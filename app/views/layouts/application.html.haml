@@ -1,0 +1,27 @@
+!!! 5
+%html(lang="en-US")
+  %head
+    %title Salon
+    %meta(charset="UTF-8")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %link{:rel=>"stylesheet", :href=>"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", :integrity=>"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u",:crossorigin=>"anonymous"}
+    %script{:src=>"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", :integrity=>"sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", :crossorigin=>"anonymous"}
+
+    = include_gon 
+    = csrf_meta_tag
+    = stylesheet_link_tag "application", media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag "application", 'data-turbolinks-track': 'reload'
+
+    =yield :head
+  %body
+    %header
+      = render 'shared/nav'
+    %section.content.clearfix{:style=>"margin-top: -21px;"}
+      = render 'shared/messages'
+      = yield
+      
+
+    
+    %footer
+
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>

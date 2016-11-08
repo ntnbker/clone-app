@@ -41,7 +41,9 @@ gem 'stripe'
 gem 'figaro', '~> 1.1.0'
 gem 'pry'
 gem 'pry-nav'
-
+gem 'sorcery', '~> 0.9.1'
+gem "haml"
+gem "gon"
 
 
 group :development, :test do
@@ -74,6 +76,7 @@ group :test do
   gem 'vcr'
   gem 'webmock'
   gem 'selenium-webdriver'
+  gem 'rails-controller-testing'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

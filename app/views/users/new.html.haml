@@ -1,0 +1,6 @@
+%div.well
+  =bootstrap_form_for(@user, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    =f.email_field :email, hide_label: false
+    =f.password_field :password, hide_label: false 
+    =f.password_field :password_confirmation
+    =f.submit 
