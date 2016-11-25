@@ -8,4 +8,11 @@ Rails.application.routes.draw do
   get 'login' => 'user_sessions#new', :as => :login
   post 'logout' => 'user_sessions#destroy', :as => :logout
 
+  resources :landlords, only:[:create, :update]
+  get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
+
+  resources :agency_admins, only:[:create, :update]
+  get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
+
+
 end

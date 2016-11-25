@@ -1,4 +1,4 @@
-class Landlord < ActiveRecord::Base
+class Landlord < ApplicationRecord
 has_many :roles, as: :roleable
 
 end 
