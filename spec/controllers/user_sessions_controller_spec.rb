@@ -19,12 +19,12 @@ describe UserSessionsController do
       end 
 
        
-      it "sets the flash message you are now signed in" do 
-        user = Fabricate(:user, id:1)
-        post :create, email: user.email, password:"password"
-        expect(flash[:notice]).to eq("You are now signed in")
-      end 
-      it "redirects to the profile page" 
+      # it "sets the flash message you are now signed in" do 
+      #   user = Fabricate(:user, id:1)
+      #   post :create, email: user.email, password:"password"
+      #   expect(flash[:notice]).to eq("You are now signed in")
+      # end 
+      # it "redirects to the profile page" 
     end
   
   end 
