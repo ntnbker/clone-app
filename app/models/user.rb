@@ -7,4 +7,6 @@ class User < ApplicationRecord
   validates :password, presence: true
   validates_confirmation_of :password, if: -> { new_record? || changes[:crypted_password] }
 
+  has_one :role
+
 end
