@@ -1,0 +1,13 @@
+<h1> This is the home page</h1>
+
+
+
+%div{:style=>"width:80%;"}
+  = bootstrap_form_tag url: '/route_to_user' do |f| 
+    = f.select :main_user, options_for_select(@main_users.map{|j|[j.main_user_type, j.id] }), prompt: 'As A...' 
+    = f.select :service, options_for_select(@main_users.map{|j|[j.main_user_type, j.id] }), prompt: 'As A...' 
+    
+    = f.submit 
+ 
+
+
