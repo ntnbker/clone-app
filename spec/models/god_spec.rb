@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe AgencyAdmin do 
+describe God do 
   describe "#somemethod"
 
 end 

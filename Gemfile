@@ -44,6 +44,7 @@ gem 'pry-nav'
 gem 'sorcery', '~> 0.9.1'
 gem "haml"
 gem "gon"
+gem 'cancancan', '~> 1.15'
 
 
 group :development, :test do

@@ -9,6 +9,23 @@ class User < ApplicationRecord
 
   has_one :role
 
+
+
+  def god?
+    user = self.role
+    
+    if user.roleable_type == "God"
+      return true
+    end 
+  end
+
+  def agent?
+    user = self.role
+    
+    if user.roleable_type == "Agent"
+      return true
+    end 
+  end
   
 
 end
