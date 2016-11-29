@@ -27,7 +27,7 @@ describe GodsController do
       end 
       
       it "renders the show page " do
-         user1 = Fabricate(:user, id:1)
+        user1 = Fabricate(:user, id:1)
         role1 = Fabricate(:role, user_id:user1.id)
         agent = Fabricate(:agent)
         agent.roles << role1
@@ -71,6 +71,24 @@ describe GodsController do
         get :show, {id:god.id}
         expect(response).to redirect_to login_path
       end 
+    end 
+
+    context "is not signed in" do 
+      it "redirects to sign in page when user not logged in" do 
+        
+
+        user2 = Fabricate(:user, id:2)
+        role2 = Fabricate(:role, user_id:user2.id)
+        god = Fabricate(:god)
+        god.roles << role2
+        role2.save
+        god.save
+        binding.pry
+        get :show, {id:god.id}
+
+        expect(response).to redirect_to login_path
+      end 
+
     end 
   end 
 end 

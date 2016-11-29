@@ -21,6 +21,12 @@ class UserSessionsController < ApplicationController
     end 
   end
 
+  def destroy
+    logout
+    redirect_to root_path
+    flash[:message] = "You Have Now Logged Out"
+  end
+
 
  
 
