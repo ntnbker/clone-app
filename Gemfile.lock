@@ -151,6 +151,7 @@ GEM
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
+    nested_form (0.3.2)
     netrc (0.11.0)
     nio4r (1.2.1)
     nokogiri (1.6.8.1)
@@ -334,6 +335,7 @@ DEPENDENCIES
   letter_opener
   listen (~> 3.0.5)
   mini_magick
+  nested_form
   pg
   pry
   pry-nav

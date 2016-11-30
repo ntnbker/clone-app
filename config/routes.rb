@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :services, only:[:new,:create, :update]
   end 
   resources :agents, only:[:show,:update]
+  post 'route_user_type' =>"pages#route_user_type"
   get 'sign_up' => 'users#new', :as =>:sign_up
   get 'login' => 'user_sessions#new', :as => :login
   delete 'logout' => 'user_sessions#destroy', :as => :logout

@@ -1,6 +1,7 @@
 require "rails_helper"
 
 describe ServicesController do 
+  
   describe "GET new" do 
     context "with signed in God User" do 
 
@@ -113,7 +114,7 @@ describe ServicesController do
       end 
     end 
   end 
-
+  
   describe "POST create" do 
     context "signed in God User"do 
       it "should assign an instance variable with instance of service" do 
@@ -329,28 +330,6 @@ describe ServicesController do
         expect(response).to redirect_to login_path
       end 
     end 
-
   end 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end 

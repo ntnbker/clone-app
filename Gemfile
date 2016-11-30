@@ -45,6 +45,7 @@ gem 'sorcery', '~> 0.9.1'
 gem "haml"
 gem "gon"
 gem 'cancancan', '~> 1.15'
+gem "nested_form"
 
 
 group :development, :test do
