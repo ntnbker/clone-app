@@ -145,7 +145,7 @@ describe ServicesController do
         expect(assigns(:god)).to be_an_instance_of(God)
       end 
 
-      it "should the correctly white attributes on with strong params" do
+      it "should the correctly whitelist attributes on with strong params" do
         user2 = Fabricate(:user, id:2)
         role2 = Fabricate(:role, user_id:user2.id)
         god = Fabricate(:god)

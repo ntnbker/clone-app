@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   resources :landlords, only:[:create, :update]
   get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
 
-  resources :agency_admins, only:[:create, :update]
+  resources :agency_admins, only:[:create, :update, :show]
   get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
 
 

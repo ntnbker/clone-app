@@ -12,6 +12,7 @@ describe UserSessionsController do
 
   describe "POST create" do 
     context "valid inputs" do 
+      it "should the correctly whitelist attributes on with strong params"
       it "assings the instance variable to the right user if authentication passed" do 
         user = Fabricate(:user, id:1)
         role = Fabricate(:role, user_id:user.id)

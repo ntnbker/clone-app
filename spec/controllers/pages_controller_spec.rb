@@ -28,5 +28,7 @@ describe PagesController do
       post :route_user_type, form_fields:{main_user:"Agent", service:"Plumber"}
       expect(session[:customer_input]).to eq({"main_user"=>"Agent", "service"=>"Plumber"})
     end
+    it "should the correctly whitelist attributes on with strong params"
+
   end 
 end 

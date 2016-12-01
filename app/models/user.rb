@@ -12,10 +12,12 @@ class User < ApplicationRecord
 
     #here we setup the relationship that a user can have with each type of user
     #ie a user can only have one agent row in a table aka being one agent
-    has_one :agency_admin
+    has_one :agency_admin, inverse_of: :user
     has_one :god
 
     accepts_nested_attributes_for :agency_admin
+    #,reject_if: :all_blank
+    validates_associated :agency_admin
   
   #here we ask what type of role the user is then we use it to 
   #define the abilities is has in the Ability model

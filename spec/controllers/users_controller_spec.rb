@@ -13,6 +13,7 @@ describe UsersController do
   end 
 
   describe "POST create" do 
+    it "should the correctly whitelist attributes on with strong params"
     context "with valid input" do 
       it "sets an instance variable with in instance of user" do 
       post :create, user:{email:"ron@email.com", password:"12345"}
