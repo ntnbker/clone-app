@@ -1,0 +1,4 @@
+class MaintenanceRequest < ApplicationRecord
+  
+
+end 

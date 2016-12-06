@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161130013152) do
+ActiveRecord::Schema.define(version: 20161204082353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20161130013152) do
     t.string  "corporation_license_number"
     t.boolean "bdm_verification_status"
     t.string  "bdm_verification_id"
+    t.boolean "mailing_same_address"
   end
 
   create_table "agents", force: :cascade do |t|
@@ -55,6 +56,22 @@ ActiveRecord::Schema.define(version: 20161130013152) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.integer  "god_id"
+  end
+
+  create_table "maintenance_requests", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "mobile"
+    t.text     "access_contact"
+    t.string   "maintenance_heading"
+    t.text     "maintenance_description"
+    t.integer  "image"
+    t.text     "availability"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "agent_id"
+    t.integer  "tenant_id"
+    t.integer  "tradie_id"
   end
 
   create_table "roles", force: :cascade do |t|

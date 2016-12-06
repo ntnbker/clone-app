@@ -10,9 +10,8 @@ class PagesController < ApplicationController
     if params[:form_fields][:main_user] == "Agent"
       redirect_to agency_admin_sign_up_path
     end 
-
-     
   end
+  
 
   def user_params
     params.require(:form_fields).permit(:main_user,:service)

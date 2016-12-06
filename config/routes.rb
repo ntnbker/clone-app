@@ -20,5 +20,7 @@ Rails.application.routes.draw do
   resources :agency_admins, only:[:create, :update, :show]
   get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
 
+  resources :maintenance_request, only:[:new,:create,:destroy,:update]
+
 
 end

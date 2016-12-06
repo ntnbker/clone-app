@@ -12,7 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require jquery_nested_form
+//= require jquery-ui
+//= require gmaps.js
 //= require_tree .

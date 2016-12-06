@@ -4,6 +4,7 @@ class AgencyAdminsController < ApplicationController
     @customer_input = session[:customer_input]
     @user = User.new
     @user.build_agency_admin
+  
   end
 
   def create
@@ -36,6 +37,11 @@ class AgencyAdminsController < ApplicationController
       flash[:notice] = "Sorry something went wrong"
     end 
 
+
+  end
+
+  def show
+    @agency_admin = AgencyAdmin.find_by(id:current_user.id)
 
   end
 
