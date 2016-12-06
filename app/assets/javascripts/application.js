@@ -18,4 +18,6 @@
 //= require jquery_nested_form
 //= require jquery-ui
 //= require gmaps.js
+
+//= require cocoon
 //= require_tree .

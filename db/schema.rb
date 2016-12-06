@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161204082353) do
+ActiveRecord::Schema.define(version: 20161206081857) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "access_contacts", force: :cascade do |t|
+    t.string   "relation"
+    t.string   "name"
+    t.string   "email"
+    t.string   "mobile"
+    t.integer  "maintenance_request_id"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "agency_admins", force: :cascade do |t|
     t.string  "company_name"
@@ -42,6 +52,16 @@ ActiveRecord::Schema.define(version: 20161204082353) do
     t.string   "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "availabilities", force: :cascade do |t|
+    t.string   "date"
+    t.string   "start_time"
+    t.string   "finish_time"
+    t.integer  "maintenance_request_id"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.boolean  "available_only_by_appointment"
   end
 
   create_table "gods", force: :cascade do |t|

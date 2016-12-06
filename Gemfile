@@ -47,6 +47,7 @@ gem "haml"
 gem "gon"
 gem 'cancancan', '~> 1.15'
 gem "nested_form"
+gem "cocoon"
 
 
 group :development, :test do
