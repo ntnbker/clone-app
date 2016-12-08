@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     resources :services, only:[:new,:create, :update]
   end 
   resources :agents, only:[:show,:update]
-  post 'route_user_type' =>"pages#route_user_type"
+  post 'route_user_type' =>"pages#create"
   get 'sign_up' => 'users#new', :as =>:sign_up
   get 'login' => 'user_sessions#new', :as => :login
   delete 'logout' => 'user_sessions#destroy', :as => :logout
@@ -18,9 +18,12 @@ Rails.application.routes.draw do
   get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
 
   resources :agency_admins, only:[:create, :update, :show]
+  resources :agency_admins do 
+    resources :maintenance_requests, only:[:index]
+  end 
   get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
 
-  resources :maintenance_requests, only:[:new,:create,:destroy,:update]
+  resources :maintenance_requests, only:[:new,:create,:destroy,:update, :show]
 
 
 end

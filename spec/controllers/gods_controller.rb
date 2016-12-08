@@ -83,7 +83,7 @@ describe GodsController do
         god.roles << role2
         role2.save
         god.save
-        binding.pry
+        
         get :show, {id:god.id}
 
         expect(response).to redirect_to login_path

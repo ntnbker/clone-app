@@ -36,6 +36,14 @@ class User < ApplicationRecord
       return true
     end 
   end
+
+  def agency_admin?
+    user = self.role
+    
+    if user.roleable_type == "AgencyAdmin"
+      return true
+    end 
+  end
   
 
 end

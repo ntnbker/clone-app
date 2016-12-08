@@ -1,20 +1,38 @@
 class PagesController < ApplicationController
   def home
+    session[:customer_input] = nil
+    @query = Query.new
     @main_users = MainUser.all
     @service = Service.all
   end
 
-  def route_user_type
+  
+
+  def create
+    @query = Query.new(query_params)
     session[:customer_input] = params[:form_fields]
     
-    if params[:form_fields][:main_user] == "Agent"
-      redirect_to agency_admin_sign_up_path
-    end 
+    if @query.valid?
+      @query.save
+      session[:customer_input] = @query.id
+      if params[:form_fields][:user_role] == "Agent"
+      redirect_to login_path
+      #if logged in as agent or agency_admin redirect_create maintenance form else redirect to login path
+      end 
+
+    else
+      render :home
+      flash[:notice] = "Please pick the fields below"
+    end
+    
+
+
+    
   end
   
 
-  def user_params
-    params.require(:form_fields).permit(:main_user,:service)
+  def query_params
+    params.require(:form_fields).permit(:user_role,:tradie, :address)
   end
 
 end 

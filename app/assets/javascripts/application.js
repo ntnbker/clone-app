@@ -20,4 +20,9 @@
 //= require gmaps.js
 
 //= require cocoon
+//= require moment
+//= require bootstrap-datetimepicker
+//= require date_calendar
 //= require_tree .
+
+

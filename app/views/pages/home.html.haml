@@ -5,8 +5,8 @@
 %div.container{:style=>"width:80%;"}
   = bootstrap_form_tag url: '/route_user_type', autocomplete:"off" do |f| 
     =f.fields_for :form_fields  do |h|
-      = h.select :main_user, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }), prompt: 'As A...' 
-      = h.select :service, options_for_select(@service.map{|j|[j.service, j.service] }), prompt: 'As A...' 
+      = h.select :user_role, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }), prompt: 'As A...' 
+      = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), prompt: 'As A...' 
       = h.text_field :address, id:'pac-input', :placeholder => 'Start typing a place name...'
       = h.submit "Send"
 

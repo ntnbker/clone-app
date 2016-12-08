@@ -1,10 +1,11 @@
 class AgencyAdminsController < ApplicationController
-
+  before_action only:[:show]
   def new
-    @customer_input = session[:customer_input]
+
+    
     @user = User.new
     @user.build_agency_admin
-  
+    
   end
 
   def create
@@ -41,7 +42,7 @@ class AgencyAdminsController < ApplicationController
   end
 
   def show
-    @agency_admin = AgencyAdmin.find_by(id:current_user.id)
+    #@agency_admin = AgencyAdmin.find_by(id:current_user.id)
 
   end
 

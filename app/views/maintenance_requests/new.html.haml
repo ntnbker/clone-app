@@ -1,25 +1,27 @@
-%h1 This is where we make a maintenance request
+%h1 maintenance request
 
 %div.container.well
-  %h1  First part
+
   =bootstrap_nested_form_for(@maintenance_request, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
-    =f.text_field :name
-    =f.text_field :email
-    =f.text_field :mobile
-    =f.fields_for :access_contacts do |contacts_form|
-      = render "access_contact_fields", f: contacts_form
-      = link_to_add_association "Add Another Access Contact", f, :access_contacts
+    .field
+      =f.text_field :name
+      =f.email_field :email
+      =f.phone_field :mobile
+      =f.text_field :image
+    #access_contacts
+      =f.fields_for :access_contacts do |contacts_form|
+        = render "access_contact_fields", f: contacts_form
+        = link_to_add_association "Add Another Access Contact", f, :access_contacts
 
-    %h1  Second part
+    .field
+      =f.text_field :maintenance_heading
+      =f.text_area :maintenance_description
 
-    =f.text_field :maintenance_heading
-    =f.text_area :maintenance_description
-
-    %p have to add file upload here
-    %h1 Third part
-    =f.fields_for :availabilities do |availability_form|
-      = render "availability_fields", f: availability_form
-      = link_to_add_association "Add Another Availability", f, :availabilities
+    
+    #availabilities
+      =f.fields_for :availabilities do |availability_form|
+        = render "availability_fields", f: availability_form
+        = link_to_add_association "Add Another Availability", f, :availabilities
 
     
     =f.submit "Submit Maintenance Request"

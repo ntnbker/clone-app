@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161206081857) do
+ActiveRecord::Schema.define(version: 20161208041317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,13 +55,13 @@ ActiveRecord::Schema.define(version: 20161206081857) do
   end
 
   create_table "availabilities", force: :cascade do |t|
-    t.string   "date"
-    t.string   "start_time"
-    t.string   "finish_time"
     t.integer  "maintenance_request_id"
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.boolean  "available_only_by_appointment"
+    t.date     "date"
+    t.time     "start_time"
+    t.time     "finish_time"
   end
 
   create_table "gods", force: :cascade do |t|
@@ -92,6 +92,13 @@ ActiveRecord::Schema.define(version: 20161206081857) do
     t.integer  "agent_id"
     t.integer  "tenant_id"
     t.integer  "tradie_id"
+  end
+
+  create_table "queries", force: :cascade do |t|
+    t.integer "maintenance_request_id"
+    t.string  "user_role"
+    t.string  "tradie"
+    t.string  "address"
   end
 
   create_table "roles", force: :cascade do |t|

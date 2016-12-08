@@ -1,4 +1,6 @@
-= bootstrap_form_tag url: '/user_sessions' do |f| 
-  = f.email_field :email, placeholder: 'name@example.com'
-  = f.password_field :password
-  = f.submit
+.container
+  = bootstrap_form_tag url: '/user_sessions' do |f| 
+    = f.email_field :email, placeholder: 'name@example.com'
+    = f.password_field :password
+    =link_to "Register", agency_admin_sign_up_path
+    = f.submit

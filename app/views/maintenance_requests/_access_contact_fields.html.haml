@@ -1,6 +1,6 @@
 %fieldset.nested-fields
   =f.select :relation, ["Husband", "Son", "Wife"]
   =f.text_field :name
-  =f.text_field :email
-  =f.text_field :mobile
+  =f.email_field :email
+  =f.phone_field :mobile
   = link_to_remove_association "remove", f

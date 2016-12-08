@@ -18,6 +18,17 @@ class Ability
       if user.agent?
         can :read_show, Agent
         can :read, Service
+        can :create, MaintenanceRequest
+        can :new, MaintenanceRequest
+        
+      end
+
+      if user.agency_admin?
+        can :read_show, Agent
+        can :read, Service
+        can :create, MaintenanceRequest
+        can :new, MaintenanceRequest
+        
       end 
     #
     # The first argument to `can` is the action you are giving the user
