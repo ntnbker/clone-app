@@ -1,5 +1,6 @@
 class AgencyAdminsController < ApplicationController
-  before_action only:[:show]
+  before_action :require_login, only: [:show]
+  
   def new
 
     
@@ -30,8 +31,9 @@ class AgencyAdminsController < ApplicationController
       @agency_admin.roles << role
       role.save
       #################
+      
+      @logged_user = login(params[:user][:email], params[:user][:password]) 
       flash[:notice] = "Thank you for signing up."
-      login(params[:user][:email], params[:user][:password]) 
       redirect_to agency_admin_path(@agency_admin)
     else 
       render :new

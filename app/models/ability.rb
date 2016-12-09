@@ -17,17 +17,23 @@ class Ability
 
       if user.agent?
         can :read_show, Agent
+        
         can :read, Service
+        
         can :create, MaintenanceRequest
         can :new, MaintenanceRequest
+        can :read_show, MaintenanceRequest
         
       end
 
       if user.agency_admin?
         can :read_show, Agent
+        
         can :read, Service
+        
         can :create, MaintenanceRequest
         can :new, MaintenanceRequest
+        can :read_show, MaintenanceRequest
         
       end 
     #

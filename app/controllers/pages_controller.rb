@@ -10,19 +10,25 @@ class PagesController < ApplicationController
 
   def create
     @query = Query.new(query_params)
-    session[:customer_input] = params[:form_fields]
+    @main_users = MainUser.all
+    @service = Service.all
     
     if @query.valid?
       @query.save
       session[:customer_input] = @query.id
       if params[:form_fields][:user_role] == "Agent"
-      redirect_to login_path
-      #if logged in as agent or agency_admin redirect_create maintenance form else redirect to login path
+        if logged_in?
+          redirect_to new_maintenance_request_path
+        else
+          redirect_to login_path
+        end 
+      #if logged in  redirect_to create maintenance form else redirect to login path
       end 
 
     else
-      render :home
       flash[:notice] = "Please pick the fields below"
+      render :home
+      
     end
     
 

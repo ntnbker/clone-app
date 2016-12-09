@@ -4,11 +4,13 @@ class MaintenanceRequest < ApplicationRecord
   has_many :access_contacts, inverse_of: :maintenance_request
   has_many :availabilities, inverse_of: :maintenance_request
 
-  validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image 
+  validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image, :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge
 
   accepts_nested_attributes_for :access_contacts, allow_destroy: true
   accepts_nested_attributes_for :availabilities, allow_destroy: true
   
   validates_associated :access_contacts
   validates_associated :availabilities
+
+  
 end 

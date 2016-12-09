@@ -2,6 +2,11 @@ require "rails_helper"
 
 describe PagesController do 
   describe "GET home" do 
+    it "sets up @query instance variables" do 
+      all_main_users = MainUser.all 
+      get :home
+      expect(assigns(:query)).to be_an_instance_of(Query)
+    end 
     it "sets up @main_users instance variables" do 
       all_main_users = MainUser.all 
       get :home
@@ -20,15 +25,27 @@ describe PagesController do
   end 
 
   describe "POST route_user_type" do 
-    it "redirects to agent sign up page if params hash contains agent" do 
-      post :route_user_type, form_fields:{main_user:"Agent", service:"Plumber"}
-      expect(response).to redirect_to agency_admin_sign_up_path
-    end 
-    it "creates a session that stores the relavant information from the params" do
-      post :route_user_type, form_fields:{main_user:"Agent", service:"Plumber"}
-      expect(session[:customer_input]).to eq({"main_user"=>"Agent", "service"=>"Plumber"})
-    end
-    it "should the correctly whitelist attributes on with strong params"
+    context "not logged in" do   
+      it "redirects to login page if params hash contains agent" do 
+        post :create, form_fields:{user_role:"Agent", tradie:"Plumber", address:"123 street avenue"}
+        expect(response).to redirect_to login_path
+      end 
+      it "creates a session that stores the relavant information from the params" do
+        post :create, form_fields:{user_role:"Agent", tradie:"Plumber", address:"123 street avenue"}
+        query = Query.first.id
+        expect(session[:customer_input]).to eq(query)
+      end
+      it "creates a query in the database" do 
+        post :create, form_fields:{user_role:"Agent", tradie:"Plumber", address:"123 street avenue"}
 
+        expect(Query.count).to eq(1)
+      end 
+      it "should the correctly whitelist attributes with strong params"
+    end 
+
+    context "logged in" do 
+      it"redirects them to the maintenance request form" 
+    end 
   end 
 end 
+

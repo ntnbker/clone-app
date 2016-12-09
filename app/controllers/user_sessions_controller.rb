@@ -6,18 +6,26 @@ class UserSessionsController < ApplicationController
   def create
     
     @user = login(params[:email], params[:password])
-    #binding.pry
-    if @user.god?
-      flash[:notice] = "You are now signed in"
-      
-      redirect_to god_path(@user.role)
-    elsif @user.agent?
-      flash[:notice] = "You are now signed in"
-      
-      redirect_to agent_path(@user.role)
+    if logged_in?
+      if @user.god?
+        flash[:success] = "You are now signed in"
+        redirect_to god_path(@user.role)
+        
+        elsif @user.agent?
+          flash[:success] = "You are now signed in"
+          redirect_to new_maintenance_request_path
+        
+        elsif @user.agency_admin?
+          flash[:success] = "You are now signed in"
+          redirect_to new_maintenance_request_path
+
+        else
+          render :new
+          flash[:danger] = "Something Went Wrong"
+      end 
     else
+      flash[:danger] = "Something Went Wrong"
       render :new
-      flash[:notice] = "Something Went Wrong"
     end 
   end
 
@@ -27,11 +35,44 @@ class UserSessionsController < ApplicationController
     flash[:message] = "You Have Now Logged Out"
   end
 
+  def menu_bar_login_form_new
+    
+  end
+
+  def menu_bar_login_form_create
+    @user = login(params[:email], params[:password])
+    
+    if logged_in?
+      if @user.god?
+        flash[:success] = "You are now signed in"
+        redirect_to god_path(@user.role)
+        
+        elsif @user.agent?
+          flash[:success] = "You are now signed in"
+          redirect_to agent_path(@user.role)
+        
+        elsif @user.agency_admin?
+          flash[:success] = "You are now signed in"
+          redirect_to agent_path(@user.role)
+          
+        else
+          flash[:danger] = "Something Went Wrong"
+          render :menu_bar_login_form_new
+          
+      end 
+    else
+
+      flash[:danger] = "Please use your correct email and password"
+      render :menu_bar_login_form_new
+      
+    end 
+  end
+
 
   private
 
   def user_params
-    
+    # params(:)
   end
 
 

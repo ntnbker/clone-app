@@ -10,11 +10,7 @@ describe AgencyAdminsController do
       get :new
       expect(assigns(:user)).to be_an_instance_of(User)
     end  
-    it "assigns instance variable to the contents of the customer session" do 
-      session[:customer_input]= {"main_user"=>"Agent", "service"=>"Plumber"}
-      get :new
-      expect(assigns(:customer_input)).to eq({"main_user"=>"Agent", "service"=>"Plumber"})
-    end 
+    
   end 
 
   describe "POST create" do 
@@ -48,13 +44,13 @@ describe AgencyAdminsController do
         
         expect(flash[:notice]).to eq("Thank you for signing up.")
       end 
-      # it "logs them in testing for this we can use current user method" do 
-      #   post :create, user:{agency_admin_attributes:{company_name:"Leaders", business_name:"Leaders International", abn:"1234567", address:"238 Victoria Road", mailing_address:"238 Victoria Road", phone:"04 12345678", mobile_phone:"04 12345678", license_type:"Individual License", license_number:"123456789", corporation_license_number:"", bdm_verification_status:"0", first_name:"Leon", last_name:"Chan"},email:"leon@email.com", password:"12345"}
-      #   user = User.first
-      #   login_user(user) 
-      #   expect(current_user).to eq(user)
+      it "logs them in testing for this we can use current user method" do 
+        post :create, user:{agency_admin_attributes:{company_name:"Leaders", business_name:"Leaders International", abn:"1234567", address:"238 Victoria Road", mailing_address:"238 Victoria Road", phone:"04 12345678", mobile_phone:"04 12345678", license_type:"Individual License", license_number:"123456789", corporation_license_number:"", bdm_verification_status:"0", first_name:"Leon", last_name:"Chan"},email:"leon@email.com", password:"12345"}
+        user = User.first
+        login_user(user) 
+        expect(assigns(:logged_user)).to eq(user)
 
-      # end 
+      end 
 
       it "should redirect to the agency admin home page" do 
         post :create, user:{agency_admin_attributes:{company_name:"Leaders", business_name:"Leaders International", abn:"1234567", address:"238 Victoria Road", mailing_address:"238 Victoria Road", phone:"04 12345678", mobile_phone:"04 12345678", license_type:"Individual License", license_number:"123456789", corporation_license_number:"", bdm_verification_status:"0", first_name:"Leon", last_name:"Chan"},email:"leon@email.com", password:"12345"}

@@ -35,6 +35,8 @@ gem 'pg'
 gem 'bootstrap_form'
 gem 'fabrication'
 gem 'faker'
+gem 'sinatra', :require => nil
+
 gem 'sidekiq'
 gem 'carrierwave'
 gem 'mini_magick'

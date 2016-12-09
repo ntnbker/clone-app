@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   
   root :to => 'pages#home'
@@ -12,6 +14,8 @@ Rails.application.routes.draw do
   post 'route_user_type' =>"pages#create"
   get 'sign_up' => 'users#new', :as =>:sign_up
   get 'login' => 'user_sessions#new', :as => :login
+  get 'menu-login' => 'user_sessions#menu_bar_login_form_new', :as => :menu_login
+  post 'menulogin' => 'user_sessions#menu_bar_login_form_create'
   delete 'logout' => 'user_sessions#destroy', :as => :logout
 
   resources :landlords, only:[:create, :update]
