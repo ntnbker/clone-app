@@ -16,23 +16,23 @@ class PagesController < ApplicationController
     if @query.valid?
       @query.save
       session[:customer_input] = @query.id
-      if params[:form_fields][:user_role] == "Agent"
+      if params[:form_fields][:user_role] == "Agent" 
         if logged_in?
           redirect_to new_maintenance_request_path
         else
           redirect_to login_path
         end 
-      #if logged in  redirect_to create maintenance form else redirect to login path
-      end 
 
+      elsif params[:form_fields][:user_role] == "Tenant"
+        redirect_to new_maintenance_request_path
+      elsif params[:form_fields][:user_role] == "Landlord"
+        redirect_to new_maintenance_request_path
+      end 
+          
     else
       flash[:notice] = "Please pick the fields below"
       render :home
-      
     end
-    
-
-
     
   end
   

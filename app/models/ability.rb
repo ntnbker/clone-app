@@ -9,13 +9,21 @@ class Ability
 
     # Define abilities for the passed in user here. For example:
     #
-      user ||= User.new # guest user (not logged in)
+      @user = user || User.new # guest user (not logged in)
+
       
-      if user.god?
+      if @user.god?
         can :manage, :all
+        can :read_show, Agent
+        
+        can :read, Service
+        
+        can :create, MaintenanceRequest
+        can :new, MaintenanceRequest
+        can :read_show, MaintenanceRequest
       end
 
-      if user.agent?
+      if @user.agent?
         can :read_show, Agent
         
         can :read, Service
@@ -26,7 +34,7 @@ class Ability
         
       end
 
-      if user.agency_admin?
+      if @user.agency_admin?
         can :read_show, Agent
         
         can :read, Service
@@ -35,6 +43,18 @@ class Ability
         can :new, MaintenanceRequest
         can :read_show, MaintenanceRequest
         
+      end
+
+      if @user.tenant?
+        
+        
+        can :read_show, MaintenanceRequest
+        
+      end 
+
+      if @user.guest?
+        can :create, MaintenanceRequest
+        can :new, MaintenanceRequest
       end 
     #
     # The first argument to `can` is the action you are giving the user
@@ -56,3 +76,19 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
   end
 end
+
+
+
+ # def initialize(user)
+ #    # Guest User 
+ #    unless user 
+ #      can :read, [Asana,Image,User,Video,Sequence]
+ #    else
+ #      # All registered users
+ #      can {registered user-y permissions}
+ #      # Admins 
+ #      if user.is_admin?
+ #        can :manage, :all
+ #      end
+ #    end 
+ #  end 

@@ -14,7 +14,8 @@ class User < ApplicationRecord
     #ie a user can only have one agent row in a table aka being one agent
     has_one :agency_admin, inverse_of: :user
     has_one :god
-
+    has_one :tenant
+    has_one :guest
     accepts_nested_attributes_for :agency_admin
     #,reject_if: :all_blank
     validates_associated :agency_admin
@@ -44,6 +45,23 @@ class User < ApplicationRecord
       return true
     end 
   end
+
+  def tenant?
+    user = self.role
+    
+    if user.roleable_type == "Tenant"
+      return true
+    end
+  end
+
+  def guest?
+    user = self.role
+    
+    if user.roleable_type == "Guest"
+      return true
+    end
+  end
+  
   
 
 end

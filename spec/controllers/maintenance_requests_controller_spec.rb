@@ -3,17 +3,6 @@ require "rails_helper"
 describe MaintenanceRequestsController do 
   describe "GET new" do 
     
-    it "expects redirect when not signed in" do 
-        user1 = Fabricate(:user, id:1)
-        role1 = Fabricate(:role, user_id:user1.id)
-        agent = Fabricate(:agent, id:1)
-        agent.roles << role1
-        role1.save
-        agent.save
-        
-        get :new
-        expect(response).to redirect_to login_path
-    end  
     it "sets the maintance request instance variable" do 
       user1 = Fabricate(:user, id:1)
       role1 = Fabricate(:role, user_id:user1.id)
@@ -22,6 +11,7 @@ describe MaintenanceRequestsController do
       role1.save
       agent.save
       login_user(user1)
+      binding.pry
       get :new
       expect(assigns(:maintenance_request)).to be_an_instance_of(MaintenanceRequest)
     end 
@@ -39,22 +29,26 @@ describe MaintenanceRequestsController do
 
   end 
 
+
+
+
+
   describe "POST create" do 
     context "with valid input" do
       
-      it "expects redirect when not signed in" do 
-        user1 = Fabricate(:user, id:1)
-        role1 = Fabricate(:role, user_id:user1.id)
-        agent = Fabricate(:agent, id:1)
-        agent.roles << role1
-        role1.save
-        agent.save
-        query = Fabricate(:query,user_role:"Agent", tradie:"Plumber")
-        session[:customer_input] = query.id
+      # it "expects redirect when not signed in" do 
+      #   user1 = Fabricate(:user, id:1)
+      #   role1 = Fabricate(:role, user_id:user1.id)
+      #   agent = Fabricate(:agent, id:1)
+      #   agent.roles << role1
+      #   role1.save
+      #   agent.save
+      #   query = Fabricate(:query,user_role:"Agent", tradie:"Plumber")
+      #   session[:customer_input] = query.id
         
-        post :create, maintenance_request:{person_in_charge:"Agent" ,real_estate_office:"123 Leaders", agent_email:"leon@email.com", agent_name:"Leon Chan", agent_mobile:"12345678",name:"Martin", email:"email@email.com", mobile:"1234567890", image:"tests",access_contacts_attributes:{"1481078351273"=>{relation:"Husband", name:"emily", email:"emaily@email.com", mobile:"5555555555", _destroy:"false"}, "0"=>{relation:"Husband", name:"john", email:"john@email.com", mobile:"0987654321", _destroy:"false"}}, maintenance_heading:"Broken tap", maintenance_description:"The tap is leaking ", "availabilities_attributes"=>{"0"=>{date:"Tuesday, December 6th 2016", start_time:"9:00 AM", finish_time:"10:00 AM"}}}
-        expect(response).to redirect_to login_path
-      end    
+      #   post :create, maintenance_request:{person_in_charge:"Agent" ,real_estate_office:"123 Leaders", agent_email:"leon@email.com", agent_name:"Leon Chan", agent_mobile:"12345678",name:"Martin", email:"email@email.com", mobile:"1234567890", image:"tests",access_contacts_attributes:{"1481078351273"=>{relation:"Husband", name:"emily", email:"emaily@email.com", mobile:"5555555555", _destroy:"false"}, "0"=>{relation:"Husband", name:"john", email:"john@email.com", mobile:"0987654321", _destroy:"false"}}, maintenance_heading:"Broken tap", maintenance_description:"The tap is leaking ", "availabilities_attributes"=>{"0"=>{date:"Tuesday, December 6th 2016", start_time:"9:00 AM", finish_time:"10:00 AM"}}}
+      #   expect(response).to redirect_to login_path
+      # end    
       
       it "sets the maintenace instance variable" do 
         user1 = Fabricate(:user, id:1)
@@ -127,21 +121,64 @@ describe MaintenanceRequestsController do
         
         expect(MaintenanceRequest.count).to eq(1)
       end
-      
-      it "sets the id of the agent" do 
-        user1 = Fabricate(:user, id:1)
-        role1 = Fabricate(:role, user_id:user1.id)
-        agent = Fabricate(:agent, id:1)
-        agent.roles << role1
-        role1.save
-        agent.save
-        login_user(user1)
+
+      it "creates a user in the db if they dont exists already" do 
+
         query = Fabricate(:query,user_role:"Agent", tradie:"Plumber")
         session[:customer_input] = query.id
 
-        post :create, maintenance_request:{person_in_charge:"Agent" ,real_estate_office:"123 Leaders", agent_email:"leon@email.com", agent_name:"Leon Chan", agent_mobile:"12345678",name:"Martin", email:"email@email.com", mobile:"1234567890", image:"tests",access_contacts_attributes:{"1481078351273"=>{relation:"Husband", name:"emily", email:"emaily@email.com", mobile:"5555555555", _destroy:"false"}, "0"=>{relation:"Husband", name:"john", email:"john@email.com", mobile:"0987654321", _destroy:"false"}}, maintenance_heading:"Broken tap", maintenance_description:"The tap is leaking ", "availabilities_attributes"=>{"0"=>{date:"Tuesday, December 6th 2016", start_time:"9:00 AM", finish_time:"10:00 AM"}}}
-        expect(MaintenanceRequest.first.agent_id).to eq(1)
-      end   
+        post :create, maintenance_request:{name:"Martin", 
+                                           email:"email@email.com", 
+                                           mobile:"1234567890",
+                                           person_in_charge:"Agent", 
+                                           real_estate_office:"123 Leaders", 
+                                           agent_email:"leon@email.com", 
+                                           agent_name:"Leon Chan", 
+                                           agent_mobile:"12345678", 
+                                           image:"tests",
+                                           maintenance_heading:"Broken tap", 
+                                           maintenance_description:"The tap is leaking ",
+                                           access_contacts_attributes:{"1481078351273"=>{relation:"Husband", name:"emily", email:"emaily@email.com", mobile:"5555555555", _destroy:"false"}, "0"=>{relation:"Husband", name:"john", email:"john@email.com", mobile:"0987654321", _destroy:"false"}}, 
+                                           availabilities_attributes:{"0"=>{date:"Tuesday, December 6th 2016", start_time:"9:00 AM", finish_time:"10:00 AM"}}}
+        
+        expect(User.count).to eq(1)
+      end 
+
+      it "creates a tenant in the db sets the user id" do 
+        query = Fabricate(:query,user_role:"Agent", tradie:"Plumber")
+        session[:customer_input] = query.id
+
+        post :create, maintenance_request:{name:"Martin", 
+                                           email:"email@email.com", 
+                                           mobile:"1234567890",
+                                           person_in_charge:"Agent", 
+                                           real_estate_office:"123 Leaders", 
+                                           agent_email:"leon@email.com", 
+                                           agent_name:"Leon Chan", 
+                                           agent_mobile:"12345678", 
+                                           image:"tests",
+                                           maintenance_heading:"Broken tap", 
+                                           maintenance_description:"The tap is leaking ",
+                                           access_contacts_attributes:{"1481078351273"=>{relation:"Husband", name:"emily", email:"emaily@email.com", mobile:"5555555555", _destroy:"false"}, "0"=>{relation:"Husband", name:"john", email:"john@email.com", mobile:"0987654321", _destroy:"false"}}, 
+                                           availabilities_attributes:{"0"=>{date:"Tuesday, December 6th 2016", start_time:"9:00 AM", finish_time:"10:00 AM"}}}
+        
+        expect(Tenant.count).to eq(1)
+      end 
+      
+      # it "sets the id of the agent" do 
+      #   user1 = Fabricate(:user, id:1)
+      #   role1 = Fabricate(:role, user_id:user1.id)
+      #   agent = Fabricate(:agent, id:1)
+      #   agent.roles << role1
+      #   role1.save
+      #   agent.save
+      #   login_user(user1)
+      #   query = Fabricate(:query,user_role:"Agent", tradie:"Plumber")
+      #   session[:customer_input] = query.id
+
+      #   post :create, maintenance_request:{person_in_charge:"Agent" ,real_estate_office:"123 Leaders", agent_email:"leon@email.com", agent_name:"Leon Chan", agent_mobile:"12345678",name:"Martin", email:"email@email.com", mobile:"1234567890", image:"tests",access_contacts_attributes:{"1481078351273"=>{relation:"Husband", name:"emily", email:"emaily@email.com", mobile:"5555555555", _destroy:"false"}, "0"=>{relation:"Husband", name:"john", email:"john@email.com", mobile:"0987654321", _destroy:"false"}}, maintenance_heading:"Broken tap", maintenance_description:"The tap is leaking ", "availabilities_attributes"=>{"0"=>{date:"Tuesday, December 6th 2016", start_time:"9:00 AM", finish_time:"10:00 AM"}}}
+      #   expect(MaintenanceRequest.first.agent_id).to eq(1)
+      # end   
       
       it 'sets the flash message to success' do 
         user1 = Fabricate(:user, id:1)
