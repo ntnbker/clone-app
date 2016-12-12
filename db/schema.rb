@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161211081521) do
+ActiveRecord::Schema.define(version: 20161212003543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,14 @@ ActiveRecord::Schema.define(version: 20161211081521) do
     t.string   "agent_name"
     t.string   "agent_email"
     t.string   "agent_mobile"
+    t.string   "service_type"
+    t.integer  "property_id"
+  end
+
+  create_table "properties", force: :cascade do |t|
+    t.integer "agency_admin_id"
+    t.integer "landlord_id"
+    t.string  "property_address"
   end
 
   create_table "queries", force: :cascade do |t|
@@ -116,6 +124,9 @@ ActiveRecord::Schema.define(version: 20161211081521) do
     t.integer  "roleable_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+  end
+
+  create_table "service_needs", force: :cascade do |t|
   end
 
   create_table "services", force: :cascade do |t|

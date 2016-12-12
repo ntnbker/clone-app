@@ -3,7 +3,7 @@ class MaintenanceRequest < ApplicationRecord
   has_one :query
   has_many :access_contacts, inverse_of: :maintenance_request
   has_many :availabilities, inverse_of: :maintenance_request
-  
+  belongs_to :property
   belongs_to :tenant
   
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image, :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge

@@ -18,24 +18,85 @@ class MaintenanceRequestsController < ApplicationController
   def create
     
     @customer_input = Query.find_by(id:session[:customer_input])
+
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     
     if @maintenance_request.valid?
       if current_user.agent? || current_user.agency_admin?
         @maintenance_request.agent_id = current_user.role.roleable_id
       end 
-      if User.exists?(email:params[:maintenance_request][:email])
+      
+
+      #This user already exists
+      @user = User.find_by(email: params[:maintenance_request][:email])
+      if @user
         @maintenance_request.perform_uniqueness_validation_of_email = false
-        user = User.find_by(email:params[:maintenance_request][:email]).id
-        @tenant = Tenant.find_by(user_id:user)
+        #user = User.find_by(email:params[:maintenance_request][:email]).id
+        @tenant = Tenant.find_by(user_id:@user.id)
+        
+        #look up property
+        @property = Property.find_by(property_address:@customer_input.address)
+        if !@property
+          @property = Property.create(property_address:@customer_input.address)
+          @maintenance_request.property_id = @property.id
+          
+
+          if @tenant.property_id.nil?
+            @tenant.update_attribute(:property_id, @property.id)
+          else
+            @tenant.property_id = @tenant.property_id
+          end 
+        
+        else
+          #@property = Property.find_by(property_address:@customer_input.address)
+          @maintenance_request.property_id = @property.id
+          if @tenant.property_id.nil?
+            @tenant.update_attribute(:property_id, @property.id)
+          else
+            @tenant.property_id = @tenant.property_id
+          end 
+        end 
+
         @maintenance_request.tenant_id = @tenant.id
+        @maintenance_request.service_type = @customer_input.tradie
+        
+        
+
+        #if Agency_admin exists
+        @agency_admin = User.find_by(email:params[:maintenance_request][:agent_email])
+        
+        if @agency_admin
+          @maintenance_request.agent_id = @agent.role.roleable_id
+        else
+           user = User.create(email:params[:maintenance_request][:agent_email], password:SecureRandom.hex(5))
+           role = Role.create(user_id:user.id)
+           agency_admin = AgencyAdmin.create(email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
+           agency_admin.roles << role
+           #HERE WE SHOULD BE EMAILING THE AGENT PASSWORD 
+        end 
+
+
         @maintenance_request.save 
-        #then add it to the tenants requests by finding the tenant through their email
          
-      else
+      else #This user does not exist
         @maintenance_request.perform_uniqueness_validation_of_email = true
         @user = User.create(email:params[:maintenance_request][:email], password:SecureRandom.hex(5))
-        tenant = Tenant.create(user_id:@user.id)
+        role = Role.create(user_id:@user.id)
+        @tenant = Tenant.create(user_id:@user.id, full_name:params[:maintenance_request][:name],email:params[:maintenance_request][:email], mobile:params[:maintenance_request][:mobile] )
+        @tenant.roles << role
+        @maintenance_request.tenant_id = @tenant.id
+        @maintenance_request.service_type = @customer_input.tradie
+        
+        if !Property.exists?(property_address:@customer_input.address)
+          @property = Property.create(property_address:@customer_input.address)
+          @maintenance_request.property_id = @property.id
+          @tenant.update_attribute(:property_id, @property.id)
+        else
+          @property = Property.find_by(property_address:@customer_input.address)
+          @maintenance_request.property_id = @property.id
+          @tenant.update_attribute(:property_id, @property.id)
+        end 
+
         
         @maintenance_request.save
         
@@ -43,12 +104,17 @@ class MaintenanceRequestsController < ApplicationController
       
       
 
-      @customer_input.update_attribute(:maintenance_request_id,@maintenance_request.id)
+      #@customer_input.update_attribute(:maintenance_request_id,@maintenance_request.id)
       EmailWorker.perform_async(@maintenance_request.id)
-      redirect_to maintenance_request_path(@maintenance_request)
+      if current_user.guest?
+        redirect_to root_path
+        flash[:success]= "Thank You for creating a Maintenance Request"
+      elsif current_user.agent? || current_user.agency_admin
+        flash[:success]= "Thank You for creating a Maintenance Request"
+        redirect_to maintenance_request_path(@maintenance_request)
+      end 
       
       
-      flash[:success]= "Thank You"
     else
       flash[:danger]= "something went wrong"
       render :new
@@ -69,10 +135,7 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def set_guest_user
-    
-    
-    login("martin@maintenanceapp.com.au", 12345)
-    
+   login("martin@maintenanceapp.com.au", 12345)
   end
 
  
