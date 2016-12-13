@@ -6,16 +6,24 @@ class ApplicationMailer < ActionMailer::Base
     mail from:"ron@email.com", to:maintenance_request.email, subject:"Hi #{maintenance_request.name} your maintenance request is now being processed"
   end
 
+  def send_access_contacts_mr_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    access_contacts = @maintenance_request.access_contacts
+    email_array = []
+
+    access_contacts.each do |f|
+      email_array.push(f.email)
+
+    end 
+    
+    binding.pry
+    mail(from:"ron@email.com", to:email_array, subject: "New comment on the Subvisual blog")
+
+    
+
+    
+  end
+
 end
 
-
-# context "sends emails" do 
-#           after {ActionMailer::Base.deliveries.clear}
-          
-#           it "sends an email when a user signs up with valid inputs" do 
-#             charge = double('charge')
-#             charge.stub(:successful?).and_return(true)
-#             StripeWrapper::Charge.stub(:create).and_return(charge)
-#             post :create, token:123, user: {email:"dom@email.com", password:"123", full_name:"dom john"}
-#             expect(ActionMailer::Base.deliveries).not_to be_empty
-#           end 

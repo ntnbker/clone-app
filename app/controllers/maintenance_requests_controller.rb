@@ -36,6 +36,7 @@ class MaintenanceRequestsController < ApplicationController
         
         #look up property
         @property = Property.find_by(property_address:@customer_input.address)
+        #CREATE PROPERTY
         if !@property
           @property = Property.create(property_address:@customer_input.address)
           @maintenance_request.property_id = @property.id
@@ -64,21 +65,28 @@ class MaintenanceRequestsController < ApplicationController
 
         #if Agency_admin exists
         @agency_admin = User.find_by(email:params[:maintenance_request][:agent_email])
-        
+        #CREATE AGENCY ADMIN
         if @agency_admin
-          @maintenance_request.agent_id = @agent.role.roleable_id
+          @maintenance_request.agent_id = @agency_admin.role.roleable_id
         else
+           @agency_admin = AgencyAdmin.new(email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
+           @agency_admin.perform_presence_validation = false
            user = User.create(email:params[:maintenance_request][:agent_email], password:SecureRandom.hex(5))
            role = Role.create(user_id:user.id)
-           agency_admin = AgencyAdmin.create(email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
-           agency_admin.roles << role
+           @agency_admin.save
+           @agency_admin.roles << role
+           
            #HERE WE SHOULD BE EMAILING THE AGENT PASSWORD 
+
+
+
         end 
 
 
         @maintenance_request.save 
          
       else #This user does not exist
+        #CREATE USER
         @maintenance_request.perform_uniqueness_validation_of_email = true
         @user = User.create(email:params[:maintenance_request][:email], password:SecureRandom.hex(5))
         role = Role.create(user_id:@user.id)
@@ -87,6 +95,7 @@ class MaintenanceRequestsController < ApplicationController
         @maintenance_request.tenant_id = @tenant.id
         @maintenance_request.service_type = @customer_input.tradie
         
+        #CREATE PROPERTY
         if !Property.exists?(property_address:@customer_input.address)
           @property = Property.create(property_address:@customer_input.address)
           @maintenance_request.property_id = @property.id
@@ -97,6 +106,26 @@ class MaintenanceRequestsController < ApplicationController
           @tenant.update_attribute(:property_id, @property.id)
         end 
 
+
+
+        #CREATE AGENCY ADMIN
+        @agency_admin = User.find_by(email:params[:maintenance_request][:agent_email])
+        
+        if @agency_admin
+          @maintenance_request.agent_id = @agency_admin.role.roleable_id
+        else
+           @agency_admin = AgencyAdmin.new(email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
+           @agency_admin.perform_presence_validation = false
+           user = User.create(email:params[:maintenance_request][:agent_email], password:SecureRandom.hex(5))
+           role = Role.create(user_id:user.id)
+           @agency_admin.save
+           @agency_admin.roles << role
+           #HERE WE SHOULD BE EMAILING THE AGENT PASSWORD 
+        end 
+
+
+
+
         
         @maintenance_request.save
         
@@ -106,6 +135,10 @@ class MaintenanceRequestsController < ApplicationController
 
       #@customer_input.update_attribute(:maintenance_request_id,@maintenance_request.id)
       EmailWorker.perform_async(@maintenance_request.id)
+      
+
+
+
       if current_user.guest?
         redirect_to root_path
         flash[:success]= "Thank You for creating a Maintenance Request"
