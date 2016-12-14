@@ -2,5 +2,5 @@
   = bootstrap_form_tag url: '/user_sessions' do |f| 
     = f.email_field :email, placeholder: 'name@example.com'
     = f.password_field :password
-    
+    = link_to "Forgot Password", new_password_reset_path
     = f.submit

@@ -1,6 +1,8 @@
 class MaintenanceRequestsController < ApplicationController
+  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action :require_login, only:[:show]
   before_action :set_guest_user, only:[:new,:create]
+
   load_and_authorize_resource
   
   def new
@@ -22,14 +24,18 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     
     if @maintenance_request.valid?
-      if current_user.agent? || current_user.agency_admin?
+      if current_user.agency_admin?
+        @maintenance_request.agency_admin_id = current_user.role.roleable_id
+      end 
+
+      if current_user.agent? 
         @maintenance_request.agent_id = current_user.role.roleable_id
       end 
       
 
       #This user already exists
       @user = User.find_by(email: params[:maintenance_request][:email])
-      if @user
+      if @user 
         @maintenance_request.perform_uniqueness_validation_of_email = false
         #user = User.find_by(email:params[:maintenance_request][:email]).id
         @tenant = Tenant.find_by(user_id:@user.id)
@@ -67,7 +73,7 @@ class MaintenanceRequestsController < ApplicationController
         @agency_admin = User.find_by(email:params[:maintenance_request][:agent_email])
         #CREATE AGENCY ADMIN
         if @agency_admin
-          @maintenance_request.agent_id = @agency_admin.role.roleable_id
+          @maintenance_request.agency_admin_id = @agency_admin.role.roleable_id
         else
            @agency_admin = AgencyAdmin.new(email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
            @agency_admin.perform_presence_validation = false
@@ -112,7 +118,7 @@ class MaintenanceRequestsController < ApplicationController
         @agency_admin = User.find_by(email:params[:maintenance_request][:agent_email])
         
         if @agency_admin
-          @maintenance_request.agent_id = @agency_admin.role.roleable_id
+          @maintenance_request.agency_admin_id = @agency_admin.role.roleable_id
         else
            @agency_admin = AgencyAdmin.new(email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
            @agency_admin.perform_presence_validation = false
@@ -158,17 +164,26 @@ class MaintenanceRequestsController < ApplicationController
 
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+
+
   end
 
 
   private
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:tenant_id,:tradie_id,:maintenance_description,:image,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy])
+    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:image,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy])
   end
 
   def set_guest_user
    login("martin@maintenanceapp.com.au", 12345)
+  end
+
+  def email_auto_login(id)
+
+    user = User.find_by(id:id)
+    binding.pry
+    auto_login(user)
   end
 
  

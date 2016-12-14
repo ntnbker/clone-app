@@ -1,5 +1,8 @@
 class AgencyAdminsController < ApplicationController
+  load_and_authorize_resource
+  before_action :set_guest_user, only:[:new,:create]
   before_action :require_login, only: [:show]
+  
   
   def new
 
@@ -10,19 +13,9 @@ class AgencyAdminsController < ApplicationController
   end
 
   def create
-    #this has to be set up in 4 steps 
-    # first we have to create the user
-    # then have to create the agency
-    # then we have to create the accociation between them
-    # then we set the role for the agent
-    # @agency = AgencyAdmin.new
+    
     @user = User.new(user_params)
-    # @user.agency_admin << @agency
-
-
     
-    
-
     if @user.valid?
       @user.save
       ###THIS SETS UP THE ROLE FOR THE USER THAT JUST SIGNED UP
@@ -57,6 +50,10 @@ class AgencyAdminsController < ApplicationController
   end
 
 
+
+  def set_guest_user
+   login("martin@maintenanceapp.com.au", 12345)
+  end
 
 
 

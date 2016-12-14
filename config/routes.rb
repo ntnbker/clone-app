@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+
+
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
@@ -21,13 +23,23 @@ Rails.application.routes.draw do
   resources :landlords, only:[:create, :update]
   get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
 
-  resources :agency_admins, only:[:create, :update, :show]
-  resources :agency_admins do 
+  #resources :agency_admins, only:[:create, :update, :show]
+  resources :agency_admins, only:[:create, :update, :show] do 
     resources :maintenance_requests, only:[:index]
   end 
   get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
 
   resources :maintenance_requests, only:[:new,:create,:destroy,:update, :show]
+  resources :password_resets, only:[:new, :create, :edit,:update]
+  resources :tenants, only:[:show, :index]
+
+
+
+
+  # get "forgot_password", to: "forgot_password#new"
+  # get "forgot_password_confirmation", to: "forgot_password#confirm"
+  # get "expired_token", to: "password_reset#expired_token"
+  # get "register/:token", to: "users#new_with_invitation_token", as:"register_with_token"
 
 
 end

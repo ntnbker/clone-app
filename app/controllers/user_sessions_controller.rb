@@ -19,6 +19,10 @@ class UserSessionsController < ApplicationController
           flash[:success] = "You are now signed in"
           redirect_to new_maintenance_request_path
 
+        elsif @user.tenant?
+          flash[:success] = "You are now signed in"
+          redirect_to tenants_path
+
         else
           render :new
           flash[:danger] = "Something Went Wrong"
@@ -54,6 +58,10 @@ class UserSessionsController < ApplicationController
         elsif @user.agency_admin?
           flash[:success] = "You are now signed in"
           redirect_to agent_path(@user.role)
+
+        elsif @user.tenant?
+          flash[:success] = "You are now signed in"
+          redirect_to tenants_path
           
         else
           flash[:danger] = "Something Went Wrong"

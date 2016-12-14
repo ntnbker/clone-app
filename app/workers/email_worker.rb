@@ -9,7 +9,8 @@ class EmailWorker
     ApplicationMailer.send_maintenance_request_email(maintenance_request).deliver
 
     ApplicationMailer.send_access_contacts_mr_email(maintenance_request).deliver
-    binding.pry
+    
+    ApplicationMailer.send_agent_maintenance_request_email(maintenance_request).deliver
   end
 end 
 

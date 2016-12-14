@@ -42,19 +42,25 @@ class Ability
         can :create, MaintenanceRequest
         can :new, MaintenanceRequest
         can :read_show, MaintenanceRequest
+
+        can :new, AgencyAdmin
         
       end
 
       if @user.tenant?
         
-        
+        can :read_index, Tenant
+        can :read_show, Tenant
         can :read_show, MaintenanceRequest
-        
+        can :create, MaintenanceRequest
+        can :new, MaintenanceRequest
       end 
 
       if @user.guest?
         can :create, MaintenanceRequest
         can :new, MaintenanceRequest
+        can :new, AgencyAdmin
+        can :create, AgencyAdmin
       end 
     #
     # The first argument to `can` is the action you are giving the user
