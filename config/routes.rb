@@ -30,6 +30,8 @@ Rails.application.routes.draw do
   get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
 
   resources :maintenance_requests, only:[:new,:create,:destroy,:update, :show]
+  
+  resources :agent_maintenance_requests, only:[:new,:create,:destroy,:update, :show]
   resources :password_resets, only:[:new, :create, :edit,:update]
   resources :tenants, only:[:show, :index]
 

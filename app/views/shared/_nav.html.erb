@@ -16,11 +16,12 @@
       
       
       <ul class="nav navbar-nav navbar-right"> 
-        
+        <% if !logged_in? %>
         <li><%= link_to "Login", menu_login_path%></li>
+        <%end %>
         <% if logged_in? %>
-        <li><%= link_to "SignOut", logout_path, method: :delete%> </li>
-       <%end %>
+          <li><%= link_to "SignOut", logout_path, method: :delete%> </li>
+        <%end %>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

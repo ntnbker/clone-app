@@ -1,29 +1,46 @@
-class MaintenanceRequestsController < ApplicationController
+class AgentMaintenanceRequestsController < ApplicationController 
+  
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   
   
-  before_action :set_user, only:[:new,:create]
-  load_and_authorize_resource
-  before_action :require_login, only:[:show]
-  
+  before_action :require_login, only:[:new,:create,:show]
+  before_action :check_user_role
 
   def new
+    
+    
     
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
     @customer_input = Query.find_by(id:session[:customer_input])
+    
+
   end
 
   def create
     
+    if current_user.agency_admin?
+      @agency_admin = current_user.agency_admin
+    elsif current_user.agent?
+      @agent = current_user.agent
+    end 
+    binding.pry
     
     @customer_input = Query.find_by(id:session[:customer_input])
 
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     
     if @maintenance_request.valid?
-      
+      if current_user.agency_admin?
+        @maintenance_request.agency_admin_id = current_user.role.roleable_id
+        @maintenance_request.perform_realestate_validations = false
+      end 
+
+      if current_user.agent? 
+        @maintenance_request.agent_id = current_user.role.roleable_id
+        @maintenance_request.perform_realestate_validations = false
+      end 
       
 
       #This user already exists
@@ -33,32 +50,11 @@ class MaintenanceRequestsController < ApplicationController
         #user = User.find_by(email:params[:maintenance_request][:email]).id
         @tenant = Tenant.find_by(user_id:@user.id)
         
-        
-        #if Agency_admin exists
-        @agency_admin = User.find_by(email:params[:maintenance_request][:agent_email])
-        #CREATE AGENCY ADMIN
-        if @agency_admin
-          @maintenance_request.agency_admin_id = @agency_admin.role.roleable_id
-        else
-           user = User.create(email:params[:maintenance_request][:agent_email], password:SecureRandom.hex(5))
-           @agency_admin = AgencyAdmin.new(user_id:user.id,email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
-           @agency_admin.perform_presence_validation = false
-           
-           role = Role.create(user_id:user.id)
-           @agency_admin.save
-           @agency_admin.roles << role
-           
-           #HERE WE SHOULD BE EMAILING THE AGENT 
-        end 
-
-
-
-
         #look up property
         @property = Property.find_by(property_address:@customer_input.address)
         #CREATE PROPERTY
         if !@property
-          @property = Property.create(property_address:@customer_input.address,agency_admin_id: @agency_admin.id)
+          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id)
           @maintenance_request.property_id = @property.id
           
 
@@ -89,7 +85,40 @@ class MaintenanceRequestsController < ApplicationController
         #CREATE EXTRA TENANT FROM ACCESS CONTACTS LIST IF THEY ARE "TENANT"
        
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
-        
+       
+        # access_contact_params.each do |key, value|
+        #   value.each do |k,v| 
+        #     if v == "Tenant"
+                              
+        #       if k == "email"
+        #         contact = User.find_by(email:v)
+
+        #         if contact
+
+        #         else 
+        #           if  k =="email" 
+        #             @contact_tenant = Tenant.new(email:v)
+                    
+        #             user = User.create(email:v, password:SecureRandom.hex(5))
+        #             role = Role.create(user_id:user.id)
+        #             @contact_tenant.save
+        #             @contact_tenant.roles << role
+                    
+        #             if k=="name"
+        #               @contact_tenant.update_attribute(:name,v)
+        #             end 
+        #             if k =="mobile"
+        #               @contact_tenant.update_attribute(:mobile,v)
+        #             end 
+
+        #           end 
+
+        #         end 
+        #       end 
+          
+        #     end 
+        #   end
+        # end 
 
         access_contact_params.each_value do |hash|
           
@@ -99,7 +128,7 @@ class MaintenanceRequestsController < ApplicationController
                 contact = User.find_by(email:value )
 
                  if contact
-                  #do nothing
+                  #do nothing dont create a new user or tenant
                  else 
                   if  key =="email" 
                     user = User.create(email:value, password:SecureRandom.hex(5))
@@ -136,6 +165,7 @@ class MaintenanceRequestsController < ApplicationController
 
 
         @maintenance_request.save 
+        #EmailWorker.perform_async(@maintenance_request.id)
          
       else #This user does not exist
         #CREATE USER
@@ -146,29 +176,6 @@ class MaintenanceRequestsController < ApplicationController
         @tenant.roles << role
         @maintenance_request.tenant_id = @tenant.id
         @maintenance_request.service_type = @customer_input.tradie
-
-
-
-         #CREATE AGENCY ADMIN
-        @agency_admin = User.find_by(email:params[:maintenance_request][:agent_email])
-        
-        if @agency_admin
-          @maintenance_request.agency_admin_id = @agency_admin.role.roleable_id
-        else
-           user = User.create(email:params[:maintenance_request][:agent_email], password:SecureRandom.hex(5))
-           @agency_admin = AgencyAdmin.new(user_id:user.id,email:params[:maintenance_request][:agent_email],mobile_phone:params[:maintenance_request][:agent_mobile])
-           @agency_admin.perform_presence_validation = false
-           
-           role = Role.create(user_id:user.id)
-           @agency_admin.save
-           @agency_admin.roles << role
-           #HERE WE SHOULD BE EMAILING THE AGENT PASSWORD 
-        end
-
-
-
-
-
         
         #CREATE PROPERTY
         if !Property.exists?(property_address:@customer_input.address)
@@ -182,14 +189,8 @@ class MaintenanceRequestsController < ApplicationController
         end 
 
 
-
-        
-
-         #CREATE EXTRA TENANT FROM ACCESS CONTACTS LIST IF THEY ARE "TENANT"
-       
+        #CREATE TENATNS
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
-        
-
         access_contact_params.each_value do |hash|
           
           if hash.has_value?("Tenant")
@@ -198,7 +199,7 @@ class MaintenanceRequestsController < ApplicationController
                 contact = User.find_by(email:value )
 
                  if contact
-                  #do nothing
+                  #do nothing dont create a new user or tenant
                  else 
                   if  key =="email" 
                     user = User.create(email:value, password:SecureRandom.hex(5))
@@ -227,27 +228,28 @@ class MaintenanceRequestsController < ApplicationController
 
 
 
+        
 
 
 
 
         
         @maintenance_request.save
-        
+        #EmailWorker.perform_async(@maintenance_request.id)
       end 
       
       
 
-      #@customer_input.update_attribute(:maintenance_request_id,@maintenance_request.id)
+     
       EmailWorker.perform_async(@maintenance_request.id)
       
 
 
 
-        flash[:success]= "Thank You for creating a Maintenance Request"
-        redirect_to root_path
-        
       
+      flash[:success]= "Thank You for creating a Maintenance Request"
+      redirect_to agent_maintenance_request_path(@maintenance_request)
+       
       
       
     else
@@ -260,8 +262,6 @@ class MaintenanceRequestsController < ApplicationController
 
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-
-
   end
 
 
@@ -271,27 +271,33 @@ class MaintenanceRequestsController < ApplicationController
     params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:image,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy])
   end
 
-  # def set_guest_user
-  #   #if !current_user.agent? || !current_user.agency_admin?
-  #     login("martin@maintenanceapp.com.au", 12345)
-  #   #end 
-  # end
-
   def set_user
-
     @user = User.new
   end
 
   def email_auto_login(id)
+    if current_user == nil 
+      user = User.find_by(id:id)
+      auto_login(user)
+    end 
+  end
 
-    user = User.find_by(id:id)
+  def check_user_role
     
-    auto_login(user)
+    if current_user.agency_admin? || current_user.agent? 
+      
+    elsif !current_user.agency_admin? || !current_user.agent? || current_user == nil
+      flash[:danger] = "Sorry you are not allowed here"
+      redirect_to root_path
+    
+    
+    end 
+
+
   end
 
  
 
+
+
 end 
-
-
-

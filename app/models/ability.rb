@@ -6,7 +6,7 @@ class Ability
     #wanted to be specific about index and show defaults are one read method which I dont want 
     alias_action :index, :show, :to => :read_index
     alias_action :show, :to => :read_show
-
+    
     # Define abilities for the passed in user here. For example:
     #
       @user = user || User.new # guest user (not logged in)
@@ -44,6 +44,7 @@ class Ability
         can :read_show, MaintenanceRequest
 
         can :new, AgencyAdmin
+        can :read_show, AgencyAdmin
         
       end
 
@@ -56,7 +57,9 @@ class Ability
         can :new, MaintenanceRequest
       end 
 
-      if @user.guest?
+      if @user
+        
+
         can :create, MaintenanceRequest
         can :new, MaintenanceRequest
         can :new, AgencyAdmin

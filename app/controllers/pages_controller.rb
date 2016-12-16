@@ -1,4 +1,6 @@
 class PagesController < ApplicationController
+  
+  
   def home
     session[:customer_input] = nil
     @query = Query.new
@@ -18,7 +20,7 @@ class PagesController < ApplicationController
       session[:customer_input] = @query.id
       if params[:form_fields][:user_role] == "Agent" 
         if logged_in?
-          redirect_to new_maintenance_request_path
+          redirect_to new_agent_maintenance_request_path
         else
           redirect_to login_path
         end 
@@ -30,15 +32,18 @@ class PagesController < ApplicationController
       end 
           
     else
-      flash[:notice] = "Please pick the fields below"
+      flash[:danger] = "Please fill all the fields below"
       render :home
     end
     
   end
   
+  private
 
   def query_params
     params.require(:form_fields).permit(:user_role,:tradie, :address)
   end
+
+ 
 
 end 

@@ -25,42 +25,93 @@ class User < ApplicationRecord
   def god?
     user = self.role
     
-    if user.roleable_type == "God"
-      return true
+    if user == nil
+      return false
+    elsif user.roleable_type == "God"
+      return true 
     end 
   end
-
+  
   def agent?
     user = self.role
-    
-    if user.roleable_type == "Agent"
+    if user == nil
+      return false
+    elsif user.roleable_type == "Agent"
       return true
     end 
   end
 
   def agency_admin?
     user = self.role
-    
-    if user.roleable_type == "AgencyAdmin"
+    if user == nil
+      return false
+    elsif user.roleable_type == "AgencyAdmin"
       return true
     end 
   end
 
   def tenant?
     user = self.role
-    
-    if user.roleable_type == "Tenant"
+    if user == nil
+      return false
+    elsif user.roleable_type == "Tenant"
       return true
     end
   end
 
-  def guest?
-    user = self.role
+  # def guest?
+  #   user = self.role
     
-    if user.roleable_type == "Guest"
-      return true
-    end
-  end
+  #   if user.roleable_type == "Guest"
+  #     return true
+  #   end
+  # end
+
+
+
+
+  # def god?
+  #   user = self.role
+    
+  #   if user.roleable_type == "God"
+  #     return true
+  #   
+        
+  #   end 
+  # end
+
+
+  # def agent?
+  #   user = self.role
+    
+  #   if user.roleable_type == "Agent"
+  #     return true
+  #   end 
+  # end
+
+  # def agency_admin?
+  #   user = self.role
+    
+  #   if user.roleable_type == "AgencyAdmin"
+  #     return true
+  #   end 
+  # end
+
+  # def tenant?
+  #   user = self.role
+    
+  #   if user.roleable_type == "Tenant"
+  #     return true
+  #   end
+  # end
+
+  # def guest?
+  #   user = self.role
+    
+  #   if user.roleable_type == "Guest"
+  #     return true
+  #   end
+  # end
   
   
 

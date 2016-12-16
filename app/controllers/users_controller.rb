@@ -8,12 +8,12 @@ class UsersController < ApplicationController
 
     if @user.valid?
       @user.save
-      flash[:notice] = "Thank you for signing up."
+      flash[:success] = "Thank you for signing up."
       redirect_to login_path
       
     else 
       render :new
-      flash[:notice] = "Sorry something went wrong"
+      flash[:danger = "Sorry something went wrong"
     end 
   end
 

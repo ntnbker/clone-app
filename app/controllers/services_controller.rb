@@ -17,10 +17,10 @@ class ServicesController < ApplicationController
       @service.god_id = @god.id
       @service.save
       redirect_to god_path(@god.id)
-      flash[:notice] = "You have added a new Service"
+      flash[:success] = "You have added a new Service"
     else
       render :new
-      flash[:notice] = "Oops something went wrong!"
+      flash[:danger] = "Oops something went wrong!"
     end 
 
   end

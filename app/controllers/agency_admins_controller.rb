@@ -1,11 +1,11 @@
 class AgencyAdminsController < ApplicationController
-  load_and_authorize_resource
-  before_action :set_guest_user, only:[:new,:create]
-  before_action :require_login, only: [:show]
   
+  #before_action :set_guest_user, only:[:new,:create]
+  before_action :require_login, only: [:show]
+  load_and_authorize_resource
   
   def new
-
+    
     
     @user = User.new
     @user.build_agency_admin
@@ -21,16 +21,19 @@ class AgencyAdminsController < ApplicationController
       ###THIS SETS UP THE ROLE FOR THE USER THAT JUST SIGNED UP
       role = Role.new(user_id:@user.id)
       @agency_admin = AgencyAdmin.find_by(user_id:@user.id)
+      @agency_admin.update_attribute(:email, params[:user][:email])
       @agency_admin.roles << role
       role.save
       #################
-      
-      @logged_user = login(params[:user][:email], params[:user][:password]) 
-      flash[:notice] = "Thank you for signing up."
+      #logout guest user
+      logout
+      #login new agency admin user
+      auto_login(@user)
+      flash[:success] = "Thank you for signing up."
       redirect_to agency_admin_path(@agency_admin)
     else 
       render :new
-      flash[:notice] = "Sorry something went wrong"
+      flash[:danger] = "Sorry something went wrong"
     end 
 
 
@@ -51,9 +54,10 @@ class AgencyAdminsController < ApplicationController
 
 
 
-  def set_guest_user
-   login("martin@maintenanceapp.com.au", 12345)
-  end
+  # def set_guest_user
+  #  login("martin@maintenanceapp.com.au", 12345)
+
+  # end
 
 
 

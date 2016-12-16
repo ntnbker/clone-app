@@ -1,12 +1,14 @@
 class MaintenanceRequest < ApplicationRecord
   belongs_to :agency_admin
+  belongs_to :agent
   has_one :query
   has_many :access_contacts, inverse_of: :maintenance_request
   has_many :availabilities, inverse_of: :maintenance_request
   belongs_to :property
   belongs_to :tenant
   
-  validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image, :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge
+  validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image
+  validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
 
   validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
 
@@ -22,7 +24,7 @@ class MaintenanceRequest < ApplicationRecord
 
 
   attr_accessor :perform_uniqueness_validation_of_email
-
+  attr_accessor :perform_realestate_validations
 
 
 
