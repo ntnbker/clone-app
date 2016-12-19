@@ -5,7 +5,7 @@ class EmailWorker
     
     maintenance_request = MaintenanceRequest.find(object_id)
 
-    ApplicationMailer.send_maintenance_request_email(maintenance_request).deliver
+    #ApplicationMailer.send_maintenance_request_email(maintenance_request).deliver
 
     # ApplicationMailer.send_access_contacts_mr_email(maintenance_request).deliver
     

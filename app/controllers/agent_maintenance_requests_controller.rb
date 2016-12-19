@@ -74,51 +74,19 @@ class AgentMaintenanceRequestsController < ApplicationController
           end 
         end 
 
-        @maintenance_request.tenant_id = @tenant.id
+        #@maintenance_request.tenant_id = @tenant.id
         @maintenance_request.service_type = @customer_input.tradie
         
         
 
-        
+        @maintenance_request.save 
 
 
         #CREATE EXTRA TENANT FROM ACCESS CONTACTS LIST IF THEY ARE "TENANT"
        
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
        
-        # access_contact_params.each do |key, value|
-        #   value.each do |k,v| 
-        #     if v == "Tenant"
-                              
-        #       if k == "email"
-        #         contact = User.find_by(email:v)
-
-        #         if contact
-
-        #         else 
-        #           if  k =="email" 
-        #             @contact_tenant = Tenant.new(email:v)
-                    
-        #             user = User.create(email:v, password:SecureRandom.hex(5))
-        #             role = Role.create(user_id:user.id)
-        #             @contact_tenant.save
-        #             @contact_tenant.roles << role
-                    
-        #             if k=="name"
-        #               @contact_tenant.update_attribute(:name,v)
-        #             end 
-        #             if k =="mobile"
-        #               @contact_tenant.update_attribute(:mobile,v)
-        #             end 
-
-        #           end 
-
-        #         end 
-        #       end 
-          
-        #     end 
-        #   end
-        # end 
+       
 
         access_contact_params.each_value do |hash|
           
@@ -128,7 +96,7 @@ class AgentMaintenanceRequestsController < ApplicationController
                 contact = User.find_by(email:value )
 
                  if contact
-                  #do nothing dont create a new user or tenant
+                  TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
                  else 
                   if  key =="email" 
                     user = User.create(email:value, password:SecureRandom.hex(5))
@@ -138,7 +106,7 @@ class AgentMaintenanceRequestsController < ApplicationController
                     role = Role.create(user_id:user.id)
                     @contact_tenant.save
                     @contact_tenant.roles << role
-                    
+                    TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                     if key =="name"
                       @contact_tenant.update_attribute(:name,value)
                     end 
@@ -159,12 +127,12 @@ class AgentMaintenanceRequestsController < ApplicationController
 
 
 
+      @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
 
 
 
 
-
-        @maintenance_request.save 
+        
         #EmailWorker.perform_async(@maintenance_request.id)
          
       else #This user does not exist
@@ -189,6 +157,8 @@ class AgentMaintenanceRequestsController < ApplicationController
         end 
 
 
+        @maintenance_request.save
+        
         #CREATE TENATNS
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
         access_contact_params.each_value do |hash|
@@ -199,7 +169,7 @@ class AgentMaintenanceRequestsController < ApplicationController
                 contact = User.find_by(email:value )
 
                  if contact
-                  #do nothing dont create a new user or tenant
+                  TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
                  else 
                   if  key =="email" 
                     user = User.create(email:value, password:SecureRandom.hex(5))
@@ -209,7 +179,7 @@ class AgentMaintenanceRequestsController < ApplicationController
                     role = Role.create(user_id:user.id)
                     @contact_tenant.save
                     @contact_tenant.roles << role
-                    
+                    TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                     if key =="name"
                       @contact_tenant.update_attribute(:name,value)
                     end 
@@ -228,13 +198,13 @@ class AgentMaintenanceRequestsController < ApplicationController
 
 
 
-        
+        @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
 
 
 
 
         
-        @maintenance_request.save
+        
         #EmailWorker.perform_async(@maintenance_request.id)
       end 
       
