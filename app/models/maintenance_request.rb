@@ -10,7 +10,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :tenant_maintenance_requests
   has_many :tenants, through: :tenant_maintenance_requests
 
-
+  has_many :messages, as: :messageable
   
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations

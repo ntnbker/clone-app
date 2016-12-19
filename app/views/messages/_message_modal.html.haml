@@ -1,0 +1,20 @@
+
+/ %div{:class=>"modal-dialog", :role=>"document"}
+/   %div{:class=>"modal-content"}
+/     %div.modal-header
+/       %button{:type=>"button" ,:class=>"close" ,:data_dismiss=>"modal" ,:aria_label=>"Close"}
+/         %span{'aria-hidden'=>"true"}
+/           &times;
+        
+/       %h4{:class=>"modal-title", :id=>"myModalLabel"}
+/         Modal title
+    
+/     %div{:class=>"modal-body"}
+/       =bootstrap_form_for(@message, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10",size:"50", remote:true) do |f|
+/         .field
+/           =f.select :message_to, ["Tenant","Tradie"]
+/           =f.text_field :body
+/           =f.submit "Submit Message", :class=>"btn btn-default", "data-dismiss"=>"modal"
+          
+
+

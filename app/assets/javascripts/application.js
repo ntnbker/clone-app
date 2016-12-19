@@ -23,6 +23,7 @@
 //= require moment
 //= require bootstrap-datetimepicker
 //= require date_calendar
+//= require popup
 //= require_tree .
 
 

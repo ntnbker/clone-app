@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   resources :agent_maintenance_requests, only:[:new,:create,:destroy,:update, :show]
   resources :password_resets, only:[:new, :create, :edit,:update]
   resources :tenants, only:[:show, :index]
-
+  resources :messages
 
 
 

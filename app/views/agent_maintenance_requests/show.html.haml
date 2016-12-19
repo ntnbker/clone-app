@@ -1,3 +1,5 @@
+This is a test
+
 .container
   %h3 
     = @maintenance_request.service_type 
@@ -22,3 +24,42 @@
     =@maintenance_request.maintenance_heading
   %p
     =@maintenance_request.maintenance_description 
+
+
+
+/%div{:id=>"modal-window", :class=>"modal hide fade", :role=>"dialog", "aria-labelledby"=>"myModalLabel", "aria-hidden"=>"true"}
+/ %div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+
+/ = link_to 'New Message', new_message_path, :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#myModal'
+
+
+/ = link_to "Nuevo Producto", new_message_path, :remote=> true, 'data-toggle' => "modal", 'data-target' => '#modal-window',class: "btn btn-primary" 
+
+
+  
+
+
+
+
+
+
+%button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
+  Launch demo modal
+
+
+
+      
+=bootstrap_form_for(@message,remote: true) do |f|
+  %div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+    %div{:class=>"modal-dialog", :role=>"document"}
+      %div{:class=>"modal-content"}
+        %div{:class=>"modal-body"}
+
+          =f.select :message_to, ["Tenant","Tradie"], id:"message_for"
+          =f.text_field :body
+          =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
+          
+
+
+      
+
