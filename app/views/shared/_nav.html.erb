@@ -21,6 +21,8 @@
         <%end %>
         <% if logged_in? %>
           <li><%= link_to "SignOut", logout_path, method: :delete%> </li>
+          <li><%= link_to "Inbox", conversations_path%> </li>
+          
         <%end %>
       </ul>
     </div><!-- /.navbar-collapse -->

@@ -232,6 +232,8 @@ class AgentMaintenanceRequestsController < ApplicationController
 
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+    @tenants = @maintenance_request.tenants
+    
     @message = Message.new
 
     

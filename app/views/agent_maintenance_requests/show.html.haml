@@ -26,16 +26,6 @@ This is a test
     =@maintenance_request.maintenance_description 
 
 
-
-/%div{:id=>"modal-window", :class=>"modal hide fade", :role=>"dialog", "aria-labelledby"=>"myModalLabel", "aria-hidden"=>"true"}
-/ %div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
-
-/ = link_to 'New Message', new_message_path, :remote => true, 'data-toggle' =>  "modal", 'data-target' => '#myModal'
-
-
-/ = link_to "Nuevo Producto", new_message_path, :remote=> true, 'data-toggle' => "modal", 'data-target' => '#modal-window',class: "btn btn-primary" 
-
-
   
 
 
@@ -54,8 +44,9 @@ This is a test
     %div{:class=>"modal-dialog", :role=>"document"}
       %div{:class=>"modal-content"}
         %div{:class=>"modal-body"}
-
-          =f.select :message_to, ["Tenant","Tradie"], id:"message_for"
+          
+          =f.select :receiver_id, options_from_collection_for_select(@tenants, 'id', 'full_name')
+          
           =f.text_field :body
           =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
           

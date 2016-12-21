@@ -19,6 +19,9 @@ class User < ApplicationRecord
     accepts_nested_attributes_for :agency_admin
     #,reject_if: :all_blank
     validates_associated :agency_admin
+
+    has_many :conversations
+    has_many :messages
   
   #here we ask what type of role the user is then we use it to 
   #define the abilities is has in the Ability model

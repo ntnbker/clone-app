@@ -31,6 +31,13 @@ class MaintenanceRequest < ApplicationRecord
   attr_accessor :perform_realestate_validations
 
 
+  def mr_tenants_array
+
+    array = self.tenants.map{|j|["Tenant", j.user_id]}
+    return array
+  end
+
+
 
 
   

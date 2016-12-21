@@ -2,6 +2,8 @@ class MessagesController < ApplicationController
   
   def new
     @message = Message.new
+
+    @tenant = [1,2,3]
     respond_to do |format|
       format.html
       format.js
@@ -10,20 +12,34 @@ class MessagesController < ApplicationController
 
 
   def create
-    binding.pry
-    @message = Message.new(message_params)
+    
+    @message = current_user.messages.new(message_params)
+    #user_message = UserMessage.create
+    
 
     respond_to do |format|
       if @message.save
-        format.html 
+        format.html {redirect_to root_path}
         format.js  
-        # format.json { render :show, status: :created, location: @comment }
+        
       else
         format.html { render :new }
-        format.json { render json: @message.errors }
         format.js
       end
     end
+
+    if @message.valid?
+      
+      if Conversation.between(current_user.id,params[:message][:receiver_id]).present?
+          @conversation = Conversation.between(current_user.id,params[:message][:receiver_id]).first
+          binding.pry
+          @message.update_attribute(:conversation_id,@conversation.id)
+       else
+        @conversation = Conversation.create(sender_id:current_user.id,recipient_id:params[:message][:receiver_id])
+        @message.update_attribute(:conversation_id,@conversation.id)
+       end
+    end 
+    
 
 
   end
@@ -32,8 +48,15 @@ class MessagesController < ApplicationController
   private 
 
   def message_params
-    params.require(:message).permit(:id,:message_to,:user_id,:body,:messageable_type, :messageable_id)
-    
+    params.require(:message).permit(:receiver_id,:id,:user_id,:title,:body,:messageable_type, :messageable_id, :conversation_id)
   end
+
+
+  def conversation_params
+    params.permit(:sender_id, :recipient_id)
+  end
+
+
+  
 
 end 

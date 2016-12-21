@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   resources :tenants, only:[:show, :index]
   resources :messages
 
+  resources :conversations
 
 
   # get "forgot_password", to: "forgot_password#new"
