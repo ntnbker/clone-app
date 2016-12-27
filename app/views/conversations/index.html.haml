@@ -2,13 +2,17 @@ This is where all the conversatinos will be shown
 
 
 
--@conversations.each do |conversation|
-  -if conversation.sender_id == current_user.id || conversation.recipient_id == current_user.id 
-    -if conversation.sender_id == current_user.id 
-      -recipient = User.find(conversation.recipient_id) 
-    -else 
-      -recipient = User.find(conversation.sender_id) 
-    
-    = link_to "recipient.first_name",   conversation_path(conversation)
+-if @conversations.present?
+  -@conversations.each do |conversation|
+    -if conversation.sender_id == current_user.id || conversation.recipient_id == current_user.id 
+      -if conversation.sender_id == current_user.id 
+        -recipient = User.find(conversation.recipient_id) 
+      -else 
+        -recipient = User.find(conversation.sender_id) 
+      
+      = link_to "recipient.first_name",   conversation_path(conversation)
+-else
+  %h3
+    You currently have no messages
   
   
