@@ -66,8 +66,4 @@ end
 
 
 
-# first_name_relation = User.where(:first_name => 'Tobias') # ActiveRecord::Relation
-# last_name_relation  = User.where(:last_name  => 'Fünke') # ActiveRecord::Relation
-
-
 

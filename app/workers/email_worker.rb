@@ -16,6 +16,9 @@ class EmailWorker
     ApplicationMailer.send_tenant_access_contacts_mr_email(maintenance_request).deliver
 
   end
+
+
+  
 end 
 
 

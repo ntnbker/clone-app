@@ -97,10 +97,11 @@ class AgentMaintenanceRequestsController < ApplicationController
 
                  if contact
                   TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
+                  contact.tenant.update_attribute(:property_id,@property.id)
                  else 
                   if  key =="email" 
                     user = User.create(email:value, password:SecureRandom.hex(5))
-                    @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id)
+                    @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id, property_id:@property.id)
                     
                     
                     role = Role.create(user_id:user.id)
@@ -146,7 +147,8 @@ class AgentMaintenanceRequestsController < ApplicationController
         @maintenance_request.service_type = @customer_input.tradie
         
         #CREATE PROPERTY
-        if !Property.exists?(property_address:@customer_input.address)
+        @property = Property.find_by(property_address:@customer_input.address)
+        if !@property
           @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id)
           @maintenance_request.property_id = @property.id
           @tenant.update_attribute(:property_id, @property.id)
@@ -170,10 +172,11 @@ class AgentMaintenanceRequestsController < ApplicationController
 
                  if contact
                   TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
+                  contact.tenant.update_attribute(:property_id,@property.id)
                  else 
                   if  key =="email" 
                     user = User.create(email:value, password:SecureRandom.hex(5))
-                    @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id)
+                    @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id,property_id:@property.id)
                     
                     
                     role = Role.create(user_id:user.id)
