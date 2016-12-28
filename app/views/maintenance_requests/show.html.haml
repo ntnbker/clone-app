@@ -23,3 +23,27 @@
     =@maintenance_request.maintenance_heading
   %p
     =@maintenance_request.maintenance_description 
+
+%button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
+  Send Tenants Message
+
+
+
+      
+=bootstrap_form_for(@message,remote: true) do |f|
+  %div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+    %div{:class=>"modal-dialog", :role=>"document"}
+      %div{:class=>"modal-content"}
+        
+        %div{:class=>"modal-body"}
+          -@tenants_conversation.each do |message|
+            %div.well 
+              =message.body
+              
+          
+          / =f.select :receiver_id, options_from_collection_for_select(@tenants, 'id', 'full_name')
+          Message Tenants
+          =f.text_field :body
+          =f.hidden_field :conversation_type, value:"Tenant"
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"

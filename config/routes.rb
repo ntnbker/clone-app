@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   resources :messages
 
   resources :conversations
+  
 
 
   # get "forgot_password", to: "forgot_password#new"

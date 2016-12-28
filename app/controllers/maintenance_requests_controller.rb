@@ -299,9 +299,10 @@ class MaintenanceRequestsController < ApplicationController
 
   def email_auto_login(id)
 
-    user = User.find_by(id:id)
-    
-    auto_login(user)
+    if current_user == nil
+      user = User.find_by(id:id)
+      auto_login(user)
+    end 
   end
 
  

@@ -1,5 +1,3 @@
-This is a test
-
 .container
   %h3 
     = @maintenance_request.service_type 
@@ -29,28 +27,47 @@ This is a test
   
 
 
-
+%button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-landlord-modal"}
+  Ask Landlord
 
 
 
 %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
-  Launch demo modal
+  Send Tenants Message
 
 
 
       
-=bootstrap_form_for(@message,remote: true) do |f|
-  %div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+
+%div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+
+  %div{:class=>"modal-dialog", :role=>"document"}
+    %div{:class=>"modal-content"}
+      
+      %div{:class=>"modal-body"}
+        -@tenants_conversation.each do |msg|
+          %div.well 
+            =msg.body
+        =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
+          
+          =f.text_field :body, class: "message_body"
+          =f.hidden_field :conversation_type, value:"Tenant"
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
+        
+
+
+      
+=bootstrap_form_for(@landlord,remote: true) do |f|
+  %div{:class=>"modal fade", :id=>"ask-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
     %div{:class=>"modal-dialog", :role=>"document"}
       %div{:class=>"modal-content"}
         %div{:class=>"modal-body"}
           
-          =f.select :receiver_id, options_from_collection_for_select(@tenants, 'id', 'full_name')
-          
-          =f.text_field :body
+          =f.text_field :name
+          =f.text_field :email
+          =f.phone_field :mobile
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
           
-
-
-      
 

@@ -15,13 +15,13 @@ class User < ApplicationRecord
     has_one :agency_admin, inverse_of: :user
     has_one :god
     has_one :tenant
+    has_one :landlord
     has_one :guest
     accepts_nested_attributes_for :agency_admin
     #,reject_if: :all_blank
     validates_associated :agency_admin
 
-    has_many :conversations
-    has_many :messages
+    
   
   #here we ask what type of role the user is then we use it to 
   #define the abilities is has in the Ability model
@@ -62,60 +62,25 @@ class User < ApplicationRecord
     end
   end
 
-  # def guest?
-  #   user = self.role
-    
-  #   if user.roleable_type == "Guest"
-  #     return true
-  #   end
-  # end
+  def landlord?
+    user = self.role
+    if user == nil
+      return false
+    elsif user.roleable_type == "Landlord"
+      return true
+    end
+  end
 
-
-
-
-  # def god?
-  #   user = self.role
-    
-  #   if user.roleable_type == "God"
-  #     return true
-  #   
-        
-  #   end 
-  # end
-
-
-  # def agent?
-  #   user = self.role
-    
-  #   if user.roleable_type == "Agent"
-  #     return true
-  #   end 
-  # end
-
-  # def agency_admin?
-  #   user = self.role
-    
-  #   if user.roleable_type == "AgencyAdmin"
-  #     return true
-  #   end 
-  # end
-
-  # def tenant?
-  #   user = self.role
-    
-  #   if user.roleable_type == "Tenant"
-  #     return true
-  #   end
-  # end
-
-  # def guest?
-  #   user = self.role
-    
-  #   if user.roleable_type == "Guest"
-  #     return true
-  #   end
-  # end
   
+  #HERE WE ADD MESSAGING SYSTEM ASSOCIATIONS
+  ###FIRST SYSTEM#####
+    # has_many :conversations
+    # has_many :messages
+
+  ###SECOND SYSTEM###
+  has_many :user_conversations
+  has_many :conversations, :through => :user_conversations
+  has_many :messages
   
 
 end
