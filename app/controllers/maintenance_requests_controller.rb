@@ -1,6 +1,6 @@
 class MaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  
+  before_action(only: [:show]) { current_user_tenant_access(params[:id]) }
   
   before_action :set_user, only:[:new,:create]
   load_and_authorize_resource
@@ -274,8 +274,14 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def show
+    binding.pry
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-
+    @tenants = @maintenance_request.tenants
+    
+    @message = Message.new
+   
+    @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
+    
 
   end
 
@@ -303,6 +309,24 @@ class MaintenanceRequestsController < ApplicationController
       user = User.find_by(id:id)
       auto_login(user)
     end 
+  end
+
+  def current_user_tenant_access(maintenance_request_id)
+    
+    maintenance_request_tenants = MaintenanceRequest.find_by(id:maintenance_request_id).tenants
+    tenants_id_array = []
+    maintenance_request_tenants.each do |tenant|
+      tenants_id_array.push(tenant.user.id)
+    end 
+  
+    if tenants_id_array.include?(current_user.id)
+        #do nothing
+      else
+        flash[:danger] = "Sorry you are not allowed to see that"
+        redirect_to root_path
+    end
+
+
   end
 
  

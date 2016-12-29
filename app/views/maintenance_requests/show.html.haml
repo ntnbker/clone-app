@@ -24,26 +24,35 @@
   %p
     =@maintenance_request.maintenance_description 
 
+
+
+
 %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
-  Send Tenants Message
+  Send Agent Message
 
 
 
       
-=bootstrap_form_for(@message,remote: true) do |f|
-  %div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
-    %div{:class=>"modal-dialog", :role=>"document"}
-      %div{:class=>"modal-content"}
+
+%div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+
+  %div{:class=>"modal-dialog", :role=>"document"}
+    %div{:class=>"modal-content"}
+      
+      %div{:class=>"modal-body message_modal"}
+
+        / -@tenants_conversation.each do |msg|
+        /   %div.well#chat_message 
+        /     =render partial: "messages/message", object: msg
+        %div.messages_container    
+          = render partial: "messages/message", collection: @tenants_conversation, as: :message   
         
-        %div{:class=>"modal-body"}
-          -@tenants_conversation.each do |message|
-            %div.well 
-              =message.body
-              
+        %div{:id=>"errors_div"}
+        =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
           
-          / =f.select :receiver_id, options_from_collection_for_select(@tenants, 'id', 'full_name')
-          Message Tenants
-          =f.text_field :body
+          =f.text_field :body, class: "message_body"
           =f.hidden_field :conversation_type, value:"Tenant"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
+          %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+            Close

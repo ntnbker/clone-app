@@ -69,6 +69,34 @@ class ApplicationMailer < ActionMailer::Base
   end
 
 
+  def tenant_message_notify_email(maintenance_request, tenant_email, tenant_id, tenant_name)
+    @maintenance_request = maintenance_request
+    @tenant_name = tenant_name
+    @tenant_id = tenant_id
+    mail(from:"ron@email.com", to:tenant_email, subject: "New Maintenance Request Message")
+  end
+
+  def message_notification_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    tenants = @maintenance_request.tenants
+    email_array = []
+
+    tenants.each do |f|
+      email_array.push(f.email)
+    end 
+
+    email_array.each do |email|
+      user = User.find_by(email:email)
+      
+      ApplicationMailer.tenant_message_notify_email(maintenance_request,email,user.id, user.tenant.full_name).deliver
+    end 
+    
+  end
+
+
+
+
 
 
 

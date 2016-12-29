@@ -240,21 +240,7 @@ class AgentMaintenanceRequestsController < ApplicationController
     @message = Message.new
     @landlord = Landlord.new
     @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
-
-    # respond_to do |format|
-    #   if @message.save
-    #     binding.pry
-    #     format.html do  
-    #       flash[:success]="Your message was sent"
-    #       render :show 
-    #     end 
-    #     format.js  
-        
-    #   else
-    #     format.html { render :show }
-    #     format.js
-    #   end
-    # end
+    
     
     
   end

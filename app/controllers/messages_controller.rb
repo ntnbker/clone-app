@@ -2,12 +2,6 @@ class MessagesController < ApplicationController
   before_action :require_login
   def new
     @message = Message.new
-
-    @tenant = [1,2,3]
-    respond_to do |format|
-      format.html
-      format.js
-  end
   end
 
 
@@ -19,16 +13,13 @@ class MessagesController < ApplicationController
 
     respond_to do |format|
       if @message.save
-        format.html do  
-          flash[:success]="Your message was sent FUCK THIS SHIT"
-          # render :template => "agent_maintenance_requests/show.html.haml"
-          render "agent_maintenance_requests/show"
-        end 
+        format.html {render "agent_maintenance_requests/show.html.haml", :success =>"Your message was sent FUCK THIS SHIT"}  
         format.js{render layout: false, content_type: 'text/javascript'}
         
       else
         format.html { render :show }
         format.js{}
+        
       end
     end
 
@@ -48,7 +39,7 @@ class MessagesController < ApplicationController
           @message.update_attribute(:conversation_id,@conversation.id)
           UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
         end
-
+        TenantMessageNotificationEmailWorker.perform_async(params[:message][:maintenance_request_id]) 
         #EmailWorker.perform_async(params[:message][:maintenance_request_id])
         #HERE WE CAN EMAIL ALL TENANTS THAT THEY HAVE A NEW MESSAGE USERS 
       

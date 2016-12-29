@@ -44,16 +44,23 @@
   %div{:class=>"modal-dialog", :role=>"document"}
     %div{:class=>"modal-content"}
       
-      %div{:class=>"modal-body"}
-        -@tenants_conversation.each do |msg|
-          %div.well 
-            =msg.body
+      %div{:class=>"modal-body message_modal"}
+
+        / -@tenants_conversation.each do |msg|
+        /   %div.well#chat_message 
+        /     =render partial: "messages/message", object: msg
+        %div.messages_container    
+          = render partial: "messages/message", collection: @tenants_conversation, as: :message   
+        
+        %div{:id=>"errors_div"}
         =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
           
           =f.text_field :body, class: "message_body"
           =f.hidden_field :conversation_type, value:"Tenant"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
+          %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+            Close
         
 
 

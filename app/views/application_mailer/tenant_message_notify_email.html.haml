@@ -1,0 +1,13 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hi,
+      =@tenant_name.capitalize
+      There is a new message regarding the maintenance request you have made. To check the message
+      please click the link.
+      =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request, user_id:@tenant_id)
+
+
+     

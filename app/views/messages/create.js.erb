@@ -1,9 +1,12 @@
 // $('#myModal').removeClass('fade');
-$('#myModal').modal('hide');
+// $('#myModal').modal('hide');
 // $('body').removeClass('modal-open');
 // $('.modal-backdrop').remove();
 $(".message_body").val("");
 
+$("#errors_div").html("<%= @message.errors.full_messages %>")
+
+$(".messages_container").append("<%= j render @message%>")
 
 
 
