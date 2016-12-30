@@ -1,4 +1,5 @@
-
+- require 'pry'
+gvjhg
 .container
   %h3 
     = @maintenance_request.service_type 
@@ -8,7 +9,7 @@
     Location: 
     =@maintenance_request.property.property_address 
   %p
-    created:
+    Created:
     =@maintenance_request.created_at.strftime("%d %b. %Y")
   %p
     Job type:
@@ -25,11 +26,21 @@
     =@maintenance_request.maintenance_description 
 
 
+ 
+- binding.pry
+%div.container
+  -if current_user.agent? || current_user.agency_admin?
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-landlord-modal"}
+      Ask Landlord
 
 
-%button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
-  Send Agent Message
 
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
+    -if current_user.agent? || current_user.agency_admin? 
+    
+      Send Tenants Message
+    -elsif current_user.tenant?
+      Send Agent Message
 
 
       
@@ -56,3 +67,20 @@
           =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
           %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
             Close
+        
+
+
+      
+=bootstrap_form_for(@landlord,remote: true) do |f|
+  %div{:class=>"modal fade", :id=>"ask-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+    %div{:class=>"modal-dialog", :role=>"document"}
+      %div{:class=>"modal-content"}
+        %div{:class=>"modal-body"}
+          
+          =f.text_field :name, class: "landlord_fields"
+          =f.text_field :email, class: "landlord_fields"
+          =f.phone_field :mobile, class: "landlord_fields"
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
+          
+

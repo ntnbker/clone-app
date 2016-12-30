@@ -19,16 +19,19 @@
       =f.text_area :maintenance_description
       =f.text_field :image
     %hr
-    .field
-    
-      =f.form_group :person_in_charge do 
-        = f.radio_button :person_in_charge, "Agent", label: "Agent"
-        = f.radio_button :person_in_charge, "Owner", label: "Owner"
-      =f.text_field :real_estate_office
-      =f.text_field :agent_name
-      =f.text_field :agent_email
-      =f.text_field :agent_mobile
-    %hr
+  
+    -if current_user == nil || current_user.tenant?
+      .field
+      
+        =f.form_group :person_in_charge do 
+          = f.radio_button :person_in_charge, "Agent", label: "Agent"
+          = f.radio_button :person_in_charge, "Owner", label: "Owner"
+        =f.text_field :real_estate_office
+        =f.text_field :agent_name
+        =f.text_field :agent_email
+        =f.text_field :agent_mobile
+
+      %hr
     #availabilities
       =f.fields_for :availabilities do |availability_form|
         = render "availability_fields", f: availability_form

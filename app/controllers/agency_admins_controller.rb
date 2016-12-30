@@ -1,8 +1,9 @@
 class AgencyAdminsController < ApplicationController
   
-  #before_action :set_guest_user, only:[:new,:create]
-  before_action :require_login, only: [:show]
-  load_and_authorize_resource
+  
+  before_action :require_login, only: [:show,:maintenance_request_index]
+  authorize_resource :class => false
+  
   
   def new
     
@@ -24,9 +25,7 @@ class AgencyAdminsController < ApplicationController
       @agency_admin.update_attribute(:email, params[:user][:email])
       @agency_admin.roles << role
       role.save
-      #################
-      #logout guest user
-      logout
+      
       #login new agency admin user
       auto_login(@user)
       flash[:success] = "Thank you for signing up."
@@ -40,8 +39,13 @@ class AgencyAdminsController < ApplicationController
   end
 
   def show
-    #@agency_admin = AgencyAdmin.find_by(id:current_user.id)
+    
 
+    @agency_admin = AgencyAdmin.find_by(id:current_user.id)
+  end
+
+  def maintenance_request_index
+    @maintenance_requests = current_user.agency_admin.maintenance_requests
   end
 
   
@@ -54,10 +58,7 @@ class AgencyAdminsController < ApplicationController
 
 
 
-  # def set_guest_user
-  #  login("martin@maintenanceapp.com.au", 12345)
-
-  # end
+ 
 
 
 

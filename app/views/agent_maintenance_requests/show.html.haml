@@ -7,7 +7,7 @@
     Location: 
     =@maintenance_request.property.property_address 
   %p
-    created:
+    Created:
     =@maintenance_request.created_at.strftime("%d %b. %Y")
   %p
     Job type:
@@ -26,14 +26,14 @@
 
   
 
+%div.container
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-landlord-modal"}
+    Ask Landlord
 
-%button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-landlord-modal"}
-  Ask Landlord
 
 
-
-%button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
-  Send Tenants Message
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
+    Send Tenants Message
 
 
 
@@ -71,9 +71,9 @@
       %div{:class=>"modal-content"}
         %div{:class=>"modal-body"}
           
-          =f.text_field :name
-          =f.text_field :email
-          =f.phone_field :mobile
+          =f.text_field :name, class: "landlord_fields"
+          =f.text_field :email, class: "landlord_fields"
+          =f.phone_field :mobile, class: "landlord_fields"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
           

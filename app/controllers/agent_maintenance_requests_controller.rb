@@ -1,48 +1,42 @@
 class AgentMaintenanceRequestsController < ApplicationController 
   
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  
-  
+  before_action(only: [:show]) { current_user_tenant_access(params[:id]) }
+  before_action :set_user, only:[:new,:create]
   before_action :require_login, only:[:new,:create,:show]
-  before_action :check_user_role
+  
 
   def new
-    
-    
-    
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
     @customer_input = Query.find_by(id:session[:customer_input])
-    
-
   end
 
   def create
+    @customer_input = Query.find_by(id:session[:customer_input])
+    @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     
     if current_user.agency_admin?
       @agency_admin = current_user.agency_admin
+      @maintenance_request.agency_admin_id = @agency_admin.id
+      @maintenance_request.perform_realestate_validations = false
     elsif current_user.agent?
       @agent = current_user.agent
+      @maintenance_request.agent_id = @agent.id
+      @maintenance_request.perform_realestate_validations = false
+    elsif current_user == nil || current_user.tenant?
+      @maintenance_request.perform_realestate_validations = true
     end 
-    binding.pry
     
-    @customer_input = Query.find_by(id:session[:customer_input])
-
-    @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
+    
+    
+    
+    
     
     if @maintenance_request.valid?
-      if current_user.agency_admin?
-        @maintenance_request.agency_admin_id = current_user.role.roleable_id
-        @maintenance_request.perform_realestate_validations = false
-      end 
-
-      if current_user.agent? 
-        @maintenance_request.agent_id = current_user.role.roleable_id
-        @maintenance_request.perform_realestate_validations = false
-      end 
       
-
+      
       #This user already exists
       @user = User.find_by(email: params[:maintenance_request][:email])
       if @user 
@@ -239,7 +233,11 @@ class AgentMaintenanceRequestsController < ApplicationController
     
     @message = Message.new
     @landlord = Landlord.new
-    @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
+    
+
+    if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
+      @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
+    end 
     
     
     
@@ -264,21 +262,21 @@ class AgentMaintenanceRequestsController < ApplicationController
     end 
   end
 
-  def check_user_role
+   def current_user_tenant_access(maintenance_request_id)
     
-    if current_user.agency_admin? || current_user.agent? 
-      
-    elsif !current_user.agency_admin? || !current_user.agent? || current_user == nil
-      flash[:danger] = "Sorry you are not allowed here"
-      redirect_to root_path
-    
-    
+    maintenance_request_tenants = MaintenanceRequest.find_by(id:maintenance_request_id).tenants
+    tenants_id_array = []
+    maintenance_request_tenants.each do |tenant|
+      tenants_id_array.push(tenant.user.id)
     end 
-
-
+  
+    if tenants_id_array.include?(current_user.id)
+        #do nothing
+      else
+        flash[:danger] = "Sorry you are not allowed to see that"
+        redirect_to root_path
+    end
   end
-
- 
 
 
 

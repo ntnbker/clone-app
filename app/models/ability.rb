@@ -43,9 +43,18 @@ class Ability
         can :new, MaintenanceRequest
         can :read_show, MaintenanceRequest
 
-        can :new, AgencyAdmin
-        can :read_show, AgencyAdmin
+        can :show, :maintenance_request
+        can :index, :maintenance_request
+        # can :new, AgencyAdmin
+        # can :read_show, AgencyAdmin
+
         
+
+
+        #can [:new, :create, :show], :agent_maintenance_requests
+        can :show, :agency_admin
+        can :new, :agency_admin
+        can :maintenance_request_index, :agency_admin 
       end
 
       if @user.tenant?
@@ -55,6 +64,8 @@ class Ability
         can :read_show, MaintenanceRequest
         can :create, MaintenanceRequest
         can :new, MaintenanceRequest
+        can :index, :maintenance_request
+        can :show, :maintenance_request
       end 
 
       if @user
@@ -64,6 +75,7 @@ class Ability
         can :new, MaintenanceRequest
         can :new, AgencyAdmin
         can :create, AgencyAdmin
+        can [:new,:create], :agency_admins
       end 
     #
     # The first argument to `can` is the action you are giving the user

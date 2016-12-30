@@ -49,15 +49,16 @@ class UserSessionsController < ApplicationController
     if logged_in?
       if @user.god?
         flash[:success] = "You are now signed in"
-        redirect_to god_path(@user.role)
+        redirect_to god_path(@user.god)
         
         elsif @user.agent?
           flash[:success] = "You are now signed in"
-          redirect_to agent_path(@user.role)
+          redirect_to agent_path(@user.agent)
         
         elsif @user.agency_admin?
+          
           flash[:success] = "You are now signed in"
-          redirect_to agent_path(@user.role)
+          redirect_to agency_admin_path(@user.agency_admin)
 
         elsif @user.tenant?
           flash[:success] = "You are now signed in"

@@ -1,0 +1,16 @@
+%div.container
+  -@maintenance_requests.each do |maintenance_request|
+    %div.well
+      %h3
+        =link_to "#{maintenance_request.maintenance_heading}", agent_maintenance_request_path(maintenance_request)
+      %p
+        =maintenance_request.maintenance_description
+      %p
+        Created:
+        = maintenance_request.created_at.strftime("%d %b. %Y")
+      %p
+        Job type:
+        = maintenance_request.service_type
+      %p
+        Address:
+        = maintenance_request.property.property_address

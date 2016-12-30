@@ -18,9 +18,21 @@
       <ul class="nav navbar-nav navbar-right"> 
         <% if !logged_in? %>
         <li><%= link_to "Login", menu_login_path%></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            
+          </ul>
+        </li>
         <%end %>
         <% if logged_in? %>
-          <li><%= link_to "SignOut", logout_path, method: :delete%> </li>
+          <% if current_user.agent? || current_user.agency_admin? %>
+            <li><%= link_to "New Maintenance Request", root_path%></li>
+          <%end %>
+          <li><%= link_to "Sign Out #{current_user.email}", logout_path, method: :delete%> </li>
           <li><%= link_to "Inbox", conversations_path%> </li>
           
         <%end %>

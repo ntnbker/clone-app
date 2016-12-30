@@ -19,8 +19,8 @@ class PagesController < ApplicationController
       @query.save
       session[:customer_input] = @query.id
       if params[:form_fields][:user_role] == "Agent" 
-        if logged_in?
-          redirect_to new_agent_maintenance_request_path
+        if logged_in? && current_user.agent? || current_user.agency_admin?
+          redirect_to new_maintenance_request_path
         else
           redirect_to login_path
         end 

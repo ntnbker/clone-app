@@ -24,12 +24,12 @@ Rails.application.routes.draw do
   get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
 
   #resources :agency_admins, only:[:create, :update, :show]
-  resources :agency_admins, only:[:create, :update, :show] do 
-    resources :maintenance_requests, only:[:index]
-  end 
-  get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
+  resources :agency_admins, only:[:create, :update, :show] 
 
-  resources :maintenance_requests, only:[:new,:create,:destroy,:update, :show]
+  
+  get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
+  get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
+  resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
   
   resources :agent_maintenance_requests, only:[:new,:create,:destroy,:update, :show]
   resources :password_resets, only:[:new, :create, :edit,:update]
