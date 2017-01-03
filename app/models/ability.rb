@@ -76,6 +76,8 @@ class Ability
         can :new, AgencyAdmin
         can :create, AgencyAdmin
         can [:new,:create], :agency_admins
+
+        can :new, :maintenance_request
       end 
     #
     # The first argument to `can` is the action you are giving the user

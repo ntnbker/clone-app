@@ -12,14 +12,24 @@ class User < ApplicationRecord
 
     #here we setup the relationship that a user can have with each type of user
     #ie a user can only have one agent row in a table aka being one agent
-    has_one :agency_admin, inverse_of: :user
+    
     has_one :god
     has_one :tenant
     has_one :landlord
     has_one :guest
-    accepts_nested_attributes_for :agency_admin
-    #,reject_if: :all_blank
-    validates_associated :agency_admin
+    has_one :tradie
+    
+    
+
+    #######OLD AGENCY_ADMINS NESTED FORM##########
+    has_one :agency_admin, inverse_of: :user
+    # accepts_nested_attributes_for :agency_admin
+    # validates_associated :agency_admin
+
+
+
+
+
 
     
   

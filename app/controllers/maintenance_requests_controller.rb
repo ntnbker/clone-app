@@ -1,9 +1,10 @@
 class MaintenanceRequestsController < ApplicationController 
   
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action(only: [:show]) { current_user_tenant_access(params[:id]) }
+  before_action(only: [:show]) { 
+maintenance_request_stakeholders(params[:id]) }
   before_action :set_user, only:[:new,:create]
-  before_action :require_login, only:[:new,:create,:show,:index]
+  before_action :require_login, only:[:create,:show,:index]
   authorize_resource :class => false
 
   def new
@@ -233,7 +234,7 @@ class MaintenanceRequestsController < ApplicationController
     
     @message = Message.new
     @landlord = Landlord.new
-    
+    @tradie = Tradie.new
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
       @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
@@ -273,11 +274,12 @@ class MaintenanceRequestsController < ApplicationController
     end 
   end
 
-   def current_user_tenant_access(maintenance_request_id)
+   def maintenance_request_stakeholders(maintenance_request_id)
     mr = MaintenanceRequest.find_by(id:maintenance_request_id)
     mr_tenants = mr.tenants
     mr_agent = mr.agent.user.id if mr.agent != nil
     mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
+    mr_landlord = mr.property.landlord_id if mr.property.landlord_id != nil 
     mr_user_affiliates_array = []
     
     if mr_agent != nil
@@ -288,12 +290,16 @@ class MaintenanceRequestsController < ApplicationController
       mr_user_affiliates_array.push(mr_agency_admin)
     end
 
+    if mr_landlord !=nil 
+      mr_user_affiliates_array.push(mr_landlord)
+    end 
+
 
 
     mr_tenants.each do |tenant|
       mr_user_affiliates_array.push(tenant.user.id)
     end 
-    binding.pry
+    
     if mr_user_affiliates_array.include?(current_user.id)
         #do nothing
       else
@@ -305,7 +311,6 @@ class MaintenanceRequestsController < ApplicationController
 
 
 end 
-
 
 
 

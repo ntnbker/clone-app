@@ -1,0 +1,38 @@
+%div.well.container
+  =bootstrap_nested_form_for(@agency, url: agencies_path, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    =f.text_field :company_name
+    =f.text_field :business_name
+    =f.text_field :abn
+    =f.text_field :address
+    =f.form_group :mailing_same_address do 
+      =f.check_box :mailing_same_address, label: "Mailing addess same as billing address"
+    =f.text_field :mailing_address
+    =f.phone_field :phone  
+    =f.phone_field :mobile_phone
+    
+    =f.form_group :license_type, label: { text: "License Type" } do 
+      =f.radio_button :license_type, "Individual License", label: "Individual License", checked: true
+      =f.radio_button :license_type, "Corporate License", label: "Corporate License", checked: true
+    =f.text_field :license_number
+    =f.text_field :corporation_license_number
+    =f.form_group :bdm_verification_status do 
+      =f.check_box :bdm_verification_status, label: "I Have BDM verfication status"
+    =f.text_field :bdm_verification_id
+    %hr
+    %h4
+      Agency Admin
+    =f.fields_for :agency_admins do |admin|
+      =admin.text_field :first_name
+      =admin.text_field :last_name
+      =admin.phone_field :mobile_phone
+      
+      =admin.fields_for :user do |user|
+        =user.email_field :email, hide_label: false
+        =user.password_field :password, hide_label: false 
+        =user.password_field :password_confirmation
+      
+    
+    =f.submit "Sign Up"
+    %p Already have an Account? 
+    =link_to "Login", login_path
+

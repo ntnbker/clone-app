@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161228051635) do
+ActiveRecord::Schema.define(version: 20170103091641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,24 @@ ActiveRecord::Schema.define(version: 20161228051635) do
     t.integer  "maintenance_request_id"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  create_table "agencies", force: :cascade do |t|
+    t.string   "company_name"
+    t.string   "business_name"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.string   "abn"
+    t.string   "address"
+    t.string   "mailing_address"
+    t.string   "phone"
+    t.string   "mobile_phone"
+    t.string   "license_number"
+    t.boolean  "bdm_verification_status"
+    t.string   "bdm_verification_id"
+    t.boolean  "mailing_same_address"
+    t.string   "corporation_license_number"
+    t.string   "license_type"
   end
 
   create_table "agency_admins", force: :cascade do |t|
@@ -43,6 +61,14 @@ ActiveRecord::Schema.define(version: 20161228051635) do
     t.boolean "bdm_verification_status"
     t.string  "bdm_verification_id"
     t.boolean "mailing_same_address"
+    t.integer "agency_id"
+  end
+
+  create_table "agency_tradies", force: :cascade do |t|
+    t.integer  "agency_id"
+    t.integer  "tradie_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "agents", force: :cascade do |t|
@@ -146,6 +172,14 @@ ActiveRecord::Schema.define(version: 20161228051635) do
     t.string  "address"
   end
 
+  create_table "quotes", force: :cascade do |t|
+    t.integer  "amount"
+    t.integer  "maintenance_request_id"
+    t.integer  "tradie_id"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "roles", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "roleable_type"
@@ -179,6 +213,16 @@ ActiveRecord::Schema.define(version: 20161228051635) do
     t.integer  "user_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "tradies", force: :cascade do |t|
+    t.string   "name"
+    t.string   "mobile"
+    t.string   "email"
+    t.integer  "user_id"
+    t.string   "skill"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_conversations", force: :cascade do |t|

@@ -6,10 +6,16 @@ class LandlordsController < ApplicationController
     
     user = User.find_by(email:params[:landlord][:email])
     @landlord = Landlord.new(landlord_params)
+    property = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id]).property
+    binding.pry
     if user && user.landlord?
       #send him the maintenance request by email if 
+      if property.landlord_id == nil 
+      property.update_attribute(:landlord_id, user.landlord.id)
+      end 
       
       LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id], user.landlord.id )
+    
     elsif !user 
       
       respond_to do |format|
@@ -24,6 +30,10 @@ class LandlordsController < ApplicationController
           @landlord.roles << role
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
           
+          
+          if property.landlord_id == nil 
+            property.update_attribute(:landlord_id, user.landlord.id)
+          end 
 
         else
           format.html { render "agent_maintenance_requests/show.html.haml", :notice =>"Please fill out the form" }

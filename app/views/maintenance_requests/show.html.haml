@@ -1,5 +1,4 @@
-- require 'pry'
-gvjhg
+
 .container
   %h3 
     = @maintenance_request.service_type 
@@ -27,11 +26,14 @@ gvjhg
 
 
  
-- binding.pry
+
 %div.container
   -if current_user.agent? || current_user.agency_admin?
     %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-landlord-modal"}
       Ask Landlord
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#request-quote-modal"}
+      Request Quote
+
 
 
 
@@ -64,7 +66,7 @@ gvjhg
           =f.text_field :body, class: "message_body"
           =f.hidden_field :conversation_type, value:"Tenant"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-          =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
+          =f.submit "Submit Message", :class=>"btn btn-default"
           %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
             Close
         
@@ -81,6 +83,19 @@ gvjhg
           =f.text_field :email, class: "landlord_fields"
           =f.phone_field :mobile, class: "landlord_fields"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-          =f.submit "Submit Message", :class=>"btn btn-default", :id=>"message_button"
+          =f.submit "Submit Message", :class=>"btn btn-default"
+          
+
+=bootstrap_form_for(@tradie,remote: true) do |f|
+  %div{:class=>"modal fade", :id=>"request-quote-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+    %div{:class=>"modal-dialog", :role=>"document"}
+      %div{:class=>"modal-content"}
+        %div{:class=>"modal-body"}
+          
+          =f.text_field :name, class: "tradie_fields"
+          =f.text_field :email, class: "tradie_fields"
+          =f.phone_field :mobile, class: "tradie_fields"
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.submit "Submit Message", :class=>"btn btn-default"
           
 
