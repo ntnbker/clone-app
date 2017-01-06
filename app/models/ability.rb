@@ -76,7 +76,8 @@ class Ability
         can :new, AgencyAdmin
         can :create, AgencyAdmin
         can [:new,:create], :agency_admins
-
+        can :new, :agency
+        can :create, :agency
         can :new, :maintenance_request
       end 
     #

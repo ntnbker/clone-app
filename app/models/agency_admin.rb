@@ -2,13 +2,52 @@ class AgencyAdmin <ApplicationRecord
   has_many :roles, as: :roleable
   has_many :maintenance_requests
   belongs_to :user, inverse_of: :agency_admin
-  belongs_to :agency, inverse_of: :agency_admin
+  belongs_to :agency, inverse_of: :agency_admins
   
   validates_presence_of :first_name
   validates_presence_of :last_name
   validates_presence_of :mobile_phone  
-  accepts_nested_attributes_for :user
+  
+  
+
+
+  accepts_nested_attributes_for :agency
   validates_associated :user
+
+
+
+
+
+
+
+
+# #########################
+#   accepts_nested_attributes_for :user, :reject_if => lambda { |a| a[:email].blank?||a[:password].blank?||a[:password_confirmation].blank? }
+#   #validates_associated :user
+#   validates_associated :agency
+# ###########################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   # #############THIS IS FOR THE AGENCY ADMIN####################

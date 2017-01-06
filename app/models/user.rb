@@ -16,15 +16,27 @@ class User < ApplicationRecord
     has_one :god
     has_one :tenant
     has_one :landlord
-    has_one :guest
+    
     has_one :tradie
     
     
 
     #######OLD AGENCY_ADMINS NESTED FORM##########
     has_one :agency_admin, inverse_of: :user
-    # accepts_nested_attributes_for :agency_admin
-    # validates_associated :agency_admin
+    accepts_nested_attributes_for :agency_admin
+    #validates_associated :agency_admin
+
+
+
+
+
+
+
+
+ ########################
+##has_one :agency_admin, inverse_of: :user
+######validates_associated :agency_admin
+
 
 
 

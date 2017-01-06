@@ -91,7 +91,7 @@
     %div{:class=>"modal-dialog", :role=>"document"}
       %div{:class=>"modal-content"}
         %div{:class=>"modal-body"}
-          
+          =f.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] })
           =f.text_field :name, class: "tradie_fields"
           =f.text_field :email, class: "tradie_fields"
           =f.phone_field :mobile, class: "tradie_fields"
