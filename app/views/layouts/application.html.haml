@@ -5,6 +5,8 @@
     %meta(charset="UTF-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %meta(name="turbolinks-cache-control" content="no-cache")
+    = include_gon(:init => true)
+    
     %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"}
     
     %script{:type=>"text/javascript", :src=>"https://maps.googleapis.com/maps/api/js?key=AIzaSyCRbOTNRo0sO0yxBpHdhn0NpB_p_Axmye8&libraries=places"}
@@ -12,8 +14,9 @@
     %script{:type=>"text/javascript", :src=>"http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"}
     / <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     
-    = include_gon 
+
     = csrf_meta_tags
+
     = stylesheet_link_tag "application", media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag "application", 'data-turbolinks-track': 'reload'
 

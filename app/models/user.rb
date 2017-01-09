@@ -17,7 +17,7 @@ class User < ApplicationRecord
     has_one :tenant
     has_one :landlord
     
-    has_one :tradie
+    has_one :trady
     
     
 
@@ -93,6 +93,14 @@ class User < ApplicationRecord
     end
   end
 
+  def trady?
+    user = self.role
+    if user == nil
+      return false
+    elsif user.roleable_type == "Trady"
+      return true
+    end
+  end
   
   #HERE WE ADD MESSAGING SYSTEM ASSOCIATIONS
   ###FIRST SYSTEM#####

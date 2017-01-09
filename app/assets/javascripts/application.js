@@ -24,6 +24,7 @@
 //= require bootstrap-datetimepicker
 //= require date_calendar
 //= require popup
+//= require ajax_requests
 //= require_tree .
 
 

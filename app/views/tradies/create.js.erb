@@ -1,0 +1,23 @@
+$("#trady_name").val("");
+$("#trady_email").val("");
+$("#trady_mobile").val("");
+
+$('#request-quote-modal').modal('hide');
+$('#more_quotes').modal('show');
+
+$('#no-more-quotes').click(function() {
+  $('#request-quote-modal').modal('hide');
+  $('#more_quotes').modal('hide');
+  $("#trady_name").val("");
+  $("#trady_email").val("");
+  $("#trady_mobile").val("");
+});
+
+
+$('#yes-more-quotes').click(function() {
+  $('#request-quote-modal').modal('show');
+  $('#more_quotes').modal('hide');
+  $("#trady_name").val("");
+  $("#trady_email").val("");
+  $("#trady_mobile").val("");
+});

@@ -40,6 +40,13 @@ Rails.application.routes.draw do
   resources :conversations
   
   resources :tradies, only:[:create]
+
+  ########################################
+  ##########TRADIE ROUTES#################
+  ########################################
+  get "trady_information" => 'tradies#trady_information', :as=>:trady_information
+
+
   resources :agencies, only:[:new, :create]
 
 
