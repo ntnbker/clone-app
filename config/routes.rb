@@ -49,6 +49,9 @@ Rails.application.routes.draw do
 
   resources :agencies, only:[:new, :create]
 
+  resources :quotes, only:[:new,:create,:edit,:update]
+
+  resources :trady_companies
 
   # get "forgot_password", to: "forgot_password#new"
   # get "forgot_password_confirmation", to: "forgot_password#confirm"

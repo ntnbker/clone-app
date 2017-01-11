@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-   
+   default from: 'from@example.com'
 
   def reset_password_email(user)
     @user = User.find_by(id:user.id)

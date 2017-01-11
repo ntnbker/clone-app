@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170106110903) do
+ActiveRecord::Schema.define(version: 20170111040454) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,6 +180,12 @@ ActiveRecord::Schema.define(version: 20170106110903) do
     t.string  "address"
   end
 
+  create_table "quote_items", force: :cascade do |t|
+    t.integer "quote_id"
+    t.string  "item_description"
+    t.integer "amount"
+  end
+
   create_table "quotes", force: :cascade do |t|
     t.integer  "amount"
     t.integer  "maintenance_request_id"
@@ -223,7 +229,18 @@ ActiveRecord::Schema.define(version: 20170106110903) do
     t.datetime "updated_at",  null: false
   end
 
-  create_table "tradie_companies", force: :cascade do |t|
+  create_table "tradies", force: :cascade do |t|
+    t.string   "name"
+    t.string   "mobile"
+    t.string   "email"
+    t.integer  "user_id"
+    t.string   "skill"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.integer  "trady_company_id"
+  end
+
+  create_table "trady_companies", force: :cascade do |t|
     t.string   "company_name"
     t.string   "trading_name"
     t.string   "abn"
@@ -235,17 +252,6 @@ ActiveRecord::Schema.define(version: 20170106110903) do
     t.string   "email"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
-  end
-
-  create_table "tradies", force: :cascade do |t|
-    t.string   "name"
-    t.string   "mobile"
-    t.string   "email"
-    t.integer  "user_id"
-    t.string   "skill"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-    t.integer  "tradie_company_id"
   end
 
   create_table "user_conversations", force: :cascade do |t|
