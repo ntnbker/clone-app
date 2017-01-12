@@ -1,0 +1,10 @@
+%div.container
+  %div.well
+    -@quote.quote_items.each do |f|
+      %p
+        =f.item_description
+        =f.amount 
+    %p
+      total:
+      =@quote.amount
+    =link_to "send"

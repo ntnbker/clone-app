@@ -49,7 +49,7 @@ Rails.application.routes.draw do
 
   resources :agencies, only:[:new, :create]
 
-  resources :quotes, only:[:new,:create,:edit,:update]
+  resources :quotes, only:[:new,:create,:show,:edit,:update]
 
   resources :trady_companies
 

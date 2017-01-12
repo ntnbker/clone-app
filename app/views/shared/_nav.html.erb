@@ -31,6 +31,7 @@
         <% if logged_in? %>
           <% if current_user.agent? || current_user.agency_admin? %>
             <li><%= link_to "New Maintenance Request", root_path%></li>
+            <li><%= link_to "My MR", maintenance_requests_path%></li>
           <%end %>
           <li><%= link_to "Sign Out #{current_user.email}", logout_path, method: :delete%> </li>
           <li><%= link_to "Inbox", conversations_path%> </li>

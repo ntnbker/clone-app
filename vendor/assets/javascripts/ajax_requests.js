@@ -1,4 +1,4 @@
-  $(document).ready(function() {
+  document.addEventListener("turbolinks:load", function() {
     $('#trady_select').on("change",(function() {
       $.ajax({
         url: "/trady_information",
@@ -13,3 +13,4 @@
 
 
   });
+

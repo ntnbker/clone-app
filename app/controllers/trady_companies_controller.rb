@@ -21,7 +21,7 @@ class TradyCompaniesController < ApplicationController
           binding.pry
         @trady.update_attribute(:trady_company_id, @existing_company.id)
         flash[:success] = "You have added your company thank you"
-        redirect_to new_quote_path
+        redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
       else
         flash[:danger] = "Please fill in below"
         render :new
@@ -33,7 +33,7 @@ class TradyCompaniesController < ApplicationController
           @trady_company.save
           @trady.update_attribute(:trady_company_id, @existing_company.id)
           flash[:success] = "You have added your company thank you"
-          redirect_to new_quote_path
+          redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
         else
           flash[:danger] = "Please fill in below"
           render :new
