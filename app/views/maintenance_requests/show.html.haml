@@ -13,6 +13,15 @@
   %p
     Job type:
     =@maintenance_request.service_type
+  %p#landlord
+    Landlord:
+    
+    -if @maintenance_request.property.landlord != nil
+      = @maintenance_request.property.landlord.name.capitalize
+    -else
+      %button{:type=>"button", :class=>"btn btn-danger btn-sm", "data-toggle"=>"modal", "data-target"=>"#create-landlord-modal"}
+        To Send Quotes From Tradies to Landlord Please Add Landlord To This Property
+
   %p
     Agent Managing: 
     -if @maintenance_request.agent_name == nil
@@ -73,8 +82,20 @@
 
 
       
+=bootstrap_form_for(@landlord,url:"/create_landlord",remote: true) do |f|
+  %div{:class=>"modal fade", :id=>"ask-mr-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+    %div{:class=>"modal-dialog", :role=>"document"}
+      %div{:class=>"modal-content"}
+        %div{:class=>"modal-body"}
+          
+          =f.text_field :name, class: "create_landlord_fields"
+          =f.text_field :email, class: "create_landlord_fields"
+          =f.phone_field :mobile, class: "create_landlord_fields"
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.submit "Submit Message", :class=>"btn btn-default"
+
 =bootstrap_form_for(@landlord,remote: true) do |f|
-  %div{:class=>"modal fade", :id=>"ask-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+  %div{:class=>"modal fade", :id=>"create-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
     %div{:class=>"modal-dialog", :role=>"document"}
       %div{:class=>"modal-content"}
         %div{:class=>"modal-body"}
@@ -83,7 +104,7 @@
           =f.text_field :email, class: "landlord_fields"
           =f.phone_field :mobile, class: "landlord_fields"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-          =f.submit "Submit Message", :class=>"btn btn-default"
+          =f.submit "Add Landlord", :class=>"btn btn-default"
           
 
 =bootstrap_form_for(@tradie,remote: true) do |f|

@@ -30,8 +30,9 @@ class TradyCompaniesController < ApplicationController
     else 
         @trady_company.perform_uniqueness_validation_of_company_name = true
         if @trady_company.valid?
+          
           @trady_company.save
-          @trady.update_attribute(:trady_company_id, @existing_company.id)
+          @trady.update_attribute(:trady_company_id, @trady_company.id)
           flash[:success] = "You have added your company thank you"
           redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
         else

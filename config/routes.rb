@@ -20,9 +20,10 @@ Rails.application.routes.draw do
   post 'menulogin' => 'user_sessions#menu_bar_login_form_create'
   delete 'logout' => 'user_sessions#destroy', :as => :logout
 
+
   resources :landlords, only:[:create, :update]
   get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
-
+  post 'create_landlord' => 'landlord#create_and_notify_landlord', :as =>:create_and_notify_landlord
   #resources :agency_admins, only:[:create, :update, :show]
   resources :agency_admins, only:[:create, :update, :show] 
 
@@ -50,7 +51,8 @@ Rails.application.routes.draw do
   resources :agencies, only:[:new, :create]
 
   resources :quotes, only:[:new,:create,:show,:edit,:update]
-
+  get "quote_email" => "quotes#send_quote_email", :as => :quote_email
+  get "show_quote" => "quotes#show_quote", :as => :show_quote
   resources :trady_companies
 
   # get "forgot_password", to: "forgot_password#new"

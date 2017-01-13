@@ -1,0 +1,10 @@
+%div.container
+  This is the view for the landlord when he receieves the quotes 
+  %div.well
+    -@quote.quote_items.each do |f|
+      %p
+        =f.item_description
+        =f.amount 
+    %p
+      total:
+      =@quote.amount

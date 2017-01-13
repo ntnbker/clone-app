@@ -7,4 +7,5 @@
     %p
       total:
       =@quote.amount
-    =link_to "send"
+    
+    =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id), :class=>"btn btn-primary btn-lg"

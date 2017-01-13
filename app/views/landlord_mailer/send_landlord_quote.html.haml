@@ -1,0 +1,21 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hi, "#{@landlord.name}" quote has been submitted by a trady for the maintenance request
+      =@maintenance_request.maintenance_heading
+      
+    %p
+      -@quote.quote_items.each do |f|
+        =f.item_description
+        =f.amount
+    %p
+      Total:
+      =@quote.amount
+    %p 
+      To see the Quote click on the link Below
+    %p
+      =link_to "Quote", show_quote_url(quote_id:@quote.id)
+
+     
