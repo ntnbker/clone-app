@@ -4,25 +4,26 @@ class TradyCompaniesController < ApplicationController
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_id = params[:trady_id]
     @company = Trady.find_by(id:@trady_id).trady_company if !nil
-    
-    
   end
+  
   def create
     
     @trady_company = TradyCompany.new(trady_company_params)
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
     @existing_company = TradyCompany.find_by(company_name:params[:trady_company][:company_name])
-    
+    @company = @trady.trady_company if !nil
         
-
     if @existing_company
-      @trady_company.perform_uniqueness_validation_of_company_name = false
+      @existing_company.update(trady_company_params)
+
+      #@trady_company.perform_uniqueness_validation_of_company_name = false
       if @trady_company.valid?
-          binding.pry
+          
         @trady.update_attribute(:trady_company_id, @existing_company.id)
         flash[:success] = "You have added your company thank you"
-        redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
+        redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
       else
+        @trady_id = params[:trady_company][:trady_id]
         flash[:danger] = "Please fill in below"
         render :new
       end
@@ -40,7 +41,17 @@ class TradyCompaniesController < ApplicationController
           render :new
         end
     end
-end 
+  end 
+
+  def edit
+    @trady_company = TradyCompany.find_by(id:params[:id])
+  end
+
+  def update
+    # binding.pry
+    # # @trady_company = 
+    # if @trady_company 
+  end
 
   private
     def trady_company_params

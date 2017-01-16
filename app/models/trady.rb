@@ -17,7 +17,7 @@ class Trady < ApplicationRecord
   attr_accessor :skill_required
 
   def name_and_company
-    "#{name.capitalize} the #{skill}"
+    "#{name.capitalize} the #{skill}, #{self.trady_company.company_name}"
   end
 
 end 

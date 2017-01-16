@@ -1,5 +1,12 @@
 This is the tradie Controller
 %div.container
+  / = if @trady_company.errors.any?
+  /   %div
+  /     %ul
+  /     -@trady_company.errors.full_messages.each do |message|
+  /       %li
+  /         =message
+        
   =bootstrap_nested_form_for(@trady_company, url: "/trady_companies", layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |a|
     = a.text_field :company_name, value:"#{@company.nil? ? '' : @company.company_name}"
     = a.text_field :trading_name, value:"#{@company.nil? ? '' : @company.trading_name}"

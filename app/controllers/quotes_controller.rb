@@ -1,11 +1,13 @@
 class QuotesController < ApplicationController
   
   def new
-    
+    binding.pry
     @quote = Quote.new
     @quote.quote_items.build
     @trady_id = params[:trady_id]
     @maintenance_request_id= params[:maintenance_request_id]
+    @trady = Trady.find_by(id:@trady_id)
+    @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
   end
 
   def create

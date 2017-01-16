@@ -38,7 +38,7 @@
 
 %div.container
   -if current_user.agent? || current_user.agency_admin?
-    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-landlord-modal"}
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-mr-landlord-modal"}
       Ask Landlord
     %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#request-quote-modal"}
       Request Quote
@@ -113,6 +113,7 @@
       %div{:class=>"modal-content"}
         %div{:class=>"modal-body"}
           =collection_select(@tradie,:id, @all_tradies, :id, :name_and_company,{prompt: "Select the Tradie"}, id:"trady_select")
+          =f.text_field :company_name, class: "tradie_fields", id:"trady_company_name"
           =f.text_field :name, class: "tradie_fields", id:"trady_name"
           =f.text_field :email, class: "tradie_fields", id:"trady_email"
           =f.phone_field :mobile, class: "tradie_fields", id:"trady_mobile"
