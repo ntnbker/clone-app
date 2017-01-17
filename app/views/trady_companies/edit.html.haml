@@ -12,6 +12,8 @@ This is the tradie Controller
     = a.text_field :mailing_address
     = a.text_field :mobile_number
     = a.text_field :email
+    = a.hidden_field :maintenance_request_id, value:@maintenance_request_id
+    = a.hidden_field :trady_id, value:@trady_id
     
     = a.submit 'Next'
      

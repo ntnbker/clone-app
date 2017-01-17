@@ -9,3 +9,4 @@
       =@quote.amount
     
     =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id), :class=>"btn btn-primary btn-lg"
+    =link_to "Edit Quote", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)

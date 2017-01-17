@@ -17,7 +17,12 @@ class Trady < ApplicationRecord
   attr_accessor :skill_required
 
   def name_and_company
-    "#{name.capitalize} the #{skill}, #{self.trady_company.company_name}"
+     
+    if self.trady_company != nil 
+      company_name = self.trady_company.company_name
+    end 
+    "#{name.capitalize} the #{skill} #{company_name}"
   end
 
 end 
+

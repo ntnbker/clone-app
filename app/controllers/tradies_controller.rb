@@ -20,7 +20,7 @@ class TradiesController < ApplicationController
     @user = User.find_by(email:params[:trady][:email])
     @trady = Trady.new(trady_params)
     mr = MaintenanceRequest.find_by(id:params[:trady][:maintenance_request_id])
-    
+    binding.pry
     if @user && @user.trady?
       
       respond_to do |format|
@@ -90,7 +90,7 @@ class TradiesController < ApplicationController
   private
 
   def trady_params
-    params.require(:trady).permit(:id,:user_id,:tradie_company_id,:name,:mobile,:email,:skill,:maintenance_request_id,:skill_required)
+    params.require(:trady).permit(:id,:user_id,:tradie_company_id,:name,:mobile,:email,:skill,:maintenance_request_id,:skill_required, :company_name)
     
   end
 
