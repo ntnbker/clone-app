@@ -25,6 +25,9 @@
 //= require date_calendar
 //= require popup
 //= require ajax_requests
+//= require react
+//= require react_ujs
+//= require components
 //= require_tree .
 
 
