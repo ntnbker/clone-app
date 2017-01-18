@@ -53,6 +53,7 @@ gem "cocoon"
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.43'
 gem 'server-generated-popups'
+gem 'react-rails'
 
 
 group :development, :test do
