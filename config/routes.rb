@@ -24,15 +24,13 @@ Rails.application.routes.draw do
   resources :landlords, only:[:create, :update]
   get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
   post 'create_landlord' => 'landlord#create_and_notify_landlord', :as =>:create_and_notify_landlord
-  #resources :agency_admins, only:[:create, :update, :show]
-  resources :agency_admins, only:[:create, :update, :show] 
-
   
-  get 'agency_sign_up' => 'agency_admins#new', :as =>:agency_admin_sign_up
+  
+  
   get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
   resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
   
-  resources :agent_maintenance_requests, only:[:new,:create,:destroy,:update, :show]
+  
   resources :password_resets, only:[:new, :create, :edit,:update]
   resources :tenants, only:[:show, :index]
 
@@ -56,10 +54,7 @@ Rails.application.routes.draw do
   post "quote_status" => "quotes#quote_status" 
   resources :trady_companies
 
-  # get "forgot_password", to: "forgot_password#new"
-  # get "forgot_password_confirmation", to: "forgot_password#confirm"
-  # get "expired_token", to: "password_reset#expired_token"
-  # get "register/:token", to: "users#new_with_invitation_token", as:"register_with_token"
+  
 
 
 end

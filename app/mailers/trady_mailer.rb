@@ -26,3 +26,5 @@ class TradyMailer < ActionMailer::Base
     mail(to:@trady.email, subject:"Quote Declined")
   end
 end 
+
+

@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
   end
 
   
-
-
   private
     def not_authenticated
       flash[:danger] = "Please login first"

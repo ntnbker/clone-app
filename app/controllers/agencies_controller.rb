@@ -1,41 +1,30 @@
 class AgenciesController < ApplicationController
-  
-  before_action :require_login, only:[:show]
-  skip_before_action :require_login,only:[:new, :create]
   authorize_resource :class => false
   
-
-
-
   def new
     @user = User.new
     @user.build_agency_admin.build_agency
-    
   end
 
-
   def create
-    
     @user = User.new(user_params)
     
-    
     if @user.valid?
-      
       @user.save
-      
-      flash[:success] = "Thank you for creating an account"
-      redirect_to root_path 
-      
-      
+      role = Role.new(user_id:@user.id)
+      @agency_admin = AgencyAdmin.find_by(user_id:@user.id)
+      @agency_admin.update_attribute(:email, params[:user][:email])
+      @agency_admin.roles << role
+      role.save
+      auto_login(@user)
+      flash[:success] = "Thank you for signing up."
+      redirect_to agency_admin_path(@agency_admin)
     else  
       flash[:danger] = "Sorry something went wrong"
       render :new
-
     end 
-    
   end
-
-
+  
   private
   
   def user_params

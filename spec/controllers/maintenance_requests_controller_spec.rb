@@ -11,7 +11,7 @@ describe MaintenanceRequestsController do
       role1.save
       agent.save
       login_user(user1)
-      binding.pry
+      
       get :new
       expect(assigns(:maintenance_request)).to be_an_instance_of(MaintenanceRequest)
     end 
@@ -28,9 +28,6 @@ describe MaintenanceRequestsController do
     end 
 
   end 
-
-
-
 
 
   describe "POST create" do 
