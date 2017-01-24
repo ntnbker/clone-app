@@ -8,6 +8,7 @@ class Trady < ApplicationRecord
   has_many :agencies, through: :agency_tradies
   
   has_many :quotes
+  has_many :invoices
   
   validates_presence_of :name
   validates_presence_of :email

@@ -6,7 +6,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :availabilities, inverse_of: :maintenance_request
   belongs_to :property
   has_many :quotes
-
+  has_many :invoices
   has_many :tenant_maintenance_requests
   has_many :tenants, through: :tenant_maintenance_requests
   has_many :conversations

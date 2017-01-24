@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   resources :conversations
   
   resources :tradies, only:[:create]
-
+  resources :invoices
   ########################################
   ##########TRADIE ROUTES#################
   ########################################
