@@ -230,7 +230,7 @@ class MaintenanceRequestsController < ApplicationController
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @tenants = @maintenance_request.tenants
-    #@tradies = Tradie 
+    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     
     @message = Message.new
     @landlord = Landlord.new

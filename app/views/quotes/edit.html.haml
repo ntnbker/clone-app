@@ -5,6 +5,7 @@
     #items
       =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
       =f.hidden_field :trady_id, value:"#{@trady.id}"
+      =f.hidden_field :status, value:"New"
       =f.fields_for :quote_items do |contacts_form|
         = render "quote_item_fields", f: contacts_form
         = link_to_add_association "Add Another item", f, :quote_items

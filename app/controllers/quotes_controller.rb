@@ -67,6 +67,44 @@ class QuotesController < ApplicationController
     @quote = Quote.find_by(id:params[:quote_id])
   end
 
+  def quote_status
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    quotes = maintenance_request.quotes
+    if params[:status] == "Approved" 
+      quotes.each do |quote|
+        if quote.id == params[:quote_id].to_i && params[:status] == "Approved"
+          #email the person who got approved that they have now been approved 
+          trady = quote.trady 
+          TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+          quote.update_attribute(:status, params[:status])
+        else
+          quote.update_attribute(:status, "Declined")
+          TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+        end 
+      end
+    elsif params[:status] == "Declined"
+      quote = Quote.find_by(id: params[:quote_id])
+      trady = quote.trady
+      quote.update_attribute(:status,"Declined")
+      TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+      #email the person who got declined
+    elsif params[:status] == "Restore"
+      quote = Quote.find_by(id: params[:quote_id])
+      quote.update_attribute(:status,"Active")
+      #email the person who got restored?
+    end 
+
+    if params[:status] == "Cancel"
+      
+      quote = Quote.find_by(id: params[:quote_id])
+      quote.update_attribute(:status,"Cancelled")
+      TradyJobCancelledEmailWorker.perform_async(quote.trady.id, maintenance_request.id)
+
+    end   
+
+
+  end
+
   def send_quote_email
     
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
@@ -86,7 +124,7 @@ class QuotesController < ApplicationController
 
   private
   def quote_params
-    params.require(:quote).permit(:id, :trady_id,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy])
+    params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy])
   end
 
   

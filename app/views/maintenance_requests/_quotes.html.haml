@@ -1,0 +1,17 @@
+-object.each do |quote|
+  %div.well 
+    %h5
+      =quote.trady.name
+    %h6
+      =quote.trady.company_name
+    %h6
+      =quote.status
+    %div 
+      -if quote.status == "Approved" 
+        =link_to "Cancel", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post
+      -if quote.status == "Active" 
+        =link_to "Approve", quote_status_path(quote_id:quote.id,status:"Approved", maintenance_request_id:quote.maintenance_request_id), method: :post
+        =link_to "Decline", quote_status_path(quote_id:quote.id,status:"Declined",maintenance_request_id:quote.maintenance_request_id), method: :post
+       
+      -if quote.status == "Declined" 
+        =link_to "Restore", quote_status_path(quote_id:quote.id,status:"Restore",maintenance_request_id:quote.maintenance_request_id), method: :post

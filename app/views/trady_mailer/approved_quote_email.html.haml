@@ -1,0 +1,18 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hello #{@trady.name.capitalize}
+      We have accepted you quote offer for the following job listed below
+
+    %h3
+      =@maintenance_request.maintenance_heading
+    %p
+      =@maintenance_request.maintenance_description
+
+    %p When the job has been completed click The button below to access the invoice form.
+
+
+    =link_to "Send Invoice", maintenance_request_url(@maintenance_request,user_id:@trady.user.id)
+
