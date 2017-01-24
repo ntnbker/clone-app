@@ -1,0 +1,12 @@
+machine:
+  ruby:
+    version: 2.3.1
+deployment:
+  staging:
+    branch: staging
+    commands:
+      - heroku maintenance:on --app maintenance-app-staging
+      - git fetch origin --unshallow
+      - git push git@heroku.com:maintenance-app-staging.git $CIRCLE_SHA1:refs/heads/master
+      - heroku run rake db:migrate --maintenance-app-staging
+      - heroku maintenance:off --maintenance-app-staging
