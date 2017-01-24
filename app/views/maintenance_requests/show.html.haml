@@ -34,6 +34,10 @@
     =@maintenance_request.maintenance_description 
 
 
+  =render "maintenance_requests/quotes", object:@quotes
+  / %div
+  /   =react_component "quotes", {quotes: @maintenance_request.quotes}
+
  
 
 %div.container

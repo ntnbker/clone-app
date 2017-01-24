@@ -10,6 +10,4 @@ class TradyEmailWorker
 
   end
 
-
-  
 end 

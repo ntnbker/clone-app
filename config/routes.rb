@@ -53,6 +53,7 @@ Rails.application.routes.draw do
   resources :quotes, only:[:new,:create,:show,:edit,:update]
   get "quote_email" => "quotes#send_quote_email", :as => :quote_email
   get "show_quote" => "quotes#show_quote", :as => :show_quote
+  post "quote_status" => "quotes#quote_status" 
   resources :trady_companies
 
   # get "forgot_password", to: "forgot_password#new"
