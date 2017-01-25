@@ -57,9 +57,9 @@
     -elsif current_user.tenant?
       Send Agent Message
 
-  %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
-
-  =link_to "Invoice", new_invoice_path, class: "btn btn-primary btn-lg"
+  
+  / -if @quote != nil && current_user.trady? && current_user.trady.id == @quote.trady_id
+  =link_to "Invoice", confirm_company_invoice_path(trady_company_id:@quote.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@quote.trady.id, quote_id:@quote.id), class: "btn btn-primary btn-lg"
       
 
 %div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}

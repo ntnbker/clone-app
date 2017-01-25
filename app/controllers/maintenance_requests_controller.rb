@@ -231,7 +231,7 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    
+    @quote = @quotes.where(:status=>"Approved").first if !nil
     @message = Message.new
     @landlord = Landlord.new
     @tradie = Trady.new

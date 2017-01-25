@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
   resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
   
-  
+  resources :agency_admins, only:[:show]
   resources :password_resets, only:[:new, :create, :edit,:update]
   resources :tenants, only:[:show, :index]
 
@@ -40,6 +40,9 @@ Rails.application.routes.draw do
   
   resources :tradies, only:[:create]
   resources :invoices
+  get "invoice_email" => "invoices#send_invoice_email", :as => :invoice_email
+  get "confirm_company_invoice" =>"invoices#edit_trady_company_invoice"
+  put "update_company_invoice" =>"invoices#update_trady_company_invoice"
   ########################################
   ##########TRADIE ROUTES#################
   ########################################
@@ -54,7 +57,4 @@ Rails.application.routes.draw do
   post "quote_status" => "quotes#quote_status" 
   resources :trady_companies
 
-  
-
-
-end
+ end
