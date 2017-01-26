@@ -1,0 +1,20 @@
+%h1 
+  Here the new invoice form goes here
+     
+     
+
+%div.container.well
+  %p
+    Please enter Invoice details
+  =bootstrap_nested_form_for(@invoice, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    #items
+      =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+      =f.hidden_field :trady_id, value:"#{@trady.id}"
+      =f.hidden_field :quote_id, value:"#{@quote_id}"
+      =f.fields_for :invoice_items do |form|
+        = render "invoices/invoice_item_fields", f: form
+        = link_to_add_association "Add Another item", f, :invoice_items
+    =f.submit "Next"
+
+    =link_to "Back", confirm_company_invoice_path(trady_company_id:@trady_company.id,maintenance_request_id:@maintenance_request_id, trady_id:@trady.id, quote_id:@quote_id)
+

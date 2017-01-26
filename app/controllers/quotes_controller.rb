@@ -1,10 +1,9 @@
 class QuotesController < ApplicationController
   
   def new
-    binding.pry
+    
     @quote = Quote.new
     @quote.quote_items.build
-    # @trady_id = params[:trady_id]
     @maintenance_request_id= params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
@@ -123,6 +122,7 @@ class QuotesController < ApplicationController
 
 
   private
+  
   def quote_params
     params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy])
   end

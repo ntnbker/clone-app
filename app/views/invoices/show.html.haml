@@ -1,0 +1,12 @@
+%div.container
+  %div.well
+    -@invoice.invoice_items.each do |f|
+      %p
+        =f.item_description
+        =f.amount 
+    %p
+      total:
+      =@invoice.amount
+    
+    =link_to "Send Invoice", invoice_email_path(maintenance_request_id:@maintenance_request.id,invoice_id:@invoice.id), :class=>"btn btn-primary btn-lg"
+    =link_to "Back", edit_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)

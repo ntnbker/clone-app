@@ -2,14 +2,14 @@ class TradyCompaniesController < ApplicationController
   def new
     @trady_company = TradyCompany.new
     @maintenance_request_id = params[:maintenance_request_id]
-    #@trady_id = params[:trady_id]
+    
     @trady = Trady.find_by(id:params[:trady_id])
     @company = @trady.trady_company if !nil
     
   end
   
   def create
-    binding.pry
+    
 
     @trady_company = TradyCompany.new(trady_company_params)
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
@@ -65,6 +65,7 @@ class TradyCompaniesController < ApplicationController
     @trady_company = TradyCompany.find_by(id:params[:id])
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
     @trady.user.update_attribute(:email,params[:trady_company][:email]) 
+    @trady.update_attribute(:email,params[:trady_company][:email]) 
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     @trady_id = params[:trady_company][:trady_id]
      
@@ -75,6 +76,11 @@ class TradyCompaniesController < ApplicationController
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
       render :edit
     end 
+  end
+
+
+  def create_trady_company
+    
   end
 
   private
