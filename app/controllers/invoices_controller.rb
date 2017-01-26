@@ -47,7 +47,7 @@ class InvoicesController < ApplicationController
     if @invoice.save
       @invoice.update_attribute(:amount,@total)
       
-      redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id])
+      redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id], quote_id:params[:invoice][:quote_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:quote][:trady_id]
@@ -60,7 +60,37 @@ class InvoicesController < ApplicationController
     @invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     @trady_id = params[:trady_id] 
+    @quote_id = params[:quote_id]
   end
+
+  def edit
+    @invoice = Invoice.find_by(id:params[:id])
+    @maintenance_request_id = params[:maintenance_request_id]
+    @trady = Trady.find_by(id:params[:trady_id])
+    @quote_id = params[:quote_id]
+    @trady_company = @trady.trady_company
+  end
+
+  def update
+    @invoice = Invoice.find_by(id:params[:id])
+    @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
+    @maintenance_request_id = params[:invoice][:maintenance_request_id]
+    @trady = Trady.find_by(id:params[:invoice][:trady_id])
+    
+    @trady_company = @trady.trady_company
+
+    if @invoice.update(invoice_params)
+      @invoice.update_attribute(:amount,@total)
+      flash[:success] = "Your Invoice has been updated"
+      redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id], quote_id:params[:invoice][:quote_id])
+    else
+      flash[:danger] = "Sorry Something went wrong "
+      render :edit
+    end 
+    
+  end
+
+
 
   private
     def trady_company_params
@@ -68,7 +98,7 @@ class InvoicesController < ApplicationController
     end
 
     def invoice_params
-    params.require(:invoice).permit(:id, :trady_id, :maintenance_request_id,invoice_items_attributes:[:id,:amount,:item_description, :_destroy])
+    params.require(:invoice).permit(:id, :trady_id,:quote_id ,:maintenance_request_id,invoice_items_attributes:[:id,:amount,:item_description, :_destroy])
   end
 
 end 

@@ -4,7 +4,7 @@
   %body
     %p 
       Hi,a maintenance request has been made. Please click the link below to view it
-      =link_to "#{@maintenance_request.maintenance_heading}", agent_maintenance_request_url(@maintenance_request,user_id:@maintenance_request.agency_admin.user_id)
+      =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@maintenance_request.agency_admin.user_id)
 
 
      
