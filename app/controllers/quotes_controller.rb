@@ -72,12 +72,14 @@ class QuotesController < ApplicationController
     if params[:status] == "Approved" 
       quotes.each do |quote|
         if quote.id == params[:quote_id].to_i && params[:status] == "Approved"
-          #email the person who got approved that they have now been approved 
+          
           trady = quote.trady 
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
           quote.update_attribute(:status, params[:status])
         else
           quote.update_attribute(:status, "Declined")
+          trady = quote.trady
+          
           TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
       end
