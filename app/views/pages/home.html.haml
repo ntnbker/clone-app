@@ -1,12 +1,11 @@
 .pages
   .header
-    %div.container{:style=>"width:80%;"}
-      = bootstrap_form_tag url: '/route_user_type', autocomplete:"off" do |f| 
-        =f.fields_for :form_fields  do |h|
-          = h.select :user_role, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }),   prompt: 'i`m a..', hide_label: true
-          = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), prompt: 'i need a..',   hide_label: true
-          = h.text_field :address, id:'pac-input', :placeholder => 'for my place at..', disable:true, hide_label:   true
-          = h.submit "Send"
+    = form_tag url: '/route_user_type', autocomplete:"off" do
+      = fields_for :form_fields  do |h|
+        = h.select :user_role, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }), prompt: 'i`m a..', hide_label: true
+        = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), prompt: 'i need a..', hide_label: true
+        = h.text_field :address, id:'pac-input', :placeholder => 'for my place at..', required: true, disable:true, hide_label: true
+        = h.submit "Send", class: 'button-primary send'
   
     %input{:type=>"hidden", :id=>"refresh", :value=>"no"}
   
@@ -15,19 +14,19 @@
       .row
         %h3.title How it works!
         .row.how-it-works
-          .col-md-3.col-sm-6.col-xs-12
+          .three.columns
             %img{:src => "/assets/key1.png"}/
             %h4 Maintenance requested
             %p Fill in the Maintenance form and submit the request
-          .col-md-3.col-sm-6.col-xs-12
+          .three.columns
             %img{:src => "/assets/key2.png"}/
             %h4 Maintenance actioned
             %p Sit back, relax and let us sort out the maintenance for you without delays
-          .col-md-3.col-sm-6.col-xs-12
+          .three.columns
             %img{:src => "/assets/key3.png"}/
             %h4 Track your Maintenance
             %p Receive notifications on where your maintenance request is up or track it online
-          .col-md-3.col-sm-6.col-xs-12
+          .three.columns
             %img{:src => "/assets/key4.png"}/
             %h4 Maintenance completed !
             %p Enjoy an easy stress free process to maintenance completion
@@ -35,19 +34,21 @@
       .row
         %h3.title The Maintenance App for..
         .row.app-for
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_LJ.png"}/
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_Ray.png"}/
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_First.png"}/
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_Mc.png"}/
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_Be.png"}/
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_St.png"}/
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_Ce.png"}/
-          .col-md-3.col-sm-6.col-xs-12
-            %img{:src => "/assets/m_La.png"}/
+          .row
+            .three.columns
+              %img{:src => "/assets/m_LJ.png"}/
+            .three.columns
+              %img{:src => "/assets/m_Ray.png"}/
+            .three.columns
+              %img{:src => "/assets/m_First.png"}/
+            .three.columns
+              %img{:src => "/assets/m_Mc.png"}/
+          .row
+            .three.columns
+              %img{:src => "/assets/m_Be.png"}/
+            .three.columns
+              %img{:src => "/assets/m_St.png"}/
+            .three.columns
+              %img{:src => "/assets/m_Ce.png"}/
+            .three.columns
+              %img{:src => "/assets/m_La.png"}/

@@ -9,30 +9,25 @@
 	    background-position: center center !important;
 	    height: 764px;
 
-    	form {
-			display: table;
-		    padding: 10px;
-		    border-radius: 5px;
-		    margin: 550px auto;
-		    background-color: rgba(50,50,50,.5);
+	    form {
+	    	position: absolute;
+	    	text-align: center;
+	    	width: 100%;
+	    	top: 500px;
 
-		    select, input[type="text"], input[type="submit"] {
-			    padding: 10px 15px;
-			    border: none;
-			    border-radius: 5px;
-			}
-			input[type="submit"]{
-				color: white;
-				padding: 9px 30px;
-				margin-top: -4px;
-				background-color: #7dc691;
-			}
-			div {
-				display: inline-block;
-				margin: 0;
-				padding: 0 3px;
-			}
-		}
+	    	select {
+	    		width: 40%;
+	    		margin: 5px 0;
+	    	}
+	    	input[type="text"] {
+    		    width: calc(80% - 100px);
+	    	}
+	    	input[type="submit"] {
+	    		width: 100px;
+	    		background-color: #7dc691;
+	    		border-color: #7dc691;
+	    	}
+	    }
 	}
 
 	.main {
@@ -88,34 +83,17 @@
 		width: 100%;
 	}
 
-	@media (max-width: 992px) {
+	/* For Desktop Nav */
+	@media (min-width: 550px) {
 		.header form {
-			margin-top: 350px;
-
-			& > div {
-				&:nth-of-type(1) {
-					float: left;
-					width: 50%;
-					padding: 2px;
-				}
-				&:nth-of-type(2) {
-					float: right;
-					width: 50%;
-					padding: 2px;
-				}
-				&:nth-of-type(3) {
-					float: left;
-					width: 65%;
-					padding: 2px;
-				}
-			}
-
-			& > input[type="submit"] {
-				float: right;
-				width: 35%;
-				margin-top: 2px;
-				padding: 9px;
-			}
-		}
+	    	select {
+	    		width: 10%;
+	    		min-width: 120px;
+	    	}
+	    	input[type="text"] {
+	    		width: 15%;
+	    		min-width: 170px;
+	    	}
+    	}
 	}
 }
