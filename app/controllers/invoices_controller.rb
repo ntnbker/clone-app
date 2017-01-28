@@ -8,7 +8,7 @@ class InvoicesController < ApplicationController
   end
 
   def update_trady_company_invoice
-    binding.pry
+    
     @trady_company = TradyCompany.find_by(id:params[:trady_company][:trady_company_id])
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
     @trady.update_attribute(:email,params[:trady_company][:email]) 
