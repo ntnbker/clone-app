@@ -90,6 +90,13 @@ class InvoicesController < ApplicationController
     
   end
 
+  def send_invoice
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    AgentsMaintenanceRequestInvoiceWorker.perform_async(maintenance_request.id)
+  end
+
+
+
 
 
   private

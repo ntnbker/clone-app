@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   resources :landlords, only:[:create, :update]
   get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
-  post 'create_landlord' => 'landlord#create_and_notify_landlord', :as =>:create_and_notify_landlord
+  post 'create_landlord' => 'landlords#create_and_notify_landlord', :as =>:create_and_notify_landlord
   
   
   
@@ -55,6 +55,9 @@ Rails.application.routes.draw do
   get "quote_email" => "quotes#send_quote_email", :as => :quote_email
   get "show_quote" => "quotes#show_quote", :as => :show_quote
   post "quote_status" => "quotes#quote_status" 
+  post "request_quote" => "quotes#landlord_requests_quote"
   resources :trady_companies
+
+  post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
 
  end

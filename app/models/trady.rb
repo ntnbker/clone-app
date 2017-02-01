@@ -13,6 +13,7 @@ class Trady < ApplicationRecord
   validates_presence_of :name
   validates_presence_of :email
   validates_presence_of :mobile
+  validates_uniqueness_of :mobile
 
   attr_accessor :maintenance_request_id
   attr_accessor :skill_required

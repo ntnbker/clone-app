@@ -123,6 +123,11 @@ class QuotesController < ApplicationController
   end
 
 
+  def landlord_requests_quote
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]
+  end
+
+
   private
   
   def quote_params

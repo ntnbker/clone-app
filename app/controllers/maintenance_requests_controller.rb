@@ -258,6 +258,10 @@ class MaintenanceRequestsController < ApplicationController
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
       @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
     end 
+
+    if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
+      @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
+    end 
     
   
 

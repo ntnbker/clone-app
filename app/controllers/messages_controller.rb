@@ -13,7 +13,7 @@ class MessagesController < ApplicationController
 
     respond_to do |format|
       if @message.save
-        format.html {render "agent_maintenance_requests/show.html.haml", :success =>"Your message was sent FUCK THIS SHIT"}  
+        format.html {render "agent_maintenance_requests/show.html.haml", :success =>"Your message was sent"}  
         format.js{render layout: false, content_type: 'text/javascript'}
         
       else
@@ -39,7 +39,11 @@ class MessagesController < ApplicationController
           @message.update_attribute(:conversation_id,@conversation.id)
           UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
         end
+
+        #if the conversation Type is tenant then use this email worker
         TenantMessageNotificationEmailWorker.perform_async(params[:message][:maintenance_request_id]) 
+        
+
         #EmailWorker.perform_async(params[:message][:maintenance_request_id])
         #HERE WE CAN EMAIL ALL TENANTS THAT THEY HAVE A NEW MESSAGE USERS 
       

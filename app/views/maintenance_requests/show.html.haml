@@ -50,7 +50,7 @@
 
 
 
-  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#myModal"}
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#tenant-message-modal"}
     -if current_user.agent? || current_user.agency_admin? 
     
       Send Tenants Message
@@ -61,20 +61,24 @@
   
   / && current_user.trady? && current_user.trady.id == @quote.trady_id
   / -binding.pry
-  -if @quote != nil 
-    =link_to "Invoice", confirm_company_invoice_path(trady_company_id:@quote.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@quote.trady.id, quote_id:@quote.id), class: "btn btn-primary btn-lg"
-      
+  -if @quote != nil
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
+      =link_to "Invoice", confirm_company_invoice_path(trady_company_id:@quote.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@quote.trady.id, quote_id:@quote.id)
+  
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#landlord-message-modal"}
+    -if current_user.agent? || current_user.agency_admin? 
+    
+      Send Landlord Message
+    -elsif current_user.landlord?
+      Send Agent Message    
 
-%div{:class=>"modal fade", :id=>"myModal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+%div{:class=>"modal fade", :id=>"tenant-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
 
   %div{:class=>"modal-dialog", :role=>"document"}
     %div{:class=>"modal-content"}
       
       %div{:class=>"modal-body message_modal"}
 
-        / -@tenants_conversation.each do |msg|
-        /   %div.well#chat_message 
-        /     =render partial: "messages/message", object: msg
         %div.messages_container    
           = render partial: "messages/message", collection: @tenants_conversation, as: :message   
         
@@ -83,6 +87,26 @@
           
           =f.text_field :body, class: "message_body"
           =f.hidden_field :conversation_type, value:"Tenant"
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.submit "Submit Message", :class=>"btn btn-default"
+          %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+            Close
+
+%div{:class=>"modal fade", :id=>"landlord-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+
+  %div{:class=>"modal-dialog", :role=>"document"}
+    %div{:class=>"modal-content"}
+      
+      %div{:class=>"modal-body message_modal"}
+
+        %div.messages_container    
+          = render partial: "messages/message", collection: @landlords_conversation, as: :message   
+        
+        %div{:id=>"errors_div"}
+        =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
+          
+          =f.text_field :body, class: "message_body"
+          =f.hidden_field :conversation_type, value:"Landlord"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.submit "Submit Message", :class=>"btn btn-default"
           %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
