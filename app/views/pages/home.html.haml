@@ -1,11 +1,11 @@
 .pages
   .header
-    = form_tag url: '/route_user_type', autocomplete:"off" do
+    = form_tag('/route_user_type', method: :post) do
       = fields_for :form_fields  do |h|
         = h.select :user_role, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }), prompt: 'i`m a..', hide_label: true
         = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), prompt: 'i need a..', hide_label: true
         = h.text_field :address, id:'pac-input', :placeholder => 'for my place at..', required: true, disable:true, hide_label: true
-        = h.submit "Send", class: 'button-primary send'
+        = h.submit "Send", class: 'button-primary green'
   
     %input{:type=>"hidden", :id=>"refresh", :value=>"no"}
   
