@@ -118,7 +118,7 @@ var AvailabilityFields = React.createClass({
         return(
             <div id="availabilities">
                 <FieldList fields={this.state.fields} removeField={this.removeField} />
-                <button className="button-add button-primary" onClick={this.addField}> Add Another Access Contact </button>
+                <button className="button-add button-primary" onClick={this.addField}> Add Another Availability </button>
             </div>
         );
     }
