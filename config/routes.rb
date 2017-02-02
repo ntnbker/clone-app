@@ -55,7 +55,7 @@ Rails.application.routes.draw do
   get "quote_email" => "quotes#send_quote_email", :as => :quote_email
   get "show_quote" => "quotes#show_quote", :as => :show_quote
   post "quote_status" => "quotes#quote_status" 
-  post "request_quote" => "quotes#landlord_requests_quote"
+  post "request_quote" => "quotes#landlord_requests_quote", :as => :request_quote 
   resources :trady_companies
 
   post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
