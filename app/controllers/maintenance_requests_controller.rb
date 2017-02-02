@@ -214,11 +214,13 @@ class MaintenanceRequestsController < ApplicationController
 
 
 
-      
+     if current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? || current_user.trady? 
       flash[:success]= "Thank You for creating a Maintenance Request"
       redirect_to maintenance_request_path(@maintenance_request)
-       
-      
+     else
+       flash[:danger]= "Sorry you cant see that please log in first"
+       redirect_to root_path
+      end
       
     else
       flash[:danger]= "something went wrong"

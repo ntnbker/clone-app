@@ -111,7 +111,7 @@ class QuotesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
-     
+    @quote.update_attribute(:delivery_status, true) 
     flash[:success] = "Your Quote has been sent Thank you"
     if @landlord == nil 
       AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )

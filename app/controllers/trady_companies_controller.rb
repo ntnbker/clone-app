@@ -22,7 +22,8 @@ class TradyCompaniesController < ApplicationController
     if @existing_company
       #@existing_company.update(trady_company_params)
 
-      #@trady_company.perform_uniqueness_validation_of_company_email = false
+      @trady_company.perform_uniqueness_validation_of_company_email = true
+
       if @trady_company.valid?
         @existing_company.update(trady_company_params)
         #@trady.user.update_attribute(:email,params[:trady_company][:email])  
@@ -37,7 +38,7 @@ class TradyCompaniesController < ApplicationController
       end
       
     else 
-        #@trady_company.perform_uniqueness_validation_of_company_email = true
+        @trady_company.perform_uniqueness_validation_of_company_email = false
         if @trady_company.valid?
           
           @trady_company.save
