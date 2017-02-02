@@ -1,0 +1,102 @@
+// Place all the styles related to the Pages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+form#new_maintenance_request {
+
+	width: 100%;
+	margin: 20px auto;
+
+	p {
+	    margin: 20px 0 5px;
+	}
+
+	button {
+		&.button-remove {
+		    margin-top: 15px;
+		    font-size: 12px;
+		    height: 20px;
+		}
+
+		&.button-add {	
+			font-size: 13px;
+    		height: 24px;
+		}
+	}
+	.person_in_charge {
+		label {
+			display: inline-block;
+			font-weight: normal;
+			margin-bottom: 15px;
+
+			input[type="radio"] {
+		        margin-right: 8px;
+			}
+		}
+	}
+
+	#access_contacts ul {
+		list-style: none;
+
+		li {
+	    	border: 1px solid #E1E1E1;
+    		padding: 10px;
+
+			.field fieldset {
+				border: none;
+				padding: 0;
+			}
+		}
+	}
+
+	#availabilities ul {
+		list-style: none;
+
+		li {
+	    	border: 1px solid #E1E1E1;
+    		padding: 10px;
+
+			.field fieldset {
+				border: none;
+				padding: 0;
+
+				input[type="date"] {
+					display: block;
+				    height: 38px;
+    				padding-left: 10px;
+				}
+
+				div {
+					display: inline-block;
+					select {
+						width: 60px;
+					}
+				}
+				.starttime {
+					padding-right: 40px;
+				}
+			}
+
+			label {
+				font-weight: normal;
+				padding: 10px 0;
+
+				input[type="checkbox"] {
+					margin-right: 8px;
+				}
+			}
+		}
+	}
+
+	input[type="text"],
+	input[type="email"],
+	input[type="tel"],
+	textarea, select {
+		width: 100%;
+	}
+
+	/* For Desktop Nav */
+	@media (min-width: 550px) {
+		width: 50%;
+	}
+}

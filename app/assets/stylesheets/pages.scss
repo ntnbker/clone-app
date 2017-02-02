@@ -24,8 +24,6 @@
 	    	}
 	    	input[type="submit"] {
 	    		width: 100px;
-	    		background-color: #7dc691;
-	    		border-color: #7dc691;
 	    	}
 	    }
 	}
@@ -95,5 +93,23 @@
 	    		min-width: 170px;
 	    	}
     	}
+	}
+}
+
+.button-primary.green {
+	background-color: #7dc691 !important;
+	border-color: #7dc691 !important;
+	&:hover {
+		background-color: #2FA342 !important;
+		border-color: #2FA342 !important;
+	}
+}
+
+.button-primary.red {
+	background-color: #E77B40 !important;
+	border-color: #E77B40 !important;
+	&:hover {
+		background-color: #B94D13 !important;
+		border-color: #B94D13 !important;
 	}
 }
