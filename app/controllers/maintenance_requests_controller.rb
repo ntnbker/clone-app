@@ -14,6 +14,7 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def create
+    binding.pry
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     

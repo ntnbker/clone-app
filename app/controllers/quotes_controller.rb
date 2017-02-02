@@ -124,7 +124,7 @@ class QuotesController < ApplicationController
 
 
   def landlord_requests_quote
-    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]
+    #maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]
   end
 
 
