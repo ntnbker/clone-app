@@ -9,7 +9,7 @@ var MaintenanceRequestsNew = React.createClass({
     },
 	render: function(){
 		return (
-			<form role="form" id="new_maintenance_request" action="/maintenance_requests" method="post">
+			<form role="form" id="new_maintenance_request" acceptCharset="UTF-8" action="/maintenance_requests" method="post">
 				<input type='hidden' name='authenticity_token' value={this.props.authenticity_token} />
 				<div className="field">
 					<p> Name </p>
