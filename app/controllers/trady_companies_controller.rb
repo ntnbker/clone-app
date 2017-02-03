@@ -13,22 +13,25 @@ class TradyCompaniesController < ApplicationController
 
     @trady_company = TradyCompany.new(trady_company_params)
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
-    @existing_company = TradyCompany.find_by(company_name:params[:trady_company][:email])
+    @existing_company = TradyCompany.find_by(email:params[:trady_company][:email])
+
+    
     @company = @trady.trady_company if !nil
     
-    #change
+    
     
 
     if @existing_company
       #@existing_company.update(trady_company_params)
 
-      @trady_company.perform_uniqueness_validation_of_company_email = true
+      @trady_company.perform_uniqueness_validation_of_company_email = false
 
       if @trady_company.valid?
         @existing_company.update(trady_company_params)
         #@trady.user.update_attribute(:email,params[:trady_company][:email])  
         @trady.update_attribute(:trady_company_id, @existing_company.id)
-        #@trady.update_attribute(:email,params[:trady_company][:email])
+        @trady.update_attribute(:company_name,params[:trady_company][:company_name])
+        @trady.update_attribute(:mobile,params[:trady_company][:mobile_number])
         flash[:success] = "You have added your company thank you"
         redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
       else
@@ -38,13 +41,15 @@ class TradyCompaniesController < ApplicationController
       end
       
     else 
-        @trady_company.perform_uniqueness_validation_of_company_email = false
+        @trady_company.perform_uniqueness_validation_of_company_email = true
         if @trady_company.valid?
           
           @trady_company.save
           @trady.update_attribute(:trady_company_id, @trady_company.id)
-          @trady.update_attribute(:email,params[:trady_company][:email])
-          @trady.user.update_attribute(:email,params[:trady_company][:email])
+          @trady.update_attribute(:mobile,params[:trady_company][:mobile_number])
+          @trady.update_attribute(:company_name,params[:trady_company][:company_name])
+          # @trady.update_attribute(:email,params[:trady_company][:email])
+          # @trady.user.update_attribute(:email,params[:trady_company][:email])
           flash[:success] = "You have added your company thank you"
           redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
         else
@@ -55,7 +60,6 @@ class TradyCompaniesController < ApplicationController
   end 
 
   def edit
-    
     @trady_company = TradyCompany.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_id = params[:trady_id]
@@ -79,9 +83,20 @@ class TradyCompaniesController < ApplicationController
   end
 
 
-  def create_trady_company
-    
-  end
+  # def trady_company_router
+  #   @trady = Trady.find_by(id:params[:trady_id])
+
+  #   @existing_company = TradyCompany.find_by(id:@trady.trady_company.id)
+
+  #   if @existing_company
+  #     redirect_to edit company path
+  #   else
+  #     redirect_to new trady company path
+  #   end 
+  # end
+
+
+  
 
   private
     def trady_company_params
