@@ -27,16 +27,16 @@ var AvailabilityField = React.createClass({
     },
 
     generateAtt(name_id, x, type) {
-    	if (name_id == "name") {
-    		return "maintenance_request[availabilities_attributes][" + x + "][" + type + "]";
-    	}
-    	else if (name_id == "id") {
-    		return "maintenance_request_availabilities_attributes_" + x + "_" + type;
-    	}
+      if (name_id == "name") {
+        return "maintenance_request[availabilities_attributes][" + x + "][" + type + "]";
+      }
+      else if (name_id == "id") {
+        return "maintenance_request_availabilities_attributes_" + x + "_" + type;
+      }
     },
 
     onChange(e) {
-    	var tmpValue = e.target.value;
+      var tmpValue = e.target.value;
       this.setState(state => {
           state.currentValue.date = tmpValue;
           return {currentValue : state.currentValue};
@@ -51,41 +51,71 @@ var AvailabilityField = React.createClass({
           <fieldset>
             <p> Date </p>
             <input type="date" value='' value={currentValue.date}
-            		 name={this.generateAtt("name", x, "date")}
-            		 id={this.generateAtt("id", x, "date")}  onChange={this.onChange}/>
+                 name={this.generateAtt("name", x, "date")}
+                 id={this.generateAtt("id", x, "date")}  onChange={this.onChange}/>
             
             <div className="starttime">
               <p> Start time </p>
-              <select name={this.generateAtt("name", x, "start_time(h1)")}
-              			id={this.generateAtt("id", x, "start_time_h1")} >
+
+              <input type="hidden" value={new Date().getFullYear()}
+                     name={this.generateAtt("name", x, "start_time(1i)")}
+                       id={this.generateAtt("id", x, "start_time_1i")} />
+
+              <input type="hidden" value={new Date().getMonth()+1}
+                     name={this.generateAtt("name", x, "start_time(2i)")}
+                       id={this.generateAtt("id", x, "start_time_2i")} />
+
+              <input type="hidden" value={new Date().getDate()}
+                     name={this.generateAtt("name", x, "start_time(3i)")}
+                       id={this.generateAtt("id", x, "start_time_3i")} /> 
+
+              <select name={this.generateAtt("name", x, "start_time(4i)")}
+                        id={this.generateAtt("id", x, "start_time_4i")} >
                 { this.makeDate(24) }
               </select>
+
               <span> : </span>
-              <select name={this.generateAtt("name", x, "start_time(m1)")}
-              			id={this.generateAtt("id", x, "start_time_m1")} >
+
+              <select name={this.generateAtt("name", x, "start_time(5i)")}
+                        id={this.generateAtt("id", x, "start_time_5i")} >
                 { this.makeDate(60) }
               </select>
             </div>
 
             <div className="finishtime">
               <p> Finish time </p>
-              <select name={this.generateAtt("name", x, "finish_time(h1)")}
-              			id={this.generateAtt("id", x, "finish_time_h1")} >
+
+              <input type="hidden" value={new Date().getFullYear()}
+                     name={this.generateAtt("name", x, "finish_time(1i)")}
+                       id={this.generateAtt("id", x, "finish_time_1i")} />
+
+              <input type="hidden" value={new Date().getMonth()+1}
+                     name={this.generateAtt("name", x, "finish_time(2i)")}
+                       id={this.generateAtt("id", x, "finish_time_2i")} />
+
+              <input type="hidden" value={new Date().getDate()}
+                     name={this.generateAtt("name", x, "finish_time(3i)")}
+                       id={this.generateAtt("id", x, "finish_time_3i")} /> 
+
+              <select name={this.generateAtt("name", x, "finish_time(4i)")}
+                        id={this.generateAtt("id", x, "finish_time_4i")} >
                 { this.makeDate(24) }
               </select>
+
               <span> : </span>
-              <select name={this.generateAtt("name", x, "finish_time(m1)")}
-              			id={this.generateAtt("id", x, "finish_time_m1")} >
+
+              <select name={this.generateAtt("name", x, "finish_time(5i)")}
+                        id={this.generateAtt("id", x, "finish_time_5i")} >
                 { this.makeDate(60) }
               </select>
             </div>
           </fieldset>
           <label>
             <input type="checkbox" value="1" name={this.generateAtt("name", x, "available_only_by_appointment")}
-            									 id={this.generateAtt("id", x, "available_only_by_appointment")} />
-  		      Check box if accesss only available by appointment
+                               id={this.generateAtt("id", x, "available_only_by_appointment")} />
+            Check box if accesss only available by appointment
           </label>
-      	</div>
+        </div>
       );
     }
 });
