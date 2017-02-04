@@ -20,7 +20,7 @@ class TradiesController < ApplicationController
     @user = User.find_by(email:params[:trady][:email])
     @trady = Trady.new(trady_params)
     mr = MaintenanceRequest.find_by(id:params[:trady][:maintenance_request_id])
-    binding.pry
+    
     if @user && @user.trady?
       
       respond_to do |format|

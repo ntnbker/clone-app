@@ -18,7 +18,12 @@ This is the tradie Controller
       = a.check_box :mailing_address_same, label: "Mailing Address same as Above", value:"#{@company.nil? ? '' : @company.mailing_address_same}"
     = a.text_field :mailing_address, value:"#{@company.nil? ? '' : @company.mailing_address}" 
     = a.text_field :mobile_number, value:"#{@company.nil? ? @trady.mobile : @company.mobile_number}"
-    = a.text_field :email, value:"#{@company.nil? ? @trady.email : @company.email}"
+    = a.text_field :email, value:"#{@company.nil? ? @trady.email : @company.email}", label:"Company Email"
+    %p
+      Tradie Email: 
+      = @trady.email
+      %br
+      click here to edit Tradie/User email 
     = a.hidden_field :maintenance_request_id, value:@maintenance_request_id
     = a.hidden_field :trady_id, value:@trady.id
     = a.submit 'Next'

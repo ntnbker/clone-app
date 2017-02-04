@@ -4,6 +4,7 @@ class MaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
   before_action :set_user, only:[:new,:create]
   before_action :require_login, only:[:create,:show,:index]
+  before_action :customer_input_session, only:[:create,:new]
   authorize_resource :class => false
 
   def new
@@ -14,6 +15,7 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def create
+    
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     
@@ -28,10 +30,6 @@ class MaintenanceRequestsController < ApplicationController
     elsif current_user == nil || current_user.tenant?
       @maintenance_request.perform_realestate_validations = true
     end 
-    
-    
-    
-    
     
     
     if @maintenance_request.valid?
@@ -199,10 +197,6 @@ class MaintenanceRequestsController < ApplicationController
 
 
 
-
-        
-        
-        #EmailWorker.perform_async(@maintenance_request.id)
       end 
       
       
@@ -213,14 +207,17 @@ class MaintenanceRequestsController < ApplicationController
 
 
 
-      
+     if current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? || current_user.trady? 
       flash[:success]= "Thank You for creating a Maintenance Request"
       redirect_to maintenance_request_path(@maintenance_request)
-       
-      
+     else
+       flash[:danger]= "Sorry you can't see that please log in first to see your maintenance request"
+       redirect_to root_path
+      end
       
     else
-      flash[:danger]= "something went wrong"
+      
+      flash[:danger]= "Something went wrong"
       render :new
       
     end 
@@ -257,6 +254,10 @@ class MaintenanceRequestsController < ApplicationController
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
       @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
+    end 
+
+    if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
+      @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
     end 
     
   

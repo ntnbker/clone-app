@@ -69,6 +69,13 @@ class Ability
         can :show, :maintenance_request
       end 
 
+      if @user.trady?
+        
+        can :new, MaintenanceRequest
+        can :index, :maintenance_request
+        can :show, :maintenance_request
+      end 
+
       if @user
         
 
@@ -81,39 +88,10 @@ class Ability
         can :create, :agency
         can :new, :maintenance_request
       end 
-    #
-    # The first argument to `can` is the action you are giving the user
-    # permission to do.
-    # If you pass :manage it will apply to every action. Other common actions
-    # here are :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on.
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
-    # class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, :published => true
-    #
-    # See the wiki for details:
-    # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
+    
   end
 end
 
 
 
- # def initialize(user)
- #    # Guest User 
- #    unless user 
- #      can :read, [Asana,Image,User,Video,Sequence]
- #    else
- #      # All registered users
- #      can {registered user-y permissions}
- #      # Admins 
- #      if user.is_admin?
- #        can :manage, :all
- #      end
- #    end 
- #  end 
+ 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170124234746) do
+ActiveRecord::Schema.define(version: 20170202043351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -274,6 +274,7 @@ ActiveRecord::Schema.define(version: 20170124234746) do
     t.string   "account_name"
     t.string   "bsb_number"
     t.string   "bank_account_number"
+    t.integer  "trady_id"
   end
 
   create_table "user_conversations", force: :cascade do |t|

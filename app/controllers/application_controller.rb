@@ -8,6 +8,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def customer_input_session
+    
+   @customer_input ||= Query.find(session[:customer_input]) unless session[:customer_input] == nil
+
+  
+  end
+
   
   private
     def not_authenticated
