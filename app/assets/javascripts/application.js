@@ -29,6 +29,7 @@
 //= require react
 //= require react_ujs
 //= require components
+//= require maintenance_requests
 //= require_tree .
 
 
