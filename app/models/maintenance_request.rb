@@ -12,6 +12,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :conversations
   #has_many :messages, as: :messageable
   has_one :action_status
+  has_many :emails
   
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
