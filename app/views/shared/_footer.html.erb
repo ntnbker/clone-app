@@ -1,37 +1,7 @@
-<div class="container">
-    <div class="row">
-        <div class="one-third column">
-            <div class="footer-logo">
-                <img src="/assets/logo.png" alt="logo">
-                MaintenanceApp
-                <p>Copyright © 2016 - MaintenanceApp.</p>
-            </div>
-        </div>
-        <div class="one-half column links">
-            <div class="one-third column">
-                <a href="/">About us</a>
-                <a href="/">Blog</a>
-                <a href="/">Feedback</a>
-            </div>
-            <div class="one-third column">
-                <a href="/">Community</a>
-                <a href="/">Trust & Safety</a>
-                <a href="/">Help & Support</a>
-            </div>
-            <div class="one-third column">
-                <a href="/">Terms of Service</a>
-                <a href="/">Privacy Policy</a>
-                <a href="/">Cookie Policy</a>
-            </div>
-        </div>
-        <div class="two columns">
-            <div class="footer-social">
-                <p>Follow us</p>
-                <div class="social-circle"> <img src="/assets/ico-twitter.png"> </div>
-                <div class="social-circle"> <img src="/assets/ico-facebook.png"> </div>
-                <div class="social-circle"> <img src="/assets/ico-instagram.png"> </div>
-                <div class="social-circle"> <img src="/assets/ico-google.png"> </div>
-            </div>
-        </div>
-    </div>
-</div>
+<% if local_assigns.has_key? :homepage %>
+    <%= react_component('Footer', homepage: true) %>
+<%end %>
+
+<% if !local_assigns.has_key? :homepage %>
+    <%= react_component('Footer') %>
+<%end %>

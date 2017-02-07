@@ -1,28 +1,26 @@
-<nav class="navbar">
-  <nav class="pushy pushy-left">
-    <ul>  
-      <li class="pushy-link"><a href="#">Login</a></li>
-      <li class="pushy-submenu">
-        <a href="#">Register</a>
-        <ul>
-          <li class="pushy-link"><a href="#">Register Agency</a></li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
-  <div class="site-overlay"></div>
-  
-  <div class="container">
-    <div class="logo">
-      <img src="/assets/logo.png" alt="logo">
-      <%= link_to "MaintenanceApp", root_path %>
-    </div>
-    <span class="desktop-menu">
-        <%= link_to "Login", menu_login_path, class:"login" %>
-        <a href="/" class="register">Register</a>
-    </span>
+<% if local_assigns.has_key? :homepage %>
+    <%= react_component('Header', {
+          logged_in: logged_in?,
+          current_user: current_user,
+          menu_login_path: menu_login_path,
+          new_agency_path: new_agency_path,
+          root_path: root_path,
+          maintenance_requests_path: maintenance_requests_path,
+          conversations_path: conversations_path,
+          logout_path: logout_path,
+          homepage: true
+    }) %>
+<%end %>
 
-    <div class="menu-btn"> ☰ </div>
-  </div>
-</nav>
-
+<% if !local_assigns.has_key? :homepage %>
+    <%= react_component('Header', {
+          logged_in: logged_in?,
+          current_user: current_user,
+          menu_login_path: menu_login_path,
+          new_agency_path: new_agency_path,
+          root_path: root_path,
+          maintenance_requests_path: maintenance_requests_path,
+          conversations_path: conversations_path,
+          logout_path: logout_path
+    }) %>
+<%end %>

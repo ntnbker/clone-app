@@ -9,7 +9,7 @@ var FieldList = React.createClass({
             )}
         </ul>;
     }
- });
+});
 
 var AvailabilityField = React.createClass({
     getInitialState : function() {

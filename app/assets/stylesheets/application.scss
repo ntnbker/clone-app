@@ -17,9 +17,8 @@
  *= require normalize
  *= require jquery-ui
  *= require popup
- *= require _nav
- *= require _footer
 */
 
 @import "pages.scss";
 @import "maintenance_requests.scss";
+@import "shared.scss"
