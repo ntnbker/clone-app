@@ -23,12 +23,18 @@
     =yield :head
   %body
     %header
-      = render 'shared/nav'
-    %section.content.clearfix{:style=>"margin-top: -21px;"}
+      - if content_for? :homepage
+        = render 'shared/nav', {:homepage => true}
+      - else
+        = render 'shared/nav'
+    %section.content.clearfix
       = render 'shared/messages'
       = yield
       
 
     
     %footer
-      = render 'shared/footer'
+      - if content_for? :homepage
+        = render 'shared/footer', {:homepage => true}
+      - else
+        = render 'shared/footer'
