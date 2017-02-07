@@ -9,7 +9,7 @@ var FieldList = React.createClass({
             )}
         </ul>;
     }
- });
+});
 
 var AccessContactField = React.createClass({
     getInitialState : function() {
