@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170202043351) do
+ActiveRecord::Schema.define(version: 20170207085449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,26 @@ ActiveRecord::Schema.define(version: 20170202043351) do
     t.integer  "maintenance_request_id"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  create_table "action_statuses", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.integer  "agent_id"
+    t.integer  "agency_admin_id"
+    t.integer  "landlord_id"
+    t.integer  "tenant_id"
+    t.integer  "trady_id"
+    t.text     "maintenance_request_status"
+    t.text     "agent_last_action"
+    t.text     "agent_status"
+    t.text     "landlord_last_action"
+    t.text     "landlord_status"
+    t.text     "trady_last_action"
+    t.text     "trady_status"
+    t.text     "tenant_last_action"
+    t.text     "tenant_status"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "agencies", force: :cascade do |t|
@@ -86,6 +106,21 @@ ActiveRecord::Schema.define(version: 20170202043351) do
     t.string   "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "ahoy_messages", force: :cascade do |t|
+    t.string   "token"
+    t.text     "to"
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.string   "mailer"
+    t.text     "subject"
+    t.datetime "sent_at"
+    t.datetime "opened_at"
+    t.datetime "clicked_at"
+    t.integer  "maintenance_request_id"
+    t.index ["token"], name: "index_ahoy_messages_on_token", using: :btree
+    t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type", using: :btree
   end
 
   create_table "availabilities", force: :cascade do |t|

@@ -27,8 +27,8 @@ class User < ApplicationRecord
     #validates_associated :agency_admin
 
 
-
-
+    # has_many :emails, class_name: "Ahoy::Message"
+    has_many :emails
 
 
 

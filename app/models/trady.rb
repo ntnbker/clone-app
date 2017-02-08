@@ -9,6 +9,7 @@ class Trady < ApplicationRecord
   
   has_many :quotes
   has_many :invoices
+  has_many :action_statuses
   
   validates_presence_of :name
   validates_presence_of :email

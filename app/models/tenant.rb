@@ -5,5 +5,6 @@ class Tenant < ApplicationRecord
   belongs_to :property
   has_many :tenant_maintenance_requests
   has_many :maintenance_requests, through: :tenant_maintenance_requests
+  has_many :action_statuses
  
 end 
