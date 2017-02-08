@@ -10,6 +10,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :tenant_maintenance_requests
   has_many :tenants, through: :tenant_maintenance_requests
   has_many :conversations
+  has_one :action_status
   #has_many :messages, as: :messageable
   
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image
@@ -24,17 +25,23 @@ class MaintenanceRequest < ApplicationRecord
   validates_associated :access_contacts
   validates_associated :availabilities
   
-
-
-
   attr_accessor :perform_uniqueness_validation_of_email
   attr_accessor :perform_realestate_validations
+
+
+  after_create :create_action_status
 
 
   def mr_tenants_array
 
     array = self.tenants.map{|j|["Tenant", j.user_id]}
     return array
+  end
+
+
+  def create_action_status
+    
+    action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Action Required", maintenance_request_id:self.id)
   end
 
 

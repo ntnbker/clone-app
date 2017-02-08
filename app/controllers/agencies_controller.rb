@@ -7,9 +7,11 @@ class AgenciesController < ApplicationController
   end
 
   def create
+
     @user = User.new(user_params)
-    
+    binding.pry
     if @user.valid?
+
       @user.save
       role = Role.new(user_id:@user.id)
       @agency_admin = AgencyAdmin.find_by(user_id:@user.id)
@@ -19,7 +21,8 @@ class AgenciesController < ApplicationController
       auto_login(@user)
       flash[:success] = "Thank you for signing up."
       redirect_to agency_admin_path(@agency_admin)
-    else  
+    else
+      @user = User.new(user_params)  
       flash[:danger] = "Sorry something went wrong"
       render :new
     end 

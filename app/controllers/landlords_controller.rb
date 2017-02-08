@@ -55,8 +55,9 @@ class LandlordsController < ApplicationController
   def create_and_notify_landlord
     user = User.find_by(email:params[:landlord][:email])
     @landlord = Landlord.new(landlord_params)
-    property = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id]).property
-    binding.pry
+    maintenance_request = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id])
+    property = maintenance_request.property
+    
     if user && user.landlord?
       #send him the maintenance request by email if 
       if property.landlord_id == nil 
@@ -64,7 +65,8 @@ class LandlordsController < ApplicationController
       end 
       
       LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id], user.landlord.id )
-    
+      #maintenance_request.action_status.update_attribute(:)
+      #.update_columns(last_request_at: Time.current)
     elsif !user 
       
       respond_to do |format|
