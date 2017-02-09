@@ -44,7 +44,7 @@ class TradiesController < ApplicationController
       end
       
       TradyEmailWorker.perform_async(@user.trady.id,mr.id)
-      
+      mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
          
     else
       respond_to do |format|
@@ -68,7 +68,7 @@ class TradiesController < ApplicationController
             end
                 
             TradyEmailWorker.perform_async(@user.trady.id,mr.id)
-           
+            mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
             AgencyTrady.create(agency_id:@agency.id,trady_id:@trady.id)
             
           else

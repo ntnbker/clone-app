@@ -9,6 +9,8 @@ class LandlordMailer < ActionMailer::Base
   end
 
   def send_landlord_quote(maintenance_request,landlord, quote)
+    track user: landlord.user
+    track extra: {maintenance_request_id:maintenance_request.id}
     @maintenance_request = maintenance_request
     @landlord = landlord
     @quote = quote
