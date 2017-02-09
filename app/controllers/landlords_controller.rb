@@ -48,8 +48,6 @@ class LandlordsController < ApplicationController
       
 
     end 
-
-
   end
 
   def create_and_notify_landlord
@@ -65,8 +63,8 @@ class LandlordsController < ApplicationController
       end 
       
       LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id], user.landlord.id )
-      #maintenance_request.action_status.update_attribute(:)
-      #.update_columns(last_request_at: Time.current)
+      maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress",agent_last_action:"Seek owner instructions", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+      
     elsif !user 
       
       respond_to do |format|
@@ -80,7 +78,7 @@ class LandlordsController < ApplicationController
           role = Role.create(user_id:@user.id)
           @landlord.roles << role
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
-          
+          maintenance_request.action_status.update_columns(agent_last_action:"Seek owner instructions", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
           
           if property.landlord_id == nil 
             property.update_attribute(:landlord_id, user.landlord.id)

@@ -124,7 +124,12 @@ class QuotesController < ApplicationController
 
 
   def landlord_requests_quote
-    #maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    LandlordRequestsQuoteEmailWorker.perform_async(maintenance_request.id)
+    maintenance_request.action_status.update_attribute(:agent_status,"Quote Requested")
+    binding.pry
+    #Send Email to the agent  
+    #change the status of the action table to the   
   end
 
 

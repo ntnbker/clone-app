@@ -16,4 +16,6 @@ class LandlordMailer < ActionMailer::Base
     
   end
 
+  
+
 end 

@@ -13,7 +13,7 @@ class MaintenanceRequest < ApplicationRecord
   has_one :action_status
   #has_many :messages, as: :messageable
   has_one :action_status
-  has_many :emails
+  has_many :emails, class_name: "Ahoy::Message"
   
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
@@ -43,7 +43,7 @@ class MaintenanceRequest < ApplicationRecord
 
   def create_action_status
     
-    action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Action Required", maintenance_request_id:self.id)
+    action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:self.id)
   end
 
 

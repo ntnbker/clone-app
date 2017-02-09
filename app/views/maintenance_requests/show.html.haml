@@ -35,10 +35,11 @@
 
 
   =render "maintenance_requests/quotes", object:@quotes
-  / %div
-  /   =react_component "quotes", {quotes: @maintenance_request.quotes}
+  
 
- 
+%button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+  =link_to "Request Quote(landlord button)", request_quote_path(maintenance_request_id:@maintenance_request.id), method: :post
+
 
 %div.container
   -if current_user.agent? || current_user.agency_admin?

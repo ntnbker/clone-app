@@ -1,0 +1,31 @@
+module Ahoy
+  class Message < ActiveRecord::Base
+
+    self.table_name = "ahoy_messages"
+
+    belongs_to :user, AhoyEmail.belongs_to.merge(polymorphic: true)
+    
+
+    belongs_to :maintenance_request
+    after_update :update_the_agents_status_to_initiated, if: :clicked_at_changed? 
+    # after_create :update_type
+
+  def self.all_maintenance_request_emails(maintenance_request_id)
+    self.where(:maintenance_request_id=>maintenance_request_id)
+    
+  end
+
+  def update_the_agents_status_to_initiated
+    binding.pry
+    mr = self.maintenance_request
+    self.maintenance_request.action_status.update_attribute(:agent_status, "Awaiting Owner Instruction")
+  end
+
+  
+
+
+
+
+
+  end
+end

@@ -1,0 +1,12 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hi, a quote has been requested for the maintenance request
+      =@maintenance_request.maintenance_heading
+      
+    %p
+      Click the link below to request quotes from tradies
+    %p
+      =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@maintenance_request.property.landlord.user.id)
