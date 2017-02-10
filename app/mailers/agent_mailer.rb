@@ -2,7 +2,7 @@ class AgentMailer < ActionMailer::Base
 
   def send_agent_quote(maintenance_request, quote)
     @maintenance_request = maintenance_request
-    
+    @quote = quote
     if @maintenance_request.agent == nil
       user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email 

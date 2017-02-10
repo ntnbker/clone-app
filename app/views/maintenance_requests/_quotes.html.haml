@@ -17,3 +17,12 @@
          
         -if quote.status == "Declined" 
           =link_to "Restore", quote_status_path(quote_id:quote.id,status:"Restore",maintenance_request_id:quote.maintenance_request_id), method: :post
+      / %div
+      /   -if quote.maintenance_request.property.landlord != nil && quote.status == "Active"
+      /     %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+      /       =link_to "Forward Quote To Landlord", forward_quote_path(maintenance_request_id:@maintenance_request.id, quote_id:quote.id), method: :post
+      /   -else
+      /     %button{:type=>"button", :class=>"btn btn-danger btn-sm", "data-toggle"=>"modal", "data-target"=>"#create-landlord-modal"}
+      /       Add Landlord To This Property
+
+            

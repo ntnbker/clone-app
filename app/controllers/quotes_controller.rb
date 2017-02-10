@@ -62,8 +62,10 @@ class QuotesController < ApplicationController
   end
 
   def show_quote
-    #this controller is to show the landlord the quote on the website. 
-    @quote = Quote.find_by(id:params[:quote_id])
+    #this controller is to show the landlord the quote on the website.
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @quotes = @maintenance_request.quotes 
+    #@quote = Quote.find_by(id:params[:quote_id])
   end
 
   def quote_status
@@ -111,13 +113,16 @@ class QuotesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
-    @quote.update_attribute(:delivery_status, true) 
+    @quote.update_attribute(:delivery_status, true)
+
     flash[:success] = "Your Quote has been sent Thank you"
     if @landlord == nil 
       AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
+      @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Action Required")
     else
       AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
       LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
+      @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
     end 
       
   end
@@ -127,9 +132,40 @@ class QuotesController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     LandlordRequestsQuoteEmailWorker.perform_async(maintenance_request.id)
     maintenance_request.action_status.update_attribute(:agent_status,"Quote Requested")
-    binding.pry
+    
     #Send Email to the agent  
     #change the status of the action table to the   
+  end
+
+  def landlord_decides_quote
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    quotes = maintenance_request.quotes
+    if params[:status] == "Approved" 
+      quotes.each do |quote|
+        if quote.id == params[:quote_id].to_i && params[:status] == "Approved"
+          
+          trady = quote.trady 
+          TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+          
+          #EMAIL AGENT QUOTE APPROVED
+          maintenance_request.action_status.update_attribute(:agent_status,"Quote Approved Tradie To Organise Appointment")
+          quote.update_attribute(:status, params[:status])
+        else
+          quote.update_attribute(:status, "Declined")
+          trady = quote.trady
+          #EMAIL AGENT QUOTE DECLINED
+          TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+        end 
+      end
+    # elsif params[:status] == "Declined"
+    #   quote = Quote.find_by(id: params[:quote_id])
+    #   trady = quote.trady
+    #   quote.update_attribute(:status,"Declined")
+    #   TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+    #   #email the person who got declined
+    
+    end 
+    
   end
 
 

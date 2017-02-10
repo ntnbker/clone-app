@@ -79,41 +79,42 @@ class MaintenanceRequestsController < ApplicationController
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
        
        
+        if access_contact_params
+          access_contact_params.each_value do |hash|
+            
+            if hash.has_value?("Tenant")
+              hash.each do |key, value|
+                if key == "email"
+                  contact = User.find_by(email:value )
 
-        access_contact_params.each_value do |hash|
-          
-          if hash.has_value?("Tenant")
-            hash.each do |key, value|
-              if key == "email"
-                contact = User.find_by(email:value )
+                   if contact
+                    TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
+                    contact.tenant.update_attribute(:property_id,@property.id)
+                   else 
+                    if  key =="email" 
+                      user = User.create(email:value, password:SecureRandom.hex(5))
+                      @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id, property_id:@property.id)
+                      
+                      
+                      role = Role.create(user_id:user.id)
+                      @contact_tenant.save
+                      @contact_tenant.roles << role
+                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
+                      if key =="name"
+                        @contact_tenant.update_attribute(:name,value)
+                      end 
+                      if key =="mobile"
+                        @contact_tenant.update_attribute(:mobile,value)
+                      end 
 
-                 if contact
-                  TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
-                  contact.tenant.update_attribute(:property_id,@property.id)
-                 else 
-                  if  key =="email" 
-                    user = User.create(email:value, password:SecureRandom.hex(5))
-                    @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id, property_id:@property.id)
-                    
-                    
-                    role = Role.create(user_id:user.id)
-                    @contact_tenant.save
-                    @contact_tenant.roles << role
-                    TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
-                    if key =="name"
-                      @contact_tenant.update_attribute(:name,value)
                     end 
-                    if key =="mobile"
-                      @contact_tenant.update_attribute(:mobile,value)
-                    end 
 
-                  end 
-
-                end
+                  end
+                end 
               end 
             end 
+            
           end 
-          
         end 
 
 
@@ -153,44 +154,45 @@ class MaintenanceRequestsController < ApplicationController
 
         @maintenance_request.save
         
-        #CREATE TENATNS
+        #CREATE TENANTS
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
-        access_contact_params.each_value do |hash|
-          
-          if hash.has_value?("Tenant")
-            hash.each do |key, value|
-              if key == "email"
-                contact = User.find_by(email:value )
+        if access_contact_params
+          access_contact_params.each_value do |hash|
+            
+            if hash.has_value?("Tenant")
+              hash.each do |key, value|
+                if key == "email"
+                  contact = User.find_by(email:value )
 
-                 if contact
-                  TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
-                  contact.tenant.update_attribute(:property_id,@property.id)
-                 else 
-                  if  key =="email" 
-                    user = User.create(email:value, password:SecureRandom.hex(5))
-                    @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id,property_id:@property.id)
-                    
-                    
-                    role = Role.create(user_id:user.id)
-                    @contact_tenant.save
-                    @contact_tenant.roles << role
-                    TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
-                    if key =="name"
-                      @contact_tenant.update_attribute(:name,value)
+                   if contact
+                    TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
+                    contact.tenant.update_attribute(:property_id,@property.id)
+                   else 
+                    if  key =="email" 
+                      user = User.create(email:value, password:SecureRandom.hex(5))
+                      @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id,property_id:@property.id)
+                      
+                      
+                      role = Role.create(user_id:user.id)
+                      @contact_tenant.save
+                      @contact_tenant.roles << role
+                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
+                      if key =="name"
+                        @contact_tenant.update_attribute(:name,value)
+                      end 
+                      if key =="mobile"
+                        @contact_tenant.update_attribute(:mobile,value)
+                      end 
+
                     end 
-                    if key =="mobile"
-                      @contact_tenant.update_attribute(:mobile,value)
-                    end 
 
-                  end 
-
-                end
+                  end
+                end 
               end 
             end 
+            
           end 
-          
         end 
-
 
 
         @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
