@@ -23,10 +23,38 @@ var MobileMenu = React.createClass({
 });
 
 var Header = React.createClass({
+    getInitialState: function() {
+      return {
+        isItems: !this.props.homepage,
+        isClicked: false
+      };
+    },
+
     showBar() {
       this.refs.Bar.show();
     },
 
+    showItems() {
+      this.setState({ isItems: !this.state.isItems,
+                      isClicked: !this.state.isClicked });
+    },
+
+    clickDocument: function(e) {
+      var component = ReactDOM.findDOMNode(this.refs.showItems);
+      if (e.target == component || $(component).has(e.target).length) {
+          // Inside of the component.
+      } else {
+          // Outside of the component.
+          this.setState({ isItems: false});
+      }
+
+    },
+    componentDidMount: function() {
+        $(document).bind('click', this.clickDocument);
+    },
+    componentWillUnmount: function() {
+        $(document).unbind('click', this.clickDocument);
+    },
     header(e) {
         var logged_in = this.props.logged_in;
         var current_user = this.props.current_user;
@@ -48,7 +76,7 @@ var Header = React.createClass({
           </MobileMenu>
 
           <div className="container">
-              <div className={e ? "forhome column" : "column"}>
+              <div className={e ? "column forhome" : "column"}>
                   <div className="logo">
                     <img src="/assets/logo.png" alt="logo" />
                     <a href={this.props.root_path}> MaintenanceApp </a>
@@ -56,9 +84,16 @@ var Header = React.createClass({
                 
                   {
                   logged_in
-                    ? <span className="desktop-menu-items">
-                        <a href={this.props.conversations_path}> Inbox </a>
-                        <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out {this.props.current_user.email}</a>
+                    ? <span className="log_in">
+                        <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
+                        {
+                        this.state.isItems
+                          ? <span className="desktop-menu-items" ref="Items">
+                              <a href={this.props.conversations_path}> Inbox </a>
+                              <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out {this.props.current_user.email}</a>
+                            </span>
+                          : null
+                        }
                       </span>
                     : <span className="desktop-menu-items">
                         <a href={this.props.menu_login_path} > Login </a>
