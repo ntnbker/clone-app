@@ -83,6 +83,12 @@ Rails.application.routes.draw do
   post "request_quote" => "quotes#landlord_requests_quote", :as => :request_quote 
   post "picks_quote" => "quotes#landlord_decides_quote", :as => :landlord_decides_quote
 
+  ###################################################
+  ##########APPOINTMENTS RESOURCES/ROUTES##################
+  ###################################################
+  resources :appointments, only:[:new,:create,:show, :edit, :update]
+  post "accept_appointment" =>"appointments#accept_appointment", :as =>:accept_appointment
+
   
 
  end

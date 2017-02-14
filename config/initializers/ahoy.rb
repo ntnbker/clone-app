@@ -18,9 +18,19 @@ module Ahoy
 
   def update_the_agents_status_to_initiated
     
-    mr = self.maintenance_request
-    self.maintenance_request.action_status.update_attribute(:agent_status, "Awaiting Owner Instruction")
+    if mailer == "LandlordMailer#send_landlord_maintenance_request"
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Initiate Maintenance Request")
+    end 
   end
+
+  def update_the_agents_status_to_awaiting_owner_instruction
+    #THIS IS FOR WHEN THE LANDLORD CLICKS ON THE LINK IN THE EMAIL ASKING HIM WHAT TO DO. ADD PROPER MAILER HERE
+    if mailer == "LandlordMailer#send_landlord_maintenance_request"
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Awaiting Owner Instruction")
+    end 
+  end
+
+
 
   def update_agents_status_to_awaiting_quote
     if mailer == 'TradyMailer#request_quote_email'

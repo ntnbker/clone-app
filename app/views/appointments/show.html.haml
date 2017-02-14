@@ -1,0 +1,30 @@
+%h1 
+  This is where we will show the appointment time and the button to pick if they want it or not 
+
+%div.container.well 
+  %h5
+    Maintenance Request: 
+    =@maintenance_request.maintenance_heading
+  %p 
+    Maintenance Request Summary: 
+    =@maintenance_request.maintenance_description
+  %h5
+    Appointment Date: 
+    =@appointment.date.strftime("%A %B %d %Y")
+  %h5 
+    Appointment Time: 
+    =@appointment.time.strftime('%r')
+
+  %div
+    -@appointment.comments.each do |comment|
+      =comment.body
+
+
+  %div 
+    %button
+      =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id), method: :post
+    %button
+      =link_to "Suggest Other Appointment Time"
+
+
+
