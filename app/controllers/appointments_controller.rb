@@ -32,9 +32,7 @@ class AppointmentsController < ApplicationController
     @maintenance_request = @appointment.maintenance_request
     @tenant_id = params[:tenant_id]
     @trady_id = params[:trady_id]
-    "maintenance_request_id"=>"23", "tenant_id"=>"20", "trady_id"=>"21"
-
-    binding.pry
+    
   end
 
 
