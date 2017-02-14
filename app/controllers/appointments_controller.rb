@@ -30,21 +30,37 @@ class AppointmentsController < ApplicationController
     
     @appointment = Appointment.find_by(id: params[:id])
     @maintenance_request = @appointment.maintenance_request
+    @tenant_id = params[:tenant_id]
+    @trady_id = params[:trady_id]
+    "maintenance_request_id"=>"23", "tenant_id"=>"20", "trady_id"=>"21"
+
+    binding.pry
   end
 
 
   def edit
-    
+    @appointment = Appointment.find_by(id: params[:id])
   end
 
   def update
-    
+    #the params has to let me know which user has just sent the new time. If it was the tenant then send a new email to the trady. 
+    #If the trady picks another time then send a new email to the tenant with the new time. 
   end
 
   def accept_appointment
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Accepted")
-    binding.pry
+    appointment_id = appointment.id
+    maintenance_request_id = params[:maintenance_request_id]
+    trady_id = params[:trady_id]
+    tenant_id = params[:tenant_id]
+
+    TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+    #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 
+    
+
+
+    
   end
 
   private

@@ -29,6 +29,19 @@ class TradyMailer < ActionMailer::Base
     @trady = trady_object
     mail(to:@trady.email, subject:"Quote Declined")
   end
+
+  def appointment_accepted_email(maintenance_request_object,appointment_object, trady_object, tenant_object)
+    @maintenance_request = maintenance_request_object
+    @appointment = appointment_object
+    @trady = trady_object
+    @tenant = tenant_object
+    track user: @trady.user
+    track extra: {maintenance_request_id:@maintenance_request.id}
+    mail(to:@trady.email, subject:"Appointment Accepted")
+  end
+
+
+
 end 
 
 
