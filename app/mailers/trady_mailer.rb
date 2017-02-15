@@ -41,6 +41,17 @@ class TradyMailer < ActionMailer::Base
   end
 
 
+  def alternative_appointment_picked_email(maintenance_request_object,appointment_object, trady_object, tenant_object)
+    @maintenance_request = maintenance_request_object
+    @appointment = appointment_object
+    @trady = trady_object
+    @tenant = tenant_object
+    track user: @trady.user
+    track extra: {maintenance_request_id:@maintenance_request.id}
+    mail(to:@trady.email, subject:"New Appointment Time Requested")
+  end
+
+
 
 end 
 

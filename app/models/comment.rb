@@ -8,3 +8,4 @@ class Comment <ApplicationRecord
   attr_accessor :maintenance_request_id
   
 end 
+

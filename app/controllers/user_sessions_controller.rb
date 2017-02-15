@@ -58,7 +58,7 @@ class UserSessionsController < ApplicationController
         elsif @user.agency_admin?
           
           flash[:success] = "You are now signed in"
-          redirect_to root_path
+          redirect_to agency_admin_path(@user.agency_admin)
 
         elsif @user.tenant?
           flash[:success] = "You are now signed in"

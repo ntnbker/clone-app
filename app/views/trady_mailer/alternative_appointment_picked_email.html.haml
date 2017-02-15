@@ -1,0 +1,17 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hello #{@trady.name.capitalize}
+      A different appointment time with #{@tenant.full_name.capitalize} has been requested, for the maintenance request below.
+
+    %h3
+      =@maintenance_request.maintenance_heading
+    %p
+      =@maintenance_request.maintenance_description
+
+    %p To confirm the new appointment with the tenant please button below and follow the instructions.
+
+    %button
+      =link_to "Confirm Appointment", appointment_url(@appointment,maintenance_request_id:@maintenance_request.id,trady_id:@trady.id,tenant_id:@tenant.id, user_id:@trady.user.id)

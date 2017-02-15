@@ -17,7 +17,10 @@
       =comments_form.hidden_field :trady_id, value:@trady_id
       =comments_form.hidden_field :maintenance_request_id, value:@maintenance_request_id
 
-
+    %h6
+      Suggested Appointment Date and Time : 
+      =@appointment.date.strftime("%A %B %d %Y")
+      =@appointment.time.strftime('%r')
 
 
     = form_for @appointment do |f|
@@ -39,7 +42,7 @@
       %h4
 
       %br
-      =f.submit "Submit Appointment Time and Comment", id:"appointment-submit-button"
+      =f.submit "Submit New Appointment Time and Comment", id:"appointment-submit-button"
 
 
 

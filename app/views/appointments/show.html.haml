@@ -16,13 +16,17 @@
     =@appointment.time.strftime('%r')
 
   %div
+    %h3
+      Comments
     -@appointment.comments.each do |comment|
-      =comment.body
 
+      %div.well
+        =comment.body
+      %br
 
   %div 
     %button
-      =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id), method: :post
+      =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
 
       / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
     %button

@@ -53,14 +53,24 @@ class AppointmentsController < ApplicationController
   def update
     #the params has to let me know which user has just sent the new time. If it was the tenant then send a new email to the trady. 
     #If the trady picks another time then send a new email to the tenant with the new time. 
-
+    #appointment{maintenance_request_id"=>"23", "tenant_id"=>"20", "trady_id"=>"21"}
      @appointment = Appointment.find_by(id: params[:id]) 
+     
+     maintenance_request_id = params[:appointment][:maintenance_request_id]
+     appointment_id = @appointment.id
+     trady_id = params[:appointment][:trady_id]
+     tenant_id = params[:appointment][:tenant_id] 
     if @appointment.update(appointment_params)
       flash[:success] = "Thank you for picking a new appointment time. We will send the new time to the trady for confirmation"
-      if params[:appointment][:current_user_role] == "Tenant"
+
+      ####WE HAVE TO CHANGE THE CURRENT USER TO THE TENANT AND TRADY FOR NOW ITS SET TO AGENCYADMIN
+
+      if params[:appointment][:current_user_role] == "AgencyAdmin"
+        TradyAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request_id, appointment_id, trady_id, tenant_id)
         #send email to trady letting them know that a new appointment time has been picked 
       elsif params[:appointment][:current_user_role] == "Trady"
-        #send an email to the tenant
+
+        #send an email to the tenant saying another appointment has been picked
       else
           #do nothing
       end 
@@ -83,11 +93,16 @@ class AppointmentsController < ApplicationController
     trady_id = params[:trady_id]
     tenant_id = params[:tenant_id]
 
-    TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+    
     #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 
     
-
-
+    binding.pry
+    #params[:current_user_role] We have to distinguish between the trady accepting and the tenant accepting
+    if params[:current_user_role] == "AgencyAdmin"
+      TenantAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+    elsif params[:current_user_role] == "Tenant"
+      TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+    end 
     
   end
 
