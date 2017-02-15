@@ -14,7 +14,8 @@ var FieldList = React.createClass({
 var AvailabilityField = React.createClass({
     getInitialState : function() {
       return {
-        currentValue : {date: '', start1: '', end1: '', start2: '', end2: ''}
+        currentValue : {date: '', start1: '', end1: '', start2: '', end2: ''},
+        dateRequired : true
       }
     },
 
@@ -52,7 +53,7 @@ var AvailabilityField = React.createClass({
             <p> Date </p>
             <input type="date" value='' value={currentValue.date}
                  name={this.generateAtt("name", x, "date")}
-                 id={this.generateAtt("id", x, "date")}  onChange={this.onChange}/>
+                 id={this.generateAtt("id", x, "date")}  onChange={this.onChange} required={this.state.dateRequired}/>
             
             <div className="starttime">
               <p> Start time </p>
@@ -70,14 +71,14 @@ var AvailabilityField = React.createClass({
                        id={this.generateAtt("id", x, "start_time_3i")} /> 
 
               <select name={this.generateAtt("name", x, "start_time(4i)")}
-                        id={this.generateAtt("id", x, "start_time_4i")} >
+                        id={this.generateAtt("id", x, "start_time_4i")} required={this.state.dateRequired}>
                 { this.makeDate(24) }
               </select>
 
               <span> : </span>
 
               <select name={this.generateAtt("name", x, "start_time(5i)")}
-                        id={this.generateAtt("id", x, "start_time_5i")} >
+                        id={this.generateAtt("id", x, "start_time_5i")} required={this.state.dateRequired}>
                 { this.makeDate(60) }
               </select>
             </div>
@@ -98,25 +99,30 @@ var AvailabilityField = React.createClass({
                        id={this.generateAtt("id", x, "finish_time_3i")} /> 
 
               <select name={this.generateAtt("name", x, "finish_time(4i)")}
-                        id={this.generateAtt("id", x, "finish_time_4i")} >
+                        id={this.generateAtt("id", x, "finish_time_4i")} required={this.state.dateRequired}>
                 { this.makeDate(24) }
               </select>
 
               <span> : </span>
 
               <select name={this.generateAtt("name", x, "finish_time(5i)")}
-                        id={this.generateAtt("id", x, "finish_time_5i")} >
+                        id={this.generateAtt("id", x, "finish_time_5i")} required={this.state.dateRequired}>
                 { this.makeDate(60) }
               </select>
             </div>
           </fieldset>
           <label>
-            <input type="checkbox" value="1" name={this.generateAtt("name", x, "available_only_by_appointment")}
-                               id={this.generateAtt("id", x, "available_only_by_appointment")} />
+            <input type="checkbox" value="1" onChange={this.onCheck}
+                   name={this.generateAtt("name", x, "available_only_by_appointment")}
+                   id={this.generateAtt("id", x, "available_only_by_appointment")} />
             Check box if accesss only available by appointment
           </label>
         </div>
       );
+    },
+
+    onCheck() {
+      this.setState({dateRequired: !this.state.dateRequired});
     }
 });
 

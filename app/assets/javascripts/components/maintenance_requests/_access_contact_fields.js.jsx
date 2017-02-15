@@ -73,7 +73,7 @@ var AccessContactField = React.createClass({
 var AccessContactFields = React.createClass({
     getInitialState : function() {
       return {
-        fields : [ <AccessContactField x={0}/> ],
+        fields : [],
         x : 0
       }
     },
@@ -88,7 +88,7 @@ var AccessContactFields = React.createClass({
 
     addField:function (e){
         this.setState({
-            fields: this.state.fields.concat([ <AccessContactField x={++this.state.x}/> ])
+            fields: this.state.fields.concat([ <AccessContactField x={this.state.x++}/> ])
         });
     
         e.preventDefault();
