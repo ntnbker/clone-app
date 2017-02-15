@@ -1,19 +1,5 @@
 This is the tradie Controller
-%div.container
-  =bootstrap_nested_form_for(@trady_company, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |a|
-    = a.text_field :company_name
-    = a.text_field :trading_name
-    = a.text_field :abn
-    = a.form_group :gst_registration do 
-      = a.check_box :gst_registration, label: "GST  registration"
-    = a.text_field :address
-    = a.form_group :mailing_address_same do
-      = a.check_box :mailing_address_same
-    = a.text_field :mailing_address
-    = a.text_field :mobile_number
-    = a.text_field :email
-    = a.hidden_field :maintenance_request_id, value:@maintenance_request_id
-    = a.hidden_field :trady_id, value:@trady_id
-    
-    = a.submit 'Next'
-     
+%div.container.well
+  =react_component('TradyCompanies', {:authenticity_token => form_authenticity_token,
+                                      :maintenance_request_id => @maintenance_request_id,
+                                      :trady_id => @trady_id})
