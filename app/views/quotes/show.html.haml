@@ -3,7 +3,9 @@
     -@quote.quote_items.each do |f|
       %p
         =f.item_description
+        =":"
         =f.amount 
+    %hr
     %p
       total:
       =@quote.amount
