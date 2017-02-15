@@ -57,3 +57,35 @@ form#new_quote {
 		width: 50%;
 	}
 }
+
+.send-quote {
+	display: table;
+	margin: 30px auto;
+
+	div {
+		text-align: right;
+		font-size: 18px;
+		margin: 10px 0;
+
+		p {
+			display: inline-block;
+			margin: 0;
+		}
+
+		span {
+			display: inline-block;
+			width: 50px;
+		}
+	}
+
+	hr {
+		margin: 10px 0;
+	}
+	button {
+		margin: 10px;
+		a {
+			text-decoration: none;
+			color: white;
+		}
+	}
+}
