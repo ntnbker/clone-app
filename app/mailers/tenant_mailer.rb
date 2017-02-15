@@ -18,7 +18,7 @@ class TenantMailer < ActionMailer::Base
     @tenant = tenant_object
     track user: @tenant.user
     track extra: {maintenance_request_id:@maintenance_request.id}
-    mail(to:@tenant.email, subject:"Appointment Accepted")
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Hi your appointment time was accepted")
   end
 
   

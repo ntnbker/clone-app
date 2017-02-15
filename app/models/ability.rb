@@ -58,6 +58,10 @@ class Ability
         can :maintenance_request_index, :agency_admin 
       end
 
+      if @user.landlord?
+        can :show, :maintenance_request
+      end 
+
       if @user.tenant?
         
         can :read_index, Tenant

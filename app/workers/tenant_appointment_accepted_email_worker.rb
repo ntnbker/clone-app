@@ -1,5 +1,3 @@
-
-
 class TenantAppointmentAcceptedEmailWorker
   include Sidekiq::Worker
 
