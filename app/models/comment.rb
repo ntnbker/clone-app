@@ -6,4 +6,5 @@ class Comment <ApplicationRecord
   validates_presence_of :body
 
   attr_accessor :maintenance_request_id
+  
 end 

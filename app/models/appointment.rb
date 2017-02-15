@@ -8,4 +8,6 @@ class Appointment < ApplicationRecord
   accepts_nested_attributes_for :comments
   validates_associated :comments
 
+  attr_accessor :current_user_role
+
 end 

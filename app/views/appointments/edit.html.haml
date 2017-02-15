@@ -25,6 +25,7 @@
       =f.hidden_field :tenant_id, value:@tenant_id
       =f.hidden_field :trady_id, value:@trady_id
       =f.hidden_field :status, value:"Active"
+      =f.hidden_field :current_user_role, value: current_user.role.roleable_type
       =f.date_field :date
       
       =f.time_select :time, {ampm: true}

@@ -53,9 +53,20 @@ class AppointmentsController < ApplicationController
   def update
     #the params has to let me know which user has just sent the new time. If it was the tenant then send a new email to the trady. 
     #If the trady picks another time then send a new email to the tenant with the new time. 
+
      @appointment = Appointment.find_by(id: params[:id]) 
     if @appointment.update(appointment_params)
       flash[:success] = "Thank you for picking a new appointment time. We will send the new time to the trady for confirmation"
+      if params[:appointment][:current_user_role] == "Tenant"
+        #send email to trady letting them know that a new appointment time has been picked 
+      elsif params[:appointment][:current_user_role] == "Trady"
+        #send an email to the tenant
+      else
+          #do nothing
+      end 
+
+
+
       redirect_to root_path
     else
       flash[:danger] = "Something went wrong, please fill everything out"
