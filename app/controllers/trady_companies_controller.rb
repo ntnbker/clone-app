@@ -1,4 +1,5 @@
 class TradyCompaniesController < ApplicationController
+  before_action(only: [:new]) { email_auto_login(params[:user_id]) }
   def new
     @trady_company = TradyCompany.new
     @maintenance_request_id = params[:maintenance_request_id]
@@ -99,9 +100,19 @@ class TradyCompaniesController < ApplicationController
   
 
   private
+    
     def trady_company_params
       params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email)
     end
+
+    def email_auto_login(id)
+      if current_user == nil
+        user = User.find_by(id:id)
+        auto_login(user)
+      end 
+    end
+
+
 end 
 
 

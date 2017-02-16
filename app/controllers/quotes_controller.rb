@@ -1,5 +1,5 @@
 class QuotesController < ApplicationController
-  
+  before_action(only: [:show_quote]) { email_auto_login(params[:user_id]) }
   def new
     
     @quote = Quote.new
@@ -173,6 +173,13 @@ class QuotesController < ApplicationController
   
   def quote_params
     params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy])
+  end
+
+  def email_auto_login(id)
+      if current_user == nil
+        user = User.find_by(id:id)
+        auto_login(user)
+      end 
   end
 
   
