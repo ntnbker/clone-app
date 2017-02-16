@@ -1,0 +1,29 @@
+#login {
+	padding: 50px 10px;
+
+    h1 {
+    	text-align: center;
+	    letter-spacing: 2px;
+    }
+
+    .form-group {
+    	margin-top: 20px;
+    	label {
+    		display: inline-block;
+    		width: 100px;
+    	}
+
+    	input[type="email"], input[type="password"] {
+    		width: 100%;
+    	}
+    }
+
+    input[type="submit"] {
+    	margin-top: 30px;
+		float: right;
+	}
+
+	@media (min-width: 550px) {
+		padding: 50px 300px;
+	}
+}

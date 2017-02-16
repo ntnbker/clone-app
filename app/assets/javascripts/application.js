@@ -18,7 +18,6 @@
 //= require jquery_nested_form
 //= require jquery-ui
 //= require gmaps.js
-//= require _nav.js
 
 //= require cocoon
 //= require moment
