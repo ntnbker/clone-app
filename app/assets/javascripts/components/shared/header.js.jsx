@@ -40,14 +40,15 @@ var Header = React.createClass({
     },
 
     clickDocument: function(e) {
-      var component = ReactDOM.findDOMNode(this.refs.showItems);
-      if (e.target == component || $(component).has(e.target).length) {
-          // Inside of the component.
-      } else {
-          // Outside of the component.
-          this.setState({ isItems: false});
+      if (this.props.homepage) {
+        var component = ReactDOM.findDOMNode(this.refs.showItems);
+        if (e.target == component || $(component).has(e.target).length) {
+            // Inside of the component.
+        } else {
+            // Outside of the component.
+            this.setState({ isItems: false});
+        }
       }
-
     },
     componentDidMount: function() {
         $(document).bind('click', this.clickDocument);
