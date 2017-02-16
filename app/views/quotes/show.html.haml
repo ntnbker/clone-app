@@ -1,12 +1,20 @@
-%div.container
-  %div.well
+%div.container.well
+  %div.send-quote
     -@quote.quote_items.each do |f|
+      %div.row
+        %p
+          =f.item_description
+          =":"
+        %span
+          =f.amount 
+    %hr
+    %div.row
       %p
-        =f.item_description
-        =f.amount 
-    %p
-      total:
-      =@quote.amount
+        Total :
+      %span
+        =@quote.amount
     
-    =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id), :class=>"btn btn-primary btn-lg"
-    =link_to "Edit Quote", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)
+    %button{:type=>"button", :class=>"button button-primary"} 
+      =link_to "Edit Quote", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)
+    %button{:type=>"button", :class=>"button button-primary green"} 
+      =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id)

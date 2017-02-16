@@ -1,0 +1,91 @@
+form#new_quote {
+
+	width: 100%;
+	margin: 20px auto;
+
+	p {
+	    margin: 20px 0 5px;
+	}
+
+	ul {
+		list-style: none;
+
+		li {
+	    	border: 1px solid #E1E1E1;
+    		padding: 10px;
+
+			.field fieldset {
+				border: none;
+				padding: 0;
+			}
+		}
+	}
+
+
+
+	button {
+		&.button-remove {
+		    margin-top: 15px;
+		    font-size: 12px;
+		    height: 20px;
+		}
+
+		&.button-add {	
+			font-size: 13px;
+    		height: 24px;
+		}
+
+		
+	}
+
+	.qf-button {
+		float: right;
+
+		button {
+			margin-right: 30px;
+		}
+		a {
+			text-decoration: none;
+		}
+	}
+	input[type="text"] {
+		width: 100%;
+	}
+
+	/* For Desktop */
+	@media (min-width: 550px) {
+		width: 50%;
+	}
+}
+
+.send-quote {
+	display: table;
+	margin: 30px auto;
+
+	div {
+		text-align: right;
+		font-size: 18px;
+		margin: 10px 0;
+
+		p {
+			display: inline-block;
+			margin: 0;
+		}
+
+		span {
+			display: inline-block;
+			width: 50px;
+		}
+	}
+
+	hr {
+		margin: 10px 0;
+	}
+	button {
+		margin: 10px;
+		a {
+			text-decoration: none;
+			color: white;
+		}
+	}
+}
