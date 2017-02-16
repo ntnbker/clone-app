@@ -49,13 +49,18 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def send_agency_admin_maintenance_request_email(maintenance_request)
+     @maintenance_request = maintenance_request
     
-    @maintenance_request = maintenance_request
-    if maintenance_request.agency_admin == nil
-      email = maintenance_request.agent_email
-    else
-      email = maintenance_request.agency_admin.email
-    end 
+    if @maintenance_request.agent == nil
+      user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    elsif @maintenance_request.agency_admin == nil
+      user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    end
+
+    track user: user
+    track extra: {maintenance_request_id:maintenance_request.id}
     
     mail from:"ron@email.com", to:email, subject:"Hi #{maintenance_request.agent_name} a maintenance request has been made"
   end

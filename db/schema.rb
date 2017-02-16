@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209044340) do
+ActiveRecord::Schema.define(version: 20170214004725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,6 +124,18 @@ ActiveRecord::Schema.define(version: 20170209044340) do
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type", using: :btree
   end
 
+  create_table "appointments", force: :cascade do |t|
+    t.integer  "trady_id"
+    t.integer  "tenant_id"
+    t.integer  "maintenance_request_id"
+    t.date     "date"
+    t.time     "time"
+    t.string   "status"
+    t.text     "comment"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "availabilities", force: :cascade do |t|
     t.integer  "maintenance_request_id"
     t.datetime "created_at",                    null: false
@@ -132,6 +144,15 @@ ActiveRecord::Schema.define(version: 20170209044340) do
     t.date     "date"
     t.time     "start_time"
     t.time     "finish_time"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.integer  "trady_id"
+    t.integer  "tenant_id"
+    t.integer  "appointment_id"
+    t.text     "body"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "conversations", force: :cascade do |t|

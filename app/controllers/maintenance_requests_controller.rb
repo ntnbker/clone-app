@@ -304,7 +304,8 @@ class MaintenanceRequestsController < ApplicationController
     mr_tenants = mr.tenants
     mr_agent = mr.agent.user.id if mr.agent != nil
     mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
-    mr_landlord = mr.property.landlord_id if mr.property.landlord_id != nil 
+    mr_landlord = mr.property.landlord.user.id if mr.property.landlord_id != nil 
+
     mr_user_affiliates_array = []
     
     if mr_agent != nil
@@ -324,12 +325,16 @@ class MaintenanceRequestsController < ApplicationController
     mr_tenants.each do |tenant|
       mr_user_affiliates_array.push(tenant.user.id)
     end 
+
+
+    
     
     if mr_user_affiliates_array.include?(current_user.id)
         #do nothing
-      else
-        flash[:danger] = "Sorry you are not allowed to see that"
-        redirect_to root_path
+    
+    else
+      flash[:danger] = "Sorry you are not allowed to see that!!!"
+      redirect_to root_path
     end
   end
 

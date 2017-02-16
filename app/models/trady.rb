@@ -10,6 +10,8 @@ class Trady < ApplicationRecord
   has_many :quotes
   has_many :invoices
   has_many :action_statuses
+  has_many :appointments
+  has_many :comments
   
   validates_presence_of :name
   validates_presence_of :email

@@ -11,8 +11,14 @@
     %p
       =@maintenance_request.maintenance_description
 
-    %p When the job has been completed click The button below to access the invoice form.
+    %p To Setup an appointment with the tenant please click the button below.
+
+    %button
+      =link_to "Setup Appointment", new_appointment_url(maintenance_request_id:@maintenance_request.id,trady_id:@trady.id, user_id:@trady.user.id)
 
 
-    =link_to "Send Invoice", maintenance_request_url(@maintenance_request,user_id:@trady.user.id)
+
+
+
+    
 

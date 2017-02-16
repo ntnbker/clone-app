@@ -1,0 +1,36 @@
+%h1 
+  This is where we will show the appointment time and the button to pick if they want it or not 
+
+%div.container.well 
+  %h5
+    Maintenance Request: 
+    =@maintenance_request.maintenance_heading
+  %p 
+    Maintenance Request Summary: 
+    =@maintenance_request.maintenance_description
+  %h5
+    Appointment Date: 
+    =@appointment.date.strftime("%A %B %d %Y")
+  %h5 
+    Appointment Time: 
+    =@appointment.time.strftime('%r')
+
+  %div
+    %h3
+      Comments
+    -@appointment.comments.each do |comment|
+
+      %div.well
+        =comment.body
+      %br
+
+  %div 
+    %button
+      =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
+
+      / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
+    %button
+      =link_to "Suggest Other Appointment Time", edit_appointment_path(@appointment,maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id)
+
+
+
