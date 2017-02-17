@@ -71,6 +71,8 @@ class Ability
         can :new, MaintenanceRequest
         can :index, :maintenance_request
         can :show, :maintenance_request
+
+        can :edit, :appointment
       end 
 
       if @user.trady?

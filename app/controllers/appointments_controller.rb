@@ -1,4 +1,6 @@
 class AppointmentsController < ApplicationController
+  before_action(only: [:new, :edit,:show]) { email_auto_login(params[:user_id]) }
+  before_action :require_login, only:[:new,:create,:show,:edit, :accept_appointment]
   def new
     @appointment = Appointment.new
     @appointment.comments.build
@@ -60,7 +62,7 @@ class AppointmentsController < ApplicationController
 
       ####WE HAVE TO CHANGE THE CURRENT USER TO THE TENANT AND TRADY FOR NOW ITS SET TO AGENCYADMIN
 
-      if params[:appointment][:current_user_role] == "AgencyAdmin"
+      if params[:appointment][:current_user_role] == "Tenant"
         TradyAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request_id, appointment_id, trady_id, tenant_id)
         #send email to trady letting them know that a new appointment time has been picked 
       elsif params[:appointment][:current_user_role] == "Trady"
@@ -95,9 +97,11 @@ class AppointmentsController < ApplicationController
     #params[:current_user_role] We have to distinguish between the trady accepting and the tenant accepting
     if params[:current_user_role] == "Trady"
       TenantAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
-    elsif params[:current_user_role] == "AgencyAdmin"
+    elsif params[:current_user_role] == "Tenant"
       TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
     end 
+
+    redirect_to root_path
     
   end
 
@@ -105,6 +109,13 @@ class AppointmentsController < ApplicationController
     
     def appointment_params
       params.require(:appointment).permit(:date, :time,:status,  :comment,:tenant_id,  :trady_id, :maintenance_request_id, :tenant_id, comments_attributes:[:id, :body, :tenant_id, :trady_id ,:appointment_id])  
+    end
+
+    def email_auto_login(id)
+      if current_user == nil
+        user = User.find_by(id:id)
+        auto_login(user)
+      end 
     end
 
 end 
