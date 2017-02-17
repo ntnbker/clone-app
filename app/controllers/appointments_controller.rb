@@ -93,9 +93,9 @@ class AppointmentsController < ApplicationController
     
     
     #params[:current_user_role] We have to distinguish between the trady accepting and the tenant accepting
-    if params[:current_user_role] == "AgencyAdmin"
+    if params[:current_user_role] == "Trady"
       TenantAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
-    elsif params[:current_user_role] == "Tenant"
+    elsif params[:current_user_role] == "AgencyAdmin"
       TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
     end 
     

@@ -111,6 +111,16 @@ class User < ApplicationRecord
   has_many :user_conversations
   has_many :conversations, :through => :user_conversations
   has_many :messages
-  
+
+
+  ##THIS IS AN UGLY HACK SO THE ACCESS_CONTACTS PARAMS CAN PASS THROUGH QUICKLY AND CREATE 
+  ##A USER WITH OUT MESSING WITH THE ACCESS_CONTACTS PARAMS WHICH CAN BE HEAVILY NESTED
+  ##THE PARAMS CAN BE FOUND IN THE MAINTENANCE REQUEST CONTROLLER. 
+  ##SAME HACK IS IN THE TENANTS MODEL
+    
+    attr_accessor :relation
+    attr_accessor :name
+    attr_accessor :mobile
+    
 
 end

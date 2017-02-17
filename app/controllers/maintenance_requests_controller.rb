@@ -80,8 +80,12 @@ class MaintenanceRequestsController < ApplicationController
        
        
         if access_contact_params
+          
           access_contact_params.each_value do |hash|
-            
+            #this hash below pushes a PW key/value into the access_contacts_params has
+            #so the hash can just be used to create a user and a tenant right away
+            #must refactor!!
+            hash[:password] = SecureRandom.hex(5)
             if hash.has_value?("Tenant")
               hash.each do |key, value|
                 if key == "email"
@@ -91,25 +95,17 @@ class MaintenanceRequestsController < ApplicationController
                     TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
                     contact.tenant.update_attribute(:property_id,@property.id)
                    else 
-                    if  key =="email" 
-                      user = User.create(email:value, password:SecureRandom.hex(5))
-                      @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id, property_id:@property.id)
-                      
-                      
+
+                      user = User.create(hash)
+                      binding.pry
+                      @contact_tenant = Tenant.new(hash)
+                      @contact_tenant.user_id = user.id
+                      @contact_tenant.property_id = @property.id
                       role = Role.create(user_id:user.id)
                       @contact_tenant.save
                       @contact_tenant.roles << role
                       TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
-                      if key =="name"
-                        @contact_tenant.update_attribute(:name,value)
-                      end 
-                      if key =="mobile"
-                        @contact_tenant.update_attribute(:mobile,value)
-                      end 
-
-                    end 
-
-                  end
+                   end
                 end 
               end 
             end 
@@ -134,7 +130,7 @@ class MaintenanceRequestsController < ApplicationController
         @maintenance_request.perform_uniqueness_validation_of_email = true
         @user = User.create(email:params[:maintenance_request][:email], password:SecureRandom.hex(5))
         role = Role.create(user_id:@user.id)
-        @tenant = Tenant.create(user_id:@user.id, full_name:params[:maintenance_request][:name],email:params[:maintenance_request][:email], mobile:params[:maintenance_request][:mobile] )
+        @tenant = Tenant.create(user_id:@user.id, name:params[:maintenance_request][:name],email:params[:maintenance_request][:email], mobile:params[:maintenance_request][:mobile] )
         @tenant.roles << role
         @maintenance_request.tenant_id = @tenant.id
         @maintenance_request.service_type = @customer_input.tradie
@@ -151,14 +147,17 @@ class MaintenanceRequestsController < ApplicationController
           @tenant.update_attribute(:property_id, @property.id)
         end 
 
-
+        binding.pry
         @maintenance_request.save
         
         #CREATE TENANTS
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
         if access_contact_params
           access_contact_params.each_value do |hash|
-            
+            #this hash below pushes a PW key/value into the access_contacts_params has
+            #so the hash can just be used to create a user and a tenant right away
+            #must refactor!!
+            hash[:password] = SecureRandom.hex(5)
             if hash.has_value?("Tenant")
               hash.each do |key, value|
                 if key == "email"
@@ -168,23 +167,15 @@ class MaintenanceRequestsController < ApplicationController
                     TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
                     contact.tenant.update_attribute(:property_id,@property.id)
                    else 
-                    if  key =="email" 
-                      user = User.create(email:value, password:SecureRandom.hex(5))
-                      @contact_tenant = Tenant.new(email:value, full_name:value,mobile:value,user_id:user.id,property_id:@property.id)
-                      
-                      
-                      role = Role.create(user_id:user.id)
-                      @contact_tenant.save
-                      @contact_tenant.roles << role
-                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
-                      if key =="name"
-                        @contact_tenant.update_attribute(:name,value)
-                      end 
-                      if key =="mobile"
-                        @contact_tenant.update_attribute(:mobile,value)
-                      end 
-
-                    end 
+                    user = User.create(hash)
+                    binding.pry
+                    @contact_tenant = Tenant.new(hash)
+                    @contact_tenant.user_id = user.id
+                    @contact_tenant.property_id = @property.id
+                    role = Role.create(user_id:user.id)
+                    @contact_tenant.save
+                    @contact_tenant.roles << role
+                    TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
 
                   end
                 end 
@@ -218,7 +209,7 @@ class MaintenanceRequestsController < ApplicationController
       end
       
     else
-      
+      binding.pry
       flash[:danger]= "Something went wrong"
       render :new
       
