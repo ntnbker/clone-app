@@ -323,7 +323,7 @@ class MaintenanceRequestsController < ApplicationController
     end 
 
 
-    binding.pry
+    
     
     
     if mr_user_affiliates_array.include?(current_user.id)

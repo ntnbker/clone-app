@@ -13,17 +13,25 @@ class AppointmentsController < ApplicationController
 
   def create
     
-
+    binding.pry
     @appointment = Appointment.new(appointment_params)
     maintenance_request = MaintenanceRequest.find_by(id:params[:appointment][:maintenance_request_id])
     tenant_id = params[:appointment][:tenant_id]
     trady_id = params[:appointment][:trady_id]
-
+    landlord_id = maintenance_request.property.landlord.id
+    requester = params[:appointment][:current_user_role]
     if @appointment.valid?
       @appointment.save
+
+      # if requester == "Trady"
+      #   TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, trady_id)
+      # elsif requester == "Landlord"
+      #   LandlordRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, landlord_id)
+      # end
+
+
       
       TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, trady_id)
-      
       maintenance_request.action_status.update_columns(agent_status:"Tenant To Confirm Appointment")
 
       
@@ -36,12 +44,7 @@ class AppointmentsController < ApplicationController
 
 
 
-    # if the person_requesting appointment is tradie then do 
-    #   TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, trady_id)
-    # elsif the person_requesting appointment is landlord then do 
-    #   LandlordRequestsInitialAppointmentEmailWorker.perform_async((maintenance_request.id, @appointment.id,tenant_id, landlord_id))
-    I HAVE TO ADD A NEW HIDDEN FEILD THAT WILL TELL ME WHO IS ASKING FOR THE APPOINTMENT 
-
+     
 
 
   end
