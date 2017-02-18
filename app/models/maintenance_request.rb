@@ -15,6 +15,7 @@ class MaintenanceRequest < ApplicationRecord
   has_one :action_status
   has_many :emails, class_name: "Ahoy::Message"
   has_many :appointments
+  belongs_to :trady
   
 
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description, :image

@@ -46,7 +46,7 @@ class AgentMailer < ActionMailer::Base
       email = @maintenance_request.agent.email
     end
 
-    track user: @user
+    # track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
     mail from:"ron@email.com", to:email, subject:"Hi the landlord has requested a quote for a maintenance job"

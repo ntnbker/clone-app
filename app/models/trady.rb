@@ -6,7 +6,7 @@ class Trady < ApplicationRecord
 
   has_many :agency_tradies
   has_many :agencies, through: :agency_tradies
-  
+  has_many :maintenance_requests
   has_many :quotes
   has_many :invoices
   has_many :action_statuses

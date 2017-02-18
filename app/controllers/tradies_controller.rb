@@ -49,7 +49,7 @@ class TradiesController < ApplicationController
     else
       respond_to do |format|
           if @trady.valid?
-            format.html {render "maintenance_requests/show.html.haml", :success =>"Your message was sent FUCK THIS SHIT"}  
+            format.html {render "maintenance_requests/show.html.haml", :success =>"Your message was sent"}  
             format.js {render layout: false, content_type: 'text/javascript'}
             @user = User.create(email:params[:trady][:email],password:SecureRandom.hex(5))
             @trady.user_id = @user.id

@@ -13,18 +13,36 @@ class AppointmentsController < ApplicationController
 
   def create
     
+
     @appointment = Appointment.new(appointment_params)
-    maintenance_request_id = params[:appointment][:maintenance_request_id]
+    maintenance_request = MaintenanceRequest.find_by(id:params[:appointment][:maintenance_request_id])
     tenant_id = params[:appointment][:tenant_id]
     trady_id = params[:appointment][:trady_id]
+
     if @appointment.valid?
       @appointment.save
-      TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request_id, @appointment.id,tenant_id, trady_id)
+      
+      TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, trady_id)
+      
+      maintenance_request.action_status.update_columns(agent_status:"Tenant To Confirm Appointment")
+
+      
       redirect_to root_path
       
     else
       render :new
     end 
+
+
+
+
+    # if the person_requesting appointment is tradie then do 
+    #   TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, trady_id)
+    # elsif the person_requesting appointment is landlord then do 
+    #   LandlordRequestsInitialAppointmentEmailWorker.perform_async((maintenance_request.id, @appointment.id,tenant_id, landlord_id))
+    I HAVE TO ADD A NEW HIDDEN FEILD THAT WILL TELL ME WHO IS ASKING FOR THE APPOINTMENT 
+
+
 
   end
 
@@ -54,6 +72,7 @@ class AppointmentsController < ApplicationController
      @appointment = Appointment.find_by(id: params[:id]) 
      
      maintenance_request_id = params[:appointment][:maintenance_request_id]
+     maintenance_request = MaintenanceRequest.find_by(id:params[:appointment][:maintenance_request_id])
      appointment_id = @appointment.id
      trady_id = params[:appointment][:trady_id]
      tenant_id = params[:appointment][:tenant_id] 
@@ -64,9 +83,11 @@ class AppointmentsController < ApplicationController
 
       if params[:appointment][:current_user_role] == "Tenant"
         TradyAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request_id, appointment_id, trady_id, tenant_id)
+        maintenance_request.action_status.update_attribute(:agent_status, "Tradie To Confirm Appointment")
         #send email to trady letting them know that a new appointment time has been picked 
       elsif params[:appointment][:current_user_role] == "Trady"
         TenantAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request_id, appointment_id, trady_id, tenant_id)
+        maintenance_request.action_status.update_attribute(:agent_status, "Tenant To Confirm Appointment")
         #send an email to the tenant saying another appointment has been picked
       else
           #do nothing
@@ -87,6 +108,7 @@ class AppointmentsController < ApplicationController
     appointment.update_attribute(:status,"Accepted")
     appointment_id = appointment.id
     maintenance_request_id = params[:maintenance_request_id]
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     trady_id = params[:trady_id]
     tenant_id = params[:tenant_id]
 
@@ -97,10 +119,12 @@ class AppointmentsController < ApplicationController
     #params[:current_user_role] We have to distinguish between the trady accepting and the tenant accepting
     if params[:current_user_role] == "Trady"
       TenantAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+      maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled - Awaiting Invoice")
     elsif params[:current_user_role] == "Tenant"
       TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+      maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled - Awaiting Invoice")
     end 
-
+    flash[:success] = "Thank you for accepting the appointment."
     redirect_to root_path
     
   end

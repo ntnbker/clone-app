@@ -296,7 +296,8 @@ class MaintenanceRequestsController < ApplicationController
     mr_agent = mr.agent.user.id if mr.agent != nil
     mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
     mr_landlord = mr.property.landlord.user.id if mr.property.landlord_id != nil 
-
+    mr_trady = mr.trady.user.id if mr.trady !=nil
+    
     mr_user_affiliates_array = []
     
     if mr_agent != nil
@@ -309,6 +310,10 @@ class MaintenanceRequestsController < ApplicationController
 
     if mr_landlord !=nil 
       mr_user_affiliates_array.push(mr_landlord)
+    end
+
+    if mr_trady !=nil 
+      mr_user_affiliates_array.push(mr_trady)
     end 
 
 
@@ -318,6 +323,7 @@ class MaintenanceRequestsController < ApplicationController
     end 
 
 
+    binding.pry
     
     
     if mr_user_affiliates_array.include?(current_user.id)

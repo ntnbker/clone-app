@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217041052) do
+ActiveRecord::Schema.define(version: 20170218061338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -220,7 +220,6 @@ ActiveRecord::Schema.define(version: 20170217041052) do
     t.datetime "updated_at",              null: false
     t.integer  "agent_id"
     t.integer  "tenant_id"
-    t.integer  "tradie_id"
     t.string   "person_in_charge"
     t.string   "real_estate_office"
     t.string   "agent_name"
@@ -230,6 +229,7 @@ ActiveRecord::Schema.define(version: 20170217041052) do
     t.integer  "property_id"
     t.integer  "agency_id"
     t.integer  "agency_admin_id"
+    t.integer  "trady_id"
   end
 
   create_table "messages", force: :cascade do |t|

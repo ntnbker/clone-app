@@ -11,3 +11,4 @@ class Appointment < ApplicationRecord
   attr_accessor :current_user_role
 
 end 
+

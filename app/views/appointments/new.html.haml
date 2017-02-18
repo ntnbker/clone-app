@@ -8,6 +8,7 @@ This is where we will make an appointment
       =f.hidden_field :tenant_id, value:@tenant_id
       =f.hidden_field :trady_id, value:@trady_id
       =f.hidden_field :status, value:"Active"
+      =f.hidden_field :current_user_role, value:"#{current_user.role.roleable_type}"
       =f.date_field :date
       
       =f.time_select :time, {ampm: true}
@@ -18,6 +19,7 @@ This is where we will make an appointment
         =comments_form.text_area :body
         =comments_form.hidden_field :tenant_id, value:@tenant_id
         =comments_form.hidden_field :trady_id, value:@trady_id
+        =comments_form.hidden_field :landlord_id, value:@landlord_id
       %br
       =f.submit "Submit Appointment Time and Comment"
 
