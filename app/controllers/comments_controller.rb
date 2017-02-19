@@ -15,8 +15,12 @@ class CommentsController < ApplicationController
     if @comment.valid?
       @comment.save
     else 
-      
-      render "appointments/edit"
+      if @trady_id != nil
+        render "appointments/edit"
+      elsif @landlord_id !=nil 
+        render "landlord_appointments/edit"
+      end 
+        
     end 
         
     
