@@ -2,6 +2,7 @@ class Appointment < ApplicationRecord
   belongs_to :maintenance_request
   belongs_to :trady
   belongs_to :tenant
+  belongs_to :landlord
   has_many :comments, inverse_of: :appointment
 
 

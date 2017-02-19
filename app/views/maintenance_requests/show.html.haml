@@ -63,7 +63,7 @@
     %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
       =link_to "Request Quote", request_quote_path(maintenance_request_id:@maintenance_request.id), method: :post
     %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
-      =link_to "Fix Myself & Make Appointment With Tenant", new_appointment_path(maintenance_request_id:@maintenance_request.id)
+      =link_to "Fix Myself & Make Appointment With Tenant", new_landlord_appointment_path(maintenance_request_id:@maintenance_request.id)
   -elsif current_user.trady?
     / && current_user.trady? && current_user.trady.id == @quote.trady_id
     -if @quote != nil && @quote.trady != nil
