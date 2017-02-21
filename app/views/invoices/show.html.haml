@@ -1,12 +1,14 @@
-%div.container
-  %div.well
-    -@invoice.invoice_items.each do |f|
-      %p
-        =f.item_description
-        =f.amount 
+%div.container.invoice-form
+  -@invoice.invoice_items.each do |f|
     %p
-      total:
-      =@invoice.amount
-    
-    =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id,invoice_id:@invoice.id), :class=>"btn btn-primary btn-lg", method: :post
+      =f.item_description
+      =f.amount 
+  %p
+    total:
+    =@invoice.amount
+  
+
+  %button.button.button-primary
     =link_to "Back", edit_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
+  %button.button.button-primary.green.right
+    =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id,invoice_id:@invoice.id), method: :post

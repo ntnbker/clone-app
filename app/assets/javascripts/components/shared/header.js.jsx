@@ -25,7 +25,7 @@ var MobileMenu = React.createClass({
 var Header = React.createClass({
     getInitialState: function() {
       return {
-        isItems: !this.props.homepage,
+        isItems: !this.props.expanded,
         isClicked: false
       };
     },
@@ -40,7 +40,7 @@ var Header = React.createClass({
     },
 
     clickDocument: function(e) {
-      if (this.props.homepage) {
+      if (this.props.expanded) {
         var component = ReactDOM.findDOMNode(this.refs.showItems);
         if (e.target == component || $(component).has(e.target).length) {
             // Inside of the component.
@@ -60,7 +60,7 @@ var Header = React.createClass({
         var logged_in = this.props.logged_in;
         var current_user = this.props.current_user;
 
-        return <nav className="header-homepage">
+        return <nav className="header-expanded">
 
           <MobileMenu ref="Bar">
             {
@@ -110,7 +110,7 @@ var Header = React.createClass({
 
     render: function() {
         return <div>
-            { this.props.homepage
+            { this.props.expanded
             ? this.header(true)
             : this.header() }
         </div>
