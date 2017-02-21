@@ -66,6 +66,14 @@ Rails.application.routes.draw do
   put "update_company_invoice" =>"invoices#update_trady_company_invoice"
   post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
   ###################################################
+  ##########WORK ORDER INVOICE RESOURCES/ROUTES######
+  ###################################################
+  get "company_information" =>"invoices#edit_trady_company_invoice"
+  put "company_information_invoice" => "work_order_invoices#update_trady_company_invoice"
+
+
+
+  ###################################################
   ##########TRADIE RESOURCES/ROUTES#################
   ###################################################
   get "trady_information" => 'tradies#trady_information', :as=>:trady_information

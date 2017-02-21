@@ -226,6 +226,9 @@ class MaintenanceRequestsController < ApplicationController
     @landlord = Landlord.new
     @tradie = Trady.new
     
+    @trady_id = @maintenance_request.trady.id
+    @trady_company_id = @maintenance_request.trady.trady_company.id
+
     if @maintenance_request.agency_admin != nil
       if @maintenance_request.agency_admin.agency.tradies !=nil
         @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
