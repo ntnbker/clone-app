@@ -16,7 +16,7 @@ class TradiesController < ApplicationController
   end
 
   def create
-    
+    binding.pry
     @user = User.find_by(email:params[:trady][:email])
     @trady = Trady.new(trady_params)
     mr = MaintenanceRequest.find_by(id:params[:trady][:maintenance_request_id])
@@ -43,7 +43,16 @@ class TradiesController < ApplicationController
         end
       end
       
-      TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+
+      if params[:trady][:trady_request] == "Quote"
+        TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+      elsif params[:trady][:trady_request] == "Work Order"
+        TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
+        mr.trady_id = user.trady.id
+      end 
+
+
+
       mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
          
     else
@@ -67,7 +76,14 @@ class TradiesController < ApplicationController
               @agency = agency_admin.agency
             end
                 
-            TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+            if params[:trady][:trady_request] == "Quote"
+              TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+            elsif params[:trady][:trady_request] == "Work Order"
+              TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
+              mr.trady_id = user.trady.id
+            end 
+
+
             mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
             AgencyTrady.create(agency_id:@agency.id,trady_id:@trady.id)
             
@@ -90,7 +106,7 @@ class TradiesController < ApplicationController
   private
 
   def trady_params
-    params.require(:trady).permit(:id,:user_id,:tradie_company_id,:name,:mobile,:email,:skill,:maintenance_request_id,:skill_required, :company_name)
+    params.require(:trady).permit(:id,:user_id,:tradie_company_id,:name,:mobile,:email,:skill,:maintenance_request_id,:skill_required, :company_name, :trady_request)
     
   end
 

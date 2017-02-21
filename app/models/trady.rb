@@ -20,6 +20,7 @@ class Trady < ApplicationRecord
 
   attr_accessor :maintenance_request_id
   attr_accessor :skill_required
+  attr_accessor :trady_request
 
   def name_and_company
      

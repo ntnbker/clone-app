@@ -26,7 +26,7 @@
 
   %div 
     %button
-      =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, landlord_id:@landlord_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
+      =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
 
       / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
     %button

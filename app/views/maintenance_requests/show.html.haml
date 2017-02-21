@@ -46,6 +46,8 @@
         Ask Landlord
       %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#request-quote-modal"}
         Request Quote
+      %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#send-work-order-modal"}
+        Send Work Order
       %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#landlord-message-modal"}
         Send Landlord Message
       %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#tenant-message-modal"}
@@ -64,6 +66,8 @@
       =link_to "Request Quote", request_quote_path(maintenance_request_id:@maintenance_request.id), method: :post
     %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
       =link_to "Fix Myself & Make Appointment With Tenant", new_landlord_appointment_path(maintenance_request_id:@maintenance_request.id)
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+      =link_to "Job Completed", job_completed_path(maintenance_request_id:@maintenance_request.id), method: :post
   -elsif current_user.trady?
     / && current_user.trady? && current_user.trady.id == @quote.trady_id
     -if @quote != nil && @quote.trady != nil
@@ -152,7 +156,7 @@
           =f.submit "Add Landlord", :class=>"btn btn-default"
           
 
-=bootstrap_form_for(@tradie,remote: true) do |f|
+=bootstrap_form_for(@tradie, remote: true) do |f|
   %div{:class=>"modal fade", :id=>"request-quote-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
     %div{:class=>"modal-dialog", :role=>"document"}
       %div{:class=>"modal-content"}
@@ -164,6 +168,22 @@
           =f.phone_field :mobile, class: "tradie_fields", id:"trady_mobile"
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.hidden_field :skill_required, value:@maintenance_request.service_type
+          =f.hidden_field :trady_request, value:"Quote" 
+          =f.submit "Send Request", :class=>"btn btn-default"
+
+=bootstrap_form_for(@tradie, remote: true) do |f|
+  %div{:class=>"modal fade", :id=>"send-work-order-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+    %div{:class=>"modal-dialog", :role=>"document"}
+      %div{:class=>"modal-content"}
+        %div{:class=>"modal-body"}
+          =collection_select(@tradie,:id, @all_tradies, :id, :name_and_company,{prompt: "Select or Add New Tradie"}, id:"trady_work_order_select")
+          =f.text_field :company_name, class: "tradie_fields", id:"trady_company_name_work_order"
+          =f.text_field :name, class: "tradie_fields", id:"trady_name_work_order"
+          =f.text_field :email, class: "tradie_fields", id:"trady_email_work_order"
+          =f.phone_field :mobile, class: "tradie_fields", id:"trady_mobile_work_order"
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.hidden_field :skill_required, value:@maintenance_request.service_type
+          =f.hidden_field :trady_request, value:"Work Order" 
           =f.submit "Send Request", :class=>"btn btn-default"
 
 

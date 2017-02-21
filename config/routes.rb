@@ -101,5 +101,10 @@ Rails.application.routes.draw do
   resources :comments, only:[:create]
 
   
+  ###################################################
+  ##########ACTION STATUS RESOURCES/ROUTES###########
+  ###################################################
+  post "job_completed" => "action_statuses#job_complete"
+
 
  end
