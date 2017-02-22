@@ -107,7 +107,7 @@ class InvoicesController < ApplicationController
 
     def invoice_params
     params.require(:invoice).permit(:id, :trady_id,:quote_id ,:maintenance_request_id,invoice_items_attributes:[:id,:amount,:item_description, :_destroy])
-  end
+    end
 
 end 
 
