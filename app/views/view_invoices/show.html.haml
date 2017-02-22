@@ -2,6 +2,16 @@
 
 %div.container
   %div.well
+    %h5 
+      Company Information
+    %p
+      =@trady.trady_company.company_name
+      %br
+      =@trady.trady_company.address
+      %br
+      =@trady.trady_company.mobile_number
+      %br
+      =@trady.trady_company.email
     -@invoice.invoice_items.each do |f|
       %p
         =f.item_description

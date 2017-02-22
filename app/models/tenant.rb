@@ -30,6 +30,6 @@ class Tenant < ApplicationRecord
   ##SAME HACK IS IN THE USERS MODEL. THIS IS  QUICK FIX 
   attr_accessor :relation
   attr_accessor :password
-  
+  attr_accessor :_destroy
  
 end 

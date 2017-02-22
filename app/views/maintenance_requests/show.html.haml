@@ -1,5 +1,8 @@
 
 .container
+  %div
+    - @gallery.each do |image| # for each image
+      = image_tag(image.url) # display the image
   %h3 
     = @maintenance_request.service_type 
     Needed for 

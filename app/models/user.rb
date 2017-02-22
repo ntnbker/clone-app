@@ -18,7 +18,7 @@ class User < ApplicationRecord
     has_one :landlord
     
     has_one :trady
-    
+    attr_accessor :_destroy
     
 
     #######OLD AGENCY_ADMINS NESTED FORM##########

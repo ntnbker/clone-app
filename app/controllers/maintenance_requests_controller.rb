@@ -11,6 +11,8 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
+    
+    @maintenance_request.maintenance_request_images.build 
     @customer_input = Query.find_by(id:session[:customer_input])
   end
 
@@ -225,9 +227,15 @@ class MaintenanceRequestsController < ApplicationController
     @message = Message.new
     @landlord = Landlord.new
     @tradie = Trady.new
+
+    if @maintenance_request.maintenance_request_image != nil
+      @gallery = @maintenance_request.maintenance_request_image.images
+    end 
     
-    @trady_id = @maintenance_request.trady.id
-    @trady_company_id = @maintenance_request.trady.trady_company.id
+    if @maintenance_request.trady != nil
+      @trady_id = @maintenance_request.trady.id
+      @trady_company_id = @maintenance_request.trady.trady_company.id
+    end 
 
     if @maintenance_request.agency_admin != nil
       if @maintenance_request.agency_admin.agency.tradies !=nil
@@ -278,7 +286,7 @@ class MaintenanceRequestsController < ApplicationController
   private
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:image,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy])
+    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:image,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], maintenance_request_images_attributes:[:id, :maintenance_request_id,{images: []},:_destroy])
   end
 
   def set_user
