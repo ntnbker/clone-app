@@ -1,14 +1,22 @@
+=react_component('StepProgress', {:step => 3})
+
 %div.container.invoice-form
   -@invoice.invoice_items.each do |f|
-    %p
-      =f.item_description
-      =f.amount 
-  %p
-    total:
-    =@invoice.amount
+    %p.invoice-show.row
+      %span
+        =f.item_description
+      %span
+        $
+        =f.amount 
+  %hr
+  %p.invoice-show.row
+    %span
+      Total
+    %span
+      $
+      =@invoice.amount
   
-
-  %button.button.button-primary
+  %button.button.button-primary.left
     =link_to "Back", edit_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
   %button.button.button-primary.green.right
     =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id,invoice_id:@invoice.id), method: :post

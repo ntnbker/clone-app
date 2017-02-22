@@ -1,10 +1,54 @@
-var FieldList = React.createClass({
+var StepProgress = React.createClass({
+    matchClass(nth, step) {
+        if (nth < step)
+            return "done";
+        else if (nth == step)
+            return "active";
+        else
+            return null;
+    },
+
+    matchChar(nth, step) {
+        if (nth < step)
+            return "✔";
+        else
+            return nth;
+    },
+
+    render: function() {
+        return <div className="progress">
+            <h4> SEND INOVICE </h4>
+            <div>
+                <div className={'circle ' + this.matchClass(1,this.props.step)}>
+                    <span className="label">{this.matchChar(1,this.props.step)}</span>
+                    <span className="title">Template Details</span>
+                </div>
+
+                <span className={'bar ' + this.matchClass(2,this.props.step)}></span>
+
+                <div className={'circle ' + this.matchClass(2,this.props.step)}>
+                    <span className="label">{this.matchChar(2,this.props.step)}</span>
+                    <span className="title">Item Details</span>
+                </div>
+
+                <span className={'bar ' + this.matchClass(3,this.props.step)}></span>
+
+                <div className={'circle ' + this.matchClass(3,this.props.step)}>
+                    <span className="label">{this.matchChar(3,this.props.step)}</span>
+                    <span className="title">Invoice Print View</span>
+                </div>
+            </div>
+        </div>
+    }
+});
+
+var InvoiceFieldList = React.createClass({
     render: function(){    
         return <ul>
             {this.props.fields.map((field, fieldIndex) => 
                 <li key={fieldIndex}>
                     {field}
-                    <button className="button-remove button-primary red" onClick={this.props.removeField} value={fieldIndex}> Remove </button>
+                    <button className="button-remove button-primary red" onClick={this.props.removeField} value={fieldIndex}> X </button>
                 </li>
             )}
         </ul>;
@@ -54,7 +98,7 @@ var InvoiceList = React.createClass({
     render: function(){ 
         return(
             <div>
-                <FieldList fields={this.state.fields} removeField={this.removeField} />
+                <InvoiceFieldList fields={this.state.fields} removeField={this.removeField} />
                 <button className="button-add button-primary" onClick={this.addField}> Add Another Item </button>
             </div>
         );
@@ -72,10 +116,8 @@ var InvoiceFields = React.createClass({
 
             <InvoiceList />
 
-            <hr />
-
             <div className="qf-button">
-                <button className="button button-primary"> <a href={this.props.backlink}> Back </a> </button>
+                <button className="button button-primary left"> <a href={this.props.backlink}> Back </a> </button>
                 <input type="submit" name="commit" value="Next" className="button button-primary green" data-disable-with="Next" />
             </div>
         </form>
