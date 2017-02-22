@@ -77,7 +77,7 @@ Rails.application.routes.draw do
   ##########VIEW INVOICES RESOURCES/ROUTES######
   ###################################################
   resources :view_invoices, only:[:show]
-
+  post "print_invoice" =>"view_invoices#print_invoice", :as=> :print_invoice
 
   ###################################################
   ##########TRADIE RESOURCES/ROUTES#################

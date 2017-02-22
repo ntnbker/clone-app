@@ -52,8 +52,9 @@
         Send Landlord Message
       %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#tenant-message-modal"}
         Send Tenants Message
-      %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
-        =link_to "View and Print Invoice", view_invoice_path(invoice_id:@maintenance_request.invoices.first.id)
+      -if @maintenance_request.invoices != nil
+        %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+          =link_to "View and Print Invoice", view_invoice_path(invoice_id:@maintenance_request.invoices.first.id)
 
         
     -else
