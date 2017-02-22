@@ -27,9 +27,7 @@ class InvoicesController < ApplicationController
   end
 
   def new
-    #below we are using the info from the quote to create a new invoice.
-    #the quote instance grabs all the info and fills out the form
-    #including all the items. When submitted however it will create a new invoice object
+    
     @quote = Quote.find_by(id:params[:quote_id])
     @invoice = Invoice.new
     @invoice.invoice_items.build

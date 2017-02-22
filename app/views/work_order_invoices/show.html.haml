@@ -1,13 +1,14 @@
 %div.container
   %div.well
     SHOW INVOICE PAGE
-    / -@invoice.invoice_items.each do |f|
-    /   %p
-    /     =f.item_description
-    /     =f.amount 
-    / %p
-    /   total:
-    /   =@invoice.amount
+    -@invoice.invoice_items.each do |f|
+      %p
+        =f.item_description
+        =f.amount 
+    %p
+      total:
+      =@invoice.amount
+
+    =link_to "Back", edit_work_order_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)
+    =link_to "Send Invoice", send_work_order_invoice_path(maintenance_request_id:@maintenance_request.id), :class=>"btn btn-primary btn-lg", method: :post
     
-    / =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id,invoice_id:@invoice.id), :class=>"btn btn-primary btn-lg", method: :post
-    / =link_to "Back", edit_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)

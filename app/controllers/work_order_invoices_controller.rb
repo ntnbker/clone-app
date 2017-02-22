@@ -29,7 +29,7 @@ class WorkOrderInvoicesController < ApplicationController
   end
 
   def  new 
-    binding.pry
+    
     @invoice = Invoice.new
     @invoice.invoice_items.build
     @maintenance_request_id= params[:maintenance_request_id]
@@ -41,11 +41,9 @@ class WorkOrderInvoicesController < ApplicationController
     @invoice = Invoice.new(invoice_params)
     
     @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
-    binding.pry
+    
     if @invoice.save
-
-      @invoice.update_columns(trady_id:params[:invoice][:trady_id],maintenance_request_id:params[:invoice][:maintenance_request_id],amount:@total)
-      
+      @invoice.update_columns(amount:@total)
       redirect_to work_order_invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
@@ -59,7 +57,38 @@ class WorkOrderInvoicesController < ApplicationController
     @invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     @trady_id = params[:trady_id] 
+  end
+
+  def edit
+    @invoice = Invoice.find_by(id:params[:id])
+    @maintenance_request_id = params[:maintenance_request_id]
+    @trady = Trady.find_by(id:params[:trady_id])
+   
+    @trady_company = @trady.trady_company
+  end
+
+  def update
+    @invoice = Invoice.find_by(id:params[:id])
+    @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
+    @maintenance_request_id = params[:invoice][:maintenance_request_id]
+    @trady = Trady.find_by(id:params[:invoice][:trady_id])
     
+    @trady_company = @trady.trady_company
+
+    if @invoice.update(invoice_params)
+      @invoice.update_attribute(:amount,@total)
+      flash[:success] = "Your Invoice has been updated"
+      redirect_to work_order_invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id])
+    else
+      flash[:danger] = "Sorry Something went wrong "
+      render :edit
+    end 
+  end
+
+  def send_invoice
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    AgentsMaintenanceRequestInvoiceWorker.perform_async(maintenance_request.id)
+    maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", maintenance_request_status:"Completed")
   end
 
   private

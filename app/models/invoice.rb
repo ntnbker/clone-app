@@ -4,8 +4,8 @@ class Invoice < ApplicationRecord
   has_many :invoice_items, inverse_of: :invoice
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
 
-  attr_accessor :maintenance_request_id
-  attr_accessor :trady_id
+  # attr_accessor :maintenance_request_id
+  # attr_accessor :trady_id
   attr_accessor :quote_id 
   
   def calculate_total(items_hash={})

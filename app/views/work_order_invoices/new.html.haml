@@ -10,9 +10,10 @@
 %div.container.well
   %p
     Please enter Invoice details
-  =form_for @invoice, url:"/work_order_invoices" do |f|
-    =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
-    =f.hidden_field :trady_id, value:"#{@trady.id}"
+  =bootstrap_nested_form_for @invoice, url:"/work_order_invoices" do |f|
+    =f.hidden_field  :trady_id, value:"#{@trady.id}"
+    =f.hidden_field  :maintenance_request_id, value:"#{@maintenance_request_id}"
+    
     #items
       
       =f.fields_for :invoice_items do |form|
