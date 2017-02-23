@@ -85,8 +85,8 @@ class TradiesController < ApplicationController
 
 
             mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
-            apple = AgencyTrady.create(agency_id:@agency.id,trady_id:@trady.id)
-            binding.pry
+            AgencyTrady.create(agency_id:@agency.id,trady_id:@trady.id)
+            
           else
             format.html { render "maintenance_requests/show.html.haml" }
             format.js {}

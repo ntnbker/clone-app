@@ -17,7 +17,7 @@ class AppointmentsController < ApplicationController
 
   def create
     
-    binding.pry
+    
     @appointment = Appointment.new(appointment_params)
     maintenance_request = MaintenanceRequest.find_by(id:params[:appointment][:maintenance_request_id])
     tenant_id = params[:appointment][:tenant_id]

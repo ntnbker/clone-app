@@ -15,7 +15,7 @@ class TradyCompaniesController < ApplicationController
     @trady_company = TradyCompany.new(trady_company_params)
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
     @existing_company = TradyCompany.find_by(email:params[:trady_company][:email])
-    binding.pry
+    
     
     @company = @trady.trady_company if !nil
     

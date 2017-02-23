@@ -74,7 +74,7 @@ class WorkOrderInvoicesController < ApplicationController
 
   def edit
     @invoice = Invoice.find_by(id:params[:id])
-    binding.pry
+    
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
    
@@ -82,7 +82,7 @@ class WorkOrderInvoicesController < ApplicationController
   end
 
   def update_invoice
-    binding.pry
+    
     @invoice = Invoice.find_by(id:params[:invoice][:id])
     @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
     @maintenance_request_id = params[:invoice][:maintenance_request_id]

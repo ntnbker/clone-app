@@ -2,7 +2,7 @@ EDIT INVOICE
 %div.container.well
   %p
     Please enter Invoice details
-    -binding.pry
+    
   =bootstrap_nested_form_for(@invoice, url:"/change_work_order_invoice", method: :put) do |f|
     #items
       =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"

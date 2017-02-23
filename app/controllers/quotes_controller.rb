@@ -17,7 +17,7 @@ class QuotesController < ApplicationController
     
     if @quote.save
       @quote.update_attribute(:amount,@total)
-      binding.pry
+      
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"

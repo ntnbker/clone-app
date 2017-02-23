@@ -46,7 +46,7 @@ class InvoicesController < ApplicationController
     @invoice.invoice_items.build
     @maintenance_request_id= params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
-    binding.pry
+    
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
   end
 
@@ -55,7 +55,7 @@ class InvoicesController < ApplicationController
     @invoice = Invoice.new(invoice_params)
     
     @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
-    binding.pry
+    
     if @invoice.save
       @invoice.update_attribute(:amount,@total)
       

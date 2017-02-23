@@ -124,7 +124,7 @@ class MaintenanceRequestsController < ApplicationController
 
 
 
-      binding.pry
+      
         
         #EmailWorker.perform_async(@maintenance_request.id)
          
@@ -150,7 +150,7 @@ class MaintenanceRequestsController < ApplicationController
           @tenant.update_attribute(:property_id, @property.id)
         end 
 
-        binding.pry
+        
         @maintenance_request.save
         
         #CREATE TENANTS
@@ -171,7 +171,7 @@ class MaintenanceRequestsController < ApplicationController
                     contact.tenant.update_attribute(:property_id,@property.id)
                    else 
                     user = User.create(hash)
-                    binding.pry
+                    
                     @contact_tenant = Tenant.new(hash)
                     @contact_tenant.user_id = user.id
                     @contact_tenant.property_id = @property.id
