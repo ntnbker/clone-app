@@ -16,9 +16,18 @@ class InvoicesController < ApplicationController
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     @trady_id = params[:trady_company][:trady_id]
     @quote_id = params[:trady_company][:quote_id]
+    
+    @invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
+
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
-      redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])  
+      
+      if @invoice == nil
+        redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])  
+      elsif @invoice !=nil
+        redirect_to edit_invoice_path(@invoice.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])
+      end 
+
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
       render :edit
@@ -26,13 +35,18 @@ class InvoicesController < ApplicationController
 
   end
 
+
+
+
   def new
-    
+    #this quote instance variable is for front end to add the values into the form using JS
     @quote = Quote.find_by(id:params[:quote_id])
+
     @invoice = Invoice.new
     @invoice.invoice_items.build
     @maintenance_request_id= params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
+    binding.pry
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
   end
 

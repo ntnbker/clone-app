@@ -9,6 +9,6 @@
       total:
       =@invoice.amount
 
-    =link_to "Back", edit_work_order_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)
+    =link_to "Back", edit_work_order_invoice_path(id:@invoice.id, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)
     =link_to "Send Invoice", send_work_order_invoice_path(maintenance_request_id:@maintenance_request.id), :class=>"btn btn-primary btn-lg", method: :post
     

@@ -1,16 +1,13 @@
-%h1 
-  Here the new invoice form goes here
-     
-     
-
+EDIT INVOICE
 %div.container.well
   %p
     Please enter Invoice details
-  =bootstrap_nested_form_for(@invoice, url:"/work_order_invoices" , layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    -binding.pry
+  =bootstrap_nested_form_for(@invoice, url:"/change_work_order_invoice", method: :put) do |f|
     #items
       =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
       =f.hidden_field :trady_id, value:"#{@trady.id}"
-      
+      =f.hidden_field :id, value:"#{@invoice.id}"
       =f.fields_for :invoice_items do |form|
         = render "work_order_invoices/invoice_item_fields", f: form
         = link_to_add_association "Add Another item", f, :invoice_items

@@ -15,7 +15,7 @@ class TradyCompaniesController < ApplicationController
     @trady_company = TradyCompany.new(trady_company_params)
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
     @existing_company = TradyCompany.find_by(email:params[:trady_company][:email])
-
+    binding.pry
     
     @company = @trady.trady_company if !nil
     
@@ -34,7 +34,13 @@ class TradyCompaniesController < ApplicationController
         @trady.update_attribute(:company_name,params[:trady_company][:company_name])
         @trady.update_attribute(:mobile,params[:trady_company][:mobile_number])
         flash[:success] = "You have added your company thank you"
-        redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
+        
+        
+        if params[:trady_company][:work_flow] == "Get Quote"#HERE WE HAVE TO SAY WHERE THE redirect should go. depending on what the form workflow says. 
+          redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
+        elsif params[:trady_company][:work_flow] == "Work Order"
+          redirect_to new_work_order_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
+        end 
       else
         @trady_id = params[:trady_company][:trady_id]
         flash[:danger] = "Please fill in below"
@@ -52,7 +58,11 @@ class TradyCompaniesController < ApplicationController
           # @trady.update_attribute(:email,params[:trady_company][:email])
           # @trady.user.update_attribute(:email,params[:trady_company][:email])
           flash[:success] = "You have added your company thank you"
-          redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
+          if params[:trady_company][:work_flow] == "Get Quote"#HERE WE HAVE TO SAY WHERE THE redirect should go. depending on what the form workflow says. 
+            redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
+          elsif params[:trady_company][:work_flow] == "Work Order"
+            redirect_to new_work_order_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
+          end 
         else
           flash[:danger] = "Please fill in below"
           render :new
@@ -73,10 +83,18 @@ class TradyCompaniesController < ApplicationController
      
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     @trady_id = params[:trady_company][:trady_id]
-     
+    
+    #if quote already exists we redirect them so they can continue with the form
+    @quote = @trady.quotes.where(maintenance_request_id: params[:trady_company][:maintenance_request_id]).first
+
+
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
-      redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])  
+      if @quote == nil
+        redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])  
+      elsif @quote != nil
+        redirect_to edit_quote_path(@quote.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id])
+      end   
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
       render :edit
@@ -102,7 +120,7 @@ class TradyCompaniesController < ApplicationController
   private
     
     def trady_company_params
-      params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email)
+      params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow)
     end
 
     def email_auto_login(id)

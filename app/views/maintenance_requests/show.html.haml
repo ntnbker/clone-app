@@ -1,8 +1,9 @@
 
 .container
   %div
-    - @gallery.each do |image| # for each image
-      = image_tag(image.url.to_s) # display the image
+    -if @gallery != nil
+      - @gallery.each do |image| # for each image
+        = image_tag(image.url.to_s) # display the image
   %h3 
     = @maintenance_request.service_type 
     Needed for 
@@ -35,8 +36,8 @@
   %p
     =@maintenance_request.maintenance_description 
 
-
-  =render "maintenance_requests/quotes", object:@quotes
+  -if current_user.agent? || current_user.agency_admin?
+    =render "maintenance_requests/quotes", object:@quotes
   
 
 
@@ -77,9 +78,10 @@
     %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
       =link_to "Job Completed", job_completed_path(maintenance_request_id:@maintenance_request.id), method: :post
   -elsif current_user.trady?
-    -if @maintenance_request.trady != nil
+    -if @maintenance_request.trady != nil && @quote == nil
+      -binding.pry
       %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
-        =link_to "Send Invoice", company_information_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request.id,trady_id:@trady_id)
+        =link_to "Send Invoice", new_company_information_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id)
     / && current_user.trady? && current_user.trady.id == @quote.trady_id
     -if @quote != nil && @quote.trady != nil
       %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 

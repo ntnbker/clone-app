@@ -1,6 +1,5 @@
-%h1
-  Hello
-%div.container
+
+%div.container.well
   =bootstrap_form_for(@trady_company, url:"/company_information_invoice",method: :put) do |a|
     = a.text_field :company_name
     = a.text_field :trading_name

@@ -24,7 +24,7 @@
       =f.text_area :maintenance_description
       
     #maintenance_request_images
-      =f.fields_for :maintenance_request_images do |image|
+      =f.fields_for :maintenance_request_image do |image|
         =image.file_field :images, multiple: true
     %hr
   

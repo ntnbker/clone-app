@@ -21,5 +21,5 @@
         = link_to_add_association "Add Another item", f, :invoice_items
     =f.submit "Next"
 
-    =link_to "Back", confirm_company_invoice_path(trady_company_id:@trady_company.id,maintenance_request_id:@maintenance_request_id, trady_id:@trady.id)
+    =link_to "Back", company_information_path(trady_company_id:@trady_company.id,maintenance_request_id:@maintenance_request_id, trady_id:@trady.id)
 

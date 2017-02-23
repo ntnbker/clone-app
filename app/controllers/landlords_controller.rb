@@ -9,7 +9,7 @@ class LandlordsController < ApplicationController
     if user 
       #send him the maintenance request by email if 
       if property.landlord_id == nil 
-      property.update_attribute(:landlord_id, user.landlord.id)
+        property.update_attribute(:landlord_id, user.landlord.id)
       end 
       
       #LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id], user.landlord.id )
@@ -33,7 +33,7 @@ class LandlordsController < ApplicationController
           if property.landlord_id == nil 
             property.update_attribute(:landlord_id, @user.landlord.id)
           end 
-          redirect_to maintenance_request_path(id:params[:landlord][:maintenance_request_id])
+          #redirect_to maintenance_request_path(id:params[:landlord][:maintenance_request_id])
         else
           format.html { render "maintenance_requests/show.html.haml", :notice =>"Please fill out the form" }
           format.js{}

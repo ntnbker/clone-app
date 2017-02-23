@@ -1,4 +1,13 @@
 class WorkOrderInvoicesController < ApplicationController
+
+  def new_trady_company_invoice
+    @trady_company = TradyCompany.new
+    @maintenance_request_id = params[:maintenance_request_id]
+    
+    @trady = Trady.find_by(id:params[:trady_id])
+    @company = @trady.trady_company if !nil
+  
+  end
   
   def edit_trady_company_invoice
     @trady_company = TradyCompany.find_by(id:params[:trady_company_id])
@@ -15,15 +24,19 @@ class WorkOrderInvoicesController < ApplicationController
     @trady.user.update_attribute(:email,params[:trady_company][:email]) 
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     @trady_id = params[:trady_company][:trady_id]
-    
+    @invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
+
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
 
-       
-      redirect_to new_work_order_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])  
+      if @invoice == nil    
+        redirect_to new_work_order_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])  
+      elsif @invoice != nil
+        redirect_to edit_work_order_invoice_path(@invoice,maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])  
+      end 
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
-      render :edit
+      render :edit_trady_company_invoice
     end 
 
   end
@@ -61,14 +74,16 @@ class WorkOrderInvoicesController < ApplicationController
 
   def edit
     @invoice = Invoice.find_by(id:params[:id])
+    binding.pry
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
    
     @trady_company = @trady.trady_company
   end
 
-  def update
-    @invoice = Invoice.find_by(id:params[:id])
+  def update_invoice
+    binding.pry
+    @invoice = Invoice.find_by(id:params[:invoice][:id])
     @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
     @maintenance_request_id = params[:invoice][:maintenance_request_id]
     @trady = Trady.find_by(id:params[:invoice][:trady_id])

@@ -69,8 +69,10 @@ Rails.application.routes.draw do
   ##########WORK ORDER INVOICE RESOURCES/ROUTES######
   ###################################################
   get "company_information" =>"work_order_invoices#edit_trady_company_invoice"
+  get "new_company_information" =>"work_order_invoices#new_trady_company_invoice"
   put "company_information_invoice" => "work_order_invoices#update_trady_company_invoice"
   post "send_work_order_invoice" => "work_order_invoices#send_invoice", :as => :send_work_order_invoice
+  put "change_work_order_invoice" => "work_order_invoices#update_invoice"
   resources :work_order_invoices
 
   ###################################################
