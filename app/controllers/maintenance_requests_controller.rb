@@ -236,6 +236,10 @@ class MaintenanceRequestsController < ApplicationController
       @trady_id = @maintenance_request.trady.id
       @trady_company_id = @maintenance_request.trady.trady_company.id
     end 
+    binding.pry
+    if !@maintenance_request.invoices.empty? 
+      @invoice = @maintenance_request.invoices.first
+    end 
 
     if @maintenance_request.agency_admin != nil
       if @maintenance_request.agency_admin.agency.tradies !=nil
