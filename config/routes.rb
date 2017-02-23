@@ -66,6 +66,20 @@ Rails.application.routes.draw do
   put "update_company_invoice" =>"invoices#update_trady_company_invoice"
   post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
   ###################################################
+  ##########WORK ORDER INVOICE RESOURCES/ROUTES######
+  ###################################################
+  get "company_information" =>"work_order_invoices#edit_trady_company_invoice"
+  put "company_information_invoice" => "work_order_invoices#update_trady_company_invoice"
+  post "send_work_order_invoice" => "work_order_invoices#send_invoice", :as => :send_work_order_invoice
+  resources :work_order_invoices
+
+  ###################################################
+  ##########VIEW INVOICES RESOURCES/ROUTES######
+  ###################################################
+  resources :view_invoices, only:[:show]
+  post "print_invoice" =>"view_invoices#print_invoice", :as=> :print_invoice
+
+  ###################################################
   ##########TRADIE RESOURCES/ROUTES#################
   ###################################################
   get "trady_information" => 'tradies#trady_information', :as=>:trady_information
@@ -83,16 +97,28 @@ Rails.application.routes.draw do
   post "request_quote" => "quotes#landlord_requests_quote", :as => :request_quote 
   post "picks_quote" => "quotes#landlord_decides_quote", :as => :landlord_decides_quote
 
-  ###################################################
-  ##########APPOINTMENTS RESOURCES/ROUTES############
-  ###################################################
+  ###################################################################
+  ##########TRADY AND TENANT APPOINTMENTS RESOURCES/ROUTES###########
+  ###################################################################
   resources :appointments, only:[:new,:create,:show, :edit, :update]
   post "accept_appointment" =>"appointments#accept_appointment", :as =>:accept_appointment
 
+  ###################################################################
+  ##########LANDLORD AND TENANT APPOINTMENTS RESOURCES/ROUTES########
+  ###################################################################
+  resources :landlord_appointments, only:[:new,:create,:show, :edit]
+  put "update_landlord_appointment" =>"landlord_appointments#update"
+  post "accept_landlord_appointment" =>"landlord_appointments#accept_appointment", :as =>:accept_landlord_appointment
   ###################################################
   ##########COMMENTS RESOURCES/ROUTES################
   ###################################################
   resources :comments, only:[:create]
+
   
+  ###################################################
+  ##########ACTION STATUS RESOURCES/ROUTES###########
+  ###################################################
+  post "job_completed" => "action_statuses#job_complete"
+
 
  end

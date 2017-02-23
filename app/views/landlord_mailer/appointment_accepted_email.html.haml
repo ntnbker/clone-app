@@ -1,0 +1,19 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hello #{@landlord.name.capitalize}
+      An appointment with #{@tenant.name.capitalize} for the maintenance request below has been accepted.
+
+    %h3
+      =@maintenance_request.maintenance_heading
+    %p
+      =@maintenance_request.maintenance_description
+
+    %p When the job has been completed please click on the button below to let us know the job was completed. Thank You. 
+
+    %button
+      =link_to "Job Completed", maintenance_request_url(@maintenance_request,user_id:@landlord.user.id)
+
+    

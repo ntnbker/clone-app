@@ -24,7 +24,7 @@ gem 'faker'
 gem 'sinatra', :require => nil
 
 gem 'sidekiq'
-gem 'carrierwave'
+gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'mini_magick'
 gem 'stripe'
 gem 'figaro', '~> 1.1.0'

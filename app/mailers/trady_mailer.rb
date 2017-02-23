@@ -51,8 +51,13 @@ class TradyMailer < ActionMailer::Base
     mail(to:@trady.email, subject:"New Appointment Time Requested")
   end
 
-
-
+  def work_order_email(trady_object, maintenance_request_object)
+    @maintenance_request = maintenance_request_object
+    @trady = trady_object
+    track user: @trady.user
+    track extra: {maintenance_request_id:@maintenance_request.id}
+    mail(to:@trady.email, subject:"Work Order")
+  end
 end 
 
 

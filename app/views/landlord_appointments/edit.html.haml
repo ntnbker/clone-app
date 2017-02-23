@@ -1,0 +1,78 @@
+
+%div.container
+  %h3 
+    Set Landlord Appointment Time
+  %div.well
+    -@appointment.comments.each do |comment|
+      %div.well
+        =comment.body
+      %br
+    %br
+    =form_for @comment, remote: true do |comments_form|
+      Comment:
+      %br
+      =comments_form.text_area :body
+      =comments_form.hidden_field :appointment_id, value:@appointment.id
+      =comments_form.hidden_field :tenant_id, value:@tenant_id
+      =comments_form.hidden_field :landlord_id, value:@landlord_id
+      =comments_form.hidden_field :maintenance_request_id, value:@maintenance_request_id
+
+    %h6
+      Suggested Appointment Date and Time : 
+      =@appointment.date.strftime("%A %B %d %Y")
+      =@appointment.time.strftime('%r')
+
+
+    = form_for @appointment, url:update_landlord_appointment_path(id:@appointment.id), method: :put do |f|
+      =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+      =f.hidden_field :tenant_id, value:@tenant_id
+      =f.hidden_field :landlord_id, value:@landlord_id
+      =f.hidden_field :status, value:"Active"
+      =f.hidden_field :current_user_role, value: current_user.role.roleable_type
+      =f.date_field :date
+      
+      =f.time_select :time, {ampm: true}
+      %br
+      
+      
+
+
+
+
+      %h4
+
+      %br
+      =f.submit "Submit New Appointment Time and Comment", id:"appointment-submit-button"
+
+
+
+:javascript
+  
+
+
+   $(document).ready(function() {
+    $('#appointment-submit-button').click(function() {
+      $.ajax({
+        url: "/comments",
+        type: "POST",
+        dataType: "script",
+        data:{
+          comment:{body:$("#comment_body").val(), 
+          appointment_id:$("#comment_appointment_id").val(), 
+          tenant_id:$("#comment_tenant_id").val(), 
+          landlord_id:$("#comment_landlord_id").val(),  
+          maintenance_request_id:$("#comment_maintenance_request_id").val()}
+          
+        }
+      });
+    });
+
+
+
+   
+
+   });
+
+
+
+   

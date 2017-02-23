@@ -27,9 +27,7 @@ class InvoicesController < ApplicationController
   end
 
   def new
-    #below we are using the info from the quote to create a new invoice.
-    #the quote instance grabs all the info and fills out the form
-    #including all the items. When submitted however it will create a new invoice object
+    
     @quote = Quote.find_by(id:params[:quote_id])
     @invoice = Invoice.new
     @invoice.invoice_items.build
@@ -93,6 +91,7 @@ class InvoicesController < ApplicationController
   def send_invoice
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     AgentsMaintenanceRequestInvoiceWorker.perform_async(maintenance_request.id)
+    maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", maintenance_request_status:"Completed")
   end
 
 
@@ -106,7 +105,7 @@ class InvoicesController < ApplicationController
 
     def invoice_params
     params.require(:invoice).permit(:id, :trady_id,:quote_id ,:maintenance_request_id,invoice_items_attributes:[:id,:amount,:item_description, :_destroy])
-  end
+    end
 
 end 
 

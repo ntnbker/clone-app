@@ -1,0 +1,27 @@
+THIS IS FOR APPOINTMENTS WITH THE LANDLORD 
+%div.container
+  %h3 
+    Set Appointment Time
+  %div.well
+    = form_for @appointment, url:"/landlord_appointments" do |f|
+      =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+      =f.hidden_field :tenant_id, value:@tenant_id
+      =f.hidden_field :landlord_id, value:@landlord_id
+      =f.hidden_field :status, value:"Active"
+      =f.hidden_field :current_user_role, value:"#{current_user.role.roleable_type}"
+      =f.date_field :date
+      
+      =f.time_select :time, {ampm: true}
+      %br
+      %h4
+      =f.fields_for :comments do |comments_form|
+        Comment:
+        =comments_form.text_area :body
+        =comments_form.hidden_field :tenant_id, value:@tenant_id
+        =comments_form.hidden_field :landlord_id, value:@landlord_id
+      %br
+      =f.submit "Submit Appointment Time and Comment"
+
+
+
+

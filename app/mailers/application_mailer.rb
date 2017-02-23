@@ -42,7 +42,7 @@ class ApplicationMailer < ActionMailer::Base
     email_array.each do |email|
       user = User.find_by(email:email)
       
-      ApplicationMailer.email_extra_tenant(maintenance_request,email,user.id, user.tenant.full_name).deliver
+      ApplicationMailer.email_extra_tenant(maintenance_request,email,user.id, user.tenant.name).deliver
     end 
     
     
@@ -66,10 +66,15 @@ class ApplicationMailer < ActionMailer::Base
   end
 
 
-  def email_extra_tenant(maintenance_request, tenant_email, tenant_id, tenant_name)
+  def email_extra_tenant(maintenance_request, tenant_email, user_id, tenant_name)
+    @user = User.find_by(id:user_id)
     @maintenance_request = maintenance_request
     @tenant_name = tenant_name
-    @tenant_id = tenant_id
+    
+    
+    
+    track user: @user
+    track extra: {maintenance_request_id:maintenance_request.id}
     mail(from:"ron@email.com", to:tenant_email, subject: "Tenants Maintenance Request")
   end
 
@@ -100,15 +105,6 @@ class ApplicationMailer < ActionMailer::Base
   end
 
 
-
-
-
-
-
-
-
-
- 
 
 end
 
