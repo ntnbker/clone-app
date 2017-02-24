@@ -1,0 +1,17 @@
+EDIT INVOICE
+%div.container.well
+  %p
+    Please enter Invoice details
+    
+  =bootstrap_nested_form_for(@invoice, url:"/change_work_order_invoice", method: :put) do |f|
+    #items
+      =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+      =f.hidden_field :trady_id, value:"#{@trady.id}"
+      =f.hidden_field :id, value:"#{@invoice.id}"
+      =f.fields_for :invoice_items do |form|
+        = render "work_order_invoices/invoice_item_fields", f: form
+        = link_to_add_association "Add Another item", f, :invoice_items
+    =f.submit "Next"
+
+    =link_to "Back", company_information_path(trady_company_id:@trady_company.id,maintenance_request_id:@maintenance_request_id, trady_id:@trady.id)
+

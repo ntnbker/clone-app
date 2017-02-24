@@ -1,0 +1,26 @@
+%div.container.well
+  =bootstrap_nested_form_for(@trady_company, url: "/trady_companies", layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |a|
+    = a.text_field :company_name, value:"#{@company.nil? ? @trady.company_name : @company.company_name}"
+    = a.text_field :trading_name, value:"#{@company.nil? ? '' : @company.trading_name}"
+    = a.text_field :abn, value:"#{@company.nil? ? '' : @company.abn}"
+    = a.form_group :gst_registration do 
+      = a.check_box :gst_registration, label: "GST  registration", value:"#{@company.nil? ? '' : @company.gst_registration}"
+    = a.text_field :address, value:"#{@company.nil? ? '' : @company.address}"
+    = a.form_group :mailing_address_same do
+      = a.check_box :mailing_address_same, label: "Mailing Address same as Above", value:"#{@company.nil? ? '' : @company.mailing_address_same}"
+    = a.text_field :mailing_address, value:"#{@company.nil? ? '' : @company.mailing_address}" 
+    = a.text_field :mobile_number, value:"#{@company.nil? ? @trady.mobile : @company.mobile_number}"
+    = a.text_field :email, value:"#{@company.nil? ? @trady.email : @company.email}", label:"Company Email"
+    = a.text_field :bank_account_number, label: "Bank Account Number"
+    = a.text_field :bsb_number, label: "BSB Number"
+    = a.text_field :account_name, label: "Account Name"
+    %p
+      Tradie Email: 
+      = @trady.email
+      %br
+      click here to edit Tradie/User email 
+    = a.hidden_field :maintenance_request_id, value:@maintenance_request_id
+    = a.hidden_field :trady_id, value:@trady.id
+    = a.hidden_field :work_flow, value:"Work Order"
+    = a.submit 'Next'
+     

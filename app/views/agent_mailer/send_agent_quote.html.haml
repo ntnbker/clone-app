@@ -7,10 +7,6 @@
       =@maintenance_request.maintenance_heading
     %Button
       =link_to "See Quote", show_quote_url(quote_id:@quote.id, maintenance_request_id:@maintenance_request.id, user_id:@user.id)
-    / %p
-    /   -@quote.quote_items.each do |f|
-    /     =f.item_description
-    /     =f.amount
-    / %p
-    /   Total:
-    /   =@quote.amount
+    %Button
+      =link_to "Maintenance Request", maintenance_request_url(@maintenance_request, user_id:@user.id)
+        

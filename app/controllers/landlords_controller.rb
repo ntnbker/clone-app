@@ -9,7 +9,7 @@ class LandlordsController < ApplicationController
     if user 
       #send him the maintenance request by email if 
       if property.landlord_id == nil 
-      property.update_attribute(:landlord_id, user.landlord.id)
+        property.update_attribute(:landlord_id, user.landlord.id)
       end 
       
       #LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id], user.landlord.id )
@@ -33,7 +33,7 @@ class LandlordsController < ApplicationController
           if property.landlord_id == nil 
             property.update_attribute(:landlord_id, @user.landlord.id)
           end 
-          redirect_to maintenance_request_path(id:params[:landlord][:maintenance_request_id])
+          #redirect_to maintenance_request_path(id:params[:landlord][:maintenance_request_id])
         else
           format.html { render "maintenance_requests/show.html.haml", :notice =>"Please fill out the form" }
           format.js{}
@@ -63,7 +63,7 @@ class LandlordsController < ApplicationController
       end 
       
       LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id], user.landlord.id )
-      maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress",agent_last_action:"Seek owner instructions", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+      maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
       
     elsif !user 
       
@@ -78,7 +78,7 @@ class LandlordsController < ApplicationController
           role = Role.create(user_id:@user.id)
           @landlord.roles << role
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
-          maintenance_request.action_status.update_columns(agent_last_action:"Seek owner instructions", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+          maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
           
           if property.landlord_id == nil 
             property.update_attribute(:landlord_id, user.landlord.id)

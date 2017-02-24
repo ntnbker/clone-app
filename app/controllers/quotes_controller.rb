@@ -17,7 +17,7 @@ class QuotesController < ApplicationController
     
     if @quote.save
       @quote.update_attribute(:amount,@total)
-      binding.pry
+      
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
@@ -77,6 +77,7 @@ class QuotesController < ApplicationController
           
           trady = quote.trady 
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+          maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
         else
           quote.update_attribute(:status, "Declined")
@@ -131,7 +132,8 @@ class QuotesController < ApplicationController
   def landlord_requests_quote
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     LandlordRequestsQuoteEmailWorker.perform_async(maintenance_request.id)
-    maintenance_request.action_status.update_attribute(:agent_status,"Quote Requested")
+    binding.pry
+    maintenance_request.action_status.update_columns(agent_status:"Quote Requested", action_category:"Action Required")
     
     #Send Email to the agent  
     #change the status of the action table to the   
@@ -146,7 +148,7 @@ class QuotesController < ApplicationController
           
           trady = quote.trady 
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
-          
+          maintenance_request.update_attribute(:trady_id,trady.id)
           #EMAIL AGENT QUOTE APPROVED
           maintenance_request.action_status.update_attribute(:agent_status,"Quote Approved Tradie To Organise Appointment")
           quote.update_attribute(:status, params[:status])

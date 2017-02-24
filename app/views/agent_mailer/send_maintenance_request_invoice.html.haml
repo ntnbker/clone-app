@@ -4,6 +4,10 @@
   %body
     %p 
       Hi, an invoice has been submitted by a trady for the maintenance request
-      =@maintenance_request.maintenance_heading
       
+      
+    %p
+      Click the button below to see the invoice
+    %button
+      =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@user.id)
     

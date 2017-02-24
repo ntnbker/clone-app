@@ -1,5 +1,5 @@
 var FieldList = React.createClass({
-    render: function(){    
+    render: function() {    
         return <ul>
             {this.props.fields.map((field, fieldIndex) => 
                 <li key={fieldIndex}>
@@ -13,15 +13,18 @@ var FieldList = React.createClass({
 
 var QuoteField = React.createClass({
     render: function() {
+        var quote = this.props.quote;
         return <div className="field">
             <fieldset>
                 <p> Item description </p>
                 <input type="text" name={'quote[quote_items_attributes][' + this.props.x + '][item_description]'}
-                                     id={'quote_quote_items_attributes_' + this.props.x + '_item_description'} required />
+                                     id={'quote_quote_items_attributes_' + this.props.x + '_item_description'}
+                           defaultValue={quote ? quote.item_description : null} required />
 
                 <p> Amount </p>
                 <input type="text" name={'quote[quote_items_attributes][' + this.props.x + '][amount]'}
-                                     id={'quote_quote_items_attributes_' + this.props.x + '_amount'} required />
+                                     id={'quote_quote_items_attributes_' + this.props.x + '_amount'}
+                           defaultValue={quote ? quote.amount : null} required />
             </fieldset>
         </div>
     }
@@ -29,12 +32,24 @@ var QuoteField = React.createClass({
 
 var QuoteList = React.createClass({
     getInitialState : function() {
-      return {
-        fields : [ <QuoteField x={0}/> ],
-        x : 0
-      }
+        var fields = [];
+        var x = -1;
+
+        if (this.props.quote_items) {
+            fields = this.props.quote_items.map((item, index) =>
+                        fields.concat([ <QuoteField quote={item} x={index}/> ]));
+            x = this.props.quote_items.length-1;
+        } else {
+            fields = [ <QuoteField x={0}/> ];
+            x = 0;
+        }
+
+        return {
+            fields : fields,
+            x : x
+        }    
     },
-    
+
     removeField: function(e) {
         var fieldIndex = parseInt(e.target.value, 10);
         this.setState(state => {
@@ -43,7 +58,7 @@ var QuoteList = React.createClass({
         });
     },
 
-    addField:function (e){
+    addField: function(e) {
         this.setState({
             fields: this.state.fields.concat([ <QuoteField x={++this.state.x}/> ])
         });
@@ -51,7 +66,7 @@ var QuoteList = React.createClass({
         e.preventDefault();
     },
 
-    render: function(){ 
+    render: function() { 
         return(
             <div>
                 <FieldList fields={this.state.fields} removeField={this.removeField} />
@@ -62,7 +77,7 @@ var QuoteList = React.createClass({
 });
 
 var QuoteFields = React.createClass({
-    render: function(){
+    render: function() {
         return <form role="form" id="new_quote" action="/quotes" acceptCharset="UTF-8" method="post">   
             <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 
@@ -71,7 +86,7 @@ var QuoteFields = React.createClass({
             <input type="hidden" value={this.props.status} name="quote[status]" id="quote_status" />
             <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
 
-            <QuoteList />
+            <QuoteList quote_items={this.props.quote_items} />
 
             <hr />
 

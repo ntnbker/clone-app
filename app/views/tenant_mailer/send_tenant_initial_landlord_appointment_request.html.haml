@@ -1,0 +1,21 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hello #{@tenant.name.capitalize}
+      An appointment with the landlord for the maintenance request below has been made
+
+    %h3
+      =@maintenance_request.maintenance_heading
+    %p
+      =@maintenance_request.maintenance_description
+
+    %p To confirm the appointment with the trady please click the button below.
+
+    %button
+      =link_to "Confirm Appointment", landlord_appointment_url(@appointment,maintenance_request_id:@maintenance_request.id,landlord_id:@landlord.id,tenant_id:@tenant.id, user_id:@tenant.user.id)
+
+
+
+    

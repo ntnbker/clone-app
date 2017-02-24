@@ -1,0 +1,24 @@
+
+
+%div.container
+  %div.well
+    %h5 
+      Company Information
+    %p
+      =@trady.trady_company.company_name
+      %br
+      =@trady.trady_company.address
+      %br
+      =@trady.trady_company.mobile_number
+      %br
+      =@trady.trady_company.email
+    -@invoice.invoice_items.each do |f|
+      %p
+        =f.item_description
+        =f.amount 
+    %p
+      total:
+      =@invoice.amount
+    %button
+      = link_to 'Print Invoice', print_invoice_path(id:@invoice), :onclick => 'window.print();return false;', method: :post
+

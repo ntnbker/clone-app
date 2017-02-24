@@ -30,7 +30,7 @@
 
       / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
     %button
-      =link_to "Suggest Other Appointment Time", edit_appointment_path(@appointment,maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id)
+      =link_to "Suggest Other Appointment Time", edit_appointment_path(@appointment,maintenance_request_id:@maintenance_request.id, landlord_id:@landlord_id, tenant_id:@tenant_id)
 
 
 

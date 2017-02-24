@@ -43,13 +43,22 @@ class TradiesController < ApplicationController
         end
       end
       
-      TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+
+      if params[:trady][:trady_request] == "Quote"
+        TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+      elsif params[:trady][:trady_request] == "Work Order"
+        TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
+        mr.update_attribute(:trady_id, @user.trady.id )
+      end 
+
+
+
       mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
          
     else
       respond_to do |format|
           if @trady.valid?
-            format.html {render "maintenance_requests/show.html.haml", :success =>"Your message was sent FUCK THIS SHIT"}  
+            format.html {render "maintenance_requests/show.html.haml", :success =>"Your message was sent"}  
             format.js {render layout: false, content_type: 'text/javascript'}
             @user = User.create(email:params[:trady][:email],password:SecureRandom.hex(5))
             @trady.user_id = @user.id
@@ -67,7 +76,14 @@ class TradiesController < ApplicationController
               @agency = agency_admin.agency
             end
                 
-            TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+            if params[:trady][:trady_request] == "Quote"
+              TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+            elsif params[:trady][:trady_request] == "Work Order"
+              TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
+              mr.update_attribute(:trady_id, @user.trady.id )
+            end 
+
+
             mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
             AgencyTrady.create(agency_id:@agency.id,trady_id:@trady.id)
             
@@ -90,7 +106,7 @@ class TradiesController < ApplicationController
   private
 
   def trady_params
-    params.require(:trady).permit(:id,:user_id,:tradie_company_id,:name,:mobile,:email,:skill,:maintenance_request_id,:skill_required, :company_name)
+    params.require(:trady).permit(:id,:user_id,:tradie_company_id,:name,:mobile,:email,:skill,:maintenance_request_id,:skill_required, :company_name, :trady_request)
     
   end
 

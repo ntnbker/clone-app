@@ -7,38 +7,56 @@ module Ahoy
     
 
     belongs_to :maintenance_request
-    after_update :update_the_agents_status_to_initiated, if: :clicked_at_changed?
-    after_update :update_agents_status_to_awaiting_quote, if: :clicked_at_changed?  
-    # after_create :update_type
+    after_update :update_agent_status, if: :clicked_at_changed?
+    
 
   def self.all_maintenance_request_emails(maintenance_request_id)
     self.where(:maintenance_request_id=>maintenance_request_id)
     
   end
 
-  def update_the_agents_status_to_initiated
+  
+  def update_agent_status
     
-    if mailer == "LandlordMailer#send_landlord_maintenance_request"
+    
+    if mailer == "ApplicationMailer#send_agency_admin_maintenance_request_email"
       self.maintenance_request.action_status.update_attribute(:agent_status, "Initiate Maintenance Request")
-    end 
-  end
-
-  def update_the_agents_status_to_awaiting_owner_instruction
-    #THIS IS FOR WHEN THE LANDLORD CLICKS ON THE LINK IN THE EMAIL ASKING HIM WHAT TO DO. ADD PROPER MAILER HERE
-    if mailer == "LandlordMailer#send_landlord_maintenance_request"
-      self.maintenance_request.action_status.update_attribute(:agent_status, "Awaiting Owner Instruction")
-    end 
-  end
-
-
-
-  def update_agents_status_to_awaiting_quote
-    if mailer == 'TradyMailer#request_quote_email'
+    elsif mailer == "ApplicationMailer#email_extra_tenant"
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Initiate Maintenance Request")
+    elsif mailer == "LandlordMailer#send_landlord_maintenance_request"
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Initiate Maintenance Request")
+    elsif mailer == "AgentMailer#request_quote_email"
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Requested")
+    elsif mailer == 'TradyMailer#request_quote_email'
       self.maintenance_request.action_status.update_attribute(:agent_status, "Awaiting Quote")
+    elsif mailer == 'AgentMailer#send_agent_quote'
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Received Awaiting Approval")
+    elsif mailer == 'LandlordMailer#send_landlord_quote'
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Received Awaiting Approval")
+    elsif mailer == 'TradyMailer#approved_quote_email'
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Approved Tradie To Organise Appointment")
+    elsif mailer == 'TenantMailer#send_tenant_initial_appointment_request'
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Tenant To Confirm Appointment")
+    elsif mailer == 'TradyMailer#alternative_appointment_picked_email'
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Tradie To Confirm Appointment")
+    elsif mailer == 'TenantMailer#alternative_appointment_picked_email'
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Tenant To Confirm Appointment")
+    elsif mailer == 'TradyMailer#appointment_accepted_email'
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled - Awaiting Invoice")
+      
+
     end 
+
+
+    
+
+
+
+    
   end
 
 
+  
 
 
 

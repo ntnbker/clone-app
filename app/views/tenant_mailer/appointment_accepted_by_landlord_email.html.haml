@@ -1,0 +1,18 @@
+!!! 5
+%html(lang="en-US")
+  
+  %body
+    %p 
+      Hello #{@tenant.name.capitalize}
+      An appointment confirmation with the landlord #{@landlord.name.capitalize} for the maintenance request below has been made.
+      Please allow access to the premise on the date of the appointment. 
+      
+
+    %h3
+      =@maintenance_request.maintenance_heading
+    %p
+      =@maintenance_request.maintenance_description
+
+    
+
+    

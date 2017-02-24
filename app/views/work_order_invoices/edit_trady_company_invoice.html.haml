@@ -1,0 +1,24 @@
+
+%div.container.well
+  =bootstrap_form_for(@trady_company, url:"/company_information_invoice",method: :put) do |a|
+    = a.text_field :company_name
+    = a.text_field :trading_name
+    = a.text_field :abn
+    = a.form_group :gst_registration do 
+      = a.check_box :gst_registration, label: "GST  registration"
+    = a.text_field :address
+    = a.form_group :mailing_address_same do
+      = a.check_box :mailing_address_same
+    = a.text_field :mailing_address
+    = a.text_field :mobile_number
+    = a.text_field :email
+    = a.text_field :bank_account_number, label: "Bank Account Number"
+    = a.text_field :bsb_number, label: "BSB Number"
+    = a.text_field :account_name, label: "Account Name"
+    = a.hidden_field :maintenance_request_id, value:@maintenance_request_id
+    = a.hidden_field :trady_id, value:@trady_id
+    = a.hidden_field :trady_company_id, value:@trady_company.id
+    
+    = a.submit 'Next'
+
+    
