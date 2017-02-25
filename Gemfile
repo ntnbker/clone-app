@@ -41,6 +41,7 @@ gem 'bootstrap3-datetimepicker-rails', '~> 4.17.43'
 gem 'server-generated-popups'
 gem 'react-rails'
 gem 'ahoy_email'
+gem 'will_paginate', '~> 3.1.0'
 
 
 group :development, :test do

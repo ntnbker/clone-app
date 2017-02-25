@@ -8,6 +8,9 @@
         =quote.trady.company_name
       %h6
         =quote.status
+      %p
+        $
+        =quote.amount
       %div 
         -if quote.status == "Approved" 
           =link_to "Cancel", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post

@@ -280,12 +280,19 @@ class MaintenanceRequestsController < ApplicationController
   def index
 
     if current_user.agency_admin?
-      @maintenance_requests = current_user.agency_admin.maintenance_requests
+      @maintenance_requests = current_user.agency_admin.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
+
     elsif current_user.agent?
-      @maintenance_requests = current_user.agent.maintenance_requests
+      @maintenance_requests = current_user.agent.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
+
     elsif current_user.tenant?
-      @maintenance_requests = current_user.tenant.maintenance_requests
+      @maintenance_requests = current_user.tenant.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
+
     end 
+
+    # if @maintenance_request.maintenance_request_image != nil
+    #   @gallery = @maintenance_request.maintenance_request_image.images
+    # end 
 
   end
 

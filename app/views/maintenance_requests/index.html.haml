@@ -1,7 +1,15 @@
+%div  
+  
+
+
 
 %div.container
   -@maintenance_requests.each do |maintenance_request|
     %div.well
+      %div
+        -if maintenance_request.maintenance_request_image != nil
+          -maintenance_request.maintenance_request_image.images.each do |image|
+            = image_tag(image.url.to_s)
       %h3
         =link_to "#{maintenance_request.maintenance_heading}", maintenance_request_path(maintenance_request)
       %p
@@ -15,3 +23,6 @@
       %p
         Address:
         = maintenance_request.property.property_address
+
+
+      = will_paginate @maintenance_requests 
