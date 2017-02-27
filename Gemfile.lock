@@ -111,6 +111,19 @@ GEM
     diff-lcs (1.2.5)
     domain_name (0.5.20161021)
       unf (>= 0.0.5, < 1.0.0)
+    elasticsearch (5.0.3)
+      elasticsearch-api (= 5.0.3)
+      elasticsearch-transport (= 5.0.3)
+    elasticsearch-api (5.0.3)
+      multi_json
+    elasticsearch-model (0.1.9)
+      activesupport (> 3)
+      elasticsearch (> 0.4)
+      hashie
+    elasticsearch-rails (0.1.9)
+    elasticsearch-transport (5.0.3)
+      faraday
+      multi_json
     errbase (0.0.3)
     erubis (2.7.0)
     eventmachine (1.2.0.1)
@@ -133,6 +146,7 @@ GEM
     haml (4.0.7)
       tilt
     hashdiff (0.3.0)
+    hashie (3.5.5)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (0.7.0)
@@ -358,6 +372,8 @@ DEPENDENCIES
   cocoon
   coffee-rails (~> 4.2)
   database_cleaner
+  elasticsearch-model
+  elasticsearch-rails
   fabrication
   faker
   figaro (~> 1.1.0)

@@ -1,4 +1,10 @@
+# require 'elasticsearch/model'
+
 class MaintenanceRequest < ApplicationRecord
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+  # index_name["maintenance_app",Rails.env].join("_")
+
   belongs_to :agency_admin
   belongs_to :agent
   has_one :query
