@@ -42,8 +42,9 @@ gem 'server-generated-popups'
 gem 'react-rails'
 gem 'ahoy_email'
 gem 'will_paginate', '~> 3.1.0'
-gem 'elasticsearch-model'
-gem 'elasticsearch-rails'
+gem 'searchkick'
+# gem 'elasticsearch-model'
+# gem 'elasticsearch-rails'
 
 
 group :development, :test do

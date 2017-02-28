@@ -1,8 +1,10 @@
 # require 'elasticsearch/model'
 
 class MaintenanceRequest < ApplicationRecord
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  searchkick
+
+  # include Elasticsearch::Model
+  # include Elasticsearch::Model::Callbacks
   # index_name["maintenance_app",Rails.env].join("_")
 
   belongs_to :agency_admin
@@ -54,6 +56,37 @@ class MaintenanceRequest < ApplicationRecord
     
     action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:self.id)
   end
+
+  # def as_indexed_json(options={})
+  #   self.as_json(only: [:name, :service_type, :maintenance_description, :maintenance_heading], 
+  #     include: { property: { only:[:property_address, :name] },
+  #                tenants:    { only: [:name] }
+                 
+  #              })
+  # end
+
+  # def self.search(query)
+  #   search_definition = {
+  #     query:{
+  #       multi_match:{
+  #         query:query,
+  #         fields:["property_address", "name", "maintenance_description"],
+          
+  #       }
+  #     }
+  #   }
+
+  #   __elasticsearch__.search(search_definition)
+  # end
+
+
+  def search_data
+  attributes.merge(
+    property_address: property(&:property_address),
+    tenants_name: tenants.map(&:name),
+    landlord: property.landlord(&:name)
+  )
+end
 
 
 

@@ -122,5 +122,9 @@ Rails.application.routes.draw do
   ###################################################
   post "job_completed" => "action_statuses#job_complete"
 
+  ###################################################
+  ##########SEARCH RESOURCES/ROUTES###########
+  ###################################################
+  get 'search', to: "search_maintenance_requests#search_maintenance_request", :as => :search_maintenance_request
 
  end

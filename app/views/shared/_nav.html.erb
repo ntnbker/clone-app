@@ -1,3 +1,10 @@
+<%= form_tag search_maintenance_request_path, method: :get do %>
+  <%= search_field_tag :query, params[:query], placeholder:"Search Address"%>
+  <%= button_tag 'Search', type: 'submit'%>
+<% end %>
+
+
+
 <% if local_assigns.has_key? :homepage %>
     <%= react_component('Header', {
           logged_in: logged_in?,
