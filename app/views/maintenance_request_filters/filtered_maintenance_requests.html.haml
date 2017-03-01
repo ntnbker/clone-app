@@ -1,16 +1,4 @@
 %div.container
-  %h6
-    Action Required
-  %p
-    =link_to "New Maintenace Requests", filtered_maintenance_requests_path(maintenance_request_filter:"Initiate Maintenance Request")
-    %br
-    =link_to "Quote Received", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Received")
-    %br
-    =link_to "New Invoice", filtered_maintenance_requests_path(maintenance_request_filter:"New Invoice")
-    %br
-    =link_to "Pending Payment", filtered_maintenance_requests_path(maintenance_request_filter:"Pending Payment")
-
-%div.container
   -@maintenance_requests.each do |maintenance_request|
     %div.well
       %div

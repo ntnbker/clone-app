@@ -127,4 +127,10 @@ Rails.application.routes.draw do
   ###################################################
   get 'search', to: "search_maintenance_requests#search_maintenance_request", :as => :search_maintenance_request
 
+  ###################################################
+  ##########SEARCH RESOURCES/ROUTES##################
+  ###################################################
+
+  get "maintenance_request_filter", to: "maintenance_request_filters#filtered_maintenance_requests", :as => :filtered_maintenance_requests
+
  end

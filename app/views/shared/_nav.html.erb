@@ -1,5 +1,5 @@
 <%= form_tag search_maintenance_request_path, method: :get do %>
-  <%= search_field_tag :query, params[:query], placeholder:"Search Address"%>
+  <%= search_field_tag :query, params[:query], placeholder:"Search Address, Tenant Name, or Landlord Name"%>
   <%= button_tag 'Search', type: 'submit'%>
 <% end %>
 

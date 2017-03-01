@@ -57,6 +57,20 @@ class MaintenanceRequest < ApplicationRecord
     action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:self.id)
   end
 
+
+
+  def self.find_maintenance_requests(current_user, params)
+    current_user_role = current_user.role.roleable_type
+    
+    if current_user_role == "AgencyAdmin"
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    elsif current_user_role == "Agent"
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    end 
+    
+    return maintenance_request_array
+  end
+
   # def as_indexed_json(options={})
   #   self.as_json(only: [:name, :service_type, :maintenance_description, :maintenance_heading], 
   #     include: { property: { only:[:property_address, :name] },
