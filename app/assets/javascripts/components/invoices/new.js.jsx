@@ -48,7 +48,7 @@ var InvoiceFieldList = React.createClass({
             {this.props.fields.map((field, fieldIndex) => 
                 <li key={fieldIndex}>
                     {field}
-                    <button className="button-remove button-primary red" onClick={this.props.removeField} value={fieldIndex}> X </button>
+                    <button type="button" className="button-remove button-primary red" onClick={this.props.removeField}> X </button>
                 </li>
             )}
         </ul>;
@@ -57,15 +57,24 @@ var InvoiceFieldList = React.createClass({
 
 var InvoiceField = React.createClass({
     render: function() {
+        var invoice = this.props.invoice;
+        var x= this.props.x;
+        if (invoice) {
+            x = invoice.id;
+        }
+
         return <div className="field">
             <fieldset>
-                <input type="text" placeholder="Item description"
-                    name={'invoice[invoice_items_attributes][' + this.props.x + '][item_description]'}
-                    id={'invoice_invoice_items_attributes_' + this.props.x + '_item_description'} required />
+                <input type="text" placeholder="Item description" defaultValue={invoice ? invoice.item_description : null}
+                    name={'invoice[invoice_items_attributes][' + x + '][item_description]'}
+                    id={'invoice_invoice_items_attributes_' + x + '_item_description'} required />
 
-                <input type="text" placeholder="Amount"
-                    name={'invoice[invoice_items_attributes][' + this.props.x + '][amount]'}
-                    id={'invoice_invoice_items_attributes_' + this.props.x + '_amount'} required />
+                <input type="text" placeholder="Amount" defaultValue={invoice ? invoice.amount : null}
+                    name={'invoice[invoice_items_attributes][' + x + '][amount]'}
+                    id={'invoice_invoice_items_attributes_' + x + '_amount'} required />
+
+                <input type="hidden" value="false" name={'invoice[invoice_items_attributes][' + x + '][_destroy]'} id={'invoice_invoice_items_attributes_' + x + '__destroy'} />
+                <input type="hidden" value={x} name={'invoice[invoice_items_attributes][' + x + '][id]'} id={'invoice_invoice_items_attributes_' + x + '_id'} />
             </fieldset>
         </div>
     }
@@ -73,10 +82,22 @@ var InvoiceField = React.createClass({
 
 var InvoiceList = React.createClass({
     getInitialState : function() {
-      return {
-        fields : [ <InvoiceField x={0}/> ],
-        x : 0
-      }
+        var fields = [];
+        var x = -1;
+
+        if (this.props.invoice_items) {
+            fields = this.props.invoice_items.map((item, index) =>
+                        fields.concat([ <InvoiceField invoice={item} x={index}/> ]));
+            x = this.props.invoice_items.length-1;
+        } else {
+            fields = [ <InvoiceField x={0}/> ];
+            x = 0;
+        }
+
+        return {
+            fields : fields,
+            x : x
+        }
     },
     
     removeField: function(e) {
@@ -107,14 +128,14 @@ var InvoiceList = React.createClass({
 
 var InvoiceFields = React.createClass({
     render: function(){
-        return <form role="form" id="new_invoice" action="/invoices" acceptCharset="UTF-8" method="post">
+        return <form role="form" id="new_invoice" action={this.props.id ? '/invoices/'+this.props.id : '/invoices'} acceptCharset="UTF-8" method="post">
             <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
-
+            <input type="hidden" name="_method" value={this.props._method} />
             <input type="hidden" value={this.props.maintenance_request_id} name="invoice[maintenance_request_id]" id="invoice_maintenance_request_id" />
             <input type="hidden" value={this.props.trady_id} name="invoice[trady_id]" id="invoice_trady_id" />
-            <input type="hidden" value={this.props.quote_id} name="invoice[quote_id]" id="invoice_quote_id" /   >
+            <input type="hidden" value={this.props.quote_id} name="invoice[quote_id]" id="invoice_quote_id" />
 
-            <InvoiceList />
+            <InvoiceList invoice_items={this.props.invoice_items} />
 
             <div className="qf-button">
                 <button className="button button-primary left"> <a href={this.props.backlink}> Back </a> </button>
@@ -146,59 +167,59 @@ var TradyCompanyInvoice = React.createClass({
 			    <input type="hidden" name="_method" value="put" />
 				<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 
-				<input type="text" placeholder="Company Name"
+				<input type="text" placeholder="Company Name" defaultValue={this.props.company_name}
 					   name="trady_company[company_name]"
 					   id="trady_company_company_name" required />
 
-				<input type="text" placeholder="Trading Name"
+				<input type="text" placeholder="Trading Name" defaultValue={this.props.trading_name}
 						name="trady_company[trading_name]"
 						id="trady_company_trading_name" required />
 
-				<input type="text" placeholder="Abn"
+				<input type="text" placeholder="Abn" defaultValue={this.props.abn}
 						name="trady_company[abn]"
 						id="trady_company_abn" required />
 
 				<label>
-					<input defaultValue={this.props.gst_registration} type="checkbox"
+					<input defaultValue={this.props.gst_registration} type="checkbox" defaultValue={this.props.gst_registration}
 							name="trady_company[gst_registration]"
 							id="trady_company_gst_registration" />
 						GST  Registration
 				</label>
 
-				<input type="text" placeholder="Address" onChange={this.handleChange}
+				<input type="text" placeholder="Address" onChange={this.handleChange} defaultValue={this.props.address}
 						name="trady_company[address]"
 						id="trady_company_address" required />
 
 				<div className="field">
 					<label>
-						<input type="checkbox" onChange={this.onSame}
+						<input type="checkbox" onChange={this.onSame} defaultValue={this.props.mailing_address_same}
 								name="trady_company[mailing_address_same]"
 								id="trady_company_mailing_address_same" />
 							Mailing Address same as Above
 					</label>
 
-					<input value={this.state.mailing} type="text" placeholder="Mailing Address"
+					<input value={this.state.mailing} type="text" placeholder="Mailing Address" defaultValue={this.props.mailing_address}
 							name="trady_company[mailing_address]"
 							id="trady_company_mailing_address" required />
 				</div>
 
-				<input type="text" placeholder="Mobile Number"
+				<input type="text" placeholder="Mobile Number" defaultValue={this.props.mobile_number}
 						name="trady_company[mobile_number]"
 						id="trady_company_mobile_number" required />
 
-				<input type="text" placeholder="Email"
+				<input type="text" placeholder="Email" defaultValue={this.props.email}
 						name="trady_company[email]"
 						id="trady_company_email" required />
 
-				<input type="text" placeholder="Bank Account Number"
+				<input type="text" placeholder="Bank Account Number" defaultValue={this.props.account_name}
 						name="trady_company[bank_account_number]"
 						id="trady_company_bank_account_number" required />
 
-				<input type="text" placeholder="BSB Number"
+				<input type="text" placeholder="BSB Number" defaultValue={this.props.bsb_number}
 						name="trady_company[bsb_number]"
 						id="trady_company_bsb_number" required />
 
-				<input type="text" placeholder="Account Name"
+				<input type="text" placeholder="Account Name" defaultValue={this.props.bank_account_number}
 						name="trady_company[account_name]"
 						id="trady_company_account_name" required />
 
