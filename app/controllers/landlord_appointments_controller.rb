@@ -103,10 +103,10 @@ class LandlordAppointmentsController < ApplicationController
     #params[:current_user_role] We have to distinguish between the trady accepting and the tenant accepting
     if params[:current_user_role] == "Landlord"
       TenantAppointmentAcceptedLandlordEmailWorker.perform_async(maintenance_request_id,appointment_id,landlord_id,tenant_id)
-      maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled")
+      maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled - Awaiting Invoice")
     elsif params[:current_user_role] == "Tenant"
       LandlordAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,landlord_id,tenant_id)
-      maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled")
+      maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled - Awaiting Invoice")
     end 
     flash[:success] = "Thank you for accepting the appointment."
     redirect_to root_path

@@ -67,8 +67,22 @@ class MaintenanceRequest < ApplicationRecord
     elsif current_user_role == "Agent"
       maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
     end 
-    
+
     return maintenance_request_array
+  end
+
+
+
+  def self.find_maintenance_requests_total(current_user, params)
+    current_user_role = current_user.role.roleable_type
+    
+    if current_user_role == "AgencyAdmin"
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    elsif current_user_role == "Agent"
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    end 
+    
+    return maintenance_request_array.count
   end
 
   # def as_indexed_json(options={})

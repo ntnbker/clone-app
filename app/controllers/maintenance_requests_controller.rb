@@ -271,9 +271,6 @@ class MaintenanceRequestsController < ApplicationController
       @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
     end 
     
-  
-
-
   end
 
 
@@ -290,9 +287,11 @@ class MaintenanceRequestsController < ApplicationController
 
     end 
 
-    # if @maintenance_request.maintenance_request_image != nil
-    #   @gallery = @maintenance_request.maintenance_request_image.images
-    # end 
+    @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
+    @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
+    @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
+    @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
+     
 
   end
 
