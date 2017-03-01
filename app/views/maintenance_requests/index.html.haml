@@ -17,30 +17,39 @@
     Awaiting Action 
   %p
     =link_to "Awaiting Owner Initiation", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Owner Initiation")
+    =@awaiting_owner_initiation_count
     
     %br
     =link_to "Awaiting Owner Instruction", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Owner Instruction")
-    
+    =@awaiting_owner_instruction_count
     %br
     =link_to "Quote Requested", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Requested")
-    
+    =@quote_requested_count
     %br
     =link_to "Awaiting Tradie Initiation", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Tradie Initiation")
+    =@awaiting_trady_initiation_count
     %br
     =link_to "Awaiting Tradie's Quote", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Quote")
+    =@awaiting_trady_quote_count
     %br
     =link_to "Awaiting Quote Approval", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Received Awaiting Approval")
+    =@awaiting_quote_approval_count
     %br
     =link_to "Quote Approved Tradie To Organise Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Approved Tradie To Organise Appointment")
+    =@trady_organise_appointment_count
     %br
     =link_to "Tradie To Confirm Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Tradie To Confirm Appointment")
+    =@trady_confirm_appointment_count
     %br
     =link_to "Tenant To Confirm Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Tenant To Confirm Appointment")
+    =@tenant_confirm_appointment_count
     %br
     =link_to "Landlord To Confirm Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Landlord To Confirm Appointment")
+    =@landlord_confirm_appointment_count
     %br
-    =link_to "Maintenance Scheduled - Awaiting Invoice", filtered_maintenance_requests_path(maintenance_request_filter:"Maintenance Scheduled - Awaiting Invoice")          
-    
+    =link_to "Maintenance Scheduled - Awaiting Invoice", filtered_maintenance_requests_path(maintenance_request_filter:"Maintenance Scheduled - Awaiting Invoice")
+    =@maintenance_scheduled_count          
+
 
     
       
