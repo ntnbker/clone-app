@@ -1,7 +1,7 @@
-<% if local_assigns.has_key? :homepage %>
-    <%= react_component('Footer', homepage: true) %>
+<% if local_assigns.has_key? :expanded %>
+    <%= react_component('Footer', expanded: true) %>
 <%end %>
 
-<% if !local_assigns.has_key? :homepage %>
+<% if !local_assigns.has_key? :expanded %>
     <%= react_component('Footer') %>
 <%end %>

@@ -1,7 +1,7 @@
 var Footer = React.createClass({
 
-    footerForHomepage() {
-        return <div className="footer-homepage">
+    footerForExpanded() {
+        return <div className="footer-expanded">
             <div className="container">
                 <div className="row">
                     <div className="one-third column">
@@ -65,8 +65,8 @@ var Footer = React.createClass({
     },
     render: function() {
         return <div>
-            { this.props.homepage
-            ? this.footerForHomepage()
+            { this.props.expanded
+            ? this.footerForExpanded()
             : this.footer() }
         </div>
     }

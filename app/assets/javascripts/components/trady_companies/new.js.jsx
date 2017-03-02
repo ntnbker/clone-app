@@ -15,9 +15,9 @@ var TradyCompanies = React.createClass({
 
 	render: function() {
 		return (
-			<form role="form" id="new_trady_company" action="/trady_companies" acceptCharset="UTF-8" method="post">   
+			<form role="form" id="new_trady_company" action={this.props.id ? '/trady_companies/'+this.props.id : '/trady_companies'} acceptCharset="UTF-8" method="post">   
 				<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
-
+				<input type="hidden" name="_method" value={this.props._method} />
 				<p> Company name </p>
 				<input defaultValue={this.props.company_name} type="text"
 					   name="trady_company[company_name]"
@@ -75,8 +75,9 @@ var TradyCompanies = React.createClass({
 				Click Here To Edit Tradie/User Email
 				</p>
 
-				<input defaultValue={this.props.maintenance_request_id} type="hidden" name="trady_company[maintenance_request_id]" id="trady_company_maintenance_request_id" />
-				<input defaultValue={this.props.trady_id} type="hidden" name="trady_company[trady_id]" id="trady_company_trady_id" />
+				<input value={this.props.maintenance_request_id} type="hidden" name="trady_company[maintenance_request_id]" id="trady_company_maintenance_request_id" />
+				<input value={this.props.trady_id} type="hidden" name="trady_company[trady_id]" id="trady_company_trady_id" />
+				<input value={this.props.work_flow} type="hidden" name="trady_company[work_flow]" id="trady_company_work_flow" />
 
 				<input type="submit" name="commit" value="Next" className="button-primary green" data-disable-with="Next" />
 			</form>

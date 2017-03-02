@@ -23,8 +23,8 @@
     =yield :head
   %body
     %header
-      - if content_for? :homepage
-        = render 'shared/nav', {:homepage => true}
+      - if content_for? :expanded
+        = render 'shared/nav', {:expanded => true}
       - else
         = render 'shared/nav'
     %section.content.clearfix
@@ -34,7 +34,7 @@
 
     
     %footer
-      - if content_for? :homepage
-        = render 'shared/footer', {:homepage => true}
+      - if content_for? :expanded
+        = render 'shared/footer', {:expanded => true}
       - else
         = render 'shared/footer'

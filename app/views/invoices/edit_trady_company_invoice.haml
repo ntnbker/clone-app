@@ -1,23 +1,20 @@
-%div.container
-  =bootstrap_form_for(@trady_company, url:"/update_company_invoice",method: :put,layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |a|
-    = a.text_field :company_name
-    = a.text_field :trading_name
-    = a.text_field :abn
-    = a.form_group :gst_registration do 
-      = a.check_box :gst_registration, label: "GST  registration"
-    = a.text_field :address
-    = a.form_group :mailing_address_same do
-      = a.check_box :mailing_address_same
-    = a.text_field :mailing_address
-    = a.text_field :mobile_number
-    = a.text_field :email
-    = a.text_field :bank_account_number, label: "Bank Account Number"
-    = a.text_field :bsb_number, label: "BSB Number"
-    = a.text_field :account_name, label: "Account Name"
-    = a.hidden_field :maintenance_request_id, value:@maintenance_request_id
-    = a.hidden_field :trady_id, value:@trady_id
-    = a.hidden_field :trady_company_id, value:@trady_company.id
-    = a.hidden_field :quote_id, value: @quote_id
-    = a.submit 'Next'
+=react_component('StepProgress', {:step => 1})
 
-    
+%div.container.invoice-form
+  =react_component('TradyCompanyInvoice', {:authenticity_token => form_authenticity_token,
+                                           :company_name => @trady_company.company_name,
+                                           :trading_name => @trady_company.trading_name,
+                                           :abn => @trady_company.abn,
+                                           :gst_registration => @trady_company.gst_registration,
+                                           :address => @trady_company.address,
+                                           :mailing_address_same => @trady_company.mailing_address_same,
+                                           :mailing_address => @trady_company.mailing_address,
+                                           :mobile_number => @trady_company.mobile_number,
+                                           :email => @trady_company.email,
+                                           :account_name => @trady_company.account_name,
+                                           :bsb_number => @trady_company.bsb_number,
+                                           :bank_account_number => @trady_company.bank_account_number,
+                                           :maintenance_request_id => @maintenance_request_id,
+                                           :trady_id => @trady_id,
+                                           :trady_company_id => @trady_company.id,
+                                           :quote_id => @quote_id})

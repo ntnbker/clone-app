@@ -1,49 +1,49 @@
-/ %h1 maintenance request
-
-/ %div.container.well
-/   =react_component('MaintenanceRequestsNew', {:authenticity_token => form_authenticity_token, :current_user => current_user})
-
-%h1 TEST maintenance request
+%h1 maintenance request
 
 %div.container.well
+  =react_component('MaintenanceRequestsNew', {:authenticity_token => form_authenticity_token, :current_user => current_user})
+
+/ %h1 TEST maintenance request
+
+/ %div.container.well
   
-  =bootstrap_nested_form_for(@maintenance_request, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
-    .field
-      =f.text_field :name
-      =f.email_field :email
-      =f.phone_field :mobile
+/   =bootstrap_nested_form_for(@maintenance_request, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+/     .field
+/       =f.text_field :name
+/       =f.email_field :email
+/       =f.phone_field :mobile
       
-    %hr
-    #access_contacts
-      =f.fields_for :access_contacts do |contacts_form|
-        = render "access_contact_fields", f: contacts_form
-        = link_to_add_association "Add Another Access Contact", f, :access_contacts
-    %hr
-    .field
-      =f.text_field :maintenance_heading
-      =f.text_area :maintenance_description
+/     %hr
+/     #access_contacts
+/       =f.fields_for :access_contacts do |contacts_form|
+/         = render "access_contact_fields", f: contacts_form
+/         = link_to_add_association "Add Another Access Contact", f, :access_contacts
+/     %hr
+/     .field
+/       =f.text_field :maintenance_heading
+/       =f.text_area :maintenance_description
       
-    #maintenance_request_images
-      =f.fields_for :maintenance_request_image do |image|
-        =image.file_field :images, multiple: true
-    %hr
+/     #maintenance_request_images
+/       =f.fields_for :maintenance_request_image do |image|
+/         =image.file_field :images, multiple: true
+/     %hr
   
-    -if current_user == nil || current_user.tenant?
-      .field
+/     -if current_user == nil || current_user.tenant?
+/       .field
       
-        =f.form_group :person_in_charge do 
-          = f.radio_button :person_in_charge, "Agent", label: "Agent"
-          = f.radio_button :person_in_charge, "Owner", label: "Owner"
-        =f.text_field :real_estate_office
-        =f.text_field :agent_name
-        =f.text_field :agent_email
-        =f.text_field :agent_mobile
-      %hr
-    #availabilities
-      =f.fields_for :availabilities do |availability_form|
-        = render "availability_fields", f: availability_form
-        = link_to_add_association "Add Another Availability", f, :availabilities
+/         =f.form_group :person_in_charge do 
+/           = f.radio_button :person_in_charge, "Agent", label: "Agent"
+/           = f.radio_button :person_in_charge, "Owner", label: "Owner"
+/         =f.text_field :real_estate_office
+/         =f.text_field :agent_name
+/         =f.text_field :agent_email
+/         =f.text_field :agent_mobile
+/       %hr
+/     #availabilities
+/       =f.fields_for :availabilities do |availability_form|
+/         = render "availability_fields", f: availability_form
+/         = link_to_add_association "Add Another Availability", f, :availabilities
     
-    =f.submit "Submit Maintenance Request"
+/     =f.submit "Submit Maintenance Request"
     
 
