@@ -201,7 +201,7 @@ class MaintenanceRequestsController < ApplicationController
       EmailWorker.perform_async(@maintenance_request.id)
       
 
-
+      MaintenanceRequest.last.reindex
 
      if current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? || current_user.trady? 
       flash[:success]= "Thank You for creating a Maintenance Request"
@@ -212,7 +212,7 @@ class MaintenanceRequestsController < ApplicationController
       end
       
     else
-      binding.pry
+      
       flash[:danger]= "Something went wrong"
       render :new
       
