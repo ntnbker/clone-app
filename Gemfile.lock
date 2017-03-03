@@ -57,6 +57,14 @@ GEM
     arel (7.1.4)
     autoprefixer-rails (6.5.2)
       execjs
+    aws-sdk (2.8.0)
+      aws-sdk-resources (= 2.8.0)
+    aws-sdk-core (2.8.0)
+      aws-sigv4 (~> 1.0)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.8.0)
+      aws-sdk-core (= 2.8.0)
+    aws-sigv4 (1.0.0)
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
       babel-source (>= 4.0, < 6)
@@ -90,6 +98,9 @@ GEM
     capybara-webkit (1.11.1)
       capybara (>= 2.3.0, < 2.8.0)
       json
+    carrierwave-aws (1.1.0)
+      aws-sdk (~> 2.0)
+      carrierwave (>= 0.7, < 2.0)
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
     cocoon (1.2.9)
@@ -111,6 +122,14 @@ GEM
     diff-lcs (1.2.5)
     domain_name (0.5.20161021)
       unf (>= 0.0.5, < 1.0.0)
+    elasticsearch (5.0.3)
+      elasticsearch-api (= 5.0.3)
+      elasticsearch-transport (= 5.0.3)
+    elasticsearch-api (5.0.3)
+      multi_json
+    elasticsearch-transport (5.0.3)
+      faraday
+      multi_json
     errbase (0.0.3)
     erubis (2.7.0)
     eventmachine (1.2.0.1)
@@ -133,12 +152,14 @@ GEM
     haml (4.0.7)
       tilt
     hashdiff (0.3.0)
+    hashie (3.5.5)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (0.7.0)
     jbuilder (2.6.0)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
+    jmespath (1.3.1)
     jquery-rails (4.2.1)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -271,6 +292,10 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    searchkick (2.1.1)
+      activemodel (>= 4.1)
+      elasticsearch (>= 1)
+      hashie
     selenium-webdriver (3.0.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
@@ -355,6 +380,7 @@ DEPENDENCIES
   capybara-email
   capybara-webkit
   carrierwave!
+  carrierwave-aws
   cocoon
   coffee-rails (~> 4.2)
   database_cleaner
@@ -382,6 +408,7 @@ DEPENDENCIES
   react-rails
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
+  searchkick
   selenium-webdriver
   server-generated-popups
   shoulda-matchers (~> 3.1)

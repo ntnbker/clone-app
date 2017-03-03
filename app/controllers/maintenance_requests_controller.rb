@@ -11,9 +11,7 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
-    
     @maintenance_request.build_maintenance_request_image
-    
     @customer_input = Query.find_by(id:session[:customer_input])
   end
 
@@ -100,7 +98,7 @@ class MaintenanceRequestsController < ApplicationController
                    else 
 
                       user = User.create(hash)
-                      binding.pry
+                      
                       @contact_tenant = Tenant.new(hash)
                       @contact_tenant.user_id = user.id
                       @contact_tenant.property_id = @property.id
@@ -201,7 +199,7 @@ class MaintenanceRequestsController < ApplicationController
       EmailWorker.perform_async(@maintenance_request.id)
       
 
-
+      MaintenanceRequest.last.reindex
 
      if current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? || current_user.trady? 
       flash[:success]= "Thank You for creating a Maintenance Request"
@@ -271,9 +269,6 @@ class MaintenanceRequestsController < ApplicationController
       @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
     end 
     
-  
-
-
   end
 
 
@@ -287,13 +282,25 @@ class MaintenanceRequestsController < ApplicationController
 
     elsif current_user.tenant?
       @maintenance_requests = current_user.tenant.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
-
+    
     end 
 
-    # if @maintenance_request.maintenance_request_image != nil
-    #   @gallery = @maintenance_request.maintenance_request_image.images
-    # end 
-
+    @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
+    @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
+    @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
+    @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
+    
+    @awaiting_owner_initiation_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Initiation")
+    @awaiting_owner_instruction_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Instruction")
+    @quote_requested_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Requested")
+    @awaiting_trady_initiation_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Tradie Initiation")
+    @awaiting_trady_quote_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Quote")
+    @awaiting_quote_approval_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received Awaiting Approval")
+    @trady_organise_appointment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Approved Tradie To Organise Appointment")
+    @trady_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tradie To Confirm Appointment")
+    @tenant_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tenant To Confirm Appointment")
+    @landlord_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Landlord To Confirm Appointment")
+    @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")
   end
 
 

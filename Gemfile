@@ -19,17 +19,14 @@ gem 'jquery-ui-rails'
 
 gem 'pg'
 gem 'bootstrap_form'
-gem 'fabrication'
-gem 'faker'
-gem 'sinatra', :require => nil
 
-gem 'sidekiq'
+
 gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
+gem 'carrierwave-aws'
 gem 'mini_magick'
 gem 'stripe'
 gem 'figaro', '~> 1.1.0'
-gem 'pry'
-gem 'pry-nav'
+
 gem 'sorcery', '~> 0.9.1'
 gem "haml"
 gem "gon"
@@ -42,6 +39,10 @@ gem 'server-generated-popups'
 gem 'react-rails'
 gem 'ahoy_email'
 gem 'will_paginate', '~> 3.1.0'
+gem 'searchkick'
+
+# gem 'elasticsearch-model'
+# gem 'elasticsearch-rails'
 
 
 group :development, :test do
@@ -61,6 +62,10 @@ group :development do
   gem "better_errors"
   gem "binding_of_caller"
   gem 'letter_opener'
+  gem 'pry'
+  gem 'pry-nav'
+  gem 'sinatra', :require => nil
+  gem 'sidekiq'
 end
 
 group :test do
@@ -75,6 +80,8 @@ group :test do
   gem 'webmock'
   gem 'selenium-webdriver'
   gem 'rails-controller-testing'
+  gem 'fabrication'
+  gem 'faker'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

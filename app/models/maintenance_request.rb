@@ -1,4 +1,12 @@
+# require 'elasticsearch/model'
+
 class MaintenanceRequest < ApplicationRecord
+  searchkick
+
+  # include Elasticsearch::Model
+  # include Elasticsearch::Model::Callbacks
+  # index_name["maintenance_app",Rails.env].join("_")
+
   belongs_to :agency_admin
   belongs_to :agent
   has_one :query
@@ -48,6 +56,65 @@ class MaintenanceRequest < ApplicationRecord
     
     action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:self.id)
   end
+
+
+
+  def self.find_maintenance_requests(current_user, params)
+    current_user_role = current_user.role.roleable_type
+    
+    if current_user_role == "AgencyAdmin"
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    elsif current_user_role == "Agent"
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    end 
+
+    return maintenance_request_array
+  end
+
+
+
+  def self.find_maintenance_requests_total(current_user, params)
+    current_user_role = current_user.role.roleable_type
+    
+    if current_user_role == "AgencyAdmin"
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    elsif current_user_role == "Agent"
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    end 
+    
+    return maintenance_request_array.count
+  end
+
+  # def as_indexed_json(options={})
+  #   self.as_json(only: [:name, :service_type, :maintenance_description, :maintenance_heading], 
+  #     include: { property: { only:[:property_address, :name] },
+  #                tenants:    { only: [:name] }
+                 
+  #              })
+  # end
+
+  # def self.search(query)
+  #   search_definition = {
+  #     query:{
+  #       multi_match:{
+  #         query:query,
+  #         fields:["property_address", "name", "maintenance_description"],
+          
+  #       }
+  #     }
+  #   }
+
+  #   __elasticsearch__.search(search_definition)
+  # end
+
+
+  def search_data
+  attributes.merge(
+    property_address: property(&:property_address),
+    tenants_name: tenants.map(&:name),
+    landlord: property.landlord(&:name)
+  )
+end
 
 
 

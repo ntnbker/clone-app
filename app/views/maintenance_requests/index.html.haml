@@ -1,7 +1,58 @@
-%div  
-  
+%div.container
+  %h6
+    Action Required
+  %p
+    =link_to "New Maintenace Requests", filtered_maintenance_requests_path(maintenance_request_filter:"Initiate Maintenance Request")
+    =@new_maintenance_requests_count
+    %br
+    =link_to "Quote Received", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Received")
+    =@quotes_received_count
+    %br
+    =link_to "New Invoice", filtered_maintenance_requests_path(maintenance_request_filter:"New Invoice")
+    =@new_invoice_count
+    %br
+    =link_to "Pending Payment", filtered_maintenance_requests_path(maintenance_request_filter:"Pending Payment")
+    =@pending_payment_count
+  %h6
+    Awaiting Action 
+  %p
+    =link_to "Awaiting Owner Initiation", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Owner Initiation")
+    =@awaiting_owner_initiation_count
+    
+    %br
+    =link_to "Awaiting Owner Instruction", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Owner Instruction")
+    =@awaiting_owner_instruction_count
+    %br
+    =link_to "Quote Requested", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Requested")
+    =@quote_requested_count
+    %br
+    =link_to "Awaiting Tradie Initiation", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Tradie Initiation")
+    =@awaiting_trady_initiation_count
+    %br
+    =link_to "Awaiting Tradie's Quote", filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Quote")
+    =@awaiting_trady_quote_count
+    %br
+    =link_to "Awaiting Quote Approval", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Received Awaiting Approval")
+    =@awaiting_quote_approval_count
+    %br
+    =link_to "Quote Approved Tradie To Organise Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Quote Approved Tradie To Organise Appointment")
+    =@trady_organise_appointment_count
+    %br
+    =link_to "Tradie To Confirm Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Tradie To Confirm Appointment")
+    =@trady_confirm_appointment_count
+    %br
+    =link_to "Tenant To Confirm Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Tenant To Confirm Appointment")
+    =@tenant_confirm_appointment_count
+    %br
+    =link_to "Landlord To Confirm Appointment", filtered_maintenance_requests_path(maintenance_request_filter:"Landlord To Confirm Appointment")
+    =@landlord_confirm_appointment_count
+    %br
+    =link_to "Maintenance Scheduled - Awaiting Invoice", filtered_maintenance_requests_path(maintenance_request_filter:"Maintenance Scheduled - Awaiting Invoice")
+    =@maintenance_scheduled_count          
 
 
+    
+      
 
 %div.container
   -@maintenance_requests.each do |maintenance_request|
@@ -12,6 +63,9 @@
             = image_tag(image.url.to_s)
       %h3
         =link_to "#{maintenance_request.maintenance_heading}", maintenance_request_path(maintenance_request)
+      %p
+        Status:
+        =maintenance_request.action_status.maintenance_request_status   
       %p
         =maintenance_request.maintenance_description
       %p

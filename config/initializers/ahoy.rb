@@ -1,4 +1,5 @@
 module Ahoy
+
   class Message < ActiveRecord::Base
 
     self.table_name = "ahoy_messages"
@@ -24,7 +25,8 @@ module Ahoy
     elsif mailer == "ApplicationMailer#email_extra_tenant"
       self.maintenance_request.action_status.update_attribute(:agent_status, "Initiate Maintenance Request")
     elsif mailer == "LandlordMailer#send_landlord_maintenance_request"
-      self.maintenance_request.action_status.update_attribute(:agent_status, "Initiate Maintenance Request")
+      
+      self.maintenance_request.action_status.update_attribute(:agent_status, "Awaiting Owner Instruction")
     elsif mailer == "AgentMailer#request_quote_email"
       self.maintenance_request.action_status.update_attribute(:agent_status, "Quote Requested")
     elsif mailer == 'TradyMailer#request_quote_email'
@@ -48,8 +50,7 @@ module Ahoy
     end 
 
 
-    
-
+   
 
 
     
