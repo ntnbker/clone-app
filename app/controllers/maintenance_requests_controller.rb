@@ -3,7 +3,7 @@ class MaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
   before_action :set_user, only:[:new,:create]
-  before_action :require_login, only:[:create,:show,:index]
+  before_action :require_login, only:[:show,:index]
   before_action :customer_input_session, only:[:create,:new]
   authorize_resource :class => false
 
@@ -11,9 +11,7 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
-    
     @maintenance_request.build_maintenance_request_image
-    
     @customer_input = Query.find_by(id:session[:customer_input])
   end
 
@@ -100,7 +98,7 @@ class MaintenanceRequestsController < ApplicationController
                    else 
 
                       user = User.create(hash)
-                      binding.pry
+                      
                       @contact_tenant = Tenant.new(hash)
                       @contact_tenant.user_id = user.id
                       @contact_tenant.property_id = @property.id
@@ -284,7 +282,7 @@ class MaintenanceRequestsController < ApplicationController
 
     elsif current_user.tenant?
       @maintenance_requests = current_user.tenant.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
-
+    
     end 
 
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
