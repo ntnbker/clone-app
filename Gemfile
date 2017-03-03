@@ -40,6 +40,7 @@ gem 'react-rails'
 gem 'ahoy_email'
 gem 'will_paginate', '~> 3.1.0'
 gem 'searchkick'
+gem 'sidekiq'
 
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
@@ -65,7 +66,7 @@ group :development do
   gem 'pry'
   gem 'pry-nav'
   gem 'sinatra', :require => nil
-  gem 'sidekiq'
+  
 end
 
 group :test do
