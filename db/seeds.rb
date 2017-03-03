@@ -16,6 +16,6 @@
   tenant = MainUser.create(main_user_type:"Tenant", god_id:god.id)
   landlord = MainUser.create(main_user_type:"Landlord", god_id:god.id)
 
-  Service.create(service:"Plumber")
-  Service.create(service:"Electrician")
-  Service.create(service:"Carpenter")
+  Service.create(service:"Plumber", god_id:god.id)
+  Service.create(service:"Electrician", god_id:god.id)
+  Service.create(service:"Carpenter", god_id:god.id)
