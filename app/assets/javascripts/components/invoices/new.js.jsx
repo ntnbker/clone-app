@@ -52,7 +52,7 @@ var FieldList = React.createClass({
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
                 Fields.push(<SampleField content={one}/>);
-                x = index;
+                x = index+1;
             });
 
             return { Fields : Fields,
