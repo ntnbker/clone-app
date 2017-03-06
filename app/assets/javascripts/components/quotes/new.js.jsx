@@ -39,9 +39,10 @@ var QuoteField = React.createClass({
 
 var QuoteFields = React.createClass({
     render: function() {
-        return <form role="form" id="new_quote" action="/quotes" acceptCharset="UTF-8" method="post">   
+        return <form role="form" id="new_quote" action={this.props.id ? '/quotes/'+this.props.id : '/quotes'} acceptCharset="UTF-8" method="post">   
             <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
-
+            
+            <input type="hidden" name="_method" value={this.props._method} />
             <input type="hidden" value={this.props.maintenance_request_id} name="quote[maintenance_request_id]" id="quote_maintenance_request_id" />
             <input type="hidden" value={this.props.trady_id} name="quote[trady_id]" id="quote_trady_id" />
             <input type="hidden" value={this.props.status} name="quote[status]" id="quote_status" />
