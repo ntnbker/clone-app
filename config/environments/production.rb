@@ -56,10 +56,29 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "realestate_#{Rails.env}"
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = {:host => "localhost:3000"}
+  #config.action_mailer.default_url_options = {:host => "localhost:3000"}
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
+  ActionMailer::Base.smtp_settings = {
+  :port           => ENV['MAILGUN_SMTP_PORT'],
+  :address        => ENV['MAILGUN_SMTP_SERVER'],
+  :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
+  :password       => ENV['MAILGUN_SMTP_PASSWORD'],
+  :domain         => 'maintenance-app-staging.herokuapp.com',
+  :authentication => :plain,
+}
+ActionMailer::Base.delivery_method = :smtp
+
+config.action_mailer.default_url_options = { :host => 'https://maintenance-app-staging.herokuapp.com/' }
+config.action_mailer.asset_host = 'https://maintenance-app-staging.herokuapp.com/'
+config.action_controller.asset_host = 'https://maintenance-app-staging.herokuapp.com/'
+
+
+
+
+
+
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -90,12 +109,4 @@ end
 
 
 
-ActionMailer::Base.smtp_settings = {
-  :port           => ENV['MAILGUN_SMTP_PORT'],
-  :address        => ENV['MAILGUN_SMTP_SERVER'],
-  :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
-  :password       => ENV['MAILGUN_SMTP_PASSWORD'],
-  :domain         => 'maintenance-app-staging.herokuapp.com',
-  :authentication => :plain,
-}
-ActionMailer::Base.delivery_method = :smtp
+
