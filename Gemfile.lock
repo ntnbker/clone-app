@@ -406,6 +406,7 @@ DEPENDENCIES
   rails (~> 5.0.0)
   rails-controller-testing
   react-rails
+  redis
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
   searchkick
