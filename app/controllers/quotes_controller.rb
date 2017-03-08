@@ -10,7 +10,7 @@ class QuotesController < ApplicationController
   end
 
   def create
-    binding.pry
+    
     @quote = Quote.new(quote_params)
     
     @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
@@ -132,7 +132,7 @@ class QuotesController < ApplicationController
   def landlord_requests_quote
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     LandlordRequestsQuoteEmailWorker.perform_async(maintenance_request.id)
-    binding.pry
+    
     maintenance_request.action_status.update_columns(agent_status:"Quote Requested", action_category:"Action Required")
     
     #Send Email to the agent  

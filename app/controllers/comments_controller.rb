@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   
   def create
-    binding.pry
+    
     @comment = Comment.new(comments_params)
 
     @appointment = Appointment.find_by(id: params[:comment][:appointment_id])
