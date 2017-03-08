@@ -30,7 +30,9 @@ var MaintenanceRequestsNew = React.createClass({
 
 				<hr/>
 
-				<AccessContactFields />
+				<div id="access_contacts">
+					<FieldList SampleField={AccessContactField} />
+				</div>
 
 				<hr/>
 
@@ -100,7 +102,9 @@ var MaintenanceRequestsNew = React.createClass({
 					<hr/>
 				}				
 
-				<AvailabilityFields />
+				<div id="availabilities">
+					<FieldList SampleField={AvailabilityField} />
+				</div>
 
 				<hr/>
 

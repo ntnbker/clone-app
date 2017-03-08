@@ -1,21 +1,9 @@
-var FieldList = React.createClass({
-    render: function(){    
-        return <ul>
-            {this.props.fields.map((field, fieldIndex) => 
-                <li key={fieldIndex}>
-                    {field}
-                    <button className="button-remove button-primary red" onClick={this.props.removeField} value={fieldIndex}> Remove </button>
-                </li>
-            )}
-        </ul>;
-    }
-});
 
 var AccessContactField = React.createClass({
     getInitialState : function() {
-      return {
-        currentValue : {relation: '', name: '', email: '', mobile: ''}
-      }
+        return {
+            remove : false
+        }
     },
 
     generateAtt(name_id, x, type) {
@@ -27,19 +15,18 @@ var AccessContactField = React.createClass({
     	}
     },
 
-    onChange(e) {
-    	var tmpValue = e.target.value;
-      this.setState(state => {
-          state.currentValue.relation = tmpValue;
-          return {currentValue : state.currentValue};
-      });
+    removeField() {
+        this.setState({remove: true});
     },
 
     render : function() {
-      var x = this.props.x;
-      var currentValue = this.state.currentValue;
+      var accessContact = this.props.content;
+      var x= this.props.x;
+      if (accessContact) {
+          x = accessContact.id;
+      }
       return (
-        <div className="field">
+        <div className="accesscontactfield" style={{display: this.state.remove ? 'none' : 'block' }}>
           <fieldset>
             <p> Relation </p>
         	  <select name={this.generateAtt("name", x, "relation")}
@@ -64,42 +51,13 @@ var AccessContactField = React.createClass({
 	          <input type="tel" placeholder="Mobile"
 	          		 name={this.generateAtt("name", x, "mobile")}
 	          		   id={this.generateAtt("id", x, "mobile")} />
+
+            <input type="hidden" value={this.state.remove}
+                name={this.generateAtt("name", x, "_destroy")}
+                  id={this.generateAtt("id", x, "_destroy")} />
           </fieldset>
+          <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
       	</div>
       );
-    }
-});
-
-var AccessContactFields = React.createClass({
-    getInitialState : function() {
-      return {
-        fields : [],
-        x : 0
-      }
-    },
-    
-    removeField: function(e) {
-        var fieldIndex = parseInt(e.target.value, 10);
-        this.setState(state => {
-            state.fields.splice(fieldIndex, 1);
-            return {fields: state.fields};
-        });
-    },
-
-    addField:function (e){
-        this.setState({
-            fields: this.state.fields.concat([ <AccessContactField x={this.state.x++}/> ])
-        });
-    
-        e.preventDefault();
-    },
-
-    render: function(){ 
-        return(
-            <div id="access_contacts">
-                <FieldList fields={this.state.fields} removeField={this.removeField} />
-                <button className="button-add button-primary" onClick={this.addField}> Add Another Access Contact </button>
-            </div>
-        );
     }
 });
