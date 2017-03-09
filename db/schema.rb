@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170222084414) do
+ActiveRecord::Schema.define(version: 20170308111152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -183,6 +183,8 @@ ActiveRecord::Schema.define(version: 20170222084414) do
     t.integer  "amount"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.string   "pricing_type"
+    t.float    "hours"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -191,6 +193,7 @@ ActiveRecord::Schema.define(version: 20170222084414) do
     t.integer  "amount"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.boolean  "tax"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -266,6 +269,8 @@ ActiveRecord::Schema.define(version: 20170222084414) do
     t.integer "quote_id"
     t.string  "item_description"
     t.integer "amount"
+    t.string  "pricing_type"
+    t.float   "hours"
   end
 
   create_table "quotes", force: :cascade do |t|
@@ -276,6 +281,7 @@ ActiveRecord::Schema.define(version: 20170222084414) do
     t.integer  "trady_id"
     t.string   "status"
     t.boolean  "delivery_status"
+    t.boolean  "tax"
   end
 
   create_table "roles", force: :cascade do |t|

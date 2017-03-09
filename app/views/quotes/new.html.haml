@@ -7,3 +7,19 @@
                                    :status => "Active",
                                    :delivery_status => "FALSE",
                                    :backlink => edit_trady_company_path(@trady_company,maintenance_request_id:@maintenance_request_id, trady_id:@trady.id)})
+
+%div
+  =bootstrap_nested_form_for(@quote, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    #items
+      =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+      =f.hidden_field :trady_id, value:"#{@trady.id}"
+      =f.hidden_field :status, value:"Active"
+      =f.hidden_field :delivery_status, value:"FALSE"
+      =f.fields_for :quote_items do |contacts_form|
+        = render "quote_item_fields", f: contacts_form
+        = link_to_add_association "Add Another item", f, :quote_items
+      = f.form_group :tax do
+        = f.check_box :tax, label: "Add GST", value: "FALSE"
+      Add total HERE
+      =f.submit "Next"
+  

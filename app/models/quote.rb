@@ -11,18 +11,24 @@ class Quote < ApplicationRecord
 
   def calculate_total(items_hash={})
     array = []
+   
     items_hash.each do |key, value|
-      
-      value.each do |k,v|
-        if k == "amount"
-          array.push(v.to_i)
-        end 
-      end
+      total = value[:amount].to_f * value[:hours].to_f
+      array.push(total)
     end
 
     sum = 0
+    binding.pry
     array.each { |a| sum+=a }
-    return sum
+
+      if tax == false
+        total = sum
+      elsif tax == true
+
+        total = sum * 1.10  
+      end 
+
+    return total
   end
 
 

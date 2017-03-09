@@ -2,4 +2,6 @@
   
   =f.text_field :item_description
   =f.text_field :amount
+  =f.text_field :hours, value: 1.0, label: "Number of Hours"
+  =f.select :pricing_type, options_for_select([ "Fixed Cost", "Hourly" ])
   = link_to_remove_association "remove", f

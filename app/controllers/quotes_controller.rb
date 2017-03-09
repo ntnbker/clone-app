@@ -10,7 +10,7 @@ class QuotesController < ApplicationController
   end
 
   def create
-    
+    binding.pry
     @quote = Quote.new(quote_params)
     
     @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
@@ -174,7 +174,7 @@ class QuotesController < ApplicationController
   private
   
   def quote_params
-    params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy])
+    params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type])
   end
 
   def email_auto_login(id)
