@@ -1,24 +1,56 @@
 
 
-%div.container
-  %div.well
-    %h5 
-      Company Information
-    %p
-      =@trady.trady_company.company_name
-      %br
-      =@trady.trady_company.address
-      %br
-      =@trady.trady_company.mobile_number
-      %br
-      =@trady.trady_company.email
-    -@invoice.invoice_items.each do |f|
+/ %div.container
+/   %div.well
+/     %h5 
+/       Company Information
+/     %p
+/       =@trady.trady_company.company_name
+/       %br
+/       =@trady.trady_company.address
+/       %br
+/       =@trady.trady_company.mobile_number
+/       %br
+/       =@trady.trady_company.email
+%div.container.invoice-form
+  %h4 
+    Invoice
+  %h5
+    Company Information
+  %hr
+  %p
+    =@trady.trady_company.company_name
+    %br
+    =@trady.trady_company.address
+    %br
+    =@trady.trady_company.mobile_number
+    %br
+    =@trady.trady_company.email
+  
+  -@invoice.invoice_items.each do |f|
+  
+    %div.row
+      %hr
+      -if f.pricing_type == "Hourly"
+        %p
+          ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
+      -elsif f.pricing_type == "Fixed Cost"
+        %p
+          ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
+      
+          
+           
+  %hr
+  %div.row
+    -if @invoice.tax == true
       %p
-        =f.item_description
-        =f.amount 
-    %p
-      total:
-      =@invoice.amount
-    %button
-      = link_to 'Print Invoice', print_invoice_path(id:@invoice), :onclick => 'window.print();return false;', method: :post
+        = "GST: #{ (@invoice.amount - @invoice.amount/1.10).round(2)}"
+    -elsif @invoice.tax == false
+      %p
+        GST: $ 0.00
+    %br    
+    %span
+      ="Total: $#{@invoice.amount}"
+  %button.button.button-primary.green
+    = link_to 'Print Invoice', print_invoice_path(id:@invoice), :onclick => 'window.print();return false;', method: :post
 

@@ -13,7 +13,14 @@ class Quote < ApplicationRecord
     array = []
    
     items_hash.each do |key, value|
-      total = value[:amount].to_f * value[:hours].to_f
+
+      if value[:hours] == ""
+        total = value[:amount].to_f * 1
+      else
+        total = value[:amount].to_f * value[:hours].to_f
+      end
+
+
       array.push(total)
     end
 
