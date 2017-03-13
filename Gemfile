@@ -42,6 +42,7 @@ gem 'will_paginate', '~> 3.1.0'
 gem 'searchkick'
 gem 'redis'
 gem 'sidekiq'
+gem "font-awesome-rails"
 
 
 # gem 'elasticsearch-model'
