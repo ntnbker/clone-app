@@ -20,7 +20,22 @@ class MaintenanceRequestsController < ApplicationController
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     
-    if current_user.agency_admin?
+    
+
+    if current_user == nil || current_user.tenant?
+      @maintenance_request.perform_realestate_validations = true
+      the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email]) 
+      the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email]) 
+        if the_agency_admin
+          @agency_admin = the_agency_admin
+          @maintenance_request.agency_admin_id = @agency_admin.id
+        end
+        if the_agent
+          @agent = the_agent
+          @maintenance_request.agent_id = @agent.id
+        end
+
+    elsif current_user.agency_admin?
       @agency_admin = current_user.agency_admin
       @maintenance_request.agency_admin_id = @agency_admin.id
       @maintenance_request.perform_realestate_validations = false
@@ -28,9 +43,20 @@ class MaintenanceRequestsController < ApplicationController
       @agent = current_user.agent
       @maintenance_request.agent_id = @agent.id
       @maintenance_request.perform_realestate_validations = false
-    elsif current_user == nil || current_user.tenant?
-      @maintenance_request.perform_realestate_validations = true
     end 
+
+
+    # if current_user.agency_admin?
+    #   @agency_admin = current_user.agency_admin
+    #   @maintenance_request.agency_admin_id = @agency_admin.id
+    #   @maintenance_request.perform_realestate_validations = false
+    # elsif current_user.agent?
+    #   @agent = current_user.agent
+    #   @maintenance_request.agent_id = @agent.id
+    #   @maintenance_request.perform_realestate_validations = false
+    # elsif current_user == nil || current_user.tenant?
+    #   @maintenance_request.perform_realestate_validations = true
+    # end 
     
     
     if @maintenance_request.valid?
@@ -118,7 +144,7 @@ class MaintenanceRequestsController < ApplicationController
 
 
 
-      @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
+        @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
 
 
 
@@ -126,7 +152,7 @@ class MaintenanceRequestsController < ApplicationController
         
         #EmailWorker.perform_async(@maintenance_request.id)
          
-      else #This user does not exist
+        else #This user does not exist
         #CREATE USER
         @maintenance_request.perform_uniqueness_validation_of_email = true
         @user = User.create(email:params[:maintenance_request][:email], password:SecureRandom.hex(5))
@@ -200,13 +226,12 @@ class MaintenanceRequestsController < ApplicationController
       
 
       MaintenanceRequest.last.reindex
-
-     if current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? || current_user.trady? 
-      flash[:success]= "Thank You for creating a Maintenance Request"
-      redirect_to maintenance_request_path(@maintenance_request)
-     else
-       flash[:danger]= "Sorry you can't see that please log in first to see your maintenance request"
-       redirect_to root_path
+      if current_user == nil
+        flash[:danger]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
+        redirect_to root_path
+      elsif current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? 
+        flash[:success]= "Thank You for creating a Maintenance Request"
+        redirect_to maintenance_request_path(@maintenance_request)
       end
       
     else
@@ -282,6 +307,8 @@ class MaintenanceRequestsController < ApplicationController
 
     elsif current_user.tenant?
       @maintenance_requests = current_user.tenant.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
+    elsif current_user.trady?
+      @maintenance_requests = current_user.trady.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
     
     end 
 

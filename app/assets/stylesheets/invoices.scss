@@ -70,38 +70,38 @@
 		}
 	}
 
-	form#new_invoice {
+	.invoicefield {
+    	border: 1px dashed #E1E1E1;
+		padding: 10px;
+		position: relative;
+		margin-top: 20px;
+
+		fieldset {
+			border: none;
+			padding: 0;
+		}
+
+		.button-remove {
+		    position: absolute;
+		    top: -32px;
+		    right: 5px;
+		    padding: 0;
+		    height: 23px;
+		    width: 23px;
+		    border-radius: 23px;
+		    line-height: 20px;
+		}
+	}
+
+	.fieldlist {
 		ul {
 			list-style: none;
 		    max-height: 430px;
-    		overflow-y: scroll;
-    		margin: 0;
-
-			li {
-		    	border: 1px dashed #E1E1E1;
-	    		padding: 10px;
-	    		position: relative;
-	    		margin-top: 20px;
-
-				.field fieldset {
-					border: none;
-					padding: 0;
-				}
-			}
+			overflow-y: scroll;
+			margin: 0;
 		}
-
+		
 		button {
-			&.button-remove {
-			    position: absolute;
-			    top: -32px;
-			    right: 5px;
-			    padding: 0;
-			    height: 23px;
-			    width: 23px;
-			    border-radius: 23px;
-			    line-height: 20px;
-			}
-
 			&.button-add {	
 				font-size: 13px;
 	    		height: 24px;

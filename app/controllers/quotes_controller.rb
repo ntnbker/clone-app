@@ -132,7 +132,7 @@ class QuotesController < ApplicationController
   def landlord_requests_quote
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     LandlordRequestsQuoteEmailWorker.perform_async(maintenance_request.id)
-    binding.pry
+    
     maintenance_request.action_status.update_columns(agent_status:"Quote Requested", action_category:"Action Required")
     
     #Send Email to the agent  
@@ -174,7 +174,7 @@ class QuotesController < ApplicationController
   private
   
   def quote_params
-    params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy])
+    params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type])
   end
 
   def email_auto_login(id)

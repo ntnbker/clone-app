@@ -1,92 +1,54 @@
-var FieldList = React.createClass({
-    render: function() {    
-        return <ul>
-            {this.props.fields.map((field, fieldIndex) => 
-                <li key={fieldIndex}>
-                    {field}
-                    <button className="button-remove button-primary red" onClick={this.props.removeField} value={fieldIndex}> Remove </button>
-                </li>
-            )}
-        </ul>;
-    }
-});
-
 var QuoteField = React.createClass({
+    getInitialState : function() {
+        return {
+            remove : false
+        }
+    },
+
+    removeField() {
+        this.setState({remove: true});
+    },
+
     render: function() {
-        var quote = this.props.quote;
-        return <div className="field">
+        var quote = this.props.content;
+        var x= this.props.x;
+        if (quote) {
+            x = quote.id;
+        }
+        return <div className="quotefield" style={{display: this.state.remove ? 'none' : 'block' }}>
             <fieldset>
                 <p> Item description </p>
-                <input type="text" name={'quote[quote_items_attributes][' + this.props.x + '][item_description]'}
-                                     id={'quote_quote_items_attributes_' + this.props.x + '_item_description'}
-                           defaultValue={quote ? quote.item_description : null} required />
+                <input type="text" name={'quote[quote_items_attributes][' + x + '][item_description]'}
+                                     id={'quote_quote_items_attributes_' + x + '_item_description'}
+                           defaultValue={quote ? quote.item_description : null} />
 
                 <p> Amount </p>
-                <input type="text" name={'quote[quote_items_attributes][' + this.props.x + '][amount]'}
-                                     id={'quote_quote_items_attributes_' + this.props.x + '_amount'}
-                           defaultValue={quote ? quote.amount : null} required />
+                <input type="text" name={'quote[quote_items_attributes][' + x + '][amount]'}
+                                     id={'quote_quote_items_attributes_' + x + '_amount'}
+                           defaultValue={quote ? quote.amount : null} />
+
+                <input type="hidden" value={this.state.remove} name={'quote[quote_items_attributes][' + x + '][_destroy]'} id={'quote_quote_items_attributes_' + x + '__destroy'}/>
+                {quote
+                ? <input type="hidden" value={x} name={'quote[quote_items_attributes][' + x + '][id]'} id={'quote_iquote_items_attributes_' + x + '_id'} />
+                : null }
             </fieldset>
+            <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
         </div>
-    }
-});
-
-var QuoteList = React.createClass({
-    getInitialState : function() {
-        var fields = [];
-        var x = -1;
-
-        if (this.props.quote_items) {
-            fields = this.props.quote_items.map((item, index) =>
-                        fields.concat([ <QuoteField quote={item} x={index}/> ]));
-            x = this.props.quote_items.length-1;
-        } else {
-            fields = [ <QuoteField x={0}/> ];
-            x = 0;
-        }
-
-        return {
-            fields : fields,
-            x : x
-        }    
-    },
-
-    removeField: function(e) {
-        var fieldIndex = parseInt(e.target.value, 10);
-        this.setState(state => {
-            state.fields.splice(fieldIndex, 1);
-            return {fields: state.fields};
-        });
-    },
-
-    addField: function(e) {
-        this.setState({
-            fields: this.state.fields.concat([ <QuoteField x={++this.state.x}/> ])
-        });
-    
-        e.preventDefault();
-    },
-
-    render: function() { 
-        return(
-            <div>
-                <FieldList fields={this.state.fields} removeField={this.removeField} />
-                <button className="button-add button-primary" onClick={this.addField}> Add Another Item </button>
-            </div>
-        );
     }
 });
 
 var QuoteFields = React.createClass({
     render: function() {
-        return <form role="form" id="new_quote" action="/quotes" acceptCharset="UTF-8" method="post">   
+        return <form role="form" id="new_quote" action={this.props.id ? '/quotes/'+this.props.id : '/quotes'} acceptCharset="UTF-8" method="post">   
             <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
-
+            
+            <input type="hidden" name="_method" value={this.props._method} />
             <input type="hidden" value={this.props.maintenance_request_id} name="quote[maintenance_request_id]" id="quote_maintenance_request_id" />
             <input type="hidden" value={this.props.trady_id} name="quote[trady_id]" id="quote_trady_id" />
             <input type="hidden" value={this.props.status} name="quote[status]" id="quote_status" />
             <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
 
-            <QuoteList quote_items={this.props.quote_items} />
+            <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} />
 
             <hr />
 

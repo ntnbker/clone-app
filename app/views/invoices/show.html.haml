@@ -2,21 +2,56 @@
 
 %div.container.invoice-form
   -@invoice.invoice_items.each do |f|
-    %p.invoice-show.row
-      %span
-        =f.item_description
-      %span
-        $
-        =f.amount 
+  
+    %div.row
+      
+
+      %hr
+      -if f.pricing_type == "Hourly"
+        %p
+          ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
+      -elsif f.pricing_type == "Fixed Cost"
+        %p
+          ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
+      
+          
+           
   %hr
-  %p.invoice-show.row
-    %span
-      Total
-    %span
-      $
-      =@invoice.amount
+  %div.row
+    -if @invoice.tax == true
+      %p
+        = "GST: #{ (@invoice.amount - @invoice.amount/1.10).round(2)}"
+    -elsif @invoice.tax == false
+      %p
+        GST: $ 0.00
+    %br    
+    %h4
+      %span
+        ="Total: $#{@invoice.amount}"
+  %div.row
+    -if @invoice.prepaid_or_postpaid == "Prepaid"
+      %p
+        Payment Required Before Work Can Commense
+      %p 
+        ="Amount Due: $#{@invoice.payment_installment_amount}"
+    -elsif @invoice.prepaid_or_postpaid == "PostPaid"
+      %p
+        Payment Required After Work Completed
   
   %button.button.button-primary.left
     =link_to "Back", edit_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
   %button.button.button-primary.green.right
     =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id,invoice_id:@invoice.id), method: :post
+/   %p.invoice-show.row
+/     %span
+/       =f.item_description
+/     %span
+/       $
+/       =f.amount 
+/ %hr
+/ %p.invoice-show.row
+/   %span
+/     Total
+/   %span
+/     $
+/     =@invoice.amount

@@ -1,22 +1,9 @@
-var FieldList = React.createClass({
-    render: function(){    
-        return <ul>
-            {this.props.fields.map((field, fieldIndex) => 
-                <li key={fieldIndex}>
-                    {field}
-                    <button className="button-remove button-primary red" onClick={this.props.removeField} value={fieldIndex}> Remove </button>
-                </li>
-            )}
-        </ul>;
-    }
-});
 
 var AvailabilityField = React.createClass({
     getInitialState : function() {
-      return {
-        currentValue : {date: '', start1: '', end1: '', start2: '', end2: ''},
-        dateRequired : true
-      }
+        return {
+            remove : false
+        }
     },
 
     makeDate(byNum) {
@@ -26,6 +13,11 @@ var AvailabilityField = React.createClass({
       }
       return date;
     },
+
+    removeField() {
+      this.setState({remove: true});
+    },
+
 
     generateAtt(name_id, x, type) {
       if (name_id == "name") {
@@ -45,13 +37,17 @@ var AvailabilityField = React.createClass({
     },
 
     render : function() {
-      var x = this.props.x;
-      var currentValue = this.state.currentValue;
+      var Availability = this.props.content;
+      var x= this.props.x;
+      if (Availability) {
+          x = Availability.id;
+      }
+
       return (
-        <div className="field">
+        <div className="availabilityfield" style={{display: this.state.remove ? 'none' : 'block' }}>
           <fieldset>
             <p> Date </p>
-            <input type="date" value='' value={currentValue.date}
+            <input type="date"
                  name={this.generateAtt("name", x, "date")}
                  id={this.generateAtt("id", x, "date")}  onChange={this.onChange} required={this.state.dateRequired}/>
             
@@ -114,48 +110,18 @@ var AvailabilityField = React.createClass({
           <label>
             <input type="checkbox" value="1" onChange={this.onCheck}
                    name={this.generateAtt("name", x, "available_only_by_appointment")}
-                   id={this.generateAtt("id", x, "available_only_by_appointment")} />
+                     id={this.generateAtt("id", x, "available_only_by_appointment")} />
             Check box if accesss only available by appointment
           </label>
+          <input type="hidden" value={this.state.remove}
+                name={this.generateAtt("name", x, "_destroy")}
+                  id={this.generateAtt("id", x, "_destroy")} />
+          <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
         </div>
       );
     },
 
     onCheck() {
       this.setState({dateRequired: !this.state.dateRequired});
-    }
-});
-
-var AvailabilityFields = React.createClass({
-    getInitialState : function() {
-      return {
-        fields : [ <AvailabilityField x={0}/> ],
-        x : 0
-      }
-    },
-    
-    removeField: function(e) {
-        var fieldIndex = parseInt(e.target.value, 10);
-        this.setState(state => {
-            state.fields.splice(fieldIndex, 1);
-            return {fields: state.fields};
-        });
-    },
-
-    addField:function (e){
-        this.setState({
-            fields: this.state.fields.concat([ <AvailabilityField x={++this.state.x}/> ])
-        });
-    
-        e.preventDefault();
-    },
-
-    render: function(){ 
-        return(
-            <div id="availabilities">
-                <FieldList fields={this.state.fields} removeField={this.removeField} />
-                <button className="button-add button-primary" onClick={this.addField}> Add Another Availability </button>
-            </div>
-        );
     }
 });

@@ -1,20 +1,31 @@
 %div.container.well
   %div.send-quote
+    %h4
+      Maintenance Request Quote
     -@quote.quote_items.each do |f|
       %div.row
-        %p
-          =f.item_description
-          =":"
-        %span
-          =f.amount 
+        %hr
+        -if f.pricing_type == "Hourly"
+          %p
+            ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
+        -elsif f.pricing_type == "Fixed Cost"
+          %p
+            ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
     %hr
     %div.row
+    -if @quote.tax == true
       %p
-        Total :
-      %span
-        =@quote.amount
+        = "GST: #{ (@quote.amount - @quote.amount/1.10).round(2)}"
+    -elsif @quote.tax == false
+      %p
+        GST: $ 0.00
+    %br    
+    %span
+      ="Total: $#{@quote.amount}"
+    %br    
     
     %button{:type=>"button", :class=>"button button-primary"} 
       =link_to "Edit Quote", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)
     %button{:type=>"button", :class=>"button button-primary green"} 
       =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id)
+/ = "GST: #{@quote.amount*0.10}"

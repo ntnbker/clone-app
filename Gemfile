@@ -40,7 +40,9 @@ gem 'react-rails'
 gem 'ahoy_email'
 gem 'will_paginate', '~> 3.1.0'
 gem 'searchkick'
+gem 'redis'
 gem 'sidekiq'
+
 
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'

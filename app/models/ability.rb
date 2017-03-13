@@ -77,7 +77,7 @@ class Ability
 
       if @user.trady?
         
-        can :new, MaintenanceRequest
+        
         can :index, :maintenance_request
         can :show, :maintenance_request
       end 
@@ -85,7 +85,7 @@ class Ability
       if @user
         
 
-        can :create, MaintenanceRequest
+        #can :create, MaintenanceRequest
         can :new, MaintenanceRequest
         can :new, AgencyAdmin
         can :create, AgencyAdmin
@@ -93,6 +93,7 @@ class Ability
         can :new, :agency
         can :create, :agency
         can :new, :maintenance_request
+        can :create, :maintenance_request
       end 
     
   end

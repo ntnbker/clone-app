@@ -39,12 +39,13 @@ form#new_maintenance_request {
 		list-style: none;
 
 		li {
-	    	border: 1px solid #E1E1E1;
-    		padding: 10px;
-
-			.field fieldset {
-				border: none;
-				padding: 0;
+			.accesscontactfield {
+				border: 1px solid #E1E1E1;
+				padding: 10px;
+				fieldset {
+					border: none;
+					padding: 0;
+				}
 			}
 		}
 	}
@@ -53,27 +54,28 @@ form#new_maintenance_request {
 		list-style: none;
 
 		li {
-	    	border: 1px solid #E1E1E1;
-    		padding: 10px;
+			.availabilityfield {
+		    	border: 1px solid #E1E1E1;
+	    		padding: 10px;
+				fieldset {
+					border: none;
+					padding: 0;
 
-			.field fieldset {
-				border: none;
-				padding: 0;
-
-				input[type="date"] {
-					display: block;
-				    height: 38px;
-    				padding-left: 10px;
-				}
-
-				div {
-					display: inline-block;
-					select {
-						width: 60px;
+					input[type="date"] {
+						display: block;
+					    height: 38px;
+	    				padding-left: 10px;
 					}
-				}
-				.starttime {
-					padding-right: 40px;
+
+					div {
+						display: inline-block;
+						select {
+							width: 60px;
+						}
+					}
+					.starttime {
+						padding-right: 40px;
+					}
 				}
 			}
 

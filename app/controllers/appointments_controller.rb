@@ -70,7 +70,7 @@ class AppointmentsController < ApplicationController
     @maintenance_request_id = params[:maintenance_request_id]
     @tenant_id  = params[:tenant_id]
     @trady_id = params[:trady_id]
-    binding.pry
+    
   end
 
   def update
