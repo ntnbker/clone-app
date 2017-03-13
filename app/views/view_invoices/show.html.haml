@@ -53,4 +53,12 @@
       ="Total: $#{@invoice.amount}"
   %button.button.button-primary.green
     = link_to 'Print Invoice', print_invoice_path(id:@invoice), :onclick => 'window.print();return false;', method: :post
+  %button.button.button-primary.green
+    Mark As Paid
+  
+  %div.row
+    =form_tag url:"" do |f|
+      =label_tag :amount_paid, "Amount Paid"
+      =text_field_tag :amount_paid 
+      =submit_tag "Submit Amount Paid", class: "button button button-primary green"
 
