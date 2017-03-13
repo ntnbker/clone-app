@@ -307,6 +307,8 @@ class MaintenanceRequestsController < ApplicationController
 
     elsif current_user.tenant?
       @maintenance_requests = current_user.tenant.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
+    elsif current_user.trady?
+      @maintenance_requests = current_user.trady.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
     
     end 
 
