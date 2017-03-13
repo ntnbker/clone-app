@@ -80,8 +80,11 @@ class MaintenanceRequest < ApplicationRecord
       maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
     elsif current_user_role == "Agent"
       maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+    elsif current_user == "Trady"
+      
     end 
     
+    #we dont really need another full method for this we can just add a setter and getter and set it in the method above
     return maintenance_request_array.count
   end
 

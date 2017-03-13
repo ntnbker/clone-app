@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   get "confirm_company_invoice" =>"invoices#edit_trady_company_invoice"
   put "update_company_invoice" =>"invoices#update_trady_company_invoice"
   post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
+  get "invoice_sent_success" => "invoices#invoice_sent_success", :as=> :invoice_sent_success
   ###################################################
   ##########WORK ORDER INVOICE RESOURCES/ROUTES######
   ###################################################
