@@ -81,11 +81,11 @@
     -if @maintenance_request.trady != nil && @quote == nil
       
       %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
-        =link_to "Send Invoice(work-order)", new_company_information_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id)
+        =link_to "Create and Send Invoices", new_company_information_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id)
     / && current_user.trady? && current_user.trady.id == @quote.trady_id
     -if @quote != nil && @quote.trady != nil
       %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
-        =link_to "Send Invoice(Quote)", confirm_company_invoice_path(trady_company_id:@quote.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@quote.trady.id, quote_id:@quote.id)
+        =link_to "Create and Send Invoices", confirm_company_invoice_path(trady_company_id:@quote.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@quote.trady.id, quote_id:@quote.id)
 
 
 

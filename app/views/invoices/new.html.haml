@@ -17,6 +17,10 @@
     =f.fields_for :invoice_items do |form|
       = render "invoices/invoice_item_fields", f: form
       = link_to_add_association "Add Another item", f, :invoice_items
+    =f.form_group :prepaid_or_postpaid do 
+      = f.radio_button :prepaid_or_postpaid, "Prepaid", label: "Payment Required Before Work Can Commense"
+      = f.radio_button :prepaid_or_postpaid, "PostPaid", label: "Payment Required After Work Completed"
+    =f.text_field :payment_installment_amount, label: "Payment Amount Required"
     = f.form_group :tax do
       = f.check_box :tax, label: "Add GST", value: "FALSE"
   =f.submit "Next"

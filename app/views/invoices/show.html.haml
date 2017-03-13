@@ -25,8 +25,18 @@
       %p
         GST: $ 0.00
     %br    
-    %span
-      ="Total: $#{@invoice.amount}"
+    %h4
+      %span
+        ="Total: $#{@invoice.amount}"
+  %div.row
+    -if @invoice.prepaid_or_postpaid == "Prepaid"
+      %p
+        Payment Required Before Work Can Commense
+      %p 
+        ="Amount Due: $#{@invoice.payment_installment_amount}"
+    -elsif @invoice.prepaid_or_postpaid == "PostPaid"
+      %p
+        Payment Required After Work Completed
   
   %button.button.button-primary.left
     =link_to "Back", edit_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)

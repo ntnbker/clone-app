@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308111152) do
+ActiveRecord::Schema.define(version: 20170313025633) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,9 +191,11 @@ ActiveRecord::Schema.define(version: 20170308111152) do
     t.integer  "trady_id"
     t.integer  "maintenance_request_id"
     t.integer  "amount"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.boolean  "tax"
+    t.integer  "payment_installment_amount"
+    t.string   "prepaid_or_postpaid"
   end
 
   create_table "landlords", force: :cascade do |t|
