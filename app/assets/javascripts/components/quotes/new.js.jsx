@@ -27,6 +27,17 @@ var QuoteField = React.createClass({
                                      id={'quote_quote_items_attributes_' + x + '_amount'}
                            defaultValue={quote ? quote.amount : null} />
 
+                <p> Number of Hours </p>
+                <input type="text" name={'quote[quote_items_attributes][' + x + '][hours]'}
+                                     id={'quote_quote_items_attributes_' + x + '_hours'}
+                           defaultValue={quote ? quote.hours : null} />
+
+                <p> Pricing type </p>
+                <select defaultValue={quote ? quote.pricing_type : null} name={'quote[quote_items_attributes][' + x + '][pricing_type]'} id={'quote_quote_items_attributes_' + x + '_pricing_type'}>
+                    <option value="Fixed Cost">Fixed Cost</option>
+                    <option value="Hourly">Hourly</option>
+                </select>
+
                 <input type="hidden" value={this.state.remove} name={'quote[quote_items_attributes][' + x + '][_destroy]'} id={'quote_quote_items_attributes_' + x + '__destroy'}/>
                 {quote
                 ? <input type="hidden" value={x} name={'quote[quote_items_attributes][' + x + '][id]'} id={'quote_iquote_items_attributes_' + x + '_id'} />
@@ -49,6 +60,12 @@ var QuoteFields = React.createClass({
             <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
 
             <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} />
+
+            <label className="quote_tax">
+                <input type="hidden" value="0" name="quote[tax]" />
+                <input type="checkbox" value="1" defaultChecked={this.props.tax ? this.props.tax : false} name="quote[tax]" id="quote_tax" />
+                Add GST
+            </label>
 
             <hr />
 

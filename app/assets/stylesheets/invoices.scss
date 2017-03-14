@@ -1,6 +1,6 @@
 .invoice-form {
 	width: 98%;
-	height: 640px;
+	height: 680px;
 	padding: 30px;
 	background: white;
 	border-radius: 4px;
@@ -48,6 +48,21 @@
 		}
 	}
 
+	.additon {
+		margin: 5px;
+		.paid-type label, .invoice_tax {
+			display: inline-block;
+			font-weight: normal;
+			margin-bottom: 0;
+
+			input[type="radio"], input[type="checkbox"] {
+				margin-right: 8px;
+				display: inline-block;
+				width: auto;
+			}
+		}
+	}
+
 	form#edit_trady_company_2 {
 		width: 100%;
 		margin: 20px auto;
@@ -79,6 +94,9 @@
 		fieldset {
 			border: none;
 			padding: 0;
+			p {
+				display: inline;
+			}
 		}
 
 		.button-remove {
@@ -96,7 +114,7 @@
 	.fieldlist {
 		ul {
 			list-style: none;
-		    max-height: 430px;
+		    max-height: 295px;
 			overflow-y: scroll;
 			margin: 0;
 		}
@@ -127,6 +145,7 @@
 	/* For Desktop */
 	@media (min-width: 550px) {
 		width: 480px;
+		height: 640px;
 	}
 }
 
