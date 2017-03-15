@@ -7,6 +7,7 @@
           -if maintenance_request.maintenance_request_image != nil
             -maintenance_request.maintenance_request_image.images.each do |image|
               = image_tag(image.url.to_s)
+
         %div.info
           %div.row
             %h3.heading
@@ -23,11 +24,11 @@
           %p.address
             %i.fa.fa-map-marker
             = maintenance_request.property.property_address
-    = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
+        = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
 
 
 
-      = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
+      
 
   %div.side-column
     -if current_user.agent? || current_user.agency_admin? 
