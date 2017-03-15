@@ -25,15 +25,20 @@
             = maintenance_request.property.property_address
     = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
 
-%div.container
-  -if current_user.agent? || current_user.agency_admin?  
-    %div.side-column
+
+
+      = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
+
+  %div.side-column
+    -if current_user.agent? || current_user.agency_admin? 
       = react_component('DropList', {:title => "Action Required",
                                      :content => [{title:'Maintenance Request', href:filtered_maintenance_requests_path(maintenance_request_filter:"Initiate Maintenance Request"),  count:@new_maintenance_requests_count},
                                                   {title:'Quote Received', href:filtered_maintenance_requests_path(maintenance_request_filter:"Quote Received"), count:@quotes_received_count},
                                                   {title:'New Invoice', href:filtered_maintenance_requests_path(maintenance_request_filter:"New Invoice"), count:@new_invoice_count},
                                                   {title:'Pending Payment', href:filtered_maintenance_requests_path(maintenance_request_filter:"Pending Payment"), count:@pending_payment_count}]},
                                     {class:"action"})
+
+
 
       = react_component('DropList', {:title => "Awaiting Action",
                                      :content => [{title:'Awaiting Owner Initiation', href:filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Owner Initiation"), count:@awaiting_owner_initiation_count},
