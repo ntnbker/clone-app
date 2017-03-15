@@ -13,4 +13,10 @@ class AgentsController < ApplicationController
     @agent = Agent.find_by(id:current_user.role.roleable_id)
   end
 
+  private
+
+  def agent_params
+    
+  end
+
 end 
