@@ -12,7 +12,10 @@
 /       =@trady.trady_company.mobile_number
 /       %br
 /       =@trady.trady_company.email
-%div.container.invoice-form
+%div.container.invoice-form.well
+  %h6
+    ="Invoice Status: #{@invoice.payment_status}"
+
   %h4 
     Invoice
   %h5
@@ -32,11 +35,9 @@
     %div.row
       %hr
       -if f.pricing_type == "Hourly"
-        %p
-          ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
+        ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
       -elsif f.pricing_type == "Fixed Cost"
-        %p
-          ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
+        ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
       
           
            
@@ -51,14 +52,34 @@
     %br    
     %span
       ="Total: $#{@invoice.amount}"
+  
+  %hr
+  -if @invoice.invoice_payments
+    %h3
+      Amounts Paid
+    -@invoice.invoice_payments.each do |payment| 
+      %hr
+      %div.row
+        ="Amount Paid: $#{payment.amount_paid}"
+        =link_to "Edit", edit_invoice_payment_path(payment, invoice_id:@invoice.id)
+        %br
+        ="Date Paid:#{payment.date}"
+    %hr
+    %h5
+      ="Total Paid: $#{@invoice.amount_paid}"
+        
+        
   %button.button.button-primary.green
     = link_to 'Print Invoice', print_invoice_path(id:@invoice), :onclick => 'window.print();return false;', method: :post
   %button.button.button-primary.green
-    Mark As Paid
+    Add Payment(Click and should show amount paid field)
   
   %div.row
-    =form_tag url:"" do |f|
-      =label_tag :amount_paid, "Amount Paid"
-      =text_field_tag :amount_paid 
+    =form_for @payment  do |f|
+      =f.label :amount_paid, "Amount Paid"
+      =f.text_field :amount_paid 
+      =f.label :date, "Date Paid"
+      =f.date_field :date
+      =f.hidden_field :invoice_id, value:@invoice.id
       =submit_tag "Submit Amount Paid", class: "button button button-primary green"
-
+    

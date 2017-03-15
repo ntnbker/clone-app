@@ -77,10 +77,15 @@ Rails.application.routes.draw do
   resources :work_order_invoices
 
   ###################################################
-  ##########VIEW INVOICES RESOURCES/ROUTES######
+  ##########VIEW INVOICES RESOURCES/ROUTES###########
   ###################################################
   resources :view_invoices, only:[:show]
   post "print_invoice" =>"view_invoices#print_invoice", :as=> :print_invoice
+
+  ###################################################
+  ##########PAYMENST RESOURCES/ROUTES################
+  ###################################################
+  resources :invoice_payments, only:[:create, :update, :edit]
 
   ###################################################
   ##########TRADIE RESOURCES/ROUTES#################
