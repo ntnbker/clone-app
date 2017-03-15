@@ -1,0 +1,9 @@
+%div.well.container
+  =form_for @invoice_payment  do |f|
+    =f.label :amount_paid, "Amount Paid"
+    =f.text_field :amount_paid 
+    =f.label :date, "Date Paid"
+    =f.date_field :date
+    =f.hidden_field :invoice_id, value:@invoice_id
+    %br
+    =submit_tag "Submit Amount Paid", class: "button button button-primary green"

@@ -3,7 +3,7 @@ class Invoice < ApplicationRecord
   belongs_to :trady
   has_many :invoice_items, inverse_of: :invoice
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
-
+  has_many :invoice_payments
   # attr_accessor :maintenance_request_id
   # attr_accessor :trady_id
   attr_accessor :quote_id 
@@ -35,6 +35,15 @@ class Invoice < ApplicationRecord
       end 
 
     return total
+  end
+
+
+  def check_payment(money_paid)
+    if money_paid.to_f < amount 
+      self.update_attribute(:payment_status, "Partial Payment Completed")
+    elsif money_paid == amount
+      self.update_attribute(:payment_status, "Full Payment Complete")
+    end 
   end
 
 

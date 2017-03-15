@@ -10,9 +10,7 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- @import "bootstrap-sprockets";
- @import "bootstrap";
- @import 'bootstrap-datetimepicker';
+
  *= require skeleton
  *= require normalize
  *= require jquery-ui
@@ -27,5 +25,5 @@
 @import "trady_companies.scss";
 @import "quotes.scss";
 @import "invoices.scss";
-@import "user_sessions.scss"
-
+@import "user_sessions.scss";
+@import "font-awesome";

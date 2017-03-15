@@ -93,13 +93,13 @@
       
       %div.well 
         %h5
-          =link_to "Invoice #{index+1}"
+          =link_to "Invoice #{index+1}", view_invoice_path(invoice_id:invoice.id)
         %p 
           ="Company Name: #{invoice.trady.trady_company.company_name}"
         %p
           ="Name: #{invoice.trady.name}"
         %p 
-          ="Invoice Total Amount: $#{invoice.amount} "
+          ="Invoice Total Amount: $#{invoice.amount}"
 /****************MODALS****************/     
 /**************************************/
 %div{:class=>"modal fade", :id=>"tenant-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
