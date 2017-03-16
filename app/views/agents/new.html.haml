@@ -1,3 +1,16 @@
 %div.container.well
-  -form_for @agent do |f|
+  %h5
+    Add agent to your team
+  =form_for @agent do |f|
+    =f.label :email
+    =f.email_field :email
+    =f.label :name
     =f.text_field :name
+    =f.label :last_name
+    =f.text_field :last_name
+    =f.label :mobile_phone
+    =f.telephone_field :mobile_phone
+    =f.label :license_number
+    =f.text_field :license_number
+    =f.hidden_field :agency_id, value:@agency_id
+    =f.submit "Submit"

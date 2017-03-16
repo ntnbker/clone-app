@@ -5,6 +5,9 @@
 <% end %>
 
 <%=link_to "My Maintenance Requests", maintenance_requests_path%>
+</br>
+<%=link_to "Add Agent", new_agent_path%>
+<%=link_to "Add Agency Admin", new_agency_admin_path%>
 
 
 <% if local_assigns.has_key? :expanded %>

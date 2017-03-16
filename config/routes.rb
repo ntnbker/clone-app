@@ -28,8 +28,8 @@ Rails.application.routes.draw do
   ###################################################
   ##########AGENT ROLE RESOURCES/ROUTES##############
   ###################################################
-  resources :agents, only:[:show,:update]
-  resources :agency_admins, only:[:show]
+  resources :agents, only:[:show,:update, :new, :create]
+  resources :agency_admins, only:[:new, :create, :show]
   resources :agencies, only:[:new, :create]
 
   ###################################################
@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   ###################################################
   ##########MR RESOURCES/ROUTES######################
   ###################################################
-  get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
+  #get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
   resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
   
   ###################################################

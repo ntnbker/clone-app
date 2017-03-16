@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315083718) do
+ActiveRecord::Schema.define(version: 20170316070701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,24 +65,13 @@ ActiveRecord::Schema.define(version: 20170315083718) do
   end
 
   create_table "agency_admins", force: :cascade do |t|
-    t.string  "company_name"
-    t.string  "business_name"
     t.string  "email"
-    t.string  "phone"
-    t.string  "address"
-    t.string  "first_name"
     t.string  "last_name"
     t.integer "user_id"
-    t.string  "abn"
-    t.string  "mailing_address"
     t.string  "mobile_phone"
-    t.string  "license_number"
-    t.string  "license_type"
-    t.string  "corporation_license_number"
-    t.boolean "bdm_verification_status"
-    t.string  "bdm_verification_id"
-    t.boolean "mailing_same_address"
     t.integer "agency_id"
+    t.string  "first_name"
+    t.string  "license_number"
   end
 
   create_table "agency_tradie_companies", force: :cascade do |t|
@@ -106,9 +95,10 @@ ActiveRecord::Schema.define(version: 20170315083718) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.string   "name"
+    t.string   "mobile_phone"
     t.string   "license_type"
     t.string   "license_number"
-    t.string   "mobile_phone"
+    t.integer  "agency_id"
   end
 
   create_table "ahoy_messages", force: :cascade do |t|
