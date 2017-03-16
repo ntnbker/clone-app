@@ -1,4 +1,11 @@
 %div.container.well
+  %div
+    -if @agent.errors.any?
+      -@agent.errors.full_messages.each do |message|
+        %p
+          =message
+      
+    
   %h5
     Add agent to your team
   =form_for @agent do |f|
@@ -14,3 +21,7 @@
     =f.text_field :license_number
     =f.hidden_field :agency_id, value:@agency_id
     =f.submit "Submit"
+
+
+
+  
