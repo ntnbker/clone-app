@@ -194,6 +194,7 @@ form#new_maintenance_request {
 		border-radius: 4px;
 		border-color: #edf1f4;
 		box-shadow: 0 1px 10px #888888;
+		position: relative;
 
 		width: calc(100% - 300px);
    		min-height: calc(100vh - 210px);
@@ -258,6 +259,13 @@ form#new_maintenance_request {
 				color: #69605b;
 			}
 		}
+		.pagination {
+			position: absolute;
+			bottom: 20px;
+			left: 50%;
+			transform: translate(-50%, 0);
+			display: table;
+		}
 	}
 
 	.side-column {
@@ -292,6 +300,7 @@ form#new_maintenance_request {
 	@media (max-width: 1200px) {
 		.main-column {
 			width: calc(100% - 50px);
+			padding-bottom: 70px;
 		}
 		.side-column {
 			width: 40px;
