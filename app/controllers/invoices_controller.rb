@@ -38,7 +38,8 @@ class InvoicesController < ApplicationController
   def new
     #this quote instance variable is for front end to add the values into the form using JS
     @quote = Quote.find_by(id:params[:quote_id])
-
+    @quote_items = @quote.quote_items
+    
     @invoice = Invoice.new
     @invoice.invoice_items.build
     @maintenance_request_id= params[:maintenance_request_id]
