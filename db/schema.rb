@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170314121430) do
+ActiveRecord::Schema.define(version: 20170317032211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,24 +65,13 @@ ActiveRecord::Schema.define(version: 20170314121430) do
   end
 
   create_table "agency_admins", force: :cascade do |t|
-    t.string  "company_name"
-    t.string  "business_name"
     t.string  "email"
-    t.string  "phone"
-    t.string  "address"
-    t.string  "first_name"
     t.string  "last_name"
     t.integer "user_id"
-    t.string  "abn"
-    t.string  "mailing_address"
     t.string  "mobile_phone"
-    t.string  "license_number"
-    t.string  "license_type"
-    t.string  "corporation_license_number"
-    t.boolean "bdm_verification_status"
-    t.string  "bdm_verification_id"
-    t.boolean "mailing_same_address"
     t.integer "agency_id"
+    t.string  "first_name"
+    t.string  "license_number"
   end
 
   create_table "agency_tradie_companies", force: :cascade do |t|
@@ -101,12 +90,16 @@ ActiveRecord::Schema.define(version: 20170314121430) do
   end
 
   create_table "agents", force: :cascade do |t|
-    t.string   "first_name"
     t.string   "last_name"
     t.string   "email"
-    t.string   "phone"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "name"
+    t.string   "mobile_phone"
+    t.string   "license_type"
+    t.string   "license_number"
+    t.integer  "agency_id"
+    t.integer  "user_id"
   end
 
   create_table "ahoy_messages", force: :cascade do |t|
@@ -379,6 +372,8 @@ ActiveRecord::Schema.define(version: 20170314121430) do
     t.string   "reset_password_token"
     t.datetime "reset_password_token_expires_at"
     t.datetime "reset_password_email_sent_at"
+    t.string   "set_password_token"
+    t.string   "id_token"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", using: :btree
   end

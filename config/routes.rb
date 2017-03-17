@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   post 'menulogin' => 'user_sessions#menu_bar_login_form_create'
   delete 'logout' => 'user_sessions#destroy', :as => :logout
   resources :password_resets, only:[:new, :create, :edit,:update]
-
+  resources :passwords, only:[:edit, :update]
   resources :gods, only:[:show]
   resources :gods do 
     resources :services, only:[:new,:create, :update]
@@ -28,8 +28,8 @@ Rails.application.routes.draw do
   ###################################################
   ##########AGENT ROLE RESOURCES/ROUTES##############
   ###################################################
-  resources :agents, only:[:show,:update]
-  resources :agency_admins, only:[:show]
+  resources :agents, only:[:show,:update, :new, :create]
+  resources :agency_admins, only:[:new, :create, :show]
   resources :agencies, only:[:new, :create]
 
   ###################################################
@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   ###################################################
   ##########MR RESOURCES/ROUTES######################
   ###################################################
-  get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
+  #get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
   resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
   
   ###################################################

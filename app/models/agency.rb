@@ -1,7 +1,7 @@
 class Agency < ApplicationRecord
   
   has_many :agency_admins
-  
+  has_many :agents
   has_many :agency_tradies
   has_many :tradies, through: :agency_tradies
 
