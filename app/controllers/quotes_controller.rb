@@ -83,14 +83,14 @@ class QuotesController < ApplicationController
           quote.update_attribute(:status, "Declined")
           trady = quote.trady
           
-          TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+          #TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
       end
     elsif params[:status] == "Declined"
       quote = Quote.find_by(id: params[:quote_id])
       trady = quote.trady
       quote.update_attribute(:status,"Declined")
-      TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+      #TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
       #email the person who got declined
     elsif params[:status] == "Restore"
       quote = Quote.find_by(id: params[:quote_id])
@@ -121,11 +121,25 @@ class QuotesController < ApplicationController
       AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
       @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Action Required")
     else
+
+      #this stuff has to go into the new end point for when they forward the quote.
       AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
       LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
       @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
     end 
-      
+  end
+
+  def forward_quote
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @landlord = @maintenance_request.property.landlord
+    @quote = Quote.find_by(id:params[:quote_id])
+    LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
+    @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
+  end
+
+  def check_landlord
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @landlord = @maintenance_request.property.landlord
   end
 
 

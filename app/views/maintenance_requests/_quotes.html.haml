@@ -11,15 +11,22 @@
       %p
         $
         =quote.amount
-      %div 
-        -if quote.status == "Approved" 
-          =link_to "Cancel", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post
+      %div
+        %button#check_for_landlord
+          Forward Quote To Landlord 
+          / =link_to "Forward Quote To Landlord", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post, id:"che"
+        -if quote.status == "Approved"
+          %button 
+            =link_to "Cancel", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post
         -if quote.status == "Active" 
-          =link_to "Approve", quote_status_path(quote_id:quote.id,status:"Approved", maintenance_request_id:quote.maintenance_request_id), method: :post
-          =link_to "Decline", quote_status_path(quote_id:quote.id,status:"Declined",maintenance_request_id:quote.maintenance_request_id), method: :post
+          %button  
+            =link_to "Approve", quote_status_path(quote_id:quote.id,status:"Approved", maintenance_request_id:quote.maintenance_request_id), method: :post
+          %button
+            =link_to "Decline", quote_status_path(quote_id:quote.id,status:"Declined",maintenance_request_id:quote.maintenance_request_id), method: :post
          
         -if quote.status == "Declined" 
-          =link_to "Restore", quote_status_path(quote_id:quote.id,status:"Restore",maintenance_request_id:quote.maintenance_request_id), method: :post
+          %button
+            =link_to "Restore", quote_status_path(quote_id:quote.id,status:"Restore",maintenance_request_id:quote.maintenance_request_id), method: :post
       / %div
       /   -if quote.maintenance_request.property.landlord != nil && quote.status == "Active"
       /     %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
