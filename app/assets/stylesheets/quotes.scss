@@ -28,8 +28,6 @@ form#new_quote {
 	.fieldlist {
 		ul {
 			list-style: none;
-		    max-height: 430px;
-			overflow-y: scroll;
 			margin: 0;
 		}
 		
@@ -45,6 +43,19 @@ form#new_quote {
 		&.button-add {	
 			font-size: 13px;
     		height: 24px;
+		}
+	}
+
+	.quote_tax {
+		display: inline-block;
+		font-weight: normal;
+		margin-top: 20px;
+		margin-bottom: 0;
+
+		input[type="radio"], input[type="checkbox"] {
+			margin-right: 8px;
+			display: inline-block;
+			width: auto;
 		}
 	}
 
