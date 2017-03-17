@@ -1,7 +1,12 @@
 var QuoteField = React.createClass({
     getInitialState : function() {
+        var quote = this.props.content;
+        var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
+        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
         return {
-            remove : false
+            remove : false,
+            pricing_type: pricing_type,
+            hours_input: hours_input
         }
     },
 
@@ -9,6 +14,15 @@ var QuoteField = React.createClass({
         this.setState({remove: true});
     },
 
+    onPricing(event) {
+        var pricing_type = event.target.value;
+        this.setState({pricing_type: pricing_type});
+        if (pricing_type == "Hourly") {
+            this.setState({hours_input: true});
+        } else {
+            this.setState({hours_input: false});
+        }
+    },
     render: function() {
         var quote = this.props.content;
         var x= this.props.x;
@@ -18,26 +32,42 @@ var QuoteField = React.createClass({
         return <div className="quotefield" style={{display: this.state.remove ? 'none' : 'block' }}>
             <fieldset>
                 <p> Item description </p>
-                <input type="text" name={'quote[quote_items_attributes][' + x + '][item_description]'}
-                                     id={'quote_quote_items_attributes_' + x + '_item_description'}
-                           defaultValue={quote ? quote.item_description : null} />
+                <input type="text"
+                       id={'quote_quote_items_attributes_' + x + '_item_description'}
+                       name={'quote[quote_items_attributes][' + x + '][item_description]'}
+                       defaultValue={quote ? quote.item_description : ''}
+                    />
 
                 <p> Amount </p>
-                <input type="text" name={'quote[quote_items_attributes][' + x + '][amount]'}
-                                     id={'quote_quote_items_attributes_' + x + '_amount'}
-                           defaultValue={quote ? quote.amount : null} />
-
-                <p> Number of Hours </p>
-                <input type="text" name={'quote[quote_items_attributes][' + x + '][hours]'}
-                                     id={'quote_quote_items_attributes_' + x + '_hours'}
-                           defaultValue={quote ? quote.hours : null} />
+                <input type="text"
+                       id={'quote_quote_items_attributes_' + x + '_amount'}
+                       name={'quote[quote_items_attributes][' + x + '][amount]'}
+                       defaultValue={quote ? quote.amount : ''}
+                    />
 
                 <p> Pricing type </p>
-                <select defaultValue={quote ? quote.pricing_type : null} name={'quote[quote_items_attributes][' + x + '][pricing_type]'} id={'quote_quote_items_attributes_' + x + '_pricing_type'}>
+                <select value={this.state.pricing_type}
+                     onChange={this.onPricing}
+                         name={'quote[quote_items_attributes][' + x + '][pricing_type]'}
+                           id={'quote_quote_items_attributes_' + x + '_pricing_type'}>
                     <option value="Fixed Cost">Fixed Cost</option>
                     <option value="Hourly">Hourly</option>
                 </select>
-
+                {
+                    this.state.hours_input
+                    ? <div>
+                        <p> Number of Hours </p>
+                        <input type="text"
+                               id={'quote_quote_items_attributes_' + x + '_hours'}
+                               name={'quote[quote_items_attributes][' + x + '][hours]'}
+                               defaultValue={quote ? quote.hours : ''}
+                            />
+                     </div>
+                    : <input type="hidden"
+                             id={'quote_quote_items_attributes_' + x + '_hours'}
+                             name={'quote[quote_items_attributes][' + x + '][hours]'}
+                        />
+                }
                 <input type="hidden" value={this.state.remove} name={'quote[quote_items_attributes][' + x + '][_destroy]'} id={'quote_quote_items_attributes_' + x + '__destroy'}/>
                 {quote
                 ? <input type="hidden" value={x} name={'quote[quote_items_attributes][' + x + '][id]'} id={'quote_iquote_items_attributes_' + x + '_id'} />

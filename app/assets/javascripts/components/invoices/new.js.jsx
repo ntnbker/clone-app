@@ -86,13 +86,28 @@ var FieldList = React.createClass({
 
 var InvoiceField = React.createClass({
     getInitialState : function() {
+        var invoice = this.props.content;
+        var pricing_type = invoice ? invoice.pricing_type : 'Fixed Cost';
+        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
         return {
-            remove : false
+            remove : false,
+            pricing_type: pricing_type,
+            hours_input: hours_input
         }
     },
 
     removeField() {
         this.setState({remove: true});
+    },
+
+    onPricing(event) {
+        var pricing_type = event.target.value;
+        this.setState({pricing_type: pricing_type});
+        if (pricing_type == "Hourly") {
+            this.setState({hours_input: true});
+        } else {
+            this.setState({hours_input: false});
+        }
     },
 
     render: function() {
@@ -111,16 +126,25 @@ var InvoiceField = React.createClass({
                     name={'invoice[invoice_items_attributes][' + x + '][amount]'}
                     id={'invoice_invoice_items_attributes_' + x + '_amount'} />
 
-                <input type="text" placeholder="Number of Hours" defaultValue={invoice ? invoice.hours : null}
-                    name={'invoice[invoice_items_attributes][' + x + '][hours]'}
-                    id={'invoice_invoice_items_attributes_' + x + '_hours'} />
-
                 <p> Pricing type : </p>
-                <select  defaultValue={invoice ? invoice.pricing_type : null} name={'invoice[invoice_items_attributes][' + x + '][pricing_type]'} id={'invoice_invoice_items_attributes_' + x + '_pricing_type'}>
+                <select value={this.state.pricing_type}
+                     onChange={this.onPricing}
+                         name={'invoice[invoice_items_attributes][' + x + '][pricing_type]'}
+                           id={'invoice_invoice_items_attributes_' + x + '_pricing_type'}>
                     <option value="Fixed Cost">Fixed Cost</option>
                     <option value="Hourly">Hourly</option>
                 </select>
 
+                {
+                    this.state.hours_input
+                    ? <input type="text" placeholder="Number of Hours" defaultValue={invoice ? invoice.hours : null}
+                             name={'invoice[invoice_items_attributes][' + x + '][hours]'}
+                             id={'invoice_invoice_items_attributes_' + x + '_hours'} />
+                    : <input type="hidden"
+                             name={'invoice[invoice_items_attributes][' + x + '][hours]'}
+                             id={'invoice_invoice_items_attributes_' + x + '_hours'} />
+                }
+                
                 <input type="hidden" value={this.state.remove} name={'invoice[invoice_items_attributes][' + x + '][_destroy]'} id={'invoice_invoice_items_attributes_' + x + '__destroy'}/>
                 {invoice
                 ? <input type="hidden" value={x} name={'invoice[invoice_items_attributes][' + x + '][id]'} id={'invoice_invoice_items_attributes_' + x + '_id'} />
@@ -133,7 +157,7 @@ var InvoiceField = React.createClass({
 
 var InvoiceFields = React.createClass({
     render: function(){
-        var invoice = this.props.invoice;
+        var invoice = this.props.invoice ? this.props.invoice : '';
         var id = invoice.id;
         var tax = invoice.tax;
         var prepaid_or_postpaid = invoice.prepaid_or_postpaid;
