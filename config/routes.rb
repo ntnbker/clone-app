@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   post 'menulogin' => 'user_sessions#menu_bar_login_form_create'
   delete 'logout' => 'user_sessions#destroy', :as => :logout
   resources :password_resets, only:[:new, :create, :edit,:update]
-
+  resources :passwords, only:[:edit, :update]
   resources :gods, only:[:show]
   resources :gods do 
     resources :services, only:[:new,:create, :update]

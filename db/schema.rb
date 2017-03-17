@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170316070701) do
+ActiveRecord::Schema.define(version: 20170317032211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 20170316070701) do
     t.string   "license_type"
     t.string   "license_number"
     t.integer  "agency_id"
+    t.integer  "user_id"
   end
 
   create_table "ahoy_messages", force: :cascade do |t|
@@ -371,6 +372,8 @@ ActiveRecord::Schema.define(version: 20170316070701) do
     t.string   "reset_password_token"
     t.datetime "reset_password_token_expires_at"
     t.datetime "reset_password_email_sent_at"
+    t.string   "set_password_token"
+    t.string   "id_token"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", using: :btree
   end

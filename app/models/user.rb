@@ -16,7 +16,7 @@ class User < ApplicationRecord
     has_one :god
     has_one :tenant
     has_one :landlord
-    
+    has_one :agent
     has_one :trady
     attr_accessor :_destroy
     
@@ -31,11 +31,13 @@ class User < ApplicationRecord
 
 
 
+    ##CALLBACKS
+    before_save :create_tokens
+  def create_tokens
+    self.set_password_token = SecureRandom.hex(10)
+    self.id_token = SecureRandom.hex(10)
+  end
 
-
- ########################
-##has_one :agency_admin, inverse_of: :user
-######validates_associated :agency_admin
 
 
 

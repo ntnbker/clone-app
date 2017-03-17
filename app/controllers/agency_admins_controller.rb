@@ -12,8 +12,29 @@ class AgencyAdminsController < ApplicationController
   def create
     @agency_admin = AgencyAdmin.new(agency_admin_params)
 
-    # if @agency_admin
+    
+    if @agency_admin.valid?
+      
+      @user = User.create(email:params[:agency_admin][:email],password:SecureRandom.hex(5))
+      
+      @agency_admin.save
+      @agency_admin.update_attribute(:user_id, @user.id)
+      role = Role.create(user_id:@user.id)
+      @agency_admin.roles << role
+
+      flash[:succes] = "You have added a new Agency Administrator to your team"
+      UserSetPasswordEmailWorker.perform_async(@user.id)
+      redirect_to new_agency_admin_path
+      
+      
+    else
+      flash[:danger] = "Something went wrong"
+      render :new
+    end
   end
+  
+
+
   def show
     @agency_admin = AgencyAdmin.find_by(id:current_user.id)
   end
@@ -25,7 +46,7 @@ class AgencyAdminsController < ApplicationController
   private
 
   def agency_admin_params
-    params.require(:agency_admin).permit(:email, :first_name, :last_name, :mobile_phone, :license_number)
+    params.require(:agency_admin).permit(:email, :first_name, :last_name, :mobile_phone, :license_number, :agency_id)
   end
 
   def user_params
