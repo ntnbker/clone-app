@@ -1,30 +1,52 @@
-%div.well
-  =bootstrap_nested_form_for(@user, url: agency_admins_path, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
-    =f.fields_for :agency_admin do |agency_form|
-      =agency_form.text_field :company_name
-      =agency_form.text_field :business_name
-      =agency_form.text_field :abn
-      =agency_form.text_field :address
-      =agency_form.form_group :mailing_same_address do 
-        =agency_form.check_box :mailing_same_address, label: "Mailing addess same as billing address"
-      =agency_form.text_field :mailing_address
-      =agency_form.phone_field :phone  
-      =agency_form.phone_field :mobile_phone
+%div.well.container
+  %div
+    -if @agency_admin.errors.any?
+      -@agency_admin.errors.full_messages.each do |message|
+        %p
+          =message
+  %h4
+    Add Another Agency Admin to this agency
+  =form_for @agency_admin do |f|
+    =f.label :email
+    =f.email_field :email
+    =f.label :first_name
+    =f.text_field :first_name
+    =f.label :last_name
+    =f.text_field :last_name
+    =f.label :mobile_phone
+    =f.telephone_field :mobile_phone
+    =f.label :license_number
+    =f.text_field :license_number
+    =f.hidden_field :agency_id, value:@agency_id
+    =f.submit "Submit"
+
+
+  / =bootstrap_nested_form_for(@user, url: agency_admins_path, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+  /   =f.fields_for :agency_admin do |agency_form|
+  /     =agency_form.text_field :company_name
+  /     =agency_form.text_field :business_name
+  /     =agency_form.text_field :abn
+  /     =agency_form.text_field :address
+  /     =agency_form.form_group :mailing_same_address do 
+  /       =agency_form.check_box :mailing_same_address, label: "Mailing addess same as billing address"
+  /     =agency_form.text_field :mailing_address
+  /     =agency_form.phone_field :phone  
+  /     =agency_form.phone_field :mobile_phone
       
-      =agency_form.form_group :license_type, label: { text: "License Type" } do 
-        =agency_form.radio_button :license_type, "Individual License", label: "Individual License", checked: true
-        =agency_form.radio_button :license_type, "Corporate License", label: "Corporate License", checked: true
-      =agency_form.text_field :license_number
-      =agency_form.text_field :corporation_license_number
-      =agency_form.form_group :bdm_verification_status do 
-        =agency_form.check_box :bdm_verification_status, label: "I Have BDM verfication status"
-      =agency_form.text_field :bdm_verification_id
-      =agency_form.text_field :first_name
-      =agency_form.text_field :last_name
-    =f.email_field :email, hide_label: false
-    =f.password_field :password, hide_label: false 
-    =f.password_field :password_confirmation
-    =f.submit "Sign Up"
-    %p Already have an Account? 
-    =link_to "Login", login_path
+  /     =agency_form.form_group :license_type, label: { text: "License Type" } do 
+  /       =agency_form.radio_button :license_type, "Individual License", label: "Individual License", checked: true
+  /       =agency_form.radio_button :license_type, "Corporate License", label: "Corporate License", checked: true
+  /     =agency_form.text_field :license_number
+  /     =agency_form.text_field :corporation_license_number
+  /     =agency_form.form_group :bdm_verification_status do 
+  /       =agency_form.check_box :bdm_verification_status, label: "I Have BDM verfication status"
+  /     =agency_form.text_field :bdm_verification_id
+  /     =agency_form.text_field :first_name
+  /     =agency_form.text_field :last_name
+  /   =f.email_field :email, hide_label: false
+  /   =f.password_field :password, hide_label: false 
+  /   =f.password_field :password_confirmation
+  /   =f.submit "Sign Up"
+  /   %p Already have an Account? 
+  /   =link_to "Login", login_path
 

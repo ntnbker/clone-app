@@ -1,0 +1,9 @@
+%div.container.well
+  = bootstrap_form_for @user,url: password_path(password_token:@token), :html => {:method => :put} do |f| 
+    = f.label :email 
+    = @user.email 
+    
+    = f.password_field :password 
+    
+    = f.password_field :password_confirmation
+    = f.submit 

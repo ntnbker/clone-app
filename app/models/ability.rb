@@ -46,6 +46,9 @@ class Ability
         can :show, :maintenance_request
         can :index, :maintenance_request
         can :create, :maintenance_request
+
+        can :create, :agency_admin
+        can :new, :agency_admin
         # can :new, AgencyAdmin
         # can :read_show, AgencyAdmin
 
