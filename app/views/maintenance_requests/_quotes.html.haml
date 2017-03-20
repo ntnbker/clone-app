@@ -12,9 +12,12 @@
         $
         =quote.amount
       %div
-        %button#check_for_landlord
-          Forward Quote To Landlord 
-          / =link_to "Forward Quote To Landlord", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post, id:"che"
+        -if @maintenance_request.property.landlord == nil
+          %button{:type=>"button", :class=>"btn btn-danger btn-sm", "data-toggle"=>"modal", "data-target"=>"#create-landlord-modal"}
+            Forward Quote To Landlord
+        -else 
+          %button
+            =link_to "Forward Quote To Landlord!!!!", forward_quote_path(quote_id:quote.id, maintenance_request_id:quote.maintenance_request_id), method: :post
         -if quote.status == "Approved"
           %button 
             =link_to "Cancel", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post

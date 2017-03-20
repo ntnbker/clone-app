@@ -130,6 +130,7 @@ class QuotesController < ApplicationController
   end
 
   def forward_quote
+    
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
