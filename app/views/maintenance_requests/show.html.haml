@@ -45,25 +45,26 @@
 
 %div.container
   -if current_user.agent? || current_user.agency_admin?
-    -if @maintenance_request.property.landlord != nil
-      %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-mr-landlord-modal"}
-        Ask Landlord
-      %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#request-quote-modal"}
-        Request Quote
-      %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#send-work-order-modal"}
-        Send Work Order
+    / -if @maintenance_request.property.landlord != nil
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#ask-mr-landlord-modal"}
+      Ask Landlord
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#request-quote-modal"}
+      Request Quote
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#send-work-order-modal"}
+      Send Work Order
+    -if @maintenance_request.property.landlord != nil  
       %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#landlord-message-modal"}
         Send Landlord Message
-      %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#tenant-message-modal"}
-        Send Tenants Message
-      -if !@maintenance_request.invoices.empty? 
-        %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
-          =link_to "View and Print Invoice", view_invoice_path(invoice_id:@invoice.id)
+    %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#tenant-message-modal"}
+      Send Tenants Message
+    -if !@maintenance_request.invoices.empty? 
+      %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+        =link_to "View and Print Invoice", view_invoice_path(invoice_id:@invoice.id)
 
         
-    -else
-      %button{:type=>"button", :class=>"btn btn-danger btn-sm", "data-toggle"=>"modal", "data-target"=>"#create-landlord-modal"}
-        Please Add Landlord To This Property
+    / -else
+    /   %button
+    /     Please Add Landlord To This Property
     
   -elsif current_user.tenant?
     %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#tenant-message-modal"}
@@ -147,6 +148,7 @@
   %div{:class=>"modal fade", :id=>"create-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
     %div{:class=>"modal-dialog", :role=>"document"}
       %div{:class=>"modal-content"}
+        Please add landlord before attempting to send a quote to the landlord.
         %div{:class=>"modal-body"}
           =f.text_field :name, class: "landlord_fields"
           =f.text_field :email, class: "landlord_fields"
@@ -193,6 +195,10 @@
         %p Would you like to ask for more Quotes
         %button{:type=>"button", :class=>"btn btn-primary ","aria-haspopup"=>"true", id:"no-more-quotes" } No
         %button{:type=>"button", :class=>"btn btn-primary ", id:"yes-more-quotes"} Yes
+
+
+
+
 
 
 

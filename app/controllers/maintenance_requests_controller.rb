@@ -331,6 +331,30 @@ class MaintenanceRequestsController < ApplicationController
   end
 
 
+  def ordered_maintenance_requests
+    
+    if params[:sort_by_date] == "Oldest to Newest"
+      sort = "ASC"
+    elsif params[:sort_by_date] == "Newest to Oldest"
+      sort = "DESC"
+    end 
+
+    if current_user.agency_admin?
+      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
+
+    elsif current_user.agent?
+      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
+
+    elsif current_user.tenant?
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
+    elsif current_user.trady?
+      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
+    
+    end 
+  
+  end
+
+
   private
 
   def maintenance_request_params

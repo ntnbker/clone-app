@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   ###################################################
   ##########MR RESOURCES/ROUTES######################
   ###################################################
-  #get 'list_maintenance_requests' => "agency_admins#maintenance_request_index"
+  get 'ordered_maintenance_requests' => "maintenance_requests#ordered_maintenance_requests"
   resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
   
   ###################################################
@@ -104,7 +104,7 @@ Rails.application.routes.draw do
   post "quote_status" => "quotes#quote_status" 
   post "request_quote" => "quotes#landlord_requests_quote", :as => :request_quote 
   post "picks_quote" => "quotes#landlord_decides_quote", :as => :landlord_decides_quote
-
+  post "forward_quote"=> "quotes#forward_quote", :as => :forward_quote
   ###################################################################
   ##########TRADY AND TENANT APPOINTMENTS RESOURCES/ROUTES###########
   ###################################################################

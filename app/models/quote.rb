@@ -25,7 +25,7 @@ class Quote < ApplicationRecord
     end
 
     sum = 0
-    binding.pry
+    
     array.each { |a| sum+=a }
 
       if tax == false
