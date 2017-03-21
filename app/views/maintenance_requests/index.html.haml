@@ -5,8 +5,7 @@
       %div.row
         %div.image
           -if maintenance_request.maintenance_request_image != nil
-            -maintenance_request.maintenance_request_image.images.each do |image|
-              = image_tag(image.url.to_s)
+            = react_component 'ImgSlider', {:images => maintenance_request.maintenance_request_image.images}
 
         %div.info
           %div.row
