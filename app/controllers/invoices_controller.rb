@@ -57,36 +57,27 @@ class InvoicesController < ApplicationController
       invoice.invoice_items.build
 
     end 
-    # invoice_items = invoices.invoice_items.build
-    #@invoice.invoice_items.build
-
-
-
-    # @ucetni_report.ucetni_baliceks.build
-    # @ucetni_report.ucetni_baliceks.each do |b|
-    #   b.ucetni_polozkas.build
-    # end
-    
+   
     
     
   end
 
   def create
+    @ledger = Ledger.new
+    # @invoice = Invoice.new(invoice_params)
     
-    @invoice = Invoice.new(invoice_params)
+    # @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
     
-    @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
-    
-    if @invoice.save
-      @invoice.update_attribute(:amount,@total)
+    # if @invoice.save
+    #   @invoice.update_attribute(:amount,@total)
       
-      redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id], quote_id:params[:invoice][:quote_id])
-    else
-      flash[:danger] = "Please Fill in a Minumum of one item"
-      @trady_id = params[:quote][:trady_id]
-      @maintenance_request_id= params[:quote][:maintenance_request_id]
-      render :new 
-    end
+    #   redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id], quote_id:params[:invoice][:quote_id])
+    # else
+    #   flash[:danger] = "Please Fill in a Minumum of one item"
+    #   @trady_id = params[:quote][:trady_id]
+    #   @maintenance_request_id= params[:quote][:maintenance_request_id]
+    #   render :new 
+    # end
   end
 
   def show
@@ -148,7 +139,7 @@ class InvoicesController < ApplicationController
     end
 
     def ledger_params
-    params.require(:ledger).permit(invoice_attributes:[ :id, :trady_id,:quote_id ,:maintenance_request_id,:tax,:payment_installment_amount,:prepaid_or_postpaid,  invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
+    params.require(:ledger).permit( :id, :grand_total, invoice_attributes:[ :id, :trady_id,:quote_id ,:maintenance_request_id,:tax, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 
