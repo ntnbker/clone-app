@@ -1,0 +1,14 @@
+/ =f.fields_for :invoice do |invoice_form|
+%br
+%fieldset.nested-fields
+  =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+  =f.hidden_field :trady_id, value:"#{@trady.id}"
+  =f.hidden_field :quote_id, value:"#{@quote_id}"
+  
+  
+  #invoice-items
+  =f.fields_for :invoice_items do |items_form|
+    = render "invoices/invoice_item_fields", f: items_form
+  %div.links
+    = link_to_add_association "Add Invoice item", f, :invoice_items
+  = link_to_remove_association "Remove Invoice", f

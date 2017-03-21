@@ -39,13 +39,36 @@ class InvoicesController < ApplicationController
     #this quote instance variable is for front end to add the values into the form using JS
     @quote = Quote.find_by(id:params[:quote_id])
     @quote_items = @quote.quote_items
-    
-    @invoice = Invoice.new
-    @invoice.invoice_items.build
     @maintenance_request_id= params[:maintenance_request_id]
+
     @trady = Trady.find_by(id:params[:trady_id])
     
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
+    
+
+
+
+
+    # @invoice = Invoice.new
+
+    @ledger = Ledger.new
+    @ledger.invoices.build
+    @ledger.invoices.each do |invoice|
+      invoice.invoice_items.build
+
+    end 
+    # invoice_items = invoices.invoice_items.build
+    #@invoice.invoice_items.build
+
+
+
+    # @ucetni_report.ucetni_baliceks.build
+    # @ucetni_report.ucetni_baliceks.each do |b|
+    #   b.ucetni_polozkas.build
+    # end
+    
+    
+    
   end
 
   def create
@@ -122,6 +145,10 @@ class InvoicesController < ApplicationController
 
     def invoice_params
     params.require(:invoice).permit(:id, :trady_id,:quote_id ,:maintenance_request_id,:tax,:payment_installment_amount,:prepaid_or_postpaid, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours])
+    end
+
+    def ledger_params
+    params.require(:ledger).permit(invoice_attributes:[ :id, :trady_id,:quote_id ,:maintenance_request_id,:tax,:payment_installment_amount,:prepaid_or_postpaid,  invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 
