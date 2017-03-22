@@ -39,29 +39,47 @@ class InvoicesController < ApplicationController
     #this quote instance variable is for front end to add the values into the form using JS
     @quote = Quote.find_by(id:params[:quote_id])
     @quote_items = @quote.quote_items
-    
-    @invoice = Invoice.new
-    @invoice.invoice_items.build
     @maintenance_request_id= params[:maintenance_request_id]
+
     @trady = Trady.find_by(id:params[:trady_id])
     
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
+    
+
+
+
+
+    # @invoice = Invoice.new
+
+    @ledger = Ledger.new
+    @ledger.invoices.build
+    @ledger.invoices.each do |invoice|
+      invoice.invoice_items.build
+
+    end 
+   
+    
+    
   end
 
   def create
     
-    @invoice = Invoice.new(invoice_params)
+
+    @ledger = Ledger.new(ledger_params)
     
-    @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
     
-    if @invoice.save
-      @invoice.update_attribute(:amount,@total)
+    if @ledger.save
+      @ledger.save_grand_total
+      @ledger.invoices.each {|invoice| invoice.save_total }
+       
+      # @invoice.update_attribute(:amount,@total)
       
-      redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id], quote_id:params[:invoice][:quote_id])
+      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:quote][:trady_id]
       @maintenance_request_id= params[:quote][:maintenance_request_id]
+      @quote = Quote.find_by(id:params[:ledger][:quote_id])
       render :new 
     end
   end
@@ -122,6 +140,10 @@ class InvoicesController < ApplicationController
 
     def invoice_params
     params.require(:invoice).permit(:id, :trady_id,:quote_id ,:maintenance_request_id,:tax,:payment_installment_amount,:prepaid_or_postpaid, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours])
+    end
+
+    def ledger_params
+    params.require(:ledger).permit( :id, :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 
