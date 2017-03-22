@@ -1,5 +1,8 @@
 
 %div.maintenance-list.container
+  %select{ :name => "maintenance_requests[ordered_maintenance_requests]", :id => "ordered_maintenance_requests"}
+    %option{:value => "Oldest to Newest"}= "Oldest to Newest"
+    %option{:value => "Newest to Oldest"}= "Newest to Oldest" 
   %div.main-column
     -@maintenance_requests.each do |maintenance_request|
       %div.row
@@ -24,13 +27,6 @@
             %i.fa.fa-map-marker
             = maintenance_request.property.property_address
         = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
-
-
-
-
-
-      
-
 
   %div.side-column
     -if current_user.agent? || current_user.agency_admin? 

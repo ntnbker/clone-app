@@ -197,6 +197,7 @@ form#new_maintenance_request {
 		position: relative;
 
 		width: calc(100% - 300px);
+		padding-bottom: 70px;
    		min-height: calc(100vh - 210px);
 		display: inline-block;
 
@@ -294,7 +295,6 @@ form#new_maintenance_request {
 	@media (max-width: 1200px) {
 		.main-column {
 			width: calc(100% - 50px);
-			padding-bottom: 70px;
 		}
 		.side-column {
 			width: 40px;
