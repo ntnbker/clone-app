@@ -10,7 +10,7 @@ class QuotesController < ApplicationController
   end
 
   def create
-    binding.pry
+    
     @quote = Quote.new(quote_params)
     
     @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
