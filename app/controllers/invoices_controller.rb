@@ -63,21 +63,25 @@ class InvoicesController < ApplicationController
   end
 
   def create
-    @ledger = Ledger.new
-    # @invoice = Invoice.new(invoice_params)
     
-    # @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
+
+    @ledger = Ledger.new(ledger_params)
     
-    # if @invoice.save
-    #   @invoice.update_attribute(:amount,@total)
+    
+    if @ledger.save
+      @ledger.save_grand_total
+      @ledger.invoices.each {|invoice| invoice.save_total }
+       
+      # @invoice.update_attribute(:amount,@total)
       
-    #   redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id], quote_id:params[:invoice][:quote_id])
-    # else
-    #   flash[:danger] = "Please Fill in a Minumum of one item"
-    #   @trady_id = params[:quote][:trady_id]
-    #   @maintenance_request_id= params[:quote][:maintenance_request_id]
-    #   render :new 
-    # end
+      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
+    else
+      flash[:danger] = "Please Fill in a Minumum of one item"
+      @trady_id = params[:quote][:trady_id]
+      @maintenance_request_id= params[:quote][:maintenance_request_id]
+      @quote = Quote.find_by(id:params[:ledger][:quote_id])
+      render :new 
+    end
   end
 
   def show
@@ -139,7 +143,7 @@ class InvoicesController < ApplicationController
     end
 
     def ledger_params
-    params.require(:ledger).permit( :id, :grand_total, invoice_attributes:[ :id, :trady_id,:quote_id ,:maintenance_request_id,:tax, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
+    params.require(:ledger).permit( :id, :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 

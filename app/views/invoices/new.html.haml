@@ -30,11 +30,15 @@
 %div.container.well
   =bootstrap_nested_form_for(@ledger, url:"/invoices",  layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
     = f.hidden_field :grand_total
+    =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+    =f.hidden_field :trady_id, value:"#{@trady.id}"
+    =f.hidden_field :quote_id, value:"#{@quote.id}"
     #invoice-fields
       = f.fields_for :invoices do |invoice|
         = render "invoices/invoice_fields", f: invoice
       %div.links
         = link_to_add_association "Add Invoice", f, :invoices
 
-    = f.hidden_field :grand_total  
+    = f.hidden_field :grand_total
+      
     =f.submit "Next"

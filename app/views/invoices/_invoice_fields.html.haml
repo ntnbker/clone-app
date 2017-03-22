@@ -3,7 +3,6 @@
 %fieldset.nested-fields
   =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
   =f.hidden_field :trady_id, value:"#{@trady.id}"
-  =f.hidden_field :quote_id, value:"#{@quote_id}"
   
   
   #invoice-items
@@ -11,4 +10,9 @@
     = render "invoices/invoice_item_fields", f: items_form
   %div.links
     = link_to_add_association "Add Invoice item", f, :invoice_items
-  = link_to_remove_association "Remove Invoice", f
+    = link_to_remove_association "Remove Invoice", f
+  %div
+    =f.text_field :amount, :readonly=>true, placeholder:"$0.00", label:"Invoice Total", value:"100"
+    
+
+  
