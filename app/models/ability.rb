@@ -31,7 +31,7 @@ class Ability
         can :create, MaintenanceRequest
         can :new, MaintenanceRequest
         can :read_show, MaintenanceRequest
-        
+        can :ordered_maintenance_requests, :maintenance_request
       end
 
       if @user.agency_admin?
@@ -59,6 +59,7 @@ class Ability
         can :show, :agency_admin
         can :new, :agency_admin
         can :maintenance_request_index, :agency_admin 
+        can :ordered_maintenance_requests, :maintenance_request
       end
 
       if @user.landlord?
@@ -74,7 +75,7 @@ class Ability
         can :new, MaintenanceRequest
         can :index, :maintenance_request
         can :show, :maintenance_request
-
+        can :ordered_maintenance_requests, :maintenance_request
         can :edit, :appointment
       end 
 
@@ -83,6 +84,7 @@ class Ability
         
         can :index, :maintenance_request
         can :show, :maintenance_request
+        can :ordered_maintenance_requests, :maintenance_request
       end 
 
       if @user

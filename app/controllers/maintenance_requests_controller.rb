@@ -3,7 +3,7 @@ class MaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
   before_action :set_user, only:[:new,:create]
-  before_action :require_login, only:[:show,:index]
+  before_action :require_login, only:[:show,:index, :ordered_maintenance_requests]
   before_action :customer_input_session, only:[:create,:new]
   authorize_resource :class => false
 
@@ -338,7 +338,7 @@ class MaintenanceRequestsController < ApplicationController
     elsif params[:sort_by_date] == "Newest to Oldest"
       sort = "DESC"
     end 
-
+    
     if current_user.agency_admin?
       @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
 
@@ -351,7 +351,7 @@ class MaintenanceRequestsController < ApplicationController
       @maintenance_requests = current_user.trady.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
     
     end 
-  
+    binding.pry
   end
 
 
