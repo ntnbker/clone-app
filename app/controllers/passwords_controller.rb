@@ -1,7 +1,7 @@
 class PasswordsController < ApplicationController
 
   def edit
-    binding.pry
+    
     @user = User.find_by(set_password_token:params[:password_token])
     @token = params[:password_token]
     if @user.blank?

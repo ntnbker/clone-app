@@ -351,7 +351,7 @@ class MaintenanceRequestsController < ApplicationController
       @maintenance_requests = current_user.trady.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
     
     end 
-    binding.pry
+    
   end
 
 
