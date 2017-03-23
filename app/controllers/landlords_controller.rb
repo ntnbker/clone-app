@@ -81,9 +81,9 @@ class LandlordsController < ApplicationController
           maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
           
           if property.landlord_id == nil 
-            property.update_attribute(:landlord_id, user.landlord.id)
+            property.update_attribute(:landlord_id, @user.landlord.id)
           end 
-
+          
         else
           format.html { render "agent_maintenance_requests/show.html.haml", :notice =>"Please fill out the form" }
           format.js{}
