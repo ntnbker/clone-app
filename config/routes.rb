@@ -60,12 +60,13 @@ Rails.application.routes.draw do
   ###################################################
   ##########INVOICE RESOURCES/ROUTES#################
   ###################################################
-  resources :invoices
+  resources :invoices, only:[:new, :create, :edit, :show]
   get "invoice_email" => "invoices#send_invoice_email", :as => :invoice_email
   get "confirm_company_invoice" =>"invoices#edit_trady_company_invoice"
   put "update_company_invoice" =>"invoices#update_trady_company_invoice"
   post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
   get "invoice_sent_success" => "invoices#invoice_sent_success", :as=> :invoice_sent_success
+  put 'update_invoice' => "invoices#update" 
   ###################################################
   ##########WORK ORDER INVOICE RESOURCES/ROUTES######
   ###################################################
@@ -93,6 +94,8 @@ Rails.application.routes.draw do
   get "trady_information" => 'tradies#trady_information', :as=>:trady_information
   resources :tradies, only:[:create]
   resources :trady_companies
+  get "edit_trady_company" => 'trady_companies#edit_trady_company_invoice_workflow', :as =>:edit_trady_company_path
+  put "update_trady_company" => "trady_companies#update_trady_company_invoice_workflow"
   post "tradie_company_redirect"=>"trady_companies#trady_company_router", :as=>:trady_company_router
   ###################################################
   ##########QUOTES RESOURCES/ROUTES##################

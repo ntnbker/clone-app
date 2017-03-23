@@ -16,16 +16,18 @@ class InvoicesController < ApplicationController
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     @trady_id = params[:trady_company][:trady_id]
     @quote_id = params[:trady_company][:quote_id]
-    
-    @invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
+    @ledger = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id]).ledger
+    #@invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
 
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
       
-      if @invoice == nil
+      if @ledger == nil
+        #This used to be the if condition (@invoice == nil)
         redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])  
-      elsif @invoice !=nil
-        redirect_to edit_invoice_path(@invoice.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])
+      elsif @ledger != nil
+        #This used to be the if condition(@invoice !=nil)
+        redirect_to edit_invoice_path(@ledger.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])
       end 
 
     else
@@ -36,6 +38,7 @@ class InvoicesController < ApplicationController
   end
 
   def new
+
     #this quote instance variable is for front end to add the values into the form using JS
     @quote = Quote.find_by(id:params[:quote_id])
     @quote_items = @quote.quote_items
@@ -87,32 +90,40 @@ class InvoicesController < ApplicationController
 
   def show
     @ledger = Ledger.find_by(id:params[:id])
-    @invoice = Invoice.find_by(id:params[:id])
+    #@invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     @trady_id = params[:trady_id] 
     @quote_id = params[:quote_id]
   end
 
   def edit
-    @invoice = Invoice.find_by(id:params[:id])
+    @ledger = Ledger.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
-    @quote_id = params[:quote_id]
+    @quote = Quote.find_by(id:params[:quote_id])
+    @quote_items = @quote.quote_items
+    
     @trady_company = @trady.trady_company
   end
 
   def update
-    @invoice = Invoice.find_by(id:params[:id])
-    @total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
-    @maintenance_request_id = params[:invoice][:maintenance_request_id]
-    @trady = Trady.find_by(id:params[:invoice][:trady_id])
+    
+    ledger_id = MaintenanceRequest.find_by(id:params[:ledger][:maintenance_request_id]).ledger.id
+    @ledger = Ledger.find_by(id:ledger_id)
+    #@total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
+    @maintenance_request_id = params[:ledger][:maintenance_request_id]
+
+    @trady = Trady.find_by(id:params[:ledger][:trady_id])
     
     @trady_company = @trady.trady_company
 
-    if @invoice.update(invoice_params)
-      @invoice.update_attribute(:amount,@total)
+    if @ledger.update(ledger_params)
+      # @invoice.update_attribute(:amount,@total)
+      @ledger.invoices.each {|invoice| invoice.save_total }
+      #must be after invoices method because all invoices calculated first then add them up for grandtotal
+      @ledger.save_grand_total
       flash[:success] = "Your Invoice has been updated"
-      redirect_to invoice_path(@invoice,maintenance_request_id:params[:invoice][:maintenance_request_id], trady_id:params[:invoice][:trady_id], quote_id:params[:invoice][:quote_id])
+      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
     else
       flash[:danger] = "Sorry Something went wrong "
       render :edit
