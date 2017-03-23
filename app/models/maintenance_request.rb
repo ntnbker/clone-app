@@ -14,7 +14,9 @@ class MaintenanceRequest < ApplicationRecord
   has_many :availabilities, inverse_of: :maintenance_request
   belongs_to :property
   has_many :quotes
+  
   has_many :invoices
+  
   has_many :tenant_maintenance_requests
   has_many :tenants, through: :tenant_maintenance_requests
   has_many :conversations
@@ -34,6 +36,13 @@ class MaintenanceRequest < ApplicationRecord
   accepts_nested_attributes_for :access_contacts, allow_destroy: true
   accepts_nested_attributes_for :availabilities, allow_destroy: true
   
+
+
+
+  accepts_nested_attributes_for :invoices
+
+
+
   
   validates_associated :access_contacts
   validates_associated :availabilities
