@@ -69,9 +69,10 @@ class InvoicesController < ApplicationController
     
     
     if @ledger.save
-      @ledger.save_grand_total
+      
       @ledger.invoices.each {|invoice| invoice.save_total }
-       
+      #must be after invoices method because all invoices calculated first then add them up for grandtotal
+      @ledger.save_grand_total
       # @invoice.update_attribute(:amount,@total)
       
       redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
@@ -85,6 +86,7 @@ class InvoicesController < ApplicationController
   end
 
   def show
+    @ledger = Ledger.find_by(id:params[:id])
     @invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     @trady_id = params[:trady_id] 
@@ -126,7 +128,7 @@ class InvoicesController < ApplicationController
   end
 
   def invoice_sent_success
-    
+    #this is an empty controller that just shows the template witha success mark and button to the home page. 
   end
 
 
