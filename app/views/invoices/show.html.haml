@@ -1,11 +1,11 @@
 =react_component('StepProgress', {:step => 3})
 
-%div.container.invoice-form
+%div.container.well
   -@ledger.invoices.each_with_index do |invoice, index| 
     %div.row
       %h5
         ="Invoice # #{index+1}"
-      %hr
+      
     -invoice.invoice_items.each do |f|
     
       %div.row
@@ -19,20 +19,25 @@
           
            
   
-    / -if @invoice.tax == true
-    /   %p
-    /     = "GST: #{ (@invoice.amount - @invoice.amount/1.10).round(2)}"
-    / -elsif @invoice.tax == false
-    /   %p
-    /     GST: $ 0.00
-    / %br    
-    / %h4
-    /   %span
-    /     ="Total: $#{@invoice.amount}"
-  %hr
+    -if invoice.tax == true
+      %p
+        = "Before Tax: #{ (invoice.amount - invoice.gst_amount).round(2)}"
+      %p
+        = "GST: #{ (invoice.amount - invoice.amount/1.10).round(2)}"
+    -elsif invoice.tax == false
+      %p
+        GST: $ 0.00
+    %br    
+    %h4
+      %span
+        ="Total: $#{invoice.amount.round(3)}"
+    %h5
+      %span
+        ="Invoice Due: #{invoice.due_on}"
+    %hr
   %div.row
     %h5
-      ="Grand Total: $#{@ledger.grand_total}"
+      ="Grand Total: $#{@ledger.grand_total.round(3)}"
   %div.row
     %button.button.button-primary.left
       =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
