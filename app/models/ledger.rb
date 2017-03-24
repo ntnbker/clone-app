@@ -12,8 +12,25 @@ class Ledger < ApplicationRecord
     invoices_amount = []
     sum = 0
     self.invoices.each do |invoice|
-      invoice_total_amount = invoice.amount
-      invoices_amount.push(invoice_total_amount)
+      if invoice.tax == nil || invoice.tax == false
+        invoice_total_amount = invoice.amount/1.10
+        #tax_amount = invoice_total_amount * 0.10 
+        invoices_amount.push(invoice_total_amount)
+        invoice.update_attribute(:amount, invoice_total_amount)
+        invoice.update_attribute(:gst_amount, 0.00)
+
+
+      else
+        invoice_total_amount = invoice.amount/1.10
+        tax_amount = invoice_total_amount * 0.10 
+        invoice.update_attribute(:gst_amount, tax_amount.round(3))
+        total = invoice.amount
+        invoices_amount.push(total.round(3))
+
+      end 
+
+
+      
     end 
 
     invoices_amount.each { |a| sum+=a }

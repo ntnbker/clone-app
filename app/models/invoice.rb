@@ -39,6 +39,11 @@ class Invoice < ApplicationRecord
     self.update_attribute(:amount, total)
   end
 
+
+  def due_on
+    self.due_date.strftime("%A %B %d %Y")
+  end
+
   
   # def calculate_total(items_hash={})
   #   array = []

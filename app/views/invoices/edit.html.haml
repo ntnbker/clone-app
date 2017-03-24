@@ -1,29 +1,59 @@
 =react_component('StepProgress', {:step => 2})
 
-%div.container.invoice-form
-  %p
-    Please enter Invoice details
-  =react_component('InvoiceFields', {:authenticity_token => form_authenticity_token,
-                                     :invoice => @invoice,
-                                     :_method => "patch",
-                                     :maintenance_request_id => @maintenance_request_id,
-  								  	               :invoice_items => @invoice.invoice_items,
-                                     :trady_id => @trady.id,
-                                     :quote_id => @quote_id,
-                                     :backlink => confirm_company_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id, trady_id:@trady.id, quote_id:@quote_id)})
+/ %div.container.invoice-form
+/   %p
+/     Please enter Invoice details
+/   =react_component('InvoiceFields', {:authenticity_token => form_authenticity_token,
+/                                      :invoice => @invoice,
+/                                      :_method => "patch",
+/                                      :maintenance_request_id => @maintenance_request_id,
+/   								  	               :invoice_items => @invoice.invoice_items,
+/                                      :trady_id => @trady.id,
+/                                      :quote_id => @quote_id,
+/                                      :backlink => confirm_company_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id, trady_id:@trady.id, quote_id:@quote_id)})
 
-/=bootstrap_nested_form_for(@invoice, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
-/   #items
-/     =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
-/     =f.hidden_field :trady_id, value:"#{@trady.id}"
-/     =f.hidden_field :quote_id, value:"#{@quote_id}"
-/     =f.fields_for :invoice_items do |form|
-/       = render "invoices/invoice_item_fields", f: form
-/       = link_to_add_association "Add Another item", f, :invoice_items
-/     =f.form_group :prepaid_or_postpaid do 
-/       = f.radio_button :prepaid_or_postpaid, "Prepaid", label: "Payment Required Before Work Can Commense"
-/       = f.radio_button :prepaid_or_postpaid, "PostPaid", label: "Payment Required After Work Completed"
-/     =f.text_field :payment_installment_amount, label: "Payment Amount Required"
-/   =f.submit "Next"
-  
-/   =link_to "Back", confirm_company_invoice_path(trady_company_id:@trady_company.id,maintenance_request_id:@maintenance_request_id, trady_id:@trady.id,   quote_id:@quote_id)
+
+Edit Invoice
+
+%div.container.well
+  -if @quote  
+    %div.send-quote
+      %h4
+        Original Quote
+      -@quote.quote_items.each do |f|
+        %div.row
+          %hr
+          -if f.pricing_type == "Hourly"
+            %p
+              ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
+          -elsif f.pricing_type == "Fixed Cost"
+            %p
+              ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
+      %hr
+      %div.row
+      -if @quote.tax == true
+        %p
+          = "GST: #{ (@quote.amount - @quote.amount/1.10).round(2)}"
+      -elsif @quote.tax == false
+        %p
+          GST: $ 0.00
+      %br    
+      %span
+        ="Total: $#{@quote.amount}"
+  =bootstrap_nested_form_for(@ledger, id:@ledger.id, url:"/update_invoice",method: :put,  layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    = f.hidden_field :grand_total
+    =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+    =f.hidden_field :trady_id, value:"#{@trady.id}"
+    =f.hidden_field :quote_id, value: @quote ? @quote.id : ''
+    #invoice-fields
+      = f.fields_for :invoices do |invoice|
+        = render "invoices/invoice_fields", f: invoice
+      %div.links
+        = link_to_add_association "Add Invoice", f, :invoices
+
+    = f.hidden_field :grand_total
+      
+    =f.submit "Next"
+
+    %button 
+      =link_to "Back", confirm_company_invoice_path(trady_company_id:@trady.trady_company, maintenance_request_id:@maintenance_request_id, trady_id:@trady.id, quote_id:@quote ? @quote.id : '')
