@@ -1,6 +1,6 @@
 
 %div.maintenance-list.container
-  = react_component 'DropforSort'
+  = react_component 'DropforSort', {:sort_by_date => @sort_by_date, :page => @page}
   %div.main-column
     -@maintenance_requests.each do |maintenance_request|
       %div.row

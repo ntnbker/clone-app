@@ -330,6 +330,8 @@ class MaintenanceRequestsController < ApplicationController
       end 
     end
 
+    @page = params[:page]
+    @sort_by_date = params[:sort_by_date]
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
     @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
     @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
