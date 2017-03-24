@@ -79,7 +79,7 @@ var ImgSlider = React.createClass({
         return {
            stlen: this.props.images ? this.props.images.length : 0,
            stpos: 0,
-           stwidth: 400,
+           stwidth: 300,
            stx: 0
        };
     },
@@ -111,9 +111,20 @@ var ImgSlider = React.createClass({
     },
 
     render: function() {
-        var style = {
+        let styles = {
+          strip: {
             left: this.state.stx,
             width: this.state.stlen * this.state.stwidth,
+          },
+          mask: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 70,
+            width: this.state.stwidth,
+            height: 300,
+            overflow: 'hidden',
+          }
         };
 
         return <div id="slider">
@@ -124,12 +135,12 @@ var ImgSlider = React.createClass({
                 </div>
               : null
             }
-            <div className="mask">
-                <div className="strip" style={style}>
+            <div className="mask" style={styles.mask}>
+                <div className="strip" style={styles.strip}>
                 { this.state.stlen
                   ? this.props.images.map((image, i) => {
                     return <span key={i}>
-                        <img src={image.url} alt="Uploading..." />
+                        <img src={image.url} alt="Uploading..." width={this.state.stwidth}/>
                     </span>
                   })
                   : <span>
@@ -156,11 +167,11 @@ var DropforSort = React.createClass({
 
     render: function() {
       return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
+        <input type="hidden" name="page" value={this.props.page}/>
         <select value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
           <option value="Oldest to Newest">Oldest to Newest</option>
           <option value="Newest to Oldest">Newest to Oldest</option>
         </select>
-        <input type="hidden" name="page" value={this.props.page}/>
         <input type="submit" value="Submit" style={{display:'none'}}/>
       </form>
     }
