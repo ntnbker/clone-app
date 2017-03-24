@@ -1,0 +1,19 @@
+=link_to "sort", ordered_maintenance_requests_path(sort_by_date:"Newest to Oldest")
+
+%div.container.well
+  =bootstrap_nested_form_for(@invoice, url:"/submit_additional_invoice",  layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    
+    =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+    =f.hidden_field :trady_id, value:"#{@trady.id}"
+    / =f.hidden_field :quote_id, value:"#{@quote.id}"
+    #invoice-fields
+      = f.fields_for :invoice_items do |item|
+        = render "invoices/invoice_item_fields", f: item
+    = f.form_group :tax do
+      = f.check_box :tax, label: "Total Includes GST", :checked => @trady.trady_company.gst_registration
+      %div.links
+        = link_to_add_association "Add Invoice Item", f, :invoice_items
+
+    
+      
+    =f.submit "Next"

@@ -248,6 +248,13 @@ class MaintenanceRequestsController < ApplicationController
     @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     @quote = @quotes.where(:status=>"Approved").first if !nil
+
+    if @quote
+      @quote_id = @quote.id
+    else
+      @quote_id = ''
+    end 
+
     @message = Message.new
     @landlord = Landlord.new
     @tradie = Trady.new
@@ -335,22 +342,35 @@ class MaintenanceRequestsController < ApplicationController
     
     if params[:sort_by_date] == "Oldest to Newest"
       sort = "ASC"
+      if current_user.agency_admin?
+      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
+
+      elsif current_user.agent?
+      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
+
+      elsif current_user.tenant?
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
+      elsif current_user.trady?
+      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
+    
+      end 
     elsif params[:sort_by_date] == "Newest to Oldest"
       sort = "DESC"
+      if current_user.agency_admin?
+        @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
+
+      elsif current_user.agent?
+        @maintenance_requests = current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
+
+      elsif current_user.tenant?
+        @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
+      elsif current_user.trady?
+        @maintenance_requests = current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
+    
+      end
     end 
     
-    if current_user.agency_admin?
-      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
-
-    elsif current_user.agent?
-      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
-
-    elsif current_user.tenant?
-      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
-    elsif current_user.trady?
-      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at #{sort}').paginate(:page => params[:page], :per_page => 15)
-    
-    end 
+     
     
   end
 
