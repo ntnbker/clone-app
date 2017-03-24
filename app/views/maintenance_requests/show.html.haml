@@ -86,7 +86,7 @@
         =link_to "Create and Send Invoices", confirm_company_invoice_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)
     -elsif @maintenance_request.ledger != nil
       %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
-        =link_to "Create More Invoices", new_extra_invoice_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)  
+        =link_to "Create More Invoices", new_additional_invoice_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)  
 
 
 

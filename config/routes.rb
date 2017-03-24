@@ -68,8 +68,8 @@ Rails.application.routes.draw do
   get "invoice_sent_success" => "invoices#invoice_sent_success", :as=> :invoice_sent_success
   put 'update_invoice' => "invoices#update"
 
-  get "new_additional_invoice" => "invoices#new_additional_invoice"
-  post "submit_additional_invoice" => "invoices#create_additional_invoice" 
+  get "new_additional_invoice" => "invoices#new_additional_invoice", :as=> :new_additional_invoice
+  post"submit_additional_invoice" => "invoices#create_additional_invoice" 
   ###################################################
   ##########WORK ORDER INVOICE RESOURCES/ROUTES######
   ###################################################

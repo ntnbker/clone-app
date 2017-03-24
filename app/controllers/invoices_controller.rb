@@ -137,11 +137,37 @@ class InvoicesController < ApplicationController
   end
 
   def new_additional_invoice
+    @maintenance_request_id= params[:maintenance_request_id]
+    @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
+    @ledger_id = @maintenance_request.ledger.id
+    @trady = Trady.find_by(id:params[:trady_id])
     
+    @invoice = Invoice.new
+    @invoice.invoice_items.build
   end
 
   def create_additional_invoice
+    @invoice = Invoice.new(invoice_params)
     
+    
+    if @invoice.save
+      #must calculate the invoice total
+      #must recalcuate the ledger grand total
+
+
+      # @ledger.invoices.each {|invoice| invoice.save_total }
+      # #must be after invoices method because all invoices calculated first then add them up for grandtotal
+      # @ledger.save_grand_total
+      # # @invoice.update_attribute(:amount,@total)
+      
+      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
+    else
+      flash[:danger] = "Please Fill in a Minumum of one item"
+      @trady_id = params[:quote][:trady_id]
+      @maintenance_request_id= params[:quote][:maintenance_request_id]
+      @quote = Quote.find_by(id:params[:ledger][:quote_id])
+      render :new 
+    end
   end
 
   def send_invoice
