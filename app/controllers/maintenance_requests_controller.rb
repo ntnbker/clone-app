@@ -306,18 +306,29 @@ class MaintenanceRequestsController < ApplicationController
 
   def index
 
-    if current_user.agency_admin?
-      @maintenance_requests = current_user.agency_admin.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
-
-    elsif current_user.agent?
-      @maintenance_requests = current_user.agent.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
-
-    elsif current_user.tenant?
-      @maintenance_requests = current_user.tenant.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
-    elsif current_user.trady?
-      @maintenance_requests = current_user.trady.maintenance_requests.paginate(:page => params[:page], :per_page => 1)
-    
-    end 
+    if params[:sort_by_date] == "Newest to Oldest"
+      sort = "DESC"
+      @maintenance_requests = if current_user.agency_admin?
+        current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+      elsif current_user.agent?
+        current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+      elsif current_user.tenant?
+        current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+      elsif current_user.trady?
+        current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+      end
+    else
+      sort = "ASC"
+      @maintenance_requests = if current_user.agency_admin?
+        current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+      elsif current_user.agent?
+        current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+      elsif current_user.tenant?
+        current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+      elsif current_user.trady?
+        current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+      end 
+    end
 
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
     @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
@@ -342,36 +353,28 @@ class MaintenanceRequestsController < ApplicationController
     
     if params[:sort_by_date] == "Oldest to Newest"
       sort = "ASC"
-      if current_user.agency_admin?
-      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
-
+      @maintenance_requests = if current_user.agency_admin?
+        current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
       elsif current_user.agent?
-      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
-
+        current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
       elsif current_user.tenant?
-      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
+        current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
       elsif current_user.trady?
-      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
-    
+        current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
       end 
     elsif params[:sort_by_date] == "Newest to Oldest"
       sort = "DESC"
-      if current_user.agency_admin?
-        @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
-
+      @maintenance_requests = if current_user.agency_admin?
+        current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
       elsif current_user.agent?
-        @maintenance_requests = current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
-
+        current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
       elsif current_user.tenant?
-        @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
+        current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
       elsif current_user.trady?
-        @maintenance_requests = current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
-    
+        current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
       end
-    end 
-    
-     
-    
+    end
+
   end
 
 

@@ -1,14 +1,12 @@
 
 %div.maintenance-list.container
-  %select{ :name => "maintenance_requests[ordered_maintenance_requests]", :id => "ordered_maintenance_requests"}
-    %option{:value => "Oldest to Newest"}= "Oldest to Newest"
-    %option{:value => "Newest to Oldest"}= "Newest to Oldest" 
+  = react_component 'DropforSort'
   %div.main-column
     -@maintenance_requests.each do |maintenance_request|
       %div.row
         %div.image
-          -if maintenance_request.maintenance_request_image != nil
-            = react_component 'ImgSlider', {:images => maintenance_request.maintenance_request_image.images}
+          = react_component 'ImgSlider',
+                            {:images => maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : ''}
 
         %div.info
           %div.row

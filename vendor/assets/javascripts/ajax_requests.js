@@ -49,22 +49,6 @@ document.addEventListener("turbolinks:load", function() {
 
 });
 
-document.addEventListener("turbolinks:load", function() {
-  $('#ordered_maintenance_requests').on("change",(function() {
-      console.log("ordered_maintenance_requests",$("#ordered_maintenance_requests option:selected").val());
-      $.ajax({
-        url: "/ordered_maintenance_requests",
-        type: "GET",
-        dataType: "script",
-        data:{
-          sort_by_date:$("#ordered_maintenance_requests option:selected").val()
-        }
-      });
-    }));
-
-  });
-
-
 
 
 

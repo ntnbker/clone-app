@@ -145,27 +145,22 @@ var ImgSlider = React.createClass({
 var DropforSort = React.createClass({
     getInitialState: function() {
         return {
-          sort_by_date: ''
+          sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
        };
     },
+
     handleChange(event) {
       this.setState({sort_by_date: event.target.value});
-      this.handleSubmit();
-    },
-
-    handleSubmit(event) {
-      alert('Your favorite flavor is: ' + this.state.sort_by_date);
-      event.preventDefault();
+      this.refs.select.submit();
     },
 
     render: function() {
-      return <form name="sort_by_date" action="/maintenance_requests" method="post">
-        <input type='hidden' name='authenticity_token' value={this.props.authenticity_token} />
-        <select value={this.state.sort_by_date} name='aaa' onChange={this.handleChange}>
-          <option value="Oldest to Newest">Oldest to Newest</option>
-          <option value="Newest to Oldest">Newest to Oldest</option>
+      return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
+        <select value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
+          <option value="Oldest to Newest" selected={this.state.sort_by_date == 'Newest to Oldest' ? '' : 'selected'}>Oldest to Newest</option>
+          <option value="Newest to Oldest" selected={this.state.sort_by_date == 'Newest to Oldest' ? 'selected' : ''}>Newest to Oldest</option>
         </select>
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Submit" style={{display:'none'}}/>
       </form>
     }
 });
