@@ -43,6 +43,7 @@ class InvoicesController < ApplicationController
     @quote = Quote.find_by(id:params[:quote_id])
     @quote_items = @quote.quote_items
     @maintenance_request_id= params[:maintenance_request_id]
+    @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
 
     @trady = Trady.find_by(id:params[:trady_id])
     
@@ -101,7 +102,11 @@ class InvoicesController < ApplicationController
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
     @quote = Quote.find_by(id:params[:quote_id])
-    @quote_items = @quote.quote_items
+    if @quote
+      @quote_items = @quote.quote_items
+    else
+      @quote_items =""
+    end 
     
     @trady_company = @trady.trady_company
   end
@@ -131,6 +136,14 @@ class InvoicesController < ApplicationController
     
   end
 
+  def new_additional_invoice
+    
+  end
+
+  def create_additional_invoice
+    
+  end
+
   def send_invoice
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     AgentsMaintenanceRequestInvoiceWorker.perform_async(maintenance_request.id)
@@ -156,7 +169,7 @@ class InvoicesController < ApplicationController
     end
 
     def ledger_params
-    params.require(:ledger).permit( :id, :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
+    params.require(:ledger).permit( :id, :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date,:_destroy ,invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 

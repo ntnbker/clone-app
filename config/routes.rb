@@ -66,16 +66,19 @@ Rails.application.routes.draw do
   put "update_company_invoice" =>"invoices#update_trady_company_invoice"
   post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
   get "invoice_sent_success" => "invoices#invoice_sent_success", :as=> :invoice_sent_success
-  put 'update_invoice' => "invoices#update" 
+  put 'update_invoice' => "invoices#update"
+
+  get "new_additional_invoice" => "invoices#new_additional_invoice"
+  post "submit_additional_invoice" => "invoices#create_additional_invoice" 
   ###################################################
   ##########WORK ORDER INVOICE RESOURCES/ROUTES######
   ###################################################
-  get "company_information" =>"work_order_invoices#edit_trady_company_invoice"
-  get "new_company_information" =>"work_order_invoices#new_trady_company_invoice"
-  put "company_information_invoice" => "work_order_invoices#update_trady_company_invoice"
-  post "send_work_order_invoice" => "work_order_invoices#send_invoice", :as => :send_work_order_invoice
-  put "change_work_order_invoice" => "work_order_invoices#update_invoice"
-  resources :work_order_invoices
+  # get "company_information" =>"work_order_invoices#edit_trady_company_invoice"
+  # get "new_company_information" =>"work_order_invoices#new_trady_company_invoice"
+  # put "company_information_invoice" => "work_order_invoices#update_trady_company_invoice"
+  # post "send_work_order_invoice" => "work_order_invoices#send_invoice", :as => :send_work_order_invoice
+  # put "change_work_order_invoice" => "work_order_invoices#update_invoice"
+  # resources :work_order_invoices
 
   ###################################################
   ##########VIEW INVOICES RESOURCES/ROUTES###########

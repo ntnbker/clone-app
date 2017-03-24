@@ -248,6 +248,13 @@ class MaintenanceRequestsController < ApplicationController
     @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     @quote = @quotes.where(:status=>"Approved").first if !nil
+
+    if @quote
+      @quote_id = @quote.id
+    else
+      @quote_id = ''
+    end 
+
     @message = Message.new
     @landlord = Landlord.new
     @tradie = Trady.new
