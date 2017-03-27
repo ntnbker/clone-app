@@ -44,6 +44,39 @@ class Invoice < ApplicationRecord
     self.due_date.strftime("%A %B %d %Y")
   end
 
+
+  def calculate_tax
+    invoices_amount = []
+    
+    if self.tax == nil || self.tax == false
+        invoice_total_amount = self.amount/1.10
+        #tax_amount = invoice_total_amount * 0.10 
+        # invoices_amount.push(invoice_total_amount)
+        self.update_attribute(:amount, invoice_total_amount)
+        self.update_attribute(:gst_amount, 0.00)
+
+      return invoice_total_amount
+      else
+        invoice_total_amount = self.amount/1.10
+        tax_amount = invoice_total_amount * 0.10 
+        self.update_attribute(:gst_amount, tax_amount.round(3))
+        # total = self.amount
+        # invoices_amount.push(total.round(3))
+        return invoice_total_amount
+    end 
+
+  end
+
+  def set_ledger_id
+    self.update_attribute(:ledger_id, self.maintenance_request.ledger.id)
+  end
+
+  def add_single_invoice_to_ledger
+    total = self.amount + self.ledger.grand_total
+    self.ledger.update_attribute(:grand_total, total)
+  end
+
+  
   
   # def calculate_total(items_hash={})
   #   array = []
