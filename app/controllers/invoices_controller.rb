@@ -160,7 +160,7 @@ class InvoicesController < ApplicationController
       # @ledger.save_grand_total
       # # @invoice.update_attribute(:amount,@total)
       
-      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
+      redirect_to invoice_path(@invoice,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:quote][:trady_id]
