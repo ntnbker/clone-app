@@ -121,12 +121,12 @@ var ImgSlider = React.createClass({
             top: 0,
             left: 0,
             zIndex: 70,
-            width: this.state.stwidth,
+            width: '100%',
             height: 300,
             overflow: 'hidden',
           }
         };
-
+        var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
         return <div id="slider">
             { this.state.stlen > 1
               ? <div>
@@ -139,12 +139,12 @@ var ImgSlider = React.createClass({
                 <div className="strip" style={styles.strip}>
                 { this.state.stlen
                   ? this.props.images.map((image, i) => {
-                    return <span key={i}>
-                        <img src={image.url} alt="Uploading..." width={this.state.stwidth}/>
+                    return <span key={i} style={{width: subWidth}}>
+                        <img src={image.url} alt="Uploading..." width='100%'/>
                     </span>
                   })
-                  : <span>
-                        <img src="http://placehold.it/400x300" alt="No image" />
+                  : <span style={{width: '100%'}}>
+                        <img src="http://placehold.it/400x300" alt="No image" width='100%'/>
                     </span>
                 }
                 </div>
@@ -167,7 +167,7 @@ var DropforSort = React.createClass({
 
     render: function() {
       return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
-        <input type="hidden" name="page" value={this.props.page}/>
+        <input type="hidden" name="page" value={this.props.page ? this.props.page : 1}/>
         <select value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
           <option value="Oldest to Newest">Oldest to Newest</option>
           <option value="Newest to Oldest">Newest to Oldest</option>
