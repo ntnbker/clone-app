@@ -344,7 +344,7 @@ class MaintenanceRequestsController < ApplicationController
       sort = "ASC"
       if current_user.agency_admin?
       @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
-      binding.pry
+
       elsif current_user.agent?
       @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 15)
 
@@ -358,7 +358,7 @@ class MaintenanceRequestsController < ApplicationController
       sort = "DESC"
       if current_user.agency_admin?
         @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
-        binding.pry
+        
       elsif current_user.agent?
         @maintenance_requests = current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 15)
 
