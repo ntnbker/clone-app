@@ -72,3 +72,107 @@ var P = React.createClass({
      );
 	}
 });
+
+
+var ImgSlider = React.createClass({
+    getInitialState: function() {
+        return {
+           stlen: this.props.images ? this.props.images.length : 0,
+           stpos: 0,
+           stwidth: 300,
+           stx: 0
+       };
+    },
+
+    sliderTopRun(stpos) {
+        var stx = stpos * -this.state.stwidth;
+
+        this.setState({
+            stx: stx
+        });
+    },
+
+    sliderTopPrev() {
+        var stpos = this.state.stpos - 1;
+        if(stpos < 0) stpos = this.state.stlen - 1;
+        this.setState({
+            stpos: stpos
+        });
+        this.sliderTopRun(stpos);
+    },
+
+    sliderTopNext() {
+        var stpos = this.state.stpos + 1;
+        if(stpos >= this.state.stlen) stpos = 0;
+        this.setState({
+            stpos: stpos
+        }); 
+        this.sliderTopRun(stpos);
+    },
+
+    render: function() {
+        let styles = {
+          strip: {
+            left: this.state.stx,
+            width: this.state.stlen * this.state.stwidth,
+          },
+          mask: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 70,
+            width: this.state.stwidth,
+            height: 300,
+            overflow: 'hidden',
+          }
+        };
+
+        return <div id="slider">
+            { this.state.stlen > 1
+              ? <div>
+                    <button className="button btn prev" onClick={this.sliderTopPrev}><i className="fa fa-angle-left"></i></button>
+                    <button className="button btn next" onClick={this.sliderTopNext}><i className="fa fa-angle-right"></i></button>
+                </div>
+              : null
+            }
+            <div className="mask" style={styles.mask}>
+                <div className="strip" style={styles.strip}>
+                { this.state.stlen
+                  ? this.props.images.map((image, i) => {
+                    return <span key={i}>
+                        <img src={image.url} alt="Uploading..." width={this.state.stwidth}/>
+                    </span>
+                  })
+                  : <span>
+                        <img src="http://placehold.it/400x300" alt="No image" />
+                    </span>
+                }
+                </div>
+            </div>
+        </div>
+    }
+});
+
+var DropforSort = React.createClass({
+    getInitialState: function() {
+        return {
+          sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
+       };
+    },
+
+    handleChange(event) {
+      this.setState({sort_by_date: event.target.value});
+      this.refs.select.submit();
+    },
+
+    render: function() {
+      return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
+        <input type="hidden" name="page" value={this.props.page}/>
+        <select value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
+          <option value="Oldest to Newest">Oldest to Newest</option>
+          <option value="Newest to Oldest">Newest to Oldest</option>
+        </select>
+        <input type="submit" value="Submit" style={{display:'none'}}/>
+      </form>
+    }
+});

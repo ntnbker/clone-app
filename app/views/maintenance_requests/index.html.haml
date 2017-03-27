@@ -1,12 +1,12 @@
 
 %div.maintenance-list.container
+  = react_component 'DropforSort', {:sort_by_date => @sort_by_date, :page => @page}
   %div.main-column
     -@maintenance_requests.each do |maintenance_request|
       %div.row
         %div.image
-          -if maintenance_request.maintenance_request_image != nil
-            -maintenance_request.maintenance_request_image.images.each do |image|
-              = image_tag(image.url.to_s)
+          = react_component 'ImgSlider',
+                            {:images => maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : ''}
 
         %div.info
           %div.row
@@ -24,14 +24,8 @@
           %p.address
             %i.fa.fa-map-marker
             = maintenance_request.property.property_address
+        %hr
         = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
-
-
-
-
-
-      
-
 
   %div.side-column
     -if current_user.agent? || current_user.agency_admin? 
