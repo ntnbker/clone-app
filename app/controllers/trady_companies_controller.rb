@@ -102,6 +102,18 @@ class TradyCompaniesController < ApplicationController
   end
 
 
+
+  def edit_trady_company_invoice_workflow
+    @trady_company = TradyCompany.find_by(id:params[:id])
+    @maintenance_request_id = params[:maintenance_request_id]
+    @trady_id = params[:trady_id]
+  end
+
+  def update_trady_company_invoice_workflow
+    
+  end
+
+
   # def trady_company_router
   #   @trady = Trady.find_by(id:params[:trady_id])
 

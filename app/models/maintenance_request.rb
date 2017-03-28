@@ -16,7 +16,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :quotes
   
   has_many :invoices
-  
+  has_one :ledger
   has_many :tenant_maintenance_requests
   has_many :tenants, through: :tenant_maintenance_requests
   has_many :conversations
@@ -39,7 +39,7 @@ class MaintenanceRequest < ApplicationRecord
 
 
 
-  accepts_nested_attributes_for :invoices
+  # accepts_nested_attributes_for :invoices
 
 
 

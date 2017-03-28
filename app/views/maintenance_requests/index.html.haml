@@ -1,37 +1,33 @@
 
 %div.maintenance-list.container
+  = react_component 'DropforSort', {:sort_by_date => @sort_by_date, :page => @page}
   %div.main-column
     -@maintenance_requests.each do |maintenance_request|
       %div.row
-        %div.image
-          -if maintenance_request.maintenance_request_image != nil
-            -maintenance_request.maintenance_request_image.images.each do |image|
-              = image_tag(image.url.to_s)
+        %div.five.columns
+          %div.image
+            = react_component 'ImgSlider',
+                            {:images => maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : ''}
 
-        %div.info
-          %div.row
-            %h3.heading
-              =link_to "#{maintenance_request.maintenance_heading}", maintenance_request_path(maintenance_request)
-            %p.status
-              =maintenance_request.action_status.maintenance_request_status
-          %div.row
-            %p.created_at
-              = maintenance_request.created_at.strftime("%d %b. %Y")
-            %p.type
-              |
-              = maintenance_request.service_type
-          = react_component 'P', {:content => maintenance_request.maintenance_description}
-          %p.address
-            %i.fa.fa-map-marker
-            = maintenance_request.property.property_address
+        %div.seven.columns                   
+          %div.info
+            %div.row
+              %h3.heading
+                =link_to "#{maintenance_request.maintenance_heading}", maintenance_request_path(maintenance_request)
+              %p.status
+                =maintenance_request.action_status.maintenance_request_status
+            %div.row
+              %p.created_at
+                = maintenance_request.created_at.strftime("%d %b. %Y")
+              %p.type
+                |
+                = maintenance_request.service_type
+            = react_component 'P', {:content => maintenance_request.maintenance_description}
+            %p.address
+              %i.fa.fa-map-marker
+              = maintenance_request.property.property_address
+        %hr
         = will_paginate @maintenance_requests, :previous_label => '< Back', :next_label => 'Next >'
-
-
-
-
-
-      
-
 
   %div.side-column
     -if current_user.agent? || current_user.agency_admin? 
