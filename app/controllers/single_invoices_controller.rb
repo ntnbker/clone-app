@@ -28,7 +28,7 @@ class SingleInvoicesController < ApplicationController
   end
   
   def show 
-    binding.pry
+    
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     @invoice = Invoice.find_by(id: params[:id])
     @trady_id = params[:trady_id] 
@@ -73,7 +73,7 @@ class SingleInvoicesController < ApplicationController
 
 
   def send_single_invoice
-    binding.pry
+    
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @invoice = Invoice.find_by(id:params[:invoice_id])
     @invoice.update_attribute(:delivery_status, true)

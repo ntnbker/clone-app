@@ -102,7 +102,7 @@
     /   %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
     /     =link_to "Create and Send Invoices", confirm_company_invoice_path(trady_company_id:@quote.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@quote.trady.id, quote_id:@quote.id)
 
-  -binding.pry
+  
   -if current_user.agent? || current_user.agency_admin? || current_user.trady?|| current_user.landlord?
 
     - @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 

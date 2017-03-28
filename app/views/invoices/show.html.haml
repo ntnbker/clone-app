@@ -42,7 +42,9 @@
     %button.button.button-primary.left
       =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
     %button.button.button-primary.green.right
-      =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id), method: :post
+      =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id ), method: :post
+
+
   /   -if @invoice.prepaid_or_postpaid == "Prepaid"
   /     %p
   /       Payment Required Before Work Can Commense
