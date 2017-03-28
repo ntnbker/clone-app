@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170323120320) do
+ActiveRecord::Schema.define(version: 20170328071950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(version: 20170323120320) do
     t.integer  "ledger_id"
     t.float    "gst_amount"
     t.date     "due_date"
+    t.boolean  "delivery_status"
   end
 
   create_table "landlords", force: :cascade do |t|

@@ -102,18 +102,23 @@ class MaintenanceRequest < ApplicationRecord
     end 
   end
 
+
+  def delivered_invoices
+    self.invoices.where(delivery_status: true).order("created_at DESC")
+  end
+
   # def find_trady_maintenance_requests(current_user)
   #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
   # end
 
 
-  def search_data
-  attributes.merge(
-    property_address: property(&:property_address),
-    tenants_name: tenants.map(&:name),
-    landlord: property.landlord(&:name)
-  )
-end
+  # def search_data
+  # attributes.merge(
+  #   property_address: property(&:property_address),
+  #   tenants_name: tenants.map(&:name),
+  #   landlord: property.landlord(&:name)
+  # )
+  # end
 
 
 

@@ -1,0 +1,68 @@
+=react_component('StepProgress', {:step => 3})
+
+%div.container.well
+  / -@ledger.invoices.each_with_index do |invoice, index| 
+  /   %div.row
+  /     %h5
+  /       ="Invoice # #{index+1}"
+      
+  -@invoice.invoice_items.each do |f|
+  
+    %div.row
+      -if f.pricing_type == "Hourly"
+        %p
+          ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.total_per_hour}" 
+      -elsif f.pricing_type == "Fixed Cost"
+        %p
+          ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
+    
+          
+           
+  
+    -if @invoice.tax == true
+      %p
+        = "Before Tax: #{ (@invoice.amount - @invoice.gst_amount).round(2)}"
+      %p
+        = "GST: #{ (@invoice.amount - @invoice.amount/1.10).round(2)}"
+    -elsif @invoice.tax == false
+      %p
+        GST: $ 0.00
+    %br    
+    %h4
+      %span
+        ="Total: $#{@invoice.amount.round(3)}"
+    %h5
+      %span
+        ="Invoice Due: #{@invoice.due_on}"
+    %hr
+  %div.row
+    / %h5
+    /   ="Grand Total: $#{@ledger.grand_total.round(3)}"
+  %div.row
+    %button.button.button-primary.left
+      =link_to "Back", edit_single_invoice_path(@invoice, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
+    %button.button.button-primary.green.right
+      =link_to "Send Invoice", send_single_invoice_path(maintenance_request_id:@maintenance_request.id,invoice_id:@invoice.id ), method: :post
+  /   -if @invoice.prepaid_or_postpaid == "Prepaid"
+  /     %p
+  /       Payment Required Before Work Can Commense
+  /     %p 
+  /       ="Amount Due: $#{@invoice.payment_installment_amount}"
+  /   -elsif @invoice.prepaid_or_postpaid == "PostPaid"
+  /     %p
+  /       Payment Required After Work Completed
+  / Display the all invoices here and each of their items 
+    
+/   %p.invoice-show.row
+/     %span
+/       =f.item_description
+/     %span
+/       $
+/       =f.amount 
+/ %hr
+/ %p.invoice-show.row
+/   %span
+/     Total
+/   %span
+/     $
+/     =@invoice.amount

@@ -71,6 +71,12 @@ Rails.application.routes.draw do
   get "new_additional_invoice" => "invoices#new_additional_invoice", :as=> :new_additional_invoice
   post"submit_additional_invoice" => "invoices#create_additional_invoice" 
   ###################################################
+  ##########SINGLE INVOICE RESOURCES/ROUTES######
+  ###################################################
+  resources :single_invoices, only:[:new, :create, :edit, :show]
+  put "update_single_invoice"=>"single_invoices#update"
+  post "send_single_invoice" => "single_invoices#send_single_invoice", :as => :send_single_invoice
+  ###################################################
   ##########WORK ORDER INVOICE RESOURCES/ROUTES######
   ###################################################
   # get "company_information" =>"work_order_invoices#edit_trady_company_invoice"

@@ -71,9 +71,12 @@ class Invoice < ApplicationRecord
     self.update_attribute(:ledger_id, self.maintenance_request.ledger.id)
   end
 
-  def add_single_invoice_to_ledger
-    total = self.amount + self.ledger.grand_total
-    self.ledger.update_attribute(:grand_total, total)
+  def recalculate_ledger
+    ledger = self.ledger
+    ledger.calculate_grand_total
+    ledger.save_grand_total
+    # total = self.amount + self.ledger.grand_total
+    # self.ledger.update_attribute(:grand_total, total)
   end
 
   
