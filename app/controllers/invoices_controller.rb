@@ -189,6 +189,10 @@ class InvoicesController < ApplicationController
   end
 
   def invoice_sent_success
+    binding.pry
+    @maintenance_request_id = params[:maintenance_request_id]
+
+    @trady_id = params[:trady_id]
     #this is an empty controller that just shows the template witha success mark and button to the home page. 
   end
 

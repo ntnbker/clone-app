@@ -28,6 +28,7 @@ class SingleInvoicesController < ApplicationController
   end
   
   def show 
+    binding.pry
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     @invoice = Invoice.find_by(id: params[:id])
     @trady_id = params[:trady_id] 
@@ -72,12 +73,16 @@ class SingleInvoicesController < ApplicationController
 
 
   def send_single_invoice
+    binding.pry
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @invoice = Invoice.find_by(id:params[:invoice_id])
     @invoice.update_attribute(:delivery_status, true)
     AgentsMaintenanceRequestInvoiceWorker.perform_async(maintenance_request.id)
     maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", maintenance_request_status:"Completed")
-    redirect_to invoice_sent_success_path
+    redirect_to invoice_sent_success_path(maintenance_request_id: params[:maintenance_request_id], trady_id: params[:trady_id] )
+
+    
+   
   end
 
   private

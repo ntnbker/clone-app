@@ -2,10 +2,17 @@
 
 %div.container.invoice-form.success
   %h5
-    Your Invoice has been sent
+    Your invoice has been sent
   %div.mark
     %i.fa.fa-check
   %p
     Congratulations!
   %p
-    Your invoice has been successfully sent.
+    Your invoice has been successfully created and sent to the Agent.
+  %div.row
+    %p
+      To create Another Invoice click the button below.
+    %button.button-primary.green.center
+      =link_to "Create New Invoice", new_single_invoice_path(maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
+    %button.button-primary.green
+      =link_to "Home", maintenance_requests_path
