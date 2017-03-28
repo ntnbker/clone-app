@@ -108,7 +108,7 @@ var MaintenanceRequestsNew = React.createClass({
 
 
 					<p> Images </p>
-					<input className="fileInput" type="file" onChange={(e)=>this._handleImageChange(e)} multiple />		
+					<input className="fileInput" type="file" name="maintenance_request[maintenance_request_image_attributes][images][]" id="maintenance_request_maintenance_request_image_attributes_images" onChange={(e)=>this._handleImageChange(e)} multiple />		
 					<div className="imgPreview">{$imagePreview}</div>
 				</div>
 
