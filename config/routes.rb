@@ -93,9 +93,21 @@ Rails.application.routes.draw do
   post "print_invoice" =>"view_invoices#print_invoice", :as=> :print_invoice
 
   ###################################################
-  ##########PAYMENST RESOURCES/ROUTES################
+  ##########PAYMENTS RESOURCES/ROUTES################
   ###################################################
   resources :invoice_payments, only:[:create, :update, :edit]
+
+  ###################################################
+  ########## INVOICE OPTIONS RESOURCES/ROUTES######
+  ###################################################
+  # resources :invoice_options, only:[:show]
+  get "invoice_options"=>"invoice_options#show"
+
+  ###################################################
+  ########## UPLOADED INVOICES ######################
+  ###################################################
+   resources :uploaded_invoices, only:[:new, :create, :show]
+  
 
   ###################################################
   ##########TRADIE RESOURCES/ROUTES#################
