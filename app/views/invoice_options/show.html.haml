@@ -13,10 +13,10 @@
       Please Click Upload Invoice to upload a PDF of your invoice
 
     %button.button-primary.green
-      (trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
+      =link_to "Upload Invoice", new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
 
 
-      Upload Invoice
+      
   
 
   %div  

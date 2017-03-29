@@ -1,1 +1,13 @@
-Here is where we upload the pdfs
+%div.container.well
+  %h3
+    Please Attach You Invoice(s)!!
+
+
+
+  %div
+    =form_for @file do |f|
+      
+      = f.file_field :invoices, multiple: true
+      =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+      =f.hidden_field :trady_id, value:@trady_id
+      = f.submit "Submit PDF"
