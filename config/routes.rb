@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
+
   
   ###################################################
   ##########SETUP RESOURCES/ROUTES###################
@@ -106,8 +107,9 @@ Rails.application.routes.draw do
   ###################################################
   ########## UPLOADED INVOICES ######################
   ###################################################
-   resources :uploaded_invoices, only:[:new, :create, :show]
-  
+  resources :uploaded_invoices, only:[:new, :create, :show, :edit, :update]
+  #put "update_uploaded_invoice"=>"uploaded_invoices#update"
+  post "send_pdf_invoice" => "uploaded_invoices#send_invoice", :as => :send_pdf_invoice
 
   ###################################################
   ##########TRADIE RESOURCES/ROUTES#################

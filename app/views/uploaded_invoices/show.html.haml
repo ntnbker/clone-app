@@ -1,1 +1,22 @@
 Here is were we show the PDF
+
+
+
+
+%div.container.well
+  -@pdf.invoices.each do |pdf|
+    
+    
+    %iframe{:src=> pdf.url,:style=>"border: 0" ,:width=>"70%", :height=>"800", :frameborder=>"0", :scrolling =>"no"}
+      
+  %div
+
+    %button.button-primary.green
+      =link_to "Back", edit_uploaded_invoice_path(@pdf,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
+
+    %button.button-primary.green
+      =link_to "Submit Invoice File(s)", send_pdf_invoice_path(pdf_invoice_id:@pdf.id,maintenance_request_id:@maintenance_request_id), method: :post
+
+    / %iframe{:src=>"'#{pdf.url}'", :style=>"border: 0" ,:width=>"50%", :height=>"600", :frameborder=>"0", :scrolling =>"no" }
+
+

@@ -5,6 +5,8 @@ class InvoicesController < ApplicationController
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_id = params[:trady_id]
     @quote_id = params[:quote_id]
+    @invoice_type= params[:invoice_type]
+    @pdf_file_id = params[:pdf_file_id]
   end
 
   def update_trady_company_invoice
@@ -16,19 +18,34 @@ class InvoicesController < ApplicationController
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     @trady_id = params[:trady_company][:trady_id]
     @quote_id = params[:trady_company][:quote_id]
-    @ledger = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id]).ledger
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
+    @ledger = @maintenance_request.ledger
+    @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
     #@invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
 
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
       
-      if @ledger == nil
-        #This used to be the if condition (@invoice == nil)
-        redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])  
-      elsif @ledger != nil
-        #This used to be the if condition(@invoice !=nil)
-        redirect_to edit_invoice_path(@ledger.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])
-      end 
+      
+      if params[:trady_company][:invoice_type] == "pdf_file"
+        
+        if @pdf_files == nil
+          redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
+        elsif @pdf_files != nil
+          redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
+        end 
+      
+      elsif params[:trady_company][:invoice_type] == "system_invoice"
+        if @ledger == nil
+          redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])  
+        elsif @ledger != nil
+          redirect_to edit_invoice_path(@ledger.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])
+        end 
+      end
+
+
+
+      
 
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
