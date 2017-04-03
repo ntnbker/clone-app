@@ -10,7 +10,7 @@ class ViewInvoicesController < ApplicationController
   def show_pdf
 
     @pdf = UploadedInvoice.find_by(id:params[:id])
-    binding.pry
+    
   end
 
   def print_invoice
