@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170323120320) do
+ActiveRecord::Schema.define(version: 20170331082541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(version: 20170323120320) do
     t.integer  "ledger_id"
     t.float    "gst_amount"
     t.date     "due_date"
+    t.boolean  "delivery_status"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -216,6 +217,7 @@ ActiveRecord::Schema.define(version: 20170323120320) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "maintenance_request_id"
+    t.integer  "super_ledger_id"
   end
 
   create_table "main_users", force: :cascade do |t|
@@ -315,6 +317,14 @@ ActiveRecord::Schema.define(version: 20170323120320) do
     t.integer  "god_id"
   end
 
+  create_table "super_ledgers", force: :cascade do |t|
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "maintenance_request_id"
+    t.integer  "ledger_id"
+    t.float    "grand_total"
+  end
+
   create_table "tenant_maintenance_requests", force: :cascade do |t|
     t.integer  "tenant_id"
     t.integer  "maintenance_request_id"
@@ -361,6 +371,15 @@ ActiveRecord::Schema.define(version: 20170323120320) do
     t.string   "bsb_number"
     t.string   "bank_account_number"
     t.integer  "trady_id"
+  end
+
+  create_table "uploaded_invoices", force: :cascade do |t|
+    t.string   "invoices",               default: [],              array: true
+    t.integer  "maintenance_request_id"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "trady_id"
+    t.boolean  "delivery_status"
   end
 
   create_table "user_conversations", force: :cascade do |t|

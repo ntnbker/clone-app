@@ -17,4 +17,10 @@
                                            :maintenance_request_id => @maintenance_request_id,
                                            :trady_id => @trady_id,
                                            :trady_company_id => @trady_company.id,
-                                           :quote_id => @quote_id})
+                                           :quote_id => @quote_id,
+                                           :invoice_type=>@invoice_type, 
+                                           :pdf_file_id=>@pdf_file_id,
+                                           :ledger_id=>@ledger_id})
+
+  %button.button-primary.green
+    =link_to "Back", invoice_options_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
