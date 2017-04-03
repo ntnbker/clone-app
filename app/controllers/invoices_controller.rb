@@ -7,6 +7,7 @@ class InvoicesController < ApplicationController
     @quote_id = params[:quote_id]
     @invoice_type= params[:invoice_type]
     @pdf_file_id = params[:pdf_file_id]
+    @ledger_id = params[:ledger_id] 
   end
 
   def update_trady_company_invoice
@@ -19,7 +20,10 @@ class InvoicesController < ApplicationController
     @trady_id = params[:trady_company][:trady_id]
     @quote_id = params[:trady_company][:quote_id]
     @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
-    @ledger = @maintenance_request.ledger
+    @ledger = Ledger.find_by(id:params[:trady_company][:quote_id])
+
+    #WE HAVE TO FIND THE RIGHT LEDGER
+
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
     #@invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
 
@@ -96,26 +100,28 @@ class InvoicesController < ApplicationController
     
     if @ledger.save
       
+      
       @ledger.invoices.each {|invoice| invoice.save_total }
       #must be after invoices method because all invoices calculated first then add them up for grandtotal
       @ledger.save_grand_total
+      
       # @invoice.update_attribute(:amount,@total)
       
       redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
-      @trady_id = params[:quote][:trady_id]
-      @maintenance_request_id= params[:quote][:maintenance_request_id]
+      @trady_id = params[:ledger][:trady_id]
+      @maintenance_request_id= params[:ledger][:maintenance_request_id]
       @quote = Quote.find_by(id:params[:ledger][:quote_id])
       render :new 
     end
   end
 
   def show
-    # @ledger = Ledger.find_by(id:params[:id])
+    @ledger = Ledger.find_by(id:params[:id])
     #@invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
-    @ledger = @maintenance_request.ledger
+    # @ledger = @maintenance_request.ledger
     @trady_id = params[:trady_id] 
     @quote_id = params[:quote_id]
   end
@@ -136,8 +142,8 @@ class InvoicesController < ApplicationController
 
   def update
     
-    ledger_id = MaintenanceRequest.find_by(id:params[:ledger][:maintenance_request_id]).ledger.id
-    @ledger = Ledger.find_by(id:ledger_id)
+    
+    @ledger = Ledger.find_by(id:params[:ledger][:ledger_id])
     #@total = @invoice.calculate_total(params[:invoice][:invoice_items_attributes])
     @maintenance_request_id = params[:ledger][:maintenance_request_id]
 

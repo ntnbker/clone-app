@@ -58,7 +58,7 @@ class UploadedInvoicesController < ApplicationController
   end
 
   def send_invoice
-    binding.pry
+    
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     AgentsMaintenanceRequestInvoiceWorker.perform_async(maintenance_request.id)
     maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", maintenance_request_status:"Completed")

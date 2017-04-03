@@ -286,6 +286,7 @@ var TradyCompanyInvoice = React.createClass({
                 <input value={this.props.quote_id} type="hidden" name="trady_company[quote_id]"/>
                 <input value={this.props.invoice_type} type="hidden" name="trady_company[invoice_type]"/>
                 <input value={this.props.pdf_file_id} type="hidden" name="trady_company[pdf_file_id]"/>
+                <input value={this.props.ledger_id} type="hidden" name="trady_company[ledger_id]"/>
                 <input type="submit" name="commit" value="Next" className="button-primary green" data-disable-with="Next" />
             </form>
         );

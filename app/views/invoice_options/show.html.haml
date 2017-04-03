@@ -31,12 +31,12 @@
       Easily make invoices using our platform by clicking the Create Invoice
       button below. 
     
-    -if @maintenance_request.ledger == nil
-      %button.button-primary.green
-        =link_to "Create Invoice", confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"system_invoice")
-    -elsif @maintenance_request.ledger != nil
-      %button.button-primary.green
-        =link_to "Create More Invoices", new_single_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id) 
+    / -if @maintenance_request.ledger == nil
+    %button.button-primary.green
+      =link_to "Create Invoice", confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"system_invoice")
+      / -elsif @maintenance_request.ledger != nil
+      / %button.button-primary.green
+      /   =link_to "Create More Invoices", new_single_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id) 
 
-      %button.button-primary.green
-       =link_to "Back To Maintenance Request, maintenance_request_path(@maintenance_request_id)
+    %button.button-primary.green
+      =link_to "Back To Maintenance Request", maintenance_request_path(@maintenance_request_id)

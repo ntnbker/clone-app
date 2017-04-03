@@ -107,7 +107,7 @@
     /     =link_to "Create and Send Invoices", confirm_company_invoice_path(trady_company_id:@quote.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@quote.trady.id, quote_id:@quote.id)
 
   
-  -if current_user.agent? || current_user.agency_admin? || current_user.trady?|| current_user.landlord?
+  -if current_user.agent? || current_user.agency_admin? || current_user.trady?
 
     - @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
       
@@ -120,6 +120,16 @@
           ="Name: #{invoice.trady.name}"
         %p 
           ="Invoice Total Amount: $#{invoice.amount}"
+
+    -@pdf_files.each_with_index do |pdf, index|
+      %div.well 
+        %h5
+          =link_to "PDF File Invoice #{index+1}", view_pdf_invoice_path(id:pdf.id)
+        %p 
+          ="Company Name: #{pdf.maintenance_request.trady.trady_company.company_name}"
+        %p
+          ="Name: #{pdf.maintenance_request.trady.name}"
+        
 /****************MODALS****************/     
 /**************************************/
 %div{:class=>"modal fade", :id=>"tenant-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}

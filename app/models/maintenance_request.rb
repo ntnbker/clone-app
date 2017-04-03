@@ -16,7 +16,8 @@ class MaintenanceRequest < ApplicationRecord
   has_many :quotes
   
   has_many :invoices
-  has_one :ledger
+  has_many :ledgers
+  has_one :super_ledger
   has_many :tenant_maintenance_requests
   has_many :tenants, through: :tenant_maintenance_requests
   has_many :conversations
@@ -106,6 +107,10 @@ class MaintenanceRequest < ApplicationRecord
 
   def delivered_invoices
     self.invoices.where(delivery_status: true).order("created_at DESC")
+  end
+
+  def delivered_uploaded_invoices
+    self.uploaded_invoices.where(delivery_status: true).order("created_at DESC")
   end
 
   # def find_trady_maintenance_requests(current_user)
