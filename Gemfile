@@ -45,6 +45,8 @@ gem 'sidekiq'
 gem "font-awesome-rails"
 
 
+
+
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
 

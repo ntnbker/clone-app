@@ -1,6 +1,7 @@
 class Ledger < ApplicationRecord
   belongs_to :maintenance_request
   has_many :invoices
+  belongs_to :super_ledger
   accepts_nested_attributes_for :invoices, allow_destroy: true
 
 
@@ -13,7 +14,7 @@ class Ledger < ApplicationRecord
     sum = 0
     self.invoices.each do |invoice|
       if invoice.tax == nil || invoice.tax == false
-        invoice_total_amount = invoice.amount/1.10
+        invoice_total_amount = invoice.amount
         #tax_amount = invoice_total_amount * 0.10 
         invoices_amount.push(invoice_total_amount)
         invoice.update_attribute(:amount, invoice_total_amount)

@@ -1,0 +1,17 @@
+%div.container.well
+  =bootstrap_nested_form_for(@invoice, id:@invoice.id, url:"/update_single_invoice", method: :put,  layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    
+    =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
+    =f.hidden_field :trady_id, value:"#{@trady.id}"
+    =f.hidden_field :id, value:"#{@invoice.id}"
+    #invoice-fields
+      = f.fields_for :invoice_items do |item|
+        = render "invoices/invoice_item_fields", f: item
+    = f.form_group :tax do
+      = f.check_box :tax, label: "Total Includes GST", :checked => @trady.trady_company.gst_registration
+      %div.links
+        = link_to_add_association "Add Invoice Item", f, :invoice_items
+
+    
+      
+    =f.submit "Next"

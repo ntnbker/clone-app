@@ -240,7 +240,6 @@ class MaintenanceRequestsController < ApplicationController
       render :new
       
     end 
-    
   end
 
   def show
@@ -248,6 +247,7 @@ class MaintenanceRequestsController < ApplicationController
     @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     @quote = @quotes.where(:status=>"Approved").first if !nil
+    @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
     if @quote
       @quote_id = @quote.id
@@ -366,6 +366,7 @@ class MaintenanceRequestsController < ApplicationController
       end 
     elsif params[:sort_by_date] == "Newest to Oldest"
       sort = "DESC"
+
       @maintenance_requests = if current_user.agency_admin?
         current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
       elsif current_user.agent?
@@ -375,7 +376,8 @@ class MaintenanceRequestsController < ApplicationController
       elsif current_user.trady?
         current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
       end
-    end
+
+    end 
 
   end
 

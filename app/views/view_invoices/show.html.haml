@@ -13,8 +13,8 @@
 /       %br
 /       =@trady.trady_company.email
 %div.container.invoice-form.well
-  %h6
-    ="Invoice Status: #{@invoice.payment_status}"
+  / %h6
+  /   ="Invoice Status: #{@invoice.payment_status}"
 
   %h4 
     Invoice
@@ -54,32 +54,32 @@
       ="Total: $#{@invoice.amount}"
   
   %hr
-  -if @invoice.invoice_payments
-    %h3
-      Amounts Paid
-    -@invoice.invoice_payments.each do |payment| 
-      %hr
-      %div.row
-        ="Amount Paid: $#{payment.amount_paid}"
-        =link_to "Edit", edit_invoice_payment_path(payment, invoice_id:@invoice.id)
-        %br
-        ="Date Paid:#{payment.date}"
-    %hr
-    %h5
-      ="Total Paid: $#{@invoice.amount_paid}"
+  / -if @invoice.invoice_payments
+  /   %h3
+  /     Amounts Paid
+  /   -@invoice.invoice_payments.each do |payment| 
+  /     %hr
+  /     %div.row
+  /       ="Amount Paid: $#{payment.amount_paid}"
+  /       =link_to "Edit", edit_invoice_payment_path(payment, invoice_id:@invoice.id)
+  /       %br
+  /       ="Date Paid:#{payment.date}"
+  /   %hr
+  /   %h5
+  /     ="Total Paid: $#{@invoice.amount_paid}"
         
         
   %button.button.button-primary.green
     = link_to 'Print Invoice', print_invoice_path(id:@invoice), :onclick => 'window.print();return false;', method: :post
-  %button.button.button-primary.green
-    Add Payment(Click and should show amount paid field)
+  / %button.button.button-primary.green
+  /   Add Payment(Click and should show amount paid field)
   
-  %div.row
-    =form_for @payment  do |f|
-      =f.label :amount_paid, "Amount Paid"
-      =f.text_field :amount_paid 
-      =f.label :date, "Date Paid"
-      =f.date_field :date
-      =f.hidden_field :invoice_id, value:@invoice.id
-      =submit_tag "Submit Amount Paid", class: "button button button-primary green"
+  / %div.row
+  /   =form_for @payment  do |f|
+  /     =f.label :amount_paid, "Amount Paid"
+  /     =f.text_field :amount_paid 
+  /     =f.label :date, "Date Paid"
+  /     =f.date_field :date
+  /     =f.hidden_field :invoice_id, value:@invoice.id
+  /     =submit_tag "Submit Amount Paid", class: "button button button-primary green"
     

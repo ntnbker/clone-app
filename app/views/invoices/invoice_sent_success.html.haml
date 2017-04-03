@@ -2,10 +2,15 @@
 
 %div.container.invoice-form.success
   %h5
-    Your Invoice has been sent
+    Your invoice has been sent
   %div.mark
     %i.fa.fa-check
   %p
     Congratulations!
   %p
-    Your invoice has been successfully sent.
+    Your invoice has been successfully created and sent to the Agent.
+  %div.row
+    %p
+      To Head Home click the button below.
+    %button.button-primary.green
+      =link_to "Home", maintenance_requests_path
