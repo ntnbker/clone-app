@@ -65,7 +65,7 @@ class MaintenanceRequestsController < ApplicationController
       #This user already exists
       @user = User.find_by(email: params[:maintenance_request][:email])
       if @user 
-        @maintenance_request.perform_uniqueness_validation_of_email = false
+        #@maintenance_request.perform_uniqueness_validation_of_email = false
         #user = User.find_by(email:params[:maintenance_request][:email]).id
         @tenant = Tenant.find_by(user_id:@user.id)
         

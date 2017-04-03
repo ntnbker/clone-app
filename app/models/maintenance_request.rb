@@ -32,7 +32,7 @@ class MaintenanceRequest < ApplicationRecord
 
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
-  validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
+  #validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
 
   accepts_nested_attributes_for :maintenance_request_image, allow_destroy: true
   accepts_nested_attributes_for :access_contacts, allow_destroy: true
