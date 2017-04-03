@@ -1,4 +1,10 @@
 var MaintenanceRequestsNew = React.createClass({
+	getInitialState() {
+    	return { 
+			images: []
+		};
+  	},
+
     generateAtt(name_id, type) {
     	if (name_id == "name") {
     		return "maintenance_request[" + type + "]";
@@ -7,7 +13,59 @@ var MaintenanceRequestsNew = React.createClass({
     		return "maintenance_request_" + type;
     	}
     },
+	_handleRemoveFrame(e) {
+		let {images} = this.state;
+		var index = e.target.id;
+		images.splice(index, 1);
+		this.setState({images: images});
+	},
+	_handleImageChange(e) {
+		e.preventDefault();
+		var files = e.target.files;
+		var reader = new FileReader();
+		var images = this.state.images;
+		
+		
+		readFile = (index) => {
+			if (index >= files.length) {
+				this.setState({
+					images: images
+				});
+				return;
+			}
+			var file = files[index];
+			var fileAlreadyExists = false;
+			for (var i = 0; i < images.length; i ++) {
+				if (images[i].fileInfo.name == file.name) {
+					fileAlreadyExists = true;
+					break;
+				}
+			}
+			if (!fileAlreadyExists) {
+				reader.readAsDataURL(file);
+				reader.onload = function(e) {
+					images.push({url: e.target.result, fileInfo: file});
+					readFile(index + 1);
+				}
+			}
+			else {
+				readFile(index + 1);
+			}
+		}
+		readFile(0);
+ 	 },
+
 	render: function(){
+		let {images} = this.state;
+		let $imagePreview = [];
+		if (images.length > 0) {
+			for (i = 0; i < images.length; i ++) {
+				let imageObject = (<div className="imgFrame" key={i}><img src={images[i].url} /><div className="btnRemoveFrame" id={i} onClick={(e) =>this._handleRemoveFrame(e)}>X</div></div>);
+				$imagePreview.push(imageObject);
+			}
+		} else {
+			$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+		}
 		return (
 			<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" action="/maintenance_requests" method="post">
 				<input type='hidden' name='authenticity_token' value={this.props.authenticity_token} />
@@ -50,12 +108,9 @@ var MaintenanceRequestsNew = React.createClass({
 
 
 					<p> Images </p>
-					<input multiple="multiple" type="file"
-							name="maintenance_request[maintenance_request_image_attributes][images][]"
-							  id="maintenance_request_maintenance_request_image_attributes_images" />
+					<input className="fileInput" type="file" name="maintenance_request[maintenance_request_image_attributes][images][]" id="maintenance_request_maintenance_request_image_attributes_images" onChange={(e)=>this._handleImageChange(e)} multiple />		
+					<div className="imgPreview">{$imagePreview}</div>
 				</div>
-
-				
 
 				{ (!this.props.current_user || this.props.current_user.tenant) ?
 					<div className="field">
