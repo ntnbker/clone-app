@@ -152,10 +152,9 @@ var InvoiceItemField = React.createClass({
     },
 
     render: function() {
-        console.log("this.state.totalamount",this.state.totalamount);
         var invoice_item = this.props.content;
         var x= this.props.x;
-        var invoice_id = this.props.params;
+        var invoice_id = this.props.params.x;
         if (invoice_item) {
             x = invoice_item.id;
             invoice_id = invoice_item.invoice_id;
@@ -212,7 +211,6 @@ var InvoiceField = React.createClass({
     },
 
     calcInvoiceTotal(price) {
-        console.log("here!!!!!");
         this.setState({
             amount: this.state.amount + price
         });
@@ -223,8 +221,6 @@ var InvoiceField = React.createClass({
         var invoice_items = (invoice && invoice.invoice_items) || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
-        console.log("invoiceInfo", 1111111);
-        console.log("invoiceInfo", invoiceInfo.maintenance_request_id);
         if (invoice) {
             x = invoice.id;
         }
@@ -268,7 +264,6 @@ var InvoiceField = React.createClass({
 var InvoiceFields = React.createClass({
     render: function(){
         const ledger = this.props.ledger || null;
-        console.log("to_json",ledger.invoices);
         const id = (ledger && ledger.id) || null;
         const invoiceInfo = {
             maintenance_request_id: this.props.maintenance_request_id,
@@ -277,7 +272,7 @@ var InvoiceFields = React.createClass({
             due_date: ''
         };
         const invoices = (ledger && ledger.invoices) ? ledger.invoices : null;
-        return <form role="form" id="new_invoice" action={id ? '/invoices/'+id : '/invoices'} acceptCharset="UTF-8" method="post">
+        return <form role="form" id="new_invoice" action={id ? '/update_invoice' : '/invoices'} acceptCharset="UTF-8" method="post">
             <input type="hidden" value={this.props.authenticity_token} name="authenticity_token"/>
             <input type="hidden" value={this.props._method} name="_method" />
             <input type="hidden" name="ledger[grand_total]"/>
