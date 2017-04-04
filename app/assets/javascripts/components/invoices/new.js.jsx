@@ -91,18 +91,27 @@ var InvoiceItemField = React.createClass({
         var invoice_item = this.props.content;
         var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
         var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+        var amount = invoice_item ? invoice_item.amount : 0;
+        var numofhours = (invoice_item && invoice_item.hours) ? invoice_item.hours : 1;
         return {
             remove : false,
             pricing_type: pricing_type,
             hours_input: hours_input,
-            amount: invoice_item ? invoice_item.amount : 0,
-            numofhours: invoice_item ? invoice_item.hours : 1,
-            totalamount: 0
+            amount: amount,
+            numofhours: numofhours,
+            totalamount: amount * numofhours
         }
     },
 
     removeField() {
-        this.setState({remove: true});
+        this.setState({remove: true,
+                       amount: 0,
+                       totalamount: 0});
+        this.updatePrice(0);
+    },
+
+    updatePrice(amount) {
+        this.props.params.updatePrice(amount - this.state.totalamount);
     },
 
     onPricing(event) {
@@ -119,9 +128,12 @@ var InvoiceItemField = React.createClass({
 
     onAmount(event) {
         const amount = event.target.value;
+        const totalamount = amount * this.state.numofhours;
+
+        this.updatePrice(totalamount);
         this.setState({
             amount: amount,
-            totalamount: amount * this.state.numofhours
+            totalamount: totalamount
         });
     },
 
@@ -132,8 +144,10 @@ var InvoiceItemField = React.createClass({
         else
             this.setState({numofhours: 1});
 
+        const totalamount = this.state.amount * hours;
+        this.updatePrice(totalamount);
         this.setState({
-            totalamount: this.state.amount * hours 
+            totalamount: totalamount
         });
     },
 
@@ -186,7 +200,9 @@ var InvoiceItemField = React.createClass({
 
 var InvoiceField = React.createClass({
     getInitialState : function() {
+        var invoice = this.props.content;
         return {
+            amount : (invoice && invoice.amount) ? invoice.amount : 0,
             remove : false
         }
     },
@@ -195,9 +211,16 @@ var InvoiceField = React.createClass({
         this.setState({remove: true});
     },
 
+    calcInvoiceTotal(price) {
+        console.log("here!!!!!");
+        this.setState({
+            amount: this.state.amount + price
+        });
+    },
+
     render: function() {
         var invoice = this.props.content;
-        var invoice_items = (invoice && invoice.invoice_items) || null
+        var invoice_items = (invoice && invoice.invoice_items) || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
         console.log("invoiceInfo", 1111111);
@@ -211,7 +234,7 @@ var InvoiceField = React.createClass({
 
             <fieldset>
                 <div>
-                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={x}/>
+                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal}}/>
                     <label>
                         <input type="checkbox" defaultValue={(invoice && invoice.tax) || ''} name={'ledger[invoices_attributes][' + x + '][tax]'} />
                         Total Includes GST
@@ -221,7 +244,7 @@ var InvoiceField = React.createClass({
                 <div className="field">
                     <div>
                         <p> Invoice Total : </p>
-                        <input type="text" readOnly="readonly" placeholder="$0.00" value="100" name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amount} name={'ledger[invoices_attributes][' + x + '][amount]'} />
                     </div>
                     <div>
                         <p> Invoice Due On : </p>
