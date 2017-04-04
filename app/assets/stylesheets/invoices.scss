@@ -86,6 +86,42 @@
 	}
 
 	.invoicefield {
+		border: 1px solid #E1E1E1;
+		padding: 10px;
+		fieldset {
+			border: none;
+			padding: 0;
+
+			label {
+				display: block;
+				font-weight: normal;
+			    margin-top: 10px;
+				margin-bottom: 0;
+
+				input[type="radio"], input[type="checkbox"] {
+					margin-right: 8px;
+					display: inline-block;
+					width: auto;
+				}
+			}
+			.field {
+				p {
+					display: inline;
+				}
+				input {
+					display: inline-block;
+					width: auto;
+				}
+			}
+		}
+
+		button.button-remove {
+			font-size: 13px;
+			height: 24px;
+		}
+	}
+
+	.invoiceitemfield {
     	border: 1px dashed #E1E1E1;
 		padding: 10px;
 		position: relative;
@@ -114,13 +150,12 @@
 	.fieldlist {
 		ul {
 			list-style: none;
-		    max-height: 295px;
-			overflow-y: scroll;
 			margin: 0;
 		}
 		
 		button {
 			&.button-add {	
+				margin-top: 5px;
 				font-size: 13px;
 	    		height: 24px;
 			}

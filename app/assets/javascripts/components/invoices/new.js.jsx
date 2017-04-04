@@ -47,18 +47,19 @@ var FieldList = React.createClass({
         const existingContent = this.props.existingContent;
         var SampleField = this.props.SampleField;
         var Fields = [];
+        var params = this.props.params;
         var x = 1;
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
-                Fields.push(<SampleField content={one}/>);
+                Fields.push(<SampleField content={one} params={params}/>);
                 x = index+1;
             });
 
             return { Fields : Fields,
                      x : x }
         } else {
-            return { Fields : [ <SampleField x={x}/> ],
+            return { Fields : [ <SampleField params={params} x={x}/> ],
                      x : x }
         }
     },
@@ -66,7 +67,8 @@ var FieldList = React.createClass({
     addField() {
         var SampleField = this.props.SampleField;
         var tmpFields = this.state.Fields.slice();
-        tmpFields.push(<SampleField x={++this.state.x}/>);
+        var params = this.props.params;
+        tmpFields.push(<SampleField x={++this.state.x} params={params}/>);
         this.setState({Fields: tmpFields});
     },
 
@@ -84,15 +86,18 @@ var FieldList = React.createClass({
     }
 });
 
-var InvoiceField = React.createClass({
+var InvoiceItemField = React.createClass({
     getInitialState : function() {
-        var invoice = this.props.content;
-        var pricing_type = invoice ? invoice.pricing_type : 'Fixed Cost';
+        var invoice_item = this.props.content;
+        var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
         var hours_input = pricing_type == 'Fixed Cost' ? false : true;
         return {
             remove : false,
             pricing_type: pricing_type,
-            hours_input: hours_input
+            hours_input: hours_input,
+            amount: invoice_item ? invoice_item.amount : 0,
+            numofhours: invoice_item ? invoice_item.hours : 1,
+            totalamount: 0
         }
     },
 
@@ -106,93 +111,159 @@ var InvoiceField = React.createClass({
         if (pricing_type == "Hourly") {
             this.setState({hours_input: true});
         } else {
-            this.setState({hours_input: false});
+            this.setState({hours_input: false,
+                           numofhours: 1,
+                           totalamount: this.state.amount});
         }
     },
 
-    render: function() {
-        var invoice = this.props.content;
-        var x= this.props.x;
-        if (invoice) {
-            x = invoice.id;
-        }
-        return <div className="invoicefield" style={{display: this.state.remove ? 'none' : 'block' }}>
-            <fieldset>
-                <input type="text" placeholder="Item description" defaultValue={invoice ? invoice.item_description : null}
-                    name={'invoice[invoice_items_attributes][' + x + '][item_description]'}
-                    id={'invoice_invoice_items_attributes_' + x + '_item_description'} />
+    onAmount(event) {
+        const amount = event.target.value;
+        this.setState({
+            amount: amount,
+            totalamount: amount * this.state.numofhours
+        });
+    },
 
-                <input type="text" placeholder="Amount" defaultValue={invoice ? invoice.amount : null}
-                    name={'invoice[invoice_items_attributes][' + x + '][amount]'}
-                    id={'invoice_invoice_items_attributes_' + x + '_amount'} />
+    onHours(event) {
+        const hours = event.target.value;
+        if (hours > 0)
+            this.setState({numofhours: hours});
+        else
+            this.setState({numofhours: 1});
+
+        this.setState({
+            totalamount: this.state.amount * hours 
+        });
+    },
+
+    render: function() {
+        console.log("this.state.totalamount",this.state.totalamount);
+        var invoice_item = this.props.content;
+        var x= this.props.x;
+        var invoice_id = this.props.params;
+        if (invoice_item) {
+            x = invoice_item.id;
+            invoice_id = invoice_item.invoice_id;
+        }
+        return <div className="invoiceitemfield" style={{display: this.state.remove ? 'none' : 'block' }}>
+            <fieldset>
+                <input type="text" placeholder="Item description" defaultValue={invoice_item ? invoice_item.item_description : null}
+                    name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'} />
+
+                <input type="text" placeholder="Amount" value={this.state.amount} onChange={this.onAmount}
+                    name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'} />
 
                 <p> Pricing type : </p>
                 <select value={this.state.pricing_type}
                      onChange={this.onPricing}
-                         name={'invoice[invoice_items_attributes][' + x + '][pricing_type]'}
-                           id={'invoice_invoice_items_attributes_' + x + '_pricing_type'}>
+                         name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'}
+                >
                     <option value="Fixed Cost">Fixed Cost</option>
                     <option value="Hourly">Hourly</option>
                 </select>
 
                 {
                     this.state.hours_input
-                    ? <input type="text" placeholder="Number of Hours" defaultValue={invoice ? invoice.hours : null}
-                             name={'invoice[invoice_items_attributes][' + x + '][hours]'}
-                             id={'invoice_invoice_items_attributes_' + x + '_hours'} />
-                    : <input type="hidden"
-                             name={'invoice[invoice_items_attributes][' + x + '][hours]'}
-                             id={'invoice_invoice_items_attributes_' + x + '_hours'} />
+                    ? <input type="text" placeholder="Number of Hours" value={this.state.numofhours} onChange={this.onHours}
+                             name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} />
+                    : <input type="hidden" value={1}
+                             name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} />
                 }
                 
-                <input type="hidden" value={this.state.remove} name={'invoice[invoice_items_attributes][' + x + '][_destroy]'} id={'invoice_invoice_items_attributes_' + x + '__destroy'}/>
-                {invoice
-                ? <input type="hidden" value={x} name={'invoice[invoice_items_attributes][' + x + '][id]'} id={'invoice_invoice_items_attributes_' + x + '_id'} />
-                : null }
+                <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
+                {
+                    invoice_item
+                    ? <input type="hidden" value={x} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'}/>
+                    : null
+                }
             </fieldset>
             <button type="button" className="button-remove button-primary red" onClick={this.removeField}> X </button>
         </div>
     }
 });
 
-var InvoiceFields = React.createClass({
-    render: function(){
-        var invoice = this.props.invoice ? this.props.invoice : '';
-        var id = invoice.id;
-        var tax = invoice.tax;
-        var prepaid_or_postpaid = invoice.prepaid_or_postpaid;
-        var payment_installment_amount = invoice.payment_installment_amount;
 
-        return <form role="form" id="new_invoice" action={id ? '/invoices/'+id : '/invoices'} acceptCharset="UTF-8" method="post">
-            <input type="hidden" value={this.props.authenticity_token} name="authenticity_token" />
-            <input type="hidden" value={this.props._method} name="_method" />
-            <input type="hidden" value={this.props.maintenance_request_id} name="invoice[maintenance_request_id]" id="invoice_maintenance_request_id" />
-            <input type="hidden" value={this.props.trady_id} name="invoice[trady_id]" id="invoice_trady_id" />
-            <input type="hidden" value={this.props.quote_id} name="invoice[quote_id]" id="invoice_quote_id" />
+var InvoiceField = React.createClass({
+    getInitialState : function() {
+        return {
+            remove : false
+        }
+    },
 
-            <FieldList existingContent={this.props.invoice_items} SampleField={InvoiceField} />
+    removeField() {
+        this.setState({remove: true});
+    },
 
-            <hr/>
-            <div className="additon">
-                <div className="paid-type">
-                    <label> <input type="radio" value="Prepaid" defaultChecked={prepaid_or_postpaid ? prepaid_or_postpaid=="Prepaid" : 0} name="invoice[prepaid_or_postpaid]" id="invoice_prepaid_or_postpaid_prepaid" />
-                        Payment Required Before Work Can Commense
-                    </label>
-                    <label> <input type="radio" value="PostPaid" defaultChecked={prepaid_or_postpaid ? prepaid_or_postpaid=="PostPaid" : 0} name="invoice[prepaid_or_postpaid]" id="invoice_prepaid_or_postpaid_postpaid" />
-                        Payment Required After Work Completed
+    render: function() {
+        var invoice = this.props.content;
+        var invoice_items = (invoice && invoice.invoice_items) || null
+        var x = this.props.x;
+        var invoiceInfo = this.props.params;
+        console.log("invoiceInfo", 1111111);
+        console.log("invoiceInfo", invoiceInfo.maintenance_request_id);
+        if (invoice) {
+            x = invoice.id;
+        }
+        return <div className="invoicefield" style={{display: this.state.remove ? 'none' : 'block' }}>
+            <input type="hidden" value={(invoice && invoice.maintenance_request_id) ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id} name={'ledger[invoices_attributes][' + x + '][maintenance_request_id]'}/>
+            <input type="hidden" value={(invoice && invoice.trady_id) ? invoice.trady_id : invoiceInfo.trady_id} name={'ledger[invoices_attributes][' + x + '][trady_id]'}/>
+
+            <fieldset>
+                <div>
+                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={x}/>
+                    <label>
+                        <input type="checkbox" defaultValue={(invoice && invoice.tax) || ''} name={'ledger[invoices_attributes][' + x + '][tax]'} />
+                        Total Includes GST
                     </label>
                 </div>
+                <hr />
+                <div className="field">
+                    <div>
+                        <p> Invoice Total : </p>
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value="100" name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                    </div>
+                    <div>
+                        <p> Invoice Due On : </p>
+                        <input type="date" defaultValue={(invoice && invoice.due_date) || ''} name={'ledger[invoices_attributes][' + x + '][due_date]'} />
+                    </div>
+                </div>
 
-                <input type="text" placeholder="Payment Amount Required" defaultValue={payment_installment_amount ? payment_installment_amount : null}
-                    name="invoice[payment_installment_amount]"
-                    id="invoice_payment_installment_amount" />
+                <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
+                {
+                    invoice
+                    ? <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>
+                    : null
+                }
+            </fieldset>
 
-                <label className="invoice_tax">
-                    <input type="hidden" value="0" name="invoice[tax]"/>
-                    <input type="checkbox" value="1" defaultChecked={tax ? tax : false} name="invoice[tax]" id="invoice_tax" />
-                    Add GST
-                </label>
-            </div>
+            <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove Invoice </button>
+        </div>
+    }
+});
+
+var InvoiceFields = React.createClass({
+    render: function(){
+        const ledger = this.props.ledger || null;
+        console.log("to_json",ledger.invoices);
+        const id = (ledger && ledger.id) || null;
+        const invoiceInfo = {
+            maintenance_request_id: this.props.maintenance_request_id,
+            trady_id: this.props.trady_id,
+            tax: '',
+            due_date: ''
+        };
+        const invoices = (ledger && ledger.invoices) ? ledger.invoices : null;
+        return <form role="form" id="new_invoice" action={id ? '/invoices/'+id : '/invoices'} acceptCharset="UTF-8" method="post">
+            <input type="hidden" value={this.props.authenticity_token} name="authenticity_token"/>
+            <input type="hidden" value={this.props._method} name="_method" />
+            <input type="hidden" name="ledger[grand_total]"/>
+            <input type="hidden" value={this.props.maintenance_request_id} name="ledger[maintenance_request_id]"/>
+            <input type="hidden" value={this.props.trady_id} name="ledger[trady_id]"/>
+            <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
+
+
+            <FieldList existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
             <div className="qf-button">
                 <button className="button button-primary left"> <a href={this.props.backlink}> Back </a> </button>
