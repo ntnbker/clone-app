@@ -93,7 +93,7 @@ class MaintenanceRequestsController < ApplicationController
           end 
         end 
 
-        #@maintenance_request.tenant_id = @tenant.id
+        
         @maintenance_request.service_type = @customer_input.tradie
         
         
@@ -159,7 +159,7 @@ class MaintenanceRequestsController < ApplicationController
         role = Role.create(user_id:@user.id)
         @tenant = Tenant.create(user_id:@user.id, name:params[:maintenance_request][:name],email:params[:maintenance_request][:email], mobile:params[:maintenance_request][:mobile] )
         @tenant.roles << role
-        @maintenance_request.tenant_id = @tenant.id
+        
         @maintenance_request.service_type = @customer_input.tradie
         
         #CREATE PROPERTY
