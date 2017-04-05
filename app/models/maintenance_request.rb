@@ -16,7 +16,8 @@ class MaintenanceRequest < ApplicationRecord
   has_many :quotes
   
   has_many :invoices
-  has_one :ledger
+  has_many :ledgers
+  has_one :super_ledger
   has_many :tenant_maintenance_requests
   has_many :tenants, through: :tenant_maintenance_requests
   has_many :conversations
@@ -27,6 +28,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :appointments
   belongs_to :trady
   has_one :maintenance_request_image, inverse_of: :maintenance_request
+  has_many :uploaded_invoices
 
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
@@ -102,18 +104,27 @@ class MaintenanceRequest < ApplicationRecord
     end 
   end
 
+
+  def delivered_invoices
+    self.invoices.where(delivery_status: true).order("created_at DESC")
+  end
+
+  def delivered_uploaded_invoices
+    self.uploaded_invoices.where(delivery_status: true).order("created_at DESC")
+  end
+
   # def find_trady_maintenance_requests(current_user)
   #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
   # end
 
 
-  def search_data
-  attributes.merge(
-    property_address: property(&:property_address),
-    tenants_name: tenants.map(&:name),
-    landlord: property.landlord(&:name)
-  )
-end
+  # def search_data
+  # attributes.merge(
+  #   property_address: property(&:property_address),
+  #   tenants_name: tenants.map(&:name),
+  #   landlord: property.landlord(&:name)
+  # )
+  # end
 
 
 

@@ -55,6 +55,31 @@ var MaintenanceRequestsNew = React.createClass({
 		readFile(0);
  	 },
 
+	  handleCheckSubmit: function(e) {
+
+		var XHR = new XMLHttpRequest();
+		var FD = new FormData(document.getElementById('new_maintenance_request'));
+		FD.delete('maintenance_request[maintenance_request_image_attributes][images][]');
+		FD.delete('commit');
+		this.state.images.map((image, index) => {
+			var idx = index + 1;
+			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
+		});
+		FD.append('commit', 'Submit Maintenance Request');
+		XHR.addEventListener('load', function(event) {
+			console.log('Yeah! Data sent and response loaded.');
+		});
+
+		XHR.addEventListener('error', function(event) {
+			console.log('Oups! Something went wrong.');
+		});
+	
+		XHR.open('POST', '/maintenance_requests');
+		XHR.setRequestHeader('Accept', 'text/html');
+		XHR.send(FD);
+
+	},
+
 	render: function(){
 		let {images} = this.state;
 		let $imagePreview = [];
@@ -67,7 +92,7 @@ var MaintenanceRequestsNew = React.createClass({
 			$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
 		}
 		return (
-			<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" action="/maintenance_requests" method="post">
+			<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8">
 				<input type='hidden' name='authenticity_token' value={this.props.authenticity_token} />
 				<div className="field">
 					<p> Name </p>
@@ -87,7 +112,7 @@ var MaintenanceRequestsNew = React.createClass({
 				</div>
 
 				<hr/>
-
+				
 				<div id="access_contacts">
 					<FieldList SampleField={AccessContactField} />
 				</div>
@@ -155,16 +180,16 @@ var MaintenanceRequestsNew = React.createClass({
 					</div>
 					:
 					<hr/>
-				}				
+				}
 
 				<div id="availabilities">
 					<FieldList SampleField={AvailabilityField} />
 				</div>
-
+				
 				<hr/>
 
-				<input type="submit" className="button-primary green" name="commit" value="Submit Maintenance Request" data-disable-with="Submit Maintenance Request" />
+				<input type="submit" className="button-primary green" name="commit" value="Submit Maintenance Request" data-disable-with="Submit Maintenance Request" onClick={(e) =>this.handleCheckSubmit(e)} />
 			</form>
 		);
-	}
+	}	
 });

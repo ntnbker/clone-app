@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
+
   
   ###################################################
   ##########SETUP RESOURCES/ROUTES###################
@@ -71,6 +72,12 @@ Rails.application.routes.draw do
   get "new_additional_invoice" => "invoices#new_additional_invoice", :as=> :new_additional_invoice
   post"submit_additional_invoice" => "invoices#create_additional_invoice" 
   ###################################################
+  ##########SINGLE INVOICE RESOURCES/ROUTES######
+  ###################################################
+  resources :single_invoices, only:[:new, :create, :edit, :show]
+  put "update_single_invoice"=>"single_invoices#update"
+  post "send_single_invoice" => "single_invoices#send_single_invoice", :as => :send_single_invoice
+  ###################################################
   ##########WORK ORDER INVOICE RESOURCES/ROUTES######
   ###################################################
   # get "company_information" =>"work_order_invoices#edit_trady_company_invoice"
@@ -85,11 +92,24 @@ Rails.application.routes.draw do
   ###################################################
   resources :view_invoices, only:[:show]
   post "print_invoice" =>"view_invoices#print_invoice", :as=> :print_invoice
-
+  get "view_pdf_invoice" =>"view_invoices#show_pdf", :as=>:view_pdf_invoice
   ###################################################
-  ##########PAYMENST RESOURCES/ROUTES################
+  ##########PAYMENTS RESOURCES/ROUTES################
   ###################################################
   resources :invoice_payments, only:[:create, :update, :edit]
+
+  ###################################################
+  ########## INVOICE OPTIONS RESOURCES/ROUTES######
+  ###################################################
+  # resources :invoice_options, only:[:show]
+  get "invoice_options"=>"invoice_options#show"
+
+  ###################################################
+  ########## UPLOADED INVOICES ######################
+  ###################################################
+  resources :uploaded_invoices, only:[:new, :create, :show, :edit, :update]
+  #put "update_uploaded_invoice"=>"uploaded_invoices#update"
+  post "send_pdf_invoice" => "uploaded_invoices#send_invoice", :as => :send_pdf_invoice
 
   ###################################################
   ##########TRADIE RESOURCES/ROUTES#################

@@ -41,6 +41,7 @@
     =f.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id}"
     =f.hidden_field :trady_id, value:"#{@trady.id}"
     =f.hidden_field :quote_id, value: @quote ? @quote.id : ''
+    =f.hidden_field :ledger_id, value: @ledger.id
     #invoice-fields
       = f.fields_for :invoices do |invoice|
         = render "invoices/invoice_fields", f: invoice
@@ -52,4 +53,4 @@
     =f.submit "Next"
 
     %button 
-      =link_to "Back", confirm_company_invoice_path(trady_company_id:@trady.trady_company, maintenance_request_id:@maintenance_request_id, trady_id:@trady.id, quote_id:@quote ? @quote.id : '')
+      =link_to "Back", confirm_company_invoice_path(trady_company_id:@trady.trady_company, maintenance_request_id:@maintenance_request_id, trady_id:@trady.id,ledger_id:@ledger_id ,quote_id:@quote ? @quote.id : '')
