@@ -94,7 +94,7 @@ var InvoiceItemField = React.createClass({
         var amount = invoice_item ? invoice_item.amount : 0;
         var numofhours = (invoice_item && invoice_item.hours) ? invoice_item.hours : 1;
         return {
-            remove : false,
+            remove : this.props.params.remove,
             pricing_type: pricing_type,
             hours_input: hours_input,
             amount: amount,
@@ -102,7 +102,11 @@ var InvoiceItemField = React.createClass({
             totalamount: amount * numofhours
         }
     },
-
+    componentWillReceiveProps() {
+        this.setState({
+            remove: this.props.params.remove 
+        });
+    },
     removeField() {
         this.setState({remove: true,
                        amount: 0,
@@ -155,6 +159,7 @@ var InvoiceItemField = React.createClass({
         var invoice_item = this.props.content;
         var x= this.props.x;
         var invoice_id = this.props.params.x;
+        console.log("invoice_item",invoice_item);
         if (invoice_item) {
             x = invoice_item.id;
             invoice_id = invoice_item.invoice_id;
@@ -218,6 +223,7 @@ var InvoiceField = React.createClass({
 
     render: function() {
         var invoice = this.props.content;
+        console.log("invoice",invoice);
         var invoice_items = (invoice && invoice.invoice_items) || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
@@ -230,7 +236,7 @@ var InvoiceField = React.createClass({
 
             <fieldset>
                 <div>
-                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal}}/>
+                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}}/>
                     <label>
                         <input type="checkbox" defaultValue={(invoice && invoice.tax) || ''} name={'ledger[invoices_attributes][' + x + '][tax]'} />
                         Total Includes GST
