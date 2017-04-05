@@ -1,19 +1,15 @@
 =react_component('StepProgress', {:step => 2})
 
-/ %div.container.invoice-form
-/   %p
-/     Please enter Invoice details
-/   =react_component('InvoiceFields', {:authenticity_token => form_authenticity_token,
-/                                      :invoice => @invoice,
-/                                      :_method => "patch",
-/                                      :maintenance_request_id => @maintenance_request_id,
-/   								  	               :invoice_items => @invoice.invoice_items,
-/                                      :trady_id => @trady.id,
-/                                      :quote_id => @quote_id,
-/                                      :backlink => confirm_company_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id, trady_id:@trady.id, quote_id:@quote_id)})
-
-
-Edit Invoice
+%div.container.invoice-form
+  %p
+    Please enter Invoice details
+  =react_component('InvoiceFields', {:authenticity_token => form_authenticity_token,
+                                     :ledger => @ledger.as_json(:include => {:invoices => {:include => :invoice_items}}),
+                                     :_method => "put",
+                                     :maintenance_request_id => @maintenance_request_id,
+                                     :trady_id => @trady.id,
+                                     :quote_id => @quote ? @quote.id : '',
+                                     :backlink => confirm_company_invoice_path(trady_company_id:@trady.trady_company, maintenance_request_id: @maintenance_request_id, trady_id:@trady.id, quote_id:@quote ? @quote.id : '')})
 
 %div.container.well
   -if @quote  
