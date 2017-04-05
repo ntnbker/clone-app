@@ -204,9 +204,14 @@ var InvoiceItemField = React.createClass({
 
 var InvoiceField = React.createClass({
     getInitialState : function() {
-        var invoice = this.props.content;
+        const invoice = this.props.content;
+        var amountExceptTax = (invoice && invoice.amount) ? invoice.amount/(1.1) : 0;
+        var amount = (invoice && invoice.amount) ? invoice.amount*(1.1) : 0;
+        const tax = (invoice && invoice.tax) ? invoice.tax : false;
         return {
-            amount : (invoice && invoice.amount) ? invoice.amount : 0,
+            amountExceptTax: tax ? amountExceptTax : invoice.amount,
+            amount : tax ? invoice.amount : amount,
+            tax: tax,
             remove : false
         }
     },
@@ -216,11 +221,17 @@ var InvoiceField = React.createClass({
     },
 
     calcInvoiceTotal(price) {
+        const amount = this.state.amount + price;
         this.setState({
-            amount: this.state.amount + price
+            amount: amount,
+            amountExceptTax : amount/(1.1)
         });
     },
-
+    onTax() {
+        this.setState({
+            tax: !this.state.tax 
+        });
+    },
     render: function() {
         var invoice = this.props.content;
         console.log("invoice",invoice);
@@ -238,7 +249,7 @@ var InvoiceField = React.createClass({
                 <div>
                     <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}}/>
                     <label>
-                        <input type="checkbox" defaultValue={(invoice && invoice.tax) || ''} name={'ledger[invoices_attributes][' + x + '][tax]'} />
+                        <input type="checkbox" value={this.state.tax} checked={this.state.tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
                         Total Includes GST
                     </label>
                 </div>
@@ -246,11 +257,11 @@ var InvoiceField = React.createClass({
                 <div className="field">
                     <div>
                         <p> Invoice Total : </p>
-                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amount} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.tax ? this.state.amount.toFixed(2) : this.state.amountExceptTax.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
                     </div>
                     <div>
                         <p> Invoice Due On : </p>
-                        <input type="date" defaultValue={(invoice && invoice.due_date) || ''} name={'ledger[invoices_attributes][' + x + '][due_date]'} />
+                        <input type="date" defaultValue={(invoice && invoice.due_date) || ''} name={'ledger[invoices_attributes][' + x + '][due_date]'} required/>
                     </div>
                 </div>
 
