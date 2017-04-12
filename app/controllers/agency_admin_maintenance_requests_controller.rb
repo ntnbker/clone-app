@@ -61,9 +61,9 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
       end 
     end 
    
-    if !@maintenance_request.invoices.empty? 
-      @invoice = @maintenance_request.invoices.first
-    end 
+    # if !@maintenance_request.invoices.empty? 
+    #   @invoice = @maintenance_request.invoices.first
+    # end 
 
     if @maintenance_request.agency_admin != nil
       if @maintenance_request.agency_admin.agency.tradies !=nil
