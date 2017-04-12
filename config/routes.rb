@@ -165,4 +165,6 @@ Rails.application.routes.draw do
 
   get "maintenance_request_filter", to: "maintenance_request_filters#filtered_maintenance_requests", :as => :filtered_maintenance_requests
 
+  resources :summaries, only:[:index]
+
  end
