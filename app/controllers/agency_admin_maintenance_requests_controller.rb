@@ -29,16 +29,9 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
 
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    @tenants = @maintenance_request.tenants
+    # @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @quote = @quotes.where(:status=>"Approved").first if !nil
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
-
-    if @quote
-      @quote_id = @quote.id
-    else
-      @quote_id = ''
-    end 
 
     @message = Message.new
     
@@ -52,17 +45,6 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end 
     
-    if @maintenance_request.trady != nil
-      @trady_id = @maintenance_request.trady.id
-      if @maintenance_request.trady.trady_company != nil
-        @trady_company_id = @maintenance_request.trady.trady_company.id
-      end 
-    end 
-   
-    # if !@maintenance_request.invoices.empty? 
-    #   @invoice = @maintenance_request.invoices.first
-    # end 
-
     if @maintenance_request.agency_admin != nil
       if @maintenance_request.agency_admin.agency.tradies !=nil
         @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
@@ -80,8 +62,6 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     end 
     
 
-
-
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
       @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
     end 
@@ -89,6 +69,13 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
       @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
     end 
+
+    respond_to do |format|
+      format.json{ render :json=>{:gallery=>@}}
+    end 
+
+
+
   end
 
   def update
