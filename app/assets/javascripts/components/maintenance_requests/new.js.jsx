@@ -66,7 +66,8 @@ var MaintenanceRequestsNew = React.createClass({
 			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
 		});
 		FD.append('commit', 'Submit Maintenance Request');
-		XHR.addEventListener('load', function(event) {
+		XHR.addEventListener('loadend', function(event) {
+			window.location.href = event.currentTarget.responseURL;
 			console.log('Yeah! Data sent and response loaded.');
 		});
 
@@ -77,12 +78,14 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.send(FD);
-
+		e.preventDefault();
 	},
 
 	render: function(){
+		let request_id = this.props.maintenance_request_id;
 		let {images} = this.state;
 		let $imagePreview = [];
+		console.log(request_id);
 		if (images.length > 0) {
 			for (i = 0; i < images.length; i ++) {
 				let imageObject = (<div className="imgFrame" key={i}><img src={images[i].url} /><div className="btnRemoveFrame" id={i} onClick={(e) =>this._handleRemoveFrame(e)}>X</div></div>);
@@ -92,7 +95,7 @@ var MaintenanceRequestsNew = React.createClass({
 			$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
 		}
 		return (
-			<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8">
+			<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
 				<input type='hidden' name='authenticity_token' value={this.props.authenticity_token} />
 				<div className="field">
 					<p> Name </p>
@@ -188,7 +191,7 @@ var MaintenanceRequestsNew = React.createClass({
 				
 				<hr/>
 
-				<input type="submit" className="button-primary green" name="commit" value="Submit Maintenance Request" data-disable-with="Submit Maintenance Request" onClick={(e) =>this.handleCheckSubmit(e)} />
+				<input type="submit" className="button-primary green" name="commit" value="Submit Maintenance Request" data-disable-with="Submit Maintenance Request" />
 			</form>
 		);
 	}	
