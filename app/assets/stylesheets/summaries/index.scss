@@ -1,7 +1,15 @@
 $color-white: #FFFFFF;
+$color-grey: #f4f8fb;
+$color-grey-1: #aab8c3;
+$color-grey-dark: #849aaa;
+$color-grey-dark-1: #cedae3;
+$color-green: #7dc691;
+$color-gray: #3e4b54;
+$color-gray-dark: #baccd8;
+$color-red: #e34f4f;
 
 .summary-container-index {	
-	background-color: #f4f8fb;
+	background-color: $color-grey;
   clear: both;
   overflow: hidden;
   width: 100%;
@@ -29,7 +37,6 @@ $color-white: #FFFFFF;
 
 	.post {
 		overflow: hidden;
-		width: 100%;
 
 		.info-title {
 			float: left;
@@ -45,14 +52,14 @@ $color-white: #FFFFFF;
 
 			.title {
 				overflow: hidden;
-				color: #849aaa;
+				color: $color-grey-dark;
 				font-size: 20px;
 				font-weight: 500;
 
 				button {
 					padding: 0 15px;
-					color: #7dc691;
-					border-color: #7dc691;
+					color: $color-green;
+					border-color: $color-green;
 					border-radius: 5px;
 					display: inline-block;
 					margin-left: 10px;
@@ -65,7 +72,7 @@ $color-white: #FFFFFF;
 
 		.author {
 			font-size: 18px;
-			color: #aab8c3;
+			color: $color-grey-1;
 			margin-top: 5px;
 			font-weight: 400;
 
@@ -75,7 +82,7 @@ $color-white: #FFFFFF;
 
 			a {
 				display: inline-block;
-				color: #cedae3;
+				color: $color-grey-dark-1;
 				font-size: 16px;
 			}
 		}
@@ -84,40 +91,70 @@ $color-white: #FFFFFF;
 			margin-left: 0px;
 			width: 50%;
 			button {
-				background-color: #f4f8fb;
+				background-color: $color-grey;
 				border: none;
 				border-radius: 5px;
 				padding: 0 20px;
 				height: 40px;
-				color: #849aaa;
+				color: $color-grey-dark;
 				font-size: 14px;
 				float: right;
 				margin-right: 5px;
 				margin-bottom: 5px;
 				font-weight: 400;
 			}
+
+			.icon-user {
+				display: inline-block;
+		    font-size: 18px;
+		    background-position: center;
+		    width: 19px;
+		    height: 19px;
+		    background-repeat: no-repeat;
+		    margin-bottom: -3px;
+				background-image: url(/assets/icon-user.png);
+			}
 		}
 
 		.content {
-			overflow: hidden;
 			clear: both;
 			margin-top: 20px;
 
+			.slider-custom {
+				position: relative;
+
+				.swiper-pagination{
+					bottom: -30px;
+
+					.swiper-pagination-bullet {
+						width: 30px;
+						height: 10px;
+						border-radius: 5px;
+						margin-right: 5px;
+					}
+				}
+
+				.swiper-pagination-bullet-active {
+					background-color: $color-green !important;
+				}
+
+			}
+			
 			.description {
-				margin-top: 30px;
-				color: #849aaa;
+				margin-top: 50px;
+				color: $color-grey-dark;
 				font-size: 16px;
-				font-weight: 300px;
+				font-weight: 300;
 			}
 
 			.date-time {
 				margin-top: 20px;
 				button {
 					border-radius: 5px;
-					background-color: #f4f8fb;
+					background-color: $color-grey;
 					border:none;
 					float: right;
-					color: #849aaa;
+					color: $color-grey-dark;
 					height: 40px;
 					font-size: 12px;
 					padding: 0 15px;
@@ -136,72 +173,87 @@ $color-white: #FFFFFF;
 
 	.quotes {
 		p {
-			color: #849aaa;
+			color: $color-grey-dark;
 			font-size: 14px;
 			margin-bottom: 10px;
 			font-weight: 500;
 		}
 
 		.list-quote {
-			border: 1px solid #f4f8fb;
+			border: 1px solid $color-grey;
 			border-radius: 5px;
 		}
 
 		.item-quote {
 			overflow: hidden;
-			border-bottom: 1px solid #f4f8fb;
+			border-bottom: 1px solid $color-grey;
 
 			&:last-child {
 				border-bottom: none;
 			};
 
-			img {
+			.user {
+				overflow: hidden;
+				width: 50%;
 				float: left;
-				display: block;
-				margin: 20px 0px 0 20px; 
-				width: 48px;
-				height: 48px;
-			}
 
+				img {
+					float: left;
+					display: block;
+					margin: 20px 0px 0 20px; 
+					width: 48px;
+					height: 48px;
+				}
+			}
+			
 			.info {
 				margin-left: 10px;
 				float: left;
 				margin-top: 20px;
 
 				.name {
-					color: #3e4b54;
+					color: $color-gray;
 					font-size: 15px;
 					margin-bottom: 5px;
 					font-weight: 500;
 
+					span {
+						float: left;
+					}
+
+					p{
+						float: left;
+						width: 80px;
+					}
+
 					button {
 						height: 27px;
-						padding: 0 15px;
 						border-radius: 5px;
 						display: inline-block;
 						margin-left: 10px;
 						font-weight: 500;
 						font-size: 11px;
+						text-align: center;
 
 						&.approved {
-							border-color: #7dc691;
-							color: #7dc691;
+							border-color: $color-green;
+							color: $color-green;
 						}
 
 						&.pending {
-							border-color: #3e4b54;
-							color: #3e4b54;
+							border-color: $color-gray;
+							color: $color-gray;
 						}
 
 						&.declined {
-							border-color: #e34f4f;
-							color: #e34f4f;
+							border-color: $color-red;
+							color: $color-red;
 						}
 					}
 				}
 
 				.description {
-					color: #849aaa;
+					color: $color-grey-dark;
 					font-size: 12px;
 					margin-bottom: 20px;
 					font-weight: 500;
@@ -211,25 +263,40 @@ $color-white: #FFFFFF;
 			.actions {
 				margin-top: 20px;
 				margin-bottom: 20px;
+				overflow: hidden;
+				width: 50%;
 
 				button {
 					border-radius: 5px;
 					border: none;
-					background-color: #f4f8fb;
+					background-color: $color-grey;
 					height: 43px;
 					padding: 0 15px;
 					margin-left: 5px;
 					line-height: 43px;
 					i {
-						color: #849aaa;
-						font-size: 18px;
+						display: inline-block;
+				    font-size: 18px;
+				    background-position: center;
+				    width: 19px;
+				    height: 19px;
+				    background-repeat: no-repeat;
+				    margin-bottom: -3px;
+
+				    &.icon-reload {
+							background-image: url(/assets/icon-reload.png);
+				    }
+
+				    &.icon-close{
+							background-image: url(/assets/icon-close.png);
+				    }
 					}
 
 					&.money {
-						background-color: #849aaa;
+						background-color: $color-grey-dark;
 						font-weight: bold;
 						font-size: 14px;
-						color: #fff;
+						color: $color-white;
 						font-weight: 600;
 					}
 					&:first-child {
@@ -246,10 +313,13 @@ $color-white: #FFFFFF;
 		}
 	}
 
-	.sidebar {
+	.sidebar, .activity-mobile{
 		overflow: hidden;
-		background-color: #f4f8fb;
+		background-color: $color-grey;
+		display: block;
+
 		.item {
+			width: 100%;
 			margin-bottom: 15px;
 			border-radius: 5px;
 			overflow: hidden;
@@ -259,7 +329,7 @@ $color-white: #FFFFFF;
 				line-height: 60px;
 
 				a {
-					color: #fff;
+					color: $color-white;
 					font-size: 14px;
 					line-height: 60px;
 					display: inline-block;
@@ -270,7 +340,7 @@ $color-white: #FFFFFF;
 				i {
 					float: right;
 					font-size: 18px;
-					color: #fff;
+					color: $color-white;
 					display: inline-block;
 					line-height: 60px;
 					font-weight: 500;
@@ -278,23 +348,24 @@ $color-white: #FFFFFF;
 				}
 
 				&.contact {
-					background-color: #7dc691;
+					background-color: $color-green;
 				}
 
 				&.action {
-					background-color: #849aaa;
+					background-color: $color-grey-dark;
 				}
 			}
 
 			.content {
-				background-color: #fff;
+				background-color: $color-white;
+
 				ul {
 					list-style: none;
 					margin-bottom: 0;
 				}
 
 				li {
-					margin-left: 30px;
+					margin-left: 34px;
 					height: 50px;
 					margin-bottom: 0px;
 
@@ -302,34 +373,58 @@ $color-white: #FFFFFF;
 						font-size: 13px;
 						font-weight: 500;
 						text-decoration: none;
-						color: #849aaa;
+						color: $color-grey-dark;
 						line-height: 50px;
 
 						i {
 							display: inline-block;
-							margin-right: 10px;
-							font-size: 18px;
+					    margin-right: 10px;
+					    font-size: 18px;
+					    background-position: center;
+					    width: 19px;
+					    height: 19px;
+					    background-repeat: no-repeat;
+					    margin-bottom: -3px;
 
-							&.icon_field {
-								background-image: url(/assets/icon_field.png);
-						    background-position: center;
-						    width: 19px;
-						    height: 14px;
-						    background-repeat: no-repeat;
-						    background-attachment: cover;
+							&.icon-field {
+								background-image: url(/assets/icon-field.png);
+							}
+
+							&.icon-user {
+								background-image: url(/assets/icon-user.png);
+							}
+
+							&.icon-send {
+								background-image: url(/assets/icon-send.png);
+							}
+
+							&.icon-setup {
+								background-image: url(/assets/icon-setup.png);
+							}
+
+							&.icon-print {
+								background-image: url(/assets/icon-print.png);
 							}
 						}	
 					}
 
 					&.active {
 						a {
-							color: #7dc691;
+							color: $color-green;
 						}
+					}
+
+					&:first-child {
+						padding-top: 10px;
+					}
+
+					&:last-child {
+						padding-bottom: 10px;
 					}
 				}
 
 				.view-more {
-					background-color: #f4f8fb;
+					background-color: $color-grey;
 					border: none;
 					height: 50px;
 					padding: 0 65px;
@@ -337,7 +432,7 @@ $color-white: #FFFFFF;
 					text-align: center;
 					display: inline-block;;
 					margin-bottom: 20px;
-					color: #849aaa;
+					color: $color-grey-dark;
 					font-size: 14px;
 					font-weight: 500;
 				}
@@ -363,7 +458,7 @@ $color-white: #FFFFFF;
 							display: block;
 							font-size: 12px;
 							font-weight: 300;
-							color: #baccd8;
+							color: $color-gray-dark;
 
 							strong {
 								font-weight: 500;
@@ -378,41 +473,247 @@ $color-white: #FFFFFF;
 			}
 		}
 	}
-}
 
-.m-t-xl {
-	margin-top: 30px;
-}
+	.sidebar-mobile {
+		display: none;
+    position: fixed;
+    bottom: 35px;
+    left: 18%;
+    float: left;
+    z-index: 1;
+    width: 500px;
 
-.text-center {
-	text-align: center;
-}
-
-@media (min-width: 640px) {
-	.summary-container-index {
-
-		.info-title {
-				width: 100%;
+		button {
+			height: 70px;
+			width: 225px;
+			border-radius: 5px;
+			border: none;
+			color: $color-white;
+			font-weight: 400;
+			font-size: 20px;
 		}
 
+		.contact {
+			float: left;
+			margin-right: 20px; 
+
+			button {
+				background-color: $color-green;
+				box-shadow: 0.2px 0.2px 20px $color-grey-1;
+			}
+		}
+
+		.actions {
+			button {
+				background-color: $color-grey-dark;
+				box-shadow: 0.2px 0.2px 20px $color-grey-1;
+			}
+		}
+	}
+
+	.activity-mobile {
+		display: none;
+		overflow: hidden;
+		width: 100%;
+		padding-top: 20px;
+
+		.content {
+			overflow: hidden;
+
+			li {
+				clear: both;
+			}	
+
+			button {
+				clear: both;
+				display: block !important;
+				width: 200px;
+				margin: auto;
+				padding-bottom: 10px;
+			}
+		}
+	}
+
+	@media (min-width: 320px){
+		.main-summary {
+			margin: auto 10px;
+		}
+
+		.section {
+			padding: 20px 10px 25px;
+			width: calc(100% - 20px)
+		}
+
+		.post {
+			.info-title {
+				width: 100%;
+				float: none;
+			}
+
+			.actions {
+				overflow: hidden;
+		    width: 317px;
+		    margin-top: 10px;
+		    margin-bottom: 5px;
+
+				button {
+					height: 40px;
+					padding: 0 10px;
+				}
+			}
+
+			.info {
+				.title {
+					font-size: 14px;
+
+					button {
+						font-size: 12px;
+					}
+				}
+			}
+
+			.author {
+				font-size: 12px;
+
+				a {
+					font-size: 11px;
+				}
+			}
+
+			.swiper-pagination{
+				left: 0%;
+				bottom: -100px;
+			}
+
+			.actions {
+				button {
+					margin-right: 3px;
+			    padding: 0 3px;
+			    font-size: 12px;
+				}
+			}
+		}
+
+		.quotes{
+			>p{
+				margin-top: 20px;
+			}
+			.item-quote{
+				.user {
+					width: 100%;
+				}
+
+				.actions {
+					margin-top: 10px;
+					margin-bottom: 10px;
+					width: 100%;
+
+					button {
+						font-size: 12px;
+					}
+				}
+			}
+		}
+
+		.sidebar {
+			display: none;
+		}
+
+		.sidebar-mobile {
+			display: block;
+	    left: 20%;
+	    float: left;
+	    z-index: 1;
+	    width: 220px;
+
+			button {
+				height: 50px;
+				width: 100px;
+				padding: 0 23px;
+				border-radius: 5px;	
+				font-size: 14px;
+			}
+		}
+
+		.activity-mobile {
+			display: block;
+		}
+	}
+
+	@media (min-width: 480px){
+		.swiper-pagination{
+				left: 0%;
+				bottom: -100px;
+			}
+
+		.quotes{
+			>p{
+				margin-top: 20px;
+			}
+			.item-quote{
+				.user {
+					width: 100%;
+				}
+
+				.actions {
+					margin-top: 10px;
+					margin-bottom: 10px;
+					width: 100%;
+
+					button {
+						font-size: 12px;
+					}
+				}
+			}
+		}
+
+		.sidebar {
+			display: none;
+		}
+
+		.sidebar-mobile {
+			display: block;
+	    bottom: 20px;
+	    left: 25%;
+	    float: left;
+	    z-index: 1;
+	    width: 250px;
+
+			button {
+				height: 50px;
+				width: 100px;
+				padding: 0 18px;
+				border-radius: 5px;	
+				font-size: 16px;
+			}
+		}
+
+		.activity-mobile {
+			display: block;
+		}
+	}
+
+	@media (min-width: 640px) and (max-width: 767px) {	
 		.main-summary {
 			margin: auto 30px;
 		}
 
 		.section {
-			float: left;
-			background-color: #fff;
-			margin-right: 25px;
-			width: calc(100% - 60px);
-			padding: 40px 30px 50px;
+			padding: 20px 15px 25px;
+			width: calc(100% - 30px)
 		}
 
 		.post {
-			overflow: hidden;
-			width: 100%;
+			.info-title {
+				width: 100%;
+				float: none;
+			}
 
 			.actions {
-				width: 100%;
+				overflow: hidden;
+		    width: 405px;
+		    margin-top: 20px;
+        margin-bottom: 10px;
 
 				button {
 					height: 40px;
@@ -422,40 +723,78 @@ $color-white: #FFFFFF;
 
 			.info {
 				.title {
-					font-size: 14px;
+					font-size: 20px;
 
 					button {
-						font-size: 10px;
+						font-size: 12px;
 					}
 				}
 			}
 
+			.swiper-pagination{
+				left: 0%;
+				bottom: 200px;
+			}
+
 			.author {
-				font-size: 12px;
-				i {
-					font-size: 12px;
-				}
+				font-size: 14px;
 
 				a {
-					font-size: 10px;
+					font-size: 12px;
 				}
 			}
 
 			.actions {
 				button {
-					font-size: 12px;
+					font-size: 14px;
 				}
 			}
 		}
-	}
-}
 
-@media (min-width: 768px) {
-	.summary-container-index {
+		.quotes{
+			>p{
+				margin-top: 20px;
+			}
+			.item-quote{
+				.user {
+					width: 55%;
+				}
 
-		.info-title {
-				width: 100%;
+				.actions {
+					margin-top: 10px;
+					margin-bottom: 10px;
+					width: 45%;
+
+					button {
+						font-size: 12px;
+					}
+				}
+			}
 		}
+
+		.sidebar {
+			display: none;
+		}
+
+		.sidebar-mobile {
+			left: 22%;
+			display: block;
+			width: 400px;
+
+			button {
+				font-size: 20px;
+				width: 180px;
+				height: 80px;
+			}
+		}
+
+		.activity-mobile {
+			display: block;
+		}
+	}
+
+	@media (min-width: 768px) {
+		
 
 		.main-summary {
 			margin: auto 50px;
@@ -463,18 +802,24 @@ $color-white: #FFFFFF;
 
 		.section {
 			float: left;
-			background-color: #fff;
-			margin-right: 25px;
-			width: calc(100% - 60px);
-			padding: 40px 30px 50px;
+			margin-right: 0px;
+			overflow: hidden;
+			padding: 25px 23px 30px;
+			width: calc(100% - 46px)
 		}
 
 		.post {
-			overflow: hidden;
-			width: 100%;
+			.info-title {
+				float: left;
+				width: 100%;
+			}
 
 			.actions {
-				width: 100%;
+		    overflow: hidden;
+		    width: 398px;
+		    float: left;
+        margin-top: 25px;
+        margin-bottom: 15px;
 
 				button {
 					height: 40px;
@@ -484,49 +829,99 @@ $color-white: #FFFFFF;
 
 			.info {
 				.title {
-					font-size: 14px;
+					font-size: 22px;
 
 					button {
-						font-size: 10px;
+						font-size: 12px;
 					}
 				}
 			}
 
-			.author {
-				font-size: 12px;
-				i {
-					font-size: 12px;
+			.item-quote{
+				.user {
+					width: 50%;
 				}
 
+				.actions {
+					width: 50%
+				}
+			}
+
+			.author {
+				font-size: 13px;
+
 				a {
-					font-size: 10px;
+					font-size: 12px;
 				}
 			}
 
 			.actions {
 				button {
-					font-size: 12px;
+					font-size: 14px;
+				}
+			}
+		}
+
+		.sidebar {
+			display: none;
+		}
+
+		.sidebar-mobile {
+			left: 22%;
+			display: block;
+			width: 570px;
+
+			button {
+				font-size: 20px;
+				width: 200px;
+				height: 80px;
+			}
+		}
+
+		.activity-mobile {
+			display: block;
+		}
+	}
+
+	@media (min-width: 956px){
+		.post {
+			.info-title {
+				float: left;
+				width: 50%;
+			}
+
+			.actions {
+		    overflow: hidden;
+		    width: 50%;
+		    float: right;
+        margin-top: 25px;
+        margin-bottom: 15px;
+
+				button {
+					height: 40px;
+					padding: 0 10px;
 				}
 			}
 		}
 	}
-}
 
-@media (min-width: 1024px) {
-	.summary-container-index{
+	@media (min-width: 1024px) {
 		.main-summary {
-			margin: auto 50px;
+			margin: auto 20px;
 		}
 
 		.section {
 			float: left;
-			background-color: #fff;
-			margin-right: 25px;
-			width: calc(100% - 345px);
-			padding: 40px 30px 50px;
+			margin-right: 10px;
+			width: calc(100% - 290px);
+			padding: 40px 15px 50px;
 		}
 
 		.post {
+			.info-title {
+				width: 50%
+			}
+
 			.info {
 				.title {
 					font-size: 18px;
@@ -538,6 +933,75 @@ $color-white: #FFFFFF;
 			}
 
 			.actions {
+				width: 50%;
+				margin: 10px 0;
+
+				button {
+					font-size: 11px;
+				}
+			}
+
+			.author {
+				font-size: 12px;
+			}
+		}
+
+		.quotes {
+			.item-quote{
+				.user {
+					width: 50%;
+				}
+
+				.actions {
+					width: 50%
+				}
+			}
+		}
+
+		.sidebar {
+			display: block;
+		}
+
+		.sidebar-mobile {
+			display: none;
+		}
+
+		.activity-mobile {
+			display: none;
+		}
+	}
+
+	@media (min-width: 1280px) {
+		.main-summary {
+			margin: auto 30px;
+		}
+
+		.section {
+			float: left;
+			margin-right: 20px;
+			width: calc(100% - 315px);
+			padding: 40px 25px 50px;
+		}
+
+		.post {
+			.info-title {
+				float: left;
+				width: 50%;
+			}
+
+			.info {
+				.title {
+					font-size: 18px;
+
+					button {
+						font-size: 12px;
+					}
+				}
+			}
+
+			.actions {
+				width: 50%;
+
 				button {
 					font-size: 12px;
 				}
@@ -553,96 +1017,170 @@ $color-white: #FFFFFF;
 					font-size: 12px;
 				}
 			}
+		}
+
+		.quotes {
+			.item-quote{
+				.user {
+					width: 50%;
+				}
+
+				.actions {
+					width: 50%
+				}
+			}
+		}
+
+		.sidebar {
+			display: block;
+		}
+
+		.sidebar-mobile {
+			display: none;
+		}
+
+		.activity-mobile {
+			display: none;
+		}
+	}
+
+	@media (min-width: 1366px) {
+		.main-summary {
+			margin: auto 50px;
+		}
+
+		.section {
+			float: left;
+			margin-right: 25px;
+			width: calc(100% - 345px);
+			padding: 40px 30px 50px;
+		}
+
+		.post {
+			.info-title {
+				float: left;
+				width: 50%;
+			}
+
+			.info {
+				.title {
+					font-size: 14px;
+
+					button {
+						font-size: 12px;
+					}
+				}
+			}
 
 			.actions {
+				width: 50%;
+
 				button {
-					font-size: 12px;
+					font-size: 14px;
 				}
 			}
+
+			.author {
+				font-size: 12px;
+			}
+
 		}
-	}
-}
 
-@media (min-width: 1366px) {
-	.main-summary {
-		margin: auto 50px;
-	}
+		.quotes {
+			.item-quote{
+				.user {
+					width: 50%;
+				}
 
-	.section {
-		float: left;
-		background-color: #fff;
-		margin-right: 25px;
-		width: auto;
-		padding: 40px 30px 50px;
-	}
-
-	.post {
-		.info {
-			.title {
-				font-size: 14px;
-
-				button {
-					font-size: 12px;
+				.actions {
+					width: 50%
 				}
 			}
 		}
 
-		.actions {
-			button {
-				font-size: 12px;
-			}
+		.sidebar {
+			display: block;
 		}
 
-		.author {
-			font-size: 12px;
-			i {
-				font-size: 12px;
-			}
-
-			a {
-				font-size: 12px;
-			}
+		.sidebar-mobile {
+			display: none;
 		}
 
-		.actions {
-			button {
-				font-size: 14px;
-			}
+		.activity-mobile {
+			display: none;
 		}
 	}
-}
 
-@media (min-width: 1680px) {
-	.main-summary {
-		margin: auto 80px;
-	}
+	@media (min-width: 1680px) {
+		.main-summary {
+			margin: auto 80px;
+		}
 
-	.post {
-		.info {
-			.title {
-				font-size: 20px;
+		.post {
+			.info-title {
+				float: left;
+				width: 50%;
+			}
 
+			.info {
+				.title {
+					font-size: 20px;
+
+					button {
+						font-size: 14px;
+					}
+				}
+			}
+
+			.author {
+				width: 50%;
+				font-size: 16px;
+	
+				a {
+					font-size: 14px;
+				}
+			}
+
+			.actions {
 				button {
 					font-size: 14px;
 				}
 			}
 		}
 
-		.author {
-			font-size: 16px;
-			i {
-				font-size: 16px;
-			}
+		.quotes {
+			.item-quote{
+				.user {
+					width: 50%;
+				}
 
-			a {
-				font-size: 14px;
+				.actions {
+					width: 50%
+				}
 			}
 		}
+		
 
-		.actions {
-			button {
-				font-size: 14px;
-			}
+		.sidebar {
+			display: block;
+		}
+
+		.sidebar-mobile {
+			display: none;
+		}
+
+		.activity-mobile {
+			display: none;
 		}
 	}
+
+	.m-t-xl {
+		margin-top: 30px;
+	}
+
+	.text-center {
+		text-align: center;
+	}
 }
+
+

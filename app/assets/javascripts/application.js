@@ -30,4 +30,6 @@
 //= require components
 //= require_tree .
 
+@import "summaries/index.js";
+
 
