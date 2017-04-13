@@ -48,9 +48,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
       @gallery = @maintenance_request.maintenance_request_image.images
     end 
 
-    if @maintenance_request.property.landlord == nil
-      @landlord = Landlord.new
-    elsif @maintenance_request.property.landlord != nil
+    if  @maintenance_request.property.landlord != nil
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end 
     
@@ -91,5 +89,9 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
       @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
     end 
+  end
+
+  def update
+    
   end
 end 

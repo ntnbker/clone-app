@@ -60,6 +60,8 @@
     Request Quote
   %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#send-work-order-modal"}
     Send Work Order
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#send-work-order-modal"}
+    Edit Landlord Contact Info
   
 
         
@@ -108,30 +110,71 @@
     %p
       ="Name: #{pdf.maintenance_request.trady.name}"
 
+%div{:style=>"border-style: solid; "}
+  Create Landlord Form 
+  = form_tag("/landlords", method: :post, remote: true) do 
+    = label_tag(:name, "Name:") 
+    = text_field_tag("landlord[name]", nil ,id:"landlord_name") 
+    
+    = label_tag(:email, "Email:") 
+    = text_field_tag("landlord[email]", nil ,id:"landlord_name_mobile")
+    
+    = label_tag(:mobile, "Mobile Number:") 
+    = text_field_tag("landlord[mobile]", nil ,id:"landlord_mobile")
+    
+    = hidden_field_tag("landlord[maintenance_request_id]", "#{@maintenance_request.id}",id:"landlord_maintenance_request_id")
+    = submit_tag("Submit")
 
-Create Landlord Form 
-= form_tag("/landlords", method: :post, remote: true) do 
-  = label_tag(:name, "Name:") 
-  = text_field_tag("landlord[name]", nil ,id:"landlord_name") 
-  
-  = label_tag(:email, "Email:") 
-  = text_field_tag("landlord[email]", nil ,id:"landlord_name_mobile")
-  
-  = label_tag(:mobile, "Mobile Number:") 
-  = text_field_tag("landlord[mobile]", nil ,id:"landlord_mobile")
-  
-  = hidden_field_tag("landlord[maintenance_request_id]", "#{@maintenance_request.id}",id:"landlord_maintenance_request_id")
-  = submit_tag("Submit")
 
-/ = form_tag("/landlords", method: :post, remote: true) do 
-/   = label_tag("landlord[:name]", value:) 
-/   = text_field_tag("landlord[:name]") 
-/   = label_tag("landlord[:email]", "Email:") 
-/   = text_field_tag("landlord[:email]")
-/   = label_tag("landlord[:mobile]", "Mobile Number:") 
-/   = text_field_tag("landlord[:mobile]")  
-/   = submit_tag("Submit")
+%br
+%div{:style=>"border-style: solid; "}
+  Edit Landlord Contact Info
+  = form_tag("/update-landlord", method: :post, remote: true) do 
+    = label_tag(:name, "Name:") 
+    = text_field_tag("landlord[name]", @landlord.nil? ? nil : @landlord.name ,id:"landlord_name") 
+    
+    = label_tag(:email, "Email:") 
+    = text_field_tag("landlord[email]", @landlord.nil? ? nil : @landlord.email ,id:"landlord_name_mobile")
+    
+    = label_tag(:mobile, "Mobile Number:") 
+    = text_field_tag("landlord[mobile]", @landlord.nil? ? nil : @landlord.mobile ,id:"landlord_mobile")
+    
+    = hidden_field_tag("landlord[id]", @landlord.nil? ? nil : @landlord.id ,id:"landlord_maintenance_request_id")
+    = hidden_field_tag("landlord[maintenance_request_id]", "#{@maintenance_request.id}",id:"landlord_maintenance_request_id")
 
+    = submit_tag("Submit")
+%br
+%div{:style=>"border-style: solid; "}
+  Create And Notify Landlord Form 
+  = form_tag("/create-and-notify-landlord", method: :post, remote: true) do 
+    = label_tag(:name, "Name:") 
+    = text_field_tag("landlord[name]", nil ,id:"landlord_name") 
+    
+    = label_tag(:email, "Email:") 
+    = text_field_tag("landlord[email]", nil ,id:"landlord_name_mobile")
+    
+    = label_tag(:mobile, "Mobile Number:") 
+    = text_field_tag("landlord[mobile]", nil ,id:"landlord_mobile")
+    
+    = hidden_field_tag("landlord[maintenance_request_id]", "#{@maintenance_request.id}",id:"landlord_maintenance_request_id")
+    = submit_tag("Submit")
+%br
+%div{:style=>"border-style: solid; "}
+  Edit and Notify Landlord Contact Form
+  = form_tag("/update-and-notify-landlord", method: :post, remote: true) do 
+    = label_tag(:name, "Name:") 
+    = text_field_tag("landlord[name]", @landlord.nil? ? nil : @landlord.name ,id:"landlord_name") 
+    
+    = label_tag(:email, "Email:") 
+    = text_field_tag("landlord[email]", @landlord.nil? ? nil : @landlord.email ,id:"landlord_name_mobile")
+    
+    = label_tag(:mobile, "Mobile Number:") 
+    = text_field_tag("landlord[mobile]", @landlord.nil? ? nil : @landlord.mobile ,id:"landlord_mobile")
+    
+    = hidden_field_tag("landlord[id]", @landlord.nil? ? nil : @landlord.id ,id:"landlord_maintenance_request_id")
+    = hidden_field_tag("landlord[maintenance_request_id]", "#{@maintenance_request.id}",id:"landlord_maintenance_request_id")
+
+    = submit_tag("Submit")
 
 
 

@@ -6,4 +6,12 @@ has_many :action_statuses
 has_many :appointments
 attr_accessor :maintenance_request_id
 
+
+validates_presence_of :name, :email, :mobile
+
+
+
+
+
+
 end 
