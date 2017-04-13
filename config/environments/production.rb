@@ -24,7 +24,7 @@ Rails.application.configure do
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = true
-
+  config.assets.digest = true
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
@@ -65,20 +65,14 @@ Rails.application.configure do
   :address        => ENV['MAILGUN_SMTP_SERVER'],
   :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
   :password       => ENV['MAILGUN_SMTP_PASSWORD'],
-  :domain         => 'maintenance-app-staging.herokuapp.com',
+  :domain         => 'maintenanceapp-staging.herokuapp.com',
   :authentication => :plain,
 }
 ActionMailer::Base.delivery_method = :smtp
 
-config.action_mailer.default_url_options = { :host => 'https://maintenance-app-staging.herokuapp.com/' }
-config.action_mailer.asset_host = 'https://maintenance-app-staging.herokuapp.com/'
-config.action_controller.asset_host = 'https://maintenance-app-staging.herokuapp.com/'
-
-
-
-
-
-
+config.action_mailer.default_url_options = { :host => 'https://maintenanceapp-staging.herokuapp.com/' }
+config.action_mailer.asset_host = 'https://maintenanceapp-staging.herokuapp.com/'
+config.action_controller.asset_host = 'https://maintenanceapp-staging.herokuapp.com/'
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -102,11 +96,7 @@ config.action_controller.asset_host = 'https://maintenance-app-staging.herokuapp
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  
+
   #Variant setting for react-rails
   config.react.variant = :production
 end
-
-
-
-

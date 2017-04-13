@@ -40854,6 +40854,38 @@ document.addEventListener("turbolinks:load", function() {
     }));
 
   });
+
+
+document.addEventListener("turbolinks:load", function() {
+  
+  $('#check_for_landlord').click(function() { 
+
+    alert( "hello" );
+
+    $.ajax({
+        url: "/trady_information",
+        type: "GET",
+        dataType: "script",
+        data:{
+          trady_id:$("#trady_work_order_select option:selected").val()
+          
+        }
+      });
+  });
+
+});
+
+
+
+
+
+
+
+
+
+
+  
+
 /******/
  (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -62860,18 +62892,19 @@ var FieldList = React.createClass({
         var existingContent = this.props.existingContent;
         var SampleField = this.props.SampleField;
         var Fields = [];
+        var params = this.props.params;
         var x = 1;
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map(function (one, index) {
-                Fields.push(React.createElement(SampleField, { content: one }));
+                Fields.push(React.createElement(SampleField, { content: one, params: params }));
                 x = index + 1;
             });
 
             return { Fields: Fields,
                 x: x };
         } else {
-            return { Fields: [React.createElement(SampleField, { x: x })],
+            return { Fields: [React.createElement(SampleField, { params: params, x: x })],
                 x: x };
         }
     },
@@ -62879,7 +62912,8 @@ var FieldList = React.createClass({
     addField: function () {
         var SampleField = this.props.SampleField;
         var tmpFields = this.state.Fields.slice();
-        tmpFields.push(React.createElement(SampleField, { x: ++this.state.x }));
+        var params = this.props.params;
+        tmpFields.push(React.createElement(SampleField, { x: ++this.state.x, params: params }));
         this.setState({ Fields: tmpFields });
     },
 
@@ -62907,39 +62941,120 @@ var FieldList = React.createClass({
     }
 });
 
-var InvoiceField = React.createClass({
-    displayName: "InvoiceField",
+var InvoiceItemField = React.createClass({
+    displayName: "InvoiceItemField",
 
     getInitialState: function () {
+        var invoice_item = this.props.content;
+        var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
+        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+        var amount = invoice_item ? invoice_item.amount : 0;
+        var numofhours = invoice_item && invoice_item.hours ? invoice_item.hours : 1;
         return {
-            remove: false
+            remove: this.props.params.remove,
+            pricing_type: pricing_type,
+            hours_input: hours_input,
+            amount: amount,
+            numofhours: numofhours,
+            totalamount: amount * numofhours
         };
     },
-
+    componentWillReceiveProps: function () {
+        this.setState({
+            remove: this.props.params.remove
+        });
+    },
     removeField: function () {
-        this.setState({ remove: true });
+        this.setState({ remove: true,
+            amount: 0,
+            totalamount: 0 });
+        this.updatePrice(0);
+    },
+
+    updatePrice: function (amount) {
+        this.props.params.updatePrice(amount - this.state.totalamount);
+    },
+
+    onPricing: function (event) {
+        var pricing_type = event.target.value;
+        this.setState({ pricing_type: pricing_type });
+        if (pricing_type == "Hourly") {
+            this.setState({ hours_input: true });
+        } else {
+            this.setState({ hours_input: false,
+                numofhours: 1,
+                totalamount: this.state.amount });
+        }
+    },
+
+    onAmount: function (event) {
+        var amount = event.target.value;
+        var totalamount = amount * this.state.numofhours;
+
+        this.updatePrice(totalamount);
+        this.setState({
+            amount: amount,
+            totalamount: totalamount
+        });
+    },
+
+    onHours: function (event) {
+        var hours = event.target.value;
+        if (hours > 0) this.setState({ numofhours: hours });else this.setState({ numofhours: 1 });
+
+        var totalamount = this.state.amount * hours;
+        this.updatePrice(totalamount);
+        this.setState({
+            totalamount: totalamount
+        });
     },
 
     render: function () {
-        var invoice = this.props.content;
+        var invoice_item = this.props.content;
         var x = this.props.x;
-        if (invoice) {
-            x = invoice.id;
+        var invoice_id = this.props.params.x;
+        console.log("invoice_item", invoice_item);
+        if (invoice_item) {
+            x = invoice_item.id;
+            invoice_id = invoice_item.invoice_id;
         }
         return React.createElement(
             "div",
-            { className: "invoicefield", style: { display: this.state.remove ? 'none' : 'block' } },
+            { className: "invoiceitemfield", style: { display: this.state.remove ? 'none' : 'block' } },
             React.createElement(
                 "fieldset",
                 null,
-                React.createElement("input", { type: "text", placeholder: "Item description", defaultValue: invoice ? invoice.item_description : null,
-                    name: 'invoice[invoice_items_attributes][' + x + '][item_description]',
-                    id: 'invoice_invoice_items_attributes_' + x + '_item_description' }),
-                React.createElement("input", { type: "text", placeholder: "Amount", defaultValue: invoice ? invoice.amount : null,
-                    name: 'invoice[invoice_items_attributes][' + x + '][amount]',
-                    id: 'invoice_invoice_items_attributes_' + x + '_amount' }),
-                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'invoice[invoice_items_attributes][' + x + '][_destroy]', id: 'invoice_invoice_items_attributes_' + x + '__destroy' }),
-                invoice ? React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]', id: 'invoice_invoice_items_attributes_' + x + '_id' }) : null
+                React.createElement("input", { type: "text", placeholder: "Item description", defaultValue: invoice_item ? invoice_item.item_description : null,
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]' }),
+                React.createElement("input", { type: "text", placeholder: "Amount", value: this.state.amount, onChange: this.onAmount,
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]' }),
+                React.createElement(
+                    "p",
+                    null,
+                    " Pricing type : "
+                ),
+                React.createElement(
+                    "select",
+                    { value: this.state.pricing_type,
+                        onChange: this.onPricing,
+                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'
+                    },
+                    React.createElement(
+                        "option",
+                        { value: "Fixed Cost" },
+                        "Fixed Cost"
+                    ),
+                    React.createElement(
+                        "option",
+                        { value: "Hourly" },
+                        "Hourly"
+                    )
+                ),
+                this.state.hours_input ? React.createElement("input", { type: "text", placeholder: "Number of Hours", value: this.state.numofhours, onChange: this.onHours,
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]' }) : React.createElement("input", { type: "hidden", value: 1,
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]' }),
+                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
+                invoice_item ? React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]' }) : null
             ),
             React.createElement(
                 "button",
@@ -62950,22 +63065,129 @@ var InvoiceField = React.createClass({
     }
 });
 
+var InvoiceField = React.createClass({
+    displayName: "InvoiceField",
+
+    getInitialState: function () {
+        var invoice = this.props.content;
+        var amountExceptTax = invoice && invoice.amount ? invoice.amount / 1.1 : 0;
+        var amount = invoice && invoice.amount ? invoice.amount * 1.1 : 0;
+        var tax = invoice && invoice.tax ? invoice.tax : false;
+        return {
+            amountExceptTax: tax ? amountExceptTax : invoice.amount,
+            amount: tax ? invoice.amount : amount,
+            tax: tax,
+            remove: false
+        };
+    },
+
+    removeField: function () {
+        this.setState({ remove: true });
+    },
+
+    calcInvoiceTotal: function (price) {
+        var amount = this.state.amount + price;
+        this.setState({
+            amount: amount,
+            amountExceptTax: amount / 1.1
+        });
+    },
+    onTax: function () {
+        this.setState({
+            tax: !this.state.tax
+        });
+    },
+    render: function () {
+        var invoice = this.props.content;
+        console.log("invoice", invoice);
+        var invoice_items = invoice && invoice.invoice_items || null;
+        var x = this.props.x;
+        var invoiceInfo = this.props.params;
+        if (invoice) {
+            x = invoice.id;
+        }
+        return React.createElement(
+            "div",
+            { className: "invoicefield", style: { display: this.state.remove ? 'none' : 'block' } },
+            React.createElement("input", { type: "hidden", value: invoice && invoice.maintenance_request_id ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id, name: 'ledger[invoices_attributes][' + x + '][maintenance_request_id]' }),
+            React.createElement("input", { type: "hidden", value: invoice && invoice.trady_id ? invoice.trady_id : invoiceInfo.trady_id, name: 'ledger[invoices_attributes][' + x + '][trady_id]' }),
+            React.createElement(
+                "fieldset",
+                null,
+                React.createElement(
+                    "div",
+                    null,
+                    React.createElement(FieldList, { existingContent: invoice_items, SampleField: InvoiceItemField, params: { x: x, updatePrice: this.calcInvoiceTotal, remove: this.state.remove } }),
+                    React.createElement(
+                        "label",
+                        null,
+                        React.createElement("input", { type: "checkbox", value: this.state.tax, checked: this.state.tax, name: 'ledger[invoices_attributes][' + x + '][tax]', onChange: this.onTax }),
+                        "Total Includes GST"
+                    )
+                ),
+                React.createElement("hr", null),
+                React.createElement(
+                    "div",
+                    { className: "field" },
+                    React.createElement(
+                        "div",
+                        null,
+                        React.createElement(
+                            "p",
+                            null,
+                            " Invoice Total : "
+                        ),
+                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.tax ? this.state.amount.toFixed(2) : this.state.amountExceptTax.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
+                    ),
+                    React.createElement(
+                        "div",
+                        null,
+                        React.createElement(
+                            "p",
+                            null,
+                            " Invoice Due On : "
+                        ),
+                        React.createElement("input", { type: "date", defaultValue: invoice && invoice.due_date || '', name: 'ledger[invoices_attributes][' + x + '][due_date]', required: true })
+                    )
+                ),
+                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
+                invoice ? React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' }) : null
+            ),
+            React.createElement(
+                "button",
+                { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+                " Remove Invoice "
+            )
+        );
+    }
+});
+
 var InvoiceFields = React.createClass({
     displayName: "InvoiceFields",
 
     render: function () {
+        var ledger = this.props.ledger || null;
+        var id = ledger && ledger.id || null;
+        var invoiceInfo = {
+            maintenance_request_id: this.props.maintenance_request_id,
+            trady_id: this.props.trady_id,
+            tax: '',
+            due_date: ''
+        };
+        var invoices = ledger && ledger.invoices ? ledger.invoices : null;
         return React.createElement(
             "form",
-            { role: "form", id: "new_invoice", action: this.props.id ? '/invoices/' + this.props.id : '/invoices', acceptCharset: "UTF-8", method: "post" },
-            React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
-            React.createElement("input", { type: "hidden", name: "_method", value: this.props._method }),
-            React.createElement("input", { type: "hidden", value: this.props.maintenance_request_id, name: "invoice[maintenance_request_id]", id: "invoice_maintenance_request_id" }),
-            React.createElement("input", { type: "hidden", value: this.props.trady_id, name: "invoice[trady_id]", id: "invoice_trady_id" }),
-            React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "invoice[quote_id]", id: "invoice_quote_id" }),
-            React.createElement(FieldList, { existingContent: this.props.invoice_items, SampleField: InvoiceField }),
+            { role: "form", id: "new_invoice", action: id ? '/update_invoice' : '/invoices', acceptCharset: "UTF-8", method: "post" },
+            React.createElement("input", { type: "hidden", value: this.props.authenticity_token, name: "authenticity_token" }),
+            React.createElement("input", { type: "hidden", value: this.props._method, name: "_method" }),
+            React.createElement("input", { type: "hidden", name: "ledger[grand_total]" }),
+            React.createElement("input", { type: "hidden", value: this.props.maintenance_request_id, name: "ledger[maintenance_request_id]" }),
+            React.createElement("input", { type: "hidden", value: this.props.trady_id, name: "ledger[trady_id]" }),
+            React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "ledger[quote_id]" }),
+            React.createElement(FieldList, { existingContent: invoices, SampleField: InvoiceField, params: invoiceInfo }),
             React.createElement(
                 "div",
-                { className: "qf-button" },
+                { className: "qf-button", style: { marginBottom: '50px' } },
                 React.createElement(
                     "button",
                     { className: "button button-primary left" },
@@ -63061,6 +63283,9 @@ var TradyCompanyInvoice = React.createClass({
             React.createElement("input", { value: this.props.trady_id, type: "hidden", name: "trady_company[trady_id]" }),
             React.createElement("input", { value: this.props.trady_company_id, type: "hidden", name: "trady_company[trady_company_id]" }),
             React.createElement("input", { value: this.props.quote_id, type: "hidden", name: "trady_company[quote_id]" }),
+            React.createElement("input", { value: this.props.invoice_type, type: "hidden", name: "trady_company[invoice_type]" }),
+            React.createElement("input", { value: this.props.pdf_file_id, type: "hidden", name: "trady_company[pdf_file_id]" }),
+            React.createElement("input", { value: this.props.ledger_id, type: "hidden", name: "trady_company[ledger_id]" }),
             React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button-primary green", "data-disable-with": "Next" })
         );
     },
@@ -63441,8 +63666,147 @@ var P = React.createClass({
         );
     }
 });
+
+var ImgSlider = React.createClass({
+    displayName: "ImgSlider",
+
+    getInitialState: function () {
+        return {
+            stlen: this.props.images ? this.props.images.length : 0,
+            stpos: 0,
+            stwidth: 300,
+            stx: 0
+        };
+    },
+
+    sliderTopRun: function (stpos) {
+        var stx = stpos * -this.state.stwidth;
+
+        this.setState({
+            stx: stx
+        });
+    },
+
+    sliderTopPrev: function () {
+        var stpos = this.state.stpos - 1;
+        if (stpos < 0) stpos = this.state.stlen - 1;
+        this.setState({
+            stpos: stpos
+        });
+        this.sliderTopRun(stpos);
+    },
+
+    sliderTopNext: function () {
+        var stpos = this.state.stpos + 1;
+        if (stpos >= this.state.stlen) stpos = 0;
+        this.setState({
+            stpos: stpos
+        });
+        this.sliderTopRun(stpos);
+    },
+
+    render: function () {
+        var styles = {
+            strip: {
+                left: this.state.stx,
+                width: this.state.stlen * this.state.stwidth
+            },
+            mask: {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 70,
+                width: '100%',
+                height: 300,
+                overflow: 'hidden'
+            }
+        };
+        var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
+        return React.createElement(
+            "div",
+            { id: "slider" },
+            this.state.stlen > 1 ? React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "button",
+                    { className: "button btn prev", onClick: this.sliderTopPrev },
+                    React.createElement("i", { className: "fa fa-angle-left" })
+                ),
+                React.createElement(
+                    "button",
+                    { className: "button btn next", onClick: this.sliderTopNext },
+                    React.createElement("i", { className: "fa fa-angle-right" })
+                )
+            ) : null,
+            React.createElement(
+                "div",
+                { className: "mask", style: styles.mask },
+                React.createElement(
+                    "div",
+                    { className: "strip", style: styles.strip },
+                    this.state.stlen ? this.props.images.map(function (image, i) {
+                        return React.createElement(
+                            "span",
+                            { key: i, style: { width: subWidth } },
+                            React.createElement("img", { src: image.url, alt: "Uploading...", width: "100%" })
+                        );
+                    }) : React.createElement(
+                        "span",
+                        { style: { width: '100%' } },
+                        React.createElement("img", { src: "http://placehold.it/400x300", alt: "No image", width: "100%" })
+                    )
+                )
+            )
+        );
+    }
+});
+
+var DropforSort = React.createClass({
+    displayName: "DropforSort",
+
+    getInitialState: function () {
+        return {
+            sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
+        };
+    },
+
+    handleChange: function (event) {
+        this.setState({ sort_by_date: event.target.value });
+        this.refs.select.submit();
+    },
+
+    render: function () {
+        return React.createElement(
+            "form",
+            { name: "sort_by_date", action: "/maintenance_requests", method: "get", ref: "select" },
+            React.createElement("input", { type: "hidden", name: "page", value: this.props.page ? this.props.page : 1 }),
+            React.createElement(
+                "select",
+                { value: this.state.sort_by_date, name: "sort_by_date", onChange: this.handleChange },
+                React.createElement(
+                    "option",
+                    { value: "Oldest to Newest" },
+                    "Oldest to Newest"
+                ),
+                React.createElement(
+                    "option",
+                    { value: "Newest to Oldest" },
+                    "Newest to Oldest"
+                )
+            ),
+            React.createElement("input", { type: "submit", value: "Submit", style: { display: 'none' } })
+        );
+    }
+});
 var MaintenanceRequestsNew = React.createClass({
 	displayName: "MaintenanceRequestsNew",
+
+	getInitialState: function () {
+		return {
+			images: []
+		};
+	},
 
 	generateAtt: function (name_id, type) {
 		if (name_id == "name") {
@@ -63451,10 +63815,105 @@ var MaintenanceRequestsNew = React.createClass({
 			return "maintenance_request_" + type;
 		}
 	},
+	_handleRemoveFrame: function (e) {
+		var images = this.state.images;
+
+		var index = e.target.id;
+		images.splice(index, 1);
+		this.setState({ images: images });
+	},
+	_handleImageChange: function (e) {
+		var _this = this;
+
+		e.preventDefault();
+		var files = e.target.files;
+		var reader = new FileReader();
+		var images = this.state.images;
+
+		readFile = function (index) {
+			if (index >= files.length) {
+				_this.setState({
+					images: images
+				});
+				return;
+			}
+			var file = files[index];
+			var fileAlreadyExists = false;
+			for (var i = 0; i < images.length; i++) {
+				if (images[i].fileInfo.name == file.name) {
+					fileAlreadyExists = true;
+					break;
+				}
+			}
+			if (!fileAlreadyExists) {
+				reader.readAsDataURL(file);
+				reader.onload = function (e) {
+					images.push({ url: e.target.result, fileInfo: file });
+					readFile(index + 1);
+				};
+			} else {
+				readFile(index + 1);
+			}
+		};
+		readFile(0);
+	},
+
+	handleCheckSubmit: function (e) {
+
+		var XHR = new XMLHttpRequest();
+		var FD = new FormData(document.getElementById('new_maintenance_request'));
+		FD["delete"]('maintenance_request[maintenance_request_image_attributes][images][]');
+		FD["delete"]('commit');
+		this.state.images.map(function (image, index) {
+			var idx = index + 1;
+			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
+		});
+		FD.append('commit', 'Submit Maintenance Request');
+		XHR.addEventListener('load', function (event) {
+			console.log('Yeah! Data sent and response loaded.');
+		});
+
+		XHR.addEventListener('error', function (event) {
+			console.log('Oups! Something went wrong.');
+		});
+
+		XHR.open('POST', '/maintenance_requests');
+		XHR.setRequestHeader('Accept', 'text/html');
+		XHR.send(FD);
+	},
+
 	render: function () {
+		var _this2 = this;
+
+		var images = this.state.images;
+
+		var $imagePreview = [];
+		if (images.length > 0) {
+			for (i = 0; i < images.length; i++) {
+				var imageObject = React.createElement(
+					"div",
+					{ className: "imgFrame", key: i },
+					React.createElement("img", { src: images[i].url }),
+					React.createElement(
+						"div",
+						{ className: "btnRemoveFrame", id: i, onClick: function (e) {
+								return _this2._handleRemoveFrame(e);
+							} },
+						"X"
+					)
+				);
+				$imagePreview.push(imageObject);
+			}
+		} else {
+			$imagePreview = React.createElement(
+				"div",
+				{ className: "previewText" },
+				"Please select an Image for Preview"
+			);
+		}
 		return React.createElement(
 			"form",
-			{ role: "form", id: "new_maintenance_request", encType: "multipart/form-data", acceptCharset: "UTF-8", action: "/maintenance_requests", method: "post" },
+			{ role: "form", id: "new_maintenance_request", encType: "multipart/form-data", acceptCharset: "UTF-8" },
 			React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
 			React.createElement(
 				"div",
@@ -63515,9 +63974,14 @@ var MaintenanceRequestsNew = React.createClass({
 					null,
 					" Images "
 				),
-				React.createElement("input", { multiple: "multiple", type: "file",
-					name: "maintenance_request[maintenance_request_image_attributes][images][]",
-					id: "maintenance_request_maintenance_request_image_attributes_images" })
+				React.createElement("input", { className: "fileInput", type: "file", name: "maintenance_request[maintenance_request_image_attributes][images][]", id: "maintenance_request_maintenance_request_image_attributes_images", onChange: function (e) {
+						return _this2._handleImageChange(e);
+					}, multiple: true }),
+				React.createElement(
+					"div",
+					{ className: "imgPreview" },
+					$imagePreview
+				)
 			),
 			!this.props.current_user || this.props.current_user.tenant ? React.createElement(
 				"div",
@@ -63587,7 +64051,9 @@ var MaintenanceRequestsNew = React.createClass({
 				React.createElement(FieldList, { SampleField: AvailabilityField })
 			),
 			React.createElement("hr", null),
-			React.createElement("input", { type: "submit", className: "button-primary green", name: "commit", value: "Submit Maintenance Request", "data-disable-with": "Submit Maintenance Request" })
+			React.createElement("input", { type: "submit", className: "button-primary green", name: "commit", value: "Submit Maintenance Request", "data-disable-with": "Submit Maintenance Request", onClick: function (e) {
+					return _this2.handleCheckSubmit(e);
+				} })
 		);
 	}
 });
@@ -63602,8 +64068,13 @@ var QuoteField = React.createClass({
     displayName: 'QuoteField',
 
     getInitialState: function () {
+        var quote = this.props.content;
+        var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
+        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
         return {
-            remove: false
+            remove: false,
+            pricing_type: pricing_type,
+            hours_input: hours_input
         };
     },
 
@@ -63611,6 +64082,15 @@ var QuoteField = React.createClass({
         this.setState({ remove: true });
     },
 
+    onPricing: function (event) {
+        var pricing_type = event.target.value;
+        this.setState({ pricing_type: pricing_type });
+        if (pricing_type == "Hourly") {
+            this.setState({ hours_input: true });
+        } else {
+            this.setState({ hours_input: false });
+        }
+    },
     render: function () {
         var quote = this.props.content;
         var x = this.props.x;
@@ -63628,17 +64108,60 @@ var QuoteField = React.createClass({
                     null,
                     ' Item description '
                 ),
-                React.createElement('input', { type: 'text', name: 'quote[quote_items_attributes][' + x + '][item_description]',
+                React.createElement('input', { type: 'text',
                     id: 'quote_quote_items_attributes_' + x + '_item_description',
-                    defaultValue: quote ? quote.item_description : null }),
+                    name: 'quote[quote_items_attributes][' + x + '][item_description]',
+                    defaultValue: quote ? quote.item_description : ''
+                }),
                 React.createElement(
                     'p',
                     null,
                     ' Amount '
                 ),
-                React.createElement('input', { type: 'text', name: 'quote[quote_items_attributes][' + x + '][amount]',
+                React.createElement('input', { type: 'text',
                     id: 'quote_quote_items_attributes_' + x + '_amount',
-                    defaultValue: quote ? quote.amount : null }),
+                    name: 'quote[quote_items_attributes][' + x + '][amount]',
+                    defaultValue: quote ? quote.amount : ''
+                }),
+                React.createElement(
+                    'p',
+                    null,
+                    ' Pricing type '
+                ),
+                React.createElement(
+                    'select',
+                    { value: this.state.pricing_type,
+                        onChange: this.onPricing,
+                        name: 'quote[quote_items_attributes][' + x + '][pricing_type]',
+                        id: 'quote_quote_items_attributes_' + x + '_pricing_type' },
+                    React.createElement(
+                        'option',
+                        { value: 'Fixed Cost' },
+                        'Fixed Cost'
+                    ),
+                    React.createElement(
+                        'option',
+                        { value: 'Hourly' },
+                        'Hourly'
+                    )
+                ),
+                this.state.hours_input ? React.createElement(
+                    'div',
+                    null,
+                    React.createElement(
+                        'p',
+                        null,
+                        ' Number of Hours '
+                    ),
+                    React.createElement('input', { type: 'text',
+                        id: 'quote_quote_items_attributes_' + x + '_hours',
+                        name: 'quote[quote_items_attributes][' + x + '][hours]',
+                        defaultValue: quote ? quote.hours : ''
+                    })
+                ) : React.createElement('input', { type: 'hidden',
+                    id: 'quote_quote_items_attributes_' + x + '_hours',
+                    name: 'quote[quote_items_attributes][' + x + '][hours]'
+                }),
                 React.createElement('input', { type: 'hidden', value: this.state.remove, name: 'quote[quote_items_attributes][' + x + '][_destroy]', id: 'quote_quote_items_attributes_' + x + '__destroy' }),
                 quote ? React.createElement('input', { type: 'hidden', value: x, name: 'quote[quote_items_attributes][' + x + '][id]', id: 'quote_iquote_items_attributes_' + x + '_id' }) : null
             ),
@@ -63665,6 +64188,13 @@ var QuoteFields = React.createClass({
             React.createElement('input', { type: 'hidden', value: this.props.status, name: 'quote[status]', id: 'quote_status' }),
             React.createElement('input', { type: 'hidden', value: this.props.delivery_status, name: 'quote[delivery_status]', id: 'quote_delivery_status' }),
             React.createElement(FieldList, { existingContent: this.props.quote_items, SampleField: QuoteField }),
+            React.createElement(
+                'label',
+                { className: 'quote_tax' },
+                React.createElement('input', { type: 'hidden', value: '0', name: 'quote[tax]' }),
+                React.createElement('input', { type: 'checkbox', value: '1', defaultChecked: this.props.tax ? this.props.tax : false, name: 'quote[tax]', id: 'quote_tax' }),
+                'Add GST'
+            ),
             React.createElement('hr', null),
             React.createElement(
                 'div',
@@ -64806,6 +65336,13 @@ var TradyCompanies = React.createClass({
 
 
 }).call(this);
+$(document).ready(function () {
+
+  var swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        paginationClickable: true
+    });
+});
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //
@@ -64818,8 +65355,6 @@ var TradyCompanies = React.createClass({
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-
-
 
 
 

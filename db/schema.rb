@@ -66,11 +66,11 @@ ActiveRecord::Schema.define(version: 20170331082541) do
 
   create_table "agency_admins", force: :cascade do |t|
     t.string  "email"
+    t.string  "first_name"
     t.string  "last_name"
     t.integer "user_id"
     t.string  "mobile_phone"
     t.integer "agency_id"
-    t.string  "first_name"
     t.string  "license_number"
   end
 
