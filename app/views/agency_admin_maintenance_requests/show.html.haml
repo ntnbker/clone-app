@@ -108,6 +108,12 @@
     %p
       ="Name: #{pdf.maintenance_request.trady.name}"
 
+
+
+    
+/****************MODALS****************/     
+/**************************************/
+
 %div{:style=>"border-style: solid; "}
   Create Landlord Form 
   = form_tag("/landlords", method: :post, remote: true) do 
@@ -175,66 +181,56 @@
     = submit_tag("Submit")
 
 
+%br
+%div{:style=>"border-style: solid; "}
+  Tenants Messaging System (Conversation Between Tenants and Agent)
+  = render partial: "messages/message", collection: @tenants_conversation, as: :message   
+  =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
+    =f.text_field :body, class: "message_body"
+    =f.hidden_field :conversation_type, value:"Tenant"
+    =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+    =f.submit "Submit Message", :class=>"btn btn-default"
+    %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+      Close
 
-
-
-
-    
-/****************MODALS****************/     
-/**************************************/
-%div{:class=>"modal fade", :id=>"tenant-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
-  %div{:class=>"modal-dialog", :role=>"document"}
-    %div{:class=>"modal-content"}
-      %div{:class=>"modal-body message_modal"}
-        %div.messages_container    
-          = render partial: "messages/message", collection: @tenants_conversation, as: :message   
-        %div{:id=>"errors_div"}
-        =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
-          =f.text_field :body, class: "message_body"
-          =f.hidden_field :conversation_type, value:"Tenant"
-          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-          =f.submit "Submit Message", :class=>"btn btn-default"
-          %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
-            Close
-
-/ %div{:class=>"modal fade", :id=>"landlord-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
-/   %div{:class=>"modal-dialog", :role=>"document"}
-/     %div{:class=>"modal-content"}
-/       %div{:class=>"modal-body message_modal"}
-/         %div.messages_container    
-/           = render partial: "messages/message", collection: @landlords_conversation, as: :message   
-/         %div{:id=>"errors_div"}
-/         =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
-/           =f.text_field :body, class: "message_body"
-/           =f.hidden_field :conversation_type, value:"Landlord"
-/           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-/           =f.submit "Submit Message", :class=>"btn btn-default"
-/           %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
-/             Close
+%br
+%div{:style=>"border-style: solid; "}   
+  Landlord Messaging System (Conversation Between Landlord and Agent)
+  = render partial: "messages/message", collection: @landlords_conversation, as: :message   
+  =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
+    =f.text_field :body, class: "message_body"
+    =f.hidden_field :conversation_type, value:"Landlord"
+    =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+    =f.submit "Submit Message", :class=>"btn btn-default"
+    %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+      Close
         
-          
-
-=bootstrap_form_for(@tradie, remote: true) do |f|
-  =collection_select(@tradie,:id, @all_tradies, :id, :name_and_company,{prompt: "Select or Add New Tradie"}, id:"trady_select")
-  =f.text_field :company_name, class: "tradie_fields", id:"trady_company_name"
-  =f.text_field :name, class: "tradie_fields", id:"trady_name"
-  =f.text_field :email, class: "tradie_fields", id:"trady_email"
-  =f.phone_field :mobile, class: "tradie_fields", id:"trady_mobile"
-  =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-  =f.hidden_field :skill_required, value:@maintenance_request.service_type
-  =f.hidden_field :trady_request, value:"Quote" 
-  =f.submit "Send Request", :class=>"btn btn-default"
-
-=bootstrap_form_for(@tradie, remote: true) do |f|
-  =collection_select(@tradie,:id, @all_tradies, :id, :name_and_company,{prompt: "Select or Add New Tradie"}, id:"trady_work_order_select")
-  =f.text_field :company_name, class: "tradie_fields", id:"trady_company_name_work_order"
-  =f.text_field :name, class: "tradie_fields", id:"trady_name_work_order"
-  =f.text_field :email, class: "tradie_fields", id:"trady_email_work_order"
-  =f.phone_field :mobile, class: "tradie_fields", id:"trady_mobile_work_order"
-  =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-  =f.hidden_field :skill_required, value:@maintenance_request.service_type
-  =f.hidden_field :trady_request, value:"Work Order" 
-  =f.submit "Send Request", :class=>"btn btn-default"
+%br 
+%div{:style=>"border-style: solid; "}   
+  Request Quote Form        
+  =bootstrap_form_for(@tradie, remote: true) do |f|
+    =collection_select(@tradie,:id, @all_tradies, :id, :name_and_company,{prompt: "Select or Add New Tradie"}, id:"trady_select")
+    =f.text_field :company_name, class: "tradie_fields", id:"trady_company_name"
+    =f.text_field :name, class: "tradie_fields", id:"trady_name"
+    =f.text_field :email, class: "tradie_fields", id:"trady_email"
+    =f.phone_field :mobile, class: "tradie_fields", id:"trady_mobile"
+    =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+    =f.hidden_field :skill_required, value:@maintenance_request.service_type
+    =f.hidden_field :trady_request, value:"Quote" 
+    =f.submit "Send Request", :class=>"btn btn-default"
+%br
+%div{:style=>"border-style: solid; "}
+  Send Work Order
+  =bootstrap_form_for(@tradie, remote: true) do |f|
+    =collection_select(@tradie,:id, @all_tradies, :id, :name_and_company,{prompt: "Select or Add New Tradie"}, id:"trady_work_order_select")
+    =f.text_field :company_name, class: "tradie_fields", id:"trady_company_name_work_order"
+    =f.text_field :name, class: "tradie_fields", id:"trady_name_work_order"
+    =f.text_field :email, class: "tradie_fields", id:"trady_email_work_order"
+    =f.phone_field :mobile, class: "tradie_fields", id:"trady_mobile_work_order"
+    =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+    =f.hidden_field :skill_required, value:@maintenance_request.service_type
+    =f.hidden_field :trady_request, value:"Work Order" 
+    =f.submit "Send Request", :class=>"btn btn-default"
 
 
 / %div{:class=>"modal fade", :id=>"more_quotes", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
