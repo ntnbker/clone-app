@@ -4,15 +4,15 @@
   = button_tag 'Search', type: 'submit'
 
 
--if current_user.agency_admin?
-  =link_to "Agency Admin Maintenance Requests INDEX", agency_admin_maintenance_requests_path
-  %br
-  / =link_to "OLD My Maintenance Requests INDEX", maintenance_requests_path
-  =link_to "Add Agent", new_agent_path
-  %br
-  =link_to "Add Agency Admin", new_agency_admin_path
+/ -if current_user.agency_admin?
+=link_to "Agency Admin Maintenance Requests INDEX", agency_admin_maintenance_requests_path
+%br
+/ =link_to "OLD My Maintenance Requests INDEX", maintenance_requests_path
+=link_to "Add Agent", new_agent_path
+%br
+=link_to "Add Agency Admin", new_agency_admin_path
 
--elsif current_user.agent?
+/ -elsif current_user.agent?
 
 
 
