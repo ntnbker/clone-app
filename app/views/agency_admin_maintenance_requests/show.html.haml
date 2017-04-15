@@ -164,7 +164,7 @@
     = submit_tag("Submit")
 %br
 %div{:style=>"border-style: solid; "}
-  Edit and Notify Landlord Contact Form
+  Edit and Notify Landlord Form
   = form_tag("/update-and-notify-landlord", method: :post, remote: true) do 
     = label_tag(:name, "Name:") 
     = text_field_tag("landlord[name]", @landlord.nil? ? nil : @landlord.name ,id:"landlord_name") 
