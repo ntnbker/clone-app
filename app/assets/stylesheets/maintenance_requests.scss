@@ -4,6 +4,16 @@
 form#new_maintenance_request {
     width: 100%;
     margin: 20px auto;
+
+    .error {
+        margin-top: 10px;
+        color: red;
+    }
+
+    .border_on_error {
+        border-color: red;
+    }
+
     p {
         margin: 20px 0 5px;
     }
