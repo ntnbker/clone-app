@@ -256,11 +256,17 @@ class MaintenanceRequestsController < ApplicationController
     end 
 
     @message = Message.new
-    @landlord = Landlord.new
+    
     @tradie = Trady.new
      
     if @maintenance_request.maintenance_request_image != nil
       @gallery = @maintenance_request.maintenance_request_image.images
+    end 
+
+    if @maintenance_request.property.landlord == nil
+      @landlord = Landlord.new
+    elsif @maintenance_request.property.landlord != nil
+      @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end 
     
     if @maintenance_request.trady != nil

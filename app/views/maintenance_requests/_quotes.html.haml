@@ -20,16 +20,16 @@
             =link_to "Forward Quote To Landlord!!!!", forward_quote_path(quote_id:quote.id, maintenance_request_id:quote.maintenance_request_id), method: :post
         -if quote.status == "Approved"
           %button 
-            =link_to "Cancel", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post
+            =link_to "Cancel", quote_status_path(quote_id:quote.id,status:"Cancel", maintenance_request_id:quote.maintenance_request_id), method: :post, remote: true
         -if quote.status == "Active" 
           %button  
-            =link_to "Approve", quote_status_path(quote_id:quote.id,status:"Approved", maintenance_request_id:quote.maintenance_request_id), method: :post
+            =link_to "Approve", quote_status_path(quote_id:quote.id,status:"Approved", maintenance_request_id:quote.maintenance_request_id), method: :post, remote: true
           %button
-            =link_to "Decline", quote_status_path(quote_id:quote.id,status:"Declined",maintenance_request_id:quote.maintenance_request_id), method: :post
+            =link_to "Decline", quote_status_path(quote_id:quote.id,status:"Declined",maintenance_request_id:quote.maintenance_request_id), method: :post, remote: true
          
         -if quote.status == "Declined" 
           %button
-            =link_to "Restore", quote_status_path(quote_id:quote.id,status:"Restore",maintenance_request_id:quote.maintenance_request_id), method: :post
+            =link_to "Restore", quote_status_path(quote_id:quote.id,status:"Restore",maintenance_request_id:quote.maintenance_request_id), method: :post, remote: true
       / %div
       /   -if quote.maintenance_request.property.landlord != nil && quote.status == "Active"
       /     %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
