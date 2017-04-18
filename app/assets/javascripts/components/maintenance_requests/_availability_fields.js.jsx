@@ -1,5 +1,5 @@
-
 var AvailabilityField = React.createClass({
+    
     getInitialState : function() {
         return {
             remove : false
@@ -18,7 +18,6 @@ var AvailabilityField = React.createClass({
       this.setState({remove: true});
     },
 
-
     generateAtt(name_id, x, type) {
       if (name_id == "name") {
         return "maintenance_request[availabilities_attributes][" + x + "][" + type + "]";
@@ -28,12 +27,64 @@ var AvailabilityField = React.createClass({
       }
     },
 
-    onChange(e) {
+    onChange(e, datepickerrorid) {
       var tmpValue = e.target.value;
+      var today = this.getToday();
+      errorMessage = '';
+      if(tmpValue < today) {
+        errorMessage = 'You should select the date after today!';
+        document.getElementById(datepickerrorid).textContent = errorMessage;
+        e.target.classList.add("border_on_error");
+      } else {
+        document.getElementById(datepickerrorid).textContent = errorMessage;
+        e.target.classList.remove("border_on_error");
+      }
       this.setState(state => {
           state.currentValue.date = tmpValue;
           return {currentValue : state.currentValue};
       });
+    },
+
+    onChangeStartTime(e, timepickerrorid) {
+      var startTime = (this.refs.startTimeHour.value*60 +  this.refs.startTimeMin.value)/100;
+      var finishTime = (this.refs.finishTimeHour.value*60 + this.refs.finishTimeMin.value)/100;
+      if(finishTime == 0) {
+        return;
+      }
+      errorMessage = '';
+      if(startTime > finishTime) {
+        errorMessage = 'You should select before than finish time!';
+        document.getElementById(timepickerrorid).textContent = errorMessage;
+      } else {
+        document.getElementById(timepickerrorid).textContent = errorMessage;
+      }
+    },
+
+    onChangeFinishTime(e, timepickerrorid) {
+      var startTime = (this.refs.startTimeHour.value*60 +  this.refs.startTimeMin.value)/100;
+      var finishTime = (this.refs.finishTimeHour.value*60 + this.refs.finishTimeMin.value)/100;
+      errorMessage = '';
+      if(startTime > finishTime) {
+        errorMessage = 'You should select later than start time!';
+        document.getElementById(timepickerrorid).textContent = errorMessage;
+      } else {
+        document.getElementById(timepickerrorid).textContent = errorMessage;
+      }
+    },
+
+    getToday() {
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1;
+      var yyyy = today.getFullYear();
+      if(dd<10) {
+          dd='0'+dd
+      } 
+      if(mm<10) {
+          mm='0'+mm
+      } 
+      today = yyyy+'-'+mm+'-'+dd;
+      return today;
     },
 
     render : function() {
@@ -42,15 +93,17 @@ var AvailabilityField = React.createClass({
       if (Availability) {
           x = Availability.id;
       }
-
+      var $datepickerrorid='errorpickdate'+x;
+      var $timepickerrorid='errorpicktime'+x;
       return (
         <div className="availabilityfield" style={{display: this.state.remove ? 'none' : 'block' }}>
           <fieldset>
             <p> Date </p>
             <input type="date"
                  name={this.generateAtt("name", x, "date")}
-                 id={this.generateAtt("id", x, "date")}  onChange={this.onChange} required={this.state.dateRequired}/>
-            
+                 id={this.generateAtt("id", x, "date")}  onChange={(e) =>this.onChange(e, $datepickerrorid)} required={this.state.dateRequired}/>
+            <p id={$datepickerrorid} className="error"></p>
+
             <div className="starttime">
               <p> Start time </p>
 
@@ -67,21 +120,20 @@ var AvailabilityField = React.createClass({
                        id={this.generateAtt("id", x, "start_time_3i")} /> 
 
               <select name={this.generateAtt("name", x, "start_time(4i)")}
-                        id={this.generateAtt("id", x, "start_time_4i")} required={this.state.dateRequired}>
+                        id={this.generateAtt("id", x, "start_time_4i")} onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="startTimeHour">
                 { this.makeDate(24) }
               </select>
 
               <span> : </span>
 
               <select name={this.generateAtt("name", x, "start_time(5i)")}
-                        id={this.generateAtt("id", x, "start_time_5i")} required={this.state.dateRequired}>
+                        id={this.generateAtt("id", x, "start_time_5i")} onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="startTimeMin">
                 { this.makeDate(60) }
               </select>
             </div>
 
             <div className="finishtime">
               <p> Finish time </p>
-
               <input type="hidden" value={new Date().getFullYear()}
                      name={this.generateAtt("name", x, "finish_time(1i)")}
                        id={this.generateAtt("id", x, "finish_time_1i")} />
@@ -95,18 +147,19 @@ var AvailabilityField = React.createClass({
                        id={this.generateAtt("id", x, "finish_time_3i")} /> 
 
               <select name={this.generateAtt("name", x, "finish_time(4i)")}
-                        id={this.generateAtt("id", x, "finish_time_4i")} required={this.state.dateRequired}>
+                        id={this.generateAtt("id", x, "finish_time_4i")} onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="finishTimeHour">
                 { this.makeDate(24) }
               </select>
 
               <span> : </span>
 
               <select name={this.generateAtt("name", x, "finish_time(5i)")}
-                        id={this.generateAtt("id", x, "finish_time_5i")} required={this.state.dateRequired}>
+                        id={this.generateAtt("id", x, "finish_time_5i")} onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="finishTimeMin">
                 { this.makeDate(60) }
               </select>
             </div>
           </fieldset>
+          <p id={$timepickerrorid} className="error"></p>
           <label>
             <input type="checkbox" value="1" onChange={this.onCheck}
                    name={this.generateAtt("name", x, "available_only_by_appointment")}
