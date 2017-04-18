@@ -293,6 +293,7 @@ $color-red: #e34f4f;
         line-height: 60px;
         font-weight: 500;
         margin-right: 20px;
+        cursor: pointer;
       }
       &.contact {
         background-color: $color-green;
@@ -311,6 +312,7 @@ $color-red: #e34f4f;
         margin-left: 34px;
         height: 50px;
         margin-bottom: 0px;
+        cursor: pointer;
         a {
           font-size: 13px;
           font-weight: 500;
@@ -447,7 +449,7 @@ $color-red: #e34f4f;
     }
   }
   .actions-full {
-    display: none;
+    display: block;
     background-color: $color-grey-dark;
     width: 100%;
     height: 100%;
@@ -462,6 +464,107 @@ $color-red: #e34f4f;
         height: 100%;
       }
     }
+  }
+  .modal-custom {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    outline: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    .modal-dialog {
+      -webkit-transform: translate(0,0);
+      -ms-transform: translate(0,0);
+      -o-transform: translate(0,0);
+      transform: translate(0,0);
+      width: 600px;
+      margin: 30px auto;
+    }
+    .modal-content {
+      position: relative;
+      background-color: #fff;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      border: 1px solid #999;
+      border: 1px solid rgba(0,0,0,.2);
+      outline: 0;
+      -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      font-weight: 400;
+      font-size: 14px;
+    }
+    .modal-header {
+      padding: 15px;
+      border-bottom: 1px solid #e5e5e5;
+      background-color: $color-grey-dark;
+      .modal-title {
+        margin-bottom: 0px;
+        font-size: 16px;
+        color: $color-white;
+        font-weight: 500;
+        font-size: 20px;
+      }
+      .close {
+        float: right;
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1;
+        color: $color-white;
+        text-shadow: 0 1px 0 $color-white;
+        filter: alpha(opacity=20);
+        opacity: .5;
+        padding: 0;
+        cursor: pointer;
+        background: 0 0;
+        border: 0;
+        margin-top: -2px;
+        height: auto;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+    .modal-body {
+      position: relative;
+      padding: 15px;
+      label {
+        font-weight: 400;
+        strong {
+          color: $color-red;
+          font-weight: 500;
+        }
+      }
+      .has-error {
+        border-color: $color-red;
+      }
+    }
+    .modal-footer {
+      padding: 15px;
+      text-align: right;
+      border-top: 1px solid #e5e5e5;
+      button {
+        border: none;
+        color: $color-white
+      }
+      .success {
+        background-color: $color-green;
+        margin-right: 10px;
+      }
+      .cancel {
+        background-color: $color-red;
+        margin-right: 10px;
+      }
+    }
+  }
+  form {
+    margin-bottom: 0px;
+  }
+  .m-t-lg {
+    margin-top: 15px;
   }
   @media (min-width: 320px) and (max-width: 480px) {
     .main-summary {
@@ -522,6 +625,10 @@ $color-red: #e34f4f;
     }
     .activity-mobile {
       display: block;
+    }
+
+    .modal-custom .modal-dialog {
+      width: 300px;
     }
   }
   @media (min-width: 481px) and (max-width: 640px) {
