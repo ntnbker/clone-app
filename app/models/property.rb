@@ -4,7 +4,7 @@ class Property < ApplicationRecord
   has_many :tenants
   has_many :maintenance_requests
   belongs_to :landlord
-
+  has_one :property 
 
   # def as_indexed_json(options={})
   #   self.as_json(only: "property_address", 

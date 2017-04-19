@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   ##########AGENT ROLE RESOURCES/ROUTES##############
   ###################################################
   resources :agents, only:[:show,:update, :new, :create]
+  resources :agent_maintenance_requests, only:[:index,:show]
   resources :agency_admins, only:[:new, :create, :show]
   resources :agencies, only:[:new, :create]
 

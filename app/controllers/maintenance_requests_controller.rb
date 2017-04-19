@@ -29,18 +29,23 @@ class MaintenanceRequestsController < ApplicationController
         if the_agency_admin
           @agency_admin = the_agency_admin
           @maintenance_request.agency_admin_id = @agency_admin.id
+          @agency = @agency_admin.agency
         end
         if the_agent
           @agent = the_agent
           @maintenance_request.agent_id = @agent.id
+          @agency = @agent.agency
         end
 
     elsif current_user.agency_admin?
       @agency_admin = current_user.agency_admin
+      @agency_admin = the_agency_admin
       @maintenance_request.agency_admin_id = @agency_admin.id
       @maintenance_request.perform_realestate_validations = false
     elsif current_user.agent?
       @agent = current_user.agent
+      @agency = @agent.agency
+      @agency_admin = @agent.agency.agency_admins.first
       @maintenance_request.agent_id = @agent.id
       @maintenance_request.perform_realestate_validations = false
     end 
@@ -73,7 +78,7 @@ class MaintenanceRequestsController < ApplicationController
         @property = Property.find_by(property_address:@customer_input.address)
         #CREATE PROPERTY
         if !@property
-          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id)
+          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id, agency_id:@agency.id)
           @maintenance_request.property_id = @property.id
           
 
@@ -165,7 +170,7 @@ class MaintenanceRequestsController < ApplicationController
         #CREATE PROPERTY
         @property = Property.find_by(property_address:@customer_input.address)
         if !@property
-          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id)
+          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id, agency_id:@agency.id)
           @maintenance_request.property_id = @property.id
           @tenant.update_attribute(:property_id, @property.id)
         else
@@ -409,7 +414,7 @@ class MaintenanceRequestsController < ApplicationController
   def maintenance_request_stakeholders(maintenance_request_id)
     mr = MaintenanceRequest.find_by(id:maintenance_request_id)
     mr_tenants = mr.tenants
-    mr_agent = mr.agent.user.id if mr.agent != nil
+    #mr_agent = mr.agent.user.id if mr.agent != nil
     mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
     mr_landlord = mr.property.landlord.user.id if mr.property.landlord_id != nil 
     mr_trady = mr.trady.user.id if mr.trady !=nil
