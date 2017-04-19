@@ -7,6 +7,16 @@
 	box-shadow: 0 1px 10px #888888;
     margin: 30px auto;
 
+	button.button-primary.option-button {
+		margin: 0;
+		height: 30px;
+		padding: 0px 10px;
+	}
+
+	.showheader {
+		margin: 0;
+	}
+
 	input {
 		display: block;
 		width: 100%;

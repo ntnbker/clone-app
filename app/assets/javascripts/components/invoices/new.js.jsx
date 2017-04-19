@@ -385,7 +385,7 @@ var InvoiceField = React.createClass({
 var InvoiceFields = React.createClass({
     render: function(){
         const ledger = this.props.ledger || null;
-        const id = (ledger && ledger.id) || null;
+        const id = (ledger && ledger.id) || '';
         const invoiceInfo = {
             maintenance_request_id: this.props.maintenance_request_id,
             trady_id: this.props.trady_id,
@@ -400,7 +400,7 @@ var InvoiceFields = React.createClass({
             <input type="hidden" value={this.props.maintenance_request_id} name="ledger[maintenance_request_id]"/>
             <input type="hidden" value={this.props.trady_id} name="ledger[trady_id]"/>
             <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
-
+            <input type="hidden" value={id} name="ledger[ledger_id]" />
 
             <FieldList existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
