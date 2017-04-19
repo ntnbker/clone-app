@@ -33,13 +33,14 @@ Rails.application.routes.draw do
   resources :agency_admins, only:[:new, :create, :show]
   resources :agencies, only:[:new, :create]
 
+  resources :agency_admin_maintenance_requests, only:[:index, :show] 
   ###################################################
   ##########LANDLORD ROLE RESOURCES/ROUTES###########
   ###################################################
-  resources :landlords, only:[:create, :update]
-  get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
-  post 'create_landlord' => 'landlords#create_and_notify_landlord', :as =>:create_and_notify_landlord
-
+  resources :landlords, only:[:create]
+  post 'update-landlord' => 'landlords#update', :as => :update_landlord
+  post 'create-and-notify-landlord' => 'landlords#create_and_notify_landlord', :as =>:create_and_notify_landlord
+  post "update-and-notify-landlord" => 'landlords#update_and_notify_landlord', :as =>:update_and_notify_landlord
   ###################################################
   ##########TENANT ROLE RESOURCES/ROUTES###########
   ###################################################

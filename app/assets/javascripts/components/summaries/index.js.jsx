@@ -434,7 +434,7 @@ var ModalConfirm = React.createClass({
               <h4 className="modal-title text-center">Confirm Landlord</h4>
             </div>
             <div className="modal-body">
-              <p className="text-center">Is John Smith the correct landlord for 123 street ave</p>
+              <p className="text-center">Is {this.props.landlord.name} the correct landlord for 123 street Ave</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default success" onClick={this.props.editLandlord} data-dismiss="modal">Yes</button>
@@ -491,6 +491,8 @@ var ModalAddLandlord = React.createClass({
   },
 
 	submit: function(e) {
+    e.preventDefault();
+
     var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
     if(this.name.value == "") {
       this.setState({errorName: true});
@@ -510,9 +512,13 @@ var ModalAddLandlord = React.createClass({
     } 
 
 		var params = {
-			name: this.name.value,
-			mobile: this.mobile.value,
-			email: this.email.value
+      authenticity_token: this.props.authToken,
+      landlord: {
+        name: this.name.value,
+        mobile: this.mobile.value,
+        email: this.email.value,
+        maintenance_request_id: this.props.maintenance_request_id,
+      },
 		}
 		this.props.addLandlord(params); 
 	},
@@ -522,10 +528,7 @@ var ModalAddLandlord = React.createClass({
       <div className="modal-custom fade">
         <div className="modal-dialog">
           <div className="modal-content">
-            <form role="form" id="addForm" method="POST" acceptCharset="UTF-8" action="/create_landlord">
-            <input name="utf8" type="hidden" value="✓"/>
-            <input type="hidden" name="authenticity_token" defaultValue={this.props.authToken} />
-            <input type="hidden" name="landlord[maintenance_request_id]" defaultValue={this.props.maintenance_request_id} />
+            <form role="form" id="addForm" onSubmit={this.submit}>
               <div className="modal-header">
                 <button type="button" 
                         className="close"
@@ -612,6 +615,8 @@ var ModalEditLandlord = React.createClass({
   },
 
 	submit: function(e) {
+    e.preventDefault();
+
     var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
 
     if(this.name.value == "") {
@@ -632,11 +637,15 @@ var ModalEditLandlord = React.createClass({
     
 
 		var params = {
-			name: this.name.value,
-			mobile: this.mobile.value,
-			email: this.email.value
-		}
-		//this.props.editLandlord(params); 
+      authenticity_token: this.props.authToken,
+      landlord: {
+        id: this.props.landlord.id,
+        name: this.name.value,
+        mobile: this.mobile.value,
+        email: this.email.value
+      }
+    }
+		this.props.editLandlord(params); 
 	},
 
 	render: function() {
@@ -828,7 +837,8 @@ var Summary = React.createClass({
   },
 
   isConfirm: function() {
-  	this.setState({isConfirm: !this.state.isConfirm});
+    this.setState({isConfirm: !this.state.isConfirm});
+  	this.setState({isModal: true});
   	this.setState({isEdit: false});
   	this.setState({isAdd: false});
     this.setState({isNotification: false});
@@ -863,47 +873,70 @@ var Summary = React.createClass({
   	}
   },
 
-  addLandlord: function(landlord){
-    /*fetch('http://localhost:3000/landlords', {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+  addLandlord: function(params){
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/landlords',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
       },
-      method: "POST",
-      body: JSON.stringify(landlord)
-    })
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function(res){ console.log(res) })
-    .catch(function(res){ console.log(res) });*/
-
-  	this.setState({landlord: landlord});
-  	this.isAdd();
-    this.setState({notification: {
-      title: "Create Landlord",
-      content: "Create Landlord was successfully!"
-    }});
-    this.isNotification();
+      data: params,
+      success: function(res){
+        self.setState({notification: {
+          title: "Ask Landlord",
+          content: "Your Landlord has been created successfully!"
+        }});
+        self.setState({landlord: res});
+        self.isAdd();
+        self.isNotification();
+      },
+      error: function() {
+        self.setState({notification: {
+          title: "Ask Landlord",
+          content: "Create Landlord error!"
+        }});
+        self.isNotification();
+      }
+    });	
   },
 
-  editLandlord: function(landlord) {
-  	this.setState({landlord: landlord});
-  	this.isEdit();
-    this.setState({notification: {
-      title: "Edit Landlord",
-      content: "Update Landlord was successfully!"
-    }});
-    this.isNotification();
+  editLandlord: function(params) {
+    debugger
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/update-landlord',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+      },
+      data: params,
+      success: function(res){
+        self.setState({notification: {
+          title: "Ask Landlord",
+          content: "Your Landlord has been updated successfully!"
+        }});
+        self.setState({landlord: res});
+        self.isEdit();
+        self.isNotification();
+      },
+      error: function() {
+        self.setState({notification: {
+          title: "Ask Landlord",
+          content: "Updated Landlord error!"
+        }});
+        self.isNotification();
+      }
+    }); 
   },
   
 	renderModal: function() {
-		if(this.state.isConfirm) {
-  		return <ModalConfirm close={this.isConfirm} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
-  	} else if(this.state.isAdd) {
+		if(this.state.isConfirm && this.state.isModal) {
+  		return <ModalConfirm close={this.isConfirm} landlord={this.state.landlord} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
+  	} else if(this.state.isAdd  && this.props.maintenance_request.id) {
 			return <ModalAddLandlord authToken={this.props.authenticity_token} maintenance_request_id={this.props.maintenance_request.id} close={this.isAdd} addLandlord={this.addLandlord} />;
   	} else  if(this.state.isEdit) {
-  		return <ModalEditLandlord close={this.isEdit} landlord={this.state.landlord} editLandlord={this.editLandlord} />;
+  		return <ModalEditLandlord close={this.isEdit} authToken={this.props.authenticity_token} landlord={this.state.landlord} editLandlord={this.editLandlord} />;
   	} else if(this.state.isNotification) {
       return <ModalNotification close={this.isNotification} title={this.state.notification.title} content={this.state.notification.content} />
     }
