@@ -522,7 +522,10 @@ var ModalAddLandlord = React.createClass({
       <div className="modal-custom fade">
         <div className="modal-dialog">
           <div className="modal-content">
-            <form id="addForm" onSubmit={this.submit}>
+            <form role="form" id="addForm" method="POST" acceptCharset="UTF-8" action="/create_landlord">
+            <input name="utf8" type="hidden" value="✓"/>
+            <input type="hidden" name="authenticity_token" defaultValue={this.props.authToken} />
+            <input type="hidden" name="landlord[maintenance_request_id]" defaultValue={this.props.maintenance_request_id} />
               <div className="modal-header">
                 <button type="button" 
                         className="close"
@@ -531,25 +534,25 @@ var ModalAddLandlord = React.createClass({
                         onClick={this.props.close}>
                   <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Create Landlord</h4>
+                <h4 className="modal-title text-center">Ask Landlord</h4>
               </div>
               <div className="modal-body">
   							  <div className="row">
   							    <div>
   							      <label>Name <strong>(*)</strong></label>
-  							      <input className={"u-full-width " + (this.state.errorName && "has-error")} id="name" ref={e => this.name = e} type="text" onChange={this.checkValidate} placeholder="Enter Name"/>
+  							      <input className={"u-full-width " + (this.state.errorName && "has-error")} id="name" ref={e => this.name = e} name="landlord[name]" type="text" onChange={this.checkValidate} placeholder="Enter Name"/>
   							    </div>
   							  </div>
   							  <div className="row m-t-lg">
   							    <div>
   							      <label>Mobile <strong>(*)</strong></label>
-  							      <input className={"u-full-width " + (this.state.errorMobile && "has-error")} id="mobile" ref={e => this.mobile = e} type="number" onChange={this.checkValidate} placeholder="Enter Mobile"/>
+  							      <input className={"u-full-width " + (this.state.errorMobile && "has-error")} id="mobile" ref={e => this.mobile = e} name="landlord[mobile]" type="number" onChange={this.checkValidate} placeholder="Enter Mobile"/>
   							    </div>
   							  </div>
   							  <div className="row m-t-lg">
   							    <div>
   							      <label>Email <strong>(*)</strong></label>
-  							      <input className={"u-full-width " + (this.state.errorEmail && "has-error")} id="email" ref={e => this.email = e} type="text" onChange={this.checkValidate} placeholder="Enter Email"/>
+  							      <input className={"u-full-width " + (this.state.errorEmail && "has-error")} id="email" ref={e => this.email = e} name="landlord[email]" type="text" onChange={this.checkValidate} placeholder="Enter Email"/>
   							    </div>
   							  </div>
               </div>
@@ -633,7 +636,7 @@ var ModalEditLandlord = React.createClass({
 			mobile: this.mobile.value,
 			email: this.email.value
 		}
-		this.props.editLandlord(params); 
+		//this.props.editLandlord(params); 
 	},
 
 	render: function() {
@@ -808,9 +811,11 @@ var ModalNotification = React.createClass({
 
 var Summary = React.createClass({
 	getInitialState: function() {
+    var landlord = this.props.landlord;
+
     return {
     	isModal: false,
-    	isConfirm: false,
+    	isConfirm: !!landlord,
       isAdd: false,
       isEdit: false,
       isNotification: false,
@@ -818,11 +823,7 @@ var Summary = React.createClass({
         title: "",
         content: ""
       },
-      landlord: {
-      	name: "test",
-      	mobile: 123456789,
-      	email: "text@mail.com"
-      }
+      landlord: landlord
     };
   },
 
@@ -855,7 +856,7 @@ var Summary = React.createClass({
   },
 
   openModal: function() {
-  	if(this.state.landlord.name == "") {
+  	if(!this.state.landlord) {
   		this.isAdd();
   	}else {
   		this.isConfirm();
@@ -863,6 +864,20 @@ var Summary = React.createClass({
   },
 
   addLandlord: function(landlord){
+    /*fetch('http://localhost:3000/landlords', {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify(landlord)
+    })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function(res){ console.log(res) })
+    .catch(function(res){ console.log(res) });*/
+
   	this.setState({landlord: landlord});
   	this.isAdd();
     this.setState({notification: {
@@ -886,7 +901,7 @@ var Summary = React.createClass({
 		if(this.state.isConfirm) {
   		return <ModalConfirm close={this.isConfirm} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
   	} else if(this.state.isAdd) {
-			return <ModalAddLandlord close={this.isAdd} addLandlord={this.addLandlord} />;
+			return <ModalAddLandlord authToken={this.props.authenticity_token} maintenance_request_id={this.props.maintenance_request.id} close={this.isAdd} addLandlord={this.addLandlord} />;
   	} else  if(this.state.isEdit) {
   		return <ModalEditLandlord close={this.isEdit} landlord={this.state.landlord} editLandlord={this.editLandlord} />;
   	} else if(this.state.isNotification) {
