@@ -32,6 +32,8 @@ class Ability
         can :new, MaintenanceRequest
         can :read_show, MaintenanceRequest
         can :ordered_maintenance_requests, :maintenance_request
+        can :index, :agent_maintenance_request
+        can :show, :agent_maintenance_request
       end
 
       if @user.agency_admin?

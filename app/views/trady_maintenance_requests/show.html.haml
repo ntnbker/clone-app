@@ -52,8 +52,7 @@
     =link_to "Create or Upload Invoices", invoice_options_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)
 
     
-/////////////WE HAVE TO ADD THIS BELOW TO EACH VIEW FOR EACH OF THE REQUIRE ROLES SEE BELOW
-/ -if current_user.agent? || current_user.agency_admin? || current_user.trady?
+
 
 - @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
   
@@ -82,21 +81,4 @@
 
 
 
-    
-/****************MODALS****************/     
-/**************************************/
-/ %div{:class=>"modal fade", :id=>"tenant-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
-/   %div{:class=>"modal-dialog", :role=>"document"}
-/     %div{:class=>"modal-content"}
-/       %div{:class=>"modal-body message_modal"}
-/         %div.messages_container    
-/           = render partial: "messages/message", collection: @tenants_conversation, as: :message   
-/         %div{:id=>"errors_div"}
-/         =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
-/           =f.text_field :body, class: "message_body"
-/           =f.hidden_field :conversation_type, value:"Tenant"
-/           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-/           =f.submit "Submit Message", :class=>"btn btn-default"
-/           %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
-/             Close
-
+ 

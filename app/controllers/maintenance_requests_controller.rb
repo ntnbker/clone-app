@@ -1,7 +1,7 @@
 class MaintenanceRequestsController < ApplicationController 
   
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
+  # before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
   before_action :set_user, only:[:new,:create]
   before_action :require_login, only:[:show,:index, :ordered_maintenance_requests]
   before_action :customer_input_session, only:[:create,:new]
@@ -412,48 +412,48 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def maintenance_request_stakeholders(maintenance_request_id)
-    mr = MaintenanceRequest.find_by(id:maintenance_request_id)
-    mr_tenants = mr.tenants
-    #mr_agent = mr.agent.user.id if mr.agent != nil
-    mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
-    mr_landlord = mr.property.landlord.user.id if mr.property.landlord_id != nil 
-    mr_trady = mr.trady.user.id if mr.trady !=nil
+    # mr = MaintenanceRequest.find_by(id:maintenance_request_id)
+    # mr_tenants = mr.tenants
+    # #mr_agent = mr.agent.user.id if mr.agent != nil
+    # mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
+    # mr_landlord = mr.property.landlord.user.id if mr.property.landlord_id != nil 
+    # mr_trady = mr.trady.user.id if mr.trady !=nil
     
-    mr_user_affiliates_array = []
+    # mr_user_affiliates_array = []
     
-    if mr_agent != nil
-      mr_user_affiliates_array.push(mr_agent)
-    end 
+    # if mr_agent != nil
+    #   mr_user_affiliates_array.push(mr_agent)
+    # end 
 
-    if mr_agency_admin != nil
-      mr_user_affiliates_array.push(mr_agency_admin)
-    end
+    # if mr_agency_admin != nil
+    #   mr_user_affiliates_array.push(mr_agency_admin)
+    # end
 
-    if mr_landlord !=nil 
-      mr_user_affiliates_array.push(mr_landlord)
-    end
+    # if mr_landlord !=nil 
+    #   mr_user_affiliates_array.push(mr_landlord)
+    # end
 
-    if mr_trady !=nil 
-      mr_user_affiliates_array.push(mr_trady)
-    end 
-
-
-    
-    mr_tenants.each do |tenant|
-      mr_user_affiliates_array.push(tenant.user.id)
-    end 
+    # if mr_trady !=nil 
+    #   mr_user_affiliates_array.push(mr_trady)
+    # end 
 
 
     
+    # mr_tenants.each do |tenant|
+    #   mr_user_affiliates_array.push(tenant.user.id)
+    # end 
+
+
     
     
-    if mr_user_affiliates_array.include?(current_user.id)
-        #do nothing
     
-    else
-      flash[:danger] = "Sorry you are not allowed to see that!!!"
-      redirect_to root_path
-    end
+    # if mr_user_affiliates_array.include?(current_user.id)
+    #     #do nothing
+    
+    # else
+    #   flash[:danger] = "Sorry you are not allowed to see that!!!"
+    #   redirect_to root_path
+    # end
   end
 
 
