@@ -537,7 +537,7 @@ var ModalAddLandlord = React.createClass({
                         onClick={this.props.close}>
                   <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Forward Maintencance request</h4>
+                <h4 className="modal-title text-center">Forward Maintenance request</h4>
               </div>
               <div className="modal-body">
   							  <div className="row">
@@ -667,7 +667,7 @@ var ModalEditLandlord = React.createClass({
                 				onClick={this.props.close}>
                 	<span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Forward Maintencance request</h4>
+                <h4 className="modal-title text-center">Forward Maintenance request</h4>
               </div>
               <div className="modal-body">
                   <div className="row">
@@ -885,14 +885,14 @@ var Summary = React.createClass({
     var self = this;
     $.ajax({
       type: 'POST',
-      url: '/landlords',
+      url: '/create-and-notify-landlord',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
       },
       data: params,
       success: function(res){
         self.setState({notification: {
-          title: "Ask Landlord",
+          title: "Forward Maintenance request",
           content: "Your Landlord has been created successfully!"
         }});
         self.setState({landlord: res});
@@ -901,7 +901,7 @@ var Summary = React.createClass({
       },
       error: function() {
         self.setState({notification: {
-          title: "Ask Landlord",
+          title: "Forward Maintenance request",
           content: "Create Landlord error!"
         }});
         self.isNotification();
@@ -913,14 +913,14 @@ var Summary = React.createClass({
     var self = this;
     $.ajax({
       type: 'POST',
-      url: '/update-landlord',
+      url: '/update-and-notify-landlord',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
       },
       data: params,
       success: function(res){
         self.setState({notification: {
-          title: "Ask Landlord",
+          title: "Forward Maintenance request",
           content: "Your Landlord has been updated successfully!"
         }});
         self.setState({landlord: res});
@@ -929,8 +929,8 @@ var Summary = React.createClass({
       },
       error: function() {
         self.setState({notification: {
-          title: "Ask Landlord",
-          content: "Updated Landlord error!"
+          title: "Forward Maintenance request",
+          content: "Your Landlord has been updated successfully"
         }});
         self.isNotification();
       }

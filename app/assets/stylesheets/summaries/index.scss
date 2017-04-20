@@ -517,13 +517,23 @@ $color-red: #e34f4f;
         color: $color-white;
         text-shadow: 0 1px 0 $color-white;
         filter: alpha(opacity=20);
-        opacity: .5;
+        opacity: .8;
         padding: 0;
         cursor: pointer;
         background: 0 0;
         border: 0;
         margin-top: -2px;
         height: auto;
+        span {
+          border: 1px solid $color-white;
+          border-radius: 100%;
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          line-height: 18px;
+          text-align: center;
+          color: $color-white;
+        }
         &:hover {
           opacity: 1;
         }
