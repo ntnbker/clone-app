@@ -537,24 +537,24 @@ var ModalAddLandlord = React.createClass({
                         onClick={this.props.close}>
                   <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Ask Landlord</h4>
+                <h4 className="modal-title text-center">Forward Maintencance request</h4>
               </div>
               <div className="modal-body">
   							  <div className="row">
   							    <div>
-  							      <label>Name <strong>(*)</strong></label>
+  							      <label>Name <strong>*</strong>:</label>
   							      <input className={"u-full-width " + (this.state.errorName && "has-error")} id="name" ref={e => this.name = e} name="landlord[name]" type="text" onChange={this.checkValidate} placeholder="Enter Name"/>
   							    </div>
   							  </div>
   							  <div className="row m-t-lg">
   							    <div>
-  							      <label>Mobile <strong>(*)</strong></label>
+  							      <label>Mobile <strong>*</strong>:</label>
   							      <input className={"u-full-width " + (this.state.errorMobile && "has-error")} id="mobile" ref={e => this.mobile = e} name="landlord[mobile]" type="number" onChange={this.checkValidate} placeholder="Enter Mobile"/>
   							    </div>
   							  </div>
   							  <div className="row m-t-lg">
   							    <div>
-  							      <label>Email <strong>(*)</strong></label>
+  							      <label>Email <strong>*</strong>:</label>
   							      <input className={"u-full-width " + (this.state.errorEmail && "has-error")} id="email" ref={e => this.email = e} name="landlord[email]" type="text" onChange={this.checkValidate} placeholder="Enter Email"/>
   							    </div>
   							  </div>
@@ -576,8 +576,13 @@ var ModalEditLandlord = React.createClass({
     return {
       errorName: false,
       errorMobile: false,
-      errorEmail: false
+      errorEmail: false,
+      isEdit: false
     };
+  },
+
+  isEdit: function() {
+    this.setState({isEdit: !this.state.isEdit});
   },
 
   checkValidate: function(e) {
@@ -662,31 +667,34 @@ var ModalEditLandlord = React.createClass({
                 				onClick={this.props.close}>
                 	<span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Edit Landlord</h4>
+                <h4 className="modal-title text-center">Forward Maintencance request</h4>
               </div>
               <div className="modal-body">
-  							  <div className="row">
-  							    <div>
-  							      <label>Name <strong>(*)</strong></label>
-  							      <input className={"u-full-width " + (this.state.errorName && "has-error")} id="name" ref={e => this.name = e} defaultValue={this.props.landlord.name} type="text" onChange={this.checkValidate} />
+                  <div className="row">
+                    <a className="btn-edit" onClick={this.isEdit}>Edit</a>
+                  </div>
+  							  <div className="row m-t-lg">
+  							    <div className="form-input">
+  							      <label>Name <strong>*</strong>:</label>
+  							      <input className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")} id="name" ref={e => this.name = e} defaultValue={this.props.landlord.name} type="text" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
   							    </div>
   							  </div>
   							  <div className="row m-t-lg">
-  							    <div>
-  							      <label>Mobile <strong>(*)</strong></label>
-  							      <input className={"u-full-width " + (this.state.errorMobile && "has-error")} id="mobile" ref={e => this.mobile = e} defaultValue={this.props.landlord.mobile} type="number" onChange={this.checkValidate} />
+  							    <div className="form-input">
+  							      <label>Mobile <strong>*</strong>:</label>
+  							      <input className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")} id="mobile" ref={e => this.mobile = e} defaultValue={this.props.landlord.mobile} type="number" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
   							    </div>
   							  </div>
   							  <div className="row m-t-lg">
-  							    <div>
-  							      <label>Email <strong>(*)</strong></label>
-  							      <input className={"u-full-width " + (this.state.errorEmail && "has-error")} id="email" ref={e => this.email = e} type="text" defaultValue={this.props.landlord.email} onChange={this.checkValidate} />
+  							    <div className="form-input">
+  							      <label>Email <strong>*</strong>:</label>
+  							      <input className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")} id="email" ref={e => this.email = e} type="text" defaultValue={this.props.landlord.email} onChange={this.checkValidate} readOnly={!this.state.isEdit} />
   							    </div>
   							  </div>
               </div>
               <div className="modal-footer">
                 <button className="btn btn-primary cancel" onClick={this.props.close}>Cancel</button>
-                <button type="submit" className="btn btn-default success">Submit</button>
+                <button type="submit" className="btn btn-default success" disabled={!this.state.isEdit}>Submit</button>
               </div>
             </form>
           </div>
@@ -902,7 +910,6 @@ var Summary = React.createClass({
   },
 
   editLandlord: function(params) {
-    debugger
     var self = this;
     $.ajax({
       type: 'POST',

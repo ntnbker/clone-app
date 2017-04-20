@@ -481,7 +481,7 @@ $color-red: #e34f4f;
       -ms-transform: translate(0,0);
       -o-transform: translate(0,0);
       transform: translate(0,0);
-      width: 600px;
+      width: 500px;
       margin: 30px auto;
     }
     .modal-content {
@@ -507,6 +507,7 @@ $color-red: #e34f4f;
         color: $color-white;
         font-weight: 500;
         font-size: 20px;
+        text-transform: uppercase;
       }
       .close {
         float: right;
@@ -531,12 +532,24 @@ $color-red: #e34f4f;
     .modal-body {
       position: relative;
       padding: 15px;
+      text-transform: uppercase;
       label {
         font-weight: 400;
+        float: left;
+        text-transform: uppercase;
+        width: 80px;
+        line-height: 38px;
         strong {
           color: $color-red;
           font-weight: 500;
+          font-size: 20px;
         }
+      }
+      input {
+        width: 80%;
+      }
+      .readonly {
+        background-color: $color-grey;
       }
       .has-error {
         border-color: $color-red;
@@ -544,11 +557,12 @@ $color-red: #e34f4f;
     }
     .modal-footer {
       padding: 15px;
-      text-align: right;
+      text-align: center;
       border-top: 1px solid #e5e5e5;
       button {
         border: none;
-        color: $color-white
+        color: $color-white;
+        text-transform: uppercase;
       }
       .success {
         background-color: $color-green;
@@ -565,6 +579,19 @@ $color-red: #e34f4f;
   }
   .m-t-lg {
     margin-top: 15px;
+  }
+  .btn-edit {
+    float: right;
+    height: 25px;
+    padding: 0;
+    width: 50px;
+    font-size: 12px;
+    font-weight: 400;
+    border: 1px solid $color-grey-dark;
+    text-align: center;
+    line-height: 25px;
+    border-radius: 3px;
+    cursor: pointer;
   }
   @media (min-width: 320px) and (max-width: 480px) {
     .main-summary {
@@ -629,6 +656,10 @@ $color-red: #e34f4f;
 
     .modal-custom .modal-dialog {
       width: 300px;
+
+      .modal-body input{
+        width: 70%;
+      }
     }
   }
   @media (min-width: 481px) and (max-width: 640px) {
