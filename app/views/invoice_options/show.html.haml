@@ -1,13 +1,13 @@
 %div.container.invoice-form
   %h4 Please Choose One
   %div
-    %h5.showheader Option 1
+    %h5.optionheader Option 1
     %p
       If you use your own app to make invoices such as Xero.
       Please Click 
       %b Upload Invoice
       to upload a PDF of your invoice.
-    %button.button-primary.option-button
+    %button.button-primary.green.option-button
       =link_to "Upload Invoice", confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"pdf_file" )  
   %hr
   %div  
@@ -16,7 +16,7 @@
       Easily make invoices using our platform by clicking the 
       %b Create Invoice
       button below.
-    %button.button-primary.option-button
+    %button.button-primary.green.option-button
       =link_to "Create Invoice", confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"system_invoice")
-    %button.button-primary.green
+    %button.button-primary
       =link_to "Back To Maintenance Request", maintenance_request_path(@maintenance_request_id)

@@ -20,66 +20,44 @@
     Invoice
   %h5
     Company Information
-  %hr
   %p
+    Company :  
     =@trady.trady_company.company_name
     %br
+    Address :  
     =@trady.trady_company.address
     %br
+    Phone :  
     =@trady.trady_company.mobile_number
     %br
+    Email :  
     =@trady.trady_company.email
-  
-  -@invoice.invoice_items.each do |f|
-  
+
+  %hr
+  %div.invoice-info 
+    -@invoice.invoice_items.each do |f|
+      %div.row
+        %br
+        -if f.pricing_type == "Hourly"
+          %p #{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour)
+          %span $#{f.amount * f.hours}
+        -elsif f.pricing_type == "Fixed Cost"
+          %p #{f.item_description.capitalize}
+          %span $ #{f.amount.to_f}
+        
+    %hr
     %div.row
-      %hr
-      -if f.pricing_type == "Hourly"
-        ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
-      -elsif f.pricing_type == "Fixed Cost"
-        ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
-      
-          
-           
+      -if @invoice.tax == true
+        %p GST
+        %span $ #{ (@invoice.amount - @invoice.amount/1.10).round(2)}
+      -elsif @invoice.tax == false
+        %p GST
+        %span $ 0.00
+      %hr    
+      %p Total
+      %span $#{@invoice.amount}
+
   %hr
-  %div.row
-    -if @invoice.tax == true
-      %p
-        = "GST: #{ (@invoice.amount - @invoice.amount/1.10).round(2)}"
-    -elsif @invoice.tax == false
-      %p
-        GST: $ 0.00
-    %br    
-    %span
-      ="Total: $#{@invoice.amount}"
-  
-  %hr
-  / -if @invoice.invoice_payments
-  /   %h3
-  /     Amounts Paid
-  /   -@invoice.invoice_payments.each do |payment| 
-  /     %hr
-  /     %div.row
-  /       ="Amount Paid: $#{payment.amount_paid}"
-  /       =link_to "Edit", edit_invoice_payment_path(payment, invoice_id:@invoice.id)
-  /       %br
-  /       ="Date Paid:#{payment.date}"
-  /   %hr
-  /   %h5
-  /     ="Total Paid: $#{@invoice.amount_paid}"
-        
-        
+
   %button.button.button-primary.green
     = link_to 'Print Invoice', print_invoice_path(id:@invoice), :onclick => 'window.print();return false;', method: :post
-  / %button.button.button-primary.green
-  /   Add Payment(Click and should show amount paid field)
-  
-  / %div.row
-  /   =form_for @payment  do |f|
-  /     =f.label :amount_paid, "Amount Paid"
-  /     =f.text_field :amount_paid 
-  /     =f.label :date, "Date Paid"
-  /     =f.date_field :date
-  /     =f.hidden_field :invoice_id, value:@invoice.id
-  /     =submit_tag "Submit Amount Paid", class: "button button button-primary green"
-    

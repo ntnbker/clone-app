@@ -1,44 +1,42 @@
 =react_component('StepProgress', {:step => 3})
 
-%div.container.well
+%div.container.invoice-form
   -@ledger.invoices.each_with_index do |invoice, index| 
     %div.row
       %h5
         ="Invoice # #{index+1}"
-      
-    -invoice.invoice_items.each do |f|
-    
-      %div.row
-        -if f.pricing_type == "Hourly"
-          %p
-            ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.total_per_hour}" 
-        -elsif f.pricing_type == "Fixed Cost"
-          %p
-            ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
-      
-          
-           
-  
-    -if invoice.tax == true
-      %p
-        = "Before Tax: #{ (invoice.amount - invoice.gst_amount).round(2)}"
-      %p
-        = "GST: #{ (invoice.amount - invoice.amount/1.10).round(2)}"
-    -elsif invoice.tax == false
-      %p
-        GST: $ 0.00
-    %br    
-    %h4
-      %span
-        ="Total: $#{invoice.amount.round(3)}"
-    %h5
-      %span
-        ="Invoice Due: #{invoice.due_on}"
+    %div.invoice-info
+      -invoice.invoice_items.each do |f|
+        %div.row
+          -if f.pricing_type == "Hourly"
+            %p #{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour)
+            %span $ #{f.total_per_hour}
+          -elsif f.pricing_type == "Fixed Cost"
+            %p #{f.item_description.capitalize}
+            %span $ #{f.amount.to_f}
+
+      -if invoice.tax == true
+        %p Before Tax
+        %span $ #{ (invoice.amount - invoice.gst_amount).round(2)}
+        %br
+        %p GST
+        %span $ #{ (invoice.amount - invoice.amount/1.10).round(2)}
+      -elsif invoice.tax == false
+        %p GST
+        %span $ 0.00
+      %hr    
+      %h6
+        %b
+          %p Total
+          %span $ #{invoice.amount.round(3)}
+      %h6
+        %b
+          ="Invoice Due: #{invoice.due_on}"
     %hr
-  %div.row
+  %div.grand-total
     %h5
-      ="Grand Total: $#{@ledger.grand_total.round(3)}"
-  %div.row
+      ="Grand Total : $ #{@ledger.grand_total.round(3)}"
+  %div.qf-button
     %button.button.button-primary.left
       =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
     %button.button.button-primary.green.right

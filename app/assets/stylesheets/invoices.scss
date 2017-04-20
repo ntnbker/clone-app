@@ -13,10 +13,26 @@
 		padding: 0px 10px;
 	}
 
-	.showheader {
+	.optionheader {
 		margin: 0;
 	}
 
+	.invoice-info {
+		width: 250px;
+		float: right;
+
+		p {
+			display: inline-block;
+			margin: 0;
+		}
+		span {
+			float: right;
+		}
+	}
+	.grand-total {
+		margin-bottom: 50px;
+		text-align: right;
+	}
 	input {
 		display: block;
 		width: 100%;
@@ -184,6 +200,8 @@
 
 	hr {
 		margin: 10px 0;
+		width: 100%;
+		display: block;
 	}
 
 	&.success {
