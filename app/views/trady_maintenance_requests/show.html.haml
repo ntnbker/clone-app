@@ -26,10 +26,10 @@
 
   %p
     Agent Managing: 
-    -if @maintenance_request.agent_name == nil
-      =@maintenance_request.agency_admin.first_name
-    -else
-      =@maintenance_request.agent_name
+    -if @maintenance_request.agent == nil
+      ="#{@maintenance_request.agency_admin.first_name} #{@maintenance_request.agency_admin.last_name}"
+    -elsif @maintenance_request.agency_admin == nil
+      ="#{@maintenance_request.agent.name} #{@maintenance_request.agent.last_name}"
   %h3
     =@maintenance_request.maintenance_heading
   %p
@@ -39,10 +39,12 @@
 %div.container
   %h5
     Contact
-  -if @maintenance_request.property.landlord != nil  
-    %a{:href=>"tel:+#{@maintenance_request.property.landlord.mobile}"}
-      ="Telephone:#{@maintenance_request.property.landlord.mobile}"
-    
+  -if @maintenance_request.agent != nil  
+    %a{:href=>"tel:+#{@maintenance_request.agent.mobile_phone}"}
+      ="Call Agent: #{@maintenance_request.agent.mobile_phone}"
+  -elsif @maintenance_request.agency_admin != nil  
+    %a{:href=>"tel:+#{@maintenance_request.agency_admin.mobile_phone}"}
+      ="Call Agent: #{@maintenance_request.agency_admin.mobile_phone}"
 %div.container
   %h5
     Action
@@ -52,7 +54,7 @@
     =link_to "Create or Upload Invoices", invoice_options_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)
 
     
-
+I HAVE TO ADD EACH QUOTE THAT WAS MADE BY THIS USERS
 
 - @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
   

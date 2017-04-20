@@ -46,7 +46,7 @@ Rails.application.routes.draw do
   ##########TENANT ROLE RESOURCES/ROUTES###########
   ###################################################
   resources :tenants, only:[:show, :index]
-  
+  resources :tenant_maintenance_requests, only:[:index, :show]
   ###################################################
   ##########MR RESOURCES/ROUTES######################
   ###################################################

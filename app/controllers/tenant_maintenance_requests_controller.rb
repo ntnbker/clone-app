@@ -1,25 +1,18 @@
-class TradyMaintenanceRequestsController < ApplicationController
-
+class TenantMaintenanceRequestsController < ApplicationController
+  
   def index
     if params[:sort_by_date] == "Newest to Oldest"
-      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
     else
-      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
     end
   end
 
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    # @tenants = @maintenance_request.tenants
+    
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @quote = @quotes.where(:status=>"Approved").first if !nil
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
-
-    if @quote
-      @quote_id = @quote.id
-    else
-      @quote_id = ''
-    end 
 
     @message = Message.new
     
@@ -65,4 +58,5 @@ class TradyMaintenanceRequestsController < ApplicationController
 
  
   end
-end 
+
+end
