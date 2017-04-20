@@ -434,7 +434,7 @@ var ModalConfirm = React.createClass({
               <h4 className="modal-title text-center">Confirm Landlord</h4>
             </div>
             <div className="modal-body">
-              <p className="text-center">Is {this.props.landlord.name} the correct landlord for 123 street Ave</p>
+              <p className="text-center">Is {this.props.landlord.name} the correct landlord for {this.props.property.property_address}</p>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default success" onClick={this.props.editLandlord} data-dismiss="modal">Yes</button>
@@ -695,7 +695,7 @@ var ModalEditLandlord = React.createClass({
               </div>
               <div className="modal-footer">
                 <button className="btn btn-primary cancel" onClick={this.props.close}>Cancel</button>
-                <button type="submit" className="btn btn-default success" disabled={!this.state.isEdit}>Submit</button>
+                <button type="submit" className="btn btn-default success">Submit</button>
               </div>
             </form>
           </div>
@@ -830,48 +830,54 @@ var ModalNotification = React.createClass({
 var Summary = React.createClass({
   getInitialState: function() {
     var landlord = this.props.landlord;
+    
 
     return {
       isModal: false,
-      isConfirm: !!landlord,
-      isAdd: false,
-      isEdit: false,
-      isNotification: false,
+      modal: "",
       notification: {
         title: "",
         content: ""
       },
-      landlord: landlord
+      landlord: landlord,
     };
   },
 
   isConfirm: function() {
-    this.setState({isConfirm: !this.state.isConfirm});
-    this.setState({isModal: true});
-    this.setState({isEdit: false});
-    this.setState({isAdd: false});
-    this.setState({isNotification: false});
+    this.setState({
+      isModal: true,
+      modal: "confirm"
+    });
   },
 
   isAdd: function() {
-    this.setState({isAdd: !this.state.isAdd});
-    this.setState({isEdit: false});
-    this.setState({isConfirm: false});
-    this.setState({isNotification: false});
+    this.setState({
+      isModal: true,
+      modal: "add"
+    });
   },
 
   isEdit: function() {
-    this.setState({isEdit: !this.state.isEdit});
-    this.setState({isAdd: false});
-    this.setState({isConfirm: false});
-    this.setState({isNotification: false});
+    this.setState({
+      isModal: true, 
+      modal: "edit"
+    });
   },
 
   isNotification: function() {
-    this.setState({isNotification: !this.state.isNotification});
-    this.setState({isAdd: false});
-    this.setState({isConfirm: false});
-    this.setState({isEdit: false});
+    this.setState({
+      isModal: true, 
+      modal: "notification"
+    });
+  },
+
+  isClose: function() {
+    this.setState({isModal: false});
+    this.setState({modal: ""});
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    div.parentNode.removeChild(div);
   },
 
   openModal: function() {
@@ -897,7 +903,7 @@ var Summary = React.createClass({
           content: "Your Landlord has been created successfully!"
         }});
         self.setState({landlord: res});
-        self.isAdd();
+        self.isClose();
         self.isNotification();
       },
       error: function() {
@@ -925,7 +931,7 @@ var Summary = React.createClass({
           content: "Your Landlord has been updated successfully!"
         }});
         self.setState({landlord: res});
-        self.isEdit();
+        self.isClose();
         self.isNotification();
       },
       error: function() {
@@ -939,14 +945,26 @@ var Summary = React.createClass({
   },
   
   renderModal: function() {
-    if(this.state.isConfirm && this.state.isModal) {
-      return <ModalConfirm close={this.isConfirm} landlord={this.state.landlord} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
-    } else if(this.state.isAdd  && this.props.maintenance_request.id) {
-      return <ModalAddLandlord authToken={this.props.authenticity_token} maintenance_request_id={this.props.maintenance_request.id} close={this.isAdd} addLandlord={this.addLandlord} />;
-    } else  if(this.state.isEdit) {
-      return <ModalEditLandlord close={this.isEdit} authToken={this.props.authenticity_token} landlord={this.state.landlord} maintenance_request_id={this.props.maintenance_request.id} editLandlord={this.editLandlord} />;
-    } else if(this.state.isNotification) {
-      return <ModalNotification close={this.isNotification} title={this.state.notification.title} content={this.state.notification.content} />
+    if(this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if(div.length === 0) {
+        div = document.createElement('div')
+        div.className  = "modal-backdrop in";
+        body.appendChild(div);
+      }
+      
+      if(this.state.modal == "confirm") {
+        return <ModalConfirm close={this.isClose} property={this.props.property} landlord={this.state.landlord} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
+      } else if(this.state.modal == "add"  && this.props.maintenance_request.id) {
+        return <ModalAddLandlord authToken={this.props.authenticity_token} maintenance_request_id={this.props.maintenance_request.id} close={this.isClose} addLandlord={this.addLandlord} />;
+      } else  if(this.state.modal == "edit" && this.props.maintenance_request.id) {
+        return <ModalEditLandlord close={this.isClose} authToken={this.props.authenticity_token} landlord={this.state.landlord} maintenance_request_id={this.props.maintenance_request.id} editLandlord={this.editLandlord} />;
+      } else if(this.state.modal = "notification") {
+        return <ModalNotification close={this.isClose} title={this.state.notification.title} content={this.state.notification.content} />
+      }
     }
 
     return null;
