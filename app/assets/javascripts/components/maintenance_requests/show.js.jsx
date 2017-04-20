@@ -1,12 +1,12 @@
 var Post = React.createClass({
-	render: function() {
-		return (
-			<div className="post">
+  render: function() {
+    return (
+      <div className="post">
         <div className="info">
           <div className="info-title">
             <div className="title">
               <span>
-              Plumber Needed in Sydney	
+              Plumber Needed in Sydney  
               </span>
               <button className="button-primary" type="">Active</button>
             </div>
@@ -65,14 +65,14 @@ var Post = React.createClass({
           </div>
         </div>
       </div>
-		);
-	}
+    );
+  }
 });
 
 var Quote = React.createClass({
-	render: function() {
-		return (
-			<div className="quotes">
+  render: function() {
+    return (
+      <div className="quotes">
         <p>
           Quotes (3)
         </p>
@@ -94,7 +94,7 @@ var Quote = React.createClass({
             </div>
             <div className="actions five columns">
               <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>	
+              <i className="icon-close" aria-hidden="true"></i>  
               </button>
               <button className="reload button-default">
               <i className="icon-reload" aria-hidden="true"></i>
@@ -117,7 +117,7 @@ var Quote = React.createClass({
             </div>
             <div className="actions five columns">
               <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>	
+              <i className="icon-close" aria-hidden="true"></i>  
               </button>
               <button className="reload button-default">
               <i className="icon-reload" aria-hidden="true"></i>
@@ -140,7 +140,7 @@ var Quote = React.createClass({
             </div>
             <div className="actions five columns">
               <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>	
+              <i className="icon-close" aria-hidden="true"></i>  
               </button>
               <button className="reload button-default">
               <i className="icon-reload" aria-hidden="true"></i>
@@ -150,14 +150,14 @@ var Quote = React.createClass({
           </div>
         </div>
       </div>
-		);
-	}
+    );
+  }
 });
 
 var Invoice = React.createClass({
-	render: function() {
-		return (
-			<div className="quotes m-t-xl">
+  render: function() {
+    return (
+      <div className="quotes m-t-xl">
         <p>
           Invoice (3)
         </p>
@@ -177,7 +177,7 @@ var Invoice = React.createClass({
             </div>
             <div className="actions five columns">
               <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>	
+              <i className="icon-close" aria-hidden="true"></i>  
               </button>
               <button className="reload button-default">
               <i className="icon-reload" aria-hidden="true"></i>
@@ -202,7 +202,7 @@ var Invoice = React.createClass({
             </div>
             <div className="actions five columns">
               <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>	
+              <i className="icon-close" aria-hidden="true"></i>  
               </button>
               <button className="reload button-default">
               <i className="icon-reload" aria-hidden="true"></i>
@@ -225,7 +225,7 @@ var Invoice = React.createClass({
             </div>
             <div className="actions five columns">
               <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>	
+              <i className="icon-close" aria-hidden="true"></i>  
               </button>
               <button className="reload button-default">
               <i className="icon-reload" aria-hidden="true"></i>
@@ -235,8 +235,8 @@ var Invoice = React.createClass({
           </div>
         </div>
       </div>
-		);
-	}
+    );
+  }
 });
 
 var ContentContact = React.createClass({
@@ -271,9 +271,9 @@ var Contact = React.createClass({
     this.setState({show: !this.state.show});
   },
 
-	render: function() {
-		return (
-			<div className="item">
+  render: function() {
+    return (
+      <div className="item">
         <div className="header contact">
           <a>Contact:</a>
           <i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showContact}></i>
@@ -282,8 +282,8 @@ var Contact = React.createClass({
           { this.state.show && <ContentContact /> }  
         </div>
       </div>
-		);
-	}
+    );
+  }
 });
 
 var ContentAction = React.createClass({
@@ -336,9 +336,9 @@ var Action = React.createClass({
     this.setState({show: !this.state.show});
   },
 
-	render: function() {
-		return (
-			<div className="item">
+  render: function() {
+    return (
+      <div className="item">
         <div className="header action">
           <a>Actions:</a>
           <i className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} aria-hidden="true" onClick={this.showAction}></i>
@@ -347,8 +347,8 @@ var Action = React.createClass({
           { this.state.show && <ContentAction openModel={this.props.openModal} /> }
         </div>
       </div>
-		);
-	}
+    );
+  }
 });
 
 var Activity = React.createClass({
@@ -402,9 +402,9 @@ var Activity = React.createClass({
     );
   },
 
-	render: function() {
-		return (
-			<div className="item">
+  render: function() {
+    return (
+      <div className="item">
         <div className="header action">
           <a >Activity log:</a>
           <i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showActivity}></i>
@@ -413,23 +413,23 @@ var Activity = React.createClass({
           { this.state.show && this.content() }
         </div>
       </div>
-		);
-	}
+    );
+  }
 });
 
 var ModalConfirm = React.createClass({
-	render: function() {
-		return (
+  render: function() {
+    return (
       <div className="modal-custom fade">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <button type="button" 
-              				className="close"
-              				data-dismiss="modal" 
-              				aria-label="Close" 
-              				onClick={this.props.close}>
-              	<span aria-hidden="true">&times;</span>
+                      className="close"
+                      data-dismiss="modal" 
+                      aria-label="Close" 
+                      onClick={this.props.close}>
+                <span aria-hidden="true">&times;</span>
               </button>
               <h4 className="modal-title text-center">Confirm Landlord</h4>
             </div>
@@ -444,7 +444,7 @@ var ModalConfirm = React.createClass({
         </div>
       </div>
     );
-	}
+  }
 });
 
 var ModalAddLandlord = React.createClass({
@@ -490,7 +490,7 @@ var ModalAddLandlord = React.createClass({
     }
   },
 
-	submit: function(e) {
+  submit: function(e) {
     e.preventDefault();
 
     var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
@@ -511,7 +511,7 @@ var ModalAddLandlord = React.createClass({
       return false;
     } 
 
-		var params = {
+    var params = {
       authenticity_token: this.props.authToken,
       landlord: {
         name: this.name.value,
@@ -519,12 +519,12 @@ var ModalAddLandlord = React.createClass({
         email: this.email.value,
         maintenance_request_id: this.props.maintenance_request_id,
       },
-		}
-		this.props.addLandlord(params); 
-	},
+    }
+    this.props.addLandlord(params); 
+  },
 
-	render: function() {
-		return (
+  render: function() {
+    return (
       <div className="modal-custom fade">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -540,35 +540,35 @@ var ModalAddLandlord = React.createClass({
                 <h4 className="modal-title text-center">Forward Maintenance request</h4>
               </div>
               <div className="modal-body">
-  							  <div className="row">
-  							    <div>
-  							      <label>Name <strong>*</strong>:</label>
-  							      <input className={"u-full-width " + (this.state.errorName && "has-error")} id="name" ref={e => this.name = e} name="landlord[name]" type="text" onChange={this.checkValidate} placeholder="Enter Name"/>
-  							    </div>
-  							  </div>
-  							  <div className="row m-t-lg">
-  							    <div>
-  							      <label>Mobile <strong>*</strong>:</label>
-  							      <input className={"u-full-width " + (this.state.errorMobile && "has-error")} id="mobile" ref={e => this.mobile = e} name="landlord[mobile]" type="number" onChange={this.checkValidate} placeholder="Enter Mobile"/>
-  							    </div>
-  							  </div>
-  							  <div className="row m-t-lg">
-  							    <div>
-  							      <label>Email <strong>*</strong>:</label>
-  							      <input className={"u-full-width " + (this.state.errorEmail && "has-error")} id="email" ref={e => this.email = e} name="landlord[email]" type="text" onChange={this.checkValidate} placeholder="Enter Email"/>
-  							    </div>
-  							  </div>
+                  <div className="row">
+                    <div>
+                      <label>Name <strong>*</strong>:</label>
+                      <input className={"u-full-width " + (this.state.errorName && "has-error")} id="name" ref={e => this.name = e} name="landlord[name]" type="text" onChange={this.checkValidate} placeholder="Enter Name"/>
+                    </div>
+                  </div>
+                  <div className="row m-t-lg">
+                    <div>
+                      <label>Mobile <strong>*</strong>:</label>
+                      <input className={"u-full-width " + (this.state.errorMobile && "has-error")} id="mobile" ref={e => this.mobile = e} name="landlord[mobile]" type="number" onChange={this.checkValidate} placeholder="Enter Mobile"/>
+                    </div>
+                  </div>
+                  <div className="row m-t-lg">
+                    <div>
+                      <label>Email <strong>*</strong>:</label>
+                      <input className={"u-full-width " + (this.state.errorEmail && "has-error")} id="email" ref={e => this.email = e} name="landlord[email]" type="text" onChange={this.checkValidate} placeholder="Enter Email"/>
+                    </div>
+                  </div>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-primary cancel" onClick={this.props.close}>Cancel</button>
-  							<button type="submit" className="btn btn-default success">Submit</button>
+                <button type="submit" className="btn btn-default success">Submit</button>
               </div>
-						</form>
+            </form>
           </div>
         </div>
       </div>
     );
-	}
+  }
 });
 
 var ModalEditLandlord = React.createClass({
@@ -619,7 +619,7 @@ var ModalEditLandlord = React.createClass({
     }
   },
 
-	submit: function(e) {
+  submit: function(e) {
     e.preventDefault();
 
     var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
@@ -641,31 +641,32 @@ var ModalEditLandlord = React.createClass({
     }
     
 
-		var params = {
+    var params = {
       authenticity_token: this.props.authToken,
       landlord: {
         id: this.props.landlord.id,
         name: this.name.value,
         mobile: this.mobile.value,
-        email: this.email.value
+        email: this.email.value,
+        maintenance_request_id: this.props.maintenance_request_id,
       }
     }
-		this.props.editLandlord(params); 
-	},
+    this.props.editLandlord(params); 
+  },
 
-	render: function() {
-		return (
+  render: function() {
+    return (
       <div className="modal-custom fade">
         <div className="modal-dialog">
           <div className="modal-content">
             <form id="editForm" onSubmit={this.submit}>
               <div className="modal-header">
                 <button type="button" 
-                				className="close"
-                				data-dismiss="modal" 
-                				aria-label="Close" 
-                				onClick={this.props.close}>
-                	<span aria-hidden="true">&times;</span>
+                        className="close"
+                        data-dismiss="modal" 
+                        aria-label="Close" 
+                        onClick={this.props.close}>
+                  <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 className="modal-title text-center">Forward Maintenance request</h4>
               </div>
@@ -673,24 +674,24 @@ var ModalEditLandlord = React.createClass({
                   <div className="row">
                     <a className="btn-edit" onClick={this.isEdit}>Edit</a>
                   </div>
-  							  <div className="row m-t-lg">
-  							    <div className="form-input">
-  							      <label>Name <strong>*</strong>:</label>
-  							      <input className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")} id="name" ref={e => this.name = e} defaultValue={this.props.landlord.name} type="text" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
-  							    </div>
-  							  </div>
-  							  <div className="row m-t-lg">
-  							    <div className="form-input">
-  							      <label>Mobile <strong>*</strong>:</label>
-  							      <input className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")} id="mobile" ref={e => this.mobile = e} defaultValue={this.props.landlord.mobile} type="number" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
-  							    </div>
-  							  </div>
-  							  <div className="row m-t-lg">
-  							    <div className="form-input">
-  							      <label>Email <strong>*</strong>:</label>
-  							      <input className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")} id="email" ref={e => this.email = e} type="text" defaultValue={this.props.landlord.email} onChange={this.checkValidate} readOnly={!this.state.isEdit} />
-  							    </div>
-  							  </div>
+                  <div className="row m-t-lg">
+                    <div className="form-input">
+                      <label>Name <strong>*</strong>:</label>
+                      <input className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")} id="name" ref={e => this.name = e} defaultValue={this.props.landlord.name} type="text" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
+                    </div>
+                  </div>
+                  <div className="row m-t-lg">
+                    <div className="form-input">
+                      <label>Mobile <strong>*</strong>:</label>
+                      <input className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")} id="mobile" ref={e => this.mobile = e} defaultValue={this.props.landlord.mobile} type="number" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
+                    </div>
+                  </div>
+                  <div className="row m-t-lg">
+                    <div className="form-input">
+                      <label>Email <strong>*</strong>:</label>
+                      <input className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")} id="email" ref={e => this.email = e} type="text" defaultValue={this.props.landlord.email} onChange={this.checkValidate} readOnly={!this.state.isEdit} />
+                    </div>
+                  </div>
               </div>
               <div className="modal-footer">
                 <button className="btn btn-primary cancel" onClick={this.props.close}>Cancel</button>
@@ -701,7 +702,7 @@ var ModalEditLandlord = React.createClass({
         </div>
       </div>
     );
-	}
+  }
 });
 
 var ActivityMobile = React.createClass({
@@ -827,12 +828,12 @@ var ModalNotification = React.createClass({
 });
 
 var Summary = React.createClass({
-	getInitialState: function() {
+  getInitialState: function() {
     var landlord = this.props.landlord;
 
     return {
-    	isModal: false,
-    	isConfirm: !!landlord,
+      isModal: false,
+      isConfirm: !!landlord,
       isAdd: false,
       isEdit: false,
       isNotification: false,
@@ -846,23 +847,23 @@ var Summary = React.createClass({
 
   isConfirm: function() {
     this.setState({isConfirm: !this.state.isConfirm});
-  	this.setState({isModal: true});
-  	this.setState({isEdit: false});
-  	this.setState({isAdd: false});
+    this.setState({isModal: true});
+    this.setState({isEdit: false});
+    this.setState({isAdd: false});
     this.setState({isNotification: false});
   },
 
   isAdd: function() {
-  	this.setState({isAdd: !this.state.isAdd});
-  	this.setState({isEdit: false});
-  	this.setState({isConfirm: false});
+    this.setState({isAdd: !this.state.isAdd});
+    this.setState({isEdit: false});
+    this.setState({isConfirm: false});
     this.setState({isNotification: false});
   },
 
   isEdit: function() {
-  	this.setState({isEdit: !this.state.isEdit});
-  	this.setState({isAdd: false});
-  	this.setState({isConfirm: false});
+    this.setState({isEdit: !this.state.isEdit});
+    this.setState({isAdd: false});
+    this.setState({isConfirm: false});
     this.setState({isNotification: false});
   },
 
@@ -874,11 +875,11 @@ var Summary = React.createClass({
   },
 
   openModal: function() {
-  	if(!this.state.landlord) {
-  		this.isAdd();
-  	}else {
-  		this.isConfirm();
-  	}
+    if(!this.state.landlord) {
+      this.isAdd();
+    }else {
+      this.isConfirm();
+    }
   },
 
   addLandlord: function(params){
@@ -906,7 +907,7 @@ var Summary = React.createClass({
         }});
         self.isNotification();
       }
-    });	
+    });  
   },
 
   editLandlord: function(params) {
@@ -937,47 +938,47 @@ var Summary = React.createClass({
     }); 
   },
   
-	renderModal: function() {
-		if(this.state.isConfirm && this.state.isModal) {
-  		return <ModalConfirm close={this.isConfirm} landlord={this.state.landlord} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
-  	} else if(this.state.isAdd  && this.props.maintenance_request.id) {
-			return <ModalAddLandlord authToken={this.props.authenticity_token} maintenance_request_id={this.props.maintenance_request.id} close={this.isAdd} addLandlord={this.addLandlord} />;
-  	} else  if(this.state.isEdit) {
-  		return <ModalEditLandlord close={this.isEdit} authToken={this.props.authenticity_token} landlord={this.state.landlord} editLandlord={this.editLandlord} />;
-  	} else if(this.state.isNotification) {
+  renderModal: function() {
+    if(this.state.isConfirm && this.state.isModal) {
+      return <ModalConfirm close={this.isConfirm} landlord={this.state.landlord} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
+    } else if(this.state.isAdd  && this.props.maintenance_request.id) {
+      return <ModalAddLandlord authToken={this.props.authenticity_token} maintenance_request_id={this.props.maintenance_request.id} close={this.isAdd} addLandlord={this.addLandlord} />;
+    } else  if(this.state.isEdit) {
+      return <ModalEditLandlord close={this.isEdit} authToken={this.props.authenticity_token} landlord={this.state.landlord} maintenance_request_id={this.props.maintenance_request.id} editLandlord={this.editLandlord} />;
+    } else if(this.state.isNotification) {
       return <ModalNotification close={this.isNotification} title={this.state.notification.title} content={this.state.notification.content} />
     }
 
-  	return null;
-	},
+    return null;
+  },
 
-	summary(e) {
-		return ( 
-			<div className="summary-container-index" id="summary-container-index">
-			  <div className="main-summary">
-			    <div className="section">
-			    	<Post />
-		    		<Quote />
-		    		<Invoice />
-			    </div>
-			    <div className="sidebar">
-			    	<Contact />
-			    	<Action openModal={this.openModal} />
-			    	<Activity />
-	    		</div>
-			    <ActivityMobile />
-			  </div>
-			  <SideBarMobile openModal={this.openModal} />
-			  { this.renderModal() }
-			</div>
-		);
-	},
+  summary(e) {
+    return ( 
+      <div className="summary-container-index" id="summary-container-index">
+        <div className="main-summary">
+          <div className="section">
+            <Post />
+            <Quote />
+            <Invoice />
+          </div>
+          <div className="sidebar">
+            <Contact />
+            <Action openModal={this.openModal} />
+            <Activity />
+          </div>
+          <ActivityMobile />
+        </div>
+        <SideBarMobile openModal={this.openModal} />
+        { this.renderModal() }
+      </div>
+    );
+  },
 
-	render: function() {
-		return (
-			<div>
-				{ this.summary() }
-			</div>
-		);
-	}
+  render: function() {
+    return (
+      <div>
+        { this.summary() }
+      </div>
+    );
+  }
 });
