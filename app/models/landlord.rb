@@ -10,6 +10,15 @@ attr_accessor :maintenance_request_id
 validates_presence_of :name, :email, :mobile
 
 
+def all_maintenance_requests
+  maintenance_requests = []
+  self.properties.each do |property|
+    property.maintenance_requests.each do |mr|
+      maintenance_requests.push(mr)
+    end 
+  end 
+  return maintenance_requests 
+end
 
 
 
