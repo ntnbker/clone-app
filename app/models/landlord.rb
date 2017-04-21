@@ -21,6 +21,17 @@ def all_maintenance_requests
 end
 
 
+def order_maintenance_request_by_descending
+  maintenance_requests = self.all_maintenance_requests.sort { |value1, value2| value2.created_at <=> value1.created_at }
+  return maintenance_requests
+end
+
+def order_maintenance_request_by_ascending
+  maintenance_requests = self.all_maintenance_requests.sort { |value1, value2| value1.created_at <=> value2.created_at }
+  return maintenance_requests
+end
+
+
 
 
 end 

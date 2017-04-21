@@ -39,7 +39,7 @@ class MaintenanceRequestsController < ApplicationController
 
     elsif current_user.agency_admin?
       @agency_admin = current_user.agency_admin
-      @agency_admin = the_agency_admin
+      @agency = @agency_admin.agency
       @maintenance_request.agency_admin_id = @agency_admin.id
       @maintenance_request.perform_realestate_validations = false
     elsif current_user.agent?
