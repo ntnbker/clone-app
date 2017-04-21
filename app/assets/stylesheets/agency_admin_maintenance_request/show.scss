@@ -8,6 +8,25 @@ $color-gray: #3e4b54;
 $color-gray-dark: #baccd8;
 $color-red: #e34f4f;
 
+body{
+  position: relative;
+}
+.modal-open {
+  overflow: hidden;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000;
+}
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: .5;
+}
 .summary-container-index {
   background-color: $color-grey;
   clear: both;
@@ -71,6 +90,18 @@ $color-red: #e34f4f;
         color: $color-grey-dark-1;
         font-size: 16px;
       }
+      .address {
+        margin-left: 5px;
+      }
+      .time {
+        display: inline-block;
+        margin-left: 3px;
+        margin-right: 3px;
+      }
+      .name-author {
+        margin-left: 3px;
+        display: inline-block;
+      }
     }
     .info .actions {
       margin-left: 0px;
@@ -117,6 +148,9 @@ $color-red: #e34f4f;
             border-radius: 5px;
             margin-right: 5px;
           }
+        }
+        .slide-image {
+          max-height: 500px;
         }
         .swiper-pagination-bullet-active {
           background-color: $color-green !important;
@@ -203,15 +237,15 @@ $color-red: #e34f4f;
         width: 80px;
         background-color: $color-white;
         padding: 0;
-        &.approved {
+        &.Approved {
           border-color: $color-green;
           color: $color-green;
         }
-        &.pending {
+        &.Pending {
           border-color: $color-gray;
           color: $color-gray;
         }
-        &.declined {
+        &.Declined {
           border-color: $color-red;
           color: $color-red;
         }
@@ -896,7 +930,7 @@ $color-red: #e34f4f;
       display: block;
     }
   }
-  @media (min-width: 1025px) {
+  @media (min-width: 1025px) and (max-width: 1280px) {
     .main-summary {
       margin: auto 20px;
     }
@@ -927,6 +961,9 @@ $color-red: #e34f4f;
       }
       .author {
         font-size: 12px;
+        a {
+          font-size: 12px;
+        }
       }
     }
     .sidebar {
@@ -939,7 +976,7 @@ $color-red: #e34f4f;
       display: none;
     }
   }
-  @media (min-width: 1280px) {
+  @media (min-width: 1281px) {
     .main-summary {
       margin: auto 30px;
     }
