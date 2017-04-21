@@ -1,8 +1,0 @@
-%fieldset.nested-fields
-  
-  =f.date_field :date
-  =f.time_select :start_time
-  =f.time_select :finish_time
-  =f.form_group :bdm_verification_status do 
-    =f.check_box :available_only_by_appointment, label: "Check box if accesss only available by appointment"
-  =link_to_remove_association "remove", f

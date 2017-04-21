@@ -1,0 +1,48 @@
+
+=form_tag search_maintenance_request_path, method: :get do 
+  = search_field_tag :query, params[:query], placeholder:"Search Address, Tenant Name, or Landlord Name"
+  = button_tag 'Search', type: 'submit'
+
+
+/ -if current_user.agency_admin?
+=link_to "Agency Admin Maintenance Requests INDEX", agency_admin_maintenance_requests_path
+%br
+=link_to "Agent Maintenance Request INDEX", agent_maintenance_requests_path 
+/ =link_to "OLD My Maintenance Requests INDEX", maintenance_requests_path
+%br
+=link_to "Trady Maintenance Request INDEX", trady_maintenance_requests_path
+%br
+=link_to "Tenant Maintenance Request INDEX", tenant_maintenance_requests_path
+%br
+=link_to "Landlord Maintenance Request INDEX", landlord_maintenance_requests_path
+%br
+=link_to "Add Agent", new_agent_path
+%br
+=link_to "Add Agency Admin", new_agency_admin_path
+
+/ -elsif current_user.agent?
+
+
+
+
+
+
+
+
+
+
+
+
+- if local_assigns.has_key? :expanded 
+  = react_component('Header', {logged_in:logged_in?,current_user: current_user,menu_login_path: menu_login_path,new_agency_path: new_agency_path,root_path: root_path,maintenance_requests_path: maintenance_requests_path,conversations_path: conversations_path,logout_path: logout_path,expanded: true}) 
+
+
+- if !local_assigns.has_key? :expanded 
+  = react_component('Header', {logged_in: logged_in?,current_user: current_user,menu_login_path: menu_login_path,new_agency_path: new_agency_path,root_path: root_path,maintenance_requests_path: maintenance_requests_path,conversations_path: conversations_path,logout_path: logout_path,expanded: false}) 
+
+
+
+
+
+
+
