@@ -13,6 +13,7 @@ class Trady < ApplicationRecord
   has_many :appointments
   has_many :comments
   
+  validates_presence_of :company_name
   validates_presence_of :name
   validates_presence_of :email
   validates_presence_of :mobile

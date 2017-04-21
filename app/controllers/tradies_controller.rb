@@ -21,27 +21,44 @@ class TradiesController < ApplicationController
     @trady = Trady.new(trady_params)
     mr = MaintenanceRequest.find_by(id:params[:trady][:maintenance_request_id])
     
+    if mr.agency_admin != nil
+      if mr.agency_admin.agency.tradies !=nil
+        @all_tradies = mr.agency_admin.agency.tradies.where(:skill=>mr.service_type) 
+      else 
+        @all_tradies= []
+      end 
+    end 
+
+    if mr.agent != nil
+      if mr.agent.agency.tradies !=nil 
+        @all_tradies = mr.agent.agency.tradies.where(:skill=>mr.service_type) 
+      else 
+        @all_tradies= []
+      end
+    end 
+
+
     if @user && @user.trady?
       
       respond_to do |format|
-        format.html {render "maintenance_requests/show.html.haml"}  
-        format.js{render layout: false, content_type: 'text/javascript'}
-
         
+        #format.js{render layout: false, content_type: 'text/javascript'}
+        format.json{render json:@all_tradies}
+      end 
 
-        agency_admin = mr.agency_admin
-        agent = mr.agent
-        if agency_admin == nil
-          @agency = agent.agency
-        elsif agent == nil
-          @agency = agency_admin.agency
-        end
-        if AgencyTrady.where(:agency_id=>@agency.id, :trady_id => @user.trady.id).present? 
-          #do nothing
-        else
-          AgencyTrady.create(agency_id:@agency.id,trady_id:@user.trady.id)
-        end
+      agency_admin = mr.agency_admin
+      agent = mr.agent
+      if agency_admin == nil
+        @agency = agent.agency
+      elsif agent == nil
+        @agency = agency_admin.agency
       end
+      if AgencyTrady.where(:agency_id=>@agency.id, :trady_id => @user.trady.id).present? 
+        #do nothing
+      else
+        AgencyTrady.create(agency_id:@agency.id,trady_id:@user.trady.id)
+      end
+        
       
 
       if params[:trady][:trady_request] == "Quote"
@@ -51,15 +68,12 @@ class TradiesController < ApplicationController
         mr.update_attribute(:trady_id, @user.trady.id )
       end 
 
-
-
       mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
          
     else
       respond_to do |format|
           if @trady.valid?
-            format.html {render "maintenance_requests/show.html.haml", :success =>"Your message was sent"}  
-            format.js {render layout: false, content_type: 'text/javascript'}
+            
             @user = User.create(email:params[:trady][:email],password:SecureRandom.hex(5))
             @trady.user_id = @user.id
             @trady.skill = params[:trady][:skill_required]
@@ -67,7 +81,6 @@ class TradiesController < ApplicationController
             @trady.roles << role
             @trady.save
 
-            
             agency_admin = mr.agency_admin
             agent = mr.agent
             if agency_admin == nil
@@ -83,13 +96,13 @@ class TradiesController < ApplicationController
               mr.update_attribute(:trady_id, @user.trady.id )
             end 
 
-
             mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
             AgencyTrady.create(agency_id:@agency.id,trady_id:@trady.id)
-            
+
+            format.json{render json:@all_tradies}
           else
-            format.html { render "maintenance_requests/show.html.haml" }
-            format.js {}
+            
+            format.json {render json:@trady.errors}
             
           end
         end
