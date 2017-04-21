@@ -30,7 +30,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     # @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
+    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(include: [:trady])
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
     @message = Message.new

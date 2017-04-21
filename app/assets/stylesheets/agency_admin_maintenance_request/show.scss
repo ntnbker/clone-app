@@ -90,6 +90,18 @@ body{
         color: $color-grey-dark-1;
         font-size: 16px;
       }
+      .address {
+        margin-left: 5px;
+      }
+      .time {
+        display: inline-block;
+        margin-left: 3px;
+        margin-right: 3px;
+      }
+      .name-author {
+        margin-left: 3px;
+        display: inline-block;
+      }
     }
     .info .actions {
       margin-left: 0px;
@@ -136,6 +148,9 @@ body{
             border-radius: 5px;
             margin-right: 5px;
           }
+        }
+        .slide-image {
+          max-height: 500px;
         }
         .swiper-pagination-bullet-active {
           background-color: $color-green !important;
@@ -222,15 +237,15 @@ body{
         width: 80px;
         background-color: $color-white;
         padding: 0;
-        &.approved {
+        &.Approved {
           border-color: $color-green;
           color: $color-green;
         }
-        &.pending {
+        &.Pending {
           border-color: $color-gray;
           color: $color-gray;
         }
-        &.declined {
+        &.Declined {
           border-color: $color-red;
           color: $color-red;
         }
@@ -915,7 +930,7 @@ body{
       display: block;
     }
   }
-  @media (min-width: 1025px) {
+  @media (min-width: 1025px) and (max-width: 1280px) {
     .main-summary {
       margin: auto 20px;
     }
@@ -946,6 +961,9 @@ body{
       }
       .author {
         font-size: 12px;
+        a {
+          font-size: 12px;
+        }
       }
     }
     .sidebar {
@@ -958,7 +976,7 @@ body{
       display: none;
     }
   }
-  @media (min-width: 1280px) {
+  @media (min-width: 1281px) {
     .main-summary {
       margin: auto 30px;
     }

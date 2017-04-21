@@ -1,43 +1,57 @@
 var Post = React.createClass({
+  componentDidMount: function() {
+    $(document).ready(function() {
+      new Swiper('.swiper-container', {
+        loop: true,
+        spaceBetween: 0,
+        slidesPerView: 1,
+        paginationClickable: true,
+        paginationClickable: true,
+        pagination: '.swiper-pagination',
+      });
+    });
+  },
+
   render: function() {
+    const maintenance = this.props.maintenance_request;
     return (
       <div className="post">
         <div className="info">
           <div className="info-title">
             <div className="title">
               <span>
-              Plumber Needed in Sydney  
+                {maintenance.maintenance_heading}
               </span>
               <button className="button-primary" type="">Active</button>
             </div>
             <div className="author">
-              <i className="fa fa-map-marker" aria-hidden="true"></i>
+              <i className="fa fa-map-marker" aria-hidden="true" />
               <span className="address">
-              Australia, Sydney, 774 Botany RD.
+                {this.props.property.property_address}.
               </span>
               <a className="time">
-              2 Days ago
+                {moment(maintenance.created_at).startOf('day').fromNow()}
               </a>
               <a>|</a>
-              <a className="name-author">Plumbing</a>
+              <a className="name-author">{maintenance.service_type}</a>
             </div>
           </div>
           <div className="actions">
             <button className="button-primary update-status">
-            Update status
+              Update status
             </button>
             <button className="button-primary edit-detail">
-            <i className="fa fa-pencil" aria-hidden="true"></i>
-            <span>
-            Edit Details
-            </span>
+              <i className="fa fa-pencil" aria-hidden="true" />
+              <span>
+                Edit Details
+              </span>
             </button>
             <button className="button-primary assign-to">
-            <i className="icon-user" aria-hidden="true"></i>
-            <span>
-            Assign to
-            </span>
-            <i className="fa fa-angle-down" aria-hidden="true"></i>
+              <i className="icon-user" aria-hidden="true" />
+              <span>
+                Assign to
+              </span>
+              <i className="fa fa-angle-down" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -45,22 +59,28 @@ var Post = React.createClass({
           <div className="slider-custom">
             <div className="swiper-container">
               <div className="swiper-wrapper slider">
-                <img src="/assets/slider1.jpg" className="swiper-slide slide-image img-1 active" />
-                <img src="/assets/slider1.jpg" className="swiper-slide slide-image img-2" />
-                <img src="/assets/slider1.jpg" className="swiper-slide slide-image img-3" />
-                <img src="/assets/slider1.jpg" className="swiper-slide slide-image img-4" />
+                {
+                  this.props.gallery.map(function(img, index) {
+                    return (
+                      <img 
+                        key={index} 
+                        src={img.url} 
+                        className={"swiper-slide slide-image img-1 " + (index === 0 && "active")}
+                      />
+                    );
+                  })
+                }
               </div>
             </div>
             <div className="swiper-pagination swiper-pagination-custom"></div>
           </div>
           <div className="description">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nunc ante, pharetra in luctus eget, sagittis et ante. Aliquam erat volutpat.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nunc ante, pharetra in luctus eget, sagittis et ante. </p>
+            <p>{maintenance.maintenance_description}</p>
           </div>
           <div className="date-time">
             <button>
-            <span className="vailability">Availability: </span>
-            <span className="time">Sep 4 (10am to 3pm)</span>
+              <span className="vailability">Availability: </span>
+              <span className="time">{maintenance.availability}</span>
             </button>
           </div>
         </div>
@@ -71,83 +91,45 @@ var Post = React.createClass({
 
 var Quote = React.createClass({
   render: function() {
+    const quotes = this.props.quotes;
     return (
       <div className="quotes">
         <p>
-          Quotes (3)
+          Quotes ({quotes.length})
         </p>
         <div className="list-quote">
-          <div className="item-quote row">
-            <div className="user seven columns">
-              <img src="/assets/user1.png" />
-              <div className="info">
-                <div className="name">
-                  <span>John Carlson</span>
-                  <button className="approved button-default">
-                  <span>Approved</span>
+        {
+          quotes.map(function(quote, index) {
+            return (
+              <div className="item-quote row" key={index}>
+                <div className="user seven columns">
+                  <img src="/assets/user1.png" />
+                  <div className="info">
+                    <div className="name">
+                      <span>{quote.trady.name}</span>
+                      <button className={'button-default ' + quote.status}>
+                        <span>{quote.status}</span>
+                      </button>
+                    </div>
+                    <p className="description">
+                      {quote.trady.company_name}
+                    </p>
+                  </div>
+                </div>
+                <div className="actions five columns">
+                  <button className="close button-default">
+                    <i className="icon-close" aria-hidden="true" />
                   </button>
+                  <button className="reload button-default">
+                    <i className="icon-reload" aria-hidden="true" />
+                  </button>
+                  <button className="money button-default">{quote.amount}AUD</button>
                 </div>
-                <p className="description">
-                  Dereck Plumbing Inc.
-                </p>
               </div>
-            </div>
-            <div className="actions five columns">
-              <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>  
-              </button>
-              <button className="reload button-default">
-              <i className="icon-reload" aria-hidden="true"></i>
-              </button>
-              <button className="money button-default">500AUD</button>
-            </div>
-          </div>
-          <div className="item-quote row">
-            <div className="user seven columns">
-              <img src="/assets/user1.png" />
-              <div className="info">
-                <div className="name">
-                  <span>John Carlson</span>
-                  <button className="declined button-default"><span>Declined</span></button>
-                </div>
-                <p className="description">
-                  Dereck Plumbing Inc.
-                </p>
-              </div>
-            </div>
-            <div className="actions five columns">
-              <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>  
-              </button>
-              <button className="reload button-default">
-              <i className="icon-reload" aria-hidden="true"></i>
-              </button>
-              <button className="money button-default">500AUD</button>
-            </div>
-          </div>
-          <div className="item-quote row">
-            <div className="user seven columns">
-              <img src="/assets/user1.png" />
-              <div className="info">
-                <div className="name">
-                  <span>John Carlson</span>
-                  <button className="pending button-default">Pending</button>
-                </div>
-                <p className="description">
-                  Dereck Plumbing Inc.
-                </p>
-              </div>
-            </div>
-            <div className="actions five columns">
-              <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>  
-              </button>
-              <button className="reload button-default">
-              <i className="icon-reload" aria-hidden="true"></i>
-              </button>
-              <button className="money button-default">500AUD</button>
-            </div>
-          </div>
+            );
+          })
+        }
+          
         </div>
       </div>
     );
@@ -156,83 +138,42 @@ var Quote = React.createClass({
 
 var Invoice = React.createClass({
   render: function() {
+    const invoices = this.props.invoices;
     return (
       <div className="quotes m-t-xl">
         <p>
-          Invoice (3)
+          Invoice ({invoices.length})
         </p>
         <div className="list-quote">
-          <div className="item-quote row">
-            <div className="user seven columns">
-              <img src="/assets/user1.png" />
-              <div className="info">
-                <div className="name">
-                  <span>John Carlson</span>
-                  <button className="approved button-default">Approved</button>
+        {
+          invoices.map(function(invoice, index) {
+            return (
+              <div className="item-quote row">
+                <div className="user seven columns">
+                  <img src="/assets/user1.png" />
+                  <div className="info">
+                    <div className="name">
+                      <span>{invoice.trady.name}</span>
+                      <button className={'button-default ' + invoice.status}>{invoice.status}</button>
+                    </div>
+                    <p className="description">
+                      {invoice.trady.company_name}
+                    </p>
+                  </div>
                 </div>
-                <p className="description">
-                  Dereck Plumbing Inc.
-                </p>
-              </div>
-            </div>
-            <div className="actions five columns">
-              <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>  
-              </button>
-              <button className="reload button-default">
-              <i className="icon-reload" aria-hidden="true"></i>
-              </button>
-              <button className="money button-default">500AUD</button>
-            </div>
-          </div>
-          <div className="item-quote row">
-            <div className="user seven columns">
-              <img src="/assets/user1.png" />
-              <div className="info">
-                <div className="name">
-                  <span>John Carlson</span>
-                  <button className="declined button-default">
-                  <span>Declined</span>
+                <div className="actions five columns">
+                  <button className="close button-default">
+                    <i className="icon-close" aria-hidden="true" />
                   </button>
+                  <button className="reload button-default">
+                    <i className="icon-reload" aria-hidden="true" />
+                  </button>
+                  <button className="money button-default">{invoice.amount}AUD</button>
                 </div>
-                <p className="description">
-                  Dereck Plumbing Inc.
-                </p>
               </div>
-            </div>
-            <div className="actions five columns">
-              <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>  
-              </button>
-              <button className="reload button-default">
-              <i className="icon-reload" aria-hidden="true"></i>
-              </button>
-              <button className="money button-default">500AUD</button>
-            </div>
-          </div>
-          <div className="item-quote row">
-            <div className="user seven columns">
-              <img src="/assets/user1.png" />
-              <div className="info">
-                <div className="name">
-                  <span>John Carlson</span>
-                  <button className="pending button-primary">Pending</button>
-                </div>
-                <p className="description">
-                  Dereck Plumbing Inc.
-                </p>
-              </div>
-            </div>
-            <div className="actions five columns">
-              <button className="close button-default">
-              <i className="icon-close" aria-hidden="true"></i>  
-              </button>
-              <button className="reload button-default">
-              <i className="icon-reload" aria-hidden="true"></i>
-              </button>
-              <button className="money button-primary">500AUD</button>
-            </div>
-          </div>
+            );
+          })
+        }          
         </div>
       </div>
     );
@@ -244,14 +185,14 @@ var ContentContact = React.createClass({
     return (
       <ul>
         <li>
-          <a href="">
-            <i className="fa fa-phone" aria-hidden="true"></i>
+          <a>
+            <i className="fa fa-phone" aria-hidden="true" />
             468873353989
           </a>
         </li>
         <li>
-          <a href="">
-            <i className="fa fa-commenting" aria-hidden="true"></i>
+          <a>
+            <i className="fa fa-commenting" aria-hidden="true" />
             Message LandLord
           </a>
         </li>
@@ -276,10 +217,14 @@ var Contact = React.createClass({
       <div className="item">
         <div className="header contact">
           <a>Contact:</a>
-          <i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showContact}></i>
+          <i
+            aria-hidden="true" 
+            onClick={this.showContact} 
+            className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} 
+          />
         </div>
         <div className="content">
-          { this.state.show && <ContentContact /> }  
+          { this.state.show && <ContentContact /> }
         </div>
       </div>
     );
@@ -292,31 +237,31 @@ var ContentAction = React.createClass({
       <ul>
         <li>
           <a onClick={this.props.openModel}>
-          <i className="fa fa-user"></i>
+            <i className="fa fa-user" />
             Ask Landlord
           </a>
         </li>
         <li className="active">
-          <a href="">
-          <i className="fa fa-file-text" aria-hidden="true"></i>
-          Request quote
+          <a>
+            <i className="fa fa-file-text" aria-hidden="true" />
+            Request quote
           </a>
         </li>
         <li>
-          <a href="">
-          <i className="icon-send" aria-hidden="true"></i>
-          Send work order
+          <a>
+            <i className="icon-send" aria-hidden="true" />
+            Send work order
           </a>
         </li>
         <li>
-          <a href="">
-            <i className="fa fa-user-plus" aria-hidden="true"></i>
+          <a>
+            <i className="fa fa-user-plus" aria-hidden="true" />
             Add Landlord
           </a>
         </li>
         <li>
-          <a href="">
-            <i className="fa fa-pencil" aria-hidden="true"></i>
+          <a>
+            <i className="fa fa-pencil" aria-hidden="true" />
             Edit Landlord
           </a>
         </li>
@@ -341,7 +286,11 @@ var Action = React.createClass({
       <div className="item">
         <div className="header action">
           <a>Actions:</a>
-          <i className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} aria-hidden="true" onClick={this.showAction}></i>
+          <i 
+            aria-hidden="true" 
+            onClick={this.showAction} 
+            className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} 
+          />
         </div>
         <div className="content" id="actions-content">
           { this.state.show && <ContentAction openModel={this.props.openModal} /> }
@@ -369,28 +318,38 @@ var Activity = React.createClass({
           <li className="user">
             <img className="img-user" src="/assets/user1.png" />
             <p className="info">
-              <span className="title">Request by <strong>Dereck Carlson</strong></span>
+              <span className="title">
+                Request by 
+                <strong>Dereck Carlson</strong>
+              </span>
               <span className="time">Sep 16, 2017 at 9am</span>
             </p>
           </li>
           <li className="user">
             <img className="img-user" src="/assets/user1.png" />
             <p className="info">
-              <span className="title">Request by <strong>Dereck Carlson</strong></span>
+              <span className="title">
+                Request by 
+                <strong>Dereck Carlson</strong>
+              </span>
               <span className="time">Sep 16, 2017 at 9am</span>
             </p>
           </li>
           <li className="user">
             <img className="img-user" src="/assets/user1.png" />
             <p className="info">
-              <span className="title">Request by <strong>Dereck Carlson</strong></span>
+              <span className="title">
+                Request by 
+                <strong>Dereck Carlson</strong>
+              </span>
               <span className="time">Sep 16, 2017 at 9am</span>
             </p>
           </li>
           <li className="user">
             <img className="img-user" src="/assets/user1.png" />
             <p className="info">
-              <span className="title">Request by <strong>Dereck Carlson</strong></span>
+              <span className="title">
+              Request by <strong>Dereck Carlson</strong></span>
               <span className="time">Sep 16, 2017 at 9am</span>
             </p>
           </li>
@@ -424,11 +383,13 @@ var ModalConfirm = React.createClass({
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <button type="button" 
-                      className="close"
-                      data-dismiss="modal" 
-                      aria-label="Close" 
-                      onClick={this.props.close}>
+              <button 
+                type="button" 
+                className="close"
+                data-dismiss="modal" 
+                aria-label="Close" 
+                onClick={this.props.close}
+              >
                 <span aria-hidden="true">&times;</span>
               </button>
               <h4 className="modal-title text-center">Confirm Landlord</h4>
@@ -437,8 +398,17 @@ var ModalConfirm = React.createClass({
               <p className="text-center">Is {this.props.landlord.name} the correct landlord for {this.props.property.property_address}</p>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-default success" onClick={this.props.editLandlord} data-dismiss="modal">Yes</button>
-              <button type="button" className="btn btn-primary cancel" onClick={this.props.addLandlord}>No</button>
+              <button 
+                type="button" 
+                className="btn btn-default success" 
+                onClick={() => this.props.onModalWith('edit')} 
+                data-dismiss="modal"
+              >Yes</button>
+              <button 
+                type="button" 
+                className="btn btn-primary cancel" 
+                onClick={() => this.props.onModalWith('add')}
+              >No</button>
             </div>
           </div>
         </div>
@@ -451,8 +421,8 @@ var ModalAddLandlord = React.createClass({
   getInitialState: function() {
     return {
       errorName: false,
+      errorEmail: false,
       errorMobile: false,
-      errorEmail: false
     };
   },
 
@@ -515,12 +485,12 @@ var ModalAddLandlord = React.createClass({
       authenticity_token: this.props.authToken,
       landlord: {
         name: this.name.value,
-        mobile: this.mobile.value,
         email: this.email.value,
+        mobile: this.mobile.value,
         maintenance_request_id: this.props.maintenance_request_id,
       },
     }
-    this.props.addLandlord(params); 
+    this.props.addLandlord(params);
   },
 
   render: function() {
@@ -530,11 +500,13 @@ var ModalAddLandlord = React.createClass({
           <div className="modal-content">
             <form role="form" id="addForm" onSubmit={this.submit}>
               <div className="modal-header">
-                <button type="button" 
-                        className="close"
-                        data-dismiss="modal" 
-                        aria-label="Close" 
-                        onClick={this.props.close}>
+                <button 
+                  type="button" 
+                  className="close"
+                  aria-label="Close" 
+                  data-dismiss="modal" 
+                  onClick={this.props.close}
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 className="modal-title text-center">Forward Maintenance request</h4>
@@ -543,7 +515,15 @@ var ModalAddLandlord = React.createClass({
                   <div className="row">
                     <div>
                       <label>Name <strong>*</strong>:</label>
-                      <input className={"u-full-width " + (this.state.errorName && "has-error")} id="name" ref={e => this.name = e} name="landlord[name]" type="text" onChange={this.checkValidate} placeholder="Enter Name"/>
+                      <input 
+                        id="name" 
+                        type="text" 
+                        name="landlord[name]" 
+                        placeholder="Enter Name"
+                        ref={e => this.name = e}
+                        onChange={this.checkValidate} 
+                        className={"u-full-width " + (this.state.errorName && "has-error")} 
+                      />
                     </div>
                   </div>
                   <div className="row m-t-lg">
@@ -560,7 +540,11 @@ var ModalAddLandlord = React.createClass({
                   </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary cancel" onClick={this.props.close}>Cancel</button>
+                <button 
+                  type="button" 
+                  onClick={this.props.close}
+                  className="btn btn-primary cancel" 
+                >Cancel</button>
                 <button type="submit" className="btn btn-default success">Submit</button>
               </div>
             </form>
@@ -574,10 +558,10 @@ var ModalAddLandlord = React.createClass({
 var ModalEditLandlord = React.createClass({
   getInitialState: function() {
     return {
+      isEdit: false,
       errorName: false,
-      errorMobile: false,
       errorEmail: false,
-      isEdit: false
+      errorMobile: false,
     };
   },
 
@@ -644,10 +628,10 @@ var ModalEditLandlord = React.createClass({
     var params = {
       authenticity_token: this.props.authToken,
       landlord: {
-        id: this.props.landlord.id,
         name: this.name.value,
-        mobile: this.mobile.value,
         email: this.email.value,
+        mobile: this.mobile.value,
+        id: this.props.landlord.id,
         maintenance_request_id: this.props.maintenance_request_id,
       }
     }
@@ -661,11 +645,13 @@ var ModalEditLandlord = React.createClass({
           <div className="modal-content">
             <form id="editForm" onSubmit={this.submit}>
               <div className="modal-header">
-                <button type="button" 
-                        className="close"
-                        data-dismiss="modal" 
-                        aria-label="Close" 
-                        onClick={this.props.close}>
+                <button 
+                  type="button" 
+                  className="close"
+                  aria-label="Close" 
+                  data-dismiss="modal" 
+                  onClick={this.props.close}
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 className="modal-title text-center">Forward Maintenance request</h4>
@@ -677,24 +663,50 @@ var ModalEditLandlord = React.createClass({
                   <div className="row m-t-lg">
                     <div className="form-input">
                       <label>Name <strong>*</strong>:</label>
-                      <input className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")} id="name" ref={e => this.name = e} defaultValue={this.props.landlord.name} type="text" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
+                      <input 
+                        type="text" 
+                        onChange={this.checkValidate} 
+                        readOnly={!this.state.isEdit} 
+                        id="name" ref={e => this.name = e} 
+                        defaultValue={this.props.landlord.name} 
+                        className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")}
+                      />
                     </div>
                   </div>
                   <div className="row m-t-lg">
                     <div className="form-input">
                       <label>Mobile <strong>*</strong>:</label>
-                      <input className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")} id="mobile" ref={e => this.mobile = e} defaultValue={this.props.landlord.mobile} type="number" onChange={this.checkValidate} readOnly={!this.state.isEdit} />
+                      <input 
+                        id="mobile" 
+                        type="number" 
+                        ref={e => this.mobile = e} 
+                        onChange={this.checkValidate} 
+                        readOnly={!this.state.isEdit} 
+                        defaultValue={this.props.landlord.mobile} 
+                        className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")}
+                      />
                     </div>
                   </div>
                   <div className="row m-t-lg">
                     <div className="form-input">
                       <label>Email <strong>*</strong>:</label>
-                      <input className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")} id="email" ref={e => this.email = e} type="text" defaultValue={this.props.landlord.email} onChange={this.checkValidate} readOnly={!this.state.isEdit} />
+                      <input 
+                        id="email"
+                        type="text"
+                        ref={e => this.email = e}
+                        onChange={this.checkValidate}
+                        readOnly={!this.state.isEdit}
+                        defaultValue={this.props.landlord.email} 
+                        className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")}
+                      />
                     </div>
                   </div>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-primary cancel" onClick={this.props.close}>Cancel</button>
+                <button 
+                  onClick={this.props.close}
+                  className="btn btn-primary cancel" 
+                >Cancel</button>
                 <button type="submit" className="btn btn-default success">Submit</button>
               </div>
             </form>
@@ -747,7 +759,7 @@ var ActivityMobile = React.createClass({
             </ul>
             <div className="text-center">
               <button className="view-more button-default">
-              View more
+                View more
               </button>
             </div>
           </div>
@@ -764,7 +776,11 @@ var ActionMobile = React.createClass({
         <div className="item">
           <div className="header action">
             <a>Actions:</a>
-            <i className="fa fa-close" aria-hidden="true" onClick={this.props.close}></i>
+            <i 
+              aria-hidden="true" 
+              className="fa fa-close" 
+              onClick={this.props.close}
+            />
           </div>
           <div className="content">
             <ContentAction openModel={this.props.openModal} />
@@ -808,11 +824,13 @@ var ModalNotification = React.createClass({
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <button type="button" 
-                      className="close"
-                      data-dismiss="modal" 
-                      aria-label="Close" 
-                      onClick={this.props.close}>
+              <button 
+                type="button" 
+                className="close"
+                aria-label="Close" 
+                data-dismiss="modal" 
+                onClick={this.props.close}
+              >
                 <span aria-hidden="true">&times;</span>
               </button>
               <h4 className="modal-title text-center">{ this.props.title }</h4>
@@ -833,42 +851,14 @@ var Summary = React.createClass({
     
 
     return {
-      isModal: false,
       modal: "",
+      isModal: false,
+      landlord: landlord,
       notification: {
         title: "",
         content: ""
       },
-      landlord: landlord,
     };
-  },
-
-  isConfirm: function() {
-    this.setState({
-      isModal: true,
-      modal: "confirm"
-    });
-  },
-
-  isAdd: function() {
-    this.setState({
-      isModal: true,
-      modal: "add"
-    });
-  },
-
-  isEdit: function() {
-    this.setState({
-      isModal: true, 
-      modal: "edit"
-    });
-  },
-
-  isNotification: function() {
-    this.setState({
-      isModal: true, 
-      modal: "notification"
-    });
   },
 
   isClose: function() {
@@ -880,11 +870,18 @@ var Summary = React.createClass({
     div.parentNode.removeChild(div);
   },
 
+  onModalWith: function(modal) {
+    this.setState({
+      modal: modal,
+      isModal: true, 
+    });
+  },
+
   openModal: function() {
     if(!this.state.landlord) {
-      this.isAdd();
+      this.onModalWith('add');
     }else {
-      this.isConfirm();
+      this.onModalWith('confirm');
     }
   },
 
@@ -898,11 +895,13 @@ var Summary = React.createClass({
       },
       data: params,
       success: function(res){
-        self.setState({notification: {
-          title: "Forward Maintenance request",
-          content: "Your Landlord has been created successfully!"
-        }});
-        self.setState({landlord: res});
+        self.setState({
+          landlord: res,
+          notification: {
+            title: "Forward Maintenance request",
+            content: "Your Landlord has been created successfully!"
+          }
+        });
         self.isClose();
         self.isNotification();
       },
@@ -926,18 +925,20 @@ var Summary = React.createClass({
       },
       data: params,
       success: function(res){
-        self.setState({notification: {
-          title: "Forward Maintenance request",
-          content: "Your Landlord has been updated successfully!"
-        }});
-        self.setState({landlord: res});
+        self.setState({
+          landlord: res,
+          notification: {
+            title: "Forward Maintenance request",
+            content: "Your Landlord has been updated successfully!",
+          },
+        });
         self.isClose();
         self.isNotification();
       },
       error: function() {
         self.setState({notification: {
           title: "Forward Maintenance request",
-          content: "Your Landlord has been updated successfully"
+          content: "Your Landlord has been updated successfully",
         }});
         self.isNotification();
       }
@@ -957,13 +958,41 @@ var Summary = React.createClass({
       }
       
       if(this.state.modal == "confirm") {
-        return <ModalConfirm close={this.isClose} property={this.props.property} landlord={this.state.landlord} addLandlord={this.isAdd} editLandlord={this.isEdit} />;
+        return (
+          <ModalConfirm 
+            close={this.isClose} 
+            landlord={this.state.landlord}
+            property={this.props.property}
+            onModalWith={(modal) => this.onModalWith(modal)}
+          />
+        );
       } else if(this.state.modal == "add"  && this.props.maintenance_request.id) {
-        return <ModalAddLandlord authToken={this.props.authenticity_token} maintenance_request_id={this.props.maintenance_request.id} close={this.isClose} addLandlord={this.addLandlord} />;
+        return (
+          <ModalAddLandlord
+            close={this.isClose}
+            addLandlord={this.addLandlord}
+            authToken={this.props.authenticity_token}
+            maintenance_request_id={this.props.maintenance_request.id}
+          />
+        );
       } else  if(this.state.modal == "edit" && this.props.maintenance_request.id) {
-        return <ModalEditLandlord close={this.isClose} authToken={this.props.authenticity_token} landlord={this.state.landlord} maintenance_request_id={this.props.maintenance_request.id} editLandlord={this.editLandlord} />;
+        return (
+          <ModalEditLandlord
+            close={this.isClose}
+            landlord={this.state.landlord}
+            editLandlord={this.editLandlord}
+            authToken={this.props.authenticity_token}
+            maintenance_request_id={this.props.maintenance_request.id}
+          />
+        );
       } else if(this.state.modal = "notification") {
-        return <ModalNotification close={this.isClose} title={this.state.notification.title} content={this.state.notification.content} />
+        return (
+          <ModalNotification 
+            close={this.isClose} 
+            title={this.state.notification.title} 
+            content={this.state.notification.content}
+          />
+        );
       }
     }
 
@@ -975,9 +1004,13 @@ var Summary = React.createClass({
       <div className="summary-container-index" id="summary-container-index">
         <div className="main-summary">
           <div className="section">
-            <Post />
-            <Quote />
-            <Invoice />
+            <Post 
+              gallery={this.props.gallery} 
+              property={this.props.property} 
+              maintenance_request={this.props.maintenance_request}
+            />
+            {this.props.quotes.length > 0 && <Quote quotes={this.props.quotes} />}
+            {this.props.invoices.length > 0 && <Invoice invoices={this.props.invoices} />}
           </div>
           <div className="sidebar">
             <Contact />
