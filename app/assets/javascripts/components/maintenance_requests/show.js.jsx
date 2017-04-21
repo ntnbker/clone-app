@@ -1,17 +1,48 @@
-var Post = React.createClass({
-  componentDidMount: function() {
-    $(document).ready(function() {
-      new Swiper('.swiper-container', {
-        loop: true,
-        spaceBetween: 0,
-        slidesPerView: 1,
-        paginationClickable: true,
-        paginationClickable: true,
-        pagination: '.swiper-pagination',
-      });
-    });
+var Carousel = React.createClass({
+  getInitialState: function() {
+    return {
+      indexSlider: 0
+    };
   },
 
+  switchSlider: function(index) {
+    if(index != this.state.indexSlider){
+      this.setState({indexSlider: index});
+    }
+  },
+
+  render: function() {
+    var temp = this;
+    return (
+      <div className="slider-custom">
+        <div className="swiper-container swiper-container-horizontal">
+          <div className="swiper-wrapper slider">
+            <img
+              key={this.state.indexSlider} 
+              src={this.props.gallery[this.state.indexSlider].url} 
+              className="swiper-slide slide-image img-1 active"
+            />
+          </div>
+        </div>
+        <div className="swiper-pagination swiper-pagination-custom swiper-pagination-clickable swiper-pagination-bullets">
+        {
+          this.props.gallery.map(function(img, index) {
+            return (
+              <span
+                key={index}
+                className={'swiper-pagination-bullet ' + ( index === temp.state.indexSlider && 'swiper-pagination-bullet-active')}
+                onClick={() => temp.switchSlider(index)}
+              ></span>
+            );
+          })
+        }
+        </div>
+      </div>
+    );
+  }
+});
+
+var Post = React.createClass({
   render: function() {
     const maintenance = this.props.maintenance_request;
     return (
@@ -56,24 +87,7 @@ var Post = React.createClass({
           </div>
         </div>
         <div className="content">
-          <div className="slider-custom">
-            <div className="swiper-container">
-              <div className="swiper-wrapper slider">
-                {
-                  this.props.gallery.map(function(img, index) {
-                    return (
-                      <img 
-                        key={index} 
-                        src={img.url} 
-                        className={"swiper-slide slide-image img-1 " + (index === 0 && "active")}
-                      />
-                    );
-                  })
-                }
-              </div>
-            </div>
-            <div className="swiper-pagination swiper-pagination-custom"></div>
-          </div>
+          <Carousel gallery={this.props.gallery} />
           <div className="description">
             <p>{maintenance.maintenance_description}</p>
           </div>
