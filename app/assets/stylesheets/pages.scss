@@ -114,6 +114,12 @@ body {
     min-height: calc(100vh - 210px);
 }
 
+.button-primary {
+	a {
+		color: white;
+		text-decoration: none;
+	}
+}
 .button-primary.green {
 	background-color: #7dc691 !important;
 	border-color: #7dc691 !important;
