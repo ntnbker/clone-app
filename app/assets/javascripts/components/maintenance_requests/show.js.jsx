@@ -903,14 +903,14 @@ var Summary = React.createClass({
           }
         });
         self.isClose();
-        self.isNotification();
+        self.onModalWith('notification');
       },
       error: function() {
         self.setState({notification: {
           title: "Forward Maintenance request",
           content: "Create Landlord error!"
         }});
-        self.isNotification();
+        self.onModalWith('notification');
       }
     });  
   },
@@ -933,14 +933,14 @@ var Summary = React.createClass({
           },
         });
         self.isClose();
-        self.isNotification();
+        self.onModalWith('notification');
       },
       error: function() {
         self.setState({notification: {
           title: "Forward Maintenance request",
           content: "Your Landlord has been updated successfully",
         }});
-        self.isNotification();
+        self.onModalWith('notification');
       }
     }); 
   },
