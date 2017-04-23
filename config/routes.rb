@@ -30,21 +30,24 @@ Rails.application.routes.draw do
   ##########AGENT ROLE RESOURCES/ROUTES##############
   ###################################################
   resources :agents, only:[:show,:update, :new, :create]
+  resources :agent_maintenance_requests, only:[:index,:show]
   resources :agency_admins, only:[:new, :create, :show]
   resources :agencies, only:[:new, :create]
 
+  resources :agency_admin_maintenance_requests, only:[:index, :show] 
   ###################################################
   ##########LANDLORD ROLE RESOURCES/ROUTES###########
   ###################################################
-  resources :landlords, only:[:create, :update]
-  get 'landlord_sign_up' => 'landlords#new', :as =>:landlord_sign_up
-  post 'create_landlord' => 'landlords#create_and_notify_landlord', :as =>:create_and_notify_landlord
-
+  resources :landlords, only:[:create]
+  resources :landlord_maintenance_requests, only:[:index, :show]
+  post 'update-landlord' => 'landlords#update', :as => :update_landlord
+  post 'create-and-notify-landlord' => 'landlords#create_and_notify_landlord', :as =>:create_and_notify_landlord
+  post "update-and-notify-landlord" => 'landlords#update_and_notify_landlord', :as =>:update_and_notify_landlord
   ###################################################
   ##########TENANT ROLE RESOURCES/ROUTES###########
   ###################################################
   resources :tenants, only:[:show, :index]
-  
+  resources :tenant_maintenance_requests, only:[:index, :show]
   ###################################################
   ##########MR RESOURCES/ROUTES######################
   ###################################################
@@ -117,6 +120,7 @@ Rails.application.routes.draw do
   get "trady_information" => 'tradies#trady_information', :as=>:trady_information
   resources :tradies, only:[:create]
   resources :trady_companies
+  resources :trady_maintenance_requests, only:[:index, :show]
   get "edit_trady_company" => 'trady_companies#edit_trady_company_invoice_workflow', :as =>:edit_trady_company_path
   put "update_trady_company" => "trady_companies#update_trady_company_invoice_workflow"
   post "tradie_company_redirect"=>"trady_companies#trady_company_router", :as=>:trady_company_router
@@ -164,5 +168,7 @@ Rails.application.routes.draw do
   ###################################################
 
   get "maintenance_request_filter", to: "maintenance_request_filters#filtered_maintenance_requests", :as => :filtered_maintenance_requests
+
+  resources :summaries, only:[:index]
 
  end

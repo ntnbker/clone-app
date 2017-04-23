@@ -1,0 +1,86 @@
+.container
+  %div
+    -if @gallery != nil
+      - @gallery.each do |image| # for each image
+        = image_tag(image.url.to_s) # display the image
+  %h3 
+    = @maintenance_request.service_type 
+    Needed for 
+    =@maintenance_request.name
+  %p 
+    Location: 
+    =@maintenance_request.property.property_address 
+  %p
+    Created:
+    =@maintenance_request.created_at.strftime("%d %b. %Y")
+  %p
+    Job type:
+    =@maintenance_request.service_type
+  %p#landlord
+    Landlord:
+    
+    -if @maintenance_request.property.landlord != nil
+      = @maintenance_request.property.landlord.name.capitalize
+    -else
+      No landlord assigned to this property!
+
+  %p
+    Agent Managing: 
+    -if @maintenance_request.agent == nil
+      ="#{@maintenance_request.agency_admin.first_name} #{@maintenance_request.agency_admin.last_name}"
+    -elsif @maintenance_request.agency_admin == nil
+      ="#{@maintenance_request.agent.name} #{@maintenance_request.agent.last_name}"
+  %h3
+    =@maintenance_request.maintenance_heading
+  %p
+    =@maintenance_request.maintenance_description 
+  
+
+%div.container
+  %h5
+    Contact
+  -if @maintenance_request.agent != nil  
+    %a{:href=>"tel:+#{@maintenance_request.agent.mobile_phone}"}
+      ="Call Agent: #{@maintenance_request.agent.mobile_phone}"
+  -elsif @maintenance_request.agency_admin != nil  
+    %a{:href=>"tel:+#{@maintenance_request.agency_admin.mobile_phone}"}
+      ="Call Agent: #{@maintenance_request.agency_admin.mobile_phone}"
+%div.container
+  %h5
+    Action
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+    Create Quote
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
+    =link_to "Create or Upload Invoices", invoice_options_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)
+
+    
+I HAVE TO ADD EACH QUOTE THAT WAS MADE BY THIS USERS
+
+- @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
+  
+  %div.well 
+    %h5
+      =link_to "Invoice #{index+1}", view_invoice_path(invoice_id:invoice.id)
+    %p 
+      ="Company Name: #{invoice.trady.trady_company.company_name}"
+    %p
+      ="Name: #{invoice.trady.name}"
+    %p 
+      ="Invoice Total Amount: $#{invoice.amount}"
+
+-@pdf_files.each_with_index do |pdf, index|
+  %div.well 
+    %h5
+      =link_to "PDF File Invoice #{index+1}", view_pdf_invoice_path(id:pdf.id)
+    %p 
+      ="Company Name: #{pdf.maintenance_request.trady.trady_company.company_name}"
+    %p
+      ="Name: #{pdf.maintenance_request.trady.name}"
+
+
+
+
+
+
+
+ 

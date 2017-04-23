@@ -1,6 +1,6 @@
-%div.container.well
-  %h3
-    Please Attach You Invoice(s)!!
+%div.container.invoice-form
+  %h5
+    Please Attach Your Invoice(s)!!
 
 
 
@@ -11,10 +11,10 @@
       =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
       =f.hidden_field :trady_id, value:@trady_id
       =f.hidden_field :quote_id, value:@quote_id
-      = f.submit "Submit PDF"
+      = f.submit "Submit"
 
 
-  %button
+  %button.button-primary.right
     / =link_to "Back", invoice_options_path(maintenance_request_id:@maintenance_request_id, trady_id:@trady_id,quote_id:@quote_id)
 
     =link_to "Back", confirm_company_invoice_path(pdf_file_id:@file.id,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file")

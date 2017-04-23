@@ -21,7 +21,7 @@ class InvoicesController < ApplicationController
     @quote_id = params[:trady_company][:quote_id]
     @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
     @ledger = Ledger.find_by(id:params[:trady_company][:quote_id])
-
+    @invoice_type = params[:trady_company][:invoice_type]
     #WE HAVE TO FIND THE RIGHT LEDGER
 
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
@@ -34,16 +34,16 @@ class InvoicesController < ApplicationController
       if params[:trady_company][:invoice_type] == "pdf_file"
         
         if @pdf_files == nil
-          redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
+          redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
         elsif @pdf_files != nil
-          redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id)
+          redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
         end 
       
       elsif params[:trady_company][:invoice_type] == "system_invoice"
         if @ledger == nil
-          redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])  
+          redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
         elsif @ledger != nil
-          redirect_to edit_invoice_path(@ledger.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id])
+          redirect_to edit_invoice_path(@ledger.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
         end 
       end
 
@@ -74,7 +74,8 @@ class InvoicesController < ApplicationController
     @trady = Trady.find_by(id:params[:trady_id])
     
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
-    
+    binding.pry
+    @invoice_type = params[:invoice_type]
 
 
 

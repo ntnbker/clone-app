@@ -106,7 +106,3 @@ config.action_controller.asset_host = 'https://maintenance-app-staging.herokuapp
   #Variant setting for react-rails
   config.react.variant = :production
 end
-
-
-
-
