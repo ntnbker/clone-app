@@ -20,7 +20,7 @@ class MaintenanceRequestsController < ApplicationController
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     
-    
+
 
     if current_user == nil || current_user.tenant?
       @maintenance_request.perform_realestate_validations = true
@@ -175,8 +175,8 @@ class MaintenanceRequestsController < ApplicationController
         end 
 
         
-        @maintenance_request.save
-        
+        @maintenance_request.save        
+
         #CREATE TENANTS
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
         if access_contact_params
@@ -237,8 +237,8 @@ class MaintenanceRequestsController < ApplicationController
     else
       
       flash[:danger]= "Something went wrong"
-      render :new
-      
+      render json: @maintenance_request.errors
+
     end 
   end
 

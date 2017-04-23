@@ -20,13 +20,11 @@ var AccessContactField = React.createClass({
     
     validateEmail: function(inputText, e, emailid) {
       var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      errorMessage = '';
       if(!inputText.match(mailformat)) {
-        errorMessage = 'Invalid Email Address!';
-        document.getElementById(emailid).textContent = errorMessage;
+        document.getElementById(emailid).textContent = strInvalidEmail;
 				e.target.classList.add("border_on_error");
       } else {
-        document.getElementById(emailid).textContent = errorMessage;
+        document.getElementById(emailid).textContent = strNone;
 				e.target.classList.remove("border_on_error");
       }
     },
@@ -34,12 +32,10 @@ var AccessContactField = React.createClass({
     validatePhoneNumber:function(inputText, e, mobileid) {
       var numbers = /^[0-9]+$/;
       if(inputText.match(numbers)) {
-        errorMessage = '';
-        document.getElementById(mobileid).textContent = errorMessage;
+        document.getElementById(mobileid).textContent = strNone;
 				e.target.classList.remove("border_on_error");
       } else {
-        errorMessage = 'Invalid Mobile Number!';
-        document.getElementById(mobileid).textContent = errorMessage;
+        document.getElementById(mobileid).textContent = strInvalidMobile;
 				e.target.classList.add("border_on_error");
       }
     },
@@ -70,24 +66,16 @@ var AccessContactField = React.createClass({
   		  	  		 name={this.generateAtt("name", x, "name")}
   		  	  		   id={this.generateAtt("id", x, "name")}
 							 onBlur={(e) => {
-								let valid = true;
-								let errorMessage = '';
 								if (!e.target.value.length) {
-										valid = false;
-										errorMessage = 'This field is required';
-										document.getElementById($fullnameid).textContent = errorMessage;
+										document.getElementById($fullnameid).textContent = strRequireText;
 										e.target.classList.add("border_on_error");
 									}
 								else if(e.target.value.length < 4) {
-										valid = false;
-										errorMessage = 'Full Name must be more than 3 letters';
-										document.getElementById($fullnameid).textContent = errorMessage;
+										document.getElementById($fullnameid).textContent = strShortName;
 										e.target.classList.add("border_on_error");
 									}
 								else if(e.target.value.length >= 4) {
-										valid = false;
-										errorMessage = '';
-										document.getElementById($fullnameid).textContent = errorMessage;
+										document.getElementById($fullnameid).textContent = strNone;
 										e.target.classList.remove("border_on_error");
 									}
 								}} />
@@ -98,18 +86,12 @@ var AccessContactField = React.createClass({
 								name={this.generateAtt("name", x, "email")}
 									id={this.generateAtt("id", x, "email")} 
 							onBlur={(e) => {
-								let valid = true;
-								let errorMessage = '';
 								if (!e.target.value.length) {
-										valid = false;
-										errorMessage = 'This field is required';
-										document.getElementById($emailid).textContent = errorMessage;
+										document.getElementById($emailid).textContent = strRequireText;
 										e.target.classList.add("border_on_error");
 									}
 								else if(e.target.value.length < 4) {
-										valid = false;
-										errorMessage = 'Name must be more than 3 letters';
-										document.getElementById($emailid).textContent = errorMessage;
+										document.getElementById($emailid).textContent = strShortEmail;
 										e.target.classList.add("border_on_error");
 									}
 								else if(e.target.value.length >= 4) {
@@ -123,16 +105,12 @@ var AccessContactField = React.createClass({
 								name={this.generateAtt("name", x, "mobile")}
 									id={this.generateAtt("id", x, "mobile")}
 							onBlur={(e) => {
-								let valid = true;
-								let errorMessage = '';
 								if (!e.target.value.length) {
-										errorMessage = 'Mobile Number is required';
-										document.getElementById($mobileid).textContent = errorMessage;
+										document.getElementById($mobileid).textContent = strRequireMobile;
 										e.target.classList.add("border_on_error");
 									}
 								else if(e.target.value.length < 8) {
-										errorMessage = 'Mobile Number must be more than 8 digits';
-										document.getElementById($mobileid).textContent = errorMessage;
+										document.getElementById($mobileid).textContent = strShortMobile;
 										e.target.classList.add("border_on_error");
 									}
 								if(e.target.value.length >= 8) {
