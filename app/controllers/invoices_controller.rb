@@ -20,7 +20,7 @@ class InvoicesController < ApplicationController
     @trady_id = params[:trady_company][:trady_id]
     @quote_id = params[:trady_company][:quote_id]
     @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
-    @ledger = Ledger.find_by(id:params[:trady_company][:quote_id])
+    @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
     @invoice_type = params[:trady_company][:invoice_type]
     #WE HAVE TO FIND THE RIGHT LEDGER
 
