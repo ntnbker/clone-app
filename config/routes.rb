@@ -135,6 +135,11 @@ Rails.application.routes.draw do
   post "request_quote" => "quotes#landlord_requests_quote", :as => :request_quote 
   post "picks_quote" => "quotes#landlord_decides_quote", :as => :landlord_decides_quote
   post "forward_quote"=> "quotes#forward_quote", :as => :forward_quote
+
+  ###################################################
+  ########## QUOTE OPTIONS RESOURCES/ROUTES######
+  ###################################################
+  get "quote_options" => "quote_options#show",:as=>:quote_options
   ###################################################################
   ##########TRADY AND TENANT APPOINTMENTS RESOURCES/ROUTES###########
   ###################################################################

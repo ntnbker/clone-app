@@ -49,7 +49,7 @@
   %h5
     Action
   %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
-    Create Quote
+    =link_to "Create Quote", quote_options_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady.id)
   %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
     =link_to "Create or Upload Invoices", invoice_options_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)
 
