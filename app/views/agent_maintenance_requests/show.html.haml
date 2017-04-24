@@ -25,7 +25,11 @@
       No landlord assigned to this property!
 
   %p
-    = "Agent Managing:#{@maintenance_request.agent.name.capitalize} #{@maintenance_request.agent.last_name.capitalize}"
+    Agent Managing: 
+    -if @maintenance_request.agent == nil
+      ="#{@maintenance_request.agency_admin.first_name} #{@maintenance_request.agency_admin.last_name}"
+    -elsif @maintenance_request.agency_admin == nil
+      ="#{@maintenance_request.agent.name} #{@maintenance_request.agent.last_name}"
   %h3
     =@maintenance_request.maintenance_heading
   %p

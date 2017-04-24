@@ -10,9 +10,16 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    # @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(include: [:trady])
+ 
+    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
+    @quote = @quotes.where(:status=>"Approved").first if !nil
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
+
+    if @quote
+      @quote_id = @quote.id
+    else
+      @quote_id = ''
+    end 
 
     @message = Message.new
     
@@ -41,7 +48,6 @@ class LandlordMaintenanceRequestsController < ApplicationController
         @all_tradies= []
       end
     end 
-    
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
       @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages

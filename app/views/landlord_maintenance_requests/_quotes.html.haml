@@ -1,0 +1,22 @@
+-object.each do |quote|
+  %div.well 
+    -if quote.trady != nil 
+      %h5
+        
+        =quote.trady.name
+      %h6
+        =quote.trady.company_name
+      %h6
+        =quote.status
+      %p
+        $
+        =quote.amount
+      %div
+       
+        -if quote.status == "Active" 
+          %button  
+            =link_to "Approve", quote_status_path(quote_id:quote.id,status:"Approved", maintenance_request_id:quote.maintenance_request_id), method: :post, remote: true
+          %button
+            =link_to "Decline", quote_status_path(quote_id:quote.id,status:"Declined",maintenance_request_id:quote.maintenance_request_id), method: :post, remote: true
+         
+        

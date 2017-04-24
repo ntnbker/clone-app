@@ -33,6 +33,7 @@ class MaintenanceRequestsController < ApplicationController
         end
         if the_agent
           @agent = the_agent
+          @agency_admin = @agent.agency.agency_admins.first
           @maintenance_request.agent_id = @agent.id
           @agency = @agent.agency
         end
