@@ -86,6 +86,51 @@ var FieldList = React.createClass({
     }
 });
 
+var FieldListForInvoice = React.createClass({
+    getInitialState : function(){
+        const existingContent = this.props.existingContent;
+        var SampleField = this.props.SampleField;
+        var Fields = [];
+        var params = this.props.params;
+        var x = 1;
+
+        if (existingContent ? existingContent.length > 0 : false) {
+            existingContent.map((one, index) => {
+                Fields.push(<SampleField content={one} params={params}/>);
+                x = index+1;
+            });
+
+            return { Fields : Fields,
+                     x : x }
+        } else {
+            return { Fields : [ <SampleField params={params} x={x}/> ],
+                     x : x }
+        }
+    },
+
+    addField() {
+        var SampleField = this.props.SampleField;
+        var tmpFields = this.state.Fields.slice();
+        var params = this.props.params;
+        tmpFields.push(<SampleField x={++this.state.x} params={params}/>);
+        this.setState({Fields: tmpFields});
+    },
+
+    render: function(){    
+        return <div className="fieldlist" style={{ paddingBottom: '30px' }}>
+            <ul>
+                {this.state.Fields.map((Field, fieldIndex) => 
+                    <li key={fieldIndex}>
+                        <h5 className="invoice-index"> Invoice #{fieldIndex+ 1}</h5>
+                        {Field}
+                    </li>
+                )}
+            </ul>
+            <button type="button" className="button-add button-primary" style={{position: 'absolute', bottom: 0, right: 0 }} onClick={this.addField}> Add New Invoice </button>
+        </div>
+    }
+});
+
 var AdditionalInvoice = React.createClass({
     getInitialState : function() {
         var quote = this.props.content;
@@ -402,7 +447,7 @@ var InvoiceFields = React.createClass({
             <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
             <input type="hidden" value={id} name="ledger[ledger_id]" />
 
-            <FieldList existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
+            <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
             <div className="qf-button" style={{marginBottom: '50px'}}>
                 <button className="button button-primary left"> <a href={this.props.backlink}> Back </a> </button>

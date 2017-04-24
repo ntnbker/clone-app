@@ -2,7 +2,7 @@
   %h4 Please Choose One
   %div
     %h5.optionheader Option 1
-    %p
+    %p.optiondescription
       If you use your own app to make invoices such as Xero.
       Please Click 
       %b Upload Invoice
@@ -11,8 +11,8 @@
       =link_to "Upload Invoice", confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"pdf_file" )  
   %hr
   %div  
-    %h5.showheader Option 2
-    %p
+    %h5.optionheader Option 2
+    %p.optiondescription
       Easily make invoices using our platform by clicking the 
       %b Create Invoice
       button below.
