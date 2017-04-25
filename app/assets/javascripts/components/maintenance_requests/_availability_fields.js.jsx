@@ -30,33 +30,29 @@ var AvailabilityField = React.createClass({
     onChange(e, datepickerrorid) {
       var tmpValue = e.target.value;
       var today = this.getToday();
-      errorMessage = '';
       if(tmpValue < today) {
-        errorMessage = 'You should select the date after today!';
-        document.getElementById(datepickerrorid).textContent = errorMessage;
+        document.getElementById(datepickerrorid).textContent = strErrSelectDate;
         e.target.classList.add("border_on_error");
       } else {
-        document.getElementById(datepickerrorid).textContent = errorMessage;
+        document.getElementById(datepickerrorid).textContent = strNone;
         e.target.classList.remove("border_on_error");
-      }
-      this.setState(state => {
+        this.setState(state => {
           state.currentValue.date = tmpValue;
           return {currentValue : state.currentValue};
-      });
+        });
+      }
     },
 
     onChangeStartTime(e, timepickerrorid) {
       var startTime = (this.refs.startTimeHour.value*60 +  this.refs.startTimeMin.value)/100;
       var finishTime = (this.refs.finishTimeHour.value*60 + this.refs.finishTimeMin.value)/100;
-      if(finishTime == 0) {
-        return;
-      }
       errorMessage = '';
       if(startTime > finishTime) {
-        errorMessage = 'You should select before than finish time!';
-        document.getElementById(timepickerrorid).textContent = errorMessage;
+        document.getElementById(timepickerrorid).textContent = strErrSelectTimeB;
+        setSubmitFlag = false;
       } else {
-        document.getElementById(timepickerrorid).textContent = errorMessage;
+        document.getElementById(timepickerrorid).textContent = '';
+        setSubmitFlag = true;
       }
     },
 
@@ -65,10 +61,11 @@ var AvailabilityField = React.createClass({
       var finishTime = (this.refs.finishTimeHour.value*60 + this.refs.finishTimeMin.value)/100;
       errorMessage = '';
       if(startTime > finishTime) {
-        errorMessage = 'You should select later than start time!';
-        document.getElementById(timepickerrorid).textContent = errorMessage;
+        document.getElementById(timepickerrorid).textContent = strErrSelectTimeL;
+        setSubmitFlag = false;
       } else {
-        document.getElementById(timepickerrorid).textContent = errorMessage;
+        document.getElementById(timepickerrorid).textContent = '';
+        setSubmitFlag = true;
       }
     },
 
