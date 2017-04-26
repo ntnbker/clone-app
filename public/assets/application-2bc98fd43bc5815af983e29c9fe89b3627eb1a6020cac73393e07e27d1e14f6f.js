@@ -62941,6 +62941,140 @@ var FieldList = React.createClass({
     }
 });
 
+var AdditionalInvoice = React.createClass({
+    displayName: "AdditionalInvoice",
+
+    getInitialState: function () {
+        var quote = this.props.content;
+        var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
+        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+        return {
+            remove: false,
+            pricing_type: pricing_type,
+            hours_input: hours_input
+        };
+    },
+
+    removeField: function () {
+        this.setState({ remove: true });
+    },
+
+    onPricing: function (event) {
+        var pricing_type = event.target.value;
+        this.setState({ pricing_type: pricing_type });
+        if (pricing_type == "Hourly") {
+            this.setState({ hours_input: true });
+        } else {
+            this.setState({ hours_input: false });
+        }
+    },
+    render: function () {
+        var quote = this.props.content;
+        var x = this.props.x;
+        if (quote) {
+            x = quote.id;
+        }
+        return React.createElement(
+            "div",
+            { className: "quotefield", style: { display: this.state.remove ? 'none' : 'block' } },
+            React.createElement(
+                "fieldset",
+                null,
+                React.createElement(
+                    "p",
+                    null,
+                    " Item description "
+                ),
+                React.createElement("input", { type: "text",
+                    name: 'invoice[invoice_items_attributes][' + x + '][item_description]',
+                    defaultValue: quote ? quote.item_description : ''
+                }),
+                React.createElement(
+                    "p",
+                    null,
+                    " Amount "
+                ),
+                React.createElement("input", { type: "text",
+                    name: 'invoice[invoice_items_attributes][' + x + '][amount]',
+                    defaultValue: quote ? quote.amount : ''
+                }),
+                React.createElement(
+                    "p",
+                    null,
+                    " Pricing type "
+                ),
+                React.createElement(
+                    "select",
+                    { value: this.state.pricing_type,
+                        onChange: this.onPricing,
+                        name: 'invoice[invoice_items_attributes][' + x + '][pricing_type]' },
+                    React.createElement(
+                        "option",
+                        { value: "Fixed Cost" },
+                        "Fixed Cost"
+                    ),
+                    React.createElement(
+                        "option",
+                        { value: "Hourly" },
+                        "Hourly"
+                    )
+                ),
+                this.state.hours_input ? React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                        "p",
+                        null,
+                        " Number of Hours "
+                    ),
+                    React.createElement("input", { type: "text",
+                        name: 'invoice[invoice_items_attributes][' + x + '][hours]',
+                        defaultValue: quote ? quote.hours : ''
+                    })
+                ) : React.createElement("input", { type: "hidden",
+                    name: 'invoice[invoice_items_attributes][' + x + '][hours]'
+                }),
+                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'invoice[invoice_items_attributes][' + x + '][_destroy]' }),
+                quote ? React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]' }) : null
+            ),
+            React.createElement(
+                "button",
+                { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+                " Remove "
+            )
+        );
+    }
+});
+
+var AdditionalInvoiceField = React.createClass({
+    displayName: "AdditionalInvoiceField",
+
+    render: function () {
+        return React.createElement(
+            "form",
+            { role: "form", id: "new_quote", action: "/submit_additional_invoice", acceptCharset: "UTF-8", method: "post" },
+            React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+            React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+            React.createElement("input", { value: this.props.maintenance_request_id, type: "hidden", name: "invoice[maintenance_request_id]" }),
+            React.createElement("input", { value: this.props.trady_id, type: "hidden", name: "invoice[trady_id]" }),
+            React.createElement(FieldList, { SampleField: AdditionalInvoice }),
+            React.createElement(
+                "label",
+                { className: "quote_tax" },
+                React.createElement("input", { type: "hidden", value: "0", name: "invoice[tax]" }),
+                React.createElement("input", { type: "checkbox", value: "1", defaultChecked: this.props.tax ? this.props.tax : false, name: "invoice[tax]" }),
+                "Add GST"
+            ),
+            React.createElement("hr", null),
+            React.createElement(
+                "div",
+                { className: "qf-button" },
+                React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button-primary green", "data-disable-with": "Next" })
+            )
+        );
+    }
+});
+
 var InvoiceItemField = React.createClass({
     displayName: "InvoiceItemField",
 
@@ -63072,10 +63206,11 @@ var InvoiceField = React.createClass({
         var invoice = this.props.content;
         var amountExceptTax = invoice && invoice.amount ? invoice.amount / 1.1 : 0;
         var amount = invoice && invoice.amount ? invoice.amount * 1.1 : 0;
+        var invoice_amount = invoice && invoice.amount ? invoice.amount : 0;
         var tax = invoice && invoice.tax ? invoice.tax : false;
         return {
-            amountExceptTax: tax ? amountExceptTax : invoice.amount,
-            amount: tax ? invoice.amount : amount,
+            amountExceptTax: tax ? amountExceptTax : invoice_amount,
+            amount: tax ? invoice_amount : amount,
             tax: tax,
             remove: false
         };
@@ -63167,7 +63302,7 @@ var InvoiceFields = React.createClass({
 
     render: function () {
         var ledger = this.props.ledger || null;
-        var id = ledger && ledger.id || null;
+        var id = ledger && ledger.id || '';
         var invoiceInfo = {
             maintenance_request_id: this.props.maintenance_request_id,
             trady_id: this.props.trady_id,
@@ -63184,6 +63319,7 @@ var InvoiceFields = React.createClass({
             React.createElement("input", { type: "hidden", value: this.props.maintenance_request_id, name: "ledger[maintenance_request_id]" }),
             React.createElement("input", { type: "hidden", value: this.props.trady_id, name: "ledger[trady_id]" }),
             React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "ledger[quote_id]" }),
+            React.createElement("input", { type: "hidden", value: id, name: "ledger[ledger_id]" }),
             React.createElement(FieldList, { existingContent: invoices, SampleField: InvoiceField, params: invoiceInfo }),
             React.createElement(
                 "div",
@@ -63294,107 +63430,192 @@ var TradyCompanyInvoice = React.createClass({
             mailing: this.state.address });
     }
 });
-
 var AccessContactField = React.createClass({
-    displayName: "AccessContactField",
+		displayName: "AccessContactField",
 
-    getInitialState: function () {
-        return {
-            remove: false
-        };
-    },
+		getInitialState: function () {
+				return {
+						remove: false
+				};
+		},
 
-    generateAtt: function (name_id, x, type) {
-        if (name_id == "name") {
-            return "maintenance_request[access_contacts_attributes][" + x + "][" + type + "]";
-        } else if (name_id == "id") {
-            return "maintenance_request_access_contacts_attributes_" + x + "_" + type;
-        }
-    },
+		generateAtt: function (name_id, x, type) {
+				if (name_id == "name") {
+						return "maintenance_request[access_contacts_attributes][" + x + "][" + type + "]";
+				} else if (name_id == "id") {
+						return "maintenance_request_access_contacts_attributes_" + x + "_" + type;
+				}
+		},
 
-    removeField: function () {
-        this.setState({ remove: true });
-    },
+		removeField: function () {
+				this.setState({ remove: true });
+		},
 
-    render: function () {
-        var accessContact = this.props.content;
-        var x = this.props.x;
-        if (accessContact) {
-            x = accessContact.id;
-        }
-        return React.createElement(
-            "div",
-            { className: "accesscontactfield", style: { display: this.state.remove ? 'none' : 'block' } },
-            React.createElement(
-                "fieldset",
-                null,
-                React.createElement(
-                    "p",
-                    null,
-                    " Relation "
-                ),
-                React.createElement(
-                    "select",
-                    { name: this.generateAtt("name", x, "relation"),
-                        id: this.generateAtt("id", x, "relation") },
-                    React.createElement(
-                        "option",
-                        { value: "Tenant" },
-                        "Tenant"
-                    ),
-                    React.createElement(
-                        "option",
-                        { value: "Husband" },
-                        "Husband"
-                    ),
-                    React.createElement(
-                        "option",
-                        { value: "Son" },
-                        "Son"
-                    ),
-                    React.createElement(
-                        "option",
-                        { value: "Wife" },
-                        "Wife"
-                    )
-                ),
-                React.createElement(
-                    "p",
-                    null,
-                    " Name "
-                ),
-                React.createElement("input", { type: "text", placeholder: "Full name",
-                    name: this.generateAtt("name", x, "name"),
-                    id: this.generateAtt("id", x, "name") }),
-                React.createElement(
-                    "p",
-                    null,
-                    " Email "
-                ),
-                React.createElement("input", { type: "email", placeholder: "E-mail",
-                    name: this.generateAtt("name", x, "email"),
-                    id: this.generateAtt("id", x, "email") }),
-                React.createElement(
-                    "p",
-                    null,
-                    " Mobile "
-                ),
-                React.createElement("input", { type: "tel", placeholder: "Mobile",
-                    name: this.generateAtt("name", x, "mobile"),
-                    id: this.generateAtt("id", x, "mobile") }),
-                React.createElement("input", { type: "hidden", value: this.state.remove,
-                    name: this.generateAtt("name", x, "_destroy"),
-                    id: this.generateAtt("id", x, "_destroy") })
-            ),
-            React.createElement(
-                "button",
-                { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
-                " Remove "
-            )
-        );
-    }
+		validateEmail: function (inputText, e, emailid) {
+				var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+				errorMessage = '';
+				if (!inputText.match(mailformat)) {
+						errorMessage = 'Invalid Email Address!';
+						document.getElementById(emailid).textContent = errorMessage;
+						e.target.classList.add("border_on_error");
+				} else {
+						document.getElementById(emailid).textContent = errorMessage;
+						e.target.classList.remove("border_on_error");
+				}
+		},
+
+		validatePhoneNumber: function (inputText, e, mobileid) {
+				var numbers = /^[0-9]+$/;
+				if (inputText.match(numbers)) {
+						errorMessage = '';
+						document.getElementById(mobileid).textContent = errorMessage;
+						e.target.classList.remove("border_on_error");
+				} else {
+						errorMessage = 'Invalid Mobile Number!';
+						document.getElementById(mobileid).textContent = errorMessage;
+						e.target.classList.add("border_on_error");
+				}
+		},
+
+		render: function () {
+				var _this = this;
+
+				var accessContact = this.props.content;
+				var x = this.props.x;
+				if (accessContact) {
+						x = accessContact.id;
+				}
+				var $fullnameid = 'errorboxfullname' + x;
+				var $emailid = 'errorboxemail' + x;
+				var $mobileid = 'errorboxmobile' + x;
+				return React.createElement(
+						"div",
+						{ className: "accesscontactfield", style: { display: this.state.remove ? 'none' : 'block' } },
+						React.createElement(
+								"fieldset",
+								null,
+								React.createElement(
+										"p",
+										null,
+										" Relation "
+								),
+								React.createElement(
+										"select",
+										{ name: this.generateAtt("name", x, "relation"),
+												id: this.generateAtt("id", x, "relation") },
+										React.createElement(
+												"option",
+												{ value: "Tenant" },
+												"Tenant"
+										),
+										React.createElement(
+												"option",
+												{ value: "Husband" },
+												"Husband"
+										),
+										React.createElement(
+												"option",
+												{ value: "Son" },
+												"Son"
+										),
+										React.createElement(
+												"option",
+												{ value: "Wife" },
+												"Wife"
+										)
+								),
+								React.createElement(
+										"p",
+										null,
+										" Name "
+								),
+								React.createElement("input", { type: "text", placeholder: "Full name",
+										name: this.generateAtt("name", x, "name"),
+										id: this.generateAtt("id", x, "name"),
+										onBlur: function (e) {
+												var valid = true;
+												var errorMessage = '';
+												if (!e.target.value.length) {
+														valid = false;
+														errorMessage = 'This field is required';
+														document.getElementById($fullnameid).textContent = errorMessage;
+														e.target.classList.add("border_on_error");
+												} else if (e.target.value.length < 4) {
+														valid = false;
+														errorMessage = 'Full Name must be more than 3 letters';
+														document.getElementById($fullnameid).textContent = errorMessage;
+														e.target.classList.add("border_on_error");
+												} else if (e.target.value.length >= 4) {
+														valid = false;
+														errorMessage = '';
+														document.getElementById($fullnameid).textContent = errorMessage;
+														e.target.classList.remove("border_on_error");
+												}
+										} }),
+								React.createElement("p", { id: $fullnameid, className: "error" }),
+								React.createElement(
+										"p",
+										null,
+										" Email "
+								),
+								React.createElement("input", { type: "email", placeholder: "E-mail",
+										name: this.generateAtt("name", x, "email"),
+										id: this.generateAtt("id", x, "email"),
+										onBlur: function (e) {
+												var valid = true;
+												var errorMessage = '';
+												if (!e.target.value.length) {
+														valid = false;
+														errorMessage = 'This field is required';
+														document.getElementById($emailid).textContent = errorMessage;
+														e.target.classList.add("border_on_error");
+												} else if (e.target.value.length < 4) {
+														valid = false;
+														errorMessage = 'Name must be more than 3 letters';
+														document.getElementById($emailid).textContent = errorMessage;
+														e.target.classList.add("border_on_error");
+												} else if (e.target.value.length >= 4) {
+														_this.validateEmail(e.target.value, e, $emailid);
+												}
+										} }),
+								React.createElement("p", { id: $emailid, className: "error" }),
+								React.createElement(
+										"p",
+										null,
+										" Mobile "
+								),
+								React.createElement("input", { type: "tel", placeholder: "Mobile",
+										name: this.generateAtt("name", x, "mobile"),
+										id: this.generateAtt("id", x, "mobile"),
+										onBlur: function (e) {
+												var valid = true;
+												var errorMessage = '';
+												if (!e.target.value.length) {
+														errorMessage = 'Mobile Number is required';
+														document.getElementById($mobileid).textContent = errorMessage;
+														e.target.classList.add("border_on_error");
+												} else if (e.target.value.length < 8) {
+														errorMessage = 'Mobile Number must be more than 8 digits';
+														document.getElementById($mobileid).textContent = errorMessage;
+														e.target.classList.add("border_on_error");
+												}
+												if (e.target.value.length >= 8) {
+														_this.validatePhoneNumber(e.target.value, e, $mobileid);
+												}
+										}, maxLength: "10" }),
+								React.createElement("p", { id: $mobileid, className: "error" }),
+								React.createElement("input", { type: "hidden", value: this.state.remove,
+										name: this.generateAtt("name", x, "_destroy"),
+										id: this.generateAtt("id", x, "_destroy") })
+						),
+						React.createElement(
+								"button",
+								{ type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+								" Remove "
+						)
+				);
+		}
 });
-
 var AvailabilityField = React.createClass({
   displayName: "AvailabilityField",
 
@@ -63428,21 +63649,76 @@ var AvailabilityField = React.createClass({
     }
   },
 
-  onChange: function (e) {
+  onChange: function (e, datepickerrorid) {
     var tmpValue = e.target.value;
+    var today = this.getToday();
+    errorMessage = '';
+    if (tmpValue < today) {
+      errorMessage = 'You should select the date after today!';
+      document.getElementById(datepickerrorid).textContent = errorMessage;
+      e.target.classList.add("border_on_error");
+    } else {
+      document.getElementById(datepickerrorid).textContent = errorMessage;
+      e.target.classList.remove("border_on_error");
+    }
     this.setState(function (state) {
       state.currentValue.date = tmpValue;
       return { currentValue: state.currentValue };
     });
   },
 
+  onChangeStartTime: function (e, timepickerrorid) {
+    var startTime = (this.refs.startTimeHour.value * 60 + this.refs.startTimeMin.value) / 100;
+    var finishTime = (this.refs.finishTimeHour.value * 60 + this.refs.finishTimeMin.value) / 100;
+    if (finishTime == 0) {
+      return;
+    }
+    errorMessage = '';
+    if (startTime > finishTime) {
+      errorMessage = 'You should select before than finish time!';
+      document.getElementById(timepickerrorid).textContent = errorMessage;
+    } else {
+      document.getElementById(timepickerrorid).textContent = errorMessage;
+    }
+  },
+
+  onChangeFinishTime: function (e, timepickerrorid) {
+    var startTime = (this.refs.startTimeHour.value * 60 + this.refs.startTimeMin.value) / 100;
+    var finishTime = (this.refs.finishTimeHour.value * 60 + this.refs.finishTimeMin.value) / 100;
+    errorMessage = '';
+    if (startTime > finishTime) {
+      errorMessage = 'You should select later than start time!';
+      document.getElementById(timepickerrorid).textContent = errorMessage;
+    } else {
+      document.getElementById(timepickerrorid).textContent = errorMessage;
+    }
+  },
+
+  getToday: function () {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+    if (mm < 10) {
+      mm = '0' + mm;
+    }
+    today = yyyy + '-' + mm + '-' + dd;
+    return today;
+  },
+
   render: function () {
+    var _this = this;
+
     var Availability = this.props.content;
     var x = this.props.x;
     if (Availability) {
       x = Availability.id;
     }
-
+    var $datepickerrorid = 'errorpickdate' + x;
+    var $timepickerrorid = 'errorpicktime' + x;
     return React.createElement(
       "div",
       { className: "availabilityfield", style: { display: this.state.remove ? 'none' : 'block' } },
@@ -63456,7 +63732,10 @@ var AvailabilityField = React.createClass({
         ),
         React.createElement("input", { type: "date",
           name: this.generateAtt("name", x, "date"),
-          id: this.generateAtt("id", x, "date"), onChange: this.onChange, required: this.state.dateRequired }),
+          id: this.generateAtt("id", x, "date"), onChange: function (e) {
+            return _this.onChange(e, $datepickerrorid);
+          }, required: this.state.dateRequired }),
+        React.createElement("p", { id: $datepickerrorid, className: "error" }),
         React.createElement(
           "div",
           { className: "starttime" },
@@ -63477,7 +63756,9 @@ var AvailabilityField = React.createClass({
           React.createElement(
             "select",
             { name: this.generateAtt("name", x, "start_time(4i)"),
-              id: this.generateAtt("id", x, "start_time_4i"), required: this.state.dateRequired },
+              id: this.generateAtt("id", x, "start_time_4i"), onChange: function (e) {
+                return _this.onChangeStartTime(e, $timepickerrorid);
+              }, required: this.state.dateRequired, ref: "startTimeHour" },
             this.makeDate(24)
           ),
           React.createElement(
@@ -63488,7 +63769,9 @@ var AvailabilityField = React.createClass({
           React.createElement(
             "select",
             { name: this.generateAtt("name", x, "start_time(5i)"),
-              id: this.generateAtt("id", x, "start_time_5i"), required: this.state.dateRequired },
+              id: this.generateAtt("id", x, "start_time_5i"), onChange: function (e) {
+                return _this.onChangeStartTime(e, $timepickerrorid);
+              }, required: this.state.dateRequired, ref: "startTimeMin" },
             this.makeDate(60)
           )
         ),
@@ -63512,7 +63795,9 @@ var AvailabilityField = React.createClass({
           React.createElement(
             "select",
             { name: this.generateAtt("name", x, "finish_time(4i)"),
-              id: this.generateAtt("id", x, "finish_time_4i"), required: this.state.dateRequired },
+              id: this.generateAtt("id", x, "finish_time_4i"), onChange: function (e) {
+                return _this.onChangeFinishTime(e, $timepickerrorid);
+              }, required: this.state.dateRequired, ref: "finishTimeHour" },
             this.makeDate(24)
           ),
           React.createElement(
@@ -63523,11 +63808,14 @@ var AvailabilityField = React.createClass({
           React.createElement(
             "select",
             { name: this.generateAtt("name", x, "finish_time(5i)"),
-              id: this.generateAtt("id", x, "finish_time_5i"), required: this.state.dateRequired },
+              id: this.generateAtt("id", x, "finish_time_5i"), onChange: function (e) {
+                return _this.onChangeFinishTime(e, $timepickerrorid);
+              }, required: this.state.dateRequired, ref: "finishTimeMin" },
             this.makeDate(60)
           )
         )
       ),
+      React.createElement("p", { id: $timepickerrorid, className: "error" }),
       React.createElement(
         "label",
         null,
@@ -63804,7 +64092,8 @@ var MaintenanceRequestsNew = React.createClass({
 
 	getInitialState: function () {
 		return {
-			images: []
+			images: [],
+			cansubmit: false
 		};
 	},
 
@@ -63815,6 +64104,7 @@ var MaintenanceRequestsNew = React.createClass({
 			return "maintenance_request_" + type;
 		}
 	},
+
 	_handleRemoveFrame: function (e) {
 		var images = this.state.images;
 
@@ -63822,6 +64112,7 @@ var MaintenanceRequestsNew = React.createClass({
 		images.splice(index, 1);
 		this.setState({ images: images });
 	},
+
 	_handleImageChange: function (e) {
 		var _this = this;
 
@@ -63859,7 +64150,10 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	handleCheckSubmit: function (e) {
-
+		if (!this.state.cansubmit) {
+			e.preventDefault();
+			return;
+		}
 		var XHR = new XMLHttpRequest();
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
 		FD["delete"]('maintenance_request[maintenance_request_image_attributes][images][]');
@@ -63869,7 +64163,8 @@ var MaintenanceRequestsNew = React.createClass({
 			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
 		});
 		FD.append('commit', 'Submit Maintenance Request');
-		XHR.addEventListener('load', function (event) {
+		XHR.addEventListener('loadend', function (event) {
+			window.location.href = event.currentTarget.responseURL;
 			console.log('Yeah! Data sent and response loaded.');
 		});
 
@@ -63880,6 +64175,37 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.send(FD);
+		e.preventDefault();
+	},
+
+	validateEmail: function (inputText, e) {
+		var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		errorMessage = '';
+		if (!inputText.match(mailformat)) {
+			errorMessage = 'Invalid Email Address!';
+			document.getElementById("errorboxemail").textContent = errorMessage;
+			e.target.classList.add("border_on_error");
+			this.setState({ cansubmit: false });
+		} else {
+			document.getElementById("errorboxemail").textContent = errorMessage;
+			e.target.classList.remove("border_on_error");
+			this.setState({ cansubmit: true });
+		}
+	},
+
+	validatePhoneNumber: function (inputText, e) {
+		var numbers = /^[0-9]+$/;
+		if (inputText.match(numbers)) {
+			errorMessage = '';
+			document.getElementById("errorboxmobile").textContent = errorMessage;
+			e.target.classList.remove("border_on_error");
+			this.setState({ cansubmit: true });
+		} else {
+			errorMessage = 'Invalid Mobile Number!';
+			document.getElementById("errorboxmobile").textContent = errorMessage;
+			e.target.classList.add("border_on_error");
+			this.setState({ cansubmit: false });
+		}
 	},
 
 	render: function () {
@@ -63913,7 +64239,9 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 		return React.createElement(
 			"form",
-			{ role: "form", id: "new_maintenance_request", encType: "multipart/form-data", acceptCharset: "UTF-8" },
+			{ role: "form", id: "new_maintenance_request", encType: "multipart/form-data", acceptCharset: "UTF-8", onSubmit: function (e) {
+					return _this2.handleCheckSubmit(e);
+				} },
 			React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
 			React.createElement(
 				"div",
@@ -63925,7 +64253,31 @@ var MaintenanceRequestsNew = React.createClass({
 				),
 				React.createElement("input", { type: "text", placeholder: "Full name",
 					name: this.generateAtt("name", "name"),
-					id: this.generateAtt("id", "name"), required: true }),
+					id: this.generateAtt("id", "name"),
+					onBlur: function (e) {
+						var valid = true;
+						var errorMessage = '';
+						if (!e.target.value.length) {
+							valid = false;
+							errorMessage = 'Name is required';
+							document.getElementById("errorbox").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						} else if (e.target.value.length < 4) {
+							valid = false;
+							errorMessage = 'Name must be more than 3 letters';
+							document.getElementById("errorbox").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						} else if (e.target.value.length >= 4) {
+							valid = false;
+							errorMessage = '';
+							document.getElementById("errorbox").textContent = errorMessage;
+							e.target.classList.remove("border_on_error");
+							_this2.setState({ cansubmit: true });
+						}
+					}, required: true }),
+				React.createElement("p", { id: "errorbox", className: "error" }),
 				React.createElement(
 					"p",
 					null,
@@ -63933,7 +64285,27 @@ var MaintenanceRequestsNew = React.createClass({
 				),
 				React.createElement("input", { type: "email", placeholder: "E-mail",
 					name: this.generateAtt("name", "email"),
-					id: this.generateAtt("id", "email"), required: true }),
+					id: this.generateAtt("id", "email"),
+					onBlur: function (e) {
+						var valid = true;
+						var errorMessage = '';
+						if (!e.target.value.length) {
+							valid = false;
+							errorMessage = 'Email Address is required';
+							document.getElementById("errorboxemail").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						} else if (e.target.value.length < 4) {
+							valid = false;
+							errorMessage = 'Email Address must have more than 3 letters';
+							document.getElementById("errorboxemail").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						} else if (e.target.value.length >= 4) {
+							_this2.validateEmail(e.target.value, e);
+						}
+					}, required: true }),
+				React.createElement("p", { id: "errorboxemail", className: "error" }),
 				React.createElement(
 					"p",
 					null,
@@ -63941,7 +64313,26 @@ var MaintenanceRequestsNew = React.createClass({
 				),
 				React.createElement("input", { type: "tel", placeholder: "Mobile",
 					name: this.generateAtt("name", "mobile"),
-					id: this.generateAtt("id", "mobile"), required: true })
+					id: this.generateAtt("id", "mobile"),
+					onBlur: function (e) {
+						var valid = true;
+						var errorMessage = '';
+						if (!e.target.value.length) {
+							errorMessage = 'Mobile Number is required';
+							document.getElementById("errorboxmobile").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						} else if (e.target.value.length < 8) {
+							errorMessage = 'Mobile Number must be more than 8 digits';
+							document.getElementById("errorboxmobile").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						}
+						if (e.target.value.length >= 8) {
+							_this2.validatePhoneNumber(e.target.value, e);
+						}
+					}, maxLength: "10", required: true }),
+				React.createElement("p", { id: "errorboxmobile", className: "error" })
 			),
 			React.createElement("hr", null),
 			React.createElement(
@@ -63960,7 +64351,32 @@ var MaintenanceRequestsNew = React.createClass({
 				),
 				React.createElement("input", { type: "text",
 					name: this.generateAtt("name", "maintenance_heading"),
-					id: this.generateAtt("id", "maintenance_heading"), required: true }),
+					id: this.generateAtt("id", "maintenance_heading"),
+					onBlur: function (e) {
+						var valid = true;
+						var errorMessage = '';
+						if (!e.target.value.length) {
+							valid = false;
+							errorMessage = 'This field is required';
+							document.getElementById("errorboxheading").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						} else if (e.target.value.length < 4) {
+							valid = false;
+							errorMessage = 'Heading must be more than 3 letters';
+							document.getElementById("errorboxheading").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						}
+						if (e.target.value.length >= 4) {
+							valid = true;
+							errorMessage = '';
+							document.getElementById("errorboxheading").textContent = errorMessage;
+							e.target.classList.remove("border_on_error");
+							_this2.setState({ cansubmit: true });
+						}
+					}, required: true }),
+				React.createElement("p", { id: "errorboxheading", className: "error" }),
 				React.createElement(
 					"p",
 					null,
@@ -63968,7 +64384,32 @@ var MaintenanceRequestsNew = React.createClass({
 				),
 				React.createElement("textarea", {
 					name: this.generateAtt("name", "maintenance_description"),
-					id: this.generateAtt("id", "maintenance_description"), required: true }),
+					id: this.generateAtt("id", "maintenance_description"),
+					onBlur: function (e) {
+						var valid = true;
+						var errorMessage = '';
+						if (!e.target.value.length) {
+							valid = false;
+							errorMessage = 'This field is required';
+							document.getElementById("errorboxdescription").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						} else if (e.target.value.length < 10) {
+							valid = false;
+							errorMessage = 'Description must be more than 10 letters';
+							document.getElementById("errorboxdescription").textContent = errorMessage;
+							e.target.classList.add("border_on_error");
+							_this2.setState({ cansubmit: false });
+						}
+						if (e.target.value.length >= 10) {
+							valid = true;
+							errorMessage = '';
+							document.getElementById("errorboxdescription").textContent = errorMessage;
+							e.target.classList.remove("border_on_error");
+							_this2.setState({ cansubmit: true });
+						}
+					}, required: true }),
+				React.createElement("p", { id: "errorboxdescription", className: "error" }),
 				React.createElement(
 					"p",
 					null,
@@ -64051,11 +64492,1655 @@ var MaintenanceRequestsNew = React.createClass({
 				React.createElement(FieldList, { SampleField: AvailabilityField })
 			),
 			React.createElement("hr", null),
-			React.createElement("input", { type: "submit", className: "button-primary green", name: "commit", value: "Submit Maintenance Request", "data-disable-with": "Submit Maintenance Request", onClick: function (e) {
-					return _this2.handleCheckSubmit(e);
-				} })
+			React.createElement("input", { type: "submit", className: "button-primary green", name: "commit", value: "Submit Maintenance Request", "data-disable-with": "Submit Maintenance Request" })
 		);
 	}
+});
+var Post = React.createClass({
+  displayName: 'Post',
+
+  componentDidMount: function () {
+    $(document).ready(function () {
+      new Swiper('.swiper-container', {
+        loop: true,
+        spaceBetween: 0,
+        slidesPerView: 1,
+        paginationClickable: true,
+        paginationClickable: true,
+        pagination: '.swiper-pagination'
+      });
+    });
+  },
+
+  render: function () {
+    var maintenance = this.props.maintenance_request;
+    return React.createElement(
+      'div',
+      { className: 'post' },
+      React.createElement(
+        'div',
+        { className: 'info' },
+        React.createElement(
+          'div',
+          { className: 'info-title' },
+          React.createElement(
+            'div',
+            { className: 'title' },
+            React.createElement(
+              'span',
+              null,
+              maintenance.maintenance_heading
+            ),
+            React.createElement(
+              'button',
+              { className: 'button-primary', type: '' },
+              'Active'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'author' },
+            React.createElement('i', { className: 'fa fa-map-marker', 'aria-hidden': 'true' }),
+            React.createElement(
+              'span',
+              { className: 'address' },
+              this.props.property.property_address,
+              '.'
+            ),
+            React.createElement(
+              'a',
+              { className: 'time' },
+              moment(maintenance.created_at).startOf('day').fromNow()
+            ),
+            React.createElement(
+              'a',
+              null,
+              '|'
+            ),
+            React.createElement(
+              'a',
+              { className: 'name-author' },
+              maintenance.service_type
+            )
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'actions' },
+          React.createElement(
+            'button',
+            { className: 'button-primary update-status' },
+            'Update status'
+          ),
+          React.createElement(
+            'button',
+            { className: 'button-primary edit-detail' },
+            React.createElement('i', { className: 'fa fa-pencil', 'aria-hidden': 'true' }),
+            React.createElement(
+              'span',
+              null,
+              'Edit Details'
+            )
+          ),
+          React.createElement(
+            'button',
+            { className: 'button-primary assign-to' },
+            React.createElement('i', { className: 'icon-user', 'aria-hidden': 'true' }),
+            React.createElement(
+              'span',
+              null,
+              'Assign to'
+            ),
+            React.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
+          )
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'content' },
+        React.createElement(
+          'div',
+          { className: 'slider-custom' },
+          React.createElement(
+            'div',
+            { className: 'swiper-container' },
+            React.createElement(
+              'div',
+              { className: 'swiper-wrapper slider' },
+              this.props.gallery.map(function (img, index) {
+                return React.createElement('img', {
+                  key: index,
+                  src: img.url,
+                  className: "swiper-slide slide-image img-1 " + (index === 0 && "active")
+                });
+              })
+            )
+          ),
+          React.createElement('div', { className: 'swiper-pagination swiper-pagination-custom' })
+        ),
+        React.createElement(
+          'div',
+          { className: 'description' },
+          React.createElement(
+            'p',
+            null,
+            maintenance.maintenance_description
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'date-time' },
+          React.createElement(
+            'button',
+            null,
+            React.createElement(
+              'span',
+              { className: 'vailability' },
+              'Availability: '
+            ),
+            React.createElement(
+              'span',
+              { className: 'time' },
+              maintenance.availability
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var Quote = React.createClass({
+  displayName: 'Quote',
+
+  render: function () {
+    var quotes = this.props.quotes;
+    return React.createElement(
+      'div',
+      { className: 'quotes' },
+      React.createElement(
+        'p',
+        null,
+        'Quotes (',
+        quotes.length,
+        ')'
+      ),
+      React.createElement(
+        'div',
+        { className: 'list-quote' },
+        quotes.map(function (quote, index) {
+          return React.createElement(
+            'div',
+            { className: 'item-quote row', key: index },
+            React.createElement(
+              'div',
+              { className: 'user seven columns' },
+              React.createElement('img', { src: '/assets/user1.png' }),
+              React.createElement(
+                'div',
+                { className: 'info' },
+                React.createElement(
+                  'div',
+                  { className: 'name' },
+                  React.createElement(
+                    'span',
+                    null,
+                    quote.trady.name
+                  ),
+                  React.createElement(
+                    'button',
+                    { className: 'button-default ' + quote.status },
+                    React.createElement(
+                      'span',
+                      null,
+                      quote.status
+                    )
+                  )
+                ),
+                React.createElement(
+                  'p',
+                  { className: 'description' },
+                  quote.trady.company_name
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'actions five columns' },
+              React.createElement(
+                'button',
+                { className: 'close button-default' },
+                React.createElement('i', { className: 'icon-close', 'aria-hidden': 'true' })
+              ),
+              React.createElement(
+                'button',
+                { className: 'reload button-default' },
+                React.createElement('i', { className: 'icon-reload', 'aria-hidden': 'true' })
+              ),
+              React.createElement(
+                'button',
+                { className: 'money button-default' },
+                quote.amount,
+                'AUD'
+              )
+            )
+          );
+        })
+      )
+    );
+  }
+});
+
+var Invoice = React.createClass({
+  displayName: 'Invoice',
+
+  render: function () {
+    var invoices = this.props.invoices;
+    return React.createElement(
+      'div',
+      { className: 'quotes m-t-xl' },
+      React.createElement(
+        'p',
+        null,
+        'Invoice (',
+        invoices.length,
+        ')'
+      ),
+      React.createElement(
+        'div',
+        { className: 'list-quote' },
+        invoices.map(function (invoice, index) {
+          return React.createElement(
+            'div',
+            { className: 'item-quote row' },
+            React.createElement(
+              'div',
+              { className: 'user seven columns' },
+              React.createElement('img', { src: '/assets/user1.png' }),
+              React.createElement(
+                'div',
+                { className: 'info' },
+                React.createElement(
+                  'div',
+                  { className: 'name' },
+                  React.createElement(
+                    'span',
+                    null,
+                    invoice.trady.name
+                  ),
+                  React.createElement(
+                    'button',
+                    { className: 'button-default ' + invoice.status },
+                    invoice.status
+                  )
+                ),
+                React.createElement(
+                  'p',
+                  { className: 'description' },
+                  invoice.trady.company_name
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'actions five columns' },
+              React.createElement(
+                'button',
+                { className: 'close button-default' },
+                React.createElement('i', { className: 'icon-close', 'aria-hidden': 'true' })
+              ),
+              React.createElement(
+                'button',
+                { className: 'reload button-default' },
+                React.createElement('i', { className: 'icon-reload', 'aria-hidden': 'true' })
+              ),
+              React.createElement(
+                'button',
+                { className: 'money button-default' },
+                invoice.amount,
+                'AUD'
+              )
+            )
+          );
+        })
+      )
+    );
+  }
+});
+
+var ContentContact = React.createClass({
+  displayName: 'ContentContact',
+
+  render: function () {
+    return React.createElement(
+      'ul',
+      null,
+      React.createElement(
+        'li',
+        null,
+        React.createElement(
+          'a',
+          null,
+          React.createElement('i', { className: 'fa fa-phone', 'aria-hidden': 'true' }),
+          '468873353989'
+        )
+      ),
+      React.createElement(
+        'li',
+        null,
+        React.createElement(
+          'a',
+          null,
+          React.createElement('i', { className: 'fa fa-commenting', 'aria-hidden': 'true' }),
+          'Message LandLord'
+        )
+      )
+    );
+  }
+});
+
+var Contact = React.createClass({
+  displayName: 'Contact',
+
+  getInitialState: function () {
+    return {
+      show: false
+    };
+  },
+
+  showContact: function () {
+    this.setState({ show: !this.state.show });
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'item' },
+      React.createElement(
+        'div',
+        { className: 'header contact' },
+        React.createElement(
+          'a',
+          null,
+          'Contact:'
+        ),
+        React.createElement('i', {
+          'aria-hidden': 'true',
+          onClick: this.showContact,
+          className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
+        })
+      ),
+      React.createElement(
+        'div',
+        { className: 'content' },
+        this.state.show && React.createElement(ContentContact, null)
+      )
+    );
+  }
+});
+
+var ContentAction = React.createClass({
+  displayName: 'ContentAction',
+
+  render: function () {
+    return React.createElement(
+      'ul',
+      null,
+      React.createElement(
+        'li',
+        null,
+        React.createElement(
+          'a',
+          { onClick: this.props.openModel },
+          React.createElement('i', { className: 'fa fa-user' }),
+          'Ask Landlord'
+        )
+      ),
+      React.createElement(
+        'li',
+        { className: 'active' },
+        React.createElement(
+          'a',
+          null,
+          React.createElement('i', { className: 'fa fa-file-text', 'aria-hidden': 'true' }),
+          'Request quote'
+        )
+      ),
+      React.createElement(
+        'li',
+        null,
+        React.createElement(
+          'a',
+          null,
+          React.createElement('i', { className: 'icon-send', 'aria-hidden': 'true' }),
+          'Send work order'
+        )
+      ),
+      React.createElement(
+        'li',
+        null,
+        React.createElement(
+          'a',
+          null,
+          React.createElement('i', { className: 'fa fa-user-plus', 'aria-hidden': 'true' }),
+          'Add Landlord'
+        )
+      ),
+      React.createElement(
+        'li',
+        null,
+        React.createElement(
+          'a',
+          null,
+          React.createElement('i', { className: 'fa fa-pencil', 'aria-hidden': 'true' }),
+          'Edit Landlord'
+        )
+      )
+    );
+  }
+});
+
+var Action = React.createClass({
+  displayName: 'Action',
+
+  getInitialState: function () {
+    return {
+      show: true
+    };
+  },
+
+  showAction: function (e) {
+    this.setState({ show: !this.state.show });
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'item' },
+      React.createElement(
+        'div',
+        { className: 'header action' },
+        React.createElement(
+          'a',
+          null,
+          'Actions:'
+        ),
+        React.createElement('i', {
+          'aria-hidden': 'true',
+          onClick: this.showAction,
+          className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+        })
+      ),
+      React.createElement(
+        'div',
+        { className: 'content', id: 'actions-content' },
+        this.state.show && React.createElement(ContentAction, { openModel: this.props.openModal })
+      )
+    );
+  }
+});
+
+var Activity = React.createClass({
+  displayName: 'Activity',
+
+  getInitialState: function () {
+    return {
+      show: true
+    };
+  },
+
+  showActivity: function () {
+    this.setState({ show: !this.state.show });
+  },
+
+  content: function () {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'ul',
+        null,
+        React.createElement(
+          'li',
+          { className: 'user' },
+          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+          React.createElement(
+            'p',
+            { className: 'info' },
+            React.createElement(
+              'span',
+              { className: 'title' },
+              'Request by',
+              React.createElement(
+                'strong',
+                null,
+                'Dereck Carlson'
+              )
+            ),
+            React.createElement(
+              'span',
+              { className: 'time' },
+              'Sep 16, 2017 at 9am'
+            )
+          )
+        ),
+        React.createElement(
+          'li',
+          { className: 'user' },
+          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+          React.createElement(
+            'p',
+            { className: 'info' },
+            React.createElement(
+              'span',
+              { className: 'title' },
+              'Request by',
+              React.createElement(
+                'strong',
+                null,
+                'Dereck Carlson'
+              )
+            ),
+            React.createElement(
+              'span',
+              { className: 'time' },
+              'Sep 16, 2017 at 9am'
+            )
+          )
+        ),
+        React.createElement(
+          'li',
+          { className: 'user' },
+          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+          React.createElement(
+            'p',
+            { className: 'info' },
+            React.createElement(
+              'span',
+              { className: 'title' },
+              'Request by',
+              React.createElement(
+                'strong',
+                null,
+                'Dereck Carlson'
+              )
+            ),
+            React.createElement(
+              'span',
+              { className: 'time' },
+              'Sep 16, 2017 at 9am'
+            )
+          )
+        ),
+        React.createElement(
+          'li',
+          { className: 'user' },
+          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+          React.createElement(
+            'p',
+            { className: 'info' },
+            React.createElement(
+              'span',
+              { className: 'title' },
+              'Request by ',
+              React.createElement(
+                'strong',
+                null,
+                'Dereck Carlson'
+              )
+            ),
+            React.createElement(
+              'span',
+              { className: 'time' },
+              'Sep 16, 2017 at 9am'
+            )
+          )
+        )
+      ),
+      React.createElement(
+        'button',
+        { className: 'view-more button-default' },
+        'View more'
+      )
+    );
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'item' },
+      React.createElement(
+        'div',
+        { className: 'header action' },
+        React.createElement(
+          'a',
+          null,
+          'Activity log:'
+        ),
+        React.createElement('i', { className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right", 'aria-hidden': 'true', onClick: this.showActivity })
+      ),
+      React.createElement(
+        'div',
+        { className: 'content text-center', id: 'activity-content' },
+        this.state.show && this.content()
+      )
+    );
+  }
+});
+
+var ModalConfirm = React.createClass({
+  displayName: 'ModalConfirm',
+
+  render: function () {
+    var _this = this;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'close',
+                'data-dismiss': 'modal',
+                'aria-label': 'Close',
+                onClick: this.props.close
+              },
+              React.createElement(
+                'span',
+                { 'aria-hidden': 'true' },
+                '×'
+              )
+            ),
+            React.createElement(
+              'h4',
+              { className: 'modal-title text-center' },
+              'Confirm Landlord'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'p',
+              { className: 'text-center' },
+              'Is ',
+              this.props.landlord.name,
+              ' the correct landlord for ',
+              this.props.property.property_address
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-footer' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-default success',
+                onClick: function () {
+                  return _this.props.onModalWith('edit');
+                },
+                'data-dismiss': 'modal'
+              },
+              'Yes'
+            ),
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-primary cancel',
+                onClick: function () {
+                  return _this.props.onModalWith('add');
+                }
+              },
+              'No'
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var ModalAddLandlord = React.createClass({
+  displayName: 'ModalAddLandlord',
+
+  getInitialState: function () {
+    return {
+      errorName: false,
+      errorEmail: false,
+      errorMobile: false
+    };
+  },
+
+  checkValidate: function (e) {
+    var key = e.target.id;
+
+    switch (key) {
+      case "name":
+        {
+          if (e.target.value == "") {
+            this.setState({ errorName: true });
+          } else {
+            this.setState({ errorName: false });
+          }
+          break;
+        }
+
+      case "mobile":
+        {
+          if (e.target.value == "") {
+            this.setState({ errorMobile: true });
+          } else {
+            this.setState({ errorMobile: false });
+          }
+          break;
+        }
+
+      default:
+        {
+          var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
+          if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+            this.setState({ errorEmail: true });
+          } else {
+            this.setState({ errorEmail: false });
+          }
+          break;
+        }
+    }
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+
+    var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
+    if (this.name.value == "") {
+      this.setState({ errorName: true });
+      e.preventDefault();
+      return false;
+    }
+    if (this.mobile.value == "") {
+      this.setState({ errorMobile: true });
+      e.preventDefault();
+      return false;
+    }
+
+    if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+      this.setState({ errorEmail: true });
+      e.preventDefault();
+      return false;
+    }
+
+    var params = {
+      authenticity_token: this.props.authToken,
+      landlord: {
+        name: this.name.value,
+        email: this.email.value,
+        mobile: this.mobile.value,
+        maintenance_request_id: this.props.maintenance_request_id
+      }
+    };
+    this.props.addLandlord(params);
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'form',
+            { role: 'form', id: 'addForm', onSubmit: this.submit },
+            React.createElement(
+              'div',
+              { className: 'modal-header' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  className: 'close',
+                  'aria-label': 'Close',
+                  'data-dismiss': 'modal',
+                  onClick: this.props.close
+                },
+                React.createElement(
+                  'span',
+                  { 'aria-hidden': 'true' },
+                  '×'
+                )
+              ),
+              React.createElement(
+                'h4',
+                { className: 'modal-title text-center' },
+                'Forward Maintenance request'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-body' },
+              React.createElement(
+                'div',
+                { className: 'row' },
+                React.createElement(
+                  'div',
+                  null,
+                  React.createElement(
+                    'label',
+                    null,
+                    'Name ',
+                    React.createElement(
+                      'strong',
+                      null,
+                      '*'
+                    ),
+                    ':'
+                  ),
+                  React.createElement('input', {
+                    id: 'name',
+                    type: 'text',
+                    name: 'landlord[name]',
+                    placeholder: 'Enter Name',
+                    ref: function (e) {
+                      return _this2.name = e;
+                    },
+                    onChange: this.checkValidate,
+                    className: "u-full-width " + (this.state.errorName && "has-error")
+                  })
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'row m-t-lg' },
+                React.createElement(
+                  'div',
+                  null,
+                  React.createElement(
+                    'label',
+                    null,
+                    'Mobile ',
+                    React.createElement(
+                      'strong',
+                      null,
+                      '*'
+                    ),
+                    ':'
+                  ),
+                  React.createElement('input', { className: "u-full-width " + (this.state.errorMobile && "has-error"), id: 'mobile', ref: function (e) {
+                      return _this2.mobile = e;
+                    }, name: 'landlord[mobile]', type: 'number', onChange: this.checkValidate, placeholder: 'Enter Mobile' })
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'row m-t-lg' },
+                React.createElement(
+                  'div',
+                  null,
+                  React.createElement(
+                    'label',
+                    null,
+                    'Email ',
+                    React.createElement(
+                      'strong',
+                      null,
+                      '*'
+                    ),
+                    ':'
+                  ),
+                  React.createElement('input', { className: "u-full-width " + (this.state.errorEmail && "has-error"), id: 'email', ref: function (e) {
+                      return _this2.email = e;
+                    }, name: 'landlord[email]', type: 'text', onChange: this.checkValidate, placeholder: 'Enter Email' })
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-footer' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  onClick: this.props.close,
+                  className: 'btn btn-primary cancel'
+                },
+                'Cancel'
+              ),
+              React.createElement(
+                'button',
+                { type: 'submit', className: 'btn btn-default success' },
+                'Submit'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var ModalEditLandlord = React.createClass({
+  displayName: 'ModalEditLandlord',
+
+  getInitialState: function () {
+    return {
+      isEdit: false,
+      errorName: false,
+      errorEmail: false,
+      errorMobile: false
+    };
+  },
+
+  isEdit: function () {
+    this.setState({ isEdit: !this.state.isEdit });
+  },
+
+  checkValidate: function (e) {
+    var key = e.target.id;
+
+    switch (key) {
+      case "name":
+        {
+          if (e.target.value == "") {
+            this.setState({ errorName: true });
+          } else {
+            this.setState({ errorName: false });
+          }
+          break;
+        }
+
+      case "mobile":
+        {
+          if (e.target.value == "") {
+            this.setState({ errorMobile: true });
+          } else {
+            this.setState({ errorMobile: false });
+          }
+          break;
+        }
+
+      default:
+        {
+          var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
+          if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+            this.setState({ errorEmail: true });
+          } else {
+            this.setState({ errorEmail: false });
+          }
+          break;
+        }
+    }
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+
+    var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
+
+    if (this.name.value == "") {
+      this.setState({ errorName: true });
+      e.preventDefault();
+      return false;
+    }
+    if (this.mobile.value == "") {
+      this.setState({ errorMobile: true });
+      e.preventDefault();
+      return false;
+    }
+    if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+      this.setState({ errorEmail: true });
+      e.preventDefault();
+      return false;
+    }
+
+    var params = {
+      authenticity_token: this.props.authToken,
+      landlord: {
+        name: this.name.value,
+        email: this.email.value,
+        mobile: this.mobile.value,
+        id: this.props.landlord.id,
+        maintenance_request_id: this.props.maintenance_request_id
+      }
+    };
+    this.props.editLandlord(params);
+  },
+
+  render: function () {
+    var _this3 = this;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'form',
+            { id: 'editForm', onSubmit: this.submit },
+            React.createElement(
+              'div',
+              { className: 'modal-header' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  className: 'close',
+                  'aria-label': 'Close',
+                  'data-dismiss': 'modal',
+                  onClick: this.props.close
+                },
+                React.createElement(
+                  'span',
+                  { 'aria-hidden': 'true' },
+                  '×'
+                )
+              ),
+              React.createElement(
+                'h4',
+                { className: 'modal-title text-center' },
+                'Forward Maintenance request'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-body' },
+              React.createElement(
+                'div',
+                { className: 'row' },
+                React.createElement(
+                  'a',
+                  { className: 'btn-edit', onClick: this.isEdit },
+                  'Edit'
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'row m-t-lg' },
+                React.createElement(
+                  'div',
+                  { className: 'form-input' },
+                  React.createElement(
+                    'label',
+                    null,
+                    'Name ',
+                    React.createElement(
+                      'strong',
+                      null,
+                      '*'
+                    ),
+                    ':'
+                  ),
+                  React.createElement('input', {
+                    type: 'text',
+                    onChange: this.checkValidate,
+                    readOnly: !this.state.isEdit,
+                    id: 'name', ref: function (e) {
+                      return _this3.name = e;
+                    },
+                    defaultValue: this.props.landlord.name,
+                    className: (this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")
+                  })
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'row m-t-lg' },
+                React.createElement(
+                  'div',
+                  { className: 'form-input' },
+                  React.createElement(
+                    'label',
+                    null,
+                    'Mobile ',
+                    React.createElement(
+                      'strong',
+                      null,
+                      '*'
+                    ),
+                    ':'
+                  ),
+                  React.createElement('input', {
+                    id: 'mobile',
+                    type: 'number',
+                    ref: function (e) {
+                      return _this3.mobile = e;
+                    },
+                    onChange: this.checkValidate,
+                    readOnly: !this.state.isEdit,
+                    defaultValue: this.props.landlord.mobile,
+                    className: (this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")
+                  })
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'row m-t-lg' },
+                React.createElement(
+                  'div',
+                  { className: 'form-input' },
+                  React.createElement(
+                    'label',
+                    null,
+                    'Email ',
+                    React.createElement(
+                      'strong',
+                      null,
+                      '*'
+                    ),
+                    ':'
+                  ),
+                  React.createElement('input', {
+                    id: 'email',
+                    type: 'text',
+                    ref: function (e) {
+                      return _this3.email = e;
+                    },
+                    onChange: this.checkValidate,
+                    readOnly: !this.state.isEdit,
+                    defaultValue: this.props.landlord.email,
+                    className: (this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")
+                  })
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-footer' },
+              React.createElement(
+                'button',
+                {
+                  onClick: this.props.close,
+                  className: 'btn btn-primary cancel'
+                },
+                'Cancel'
+              ),
+              React.createElement(
+                'button',
+                { type: 'submit', className: 'btn btn-default success' },
+                'Submit'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var ActivityMobile = React.createClass({
+  displayName: 'ActivityMobile',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'activity-mobile' },
+      React.createElement(
+        'div',
+        { className: 'item' },
+        React.createElement(
+          'div',
+          { className: 'header action' },
+          React.createElement(
+            'a',
+            null,
+            'Activity log:'
+          ),
+          React.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
+        ),
+        React.createElement(
+          'div',
+          { className: 'content text-center' },
+          React.createElement(
+            'ul',
+            null,
+            React.createElement(
+              'li',
+              { className: 'user' },
+              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+              React.createElement(
+                'p',
+                { className: 'info' },
+                React.createElement(
+                  'span',
+                  { className: 'title' },
+                  'Request by ',
+                  React.createElement(
+                    'strong',
+                    null,
+                    'Dereck Carlson'
+                  )
+                ),
+                React.createElement(
+                  'span',
+                  { className: 'time' },
+                  'Sep 16, 2017 at 9am'
+                )
+              )
+            ),
+            React.createElement(
+              'li',
+              { className: 'user' },
+              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+              React.createElement(
+                'p',
+                { className: 'info' },
+                React.createElement(
+                  'span',
+                  { className: 'title' },
+                  'Request by ',
+                  React.createElement(
+                    'strong',
+                    null,
+                    'Dereck Carlson'
+                  )
+                ),
+                React.createElement(
+                  'span',
+                  { className: 'time' },
+                  'Sep 16, 2017 at 9am'
+                )
+              )
+            ),
+            React.createElement(
+              'li',
+              { className: 'user' },
+              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+              React.createElement(
+                'p',
+                { className: 'info' },
+                React.createElement(
+                  'span',
+                  { className: 'title' },
+                  'Request by ',
+                  React.createElement(
+                    'strong',
+                    null,
+                    'Dereck Carlson'
+                  )
+                ),
+                React.createElement(
+                  'span',
+                  { className: 'time' },
+                  'Sep 16, 2017 at 9am'
+                )
+              )
+            ),
+            React.createElement(
+              'li',
+              { className: 'user' },
+              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
+              React.createElement(
+                'p',
+                { className: 'info' },
+                React.createElement(
+                  'span',
+                  { className: 'title' },
+                  'Request by ',
+                  React.createElement(
+                    'strong',
+                    null,
+                    'Dereck Carlson'
+                  )
+                ),
+                React.createElement(
+                  'span',
+                  { className: 'time' },
+                  'Sep 16, 2017 at 9am'
+                )
+              )
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'text-center' },
+            React.createElement(
+              'button',
+              { className: 'view-more button-default' },
+              'View more'
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var ActionMobile = React.createClass({
+  displayName: 'ActionMobile',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'actions-full', id: 'actions-full' },
+      React.createElement(
+        'div',
+        { className: 'item' },
+        React.createElement(
+          'div',
+          { className: 'header action' },
+          React.createElement(
+            'a',
+            null,
+            'Actions:'
+          ),
+          React.createElement('i', {
+            'aria-hidden': 'true',
+            className: 'fa fa-close',
+            onClick: this.props.close
+          })
+        ),
+        React.createElement(
+          'div',
+          { className: 'content' },
+          React.createElement(ContentAction, { openModel: this.props.openModal })
+        )
+      )
+    );
+  }
+});
+
+var SideBarMobile = React.createClass({
+  displayName: 'SideBarMobile',
+
+  getInitialState: function () {
+    return {
+      showAction: false
+    };
+  },
+
+  showAction: function () {
+    this.setState({ showAction: !this.state.showAction });
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'div',
+        { className: 'sidebar-mobile' },
+        React.createElement(
+          'div',
+          { className: 'fixed' },
+          React.createElement(
+            'button',
+            { className: 'contact button-default' },
+            'Contact'
+          ),
+          React.createElement(
+            'button',
+            { className: 'actions button-default', onClick: this.showAction },
+            'Actions'
+          )
+        )
+      ),
+      !!this.state.showAction && React.createElement(ActionMobile, { close: this.showAction, openModal: this.props.openModal })
+    );
+  }
+});
+
+var ModalNotification = React.createClass({
+  displayName: 'ModalNotification',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'close',
+                'aria-label': 'Close',
+                'data-dismiss': 'modal',
+                onClick: this.props.close
+              },
+              React.createElement(
+                'span',
+                { 'aria-hidden': 'true' },
+                '×'
+              )
+            ),
+            React.createElement(
+              'h4',
+              { className: 'modal-title text-center' },
+              this.props.title
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'p',
+              { className: 'text-center' },
+              this.props.content
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var Summary = React.createClass({
+  displayName: 'Summary',
+
+  getInitialState: function () {
+    var landlord = this.props.landlord;
+
+    return {
+      modal: "",
+      isModal: false,
+      landlord: landlord,
+      notification: {
+        title: "",
+        content: ""
+      }
+    };
+  },
+
+  isClose: function () {
+    this.setState({ isModal: false });
+    this.setState({ modal: "" });
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    div.parentNode.removeChild(div);
+  },
+
+  onModalWith: function (modal) {
+    this.setState({
+      modal: modal,
+      isModal: true
+    });
+  },
+
+  openModal: function () {
+    if (!this.state.landlord) {
+      this.onModalWith('add');
+    } else {
+      this.onModalWith('confirm');
+    }
+  },
+
+  addLandlord: function (params) {
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/create-and-notify-landlord',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        self.setState({
+          landlord: res,
+          notification: {
+            title: "Forward Maintenance request",
+            content: "Your Landlord has been created successfully!"
+          }
+        });
+        self.isClose();
+        self.onModalWith('notification');
+      },
+      error: function () {
+        self.setState({ notification: {
+            title: "Forward Maintenance request",
+            content: "Create Landlord error!"
+          } });
+        self.onModalWith('notification');
+      }
+    });
+  },
+
+  editLandlord: function (params) {
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/update-and-notify-landlord',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        self.setState({
+          landlord: res,
+          notification: {
+            title: "Forward Maintenance request",
+            content: "Your Landlord has been updated successfully!"
+          }
+        });
+        self.isClose();
+        self.onModalWith('notification');
+      },
+      error: function () {
+        self.setState({ notification: {
+            title: "Forward Maintenance request",
+            content: "Your Landlord has been updated successfully"
+          } });
+        self.onModalWith('notification');
+      }
+    });
+  },
+
+  renderModal: function () {
+    var _this4 = this;
+
+    if (this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if (div.length === 0) {
+        div = document.createElement('div');
+        div.className = "modal-backdrop in";
+        body.appendChild(div);
+      }
+
+      if (this.state.modal == "confirm") {
+        return React.createElement(ModalConfirm, {
+          close: this.isClose,
+          landlord: this.state.landlord,
+          property: this.props.property,
+          onModalWith: function (modal) {
+            return _this4.onModalWith(modal);
+          }
+        });
+      } else if (this.state.modal == "add" && this.props.maintenance_request.id) {
+        return React.createElement(ModalAddLandlord, {
+          close: this.isClose,
+          addLandlord: this.addLandlord,
+          authToken: this.props.authenticity_token,
+          maintenance_request_id: this.props.maintenance_request.id
+        });
+      } else if (this.state.modal == "edit" && this.props.maintenance_request.id) {
+        return React.createElement(ModalEditLandlord, {
+          close: this.isClose,
+          landlord: this.state.landlord,
+          editLandlord: this.editLandlord,
+          authToken: this.props.authenticity_token,
+          maintenance_request_id: this.props.maintenance_request.id
+        });
+      } else if (this.state.modal = "notification") {
+        return React.createElement(ModalNotification, {
+          close: this.isClose,
+          title: this.state.notification.title,
+          content: this.state.notification.content
+        });
+      }
+    }
+
+    return null;
+  },
+
+  summary: function (e) {
+    return React.createElement(
+      'div',
+      { className: 'summary-container-index', id: 'summary-container-index' },
+      React.createElement(
+        'div',
+        { className: 'main-summary' },
+        React.createElement(
+          'div',
+          { className: 'section' },
+          React.createElement(Post, {
+            gallery: this.props.gallery,
+            property: this.props.property,
+            maintenance_request: this.props.maintenance_request
+          }),
+          this.props.quotes.length > 0 && React.createElement(Quote, { quotes: this.props.quotes }),
+          this.props.invoices.length > 0 && React.createElement(Invoice, { invoices: this.props.invoices })
+        ),
+        React.createElement(
+          'div',
+          { className: 'sidebar' },
+          React.createElement(Contact, null),
+          React.createElement(Action, { openModal: this.openModal }),
+          React.createElement(Activity, null)
+        ),
+        React.createElement(ActivityMobile, null)
+      ),
+      React.createElement(SideBarMobile, { openModal: this.openModal }),
+      this.renderModal()
+    );
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      null,
+      this.summary()
+    );
+  }
 });
 // var quotes = React.createClass({
 
@@ -65336,13 +67421,6 @@ var TradyCompanies = React.createClass({
 
 
 }).call(this);
-$(document).ready(function () {
-
-  var swiper = new Swiper('.swiper-container', {
-        pagination: '.swiper-pagination',
-        paginationClickable: true
-    });
-});
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //

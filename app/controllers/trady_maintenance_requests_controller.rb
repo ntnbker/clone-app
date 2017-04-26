@@ -23,7 +23,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     @message = Message.new
     
-    @tradie = Trady.new
+    @trady = current_user.trady
      
     if @maintenance_request.maintenance_request_image != nil
       @gallery = @maintenance_request.maintenance_request_image.images

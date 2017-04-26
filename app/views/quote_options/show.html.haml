@@ -1,0 +1,27 @@
+new_trady_company_url(maintenance_request_id:@maintenance_request,trady_id:@trady.id)
+
+
+
+%div.container.invoice-form
+  %h4 Please Choose One
+  %div
+    %h5.optionheader Option 1
+    %p.optiondescription
+      If you use your own app to make quotes such as Xero.
+      Please Click 
+      %b Upload Invoice
+      to upload a PDF of your invoice.
+    %button.button-primary.green.option-button
+      =link_to "Upload Quote"
+      / , confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"pdf_file" )  
+  %hr
+  %div  
+    %h5.optionheader Option 2
+    %p.optiondescription
+      Easily make quotes using our platform by clicking the 
+      %b Create Quotes
+      button below.
+    %button.button-primary.green.option-button
+      =link_to "Create Quote", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quoto_type:"system_quote")
+    %button.button-primary
+      =link_to "Back To Maintenance Request", trady_maintenance_request_path(@maintenance_request.id)

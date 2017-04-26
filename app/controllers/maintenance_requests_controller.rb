@@ -33,13 +33,14 @@ class MaintenanceRequestsController < ApplicationController
         end
         if the_agent
           @agent = the_agent
+          @agency_admin = @agent.agency.agency_admins.first
           @maintenance_request.agent_id = @agent.id
           @agency = @agent.agency
         end
 
     elsif current_user.agency_admin?
       @agency_admin = current_user.agency_admin
-      @agency_admin = the_agency_admin
+      @agency = @agency_admin.agency
       @maintenance_request.agency_admin_id = @agency_admin.id
       @maintenance_request.perform_realestate_validations = false
     elsif current_user.agent?
@@ -232,11 +233,17 @@ class MaintenanceRequestsController < ApplicationController
 
       MaintenanceRequest.last.reindex
       if current_user == nil
-        flash[:danger]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
+        flash[:success]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
         redirect_to root_path
-      elsif current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? 
+      elsif current_user.agency_admin? 
         flash[:success]= "Thank You for creating a Maintenance Request"
-        redirect_to maintenance_request_path(@maintenance_request)
+        redirect_to agency_admin_maintenance_request_path(@maintenance_request)
+      elsif current_user.agent? 
+        flash[:success]= "Thank You for creating a Maintenance Request"
+        redirect_to agent_maintenance_request_path(@maintenance_request)
+      elsif current_user.tenant? 
+        flash[:success]= "Thank You for creating a Maintenance Request"
+        redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
       
     else

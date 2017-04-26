@@ -30,10 +30,14 @@
       ="#{@maintenance_request.agency_admin.first_name} #{@maintenance_request.agency_admin.last_name}"
     -elsif @maintenance_request.agency_admin == nil
       ="#{@maintenance_request.agent.name} #{@maintenance_request.agent.last_name}"
+
   %h3
     =@maintenance_request.maintenance_heading
   %p
     =@maintenance_request.maintenance_description 
+
+
+  =render "landlord_maintenance_requests/quotes", object:@quotes
   
 
 %div.container
@@ -45,42 +49,33 @@
   -elsif @maintenance_request.agency_admin != nil  
     %a{:href=>"tel:+#{@maintenance_request.agency_admin.mobile_phone}"}
       ="Call Agent: #{@maintenance_request.agency_admin.mobile_phone}"
+
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg", "data-toggle"=>"modal", "data-target"=>"#landlord-message-modal"}
+    Send Agent Message
+
 %div.container
   %h5
     Action
   %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
-    =link_to "Create Quote", quote_options_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady.id)
-  %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
-    =link_to "Create or Upload Invoices", invoice_options_path(trady_company_id:@maintenance_request.trady.trady_company.id, maintenance_request_id:@maintenance_request.id,trady_id:@maintenance_request.trady.id, quote_id:@quote_id)
-
-    
-I HAVE TO ADD EACH QUOTE THAT WAS MADE BY THIS USERS
-
-- @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
-  
-  %div.well 
-    %h5
-      =link_to "Invoice #{index+1}", view_invoice_path(invoice_id:invoice.id)
-    %p 
-      ="Company Name: #{invoice.trady.trady_company.company_name}"
-    %p
-      ="Name: #{invoice.trady.name}"
-    %p 
-      ="Invoice Total Amount: $#{invoice.amount}"
-
--@pdf_files.each_with_index do |pdf, index|
-  %div.well 
-    %h5
-      =link_to "PDF File Invoice #{index+1}", view_pdf_invoice_path(id:pdf.id)
-    %p 
-      ="Company Name: #{pdf.maintenance_request.trady.trady_company.company_name}"
-    %p
-      ="Name: #{pdf.maintenance_request.trady.name}"
+    =link_to "Request Quote", request_quote_path(maintenance_request_id:@maintenance_request.id), method: :post
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+    =link_to "Fix Myself & Make Appointment With Tenant", new_landlord_appointment_path(maintenance_request_id:@maintenance_request.id)
+  %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
+    =link_to "Job Completed", job_completed_path(maintenance_request_id:@maintenance_request.id), method: :post
 
 
+   
+/****************MODALS****************/     
+/**************************************/
 
+%div{:style=>"border-style: solid; "}   
+  Landlord Messaging System (Conversation Between Landlord and Agent)
+  = render partial: "messages/message", collection: @landlords_conversation, as: :message   
+  =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
+    =f.text_field :body, class: "message_body"
+    =f.hidden_field :conversation_type, value:"Landlord"
+    =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+    =f.submit "Submit Message", :class=>"btn btn-default"
+    %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+      Close
 
-
-
-
- 
