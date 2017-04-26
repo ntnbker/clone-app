@@ -62,9 +62,11 @@ class InvoicesController < ApplicationController
 
     #this quote instance variable is for front end to add the values into the form using JS
     @quote = Quote.find_by(id:params[:quote_id])
+    
     if @quote
       @quote_items = @quote.quote_items
-    else
+    elsif @quote == nil
+      
       @quote_items =""
     end 
 
@@ -74,7 +76,7 @@ class InvoicesController < ApplicationController
     @trady = Trady.find_by(id:params[:trady_id])
     
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
-    binding.pry
+    
     @invoice_type = params[:invoice_type]
 
 

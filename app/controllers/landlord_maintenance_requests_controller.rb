@@ -15,13 +15,6 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @email_quote_id = params[:email_quote_id]
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
-
-    # if @quote
-    #   @quote_id = @quote.id
-    # else
-    #   @quote_id = ''
-    # end 
-
     @message = Message.new
     
     @tradie = Trady.new
@@ -59,7 +52,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :email_quote_id=>@email_quote_id}}
+      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation}}
       format.html{render :show}
     end 
 
