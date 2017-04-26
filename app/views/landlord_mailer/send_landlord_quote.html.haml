@@ -6,6 +6,7 @@
       Hi, "#{@landlord.name}" quote has been submitted by a trady for the maintenance request
       =@maintenance_request.maintenance_heading
     %Button
-      =link_to "See Quote", show_quote_url(quote_id:@quote.id, maintenance_request_id:@maintenance_request.id,user_id:@landlord.user.id)
+      =link_to "See Quote", landlord_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@landlord.user.id)
+      / =link_to "See Quote", show_quote_url(quote_id:@quote.id, maintenance_request_id:@maintenance_request.id,user_id:@landlord.user.id)
       
     
