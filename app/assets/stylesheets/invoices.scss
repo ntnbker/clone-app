@@ -348,3 +348,37 @@
 		}
 	}
 }
+
+#Iframe-Master-CC-and-Rs {
+  max-width: 100%;
+  max-height: 100%; 
+  overflow: hidden;
+}
+
+.responsive-wrapper {
+  position: relative;
+  height: 0;
+}
+ 
+.responsive-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.responsive-wrapper-wxh-572x612 {
+  padding-bottom: 107%;
+}
+.set-margin {
+  margin: 30px;
+}
+.center-block-horiz {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
