@@ -13,11 +13,12 @@ class QuotesController < ApplicationController
     
     @quote = Quote.new(quote_params)
     
-    @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
+    # @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
     
     if @quote.save
-      @quote.update_attribute(:amount,@total)
-      
+      @quote.calculate_quote_items_totals
+      @quote.calculate_tax
+      # @quote.update_attribute(:amount,@total)
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
