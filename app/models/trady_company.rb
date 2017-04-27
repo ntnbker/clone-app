@@ -14,6 +14,10 @@ class TradyCompany < ApplicationRecord
   attr_accessor :work_flow
 
   attr_accessor :perform_uniqueness_validation_of_company_email
-  
+  attr_accessor :trady_company_id 
+  attr_accessor :quote_id 
+  attr_accessor :invoice_type
+  attr_accessor :pdf_file_id 
+  attr_accessor :ledger_id
 
 end 

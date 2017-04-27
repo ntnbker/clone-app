@@ -23,7 +23,7 @@ class InvoicesController < ApplicationController
     @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
     @invoice_type = params[:trady_company][:invoice_type]
     #WE HAVE TO FIND THE RIGHT LEDGER
-
+    binding.pry
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
     #@invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
 
@@ -43,7 +43,7 @@ class InvoicesController < ApplicationController
         if @ledger == nil
           redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
         elsif @ledger != nil
-          redirect_to edit_invoice_path(@ledger.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
+          redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
         end 
       end
 
@@ -97,10 +97,11 @@ class InvoicesController < ApplicationController
 
   def create
     
-
+    
     @ledger = Ledger.new(ledger_params)
     
-    
+    @invoice_type = params[:ledger][:invoice_type]
+    binding.pry
     if @ledger.save
       
       
@@ -110,7 +111,7 @@ class InvoicesController < ApplicationController
       
       # @invoice.update_attribute(:amount,@total)
       
-      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
+      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type )
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:ledger][:trady_id]
@@ -122,6 +123,8 @@ class InvoicesController < ApplicationController
 
   def show
     @ledger = Ledger.find_by(id:params[:id])
+    @invoice_type = params[:invoice_type]
+    binding.pry
     #@invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     # @ledger = @maintenance_request.ledger
@@ -134,6 +137,7 @@ class InvoicesController < ApplicationController
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
     @quote = Quote.find_by(id:params[:quote_id])
+    @invoice_type = params[:invoice_type]
     if @quote
       @quote_items = @quote.quote_items
     else
@@ -151,7 +155,7 @@ class InvoicesController < ApplicationController
     @maintenance_request_id = params[:ledger][:maintenance_request_id]
 
     @trady = Trady.find_by(id:params[:ledger][:trady_id])
-    
+    @invoice_type = params[:ledger][:invoice_type]
     @trady_company = @trady.trady_company
 
     if @ledger.update(ledger_params)
@@ -160,7 +164,7 @@ class InvoicesController < ApplicationController
       #must be after invoices method because all invoices calculated first then add them up for grandtotal
       @ledger.save_grand_total
       flash[:success] = "Your Invoice has been updated"
-      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id])
+      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type)
     else
       flash[:danger] = "Sorry Something went wrong "
       render :edit
@@ -234,7 +238,7 @@ class InvoicesController < ApplicationController
 
   private
     def trady_company_params
-      params.require(:trady_company).permit(:bank_account_number,:bsb_number,:account_name,:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email)
+      params.require(:trady_company).permit(:bank_account_number,:bsb_number,:account_name,:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email,:trady_company_id, :quote_id, :invoice_type, :pdf_file_id, :ledger_id)
     end
 
     def invoice_params
@@ -242,7 +246,7 @@ class InvoicesController < ApplicationController
     end
 
     def ledger_params
-    params.require(:ledger).permit( :id, :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date,:_destroy ,invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
+    params.require(:ledger).permit( :id, :trady_company_id,  :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date,:_destroy ,invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 
