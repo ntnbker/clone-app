@@ -28,6 +28,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   end
 
   def show
+    @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     # @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(include: [:trady,:quote_items])
