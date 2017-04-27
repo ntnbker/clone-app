@@ -1,7 +1,11 @@
 %div.container.well
   %div.send-quote
-    %h4
+    %h2
       Maintenance Request Quote
+    %h5
+      ="Company Name: #{@quote.trady.company_name.capitalize}"
+    %h5
+      ="Name: #{@quote.trady.name.capitalize}"
     -@quote.quote_items.each do |f|
       %div.row
         %hr
@@ -13,16 +17,19 @@
             ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
     %hr
     %div.row
-    -if @quote.tax == true
-      %p
-        = "GST: #{ (@quote.amount - @quote.amount/1.10).round(2)}"
-    -elsif @quote.tax == false
-      %p
-        GST: $ 0.00
-    %br    
-    %span
-      ="Total: $#{@quote.amount}"
-    %br    
+      = "Items Total: #{@quote.amount- @quote.gst_amount} "
+      %br   
+      -if @quote.tax == true
+        %p
+          = "GST: #{@quote.gst_amount.round(2)}"
+        %br   
+      -elsif @quote.tax == false
+        %p
+          GST: $ 0.00
+      %br    
+      
+      ="Grand Total: $#{@quote.amount.round(2)}"
+      %br    
     
     %button{:type=>"button", :class=>"button button-primary"} 
       =link_to "Edit Quote", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)

@@ -39,14 +39,15 @@ class QuotesController < ApplicationController
   def update
     
     @quote = Quote.find_by(id:params[:id])
-    @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
+    # @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
     @maintenance_request_id = params[:quote][:maintenance_request_id]
     @trady = Trady.find_by(id:params[:quote][:trady_id])
     
     @trady_company = @trady.trady_company
 
     if @quote.update(quote_params)
-      @quote.update_attribute(:amount,@total)
+      @quote.calculate_quote_items_totals
+      @quote.calculate_tax
       flash[:success] = "Your Quote has been updated"
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
     else
