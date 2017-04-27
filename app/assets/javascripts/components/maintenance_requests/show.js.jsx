@@ -105,9 +105,156 @@ var Post = React.createClass({
 	}
 });
 
+var ButtonForwardLandlord = React.createClass({
+	sendEmail: function() {
+		if(!!this.props.landlord){
+			const params = { 
+				quote_id: this.props.quote.id,
+				maintenance_request_id: this.props.quote.maintenance_request_id,
+			};
+
+			this.props.sendEmailLandlord(params);
+		}else {
+			this.props.onModalWith("addLandlord");
+		}
+	},
+
+	render: function() {
+		return (
+			<button 
+				type="button" 
+				className="btn btn-default"
+				onClick={this.sendEmail}
+			>
+				Forward to LandLord
+			</button>
+		);
+	}
+});
+
+var ButtonAccept = React.createClass({
+	updateStatus: function() {
+		const params = {
+			status: "Approved",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id,
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function() {
+		return (
+			<button 
+			type="button" 
+			className="btn btn-accept" 
+			onClick={this.updateStatus}
+			>
+				Accept
+			</button>
+		);
+	}
+});
+
+var ButtonDecline = React.createClass({
+	updateStatus: function() {
+		const params = {
+			status: "Declined",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id,
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function() {
+		return (
+			<button 
+			type="button" 
+			className="btn btn-decline" 
+			onClick={this.updateStatus}
+			>
+				Decline
+			</button>
+		);
+	}
+});
+
+var ButtonRestore = React.createClass({
+	updateStatus: function() {
+		const params = {
+			status: "Restore",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id,
+		};
+		debugger
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function() {
+		return (
+			<button type="button" className="btn btn-default" onClick={this.updateStatus}>
+				Restore
+			</button>
+		);
+	}
+});
+
+var ButtonCancle = React.createClass({
+	updateStatus: function() {
+		const params = {
+			status: "Cancel",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id,
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function() {
+		return (
+			<button 
+				type="button"
+				className="btn btn-cancel" 
+				onClick={this.updateStatus}
+			>
+				Cancel
+			</button>
+		);
+	}
+});
+
+var ButtonView = React.createClass({
+	render: function() {
+		return (
+			<button type="button" className="btn btn-default">
+				View
+			</button>
+		);
+	}
+});
+
+var ActionQuote = React.createClass({
+	render: function(){
+		const quote = this.props.quote;
+		const self = this.props;
+		return (
+			<div className="actions-quote">
+				{ quote.status == "Active" && <ButtonForwardLandlord sendEmailLandlord={self.sendEmailLandlord} quote={quote} onModalWith={self.onModalWith} landlord={self.landlord} /> }
+				{ quote.status == "Active" && <ButtonAccept updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
+				{ quote.status == "Active" && <ButtonDecline updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
+				{ (quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved") ? <ButtonRestore updateStatusQuote={self.updateStatusQuote} quote={quote} /> : null }
+				{ <ButtonView /> }
+				{ quote.status == "Approved" && <ButtonCancle updateStatusQuote={self.updateStatusQuote} quote={quote} />}
+			</div>
+		);
+	}
+});
+
 var Quote = React.createClass({
 	render: function() {
 		const quotes = this.props.quotes;
+		const self = this.props;
 		return (
 			<div className="quotes">
 				<p>
@@ -133,19 +280,13 @@ var Quote = React.createClass({
 									</div>
 								</div>
 								<div className="actions five columns">
-									<button className="close button-default">
-										<i className="icon-close" aria-hidden="true" />
-									</button>
-									<button className="reload button-default">
-										<i className="icon-reload" aria-hidden="true" />
-									</button>
-									<button className="money button-default">{quote.amount}AUD</button>
+									<p className="price">Amount: {quote.amount}AUD</p>
 								</div>
+								{ !!self.current_user && <ActionQuote quote={quote} updateStatusQuote={self.updateStatusQuote} sendEmailLandlord={self.sendEmailLandlord} onModalWith={self.onModalWith} landlord={self.landlord} /> }
 							</div>
 						);
 					})
 				}
-					
 				</div>
 			</div>
 		);
@@ -1422,17 +1563,19 @@ var ModalSendMessageTenant = React.createClass({
 var Summary = React.createClass({
 	getInitialState: function() {
 		var landlord = this.props.landlord;
+		var quotes = this.props.quotes;
 		return {
 			modal: "",
+			quotes: quotes,
 			isModal: false,
 			landlord: landlord,
+			tenants_conversation: this.props.tenants_conversation,
+			landlords_conversation: this.props.landlords_conversation,
 			notification: {
 				title: "",
 				content: "",
 				bgClass: "",
 			},
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
 		};
 	},
 
@@ -1596,10 +1739,8 @@ var Summary = React.createClass({
 				self.setState({
 					landlords_conversation: landlords_conversation,
 				});
-				debugger
 			},
 			error: function(err) {
-				debugger
 				self.setState({notification: {
 					title: "Message Landlord",
 					content: err.responseText,
@@ -1630,6 +1771,54 @@ var Summary = React.createClass({
 				self.setState({notification: {
 					title: "Message Tenants",
 					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateStatusQuote: function(params) {
+		const self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_status',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					quotes: res
+				});
+			},
+			error: function(err) {
+				
+			}
+		});
+	},
+
+	sendEmailLandlord: function(params) {
+		const self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/forward_quote',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({notification: {
+					title: "Forward Landlord",
+					content: "The email about quote information was sent for Landlord.",
+					bgClass: "bg-success",
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Forward Landlord",
+					content: "Send emaid is error!",
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1770,7 +1959,7 @@ var Summary = React.createClass({
 							property={this.props.property} 
 							maintenance_request={this.props.maintenance_request}
 						/>
-						{this.props.quotes.length > 0 && <Quote quotes={this.props.quotes} />}
+						{this.props.quotes.length > 0 && <Quote quotes={this.state.quotes} updateStatusQuote={this.updateStatusQuote} sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} onModalWith={this.onModalWith} landlord={this.state.landlord} />}
 						{this.props.invoices.length > 0 && <Invoice invoices={this.props.invoices} />}
 					</div>
 					<div className="sidebar">
