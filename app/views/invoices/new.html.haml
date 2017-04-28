@@ -3,7 +3,7 @@
 %div.container.invoice-form
   %p
     Please enter Invoice details
-    -binding.pry
+    
   =react_component('InvoiceFields', {:authenticity_token => form_authenticity_token,
                                      :maintenance_request_id => @maintenance_request_id,
                                      :trady_id => @trady.id,
