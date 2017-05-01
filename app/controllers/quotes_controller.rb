@@ -72,7 +72,7 @@ class QuotesController < ApplicationController
 
   def quote_status
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    quotes = maintenance_request.quotes.where(:delivery_status=>true)
+    quotes = maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
 
     if params[:status] == "Approved" 
       quotes.each do |quote|
