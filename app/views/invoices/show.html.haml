@@ -38,7 +38,7 @@
       ="Grand Total : $ #{@ledger.grand_total.round(3)}"
   %div.qf-button
     %button.button.button-primary.left
-      =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
+      =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
     %button.button.button-primary.green.right
       =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id ), method: :post
 

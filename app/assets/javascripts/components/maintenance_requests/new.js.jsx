@@ -1,8 +1,12 @@
+var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
 	getInitialState() {
     	return { 
 			images: [],
-			cansubmit: false
+			validName: false,
+			validEmail: false,
+			validMobile: false,
+			validDate: false,
 		};
   	},
 
@@ -58,8 +62,9 @@ var MaintenanceRequestsNew = React.createClass({
  	 },
 
 	handleCheckSubmit: function(e) {
-		if(!this.state.cansubmit) {
+		if(!this.state.validName || !this.state.validEmail || !this.state.validMobile || !this.state.validDate) {
 			e.preventDefault();
+			document.getElementById("errCantSubmit").textContent = strCantSubmit;
 			return;
 		}
 		var XHR = new XMLHttpRequest();
@@ -72,49 +77,90 @@ var MaintenanceRequestsNew = React.createClass({
 		});
 		FD.append('commit', 'Submit Maintenance Request');
 		XHR.addEventListener('loadend', function(event) {
-			window.location.href = event.currentTarget.responseURL;
-			console.log('Yeah! Data sent and response loaded.');
+			var validationObject;
+			var jsonObject = event.currentTarget.response;
+			IsJsonString = (str) => { 
+				try {
+					JSON.parse(str);
+				} catch (e) {
+					return false;
+				}
+				return true; 
+			}
+			setErrorMessage = (id, strErrorMessage, validateObject) => {
+				if(validateObject != undefined) {
+					document.getElementById(id).textContent = strErrorMessage;
+					document.getElementById(id).classList.add("border_on_error");
+				}
+			}
+			if(IsJsonString(jsonObject) == true)
+				validationObject = JSON.parse(jsonObject);
+			else
+				window.location.href = event.currentTarget.responseURL;
+			if(validationObject['name'] != undefined) {
+				document.getElementById("errorbox").textContent = strErrName;
+				document.getElementById("errorbox").classList.add("border_on_error");
+			}
+			if(validationObject['email'] != undefined) {
+				document.getElementById("errorboxemail").textContent = strErrEmail;
+				document.getElementById("errorboxemail").classList.add("border_on_error");
+			}
+			if(validationObject['mobile'] != undefined) {
+				document.getElementById("errorboxmobile").textContent = strErrMobile;
+				document.getElementById("errorboxmobile").classList.add("border_on_error");
+			}
+			if(validationObject['maintenance_heading'] != undefined) {
+				document.getElementById("errorboxheading").textContent = strErrHeading;
+				document.getElementById("errorboxheading").classList.add("border_on_error");
+			}
+			if(validationObject['maintenance_description'] != undefined) {
+				document.getElementById("errorboxdescription").textContent = strErrDescription;
+				document.getElementById("errorboxdescription").classList.add("border_on_error");
+			}
 		});
-
-		XHR.addEventListener('error', function(event) {
-			console.log('Oups! Something went wrong.');
-		});
-
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.send(FD);
 		e.preventDefault();				
 	},
 
-	validateEmail: function(inputText,e){
+	validateEmail: function(inputText, e, agentFlag){
 		var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-		errorMessage = '';
 		if(!inputText.match(mailformat)){
-			errorMessage = 'Invalid Email Address!';
-			document.getElementById("errorboxemail").textContent = errorMessage;
+			if(agentFlag == false)
+				document.getElementById("errorboxemail").textContent = strInvalidEmail;
+			else
+				document.getElementById("errAgentEamil").textContent = strInvalidEmail;
 			e.target.classList.add("border_on_error");
-			this.setState({cansubmit: false});
+			this.setState({validEmail: false});
 		}
 		else{
-			document.getElementById("errorboxemail").textContent = errorMessage;
+			if(agentFlag == false)
+				document.getElementById("errorboxemail").textContent = strNone;
+			else
+				document.getElementById("errAgentEamil").textContent = strNone;
 			e.target.classList.remove("border_on_error");
-			this.setState({cansubmit: true});
+			this.setState({validEmail: true});
 		}
 	},
 
-	validatePhoneNumber:function(inputText,e){
+	validatePhoneNumber:function(inputText, e, agentFlag){
 		var numbers = /^[0-9]+$/;
 		if(inputText.match(numbers)){
-			errorMessage = '';
-			document.getElementById("errorboxmobile").textContent = errorMessage;
+			if(agentFlag == false)
+				document.getElementById("errorboxmobile").textContent = strNone;
+			else
+				document.getElementById("errAgentMobile").textContent = strNone;
 			e.target.classList.remove("border_on_error");
-			this.setState({cansubmit: true});
+			this.setState({validMobile: false});
 		}
 		else{
-			errorMessage = 'Invalid Mobile Number!';
-			document.getElementById("errorboxmobile").textContent = errorMessage;
+			if(agentFlag == false)
+				document.getElementById("errorboxmobile").textContent = strInvalidMobile;
+			else
+				document.getElementById("errAgentMobile").textContent = strInvalidMobile;
 			e.target.classList.add("border_on_error");
-			this.setState({cansubmit: false});
+			this.setState({validMobile: true});
 		}
 	},
 
@@ -138,28 +184,20 @@ var MaintenanceRequestsNew = React.createClass({
 			  	  		 name={this.generateAtt("name", "name")}
 			  	  		   id={this.generateAtt("id", "name")} 
 					   onBlur={(e) => {
-							let valid = true;
-							let errorMessage = '';
 							if (!e.target.value.length) {
-									valid = false;
-									errorMessage = 'Name is required';
-									document.getElementById("errorbox").textContent = errorMessage;
+									document.getElementById("errorbox").textContent = strRequireName;
 									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
+									this.setState({validName: false});
 								}
 							else if(e.target.value.length < 4){
-									valid = false;
-									errorMessage = 'Name must be more than 3 letters';
-									document.getElementById("errorbox").textContent = errorMessage;
+									document.getElementById("errorbox").textContent = strShortName;
 									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
+									this.setState({validName: false});
 								}
 							else if(e.target.value.length >= 4){
-									valid = false;
-									errorMessage = '';
-									document.getElementById("errorbox").textContent = errorMessage;
+									document.getElementById("errorbox").textContent = strNone;
 									e.target.classList.remove("border_on_error");
-									this.setState({cansubmit: true});
+									this.setState({validName: true});
 								}
 							}} 	required />
 					<p id="errorbox" className="error"></p>
@@ -169,24 +207,18 @@ var MaintenanceRequestsNew = React.createClass({
 	 	           		  name={this.generateAtt("name", "email")}
 	 	           		   	id={this.generateAtt("id", "email")}
 						onBlur={(e) => {
-							let valid = true;
-							let errorMessage = '';
 							if (!e.target.value.length) {
-									valid = false;
-									errorMessage = 'Email Address is required';
-									document.getElementById("errorboxemail").textContent = errorMessage;
+									document.getElementById("errorboxemail").textContent = strRequireEmail;
 									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
+									this.setState({validEmail: false});
 								}
 							else if(e.target.value.length < 4){
-									valid = false;
-									errorMessage = 'Email Address must have more than 3 letters';
-									document.getElementById("errorboxemail").textContent = errorMessage;
+									document.getElementById("errorboxemail").textContent = strShortEmail;
 									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
+									this.setState({validEmail: false});
 								}
 							else if(e.target.value.length >= 4){
-									this.validateEmail(e.target.value,e);
+									this.validateEmail(e.target.value, e, false);
 								}
 							}}  required />
 					<p id="errorboxemail" className="error"></p>
@@ -196,27 +228,23 @@ var MaintenanceRequestsNew = React.createClass({
 						name={this.generateAtt("name", "mobile")}
 						  id={this.generateAtt("id", "mobile")}
 					  onBlur={(e) => {
-						let valid = true;
-						let errorMessage = '';
 						if (!e.target.value.length) {
-								errorMessage = 'Mobile Number is required';
-								document.getElementById("errorboxmobile").textContent = errorMessage;
+								document.getElementById("errorboxmobile").textContent = strRequireMobile;
 								e.target.classList.add("border_on_error");
-								this.setState({cansubmit: false});
+								this.setState({validMobile: false});
 							}
 						else if(e.target.value.length < 8){
-								errorMessage = 'Mobile Number must be more than 8 digits';
-								document.getElementById("errorboxmobile").textContent = errorMessage;
+								document.getElementById("errorboxmobile").textContent = strShortMobile;
 								e.target.classList.add("border_on_error");
-								this.setState({cansubmit: false});
+								this.setState({validMobile: false});
 							}
 						if(e.target.value.length >= 8){
-								this.validatePhoneNumber(e.target.value,e);
+								this.validatePhoneNumber(e.target.value, e, false);
 							}
 						}} maxLength="10" required />																														
 					<p id="errorboxmobile" className="error"></p>
 				</div>
-
+				
 				<hr/>
 				
 				<div id="access_contacts">
@@ -230,62 +258,12 @@ var MaintenanceRequestsNew = React.createClass({
 					<input type="text"
 						  name={this.generateAtt("name", "maintenance_heading")}
 							id={this.generateAtt("id", "maintenance_heading")}
-						onBlur={(e) => {
-							let valid = true;
-							let errorMessage = '';
-							if (!e.target.value.length) {
-									valid = false;
-									errorMessage = 'This field is required';
-									document.getElementById("errorboxheading").textContent = errorMessage;
-									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
-								}
-							else if(e.target.value.length < 4){
-									valid = false;
-									errorMessage = 'Heading must be more than 3 letters';
-									document.getElementById("errorboxheading").textContent = errorMessage;
-									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
-								}
-							if(e.target.value.length >= 4){
-									valid = true;
-									errorMessage = '';
-									document.getElementById("errorboxheading").textContent = errorMessage;
-									e.target.classList.remove("border_on_error");
-									this.setState({cansubmit: true});
-								}
-							}}  required />
-					<p id="errorboxheading" className="error"></p>
+						/>
 
 					<p> Maintenance description </p>
 					<textarea 
 						  name={this.generateAtt("name", "maintenance_description")}
-							id={this.generateAtt("id", "maintenance_description")}
-						onBlur={(e) => {
-							let valid = true;
-							let errorMessage = '';
-							if (!e.target.value.length) {
-									valid = false;
-									errorMessage = 'This field is required';
-									document.getElementById("errorboxdescription").textContent = errorMessage;
-									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
-								}
-							else if(e.target.value.length < 10){
-									valid = false;
-									errorMessage = 'Description must be more than 10 letters';
-									document.getElementById("errorboxdescription").textContent = errorMessage;
-									e.target.classList.add("border_on_error");
-									this.setState({cansubmit: false});
-								}
-							if(e.target.value.length >= 10){
-									valid = true;
-									errorMessage = '';
-									document.getElementById("errorboxdescription").textContent = errorMessage;
-									e.target.classList.remove("border_on_error");
-									this.setState({cansubmit: true});
-								}
-							}} required >
+							id={this.generateAtt("id", "maintenance_description")} >
 					</textarea>
 					<p id="errorboxdescription" className="error"></p>
 
@@ -319,22 +297,79 @@ var MaintenanceRequestsNew = React.createClass({
 							<p> Real estate office </p>
 							<input type="text"
 								   name={this.generateAtt("name", "real_estate_office")}
-								     id={this.generateAtt("id", "real_estate_office")} required />
+								     id={this.generateAtt("id", "real_estate_office")} 
+								 onBlur={(e) => {
+									if (!e.target.value.length) {
+											document.getElementById("errRealEstateOffice").textContent = strRequireText;
+											e.target.classList.add("border_on_error");
+										}
+									else if(e.target.value.length < 4){
+											document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
+											e.target.classList.add("border_on_error");
+										}
+									else if(e.target.value.length >= 4){
+											document.getElementById("errRealEstateOffice").textContent = strNone;
+											e.target.classList.remove("border_on_error");
+										}
+									}} 	required />
+							<p id="errRealEstateOffice" className="error"></p>
 
 	 						<p> Agent name </p>
 							<input type="text"
 								   name={this.generateAtt("name", "agent_name")}
-								     id={this.generateAtt("id", "agent_name")} required />
+								     id={this.generateAtt("id", "agent_name")} 
+								 onBlur={(e) => {
+									if (!e.target.value.length) {
+											document.getElementById("errAgentName").textContent = strRequireName;
+											e.target.classList.add("border_on_error");
+										}
+									else if(e.target.value.length < 4){
+											document.getElementById("errAgentName").textContent = strShortName;
+											e.target.classList.add("border_on_error");
+										}
+									else if(e.target.value.length >= 4){
+											document.getElementById("errAgentName").textContent = strNone;
+											e.target.classList.remove("border_on_error");
+										}
+									}} 	required />
+							<p id="errAgentName" className="error"></p>
 
 	 						<p> Agent email </p>
 							<input type="text"
 								   name={this.generateAtt("name", "agent_email")}
-								     id={this.generateAtt("id", "agent_email")} required />
-
+								     id={this.generateAtt("id", "agent_email")} 
+								 onBlur={(e) => {
+									if (!e.target.value.length) {
+											document.getElementById("errAgentEamil").textContent = strRequireEmail;
+											e.target.classList.add("border_on_error");
+										}
+									else if(e.target.value.length < 4){
+											document.getElementById("errAgentEamil").textContent = strShortEmail;
+											e.target.classList.add("border_on_error");
+										}
+									else if(e.target.value.length >= 4){
+											this.validateEmail(e.target.value, e, true);
+										}
+									}}  required />
+							<p id="errAgentEamil" className="error"></p>
 	 						<p> Agent mobile </p>
 							<input type="text"
 								   name={this.generateAtt("name", "agent_mobile")}
-								     id={this.generateAtt("id", "agent_mobile")} required />
+								     id={this.generateAtt("id", "agent_mobile")} 
+								 onBlur={(e) => {
+									if (!e.target.value.length) {
+											document.getElementById("errAgentMobile").textContent = strRequireMobile;
+											e.target.classList.add("border_on_error");
+										}
+									else if(e.target.value.length < 8){
+											document.getElementById("errAgentMobile").textContent = strShortMobile;
+											e.target.classList.add("border_on_error");
+										}
+									if(e.target.value.length >= 8){
+											this.validatePhoneNumber(e.target.value, e, true);
+										}
+									}} maxLength="10" required />
+							<p id="errAgentMobile" className="error"></p>
 						</div>
 						<hr/>
 					</div>
@@ -347,7 +382,7 @@ var MaintenanceRequestsNew = React.createClass({
 				</div>
 				
 				<hr/>
-
+				<p id="errCantSubmit" className="error"></p>
 				<input type="submit" className="button-primary green" name="commit" value="Submit Maintenance Request" data-disable-with="Submit Maintenance Request" />
 			</form>
 		);

@@ -36,6 +36,7 @@ class Invoice < ApplicationRecord
 
   def save_total
     total = self.calculate_invoice_items_totals
+    self.calculate_tax
     self.update_attribute(:amount, total)
   end
 
@@ -49,7 +50,8 @@ class Invoice < ApplicationRecord
     invoices_amount = []
     
     if self.tax == nil || self.tax == false
-        invoice_total_amount = self.amount/1.10
+        invoice_total_amount = self.amount
+        #invoice_total_amount = self.amount/1.10
         #tax_amount = invoice_total_amount * 0.10 
         # invoices_amount.push(invoice_total_amount)
         self.update_attribute(:amount, invoice_total_amount)

@@ -12,14 +12,8 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
  
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @quote = @quotes.where(:status=>"Approved").first if !nil
+    @email_quote_id = params[:email_quote_id]
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
-
-    if @quote
-      @quote_id = @quote.id
-    else
-      @quote_id = ''
-    end 
 
     @message = Message.new
     
