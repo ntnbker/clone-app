@@ -173,17 +173,17 @@
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.submit "Submit Message", :class=>"btn btn-default"
 
-=bootstrap_form_for(@landlord,remote: true) do |f|
-  %div{:class=>"modal fade", :id=>"create-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
-    %div{:class=>"modal-dialog", :role=>"document"}
-      %div{:class=>"modal-content"}
-        Please add landlord before attempting to send a quote to the landlord.
-        %div{:class=>"modal-body"}
-          =f.text_field :name, class: "landlord_fields"
-          =f.text_field :email, class: "landlord_fields"
-          =f.phone_field :mobile, class: "landlord_fields"
-          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-          =f.submit "Add Landlord", :class=>"btn btn-default"
+/ =bootstrap_form_for(@landlord,remote: true) do |f|
+/   %div{:class=>"modal fade", :id=>"create-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+/     %div{:class=>"modal-dialog", :role=>"document"}
+/       %div{:class=>"modal-content"}
+/         Please add landlord before attempting to send a quote to the landlord.
+/         %div{:class=>"modal-body"}
+/           =f.text_field :name, class: "landlord_fields"
+/           =f.text_field :email, class: "landlord_fields"
+/           =f.phone_field :mobile, class: "landlord_fields"
+/           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+/           =f.submit "Add Landlord", :class=>"btn btn-default"
           
 
 =bootstrap_form_for(@tradie, remote: true) do |f|
