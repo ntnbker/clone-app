@@ -33,7 +33,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     # @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
 
-    @agency = @current_user.agency_admin
+    @agency = @current_user.agency_admin.agency
 
 
     @email_quote_id = params[:email_quote_id]

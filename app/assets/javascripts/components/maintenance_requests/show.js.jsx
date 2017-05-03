@@ -296,6 +296,7 @@ var DetailQuote = React.createClass({
 	render: function() {
 		const quote_items = this.props.quote_items;
 		let subTotal = 0;
+		let gst = 0;
 		if(!!quote_items) {
 			return (
 				<table  className="table">
@@ -308,49 +309,54 @@ var DetailQuote = React.createClass({
 							Pricing
 						</th>
 						<th>
+							Rate
+						</th>
+						<th>
 							Hours
 						</th>
 						<th>
-							Amount
+							Total
 						</th>
 					</tr>
 					</thead>
 					<tbody>
 					{
 						quote_items.map(function(item, key) {
-							subTotal+= item.amount;
+							subTotal+= item.amount * item.hours;
+							gst += !!item.gst_amount ? item.gst_amount : 0;
 							return (
 								<tr key={key}>
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
-									<td>{item.hours}</td>
 									<td>{item.amount}</td>
+									<td>{!!item.hours ? item.hours : 0}</td>
+									<td>${item.hours * item.amount}</td>
 								</tr>
 							);
 						})
 					}
 					<tr>
-						<td colSpan="3" className="text-right">
+						<td colSpan="4" className="text-right">
 							Subtotal:
 						</td>
 						<td>
-							{subTotal}
+							${subTotal}
 						</td>
 					</tr>
 					<tr>
-						<td colSpan="3" className="text-right">
+						<td colSpan="4" className="text-right">
 							GST:
 						</td>
 						<td>
-							0
+							${gst}
 						</td>
 					</tr>
 					<tr>
-						<td colSpan="3" className="text-right">
+						<td colSpan="4" className="text-right">
 							Total:
 						</td>
 						<td>
-							{subTotal}
+							${subTotal + gst}
 						</td>
 					</tr>
 					</tbody>
@@ -398,7 +404,7 @@ var ModalViewQuote = React.createClass({
 		let position = 0;
 		let quote = "";
 		if(key == "prev") {
-			position = index - 1 < 0 ? 0 : index-1;
+			position = index - 1 < 0 ? this.state.quotes.length - 1 : index-1;
 		}else {
 			position = index + 1 > this.state.quotes.length - 1 ? 0 : index+1;
 		}
@@ -457,7 +463,7 @@ var ModalViewQuote = React.createClass({
 						</div>
 						<div className="slider-quote">
 							<div className="modal-body">
-								<div className="show-quote">
+								<div className="show-quote" onTouchEnd={(key, index) => this.switchSlider('prev', this.state.index)}>
 									<div className="info-quote">
 										<div className="info-trady">
 											<p>{quote.trady.name}</p>
@@ -465,8 +471,9 @@ var ModalViewQuote = React.createClass({
 											<p className="">{!!quote.trady.trady_company && quote.trady.trady_company.email}</p>
 											<p className="">Abn: {!!quote.trady.trady_company && quote.trady.trady_company.abn}</p>
 										</div>
-										<div className="">
-									
+										<div className="info-agency">
+											<p>{self.agency.company_name}</p>
+											<p>{self.agency.address}</p>
 										</div>
 									</div>
 									<div className="detail-quote">
@@ -495,7 +502,6 @@ var ModalViewQuote = React.createClass({
 						</div>
 						
 					</div>
->>>>>>> 251242b9e9af28e492107aeadd1791877c8be6af
 				</div>
 			</div>
 		);
@@ -539,7 +545,7 @@ var Invoice = React.createClass({
 							</div>
 						);
 					})
-				}          
+				}      
 				</div>
 			</div>
 		);
@@ -651,13 +657,13 @@ var ContentAction = React.createClass({
 					</a>
 				</li>
 				<li className="active">
-					<a>
+					<a onClick={() => this.props.onModalWith('requestQuote')}>
 						<i className="fa fa-file-text" aria-hidden="true" />
 						Request quote
 					</a>
 				</li>
 				<li>
-					<a>
+					<a onClick={() => this.props.onModalWith('sendWorkOrder')}>
 						<i className="icon-send" aria-hidden="true" />
 						Send work order
 					</a>
@@ -1772,18 +1778,281 @@ var ModalSendMessageTenant = React.createClass({
 	}
 });
 
+var ModalRequestModal = React.createClass({
+	getInitialState: function() {
+		return {
+			isAdd: false,
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false,
+			errorCompany: false,
+			maintenance_request: this.props.maintenance_request,
+			trady: {
+				name: null,
+				email: null,
+				mobile: null,
+				company_name: null,
+			},
+		};	
+	},
+
+	checkValidate: function(e) {
+		var key = e.target.id;
+
+		switch(key) {
+			case "company": {
+					if(e.target.value == "") {
+						this.setState({errorCompany: true});
+					}else {
+						this.setState({errorCompany: false});
+					}
+					this.state.trady.company_name = e.target.value;
+					this.forceUpdate();
+				break;
+			}
+
+			case "name": {
+					if(e.target.value == "") {
+						this.setState({errorName: true});
+					}else {
+						this.setState({errorName: false});
+					}
+					this.state.trady.name = e.target.value;
+					this.forceUpdate();
+				break;
+			}
+
+			case "mobile": {
+				if(e.target.value == "") {
+					this.setState({errorMobile: true});
+				}else {
+					this.setState({errorMobile: false});
+				}        
+				this.state.trady.mobile = e.target.value;
+					this.forceUpdate();
+				break;
+			}
+
+			default: {
+				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+					this.setState({errorEmail: true});
+				}else {
+					this.setState({errorEmail: false});
+				}
+				this.state.trady.email = e.target.value;
+					this.forceUpdate();
+				break;
+			}
+		}
+	},
+
+	componentWillMount: function() {
+		this.selectTrady(this.state.maintenance_request.trady_id);
+	},
+
+	selectTrady: function(id) {
+		const self = this.props;
+		if(!!id){
+			for(var i = 0; i < self.tradies.length; i++) {
+				const item = self.tradies[i];
+				if(item.id == id) {
+					this.setState({
+						trady: item,
+						isAdd: false,
+					});
+
+					return;
+				}
+			}
+		}
+
+		this.setState({
+			isAdd: true,
+			trady: {
+				name: null,
+				email: null,
+				mobile: null,
+				company_name: null,
+			}
+		});
+	},
+
+	submit: function(e) {
+		e.preventDefault();
+		let flag = false;
+
+		if(this.company.value == "") {
+			this.setState({errorCompany: true});
+			flag = true;
+		}
+
+		if(this.name.value == "") {
+			this.setState({errorName: true});
+			flag = true;
+		}
+
+		if(this.mobile.value == "") {
+			this.setState({errorMobile: true});
+			flag = true;
+		}
+
+		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+			this.setState({errorEmail: true});
+			flag = true;
+		} 
+
+		if(!flag) {
+			var params = {
+				trady: {
+					name: this.name.value,
+					email: this.email.value,
+					mobile: this.mobile.value,
+					company_name: this.company.value,
+					maintenance_request_id: this.props.maintenance_request.id,
+					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
+					skill_required: this.props.maintenance_request.service_type,
+					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
+				},
+			};
+			this.props.requestQuote(params);
+		}
+
+		return
+	},
+
+	render: function() {
+		const self = this;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<form role="form" id="addForm" onSubmit={this.submit}>
+							<div className="modal-header">
+								<button 
+									type="button" 
+									className="close"
+									aria-label="Close" 
+									data-dismiss="modal" 
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">{ this.props.keyTitle == "request-quote" ? "Request Quote" : "Send Work Order" }</h4>
+							</div>
+							<div className="modal-body">
+									<div className="row">
+										<label className="label-custom">Select Trady:</label>
+										<select 
+											id="trady" 
+											className="form-control"
+											ref={e => this.trady_id = e}
+											onChange={() => this.selectTrady(this.trady_id.value)} 
+										>
+											<option value="" selected={!self.props.maintenance_request.trady_id && "selected"}>Select or Add New Tradie</option>
+											{
+												this.props.tradies.map(function(trady, index) {
+													return (
+														<option 
+															key={index+1} 
+															value={trady.id} 
+															selected={self.props.maintenance_request.trady_id == trady.id && "selected"}
+														>
+															{trady.name}
+														</option>
+													);
+												})
+											}
+										</select>
+									</div>
+									<div className="row m-t-lg">
+										<div>
+											<label className="label-custom">Company Name<strong>*</strong>:</label>
+											<input
+												type="text" 
+												id="company" 
+												ref={e => this.company = e}
+												onChange={this.checkValidate} 
+												placeholder="Enter Company Name"
+												readOnly={!this.state.isAdd}
+												value={!!this.state.trady.company_name ? this.state.trady.company_name : ""}
+												className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")} 
+											/>
+										</div>
+									</div>
+									<div className="row m-t-lg">
+										<div>
+											<label className="label-custom">Name <strong>*</strong>:</label>
+											<input
+												id="name" 
+												type="text" 
+												ref={e => this.name = e}
+												placeholder="Enter Name"
+												onChange={this.checkValidate}
+												readOnly={!this.state.isAdd}
+												value={!!this.state.trady.name ? this.state.trady.name : ""}
+												className={"input-custom u-full-width " + (this.state.errorName && "has-error")} 
+											/>
+										</div>
+									</div>
+									<div className="row m-t-lg">
+										<div>
+											<label className="label-custom">Email <strong>*</strong>:</label>
+											<input
+												id="email" 
+												type="text" 
+												placeholder="Enter Email"
+												ref={e => this.email = e} 
+												onChange={this.checkValidate}
+												readOnly={!this.state.isAdd}
+												value={!!this.state.trady.email ? this.state.trady.email : ""} 
+												className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")} 
+											/>
+										</div>
+									</div>
+									<div className="row m-t-lg">
+										<div>
+											<label className="label-custom">Mobile <strong>*</strong>:</label>
+											<input 
+												id="mobile" 
+												type="number" 
+												placeholder="Enter Mobile"
+												ref={e => this.mobile = e} 
+												onChange={this.checkValidate}
+												readOnly={!this.state.isAdd}
+												value={!!this.state.trady.mobile ? this.state.trady.mobile : ""} 
+												className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")} 
+											/>
+										</div>
+									</div>
+							</div>
+							<div className="modal-footer">
+								<button 
+									type="button" 
+									onClick={this.props.close}
+									className="btn btn-primary cancel" 
+								>Cancel</button>
+								<button type="submit" className="btn btn-default success">Submit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
 var Summary = React.createClass({
 	getInitialState: function() {
-		var landlord = this.props.landlord;
-		var quotes = this.props.quotes;
 		return {
 			modal: "",
-			quotes: quotes,
+			quote: null,
 			isModal: false,
-			landlord: landlord,
+			quotes: this.props.quotes,
+			tradies: this.props.tradies,
+			landlord: this.props.landlord,
+			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
-			quote: null,
 			notification: {
 				title: "",
 				content: "",
@@ -2046,6 +2315,41 @@ var Summary = React.createClass({
 			}
 		});
 	},
+
+	requestQuote: function(params) {
+		const self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/tradies',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if(params.trady.trady_request == "Work Order") {
+					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
+					self.forceUpdate();
+				} 
+				self.setState({
+					tradies: res,
+					notification: {
+						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
+						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
+					content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
 	
 	renderModal: function() {
 		if(this.state.isModal) {
@@ -2076,7 +2380,7 @@ var Summary = React.createClass({
 							close={this.isClose}
 							addAskLandlord={this.addAskLandlord}
 							authToken={this.props.authenticity_token}
-							maintenance_request_id={this.props.maintenance_request.id}
+							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);
 
@@ -2087,7 +2391,7 @@ var Summary = React.createClass({
 							landlord={this.state.landlord}
 							editAskLandlord={this.editAskLandlord}
 							authToken={this.props.authenticity_token}
-							maintenance_request_id={this.props.maintenance_request.id}
+							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);
 
@@ -2107,7 +2411,7 @@ var Summary = React.createClass({
 							close={this.isClose}
 							addLandlord={this.addLandlord}
 							authToken={this.props.authenticity_token}
-							maintenance_request_id={this.props.maintenance_request.id}
+							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);
 
@@ -2119,7 +2423,7 @@ var Summary = React.createClass({
 								landlord={this.state.landlord}
 								editLandlord={this.editLandlord}
 								authToken={this.props.authenticity_token}
-								maintenance_request_id={this.props.maintenance_request.id}
+								maintenance_request_id={this.state.maintenance_request.id}
 							/>
 						);
 					}else {
@@ -2146,7 +2450,7 @@ var Summary = React.createClass({
 							authToken={this.props.authenticity_token}
 							sendMessageLandlord={this.sendMessageLandlord}
 							landlords_conversation={this.state.landlords_conversation} 
-							maintenance_request_id={this.props.maintenance_request.id}
+							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);
 				}
@@ -2159,7 +2463,7 @@ var Summary = React.createClass({
 							authToken={this.props.authenticity_token}
 							sendMessageTenant={this.sendMessageTenant}
 							tenants_conversation={this.state.tenants_conversation}
-							maintenance_request_id={this.props.maintenance_request.id} 
+							maintenance_request_id={this.state.maintenance_request.id} 
 						/>
 					);
 				}
@@ -2170,12 +2474,37 @@ var Summary = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote} 
 							quotes={this.state.quotes}
+							agency={this.props.agency}
 							property={this.props.property}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith} 
 							viewQuote={(quote) => this.viewQuote(quote)} 
 							updateStatusQuote={this.updateStatusQuote} 
 							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} 
+						/>
+					);
+				}
+
+				case 'requestQuote': {
+					return (
+						<ModalRequestModal
+							close={this.isClose} 
+							keyTitle="request-quote"
+							tradies={this.state.tradies}
+							requestQuote={this.requestQuote}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					);
+				}
+
+				case 'sendWorkOrder': {
+					return (
+						<ModalRequestModal
+							close={this.isClose} 
+							keyTitle="sen-work-order"
+							tradies={this.state.tradies}
+							requestQuote={this.requestQuote}
+							maintenance_request={this.state.maintenance_request}
 						/>
 					);
 				}
@@ -2194,7 +2523,7 @@ var Summary = React.createClass({
 						<Post 
 							gallery={this.props.gallery} 
 							property={this.props.property} 
-							maintenance_request={this.props.maintenance_request}
+							maintenance_request={this.state.maintenance_request}
 						/>
 						{this.props.quotes.length > 0 && <Quote viewQuote={(quote) => this.viewQuote(quote)} onModalWith={this.onModalWith} quotes={this.state.quotes} updateStatusQuote={this.updateStatusQuote} sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} landlord={this.state.landlord} />}
 						{this.props.invoices.length > 0 && <Invoice invoices={this.props.invoices} />}
