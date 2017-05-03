@@ -183,12 +183,7 @@ class QuotesController < ApplicationController
           TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
       end
-    # elsif params[:status] == "Declined"
-    #   quote = Quote.find_by(id: params[:quote_id])
-    #   trady = quote.trady
-    #   quote.update_attribute(:status,"Declined")
-    #   TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
-    #   #email the person who got declined
+    
     
     end 
     

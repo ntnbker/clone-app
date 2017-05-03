@@ -119,7 +119,7 @@ Rails.application.routes.draw do
   ###################################################
   get "trady_information" => 'tradies#trady_information', :as=>:trady_information
   resources :tradies, only:[:create]
-  resources :trady_companies
+  resources :trady_companies, only:[:new, :create, :edit, :update]
   resources :trady_maintenance_requests, only:[:index, :show]
   get "edit_trady_company" => 'trady_companies#edit_trady_company_invoice_workflow', :as =>:edit_trady_company_path
   put "update_trady_company" => "trady_companies#update_trady_company_invoice_workflow"

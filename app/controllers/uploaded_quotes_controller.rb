@@ -1,0 +1,4 @@
+class UploadedQuotesController < ApplicationController 
+  
+
+end 

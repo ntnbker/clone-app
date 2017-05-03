@@ -1,62 +1,62 @@
 class InvoicesController < ApplicationController
 
-  def edit_trady_company_invoice
-    @trady_company = TradyCompany.find_by(id:params[:trady_company_id])
-    @maintenance_request_id = params[:maintenance_request_id]
-    @trady_id = params[:trady_id]
-    @quote_id = params[:quote_id]
-    @invoice_type= params[:invoice_type]
-    @pdf_file_id = params[:pdf_file_id]
-    @ledger_id = params[:ledger_id] 
-  end
+  # def edit_trady_company_invoice
+  #   @trady_company = TradyCompany.find_by(id:params[:trady_company_id])
+  #   @maintenance_request_id = params[:maintenance_request_id]
+  #   @trady_id = params[:trady_id]
+  #   @quote_id = params[:quote_id]
+  #   @invoice_type= params[:invoice_type]
+  #   @pdf_file_id = params[:pdf_file_id]
+  #   @ledger_id = params[:ledger_id] 
+  # end
 
-  def update_trady_company_invoice
+  # def update_trady_company_invoice
     
-    @trady_company = TradyCompany.find_by(id:params[:trady_company][:trady_company_id])
-    @trady = Trady.find_by(id:params[:trady_company][:trady_id])
-    @trady.update_attribute(:email,params[:trady_company][:email]) 
-    @trady.user.update_attribute(:email,params[:trady_company][:email]) 
-    @maintenance_request_id = params[:trady_company][:maintenance_request_id]
-    @trady_id = params[:trady_company][:trady_id]
-    @quote_id = params[:trady_company][:quote_id]
-    @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
-    @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
-    @invoice_type = params[:trady_company][:invoice_type]
-    #WE HAVE TO FIND THE RIGHT LEDGER
-    binding.pry
-    @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
-    #@invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
+  #   @trady_company = TradyCompany.find_by(id:params[:trady_company][:trady_company_id])
+  #   @trady = Trady.find_by(id:params[:trady_company][:trady_id])
+  #   @trady.update_attribute(:email,params[:trady_company][:email]) 
+  #   @trady.user.update_attribute(:email,params[:trady_company][:email]) 
+  #   @maintenance_request_id = params[:trady_company][:maintenance_request_id]
+  #   @trady_id = params[:trady_company][:trady_id]
+  #   @quote_id = params[:trady_company][:quote_id]
+  #   @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
+  #   @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
+  #   @invoice_type = params[:trady_company][:invoice_type]
+    
+    
+  #   @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
+    
 
-    if @trady_company.update(trady_company_params)
-      flash[:success] = "You have succesfully edited your company"
+  #   if @trady_company.update(trady_company_params)
+  #     flash[:success] = "You have succesfully edited your company"
       
       
-      if params[:trady_company][:invoice_type] == "pdf_file"
+  #     if params[:trady_company][:invoice_type] == "pdf_file"
         
-        if @pdf_files == nil
-          redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-        elsif @pdf_files != nil
-          redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-        end 
+  #       if @pdf_files == nil
+  #         redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
+  #       elsif @pdf_files != nil
+  #         redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
+  #       end 
       
-      elsif params[:trady_company][:invoice_type] == "system_invoice"
-        if @ledger == nil
-          redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
-        elsif @ledger != nil
-          redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-        end 
-      end
+  #     elsif params[:trady_company][:invoice_type] == "system_invoice"
+  #       if @ledger == nil
+  #         redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
+  #       elsif @ledger != nil
+  #         redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
+  #       end 
+  #     end
 
 
 
       
 
-    else
-      flash[:danger] = "Sorry something went wrong please fill in the required fields"
-      render :edit
-    end 
+  #   else
+  #     flash[:danger] = "Sorry something went wrong please fill in the required fields"
+  #     render :edit
+  #   end 
 
-  end
+  # end
 
   def new
 
@@ -66,7 +66,6 @@ class InvoicesController < ApplicationController
     if @quote
       @quote_items = @quote.quote_items
     elsif @quote == nil
-      
       @quote_items =""
     end 
 
@@ -101,7 +100,7 @@ class InvoicesController < ApplicationController
     @ledger = Ledger.new(ledger_params)
     
     @invoice_type = params[:ledger][:invoice_type]
-    binding.pry
+    
     if @ledger.save
       
       
@@ -111,7 +110,7 @@ class InvoicesController < ApplicationController
       
       # @invoice.update_attribute(:amount,@total)
       
-      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type )
+      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:ledger][:trady_id]
@@ -124,10 +123,11 @@ class InvoicesController < ApplicationController
   def show
     @ledger = Ledger.find_by(id:params[:id])
     @invoice_type = params[:invoice_type]
-    binding.pry
+    @system_plan = params[:system_plan]
     #@invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     # @ledger = @maintenance_request.ledger
+    @trady = Trady.find_by(id:params[:trady_id])
     @trady_id = params[:trady_id] 
     @quote_id = params[:quote_id]
   end
