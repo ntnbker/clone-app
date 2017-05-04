@@ -12,7 +12,8 @@ class Trady < ApplicationRecord
   has_many :action_statuses
   has_many :appointments
   has_many :comments
-  
+  has_many :uploaded_invoices
+  has_many :uploaded_quotes
   validates_presence_of :company_name
   validates_presence_of :name
   validates_presence_of :email

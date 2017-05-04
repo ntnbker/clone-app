@@ -40,25 +40,16 @@ class TradyCompaniesController < ApplicationController
 
         if system_plan == "Invoice"
           if params[:trady_company][:invoice_type] == "pdf_file"
-            #if @pdf_files == nil
-              redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-            # elsif @pdf_files != nil
-            #   redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-            # end 
-      
+            redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
           elsif params[:trady_company][:invoice_type] == "system_invoice"
-            # if @ledger == nil
-              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
-            # elsif @ledger != nil
-            #   redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-            # end 
+            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
           end
-
-
         elsif system_plan == "Quote"
-          
-
-
+          if params[:trady_company][:quote_type] == "pdf_file"
+            redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type)
+          elsif params[:trady_company][:quote_type] == "system_quote"
+            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type)  
+          end
         end 
         
         # if params[:trady_company][:work_flow] == "Get Quote"#HERE WE HAVE TO SAY WHERE THE redirect should go. depending on what the form workflow says. 
@@ -86,16 +77,14 @@ class TradyCompaniesController < ApplicationController
             if params[:trady_company][:invoice_type] == "pdf_file"
               redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
             elsif params[:trady_company][:invoice_type] == "system_invoice"
-              
               redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
-              
             end
-
-
           elsif system_plan == "Quote"
-            
-            #THIS IS WHERE THE QUOTE WORKFLOW GOES
-
+            if params[:trady_company][:quote_type] == "pdf_file"
+              redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type)
+            elsif params[:trady_company][:quote_type] == "system_quote"
+              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type)  
+            end
           end 
           # if params[:trady_company][:work_flow] == "Get Quote"#HERE WE HAVE TO SAY WHERE THE redirect should go. depending on what the form workflow says. 
           #   redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
