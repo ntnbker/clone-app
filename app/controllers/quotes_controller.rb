@@ -110,7 +110,7 @@ class QuotesController < ApplicationController
     end   
 
     respond_to do |format|
-      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => [:trady])}}
+      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})}}
       
     end
 
