@@ -42,7 +42,7 @@ var Carousel = React.createClass({
 	}
 });
 
-var Property = React.createClass({
+var ItemMaintenanceRequest = React.createClass({
 	render: function() {
 		const maintenance = this.props.maintenance_request;
 		return (

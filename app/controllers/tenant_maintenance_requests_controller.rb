@@ -9,6 +9,7 @@ class TenantMaintenanceRequestsController < ApplicationController
   end
 
   def show
+    @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)

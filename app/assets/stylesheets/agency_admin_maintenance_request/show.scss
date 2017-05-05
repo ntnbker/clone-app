@@ -675,7 +675,7 @@ body{
       }
       .message {
         list-style: none;
-        height: 300px;
+        max-height: 300px;
         overflow-y: scroll;
         overflow-x: inherit;
         margin-bottom: 0px;
@@ -876,6 +876,9 @@ body{
         right: 5px;
       }
     }
+  }
+  .tenant-content {
+    left: 35% !important;
   }
   @media (min-width: 320px) and (max-width: 480px) {
     .main-summary {
