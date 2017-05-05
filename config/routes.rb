@@ -146,7 +146,7 @@ Rails.application.routes.draw do
   resources :uploaded_quotes, only:[:new, :create, :show, :edit, :update]
   
   post "send_pdf_quote" => "uploaded_quotes#send_quote", :as => :send_pdf_quote
-
+  get "uploaded_quote_sent" => "uploaded_quotes#uploaded_quote_sent", :as => :uploaded_quote_sent
   ###################################################################
   ##########TRADY AND TENANT APPOINTMENTS RESOURCES/ROUTES###########
   ###################################################################

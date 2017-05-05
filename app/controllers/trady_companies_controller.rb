@@ -40,15 +40,15 @@ class TradyCompaniesController < ApplicationController
 
         if system_plan == "Invoice"
           if params[:trady_company][:invoice_type] == "pdf_file"
-            redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
+            redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
           elsif params[:trady_company][:invoice_type] == "system_invoice"
-            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
+            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)  
           end
         elsif system_plan == "Quote"
           if params[:trady_company][:quote_type] == "pdf_file"
-            redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type)
+            redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type, system_plan:system_plan)
           elsif params[:trady_company][:quote_type] == "system_quote"
-            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type)  
+            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type, system_plan:system_plan)  
           end
         end 
         
@@ -75,15 +75,15 @@ class TradyCompaniesController < ApplicationController
 
           if system_plan == "Invoice"
             if params[:trady_company][:invoice_type] == "pdf_file"
-              redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
+              redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
             elsif params[:trady_company][:invoice_type] == "system_invoice"
-              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
+              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)  
             end
           elsif system_plan == "Quote"
             if params[:trady_company][:quote_type] == "pdf_file"
-              redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type)
+              redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@quote_type, system_plan:system_plan)
             elsif params[:trady_company][:quote_type] == "system_quote"
-              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type)  
+              redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)  
             end
           end 
           # if params[:trady_company][:work_flow] == "Get Quote"#HERE WE HAVE TO SAY WHERE THE redirect should go. depending on what the form workflow says. 
@@ -107,9 +107,11 @@ class TradyCompaniesController < ApplicationController
     #@trady_company = TradyCompany.find_by(id:params[:trady_company_id])
     @trady_company = TradyCompany.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
+    @trady = Trady.find_by(id:params[:trady_id])
     @trady_id = params[:trady_id]
     @quote_id = params[:quote_id]
     @invoice_type= params[:invoice_type]
+    @quote_type = params[:quote_type]
     @pdf_file_id = params[:pdf_file_id]
     @ledger_id = params[:ledger_id] 
     @system_plan = params[:system_plan]
@@ -126,11 +128,12 @@ class TradyCompaniesController < ApplicationController
     @quote_id = params[:trady_company][:quote_id]
     @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
     @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
+    @quote = Quote.find_by(id:params[:trady_company][:quote_id])
     @invoice_type = params[:trady_company][:invoice_type]
     system_plan = params[:trady_company][:system_plan]
     
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
-    
+    @quote_pdf_files = UploadedQuote.find_by(id:params[:trady_company][:pdf_file_id])
 
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
@@ -139,22 +142,36 @@ class TradyCompaniesController < ApplicationController
       if system_plan == "Invoice"
           if params[:trady_company][:invoice_type] == "pdf_file"
             if @pdf_files == nil
-              redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
+              redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
             elsif @pdf_files != nil
-              redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
+              redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
             end 
       
           elsif params[:trady_company][:invoice_type] == "system_invoice"
             if @ledger == nil
-              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
+              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)  
             elsif @ledger != nil
-              redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
+              redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)
             end 
           end
 
 
         elsif system_plan == "Quote"
           
+          if params[:trady_company][:quote_type] == "pdf_file"
+            if @quote_pdf_files == nil
+              redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type, system_plan:system_plan)
+            elsif @quote_pdf_files != nil
+              redirect_to edit_uploaded_quote_path(@quote_pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, quote_type:@quote_type, system_plan:system_plan)
+            end    
+          elsif params[:trady_company][:quote_type] == "system_quote"
+            # if @quote == nil 
+            #   redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type, system_plan:system_plan)  
+            # elsif @quote != nil
+            #   redirect_to edit_quote_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)
+            # end 
+              
+          end
 
 
         end

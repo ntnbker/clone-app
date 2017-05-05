@@ -7,6 +7,10 @@ class QuotesController < ApplicationController
     @maintenance_request_id= params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
+    @quote_type = params[:quote_type]
+    @system_plan = params[:system_plan]
+
+    
   end
 
   def create

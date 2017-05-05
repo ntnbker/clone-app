@@ -32,7 +32,7 @@ class UploadedQuotesController < ApplicationController
 
   def edit
 
-    @file = UploadedInvoice.find_by(id:params[:id])
+    @file = UploadedQuote.find_by(id:params[:id])
     @trady = Trady.find_by(id:params[:trady_id])
     
     @maintenance_request_id = params[:maintenance_request_id]
@@ -45,7 +45,7 @@ class UploadedQuotesController < ApplicationController
   end
 
   def update
-    @file = UploadedInvoice.find_by(id:params[:id])
+    @file = UploadedQuote.find_by(id:params[:id])
     maintenance_request_id = params[:uploaded_quote][:maintenance_request_id]
     trady_id = params[:uploaded_quote][:trady_id]
     quote_id = params[:uploaded_quote][:quote_id]
@@ -54,7 +54,7 @@ class UploadedQuotesController < ApplicationController
 
     if @file.update(file_params)
       flash[:success] = "Thank you for uploading your invoice(s)"
-      redirect_to uploaded_invoice_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, quote_type:quote_type, system_plan:system_plan)
+      redirect_to uploaded_quote_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, quote_type:quote_type, system_plan:system_plan)
     else
       flash[:danger] = "Something went wrong."
       render :new
@@ -77,13 +77,19 @@ class UploadedQuotesController < ApplicationController
   def send_quote
     
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
+    #AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
+    #I HAVE TO ADD AN EMAIL TO THE AGENT WHEN A PDF QUOTE IS MADE
     maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Action Required")
     quote = UploadedQuote.find_by(id:params[:pdf_quote_id])
     quote.update_attribute(:delivery_status, true)
      
+    
+    redirect_to uploaded_quote_sent_path(maintenance_request_id: params[:maintenance_request_id] )
+  end
 
-    redirect_to invoice_sent_success_path(maintenance_request_id: params[:maintenance_request_id], trady_id: params[:trady_id] )
+
+  def uploaded_quote_sent
+    @maintenance_request = params[:maintenance_request_id]
   end
     
   
