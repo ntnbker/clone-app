@@ -88,7 +88,8 @@ var QuoteFields = React.createClass({
             <input type="hidden" value={this.props.trady_id} name="quote[trady_id]" id="quote_trady_id" />
             <input type="hidden" value={this.props.status} name="quote[status]" id="quote_status" />
             <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
-
+            <input type="hidden" value={this.props.quote_type} name="quote[quote_type]" id="quote_type" />
+            <input type="hidden" value={this.props.system_plan} name="quote[system_plan]" id="system_plan" />
             <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} />
 
             <label className="quote_tax">

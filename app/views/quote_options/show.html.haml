@@ -36,7 +36,7 @@ new_trady_company_url(maintenance_request_id:@maintenance_request,trady_id:@trad
         =link_to "Create Quote(New company)", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
     -else 
       %button.button-primary.green.option-button
-        =link_to "Create Quote(Edit Company)", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"pdf_file", system_plan:"Quote")
+        =link_to "Create Quote(Edit Company)", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
 
     Add Edit company link/button
 

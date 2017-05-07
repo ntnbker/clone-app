@@ -56,13 +56,14 @@
     
 I HAVE TO ADD EACH QUOTE THAT WAS MADE BY THIS USERS
 
+
 - @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
   
   %div.well 
     %h5
       =link_to "Invoice #{index+1}", view_invoice_path(invoice_id:invoice.id)
     %p 
-      ="Company Name: #{invoice.trady.trady_company.company_name}"
+      / ="Company Name: #{if invoice.trady.trady_company.nil? ? '' : invoice.trady.trady_company.company_name }"
     %p
       ="Name: #{invoice.trady.name}"
     %p 
@@ -73,7 +74,7 @@ I HAVE TO ADD EACH QUOTE THAT WAS MADE BY THIS USERS
     %h5
       =link_to "PDF File Invoice #{index+1}", view_pdf_invoice_path(id:pdf.id)
     %p 
-      ="Company Name: #{pdf.maintenance_request.trady.trady_company.company_name}"
+      / ="Company Name: #{if pdf.maintenance_request.trady.trady_company.nil? ? '' : pdf.maintenance_request.trady.trady_company.company_name}"
     %p
       ="Name: #{pdf.maintenance_request.trady.name}"
 

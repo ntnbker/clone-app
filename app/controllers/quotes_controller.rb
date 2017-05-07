@@ -16,14 +16,16 @@ class QuotesController < ApplicationController
   def create
     
     @quote = Quote.new(quote_params)
-    
+    @quote_type = params[:quote][:quote_type]
+    @system_plan = params[:quote][:system_plan]
+
     # @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
     
     if @quote.save
       @quote.calculate_quote_items_totals
       @quote.calculate_tax
       # @quote.update_attribute(:amount,@total)
-      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
+      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:quote][:trady_id]
@@ -34,10 +36,13 @@ class QuotesController < ApplicationController
 
   def edit
     @quote = Quote.find_by(id:params[:id])
+    @quote_id = @quote.id
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
-    
+    @quote_type = params[:quote_type]
+    @system_plan = params[:system_plan]
     @trady_company = @trady.trady_company
+
   end
 
   def update
@@ -48,12 +53,14 @@ class QuotesController < ApplicationController
     @trady = Trady.find_by(id:params[:quote][:trady_id])
     
     @trady_company = @trady.trady_company
+    @quote_type = params[:quote][:quote_type]
+    @system_plan = params[:quote][:system_plan]
 
     if @quote.update(quote_params)
       @quote.calculate_quote_items_totals
       @quote.calculate_tax
       flash[:success] = "Your Quote has been updated"
-      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
+      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
     else
       flash[:danger] = "Sorry Something went wrong "
       render :edit
@@ -64,7 +71,9 @@ class QuotesController < ApplicationController
     #this controller is to show the quote before sending in the quote email 
     @quote = Quote.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
-    @trady_id = params[:trady_id] 
+    @trady_id = params[:trady_id]
+    @quote_type = params[:quote_type]
+    @system_plan = params[:system_plan]
   end
 
   def show_quote

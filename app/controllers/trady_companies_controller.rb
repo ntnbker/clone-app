@@ -25,7 +25,7 @@ class TradyCompaniesController < ApplicationController
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     system_plan = params[:trady_company][:system_plan]
     @invoice_type = params[:trady_company][:invoice_type]
-    
+    @quote_type = params[:trady_company][:quote_type]
 
     if @existing_company
       @trady_company.perform_uniqueness_validation_of_company_email = false
@@ -46,17 +46,12 @@ class TradyCompaniesController < ApplicationController
           end
         elsif system_plan == "Quote"
           if params[:trady_company][:quote_type] == "pdf_file"
-            redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type, system_plan:system_plan)
+            redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@quote_type, system_plan:system_plan)
           elsif params[:trady_company][:quote_type] == "system_quote"
-            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type, system_plan:system_plan)  
+            redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)  
           end
         end 
         
-        # if params[:trady_company][:work_flow] == "Get Quote"#HERE WE HAVE TO SAY WHERE THE redirect should go. depending on what the form workflow says. 
-        #   redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
-        # elsif params[:trady_company][:work_flow] == "Work Order"
-        #   redirect_to new_work_order_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
-        # end 
       else
         @trady_id = params[:trady_company][:trady_id]
         flash[:danger] = "Please fill in below"
@@ -86,11 +81,7 @@ class TradyCompaniesController < ApplicationController
               redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)  
             end
           end 
-          # if params[:trady_company][:work_flow] == "Get Quote"#HERE WE HAVE TO SAY WHERE THE redirect should go. depending on what the form workflow says. 
-          #   redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],trady_company_id:@trady_company.id)
-          # elsif params[:trady_company][:work_flow] == "Work Order"
-          #   redirect_to new_work_order_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
-          # end 
+          
         
 
           flash[:success] = "You have added your company thank you"
@@ -130,6 +121,7 @@ class TradyCompaniesController < ApplicationController
     @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
     @quote = Quote.find_by(id:params[:trady_company][:quote_id])
     @invoice_type = params[:trady_company][:invoice_type]
+    @quote_type = params[:trady_company][:quote_type]
     system_plan = params[:trady_company][:system_plan]
     
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
@@ -165,11 +157,11 @@ class TradyCompaniesController < ApplicationController
               redirect_to edit_uploaded_quote_path(@quote_pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, quote_type:@quote_type, system_plan:system_plan)
             end    
           elsif params[:trady_company][:quote_type] == "system_quote"
-            # if @quote == nil 
-            #   redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@invoice_type, system_plan:system_plan)  
-            # elsif @quote != nil
-            #   redirect_to edit_quote_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)
-            # end 
+            if @quote == nil 
+              redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)  
+            elsif @quote != nil
+              redirect_to edit_quote_path(@quote, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)
+            end 
               
           end
 
