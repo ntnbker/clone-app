@@ -9,9 +9,11 @@ class LandlordMaintenanceRequestsController < ApplicationController
   end
 
   def show
+    @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
  
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
+    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    @agency = @current_user.agency_admin.agency
     @email_quote_id = params[:email_quote_id]
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
@@ -52,7 +54,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation}}
+      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@current_user.agent}}
       format.html{render :show}
     end 
 

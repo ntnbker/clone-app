@@ -85,7 +85,7 @@ class QuotesController < ApplicationController
 
   def quote_status
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    quotes = maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    quotes = maintenance_request.quotes.where(:delivery_status=>true)
 
     if params[:status] == "Approved" 
       quotes.each do |quote|
@@ -123,7 +123,7 @@ class QuotesController < ApplicationController
     end   
 
     respond_to do |format|
-      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => [:trady])}}
+      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})}}
       
     end
 
