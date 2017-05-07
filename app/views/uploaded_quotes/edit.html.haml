@@ -1,0 +1,15 @@
+%div.container.invoice-form
+  %h5
+    Please Attach Your Quote(s)!!
+  %div
+    =form_for @file do |f|
+      = f.file_field :quotes, multiple: true
+      =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+      =f.hidden_field :trady_id, value:@trady_id
+      =f.hidden_field :quote_id, value:@quote_id
+      =f.hidden_field :quote_type, value:"pdf_file"
+      =f.hidden_field :system_plan, value:"Quote"
+      =f.submit "Attach PDF", class: 'button-primary green'
+
+    %button.button-primary.green.option-button
+      =link_to "Back", edit_trady_company_path(id:@trady_company,pdf_file_id:@file.id,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, quote_type:"pdf_file", system_plan:"Quote")

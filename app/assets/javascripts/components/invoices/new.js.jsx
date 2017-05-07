@@ -447,7 +447,7 @@ var InvoiceFields = React.createClass({
             <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
             <input type="hidden" value={id} name="ledger[ledger_id]" />
             <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
-
+            
             <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
             <div className="qf-button" style={{marginBottom: '50px'}}>

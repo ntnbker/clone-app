@@ -111,7 +111,7 @@ Rails.application.routes.draw do
   ########## UPLOADED INVOICES ######################
   ###################################################
   resources :uploaded_invoices, only:[:new, :create, :show, :edit, :update]
-  #put "update_uploaded_invoice"=>"uploaded_invoices#update"
+  
   post "send_pdf_invoice" => "uploaded_invoices#send_invoice", :as => :send_pdf_invoice
 
   ###################################################
@@ -119,7 +119,7 @@ Rails.application.routes.draw do
   ###################################################
   get "trady_information" => 'tradies#trady_information', :as=>:trady_information
   resources :tradies, only:[:create]
-  resources :trady_companies
+  resources :trady_companies, only:[:new, :create, :edit, :update]
   resources :trady_maintenance_requests, only:[:index, :show]
   get "edit_trady_company" => 'trady_companies#edit_trady_company_invoice_workflow', :as =>:edit_trady_company_path
   put "update_trady_company" => "trady_companies#update_trady_company_invoice_workflow"
@@ -140,6 +140,13 @@ Rails.application.routes.draw do
   ########## QUOTE OPTIONS RESOURCES/ROUTES######
   ###################################################
   get "quote_options" => "quote_options#show",:as=>:quote_options
+  ###################################################
+  ########## UPLOADED QUOTES ######################
+  ###################################################
+  resources :uploaded_quotes, only:[:new, :create, :show, :edit, :update]
+  
+  post "send_pdf_quote" => "uploaded_quotes#send_quote", :as => :send_pdf_quote
+  get "uploaded_quote_sent" => "uploaded_quotes#uploaded_quote_sent", :as => :uploaded_quote_sent
   ###################################################################
   ##########TRADY AND TENANT APPOINTMENTS RESOURCES/ROUTES###########
   ###################################################################

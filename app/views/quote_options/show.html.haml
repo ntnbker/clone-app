@@ -3,6 +3,7 @@ new_trady_company_url(maintenance_request_id:@maintenance_request,trady_id:@trad
 
 
 %div.container.invoice-form
+  %h1 Quotes
   %h4 Please Choose One
   %div
     %h5.optionheader Option 1
@@ -11,9 +12,18 @@ new_trady_company_url(maintenance_request_id:@maintenance_request,trady_id:@trad
       Please Click 
       %b Upload Invoice
       to upload a PDF of your invoice.
-    %button.button-primary.green.option-button
-      =link_to "Upload Quote"
-      / , confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"pdf_file" )  
+
+      -if @trady.trady_company.nil?
+        %button.button-primary.green.option-button
+          =link_to "Upload Quote(New Company)", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"pdf_file", system_plan:"Quote")
+          
+      -else
+        %button.button-primary.green.option-button
+          =link_to "Upload Quote(Edit Company)", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"pdf_file", system_plan:"Quote")
+           
+    / %button.button-primary.green.option-button
+    /   =link_to "Upload Quote", 
+    / , confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"pdf_file" )  
   %hr
   %div  
     %h5.optionheader Option 2
@@ -21,7 +31,17 @@ new_trady_company_url(maintenance_request_id:@maintenance_request,trady_id:@trad
       Easily make quotes using our platform by clicking the 
       %b Create Quotes
       button below.
-    %button.button-primary.green.option-button
-      =link_to "Create Quote", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quoto_type:"system_quote")
+    -if @trady.trady_company.nil?
+      %button.button-primary.green.option-button
+        =link_to "Create Quote(New company)", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
+    -else 
+      %button.button-primary.green.option-button
+        =link_to "Create Quote(Edit Company)", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
+
+    Add Edit company link/button
+
+
+
+
     %button.button-primary
       =link_to "Back To Maintenance Request", trady_maintenance_request_path(@maintenance_request.id)
