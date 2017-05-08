@@ -14,6 +14,7 @@
     %p When the job has been completed please click on the button below to send the invoice for your services. Thank You 
 
     %button
-      =link_to "Send Invoice", maintenance_request_url(@maintenance_request,user_id:@trady.user.id)
+      =link_to "Send Invoice", invoice_options_url(maintenance_request_id:@maintenance_request.id, trady_id: @trady.id, trady_company_id:@trady.trady_company.id)
+      / =link_to "Send Invoice", maintenance_request_url(@maintenance_request,user_id:@trady.user.id)
 
     

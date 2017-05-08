@@ -13,7 +13,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
  
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
-    @agency = @current_user.agency_admin.agency
+    @agency = @maintenance_request.property.agency
     @email_quote_id = params[:email_quote_id]
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
