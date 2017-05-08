@@ -56,26 +56,26 @@
     
 I HAVE TO ADD EACH QUOTE THAT WAS MADE BY THIS USERS
 
-- @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
+/ - @maintenance_request.delivered_invoices.each_with_index do |invoice, index| 
   
-  %div.well 
-    %h5
-      =link_to "Invoice #{index+1}", view_invoice_path(invoice_id:invoice.id)
-    %p 
-      ="Company Name: #{invoice.trady.trady_company.company_name}"
-    %p
-      ="Name: #{invoice.trady.name}"
-    %p 
-      ="Invoice Total Amount: $#{invoice.amount}"
+/   %div.well 
+/     %h5
+/       =link_to "Invoice #{index+1}", view_invoice_path(invoice_id:invoice.id)
+/     %p 
+/       ="Company Name: #{invoice.trady.trady_company.company_name}"
+/     %p
+/       ="Name: #{invoice.trady.name}"
+/     %p 
+/       ="Invoice Total Amount: $#{invoice.amount}"
 
--@pdf_files.each_with_index do |pdf, index|
-  %div.well 
-    %h5
-      =link_to "PDF File Invoice #{index+1}", view_pdf_invoice_path(id:pdf.id)
-    %p 
-      ="Company Name: #{pdf.maintenance_request.trady.trady_company.company_name}"
-    %p
-      ="Name: #{pdf.maintenance_request.trady.name}"
+/ -@pdf_files.each_with_index do |pdf, index|
+/   %div.well 
+/     %h5
+/       =link_to "PDF File Invoice #{index+1}", view_pdf_invoice_path(id:pdf.id)
+/     %p 
+/       ="Company Name: #{pdf.maintenance_request.trady.trady_company.company_name}"
+/     %p
+/       ="Name: #{pdf.maintenance_request.trady.name}"
 
 
 
