@@ -13,6 +13,26 @@ $color-blue-light: #7646FF;
 body{
   position: relative;
 }
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 15px;
+  background-color: #F5F5F5;
+  margin-right: 0px;
+  padding: 0 10px;
+}
+body::-webkit-scrollbar {
+  width: 5px;
+  background-color: #F5F5F5;
+  margin-right: 0px;
+  padding: 0 10px;
+}
+body::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: rgba(0, 0, 0, 0.5);
+  margin-right: 0px;
+  padding: 0 10px;
+}
 .modal-open {
   overflow: hidden;
 }
@@ -299,6 +319,19 @@ body{
             margin-right: 20px;
           }
         }
+        .btn-view {
+          margin-right: 0px !important;
+          background-color: $color-white;
+          height: 35px;
+          width: auto;
+          padding: 0 20px;
+          line-height: 35px;
+          font-weight: 400;
+          font-size: 14px;
+          color: $color-black;
+          margin-left: 0px;
+          border: 1px solid $color-black;
+        }
       }
     }
     .actions {
@@ -571,6 +604,15 @@ body{
       box-shadow: 0 3px 9px rgba(0,0,0,0.5);
       font-weight: 400;
       font-size: 14px;
+      .due {
+        margin-left: 20px;
+        margin-bottom: 10px;
+      }
+      .print {
+        display: flex;
+        justify-content: flex-end;
+        margin-right: 20px;
+      }
     }
     .readonly {
       background-color: $color-grey;
@@ -868,17 +910,28 @@ body{
         padding: 0px;
       }
       .btn-prev {
-        top: 45%;
+        top: 40%;
         left: 5px;
       }
       .btn-next {
-        top: 45%;
+        top: 40%;
         right: 5px;
       }
     }
   }
   .tenant-content {
     left: 35% !important;
+  }
+  .invoices .content{
+
+  }
+  .invoices .content p{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+  }
+  .invoices .content p span{
+    margin-left: 5px;
   }
   @media (min-width: 320px) and (max-width: 480px) {
     .main-summary {
@@ -955,6 +1008,17 @@ body{
       .modal-body input{
         width: 100%;
       }
+    }
+
+    .invoices .content p {
+      justify-content: flex-start;
+      margin-right: 0px;
+      margin-left: 20px;
+    }
+
+    .invoices .content .btn-view {
+      width: 100px;
+      justify-content: flex-start;
     }
   }
   @media (min-width: 481px) and (max-width: 640px) {
