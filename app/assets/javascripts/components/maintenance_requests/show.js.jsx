@@ -980,10 +980,14 @@ var MaintenanceRequest = React.createClass({
 		return {
 			modal: "",
 			quote: null,
+			invoice: null,
 			isModal: false,
+			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
 			landlord: this.props.landlord,
+			invoices: this.props.invoices,
+			invoice_pdf_files: this.props.invoice_pdf_files,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
@@ -1011,12 +1015,40 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	viewQuote: function(quote) {
-		this.setState({
-			quote: quote
-		});
+	viewItem: function(key, item) {
+		switch(key) {
+			case 'viewQuote': {
+				this.setState({
+					quote: item
+				});
 
-		this.onModalWith('viewQuote');
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewInvoice': {
+				this.setState({
+					invoice: item
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewPdfInvoice': {
+				this.setState({
+					invoice_pdf_file: item
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			default: {
+				break;
+			}
+		}
+		
 	},
 
 	addAskLandlord: function(params){
@@ -1442,6 +1474,34 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 				}
+
+				case 'viewInvoice': {
+					return (
+							<ModalViewInvoice
+								close={this.isClose}
+								agency={this.props.agency}
+							 	invoice={this.state.invoice} 
+							 	invoices={this.state.invoices}
+								property={this.props.property}
+							/>
+					);
+					
+					break;	
+				}
+
+				case 'viewPdfInvoice': {
+					return (
+							<ModalViewPDFInvoice
+								close={this.isClose}
+								agency={this.props.agency}
+							 	invoice_pdf_file={this.state.invoice_pdf_file} 
+							 	invoice_pdf_files={this.state.invoice_pdf_files}
+								property={this.props.property}
+							/>
+					);
+					
+					break;	
+				}
 					
 				default:
 					return null;
@@ -1459,8 +1519,9 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property} 
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{this.props.quotes.length > 0 && <Quotes viewQuote={(quote) => this.viewQuote(quote)} onModalWith={this.onModalWith} quotes={this.state.quotes} updateStatusQuote={this.updateStatusQuote} sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} landlord={this.state.landlord} />}
-						{this.props.invoices.length > 0 && <Invoice invoices={this.props.invoices} />}
+						{this.props.quotes.length > 0 && <Quotes viewQuote={(key, item) => this.viewItem(key, item)} onModalWith={this.onModalWith} quotes={this.state.quotes} updateStatusQuote={this.updateStatusQuote} sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} landlord={this.state.landlord} />}
+						{this.props.invoices.length > 0 && <Invoices invoices={this.state.invoices} viewInvoice={(key, item) => this.viewItem(key, item)} />}
+						{this.props.invoice_pdf_files.length > 0 && <PDFInvoices invoice_pdf_files={this.state.invoice_pdf_files} viewPDFInvoice={(key, item) => this.viewItem(key, item)} />}
 					</div>
 					<div className="sidebar">
 						<Contact landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />

@@ -1,15 +1,15 @@
-var Invoices = React.createClass({
+var PDFInvoices = React.createClass({
 	render: function() {
-		const invoices = this.props.invoices;
+		const invoice_pdf_files = this.props.invoice_pdf_files;
 		const self = this;
 		return (
 			<div className="quotes invoices m-t-xl">
 				<p>
-					Invoice ({invoices.length})
+					PDF Invoice ({invoice_pdf_files.length})
 				</p>
 				<div className="list-quote">
 				{
-					invoices.map(function(invoice, index) {
+					invoice_pdf_files.map(function(invoice, index) {
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
@@ -25,14 +25,8 @@ var Invoices = React.createClass({
 								</div>
 								<div className="actions five columns content">
 									<p>
-										Total: <span>${invoice.amount}</span>
-									</p>
-									<p>
-										DUE: <span>{ moment(invoice.due_date).format('LL')}</span>
-									</p>
-									<p>
-										<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
-											View Invoice
+										<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice)}>
+											View
 										</button>
 									</p>
 								</div>
