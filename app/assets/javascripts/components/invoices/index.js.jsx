@@ -19,7 +19,8 @@ var Invoices = React.createClass({
 											<span>{invoice.trady.name}</span>
 										</div>
 										<p className="description">
-											{invoice.trady.company_name}
+											{invoice.trady.company_name}<br />
+											{invoice.trady.trady_company.company_name}
 										</p>
 									</div>
 								</div>

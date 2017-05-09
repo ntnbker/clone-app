@@ -167,7 +167,8 @@ var Quotes = React.createClass({
 											</button>
 										</div>
 										<p className="description">
-											{quote.trady.company_name}
+											{quote.trady.company_name} <br />
+											{quote.trady.trady_company.company_name}
 										</p>
 									</div>
 								</div>
@@ -222,7 +223,7 @@ var DetailQuote = React.createClass({
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
 									<td>{item.amount}</td>
-									<td>{!!item.hours ? item.hours : 0}</td>
+									<td>{!!item.hours ? item.hours : 'N/A'}</td>
 									<td>${item.hours * item.amount}</td>
 								</tr>
 							);

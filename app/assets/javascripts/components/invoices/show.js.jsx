@@ -35,7 +35,7 @@ var DetailInvoice = React.createClass({
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
 									<td>{item.amount}</td>
-									<td>{!!item.hours ? item.hours : 0}</td>
+									<td>{!!item.hours ? item.hours : 'N/A'}</td>
 									<td>${item.hours * item.amount}</td>
 								</tr>
 							);
@@ -143,6 +143,59 @@ var ModalViewInvoice = React.createClass({
 		}
 	},
 
+	printInvoice: function() {
+		$('.button-slider').toggle('hide');	
+		var contents = $('#print-invoice').html();
+		var style = ".info-quote {border-bottom: 1px solid #3e4b54; clear: both; overflow: hidden;}" +
+								".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" +
+								".info-trady p {margin-bottom: 0px;}" +
+								".info-agency {width: 50%;overflow: hidden;}" +
+								".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" +
+								".detail-quote .info-maintenance {margin-top: 10px;}" +
+								".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" +
+								".detail-quote {margin-top: 15px;}" +
+								".detail-quot .table {width: 100%;}" +
+								".detail-quot .table tr td {padding-left: 0; padding: 3px 3px;}";
+    var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
+    var htmlContent = "<html>" +
+          "<head>" +
+          "<title> Invoice </title>" +
+          '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
+          '<style type="text/css" media="print,screen">' +
+          style +
+          "</style>";
+   	frame.open();
+    frame.write(htmlContent);
+    frame.write("</head><body>");
+    frame.write(contents);
+    frame.write("</body></html>");
+    frame.close();
+    
+    // print just the modal div
+    setTimeout(function() {
+    	$('#printframe')[0].contentWindow.print();
+      $('#printframe')[0].contentWindow.close();
+    	$('.button-slider').toggle('show');
+    }, 1000);
+
+    
+	},
+
+	printElement: function(elem) {
+		var domClone = elem.cloneNode(true);
+
+    var $printSection = document.getElementById("printSection");
+    debugger
+    if (!$printSection) {
+        var $printSection = document.createElement("div");
+        $printSection.id = "printSection";
+        document.body.appendChild($printSection);
+    }
+
+    $printSection.innerHTML = "";
+    $printSection.append
+	},
+
 	render: function() {
 		const self = this.props;
 		const invoice = this.state.invoice;
@@ -164,7 +217,7 @@ var ModalViewInvoice = React.createClass({
 							</button>
 							<h4 className="modal-title text-center">Invoice</h4>
 						</div>
-						<div className="slider-quote">
+						<div className="slider-quote" id="print-invoice">
 							<div className="modal-body">
 								<div className="show-quote" onTouchEnd={(key, index) => this.switchSlider('prev', this.state.index)}>
 									<div className="info-quote">
@@ -204,11 +257,14 @@ var ModalViewInvoice = React.createClass({
 							DUE: <span>{ moment(invoice.due_date).format('DD/MM/YYYY')}</span>
 						</p>
 						<p className="print">
-							<button className="btn btn-default btn-print">
+							<button className="btn btn-default btn-print" onClick={this.printInvoice}>
 								Print
 							</button>
 						</p>
 					</div>
+				</div>
+				<div id="modal-print">
+				    <iframe id="printframe" />  
 				</div>
 			</div>
 		);

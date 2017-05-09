@@ -33,6 +33,12 @@ body::-webkit-scrollbar-thumb {
   margin-right: 0px;
   padding: 0 10px;
 }
+#modal-print {
+  display: none;
+  margin: 0 auto;
+  position: relative;
+  top: 100px;
+}
 .modal-open {
   overflow: hidden;
 }
