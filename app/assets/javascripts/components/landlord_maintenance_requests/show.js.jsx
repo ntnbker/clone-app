@@ -96,12 +96,22 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
-	viewQuote: function(quote) {
-		this.setState({
-			quote: quote
-		});
+	viewItem: function(key, item) {
+		switch(key) {
+			case 'viewQuote': {
+				this.setState({
+					quote: item
+				});
 
-		this.onModalWith('viewQuote');
+				this.onModalWith(key);
+				break;
+			}
+			
+			default: {
+				break;
+			}
+		}
+		
 	},
 
 	sendMessageLandlord: function(params) {
@@ -255,15 +265,16 @@ var LandlordMaintenanceRequest = React.createClass({
 					return (
 						<ModalViewQuote 
 							close={this.isClose}
-							quote={this.state.quote} 
+							quote={this.state.quote}
+							keyLandlord={"landlord"} 
 							quotes={this.state.quotes}
 							agency={this.props.agency}
 							property={this.props.property}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith} 
-							viewQuote={(quote) => this.viewQuote(quote)} 
+							current_user={this.props.current_user} 
 							updateStatusQuote={this.updateStatusQuote} 
-							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} 
+							viewQuote={(quote) => this.viewQuote(quote)} 
 						/>
 					);
 				}
@@ -296,6 +307,19 @@ var LandlordMaintenanceRequest = React.createClass({
 							property={this.props.property} 
 							maintenance_request={this.state.maintenance_request}
 						/>
+						{ this.props.quotes.length > 0 ?
+								<Quotes 
+									keyLandlord="landlord"
+									quotes={this.state.quotes} 
+									landlord={this.state.landlord} 
+									onModalWith={this.onModalWith} 
+									current_user={this.props.current_user} 
+									updateStatusQuote={this.updateStatusQuote} 
+									sendEmailLandlord={this.sendEmailLandlord} 
+									viewQuote={(key, item) => this.viewItem(key, item)} 
+								/>
+								: null
+						}
 					</div>
 					<div className="sidebar">
 						<LandlordContact landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} maintenance_request={this.state.maintenance_request} />
