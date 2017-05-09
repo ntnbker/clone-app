@@ -6,33 +6,86 @@
       ="Company Name: #{@quote.trady.company_name.capitalize}"
     %h5
       ="Name: #{@quote.trady.name.capitalize}"
-    -@quote.quote_items.each do |f|
-      %div.row
-        %hr
-        -if f.pricing_type == "Hourly"
-          %p
-            ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
-        -elsif f.pricing_type == "Fixed Cost"
-          %p
-            ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
-    %hr
-    %div.row
-      = "Items Total: #{@quote.amount} "
-      %br   
-      -if @quote.tax == true
-        %p
-          = "GST: #{@quote.gst_amount.round(2)}"
-        %br   
-      -elsif @quote.tax == false
-        %p
-          GST: $ 0.00
-      %br    
+    %h6
+      ="Address: #{@quote.trady.trady_company.address}"
+    %h6
+      ="Email: #{@quote.trady.trady_company.email}"
+    %h6
+      ="Mobile: #{@quote.trady.trady_company.mobile_number}"
+    %table{:style=>"width:50%"}
+      %tr
+        %th Description
+        %th Pricing
+        %th Rate
+        %th Hours
+        %th Total
+      -@quote.quote_items.each do |f|
       
-      ="Grand Total: $#{@quote.amount.round(2)}"
-      %br    
+        %tr
+          %td
+            ="#{f.item_description.capitalize}"
+          %td 
+            =f.pricing_type
+          %td 
+            ="$ #{f.amount.to_f}"
+          %td
+            -if f.pricing_type == 'Fixed Cost'
+              N/A
+            -elsif f.pricing_type == 'Hourly'
+              = f.hours
+          %td
+            -if f.pricing_type == 'Fixed Cost'
+              = f.amount
+            -elsif f.pricing_type == 'Hourly'
+              ="$#{f.amount * f.hours}"
+            
+    %div.row
+    = "Items Total: #{@quote.amount} "
+    %br   
+    -if @quote.tax == true
+      %p
+        = "GST: #{@quote.gst_amount.round(2)}"
+      %br   
+    -elsif @quote.tax == false
+      %p
+        GST: $ 0.00
+    %br    
+    
+    ="Grand Total: $#{@quote.amount.round(2)}"
+    %br 
+
+    / -"f.pricing_type == 'Fixed Cost'? N/A : f.hours"
+          
+        
+    /     %div.row
+    /     %hr
+    /     -if f.pricing_type == "Hourly"
+    /       %p
+    /         ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
+    /     -elsif f.pricing_type == "Fixed Cost"
+    /       %p
+    /         ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
+    / %hr
+    / %div.row
+    /   = "Items Total: #{@quote.amount} "
+    /   %br   
+    /   -if @quote.tax == true
+    /     %p
+    /       = "GST: #{@quote.gst_amount.round(2)}"
+    /     %br   
+    /   -elsif @quote.tax == false
+    /     %p
+    /       GST: $ 0.00
+    /   %br    
+      
+    /   ="Grand Total: $#{@quote.amount.round(2)}"
+    /   %br    
     
     %button{:type=>"button", :class=>"button button-primary"} 
       =link_to "Back", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan)
     %button{:type=>"button", :class=>"button button-primary green"} 
       =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id)
-/ = "GST: #{@quote.amount*0.10}"
+
+
+
+  
