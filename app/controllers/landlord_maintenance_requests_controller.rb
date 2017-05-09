@@ -11,7 +11,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
   def show
     @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
- 
+    @non_json_quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     @agency = @maintenance_request.property.agency
     @email_quote_id = params[:email_quote_id]

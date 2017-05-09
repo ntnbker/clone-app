@@ -17,7 +17,7 @@
             ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
     %hr
     %div.row
-      = "Items Total: #{@quote.amount- @quote.gst_amount} "
+      = "Items Total: #{@quote.amount} "
       %br   
       -if @quote.tax == true
         %p
@@ -32,7 +32,7 @@
       %br    
     
     %button{:type=>"button", :class=>"button button-primary"} 
-      =link_to "Edit Quote", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan)
+      =link_to "Back", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan)
     %button{:type=>"button", :class=>"button button-primary green"} 
       =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id)
 / = "GST: #{@quote.amount*0.10}"

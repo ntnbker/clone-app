@@ -178,7 +178,9 @@ class QuotesController < ApplicationController
 
   def landlord_decides_quote
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    quotes = maintenance_request.quotes
+    quotes = maintenance_request.quotes.where(:delivery_status=>true)
+    
+    # @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     if params[:status] == "Approved" 
       quotes.each do |quote|
         if quote.id == params[:quote_id].to_i && params[:status] == "Approved"
@@ -193,12 +195,17 @@ class QuotesController < ApplicationController
           quote.update_attribute(:status, "Declined")
           trady = quote.trady
           #EMAIL AGENT QUOTE DECLINED
-          TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+          # TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
       end
     
-    
+      
     end 
+    q = quotes.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    respond_to do |format|
+      format.json {render :json => q}
+      
+    end
     
   end
 

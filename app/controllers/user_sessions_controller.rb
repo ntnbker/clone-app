@@ -13,11 +13,12 @@ class UserSessionsController < ApplicationController
         
         elsif @user.agent?
           flash[:success] = "You are now signed in"
-          redirect_to agent_path(@user.agent)
+          
+          redirect_to agent_maintenance_requests_path 
         
         elsif @user.agency_admin?
           flash[:success] = "You are now signed in"
-          redirect_to agency_admin_path(@user.agency_admin)
+          redirect_to agency_admin_maintenance_requests_path 
 
         elsif @user.tenant?
           flash[:success] = "You are now signed in"
