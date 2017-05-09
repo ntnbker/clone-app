@@ -158,12 +158,12 @@ var ModalViewInvoice = React.createClass({
 								".detail-quot .table tr td {padding-left: 0; padding: 3px 3px;}";
     var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
     var htmlContent = "<html>" +
-          "<head>" +
-          "<title> Invoice </title>" +
-          '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
-          '<style type="text/css" media="print,screen">' +
-          style +
-          "</style>";
+						          "<head>" +
+						          "<title> Invoice </title>" +
+						          '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
+						          '<style type="text/css" media="print,screen">' +
+						          style +
+						          "</style>";
    	frame.open();
     frame.write(htmlContent);
     frame.write("</head><body>");
@@ -179,21 +179,6 @@ var ModalViewInvoice = React.createClass({
     }, 1000);
 
     
-	},
-
-	printElement: function(elem) {
-		var domClone = elem.cloneNode(true);
-
-    var $printSection = document.getElementById("printSection");
-    debugger
-    if (!$printSection) {
-        var $printSection = document.createElement("div");
-        $printSection.id = "printSection";
-        document.body.appendChild($printSection);
-    }
-
-    $printSection.innerHTML = "";
-    $printSection.append
 	},
 
 	render: function() {
