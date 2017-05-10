@@ -192,8 +192,8 @@ var Quotes = React.createClass({
 											
 										</div>
 										<p className="description">
-											{quote.trady.company_name} <br />
-											{quote.trady.trady_company.company_name}
+											{quote.trady && quote.trady.company_name} <br />
+											{(quote.trady && quote.trady.trady_company) ? quote.trady.trady_company.company_name : null}
 										</p>
 									</div>
 								</div>
@@ -241,15 +241,15 @@ var DetailQuote = React.createClass({
 					<tbody>
 					{
 						quote_items.map(function(item, key) {
-							subTotal+= item.amount * item.hours;
+							subTotal+= item.amount;
 							gst += !!item.gst_amount ? item.gst_amount : 0;
 							return (
 								<tr key={key}>
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
-									<td>{item.amount}</td>
+									<td>${item.amount}</td>
 									<td>{!!item.hours ? item.hours : 'N/A'}</td>
-									<td>${item.hours * item.amount}</td>
+									<td>${item.amount}</td>
 								</tr>
 							);
 						})
