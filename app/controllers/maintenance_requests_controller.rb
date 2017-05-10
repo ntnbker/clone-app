@@ -8,11 +8,19 @@ class MaintenanceRequestsController < ApplicationController
   authorize_resource :class => false
 
   def new
+    
+    if current_user != nil 
+      @role = current_user.role.roleable_type
+    else
+      @role = nil
+    end 
+      
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
+    
   end
 
   def create

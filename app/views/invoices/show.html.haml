@@ -42,27 +42,3 @@
     %button.button.button-primary.green.right
       =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id ), method: :post
 
-
-  /   -if @invoice.prepaid_or_postpaid == "Prepaid"
-  /     %p
-  /       Payment Required Before Work Can Commense
-  /     %p 
-  /       ="Amount Due: $#{@invoice.payment_installment_amount}"
-  /   -elsif @invoice.prepaid_or_postpaid == "PostPaid"
-  /     %p
-  /       Payment Required After Work Completed
-  / Display the all invoices here and each of their items 
-    
-/   %p.invoice-show.row
-/     %span
-/       =f.item_description
-/     %span
-/       $
-/       =f.amount 
-/ %hr
-/ %p.invoice-show.row
-/   %span
-/     Total
-/   %span
-/     $
-/     =@invoice.amount

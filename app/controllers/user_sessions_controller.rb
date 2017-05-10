@@ -22,8 +22,14 @@ class UserSessionsController < ApplicationController
 
         elsif @user.tenant?
           flash[:success] = "You are now signed in"
-          redirect_to tenants_path
+          redirect_to tenant_maintenance_requests_path
 
+        elsif @user.landlord?
+          flash[:success] = "You are now signed in"
+          redirect_to landlord_maintenance_requests_path
+        elsif @user.trady?
+          flash[:success] = "You are now signed in"
+          redirect_to trady_maintenance_requests_path
         else
           render :new
           flash[:danger] = "Something Went Wrong"
@@ -50,21 +56,27 @@ class UserSessionsController < ApplicationController
     if logged_in?
       if @user.god?
         flash[:success] = "You are now signed in"
-        redirect_to god_path(@user.god)
+        redirect_to god_path(@user.role)
         
         elsif @user.agent?
           flash[:success] = "You are now signed in"
-          redirect_to agent_path(@user.agent)
+          
+          redirect_to agent_maintenance_requests_path 
         
         elsif @user.agency_admin?
-          
           flash[:success] = "You are now signed in"
-          redirect_to agency_admin_path(@user.agency_admin)
+          redirect_to agency_admin_maintenance_requests_path 
 
         elsif @user.tenant?
           flash[:success] = "You are now signed in"
-          redirect_to tenants_path
-          
+          redirect_to tenant_maintenance_requests_path
+
+        elsif @user.landlord?
+          flash[:success] = "You are now signed in"
+          redirect_to landlord_maintenance_requests_path
+        elsif @user.trady?
+          flash[:success] = "You are now signed in"
+          redirect_to trady_maintenance_requests_path
         else
           flash[:danger] = "Something Went Wrong"
           render :menu_bar_login_form_new
