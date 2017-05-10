@@ -166,22 +166,22 @@ var LandlordMaintenanceRequest = React.createClass({
 		const self = this;
 		$.ajax({
 			type: 'POST',
-			url: '/forward_quote',
+			url: '/request_quote',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
 			data: params,
 			success: function(res){
 				self.setState({notification: {
-					title: "Forward Landlord",
-					content: "The email about quote information was sent for Landlord.",
+					title: "Request Another Quote",
+					content: "Send email is successfully.",
 					bgClass: "bg-success",
 				}});
 				self.onModalWith('notification');
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Forward Landlord",
+					title: "Request Another Quote",
 					content: "Send emaid is error!",
 					bgClass: "bg-error",
 				}});

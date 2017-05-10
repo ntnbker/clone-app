@@ -127,9 +127,17 @@ var ButtonView = React.createClass({
 });
 
 var ButtonRequestAnotherQuote = React.createClass({
+	sendEmail: function() {
+			const params = { 
+				maintenance_request_id: this.props.quote.maintenance_request_id,
+			};
+
+			this.props.sendEmailLandlord(params);
+	},
+	
 	render: function() {
 		return (
-			<button type="button" className="btn btn-default">
+			<button type="button" className="btn btn-default" onClick={this.sendEmail}>
 				Request Another Quote
 			</button>
 		);
@@ -144,7 +152,7 @@ var ActionQuote = React.createClass({
 			return (
 				<div className="actions-quote">
 					{ quote.status == "Active" && <ButtonAccept updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
-					{ quote.status != "Approved" && <ButtonRequestAnotherQuote /> }
+					{ quote.status == "Active" && <ButtonRequestAnotherQuote sendEmailLandlord={self.sendEmailLandlord} quote={quote} /> }
 					{ !self.quotes && <ButtonView viewQuote={(key, item) => self.viewQuote(key, item)} quote={self.quote}/> }
 				</div>
 			);
@@ -182,18 +190,13 @@ var Quotes = React.createClass({
 									<div className="info">
 										<div className="name">
 											<span>{quote.trady.name}</span>
-											{
-												(!self.keyLandlord || self.keyLandlord != "landlord") ?
-												<button className={'button-default ' + quote.status}>
-													<span>{quote.status}</span>
-												</button>
-												: null
-											}
-											
+											<button className={'button-default ' + quote.status}>
+												<span>{quote.status}</span>
+											</button>
 										</div>
 										<p className="description">
-											{quote.trady && quote.trady.company_name} <br />
-											{(quote.trady && quote.trady.trady_company) ? quote.trady.trady_company.company_name : null}
+											{quote.trady && quote.trady.name} <br />
+											{(quote.trady && quote.trady.trady_company) ? quote.trady.trady_company.trading_name : null}
 										</p>
 									</div>
 								</div>
