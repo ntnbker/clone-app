@@ -180,4 +180,9 @@ Rails.application.routes.draw do
   ##########AGENT EMAILS RESOURCES/ROUTES############
   ################################################### 
     resources :agent_emails, only:[:index]
+  ###################################################
+  ##########AGENT EMAILS RESOURCES/ROUTES############
+  ###################################################
+    post "update_print_status"=> "print_statuses#update" 
+    
  end

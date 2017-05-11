@@ -9,21 +9,27 @@ class TradyMaintenanceRequestsController < ApplicationController
   end
 
   def show
+    
+    @signed_in_trady = current_user.trady
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    # @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @quote = @quotes.where(:status=>"Approved").first if !nil
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices
+    @assigned_trady = @maintenance_request.trady 
+    @quotes = @maintenance_request.trady.quotes.where(:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    #@quote = @quotes.where(:status=>"Approved").first if !nil
+    
+    @pdf_invoice_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}})
+    @invoices = @maintenance_request.trady.invoices.where(:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
 
-    if @quote
-      @quote_id = @quote.id
-    else
-      @quote_id = ''
-    end 
+    
+
+    # if @quote
+    #   @quote_id = @quote.id
+    # else
+    #   @quote_id = ''
+    # end 
 
     @message = Message.new
     
-    @trady = current_user.trady
+    @trady = @signed_in_trady
      
     if @maintenance_request.maintenance_request_image != nil
       @gallery = @maintenance_request.maintenance_request_image.images
@@ -59,7 +65,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation}}
+      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, pdf_invoice_files:@pdf_invoice_files, invoices:@invoices}}
       format.html{render :show}
     end 
 
