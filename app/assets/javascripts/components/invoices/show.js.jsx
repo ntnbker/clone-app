@@ -28,15 +28,15 @@ var DetailInvoice = React.createClass({
 					<tbody>
 					{
 						invoice_items.map(function(item, key) {
-							subTotal+= item.amount * item.hours;
+							subTotal+= item.amount;
 							gst += !!item.gst_amount ? item.gst_amount : 0;
 							return (
 								<tr key={key}>
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
-									<td>{item.amount}</td>
+									<td>${item.amount}</td>
 									<td>{!!item.hours ? item.hours : 'N/A'}</td>
-									<td>${item.hours * item.amount}</td>
+									<td>${item.amount}</td>
 								</tr>
 							);
 						})

@@ -19,8 +19,8 @@ var Invoices = React.createClass({
 											<span>{invoice.trady.name}</span>
 										</div>
 										<p className="description">
-											{invoice.trady.company_name}<br />
-											{invoice.trady.trady_company.company_name}
+											{invoice.trady && invoice.trady.company_name}<br />
+											{(invoice.trady && invoice.trady.trady_company) ? invoice.trady.trady_company.trading_name : null}
 										</p>
 									</div>
 								</div>
