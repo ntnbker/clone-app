@@ -156,6 +156,12 @@ var ActionQuote = React.createClass({
 					{ !self.quotes && <ButtonView viewQuote={(key, item) => self.viewQuote(key, item)} quote={self.quote}/> }
 				</div>
 			);
+		}else if(self.keyLandlord == "trady") {
+			return (
+				<div className="actions-quote">
+					{ !self.quotes && <ButtonView viewQuote={(key, item) => self.viewQuote(key, item)} quote={self.quote}/> }
+				</div>
+			);
 		}else {
 			return (
 				<div className="actions-quote">
@@ -251,7 +257,7 @@ var DetailQuote = React.createClass({
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
 									<td>${item.amount}</td>
-									<td>{!!item.hours ? item.hours : 'N/A'}</td>
+									<td>{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'}</td>
 									<td>${item.amount}</td>
 								</tr>
 							);

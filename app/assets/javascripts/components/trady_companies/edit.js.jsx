@@ -1,6 +1,6 @@
-var AddTradycompany = React.createClass({
-  getInitialState: function () {
-    return { 
+var EditTradyCompany = React.createClass({
+	getInitialState: function() {
+		return { 
     	errorABN: false,
     	openModal: false,
       errorPhone: false,
@@ -22,9 +22,9 @@ var AddTradycompany = React.createClass({
       	contnet: "",
       }
     };
-  },
+	},
 
-  handleChange: function(event) {
+	handleChange: function(event) {
     this.setState({address: event.target.value});
     if (!!this.state.same_Address) {
       this.setState({
@@ -46,44 +46,13 @@ var AddTradycompany = React.createClass({
   	});
   },
 
-  openModalNotification: function(params) {
-  	if(params) {
-  		var body = document.getElementsByTagName('body')[0];
-			body.className += "modal-open";
-			var div = document.getElementsByClassName('modal-backdrop in');
-
-			if(div.length === 0) {
-				div = document.createElement('div')
-				div.className  = "modal-backdrop in";
-				body.appendChild(div);
-			}
-			this.setState({
-				openModal: true,
-				notification: {
-					title: params.title,
-					bgClass: params.bgClass,
-					content: params.content,
-				}
-			});
-  	}
+  changeMailingAddress: function(e) {
+  	this.setState({
+  		mailing_address: e.target.value
+  	});
   },
 
-  closeModal: function() {
-		var body = document.getElementsByTagName('body')[0];
-		body.classList.remove("modal-open");
-		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
-		this.setState({
-			openModal: false,
-			notification: {
-				title: "",
-				bgClass: "",
-				content: "",
-			}
-		});
-	},
-
-  checkValidate: function(e) {
+	checkValidate: function(e) {
   	const target = e.target.id;
   	switch (target.key) {
   		case 'email': {
@@ -141,16 +110,8 @@ var AddTradycompany = React.createClass({
   	}
   },
 
-  changeMailingAddress: function(e) {
-  	this.setState({
-  		mailing_address: e.target.value
-  	});
-  },
-
-  onSubmit: function(e){
-  	
+  edit: function(e) {
   	var flag = false;
-
   	if(!this.company_name.value) {
   		flag = true;
   		this.setState({
@@ -192,7 +153,7 @@ var AddTradycompany = React.createClass({
   			errorEmail: true
   		});
   	}
-    
+
   	if(!this.mobile_number.value || !PHONE_REGEXP.test(this.mobile_number.value)) {
   		flag = true;
   		this.setState({
@@ -228,15 +189,18 @@ var AddTradycompany = React.createClass({
   				email: this.email.value,
   				address: this.address.value,
   				trady_id: this.props.trady_id,
-          quote_id: this.props.quote_id,
-          work_flow: this.props.work_flow,
-          bsb_number: this.bsb_number.value,
-          quote_type: this.props.quote_type,
-          system_plan: this.props.system_plan,
-          company_name: this.company_name.value,
-          trading_name: this.trading_name.value,
-          invoice_type: this.props.invoice_type,
+  				trady_id: this.props.trady_id,
+  				quote_id: this.props.quote_id,
+  				ledger_id: this.props.ledger_id,
+  				trady_company_id: this.props.id,
+  				work_flow: this.props.work_flow,
+  				quote_type: this.props.quote_type,
+  				bsb_number: this.bsb_number.value,
+  				pdf_file_id: this.props.pdf_file_id,
+  				company_name: this.company_name.value,
+  				trading_name: this.trading_name.value,
   				account_name: this.account_name.value,
+  				invoice_type: this.props.invoice_type,
   				mobile_number: this.mobile_number.value,
   				mailing_address: this.mailing_address.value,
   				gst_registration: this.state.gst_registration,
@@ -247,34 +211,29 @@ var AddTradycompany = React.createClass({
 
   		const self = this;
 			$.ajax({
-				type: 'POST',
-				url: '/trady_companies',
+				type: 'PUT',
+				url: '/trady_companies/'+ self.props.id,
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 				},
 				data: params,
 				success: function(res){
-					window.location = window.location.origin + "/quotes/new?maintenance_request_id=" + self.props.maintenance_request_id + "&quote_id=" + self.props.quote_id + "&quote_type=" + self.props.quote_type + "&system_plan=" + self.props.system_plan + "&trady_id=" + self.props.trady_id;
+					window.location = window.location.origin + "/quotes/new?maintenance_request_id=" + self.props.maintenance_request_id + "&quote_type=" + self.props.quote_type + "&system_plan=" + self.props.system_plan + "&trady_id=" + self.props.trady_id;
 				},
 				error: function(err) {
-					self.openModalNotification({
-						bgClass: 'bg-error',
-						title: "Add Trady Company",
-						content: "Add trady company is error!",
-					});
+				
 				}
 			});
   	}
   		
 		e.preventDefault();
-
   	return;
   },
 
   renderButtonBack: function() {
     if(this.props.system_plan == "Invoice") {
       return (
-        <a className="btn btn-default btn-back m-r-lg" href={"/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.trady_company_id}>
+        <a className="btn btn-default btn-back m-r-lg" href={"/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.id}>
           Back
         </a>
       );
@@ -287,69 +246,67 @@ var AddTradycompany = React.createClass({
     }
   },
 
-  render: function() {
+	render: function() {
 		return (
-			<div>
-      <form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.onSubmit} >   
-
-        <div className="form-group">
-          <label className="control-label col-sm-2 required">Company name</label>
-          <div className="col-sm-10">
-            <input 
-              required 
-              type="text" 
-              id="company_name" 
-              placeholder="Company Name" 
-              defaultValue={this.props.company_name} 
+			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
+				<div className="form-group">
+					<label className="control-label col-sm-2 required">Company name</label>
+					<div className="col-sm-10">
+						<input 
+							required
+							type="text" 
+							id="company_name" 
+							placeholder="Company Name"
+							defaultValue={this.props.company_name} 
               ref={(ref) => this.company_name = ref}
-              className={"form-control " + (this.state.errorCompanyName ? "has-error" : "")}
-            />
-          </div>
-        </div>
-       <div className="form-group">
-        <label className="control-label col-sm-2 required">Trading name</label>
-          <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="trading_name" 
-  		        placeholder="Trading Name" 
+							className={"form-control " + (this.state.errorCompanyName ? "has-error" : "")}
+						/>
+					</div>
+				</div>
+				<div className="form-group">
+					<label className="control-label col-sm-2 required">Trading name</label>
+					<div className="col-sm-10">
+						<input 
+							required
+							type="text" 
+							id="trading_name" 
+							className="form-control" 
+							placeholder="Trading Name" 
   		        defaultValue={this.props.trading_name} 
   		        ref={(ref) => this.trading_name = ref}
   		        className={"form-control " + (!!this.state.errorTradingName && "has-error")}
-  	        />
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label className="control-label col-sm-2 required">Abn</label>
-          <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        id="abn" 
-  		        type="text" 
-  		        placeholder="Abn" 
-  		        defaultValue={this.props.abn} 
-  		        ref={(ref) => this.abn = ref}
-  		        className={"form-control " + (!!this.state.errorABN && "has-error")}
-  	        />
-          </div>
-        </div>
-
+						/>
+					</div>
+				</div>
 				<div className="form-group">
-          <input 
-	          type="checkbox" 
-	          id="gst_registration" 
-	          onChange={() => {
-	          	this.setState({
-	          		gst_registration: !this.state.gst_registration
-	          	});
-	          }}
-	          checked={!!this.state.gst_registration ? "checked" : false}
-          />
-          GST  Registration
-        </div>
-
+					<label className="control-label col-sm-2 required">Abn</label>
+					<div className="col-sm-10">
+						<input 
+							required
+							id="abn"
+							type="text"  
+							placeholder="Abn" 
+			        defaultValue={this.props.abn} 
+			        ref={(ref) => this.abn = ref}
+			        className={"form-control " + (!!this.state.errorABN && "has-error")}
+						/>
+					</div>
+				</div>
+				<div className="form-group">
+					<div className="col-sm-10 col-sm-offset-2">
+						<input 
+		          type="checkbox" 
+		          id="gst_registration" 
+		          onChange={() => {
+		          	this.setState({
+		          		gst_registration: !this.state.gst_registration
+		          	});
+		          }}
+		          checked={!!this.state.gst_registration ? "checked" : false}
+	          />
+	          GST  Registration
+					</div>
+				</div>
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Address</label>
           <div className="col-sm-10">
@@ -365,8 +322,7 @@ var AddTradycompany = React.createClass({
   	        />
           </div>
         </div>
-
-        <div className="form-group">
+				<div className="form-group">
           <input 
           	type="checkbox" 
             onChange={this.onSame} 
@@ -389,7 +345,6 @@ var AddTradycompany = React.createClass({
 	          />
           </div>
         </div>
-
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Mobile number</label>
           <div className="col-sm-10">
@@ -405,8 +360,7 @@ var AddTradycompany = React.createClass({
   	        />
           </div>
         </div>
-
-        <div className="form-group">
+				<div className="form-group">
           <label className="control-label col-sm-2 required">Company Email</label>
           <div className="col-sm-10">
   	        <input 
@@ -468,24 +422,10 @@ var AddTradycompany = React.createClass({
           </div>
         </div>
         { this.renderButtonBack() }
-        <button type="submit" name="commit" value="Next" className="button-primary green option-button">
-        	Next
-        </button>
-        
-        
-
-      </form>
-      { this.state.openModal ? 
-      		<ModalNotification 
-						title={this.state.notification.title} 
-						content={this.state.notification.content}
-						close={this.closeModal} 
-						bgClass={this.state.notification.bgClass}
-					/>
-					:
-					null
-      }
-      </div>
+				<button type="submit" className="button-primary green option-button">
+					Edit
+				</button>
+			</form>
 		);
 	}
 });

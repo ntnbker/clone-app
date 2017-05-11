@@ -1,5 +1,3 @@
-const EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
-
 var ModalConfirm = React.createClass({
 	render: function() {
 		return (
