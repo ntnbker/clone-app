@@ -1,37 +1,78 @@
 =react_component('StepProgress', {:step => 3})
 
-%div.container.invoice-form
+%div.container.invoice-form 
+  %h6
+    ="Name: #{@trady.name.capitalize}"
+  %h6
+    ="Company Name: #{@trady.trady_company.company_name.capitalize}"
+  %h6
+    ="Company Trading Name: #{@trady.trady_company.trading_name.capitalize}"
+  %h6
+    ="ABN: #{@trady.trady_company.trading_name.capitalize}"
+  %h6
+    ="Address: #{@trady.trady_company.address}"
+  %h6
+    ="Mailing Address: #{@trady.trady_company.mailing_address}"
+  %h6
+    ="Email: #{@trady.trady_company.email}"
+  %h6
+    ="Mobile: #{@trady.trady_company.mobile_number}"
+  %h6
+    ="Bank Account Name: #{@trady.trady_company.trading_name.capitalize}"
+  
   -@ledger.invoices.each_with_index do |invoice, index| 
-    %div.row
-      %h5
-        ="Invoice # #{index+1}"
-    %div.invoice-info
-      -invoice.invoice_items.each do |f|
-        %div.row
-          -if f.pricing_type == "Hourly"
-            %p #{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour)
-            %span $ #{f.total_per_hour}
-          -elsif f.pricing_type == "Fixed Cost"
-            %p #{f.item_description.capitalize}
-            %span $ #{f.amount.to_f}
+  
+    %h5
+      ="Invoice # #{index+1}"
+    %table{:style=>"width:100%"}
+      %tr
+        %th Description
+        %th Pricing
+        %th Rate
+        %th Hours
+        %th Total
+    -invoice.invoice_items.each do |f|
+      %tr
+        %td
+          =f.item_description.capitalize
+        %td 
+          =f.pricing_type
+        %td 
+          ="$ #{f.amount.to_f}"
+        %td
+          -if f.pricing_type == 'Fixed Cost'
+            N/A
+          -elsif f.pricing_type == 'Hourly'
+            = f.hours
+        %td
+          -if f.pricing_type == 'Fixed Cost'
+            = f.amount
+          -elsif f.pricing_type == 'Hourly'
+            ="$#{f.amount * f.hours}"
+          
+    -if invoice.tax == true
+      %p Before Tax
+      %span $ #{ (invoice.amount - invoice.gst_amount).round(2)}
+      %br
+      %p GST
+      %span $ #{ (invoice.amount - invoice.amount/1.10).round(2)}
+    -elsif invoice.tax == false
+      %p GST
+      %span $ 0.00
+    %hr    
+    %h6
+      %b
+        %p Invoice Total
+        %span $ #{invoice.amount.round(3)}
+    %h6
+      %b
+        ="Invoice Due: #{invoice.due_on}"
 
-      -if invoice.tax == true
-        %p Before Tax
-        %span $ #{ (invoice.amount - invoice.gst_amount).round(2)}
-        %br
-        %p GST
-        %span $ #{ (invoice.amount - invoice.amount/1.10).round(2)}
-      -elsif invoice.tax == false
-        %p GST
-        %span $ 0.00
-      %hr    
-      %h6
-        %b
-          %p Total
-          %span $ #{invoice.amount.round(3)}
-      %h6
-        %b
-          ="Invoice Due: #{invoice.due_on}"
+
+
+
+
+
     %hr
   %div.grand-total
     %h5
@@ -42,3 +83,6 @@
     %button.button.button-primary.green.right
       =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id ), method: :post
 
+
+
+    

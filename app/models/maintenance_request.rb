@@ -113,6 +113,10 @@ class MaintenanceRequest < ApplicationRecord
     self.uploaded_invoices.where(delivery_status: true).order("created_at DESC")
   end
 
+  def trady_delivered_uploaded_invoices (maintenance_request_id)
+    self.uploaded_invoices.where(:delivery_status=> true, :maintenance_request_id => maintenance_request_id).order("created_at DESC")
+  end
+
   # def find_trady_maintenance_requests(current_user)
   #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
   # end

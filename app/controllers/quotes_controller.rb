@@ -71,6 +71,7 @@ class QuotesController < ApplicationController
     #this controller is to show the quote before sending in the quote email 
     @quote = Quote.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
+    @trady = Trady.find_by(id:params[:trady_id])
     @trady_id = params[:trady_id]
     @quote_type = params[:quote_type]
     @system_plan = params[:system_plan]

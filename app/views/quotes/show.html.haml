@@ -2,16 +2,24 @@
   %div.send-quote
     %h2
       Maintenance Request Quote
-    %h5
-      ="Company Name: #{@quote.trady.company_name.capitalize}"
-    %h5
-      ="Name: #{@quote.trady.name.capitalize}"
-    %h6
-      ="Address: #{@quote.trady.trady_company.address}"
-    %h6
-      ="Email: #{@quote.trady.trady_company.email}"
-    %h6
-      ="Mobile: #{@quote.trady.trady_company.mobile_number}"
+  %h6
+    ="Name: #{@trady.name.capitalize}"
+  %h6
+    ="Company Name: #{@trady.trady_company.company_name.capitalize}"
+  %h6
+    ="Company Trading Name: #{@trady.trady_company.trading_name.capitalize}"
+  %h6
+    ="ABN: #{@trady.trady_company.trading_name.capitalize}"
+  %h6
+    ="Address: #{@trady.trady_company.address}"
+  %h6
+    ="Mailing Address: #{@trady.trady_company.mailing_address}"
+  %h6
+    ="Email: #{@trady.trady_company.email}"
+  %h6
+    ="Mobile: #{@trady.trady_company.mobile_number}"
+  %h6
+    ="Bank Account Name: #{@trady.trady_company.trading_name.capitalize}"
     %table{:style=>"width:50%"}
       %tr
         %th Description
