@@ -62,32 +62,7 @@
     ="Grand Total: $#{@quote.amount.round(2)}"
     %br 
 
-    / -"f.pricing_type == 'Fixed Cost'? N/A : f.hours"
-          
-        
-    /     %div.row
-    /     %hr
-    /     -if f.pricing_type == "Hourly"
-    /       %p
-    /         ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
-    /     -elsif f.pricing_type == "Fixed Cost"
-    /       %p
-    /         ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
-    / %hr
-    / %div.row
-    /   = "Items Total: #{@quote.amount} "
-    /   %br   
-    /   -if @quote.tax == true
-    /     %p
-    /       = "GST: #{@quote.gst_amount.round(2)}"
-    /     %br   
-    /   -elsif @quote.tax == false
-    /     %p
-    /       GST: $ 0.00
-    /   %br    
-      
-    /   ="Grand Total: $#{@quote.amount.round(2)}"
-    /   %br    
+    
     
     %button{:type=>"button", :class=>"button button-primary"} 
       =link_to "Back", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan)
