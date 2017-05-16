@@ -9,5 +9,4 @@ class AgencyEmail
     end
     return accounts
   end
-
 end 

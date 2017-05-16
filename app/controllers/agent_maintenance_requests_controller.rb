@@ -24,6 +24,23 @@ class AgentMaintenanceRequestsController < ApplicationController
     @tenant_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tenant To Confirm Appointment")
     @landlord_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Landlord To Confirm Appointment")
     @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")
+  
+
+
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+
+    respond_to do |format|
+      format.json {render json:maintenance_requests_json}
+      format.html
+    end 
+
+
+
+
+
+
+
+
   end
 
   def show

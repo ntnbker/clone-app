@@ -53,3 +53,9 @@
                                                   {title:'Landlord To Confirm Appointment', href:filtered_maintenance_requests_path(maintenance_request_filter:"Landlord To Confirm Appointment"), count:@landlord_confirm_appointment_count},
                                                   {title:'Maintenance Scheduled - Awaiting Invoice', href:filtered_maintenance_requests_path(maintenance_request_filter:"Maintenance Scheduled - Awaiting Invoice"), count:@maintenance_scheduled_count}]},
                                     {class:"awaiting"})
+
+=link_to "New Invoices", filtered_maintenance_requests_path(maintenance_request_filter:"New Invoice"), remote: true
+=link_to "Awaiting Owner Instruction",filtered_maintenance_requests_path(maintenance_request_filter:"Awaiting Owner Instruction"), remote: true
+
+
+=link_to "INDEX",agent_maintenance_requests_path, remote: true

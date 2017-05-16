@@ -6,6 +6,16 @@ class LandlordMaintenanceRequestsController < ApplicationController
     else
       @maintenance_requests = current_user.landlord.order_maintenance_request_by_ascending.paginate(:page => params[:page], :per_page => 3)
     end
+
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+
+    respond_to do |format|
+      format.json {render json:maintenance_requests_json}
+      format.html
+    end 
+
+
+    
   end
 
   def show
