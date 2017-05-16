@@ -23,7 +23,7 @@ var LandlordSideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && <LandlordActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} /> }
+				{ !!this.state.showAction && <LandlordActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
 				{ !!this.state.showContact && <LandlordContactMobile close={(key) => this.show('contact')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} current_user={this.props.current_user} maintenance_request={this.props.maintenance_request} /> }
 			</div>
 		);
@@ -321,7 +321,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					</div>
 					<div className="sidebar">
 						<LandlordContact landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} maintenance_request={this.state.maintenance_request} />
-						<LandlordAction landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} />
+						<LandlordAction landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} maintenance_request={this.state.maintenance_request} />
 					</div>
 				</div>
 				<LandlordSideBarMobile onModalWith={(modal) => this.onModalWith(modal)} landlord={this.state.landlord} current_user={this.props.current_user} maintenance_request={this.state.maintenance_request} />

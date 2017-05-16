@@ -48,7 +48,7 @@ var FieldList = React.createClass({
         var SampleField = this.props.SampleField;
         var Fields = [];
         var params = this.props.params;
-        var x = 1;
+        var x = 0;
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
@@ -59,8 +59,7 @@ var FieldList = React.createClass({
             return { Fields : Fields,
                      x : x }
         } else {
-            return { Fields : [ <SampleField params={params} x={x}/> ],
-                     x : x }
+            return { Fields : [], x : x}
         }
     },
 
