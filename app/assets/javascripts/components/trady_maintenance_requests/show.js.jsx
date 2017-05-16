@@ -23,7 +23,7 @@ var TradySideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && <TradyActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} /> }
+				{ !!this.state.showAction && <TradyActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} assigned_trady={this.props.assigned_trady} signed_in_trady={this.props.signed_in_trady} /> }
 				{ !!this.state.showContact && <TradyContactMobile close={(key) => this.show('contact')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} current_user={this.props.current_user} maintenance_request={this.props.maintenance_request} /> }
 			</div>
 		);
@@ -243,11 +243,28 @@ var TradyMaintenanceRequest = React.createClass({
 						}
 					</div>
 					<div className="sidebar">
-						<TradyContact landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} maintenance_request={this.state.maintenance_request} />
-						<TradyAction landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} />
+						<TradyContact 
+							landlord={this.state.landlord} 
+							onModalWith={(modal) => this.onModalWith(modal)} 
+							current_user={this.props.current_user} 
+							maintenance_request={this.state.maintenance_request} 
+						/>
+						<TradyAction 
+							landlord={this.state.landlord} 
+							assigned_trady={this.props.assigned_trady}
+							signed_in_trady={this.props.signed_in_trady} 
+							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
 					</div>
 				</div>
-				<TradySideBarMobile onModalWith={(modal) => this.onModalWith(modal)} landlord={this.state.landlord} current_user={this.props.current_user} maintenance_request={this.state.maintenance_request} />
+				<TradySideBarMobile 
+					landlord={this.state.landlord} 
+					current_user={this.props.current_user} 
+					assigned_trady={this.props.assigned_trady}
+					signed_in_trady={this.props.signed_in_trady} 
+					onModalWith={(modal) => this.onModalWith(modal)} 
+					maintenance_request={this.state.maintenance_request} 
+				/>
 				{ this.renderModal() }
 			</div>
 		);

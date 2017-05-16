@@ -9,13 +9,13 @@ var ContentLandlordAction = React.createClass({
 					</a>
 				</li>
 				<li>
-					<a>
+					<a href={"/landlord_appointments/new?maintenance_request_id=" + this.props.maintenance_request.id}>
 						<i className="icon-send" aria-hidden="true" />
 						Fix Myself
 					</a>
 				</li>
 				<li>
-					<a>
+					<a href={"/job_completed?maintenance_request_id=" + this.props.maintenance_request.id}>
 						<i aria-hidden="true" className="fa fa-user-plus" />
 						Job Completed
 					</a>
@@ -48,7 +48,7 @@ var LandlordAction = React.createClass({
 					/>
 				</div>
 				<div className="content" id="actions-content">
-					{ this.state.show && <ContentLandlordAction onModalWith={(modal) => this.props.onModalWith(modal)}  landlord={this.props.landlord} /> }
+					{ this.state.show && <ContentLandlordAction onModalWith={(modal) => this.props.onModalWith(modal)}  landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
 				</div>
 			</div>
 		);
@@ -69,7 +69,7 @@ var LandlordActionMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						<ContentLandlordAction onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} />
+						<ContentLandlordAction onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} />
 					</div>
 				</div>
 			</div>
