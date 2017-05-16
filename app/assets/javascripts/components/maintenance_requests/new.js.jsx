@@ -111,8 +111,7 @@ var MaintenanceRequestsNew = React.createClass({
  	 },
 
 	handleCheckSubmit: function(e) {
-		if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile) {
-			debugger
+		if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription) {
 			e.preventDefault();
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
 			return;
@@ -168,49 +167,11 @@ var MaintenanceRequestsNew = React.createClass({
 				document.getElementById("errorboxdescription").classList.add("border_on_error");
 			}
 		});
-		/*XHR.open('POST', '/maintenance_requests');
+		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
-		XHR.send(FD);*/
+		XHR.send(FD);
 		e.preventDefault();
-		var params = {
-			maintenance_request: {
-				name: this.name.value,
-				email: this.email.value,
-				mobile: this.mobile.value,
-				maintenance_heading: this.maintenance_heading.value,
-				maintenance_description: this.maintenance_description.value,
-				agent_email: this.agent_email.value,
-				real_estate_office: this.real_estate_office.value,
-				agent_name: this.agent_name.value,
-				agent_mobile: this.agent_mobile.value,
-				person_in_charge: "Agent",
-			}
-		};
-
-		var fd = new FormData();
-		$.each(params, function(key, value) {
-			fd.append(key, value);
-		});
-
-		const self = this;
-		$.ajax({
-			type: 'POST',
-			url: '/maintenance_requests',
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-			},
-			/*contentType: 'multipart/form-data',
-			processData: false,*/
-			data: params,
-			success: function(res){
-				debugger
-			},
-			error: function(err) {
-				debugger
-			}
-		});
-
   	return false;
 	},
 
@@ -271,7 +232,7 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		return (
 			<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
-				<input type="hidden" name="utf8" value="✓" />
+				<input name="utf8" type="hidden" value="✓" /> 
 				<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 				<div className="field">
 					<p> Name </p>
@@ -365,9 +326,14 @@ var MaintenanceRequestsNew = React.createClass({
 						id={this.generateAtt("id", "maintenance_heading")}
 					  name={this.generateAtt("name", "maintenance_heading")}
 						onBlur={(e) => {
-						if (!e.target.value.length) {
+							if (!e.target.value.length) {
 								document.getElementById("errorboxheading").textContent = strErrHeading;
 								e.target.classList.add("border_on_error");
+								this.setState({validHeading: true});
+							}
+							else {
+								document.getElementById("errorboxheading").textContent = "";
+								e.target.classList.remove("border_on_error");
 								this.setState({validHeading: false});
 							}
 						}} 
@@ -384,6 +350,11 @@ var MaintenanceRequestsNew = React.createClass({
 							if (!e.target.value.length) {
 								document.getElementById("errorboxdescription").textContent = strErrDescription;
 								e.target.classList.add("border_on_error");
+								this.setState({validDescription: true});
+							}
+							else {
+								document.getElementById("errorboxdescription").textContent = "";
+								e.target.classList.reqmove("border_on_error");
 								this.setState({validDescription: false});
 							}
 						}} 
@@ -396,6 +367,7 @@ var MaintenanceRequestsNew = React.createClass({
 						multiple 
 						type="file" 
 						className="fileInput" 
+						multiple
 						onChange={(e)=>this._handleImageChange(e)} 
 						id="maintenance_request_maintenance_request_image_attributes_images" 
 						name="maintenance_request[maintenance_request_image_attributes][images][]" 

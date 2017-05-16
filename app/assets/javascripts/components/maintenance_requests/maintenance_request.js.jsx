@@ -87,7 +87,7 @@ var ItemMaintenanceRequest = React.createClass({
 					</div>
 				</div>
 				<div className="content">
-					<Carousel gallery={this.props.gallery} />
+					{this.props.gallery && <Carousel gallery={this.props.gallery} />}
 					<div className="description">
 						<p>{maintenance.maintenance_description}</p>
 					</div>
