@@ -354,7 +354,7 @@ var MaintenanceRequestsNew = React.createClass({
 							}
 							else {
 								document.getElementById("errorboxdescription").textContent = "";
-								e.target.classList.reqmove("border_on_error");
+								e.target.classList.remove("border_on_error");
 								this.setState({validDescription: false});
 							}
 						}} 
