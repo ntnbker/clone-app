@@ -63,12 +63,21 @@ var FieldList = React.createClass({
         }
     },
 
-    addField() {
+    addField: function() {
         var SampleField = this.props.SampleField;
         var tmpFields = this.state.Fields.slice();
         var params = this.props.params;
-        tmpFields.push(<SampleField x={++this.state.x} params={params}/>);
+        tmpFields.push(<SampleField x={++this.state.x} params={params} removeField={(position) => this.removeField(position)} validDate={(flag) => this.props.validDate(flag)}/>);
         this.setState({Fields: tmpFields});
+    },
+
+    removeField: function(x) {
+        var tmpFields = this.state.Fields;
+        tmpFields.splice(x-1, 1);
+        this.setState({
+            Fields: tmpFields,
+            x: tmpFields.length,
+        });
     },
 
     render: function(){    

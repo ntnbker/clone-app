@@ -1,16 +1,19 @@
 var ContentTradyAction = React.createClass({
 	render: function() {
+		const maintenance_request = this.props.maintenance_request;
+		const trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+		const maintenance_trady_id = maintenance_request.trady_id;
 		if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return (
 				<ul>
 					<li className="active">
-						<a>
+						<a href={"/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id}>
 							<i className="fa fa-file-text" aria-hidden="true" />
 							Create or Upload Quote
 						</a>
 					</li>
 					<li>
-						<a>
+						<a href={"/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id="}>
 							<i className="icon-send" aria-hidden="true" />
 							Create or Upload Invoice
 						</a>
@@ -23,14 +26,14 @@ var ContentTradyAction = React.createClass({
 			return(
 				<ul>
 					<li className="active">
-						<a>
+						<a href={"/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id}>
 							<i className="fa fa-file-text" aria-hidden="true" />
 							Create or Upload Quote
 						</a>
 					</li>
 					{ !!this.props.assigned_trady ?
 							<li>
-								<a>
+								<a href={"/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id="}>
 									<i className="icon-send" aria-hidden="true" />
 									Create or Upload Invoice
 								</a>
@@ -72,6 +75,7 @@ var TradyAction = React.createClass({
 						  	landlord={this.props.landlord} 
 						 		assigned_trady={this.props.assigned_trady}
 						 		signed_in_trady={this.props.signed_in_trady} 
+						 		maintenance_request={this.props.maintenance_request}
 						  	onModalWith={(modal) => this.props.onModalWith(modal)} 
 						  /> 
 						  :
@@ -98,10 +102,11 @@ var TradyActionMobile = React.createClass({
 					</div>
 					<div className="content">
 						<ContentTradyAction 
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
 							landlord={this.props.landlord} 
 							landlord={this.props.landlord} 
 					 		assigned_trady={this.props.assigned_trady}
+					 		maintenance_request={this.props.maintenance_request}
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
 						/>
 					</div>
 				</div>

@@ -1,14 +1,15 @@
 var AvailabilityField = React.createClass({
     
-    getInitialState : function() {
+    getInitialState: function() {
         return {
             remove : false,
 
         }
     },
 
-    makeDate(byNum) {
+    makeDate: function(byNum) {
       var date=[];
+      date.push(<option key="-1" value="">--</option>)
       for (var i=0; i<byNum; i++) {
         date.push(<option key={i} value={i}>{i}</option>);
       }
@@ -19,7 +20,7 @@ var AvailabilityField = React.createClass({
       this.setState({remove: true});
     },
 
-    generateAtt(name_id, x, type) {
+    generateAtt: function(name_id, x, type) {
       if (name_id == "name") {
         return "maintenance_request[availabilities_attributes][" + x + "][" + type + "]";
       }
@@ -28,7 +29,7 @@ var AvailabilityField = React.createClass({
       }
     },
 
-    onChange(e, datepickerrorid) {
+    onChange: function(e, datepickerrorid) {
       var tmpValue = e.target.value;
       var today = this.getToday();
       if(tmpValue < today) {
@@ -43,48 +44,52 @@ var AvailabilityField = React.createClass({
       }
     },
 
-    onChangeStartTime(e, timepickerrorid) {
+    onChangeStartTime: function(e, timepickerrorid) {
       var startTime = (this.refs.startTimeHour.value*60 +  this.refs.startTimeMin.value)/100;
       var finishTime = (this.refs.finishTimeHour.value*60 + this.refs.finishTimeMin.value)/100;
       errorMessage = '';
       if(startTime > finishTime) {
         document.getElementById(timepickerrorid).textContent = strErrSelectTimeB;
         setSubmitFlag = false;
+        this.props.validDate(true);
       } else {
         document.getElementById(timepickerrorid).textContent = '';
         setSubmitFlag = true;
+        this.props.validDate(false);
       }
     },
 
-    onChangeFinishTime(e, timepickerrorid) {
+    onChangeFinishTime: function(e, timepickerrorid) {
       var startTime = (this.refs.startTimeHour.value*60 +  this.refs.startTimeMin.value)/100;
       var finishTime = (this.refs.finishTimeHour.value*60 + this.refs.finishTimeMin.value)/100;
       errorMessage = '';
       if(startTime > finishTime) {
         document.getElementById(timepickerrorid).textContent = strErrSelectTimeL;
         setSubmitFlag = false;
+        this.props.validDate(true);
       } else {
         document.getElementById(timepickerrorid).textContent = '';
         setSubmitFlag = true;
+        this.props.validDate(false);
       }
     },
 
-    getToday() {
+    getToday: function() {
       var today = new Date();
       var dd = today.getDate();
       var mm = today.getMonth()+1;
       var yyyy = today.getFullYear();
-      if(dd<10) {
-          dd='0'+dd
+      if(dd < 10) {
+          dd = '0'+dd;
       } 
-      if(mm<10) {
-          mm='0'+mm
+      if(mm < 10) {
+          mm = '0'+mm;
       } 
       today = yyyy+'-'+mm+'-'+dd;
       return today;
     },
 
-    render : function() {
+    render: function() {
       var Availability = this.props.content;
       var x= this.props.x;
       if (Availability) {
@@ -130,9 +135,9 @@ var AvailabilityField = React.createClass({
 
               <select 
                 required="required"
+                ref="startTimeHour"
                 id={this.generateAtt("id", x, "start_time_4i")} 
                 name={this.generateAtt("name", x, "start_time(4i)")}
-                required={this.state.dateRequired} ref="startTimeHour"
                 onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
               >
                 { this.makeDate(24) }
@@ -143,7 +148,6 @@ var AvailabilityField = React.createClass({
               <select 
                 required="required"
                 ref="startTimeMin"
-                required={this.state.dateRequired} 
                 id={this.generateAtt("id", x, "start_time_5i")} 
                 name={this.generateAtt("name", x, "start_time(5i)")}
                 onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
@@ -174,10 +178,11 @@ var AvailabilityField = React.createClass({
                 id={this.generateAtt("id", x, "finish_time_3i")} 
               /> 
 
-              <select 
+              <select
+                required="required"
+                ref="finishTimeHour"
                 id={this.generateAtt("id", x, "finish_time_4i")} 
                 name={this.generateAtt("name", x, "finish_time(4i)")}
-                required={this.state.dateRequired} ref="finishTimeHour"
                 onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)}
               >
                 { this.makeDate(24) }
@@ -187,9 +192,9 @@ var AvailabilityField = React.createClass({
 
               <select 
                 required="required"
+                ref="finishTimeMin"
                 id={this.generateAtt("id", x, "finish_time_5i")} 
                 name={this.generateAtt("name", x, "finish_time(5i)")}
-                required={this.state.dateRequired} ref="finishTimeMin"
                 onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} 
               >
                 { this.makeDate(60) }
@@ -213,12 +218,12 @@ var AvailabilityField = React.createClass({
             id={this.generateAtt("id", x, "_destroy")} 
             name={this.generateAtt("name", x, "_destroy")}
           />
-          <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+          <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> Remove </button>
         </div>
       );
     },
 
-    onCheck() {
+    onCheck: function() {
       this.setState({dateRequired: !this.state.dateRequired});
     }
 });
