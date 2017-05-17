@@ -6,6 +6,18 @@ class TradyMaintenanceRequestsController < ApplicationController
     else
       @maintenance_requests = current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
     end
+
+
+
+    @m = MaintenanceRequest.with_tradies_quote_request(current_user.trady.id)
+
+
+
+    @mr = TradyMaintenanceRequest.find_trady_maintenance_requests(current_user.trady.id)
+
+   
+
+
   end
 
   def show

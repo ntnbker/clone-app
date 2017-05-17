@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170510083104) do
+ActiveRecord::Schema.define(version: 20170516032318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -289,6 +289,9 @@ ActiveRecord::Schema.define(version: 20170510083104) do
     t.string  "pricing_type"
     t.float   "hours"
     t.float   "total_per_hour"
+  end
+
+  create_table "quote_requests", force: :cascade do |t|
   end
 
   create_table "quotes", force: :cascade do |t|
