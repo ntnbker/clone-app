@@ -109,12 +109,12 @@ class MaintenanceRequest < ApplicationRecord
     self.invoices.where(delivery_status: true).order("created_at DESC")
   end
 
-  def delivered_uploaded_invoices
-    self.uploaded_invoices.where(delivery_status: true).order("created_at DESC")
+  def delivered_uploaded_invoices(trady_id)
+    self.uploaded_invoices.where(delivery_status: true, trady_id: trady_id).order("created_at DESC")
   end
 
-  def trady_delivered_uploaded_invoices (maintenance_request_id)
-    self.uploaded_invoices.where(:delivery_status=> true, :maintenance_request_id => maintenance_request_id).order("created_at DESC")
+  def trady_delivered_uploaded_invoices (maintenance_request_id, trady_id)
+    self.uploaded_invoices.where(trady_id:trady_id,:delivery_status=> true, :maintenance_request_id => maintenance_request_id).order("created_at DESC")
   end
 
 
