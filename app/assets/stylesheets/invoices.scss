@@ -14,6 +14,24 @@
 		padding: 0px 10px;
 	}
 
+	.info-invoice {
+		display: flex;
+		justify-content: space-between;
+		flex-direction: row;
+
+		.title {
+			font-weight: bold;
+		}
+	}
+
+	.invoice-left {
+		flex: 1;
+	}
+
+	.invoice-right {
+		flex: 1;
+	}
+
 	.optionheader {
 		margin: 0;
 	}
@@ -246,8 +264,14 @@
 	}
 
 	/* For Desktop */
-	@media (min-width: 550px) {
-		width: 480px;
+	@media (min-width: 786px) {
+		width: 700px;
+	}
+
+	@media (max-width: 640px) {
+		.info-invoice {
+			flex-direction: column;
+		}
 	}
 }
 
@@ -381,4 +405,7 @@
 .center-block-horiz {
   margin-left: auto !important;
   margin-right: auto !important;
+}
+.text-center {
+	text-align: center;
 }

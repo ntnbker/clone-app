@@ -2,7 +2,8 @@ var AvailabilityField = React.createClass({
     
     getInitialState : function() {
         return {
-            remove : false
+            remove : false,
+
         }
     },
 
@@ -37,8 +38,7 @@ var AvailabilityField = React.createClass({
         document.getElementById(datepickerrorid).textContent = strNone;
         e.target.classList.remove("border_on_error");
         this.setState(state => {
-          state.currentValue.date = tmpValue;
-          return {currentValue : state.currentValue};
+          return {currentValue : tmpValue};
         });
       }
     },
@@ -96,76 +96,123 @@ var AvailabilityField = React.createClass({
         <div className="availabilityfield" style={{display: this.state.remove ? 'none' : 'block' }}>
           <fieldset>
             <p> Date </p>
-            <input type="date"
-                 name={this.generateAtt("name", x, "date")}
-                 id={this.generateAtt("id", x, "date")}  onChange={(e) =>this.onChange(e, $datepickerrorid)} required={this.state.dateRequired}/>
+            <input 
+              type="date"
+              required="required"
+              id={this.generateAtt("id", x, "date")}  
+              name={this.generateAtt("name", x, "date")}
+              onChange={(e) =>this.onChange(e, $datepickerrorid)} 
+            />
             <p id={$datepickerrorid} className="error"></p>
 
             <div className="starttime">
               <p> Start time </p>
 
-              <input type="hidden" value={new Date().getFullYear()}
-                     name={this.generateAtt("name", x, "start_time(1i)")}
-                       id={this.generateAtt("id", x, "start_time_1i")} />
+              <input 
+                type="hidden" 
+                value={new Date().getFullYear()}
+                id={this.generateAtt("id", x, "start_time_1i")} 
+                name={this.generateAtt("name", x, "start_time(1i)")}
+              />
 
-              <input type="hidden" value={new Date().getMonth()+1}
-                     name={this.generateAtt("name", x, "start_time(2i)")}
-                       id={this.generateAtt("id", x, "start_time_2i")} />
+              <input 
+                type="hidden" 
+                value={new Date().getMonth()+1}
+                id={this.generateAtt("id", x, "start_time_2i")} 
+                name={this.generateAtt("name", x, "start_time(2i)")}
+              />
 
-              <input type="hidden" value={new Date().getDate()}
-                     name={this.generateAtt("name", x, "start_time(3i)")}
-                       id={this.generateAtt("id", x, "start_time_3i")} /> 
+              <input 
+                type="hidden" value={new Date().getDate()}
+                id={this.generateAtt("id", x, "start_time_3i")} 
+                name={this.generateAtt("name", x, "start_time(3i)")}
+              /> 
 
-              <select name={this.generateAtt("name", x, "start_time(4i)")}
-                        id={this.generateAtt("id", x, "start_time_4i")} onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="startTimeHour">
+              <select 
+                required="required"
+                id={this.generateAtt("id", x, "start_time_4i")} 
+                name={this.generateAtt("name", x, "start_time(4i)")}
+                required={this.state.dateRequired} ref="startTimeHour"
+                onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
+              >
                 { this.makeDate(24) }
               </select>
 
               <span> : </span>
 
-              <select name={this.generateAtt("name", x, "start_time(5i)")}
-                        id={this.generateAtt("id", x, "start_time_5i")} onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="startTimeMin">
+              <select 
+                required="required"
+                ref="startTimeMin"
+                required={this.state.dateRequired} 
+                id={this.generateAtt("id", x, "start_time_5i")} 
+                name={this.generateAtt("name", x, "start_time(5i)")}
+                onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
+              >
                 { this.makeDate(60) }
               </select>
             </div>
 
             <div className="finishtime">
               <p> Finish time </p>
-              <input type="hidden" value={new Date().getFullYear()}
-                     name={this.generateAtt("name", x, "finish_time(1i)")}
-                       id={this.generateAtt("id", x, "finish_time_1i")} />
+              <input 
+                type="hidden" 
+                value={new Date().getFullYear()}
+                id={this.generateAtt("id", x, "finish_time_1i")} 
+                name={this.generateAtt("name", x, "finish_time(1i)")}
+              />
 
-              <input type="hidden" value={new Date().getMonth()+1}
-                     name={this.generateAtt("name", x, "finish_time(2i)")}
-                       id={this.generateAtt("id", x, "finish_time_2i")} />
+              <input 
+                type="hidden" 
+                value={new Date().getMonth()+1}
+                id={this.generateAtt("id", x, "finish_time_2i")} 
+                name={this.generateAtt("name", x, "finish_time(2i)")}
+              />
 
-              <input type="hidden" value={new Date().getDate()}
-                     name={this.generateAtt("name", x, "finish_time(3i)")}
-                       id={this.generateAtt("id", x, "finish_time_3i")} /> 
+              <input 
+                type="hidden" value={new Date().getDate()}
+                name={this.generateAtt("name", x, "finish_time(3i)")}
+                id={this.generateAtt("id", x, "finish_time_3i")} 
+              /> 
 
-              <select name={this.generateAtt("name", x, "finish_time(4i)")}
-                        id={this.generateAtt("id", x, "finish_time_4i")} onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="finishTimeHour">
+              <select 
+                id={this.generateAtt("id", x, "finish_time_4i")} 
+                name={this.generateAtt("name", x, "finish_time(4i)")}
+                required={this.state.dateRequired} ref="finishTimeHour"
+                onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)}
+              >
                 { this.makeDate(24) }
               </select>
 
               <span> : </span>
 
-              <select name={this.generateAtt("name", x, "finish_time(5i)")}
-                        id={this.generateAtt("id", x, "finish_time_5i")} onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} required={this.state.dateRequired} ref="finishTimeMin">
+              <select 
+                required="required"
+                id={this.generateAtt("id", x, "finish_time_5i")} 
+                name={this.generateAtt("name", x, "finish_time(5i)")}
+                required={this.state.dateRequired} ref="finishTimeMin"
+                onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} 
+              >
                 { this.makeDate(60) }
               </select>
             </div>
           </fieldset>
           <p id={$timepickerrorid} className="error"></p>
           <label>
-            <input type="checkbox" value="1" onChange={this.onCheck}
-                   name={this.generateAtt("name", x, "available_only_by_appointment")}
-                     id={this.generateAtt("id", x, "available_only_by_appointment")} />
+            <input 
+              value="1" 
+              type="checkbox" 
+              onChange={this.onCheck}
+              id={this.generateAtt("id", x, "available_only_by_appointment")} 
+              name={this.generateAtt("name", x, "available_only_by_appointment")}
+            />
             Check box if accesss only available by appointment
           </label>
-          <input type="hidden" value={this.state.remove}
-                name={this.generateAtt("name", x, "_destroy")}
-                  id={this.generateAtt("id", x, "_destroy")} />
+          <input 
+            type="hidden" 
+            value={this.state.remove}
+            id={this.generateAtt("id", x, "_destroy")} 
+            name={this.generateAtt("name", x, "_destroy")}
+          />
           <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
         </div>
       );
