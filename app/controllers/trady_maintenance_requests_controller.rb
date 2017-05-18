@@ -1,11 +1,11 @@
 class TradyMaintenanceRequestsController < ApplicationController
 
   def index
-    if params[:sort_by_date] == "Newest to Oldest"
-      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-    else
-      @maintenance_requests = current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-    end
+    # if params[:sort_by_date] == "Newest to Oldest"
+    #   @maintenance_requests = current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+    # else
+    #   @maintenance_requests = current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+    # end
 
 
 
@@ -13,9 +13,9 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
 
-    @mr = TradyMaintenanceRequest.find_trady_maintenance_requests(current_user.trady.id)
+    @maintenance_requests =TradyMaintenanceRequest.find_trady_maintenance_requests(current_user.trady.id).paginate(:page => params[:page], :per_page => 3)
 
-   
+
 
 
   end
@@ -24,7 +24,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices
+    
     if @maintenance_request.agency_admin == nil
       @agency = @maintenance_request.agent.agency
       @agent = @maintenance_request.agent 
@@ -33,18 +33,24 @@ class TradyMaintenanceRequestsController < ApplicationController
       @agent = @maintenance_request.agency_admin
     end 
 
-    @invoice_pdf_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}})
+    
     
 
     
     @signed_in_trady = current_user.trady
+    if @maintenance_request.trady != nil
+      @assigned_trady = @maintenance_request.trady 
+      
+    end
     
-    @assigned_trady = @maintenance_request.trady 
-    @quotes = @maintenance_request.trady.quotes.where(:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    @invoice_pdf_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id,@signed_in_trady.id).as_json(:include => {:trady => {:include => :trady_company}})
+    @quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     #@quote = @quotes.where(:status=>"Approved").first if !nil
     
+
+    
    
-    @invoices = @maintenance_request.trady.invoices.where(:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
+    @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
 
 
     

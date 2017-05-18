@@ -26,6 +26,8 @@ class QuotesController < ApplicationController
       @quote.calculate_tax
       # @quote.update_attribute(:amount,@total)
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
+      #######TradyStatus.create(maintenance_request_id:params[:quote][:maintenance_request_id],status:"Awaiting Quote Approval")
+
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:quote][:trady_id]
@@ -96,6 +98,8 @@ class QuotesController < ApplicationController
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
+
+
         else
           quote.update_attribute(:status, "Declined")
           trady = quote.trady
