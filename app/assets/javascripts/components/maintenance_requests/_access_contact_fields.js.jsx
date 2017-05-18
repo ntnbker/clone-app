@@ -1,8 +1,7 @@
 var AccessContactField = React.createClass({
     getInitialState : function() {
         return {
-            remove : false,
-            validateEmail: [],
+            remove : false
         };
     },
 
@@ -21,9 +20,11 @@ var AccessContactField = React.createClass({
 
     changeRelation: function(e, position) {
       if( e.target.value == "Tenant"){
-        $("#maintenance_request_access_contacts_attributes_" + position + "_email").removeAttr("required");
-      }else {
         $("#maintenance_request_access_contacts_attributes_" + position + "_email").attr('required', 'required');
+      }else {
+        $("#maintenance_request_access_contacts_attributes_" + position + "_email").removeAttr("required");
+        $("#maintenance_request_access_contacts_attributes_" + position + "_email").removeClass("border_on_error");
+        document.getElementById('errorboxemail' + position).textContent = "";
       }
     },
     
@@ -98,8 +99,10 @@ var AccessContactField = React.createClass({
 					<p id={$fullnameid} className="error"></p>
 
   		  	<p> Email </p>
-					<input 
-            type="email" placeholder="E-mail"
+					<input
+            type="email" 
+            required="required"
+            placeholder="E-mail"
 						id={this.generateAtt("id", x, "email")} 
             name={this.generateAtt("name", x, "email")}
 						onBlur={(e) => {
@@ -144,7 +147,7 @@ var AccessContactField = React.createClass({
                 name={this.generateAtt("name", x, "_destroy")}
                   id={this.generateAtt("id", x, "_destroy")} />
           </fieldset>
-          <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+          <button type="button" className="button-remove button-primary red" onClick={(position) => {this.props.removeField(x)}}> Remove </button>
       	</div>
       );
     }

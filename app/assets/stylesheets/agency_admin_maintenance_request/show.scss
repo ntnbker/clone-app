@@ -230,6 +230,7 @@ body::-webkit-scrollbar-thumb {
         width: 100%;
         position: relative;
         margin-top: 20px;
+        text-align: left;
         &:after {
           bottom: 100%;
           left: 6%;

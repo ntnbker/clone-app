@@ -1,10 +1,10 @@
 var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
-	getInitialState() {
+	getInitialState: function() {
 		this.getAgentEmail();
   	return { 
 			images: [],
-			isAgent: false,
+			isAgent: true,
 			validName: false,
 			validDate: false,
 			validEmail: false,
@@ -35,31 +35,44 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	checkAgentEmail: function(e) {
-		const email = e.target.value;
-		for(var i = 0; i < this.state.agent_emails.length; i++) {
-			const item = this.state.agent_emails[i];
-			if(!!email && email == item.email) {
-				this.setState({
-					isAgent: true
-				});
-				break;
+		if(this.state.selectedRadio == "Agent") {
+			const email = e.target.value;
+			var flag = false;
+			for(var i = 0; i < this.state.agent_emails.length; i++) {
+				const item = this.state.agent_emails[i];
+				if(!!email && email == item.email) {
+					flag= true;
+					break;
+				}
 			}
+
+			this.setState({
+				isAgent: flag
+			});
+		}
+		
+		if (!e.target.value.length) {
+			document.getElementById("errAgentEamil").textContent = strRequireEmail;
+			e.target.classList.add("border_on_error");
+		}
+		else if(e.target.value.length < 4){
+			document.getElementById("errAgentEamil").textContent = strShortEmail;
+			e.target.classList.add("border_on_error");
+		}
+		else if(e.target.value.length >= 4){
+			this.validateEmail(e.target.value, e, true);
 		}
 	},
 
 	handleRadioChange: function(e) {
 		const value = e.currentTarget.value;
-		if(value == "Owner") {
-			this.setState({
-	      isAgent: false
-	    });
-		}
 		this.setState({
-      selectedRadio: value
+      selectedRadio: value,
+      isAgent: value == "Owner" ? false :true
     });
 	},
 
-  generateAtt(name_id, type) {
+  generateAtt: function(name_id, type) {
   	if (name_id == "name") {
   		return "maintenance_request[" + type + "]";
   	}
@@ -68,14 +81,14 @@ var MaintenanceRequestsNew = React.createClass({
   	}
   },
 
-	_handleRemoveFrame(e) {
+	_handleRemoveFrame: function(e) {
 		let {images} = this.state;
 		var index = e.target.id;
 		images.splice(index, 1);
 		this.setState({images: images});
 	},
 
-	_handleImageChange(e) {
+	_handleImageChange: function(e) {
 		e.preventDefault();
 		var files = e.target.files;
 		var reader = new FileReader();
@@ -108,10 +121,16 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		}
 		readFile(0);
- 	 },
+	},
+
+	validDate: function(flag) {
+		this.setState({
+			validDate: flag
+		});
+	},
 
 	handleCheckSubmit: function(e) {
-		if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription) {
+		if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
 			e.preventDefault();
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
 			return;
@@ -272,17 +291,17 @@ var MaintenanceRequestsNew = React.createClass({
        		  name={this.generateAtt("name", "email")}
 						onBlur={(e) => {
 							if (!e.target.value.length) {
-									document.getElementById("errorboxemail").textContent = strRequireEmail;
-									e.target.classList.add("border_on_error");
-								}
+								document.getElementById("errorboxemail").textContent = strRequireEmail;
+								e.target.classList.add("border_on_error");
+							}
 							else if(e.target.value.length < 4){
-									document.getElementById("errorboxemail").textContent = strShortEmail;
-									e.target.classList.add("border_on_error");
-								}
+								document.getElementById("errorboxemail").textContent = strShortEmail;
+								e.target.classList.add("border_on_error");
+							}
 							else if(e.target.value.length >= 4){
-									this.validateEmail(e.target.value, e, false);
-								}
-							}}/>
+								this.validateEmail(e.target.value, e, false);
+							}
+						}}/>
 					<p id="errorboxemail" className="error"></p>
 					
 					<p> Mobile </p>
@@ -367,7 +386,6 @@ var MaintenanceRequestsNew = React.createClass({
 						multiple 
 						type="file" 
 						className="fileInput" 
-						multiple
 						onChange={(e)=>this._handleImageChange(e)} 
 						id="maintenance_request_maintenance_request_image_attributes_images" 
 						name="maintenance_request[maintenance_request_image_attributes][images][]" 
@@ -415,23 +433,11 @@ var MaintenanceRequestsNew = React.createClass({
 							<input 
 								required
 								type="text"
+							 	onBlur={this.checkAgentEmail}
 								ref={(ref) => this.agent_email = ref}
-								onChange={this.state.selectedRadio == "Agent" ? this.checkAgentEmail : null}
 					     	id={this.generateAtt("id", "agent_email")} 
 						   	name={this.generateAtt("name", "agent_email")}
-							 	onBlur={(e) => {
-									if (!e.target.value.length) {
-											document.getElementById("errAgentEamil").textContent = strRequireEmail;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length < 4){
-											document.getElementById("errAgentEamil").textContent = strShortEmail;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length >= 4){
-											this.validateEmail(e.target.value, e, true);
-										}
-									}}/>
+						 	/>
 							<p id="errAgentEamil" className="error"></p>
 							{	!this.state.isAgent ?
 									<div>
@@ -444,16 +450,16 @@ var MaintenanceRequestsNew = React.createClass({
 								   	name={this.generateAtt("name", "real_estate_office")}
 									 	onBlur={(e) => {
 											if (!e.target.value.length) {
-													document.getElementById("errRealEstateOffice").textContent = strRequireText;
 													e.target.classList.add("border_on_error");
+													document.getElementById("errRealEstateOffice").textContent = strRequireText;
 												}
 											else if(e.target.value.length < 4){
-													document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
 													e.target.classList.add("border_on_error");
+													document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
 												}
 											else if(e.target.value.length >= 4){
-													document.getElementById("errRealEstateOffice").textContent = strNone;
 													e.target.classList.remove("border_on_error");
+													document.getElementById("errRealEstateOffice").textContent = strNone;
 												}
 											}}/>
 									<p id="errRealEstateOffice" className="error"></p>
@@ -467,18 +473,18 @@ var MaintenanceRequestsNew = React.createClass({
 								   	name={this.generateAtt("name", "agent_name")}
 									 	onBlur={(e) => {
 											if (!e.target.value.length) {
-													document.getElementById("errAgentName").textContent = strRequireName;
-													e.target.classList.add("border_on_error");
-												}
+												e.target.classList.add("border_on_error");
+												document.getElementById("errAgentName").textContent = strRequireName;
+											}
 											else if(e.target.value.length < 4){
-													document.getElementById("errAgentName").textContent = strShortName;
-													e.target.classList.add("border_on_error");
-												}
+												e.target.classList.add("border_on_error");
+												document.getElementById("errAgentName").textContent = strShortName;
+											}
 											else if(e.target.value.length >= 4){
-													document.getElementById("errAgentName").textContent = strNone;
-													e.target.classList.remove("border_on_error");
-												}
-											}}/>
+												e.target.classList.remove("border_on_error");
+												document.getElementById("errAgentName").textContent = strNone;
+											}
+										}}/>
 									<p id="errAgentName" className="error"></p>
 
 			 						<p> Agent mobile </p>
@@ -491,17 +497,17 @@ var MaintenanceRequestsNew = React.createClass({
 								   	name={this.generateAtt("name", "agent_mobile")}
 									 	onBlur={(e) => {
 											if (!e.target.value.length) {
-													document.getElementById("errAgentMobile").textContent = strRequireMobile;
-													e.target.classList.add("border_on_error");
-												}
+												e.target.classList.add("border_on_error");
+												document.getElementById("errAgentMobile").textContent = strRequireMobile;
+											}
 											else if(e.target.value.length < 8){
-													document.getElementById("errAgentMobile").textContent = strShortMobile;
-													e.target.classList.add("border_on_error");
-												}
+												e.target.classList.add("border_on_error");
+												document.getElementById("errAgentMobile").textContent = strShortMobile;
+											}
 											if(e.target.value.length >= 8){
-													this.validatePhoneNumber(e.target.value, e, true);
-												}
-											}}/>
+												this.validatePhoneNumber(e.target.value, e, true);
+											}
+										}}/>
 									<p id="errAgentMobile" className="error"></p>
 									</div>
 									:
@@ -516,7 +522,7 @@ var MaintenanceRequestsNew = React.createClass({
 				}
 
 				<div id="availabilities">
-					<FieldList SampleField={AvailabilityField} />
+					<FieldList SampleField={AvailabilityField} validDate={(flag) => this.validDate(flag)} />
 				</div>
 				
 				<hr/>

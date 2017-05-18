@@ -250,15 +250,19 @@ var DetailQuote = React.createClass({
 					<tbody>
 					{
 						quote_items.map(function(item, key) {
-							subTotal+= item.amount;
 							gst += !!item.gst_amount ? item.gst_amount : 0;
+							if(item.pricing_type == "Fixed Cost") {
+								subTotal += item.amount;
+							}else {
+								subTotal += (item.amount*item.hours);
+							}
 							return (
 								<tr key={key}>
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
 									<td>${item.amount}</td>
-									<td>{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'}</td>
-									<td>${item.amount}</td>
+									<td>{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
+									<td>${ item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours }</td>
 								</tr>
 							);
 						})
