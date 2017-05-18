@@ -66,7 +66,6 @@ var Header = React.createClass({
             {
             logged_in
               ? <span className="mobile-menu-items">
-                  <a href={this.props.conversations_path}> Inbox </a>
                   <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out {this.props.current_user.email}</a>
                 </span>
               : <span className="mobile-menu-items">
@@ -90,7 +89,6 @@ var Header = React.createClass({
                         {
                         this.state.isItems
                           ? <span className="desktop-menu-items" ref="Items">
-                              <a href={this.props.conversations_path}> Inbox </a>
                               <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out {this.props.current_user.email}</a>
                             </span>
                           : null

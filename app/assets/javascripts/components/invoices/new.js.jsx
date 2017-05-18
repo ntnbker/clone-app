@@ -59,6 +59,13 @@ var FieldList = React.createClass({
             return { Fields : Fields,
                      x : x }
         } else {
+            if(!!this.props.flag && this.props.flag == "quote") {
+                x = 1;
+                return { Fields : [ <SampleField params={params} x={x}/> ], 
+                     x : x }
+            }else {
+
+            }
             return { Fields : [], x : x}
         }
     },
@@ -115,7 +122,7 @@ var ButtonAddAnotherItem = React.createClass({
                 );
             }
             default:
-                return null;
+                return <button type="button" className="button-add button-primary" onClick={this.props.addField}>Add Another Item</button>
         }
     }
 });
