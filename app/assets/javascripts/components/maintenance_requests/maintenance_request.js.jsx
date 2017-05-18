@@ -5,10 +5,16 @@ var Carousel = React.createClass({
 		};
 	},
 
-	switchSlider: function(index) {
-		if(index != this.state.indexSlider){
-			this.setState({indexSlider: index});
-		}
+	componentDidMount: function() {
+		new Swiper('.swiper-container', {
+      paginationClickable: true,
+      pagination: '.swiper-pagination',
+      autoplay: 2500,
+      centeredSlides: true,
+      autoplayDisableOnInteraction: false,
+      slidesPerView: 1,
+      loop: true,
+    });
 	},
 
 	render: function() {
@@ -17,26 +23,20 @@ var Carousel = React.createClass({
 			<div className="slider-custom">
 				<div className="swiper-container swiper-container-horizontal">
 					<div className="swiper-wrapper slider">
-						<img
-							key={this.state.indexSlider} 
-							src={this.props.gallery[this.state.indexSlider].url} 
-							className="swiper-slide slide-image img-1 active"
-						/>
+					{
+						this.props.gallery.map(function(img, index) {
+							return (
+								<img
+									key={index} 
+									src={img.url} 
+									className="swiper-slide slide-image"
+								/>
+							);
+						})
+					}
 					</div>
 				</div>
-				<div className="swiper-pagination swiper-pagination-custom swiper-pagination-clickable swiper-pagination-bullets">
-				{
-					this.props.gallery.map(function(img, index) {
-						return (
-							<span
-								key={index}
-								className={'swiper-pagination-bullet ' + ( index === temp.state.indexSlider && 'swiper-pagination-bullet-active')}
-								onClick={() => temp.switchSlider(index)}
-							></span>
-						);
-					})
-				}
-				</div>
+				<div className="swiper-pagination"></div>
 			</div>
 		);
 	}
