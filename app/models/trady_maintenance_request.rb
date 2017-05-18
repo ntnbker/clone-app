@@ -6,7 +6,7 @@ class TradyMaintenanceRequest
 
 
 
-    quoting_maintenance_request_ids = Quote.where(trady_id: trady_id).pluck(:maintenance_request_id)
+    quoting_maintenance_request_ids = Quote.where(trady_id: trady_id, delivery_status: true).pluck(:maintenance_request_id)
     all_maintenance_requests = MaintenanceRequest.where(trady_id: trady_id).or(MaintenanceRequest.where(id: quoting_maintenance_request_ids))
     
 

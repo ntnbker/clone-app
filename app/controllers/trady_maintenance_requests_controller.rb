@@ -38,15 +38,17 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     
     @signed_in_trady = current_user.trady
+    if @maintenance_request.trady != nil
+      @assigned_trady = @maintenance_request.trady 
+      
+    end
     
-    @assigned_trady = @maintenance_request.trady 
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices(@assigned_trady.id)
     @invoice_pdf_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id,@signed_in_trady.id).as_json(:include => {:trady => {:include => :trady_company}})
     @quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     #@quote = @quotes.where(:status=>"Approved").first if !nil
     
 
-    binding.pry
+    
    
     @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
 
