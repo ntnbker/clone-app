@@ -1,4 +1,34 @@
 
+- if logged_in?
+  - if current_user.agency_admin?
+    =link_to "Agency Admin Maintenance Requests", agency_admin_maintenance_requests_path
+    %br
+    =link_to "Add Agent", new_agent_path
+    %br
+    =link_to "Add Agency Admin", new_agency_admin_path
+    %br
+
+  - elsif current_user.agent?
+    =link_to "Agent Maintenance Request", agent_maintenance_requests_path
+    %br
+
+  - elsif current_user.trady?
+    =link_to "Trady Maintenance Request", trady_maintenance_requests_path
+    %br
+
+  - elsif current_user.tenant?
+    =link_to "Tenant Maintenance Request", tenant_maintenance_requests_path
+    %br
+
+  - elsif current_user.landlord?
+    =link_to "Landlord Maintenance Request", landlord_maintenance_requests_path
+    %br
+
+  =link_to "New Maintenance Request", root_path
+  %br
+  =link_to "My Maintenance Requests", maintenance_requests_path
+
+
 =form_tag search_maintenance_request_path, method: :get do 
   = search_field_tag :query, params[:query], placeholder:"Search Address, Tenant Name, or Landlord Name"
   = button_tag 'Search', type: 'submit'
@@ -37,17 +67,8 @@
 
 
 
-
 - if local_assigns.has_key? :expanded 
-  = react_component('Header', {logged_in:logged_in?,current_user: current_user,menu_login_path: menu_login_path,new_agency_path: new_agency_path,root_path: root_path,maintenance_requests_path: maintenance_requests_path,conversations_path: conversations_path,logout_path: logout_path,expanded: true}) 
-
+  = react_component('Header', {logged_in:logged_in?,current_user: current_user,menu_login_path: menu_login_path,new_agency_path: new_agency_path,root_path: root_path,maintenance_requests_path: maintenance_requests_path,conversations_path: conversations_path,logout_path: logout_path, expanded: true}) 
 
 - if !local_assigns.has_key? :expanded 
-  = react_component('Header', {logged_in: logged_in?,current_user: current_user,menu_login_path: menu_login_path,new_agency_path: new_agency_path,root_path: root_path,maintenance_requests_path: maintenance_requests_path,conversations_path: conversations_path,logout_path: logout_path,expanded: false}) 
-
-
-
-
-
-
-
+  = react_component('Header', {logged_in: logged_in?,current_user: current_user,menu_login_path: menu_login_path,new_agency_path: new_agency_path,root_path: root_path,maintenance_requests_path: maintenance_requests_path,conversations_path: conversations_path,logout_path: logout_path, expanded: false}) 

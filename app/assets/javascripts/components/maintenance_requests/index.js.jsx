@@ -168,9 +168,9 @@ var DropforSort = React.createClass({
     render: function() {
       return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
         <input type="hidden" name="page" value={this.props.page ? this.props.page : 1}/>
-        <select value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
-          <option value="Oldest to Newest">Oldest to Newest</option>
-          <option value="Newest to Oldest">Newest to Oldest</option>
+        <select className="select-custom" value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
+          <option className="option-custom" value="Oldest to Newest">Oldest to Newest</option>
+          <option className="option-custom" value="Newest to Oldest">Newest to Oldest</option>
         </select>
         <input type="submit" value="Submit" style={{display:'none'}}/>
       </form>

@@ -59,6 +59,13 @@ var FieldList = React.createClass({
             return { Fields : Fields,
                      x : x }
         } else {
+            if(!!this.props.flag && this.props.flag == "quote") {
+                x = 1;
+                return { Fields : [ <SampleField params={params} x={x}/> ], 
+                     x : x }
+            }else {
+
+            }
             return { Fields : [], x : x}
         }
     },
@@ -89,8 +96,34 @@ var FieldList = React.createClass({
                     </li>
                 )}
             </ul>
-            <button type="button" className="button-add button-primary" onClick={this.addField}> Add Another Item </button>
+            <ButtonAddAnotherItem flag={this.props.flag} x={this.state.x} addField={this.addField}/>
         </div>
+    }
+});
+
+var ButtonAddAnotherItem = React.createClass({
+    render: function() {
+        var self = this.props;
+        var x = self.x +1;
+        switch(self.flag) {
+            case 'date': {
+                return (
+                    <button type="button" className="button-add button-primary" onClick={this.props.addField}>
+                        { x <= 1 ? "Add Suggeted Appointment Times" : "Add Suggeted Appointment Times To The Section"}
+                    </button>
+                );       
+            }
+
+            case 'contact': {
+                return (
+                    <button type="button" className="button-add button-primary" onClick={this.props.addField}>
+                        { x <= 1 ? "Add Access Contact" : "Add Access Contact To The Section"}
+                    </button>
+                );
+            }
+            default:
+                return <button type="button" className="button-add button-primary" onClick={this.props.addField}>Add Another Item</button>
+        }
     }
 });
 
