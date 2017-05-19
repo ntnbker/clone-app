@@ -11,10 +11,11 @@ var Carousel = React.createClass({
       pagination: '.swiper-pagination',
       autoplay: 2500,
       centeredSlides: true,
-      autoplayDisableOnInteraction: false,
       slidesPerView: 1,
       loop: true,
     });
+
+    $('.slider-custom').css("min-height", 200);
 	},
 
 	render: function() {

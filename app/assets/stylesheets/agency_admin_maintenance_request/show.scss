@@ -405,6 +405,13 @@ body::-webkit-scrollbar-thumb {
       margin-top: 20px;
       .slider-custom {
         position: relative;
+        min-height: 100px;
+        .swiper-container {
+          min-height: 100px;
+          .slider {
+            min-height: 100px;
+          }
+        }
         .swiper-pagination {
           position: initial;
           bottom: -30px;
