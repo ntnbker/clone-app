@@ -31,7 +31,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :uploaded_invoices
   has_many :uploaded_quotes
   has_many :trady_statuses
-
+  has_many :quote_requests
 
 
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description
