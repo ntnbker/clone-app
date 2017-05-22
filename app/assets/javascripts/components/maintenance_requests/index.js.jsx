@@ -125,7 +125,7 @@ var ImgSlider = React.createClass({
         return {
            stlen: this.props.images ? this.props.images.length : 0,
            stpos: 0,
-           stwidth: 250,
+           stwidth: 300,
            stx: 0
        };
     },
@@ -174,7 +174,7 @@ var ImgSlider = React.createClass({
             left: 0,
             zIndex: 70,
             width: '100%',
-            height: 250,
+            height: 300,
             overflow: 'hidden',
           }
         };
@@ -461,7 +461,12 @@ var MaintenanceRequestItem = React.createClass({
                   {maintenance_request.maintenance_heading}
                 </a>
               </h3>
-              <p className="status">{maintenance_request.action_status ? maintenance_request.action_status.maintenance_request_status : ''}</p>
+              {
+                maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu ? 
+                  <p className="status">{maintenance_request.action_status.maintenance_request_status}</p>
+                  : null
+              }
+              
             </div>
             <div className="row">
               <p className="created_at">
@@ -475,10 +480,15 @@ var MaintenanceRequestItem = React.createClass({
             <div>
               { <P content={maintenance_request.maintenance_description} /> }
             </div>
-            <p className="address">
-              <i className="fa fa-map-marker"></i>
-              {maintenance_request.property ? maintenance_request.property.property_address : ""}
-            </p>
+            {
+              maintenance_request.property && maintenance_request.property.property_address ? 
+              <p className="address">
+                <i className="fa fa-map-marker"></i>
+                {maintenance_request.property.property_address}
+              </p>
+              : null
+            }
+            
           </div>
         </div>
       </div>

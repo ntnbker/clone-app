@@ -1,35 +1,58 @@
 var Carousel = React.createClass({
 	getInitialState: function() {
 		return {
-			indexSlider: 0
+			stlen: this.props.gallery ? this.props.gallery.length : 0,
+			indexSlider: 0,
+			stpos: 0,
+     	stwidth: 0,
+     	stx: 0
 		};
 	},
 
-	componentDidMount: function() {
-		new Swiper('.swiper-container', {
-      paginationClickable: true,
-      pagination: '.swiper-pagination',
-      autoplay: 2500,
-      centeredSlides: true,
-      slidesPerView: 1,
-      loop: true,
+	sliderRun: function(stpos) {
+    var stx = stpos * -this.state.stwidth;
+    this.setState({
+        stx: stx,
+    		stpos: stpos,
     });
+  },
 
-    $('.slider-custom').css("min-height", 200);
+  sliderPrev: function(argument) {
+    var stpos = this.state.stpos - 1;
+    if(stpos < 0) stpos = this.state.stlen - 1;
+    this.sliderRun(stpos);
+  },
+
+  sliderNext: function() {
+    var stpos = this.state.stpos + 1;
+    if(stpos >= this.state.stlen) stpos = 0;
+    this.sliderRun(stpos);
+  },
+
+	componentDidMount: function() {
+		this.setState({
+			stwidth: $('.slider-custom').width()
+		});
 	},
 
 	render: function() {
-		var temp = this;
+		var styles = {
+      left: this.state.stx,
+      width: this.state.stlen * this.state.stwidth,
+    };
+		const temp = this;
+		var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
 		return (
 			<div className="slider-custom">
 				<div className="swiper-container swiper-container-horizontal">
-					<div className="swiper-wrapper slider">
+					<div className="swiper-wrapper slider" style={styles}>
 					{
 						this.props.gallery.map(function(img, index) {
 							return (
 								<img
 									key={index} 
 									src={img.url} 
+									style={{width: subWidth}}
 									className="swiper-slide slide-image"
 								/>
 							);
@@ -37,7 +60,23 @@ var Carousel = React.createClass({
 					}
 					</div>
 				</div>
-				<div className="swiper-pagination"></div>
+				<div className="swiper-pagination">
+				{
+					this.props.gallery.map(function(img, index) {
+						return (
+							<span 
+								key={index} 
+								className={"swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active")}
+								onClick={(stops) => temp.sliderRun(index)}
+							>
+								
+							</span>
+						);
+					})
+				}					
+				</div>
+				<div className="swiper-button-next" onClick={this.sliderNext}></div>
+        <div className="swiper-button-prev" onClick={this.sliderPrev}></div>
 			</div>
 		);
 	}

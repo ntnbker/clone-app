@@ -405,11 +405,9 @@ body::-webkit-scrollbar-thumb {
       margin-top: 20px;
       .slider-custom {
         position: relative;
-        min-height: 100px;
         .swiper-container {
-          min-height: 100px;
           .slider {
-            min-height: 100px;
+            transition: all .6s;
           }
         }
         .swiper-pagination {
@@ -427,6 +425,12 @@ body::-webkit-scrollbar-thumb {
         }
         .swiper-pagination-bullet-active {
           background-color: $color-green !important;
+        }
+        .swiper-button-next {
+          top: 43%;
+        }
+        .swiper-button-prev {
+          top: 43%;
         }
       }
       .description {
