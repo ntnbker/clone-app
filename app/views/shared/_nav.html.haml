@@ -23,9 +23,7 @@
     =link_to "Landlord Maintenance Request", landlord_maintenance_requests_path
     %br
 
-  =link_to "New Maintenance Request", root_path
-  %br
-  =link_to "My Maintenance Requests", maintenance_requests_path
+ 
 
 - if local_assigns.has_key? :expanded 
   = react_component('Header', {logged_in:logged_in?,current_user: current_user,menu_login_path: menu_login_path,new_agency_path: new_agency_path,root_path: root_path,maintenance_requests_path: maintenance_requests_path,conversations_path: conversations_path,logout_path: logout_path, expanded: true}) 
