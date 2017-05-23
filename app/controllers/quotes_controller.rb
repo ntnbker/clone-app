@@ -20,11 +20,21 @@ class QuotesController < ApplicationController
     @system_plan = params[:quote][:system_plan]
 
     # @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
+    # quote_request = QuoteRequest.where(:trady_id=>params[:quote][:trady_id], :maintenance_request_id=>params[:quote][:maintenance_request_id]).first
     
+
     if @quote.save
       @quote.calculate_quote_items_totals
       @quote.calculate_tax
       # @quote.update_attribute(:amount,@total)
+
+      # if the quote id has been set then do nothing. if the quote_id in blank then fill it in. 
+      # if quote_request.quote_id.blank?
+      #   quote.update_attribute(:quote_id, @quote.id)
+      # else  
+
+      # end 
+
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
       #######TradyStatus.create(maintenance_request_id:params[:quote][:maintenance_request_id],status:"Awaiting Quote Approval")
 
@@ -142,6 +152,15 @@ class QuotesController < ApplicationController
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
     @quote.update_attribute(:delivery_status, true)
+
+    quote_request = QuoteRequest.where(:trady_id=>@quote.trady.id, :maintenance_request_id=>@maintenance_request.id).first
+
+    if quote_request.quote_id.blank?
+      quote_request.update_attribute(:quote_id, @quote.id)
+    else  
+
+    end
+
 
     flash[:success] = "Your Quote has been sent Thank you"
     if @landlord == nil 

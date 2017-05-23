@@ -6,6 +6,7 @@ class Message < ApplicationRecord
   attr_accessor :receiver_id
   attr_accessor :maintenance_request_id
   attr_accessor :conversation_type
+  attr_accessor :quote_id
   validates_presence_of :body
 
   

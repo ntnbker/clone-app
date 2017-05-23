@@ -4,7 +4,7 @@ class Quote < ApplicationRecord
   belongs_to :quote_request
   has_many :quote_items, inverse_of: :quote
   accepts_nested_attributes_for :quote_items, allow_destroy: true
-
+  has_one :conversation
 
 
   validates_presence_of :maintenance_request_id

@@ -228,6 +228,22 @@
 
 
 
+Quote Conversation
+%div{:class=>"modal fade", :id=>"landlord-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+  %div{:class=>"modal-dialog", :role=>"document"}
+    %div{:class=>"modal-content"}
+      %div{:class=>"modal-body message_modal"}
+        %div.messages_container    
+          / = render partial: "messages/message", collection: @landlords_conversation, as: :message   
+        %div{:id=>"errors_div"}
+        =bootstrap_form_for(@message,remote: true,url:"/quote_messages", method: :post) do |f|
+          =f.text_field :body, class: "message_body"
+          =f.hidden_field :conversation_type, value:"Trady"
+          =f.hidden_field :quote_id, value:@quotes.first.id
+          =f.submit "Submit Message", :class=>"btn btn-default"
+          %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+            Close
+
 
 
 
