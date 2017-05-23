@@ -402,14 +402,16 @@ var InvoiceItemField = React.createClass({
 var InvoiceField = React.createClass({
     getInitialState : function() {
         const invoice = this.props.content;
-        var amountExceptTax = (invoice && invoice.amount) ? invoice.amount/(1.1) : 0;
-        var amount = (invoice && invoice.amount) ? invoice.amount : 0;
-        var amountTax = (invoice && invoice.amount) ? invoice.amount - invoice.amount/(1.1) : 0;
+        var invoice_total = (invoice && invoice.amount) ? invoice.amount : 0;
+        var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
+        var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
+        const tax = (invoice && invoice.tax) ? invoice.tax : false;   
         return {
+            invoice_total: invoice_total,
+            items_total : tax ? items_total : invoice_total,
+            tax: tax,
+            tax_total: tax ? tax_total : 0,
             remove : false,
-            amountTax: amountTax,
-            amountExceptTax: amountExceptTax,
-            amount : amount,
         }
     },
 
@@ -418,16 +420,21 @@ var InvoiceField = React.createClass({
     },
 
     calcInvoiceTotal(price) {
-        const amount = this.state.amount + price;
+        const invoice_total = this.state.invoice_total + price;
         this.setState({
-            amount: amount,
-            amountExceptTax : amount/(1.1),
-            amountTax: amount - amount/(1.1),
+            items_total: this.state.tax ? invoice_total/1.1 : invoice_total,
+            invoice_total: invoice_total,
+            tax_total: this.state.tax ? invoice_total - invoice_total/(1.1) : 0,
         });
     },
     onTax() {
+        const invoice_total = this.state.invoice_total;
+        const tax = this.state.tax;
         this.setState({
-            tax: !this.state.tax 
+            tax: !tax,
+            invoice_total: invoice_total,
+            items_total: !tax ? invoice_total/1.1 : invoice_total,
+            tax_total: !tax ? invoice_total - invoice_total/(1.1) : 0,
         });
     },
     render: function() {
@@ -445,20 +452,24 @@ var InvoiceField = React.createClass({
             <fieldset>
                 <div>
                     <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
+                    <label>     
+                        <input type="checkbox" value={this.state.tax} checked={this.state.tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
+                        Total Includes GST        
+                   </label>
                 </div>
                 <hr />
                 <div className="field">
                     <div>
-                        <p> Items Total : </p>
-                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amount.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                        <p> Invoice Total : </p>
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
                     </div>
                     <div>
                         <p> Tax Total : </p>
-                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amountTax.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
                     </div>
                     <div>
-                        <p> Invoice Total : </p>
-                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amountExceptTax.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                        <p> Items Total : </p>
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
                     </div>
                     <div>
                         <p> Invoice Due On : </p>

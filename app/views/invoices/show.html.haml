@@ -84,7 +84,7 @@
         %tr
           %td{:colspan => 4} GST
           %td
-            = "$ #{ (invoice.amount - invoice.gst_amount).round(2)}"
+            = "$ #{ (invoice.gst_amount).round(2)}"
       -elsif invoice.tax == false
         %tr
           %td{:colspan => 4} GST

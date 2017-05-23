@@ -404,6 +404,7 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   render: function() {
+    const self = this;
     const current_user_agent = this.props.current_user_agent;
     const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
@@ -413,7 +414,7 @@ var ListMaintenanceRequest = React.createClass({
           <div>
             {
               this.state.dataShow.map(function(maintenance_request, key) {
-                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} />
+                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
               })
             }
             { this.state.data.length > this.state.prePage && <Pagination page={this.state.page} total={this.state.data.length} prePage={this.state.prePage} setPage={this.setPage} /> }
@@ -458,7 +459,7 @@ var MaintenanceRequestItem = React.createClass({
           <div className="info">
             <div className="row">
               <h3 className="heading">
-                <a href={"/maintenance_requests/" + maintenance_request.id}>
+                <a href={this.props.link + "/" + maintenance_request.id}>
                   {maintenance_request.maintenance_heading}
                 </a>
               </h3>
