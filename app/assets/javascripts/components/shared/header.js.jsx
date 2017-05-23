@@ -150,7 +150,7 @@ var Header = React.createClass({
               name="query" 
               type="search" 
               className="input-search"
-              placeholder="Search Here"
+              placeholder="Search..."
             />
             <button name="button" type="submit" className="btn-search">
               <i className="fa fa-search"></i>
@@ -163,6 +163,7 @@ var Header = React.createClass({
     header: function(e) {
         var logged_in = this.props.logged_in;
         var current_user = this.props.current_user;
+        var expanded = this.props.expanded
 
         return <nav className="header-expanded">
 
@@ -170,6 +171,12 @@ var Header = React.createClass({
             {
             logged_in ?
               <ul className="menu-mobile">
+                  <li>
+                    <img src="/assets/user1.png" />
+                    <span>
+                      Hi, {this.props.current_user.name}
+                    </span>
+                  </li>
                   { this.menuBar() }
                   <li>
                     <a href={this.props.logout_path} data-method="delete" rel="nofollow"> 
@@ -191,35 +198,58 @@ var Header = React.createClass({
                     <a href={this.props.root_path}> MaintenanceApp </a>
                   </div>
                   {
-                    logged_in ?
-                      this.Search()
-                      : null
-                  }
-                  {
-                    logged_in ?
-                      <div className="menu-bar dropdown-custom">
-                        <button type="button" className="btn-menu" onClick={this.showMenu}>
-                          My Maintenance Request
-                        </button>
-                        <ul className="dropdown-menu" id="menu-bar">
-                        { this.menuBar() }
-                        </ul>
-                      </div>
-                      : null
-                  }
-                  {
-                  logged_in
-                    ? <span className="log_in">
-                        <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
+                    logged_in? 
+                      <div>
                         {
-                        this.state.isItems
-                          ? <span className="desktop-menu-items" ref="Items">
-                              <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
-                            </span>
-                          : null
+                          !expanded ?
+                            <div className="header-right">
+                              { this.Search() }
+                              <div className="question">
+                                <i className="fa fa-question" />
+                              </div>
+                              <div className="notification">
+                                <i className="fa fa-bell" />
+                              </div>
+                              <div className="menu-bar dropdown-custom">
+                                <button type="button" className="btn-menu" onClick={this.showMenu}>
+                                  <img src="/assets/user1.png" />
+                                  <span>
+                                    Hi, {this.props.current_user.name}
+                                    <i className="fa fa-angle-down"/>
+                                  </span>
+                                </button>
+                                <ul className="dropdown-menu" id="menu-bar">
+                                  { this.menuBar() }
+                                  <li  ref="Items">
+                                    <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            :
+                            <div className="log_in">
+                              <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
+                              {
+                              this.state.isItems ?
+                                <ul className="desktop-menu-items"> 
+                                  <li>
+                                    <img src="/assets/user1.png" />
+                                    <span>
+                                      Hi, {this.props.current_user.name}
+                                    </span>
+                                  </li>
+                                  { this.menuBar() }
+                                  <li  ref="Items">
+                                    <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                                  </li>
+                                </ul>
+                                : null
+                              }
+                          </div>
                         }
-                      </span>
-                    : <span className="desktop-menu-items">
+                      </div>
+                      : 
+                      <span className="desktop-menu-items">
                         <a href={this.props.menu_login_path} > Login </a>
                         <a href={this.props.new_agency_path} className="register"> Register </a>
                       </span>

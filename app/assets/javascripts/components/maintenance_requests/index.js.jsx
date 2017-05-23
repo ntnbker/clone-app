@@ -366,7 +366,8 @@ var ListMaintenanceRequest = React.createClass({
     });
     if(this.state.valueAction) {
       this.getData("/maintenance_request_filter", page, {
-        maintenance_request_filter: this.state.valueAction
+        sort_by_date: this.state.sortByDate,
+        maintenance_request_filter: this.state.valueAction,
       });
     }else {
       this.getData(this.props.link, page, {sort_by_date: this.state.sortByDate});

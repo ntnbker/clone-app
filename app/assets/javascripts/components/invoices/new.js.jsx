@@ -59,9 +59,9 @@ var FieldList = React.createClass({
             return { Fields : Fields,
                      x : x }
         } else {
-            if(!!this.props.flag && this.props.flag == "quote") {
+            if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
                 x = 1;
-                return { Fields : [ <SampleField params={params} x={x}/> ], 
+                return { Fields : [ <SampleField params={params} x={x} removeField={(position) => this.removeField(position)} /> ], 
                      x : x }
             }else {
 
@@ -144,17 +144,26 @@ var FieldListForInvoice = React.createClass({
             return { Fields : Fields,
                      x : x }
         } else {
-            return { Fields : [ <SampleField params={params} x={x}/> ],
+            return { Fields : [ <SampleField params={params} x={x} removeField={(position) => this.removeField(position)}/> ],
                      x : x }
         }
     },
 
-    addField() {
+    addField: function() {
         var SampleField = this.props.SampleField;
         var tmpFields = this.state.Fields.slice();
         var params = this.props.params;
-        tmpFields.push(<SampleField x={++this.state.x} params={params}/>);
+        tmpFields.push(<SampleField x={++this.state.x} params={params} removeField={(position) => this.removeField(position)}/>);
         this.setState({Fields: tmpFields});
+    },
+
+    removeField: function(x) {
+        var tmpFields = this.state.Fields;
+        tmpFields.splice(x-1, 1);
+        this.setState({
+            Fields: tmpFields,
+            x: tmpFields.length,
+        });
     },
 
     render: function(){    
@@ -257,7 +266,7 @@ var AdditionalInvoiceField = React.createClass({
             <input value={this.props.trady_id} type="hidden" name="invoice[trady_id]"/>
 
 
-            <FieldList SampleField={AdditionalInvoice} />
+            <FieldList SampleField={AdditionalInvoice}/>
 
             <label className="quote_tax">
                 <input type="hidden" value="0" name="invoice[tax]" />
@@ -348,12 +357,11 @@ var InvoiceItemField = React.createClass({
         var invoice_item = this.props.content;
         var x= this.props.x;
         var invoice_id = this.props.params.x;
-        console.log("invoice_item",invoice_item);
         if (invoice_item) {
             x = invoice_item.id;
             invoice_id = invoice_item.invoice_id;
         }
-        return <div className="invoiceitemfield" style={{display: this.state.remove ? 'none' : 'block' }}>
+        return <div className="invoiceitemfield">
             <fieldset>
                 <input type="text" placeholder="Item description" defaultValue={invoice_item ? invoice_item.item_description : null}
                     name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'} />
@@ -385,7 +393,7 @@ var InvoiceItemField = React.createClass({
                     : null
                 }
             </fieldset>
-            <button type="button" className="button-remove button-primary red" onClick={this.removeField}> X </button>
+            <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> X </button>
         </div>
     }
 });
@@ -395,14 +403,13 @@ var InvoiceField = React.createClass({
     getInitialState : function() {
         const invoice = this.props.content;
         var amountExceptTax = (invoice && invoice.amount) ? invoice.amount/(1.1) : 0;
-        var amount = (invoice && invoice.amount) ? invoice.amount*(1.1) : 0;
-        var invoice_amount = (invoice && invoice.amount) ? invoice.amount : 0;
-        const tax = (invoice && invoice.tax) ? invoice.tax : false;
+        var amount = (invoice && invoice.amount) ? invoice.amount : 0;
+        var amountTax = (invoice && invoice.amount) ? invoice.amount - invoice.amount/(1.1) : 0;
         return {
-            amountExceptTax: tax ? amountExceptTax : invoice_amount,
-            amount : tax ? invoice_amount : amount,
-            tax: tax,
-            remove : false
+            remove : false,
+            amountTax: amountTax,
+            amountExceptTax: amountExceptTax,
+            amount : amount,
         }
     },
 
@@ -414,7 +421,8 @@ var InvoiceField = React.createClass({
         const amount = this.state.amount + price;
         this.setState({
             amount: amount,
-            amountExceptTax : amount/(1.1)
+            amountExceptTax : amount/(1.1),
+            amountTax: amount - amount/(1.1),
         });
     },
     onTax() {
@@ -424,30 +432,33 @@ var InvoiceField = React.createClass({
     },
     render: function() {
         var invoice = this.props.content;
-        console.log("invoice",invoice);
         var invoice_items = (invoice && invoice.invoice_items) || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
         if (invoice) {
             x = invoice.id;
         }
-        return <div className="invoicefield" style={{display: this.state.remove ? 'none' : 'block' }}>
+        return <div className="invoicefield">
             <input type="hidden" value={(invoice && invoice.maintenance_request_id) ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id} name={'ledger[invoices_attributes][' + x + '][maintenance_request_id]'}/>
             <input type="hidden" value={(invoice && invoice.trady_id) ? invoice.trady_id : invoiceInfo.trady_id} name={'ledger[invoices_attributes][' + x + '][trady_id]'}/>
 
             <fieldset>
                 <div>
-                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}}/>
-                    <label>
-                        <input type="checkbox" value={this.state.tax} checked={this.state.tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
-                        Total Includes GST
-                    </label>
+                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
                 </div>
                 <hr />
                 <div className="field">
                     <div>
+                        <p> Items Total : </p>
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amount.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                    </div>
+                    <div>
+                        <p> Tax Total : </p>
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amountTax.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                    </div>
+                    <div>
                         <p> Invoice Total : </p>
-                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.tax ? this.state.amount.toFixed(2) : this.state.amountExceptTax.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+                        <input type="text" readOnly="readonly" placeholder="$0.00" value={this.state.amountExceptTax.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
                     </div>
                     <div>
                         <p> Invoice Due On : </p>
@@ -463,7 +474,7 @@ var InvoiceField = React.createClass({
                 }
             </fieldset>
 
-            <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove Invoice </button>
+            <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> Remove Invoice </button>
         </div>
     }
 });

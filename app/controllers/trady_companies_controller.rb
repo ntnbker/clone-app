@@ -106,8 +106,6 @@ class TradyCompaniesController < ApplicationController
     @pdf_file_id = params[:pdf_file_id]
     @ledger_id = params[:ledger_id] 
     @system_plan = params[:system_plan]
-
-    binding.pry
   end
 
   def update
