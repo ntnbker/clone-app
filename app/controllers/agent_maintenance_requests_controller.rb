@@ -48,10 +48,10 @@ class AgentMaintenanceRequestsController < ApplicationController
     @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     # @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
-
+    
+    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
     @agency = @current_user.agent.agency
-
+    quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
 
     @email_quote_id = params[:email_quote_id]
 
@@ -99,7 +99,7 @@ class AgentMaintenanceRequestsController < ApplicationController
 
     respond_to do |format|
 
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files => @invoice_pdf_files}}
+      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files => @invoice_pdf_files, tradies_with_quote_requests:quote_request_trady_list}}
       format.html{render :show}
     end 
 

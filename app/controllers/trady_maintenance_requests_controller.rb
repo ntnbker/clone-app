@@ -44,10 +44,10 @@ class TradyMaintenanceRequestsController < ApplicationController
     end
     
     @invoice_pdf_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id,@signed_in_trady.id).as_json(:include => {:trady => {:include => :trady_company}})
-    @quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    @quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
     #@quote = @quotes.where(:status=>"Approved").first if !nil
     
-
+    
     
    
     @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
