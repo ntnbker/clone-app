@@ -5,9 +5,11 @@ class TradyMaintenanceRequest
     trady = Trady.find_by(id:trady_id)
 
 
-
+    maintenance_requests_with_quote_requests = QuoteRequest.where(trady_id:trady_id).pluck(:maintenance_request_id)
+    binding.pry
     quoting_maintenance_request_ids = Quote.where(trady_id: trady_id, delivery_status: true).pluck(:maintenance_request_id)
-    all_maintenance_requests = MaintenanceRequest.where(trady_id: trady_id).or(MaintenanceRequest.where(id: quoting_maintenance_request_ids))
+    
+    all_maintenance_requests = MaintenanceRequest.where(trady_id: trady_id).or(MaintenanceRequest.where(id: quoting_maintenance_request_ids)).or(MaintenanceRequest.where(id:maintenance_requests_with_quote_requests))
     
 
    # quote_maintenance_requests =  MaintenanceRequest.joins(:quotes).where(quotes:{trady_id:trady_id}).distinct

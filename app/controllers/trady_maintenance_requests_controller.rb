@@ -15,7 +15,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     @maintenance_requests =TradyMaintenanceRequest.find_trady_maintenance_requests(current_user.trady.id).paginate(:page => params[:page], :per_page => 3)
 
-
+    
 
 
   end
@@ -47,7 +47,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     @quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
     #@quote = @quotes.where(:status=>"Approved").first if !nil
     
-    
+
     
    
     @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})

@@ -69,7 +69,7 @@ class MessagesController < ApplicationController
     
     respond_to do |format|
       if @message.save
-        if Conversation.type_of_conversation(params[:message][:conversation_type],params[:message][:quote_id]).present?
+        if Conversation.quote_conversation(params[:message][:conversation_type],params[:message][:quote_id]).present?
           @conversation = Conversation.quote_conversation(params[:message][:conversation_type],params[:message][:quote_id]).first
           @message.update_attribute(:conversation_id,@conversation.id)
           

@@ -10,7 +10,7 @@ class Conversation < ApplicationRecord
   end
 
   def self.quote_conversation(type, quote_id)
-  Conversation.where(:conversation_type =>type,:maintenance_request_id=>maintenance_request_id)  
+  Conversation.where(:conversation_type =>type,:quote_id=>quote_id)  
   end
 
 
