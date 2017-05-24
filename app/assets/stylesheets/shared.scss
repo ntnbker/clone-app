@@ -518,9 +518,9 @@ footer {
     height: 100%;
     transition: -webkit-transform ease 250ms;
     transition: transform ease 250ms;
-
     background: #191918;
     left: -300px;
+    overflow: hidden;
 
     &.visible {
       transform: translate3d(300px, 0, 0);

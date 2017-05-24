@@ -62,21 +62,28 @@ var Carousel = React.createClass({
 				</div>
 				<div className="swiper-pagination">
 				{
-					this.props.gallery.map(function(img, index) {
-						return (
-							<span 
-								key={index} 
-								className={"swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active")}
-								onClick={(stops) => temp.sliderRun(index)}
-							>
-								
-							</span>
-						);
-					})
+					this.props.gallery.lenght > 1 ?
+						this.props.gallery.map(function(img, index) {
+							return (
+								<span 
+									key={index} 
+									className={"swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active")}
+									onClick={(stops) => temp.sliderRun(index)}
+								>
+									
+								</span>
+							);
+						})
+						: null
 				}					
 				</div>
-				<div className="swiper-button-next" onClick={this.sliderNext}></div>
-        <div className="swiper-button-prev" onClick={this.sliderPrev}></div>
+				{
+					this.props.gallery.lenght > 1 && <div className="swiper-button-next" onClick={this.sliderNext}></div>
+				}
+				{
+					this.props.gallery.lenght > 1 && <div className="swiper-button-prev" onClick={this.sliderPrev}></div>
+				}
+        
 			</div>
 		);
 	}

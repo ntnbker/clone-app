@@ -987,7 +987,8 @@ var MaintenanceRequest = React.createClass({
 
 	viewItem: function(key, item) {
 		switch(key) {
-			case 'viewQuote': {
+			case 'viewQuote':
+			case 'viewQuoteMessage': {
 				this.setState({
 					quote: item
 				});
@@ -1196,6 +1197,36 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Message Tenants",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	sendMessageQuote: function(params) {
+		const self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_messages',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				let quote = self.state.quote
+				quote.conversation = quote.conversation ? quote.conversation : {};
+				const messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
+				messages.push(res);
+				quote.conversation.messages = messages;
+				self.setState({
+					quote: quote
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Message Trady",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});
@@ -1421,6 +1452,17 @@ var MaintenanceRequest = React.createClass({
 					);
 				}
 
+				case 'viewQuoteMessage': {
+					return (
+						<ModalViewQuoteMessage
+							close={this.isClose}
+							quote={this.state.quote}
+							current_user={this.props.current_user}
+							sendMessageQuote={this.sendMessageQuote} 
+						/>
+					)
+				}
+
 				case 'requestQuote': {
 					return (
 						<ModalRequestModal
@@ -1489,7 +1531,19 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property} 
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{this.props.quotes.length > 0 && <Quotes viewQuote={(key, item) => this.viewItem(key, item)} onModalWith={this.onModalWith} quotes={this.state.quotes} updateStatusQuote={this.updateStatusQuote} sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} landlord={this.state.landlord} />}
+						{	this.props.quotes.length > 0 ?
+						 		<Quotes 
+							 		quotes={this.state.quotes} 
+							 		onModalWith={this.onModalWith} 
+							 		landlord={this.state.landlord} 
+							 		current_user={this.props.current_user} 
+							 		updateStatusQuote={this.updateStatusQuote} 
+							 		sendEmailLandlord={this.sendEmailLandlord} 
+							 		viewQuote={(key, item) => this.viewItem(key, item)} 
+							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
+						 		/>
+						 		: null
+						 	}
 						{this.props.invoices.length > 0 && <Invoices invoices={this.state.invoices} viewInvoice={(key, item) => this.viewItem(key, item)} />}
 						{this.props.invoice_pdf_files.length > 0 && <PDFInvoices invoice_pdf_files={this.state.invoice_pdf_files} viewPDFInvoice={(key, item) => this.viewItem(key, item)} />}
 					</div>
