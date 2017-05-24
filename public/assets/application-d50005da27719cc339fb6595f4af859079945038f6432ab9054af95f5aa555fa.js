@@ -11563,12 +11563,12 @@ return jQuery;
 
 })( jQuery );
 /*
-Turbolinks 5.0.0
-Copyright © 2016 Basecamp, LLC
+Turbolinks 5.0.2
+Copyright © 2017 Basecamp, LLC
  */
 
-(function(){(function(){(function(){this.Turbolinks={supported:function(){return null!=window.history.pushState&&null!=window.requestAnimationFrame}(),visit:function(e,r){return t.controller.visit(e,r)},clearCache:function(){return t.controller.clearCache()}}}).call(this)}).call(this);var t=this.Turbolinks;(function(){(function(){var e,r;t.copyObject=function(t){var e,r,n;r={};for(e in t)n=t[e],r[e]=n;return r},t.closest=function(t,r){return e.call(t,r)},e=function(){var t,e;return t=document.documentElement,null!=(e=t.closest)?e:function(t){var e;for(e=this;e;){if(e.nodeType===Node.ELEMENT_NODE&&r.call(e,t))return e;e=e.parentNode}}}(),t.defer=function(t){return setTimeout(t,1)},t.dispatch=function(t,e){var r,n,o,i,s;return i=null!=e?e:{},s=i.target,r=i.cancelable,n=i.data,o=document.createEvent("Events"),o.initEvent(t,!0,r===!0),o.data=null!=n?n:{},(null!=s?s:document).dispatchEvent(o),o},t.match=function(t,e){return r.call(t,e)},r=function(){var t,e,r,n;return t=document.documentElement,null!=(e=null!=(r=null!=(n=t.matchesSelector)?n:t.webkitMatchesSelector)?r:t.msMatchesSelector)?e:t.mozMatchesSelector}(),t.uuid=function(){var t,e,r;for(r="",t=e=1;36>=e;t=++e)r+=9===t||14===t||19===t||24===t?"-":15===t?"4":20===t?(Math.floor(4*Math.random())+8).toString(16):Math.floor(15*Math.random()).toString(16);return r}}).call(this),function(){t.Location=function(){function t(t){var e,r;null==t&&(t=""),r=document.createElement("a"),r.href=t.toString(),this.absoluteURL=r.href,e=r.hash.length,2>e?this.requestURL=this.absoluteURL:(this.requestURL=this.absoluteURL.slice(0,-e),this.anchor=r.hash.slice(1))}var e,r,n,o;return t.wrap=function(t){return t instanceof this?t:new this(t)},t.prototype.getOrigin=function(){return this.absoluteURL.split("/",3).join("/")},t.prototype.getPath=function(){var t,e;return null!=(t=null!=(e=this.absoluteURL.match(/\/\/[^\/]*(\/[^?;]*)/))?e[1]:void 0)?t:"/"},t.prototype.getPathComponents=function(){return this.getPath().split("/").slice(1)},t.prototype.getLastPathComponent=function(){return this.getPathComponents().slice(-1)[0]},t.prototype.getExtension=function(){var t,e;return null!=(t=null!=(e=this.getLastPathComponent().match(/\.[^.]*$/))?e[0]:void 0)?t:""},t.prototype.isHTML=function(){return this.getExtension().match(/^(?:|\.(?:htm|html|xhtml))$/)},t.prototype.isPrefixedBy=function(t){var e;return e=r(t),this.isEqualTo(t)||o(this.absoluteURL,e)},t.prototype.isEqualTo=function(t){return this.absoluteURL===(null!=t?t.absoluteURL:void 0)},t.prototype.toCacheKey=function(){return this.requestURL},t.prototype.toJSON=function(){return this.absoluteURL},t.prototype.toString=function(){return this.absoluteURL},t.prototype.valueOf=function(){return this.absoluteURL},r=function(t){return e(t.getOrigin()+t.getPath())},e=function(t){return n(t,"/")?t:t+"/"},o=function(t,e){return t.slice(0,e.length)===e},n=function(t,e){return t.slice(-e.length)===e},t}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.HttpRequest=function(){function r(r,n,o){this.delegate=r,this.requestCanceled=e(this.requestCanceled,this),this.requestTimedOut=e(this.requestTimedOut,this),this.requestFailed=e(this.requestFailed,this),this.requestLoaded=e(this.requestLoaded,this),this.requestProgressed=e(this.requestProgressed,this),this.url=t.Location.wrap(n).requestURL,this.referrer=t.Location.wrap(o).absoluteURL,this.createXHR()}return r.NETWORK_FAILURE=0,r.TIMEOUT_FAILURE=-1,r.timeout=60,r.prototype.send=function(){var t;return this.xhr&&!this.sent?(this.notifyApplicationBeforeRequestStart(),this.setProgress(0),this.xhr.send(),this.sent=!0,"function"==typeof(t=this.delegate).requestStarted?t.requestStarted():void 0):void 0},r.prototype.cancel=function(){return this.xhr&&this.sent?this.xhr.abort():void 0},r.prototype.requestProgressed=function(t){return t.lengthComputable?this.setProgress(t.loaded/t.total):void 0},r.prototype.requestLoaded=function(){return this.endRequest(function(t){return function(){var e;return 200<=(e=t.xhr.status)&&300>e?t.delegate.requestCompletedWithResponse(t.xhr.responseText,t.xhr.getResponseHeader("Turbolinks-Location")):(t.failed=!0,t.delegate.requestFailedWithStatusCode(t.xhr.status,t.xhr.responseText))}}(this))},r.prototype.requestFailed=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.NETWORK_FAILURE)}}(this))},r.prototype.requestTimedOut=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.TIMEOUT_FAILURE)}}(this))},r.prototype.requestCanceled=function(){return this.endRequest()},r.prototype.notifyApplicationBeforeRequestStart=function(){return t.dispatch("turbolinks:request-start",{data:{url:this.url,xhr:this.xhr}})},r.prototype.notifyApplicationAfterRequestEnd=function(){return t.dispatch("turbolinks:request-end",{data:{url:this.url,xhr:this.xhr}})},r.prototype.createXHR=function(){return this.xhr=new XMLHttpRequest,this.xhr.open("GET",this.url,!0),this.xhr.timeout=1e3*this.constructor.timeout,this.xhr.setRequestHeader("Accept","text/html, application/xhtml+xml"),this.xhr.setRequestHeader("Turbolinks-Referrer",this.referrer),this.xhr.onprogress=this.requestProgressed,this.xhr.onload=this.requestLoaded,this.xhr.onerror=this.requestFailed,this.xhr.ontimeout=this.requestTimedOut,this.xhr.onabort=this.requestCanceled},r.prototype.endRequest=function(t){return this.xhr?(this.notifyApplicationAfterRequestEnd(),null!=t&&t.call(this),this.destroy()):void 0},r.prototype.setProgress=function(t){var e;return this.progress=t,"function"==typeof(e=this.delegate).requestProgressed?e.requestProgressed(this.progress):void 0},r.prototype.destroy=function(){var t;return this.setProgress(1),"function"==typeof(t=this.delegate).requestFinished&&t.requestFinished(),this.delegate=null,this.xhr=null},r}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.ProgressBar=function(){function t(){this.trickle=e(this.trickle,this),this.stylesheetElement=this.createStylesheetElement(),this.progressElement=this.createProgressElement()}var r;return r=300,t.defaultCSS=".turbolinks-progress-bar {\n  position: fixed;\n  display: block;\n  top: 0;\n  left: 0;\n  height: 3px;\n  background: #0076ff;\n  z-index: 9999;\n  transition: width "+r+"ms ease-out, opacity "+r/2+"ms "+r/2+"ms ease-in;\n  transform: translate3d(0, 0, 0);\n}",t.prototype.show=function(){return this.visible?void 0:(this.visible=!0,this.installStylesheetElement(),this.installProgressElement(),this.startTrickling())},t.prototype.hide=function(){return this.visible&&!this.hiding?(this.hiding=!0,this.fadeProgressElement(function(t){return function(){return t.uninstallProgressElement(),t.stopTrickling(),t.visible=!1,t.hiding=!1}}(this))):void 0},t.prototype.setValue=function(t){return this.value=t,this.refresh()},t.prototype.installStylesheetElement=function(){return document.head.insertBefore(this.stylesheetElement,document.head.firstChild)},t.prototype.installProgressElement=function(){return this.progressElement.style.width=0,this.progressElement.style.opacity=1,document.documentElement.insertBefore(this.progressElement,document.body),this.refresh()},t.prototype.fadeProgressElement=function(t){return this.progressElement.style.opacity=0,setTimeout(t,1.5*r)},t.prototype.uninstallProgressElement=function(){return this.progressElement.parentNode?document.documentElement.removeChild(this.progressElement):void 0},t.prototype.startTrickling=function(){return null!=this.trickleInterval?this.trickleInterval:this.trickleInterval=setInterval(this.trickle,r)},t.prototype.stopTrickling=function(){return clearInterval(this.trickleInterval),this.trickleInterval=null},t.prototype.trickle=function(){return this.setValue(this.value+Math.random()/100)},t.prototype.refresh=function(){return requestAnimationFrame(function(t){return function(){return t.progressElement.style.width=10+90*t.value+"%"}}(this))},t.prototype.createStylesheetElement=function(){var t;return t=document.createElement("style"),t.type="text/css",t.textContent=this.constructor.defaultCSS,t},t.prototype.createProgressElement=function(){var t;return t=document.createElement("div"),t.className="turbolinks-progress-bar",t},t}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.BrowserAdapter=function(){function r(r){this.controller=r,this.showProgressBar=e(this.showProgressBar,this),this.progressBar=new t.ProgressBar}var n,o,i,s;return s=t.HttpRequest,n=s.NETWORK_FAILURE,i=s.TIMEOUT_FAILURE,o=500,r.prototype.visitProposedToLocationWithAction=function(t,e){return this.controller.startVisitToLocationWithAction(t,e)},r.prototype.visitStarted=function(t){return t.issueRequest(),t.changeHistory(),t.loadCachedSnapshot()},r.prototype.visitRequestStarted=function(t){return this.progressBar.setValue(0),t.hasCachedSnapshot()||"restore"!==t.action?this.showProgressBarAfterDelay():this.showProgressBar()},r.prototype.visitRequestProgressed=function(t){return this.progressBar.setValue(t.progress)},r.prototype.visitRequestCompleted=function(t){return t.loadResponse()},r.prototype.visitRequestFailedWithStatusCode=function(t,e){switch(e){case n:case i:return this.reload();default:return t.loadResponse()}},r.prototype.visitRequestFinished=function(t){return this.hideProgressBar()},r.prototype.visitCompleted=function(t){return t.followRedirect()},r.prototype.pageInvalidated=function(){return this.reload()},r.prototype.showProgressBarAfterDelay=function(){return this.progressBarTimeout=setTimeout(this.showProgressBar,o)},r.prototype.showProgressBar=function(){return this.progressBar.show()},r.prototype.hideProgressBar=function(){return this.progressBar.hide(),clearTimeout(this.progressBarTimeout)},r.prototype.reload=function(){return window.location.reload()},r}()}.call(this),function(){var e,r=function(t,e){return function(){return t.apply(e,arguments)}};e=!1,addEventListener("load",function(){return t.defer(function(){return e=!0})},!1),t.History=function(){function n(t){this.delegate=t,this.onPopState=r(this.onPopState,this)}return n.prototype.start=function(){return this.started?void 0:(addEventListener("popstate",this.onPopState,!1),this.started=!0)},n.prototype.stop=function(){return this.started?(removeEventListener("popstate",this.onPopState,!1),this.started=!1):void 0},n.prototype.push=function(e,r){return e=t.Location.wrap(e),this.update("push",e,r)},n.prototype.replace=function(e,r){return e=t.Location.wrap(e),this.update("replace",e,r)},n.prototype.onPopState=function(e){var r,n,o,i;return this.shouldHandlePopState()&&(i=null!=(n=e.state)?n.turbolinks:void 0)?(r=t.Location.wrap(window.location),o=i.restorationIdentifier,this.delegate.historyPoppedToLocationWithRestorationIdentifier(r,o)):void 0},n.prototype.shouldHandlePopState=function(){return e===!0},n.prototype.update=function(t,e,r){var n;return n={turbolinks:{restorationIdentifier:r}},history[t+"State"](n,null,e)},n}()}.call(this),function(){t.Snapshot=function(){function e(t){var e,r;r=t.head,e=t.body,this.head=null!=r?r:document.createElement("head"),this.body=null!=e?e:document.createElement("body")}return e.wrap=function(t){return t instanceof this?t:this.fromHTML(t)},e.fromHTML=function(t){var e;return e=document.createElement("html"),e.innerHTML=t,this.fromElement(e)},e.fromElement=function(t){return new this({head:t.querySelector("head"),body:t.querySelector("body")})},e.prototype.clone=function(){return new e({head:this.head.cloneNode(!0),body:this.body.cloneNode(!0)})},e.prototype.getRootLocation=function(){var e,r;return r=null!=(e=this.getSetting("root"))?e:"/",new t.Location(r)},e.prototype.getCacheControlValue=function(){return this.getSetting("cache-control")},e.prototype.hasAnchor=function(t){try{return null!=this.body.querySelector("[id='"+t+"']")}catch(e){}},e.prototype.isPreviewable=function(){return"no-preview"!==this.getCacheControlValue()},e.prototype.isCacheable=function(){return"no-cache"!==this.getCacheControlValue()},e.prototype.getSetting=function(t){var e,r;return r=this.head.querySelectorAll("meta[name='turbolinks-"+t+"']"),e=r[r.length-1],null!=e?e.getAttribute("content"):void 0},e}()}.call(this),function(){var e=[].slice;t.Renderer=function(){function t(){}var r;return t.render=function(){var t,r,n,o;return n=arguments[0],r=arguments[1],t=3<=arguments.length?e.call(arguments,2):[],o=function(t,e,r){r.prototype=t.prototype;var n=new r,o=t.apply(n,e);return Object(o)===o?o:n}(this,t,function(){}),o.delegate=n,o.render(r),o},t.prototype.renderView=function(t){return this.delegate.viewWillRender(this.newBody),t(),this.delegate.viewRendered(this.newBody)},t.prototype.invalidateView=function(){return this.delegate.viewInvalidated()},t.prototype.createScriptElement=function(t){var e;return"false"===t.getAttribute("data-turbolinks-eval")?t:(e=document.createElement("script"),e.textContent=t.textContent,r(e,t),e)},r=function(t,e){var r,n,o,i,s,a,u;for(i=e.attributes,a=[],r=0,n=i.length;n>r;r++)s=i[r],o=s.name,u=s.value,a.push(t.setAttribute(o,u));return a},t}()}.call(this),function(){t.HeadDetails=function(){function t(t){var e,r,i,s,a,u,c;for(this.element=t,this.elements={},c=this.element.childNodes,s=0,u=c.length;u>s;s++)i=c[s],i.nodeType===Node.ELEMENT_NODE&&(a=i.outerHTML,r=null!=(e=this.elements)[a]?e[a]:e[a]={type:o(i),tracked:n(i),elements:[]},r.elements.push(i))}var e,r,n,o;return t.prototype.hasElementWithKey=function(t){return t in this.elements},t.prototype.getTrackedElementSignature=function(){var t,e;return function(){var r,n;r=this.elements,n=[];for(t in r)e=r[t].tracked,e&&n.push(t);return n}.call(this).join("")},t.prototype.getScriptElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("script",t)},t.prototype.getStylesheetElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("stylesheet",t)},t.prototype.getElementsMatchingTypeNotInDetails=function(t,e){var r,n,o,i,s,a;o=this.elements,s=[];for(n in o)i=o[n],a=i.type,r=i.elements,a!==t||e.hasElementWithKey(n)||s.push(r[0]);return s},t.prototype.getProvisionalElements=function(){var t,e,r,n,o,i,s;r=[],n=this.elements;for(e in n)o=n[e],s=o.type,i=o.tracked,t=o.elements,null!=s||i?t.length>1&&r.push.apply(r,t.slice(1)):r.push.apply(r,t);return r},o=function(t){return e(t)?"script":r(t)?"stylesheet":void 0},n=function(t){return"reload"===t.getAttribute("data-turbolinks-track")},e=function(t){var e;return e=t.tagName.toLowerCase(),"script"===e},r=function(t){var e;return e=t.tagName.toLowerCase(),"style"===e||"link"===e&&"stylesheet"===t.getAttribute("rel")},t}()}.call(this),function(){var e=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;t.SnapshotRenderer=function(r){function n(e,r){this.currentSnapshot=e,this.newSnapshot=r,this.currentHeadDetails=new t.HeadDetails(this.currentSnapshot.head),this.newHeadDetails=new t.HeadDetails(this.newSnapshot.head),this.newBody=this.newSnapshot.body}return e(n,r),n.prototype.render=function(t){return this.trackedElementsAreIdentical()?(this.mergeHead(),this.renderView(function(e){return function(){return e.replaceBody(),e.focusFirstAutofocusableElement(),t()}}(this))):this.invalidateView()},n.prototype.mergeHead=function(){return this.copyNewHeadStylesheetElements(),this.copyNewHeadScriptElements(),this.removeCurrentHeadProvisionalElements(),this.copyNewHeadProvisionalElements()},n.prototype.replaceBody=function(){return this.activateBodyScriptElements(),this.importBodyPermanentElements(),this.assignNewBody()},n.prototype.trackedElementsAreIdentical=function(){return this.currentHeadDetails.getTrackedElementSignature()===this.newHeadDetails.getTrackedElementSignature()},n.prototype.copyNewHeadStylesheetElements=function(){var t,e,r,n,o;for(n=this.getNewHeadStylesheetElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},n.prototype.copyNewHeadScriptElements=function(){var t,e,r,n,o;for(n=this.getNewHeadScriptElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(this.createScriptElement(t)));return o},n.prototype.removeCurrentHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getCurrentHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.removeChild(t));return o},n.prototype.copyNewHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getNewHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},n.prototype.importBodyPermanentElements=function(){var t,e,r,n,o,i;for(n=this.getNewBodyPermanentElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],(t=this.findCurrentBodyPermanentElement(o))?i.push(o.parentNode.replaceChild(t,o)):i.push(void 0);return i},n.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getNewBodyScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},n.prototype.assignNewBody=function(){return document.body=this.newBody},n.prototype.focusFirstAutofocusableElement=function(){var t;return null!=(t=this.findFirstAutofocusableElement())?t.focus():void 0},n.prototype.getNewHeadStylesheetElements=function(){return this.newHeadDetails.getStylesheetElementsNotInDetails(this.currentHeadDetails)},n.prototype.getNewHeadScriptElements=function(){return this.newHeadDetails.getScriptElementsNotInDetails(this.currentHeadDetails)},n.prototype.getCurrentHeadProvisionalElements=function(){return this.currentHeadDetails.getProvisionalElements()},n.prototype.getNewHeadProvisionalElements=function(){return this.newHeadDetails.getProvisionalElements()},n.prototype.getNewBodyPermanentElements=function(){return this.newBody.querySelectorAll("[id][data-turbolinks-permanent]")},n.prototype.findCurrentBodyPermanentElement=function(t){return document.body.querySelector("#"+t.id+"[data-turbolinks-permanent]")},n.prototype.getNewBodyScriptElements=function(){return this.newBody.querySelectorAll("script")},n.prototype.findFirstAutofocusableElement=function(){return document.body.querySelector("[autofocus]")},n}(t.Renderer)}.call(this),function(){var e=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;t.ErrorRenderer=function(t){function r(t){this.html=t}return e(r,t),r.prototype.render=function(t){return this.renderView(function(e){return function(){return e.replaceDocumentHTML(),e.activateBodyScriptElements(),t()}}(this))},r.prototype.replaceDocumentHTML=function(){return document.documentElement.innerHTML=this.html},r.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},r.prototype.getScriptElements=function(){return document.documentElement.querySelectorAll("script")},r}(t.Renderer)}.call(this),function(){t.View=function(){function e(t){this.delegate=t,this.element=document.documentElement}return e.prototype.getRootLocation=function(){return this.getSnapshot().getRootLocation()},e.prototype.getSnapshot=function(){return t.Snapshot.fromElement(this.element)},e.prototype.render=function(t,e){var r,n,o;return o=t.snapshot,r=t.error,n=t.isPreview,this.markAsPreview(n),null!=o?this.renderSnapshot(o,e):this.renderError(r,e)},e.prototype.markAsPreview=function(t){return t?this.element.setAttribute("data-turbolinks-preview",""):this.element.removeAttribute("data-turbolinks-preview")},e.prototype.renderSnapshot=function(e,r){return t.SnapshotRenderer.render(this.delegate,r,this.getSnapshot(),t.Snapshot.wrap(e))},e.prototype.renderError=function(e,r){return t.ErrorRenderer.render(this.delegate,r,e)},e}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.ScrollManager=function(){function t(t){this.delegate=t,this.onScroll=e(this.onScroll,this)}return t.prototype.start=function(){return this.started?void 0:(addEventListener("scroll",this.onScroll,!1),this.onScroll(),this.started=!0)},t.prototype.stop=function(){return this.started?(removeEventListener("scroll",this.onScroll,!1),this.started=!1):void 0},t.prototype.scrollToElement=function(t){return t.scrollIntoView()},t.prototype.scrollToPosition=function(t){var e,r;return e=t.x,r=t.y,window.scrollTo(e,r)},t.prototype.onScroll=function(t){return this.updatePosition({x:window.pageXOffset,y:window.pageYOffset})},t.prototype.updatePosition=function(t){var e;return this.position=t,null!=(e=this.delegate)?e.scrollPositionChanged(this.position):void 0},t}()}.call(this),function(){t.SnapshotCache=function(){function e(t){this.size=t,this.keys=[],this.snapshots={}}var r;return e.prototype.has=function(t){var e;return e=r(t),e in this.snapshots},e.prototype.get=function(t){var e;if(this.has(t))return e=this.read(t),this.touch(t),e},e.prototype.put=function(t,e){return this.write(t,e),this.touch(t),e},e.prototype.read=function(t){var e;return e=r(t),this.snapshots[e]},e.prototype.write=function(t,e){var n;return n=r(t),this.snapshots[n]=e},e.prototype.touch=function(t){var e,n;return n=r(t),e=this.keys.indexOf(n),e>-1&&this.keys.splice(e,1),this.keys.unshift(n),this.trim()},e.prototype.trim=function(){var t,e,r,n,o;for(n=this.keys.splice(this.size),o=[],t=0,r=n.length;r>t;t++)e=n[t],o.push(delete this.snapshots[e]);return o},r=function(e){return t.Location.wrap(e).toCacheKey()},e}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.Visit=function(){function r(r,n,o){this.controller=r,this.action=o,this.performScroll=e(this.performScroll,this),this.identifier=t.uuid(),this.location=t.Location.wrap(n),this.adapter=this.controller.adapter,this.state="initialized",this.timingMetrics={}}var n;return r.prototype.start=function(){return"initialized"===this.state?(this.recordTimingMetric("visitStart"),this.state="started",this.adapter.visitStarted(this)):void 0},r.prototype.cancel=function(){var t;return"started"===this.state?(null!=(t=this.request)&&t.cancel(),this.cancelRender(),this.state="canceled"):void 0},r.prototype.complete=function(){var t;return"started"===this.state?(this.recordTimingMetric("visitEnd"),this.state="completed","function"==typeof(t=this.adapter).visitCompleted&&t.visitCompleted(this),this.controller.visitCompleted(this)):void 0},r.prototype.fail=function(){var t;return"started"===this.state?(this.state="failed","function"==typeof(t=this.adapter).visitFailed?t.visitFailed(this):void 0):void 0},r.prototype.changeHistory=function(){var t,e;return this.historyChanged?void 0:(t=this.location.isEqualTo(this.referrer)?"replace":this.action,e=n(t),this.controller[e](this.location,this.restorationIdentifier),this.historyChanged=!0)},r.prototype.issueRequest=function(){return this.shouldIssueRequest()&&null==this.request?(this.progress=0,this.request=new t.HttpRequest(this,this.location,this.referrer),this.request.send()):void 0},r.prototype.getCachedSnapshot=function(){var t;return!(t=this.controller.getCachedSnapshotForLocation(this.location))||null!=this.location.anchor&&!t.hasAnchor(this.location.anchor)||"restore"!==this.action&&!t.isPreviewable()?void 0:t},r.prototype.hasCachedSnapshot=function(){return null!=this.getCachedSnapshot()},r.prototype.loadCachedSnapshot=function(){var t,e;return(e=this.getCachedSnapshot())?(t=this.shouldIssueRequest(),this.render(function(){var r;return this.cacheSnapshot(),this.controller.render({snapshot:e,isPreview:t},this.performScroll),"function"==typeof(r=this.adapter).visitRendered&&r.visitRendered(this),t?void 0:this.complete()})):void 0},r.prototype.loadResponse=function(){return null!=this.response?this.render(function(){var t,e;return this.cacheSnapshot(),this.request.failed?(this.controller.render({error:this.response},this.performScroll),"function"==typeof(t=this.adapter).visitRendered&&t.visitRendered(this),this.fail()):(this.controller.render({snapshot:this.response},this.performScroll),"function"==typeof(e=this.adapter).visitRendered&&e.visitRendered(this),this.complete())}):void 0},r.prototype.followRedirect=function(){return this.redirectedToLocation&&!this.followedRedirect?(this.location=this.redirectedToLocation,this.controller.replaceHistoryWithLocationAndRestorationIdentifier(this.redirectedToLocation,this.restorationIdentifier),this.followedRedirect=!0):void 0},r.prototype.requestStarted=function(){var t;return this.recordTimingMetric("requestStart"),"function"==typeof(t=this.adapter).visitRequestStarted?t.visitRequestStarted(this):void 0},r.prototype.requestProgressed=function(t){var e;return this.progress=t,"function"==typeof(e=this.adapter).visitRequestProgressed?e.visitRequestProgressed(this):void 0},r.prototype.requestCompletedWithResponse=function(e,r){return this.response=e,null!=r&&(this.redirectedToLocation=t.Location.wrap(r)),this.adapter.visitRequestCompleted(this)},r.prototype.requestFailedWithStatusCode=function(t,e){return this.response=e,this.adapter.visitRequestFailedWithStatusCode(this,t)},r.prototype.requestFinished=function(){var t;return this.recordTimingMetric("requestEnd"),"function"==typeof(t=this.adapter).visitRequestFinished?t.visitRequestFinished(this):void 0},r.prototype.performScroll=function(){return this.scrolled?void 0:("restore"===this.action?this.scrollToRestoredPosition()||this.scrollToTop():this.scrollToAnchor()||this.scrollToTop(),this.scrolled=!0)},r.prototype.scrollToRestoredPosition=function(){var t,e;return t=null!=(e=this.restorationData)?e.scrollPosition:void 0,null!=t?(this.controller.scrollToPosition(t),!0):void 0},r.prototype.scrollToAnchor=function(){return null!=this.location.anchor?(this.controller.scrollToAnchor(this.location.anchor),!0):void 0},r.prototype.scrollToTop=function(){return this.controller.scrollToPosition({x:0,y:0})},r.prototype.recordTimingMetric=function(t){var e;return null!=(e=this.timingMetrics)[t]?e[t]:e[t]=(new Date).getTime()},r.prototype.getTimingMetrics=function(){return t.copyObject(this.timingMetrics)},n=function(t){switch(t){case"replace":return"replaceHistoryWithLocationAndRestorationIdentifier";case"advance":case"restore":return"pushHistoryWithLocationAndRestorationIdentifier"}},r.prototype.shouldIssueRequest=function(){return"restore"===this.action?!this.hasCachedSnapshot():!0},r.prototype.cacheSnapshot=function(){return this.snapshotCached?void 0:(this.controller.cacheSnapshot(),this.snapshotCached=!0)},r.prototype.render=function(t){return this.cancelRender(),this.frame=requestAnimationFrame(function(e){return function(){return e.frame=null,t.call(e)}}(this))},r.prototype.cancelRender=function(){return this.frame?cancelAnimationFrame(this.frame):void 0},r}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.Controller=function(){function r(){this.clickBubbled=e(this.clickBubbled,this),this.clickCaptured=e(this.clickCaptured,this),this.pageLoaded=e(this.pageLoaded,this),this.history=new t.History(this),this.view=new t.View(this),this.scrollManager=new t.ScrollManager(this),this.restorationData={},this.clearCache()}return r.prototype.start=function(){return t.supported&&!this.started?(addEventListener("click",this.clickCaptured,!0),addEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.start(),this.startHistory(),this.started=!0,this.enabled=!0):void 0},r.prototype.disable=function(){return this.enabled=!1},r.prototype.stop=function(){return this.started?(removeEventListener("click",this.clickCaptured,!0),removeEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.stop(),this.stopHistory(),this.started=!1):void 0},r.prototype.clearCache=function(){return this.cache=new t.SnapshotCache(10)},r.prototype.visit=function(e,r){var n,o;return null==r&&(r={}),e=t.Location.wrap(e),this.applicationAllowsVisitingLocation(e)?this.locationIsVisitable(e)?(n=null!=(o=r.action)?o:"advance",this.adapter.visitProposedToLocationWithAction(e,n)):window.location=e:void 0},r.prototype.startVisitToLocationWithAction=function(e,r,n){var o;return t.supported?(o=this.getRestorationDataForIdentifier(n),this.startVisit(e,r,{restorationData:o})):window.location=e},r.prototype.startHistory=function(){return this.location=t.Location.wrap(window.location),this.restorationIdentifier=t.uuid(),this.history.start(),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.stopHistory=function(){return this.history.stop()},r.prototype.pushHistoryWithLocationAndRestorationIdentifier=function(e,r){return this.restorationIdentifier=r,this.location=t.Location.wrap(e),this.history.push(this.location,this.restorationIdentifier)},r.prototype.replaceHistoryWithLocationAndRestorationIdentifier=function(e,r){return this.restorationIdentifier=r,this.location=t.Location.wrap(e),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.historyPoppedToLocationWithRestorationIdentifier=function(e,r){var n;return this.restorationIdentifier=r,this.enabled?(n=this.getRestorationDataForIdentifier(this.restorationIdentifier),this.startVisit(e,"restore",{restorationIdentifier:this.restorationIdentifier,restorationData:n,historyChanged:!0}),this.location=t.Location.wrap(e)):this.adapter.pageInvalidated()},r.prototype.getCachedSnapshotForLocation=function(t){var e;return e=this.cache.get(t),e?e.clone():void 0},r.prototype.shouldCacheSnapshot=function(){return this.view.getSnapshot().isCacheable()},r.prototype.cacheSnapshot=function(){var t;return this.shouldCacheSnapshot()?(this.notifyApplicationBeforeCachingSnapshot(),t=this.view.getSnapshot(),this.cache.put(this.lastRenderedLocation,t.clone())):void 0},r.prototype.scrollToAnchor=function(t){var e;return(e=document.getElementById(t))?this.scrollToElement(e):this.scrollToPosition({x:0,y:0})},r.prototype.scrollToElement=function(t){return this.scrollManager.scrollToElement(t)},r.prototype.scrollToPosition=function(t){return this.scrollManager.scrollToPosition(t)},r.prototype.scrollPositionChanged=function(t){var e;return e=this.getCurrentRestorationData(),e.scrollPosition=t},r.prototype.render=function(t,e){return this.view.render(t,e)},r.prototype.viewInvalidated=function(){return this.adapter.pageInvalidated()},r.prototype.viewWillRender=function(t){return this.notifyApplicationBeforeRender(t)},r.prototype.viewRendered=function(){return this.lastRenderedLocation=this.currentVisit.location,this.notifyApplicationAfterRender()},r.prototype.pageLoaded=function(){return this.lastRenderedLocation=this.location,this.notifyApplicationAfterPageLoad()},r.prototype.clickCaptured=function(){return removeEventListener("click",this.clickBubbled,!1),addEventListener("click",this.clickBubbled,!1)},r.prototype.clickBubbled=function(t){var e,r,n;return this.enabled&&this.clickEventIsSignificant(t)&&(r=this.getVisitableLinkForNode(t.target))&&(n=this.getVisitableLocationForLink(r))&&this.applicationAllowsFollowingLinkToLocation(r,n)?(t.preventDefault(),e=this.getActionForLink(r),this.visit(n,{action:e})):void 0},r.prototype.applicationAllowsFollowingLinkToLocation=function(t,e){var r;return r=this.notifyApplicationAfterClickingLinkToLocation(t,e),!r.defaultPrevented},r.prototype.applicationAllowsVisitingLocation=function(t){var e;return e=this.notifyApplicationBeforeVisitingLocation(t),!e.defaultPrevented},r.prototype.notifyApplicationAfterClickingLinkToLocation=function(e,r){return t.dispatch("turbolinks:click",{target:e,data:{url:r.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationBeforeVisitingLocation=function(e){return t.dispatch("turbolinks:before-visit",{data:{url:e.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationAfterVisitingLocation=function(e){return t.dispatch("turbolinks:visit",{data:{url:e.absoluteURL}})},r.prototype.notifyApplicationBeforeCachingSnapshot=function(){return t.dispatch("turbolinks:before-cache")},r.prototype.notifyApplicationBeforeRender=function(e){return t.dispatch("turbolinks:before-render",{data:{newBody:e}})},r.prototype.notifyApplicationAfterRender=function(){return t.dispatch("turbolinks:render")},r.prototype.notifyApplicationAfterPageLoad=function(e){return null==e&&(e={}),t.dispatch("turbolinks:load",{data:{url:this.location.absoluteURL,timing:e}})},r.prototype.startVisit=function(t,e,r){var n;return null!=(n=this.currentVisit)&&n.cancel(),this.currentVisit=this.createVisit(t,e,r),this.currentVisit.start(),this.notifyApplicationAfterVisitingLocation(t)},r.prototype.createVisit=function(e,r,n){
-var o,i,s,a,u;return i=null!=n?n:{},a=i.restorationIdentifier,s=i.restorationData,o=i.historyChanged,u=new t.Visit(this,e,r),u.restorationIdentifier=null!=a?a:t.uuid(),u.restorationData=t.copyObject(s),u.historyChanged=o,u.referrer=this.location,u},r.prototype.visitCompleted=function(t){return this.notifyApplicationAfterPageLoad(t.getTimingMetrics())},r.prototype.clickEventIsSignificant=function(t){return!(t.defaultPrevented||t.target.isContentEditable||t.which>1||t.altKey||t.ctrlKey||t.metaKey||t.shiftKey)},r.prototype.getVisitableLinkForNode=function(e){return this.nodeIsVisitable(e)?t.closest(e,"a[href]:not([target])"):void 0},r.prototype.getVisitableLocationForLink=function(e){var r;return r=new t.Location(e.getAttribute("href")),this.locationIsVisitable(r)?r:void 0},r.prototype.getActionForLink=function(t){var e;return null!=(e=t.getAttribute("data-turbolinks-action"))?e:"advance"},r.prototype.nodeIsVisitable=function(e){var r;return(r=t.closest(e,"[data-turbolinks]"))?"false"!==r.getAttribute("data-turbolinks"):!0},r.prototype.locationIsVisitable=function(t){return t.isPrefixedBy(this.view.getRootLocation())&&t.isHTML()},r.prototype.getCurrentRestorationData=function(){return this.getRestorationDataForIdentifier(this.restorationIdentifier)},r.prototype.getRestorationDataForIdentifier=function(t){var e;return null!=(e=this.restorationData)[t]?e[t]:e[t]={}},r}()}.call(this),function(){var e,r,n;t.start=function(){return r()?(null==t.controller&&(t.controller=e()),t.controller.start()):void 0},r=function(){return null==window.Turbolinks&&(window.Turbolinks=t),n()},e=function(){var e;return e=new t.Controller,e.adapter=new t.BrowserAdapter(e),e},n=function(){return window.Turbolinks===t},n()&&t.start()}.call(this)}).call(this),"object"==typeof module&&module.exports?module.exports=t:"function"==typeof define&&define.amd&&define(t)}).call(this);
+(function(){(function(){(function(){this.Turbolinks={supported:function(){return null!=window.history.pushState&&null!=window.requestAnimationFrame&&null!=window.addEventListener}(),visit:function(e,r){return t.controller.visit(e,r)},clearCache:function(){return t.controller.clearCache()}}}).call(this)}).call(this);var t=this.Turbolinks;(function(){(function(){var e,r,n=[].slice;t.copyObject=function(t){var e,r,n;r={};for(e in t)n=t[e],r[e]=n;return r},t.closest=function(t,r){return e.call(t,r)},e=function(){var t,e;return t=document.documentElement,null!=(e=t.closest)?e:function(t){var e;for(e=this;e;){if(e.nodeType===Node.ELEMENT_NODE&&r.call(e,t))return e;e=e.parentNode}}}(),t.defer=function(t){return setTimeout(t,1)},t.throttle=function(t){var e;return e=null,function(){var r;return r=1<=arguments.length?n.call(arguments,0):[],null!=e?e:e=requestAnimationFrame(function(n){return function(){return e=null,t.apply(n,r)}}(this))}},t.dispatch=function(t,e){var r,n,o,i,s;return i=null!=e?e:{},s=i.target,r=i.cancelable,n=i.data,o=document.createEvent("Events"),o.initEvent(t,!0,r===!0),o.data=null!=n?n:{},(null!=s?s:document).dispatchEvent(o),o},t.match=function(t,e){return r.call(t,e)},r=function(){var t,e,r,n;return t=document.documentElement,null!=(e=null!=(r=null!=(n=t.matchesSelector)?n:t.webkitMatchesSelector)?r:t.msMatchesSelector)?e:t.mozMatchesSelector}(),t.uuid=function(){var t,e,r;for(r="",t=e=1;36>=e;t=++e)r+=9===t||14===t||19===t||24===t?"-":15===t?"4":20===t?(Math.floor(4*Math.random())+8).toString(16):Math.floor(15*Math.random()).toString(16);return r}}).call(this),function(){t.Location=function(){function t(t){var e,r;null==t&&(t=""),r=document.createElement("a"),r.href=t.toString(),this.absoluteURL=r.href,e=r.hash.length,2>e?this.requestURL=this.absoluteURL:(this.requestURL=this.absoluteURL.slice(0,-e),this.anchor=r.hash.slice(1))}var e,r,n,o;return t.wrap=function(t){return t instanceof this?t:new this(t)},t.prototype.getOrigin=function(){return this.absoluteURL.split("/",3).join("/")},t.prototype.getPath=function(){var t,e;return null!=(t=null!=(e=this.absoluteURL.match(/\/\/[^\/]*(\/[^?;]*)/))?e[1]:void 0)?t:"/"},t.prototype.getPathComponents=function(){return this.getPath().split("/").slice(1)},t.prototype.getLastPathComponent=function(){return this.getPathComponents().slice(-1)[0]},t.prototype.getExtension=function(){var t,e;return null!=(t=null!=(e=this.getLastPathComponent().match(/\.[^.]*$/))?e[0]:void 0)?t:""},t.prototype.isHTML=function(){return this.getExtension().match(/^(?:|\.(?:htm|html|xhtml))$/)},t.prototype.isPrefixedBy=function(t){var e;return e=r(t),this.isEqualTo(t)||o(this.absoluteURL,e)},t.prototype.isEqualTo=function(t){return this.absoluteURL===(null!=t?t.absoluteURL:void 0)},t.prototype.toCacheKey=function(){return this.requestURL},t.prototype.toJSON=function(){return this.absoluteURL},t.prototype.toString=function(){return this.absoluteURL},t.prototype.valueOf=function(){return this.absoluteURL},r=function(t){return e(t.getOrigin()+t.getPath())},e=function(t){return n(t,"/")?t:t+"/"},o=function(t,e){return t.slice(0,e.length)===e},n=function(t,e){return t.slice(-e.length)===e},t}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.HttpRequest=function(){function r(r,n,o){this.delegate=r,this.requestCanceled=e(this.requestCanceled,this),this.requestTimedOut=e(this.requestTimedOut,this),this.requestFailed=e(this.requestFailed,this),this.requestLoaded=e(this.requestLoaded,this),this.requestProgressed=e(this.requestProgressed,this),this.url=t.Location.wrap(n).requestURL,this.referrer=t.Location.wrap(o).absoluteURL,this.createXHR()}return r.NETWORK_FAILURE=0,r.TIMEOUT_FAILURE=-1,r.timeout=60,r.prototype.send=function(){var t;return this.xhr&&!this.sent?(this.notifyApplicationBeforeRequestStart(),this.setProgress(0),this.xhr.send(),this.sent=!0,"function"==typeof(t=this.delegate).requestStarted?t.requestStarted():void 0):void 0},r.prototype.cancel=function(){return this.xhr&&this.sent?this.xhr.abort():void 0},r.prototype.requestProgressed=function(t){return t.lengthComputable?this.setProgress(t.loaded/t.total):void 0},r.prototype.requestLoaded=function(){return this.endRequest(function(t){return function(){var e;return 200<=(e=t.xhr.status)&&300>e?t.delegate.requestCompletedWithResponse(t.xhr.responseText,t.xhr.getResponseHeader("Turbolinks-Location")):(t.failed=!0,t.delegate.requestFailedWithStatusCode(t.xhr.status,t.xhr.responseText))}}(this))},r.prototype.requestFailed=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.NETWORK_FAILURE)}}(this))},r.prototype.requestTimedOut=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.TIMEOUT_FAILURE)}}(this))},r.prototype.requestCanceled=function(){return this.endRequest()},r.prototype.notifyApplicationBeforeRequestStart=function(){return t.dispatch("turbolinks:request-start",{data:{url:this.url,xhr:this.xhr}})},r.prototype.notifyApplicationAfterRequestEnd=function(){return t.dispatch("turbolinks:request-end",{data:{url:this.url,xhr:this.xhr}})},r.prototype.createXHR=function(){return this.xhr=new XMLHttpRequest,this.xhr.open("GET",this.url,!0),this.xhr.timeout=1e3*this.constructor.timeout,this.xhr.setRequestHeader("Accept","text/html, application/xhtml+xml"),this.xhr.setRequestHeader("Turbolinks-Referrer",this.referrer),this.xhr.onprogress=this.requestProgressed,this.xhr.onload=this.requestLoaded,this.xhr.onerror=this.requestFailed,this.xhr.ontimeout=this.requestTimedOut,this.xhr.onabort=this.requestCanceled},r.prototype.endRequest=function(t){return this.xhr?(this.notifyApplicationAfterRequestEnd(),null!=t&&t.call(this),this.destroy()):void 0},r.prototype.setProgress=function(t){var e;return this.progress=t,"function"==typeof(e=this.delegate).requestProgressed?e.requestProgressed(this.progress):void 0},r.prototype.destroy=function(){var t;return this.setProgress(1),"function"==typeof(t=this.delegate).requestFinished&&t.requestFinished(),this.delegate=null,this.xhr=null},r}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.ProgressBar=function(){function t(){this.trickle=e(this.trickle,this),this.stylesheetElement=this.createStylesheetElement(),this.progressElement=this.createProgressElement()}var r;return r=300,t.defaultCSS=".turbolinks-progress-bar {\n  position: fixed;\n  display: block;\n  top: 0;\n  left: 0;\n  height: 3px;\n  background: #0076ff;\n  z-index: 9999;\n  transition: width "+r+"ms ease-out, opacity "+r/2+"ms "+r/2+"ms ease-in;\n  transform: translate3d(0, 0, 0);\n}",t.prototype.show=function(){return this.visible?void 0:(this.visible=!0,this.installStylesheetElement(),this.installProgressElement(),this.startTrickling())},t.prototype.hide=function(){return this.visible&&!this.hiding?(this.hiding=!0,this.fadeProgressElement(function(t){return function(){return t.uninstallProgressElement(),t.stopTrickling(),t.visible=!1,t.hiding=!1}}(this))):void 0},t.prototype.setValue=function(t){return this.value=t,this.refresh()},t.prototype.installStylesheetElement=function(){return document.head.insertBefore(this.stylesheetElement,document.head.firstChild)},t.prototype.installProgressElement=function(){return this.progressElement.style.width=0,this.progressElement.style.opacity=1,document.documentElement.insertBefore(this.progressElement,document.body),this.refresh()},t.prototype.fadeProgressElement=function(t){return this.progressElement.style.opacity=0,setTimeout(t,1.5*r)},t.prototype.uninstallProgressElement=function(){return this.progressElement.parentNode?document.documentElement.removeChild(this.progressElement):void 0},t.prototype.startTrickling=function(){return null!=this.trickleInterval?this.trickleInterval:this.trickleInterval=setInterval(this.trickle,r)},t.prototype.stopTrickling=function(){return clearInterval(this.trickleInterval),this.trickleInterval=null},t.prototype.trickle=function(){return this.setValue(this.value+Math.random()/100)},t.prototype.refresh=function(){return requestAnimationFrame(function(t){return function(){return t.progressElement.style.width=10+90*t.value+"%"}}(this))},t.prototype.createStylesheetElement=function(){var t;return t=document.createElement("style"),t.type="text/css",t.textContent=this.constructor.defaultCSS,t},t.prototype.createProgressElement=function(){var t;return t=document.createElement("div"),t.className="turbolinks-progress-bar",t},t}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.BrowserAdapter=function(){function r(r){this.controller=r,this.showProgressBar=e(this.showProgressBar,this),this.progressBar=new t.ProgressBar}var n,o,i,s;return s=t.HttpRequest,n=s.NETWORK_FAILURE,i=s.TIMEOUT_FAILURE,o=500,r.prototype.visitProposedToLocationWithAction=function(t,e){return this.controller.startVisitToLocationWithAction(t,e)},r.prototype.visitStarted=function(t){return t.issueRequest(),t.changeHistory(),t.loadCachedSnapshot()},r.prototype.visitRequestStarted=function(t){return this.progressBar.setValue(0),t.hasCachedSnapshot()||"restore"!==t.action?this.showProgressBarAfterDelay():this.showProgressBar()},r.prototype.visitRequestProgressed=function(t){return this.progressBar.setValue(t.progress)},r.prototype.visitRequestCompleted=function(t){return t.loadResponse()},r.prototype.visitRequestFailedWithStatusCode=function(t,e){switch(e){case n:case i:return this.reload();default:return t.loadResponse()}},r.prototype.visitRequestFinished=function(t){return this.hideProgressBar()},r.prototype.visitCompleted=function(t){return t.followRedirect()},r.prototype.pageInvalidated=function(){return this.reload()},r.prototype.showProgressBarAfterDelay=function(){return this.progressBarTimeout=setTimeout(this.showProgressBar,o)},r.prototype.showProgressBar=function(){return this.progressBar.show()},r.prototype.hideProgressBar=function(){return this.progressBar.hide(),clearTimeout(this.progressBarTimeout)},r.prototype.reload=function(){return window.location.reload()},r}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.History=function(){function r(t){this.delegate=t,this.onPageLoad=e(this.onPageLoad,this),this.onPopState=e(this.onPopState,this)}return r.prototype.start=function(){return this.started?void 0:(addEventListener("popstate",this.onPopState,!1),addEventListener("load",this.onPageLoad,!1),this.started=!0)},r.prototype.stop=function(){return this.started?(removeEventListener("popstate",this.onPopState,!1),removeEventListener("load",this.onPageLoad,!1),this.started=!1):void 0},r.prototype.push=function(e,r){return e=t.Location.wrap(e),this.update("push",e,r)},r.prototype.replace=function(e,r){return e=t.Location.wrap(e),this.update("replace",e,r)},r.prototype.onPopState=function(e){var r,n,o,i;return this.shouldHandlePopState()&&(i=null!=(n=e.state)?n.turbolinks:void 0)?(r=t.Location.wrap(window.location),o=i.restorationIdentifier,this.delegate.historyPoppedToLocationWithRestorationIdentifier(r,o)):void 0},r.prototype.onPageLoad=function(e){return t.defer(function(t){return function(){return t.pageLoaded=!0}}(this))},r.prototype.shouldHandlePopState=function(){return this.pageIsLoaded()},r.prototype.pageIsLoaded=function(){return this.pageLoaded||"complete"===document.readyState},r.prototype.update=function(t,e,r){var n;return n={turbolinks:{restorationIdentifier:r}},history[t+"State"](n,null,e)},r}()}.call(this),function(){t.Snapshot=function(){function e(t){var e,r;r=t.head,e=t.body,this.head=null!=r?r:document.createElement("head"),this.body=null!=e?e:document.createElement("body")}return e.wrap=function(t){return t instanceof this?t:this.fromHTML(t)},e.fromHTML=function(t){var e;return e=document.createElement("html"),e.innerHTML=t,this.fromElement(e)},e.fromElement=function(t){return new this({head:t.querySelector("head"),body:t.querySelector("body")})},e.prototype.clone=function(){return new e({head:this.head.cloneNode(!0),body:this.body.cloneNode(!0)})},e.prototype.getRootLocation=function(){var e,r;return r=null!=(e=this.getSetting("root"))?e:"/",new t.Location(r)},e.prototype.getCacheControlValue=function(){return this.getSetting("cache-control")},e.prototype.hasAnchor=function(t){try{return null!=this.body.querySelector("[id='"+t+"']")}catch(e){}},e.prototype.isPreviewable=function(){return"no-preview"!==this.getCacheControlValue()},e.prototype.isCacheable=function(){return"no-cache"!==this.getCacheControlValue()},e.prototype.getSetting=function(t){var e,r;return r=this.head.querySelectorAll("meta[name='turbolinks-"+t+"']"),e=r[r.length-1],null!=e?e.getAttribute("content"):void 0},e}()}.call(this),function(){var e=[].slice;t.Renderer=function(){function t(){}var r;return t.render=function(){var t,r,n,o;return n=arguments[0],r=arguments[1],t=3<=arguments.length?e.call(arguments,2):[],o=function(t,e,r){r.prototype=t.prototype;var n=new r,o=t.apply(n,e);return Object(o)===o?o:n}(this,t,function(){}),o.delegate=n,o.render(r),o},t.prototype.renderView=function(t){return this.delegate.viewWillRender(this.newBody),t(),this.delegate.viewRendered(this.newBody)},t.prototype.invalidateView=function(){return this.delegate.viewInvalidated()},t.prototype.createScriptElement=function(t){var e;return"false"===t.getAttribute("data-turbolinks-eval")?t:(e=document.createElement("script"),e.textContent=t.textContent,r(e,t),e)},r=function(t,e){var r,n,o,i,s,a,u;for(i=e.attributes,a=[],r=0,n=i.length;n>r;r++)s=i[r],o=s.name,u=s.value,a.push(t.setAttribute(o,u));return a},t}()}.call(this),function(){t.HeadDetails=function(){function t(t){var e,r,i,s,a,u,l;for(this.element=t,this.elements={},l=this.element.childNodes,s=0,u=l.length;u>s;s++)i=l[s],i.nodeType===Node.ELEMENT_NODE&&(a=i.outerHTML,r=null!=(e=this.elements)[a]?e[a]:e[a]={type:o(i),tracked:n(i),elements:[]},r.elements.push(i))}var e,r,n,o;return t.prototype.hasElementWithKey=function(t){return t in this.elements},t.prototype.getTrackedElementSignature=function(){var t,e;return function(){var r,n;r=this.elements,n=[];for(t in r)e=r[t].tracked,e&&n.push(t);return n}.call(this).join("")},t.prototype.getScriptElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("script",t)},t.prototype.getStylesheetElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("stylesheet",t)},t.prototype.getElementsMatchingTypeNotInDetails=function(t,e){var r,n,o,i,s,a;o=this.elements,s=[];for(n in o)i=o[n],a=i.type,r=i.elements,a!==t||e.hasElementWithKey(n)||s.push(r[0]);return s},t.prototype.getProvisionalElements=function(){var t,e,r,n,o,i,s;r=[],n=this.elements;for(e in n)o=n[e],s=o.type,i=o.tracked,t=o.elements,null!=s||i?t.length>1&&r.push.apply(r,t.slice(1)):r.push.apply(r,t);return r},o=function(t){return e(t)?"script":r(t)?"stylesheet":void 0},n=function(t){return"reload"===t.getAttribute("data-turbolinks-track")},e=function(t){var e;return e=t.tagName.toLowerCase(),"script"===e},r=function(t){var e;return e=t.tagName.toLowerCase(),"style"===e||"link"===e&&"stylesheet"===t.getAttribute("rel")},t}()}.call(this),function(){var e=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;t.SnapshotRenderer=function(r){function n(e,r){this.currentSnapshot=e,this.newSnapshot=r,this.currentHeadDetails=new t.HeadDetails(this.currentSnapshot.head),this.newHeadDetails=new t.HeadDetails(this.newSnapshot.head),this.newBody=this.newSnapshot.body}return e(n,r),n.prototype.render=function(t){return this.trackedElementsAreIdentical()?(this.mergeHead(),this.renderView(function(e){return function(){return e.replaceBody(),e.focusFirstAutofocusableElement(),t()}}(this))):this.invalidateView()},n.prototype.mergeHead=function(){return this.copyNewHeadStylesheetElements(),this.copyNewHeadScriptElements(),this.removeCurrentHeadProvisionalElements(),this.copyNewHeadProvisionalElements()},n.prototype.replaceBody=function(){return this.activateBodyScriptElements(),this.importBodyPermanentElements(),this.assignNewBody()},n.prototype.trackedElementsAreIdentical=function(){return this.currentHeadDetails.getTrackedElementSignature()===this.newHeadDetails.getTrackedElementSignature()},n.prototype.copyNewHeadStylesheetElements=function(){var t,e,r,n,o;for(n=this.getNewHeadStylesheetElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},n.prototype.copyNewHeadScriptElements=function(){var t,e,r,n,o;for(n=this.getNewHeadScriptElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(this.createScriptElement(t)));return o},n.prototype.removeCurrentHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getCurrentHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.removeChild(t));return o},n.prototype.copyNewHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getNewHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},n.prototype.importBodyPermanentElements=function(){var t,e,r,n,o,i;for(n=this.getNewBodyPermanentElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],(t=this.findCurrentBodyPermanentElement(o))?i.push(o.parentNode.replaceChild(t,o)):i.push(void 0);return i},n.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getNewBodyScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},n.prototype.assignNewBody=function(){return document.body=this.newBody},n.prototype.focusFirstAutofocusableElement=function(){var t;return null!=(t=this.findFirstAutofocusableElement())?t.focus():void 0},n.prototype.getNewHeadStylesheetElements=function(){return this.newHeadDetails.getStylesheetElementsNotInDetails(this.currentHeadDetails)},n.prototype.getNewHeadScriptElements=function(){return this.newHeadDetails.getScriptElementsNotInDetails(this.currentHeadDetails)},n.prototype.getCurrentHeadProvisionalElements=function(){return this.currentHeadDetails.getProvisionalElements()},n.prototype.getNewHeadProvisionalElements=function(){return this.newHeadDetails.getProvisionalElements()},n.prototype.getNewBodyPermanentElements=function(){return this.newBody.querySelectorAll("[id][data-turbolinks-permanent]")},n.prototype.findCurrentBodyPermanentElement=function(t){return document.body.querySelector("#"+t.id+"[data-turbolinks-permanent]")},n.prototype.getNewBodyScriptElements=function(){return this.newBody.querySelectorAll("script")},n.prototype.findFirstAutofocusableElement=function(){return document.body.querySelector("[autofocus]")},n}(t.Renderer)}.call(this),function(){var e=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;t.ErrorRenderer=function(t){function r(t){this.html=t}return e(r,t),r.prototype.render=function(t){return this.renderView(function(e){return function(){return e.replaceDocumentHTML(),e.activateBodyScriptElements(),t()}}(this))},r.prototype.replaceDocumentHTML=function(){return document.documentElement.innerHTML=this.html},r.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},r.prototype.getScriptElements=function(){return document.documentElement.querySelectorAll("script")},r}(t.Renderer)}.call(this),function(){t.View=function(){function e(t){this.delegate=t,this.element=document.documentElement}return e.prototype.getRootLocation=function(){return this.getSnapshot().getRootLocation()},e.prototype.getSnapshot=function(){return t.Snapshot.fromElement(this.element)},e.prototype.render=function(t,e){var r,n,o;return o=t.snapshot,r=t.error,n=t.isPreview,this.markAsPreview(n),null!=o?this.renderSnapshot(o,e):this.renderError(r,e)},e.prototype.markAsPreview=function(t){return t?this.element.setAttribute("data-turbolinks-preview",""):this.element.removeAttribute("data-turbolinks-preview")},e.prototype.renderSnapshot=function(e,r){return t.SnapshotRenderer.render(this.delegate,r,this.getSnapshot(),t.Snapshot.wrap(e))},e.prototype.renderError=function(e,r){return t.ErrorRenderer.render(this.delegate,r,e)},e}()}.call(this),function(){t.ScrollManager=function(){function e(e){this.delegate=e,this.onScroll=t.throttle(this.onScroll).bind(this)}return e.prototype.start=function(){return this.started?void 0:(addEventListener("scroll",this.onScroll,!1),this.onScroll(),this.started=!0)},e.prototype.stop=function(){return this.started?(removeEventListener("scroll",this.onScroll,!1),this.started=!1):void 0},e.prototype.scrollToElement=function(t){return t.scrollIntoView()},e.prototype.scrollToPosition=function(t){var e,r;return e=t.x,r=t.y,window.scrollTo(e,r)},e.prototype.onScroll=function(t){return this.updatePosition({x:window.pageXOffset,y:window.pageYOffset})},e.prototype.updatePosition=function(t){var e;return this.position=t,null!=(e=this.delegate)?e.scrollPositionChanged(this.position):void 0},e}()}.call(this),function(){t.SnapshotCache=function(){function e(t){this.size=t,this.keys=[],this.snapshots={}}var r;return e.prototype.has=function(t){var e;return e=r(t),e in this.snapshots},e.prototype.get=function(t){var e;if(this.has(t))return e=this.read(t),this.touch(t),e},e.prototype.put=function(t,e){return this.write(t,e),this.touch(t),e},e.prototype.read=function(t){var e;return e=r(t),this.snapshots[e]},e.prototype.write=function(t,e){var n;return n=r(t),this.snapshots[n]=e},e.prototype.touch=function(t){var e,n;return n=r(t),e=this.keys.indexOf(n),e>-1&&this.keys.splice(e,1),this.keys.unshift(n),this.trim()},e.prototype.trim=function(){var t,e,r,n,o;for(n=this.keys.splice(this.size),o=[],t=0,r=n.length;r>t;t++)e=n[t],o.push(delete this.snapshots[e]);return o},r=function(e){return t.Location.wrap(e).toCacheKey()},e}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.Visit=function(){function r(r,n,o){this.controller=r,this.action=o,this.performScroll=e(this.performScroll,this),this.identifier=t.uuid(),this.location=t.Location.wrap(n),this.adapter=this.controller.adapter,this.state="initialized",this.timingMetrics={}}var n;return r.prototype.start=function(){return"initialized"===this.state?(this.recordTimingMetric("visitStart"),this.state="started",this.adapter.visitStarted(this)):void 0},r.prototype.cancel=function(){var t;return"started"===this.state?(null!=(t=this.request)&&t.cancel(),this.cancelRender(),this.state="canceled"):void 0},r.prototype.complete=function(){var t;return"started"===this.state?(this.recordTimingMetric("visitEnd"),this.state="completed","function"==typeof(t=this.adapter).visitCompleted&&t.visitCompleted(this),this.controller.visitCompleted(this)):void 0},r.prototype.fail=function(){var t;return"started"===this.state?(this.state="failed","function"==typeof(t=this.adapter).visitFailed?t.visitFailed(this):void 0):void 0},r.prototype.changeHistory=function(){var t,e;return this.historyChanged?void 0:(t=this.location.isEqualTo(this.referrer)?"replace":this.action,e=n(t),this.controller[e](this.location,this.restorationIdentifier),this.historyChanged=!0)},r.prototype.issueRequest=function(){return this.shouldIssueRequest()&&null==this.request?(this.progress=0,this.request=new t.HttpRequest(this,this.location,this.referrer),this.request.send()):void 0},r.prototype.getCachedSnapshot=function(){var t;return!(t=this.controller.getCachedSnapshotForLocation(this.location))||null!=this.location.anchor&&!t.hasAnchor(this.location.anchor)||"restore"!==this.action&&!t.isPreviewable()?void 0:t},r.prototype.hasCachedSnapshot=function(){return null!=this.getCachedSnapshot()},r.prototype.loadCachedSnapshot=function(){var t,e;return(e=this.getCachedSnapshot())?(t=this.shouldIssueRequest(),this.render(function(){var r;return this.cacheSnapshot(),this.controller.render({snapshot:e,isPreview:t},this.performScroll),"function"==typeof(r=this.adapter).visitRendered&&r.visitRendered(this),t?void 0:this.complete()})):void 0},r.prototype.loadResponse=function(){return null!=this.response?this.render(function(){var t,e;return this.cacheSnapshot(),this.request.failed?(this.controller.render({error:this.response},this.performScroll),"function"==typeof(t=this.adapter).visitRendered&&t.visitRendered(this),this.fail()):(this.controller.render({snapshot:this.response},this.performScroll),"function"==typeof(e=this.adapter).visitRendered&&e.visitRendered(this),this.complete())}):void 0},r.prototype.followRedirect=function(){return this.redirectedToLocation&&!this.followedRedirect?(this.location=this.redirectedToLocation,this.controller.replaceHistoryWithLocationAndRestorationIdentifier(this.redirectedToLocation,this.restorationIdentifier),this.followedRedirect=!0):void 0},r.prototype.requestStarted=function(){var t;return this.recordTimingMetric("requestStart"),"function"==typeof(t=this.adapter).visitRequestStarted?t.visitRequestStarted(this):void 0},r.prototype.requestProgressed=function(t){var e;return this.progress=t,"function"==typeof(e=this.adapter).visitRequestProgressed?e.visitRequestProgressed(this):void 0},r.prototype.requestCompletedWithResponse=function(e,r){return this.response=e,null!=r&&(this.redirectedToLocation=t.Location.wrap(r)),this.adapter.visitRequestCompleted(this)},r.prototype.requestFailedWithStatusCode=function(t,e){return this.response=e,this.adapter.visitRequestFailedWithStatusCode(this,t)},r.prototype.requestFinished=function(){var t;return this.recordTimingMetric("requestEnd"),"function"==typeof(t=this.adapter).visitRequestFinished?t.visitRequestFinished(this):void 0},r.prototype.performScroll=function(){return this.scrolled?void 0:("restore"===this.action?this.scrollToRestoredPosition()||this.scrollToTop():this.scrollToAnchor()||this.scrollToTop(),this.scrolled=!0)},r.prototype.scrollToRestoredPosition=function(){var t,e;return t=null!=(e=this.restorationData)?e.scrollPosition:void 0,null!=t?(this.controller.scrollToPosition(t),!0):void 0},r.prototype.scrollToAnchor=function(){return null!=this.location.anchor?(this.controller.scrollToAnchor(this.location.anchor),!0):void 0},r.prototype.scrollToTop=function(){return this.controller.scrollToPosition({x:0,y:0})},r.prototype.recordTimingMetric=function(t){var e;return null!=(e=this.timingMetrics)[t]?e[t]:e[t]=(new Date).getTime()},r.prototype.getTimingMetrics=function(){return t.copyObject(this.timingMetrics)},n=function(t){switch(t){case"replace":return"replaceHistoryWithLocationAndRestorationIdentifier";case"advance":case"restore":return"pushHistoryWithLocationAndRestorationIdentifier"}},r.prototype.shouldIssueRequest=function(){return"restore"===this.action?!this.hasCachedSnapshot():!0},r.prototype.cacheSnapshot=function(){return this.snapshotCached?void 0:(this.controller.cacheSnapshot(),this.snapshotCached=!0)},r.prototype.render=function(t){return this.cancelRender(),this.frame=requestAnimationFrame(function(e){return function(){return e.frame=null,t.call(e)}}(this))},r.prototype.cancelRender=function(){return this.frame?cancelAnimationFrame(this.frame):void 0},r}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.Controller=function(){function r(){this.clickBubbled=e(this.clickBubbled,this),this.clickCaptured=e(this.clickCaptured,this),this.pageLoaded=e(this.pageLoaded,this),this.history=new t.History(this),this.view=new t.View(this),this.scrollManager=new t.ScrollManager(this),this.restorationData={},this.clearCache()}return r.prototype.start=function(){return t.supported&&!this.started?(addEventListener("click",this.clickCaptured,!0),addEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.start(),this.startHistory(),this.started=!0,this.enabled=!0):void 0},r.prototype.disable=function(){return this.enabled=!1},r.prototype.stop=function(){return this.started?(removeEventListener("click",this.clickCaptured,!0),removeEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.stop(),this.stopHistory(),this.started=!1):void 0},r.prototype.clearCache=function(){return this.cache=new t.SnapshotCache(10)},r.prototype.visit=function(e,r){var n,o;return null==r&&(r={}),e=t.Location.wrap(e),this.applicationAllowsVisitingLocation(e)?this.locationIsVisitable(e)?(n=null!=(o=r.action)?o:"advance",this.adapter.visitProposedToLocationWithAction(e,n)):window.location=e:void 0},r.prototype.startVisitToLocationWithAction=function(e,r,n){var o;return t.supported?(o=this.getRestorationDataForIdentifier(n),this.startVisit(e,r,{restorationData:o})):window.location=e},r.prototype.startHistory=function(){return this.location=t.Location.wrap(window.location),this.restorationIdentifier=t.uuid(),this.history.start(),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.stopHistory=function(){return this.history.stop()},r.prototype.pushHistoryWithLocationAndRestorationIdentifier=function(e,r){return this.restorationIdentifier=r,this.location=t.Location.wrap(e),this.history.push(this.location,this.restorationIdentifier)},r.prototype.replaceHistoryWithLocationAndRestorationIdentifier=function(e,r){return this.restorationIdentifier=r,this.location=t.Location.wrap(e),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.historyPoppedToLocationWithRestorationIdentifier=function(e,r){var n;return this.restorationIdentifier=r,this.enabled?(n=this.getRestorationDataForIdentifier(this.restorationIdentifier),this.startVisit(e,"restore",{restorationIdentifier:this.restorationIdentifier,restorationData:n,historyChanged:!0}),this.location=t.Location.wrap(e)):this.adapter.pageInvalidated()},r.prototype.getCachedSnapshotForLocation=function(t){var e;return e=this.cache.get(t),e?e.clone():void 0},r.prototype.shouldCacheSnapshot=function(){return this.view.getSnapshot().isCacheable()},r.prototype.cacheSnapshot=function(){var t;return this.shouldCacheSnapshot()?(this.notifyApplicationBeforeCachingSnapshot(),t=this.view.getSnapshot(),this.cache.put(this.lastRenderedLocation,t.clone())):void 0},r.prototype.scrollToAnchor=function(t){var e;return(e=document.getElementById(t))?this.scrollToElement(e):this.scrollToPosition({x:0,y:0})},r.prototype.scrollToElement=function(t){return this.scrollManager.scrollToElement(t)},r.prototype.scrollToPosition=function(t){return this.scrollManager.scrollToPosition(t)},r.prototype.scrollPositionChanged=function(t){var e;return e=this.getCurrentRestorationData(),e.scrollPosition=t},r.prototype.render=function(t,e){return this.view.render(t,e)},r.prototype.viewInvalidated=function(){return this.adapter.pageInvalidated()},r.prototype.viewWillRender=function(t){return this.notifyApplicationBeforeRender(t)},r.prototype.viewRendered=function(){return this.lastRenderedLocation=this.currentVisit.location,this.notifyApplicationAfterRender()},r.prototype.pageLoaded=function(){return this.lastRenderedLocation=this.location,this.notifyApplicationAfterPageLoad()},r.prototype.clickCaptured=function(){return removeEventListener("click",this.clickBubbled,!1),addEventListener("click",this.clickBubbled,!1)},r.prototype.clickBubbled=function(t){var e,r,n;return this.enabled&&this.clickEventIsSignificant(t)&&(r=this.getVisitableLinkForNode(t.target))&&(n=this.getVisitableLocationForLink(r))&&this.applicationAllowsFollowingLinkToLocation(r,n)?(t.preventDefault(),e=this.getActionForLink(r),this.visit(n,{action:e})):void 0},r.prototype.applicationAllowsFollowingLinkToLocation=function(t,e){var r;return r=this.notifyApplicationAfterClickingLinkToLocation(t,e),!r.defaultPrevented},r.prototype.applicationAllowsVisitingLocation=function(t){var e;return e=this.notifyApplicationBeforeVisitingLocation(t),!e.defaultPrevented},r.prototype.notifyApplicationAfterClickingLinkToLocation=function(e,r){return t.dispatch("turbolinks:click",{target:e,data:{url:r.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationBeforeVisitingLocation=function(e){return t.dispatch("turbolinks:before-visit",{data:{url:e.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationAfterVisitingLocation=function(e){return t.dispatch("turbolinks:visit",{data:{url:e.absoluteURL}})},r.prototype.notifyApplicationBeforeCachingSnapshot=function(){return t.dispatch("turbolinks:before-cache")},r.prototype.notifyApplicationBeforeRender=function(e){return t.dispatch("turbolinks:before-render",{data:{newBody:e}})},r.prototype.notifyApplicationAfterRender=function(){
+return t.dispatch("turbolinks:render")},r.prototype.notifyApplicationAfterPageLoad=function(e){return null==e&&(e={}),t.dispatch("turbolinks:load",{data:{url:this.location.absoluteURL,timing:e}})},r.prototype.startVisit=function(t,e,r){var n;return null!=(n=this.currentVisit)&&n.cancel(),this.currentVisit=this.createVisit(t,e,r),this.currentVisit.start(),this.notifyApplicationAfterVisitingLocation(t)},r.prototype.createVisit=function(e,r,n){var o,i,s,a,u;return i=null!=n?n:{},a=i.restorationIdentifier,s=i.restorationData,o=i.historyChanged,u=new t.Visit(this,e,r),u.restorationIdentifier=null!=a?a:t.uuid(),u.restorationData=t.copyObject(s),u.historyChanged=o,u.referrer=this.location,u},r.prototype.visitCompleted=function(t){return this.notifyApplicationAfterPageLoad(t.getTimingMetrics())},r.prototype.clickEventIsSignificant=function(t){return!(t.defaultPrevented||t.target.isContentEditable||t.which>1||t.altKey||t.ctrlKey||t.metaKey||t.shiftKey)},r.prototype.getVisitableLinkForNode=function(e){return this.nodeIsVisitable(e)?t.closest(e,"a[href]:not([target]):not([download])"):void 0},r.prototype.getVisitableLocationForLink=function(e){var r;return r=new t.Location(e.getAttribute("href")),this.locationIsVisitable(r)?r:void 0},r.prototype.getActionForLink=function(t){var e;return null!=(e=t.getAttribute("data-turbolinks-action"))?e:"advance"},r.prototype.nodeIsVisitable=function(e){var r;return(r=t.closest(e,"[data-turbolinks]"))?"false"!==r.getAttribute("data-turbolinks"):!0},r.prototype.locationIsVisitable=function(t){return t.isPrefixedBy(this.view.getRootLocation())&&t.isHTML()},r.prototype.getCurrentRestorationData=function(){return this.getRestorationDataForIdentifier(this.restorationIdentifier)},r.prototype.getRestorationDataForIdentifier=function(t){var e;return null!=(e=this.restorationData)[t]?e[t]:e[t]={}},r}()}.call(this),function(){var e,r,n;t.start=function(){return r()?(null==t.controller&&(t.controller=e()),t.controller.start()):void 0},r=function(){return null==window.Turbolinks&&(window.Turbolinks=t),n()},e=function(){var e;return e=new t.Controller,e.adapter=new t.BrowserAdapter(e),e},n=function(){return window.Turbolinks===t},n()&&t.start()}.call(this)}).call(this),"object"==typeof module&&module.exports?module.exports=t:"function"==typeof define&&define.amd&&define(t)}).call(this);
 /* ========================================================================
  * Bootstrap: transition.js v3.3.7
  * http://getbootstrap.com/javascript/#transitions
@@ -33777,9 +33777,9 @@ return $.ui.tooltip;
 
 
 $( document ).ready(function() {
-    var input = document.getElementById('pac-input');
+    /*var input = document.getElementById('pac-input');
     var options = {types: ['address'], componentRestrictions: {country: 'au'}};
-    var autocomplete = new google.maps.places.Autocomplete(input,options);
+    var autocomplete = new google.maps.places.Autocomplete(input,options);*/
 
     // This resets the web page when we go back to the home page
   var $input = $('#refresh');
@@ -33788,7 +33788,12 @@ $( document ).ready(function() {
   // google.maps.event.addDomListener(window, 'turbolinks:load', initialize);
 });
 
-
+function getAddressOfGoogleMap() {
+	var input = document.getElementById('pac-input');
+  var options = {types: ['address'], componentRestrictions: {country: 'au'}};
+  var autocomplete = new google.maps.places.Autocomplete(input,options);
+}
+;
 (function($) {
 
   var cocoon_element_counter = 0;
@@ -33923,7 +33928,7 @@ $( document ).ready(function() {
 
 
 //! moment.js
-//! version : 2.15.1
+//! version : 2.17.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -33932,4231 +33937,4298 @@ $( document ).ready(function() {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     global.moment = factory()
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
-    var hookCallback;
+var hookCallback;
 
-    function utils_hooks__hooks () {
-        return hookCallback.apply(null, arguments);
+function hooks () {
+    return hookCallback.apply(null, arguments);
+}
+
+// This is done to register the method called with moment()
+// without creating circular dependencies.
+function setHookCallback (callback) {
+    hookCallback = callback;
+}
+
+function isArray(input) {
+    return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
+}
+
+function isObject(input) {
+    // IE8 will treat undefined and null as object if it wasn't for
+    // input != null
+    return input != null && Object.prototype.toString.call(input) === '[object Object]';
+}
+
+function isObjectEmpty(obj) {
+    var k;
+    for (k in obj) {
+        // even if its not own property I'd still call it non-empty
+        return false;
     }
+    return true;
+}
 
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
-    function setHookCallback (callback) {
-        hookCallback = callback;
+function isNumber(input) {
+    return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
+}
+
+function isDate(input) {
+    return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
+}
+
+function map(arr, fn) {
+    var res = [], i;
+    for (i = 0; i < arr.length; ++i) {
+        res.push(fn(arr[i], i));
     }
+    return res;
+}
 
-    function isArray(input) {
-        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
-    }
+function hasOwnProp(a, b) {
+    return Object.prototype.hasOwnProperty.call(a, b);
+}
 
-    function isObject(input) {
-        // IE8 will treat undefined and null as object if it wasn't for
-        // input != null
-        return input != null && Object.prototype.toString.call(input) === '[object Object]';
-    }
-
-    function isObjectEmpty(obj) {
-        var k;
-        for (k in obj) {
-            // even if its not own property I'd still call it non-empty
-            return false;
+function extend(a, b) {
+    for (var i in b) {
+        if (hasOwnProp(b, i)) {
+            a[i] = b[i];
         }
-        return true;
     }
 
-    function isDate(input) {
-        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
+    if (hasOwnProp(b, 'toString')) {
+        a.toString = b.toString;
     }
 
-    function map(arr, fn) {
-        var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
-            res.push(fn(arr[i], i));
-        }
-        return res;
+    if (hasOwnProp(b, 'valueOf')) {
+        a.valueOf = b.valueOf;
     }
 
-    function hasOwnProp(a, b) {
-        return Object.prototype.hasOwnProperty.call(a, b);
-    }
+    return a;
+}
 
-    function extend(a, b) {
-        for (var i in b) {
-            if (hasOwnProp(b, i)) {
-                a[i] = b[i];
+function createUTC (input, format, locale, strict) {
+    return createLocalOrUTC(input, format, locale, strict, true).utc();
+}
+
+function defaultParsingFlags() {
+    // We need to deep clone this object.
+    return {
+        empty           : false,
+        unusedTokens    : [],
+        unusedInput     : [],
+        overflow        : -2,
+        charsLeftOver   : 0,
+        nullInput       : false,
+        invalidMonth    : null,
+        invalidFormat   : false,
+        userInvalidated : false,
+        iso             : false,
+        parsedDateParts : [],
+        meridiem        : null
+    };
+}
+
+function getParsingFlags(m) {
+    if (m._pf == null) {
+        m._pf = defaultParsingFlags();
+    }
+    return m._pf;
+}
+
+var some;
+if (Array.prototype.some) {
+    some = Array.prototype.some;
+} else {
+    some = function (fun) {
+        var t = Object(this);
+        var len = t.length >>> 0;
+
+        for (var i = 0; i < len; i++) {
+            if (i in t && fun.call(this, t[i], i, t)) {
+                return true;
             }
         }
 
-        if (hasOwnProp(b, 'toString')) {
-            a.toString = b.toString;
+        return false;
+    };
+}
+
+var some$1 = some;
+
+function isValid(m) {
+    if (m._isValid == null) {
+        var flags = getParsingFlags(m);
+        var parsedParts = some$1.call(flags.parsedDateParts, function (i) {
+            return i != null;
+        });
+        var isNowValid = !isNaN(m._d.getTime()) &&
+            flags.overflow < 0 &&
+            !flags.empty &&
+            !flags.invalidMonth &&
+            !flags.invalidWeekday &&
+            !flags.nullInput &&
+            !flags.invalidFormat &&
+            !flags.userInvalidated &&
+            (!flags.meridiem || (flags.meridiem && parsedParts));
+
+        if (m._strict) {
+            isNowValid = isNowValid &&
+                flags.charsLeftOver === 0 &&
+                flags.unusedTokens.length === 0 &&
+                flags.bigHour === undefined;
         }
 
-        if (hasOwnProp(b, 'valueOf')) {
-            a.valueOf = b.valueOf;
-        }
-
-        return a;
-    }
-
-    function create_utc__createUTC (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, true).utc();
-    }
-
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false,
-            parsedDateParts : [],
-            meridiem        : null
-        };
-    }
-
-    function getParsingFlags(m) {
-        if (m._pf == null) {
-            m._pf = defaultParsingFlags();
-        }
-        return m._pf;
-    }
-
-    var some;
-    if (Array.prototype.some) {
-        some = Array.prototype.some;
-    } else {
-        some = function (fun) {
-            var t = Object(this);
-            var len = t.length >>> 0;
-
-            for (var i = 0; i < len; i++) {
-                if (i in t && fun.call(this, t[i], i, t)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-    }
-
-    function valid__isValid(m) {
-        if (m._isValid == null) {
-            var flags = getParsingFlags(m);
-            var parsedParts = some.call(flags.parsedDateParts, function (i) {
-                return i != null;
-            });
-            var isNowValid = !isNaN(m._d.getTime()) &&
-                flags.overflow < 0 &&
-                !flags.empty &&
-                !flags.invalidMonth &&
-                !flags.invalidWeekday &&
-                !flags.nullInput &&
-                !flags.invalidFormat &&
-                !flags.userInvalidated &&
-                (!flags.meridiem || (flags.meridiem && parsedParts));
-
-            if (m._strict) {
-                isNowValid = isNowValid &&
-                    flags.charsLeftOver === 0 &&
-                    flags.unusedTokens.length === 0 &&
-                    flags.bigHour === undefined;
-            }
-
-            if (Object.isFrozen == null || !Object.isFrozen(m)) {
-                m._isValid = isNowValid;
-            }
-            else {
-                return isNowValid;
-            }
-        }
-        return m._isValid;
-    }
-
-    function valid__createInvalid (flags) {
-        var m = create_utc__createUTC(NaN);
-        if (flags != null) {
-            extend(getParsingFlags(m), flags);
+        if (Object.isFrozen == null || !Object.isFrozen(m)) {
+            m._isValid = isNowValid;
         }
         else {
-            getParsingFlags(m).userInvalidated = true;
+            return isNowValid;
         }
+    }
+    return m._isValid;
+}
 
-        return m;
+function createInvalid (flags) {
+    var m = createUTC(NaN);
+    if (flags != null) {
+        extend(getParsingFlags(m), flags);
+    }
+    else {
+        getParsingFlags(m).userInvalidated = true;
     }
 
-    function isUndefined(input) {
-        return input === void 0;
+    return m;
+}
+
+function isUndefined(input) {
+    return input === void 0;
+}
+
+// Plugins that add properties should also add the key here (null value),
+// so we can properly clone ourselves.
+var momentProperties = hooks.momentProperties = [];
+
+function copyConfig(to, from) {
+    var i, prop, val;
+
+    if (!isUndefined(from._isAMomentObject)) {
+        to._isAMomentObject = from._isAMomentObject;
+    }
+    if (!isUndefined(from._i)) {
+        to._i = from._i;
+    }
+    if (!isUndefined(from._f)) {
+        to._f = from._f;
+    }
+    if (!isUndefined(from._l)) {
+        to._l = from._l;
+    }
+    if (!isUndefined(from._strict)) {
+        to._strict = from._strict;
+    }
+    if (!isUndefined(from._tzm)) {
+        to._tzm = from._tzm;
+    }
+    if (!isUndefined(from._isUTC)) {
+        to._isUTC = from._isUTC;
+    }
+    if (!isUndefined(from._offset)) {
+        to._offset = from._offset;
+    }
+    if (!isUndefined(from._pf)) {
+        to._pf = getParsingFlags(from);
+    }
+    if (!isUndefined(from._locale)) {
+        to._locale = from._locale;
     }
 
-    // Plugins that add properties should also add the key here (null value),
-    // so we can properly clone ourselves.
-    var momentProperties = utils_hooks__hooks.momentProperties = [];
-
-    function copyConfig(to, from) {
-        var i, prop, val;
-
-        if (!isUndefined(from._isAMomentObject)) {
-            to._isAMomentObject = from._isAMomentObject;
-        }
-        if (!isUndefined(from._i)) {
-            to._i = from._i;
-        }
-        if (!isUndefined(from._f)) {
-            to._f = from._f;
-        }
-        if (!isUndefined(from._l)) {
-            to._l = from._l;
-        }
-        if (!isUndefined(from._strict)) {
-            to._strict = from._strict;
-        }
-        if (!isUndefined(from._tzm)) {
-            to._tzm = from._tzm;
-        }
-        if (!isUndefined(from._isUTC)) {
-            to._isUTC = from._isUTC;
-        }
-        if (!isUndefined(from._offset)) {
-            to._offset = from._offset;
-        }
-        if (!isUndefined(from._pf)) {
-            to._pf = getParsingFlags(from);
-        }
-        if (!isUndefined(from._locale)) {
-            to._locale = from._locale;
-        }
-
-        if (momentProperties.length > 0) {
-            for (i in momentProperties) {
-                prop = momentProperties[i];
-                val = from[prop];
-                if (!isUndefined(val)) {
-                    to[prop] = val;
-                }
+    if (momentProperties.length > 0) {
+        for (i in momentProperties) {
+            prop = momentProperties[i];
+            val = from[prop];
+            if (!isUndefined(val)) {
+                to[prop] = val;
             }
         }
-
-        return to;
     }
 
-    var updateInProgress = false;
+    return to;
+}
 
-    // Moment prototype object
-    function Moment(config) {
-        copyConfig(this, config);
-        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
-        if (updateInProgress === false) {
-            updateInProgress = true;
-            utils_hooks__hooks.updateOffset(this);
-            updateInProgress = false;
+var updateInProgress = false;
+
+// Moment prototype object
+function Moment(config) {
+    copyConfig(this, config);
+    this._d = new Date(config._d != null ? config._d.getTime() : NaN);
+    if (!this.isValid()) {
+        this._d = new Date(NaN);
+    }
+    // Prevent infinite loop in case updateOffset creates new moment
+    // objects.
+    if (updateInProgress === false) {
+        updateInProgress = true;
+        hooks.updateOffset(this);
+        updateInProgress = false;
+    }
+}
+
+function isMoment (obj) {
+    return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
+}
+
+function absFloor (number) {
+    if (number < 0) {
+        // -0 -> 0
+        return Math.ceil(number) || 0;
+    } else {
+        return Math.floor(number);
+    }
+}
+
+function toInt(argumentForCoercion) {
+    var coercedNumber = +argumentForCoercion,
+        value = 0;
+
+    if (coercedNumber !== 0 && isFinite(coercedNumber)) {
+        value = absFloor(coercedNumber);
+    }
+
+    return value;
+}
+
+// compare two arrays, return the number of differences
+function compareArrays(array1, array2, dontConvert) {
+    var len = Math.min(array1.length, array2.length),
+        lengthDiff = Math.abs(array1.length - array2.length),
+        diffs = 0,
+        i;
+    for (i = 0; i < len; i++) {
+        if ((dontConvert && array1[i] !== array2[i]) ||
+            (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
+            diffs++;
         }
     }
+    return diffs + lengthDiff;
+}
 
-    function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
+function warn(msg) {
+    if (hooks.suppressDeprecationWarnings === false &&
+            (typeof console !==  'undefined') && console.warn) {
+        console.warn('Deprecation warning: ' + msg);
     }
+}
 
-    function absFloor (number) {
-        if (number < 0) {
-            // -0 -> 0
-            return Math.ceil(number) || 0;
-        } else {
-            return Math.floor(number);
+function deprecate(msg, fn) {
+    var firstTime = true;
+
+    return extend(function () {
+        if (hooks.deprecationHandler != null) {
+            hooks.deprecationHandler(null, msg);
         }
-    }
-
-    function toInt(argumentForCoercion) {
-        var coercedNumber = +argumentForCoercion,
-            value = 0;
-
-        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            value = absFloor(coercedNumber);
-        }
-
-        return value;
-    }
-
-    // compare two arrays, return the number of differences
-    function compareArrays(array1, array2, dontConvert) {
-        var len = Math.min(array1.length, array2.length),
-            lengthDiff = Math.abs(array1.length - array2.length),
-            diffs = 0,
-            i;
-        for (i = 0; i < len; i++) {
-            if ((dontConvert && array1[i] !== array2[i]) ||
-                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
-                diffs++;
-            }
-        }
-        return diffs + lengthDiff;
-    }
-
-    function warn(msg) {
-        if (utils_hooks__hooks.suppressDeprecationWarnings === false &&
-                (typeof console !==  'undefined') && console.warn) {
-            console.warn('Deprecation warning: ' + msg);
-        }
-    }
-
-    function deprecate(msg, fn) {
-        var firstTime = true;
-
-        return extend(function () {
-            if (utils_hooks__hooks.deprecationHandler != null) {
-                utils_hooks__hooks.deprecationHandler(null, msg);
-            }
-            if (firstTime) {
-                var args = [];
-                var arg;
-                for (var i = 0; i < arguments.length; i++) {
-                    arg = '';
-                    if (typeof arguments[i] === 'object') {
-                        arg += '\n[' + i + '] ';
-                        for (var key in arguments[0]) {
-                            arg += key + ': ' + arguments[0][key] + ', ';
-                        }
-                        arg = arg.slice(0, -2); // Remove trailing comma and space
-                    } else {
-                        arg = arguments[i];
+        if (firstTime) {
+            var args = [];
+            var arg;
+            for (var i = 0; i < arguments.length; i++) {
+                arg = '';
+                if (typeof arguments[i] === 'object') {
+                    arg += '\n[' + i + '] ';
+                    for (var key in arguments[0]) {
+                        arg += key + ': ' + arguments[0][key] + ', ';
                     }
-                    args.push(arg);
-                }
-                warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + (new Error()).stack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-
-    var deprecations = {};
-
-    function deprecateSimple(name, msg) {
-        if (utils_hooks__hooks.deprecationHandler != null) {
-            utils_hooks__hooks.deprecationHandler(name, msg);
-        }
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-
-    utils_hooks__hooks.suppressDeprecationWarnings = false;
-    utils_hooks__hooks.deprecationHandler = null;
-
-    function isFunction(input) {
-        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
-
-    function locale_set__set (config) {
-        var prop, i;
-        for (i in config) {
-            prop = config[i];
-            if (isFunction(prop)) {
-                this[i] = prop;
-            } else {
-                this['_' + i] = prop;
-            }
-        }
-        this._config = config;
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
-    }
-
-    function mergeConfigs(parentConfig, childConfig) {
-        var res = extend({}, parentConfig), prop;
-        for (prop in childConfig) {
-            if (hasOwnProp(childConfig, prop)) {
-                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
-                    res[prop] = {};
-                    extend(res[prop], parentConfig[prop]);
-                    extend(res[prop], childConfig[prop]);
-                } else if (childConfig[prop] != null) {
-                    res[prop] = childConfig[prop];
+                    arg = arg.slice(0, -2); // Remove trailing comma and space
                 } else {
-                    delete res[prop];
+                    arg = arguments[i];
                 }
+                args.push(arg);
+            }
+            warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + (new Error()).stack);
+            firstTime = false;
+        }
+        return fn.apply(this, arguments);
+    }, fn);
+}
+
+var deprecations = {};
+
+function deprecateSimple(name, msg) {
+    if (hooks.deprecationHandler != null) {
+        hooks.deprecationHandler(name, msg);
+    }
+    if (!deprecations[name]) {
+        warn(msg);
+        deprecations[name] = true;
+    }
+}
+
+hooks.suppressDeprecationWarnings = false;
+hooks.deprecationHandler = null;
+
+function isFunction(input) {
+    return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
+}
+
+function set (config) {
+    var prop, i;
+    for (i in config) {
+        prop = config[i];
+        if (isFunction(prop)) {
+            this[i] = prop;
+        } else {
+            this['_' + i] = prop;
+        }
+    }
+    this._config = config;
+    // Lenient ordinal parsing accepts just a number in addition to
+    // number + (possibly) stuff coming from _ordinalParseLenient.
+    this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
+}
+
+function mergeConfigs(parentConfig, childConfig) {
+    var res = extend({}, parentConfig), prop;
+    for (prop in childConfig) {
+        if (hasOwnProp(childConfig, prop)) {
+            if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
+                res[prop] = {};
+                extend(res[prop], parentConfig[prop]);
+                extend(res[prop], childConfig[prop]);
+            } else if (childConfig[prop] != null) {
+                res[prop] = childConfig[prop];
+            } else {
+                delete res[prop];
             }
         }
-        for (prop in parentConfig) {
-            if (hasOwnProp(parentConfig, prop) &&
-                    !hasOwnProp(childConfig, prop) &&
-                    isObject(parentConfig[prop])) {
-                // make sure changes to properties don't modify parent config
-                res[prop] = extend({}, res[prop]);
+    }
+    for (prop in parentConfig) {
+        if (hasOwnProp(parentConfig, prop) &&
+                !hasOwnProp(childConfig, prop) &&
+                isObject(parentConfig[prop])) {
+            // make sure changes to properties don't modify parent config
+            res[prop] = extend({}, res[prop]);
+        }
+    }
+    return res;
+}
+
+function Locale(config) {
+    if (config != null) {
+        this.set(config);
+    }
+}
+
+var keys;
+
+if (Object.keys) {
+    keys = Object.keys;
+} else {
+    keys = function (obj) {
+        var i, res = [];
+        for (i in obj) {
+            if (hasOwnProp(obj, i)) {
+                res.push(i);
             }
         }
         return res;
-    }
-
-    function Locale(config) {
-        if (config != null) {
-            this.set(config);
-        }
-    }
-
-    var keys;
-
-    if (Object.keys) {
-        keys = Object.keys;
-    } else {
-        keys = function (obj) {
-            var i, res = [];
-            for (i in obj) {
-                if (hasOwnProp(obj, i)) {
-                    res.push(i);
-                }
-            }
-            return res;
-        };
-    }
-
-    var defaultCalendar = {
-        sameDay : '[Today at] LT',
-        nextDay : '[Tomorrow at] LT',
-        nextWeek : 'dddd [at] LT',
-        lastDay : '[Yesterday at] LT',
-        lastWeek : '[Last] dddd [at] LT',
-        sameElse : 'L'
     };
+}
 
-    function locale_calendar__calendar (key, mom, now) {
-        var output = this._calendar[key] || this._calendar['sameElse'];
-        return isFunction(output) ? output.call(mom, now) : output;
-    }
+var keys$1 = keys;
 
-    var defaultLongDateFormat = {
-        LTS  : 'h:mm:ss A',
-        LT   : 'h:mm A',
-        L    : 'MM/DD/YYYY',
-        LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY h:mm A',
-        LLLL : 'dddd, MMMM D, YYYY h:mm A'
-    };
+var defaultCalendar = {
+    sameDay : '[Today at] LT',
+    nextDay : '[Tomorrow at] LT',
+    nextWeek : 'dddd [at] LT',
+    lastDay : '[Yesterday at] LT',
+    lastWeek : '[Last] dddd [at] LT',
+    sameElse : 'L'
+};
 
-    function longDateFormat (key) {
-        var format = this._longDateFormat[key],
-            formatUpper = this._longDateFormat[key.toUpperCase()];
+function calendar (key, mom, now) {
+    var output = this._calendar[key] || this._calendar['sameElse'];
+    return isFunction(output) ? output.call(mom, now) : output;
+}
 
-        if (format || !formatUpper) {
-            return format;
-        }
+var defaultLongDateFormat = {
+    LTS  : 'h:mm:ss A',
+    LT   : 'h:mm A',
+    L    : 'MM/DD/YYYY',
+    LL   : 'MMMM D, YYYY',
+    LLL  : 'MMMM D, YYYY h:mm A',
+    LLLL : 'dddd, MMMM D, YYYY h:mm A'
+};
 
-        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
-            return val.slice(1);
-        });
+function longDateFormat (key) {
+    var format = this._longDateFormat[key],
+        formatUpper = this._longDateFormat[key.toUpperCase()];
 
-        return this._longDateFormat[key];
-    }
-
-    var defaultInvalidDate = 'Invalid date';
-
-    function invalidDate () {
-        return this._invalidDate;
-    }
-
-    var defaultOrdinal = '%d';
-    var defaultOrdinalParse = /\d{1,2}/;
-
-    function ordinal (number) {
-        return this._ordinal.replace('%d', number);
-    }
-
-    var defaultRelativeTime = {
-        future : 'in %s',
-        past   : '%s ago',
-        s  : 'a few seconds',
-        m  : 'a minute',
-        mm : '%d minutes',
-        h  : 'an hour',
-        hh : '%d hours',
-        d  : 'a day',
-        dd : '%d days',
-        M  : 'a month',
-        MM : '%d months',
-        y  : 'a year',
-        yy : '%d years'
-    };
-
-    function relative__relativeTime (number, withoutSuffix, string, isFuture) {
-        var output = this._relativeTime[string];
-        return (isFunction(output)) ?
-            output(number, withoutSuffix, string, isFuture) :
-            output.replace(/%d/i, number);
-    }
-
-    function pastFuture (diff, output) {
-        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
-    }
-
-    var aliases = {};
-
-    function addUnitAlias (unit, shorthand) {
-        var lowerCase = unit.toLowerCase();
-        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
-    }
-
-    function normalizeUnits(units) {
-        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
-    }
-
-    function normalizeObjectUnits(inputObject) {
-        var normalizedInput = {},
-            normalizedProp,
-            prop;
-
-        for (prop in inputObject) {
-            if (hasOwnProp(inputObject, prop)) {
-                normalizedProp = normalizeUnits(prop);
-                if (normalizedProp) {
-                    normalizedInput[normalizedProp] = inputObject[prop];
-                }
-            }
-        }
-
-        return normalizedInput;
-    }
-
-    var priorities = {};
-
-    function addUnitPriority(unit, priority) {
-        priorities[unit] = priority;
-    }
-
-    function getPrioritizedUnits(unitsObj) {
-        var units = [];
-        for (var u in unitsObj) {
-            units.push({unit: u, priority: priorities[u]});
-        }
-        units.sort(function (a, b) {
-            return a.priority - b.priority;
-        });
-        return units;
-    }
-
-    function makeGetSet (unit, keepTime) {
-        return function (value) {
-            if (value != null) {
-                get_set__set(this, unit, value);
-                utils_hooks__hooks.updateOffset(this, keepTime);
-                return this;
-            } else {
-                return get_set__get(this, unit);
-            }
-        };
-    }
-
-    function get_set__get (mom, unit) {
-        return mom.isValid() ?
-            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
-    }
-
-    function get_set__set (mom, unit, value) {
-        if (mom.isValid()) {
-            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-        }
-    }
-
-    // MOMENTS
-
-    function stringGet (units) {
-        units = normalizeUnits(units);
-        if (isFunction(this[units])) {
-            return this[units]();
-        }
-        return this;
-    }
-
-
-    function stringSet (units, value) {
-        if (typeof units === 'object') {
-            units = normalizeObjectUnits(units);
-            var prioritized = getPrioritizedUnits(units);
-            for (var i = 0; i < prioritized.length; i++) {
-                this[prioritized[i].unit](units[prioritized[i].unit]);
-            }
-        } else {
-            units = normalizeUnits(units);
-            if (isFunction(this[units])) {
-                return this[units](value);
-            }
-        }
-        return this;
-    }
-
-    function zeroFill(number, targetLength, forceSign) {
-        var absNumber = '' + Math.abs(number),
-            zerosToFill = targetLength - absNumber.length,
-            sign = number >= 0;
-        return (sign ? (forceSign ? '+' : '') : '-') +
-            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-    }
-
-    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
-
-    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
-
-    var formatFunctions = {};
-
-    var formatTokenFunctions = {};
-
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
-    function addFormatToken (token, padded, ordinal, callback) {
-        var func = callback;
-        if (typeof callback === 'string') {
-            func = function () {
-                return this[callback]();
-            };
-        }
-        if (token) {
-            formatTokenFunctions[token] = func;
-        }
-        if (padded) {
-            formatTokenFunctions[padded[0]] = function () {
-                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-            };
-        }
-        if (ordinal) {
-            formatTokenFunctions[ordinal] = function () {
-                return this.localeData().ordinal(func.apply(this, arguments), token);
-            };
-        }
-    }
-
-    function removeFormattingTokens(input) {
-        if (input.match(/\[[\s\S]/)) {
-            return input.replace(/^\[|\]$/g, '');
-        }
-        return input.replace(/\\/g, '');
-    }
-
-    function makeFormatFunction(format) {
-        var array = format.match(formattingTokens), i, length;
-
-        for (i = 0, length = array.length; i < length; i++) {
-            if (formatTokenFunctions[array[i]]) {
-                array[i] = formatTokenFunctions[array[i]];
-            } else {
-                array[i] = removeFormattingTokens(array[i]);
-            }
-        }
-
-        return function (mom) {
-            var output = '', i;
-            for (i = 0; i < length; i++) {
-                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
-            }
-            return output;
-        };
-    }
-
-    // format date using native date object
-    function formatMoment(m, format) {
-        if (!m.isValid()) {
-            return m.localeData().invalidDate();
-        }
-
-        format = expandFormat(format, m.localeData());
-        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
-
-        return formatFunctions[format](m);
-    }
-
-    function expandFormat(format, locale) {
-        var i = 5;
-
-        function replaceLongDateFormatTokens(input) {
-            return locale.longDateFormat(input) || input;
-        }
-
-        localFormattingTokens.lastIndex = 0;
-        while (i >= 0 && localFormattingTokens.test(format)) {
-            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-            localFormattingTokens.lastIndex = 0;
-            i -= 1;
-        }
-
+    if (format || !formatUpper) {
         return format;
     }
 
-    var match1         = /\d/;            //       0 - 9
-    var match2         = /\d\d/;          //      00 - 99
-    var match3         = /\d{3}/;         //     000 - 999
-    var match4         = /\d{4}/;         //    0000 - 9999
-    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
-    var match1to2      = /\d\d?/;         //       0 - 99
-    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
-    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
-    var match1to3      = /\d{1,3}/;       //       0 - 999
-    var match1to4      = /\d{1,4}/;       //       0 - 9999
-    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
+    this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
+        return val.slice(1);
+    });
 
-    var matchUnsigned  = /\d+/;           //       0 - inf
-    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
+    return this._longDateFormat[key];
+}
 
-    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
-    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
+var defaultInvalidDate = 'Invalid date';
 
-    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
+function invalidDate () {
+    return this._invalidDate;
+}
 
-    // any word (or two) characters or numbers including two/three word month in arabic.
-    // includes scottish gaelic two word and hyphenated months
-    var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+var defaultOrdinal = '%d';
+var defaultOrdinalParse = /\d{1,2}/;
 
+function ordinal (number) {
+    return this._ordinal.replace('%d', number);
+}
 
-    var regexes = {};
+var defaultRelativeTime = {
+    future : 'in %s',
+    past   : '%s ago',
+    s  : 'a few seconds',
+    m  : 'a minute',
+    mm : '%d minutes',
+    h  : 'an hour',
+    hh : '%d hours',
+    d  : 'a day',
+    dd : '%d days',
+    M  : 'a month',
+    MM : '%d months',
+    y  : 'a year',
+    yy : '%d years'
+};
 
-    function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
-            return (isStrict && strictRegex) ? strictRegex : regex;
-        };
-    }
+function relativeTime (number, withoutSuffix, string, isFuture) {
+    var output = this._relativeTime[string];
+    return (isFunction(output)) ?
+        output(number, withoutSuffix, string, isFuture) :
+        output.replace(/%d/i, number);
+}
 
-    function getParseRegexForToken (token, config) {
-        if (!hasOwnProp(regexes, token)) {
-            return new RegExp(unescapeFormat(token));
-        }
+function pastFuture (diff, output) {
+    var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
+    return isFunction(format) ? format(output) : format.replace(/%s/i, output);
+}
 
-        return regexes[token](config._strict, config._locale);
-    }
+var aliases = {};
 
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    function unescapeFormat(s) {
-        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
-            return p1 || p2 || p3 || p4;
-        }));
-    }
+function addUnitAlias (unit, shorthand) {
+    var lowerCase = unit.toLowerCase();
+    aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
+}
 
-    function regexEscape(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    }
+function normalizeUnits(units) {
+    return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
+}
 
-    var tokens = {};
+function normalizeObjectUnits(inputObject) {
+    var normalizedInput = {},
+        normalizedProp,
+        prop;
 
-    function addParseToken (token, callback) {
-        var i, func = callback;
-        if (typeof token === 'string') {
-            token = [token];
-        }
-        if (typeof callback === 'number') {
-            func = function (input, array) {
-                array[callback] = toInt(input);
-            };
-        }
-        for (i = 0; i < token.length; i++) {
-            tokens[token[i]] = func;
-        }
-    }
-
-    function addWeekParseToken (token, callback) {
-        addParseToken(token, function (input, array, config, token) {
-            config._w = config._w || {};
-            callback(input, config._w, config, token);
-        });
-    }
-
-    function addTimeToArrayFromToken(token, input, config) {
-        if (input != null && hasOwnProp(tokens, token)) {
-            tokens[token](input, config._a, config, token);
+    for (prop in inputObject) {
+        if (hasOwnProp(inputObject, prop)) {
+            normalizedProp = normalizeUnits(prop);
+            if (normalizedProp) {
+                normalizedInput[normalizedProp] = inputObject[prop];
+            }
         }
     }
 
-    var YEAR = 0;
-    var MONTH = 1;
-    var DATE = 2;
-    var HOUR = 3;
-    var MINUTE = 4;
-    var SECOND = 5;
-    var MILLISECOND = 6;
-    var WEEK = 7;
-    var WEEKDAY = 8;
+    return normalizedInput;
+}
 
-    var indexOf;
+var priorities = {};
 
-    if (Array.prototype.indexOf) {
-        indexOf = Array.prototype.indexOf;
+function addUnitPriority(unit, priority) {
+    priorities[unit] = priority;
+}
+
+function getPrioritizedUnits(unitsObj) {
+    var units = [];
+    for (var u in unitsObj) {
+        units.push({unit: u, priority: priorities[u]});
+    }
+    units.sort(function (a, b) {
+        return a.priority - b.priority;
+    });
+    return units;
+}
+
+function makeGetSet (unit, keepTime) {
+    return function (value) {
+        if (value != null) {
+            set$1(this, unit, value);
+            hooks.updateOffset(this, keepTime);
+            return this;
+        } else {
+            return get(this, unit);
+        }
+    };
+}
+
+function get (mom, unit) {
+    return mom.isValid() ?
+        mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
+}
+
+function set$1 (mom, unit, value) {
+    if (mom.isValid()) {
+        mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+    }
+}
+
+// MOMENTS
+
+function stringGet (units) {
+    units = normalizeUnits(units);
+    if (isFunction(this[units])) {
+        return this[units]();
+    }
+    return this;
+}
+
+
+function stringSet (units, value) {
+    if (typeof units === 'object') {
+        units = normalizeObjectUnits(units);
+        var prioritized = getPrioritizedUnits(units);
+        for (var i = 0; i < prioritized.length; i++) {
+            this[prioritized[i].unit](units[prioritized[i].unit]);
+        }
     } else {
-        indexOf = function (o) {
-            // I know
-            var i;
-            for (i = 0; i < this.length; ++i) {
-                if (this[i] === o) {
-                    return i;
-                }
-            }
-            return -1;
+        units = normalizeUnits(units);
+        if (isFunction(this[units])) {
+            return this[units](value);
+        }
+    }
+    return this;
+}
+
+function zeroFill(number, targetLength, forceSign) {
+    var absNumber = '' + Math.abs(number),
+        zerosToFill = targetLength - absNumber.length,
+        sign = number >= 0;
+    return (sign ? (forceSign ? '+' : '') : '-') +
+        Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
+}
+
+var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
+
+var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
+
+var formatFunctions = {};
+
+var formatTokenFunctions = {};
+
+// token:    'M'
+// padded:   ['MM', 2]
+// ordinal:  'Mo'
+// callback: function () { this.month() + 1 }
+function addFormatToken (token, padded, ordinal, callback) {
+    var func = callback;
+    if (typeof callback === 'string') {
+        func = function () {
+            return this[callback]();
         };
     }
-
-    function daysInMonth(year, month) {
-        return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+    if (token) {
+        formatTokenFunctions[token] = func;
     }
+    if (padded) {
+        formatTokenFunctions[padded[0]] = function () {
+            return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
+        };
+    }
+    if (ordinal) {
+        formatTokenFunctions[ordinal] = function () {
+            return this.localeData().ordinal(func.apply(this, arguments), token);
+        };
+    }
+}
 
-    // FORMATTING
+function removeFormattingTokens(input) {
+    if (input.match(/\[[\s\S]/)) {
+        return input.replace(/^\[|\]$/g, '');
+    }
+    return input.replace(/\\/g, '');
+}
 
-    addFormatToken('M', ['MM', 2], 'Mo', function () {
-        return this.month() + 1;
-    });
+function makeFormatFunction(format) {
+    var array = format.match(formattingTokens), i, length;
 
-    addFormatToken('MMM', 0, 0, function (format) {
-        return this.localeData().monthsShort(this, format);
-    });
-
-    addFormatToken('MMMM', 0, 0, function (format) {
-        return this.localeData().months(this, format);
-    });
-
-    // ALIASES
-
-    addUnitAlias('month', 'M');
-
-    // PRIORITY
-
-    addUnitPriority('month', 8);
-
-    // PARSING
-
-    addRegexToken('M',    match1to2);
-    addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  function (isStrict, locale) {
-        return locale.monthsShortRegex(isStrict);
-    });
-    addRegexToken('MMMM', function (isStrict, locale) {
-        return locale.monthsRegex(isStrict);
-    });
-
-    addParseToken(['M', 'MM'], function (input, array) {
-        array[MONTH] = toInt(input) - 1;
-    });
-
-    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
-        var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
-        if (month != null) {
-            array[MONTH] = month;
+    for (i = 0, length = array.length; i < length; i++) {
+        if (formatTokenFunctions[array[i]]) {
+            array[i] = formatTokenFunctions[array[i]];
         } else {
-            getParsingFlags(config).invalidMonth = input;
+            array[i] = removeFormattingTokens(array[i]);
         }
+    }
+
+    return function (mom) {
+        var output = '', i;
+        for (i = 0; i < length; i++) {
+            output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
+        }
+        return output;
+    };
+}
+
+// format date using native date object
+function formatMoment(m, format) {
+    if (!m.isValid()) {
+        return m.localeData().invalidDate();
+    }
+
+    format = expandFormat(format, m.localeData());
+    formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
+
+    return formatFunctions[format](m);
+}
+
+function expandFormat(format, locale) {
+    var i = 5;
+
+    function replaceLongDateFormatTokens(input) {
+        return locale.longDateFormat(input) || input;
+    }
+
+    localFormattingTokens.lastIndex = 0;
+    while (i >= 0 && localFormattingTokens.test(format)) {
+        format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+        localFormattingTokens.lastIndex = 0;
+        i -= 1;
+    }
+
+    return format;
+}
+
+var match1         = /\d/;            //       0 - 9
+var match2         = /\d\d/;          //      00 - 99
+var match3         = /\d{3}/;         //     000 - 999
+var match4         = /\d{4}/;         //    0000 - 9999
+var match6         = /[+-]?\d{6}/;    // -999999 - 999999
+var match1to2      = /\d\d?/;         //       0 - 99
+var match3to4      = /\d\d\d\d?/;     //     999 - 9999
+var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
+var match1to3      = /\d{1,3}/;       //       0 - 999
+var match1to4      = /\d{1,4}/;       //       0 - 9999
+var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
+
+var matchUnsigned  = /\d+/;           //       0 - inf
+var matchSigned    = /[+-]?\d+/;      //    -inf - inf
+
+var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
+var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
+
+var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
+
+// any word (or two) characters or numbers including two/three word month in arabic.
+// includes scottish gaelic two word and hyphenated months
+var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+
+
+var regexes = {};
+
+function addRegexToken (token, regex, strictRegex) {
+    regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
+        return (isStrict && strictRegex) ? strictRegex : regex;
+    };
+}
+
+function getParseRegexForToken (token, config) {
+    if (!hasOwnProp(regexes, token)) {
+        return new RegExp(unescapeFormat(token));
+    }
+
+    return regexes[token](config._strict, config._locale);
+}
+
+// Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+function unescapeFormat(s) {
+    return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
+        return p1 || p2 || p3 || p4;
+    }));
+}
+
+function regexEscape(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+var tokens = {};
+
+function addParseToken (token, callback) {
+    var i, func = callback;
+    if (typeof token === 'string') {
+        token = [token];
+    }
+    if (isNumber(callback)) {
+        func = function (input, array) {
+            array[callback] = toInt(input);
+        };
+    }
+    for (i = 0; i < token.length; i++) {
+        tokens[token[i]] = func;
+    }
+}
+
+function addWeekParseToken (token, callback) {
+    addParseToken(token, function (input, array, config, token) {
+        config._w = config._w || {};
+        callback(input, config._w, config, token);
     });
+}
 
-    // LOCALES
-
-    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
-    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m, format) {
-        if (!m) {
-            return this._months;
-        }
-        return isArray(this._months) ? this._months[m.month()] :
-            this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
+function addTimeToArrayFromToken(token, input, config) {
+    if (input != null && hasOwnProp(tokens, token)) {
+        tokens[token](input, config._a, config, token);
     }
+}
 
-    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m, format) {
-        if (!m) {
-            return this._monthsShort;
-        }
-        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
-            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
+var YEAR = 0;
+var MONTH = 1;
+var DATE = 2;
+var HOUR = 3;
+var MINUTE = 4;
+var SECOND = 5;
+var MILLISECOND = 6;
+var WEEK = 7;
+var WEEKDAY = 8;
 
-    function units_month__handleStrictParse(monthName, format, strict) {
-        var i, ii, mom, llc = monthName.toLocaleLowerCase();
-        if (!this._monthsParse) {
-            // this is not used
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-            for (i = 0; i < 12; ++i) {
-                mom = create_utc__createUTC([2000, i]);
-                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
-                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+var indexOf;
+
+if (Array.prototype.indexOf) {
+    indexOf = Array.prototype.indexOf;
+} else {
+    indexOf = function (o) {
+        // I know
+        var i;
+        for (i = 0; i < this.length; ++i) {
+            if (this[i] === o) {
+                return i;
             }
         }
+        return -1;
+    };
+}
 
-        if (strict) {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
+var indexOf$1 = indexOf;
+
+function daysInMonth(year, month) {
+    return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
+// FORMATTING
+
+addFormatToken('M', ['MM', 2], 'Mo', function () {
+    return this.month() + 1;
+});
+
+addFormatToken('MMM', 0, 0, function (format) {
+    return this.localeData().monthsShort(this, format);
+});
+
+addFormatToken('MMMM', 0, 0, function (format) {
+    return this.localeData().months(this, format);
+});
+
+// ALIASES
+
+addUnitAlias('month', 'M');
+
+// PRIORITY
+
+addUnitPriority('month', 8);
+
+// PARSING
+
+addRegexToken('M',    match1to2);
+addRegexToken('MM',   match1to2, match2);
+addRegexToken('MMM',  function (isStrict, locale) {
+    return locale.monthsShortRegex(isStrict);
+});
+addRegexToken('MMMM', function (isStrict, locale) {
+    return locale.monthsRegex(isStrict);
+});
+
+addParseToken(['M', 'MM'], function (input, array) {
+    array[MONTH] = toInt(input) - 1;
+});
+
+addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
+    var month = config._locale.monthsParse(input, token, config._strict);
+    // if we didn't find a month name, mark the date as invalid.
+    if (month != null) {
+        array[MONTH] = month;
+    } else {
+        getParsingFlags(config).invalidMonth = input;
+    }
+});
+
+// LOCALES
+
+var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/;
+var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
+function localeMonths (m, format) {
+    if (!m) {
+        return this._months;
+    }
+    return isArray(this._months) ? this._months[m.month()] :
+        this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
+}
+
+var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
+function localeMonthsShort (m, format) {
+    if (!m) {
+        return this._monthsShort;
+    }
+    return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
+        this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+}
+
+function handleStrictParse(monthName, format, strict) {
+    var i, ii, mom, llc = monthName.toLocaleLowerCase();
+    if (!this._monthsParse) {
+        // this is not used
+        this._monthsParse = [];
+        this._longMonthsParse = [];
+        this._shortMonthsParse = [];
+        for (i = 0; i < 12; ++i) {
+            mom = createUTC([2000, i]);
+            this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
+            this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+        }
+    }
+
+    if (strict) {
+        if (format === 'MMM') {
+            ii = indexOf$1.call(this._shortMonthsParse, llc);
+            return ii !== -1 ? ii : null;
         } else {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
+            ii = indexOf$1.call(this._longMonthsParse, llc);
+            return ii !== -1 ? ii : null;
+        }
+    } else {
+        if (format === 'MMM') {
+            ii = indexOf$1.call(this._shortMonthsParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
+            ii = indexOf$1.call(this._longMonthsParse, llc);
+            return ii !== -1 ? ii : null;
+        } else {
+            ii = indexOf$1.call(this._longMonthsParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._shortMonthsParse, llc);
+            return ii !== -1 ? ii : null;
         }
     }
+}
 
-    function localeMonthsParse (monthName, format, strict) {
-        var i, mom, regex;
+function localeMonthsParse (monthName, format, strict) {
+    var i, mom, regex;
 
-        if (this._monthsParseExact) {
-            return units_month__handleStrictParse.call(this, monthName, format, strict);
-        }
-
-        if (!this._monthsParse) {
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-        }
-
-        // TODO: add sorting
-        // Sorting makes sure if one month (or abbr) is a prefix of another
-        // see sorting in computeMonthsParse
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            if (strict && !this._longMonthsParse[i]) {
-                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-            }
-            if (!strict && !this._monthsParse[i]) {
-                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (!strict && this._monthsParse[i].test(monthName)) {
-                return i;
-            }
-        }
+    if (this._monthsParseExact) {
+        return handleStrictParse.call(this, monthName, format, strict);
     }
 
-    // MOMENTS
+    if (!this._monthsParse) {
+        this._monthsParse = [];
+        this._longMonthsParse = [];
+        this._shortMonthsParse = [];
+    }
 
-    function setMonth (mom, value) {
-        var dayOfMonth;
-
-        if (!mom.isValid()) {
-            // No op
-            return mom;
+    // TODO: add sorting
+    // Sorting makes sure if one month (or abbr) is a prefix of another
+    // see sorting in computeMonthsParse
+    for (i = 0; i < 12; i++) {
+        // make the regex if we don't have it already
+        mom = createUTC([2000, i]);
+        if (strict && !this._longMonthsParse[i]) {
+            this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
+            this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
         }
-
-        if (typeof value === 'string') {
-            if (/^\d+$/.test(value)) {
-                value = toInt(value);
-            } else {
-                value = mom.localeData().monthsParse(value);
-                // TODO: Another silent failure?
-                if (typeof value !== 'number') {
-                    return mom;
-                }
-            }
+        if (!strict && !this._monthsParse[i]) {
+            regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
+            this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
         }
+        // test the regex
+        if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
+            return i;
+        } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
+            return i;
+        } else if (!strict && this._monthsParse[i].test(monthName)) {
+            return i;
+        }
+    }
+}
 
-        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
-        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+// MOMENTS
+
+function setMonth (mom, value) {
+    var dayOfMonth;
+
+    if (!mom.isValid()) {
+        // No op
         return mom;
     }
 
-    function getSetMonth (value) {
-        if (value != null) {
-            setMonth(this, value);
-            utils_hooks__hooks.updateOffset(this, true);
-            return this;
+    if (typeof value === 'string') {
+        if (/^\d+$/.test(value)) {
+            value = toInt(value);
         } else {
-            return get_set__get(this, 'Month');
+            value = mom.localeData().monthsParse(value);
+            // TODO: Another silent failure?
+            if (!isNumber(value)) {
+                return mom;
+            }
         }
     }
 
-    function getDaysInMonth () {
-        return daysInMonth(this.year(), this.month());
-    }
+    dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
+    mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+    return mom;
+}
 
-    var defaultMonthsShortRegex = matchWord;
-    function monthsShortRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsShortStrictRegex;
-            } else {
-                return this._monthsShortRegex;
-            }
+function getSetMonth (value) {
+    if (value != null) {
+        setMonth(this, value);
+        hooks.updateOffset(this, true);
+        return this;
+    } else {
+        return get(this, 'Month');
+    }
+}
+
+function getDaysInMonth () {
+    return daysInMonth(this.year(), this.month());
+}
+
+var defaultMonthsShortRegex = matchWord;
+function monthsShortRegex (isStrict) {
+    if (this._monthsParseExact) {
+        if (!hasOwnProp(this, '_monthsRegex')) {
+            computeMonthsParse.call(this);
+        }
+        if (isStrict) {
+            return this._monthsShortStrictRegex;
         } else {
-            if (!hasOwnProp(this, '_monthsShortRegex')) {
-                this._monthsShortRegex = defaultMonthsShortRegex;
-            }
-            return this._monthsShortStrictRegex && isStrict ?
-                this._monthsShortStrictRegex : this._monthsShortRegex;
+            return this._monthsShortRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_monthsShortRegex')) {
+            this._monthsShortRegex = defaultMonthsShortRegex;
+        }
+        return this._monthsShortStrictRegex && isStrict ?
+            this._monthsShortStrictRegex : this._monthsShortRegex;
     }
+}
 
-    var defaultMonthsRegex = matchWord;
-    function monthsRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsStrictRegex;
-            } else {
-                return this._monthsRegex;
-            }
+var defaultMonthsRegex = matchWord;
+function monthsRegex (isStrict) {
+    if (this._monthsParseExact) {
+        if (!hasOwnProp(this, '_monthsRegex')) {
+            computeMonthsParse.call(this);
+        }
+        if (isStrict) {
+            return this._monthsStrictRegex;
         } else {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                this._monthsRegex = defaultMonthsRegex;
-            }
-            return this._monthsStrictRegex && isStrict ?
-                this._monthsStrictRegex : this._monthsRegex;
+            return this._monthsRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_monthsRegex')) {
+            this._monthsRegex = defaultMonthsRegex;
+        }
+        return this._monthsStrictRegex && isStrict ?
+            this._monthsStrictRegex : this._monthsRegex;
+    }
+}
+
+function computeMonthsParse () {
+    function cmpLenRev(a, b) {
+        return b.length - a.length;
     }
 
-    function computeMonthsParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom;
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            shortPieces.push(this.monthsShort(mom, ''));
-            longPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.monthsShort(mom, ''));
-        }
-        // Sorting makes sure if one month (or abbr) is a prefix of another it
-        // will match the longer piece.
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 12; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-        }
-        for (i = 0; i < 24; i++) {
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._monthsShortRegex = this._monthsRegex;
-        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+    var shortPieces = [], longPieces = [], mixedPieces = [],
+        i, mom;
+    for (i = 0; i < 12; i++) {
+        // make the regex if we don't have it already
+        mom = createUTC([2000, i]);
+        shortPieces.push(this.monthsShort(mom, ''));
+        longPieces.push(this.months(mom, ''));
+        mixedPieces.push(this.months(mom, ''));
+        mixedPieces.push(this.monthsShort(mom, ''));
+    }
+    // Sorting makes sure if one month (or abbr) is a prefix of another it
+    // will match the longer piece.
+    shortPieces.sort(cmpLenRev);
+    longPieces.sort(cmpLenRev);
+    mixedPieces.sort(cmpLenRev);
+    for (i = 0; i < 12; i++) {
+        shortPieces[i] = regexEscape(shortPieces[i]);
+        longPieces[i] = regexEscape(longPieces[i]);
+    }
+    for (i = 0; i < 24; i++) {
+        mixedPieces[i] = regexEscape(mixedPieces[i]);
     }
 
-    // FORMATTING
+    this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+    this._monthsShortRegex = this._monthsRegex;
+    this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+    this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+}
 
-    addFormatToken('Y', 0, 0, function () {
-        var y = this.year();
-        return y <= 9999 ? '' + y : '+' + y;
-    });
+// FORMATTING
 
-    addFormatToken(0, ['YY', 2], 0, function () {
-        return this.year() % 100;
-    });
+addFormatToken('Y', 0, 0, function () {
+    var y = this.year();
+    return y <= 9999 ? '' + y : '+' + y;
+});
 
-    addFormatToken(0, ['YYYY',   4],       0, 'year');
-    addFormatToken(0, ['YYYYY',  5],       0, 'year');
-    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
+addFormatToken(0, ['YY', 2], 0, function () {
+    return this.year() % 100;
+});
 
-    // ALIASES
+addFormatToken(0, ['YYYY',   4],       0, 'year');
+addFormatToken(0, ['YYYYY',  5],       0, 'year');
+addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
 
-    addUnitAlias('year', 'y');
+// ALIASES
 
-    // PRIORITIES
+addUnitAlias('year', 'y');
 
-    addUnitPriority('year', 1);
+// PRIORITIES
 
-    // PARSING
+addUnitPriority('year', 1);
 
-    addRegexToken('Y',      matchSigned);
-    addRegexToken('YY',     match1to2, match2);
-    addRegexToken('YYYY',   match1to4, match4);
-    addRegexToken('YYYYY',  match1to6, match6);
-    addRegexToken('YYYYYY', match1to6, match6);
+// PARSING
 
-    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
-    addParseToken('YYYY', function (input, array) {
-        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
-    });
-    addParseToken('YY', function (input, array) {
-        array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-    addParseToken('Y', function (input, array) {
-        array[YEAR] = parseInt(input, 10);
-    });
+addRegexToken('Y',      matchSigned);
+addRegexToken('YY',     match1to2, match2);
+addRegexToken('YYYY',   match1to4, match4);
+addRegexToken('YYYYY',  match1to6, match6);
+addRegexToken('YYYYYY', match1to6, match6);
 
-    // HELPERS
+addParseToken(['YYYYY', 'YYYYYY'], YEAR);
+addParseToken('YYYY', function (input, array) {
+    array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
+});
+addParseToken('YY', function (input, array) {
+    array[YEAR] = hooks.parseTwoDigitYear(input);
+});
+addParseToken('Y', function (input, array) {
+    array[YEAR] = parseInt(input, 10);
+});
 
-    function daysInYear(year) {
-        return isLeapYear(year) ? 366 : 365;
+// HELPERS
+
+function daysInYear(year) {
+    return isLeapYear(year) ? 366 : 365;
+}
+
+function isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+// HOOKS
+
+hooks.parseTwoDigitYear = function (input) {
+    return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+};
+
+// MOMENTS
+
+var getSetYear = makeGetSet('FullYear', true);
+
+function getIsLeapYear () {
+    return isLeapYear(this.year());
+}
+
+function createDate (y, m, d, h, M, s, ms) {
+    //can't just apply() to create a date:
+    //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
+    var date = new Date(y, m, d, h, M, s, ms);
+
+    //the date constructor remaps years 0-99 to 1900-1999
+    if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
+        date.setFullYear(y);
+    }
+    return date;
+}
+
+function createUTCDate (y) {
+    var date = new Date(Date.UTC.apply(null, arguments));
+
+    //the Date.UTC function remaps years 0-99 to 1900-1999
+    if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
+        date.setUTCFullYear(y);
+    }
+    return date;
+}
+
+// start-of-first-week - start-of-year
+function firstWeekOffset(year, dow, doy) {
+    var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
+        fwd = 7 + dow - doy,
+        // first-week day local weekday -- which local weekday is fwd
+        fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
+
+    return -fwdlw + fwd - 1;
+}
+
+//http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
+function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
+    var localWeekday = (7 + weekday - dow) % 7,
+        weekOffset = firstWeekOffset(year, dow, doy),
+        dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
+        resYear, resDayOfYear;
+
+    if (dayOfYear <= 0) {
+        resYear = year - 1;
+        resDayOfYear = daysInYear(resYear) + dayOfYear;
+    } else if (dayOfYear > daysInYear(year)) {
+        resYear = year + 1;
+        resDayOfYear = dayOfYear - daysInYear(year);
+    } else {
+        resYear = year;
+        resDayOfYear = dayOfYear;
     }
 
-    function isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    }
-
-    // HOOKS
-
-    utils_hooks__hooks.parseTwoDigitYear = function (input) {
-        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+    return {
+        year: resYear,
+        dayOfYear: resDayOfYear
     };
+}
 
-    // MOMENTS
+function weekOfYear(mom, dow, doy) {
+    var weekOffset = firstWeekOffset(mom.year(), dow, doy),
+        week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
+        resWeek, resYear;
 
-    var getSetYear = makeGetSet('FullYear', true);
-
-    function getIsLeapYear () {
-        return isLeapYear(this.year());
+    if (week < 1) {
+        resYear = mom.year() - 1;
+        resWeek = week + weeksInYear(resYear, dow, doy);
+    } else if (week > weeksInYear(mom.year(), dow, doy)) {
+        resWeek = week - weeksInYear(mom.year(), dow, doy);
+        resYear = mom.year() + 1;
+    } else {
+        resYear = mom.year();
+        resWeek = week;
     }
 
-    function createDate (y, m, d, h, M, s, ms) {
-        //can't just apply() to create a date:
-        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
-        var date = new Date(y, m, d, h, M, s, ms);
-
-        //the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
-            date.setFullYear(y);
-        }
-        return date;
-    }
-
-    function createUTCDate (y) {
-        var date = new Date(Date.UTC.apply(null, arguments));
-
-        //the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
-            date.setUTCFullYear(y);
-        }
-        return date;
-    }
-
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
-            fwd = 7 + dow - doy,
-            // first-week day local weekday -- which local weekday is fwd
-            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
-
-        return -fwdlw + fwd - 1;
-    }
-
-    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-        var localWeekday = (7 + weekday - dow) % 7,
-            weekOffset = firstWeekOffset(year, dow, doy),
-            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
-            resYear, resDayOfYear;
-
-        if (dayOfYear <= 0) {
-            resYear = year - 1;
-            resDayOfYear = daysInYear(resYear) + dayOfYear;
-        } else if (dayOfYear > daysInYear(year)) {
-            resYear = year + 1;
-            resDayOfYear = dayOfYear - daysInYear(year);
-        } else {
-            resYear = year;
-            resDayOfYear = dayOfYear;
-        }
-
-        return {
-            year: resYear,
-            dayOfYear: resDayOfYear
-        };
-    }
-
-    function weekOfYear(mom, dow, doy) {
-        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
-            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
-            resWeek, resYear;
-
-        if (week < 1) {
-            resYear = mom.year() - 1;
-            resWeek = week + weeksInYear(resYear, dow, doy);
-        } else if (week > weeksInYear(mom.year(), dow, doy)) {
-            resWeek = week - weeksInYear(mom.year(), dow, doy);
-            resYear = mom.year() + 1;
-        } else {
-            resYear = mom.year();
-            resWeek = week;
-        }
-
-        return {
-            week: resWeek,
-            year: resYear
-        };
-    }
-
-    function weeksInYear(year, dow, doy) {
-        var weekOffset = firstWeekOffset(year, dow, doy),
-            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
-    }
-
-    // FORMATTING
-
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
-
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PRIORITIES
-
-    addUnitPriority('week', 5);
-    addUnitPriority('isoWeek', 5);
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
+    return {
+        week: resWeek,
+        year: resYear
     };
+}
 
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
+function weeksInYear(year, dow, doy) {
+    var weekOffset = firstWeekOffset(year, dow, doy),
+        weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
+    return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
+}
+
+// FORMATTING
+
+addFormatToken('w', ['ww', 2], 'wo', 'week');
+addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
+
+// ALIASES
+
+addUnitAlias('week', 'w');
+addUnitAlias('isoWeek', 'W');
+
+// PRIORITIES
+
+addUnitPriority('week', 5);
+addUnitPriority('isoWeek', 5);
+
+// PARSING
+
+addRegexToken('w',  match1to2);
+addRegexToken('ww', match1to2, match2);
+addRegexToken('W',  match1to2);
+addRegexToken('WW', match1to2, match2);
+
+addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
+    week[token.substr(0, 1)] = toInt(input);
+});
+
+// HELPERS
+
+// LOCALES
+
+function localeWeek (mom) {
+    return weekOfYear(mom, this._week.dow, this._week.doy).week;
+}
+
+var defaultLocaleWeek = {
+    dow : 0, // Sunday is the first day of the week.
+    doy : 6  // The week that contains Jan 1st is the first week of the year.
+};
+
+function localeFirstDayOfWeek () {
+    return this._week.dow;
+}
+
+function localeFirstDayOfYear () {
+    return this._week.doy;
+}
+
+// MOMENTS
+
+function getSetWeek (input) {
+    var week = this.localeData().week(this);
+    return input == null ? week : this.add((input - week) * 7, 'd');
+}
+
+function getSetISOWeek (input) {
+    var week = weekOfYear(this, 1, 4).week;
+    return input == null ? week : this.add((input - week) * 7, 'd');
+}
+
+// FORMATTING
+
+addFormatToken('d', 0, 'do', 'day');
+
+addFormatToken('dd', 0, 0, function (format) {
+    return this.localeData().weekdaysMin(this, format);
+});
+
+addFormatToken('ddd', 0, 0, function (format) {
+    return this.localeData().weekdaysShort(this, format);
+});
+
+addFormatToken('dddd', 0, 0, function (format) {
+    return this.localeData().weekdays(this, format);
+});
+
+addFormatToken('e', 0, 0, 'weekday');
+addFormatToken('E', 0, 0, 'isoWeekday');
+
+// ALIASES
+
+addUnitAlias('day', 'd');
+addUnitAlias('weekday', 'e');
+addUnitAlias('isoWeekday', 'E');
+
+// PRIORITY
+addUnitPriority('day', 11);
+addUnitPriority('weekday', 11);
+addUnitPriority('isoWeekday', 11);
+
+// PARSING
+
+addRegexToken('d',    match1to2);
+addRegexToken('e',    match1to2);
+addRegexToken('E',    match1to2);
+addRegexToken('dd',   function (isStrict, locale) {
+    return locale.weekdaysMinRegex(isStrict);
+});
+addRegexToken('ddd',   function (isStrict, locale) {
+    return locale.weekdaysShortRegex(isStrict);
+});
+addRegexToken('dddd',   function (isStrict, locale) {
+    return locale.weekdaysRegex(isStrict);
+});
+
+addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
+    var weekday = config._locale.weekdaysParse(input, token, config._strict);
+    // if we didn't get a weekday name, mark the date as invalid
+    if (weekday != null) {
+        week.d = weekday;
+    } else {
+        getParsingFlags(config).invalidWeekday = input;
+    }
+});
+
+addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
+    week[token] = toInt(input);
+});
+
+// HELPERS
+
+function parseWeekday(input, locale) {
+    if (typeof input !== 'string') {
+        return input;
     }
 
-    function localeFirstDayOfYear () {
-        return this._week.doy;
+    if (!isNaN(input)) {
+        return parseInt(input, 10);
     }
 
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
+    input = locale.weekdaysParse(input);
+    if (typeof input === 'number') {
+        return input;
     }
 
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
+    return null;
+}
+
+function parseIsoWeekday(input, locale) {
+    if (typeof input === 'string') {
+        return locale.weekdaysParse(input) % 7 || 7;
+    }
+    return isNaN(input) ? null : input;
+}
+
+// LOCALES
+
+var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
+function localeWeekdays (m, format) {
+    if (!m) {
+        return this._weekdays;
+    }
+    return isArray(this._weekdays) ? this._weekdays[m.day()] :
+        this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
+}
+
+var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
+function localeWeekdaysShort (m) {
+    return (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+}
+
+var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
+function localeWeekdaysMin (m) {
+    return (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+}
+
+function handleStrictParse$1(weekdayName, format, strict) {
+    var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
+    if (!this._weekdaysParse) {
+        this._weekdaysParse = [];
+        this._shortWeekdaysParse = [];
+        this._minWeekdaysParse = [];
+
+        for (i = 0; i < 7; ++i) {
+            mom = createUTC([2000, 1]).day(i);
+            this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
+            this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
+            this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
+        }
     }
 
-    // FORMATTING
-
-    addFormatToken('d', 0, 'do', 'day');
-
-    addFormatToken('dd', 0, 0, function (format) {
-        return this.localeData().weekdaysMin(this, format);
-    });
-
-    addFormatToken('ddd', 0, 0, function (format) {
-        return this.localeData().weekdaysShort(this, format);
-    });
-
-    addFormatToken('dddd', 0, 0, function (format) {
-        return this.localeData().weekdays(this, format);
-    });
-
-    addFormatToken('e', 0, 0, 'weekday');
-    addFormatToken('E', 0, 0, 'isoWeekday');
-
-    // ALIASES
-
-    addUnitAlias('day', 'd');
-    addUnitAlias('weekday', 'e');
-    addUnitAlias('isoWeekday', 'E');
-
-    // PRIORITY
-    addUnitPriority('day', 11);
-    addUnitPriority('weekday', 11);
-    addUnitPriority('isoWeekday', 11);
-
-    // PARSING
-
-    addRegexToken('d',    match1to2);
-    addRegexToken('e',    match1to2);
-    addRegexToken('E',    match1to2);
-    addRegexToken('dd',   function (isStrict, locale) {
-        return locale.weekdaysMinRegex(isStrict);
-    });
-    addRegexToken('ddd',   function (isStrict, locale) {
-        return locale.weekdaysShortRegex(isStrict);
-    });
-    addRegexToken('dddd',   function (isStrict, locale) {
-        return locale.weekdaysRegex(isStrict);
-    });
-
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
-        var weekday = config._locale.weekdaysParse(input, token, config._strict);
-        // if we didn't get a weekday name, mark the date as invalid
-        if (weekday != null) {
-            week.d = weekday;
+    if (strict) {
+        if (format === 'dddd') {
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            return ii !== -1 ? ii : null;
+        } else if (format === 'ddd') {
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         } else {
-            getParsingFlags(config).invalidWeekday = input;
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         }
-    });
-
-    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
-        week[token] = toInt(input);
-    });
-
-    // HELPERS
-
-    function parseWeekday(input, locale) {
-        if (typeof input !== 'string') {
-            return input;
-        }
-
-        if (!isNaN(input)) {
-            return parseInt(input, 10);
-        }
-
-        input = locale.weekdaysParse(input);
-        if (typeof input === 'number') {
-            return input;
-        }
-
-        return null;
-    }
-
-    function parseIsoWeekday(input, locale) {
-        if (typeof input === 'string') {
-            return locale.weekdaysParse(input) % 7 || 7;
-        }
-        return isNaN(input) ? null : input;
-    }
-
-    // LOCALES
-
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m, format) {
-        if (!m) {
-            return this._weekdays;
-        }
-        return isArray(this._weekdays) ? this._weekdays[m.day()] :
-            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
-    }
-
-    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
-    function localeWeekdaysShort (m) {
-        return (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
-    }
-
-    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
-    function localeWeekdaysMin (m) {
-        return (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
-    }
-
-    function day_of_week__handleStrictParse(weekdayName, format, strict) {
-        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._minWeekdaysParse = [];
-
-            for (i = 0; i < 7; ++i) {
-                mom = create_utc__createUTC([2000, 1]).day(i);
-                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
-                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
-                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
+    } else {
+        if (format === 'dddd') {
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
-        }
-
-        if (strict) {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
+        } else if (format === 'ddd') {
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         } else {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         }
     }
+}
 
-    function localeWeekdaysParse (weekdayName, format, strict) {
-        var i, mom, regex;
+function localeWeekdaysParse (weekdayName, format, strict) {
+    var i, mom, regex;
 
-        if (this._weekdaysParseExact) {
-            return day_of_week__handleStrictParse.call(this, weekdayName, format, strict);
-        }
-
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._minWeekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._fullWeekdaysParse = [];
-        }
-
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
-            }
-            if (!this._weekdaysParse[i]) {
-                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
-                return i;
-            }
-        }
+    if (this._weekdaysParseExact) {
+        return handleStrictParse$1.call(this, weekdayName, format, strict);
     }
 
-    // MOMENTS
+    if (!this._weekdaysParse) {
+        this._weekdaysParse = [];
+        this._minWeekdaysParse = [];
+        this._shortWeekdaysParse = [];
+        this._fullWeekdaysParse = [];
+    }
 
-    function getSetDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
+    for (i = 0; i < 7; i++) {
+        // make the regex if we don't have it already
+
+        mom = createUTC([2000, 1]).day(i);
+        if (strict && !this._fullWeekdaysParse[i]) {
+            this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
+            this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
+            this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
         }
-        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-        if (input != null) {
-            input = parseWeekday(input, this.localeData());
-            return this.add(input - day, 'd');
+        if (!this._weekdaysParse[i]) {
+            regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
+            this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
+        }
+        // test the regex
+        if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
+            return i;
+        } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
+            return i;
+        } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
+            return i;
+        } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
+            return i;
+        }
+    }
+}
+
+// MOMENTS
+
+function getSetDayOfWeek (input) {
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+    var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
+    if (input != null) {
+        input = parseWeekday(input, this.localeData());
+        return this.add(input - day, 'd');
+    } else {
+        return day;
+    }
+}
+
+function getSetLocaleDayOfWeek (input) {
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+    var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
+    return input == null ? weekday : this.add(input - weekday, 'd');
+}
+
+function getSetISODayOfWeek (input) {
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+
+    // behaves the same as moment#day except
+    // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
+    // as a setter, sunday should belong to the previous week.
+
+    if (input != null) {
+        var weekday = parseIsoWeekday(input, this.localeData());
+        return this.day(this.day() % 7 ? weekday : weekday - 7);
+    } else {
+        return this.day() || 7;
+    }
+}
+
+var defaultWeekdaysRegex = matchWord;
+function weekdaysRegex (isStrict) {
+    if (this._weekdaysParseExact) {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            computeWeekdaysParse.call(this);
+        }
+        if (isStrict) {
+            return this._weekdaysStrictRegex;
         } else {
-            return day;
+            return this._weekdaysRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            this._weekdaysRegex = defaultWeekdaysRegex;
+        }
+        return this._weekdaysStrictRegex && isStrict ?
+            this._weekdaysStrictRegex : this._weekdaysRegex;
     }
+}
 
-    function getSetLocaleDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
+var defaultWeekdaysShortRegex = matchWord;
+function weekdaysShortRegex (isStrict) {
+    if (this._weekdaysParseExact) {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            computeWeekdaysParse.call(this);
         }
-        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-        return input == null ? weekday : this.add(input - weekday, 'd');
-    }
-
-    function getSetISODayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-
-        // behaves the same as moment#day except
-        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-        // as a setter, sunday should belong to the previous week.
-
-        if (input != null) {
-            var weekday = parseIsoWeekday(input, this.localeData());
-            return this.day(this.day() % 7 ? weekday : weekday - 7);
+        if (isStrict) {
+            return this._weekdaysShortStrictRegex;
         } else {
-            return this.day() || 7;
+            return this._weekdaysShortRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_weekdaysShortRegex')) {
+            this._weekdaysShortRegex = defaultWeekdaysShortRegex;
+        }
+        return this._weekdaysShortStrictRegex && isStrict ?
+            this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
     }
+}
 
-    var defaultWeekdaysRegex = matchWord;
-    function weekdaysRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysStrictRegex;
-            } else {
-                return this._weekdaysRegex;
-            }
+var defaultWeekdaysMinRegex = matchWord;
+function weekdaysMinRegex (isStrict) {
+    if (this._weekdaysParseExact) {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            computeWeekdaysParse.call(this);
+        }
+        if (isStrict) {
+            return this._weekdaysMinStrictRegex;
         } else {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                this._weekdaysRegex = defaultWeekdaysRegex;
-            }
-            return this._weekdaysStrictRegex && isStrict ?
-                this._weekdaysStrictRegex : this._weekdaysRegex;
+            return this._weekdaysMinRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_weekdaysMinRegex')) {
+            this._weekdaysMinRegex = defaultWeekdaysMinRegex;
+        }
+        return this._weekdaysMinStrictRegex && isStrict ?
+            this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
+    }
+}
+
+
+function computeWeekdaysParse () {
+    function cmpLenRev(a, b) {
+        return b.length - a.length;
     }
 
-    var defaultWeekdaysShortRegex = matchWord;
-    function weekdaysShortRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysShortStrictRegex;
-            } else {
-                return this._weekdaysShortRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_weekdaysShortRegex')) {
-                this._weekdaysShortRegex = defaultWeekdaysShortRegex;
-            }
-            return this._weekdaysShortStrictRegex && isStrict ?
-                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
-        }
+    var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
+        i, mom, minp, shortp, longp;
+    for (i = 0; i < 7; i++) {
+        // make the regex if we don't have it already
+        mom = createUTC([2000, 1]).day(i);
+        minp = this.weekdaysMin(mom, '');
+        shortp = this.weekdaysShort(mom, '');
+        longp = this.weekdays(mom, '');
+        minPieces.push(minp);
+        shortPieces.push(shortp);
+        longPieces.push(longp);
+        mixedPieces.push(minp);
+        mixedPieces.push(shortp);
+        mixedPieces.push(longp);
+    }
+    // Sorting makes sure if one weekday (or abbr) is a prefix of another it
+    // will match the longer piece.
+    minPieces.sort(cmpLenRev);
+    shortPieces.sort(cmpLenRev);
+    longPieces.sort(cmpLenRev);
+    mixedPieces.sort(cmpLenRev);
+    for (i = 0; i < 7; i++) {
+        shortPieces[i] = regexEscape(shortPieces[i]);
+        longPieces[i] = regexEscape(longPieces[i]);
+        mixedPieces[i] = regexEscape(mixedPieces[i]);
     }
 
-    var defaultWeekdaysMinRegex = matchWord;
-    function weekdaysMinRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysMinStrictRegex;
-            } else {
-                return this._weekdaysMinRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_weekdaysMinRegex')) {
-                this._weekdaysMinRegex = defaultWeekdaysMinRegex;
-            }
-            return this._weekdaysMinStrictRegex && isStrict ?
-                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
-        }
-    }
+    this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+    this._weekdaysShortRegex = this._weekdaysRegex;
+    this._weekdaysMinRegex = this._weekdaysRegex;
 
+    this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+    this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+    this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
+}
 
-    function computeWeekdaysParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
+// FORMATTING
 
-        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom, minp, shortp, longp;
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            minp = this.weekdaysMin(mom, '');
-            shortp = this.weekdaysShort(mom, '');
-            longp = this.weekdays(mom, '');
-            minPieces.push(minp);
-            shortPieces.push(shortp);
-            longPieces.push(longp);
-            mixedPieces.push(minp);
-            mixedPieces.push(shortp);
-            mixedPieces.push(longp);
-        }
-        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
-        // will match the longer piece.
-        minPieces.sort(cmpLenRev);
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 7; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
+function hFormat() {
+    return this.hours() % 12 || 12;
+}
 
-        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._weekdaysShortRegex = this._weekdaysRegex;
-        this._weekdaysMinRegex = this._weekdaysRegex;
+function kFormat() {
+    return this.hours() || 24;
+}
 
-        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
-    }
+addFormatToken('H', ['HH', 2], 0, 'hour');
+addFormatToken('h', ['hh', 2], 0, hFormat);
+addFormatToken('k', ['kk', 2], 0, kFormat);
 
-    // FORMATTING
+addFormatToken('hmm', 0, 0, function () {
+    return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+});
 
-    function hFormat() {
-        return this.hours() % 12 || 12;
-    }
+addFormatToken('hmmss', 0, 0, function () {
+    return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
+        zeroFill(this.seconds(), 2);
+});
 
-    function kFormat() {
-        return this.hours() || 24;
-    }
+addFormatToken('Hmm', 0, 0, function () {
+    return '' + this.hours() + zeroFill(this.minutes(), 2);
+});
 
-    addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, hFormat);
-    addFormatToken('k', ['kk', 2], 0, kFormat);
+addFormatToken('Hmmss', 0, 0, function () {
+    return '' + this.hours() + zeroFill(this.minutes(), 2) +
+        zeroFill(this.seconds(), 2);
+});
 
-    addFormatToken('hmm', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+function meridiem (token, lowercase) {
+    addFormatToken(token, 0, 0, function () {
+        return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
     });
+}
 
-    addFormatToken('hmmss', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
+meridiem('a', true);
+meridiem('A', false);
 
-    addFormatToken('Hmm', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2);
-    });
+// ALIASES
 
-    addFormatToken('Hmmss', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
+addUnitAlias('hour', 'h');
 
-    function meridiem (token, lowercase) {
-        addFormatToken(token, 0, 0, function () {
-            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
-        });
+// PRIORITY
+addUnitPriority('hour', 13);
+
+// PARSING
+
+function matchMeridiem (isStrict, locale) {
+    return locale._meridiemParse;
+}
+
+addRegexToken('a',  matchMeridiem);
+addRegexToken('A',  matchMeridiem);
+addRegexToken('H',  match1to2);
+addRegexToken('h',  match1to2);
+addRegexToken('HH', match1to2, match2);
+addRegexToken('hh', match1to2, match2);
+
+addRegexToken('hmm', match3to4);
+addRegexToken('hmmss', match5to6);
+addRegexToken('Hmm', match3to4);
+addRegexToken('Hmmss', match5to6);
+
+addParseToken(['H', 'HH'], HOUR);
+addParseToken(['a', 'A'], function (input, array, config) {
+    config._isPm = config._locale.isPM(input);
+    config._meridiem = input;
+});
+addParseToken(['h', 'hh'], function (input, array, config) {
+    array[HOUR] = toInt(input);
+    getParsingFlags(config).bigHour = true;
+});
+addParseToken('hmm', function (input, array, config) {
+    var pos = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos));
+    array[MINUTE] = toInt(input.substr(pos));
+    getParsingFlags(config).bigHour = true;
+});
+addParseToken('hmmss', function (input, array, config) {
+    var pos1 = input.length - 4;
+    var pos2 = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos1));
+    array[MINUTE] = toInt(input.substr(pos1, 2));
+    array[SECOND] = toInt(input.substr(pos2));
+    getParsingFlags(config).bigHour = true;
+});
+addParseToken('Hmm', function (input, array, config) {
+    var pos = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos));
+    array[MINUTE] = toInt(input.substr(pos));
+});
+addParseToken('Hmmss', function (input, array, config) {
+    var pos1 = input.length - 4;
+    var pos2 = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos1));
+    array[MINUTE] = toInt(input.substr(pos1, 2));
+    array[SECOND] = toInt(input.substr(pos2));
+});
+
+// LOCALES
+
+function localeIsPM (input) {
+    // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
+    // Using charAt should be more compatible.
+    return ((input + '').toLowerCase().charAt(0) === 'p');
+}
+
+var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
+function localeMeridiem (hours, minutes, isLower) {
+    if (hours > 11) {
+        return isLower ? 'pm' : 'PM';
+    } else {
+        return isLower ? 'am' : 'AM';
     }
-
-    meridiem('a', true);
-    meridiem('A', false);
-
-    // ALIASES
-
-    addUnitAlias('hour', 'h');
-
-    // PRIORITY
-    addUnitPriority('hour', 13);
-
-    // PARSING
-
-    function matchMeridiem (isStrict, locale) {
-        return locale._meridiemParse;
-    }
-
-    addRegexToken('a',  matchMeridiem);
-    addRegexToken('A',  matchMeridiem);
-    addRegexToken('H',  match1to2);
-    addRegexToken('h',  match1to2);
-    addRegexToken('HH', match1to2, match2);
-    addRegexToken('hh', match1to2, match2);
-
-    addRegexToken('hmm', match3to4);
-    addRegexToken('hmmss', match5to6);
-    addRegexToken('Hmm', match3to4);
-    addRegexToken('Hmmss', match5to6);
-
-    addParseToken(['H', 'HH'], HOUR);
-    addParseToken(['a', 'A'], function (input, array, config) {
-        config._isPm = config._locale.isPM(input);
-        config._meridiem = input;
-    });
-    addParseToken(['h', 'hh'], function (input, array, config) {
-        array[HOUR] = toInt(input);
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('Hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-    });
-    addParseToken('Hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-    });
-
-    // LOCALES
-
-    function localeIsPM (input) {
-        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-        // Using charAt should be more compatible.
-        return ((input + '').toLowerCase().charAt(0) === 'p');
-    }
-
-    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
-    function localeMeridiem (hours, minutes, isLower) {
-        if (hours > 11) {
-            return isLower ? 'pm' : 'PM';
-        } else {
-            return isLower ? 'am' : 'AM';
-        }
-    }
+}
 
 
-    // MOMENTS
+// MOMENTS
 
-    // Setting the hour should keep the time, because the user explicitly
-    // specified which hour he wants. So trying to maintain the same hour (in
-    // a new timezone) makes sense. Adding/subtracting hours does not follow
-    // this rule.
-    var getSetHour = makeGetSet('Hours', true);
+// Setting the hour should keep the time, because the user explicitly
+// specified which hour he wants. So trying to maintain the same hour (in
+// a new timezone) makes sense. Adding/subtracting hours does not follow
+// this rule.
+var getSetHour = makeGetSet('Hours', true);
 
-    var baseConfig = {
-        calendar: defaultCalendar,
-        longDateFormat: defaultLongDateFormat,
-        invalidDate: defaultInvalidDate,
-        ordinal: defaultOrdinal,
-        ordinalParse: defaultOrdinalParse,
-        relativeTime: defaultRelativeTime,
+// months
+// week
+// weekdays
+// meridiem
+var baseConfig = {
+    calendar: defaultCalendar,
+    longDateFormat: defaultLongDateFormat,
+    invalidDate: defaultInvalidDate,
+    ordinal: defaultOrdinal,
+    ordinalParse: defaultOrdinalParse,
+    relativeTime: defaultRelativeTime,
 
-        months: defaultLocaleMonths,
-        monthsShort: defaultLocaleMonthsShort,
+    months: defaultLocaleMonths,
+    monthsShort: defaultLocaleMonthsShort,
 
-        week: defaultLocaleWeek,
+    week: defaultLocaleWeek,
 
-        weekdays: defaultLocaleWeekdays,
-        weekdaysMin: defaultLocaleWeekdaysMin,
-        weekdaysShort: defaultLocaleWeekdaysShort,
+    weekdays: defaultLocaleWeekdays,
+    weekdaysMin: defaultLocaleWeekdaysMin,
+    weekdaysShort: defaultLocaleWeekdaysShort,
 
-        meridiemParse: defaultLocaleMeridiemParse
-    };
+    meridiemParse: defaultLocaleMeridiemParse
+};
 
-    // internal storage for locale config files
-    var locales = {};
-    var globalLocale;
+// internal storage for locale config files
+var locales = {};
+var localeFamilies = {};
+var globalLocale;
 
-    function normalizeLocale(key) {
-        return key ? key.toLowerCase().replace('_', '-') : key;
-    }
+function normalizeLocale(key) {
+    return key ? key.toLowerCase().replace('_', '-') : key;
+}
 
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
-    function chooseLocale(names) {
-        var i = 0, j, next, locale, split;
+// pick the locale from the array
+// try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
+// substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
+function chooseLocale(names) {
+    var i = 0, j, next, locale, split;
 
-        while (i < names.length) {
-            split = normalizeLocale(names[i]).split('-');
-            j = split.length;
-            next = normalizeLocale(names[i + 1]);
-            next = next ? next.split('-') : null;
-            while (j > 0) {
-                locale = loadLocale(split.slice(0, j).join('-'));
-                if (locale) {
-                    return locale;
-                }
-                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
-                    //the next array item is better than a shallower substring of this one
-                    break;
-                }
-                j--;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    function loadLocale(name) {
-        var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && (typeof module !== 'undefined') &&
-                module && module.exports) {
-            try {
-                oldLocale = globalLocale._abbr;
-                require('./locale/' + name);
-                // because defineLocale currently also sets the global locale, we
-                // want to undo that for lazy loaded locales
-                locale_locales__getSetGlobalLocale(oldLocale);
-            } catch (e) { }
-        }
-        return locales[name];
-    }
-
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
-    function locale_locales__getSetGlobalLocale (key, values) {
-        var data;
-        if (key) {
-            if (isUndefined(values)) {
-                data = locale_locales__getLocale(key);
-            }
-            else {
-                data = defineLocale(key, values);
-            }
-
-            if (data) {
-                // moment.duration._locale = moment._locale = data;
-                globalLocale = data;
-            }
-        }
-
-        return globalLocale._abbr;
-    }
-
-    function defineLocale (name, config) {
-        if (config !== null) {
-            var parentConfig = baseConfig;
-            config.abbr = name;
-            if (locales[name] != null) {
-                deprecateSimple('defineLocaleOverride',
-                        'use moment.updateLocale(localeName, config) to change ' +
-                        'an existing locale. moment.defineLocale(localeName, ' +
-                        'config) should only be used for creating a new locale ' +
-                        'See http://momentjs.com/guides/#/warnings/define-locale/ for more info.');
-                parentConfig = locales[name]._config;
-            } else if (config.parentLocale != null) {
-                if (locales[config.parentLocale] != null) {
-                    parentConfig = locales[config.parentLocale]._config;
-                } else {
-                    // treat as if there is no base config
-                    deprecateSimple('parentLocaleUndefined',
-                            'specified parentLocale is not defined yet. See http://momentjs.com/guides/#/warnings/parent-locale/');
-                }
-            }
-            locales[name] = new Locale(mergeConfigs(parentConfig, config));
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-
-            return locales[name];
-        } else {
-            // useful for testing
-            delete locales[name];
-            return null;
-        }
-    }
-
-    function updateLocale(name, config) {
-        if (config != null) {
-            var locale, parentConfig = baseConfig;
-            // MERGE
-            if (locales[name] != null) {
-                parentConfig = locales[name]._config;
-            }
-            config = mergeConfigs(parentConfig, config);
-            locale = new Locale(config);
-            locale.parentLocale = locales[name];
-            locales[name] = locale;
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-        } else {
-            // pass null for config to unupdate, useful for tests
-            if (locales[name] != null) {
-                if (locales[name].parentLocale != null) {
-                    locales[name] = locales[name].parentLocale;
-                } else if (locales[name] != null) {
-                    delete locales[name];
-                }
-            }
-        }
-        return locales[name];
-    }
-
-    // returns locale data
-    function locale_locales__getLocale (key) {
-        var locale;
-
-        if (key && key._locale && key._locale._abbr) {
-            key = key._locale._abbr;
-        }
-
-        if (!key) {
-            return globalLocale;
-        }
-
-        if (!isArray(key)) {
-            //short-circuit everything else
-            locale = loadLocale(key);
+    while (i < names.length) {
+        split = normalizeLocale(names[i]).split('-');
+        j = split.length;
+        next = normalizeLocale(names[i + 1]);
+        next = next ? next.split('-') : null;
+        while (j > 0) {
+            locale = loadLocale(split.slice(0, j).join('-'));
             if (locale) {
                 return locale;
             }
-            key = [key];
+            if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
+                //the next array item is better than a shallower substring of this one
+                break;
+            }
+            j--;
+        }
+        i++;
+    }
+    return null;
+}
+
+function loadLocale(name) {
+    var oldLocale = null;
+    // TODO: Find a better way to register and load all the locales in Node
+    if (!locales[name] && (typeof module !== 'undefined') &&
+            module && module.exports) {
+        try {
+            oldLocale = globalLocale._abbr;
+            require('./locale/' + name);
+            // because defineLocale currently also sets the global locale, we
+            // want to undo that for lazy loaded locales
+            getSetGlobalLocale(oldLocale);
+        } catch (e) { }
+    }
+    return locales[name];
+}
+
+// This function will load locale and then set the global locale.  If
+// no arguments are passed in, it will simply return the current global
+// locale key.
+function getSetGlobalLocale (key, values) {
+    var data;
+    if (key) {
+        if (isUndefined(values)) {
+            data = getLocale(key);
+        }
+        else {
+            data = defineLocale(key, values);
         }
 
-        return chooseLocale(key);
+        if (data) {
+            // moment.duration._locale = moment._locale = data;
+            globalLocale = data;
+        }
     }
 
-    function locale_locales__listLocales() {
-        return keys(locales);
-    }
+    return globalLocale._abbr;
+}
 
-    function checkOverflow (m) {
-        var overflow;
-        var a = m._a;
-
-        if (a && getParsingFlags(m).overflow === -2) {
-            overflow =
-                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
-                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
-                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
-                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
-                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
-                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
-                -1;
-
-            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-                overflow = DATE;
+function defineLocale (name, config) {
+    if (config !== null) {
+        var parentConfig = baseConfig;
+        config.abbr = name;
+        if (locales[name] != null) {
+            deprecateSimple('defineLocaleOverride',
+                    'use moment.updateLocale(localeName, config) to change ' +
+                    'an existing locale. moment.defineLocale(localeName, ' +
+                    'config) should only be used for creating a new locale ' +
+                    'See http://momentjs.com/guides/#/warnings/define-locale/ for more info.');
+            parentConfig = locales[name]._config;
+        } else if (config.parentLocale != null) {
+            if (locales[config.parentLocale] != null) {
+                parentConfig = locales[config.parentLocale]._config;
+            } else {
+                if (!localeFamilies[config.parentLocale]) {
+                    localeFamilies[config.parentLocale] = [];
+                }
+                localeFamilies[config.parentLocale].push({
+                    name: name,
+                    config: config
+                });
+                return null;
             }
-            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
-                overflow = WEEK;
-            }
-            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
-                overflow = WEEKDAY;
-            }
+        }
+        locales[name] = new Locale(mergeConfigs(parentConfig, config));
 
-            getParsingFlags(m).overflow = overflow;
+        if (localeFamilies[name]) {
+            localeFamilies[name].forEach(function (x) {
+                defineLocale(x.name, x.config);
+            });
         }
 
-        return m;
+        // backwards compat for now: also set the locale
+        // make sure we set the locale AFTER all child locales have been
+        // created, so we won't end up with the child locale set.
+        getSetGlobalLocale(name);
+
+
+        return locales[name];
+    } else {
+        // useful for testing
+        delete locales[name];
+        return null;
+    }
+}
+
+function updateLocale(name, config) {
+    if (config != null) {
+        var locale, parentConfig = baseConfig;
+        // MERGE
+        if (locales[name] != null) {
+            parentConfig = locales[name]._config;
+        }
+        config = mergeConfigs(parentConfig, config);
+        locale = new Locale(config);
+        locale.parentLocale = locales[name];
+        locales[name] = locale;
+
+        // backwards compat for now: also set the locale
+        getSetGlobalLocale(name);
+    } else {
+        // pass null for config to unupdate, useful for tests
+        if (locales[name] != null) {
+            if (locales[name].parentLocale != null) {
+                locales[name] = locales[name].parentLocale;
+            } else if (locales[name] != null) {
+                delete locales[name];
+            }
+        }
+    }
+    return locales[name];
+}
+
+// returns locale data
+function getLocale (key) {
+    var locale;
+
+    if (key && key._locale && key._locale._abbr) {
+        key = key._locale._abbr;
     }
 
-    // iso 8601 regex
-    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
+    if (!key) {
+        return globalLocale;
+    }
 
-    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
+    if (!isArray(key)) {
+        //short-circuit everything else
+        locale = loadLocale(key);
+        if (locale) {
+            return locale;
+        }
+        key = [key];
+    }
 
-    var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
-        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
-        ['YYYY-DDD', /\d{4}-\d{3}/],
-        ['YYYY-MM', /\d{4}-\d\d/, false],
-        ['YYYYYYMMDD', /[+-]\d{10}/],
-        ['YYYYMMDD', /\d{8}/],
-        // YYYYMM is NOT allowed by the standard
-        ['GGGG[W]WWE', /\d{4}W\d{3}/],
-        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
-        ['YYYYDDD', /\d{7}/]
-    ];
+    return chooseLocale(key);
+}
 
-    // iso time formats and regexes
-    var isoTimes = [
-        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
-        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
-        ['HH:mm', /\d\d:\d\d/],
-        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
-        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
-        ['HHmmss', /\d\d\d\d\d\d/],
-        ['HHmm', /\d\d\d\d/],
-        ['HH', /\d\d/]
-    ];
+function listLocales() {
+    return keys$1(locales);
+}
 
-    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
+function checkOverflow (m) {
+    var overflow;
+    var a = m._a;
 
-    // date from iso format
-    function configFromISO(config) {
-        var i, l,
-            string = config._i,
-            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
-            allowTime, dateFormat, timeFormat, tzFormat;
+    if (a && getParsingFlags(m).overflow === -2) {
+        overflow =
+            a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
+            a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
+            a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
+            a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
+            a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
+            a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
+            -1;
 
-        if (match) {
-            getParsingFlags(config).iso = true;
+        if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+            overflow = DATE;
+        }
+        if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
+            overflow = WEEK;
+        }
+        if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
+            overflow = WEEKDAY;
+        }
 
-            for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(match[1])) {
-                    dateFormat = isoDates[i][0];
-                    allowTime = isoDates[i][2] !== false;
+        getParsingFlags(m).overflow = overflow;
+    }
+
+    return m;
+}
+
+// iso 8601 regex
+// 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+
+var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
+
+var isoDates = [
+    ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
+    ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
+    ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
+    ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
+    ['YYYY-DDD', /\d{4}-\d{3}/],
+    ['YYYY-MM', /\d{4}-\d\d/, false],
+    ['YYYYYYMMDD', /[+-]\d{10}/],
+    ['YYYYMMDD', /\d{8}/],
+    // YYYYMM is NOT allowed by the standard
+    ['GGGG[W]WWE', /\d{4}W\d{3}/],
+    ['GGGG[W]WW', /\d{4}W\d{2}/, false],
+    ['YYYYDDD', /\d{7}/]
+];
+
+// iso time formats and regexes
+var isoTimes = [
+    ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
+    ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
+    ['HH:mm:ss', /\d\d:\d\d:\d\d/],
+    ['HH:mm', /\d\d:\d\d/],
+    ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
+    ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
+    ['HHmmss', /\d\d\d\d\d\d/],
+    ['HHmm', /\d\d\d\d/],
+    ['HH', /\d\d/]
+];
+
+var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
+
+// date from iso format
+function configFromISO(config) {
+    var i, l,
+        string = config._i,
+        match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
+        allowTime, dateFormat, timeFormat, tzFormat;
+
+    if (match) {
+        getParsingFlags(config).iso = true;
+
+        for (i = 0, l = isoDates.length; i < l; i++) {
+            if (isoDates[i][1].exec(match[1])) {
+                dateFormat = isoDates[i][0];
+                allowTime = isoDates[i][2] !== false;
+                break;
+            }
+        }
+        if (dateFormat == null) {
+            config._isValid = false;
+            return;
+        }
+        if (match[3]) {
+            for (i = 0, l = isoTimes.length; i < l; i++) {
+                if (isoTimes[i][1].exec(match[3])) {
+                    // match[2] should be 'T' or space
+                    timeFormat = (match[2] || ' ') + isoTimes[i][0];
                     break;
                 }
             }
-            if (dateFormat == null) {
+            if (timeFormat == null) {
                 config._isValid = false;
                 return;
             }
-            if (match[3]) {
-                for (i = 0, l = isoTimes.length; i < l; i++) {
-                    if (isoTimes[i][1].exec(match[3])) {
-                        // match[2] should be 'T' or space
-                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
-                        break;
-                    }
-                }
-                if (timeFormat == null) {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            if (!allowTime && timeFormat != null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[4]) {
-                if (tzRegex.exec(match[4])) {
-                    tzFormat = 'Z';
-                } else {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
-            configFromStringAndFormat(config);
-        } else {
+        }
+        if (!allowTime && timeFormat != null) {
             config._isValid = false;
-        }
-    }
-
-    // date from iso format or fallback
-    function configFromString(config) {
-        var matched = aspNetJsonRegex.exec(config._i);
-
-        if (matched !== null) {
-            config._d = new Date(+matched[1]);
             return;
         }
-
-        configFromISO(config);
-        if (config._isValid === false) {
-            delete config._isValid;
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    utils_hooks__hooks.createFromInputFallback = deprecate(
-        'value provided is not in a recognized ISO format. moment construction falls back to js Date(), ' +
-        'which is not reliable across all browsers and versions. Non ISO date formats are ' +
-        'discouraged and will be removed in an upcoming major release. Please refer to ' +
-        'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
-        function (config) {
-            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
-        }
-    );
-
-    // Pick the first defined of two or three arguments.
-    function defaults(a, b, c) {
-        if (a != null) {
-            return a;
-        }
-        if (b != null) {
-            return b;
-        }
-        return c;
-    }
-
-    function currentDateArray(config) {
-        // hooks is actually the exported moment object
-        var nowValue = new Date(utils_hooks__hooks.now());
-        if (config._useUTC) {
-            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
-        }
-        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
-    }
-
-    // convert an array to a date.
-    // the array should mirror the parameters below
-    // note: all values past the year are optional and will default to the lowest possible value.
-    // [year, month, day , hour, minute, second, millisecond]
-    function configFromArray (config) {
-        var i, date, input = [], currentDate, yearToUse;
-
-        if (config._d) {
-            return;
-        }
-
-        currentDate = currentDateArray(config);
-
-        //compute day of the year from weeks and weekdays
-        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-            dayOfYearFromWeekInfo(config);
-        }
-
-        //if the day of the year is set, figure out what it is
-        if (config._dayOfYear) {
-            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-
-            if (config._dayOfYear > daysInYear(yearToUse)) {
-                getParsingFlags(config)._overflowDayOfYear = true;
+        if (match[4]) {
+            if (tzRegex.exec(match[4])) {
+                tzFormat = 'Z';
+            } else {
+                config._isValid = false;
+                return;
             }
-
-            date = createUTCDate(yearToUse, 0, config._dayOfYear);
-            config._a[MONTH] = date.getUTCMonth();
-            config._a[DATE] = date.getUTCDate();
         }
+        config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
+        configFromStringAndFormat(config);
+    } else {
+        config._isValid = false;
+    }
+}
 
-        // Default to current date.
-        // * if no year, month, day of month are given, default to today
-        // * if day of month is given, default month and year
-        // * if month is given, default only year
-        // * if year is given, don't default anything
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
-            config._a[i] = input[i] = currentDate[i];
-        }
+// date from iso format or fallback
+function configFromString(config) {
+    var matched = aspNetJsonRegex.exec(config._i);
 
-        // Zero out whatever was not defaulted, including time
-        for (; i < 7; i++) {
-            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
-        }
-
-        // Check for 24:00:00.000
-        if (config._a[HOUR] === 24 &&
-                config._a[MINUTE] === 0 &&
-                config._a[SECOND] === 0 &&
-                config._a[MILLISECOND] === 0) {
-            config._nextDay = true;
-            config._a[HOUR] = 0;
-        }
-
-        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-        // Apply timezone offset from input. The actual utcOffset can be changed
-        // with parseZone.
-        if (config._tzm != null) {
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-        }
-
-        if (config._nextDay) {
-            config._a[HOUR] = 24;
-        }
+    if (matched !== null) {
+        config._d = new Date(+matched[1]);
+        return;
     }
 
-    function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
+    configFromISO(config);
+    if (config._isValid === false) {
+        delete config._isValid;
+        hooks.createFromInputFallback(config);
+    }
+}
 
-        w = config._w;
-        if (w.GG != null || w.W != null || w.E != null) {
-            dow = 1;
-            doy = 4;
+hooks.createFromInputFallback = deprecate(
+    'value provided is not in a recognized ISO format. moment construction falls back to js Date(), ' +
+    'which is not reliable across all browsers and versions. Non ISO date formats are ' +
+    'discouraged and will be removed in an upcoming major release. Please refer to ' +
+    'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
+    function (config) {
+        config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
+    }
+);
 
-            // TODO: We need to take the current isoWeekYear, but that depends on
-            // how we interpret now (local, utc, fixed offset). So create
-            // a now version of current config (take local/utc/offset flags, and
-            // create now).
-            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
-            week = defaults(w.W, 1);
-            weekday = defaults(w.E, 1);
-            if (weekday < 1 || weekday > 7) {
+// Pick the first defined of two or three arguments.
+function defaults(a, b, c) {
+    if (a != null) {
+        return a;
+    }
+    if (b != null) {
+        return b;
+    }
+    return c;
+}
+
+function currentDateArray(config) {
+    // hooks is actually the exported moment object
+    var nowValue = new Date(hooks.now());
+    if (config._useUTC) {
+        return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
+    }
+    return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
+}
+
+// convert an array to a date.
+// the array should mirror the parameters below
+// note: all values past the year are optional and will default to the lowest possible value.
+// [year, month, day , hour, minute, second, millisecond]
+function configFromArray (config) {
+    var i, date, input = [], currentDate, yearToUse;
+
+    if (config._d) {
+        return;
+    }
+
+    currentDate = currentDateArray(config);
+
+    //compute day of the year from weeks and weekdays
+    if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
+        dayOfYearFromWeekInfo(config);
+    }
+
+    //if the day of the year is set, figure out what it is
+    if (config._dayOfYear) {
+        yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
+
+        if (config._dayOfYear > daysInYear(yearToUse)) {
+            getParsingFlags(config)._overflowDayOfYear = true;
+        }
+
+        date = createUTCDate(yearToUse, 0, config._dayOfYear);
+        config._a[MONTH] = date.getUTCMonth();
+        config._a[DATE] = date.getUTCDate();
+    }
+
+    // Default to current date.
+    // * if no year, month, day of month are given, default to today
+    // * if day of month is given, default month and year
+    // * if month is given, default only year
+    // * if year is given, don't default anything
+    for (i = 0; i < 3 && config._a[i] == null; ++i) {
+        config._a[i] = input[i] = currentDate[i];
+    }
+
+    // Zero out whatever was not defaulted, including time
+    for (; i < 7; i++) {
+        config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
+    }
+
+    // Check for 24:00:00.000
+    if (config._a[HOUR] === 24 &&
+            config._a[MINUTE] === 0 &&
+            config._a[SECOND] === 0 &&
+            config._a[MILLISECOND] === 0) {
+        config._nextDay = true;
+        config._a[HOUR] = 0;
+    }
+
+    config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
+    // Apply timezone offset from input. The actual utcOffset can be changed
+    // with parseZone.
+    if (config._tzm != null) {
+        config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+    }
+
+    if (config._nextDay) {
+        config._a[HOUR] = 24;
+    }
+}
+
+function dayOfYearFromWeekInfo(config) {
+    var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
+
+    w = config._w;
+    if (w.GG != null || w.W != null || w.E != null) {
+        dow = 1;
+        doy = 4;
+
+        // TODO: We need to take the current isoWeekYear, but that depends on
+        // how we interpret now (local, utc, fixed offset). So create
+        // a now version of current config (take local/utc/offset flags, and
+        // create now).
+        weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
+        week = defaults(w.W, 1);
+        weekday = defaults(w.E, 1);
+        if (weekday < 1 || weekday > 7) {
+            weekdayOverflow = true;
+        }
+    } else {
+        dow = config._locale._week.dow;
+        doy = config._locale._week.doy;
+
+        var curWeek = weekOfYear(createLocal(), dow, doy);
+
+        weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
+
+        // Default to current week.
+        week = defaults(w.w, curWeek.week);
+
+        if (w.d != null) {
+            // weekday -- low day numbers are considered next week
+            weekday = w.d;
+            if (weekday < 0 || weekday > 6) {
+                weekdayOverflow = true;
+            }
+        } else if (w.e != null) {
+            // local weekday -- counting starts from begining of week
+            weekday = w.e + dow;
+            if (w.e < 0 || w.e > 6) {
                 weekdayOverflow = true;
             }
         } else {
-            dow = config._locale._week.dow;
-            doy = config._locale._week.doy;
-
-            weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(local__createLocal(), dow, doy).year);
-            week = defaults(w.w, 1);
-
-            if (w.d != null) {
-                // weekday -- low day numbers are considered next week
-                weekday = w.d;
-                if (weekday < 0 || weekday > 6) {
-                    weekdayOverflow = true;
-                }
-            } else if (w.e != null) {
-                // local weekday -- counting starts from begining of week
-                weekday = w.e + dow;
-                if (w.e < 0 || w.e > 6) {
-                    weekdayOverflow = true;
-                }
-            } else {
-                // default to begining of week
-                weekday = dow;
-            }
-        }
-        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-            getParsingFlags(config)._overflowWeeks = true;
-        } else if (weekdayOverflow != null) {
-            getParsingFlags(config)._overflowWeekday = true;
-        } else {
-            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-            config._a[YEAR] = temp.year;
-            config._dayOfYear = temp.dayOfYear;
+            // default to begining of week
+            weekday = dow;
         }
     }
+    if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
+        getParsingFlags(config)._overflowWeeks = true;
+    } else if (weekdayOverflow != null) {
+        getParsingFlags(config)._overflowWeekday = true;
+    } else {
+        temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
+        config._a[YEAR] = temp.year;
+        config._dayOfYear = temp.dayOfYear;
+    }
+}
 
-    // constant that refers to the ISO standard
-    utils_hooks__hooks.ISO_8601 = function () {};
+// constant that refers to the ISO standard
+hooks.ISO_8601 = function () {};
 
-    // date from string and format string
-    function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
-        if (config._f === utils_hooks__hooks.ISO_8601) {
-            configFromISO(config);
-            return;
+// date from string and format string
+function configFromStringAndFormat(config) {
+    // TODO: Move this to another part of the creation flow to prevent circular deps
+    if (config._f === hooks.ISO_8601) {
+        configFromISO(config);
+        return;
+    }
+
+    config._a = [];
+    getParsingFlags(config).empty = true;
+
+    // This array is used to make a Date, either with `new Date` or `Date.UTC`
+    var string = '' + config._i,
+        i, parsedInput, tokens, token, skipped,
+        stringLength = string.length,
+        totalParsedInputLength = 0;
+
+    tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
+
+    for (i = 0; i < tokens.length; i++) {
+        token = tokens[i];
+        parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
+        // console.log('token', token, 'parsedInput', parsedInput,
+        //         'regex', getParseRegexForToken(token, config));
+        if (parsedInput) {
+            skipped = string.substr(0, string.indexOf(parsedInput));
+            if (skipped.length > 0) {
+                getParsingFlags(config).unusedInput.push(skipped);
+            }
+            string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
+            totalParsedInputLength += parsedInput.length;
         }
-
-        config._a = [];
-        getParsingFlags(config).empty = true;
-
-        // This array is used to make a Date, either with `new Date` or `Date.UTC`
-        var string = '' + config._i,
-            i, parsedInput, tokens, token, skipped,
-            stringLength = string.length,
-            totalParsedInputLength = 0;
-
-        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-
-        for (i = 0; i < tokens.length; i++) {
-            token = tokens[i];
-            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            // console.log('token', token, 'parsedInput', parsedInput,
-            //         'regex', getParseRegexForToken(token, config));
+        // don't parse if it's not a known token
+        if (formatTokenFunctions[token]) {
             if (parsedInput) {
-                skipped = string.substr(0, string.indexOf(parsedInput));
-                if (skipped.length > 0) {
-                    getParsingFlags(config).unusedInput.push(skipped);
-                }
-                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
-                totalParsedInputLength += parsedInput.length;
+                getParsingFlags(config).empty = false;
             }
-            // don't parse if it's not a known token
-            if (formatTokenFunctions[token]) {
-                if (parsedInput) {
-                    getParsingFlags(config).empty = false;
-                }
-                else {
-                    getParsingFlags(config).unusedTokens.push(token);
-                }
-                addTimeToArrayFromToken(token, parsedInput, config);
-            }
-            else if (config._strict && !parsedInput) {
+            else {
                 getParsingFlags(config).unusedTokens.push(token);
             }
+            addTimeToArrayFromToken(token, parsedInput, config);
         }
-
-        // add remaining unparsed input length to the string
-        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-        if (string.length > 0) {
-            getParsingFlags(config).unusedInput.push(string);
-        }
-
-        // clear _12h flag if hour is <= 12
-        if (config._a[HOUR] <= 12 &&
-            getParsingFlags(config).bigHour === true &&
-            config._a[HOUR] > 0) {
-            getParsingFlags(config).bigHour = undefined;
-        }
-
-        getParsingFlags(config).parsedDateParts = config._a.slice(0);
-        getParsingFlags(config).meridiem = config._meridiem;
-        // handle meridiem
-        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
-
-        configFromArray(config);
-        checkOverflow(config);
-    }
-
-
-    function meridiemFixWrap (locale, hour, meridiem) {
-        var isPm;
-
-        if (meridiem == null) {
-            // nothing to do
-            return hour;
-        }
-        if (locale.meridiemHour != null) {
-            return locale.meridiemHour(hour, meridiem);
-        } else if (locale.isPM != null) {
-            // Fallback
-            isPm = locale.isPM(meridiem);
-            if (isPm && hour < 12) {
-                hour += 12;
-            }
-            if (!isPm && hour === 12) {
-                hour = 0;
-            }
-            return hour;
-        } else {
-            // this is not supposed to happen
-            return hour;
+        else if (config._strict && !parsedInput) {
+            getParsingFlags(config).unusedTokens.push(token);
         }
     }
 
-    // date from string and array of format strings
-    function configFromStringAndArray(config) {
-        var tempConfig,
-            bestMoment,
-
-            scoreToBeat,
-            i,
-            currentScore;
-
-        if (config._f.length === 0) {
-            getParsingFlags(config).invalidFormat = true;
-            config._d = new Date(NaN);
-            return;
-        }
-
-        for (i = 0; i < config._f.length; i++) {
-            currentScore = 0;
-            tempConfig = copyConfig({}, config);
-            if (config._useUTC != null) {
-                tempConfig._useUTC = config._useUTC;
-            }
-            tempConfig._f = config._f[i];
-            configFromStringAndFormat(tempConfig);
-
-            if (!valid__isValid(tempConfig)) {
-                continue;
-            }
-
-            // if there is any input that was not parsed add a penalty for that format
-            currentScore += getParsingFlags(tempConfig).charsLeftOver;
-
-            //or tokens
-            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-
-            getParsingFlags(tempConfig).score = currentScore;
-
-            if (scoreToBeat == null || currentScore < scoreToBeat) {
-                scoreToBeat = currentScore;
-                bestMoment = tempConfig;
-            }
-        }
-
-        extend(config, bestMoment || tempConfig);
+    // add remaining unparsed input length to the string
+    getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
+    if (string.length > 0) {
+        getParsingFlags(config).unusedInput.push(string);
     }
 
-    function configFromObject(config) {
-        if (config._d) {
-            return;
-        }
-
-        var i = normalizeObjectUnits(config._i);
-        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
-            return obj && parseInt(obj, 10);
-        });
-
-        configFromArray(config);
+    // clear _12h flag if hour is <= 12
+    if (config._a[HOUR] <= 12 &&
+        getParsingFlags(config).bigHour === true &&
+        config._a[HOUR] > 0) {
+        getParsingFlags(config).bigHour = undefined;
     }
 
-    function createFromConfig (config) {
-        var res = new Moment(checkOverflow(prepareConfig(config)));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
+    getParsingFlags(config).parsedDateParts = config._a.slice(0);
+    getParsingFlags(config).meridiem = config._meridiem;
+    // handle meridiem
+    config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
 
-        return res;
+    configFromArray(config);
+    checkOverflow(config);
+}
+
+
+function meridiemFixWrap (locale, hour, meridiem) {
+    var isPm;
+
+    if (meridiem == null) {
+        // nothing to do
+        return hour;
+    }
+    if (locale.meridiemHour != null) {
+        return locale.meridiemHour(hour, meridiem);
+    } else if (locale.isPM != null) {
+        // Fallback
+        isPm = locale.isPM(meridiem);
+        if (isPm && hour < 12) {
+            hour += 12;
+        }
+        if (!isPm && hour === 12) {
+            hour = 0;
+        }
+        return hour;
+    } else {
+        // this is not supposed to happen
+        return hour;
+    }
+}
+
+// date from string and array of format strings
+function configFromStringAndArray(config) {
+    var tempConfig,
+        bestMoment,
+
+        scoreToBeat,
+        i,
+        currentScore;
+
+    if (config._f.length === 0) {
+        getParsingFlags(config).invalidFormat = true;
+        config._d = new Date(NaN);
+        return;
     }
 
-    function prepareConfig (config) {
-        var input = config._i,
-            format = config._f;
+    for (i = 0; i < config._f.length; i++) {
+        currentScore = 0;
+        tempConfig = copyConfig({}, config);
+        if (config._useUTC != null) {
+            tempConfig._useUTC = config._useUTC;
+        }
+        tempConfig._f = config._f[i];
+        configFromStringAndFormat(tempConfig);
 
-        config._locale = config._locale || locale_locales__getLocale(config._l);
-
-        if (input === null || (format === undefined && input === '')) {
-            return valid__createInvalid({nullInput: true});
+        if (!isValid(tempConfig)) {
+            continue;
         }
 
-        if (typeof input === 'string') {
-            config._i = input = config._locale.preparse(input);
-        }
+        // if there is any input that was not parsed add a penalty for that format
+        currentScore += getParsingFlags(tempConfig).charsLeftOver;
 
-        if (isMoment(input)) {
-            return new Moment(checkOverflow(input));
-        } else if (isArray(format)) {
-            configFromStringAndArray(config);
-        } else if (isDate(input)) {
-            config._d = input;
-        } else if (format) {
-            configFromStringAndFormat(config);
-        }  else {
-            configFromInput(config);
-        }
+        //or tokens
+        currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
 
-        if (!valid__isValid(config)) {
-            config._d = null;
-        }
+        getParsingFlags(tempConfig).score = currentScore;
 
-        return config;
-    }
-
-    function configFromInput(config) {
-        var input = config._i;
-        if (input === undefined) {
-            config._d = new Date(utils_hooks__hooks.now());
-        } else if (isDate(input)) {
-            config._d = new Date(input.valueOf());
-        } else if (typeof input === 'string') {
-            configFromString(config);
-        } else if (isArray(input)) {
-            config._a = map(input.slice(0), function (obj) {
-                return parseInt(obj, 10);
-            });
-            configFromArray(config);
-        } else if (typeof(input) === 'object') {
-            configFromObject(config);
-        } else if (typeof(input) === 'number') {
-            // from milliseconds
-            config._d = new Date(input);
-        } else {
-            utils_hooks__hooks.createFromInputFallback(config);
+        if (scoreToBeat == null || currentScore < scoreToBeat) {
+            scoreToBeat = currentScore;
+            bestMoment = tempConfig;
         }
     }
 
-    function createLocalOrUTC (input, format, locale, strict, isUTC) {
-        var c = {};
+    extend(config, bestMoment || tempConfig);
+}
 
-        if (typeof(locale) === 'boolean') {
-            strict = locale;
-            locale = undefined;
-        }
-
-        if ((isObject(input) && isObjectEmpty(input)) ||
-                (isArray(input) && input.length === 0)) {
-            input = undefined;
-        }
-        // object construction must be done this way.
-        // https://github.com/moment/moment/issues/1423
-        c._isAMomentObject = true;
-        c._useUTC = c._isUTC = isUTC;
-        c._l = locale;
-        c._i = input;
-        c._f = format;
-        c._strict = strict;
-
-        return createFromConfig(c);
+function configFromObject(config) {
+    if (config._d) {
+        return;
     }
 
-    function local__createLocal (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, false);
-    }
-
-    var prototypeMin = deprecate(
-        'moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/',
-        function () {
-            var other = local__createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other < this ? this : other;
-            } else {
-                return valid__createInvalid();
-            }
-        }
-    );
-
-    var prototypeMax = deprecate(
-        'moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/',
-        function () {
-            var other = local__createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other > this ? this : other;
-            } else {
-                return valid__createInvalid();
-            }
-        }
-    );
-
-    // Pick a moment m from moments so that m[fn](other) is true for all
-    // other. This relies on the function fn to be transitive.
-    //
-    // moments should either be an array of moment objects or an array, whose
-    // first element is an array of moment objects.
-    function pickBy(fn, moments) {
-        var res, i;
-        if (moments.length === 1 && isArray(moments[0])) {
-            moments = moments[0];
-        }
-        if (!moments.length) {
-            return local__createLocal();
-        }
-        res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
-            if (!moments[i].isValid() || moments[i][fn](res)) {
-                res = moments[i];
-            }
-        }
-        return res;
-    }
-
-    // TODO: Use [].sort instead?
-    function min () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isBefore', args);
-    }
-
-    function max () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isAfter', args);
-    }
-
-    var now = function () {
-        return Date.now ? Date.now() : +(new Date());
-    };
-
-    function Duration (duration) {
-        var normalizedInput = normalizeObjectUnits(duration),
-            years = normalizedInput.year || 0,
-            quarters = normalizedInput.quarter || 0,
-            months = normalizedInput.month || 0,
-            weeks = normalizedInput.week || 0,
-            days = normalizedInput.day || 0,
-            hours = normalizedInput.hour || 0,
-            minutes = normalizedInput.minute || 0,
-            seconds = normalizedInput.second || 0,
-            milliseconds = normalizedInput.millisecond || 0;
-
-        // representation for dateAddRemove
-        this._milliseconds = +milliseconds +
-            seconds * 1e3 + // 1000
-            minutes * 6e4 + // 1000 * 60
-            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
-        // Because of dateAddRemove treats 24 hours as different from a
-        // day when working around DST, we need to store them separately
-        this._days = +days +
-            weeks * 7;
-        // It is impossible translate months into days without knowing
-        // which months you are are talking about, so we have to store
-        // it separately.
-        this._months = +months +
-            quarters * 3 +
-            years * 12;
-
-        this._data = {};
-
-        this._locale = locale_locales__getLocale();
-
-        this._bubble();
-    }
-
-    function isDuration (obj) {
-        return obj instanceof Duration;
-    }
-
-    function absRound (number) {
-        if (number < 0) {
-            return Math.round(-1 * number) * -1;
-        } else {
-            return Math.round(number);
-        }
-    }
-
-    // FORMATTING
-
-    function offset (token, separator) {
-        addFormatToken(token, 0, 0, function () {
-            var offset = this.utcOffset();
-            var sign = '+';
-            if (offset < 0) {
-                offset = -offset;
-                sign = '-';
-            }
-            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
-        });
-    }
-
-    offset('Z', ':');
-    offset('ZZ', '');
-
-    // PARSING
-
-    addRegexToken('Z',  matchShortOffset);
-    addRegexToken('ZZ', matchShortOffset);
-    addParseToken(['Z', 'ZZ'], function (input, array, config) {
-        config._useUTC = true;
-        config._tzm = offsetFromString(matchShortOffset, input);
+    var i = normalizeObjectUnits(config._i);
+    config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
+        return obj && parseInt(obj, 10);
     });
 
-    // HELPERS
+    configFromArray(config);
+}
 
-    // timezone chunker
-    // '+10:00' > ['10',  '00']
-    // '-1530'  > ['-15', '30']
-    var chunkOffset = /([\+\-]|\d\d)/gi;
-
-    function offsetFromString(matcher, string) {
-        var matches = ((string || '').match(matcher) || []);
-        var chunk   = matches[matches.length - 1] || [];
-        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
-        var minutes = +(parts[1] * 60) + toInt(parts[2]);
-
-        return parts[0] === '+' ? minutes : -minutes;
+function createFromConfig (config) {
+    var res = new Moment(checkOverflow(prepareConfig(config)));
+    if (res._nextDay) {
+        // Adding is smart enough around DST
+        res.add(1, 'd');
+        res._nextDay = undefined;
     }
 
-    // Return a moment from input, that is local/utc/zone equivalent to model.
-    function cloneWithOffset(input, model) {
-        var res, diff;
-        if (model._isUTC) {
-            res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? input.valueOf() : local__createLocal(input).valueOf()) - res.valueOf();
-            // Use low-level api, because this fn is low-level api.
-            res._d.setTime(res._d.valueOf() + diff);
-            utils_hooks__hooks.updateOffset(res, false);
-            return res;
+    return res;
+}
+
+function prepareConfig (config) {
+    var input = config._i,
+        format = config._f;
+
+    config._locale = config._locale || getLocale(config._l);
+
+    if (input === null || (format === undefined && input === '')) {
+        return createInvalid({nullInput: true});
+    }
+
+    if (typeof input === 'string') {
+        config._i = input = config._locale.preparse(input);
+    }
+
+    if (isMoment(input)) {
+        return new Moment(checkOverflow(input));
+    } else if (isDate(input)) {
+        config._d = input;
+    } else if (isArray(format)) {
+        configFromStringAndArray(config);
+    } else if (format) {
+        configFromStringAndFormat(config);
+    }  else {
+        configFromInput(config);
+    }
+
+    if (!isValid(config)) {
+        config._d = null;
+    }
+
+    return config;
+}
+
+function configFromInput(config) {
+    var input = config._i;
+    if (input === undefined) {
+        config._d = new Date(hooks.now());
+    } else if (isDate(input)) {
+        config._d = new Date(input.valueOf());
+    } else if (typeof input === 'string') {
+        configFromString(config);
+    } else if (isArray(input)) {
+        config._a = map(input.slice(0), function (obj) {
+            return parseInt(obj, 10);
+        });
+        configFromArray(config);
+    } else if (typeof(input) === 'object') {
+        configFromObject(config);
+    } else if (isNumber(input)) {
+        // from milliseconds
+        config._d = new Date(input);
+    } else {
+        hooks.createFromInputFallback(config);
+    }
+}
+
+function createLocalOrUTC (input, format, locale, strict, isUTC) {
+    var c = {};
+
+    if (locale === true || locale === false) {
+        strict = locale;
+        locale = undefined;
+    }
+
+    if ((isObject(input) && isObjectEmpty(input)) ||
+            (isArray(input) && input.length === 0)) {
+        input = undefined;
+    }
+    // object construction must be done this way.
+    // https://github.com/moment/moment/issues/1423
+    c._isAMomentObject = true;
+    c._useUTC = c._isUTC = isUTC;
+    c._l = locale;
+    c._i = input;
+    c._f = format;
+    c._strict = strict;
+
+    return createFromConfig(c);
+}
+
+function createLocal (input, format, locale, strict) {
+    return createLocalOrUTC(input, format, locale, strict, false);
+}
+
+var prototypeMin = deprecate(
+    'moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/',
+    function () {
+        var other = createLocal.apply(null, arguments);
+        if (this.isValid() && other.isValid()) {
+            return other < this ? this : other;
         } else {
-            return local__createLocal(input).local();
+            return createInvalid();
         }
     }
+);
 
-    function getDateOffset (m) {
-        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-        // https://github.com/moment/moment/pull/1871
-        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
-    }
-
-    // HOOKS
-
-    // This function will be called whenever a moment is mutated.
-    // It is intended to keep the offset in sync with the timezone.
-    utils_hooks__hooks.updateOffset = function () {};
-
-    // MOMENTS
-
-    // keepLocalTime = true means only change the timezone, without
-    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-    // +0200, so we adjust the time as needed, to be valid.
-    //
-    // Keeping the time actually adds/subtracts (one hour)
-    // from the actual represented time. That is why we call updateOffset
-    // a second time. In case it wants us to change the offset again
-    // _changeInProgress == true case, then we have to adjust, because
-    // there is no such time in the given timezone.
-    function getSetOffset (input, keepLocalTime) {
-        var offset = this._offset || 0,
-            localAdjust;
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        if (input != null) {
-            if (typeof input === 'string') {
-                input = offsetFromString(matchShortOffset, input);
-            } else if (Math.abs(input) < 16) {
-                input = input * 60;
-            }
-            if (!this._isUTC && keepLocalTime) {
-                localAdjust = getDateOffset(this);
-            }
-            this._offset = input;
-            this._isUTC = true;
-            if (localAdjust != null) {
-                this.add(localAdjust, 'm');
-            }
-            if (offset !== input) {
-                if (!keepLocalTime || this._changeInProgress) {
-                    add_subtract__addSubtract(this, create__createDuration(input - offset, 'm'), 1, false);
-                } else if (!this._changeInProgress) {
-                    this._changeInProgress = true;
-                    utils_hooks__hooks.updateOffset(this, true);
-                    this._changeInProgress = null;
-                }
-            }
-            return this;
+var prototypeMax = deprecate(
+    'moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/',
+    function () {
+        var other = createLocal.apply(null, arguments);
+        if (this.isValid() && other.isValid()) {
+            return other > this ? this : other;
         } else {
-            return this._isUTC ? offset : getDateOffset(this);
+            return createInvalid();
         }
     }
+);
 
-    function getSetZone (input, keepLocalTime) {
-        if (input != null) {
-            if (typeof input !== 'string') {
-                input = -input;
+// Pick a moment m from moments so that m[fn](other) is true for all
+// other. This relies on the function fn to be transitive.
+//
+// moments should either be an array of moment objects or an array, whose
+// first element is an array of moment objects.
+function pickBy(fn, moments) {
+    var res, i;
+    if (moments.length === 1 && isArray(moments[0])) {
+        moments = moments[0];
+    }
+    if (!moments.length) {
+        return createLocal();
+    }
+    res = moments[0];
+    for (i = 1; i < moments.length; ++i) {
+        if (!moments[i].isValid() || moments[i][fn](res)) {
+            res = moments[i];
+        }
+    }
+    return res;
+}
+
+// TODO: Use [].sort instead?
+function min () {
+    var args = [].slice.call(arguments, 0);
+
+    return pickBy('isBefore', args);
+}
+
+function max () {
+    var args = [].slice.call(arguments, 0);
+
+    return pickBy('isAfter', args);
+}
+
+var now = function () {
+    return Date.now ? Date.now() : +(new Date());
+};
+
+function Duration (duration) {
+    var normalizedInput = normalizeObjectUnits(duration),
+        years = normalizedInput.year || 0,
+        quarters = normalizedInput.quarter || 0,
+        months = normalizedInput.month || 0,
+        weeks = normalizedInput.week || 0,
+        days = normalizedInput.day || 0,
+        hours = normalizedInput.hour || 0,
+        minutes = normalizedInput.minute || 0,
+        seconds = normalizedInput.second || 0,
+        milliseconds = normalizedInput.millisecond || 0;
+
+    // representation for dateAddRemove
+    this._milliseconds = +milliseconds +
+        seconds * 1e3 + // 1000
+        minutes * 6e4 + // 1000 * 60
+        hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
+    // Because of dateAddRemove treats 24 hours as different from a
+    // day when working around DST, we need to store them separately
+    this._days = +days +
+        weeks * 7;
+    // It is impossible translate months into days without knowing
+    // which months you are are talking about, so we have to store
+    // it separately.
+    this._months = +months +
+        quarters * 3 +
+        years * 12;
+
+    this._data = {};
+
+    this._locale = getLocale();
+
+    this._bubble();
+}
+
+function isDuration (obj) {
+    return obj instanceof Duration;
+}
+
+function absRound (number) {
+    if (number < 0) {
+        return Math.round(-1 * number) * -1;
+    } else {
+        return Math.round(number);
+    }
+}
+
+// FORMATTING
+
+function offset (token, separator) {
+    addFormatToken(token, 0, 0, function () {
+        var offset = this.utcOffset();
+        var sign = '+';
+        if (offset < 0) {
+            offset = -offset;
+            sign = '-';
+        }
+        return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
+    });
+}
+
+offset('Z', ':');
+offset('ZZ', '');
+
+// PARSING
+
+addRegexToken('Z',  matchShortOffset);
+addRegexToken('ZZ', matchShortOffset);
+addParseToken(['Z', 'ZZ'], function (input, array, config) {
+    config._useUTC = true;
+    config._tzm = offsetFromString(matchShortOffset, input);
+});
+
+// HELPERS
+
+// timezone chunker
+// '+10:00' > ['10',  '00']
+// '-1530'  > ['-15', '30']
+var chunkOffset = /([\+\-]|\d\d)/gi;
+
+function offsetFromString(matcher, string) {
+    var matches = (string || '').match(matcher);
+
+    if (matches === null) {
+        return null;
+    }
+
+    var chunk   = matches[matches.length - 1] || [];
+    var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
+    var minutes = +(parts[1] * 60) + toInt(parts[2]);
+
+    return minutes === 0 ?
+      0 :
+      parts[0] === '+' ? minutes : -minutes;
+}
+
+// Return a moment from input, that is local/utc/zone equivalent to model.
+function cloneWithOffset(input, model) {
+    var res, diff;
+    if (model._isUTC) {
+        res = model.clone();
+        diff = (isMoment(input) || isDate(input) ? input.valueOf() : createLocal(input).valueOf()) - res.valueOf();
+        // Use low-level api, because this fn is low-level api.
+        res._d.setTime(res._d.valueOf() + diff);
+        hooks.updateOffset(res, false);
+        return res;
+    } else {
+        return createLocal(input).local();
+    }
+}
+
+function getDateOffset (m) {
+    // On Firefox.24 Date#getTimezoneOffset returns a floating point.
+    // https://github.com/moment/moment/pull/1871
+    return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
+}
+
+// HOOKS
+
+// This function will be called whenever a moment is mutated.
+// It is intended to keep the offset in sync with the timezone.
+hooks.updateOffset = function () {};
+
+// MOMENTS
+
+// keepLocalTime = true means only change the timezone, without
+// affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
+// 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
+// +0200, so we adjust the time as needed, to be valid.
+//
+// Keeping the time actually adds/subtracts (one hour)
+// from the actual represented time. That is why we call updateOffset
+// a second time. In case it wants us to change the offset again
+// _changeInProgress == true case, then we have to adjust, because
+// there is no such time in the given timezone.
+function getSetOffset (input, keepLocalTime) {
+    var offset = this._offset || 0,
+        localAdjust;
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+    if (input != null) {
+        if (typeof input === 'string') {
+            input = offsetFromString(matchShortOffset, input);
+            if (input === null) {
+                return this;
             }
-
-            this.utcOffset(input, keepLocalTime);
-
-            return this;
-        } else {
-            return -this.utcOffset();
+        } else if (Math.abs(input) < 16) {
+            input = input * 60;
         }
-    }
-
-    function setOffsetToUTC (keepLocalTime) {
-        return this.utcOffset(0, keepLocalTime);
-    }
-
-    function setOffsetToLocal (keepLocalTime) {
-        if (this._isUTC) {
-            this.utcOffset(0, keepLocalTime);
-            this._isUTC = false;
-
-            if (keepLocalTime) {
-                this.subtract(getDateOffset(this), 'm');
+        if (!this._isUTC && keepLocalTime) {
+            localAdjust = getDateOffset(this);
+        }
+        this._offset = input;
+        this._isUTC = true;
+        if (localAdjust != null) {
+            this.add(localAdjust, 'm');
+        }
+        if (offset !== input) {
+            if (!keepLocalTime || this._changeInProgress) {
+                addSubtract(this, createDuration(input - offset, 'm'), 1, false);
+            } else if (!this._changeInProgress) {
+                this._changeInProgress = true;
+                hooks.updateOffset(this, true);
+                this._changeInProgress = null;
             }
         }
         return this;
+    } else {
+        return this._isUTC ? offset : getDateOffset(this);
     }
+}
 
-    function setOffsetToParsedOffset () {
-        if (this._tzm) {
-            this.utcOffset(this._tzm);
-        } else if (typeof this._i === 'string') {
-            var tZone = offsetFromString(matchOffset, this._i);
-
-            if (tZone === 0) {
-                this.utcOffset(0, true);
-            } else {
-                this.utcOffset(offsetFromString(matchOffset, this._i));
-            }
+function getSetZone (input, keepLocalTime) {
+    if (input != null) {
+        if (typeof input !== 'string') {
+            input = -input;
         }
+
+        this.utcOffset(input, keepLocalTime);
+
         return this;
+    } else {
+        return -this.utcOffset();
     }
+}
 
-    function hasAlignedHourOffset (input) {
-        if (!this.isValid()) {
-            return false;
+function setOffsetToUTC (keepLocalTime) {
+    return this.utcOffset(0, keepLocalTime);
+}
+
+function setOffsetToLocal (keepLocalTime) {
+    if (this._isUTC) {
+        this.utcOffset(0, keepLocalTime);
+        this._isUTC = false;
+
+        if (keepLocalTime) {
+            this.subtract(getDateOffset(this), 'm');
         }
-        input = input ? local__createLocal(input).utcOffset() : 0;
-
-        return (this.utcOffset() - input) % 60 === 0;
     }
+    return this;
+}
 
-    function isDaylightSavingTime () {
-        return (
-            this.utcOffset() > this.clone().month(0).utcOffset() ||
-            this.utcOffset() > this.clone().month(5).utcOffset()
-        );
+function setOffsetToParsedOffset () {
+    if (this._tzm != null) {
+        this.utcOffset(this._tzm);
+    } else if (typeof this._i === 'string') {
+        var tZone = offsetFromString(matchOffset, this._i);
+        if (tZone != null) {
+            this.utcOffset(tZone);
+        }
+        else {
+            this.utcOffset(0, true);
+        }
     }
+    return this;
+}
 
-    function isDaylightSavingTimeShifted () {
-        if (!isUndefined(this._isDSTShifted)) {
-            return this._isDSTShifted;
-        }
+function hasAlignedHourOffset (input) {
+    if (!this.isValid()) {
+        return false;
+    }
+    input = input ? createLocal(input).utcOffset() : 0;
 
-        var c = {};
+    return (this.utcOffset() - input) % 60 === 0;
+}
 
-        copyConfig(c, this);
-        c = prepareConfig(c);
+function isDaylightSavingTime () {
+    return (
+        this.utcOffset() > this.clone().month(0).utcOffset() ||
+        this.utcOffset() > this.clone().month(5).utcOffset()
+    );
+}
 
-        if (c._a) {
-            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
-            this._isDSTShifted = this.isValid() &&
-                compareArrays(c._a, other.toArray()) > 0;
-        } else {
-            this._isDSTShifted = false;
-        }
-
+function isDaylightSavingTimeShifted () {
+    if (!isUndefined(this._isDSTShifted)) {
         return this._isDSTShifted;
     }
 
-    function isLocal () {
-        return this.isValid() ? !this._isUTC : false;
+    var c = {};
+
+    copyConfig(c, this);
+    c = prepareConfig(c);
+
+    if (c._a) {
+        var other = c._isUTC ? createUTC(c._a) : createLocal(c._a);
+        this._isDSTShifted = this.isValid() &&
+            compareArrays(c._a, other.toArray()) > 0;
+    } else {
+        this._isDSTShifted = false;
     }
 
-    function isUtcOffset () {
-        return this.isValid() ? this._isUTC : false;
-    }
+    return this._isDSTShifted;
+}
 
-    function isUtc () {
-        return this.isValid() ? this._isUTC && this._offset === 0 : false;
-    }
+function isLocal () {
+    return this.isValid() ? !this._isUTC : false;
+}
 
-    // ASP.NET json date format regex
-    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
+function isUtcOffset () {
+    return this.isValid() ? this._isUTC : false;
+}
 
-    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    // and further modified to allow for strings containing both week and day
-    var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
+function isUtc () {
+    return this.isValid() ? this._isUTC && this._offset === 0 : false;
+}
 
-    function create__createDuration (input, key) {
-        var duration = input,
-            // matching against regexp is expensive, do it on demand
-            match = null,
-            sign,
-            ret,
-            diffRes;
+// ASP.NET json date format regex
+var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
 
-        if (isDuration(input)) {
-            duration = {
-                ms : input._milliseconds,
-                d  : input._days,
-                M  : input._months
-            };
-        } else if (typeof input === 'number') {
-            duration = {};
-            if (key) {
-                duration[key] = input;
-            } else {
-                duration.milliseconds = input;
-            }
-        } else if (!!(match = aspNetRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y  : 0,
-                d  : toInt(match[DATE])                         * sign,
-                h  : toInt(match[HOUR])                         * sign,
-                m  : toInt(match[MINUTE])                       * sign,
-                s  : toInt(match[SECOND])                       * sign,
-                ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
-            };
-        } else if (!!(match = isoRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y : parseIso(match[2], sign),
-                M : parseIso(match[3], sign),
-                w : parseIso(match[4], sign),
-                d : parseIso(match[5], sign),
-                h : parseIso(match[6], sign),
-                m : parseIso(match[7], sign),
-                s : parseIso(match[8], sign)
-            };
-        } else if (duration == null) {// checks for null or undefined
-            duration = {};
-        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
-            diffRes = momentsDifference(local__createLocal(duration.from), local__createLocal(duration.to));
+// from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
+// somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
+// and further modified to allow for strings containing both week and day
+var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
 
-            duration = {};
-            duration.ms = diffRes.milliseconds;
-            duration.M = diffRes.months;
-        }
+function createDuration (input, key) {
+    var duration = input,
+        // matching against regexp is expensive, do it on demand
+        match = null,
+        sign,
+        ret,
+        diffRes;
 
-        ret = new Duration(duration);
-
-        if (isDuration(input) && hasOwnProp(input, '_locale')) {
-            ret._locale = input._locale;
-        }
-
-        return ret;
-    }
-
-    create__createDuration.fn = Duration.prototype;
-
-    function parseIso (inp, sign) {
-        // We'd normally use ~~inp for this, but unfortunately it also
-        // converts floats to ints.
-        // inp may be undefined, so careful calling replace on it.
-        var res = inp && parseFloat(inp.replace(',', '.'));
-        // apply sign while we're at it
-        return (isNaN(res) ? 0 : res) * sign;
-    }
-
-    function positiveMomentsDifference(base, other) {
-        var res = {milliseconds: 0, months: 0};
-
-        res.months = other.month() - base.month() +
-            (other.year() - base.year()) * 12;
-        if (base.clone().add(res.months, 'M').isAfter(other)) {
-            --res.months;
-        }
-
-        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
-
-        return res;
-    }
-
-    function momentsDifference(base, other) {
-        var res;
-        if (!(base.isValid() && other.isValid())) {
-            return {milliseconds: 0, months: 0};
-        }
-
-        other = cloneWithOffset(other, base);
-        if (base.isBefore(other)) {
-            res = positiveMomentsDifference(base, other);
-        } else {
-            res = positiveMomentsDifference(other, base);
-            res.milliseconds = -res.milliseconds;
-            res.months = -res.months;
-        }
-
-        return res;
-    }
-
-    // TODO: remove 'name' arg after deprecation is removed
-    function createAdder(direction, name) {
-        return function (val, period) {
-            var dur, tmp;
-            //invert the arguments, but complain about it
-            if (period !== null && !isNaN(+period)) {
-                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' +
-                'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
-                tmp = val; val = period; period = tmp;
-            }
-
-            val = typeof val === 'string' ? +val : val;
-            dur = create__createDuration(val, period);
-            add_subtract__addSubtract(this, dur, direction);
-            return this;
+    if (isDuration(input)) {
+        duration = {
+            ms : input._milliseconds,
+            d  : input._days,
+            M  : input._months
         };
-    }
-
-    function add_subtract__addSubtract (mom, duration, isAdding, updateOffset) {
-        var milliseconds = duration._milliseconds,
-            days = absRound(duration._days),
-            months = absRound(duration._months);
-
-        if (!mom.isValid()) {
-            // No op
-            return;
-        }
-
-        updateOffset = updateOffset == null ? true : updateOffset;
-
-        if (milliseconds) {
-            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
-        }
-        if (days) {
-            get_set__set(mom, 'Date', get_set__get(mom, 'Date') + days * isAdding);
-        }
-        if (months) {
-            setMonth(mom, get_set__get(mom, 'Month') + months * isAdding);
-        }
-        if (updateOffset) {
-            utils_hooks__hooks.updateOffset(mom, days || months);
-        }
-    }
-
-    var add_subtract__add      = createAdder(1, 'add');
-    var add_subtract__subtract = createAdder(-1, 'subtract');
-
-    function getCalendarFormat(myMoment, now) {
-        var diff = myMoment.diff(now, 'days', true);
-        return diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
-    }
-
-    function moment_calendar__calendar (time, formats) {
-        // We want to compare the start of today, vs this.
-        // Getting start-of-today depends on whether we're local/utc/offset or not.
-        var now = time || local__createLocal(),
-            sod = cloneWithOffset(now, this).startOf('day'),
-            format = utils_hooks__hooks.calendarFormat(this, sod) || 'sameElse';
-
-        var output = formats && (isFunction(formats[format]) ? formats[format].call(this, now) : formats[format]);
-
-        return this.format(output || this.localeData().calendar(format, this, local__createLocal(now)));
-    }
-
-    function clone () {
-        return new Moment(this);
-    }
-
-    function isAfter (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() > localInput.valueOf();
+    } else if (isNumber(input)) {
+        duration = {};
+        if (key) {
+            duration[key] = input;
         } else {
-            return localInput.valueOf() < this.clone().startOf(units).valueOf();
+            duration.milliseconds = input;
         }
+    } else if (!!(match = aspNetRegex.exec(input))) {
+        sign = (match[1] === '-') ? -1 : 1;
+        duration = {
+            y  : 0,
+            d  : toInt(match[DATE])                         * sign,
+            h  : toInt(match[HOUR])                         * sign,
+            m  : toInt(match[MINUTE])                       * sign,
+            s  : toInt(match[SECOND])                       * sign,
+            ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
+        };
+    } else if (!!(match = isoRegex.exec(input))) {
+        sign = (match[1] === '-') ? -1 : 1;
+        duration = {
+            y : parseIso(match[2], sign),
+            M : parseIso(match[3], sign),
+            w : parseIso(match[4], sign),
+            d : parseIso(match[5], sign),
+            h : parseIso(match[6], sign),
+            m : parseIso(match[7], sign),
+            s : parseIso(match[8], sign)
+        };
+    } else if (duration == null) {// checks for null or undefined
+        duration = {};
+    } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
+        diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
+
+        duration = {};
+        duration.ms = diffRes.milliseconds;
+        duration.M = diffRes.months;
     }
 
-    function isBefore (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() < localInput.valueOf();
-        } else {
-            return this.clone().endOf(units).valueOf() < localInput.valueOf();
-        }
+    ret = new Duration(duration);
+
+    if (isDuration(input) && hasOwnProp(input, '_locale')) {
+        ret._locale = input._locale;
     }
 
-    function isBetween (from, to, units, inclusivity) {
-        inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
-            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
+    return ret;
+}
+
+createDuration.fn = Duration.prototype;
+
+function parseIso (inp, sign) {
+    // We'd normally use ~~inp for this, but unfortunately it also
+    // converts floats to ints.
+    // inp may be undefined, so careful calling replace on it.
+    var res = inp && parseFloat(inp.replace(',', '.'));
+    // apply sign while we're at it
+    return (isNaN(res) ? 0 : res) * sign;
+}
+
+function positiveMomentsDifference(base, other) {
+    var res = {milliseconds: 0, months: 0};
+
+    res.months = other.month() - base.month() +
+        (other.year() - base.year()) * 12;
+    if (base.clone().add(res.months, 'M').isAfter(other)) {
+        --res.months;
     }
 
-    function isSame (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input),
-            inputMs;
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(units || 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() === localInput.valueOf();
-        } else {
-            inputMs = localInput.valueOf();
-            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
-        }
+    res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
+
+    return res;
+}
+
+function momentsDifference(base, other) {
+    var res;
+    if (!(base.isValid() && other.isValid())) {
+        return {milliseconds: 0, months: 0};
     }
 
-    function isSameOrAfter (input, units) {
-        return this.isSame(input, units) || this.isAfter(input,units);
+    other = cloneWithOffset(other, base);
+    if (base.isBefore(other)) {
+        res = positiveMomentsDifference(base, other);
+    } else {
+        res = positiveMomentsDifference(other, base);
+        res.milliseconds = -res.milliseconds;
+        res.months = -res.months;
     }
 
-    function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input,units);
+    return res;
+}
+
+// TODO: remove 'name' arg after deprecation is removed
+function createAdder(direction, name) {
+    return function (val, period) {
+        var dur, tmp;
+        //invert the arguments, but complain about it
+        if (period !== null && !isNaN(+period)) {
+            deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' +
+            'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
+            tmp = val; val = period; period = tmp;
+        }
+
+        val = typeof val === 'string' ? +val : val;
+        dur = createDuration(val, period);
+        addSubtract(this, dur, direction);
+        return this;
+    };
+}
+
+function addSubtract (mom, duration, isAdding, updateOffset) {
+    var milliseconds = duration._milliseconds,
+        days = absRound(duration._days),
+        months = absRound(duration._months);
+
+    if (!mom.isValid()) {
+        // No op
+        return;
     }
 
-    function diff (input, units, asFloat) {
-        var that,
-            zoneDelta,
-            delta, output;
+    updateOffset = updateOffset == null ? true : updateOffset;
 
-        if (!this.isValid()) {
-            return NaN;
-        }
+    if (milliseconds) {
+        mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
+    }
+    if (days) {
+        set$1(mom, 'Date', get(mom, 'Date') + days * isAdding);
+    }
+    if (months) {
+        setMonth(mom, get(mom, 'Month') + months * isAdding);
+    }
+    if (updateOffset) {
+        hooks.updateOffset(mom, days || months);
+    }
+}
 
-        that = cloneWithOffset(input, this);
+var add      = createAdder(1, 'add');
+var subtract = createAdder(-1, 'subtract');
 
-        if (!that.isValid()) {
-            return NaN;
-        }
+function getCalendarFormat(myMoment, now) {
+    var diff = myMoment.diff(now, 'days', true);
+    return diff < -6 ? 'sameElse' :
+            diff < -1 ? 'lastWeek' :
+            diff < 0 ? 'lastDay' :
+            diff < 1 ? 'sameDay' :
+            diff < 2 ? 'nextDay' :
+            diff < 7 ? 'nextWeek' : 'sameElse';
+}
 
-        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
+function calendar$1 (time, formats) {
+    // We want to compare the start of today, vs this.
+    // Getting start-of-today depends on whether we're local/utc/offset or not.
+    var now = time || createLocal(),
+        sod = cloneWithOffset(now, this).startOf('day'),
+        format = hooks.calendarFormat(this, sod) || 'sameElse';
 
-        units = normalizeUnits(units);
+    var output = formats && (isFunction(formats[format]) ? formats[format].call(this, now) : formats[format]);
 
-        if (units === 'year' || units === 'month' || units === 'quarter') {
-            output = monthDiff(this, that);
-            if (units === 'quarter') {
-                output = output / 3;
-            } else if (units === 'year') {
-                output = output / 12;
-            }
-        } else {
-            delta = this - that;
-            output = units === 'second' ? delta / 1e3 : // 1000
-                units === 'minute' ? delta / 6e4 : // 1000 * 60
-                units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
-                units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
-                units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
-                delta;
-        }
-        return asFloat ? output : absFloor(output);
+    return this.format(output || this.localeData().calendar(format, this, createLocal(now)));
+}
+
+function clone () {
+    return new Moment(this);
+}
+
+function isAfter (input, units) {
+    var localInput = isMoment(input) ? input : createLocal(input);
+    if (!(this.isValid() && localInput.isValid())) {
+        return false;
+    }
+    units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+    if (units === 'millisecond') {
+        return this.valueOf() > localInput.valueOf();
+    } else {
+        return localInput.valueOf() < this.clone().startOf(units).valueOf();
+    }
+}
+
+function isBefore (input, units) {
+    var localInput = isMoment(input) ? input : createLocal(input);
+    if (!(this.isValid() && localInput.isValid())) {
+        return false;
+    }
+    units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+    if (units === 'millisecond') {
+        return this.valueOf() < localInput.valueOf();
+    } else {
+        return this.clone().endOf(units).valueOf() < localInput.valueOf();
+    }
+}
+
+function isBetween (from, to, units, inclusivity) {
+    inclusivity = inclusivity || '()';
+    return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
+        (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
+}
+
+function isSame (input, units) {
+    var localInput = isMoment(input) ? input : createLocal(input),
+        inputMs;
+    if (!(this.isValid() && localInput.isValid())) {
+        return false;
+    }
+    units = normalizeUnits(units || 'millisecond');
+    if (units === 'millisecond') {
+        return this.valueOf() === localInput.valueOf();
+    } else {
+        inputMs = localInput.valueOf();
+        return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
+    }
+}
+
+function isSameOrAfter (input, units) {
+    return this.isSame(input, units) || this.isAfter(input,units);
+}
+
+function isSameOrBefore (input, units) {
+    return this.isSame(input, units) || this.isBefore(input,units);
+}
+
+function diff (input, units, asFloat) {
+    var that,
+        zoneDelta,
+        delta, output;
+
+    if (!this.isValid()) {
+        return NaN;
     }
 
-    function monthDiff (a, b) {
-        // difference in months
-        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
-            // b is in (anchor - 1 month, anchor + 1 month)
-            anchor = a.clone().add(wholeMonthDiff, 'months'),
-            anchor2, adjust;
+    that = cloneWithOffset(input, this);
 
-        if (b - anchor < 0) {
-            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor - anchor2);
-        } else {
-            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor2 - anchor);
-        }
-
-        //check for negative zero, return zero if negative zero
-        return -(wholeMonthDiff + adjust) || 0;
+    if (!that.isValid()) {
+        return NaN;
     }
 
-    utils_hooks__hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-    utils_hooks__hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
+    zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
 
-    function toString () {
-        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-    }
+    units = normalizeUnits(units);
 
-    function moment_format__toISOString () {
-        var m = this.clone().utc();
-        if (0 < m.year() && m.year() <= 9999) {
-            if (isFunction(Date.prototype.toISOString)) {
-                // native implementation is ~50x faster, use it when we can
-                return this.toDate().toISOString();
-            } else {
-                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-            }
-        } else {
-            return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-        }
-    }
-
-    function format (inputString) {
-        if (!inputString) {
-            inputString = this.isUtc() ? utils_hooks__hooks.defaultFormatUtc : utils_hooks__hooks.defaultFormat;
-        }
-        var output = formatMoment(this, inputString);
-        return this.localeData().postformat(output);
-    }
-
-    function from (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function fromNow (withoutSuffix) {
-        return this.from(local__createLocal(), withoutSuffix);
-    }
-
-    function to (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function toNow (withoutSuffix) {
-        return this.to(local__createLocal(), withoutSuffix);
-    }
-
-    // If passed a locale key, it will set the locale for this
-    // instance.  Otherwise, it will return the locale configuration
-    // variables for this instance.
-    function locale (key) {
-        var newLocaleData;
-
-        if (key === undefined) {
-            return this._locale._abbr;
-        } else {
-            newLocaleData = locale_locales__getLocale(key);
-            if (newLocaleData != null) {
-                this._locale = newLocaleData;
-            }
-            return this;
-        }
-    }
-
-    var lang = deprecate(
-        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
-        function (key) {
-            if (key === undefined) {
-                return this.localeData();
-            } else {
-                return this.locale(key);
-            }
-        }
-    );
-
-    function localeData () {
-        return this._locale;
-    }
-
-    function startOf (units) {
-        units = normalizeUnits(units);
-        // the following switch intentionally omits break keywords
-        // to utilize falling through the cases.
-        switch (units) {
-            case 'year':
-                this.month(0);
-                /* falls through */
-            case 'quarter':
-            case 'month':
-                this.date(1);
-                /* falls through */
-            case 'week':
-            case 'isoWeek':
-            case 'day':
-            case 'date':
-                this.hours(0);
-                /* falls through */
-            case 'hour':
-                this.minutes(0);
-                /* falls through */
-            case 'minute':
-                this.seconds(0);
-                /* falls through */
-            case 'second':
-                this.milliseconds(0);
-        }
-
-        // weeks are a special case
-        if (units === 'week') {
-            this.weekday(0);
-        }
-        if (units === 'isoWeek') {
-            this.isoWeekday(1);
-        }
-
-        // quarters are also special
+    if (units === 'year' || units === 'month' || units === 'quarter') {
+        output = monthDiff(this, that);
         if (units === 'quarter') {
-            this.month(Math.floor(this.month() / 3) * 3);
+            output = output / 3;
+        } else if (units === 'year') {
+            output = output / 12;
         }
+    } else {
+        delta = this - that;
+        output = units === 'second' ? delta / 1e3 : // 1000
+            units === 'minute' ? delta / 6e4 : // 1000 * 60
+            units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
+            units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
+            units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
+            delta;
+    }
+    return asFloat ? output : absFloor(output);
+}
 
-        return this;
+function monthDiff (a, b) {
+    // difference in months
+    var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
+        // b is in (anchor - 1 month, anchor + 1 month)
+        anchor = a.clone().add(wholeMonthDiff, 'months'),
+        anchor2, adjust;
+
+    if (b - anchor < 0) {
+        anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
+        // linear across the month
+        adjust = (b - anchor) / (anchor - anchor2);
+    } else {
+        anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
+        // linear across the month
+        adjust = (b - anchor) / (anchor2 - anchor);
     }
 
-    function endOf (units) {
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond') {
-            return this;
-        }
+    //check for negative zero, return zero if negative zero
+    return -(wholeMonthDiff + adjust) || 0;
+}
 
-        // 'date' is an alias for 'day', so it should be considered as such.
-        if (units === 'date') {
-            units = 'day';
-        }
+hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
 
-        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
-    }
+function toString () {
+    return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+}
 
-    function to_type__valueOf () {
-        return this._d.valueOf() - ((this._offset || 0) * 60000);
-    }
-
-    function unix () {
-        return Math.floor(this.valueOf() / 1000);
-    }
-
-    function toDate () {
-        return new Date(this.valueOf());
-    }
-
-    function toArray () {
-        var m = this;
-        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
-    }
-
-    function toObject () {
-        var m = this;
-        return {
-            years: m.year(),
-            months: m.month(),
-            date: m.date(),
-            hours: m.hours(),
-            minutes: m.minutes(),
-            seconds: m.seconds(),
-            milliseconds: m.milliseconds()
-        };
-    }
-
-    function toJSON () {
-        // new Date(NaN).toJSON() === null
-        return this.isValid() ? this.toISOString() : null;
-    }
-
-    function moment_valid__isValid () {
-        return valid__isValid(this);
-    }
-
-    function parsingFlags () {
-        return extend({}, getParsingFlags(this));
-    }
-
-    function invalidAt () {
-        return getParsingFlags(this).overflow;
-    }
-
-    function creationData() {
-        return {
-            input: this._i,
-            format: this._f,
-            locale: this._locale,
-            isUTC: this._isUTC,
-            strict: this._strict
-        };
-    }
-
-    // FORMATTING
-
-    addFormatToken(0, ['gg', 2], 0, function () {
-        return this.weekYear() % 100;
-    });
-
-    addFormatToken(0, ['GG', 2], 0, function () {
-        return this.isoWeekYear() % 100;
-    });
-
-    function addWeekYearFormatToken (token, getter) {
-        addFormatToken(0, [token, token.length], 0, getter);
-    }
-
-    addWeekYearFormatToken('gggg',     'weekYear');
-    addWeekYearFormatToken('ggggg',    'weekYear');
-    addWeekYearFormatToken('GGGG',  'isoWeekYear');
-    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
-
-    // ALIASES
-
-    addUnitAlias('weekYear', 'gg');
-    addUnitAlias('isoWeekYear', 'GG');
-
-    // PRIORITY
-
-    addUnitPriority('weekYear', 1);
-    addUnitPriority('isoWeekYear', 1);
-
-
-    // PARSING
-
-    addRegexToken('G',      matchSigned);
-    addRegexToken('g',      matchSigned);
-    addRegexToken('GG',     match1to2, match2);
-    addRegexToken('gg',     match1to2, match2);
-    addRegexToken('GGGG',   match1to4, match4);
-    addRegexToken('gggg',   match1to4, match4);
-    addRegexToken('GGGGG',  match1to6, match6);
-    addRegexToken('ggggg',  match1to6, match6);
-
-    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
-        week[token.substr(0, 2)] = toInt(input);
-    });
-
-    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
-        week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-
-    // MOMENTS
-
-    function getSetWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input,
-                this.week(),
-                this.weekday(),
-                this.localeData()._week.dow,
-                this.localeData()._week.doy);
-    }
-
-    function getSetISOWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input, this.isoWeek(), this.isoWeekday(), 1, 4);
-    }
-
-    function getISOWeeksInYear () {
-        return weeksInYear(this.year(), 1, 4);
-    }
-
-    function getWeeksInYear () {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-    }
-
-    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-        var weeksTarget;
-        if (input == null) {
-            return weekOfYear(this, dow, doy).year;
+function toISOString () {
+    var m = this.clone().utc();
+    if (0 < m.year() && m.year() <= 9999) {
+        if (isFunction(Date.prototype.toISOString)) {
+            // native implementation is ~50x faster, use it when we can
+            return this.toDate().toISOString();
         } else {
-            weeksTarget = weeksInYear(input, dow, doy);
-            if (week > weeksTarget) {
-                week = weeksTarget;
-            }
-            return setWeekAll.call(this, input, week, weekday, dow, doy);
+            return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+        }
+    } else {
+        return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+    }
+}
+
+/**
+ * Return a human readable representation of a moment that can
+ * also be evaluated to get a new moment which is the same
+ *
+ * @link https://nodejs.org/dist/latest/docs/api/util.html#util_custom_inspect_function_on_objects
+ */
+function inspect () {
+    if (!this.isValid()) {
+        return 'moment.invalid(/* ' + this._i + ' */)';
+    }
+    var func = 'moment';
+    var zone = '';
+    if (!this.isLocal()) {
+        func = this.utcOffset() === 0 ? 'moment.utc' : 'moment.parseZone';
+        zone = 'Z';
+    }
+    var prefix = '[' + func + '("]';
+    var year = (0 < this.year() && this.year() <= 9999) ? 'YYYY' : 'YYYYYY';
+    var datetime = '-MM-DD[T]HH:mm:ss.SSS';
+    var suffix = zone + '[")]';
+
+    return this.format(prefix + year + datetime + suffix);
+}
+
+function format (inputString) {
+    if (!inputString) {
+        inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
+    }
+    var output = formatMoment(this, inputString);
+    return this.localeData().postformat(output);
+}
+
+function from (time, withoutSuffix) {
+    if (this.isValid() &&
+            ((isMoment(time) && time.isValid()) ||
+             createLocal(time).isValid())) {
+        return createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
+    } else {
+        return this.localeData().invalidDate();
+    }
+}
+
+function fromNow (withoutSuffix) {
+    return this.from(createLocal(), withoutSuffix);
+}
+
+function to (time, withoutSuffix) {
+    if (this.isValid() &&
+            ((isMoment(time) && time.isValid()) ||
+             createLocal(time).isValid())) {
+        return createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+    } else {
+        return this.localeData().invalidDate();
+    }
+}
+
+function toNow (withoutSuffix) {
+    return this.to(createLocal(), withoutSuffix);
+}
+
+// If passed a locale key, it will set the locale for this
+// instance.  Otherwise, it will return the locale configuration
+// variables for this instance.
+function locale (key) {
+    var newLocaleData;
+
+    if (key === undefined) {
+        return this._locale._abbr;
+    } else {
+        newLocaleData = getLocale(key);
+        if (newLocaleData != null) {
+            this._locale = newLocaleData;
+        }
+        return this;
+    }
+}
+
+var lang = deprecate(
+    'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
+    function (key) {
+        if (key === undefined) {
+            return this.localeData();
+        } else {
+            return this.locale(key);
         }
     }
+);
 
-    function setWeekAll(weekYear, week, weekday, dow, doy) {
-        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
-            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+function localeData () {
+    return this._locale;
+}
 
-        this.year(date.getUTCFullYear());
-        this.month(date.getUTCMonth());
-        this.date(date.getUTCDate());
+function startOf (units) {
+    units = normalizeUnits(units);
+    // the following switch intentionally omits break keywords
+    // to utilize falling through the cases.
+    switch (units) {
+        case 'year':
+            this.month(0);
+            /* falls through */
+        case 'quarter':
+        case 'month':
+            this.date(1);
+            /* falls through */
+        case 'week':
+        case 'isoWeek':
+        case 'day':
+        case 'date':
+            this.hours(0);
+            /* falls through */
+        case 'hour':
+            this.minutes(0);
+            /* falls through */
+        case 'minute':
+            this.seconds(0);
+            /* falls through */
+        case 'second':
+            this.milliseconds(0);
+    }
+
+    // weeks are a special case
+    if (units === 'week') {
+        this.weekday(0);
+    }
+    if (units === 'isoWeek') {
+        this.isoWeekday(1);
+    }
+
+    // quarters are also special
+    if (units === 'quarter') {
+        this.month(Math.floor(this.month() / 3) * 3);
+    }
+
+    return this;
+}
+
+function endOf (units) {
+    units = normalizeUnits(units);
+    if (units === undefined || units === 'millisecond') {
         return this;
     }
 
-    // FORMATTING
-
-    addFormatToken('Q', 0, 'Qo', 'quarter');
-
-    // ALIASES
-
-    addUnitAlias('quarter', 'Q');
-
-    // PRIORITY
-
-    addUnitPriority('quarter', 7);
-
-    // PARSING
-
-    addRegexToken('Q', match1);
-    addParseToken('Q', function (input, array) {
-        array[MONTH] = (toInt(input) - 1) * 3;
-    });
-
-    // MOMENTS
-
-    function getSetQuarter (input) {
-        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
+    // 'date' is an alias for 'day', so it should be considered as such.
+    if (units === 'date') {
+        units = 'day';
     }
 
-    // FORMATTING
+    return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
+}
 
-    addFormatToken('D', ['DD', 2], 'Do', 'date');
+function valueOf () {
+    return this._d.valueOf() - ((this._offset || 0) * 60000);
+}
 
-    // ALIASES
+function unix () {
+    return Math.floor(this.valueOf() / 1000);
+}
 
-    addUnitAlias('date', 'D');
+function toDate () {
+    return new Date(this.valueOf());
+}
 
-    // PRIOROITY
-    addUnitPriority('date', 9);
+function toArray () {
+    var m = this;
+    return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
+}
 
-    // PARSING
+function toObject () {
+    var m = this;
+    return {
+        years: m.year(),
+        months: m.month(),
+        date: m.date(),
+        hours: m.hours(),
+        minutes: m.minutes(),
+        seconds: m.seconds(),
+        milliseconds: m.milliseconds()
+    };
+}
 
-    addRegexToken('D',  match1to2);
-    addRegexToken('DD', match1to2, match2);
-    addRegexToken('Do', function (isStrict, locale) {
-        return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
-    });
+function toJSON () {
+    // new Date(NaN).toJSON() === null
+    return this.isValid() ? this.toISOString() : null;
+}
 
-    addParseToken(['D', 'DD'], DATE);
-    addParseToken('Do', function (input, array) {
-        array[DATE] = toInt(input.match(match1to2)[0], 10);
-    });
+function isValid$1 () {
+    return isValid(this);
+}
 
-    // MOMENTS
+function parsingFlags () {
+    return extend({}, getParsingFlags(this));
+}
 
-    var getSetDayOfMonth = makeGetSet('Date', true);
+function invalidAt () {
+    return getParsingFlags(this).overflow;
+}
 
-    // FORMATTING
+function creationData() {
+    return {
+        input: this._i,
+        format: this._f,
+        locale: this._locale,
+        isUTC: this._isUTC,
+        strict: this._strict
+    };
+}
 
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+// FORMATTING
 
-    // ALIASES
+addFormatToken(0, ['gg', 2], 0, function () {
+    return this.weekYear() % 100;
+});
 
-    addUnitAlias('dayOfYear', 'DDD');
+addFormatToken(0, ['GG', 2], 0, function () {
+    return this.isoWeekYear() % 100;
+});
 
-    // PRIORITY
-    addUnitPriority('dayOfYear', 4);
+function addWeekYearFormatToken (token, getter) {
+    addFormatToken(0, [token, token.length], 0, getter);
+}
 
-    // PARSING
+addWeekYearFormatToken('gggg',     'weekYear');
+addWeekYearFormatToken('ggggg',    'weekYear');
+addWeekYearFormatToken('GGGG',  'isoWeekYear');
+addWeekYearFormatToken('GGGGG', 'isoWeekYear');
 
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
+// ALIASES
 
-    // HELPERS
+addUnitAlias('weekYear', 'gg');
+addUnitAlias('isoWeekYear', 'GG');
 
-    // MOMENTS
+// PRIORITY
 
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+addUnitPriority('weekYear', 1);
+addUnitPriority('isoWeekYear', 1);
+
+
+// PARSING
+
+addRegexToken('G',      matchSigned);
+addRegexToken('g',      matchSigned);
+addRegexToken('GG',     match1to2, match2);
+addRegexToken('gg',     match1to2, match2);
+addRegexToken('GGGG',   match1to4, match4);
+addRegexToken('gggg',   match1to4, match4);
+addRegexToken('GGGGG',  match1to6, match6);
+addRegexToken('ggggg',  match1to6, match6);
+
+addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
+    week[token.substr(0, 2)] = toInt(input);
+});
+
+addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
+    week[token] = hooks.parseTwoDigitYear(input);
+});
+
+// MOMENTS
+
+function getSetWeekYear (input) {
+    return getSetWeekYearHelper.call(this,
+            input,
+            this.week(),
+            this.weekday(),
+            this.localeData()._week.dow,
+            this.localeData()._week.doy);
+}
+
+function getSetISOWeekYear (input) {
+    return getSetWeekYearHelper.call(this,
+            input, this.isoWeek(), this.isoWeekday(), 1, 4);
+}
+
+function getISOWeeksInYear () {
+    return weeksInYear(this.year(), 1, 4);
+}
+
+function getWeeksInYear () {
+    var weekInfo = this.localeData()._week;
+    return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
+}
+
+function getSetWeekYearHelper(input, week, weekday, dow, doy) {
+    var weeksTarget;
+    if (input == null) {
+        return weekOfYear(this, dow, doy).year;
+    } else {
+        weeksTarget = weeksInYear(input, dow, doy);
+        if (week > weeksTarget) {
+            week = weeksTarget;
+        }
+        return setWeekAll.call(this, input, week, weekday, dow, doy);
+    }
+}
+
+function setWeekAll(weekYear, week, weekday, dow, doy) {
+    var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
+        date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+
+    this.year(date.getUTCFullYear());
+    this.month(date.getUTCMonth());
+    this.date(date.getUTCDate());
+    return this;
+}
+
+// FORMATTING
+
+addFormatToken('Q', 0, 'Qo', 'quarter');
+
+// ALIASES
+
+addUnitAlias('quarter', 'Q');
+
+// PRIORITY
+
+addUnitPriority('quarter', 7);
+
+// PARSING
+
+addRegexToken('Q', match1);
+addParseToken('Q', function (input, array) {
+    array[MONTH] = (toInt(input) - 1) * 3;
+});
+
+// MOMENTS
+
+function getSetQuarter (input) {
+    return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
+}
+
+// FORMATTING
+
+addFormatToken('D', ['DD', 2], 'Do', 'date');
+
+// ALIASES
+
+addUnitAlias('date', 'D');
+
+// PRIOROITY
+addUnitPriority('date', 9);
+
+// PARSING
+
+addRegexToken('D',  match1to2);
+addRegexToken('DD', match1to2, match2);
+addRegexToken('Do', function (isStrict, locale) {
+    return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
+});
+
+addParseToken(['D', 'DD'], DATE);
+addParseToken('Do', function (input, array) {
+    array[DATE] = toInt(input.match(match1to2)[0], 10);
+});
+
+// MOMENTS
+
+var getSetDayOfMonth = makeGetSet('Date', true);
+
+// FORMATTING
+
+addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+
+// ALIASES
+
+addUnitAlias('dayOfYear', 'DDD');
+
+// PRIORITY
+addUnitPriority('dayOfYear', 4);
+
+// PARSING
+
+addRegexToken('DDD',  match1to3);
+addRegexToken('DDDD', match3);
+addParseToken(['DDD', 'DDDD'], function (input, array, config) {
+    config._dayOfYear = toInt(input);
+});
+
+// HELPERS
+
+// MOMENTS
+
+function getSetDayOfYear (input) {
+    var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
+    return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+}
+
+// FORMATTING
+
+addFormatToken('m', ['mm', 2], 0, 'minute');
+
+// ALIASES
+
+addUnitAlias('minute', 'm');
+
+// PRIORITY
+
+addUnitPriority('minute', 14);
+
+// PARSING
+
+addRegexToken('m',  match1to2);
+addRegexToken('mm', match1to2, match2);
+addParseToken(['m', 'mm'], MINUTE);
+
+// MOMENTS
+
+var getSetMinute = makeGetSet('Minutes', false);
+
+// FORMATTING
+
+addFormatToken('s', ['ss', 2], 0, 'second');
+
+// ALIASES
+
+addUnitAlias('second', 's');
+
+// PRIORITY
+
+addUnitPriority('second', 15);
+
+// PARSING
+
+addRegexToken('s',  match1to2);
+addRegexToken('ss', match1to2, match2);
+addParseToken(['s', 'ss'], SECOND);
+
+// MOMENTS
+
+var getSetSecond = makeGetSet('Seconds', false);
+
+// FORMATTING
+
+addFormatToken('S', 0, 0, function () {
+    return ~~(this.millisecond() / 100);
+});
+
+addFormatToken(0, ['SS', 2], 0, function () {
+    return ~~(this.millisecond() / 10);
+});
+
+addFormatToken(0, ['SSS', 3], 0, 'millisecond');
+addFormatToken(0, ['SSSS', 4], 0, function () {
+    return this.millisecond() * 10;
+});
+addFormatToken(0, ['SSSSS', 5], 0, function () {
+    return this.millisecond() * 100;
+});
+addFormatToken(0, ['SSSSSS', 6], 0, function () {
+    return this.millisecond() * 1000;
+});
+addFormatToken(0, ['SSSSSSS', 7], 0, function () {
+    return this.millisecond() * 10000;
+});
+addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
+    return this.millisecond() * 100000;
+});
+addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
+    return this.millisecond() * 1000000;
+});
+
+
+// ALIASES
+
+addUnitAlias('millisecond', 'ms');
+
+// PRIORITY
+
+addUnitPriority('millisecond', 16);
+
+// PARSING
+
+addRegexToken('S',    match1to3, match1);
+addRegexToken('SS',   match1to3, match2);
+addRegexToken('SSS',  match1to3, match3);
+
+var token;
+for (token = 'SSSS'; token.length <= 9; token += 'S') {
+    addRegexToken(token, matchUnsigned);
+}
+
+function parseMs(input, array) {
+    array[MILLISECOND] = toInt(('0.' + input) * 1000);
+}
+
+for (token = 'S'; token.length <= 9; token += 'S') {
+    addParseToken(token, parseMs);
+}
+// MOMENTS
+
+var getSetMillisecond = makeGetSet('Milliseconds', false);
+
+// FORMATTING
+
+addFormatToken('z',  0, 0, 'zoneAbbr');
+addFormatToken('zz', 0, 0, 'zoneName');
+
+// MOMENTS
+
+function getZoneAbbr () {
+    return this._isUTC ? 'UTC' : '';
+}
+
+function getZoneName () {
+    return this._isUTC ? 'Coordinated Universal Time' : '';
+}
+
+var proto = Moment.prototype;
+
+proto.add               = add;
+proto.calendar          = calendar$1;
+proto.clone             = clone;
+proto.diff              = diff;
+proto.endOf             = endOf;
+proto.format            = format;
+proto.from              = from;
+proto.fromNow           = fromNow;
+proto.to                = to;
+proto.toNow             = toNow;
+proto.get               = stringGet;
+proto.invalidAt         = invalidAt;
+proto.isAfter           = isAfter;
+proto.isBefore          = isBefore;
+proto.isBetween         = isBetween;
+proto.isSame            = isSame;
+proto.isSameOrAfter     = isSameOrAfter;
+proto.isSameOrBefore    = isSameOrBefore;
+proto.isValid           = isValid$1;
+proto.lang              = lang;
+proto.locale            = locale;
+proto.localeData        = localeData;
+proto.max               = prototypeMax;
+proto.min               = prototypeMin;
+proto.parsingFlags      = parsingFlags;
+proto.set               = stringSet;
+proto.startOf           = startOf;
+proto.subtract          = subtract;
+proto.toArray           = toArray;
+proto.toObject          = toObject;
+proto.toDate            = toDate;
+proto.toISOString       = toISOString;
+proto.inspect           = inspect;
+proto.toJSON            = toJSON;
+proto.toString          = toString;
+proto.unix              = unix;
+proto.valueOf           = valueOf;
+proto.creationData      = creationData;
+
+// Year
+proto.year       = getSetYear;
+proto.isLeapYear = getIsLeapYear;
+
+// Week Year
+proto.weekYear    = getSetWeekYear;
+proto.isoWeekYear = getSetISOWeekYear;
+
+// Quarter
+proto.quarter = proto.quarters = getSetQuarter;
+
+// Month
+proto.month       = getSetMonth;
+proto.daysInMonth = getDaysInMonth;
+
+// Week
+proto.week           = proto.weeks        = getSetWeek;
+proto.isoWeek        = proto.isoWeeks     = getSetISOWeek;
+proto.weeksInYear    = getWeeksInYear;
+proto.isoWeeksInYear = getISOWeeksInYear;
+
+// Day
+proto.date       = getSetDayOfMonth;
+proto.day        = proto.days             = getSetDayOfWeek;
+proto.weekday    = getSetLocaleDayOfWeek;
+proto.isoWeekday = getSetISODayOfWeek;
+proto.dayOfYear  = getSetDayOfYear;
+
+// Hour
+proto.hour = proto.hours = getSetHour;
+
+// Minute
+proto.minute = proto.minutes = getSetMinute;
+
+// Second
+proto.second = proto.seconds = getSetSecond;
+
+// Millisecond
+proto.millisecond = proto.milliseconds = getSetMillisecond;
+
+// Offset
+proto.utcOffset            = getSetOffset;
+proto.utc                  = setOffsetToUTC;
+proto.local                = setOffsetToLocal;
+proto.parseZone            = setOffsetToParsedOffset;
+proto.hasAlignedHourOffset = hasAlignedHourOffset;
+proto.isDST                = isDaylightSavingTime;
+proto.isLocal              = isLocal;
+proto.isUtcOffset          = isUtcOffset;
+proto.isUtc                = isUtc;
+proto.isUTC                = isUtc;
+
+// Timezone
+proto.zoneAbbr = getZoneAbbr;
+proto.zoneName = getZoneName;
+
+// Deprecations
+proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
+proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
+proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
+proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
+proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
+
+function createUnix (input) {
+    return createLocal(input * 1000);
+}
+
+function createInZone () {
+    return createLocal.apply(null, arguments).parseZone();
+}
+
+function preParsePostFormat (string) {
+    return string;
+}
+
+var proto$1 = Locale.prototype;
+
+proto$1.calendar        = calendar;
+proto$1.longDateFormat  = longDateFormat;
+proto$1.invalidDate     = invalidDate;
+proto$1.ordinal         = ordinal;
+proto$1.preparse        = preParsePostFormat;
+proto$1.postformat      = preParsePostFormat;
+proto$1.relativeTime    = relativeTime;
+proto$1.pastFuture      = pastFuture;
+proto$1.set             = set;
+
+// Month
+proto$1.months            =        localeMonths;
+proto$1.monthsShort       =        localeMonthsShort;
+proto$1.monthsParse       =        localeMonthsParse;
+proto$1.monthsRegex       = monthsRegex;
+proto$1.monthsShortRegex  = monthsShortRegex;
+
+// Week
+proto$1.week = localeWeek;
+proto$1.firstDayOfYear = localeFirstDayOfYear;
+proto$1.firstDayOfWeek = localeFirstDayOfWeek;
+
+// Day of Week
+proto$1.weekdays       =        localeWeekdays;
+proto$1.weekdaysMin    =        localeWeekdaysMin;
+proto$1.weekdaysShort  =        localeWeekdaysShort;
+proto$1.weekdaysParse  =        localeWeekdaysParse;
+
+proto$1.weekdaysRegex       =        weekdaysRegex;
+proto$1.weekdaysShortRegex  =        weekdaysShortRegex;
+proto$1.weekdaysMinRegex    =        weekdaysMinRegex;
+
+// Hours
+proto$1.isPM = localeIsPM;
+proto$1.meridiem = localeMeridiem;
+
+function get$1 (format, index, field, setter) {
+    var locale = getLocale();
+    var utc = createUTC().set(setter, index);
+    return locale[field](utc, format);
+}
+
+function listMonthsImpl (format, index, field) {
+    if (isNumber(format)) {
+        index = format;
+        format = undefined;
     }
 
-    // FORMATTING
+    format = format || '';
 
-    addFormatToken('m', ['mm', 2], 0, 'minute');
-
-    // ALIASES
-
-    addUnitAlias('minute', 'm');
-
-    // PRIORITY
-
-    addUnitPriority('minute', 14);
-
-    // PARSING
-
-    addRegexToken('m',  match1to2);
-    addRegexToken('mm', match1to2, match2);
-    addParseToken(['m', 'mm'], MINUTE);
-
-    // MOMENTS
-
-    var getSetMinute = makeGetSet('Minutes', false);
-
-    // FORMATTING
-
-    addFormatToken('s', ['ss', 2], 0, 'second');
-
-    // ALIASES
-
-    addUnitAlias('second', 's');
-
-    // PRIORITY
-
-    addUnitPriority('second', 15);
-
-    // PARSING
-
-    addRegexToken('s',  match1to2);
-    addRegexToken('ss', match1to2, match2);
-    addParseToken(['s', 'ss'], SECOND);
-
-    // MOMENTS
-
-    var getSetSecond = makeGetSet('Seconds', false);
-
-    // FORMATTING
-
-    addFormatToken('S', 0, 0, function () {
-        return ~~(this.millisecond() / 100);
-    });
-
-    addFormatToken(0, ['SS', 2], 0, function () {
-        return ~~(this.millisecond() / 10);
-    });
-
-    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
-    addFormatToken(0, ['SSSS', 4], 0, function () {
-        return this.millisecond() * 10;
-    });
-    addFormatToken(0, ['SSSSS', 5], 0, function () {
-        return this.millisecond() * 100;
-    });
-    addFormatToken(0, ['SSSSSS', 6], 0, function () {
-        return this.millisecond() * 1000;
-    });
-    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
-        return this.millisecond() * 10000;
-    });
-    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
-        return this.millisecond() * 100000;
-    });
-    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
-        return this.millisecond() * 1000000;
-    });
-
-
-    // ALIASES
-
-    addUnitAlias('millisecond', 'ms');
-
-    // PRIORITY
-
-    addUnitPriority('millisecond', 16);
-
-    // PARSING
-
-    addRegexToken('S',    match1to3, match1);
-    addRegexToken('SS',   match1to3, match2);
-    addRegexToken('SSS',  match1to3, match3);
-
-    var token;
-    for (token = 'SSSS'; token.length <= 9; token += 'S') {
-        addRegexToken(token, matchUnsigned);
+    if (index != null) {
+        return get$1(format, index, field, 'month');
     }
 
-    function parseMs(input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
+    var i;
+    var out = [];
+    for (i = 0; i < 12; i++) {
+        out[i] = get$1(format, i, field, 'month');
     }
+    return out;
+}
 
-    for (token = 'S'; token.length <= 9; token += 'S') {
-        addParseToken(token, parseMs);
-    }
-    // MOMENTS
-
-    var getSetMillisecond = makeGetSet('Milliseconds', false);
-
-    // FORMATTING
-
-    addFormatToken('z',  0, 0, 'zoneAbbr');
-    addFormatToken('zz', 0, 0, 'zoneName');
-
-    // MOMENTS
-
-    function getZoneAbbr () {
-        return this._isUTC ? 'UTC' : '';
-    }
-
-    function getZoneName () {
-        return this._isUTC ? 'Coordinated Universal Time' : '';
-    }
-
-    var momentPrototype__proto = Moment.prototype;
-
-    momentPrototype__proto.add               = add_subtract__add;
-    momentPrototype__proto.calendar          = moment_calendar__calendar;
-    momentPrototype__proto.clone             = clone;
-    momentPrototype__proto.diff              = diff;
-    momentPrototype__proto.endOf             = endOf;
-    momentPrototype__proto.format            = format;
-    momentPrototype__proto.from              = from;
-    momentPrototype__proto.fromNow           = fromNow;
-    momentPrototype__proto.to                = to;
-    momentPrototype__proto.toNow             = toNow;
-    momentPrototype__proto.get               = stringGet;
-    momentPrototype__proto.invalidAt         = invalidAt;
-    momentPrototype__proto.isAfter           = isAfter;
-    momentPrototype__proto.isBefore          = isBefore;
-    momentPrototype__proto.isBetween         = isBetween;
-    momentPrototype__proto.isSame            = isSame;
-    momentPrototype__proto.isSameOrAfter     = isSameOrAfter;
-    momentPrototype__proto.isSameOrBefore    = isSameOrBefore;
-    momentPrototype__proto.isValid           = moment_valid__isValid;
-    momentPrototype__proto.lang              = lang;
-    momentPrototype__proto.locale            = locale;
-    momentPrototype__proto.localeData        = localeData;
-    momentPrototype__proto.max               = prototypeMax;
-    momentPrototype__proto.min               = prototypeMin;
-    momentPrototype__proto.parsingFlags      = parsingFlags;
-    momentPrototype__proto.set               = stringSet;
-    momentPrototype__proto.startOf           = startOf;
-    momentPrototype__proto.subtract          = add_subtract__subtract;
-    momentPrototype__proto.toArray           = toArray;
-    momentPrototype__proto.toObject          = toObject;
-    momentPrototype__proto.toDate            = toDate;
-    momentPrototype__proto.toISOString       = moment_format__toISOString;
-    momentPrototype__proto.toJSON            = toJSON;
-    momentPrototype__proto.toString          = toString;
-    momentPrototype__proto.unix              = unix;
-    momentPrototype__proto.valueOf           = to_type__valueOf;
-    momentPrototype__proto.creationData      = creationData;
-
-    // Year
-    momentPrototype__proto.year       = getSetYear;
-    momentPrototype__proto.isLeapYear = getIsLeapYear;
-
-    // Week Year
-    momentPrototype__proto.weekYear    = getSetWeekYear;
-    momentPrototype__proto.isoWeekYear = getSetISOWeekYear;
-
-    // Quarter
-    momentPrototype__proto.quarter = momentPrototype__proto.quarters = getSetQuarter;
-
-    // Month
-    momentPrototype__proto.month       = getSetMonth;
-    momentPrototype__proto.daysInMonth = getDaysInMonth;
-
-    // Week
-    momentPrototype__proto.week           = momentPrototype__proto.weeks        = getSetWeek;
-    momentPrototype__proto.isoWeek        = momentPrototype__proto.isoWeeks     = getSetISOWeek;
-    momentPrototype__proto.weeksInYear    = getWeeksInYear;
-    momentPrototype__proto.isoWeeksInYear = getISOWeeksInYear;
-
-    // Day
-    momentPrototype__proto.date       = getSetDayOfMonth;
-    momentPrototype__proto.day        = momentPrototype__proto.days             = getSetDayOfWeek;
-    momentPrototype__proto.weekday    = getSetLocaleDayOfWeek;
-    momentPrototype__proto.isoWeekday = getSetISODayOfWeek;
-    momentPrototype__proto.dayOfYear  = getSetDayOfYear;
-
-    // Hour
-    momentPrototype__proto.hour = momentPrototype__proto.hours = getSetHour;
-
-    // Minute
-    momentPrototype__proto.minute = momentPrototype__proto.minutes = getSetMinute;
-
-    // Second
-    momentPrototype__proto.second = momentPrototype__proto.seconds = getSetSecond;
-
-    // Millisecond
-    momentPrototype__proto.millisecond = momentPrototype__proto.milliseconds = getSetMillisecond;
-
-    // Offset
-    momentPrototype__proto.utcOffset            = getSetOffset;
-    momentPrototype__proto.utc                  = setOffsetToUTC;
-    momentPrototype__proto.local                = setOffsetToLocal;
-    momentPrototype__proto.parseZone            = setOffsetToParsedOffset;
-    momentPrototype__proto.hasAlignedHourOffset = hasAlignedHourOffset;
-    momentPrototype__proto.isDST                = isDaylightSavingTime;
-    momentPrototype__proto.isLocal              = isLocal;
-    momentPrototype__proto.isUtcOffset          = isUtcOffset;
-    momentPrototype__proto.isUtc                = isUtc;
-    momentPrototype__proto.isUTC                = isUtc;
-
-    // Timezone
-    momentPrototype__proto.zoneAbbr = getZoneAbbr;
-    momentPrototype__proto.zoneName = getZoneName;
-
-    // Deprecations
-    momentPrototype__proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
-    momentPrototype__proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
-    momentPrototype__proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
-    momentPrototype__proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
-    momentPrototype__proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
-
-    var momentPrototype = momentPrototype__proto;
-
-    function moment__createUnix (input) {
-        return local__createLocal(input * 1000);
-    }
-
-    function moment__createInZone () {
-        return local__createLocal.apply(null, arguments).parseZone();
-    }
-
-    function preParsePostFormat (string) {
-        return string;
-    }
-
-    var prototype__proto = Locale.prototype;
-
-    prototype__proto.calendar        = locale_calendar__calendar;
-    prototype__proto.longDateFormat  = longDateFormat;
-    prototype__proto.invalidDate     = invalidDate;
-    prototype__proto.ordinal         = ordinal;
-    prototype__proto.preparse        = preParsePostFormat;
-    prototype__proto.postformat      = preParsePostFormat;
-    prototype__proto.relativeTime    = relative__relativeTime;
-    prototype__proto.pastFuture      = pastFuture;
-    prototype__proto.set             = locale_set__set;
-
-    // Month
-    prototype__proto.months            =        localeMonths;
-    prototype__proto.monthsShort       =        localeMonthsShort;
-    prototype__proto.monthsParse       =        localeMonthsParse;
-    prototype__proto.monthsRegex       = monthsRegex;
-    prototype__proto.monthsShortRegex  = monthsShortRegex;
-
-    // Week
-    prototype__proto.week = localeWeek;
-    prototype__proto.firstDayOfYear = localeFirstDayOfYear;
-    prototype__proto.firstDayOfWeek = localeFirstDayOfWeek;
-
-    // Day of Week
-    prototype__proto.weekdays       =        localeWeekdays;
-    prototype__proto.weekdaysMin    =        localeWeekdaysMin;
-    prototype__proto.weekdaysShort  =        localeWeekdaysShort;
-    prototype__proto.weekdaysParse  =        localeWeekdaysParse;
-
-    prototype__proto.weekdaysRegex       =        weekdaysRegex;
-    prototype__proto.weekdaysShortRegex  =        weekdaysShortRegex;
-    prototype__proto.weekdaysMinRegex    =        weekdaysMinRegex;
-
-    // Hours
-    prototype__proto.isPM = localeIsPM;
-    prototype__proto.meridiem = localeMeridiem;
-
-    function lists__get (format, index, field, setter) {
-        var locale = locale_locales__getLocale();
-        var utc = create_utc__createUTC().set(setter, index);
-        return locale[field](utc, format);
-    }
-
-    function listMonthsImpl (format, index, field) {
-        if (typeof format === 'number') {
+// ()
+// (5)
+// (fmt, 5)
+// (fmt)
+// (true)
+// (true, 5)
+// (true, fmt, 5)
+// (true, fmt)
+function listWeekdaysImpl (localeSorted, format, index, field) {
+    if (typeof localeSorted === 'boolean') {
+        if (isNumber(format)) {
             index = format;
             format = undefined;
         }
 
         format = format || '';
+    } else {
+        format = localeSorted;
+        index = format;
+        localeSorted = false;
 
-        if (index != null) {
-            return lists__get(format, index, field, 'month');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 12; i++) {
-            out[i] = lists__get(format, i, field, 'month');
-        }
-        return out;
-    }
-
-    // ()
-    // (5)
-    // (fmt, 5)
-    // (fmt)
-    // (true)
-    // (true, 5)
-    // (true, fmt, 5)
-    // (true, fmt)
-    function listWeekdaysImpl (localeSorted, format, index, field) {
-        if (typeof localeSorted === 'boolean') {
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        } else {
-            format = localeSorted;
+        if (isNumber(format)) {
             index = format;
-            localeSorted = false;
-
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
+            format = undefined;
         }
 
-        var locale = locale_locales__getLocale(),
-            shift = localeSorted ? locale._week.dow : 0;
+        format = format || '';
+    }
 
-        if (index != null) {
-            return lists__get(format, (index + shift) % 7, field, 'day');
+    var locale = getLocale(),
+        shift = localeSorted ? locale._week.dow : 0;
+
+    if (index != null) {
+        return get$1(format, (index + shift) % 7, field, 'day');
+    }
+
+    var i;
+    var out = [];
+    for (i = 0; i < 7; i++) {
+        out[i] = get$1(format, (i + shift) % 7, field, 'day');
+    }
+    return out;
+}
+
+function listMonths (format, index) {
+    return listMonthsImpl(format, index, 'months');
+}
+
+function listMonthsShort (format, index) {
+    return listMonthsImpl(format, index, 'monthsShort');
+}
+
+function listWeekdays (localeSorted, format, index) {
+    return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
+}
+
+function listWeekdaysShort (localeSorted, format, index) {
+    return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
+}
+
+function listWeekdaysMin (localeSorted, format, index) {
+    return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
+}
+
+getSetGlobalLocale('en', {
+    ordinalParse: /\d{1,2}(th|st|nd|rd)/,
+    ordinal : function (number) {
+        var b = number % 10,
+            output = (toInt(number % 100 / 10) === 1) ? 'th' :
+            (b === 1) ? 'st' :
+            (b === 2) ? 'nd' :
+            (b === 3) ? 'rd' : 'th';
+        return number + output;
+    }
+});
+
+// Side effect imports
+hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
+hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
+
+var mathAbs = Math.abs;
+
+function abs () {
+    var data           = this._data;
+
+    this._milliseconds = mathAbs(this._milliseconds);
+    this._days         = mathAbs(this._days);
+    this._months       = mathAbs(this._months);
+
+    data.milliseconds  = mathAbs(data.milliseconds);
+    data.seconds       = mathAbs(data.seconds);
+    data.minutes       = mathAbs(data.minutes);
+    data.hours         = mathAbs(data.hours);
+    data.months        = mathAbs(data.months);
+    data.years         = mathAbs(data.years);
+
+    return this;
+}
+
+function addSubtract$1 (duration, input, value, direction) {
+    var other = createDuration(input, value);
+
+    duration._milliseconds += direction * other._milliseconds;
+    duration._days         += direction * other._days;
+    duration._months       += direction * other._months;
+
+    return duration._bubble();
+}
+
+// supports only 2.0-style add(1, 's') or add(duration)
+function add$1 (input, value) {
+    return addSubtract$1(this, input, value, 1);
+}
+
+// supports only 2.0-style subtract(1, 's') or subtract(duration)
+function subtract$1 (input, value) {
+    return addSubtract$1(this, input, value, -1);
+}
+
+function absCeil (number) {
+    if (number < 0) {
+        return Math.floor(number);
+    } else {
+        return Math.ceil(number);
+    }
+}
+
+function bubble () {
+    var milliseconds = this._milliseconds;
+    var days         = this._days;
+    var months       = this._months;
+    var data         = this._data;
+    var seconds, minutes, hours, years, monthsFromDays;
+
+    // if we have a mix of positive and negative values, bubble down first
+    // check: https://github.com/moment/moment/issues/2166
+    if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
+            (milliseconds <= 0 && days <= 0 && months <= 0))) {
+        milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
+        days = 0;
+        months = 0;
+    }
+
+    // The following code bubbles up values, see the tests for
+    // examples of what that means.
+    data.milliseconds = milliseconds % 1000;
+
+    seconds           = absFloor(milliseconds / 1000);
+    data.seconds      = seconds % 60;
+
+    minutes           = absFloor(seconds / 60);
+    data.minutes      = minutes % 60;
+
+    hours             = absFloor(minutes / 60);
+    data.hours        = hours % 24;
+
+    days += absFloor(hours / 24);
+
+    // convert days to months
+    monthsFromDays = absFloor(daysToMonths(days));
+    months += monthsFromDays;
+    days -= absCeil(monthsToDays(monthsFromDays));
+
+    // 12 months -> 1 year
+    years = absFloor(months / 12);
+    months %= 12;
+
+    data.days   = days;
+    data.months = months;
+    data.years  = years;
+
+    return this;
+}
+
+function daysToMonths (days) {
+    // 400 years have 146097 days (taking into account leap year rules)
+    // 400 years have 12 months === 4800
+    return days * 4800 / 146097;
+}
+
+function monthsToDays (months) {
+    // the reverse of daysToMonths
+    return months * 146097 / 4800;
+}
+
+function as (units) {
+    var days;
+    var months;
+    var milliseconds = this._milliseconds;
+
+    units = normalizeUnits(units);
+
+    if (units === 'month' || units === 'year') {
+        days   = this._days   + milliseconds / 864e5;
+        months = this._months + daysToMonths(days);
+        return units === 'month' ? months : months / 12;
+    } else {
+        // handle milliseconds separately because of floating point math errors (issue #1867)
+        days = this._days + Math.round(monthsToDays(this._months));
+        switch (units) {
+            case 'week'   : return days / 7     + milliseconds / 6048e5;
+            case 'day'    : return days         + milliseconds / 864e5;
+            case 'hour'   : return days * 24    + milliseconds / 36e5;
+            case 'minute' : return days * 1440  + milliseconds / 6e4;
+            case 'second' : return days * 86400 + milliseconds / 1000;
+            // Math.floor prevents floating point math errors here
+            case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
+            default: throw new Error('Unknown unit ' + units);
         }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 7; i++) {
-            out[i] = lists__get(format, (i + shift) % 7, field, 'day');
-        }
-        return out;
     }
+}
 
-    function lists__listMonths (format, index) {
-        return listMonthsImpl(format, index, 'months');
-    }
+// TODO: Use this.as('ms')?
+function valueOf$1 () {
+    return (
+        this._milliseconds +
+        this._days * 864e5 +
+        (this._months % 12) * 2592e6 +
+        toInt(this._months / 12) * 31536e6
+    );
+}
 
-    function lists__listMonthsShort (format, index) {
-        return listMonthsImpl(format, index, 'monthsShort');
-    }
-
-    function lists__listWeekdays (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
-    }
-
-    function lists__listWeekdaysShort (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
-    }
-
-    function lists__listWeekdaysMin (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
-    }
-
-    locale_locales__getSetGlobalLocale('en', {
-        ordinalParse: /\d{1,2}(th|st|nd|rd)/,
-        ordinal : function (number) {
-            var b = number % 10,
-                output = (toInt(number % 100 / 10) === 1) ? 'th' :
-                (b === 1) ? 'st' :
-                (b === 2) ? 'nd' :
-                (b === 3) ? 'rd' : 'th';
-            return number + output;
-        }
-    });
-
-    // Side effect imports
-    utils_hooks__hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', locale_locales__getSetGlobalLocale);
-    utils_hooks__hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', locale_locales__getLocale);
-
-    var mathAbs = Math.abs;
-
-    function duration_abs__abs () {
-        var data           = this._data;
-
-        this._milliseconds = mathAbs(this._milliseconds);
-        this._days         = mathAbs(this._days);
-        this._months       = mathAbs(this._months);
-
-        data.milliseconds  = mathAbs(data.milliseconds);
-        data.seconds       = mathAbs(data.seconds);
-        data.minutes       = mathAbs(data.minutes);
-        data.hours         = mathAbs(data.hours);
-        data.months        = mathAbs(data.months);
-        data.years         = mathAbs(data.years);
-
-        return this;
-    }
-
-    function duration_add_subtract__addSubtract (duration, input, value, direction) {
-        var other = create__createDuration(input, value);
-
-        duration._milliseconds += direction * other._milliseconds;
-        duration._days         += direction * other._days;
-        duration._months       += direction * other._months;
-
-        return duration._bubble();
-    }
-
-    // supports only 2.0-style add(1, 's') or add(duration)
-    function duration_add_subtract__add (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, 1);
-    }
-
-    // supports only 2.0-style subtract(1, 's') or subtract(duration)
-    function duration_add_subtract__subtract (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, -1);
-    }
-
-    function absCeil (number) {
-        if (number < 0) {
-            return Math.floor(number);
-        } else {
-            return Math.ceil(number);
-        }
-    }
-
-    function bubble () {
-        var milliseconds = this._milliseconds;
-        var days         = this._days;
-        var months       = this._months;
-        var data         = this._data;
-        var seconds, minutes, hours, years, monthsFromDays;
-
-        // if we have a mix of positive and negative values, bubble down first
-        // check: https://github.com/moment/moment/issues/2166
-        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
-                (milliseconds <= 0 && days <= 0 && months <= 0))) {
-            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
-            days = 0;
-            months = 0;
-        }
-
-        // The following code bubbles up values, see the tests for
-        // examples of what that means.
-        data.milliseconds = milliseconds % 1000;
-
-        seconds           = absFloor(milliseconds / 1000);
-        data.seconds      = seconds % 60;
-
-        minutes           = absFloor(seconds / 60);
-        data.minutes      = minutes % 60;
-
-        hours             = absFloor(minutes / 60);
-        data.hours        = hours % 24;
-
-        days += absFloor(hours / 24);
-
-        // convert days to months
-        monthsFromDays = absFloor(daysToMonths(days));
-        months += monthsFromDays;
-        days -= absCeil(monthsToDays(monthsFromDays));
-
-        // 12 months -> 1 year
-        years = absFloor(months / 12);
-        months %= 12;
-
-        data.days   = days;
-        data.months = months;
-        data.years  = years;
-
-        return this;
-    }
-
-    function daysToMonths (days) {
-        // 400 years have 146097 days (taking into account leap year rules)
-        // 400 years have 12 months === 4800
-        return days * 4800 / 146097;
-    }
-
-    function monthsToDays (months) {
-        // the reverse of daysToMonths
-        return months * 146097 / 4800;
-    }
-
-    function as (units) {
-        var days;
-        var months;
-        var milliseconds = this._milliseconds;
-
-        units = normalizeUnits(units);
-
-        if (units === 'month' || units === 'year') {
-            days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToMonths(days);
-            return units === 'month' ? months : months / 12;
-        } else {
-            // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(monthsToDays(this._months));
-            switch (units) {
-                case 'week'   : return days / 7     + milliseconds / 6048e5;
-                case 'day'    : return days         + milliseconds / 864e5;
-                case 'hour'   : return days * 24    + milliseconds / 36e5;
-                case 'minute' : return days * 1440  + milliseconds / 6e4;
-                case 'second' : return days * 86400 + milliseconds / 1000;
-                // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
-                default: throw new Error('Unknown unit ' + units);
-            }
-        }
-    }
-
-    // TODO: Use this.as('ms')?
-    function duration_as__valueOf () {
-        return (
-            this._milliseconds +
-            this._days * 864e5 +
-            (this._months % 12) * 2592e6 +
-            toInt(this._months / 12) * 31536e6
-        );
-    }
-
-    function makeAs (alias) {
-        return function () {
-            return this.as(alias);
-        };
-    }
-
-    var asMilliseconds = makeAs('ms');
-    var asSeconds      = makeAs('s');
-    var asMinutes      = makeAs('m');
-    var asHours        = makeAs('h');
-    var asDays         = makeAs('d');
-    var asWeeks        = makeAs('w');
-    var asMonths       = makeAs('M');
-    var asYears        = makeAs('y');
-
-    function duration_get__get (units) {
-        units = normalizeUnits(units);
-        return this[units + 's']();
-    }
-
-    function makeGetter(name) {
-        return function () {
-            return this._data[name];
-        };
-    }
-
-    var milliseconds = makeGetter('milliseconds');
-    var seconds      = makeGetter('seconds');
-    var minutes      = makeGetter('minutes');
-    var hours        = makeGetter('hours');
-    var days         = makeGetter('days');
-    var months       = makeGetter('months');
-    var years        = makeGetter('years');
-
-    function weeks () {
-        return absFloor(this.days() / 7);
-    }
-
-    var round = Math.round;
-    var thresholds = {
-        s: 45,  // seconds to minute
-        m: 45,  // minutes to hour
-        h: 22,  // hours to day
-        d: 26,  // days to month
-        M: 11   // months to year
+function makeAs (alias) {
+    return function () {
+        return this.as(alias);
     };
+}
 
-    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
-        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+var asMilliseconds = makeAs('ms');
+var asSeconds      = makeAs('s');
+var asMinutes      = makeAs('m');
+var asHours        = makeAs('h');
+var asDays         = makeAs('d');
+var asWeeks        = makeAs('w');
+var asMonths       = makeAs('M');
+var asYears        = makeAs('y');
+
+function get$2 (units) {
+    units = normalizeUnits(units);
+    return this[units + 's']();
+}
+
+function makeGetter(name) {
+    return function () {
+        return this._data[name];
+    };
+}
+
+var milliseconds = makeGetter('milliseconds');
+var seconds      = makeGetter('seconds');
+var minutes      = makeGetter('minutes');
+var hours        = makeGetter('hours');
+var days         = makeGetter('days');
+var months       = makeGetter('months');
+var years        = makeGetter('years');
+
+function weeks () {
+    return absFloor(this.days() / 7);
+}
+
+var round = Math.round;
+var thresholds = {
+    s: 45,  // seconds to minute
+    m: 45,  // minutes to hour
+    h: 22,  // hours to day
+    d: 26,  // days to month
+    M: 11   // months to year
+};
+
+// helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
+function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
+    return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+}
+
+function relativeTime$1 (posNegDuration, withoutSuffix, locale) {
+    var duration = createDuration(posNegDuration).abs();
+    var seconds  = round(duration.as('s'));
+    var minutes  = round(duration.as('m'));
+    var hours    = round(duration.as('h'));
+    var days     = round(duration.as('d'));
+    var months   = round(duration.as('M'));
+    var years    = round(duration.as('y'));
+
+    var a = seconds < thresholds.s && ['s', seconds]  ||
+            minutes <= 1           && ['m']           ||
+            minutes < thresholds.m && ['mm', minutes] ||
+            hours   <= 1           && ['h']           ||
+            hours   < thresholds.h && ['hh', hours]   ||
+            days    <= 1           && ['d']           ||
+            days    < thresholds.d && ['dd', days]    ||
+            months  <= 1           && ['M']           ||
+            months  < thresholds.M && ['MM', months]  ||
+            years   <= 1           && ['y']           || ['yy', years];
+
+    a[2] = withoutSuffix;
+    a[3] = +posNegDuration > 0;
+    a[4] = locale;
+    return substituteTimeAgo.apply(null, a);
+}
+
+// This function allows you to set the rounding function for relative time strings
+function getSetRelativeTimeRounding (roundingFunction) {
+    if (roundingFunction === undefined) {
+        return round;
     }
-
-    function duration_humanize__relativeTime (posNegDuration, withoutSuffix, locale) {
-        var duration = create__createDuration(posNegDuration).abs();
-        var seconds  = round(duration.as('s'));
-        var minutes  = round(duration.as('m'));
-        var hours    = round(duration.as('h'));
-        var days     = round(duration.as('d'));
-        var months   = round(duration.as('M'));
-        var years    = round(duration.as('y'));
-
-        var a = seconds < thresholds.s && ['s', seconds]  ||
-                minutes <= 1           && ['m']           ||
-                minutes < thresholds.m && ['mm', minutes] ||
-                hours   <= 1           && ['h']           ||
-                hours   < thresholds.h && ['hh', hours]   ||
-                days    <= 1           && ['d']           ||
-                days    < thresholds.d && ['dd', days]    ||
-                months  <= 1           && ['M']           ||
-                months  < thresholds.M && ['MM', months]  ||
-                years   <= 1           && ['y']           || ['yy', years];
-
-        a[2] = withoutSuffix;
-        a[3] = +posNegDuration > 0;
-        a[4] = locale;
-        return substituteTimeAgo.apply(null, a);
-    }
-
-    // This function allows you to set the rounding function for relative time strings
-    function duration_humanize__getSetRelativeTimeRounding (roundingFunction) {
-        if (roundingFunction === undefined) {
-            return round;
-        }
-        if (typeof(roundingFunction) === 'function') {
-            round = roundingFunction;
-            return true;
-        }
-        return false;
-    }
-
-    // This function allows you to set a threshold for relative time strings
-    function duration_humanize__getSetRelativeTimeThreshold (threshold, limit) {
-        if (thresholds[threshold] === undefined) {
-            return false;
-        }
-        if (limit === undefined) {
-            return thresholds[threshold];
-        }
-        thresholds[threshold] = limit;
+    if (typeof(roundingFunction) === 'function') {
+        round = roundingFunction;
         return true;
     }
+    return false;
+}
 
-    function humanize (withSuffix) {
-        var locale = this.localeData();
-        var output = duration_humanize__relativeTime(this, !withSuffix, locale);
+// This function allows you to set a threshold for relative time strings
+function getSetRelativeTimeThreshold (threshold, limit) {
+    if (thresholds[threshold] === undefined) {
+        return false;
+    }
+    if (limit === undefined) {
+        return thresholds[threshold];
+    }
+    thresholds[threshold] = limit;
+    return true;
+}
 
-        if (withSuffix) {
-            output = locale.pastFuture(+this, output);
-        }
+function humanize (withSuffix) {
+    var locale = this.localeData();
+    var output = relativeTime$1(this, !withSuffix, locale);
 
-        return locale.postformat(output);
+    if (withSuffix) {
+        output = locale.pastFuture(+this, output);
     }
 
-    var iso_string__abs = Math.abs;
+    return locale.postformat(output);
+}
 
-    function iso_string__toISOString() {
-        // for ISO strings we do not use the normal bubbling rules:
-        //  * milliseconds bubble up until they become hours
-        //  * days do not bubble at all
-        //  * months bubble up until they become years
-        // This is because there is no context-free conversion between hours and days
-        // (think of clock changes)
-        // and also not between days and months (28-31 days per month)
-        var seconds = iso_string__abs(this._milliseconds) / 1000;
-        var days         = iso_string__abs(this._days);
-        var months       = iso_string__abs(this._months);
-        var minutes, hours, years;
+var abs$1 = Math.abs;
 
-        // 3600 seconds -> 60 minutes -> 1 hour
-        minutes           = absFloor(seconds / 60);
-        hours             = absFloor(minutes / 60);
-        seconds %= 60;
-        minutes %= 60;
+function toISOString$1() {
+    // for ISO strings we do not use the normal bubbling rules:
+    //  * milliseconds bubble up until they become hours
+    //  * days do not bubble at all
+    //  * months bubble up until they become years
+    // This is because there is no context-free conversion between hours and days
+    // (think of clock changes)
+    // and also not between days and months (28-31 days per month)
+    var seconds = abs$1(this._milliseconds) / 1000;
+    var days         = abs$1(this._days);
+    var months       = abs$1(this._months);
+    var minutes, hours, years;
 
-        // 12 months -> 1 year
-        years  = absFloor(months / 12);
-        months %= 12;
+    // 3600 seconds -> 60 minutes -> 1 hour
+    minutes           = absFloor(seconds / 60);
+    hours             = absFloor(minutes / 60);
+    seconds %= 60;
+    minutes %= 60;
+
+    // 12 months -> 1 year
+    years  = absFloor(months / 12);
+    months %= 12;
 
 
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = years;
-        var M = months;
-        var D = days;
-        var h = hours;
-        var m = minutes;
-        var s = seconds;
-        var total = this.asSeconds();
+    // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+    var Y = years;
+    var M = months;
+    var D = days;
+    var h = hours;
+    var m = minutes;
+    var s = seconds;
+    var total = this.asSeconds();
 
-        if (!total) {
-            // this is the same as C#'s (Noda) and python (isodate)...
-            // but not other JS (goog.date)
-            return 'P0D';
-        }
-
-        return (total < 0 ? '-' : '') +
-            'P' +
-            (Y ? Y + 'Y' : '') +
-            (M ? M + 'M' : '') +
-            (D ? D + 'D' : '') +
-            ((h || m || s) ? 'T' : '') +
-            (h ? h + 'H' : '') +
-            (m ? m + 'M' : '') +
-            (s ? s + 'S' : '');
+    if (!total) {
+        // this is the same as C#'s (Noda) and python (isodate)...
+        // but not other JS (goog.date)
+        return 'P0D';
     }
 
-    var duration_prototype__proto = Duration.prototype;
+    return (total < 0 ? '-' : '') +
+        'P' +
+        (Y ? Y + 'Y' : '') +
+        (M ? M + 'M' : '') +
+        (D ? D + 'D' : '') +
+        ((h || m || s) ? 'T' : '') +
+        (h ? h + 'H' : '') +
+        (m ? m + 'M' : '') +
+        (s ? s + 'S' : '');
+}
 
-    duration_prototype__proto.abs            = duration_abs__abs;
-    duration_prototype__proto.add            = duration_add_subtract__add;
-    duration_prototype__proto.subtract       = duration_add_subtract__subtract;
-    duration_prototype__proto.as             = as;
-    duration_prototype__proto.asMilliseconds = asMilliseconds;
-    duration_prototype__proto.asSeconds      = asSeconds;
-    duration_prototype__proto.asMinutes      = asMinutes;
-    duration_prototype__proto.asHours        = asHours;
-    duration_prototype__proto.asDays         = asDays;
-    duration_prototype__proto.asWeeks        = asWeeks;
-    duration_prototype__proto.asMonths       = asMonths;
-    duration_prototype__proto.asYears        = asYears;
-    duration_prototype__proto.valueOf        = duration_as__valueOf;
-    duration_prototype__proto._bubble        = bubble;
-    duration_prototype__proto.get            = duration_get__get;
-    duration_prototype__proto.milliseconds   = milliseconds;
-    duration_prototype__proto.seconds        = seconds;
-    duration_prototype__proto.minutes        = minutes;
-    duration_prototype__proto.hours          = hours;
-    duration_prototype__proto.days           = days;
-    duration_prototype__proto.weeks          = weeks;
-    duration_prototype__proto.months         = months;
-    duration_prototype__proto.years          = years;
-    duration_prototype__proto.humanize       = humanize;
-    duration_prototype__proto.toISOString    = iso_string__toISOString;
-    duration_prototype__proto.toString       = iso_string__toISOString;
-    duration_prototype__proto.toJSON         = iso_string__toISOString;
-    duration_prototype__proto.locale         = locale;
-    duration_prototype__proto.localeData     = localeData;
+var proto$2 = Duration.prototype;
 
-    // Deprecations
-    duration_prototype__proto.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', iso_string__toISOString);
-    duration_prototype__proto.lang = lang;
+proto$2.abs            = abs;
+proto$2.add            = add$1;
+proto$2.subtract       = subtract$1;
+proto$2.as             = as;
+proto$2.asMilliseconds = asMilliseconds;
+proto$2.asSeconds      = asSeconds;
+proto$2.asMinutes      = asMinutes;
+proto$2.asHours        = asHours;
+proto$2.asDays         = asDays;
+proto$2.asWeeks        = asWeeks;
+proto$2.asMonths       = asMonths;
+proto$2.asYears        = asYears;
+proto$2.valueOf        = valueOf$1;
+proto$2._bubble        = bubble;
+proto$2.get            = get$2;
+proto$2.milliseconds   = milliseconds;
+proto$2.seconds        = seconds;
+proto$2.minutes        = minutes;
+proto$2.hours          = hours;
+proto$2.days           = days;
+proto$2.weeks          = weeks;
+proto$2.months         = months;
+proto$2.years          = years;
+proto$2.humanize       = humanize;
+proto$2.toISOString    = toISOString$1;
+proto$2.toString       = toISOString$1;
+proto$2.toJSON         = toISOString$1;
+proto$2.locale         = locale;
+proto$2.localeData     = localeData;
 
-    // Side effect imports
+// Deprecations
+proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
+proto$2.lang = lang;
 
-    // FORMATTING
+// Side effect imports
 
-    addFormatToken('X', 0, 0, 'unix');
-    addFormatToken('x', 0, 0, 'valueOf');
+// FORMATTING
 
-    // PARSING
+addFormatToken('X', 0, 0, 'unix');
+addFormatToken('x', 0, 0, 'valueOf');
 
-    addRegexToken('x', matchSigned);
-    addRegexToken('X', matchTimestamp);
-    addParseToken('X', function (input, array, config) {
-        config._d = new Date(parseFloat(input, 10) * 1000);
-    });
-    addParseToken('x', function (input, array, config) {
-        config._d = new Date(toInt(input));
-    });
+// PARSING
 
-    // Side effect imports
+addRegexToken('x', matchSigned);
+addRegexToken('X', matchTimestamp);
+addParseToken('X', function (input, array, config) {
+    config._d = new Date(parseFloat(input, 10) * 1000);
+});
+addParseToken('x', function (input, array, config) {
+    config._d = new Date(toInt(input));
+});
+
+// Side effect imports
 
 
-    utils_hooks__hooks.version = '2.15.1';
+hooks.version = '2.17.1';
 
-    setHookCallback(local__createLocal);
+setHookCallback(createLocal);
 
-    utils_hooks__hooks.fn                    = momentPrototype;
-    utils_hooks__hooks.min                   = min;
-    utils_hooks__hooks.max                   = max;
-    utils_hooks__hooks.now                   = now;
-    utils_hooks__hooks.utc                   = create_utc__createUTC;
-    utils_hooks__hooks.unix                  = moment__createUnix;
-    utils_hooks__hooks.months                = lists__listMonths;
-    utils_hooks__hooks.isDate                = isDate;
-    utils_hooks__hooks.locale                = locale_locales__getSetGlobalLocale;
-    utils_hooks__hooks.invalid               = valid__createInvalid;
-    utils_hooks__hooks.duration              = create__createDuration;
-    utils_hooks__hooks.isMoment              = isMoment;
-    utils_hooks__hooks.weekdays              = lists__listWeekdays;
-    utils_hooks__hooks.parseZone             = moment__createInZone;
-    utils_hooks__hooks.localeData            = locale_locales__getLocale;
-    utils_hooks__hooks.isDuration            = isDuration;
-    utils_hooks__hooks.monthsShort           = lists__listMonthsShort;
-    utils_hooks__hooks.weekdaysMin           = lists__listWeekdaysMin;
-    utils_hooks__hooks.defineLocale          = defineLocale;
-    utils_hooks__hooks.updateLocale          = updateLocale;
-    utils_hooks__hooks.locales               = locale_locales__listLocales;
-    utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
-    utils_hooks__hooks.normalizeUnits        = normalizeUnits;
-    utils_hooks__hooks.relativeTimeRounding = duration_humanize__getSetRelativeTimeRounding;
-    utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
-    utils_hooks__hooks.calendarFormat        = getCalendarFormat;
-    utils_hooks__hooks.prototype             = momentPrototype;
+hooks.fn                    = proto;
+hooks.min                   = min;
+hooks.max                   = max;
+hooks.now                   = now;
+hooks.utc                   = createUTC;
+hooks.unix                  = createUnix;
+hooks.months                = listMonths;
+hooks.isDate                = isDate;
+hooks.locale                = getSetGlobalLocale;
+hooks.invalid               = createInvalid;
+hooks.duration              = createDuration;
+hooks.isMoment              = isMoment;
+hooks.weekdays              = listWeekdays;
+hooks.parseZone             = createInZone;
+hooks.localeData            = getLocale;
+hooks.isDuration            = isDuration;
+hooks.monthsShort           = listMonthsShort;
+hooks.weekdaysMin           = listWeekdaysMin;
+hooks.defineLocale          = defineLocale;
+hooks.updateLocale          = updateLocale;
+hooks.locales               = listLocales;
+hooks.weekdaysShort         = listWeekdaysShort;
+hooks.normalizeUnits        = normalizeUnits;
+hooks.relativeTimeRounding = getSetRelativeTimeRounding;
+hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
+hooks.calendarFormat        = getCalendarFormat;
+hooks.prototype             = proto;
 
-    var _moment = utils_hooks__hooks;
+return hooks;
 
-    return _moment;
-
-}));
-/*! version : 4.17.42
+})));
+/*! version : 4.17.47
  =========================================================
  bootstrap-datetimejs
  https://github.com/Eonasdan/bootstrap-datetimepicker
@@ -38301,6 +38373,10 @@ $( document ).ready(function() {
 
                 if (d === undefined || d === null) {
                     returnMoment = moment(); //TODO should this use format? and locale?
+                } else if (moment.isDate(d) || moment.isMoment(d)) {
+                    // If the date that is passed in is already a Date() or moment() object,
+                    // pass it directly to moment.
+                    returnMoment = moment(d);
                 } else if (hasTimeZone()) { // There is a string to parse and a default time zone
                     // parse with the tz function which takes a default time zone if it is not in the format string
                     returnMoment = moment.tz(d, parseFormats, options.useStrict, options.timeZone);
@@ -38495,6 +38571,7 @@ $( document ).ready(function() {
                 if (use24Hours) {
                     template.addClass('usetwentyfour');
                 }
+
                 if (isEnabled('s') && !use24Hours) {
                     template.addClass('wider');
                 }
@@ -38607,15 +38684,15 @@ $( document ).ready(function() {
                     widget.removeClass('pull-right');
                 }
 
-                // find the first parent element that has a relative css positioning
-                if (parent.css('position') !== 'relative') {
+                // find the first parent element that has a non-static css positioning
+                if (parent.css('position') === 'static') {
                     parent = parent.parents().filter(function () {
-                        return $(this).css('position') === 'relative';
+                        return $(this).css('position') !== 'static';
                     }).first();
                 }
 
                 if (parent.length === 0) {
-                    throw new Error('datetimepicker component should be placed within a relative positioned container');
+                    throw new Error('datetimepicker component should be placed within a non-static positioned container');
                 }
 
                 widget.css({
@@ -38845,7 +38922,7 @@ $( document ).ready(function() {
                     currentDate,
                     html = [],
                     row,
-                    clsName,
+                    clsNames = [],
                     i;
 
                 if (!hasDate()) {
@@ -38876,26 +38953,31 @@ $( document ).ready(function() {
                         }
                         html.push(row);
                     }
-                    clsName = '';
+                    clsNames = ['day'];
                     if (currentDate.isBefore(viewDate, 'M')) {
-                        clsName += ' old';
+                        clsNames.push('old');
                     }
                     if (currentDate.isAfter(viewDate, 'M')) {
-                        clsName += ' new';
+                        clsNames.push('new');
                     }
                     if (currentDate.isSame(date, 'd') && !unset) {
-                        clsName += ' active';
+                        clsNames.push('active');
                     }
                     if (!isValid(currentDate, 'd')) {
-                        clsName += ' disabled';
+                        clsNames.push('disabled');
                     }
                     if (currentDate.isSame(getMoment(), 'd')) {
-                        clsName += ' today';
+                        clsNames.push('today');
                     }
                     if (currentDate.day() === 0 || currentDate.day() === 6) {
-                        clsName += ' weekend';
+                        clsNames.push('weekend');
                     }
-                    row.append('<td data-action="selectDay" data-day="' + currentDate.format('L') + '" class="day' + clsName + '">' + currentDate.date() + '</td>');
+                    notifyEvent({
+                        type: 'dp.classify',
+                        date: currentDate,
+                        classNames: clsNames
+                    });
+                    row.append('<td data-action="selectDay" data-day="' + currentDate.format('L') + '" class="' + clsNames.join(' ') + '">' + currentDate.date() + '</td>');
                     currentDate.add(1, 'd');
                 }
 
@@ -39021,11 +39103,15 @@ $( document ).ready(function() {
 
                 if (options.stepping !== 1) {
                     targetMoment.minutes((Math.round(targetMoment.minutes() / options.stepping) * options.stepping)).seconds(0);
+
+                    while (options.minDate && targetMoment.isBefore(options.minDate)) {
+                        targetMoment.add(options.stepping, 'minutes');
+                    }
                 }
 
                 if (isValid(targetMoment)) {
                     date = targetMoment;
-                    //viewDate = date.clone(); // TODO this doesn't work right on first use
+                    viewDate = date.clone();
                     input.val(date.format(actualFormat));
                     element.data('date', date.format(actualFormat));
                     unset = false;
@@ -39092,7 +39178,6 @@ $( document ).ready(function() {
 
                 input.blur();
 
-                currentViewMode = 0;
                 viewDate = date.clone();
 
                 return picker;
@@ -39104,7 +39189,7 @@ $( document ).ready(function() {
 
             parseInputDate = function (inputDate) {
                 if (options.parseInputDate === undefined) {
-                    if (!moment.isMoment(inputDate)) {
+                    if (!moment.isMoment(inputDate) || inputDate instanceof Date) {
                         inputDate = getMoment(inputDate);
                     }
                 } else {
@@ -40561,11 +40646,12 @@ $( document ).ready(function() {
 
         if (typeof options === 'object') {
             return this.each(function () {
-                var $this = $(this);
+                var $this = $(this),
+                    _options;
                 if (!$this.data('DateTimePicker')) {
                     // create a private copy of the defaults object
-                    options = $.extend(true, {}, $.fn.datetimepicker.defaults, options);
-                    $this.data('DateTimePicker', dateTimePicker($this, options));
+                    _options = $.extend(true, {}, $.fn.datetimepicker.defaults, options);
+                    $this.data('DateTimePicker', dateTimePicker($this, _options));
                 }
             });
         } else if (typeof options === 'string') {
@@ -40776,9 +40862,8 @@ $( document ).ready(function() {
         enabledHours: false,
         viewDate: false
     };
-    if (typeof module !== 'undefined') {
-        module.exports = $.fn.datetimepicker;
-    }
+
+    return $.fn.datetimepicker;
 }));
 $( document ).ready(function() {
   $(function () {
@@ -41233,8 +41318,15 @@ document.addEventListener("turbolinks:load", function() {
 /* 4 */
 /***/ function(module, exports) {
 
+	/*
+	object-assign
+	(c) Sindre Sorhus
+	@license MIT
+	*/
+
 	'use strict';
 	/* eslint-disable no-unused-vars */
+	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
 	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -41255,7 +41347,7 @@ document.addEventListener("turbolinks:load", function() {
 			// Detect buggy property enumeration order in older V8 versions.
 
 			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-			var test1 = new String('abc');  // eslint-disable-line
+			var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
 			test1[5] = 'de';
 			if (Object.getOwnPropertyNames(test1)[0] === '5') {
 				return false;
@@ -41284,7 +41376,7 @@ document.addEventListener("turbolinks:load", function() {
 			}
 
 			return true;
-		} catch (e) {
+		} catch (err) {
 			// We don't expect any of the above to throw, but better to be safe.
 			return false;
 		}
@@ -41304,8 +41396,8 @@ document.addEventListener("turbolinks:load", function() {
 				}
 			}
 
-			if (Object.getOwnPropertySymbols) {
-				symbols = Object.getOwnPropertySymbols(from);
+			if (getOwnPropertySymbols) {
+				symbols = getOwnPropertySymbols(from);
 				for (var i = 0; i < symbols.length; i++) {
 					if (propIsEnumerable.call(from, symbols[i])) {
 						to[symbols[i]] = from[symbols[i]];
@@ -41585,17 +41677,6 @@ document.addEventListener("turbolinks:load", function() {
 	  }
 	};
 
-	var fiveArgumentPooler = function (a1, a2, a3, a4, a5) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3, a4, a5);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3, a4, a5);
-	  }
-	};
-
 	var standardReleaser = function (instance) {
 	  var Klass = this;
 	  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
@@ -41635,8 +41716,7 @@ document.addEventListener("turbolinks:load", function() {
 	  oneArgumentPooler: oneArgumentPooler,
 	  twoArgumentPooler: twoArgumentPooler,
 	  threeArgumentPooler: threeArgumentPooler,
-	  fourArgumentPooler: fourArgumentPooler,
-	  fiveArgumentPooler: fiveArgumentPooler
+	  fourArgumentPooler: fourArgumentPooler
 	};
 
 	module.exports = PooledClass;
@@ -41712,12 +41792,18 @@ document.addEventListener("turbolinks:load", function() {
 	 * will remain to ensure logic does not differ in production.
 	 */
 
-	function invariant(condition, format, a, b, c, d, e, f) {
-	  if (process.env.NODE_ENV !== 'production') {
+	var validateFormat = function validateFormat(format) {};
+
+	if (process.env.NODE_ENV !== 'production') {
+	  validateFormat = function validateFormat(format) {
 	    if (format === undefined) {
 	      throw new Error('invariant requires an error message argument');
 	    }
-	  }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
 
 	  if (!condition) {
 	    var error;
@@ -43970,7 +44056,14 @@ document.addEventListener("turbolinks:load", function() {
 	    // We warn in this case but don't throw. We expect the element creation to
 	    // succeed and there will likely be errors in render.
 	    if (!validType) {
-	      process.env.NODE_ENV !== 'production' ? warning(false, 'React.createElement: type should not be null, undefined, boolean, or ' + 'number. It should be a string (for DOM elements) or a ReactClass ' + '(for composite components).%s', getDeclarationErrorAddendum()) : void 0;
+	      if (typeof type !== 'function' && typeof type !== 'string') {
+	        var info = '';
+	        if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
+	          info += ' You likely forgot to export your component from the file ' + 'it\'s defined in.';
+	        }
+	        info += getDeclarationErrorAddendum();
+	        process.env.NODE_ENV !== 'production' ? warning(false, 'React.createElement: type is invalid -- expected a string (for ' + 'built-in components) or a class/function (for composite ' + 'components) but got: %s.%s', type == null ? type : typeof type, info) : void 0;
+	      }
 	    }
 
 	    var element = ReactElement.createElement.apply(this, arguments);
@@ -44941,7 +45034,7 @@ document.addEventListener("turbolinks:load", function() {
 
 	'use strict';
 
-	module.exports = '15.4.1';
+	module.exports = '15.4.2';
 
 /***/ },
 /* 31 */
@@ -45140,6 +45233,13 @@ document.addEventListener("turbolinks:load", function() {
 	var internalInstanceKey = '__reactInternalInstance$' + Math.random().toString(36).slice(2);
 
 	/**
+	 * Check if a given node should be cached.
+	 */
+	function shouldPrecacheNode(node, nodeID) {
+	  return node.nodeType === 1 && node.getAttribute(ATTR_NAME) === String(nodeID) || node.nodeType === 8 && node.nodeValue === ' react-text: ' + nodeID + ' ' || node.nodeType === 8 && node.nodeValue === ' react-empty: ' + nodeID + ' ';
+	}
+
+	/**
 	 * Drill down (through composites and empty components) until we get a host or
 	 * host text component.
 	 *
@@ -45204,7 +45304,7 @@ document.addEventListener("turbolinks:load", function() {
 	    }
 	    // We assume the child nodes are in the same order as the child instances.
 	    for (; childNode !== null; childNode = childNode.nextSibling) {
-	      if (childNode.nodeType === 1 && childNode.getAttribute(ATTR_NAME) === String(childID) || childNode.nodeType === 8 && childNode.nodeValue === ' react-text: ' + childID + ' ' || childNode.nodeType === 8 && childNode.nodeValue === ' react-empty: ' + childID + ' ') {
+	      if (shouldPrecacheNode(childNode, childID)) {
 	        precacheNode(childInst, childNode);
 	        continue outer;
 	      }
@@ -47445,17 +47545,6 @@ document.addEventListener("turbolinks:load", function() {
 	  }
 	};
 
-	var fiveArgumentPooler = function (a1, a2, a3, a4, a5) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3, a4, a5);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3, a4, a5);
-	  }
-	};
-
 	var standardReleaser = function (instance) {
 	  var Klass = this;
 	  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
@@ -47495,8 +47584,7 @@ document.addEventListener("turbolinks:load", function() {
 	  oneArgumentPooler: oneArgumentPooler,
 	  twoArgumentPooler: twoArgumentPooler,
 	  threeArgumentPooler: threeArgumentPooler,
-	  fourArgumentPooler: fourArgumentPooler,
-	  fiveArgumentPooler: fiveArgumentPooler
+	  fourArgumentPooler: fourArgumentPooler
 	};
 
 	module.exports = PooledClass;
@@ -52314,12 +52402,18 @@ document.addEventListener("turbolinks:load", function() {
 	    } else {
 	      var contentToUse = CONTENT_TYPES[typeof props.children] ? props.children : null;
 	      var childrenToUse = contentToUse != null ? null : props.children;
+	      // TODO: Validate that text is allowed as a child of this node
 	      if (contentToUse != null) {
-	        // TODO: Validate that text is allowed as a child of this node
-	        if (process.env.NODE_ENV !== 'production') {
-	          setAndValidateContentChildDev.call(this, contentToUse);
+	        // Avoid setting textContent when the text is empty. In IE11 setting
+	        // textContent on a text area will cause the placeholder to not
+	        // show within the textarea until it has been focused and blurred again.
+	        // https://github.com/facebook/react/issues/6731#issuecomment-254874553
+	        if (contentToUse !== '') {
+	          if (process.env.NODE_ENV !== 'production') {
+	            setAndValidateContentChildDev.call(this, contentToUse);
+	          }
+	          DOMLazyTree.queueText(lazyTree, contentToUse);
 	        }
-	        DOMLazyTree.queueText(lazyTree, contentToUse);
 	      } else if (childrenToUse != null) {
 	        var mountImages = this.mountChildren(childrenToUse, transaction, context);
 	        for (var i = 0; i < mountImages.length; i++) {
@@ -54239,7 +54333,17 @@ document.addEventListener("turbolinks:load", function() {
 	      }
 	    } else {
 	      if (props.value == null && props.defaultValue != null) {
-	        node.defaultValue = '' + props.defaultValue;
+	        // In Chrome, assigning defaultValue to certain input types triggers input validation.
+	        // For number inputs, the display value loses trailing decimal points. For email inputs,
+	        // Chrome raises "The specified value <x> is not a valid email address".
+	        //
+	        // Here we check to see if the defaultValue has actually changed, avoiding these problems
+	        // when the user is inputting text
+	        //
+	        // https://github.com/facebook/react/issues/7253
+	        if (node.defaultValue !== '' + props.defaultValue) {
+	          node.defaultValue = '' + props.defaultValue;
+	        }
 	      }
 	      if (props.checked == null && props.defaultChecked != null) {
 	        node.defaultChecked = !!props.defaultChecked;
@@ -54986,9 +55090,15 @@ document.addEventListener("turbolinks:load", function() {
 	    // This is in postMount because we need access to the DOM node, which is not
 	    // available until after the component has mounted.
 	    var node = ReactDOMComponentTree.getNodeFromInstance(inst);
+	    var textContent = node.textContent;
 
-	    // Warning: node.value may be the empty string at this point (IE11) if placeholder is set.
-	    node.value = node.textContent; // Detach value from defaultValue
+	    // Only set node.value if textContent is equal to the expected
+	    // initial value. In IE10/IE11 there is a bug where the placeholder attribute
+	    // will populate textContent as well.
+	    // https://developer.microsoft.com/microsoft-edge/platform/issues/101525/
+	    if (textContent === inst._wrapperState.initialValue) {
+	      node.value = textContent;
+	    }
 	  }
 	};
 
@@ -55790,7 +55900,17 @@ document.addEventListener("turbolinks:load", function() {
 	    instance = ReactEmptyComponent.create(instantiateReactComponent);
 	  } else if (typeof node === 'object') {
 	    var element = node;
-	    !(element && (typeof element.type === 'function' || typeof element.type === 'string')) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s', element.type == null ? element.type : typeof element.type, getDeclarationErrorAddendum(element._owner)) : _prodInvariant('130', element.type == null ? element.type : typeof element.type, getDeclarationErrorAddendum(element._owner)) : void 0;
+	    var type = element.type;
+	    if (typeof type !== 'function' && typeof type !== 'string') {
+	      var info = '';
+	      if (process.env.NODE_ENV !== 'production') {
+	        if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
+	          info += ' You likely forgot to export your component from the file ' + 'it\'s defined in.';
+	        }
+	      }
+	      info += getDeclarationErrorAddendum(element._owner);
+	       true ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s', type == null ? type : typeof type, info) : _prodInvariant('130', type == null ? type : typeof type, info) : void 0;
+	    }
 
 	    // Special case string values
 	    if (typeof element.type === 'string') {
@@ -56080,7 +56200,7 @@ document.addEventListener("turbolinks:load", function() {
 	      // Since plain JS classes are defined without any special initialization
 	      // logic, we can not catch common errors early. Therefore, we have to
 	      // catch them here, at initialization time, instead.
-	      process.env.NODE_ENV !== 'production' ? warning(!inst.getInitialState || inst.getInitialState.isReactClassApproved, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', this.getName() || 'a component') : void 0;
+	      process.env.NODE_ENV !== 'production' ? warning(!inst.getInitialState || inst.getInitialState.isReactClassApproved || inst.state, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.getDefaultProps || inst.getDefaultProps.isReactClassApproved, 'getDefaultProps was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Use a static property to define defaultProps instead.', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.propTypes, 'propTypes was defined as an instance property on %s. Use a static ' + 'property to define propTypes instead.', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.contextTypes, 'contextTypes was defined as an instance property on %s. Use a ' + 'static property to define contextTypes instead.', this.getName() || 'a component') : void 0;
@@ -57084,14 +57204,11 @@ document.addEventListener("turbolinks:load", function() {
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(35),
-	    _assign = __webpack_require__(4);
+	var _prodInvariant = __webpack_require__(35);
 
 	var invariant = __webpack_require__(8);
 
 	var genericComponentClass = null;
-	// This registry keeps track of wrapper classes around host tags.
-	var tagToComponentClass = {};
 	var textComponentClass = null;
 
 	var ReactHostComponentInjection = {
@@ -57104,11 +57221,6 @@ document.addEventListener("turbolinks:load", function() {
 	  // rendered as props.
 	  injectTextComponentClass: function (componentClass) {
 	    textComponentClass = componentClass;
-	  },
-	  // This accepts a keyed object with classes as values. Each key represents a
-	  // tag. That particular tag will use this class instead of the generic one.
-	  injectComponentClasses: function (componentClasses) {
-	    _assign(tagToComponentClass, componentClasses);
 	  }
 	};
 
@@ -59148,10 +59260,10 @@ document.addEventListener("turbolinks:load", function() {
 	 */
 
 	function getUnboundedScrollPosition(scrollable) {
-	  if (scrollable === window) {
+	  if (scrollable.Window && scrollable instanceof scrollable.Window) {
 	    return {
-	      x: window.pageXOffset || document.documentElement.scrollLeft,
-	      y: window.pageYOffset || document.documentElement.scrollTop
+	      x: scrollable.pageXOffset || scrollable.document.documentElement.scrollLeft,
+	      y: scrollable.pageYOffset || scrollable.document.documentElement.scrollTop
 	    };
 	  }
 	  return {
@@ -59900,7 +60012,9 @@ document.addEventListener("turbolinks:load", function() {
 	 * @return {boolean} Whether or not the object is a DOM node.
 	 */
 	function isNode(object) {
-	  return !!(object && (typeof Node === 'function' ? object instanceof Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
+	  var doc = object ? object.ownerDocument || object : document;
+	  var defaultView = doc.defaultView || window;
+	  return !!(object && (typeof defaultView.Node === 'function' ? object instanceof defaultView.Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
 	}
 
 	module.exports = isNode;
@@ -59930,15 +60044,19 @@ document.addEventListener("turbolinks:load", function() {
 	 *
 	 * The activeElement will be null only if the document or document body is not
 	 * yet defined.
+	 *
+	 * @param {?DOMDocument} doc Defaults to current document.
+	 * @return {?DOMElement}
 	 */
-	function getActiveElement() /*?DOMElement*/{
-	  if (typeof document === 'undefined') {
+	function getActiveElement(doc) /*?DOMElement*/{
+	  doc = doc || (typeof document !== 'undefined' ? document : undefined);
+	  if (typeof doc === 'undefined') {
 	    return null;
 	  }
 	  try {
-	    return document.activeElement || document.body;
+	    return doc.activeElement || doc.body;
 	  } catch (e) {
-	    return document.body;
+	    return doc.body;
 	  }
 	}
 
@@ -61963,7 +62081,7 @@ document.addEventListener("turbolinks:load", function() {
 
 	'use strict';
 
-	module.exports = '15.4.1';
+	module.exports = '15.4.2';
 
 /***/ },
 /* 172 */
@@ -62349,206 +62467,511 @@ document.addEventListener("turbolinks:load", function() {
 
 /***/ }
 /******/ ]);
-;(function(document, window) {
-  // jQuery is optional. Use it to support legacy browsers.
-  var $ = (typeof window.jQuery !== 'undefined') && window.jQuery;
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("react"), require("react-dom"), require("react-dom/server"));
+	else if(typeof define === 'function' && define.amd)
+		define(["react", "react-dom", "react-dom/server"], factory);
+	else if(typeof exports === 'object')
+		exports["ReactRailsUJS"] = factory(require("react"), require("react-dom"), require("react-dom/server"));
+	else
+		root["ReactRailsUJS"] = factory(root["React"], root["ReactDOM"], root["ReactDOMServer"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
 
-  window.ReactRailsUJS = {
-    // This attribute holds the name of component which should be mounted
-    // example: `data-react-class="MyApp.Items.EditForm"`
-    CLASS_NAME_ATTR: 'data-react-class',
+// Assume className is simple and can be found at top-level (window).
+// Fallback to eval to handle cases like 'My.React.ComponentName'.
+// Also, try to gracefully import Babel 6 style default exports
+var topLevel = typeof window === "undefined" ? this : window;
 
-    // This attribute holds JSON stringified props for initializing the component
-    // example: `data-react-props="{\"item\": { \"id\": 1, \"name\": \"My Item\"} }"`
-    PROPS_ATTR: 'data-react-props',
+module.exports = function(className) {
+  var constructor;
+  // Try to access the class globally first
+  constructor = topLevel[className];
 
-    // helper method for the mount and unmount methods to find the
-    // `data-react-class` DOM elements
-    findDOMNodes: function(searchSelector) {
-      // we will use fully qualified paths as we do not bind the callbacks
-      var selector, parent;
+  // If that didn't work, try eval
+  if (!constructor) {
+    constructor = eval(className);
+  }
 
-      switch (typeof searchSelector) {
-        case 'undefined':
-          selector = '[' + window.ReactRailsUJS.CLASS_NAME_ATTR + ']';
-          parent = document;
-          break;
-        case 'object':
-          selector = '[' + window.ReactRailsUJS.CLASS_NAME_ATTR + ']';
-          parent = searchSelector;
-          break;
-        case 'string':
-          selector = searchSelector + '[' + window.ReactRailsUJS.CLASS_NAME_ATTR + '], ' +
-                     searchSelector + ' [' + window.ReactRailsUJS.CLASS_NAME_ATTR + ']';
-          parent = document;
-          break
-        default:
-          break;
-      }
+  // Lastly, if there is a default attribute try that
+  if (constructor && constructor['default']) {
+    constructor = constructor['default'];
+  }
 
-      if ($) {
-        return $(selector, parent);
-      } else {
-        return parent.querySelectorAll(selector);
-      }
-    },
+  return constructor;
+}
 
-    // Get the constructor for a className
-    getConstructor: function(className) {
-      // Assume className is simple and can be found at top-level (window).
-      // Fallback to eval to handle cases like 'My.React.ComponentName'.
-      // Also, try to gracefully import Babel 6 style default exports
-      //
-      var constructor;
 
-      // Try to access the class globally first
-      constructor = window[className];
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
 
-      // If that didn't work, try eval
-      if (!constructor) {
-        constructor = eval.call(window, className);
-      }
+var nativeEvents = __webpack_require__(7)
+var pjaxEvents = __webpack_require__(8)
+var turbolinksEvents = __webpack_require__(9)
+var turbolinksClassicDeprecatedEvents = __webpack_require__(11)
+var turbolinksClassicEvents = __webpack_require__(10)
 
-      // Lastly, if there is a default attribute try that
-      if (constructor && constructor['default']) {
-        constructor = constructor['default'];
-      }
+// see what things are globally available
+// and setup event handlers to those things
+module.exports = function(ujs) {
+  if (ujs.handleEvent) {
+    // We're calling this a second time -- remove previous handlers
+    turbolinksClassicEvents.teardown(ujs)
+    turbolinksEvents.teardown(ujs);
+    turbolinksClassicDeprecatedEvents.teardown(ujs);
+    pjaxEvents.teardown(ujs);
+    nativeEvents.teardown(ujs);
+  }
 
-      return constructor;
-    },
-
-    // Within `searchSelector`, find nodes which should have React components
-    // inside them, and mount them with their props.
-    mountComponents: function(searchSelector) {
-      var nodes = window.ReactRailsUJS.findDOMNodes(searchSelector);
-
-      for (var i = 0; i < nodes.length; ++i) {
-        var node = nodes[i];
-        var className = node.getAttribute(window.ReactRailsUJS.CLASS_NAME_ATTR);
-        var constructor = this.getConstructor(className);
-        var propsJson = node.getAttribute(window.ReactRailsUJS.PROPS_ATTR);
-        var props = propsJson && JSON.parse(propsJson);
-
-        if (typeof(constructor) === "undefined") {
-          var message = "Cannot find component: '" + className + "'"
-          if (console && console.log) { console.log("%c[react-rails] %c" + message + " for element", "font-weight: bold", "", node) }
-          var error = new Error(message + ". Make sure your component is globally available to render.")
-          throw error
-        } else {
-          ReactDOM.render(React.createElement(constructor, props), node);
-        }
-      }
-    },
-
-    // Within `searchSelector`, find nodes which have React components
-    // inside them, and unmount those components.
-    unmountComponents: function(searchSelector) {
-      var nodes = window.ReactRailsUJS.findDOMNodes(searchSelector);
-
-      for (var i = 0; i < nodes.length; ++i) {
-        var node = nodes[i];
-
-        ReactDOM.unmountComponentAtNode(node);
-      }
-    }
-  };
-})(document, window);
-;(function(document, window) {
-  window.ReactRailsUJS.Turbolinks = {
-    // Turbolinks 5+ got rid of named events (?!)
-    setup: function() {
-      ReactRailsUJS.handleEvent('turbolinks:load', function() {window.ReactRailsUJS.mountComponents()});
-      ReactRailsUJS.handleEvent('turbolinks:before-render', function() {window.ReactRailsUJS.unmountComponents()});
-    }
-  };
-})(document, window);
-;(function(document, window) {
-  window.ReactRailsUJS.TurbolinksClassic = {
-    // Attach handlers to Turbolinks-Classic events
-    // for mounting and unmounting components
-    setup: function() {
-      ReactRailsUJS.handleEvent(Turbolinks.EVENTS.CHANGE, function() {window.ReactRailsUJS.mountComponents()});
-      ReactRailsUJS.handleEvent(Turbolinks.EVENTS.BEFORE_UNLOAD, function() {window.ReactRailsUJS.unmountComponents()});
-    }
-  };
-})(document, window);
-;(function(document, window) {
-  window.ReactRailsUJS.TurbolinksClassicDeprecated = {
-    // Before Turbolinks 2.4.0, Turbolinks didn't
-    // have named events and didn't have a before-unload event.
-    // Also, it didn't work with the Turbolinks cache, see
-    // https://github.com/reactjs/react-rails/issues/87
-    setup: function() {
-      Turbolinks.pagesCached(0)
-      ReactRailsUJS.handleEvent('page:change', function() {window.ReactRailsUJS.mountComponents()});
-      ReactRailsUJS.handleEvent('page:receive', function() {window.ReactRailsUJS.unmountComponents()});
-    }
-  };
-})(document, window);
-;(function(document, window) {
-  window.ReactRailsUJS.pjax = {
-    // pjax support
-    setup: function() {
-      ReactRailsUJS.handleEvent('ready', function() {window.ReactRailsUJS.mountComponents()});
-      ReactRailsUJS.handleEvent('pjax:end', function(e) {window.ReactRailsUJS.mountComponents(e.target)});
-      ReactRailsUJS.handleEvent('pjax:beforeReplace', function(e) {window.ReactRailsUJS.unmountComponents(e.target)});
-    }
-  };
-})(document, window);
-;(function(document, window) {
-  // jQuery is optional. Use it to support legacy browsers.
-  var $ = (typeof window.jQuery !== 'undefined') && window.jQuery;
-
-  window.ReactRailsUJS.Native = {
-    // Attach handlers to browser events to mount & unmount components
-    setup: function() {
-      if ($) {
-        $(function() {window.ReactRailsUJS.mountComponents()});
-      } else if ('addEventListener' in window) {
-        document.addEventListener('DOMContentLoaded', function() {window.ReactRailsUJS.mountComponents()});
-      } else {
-        // add support to IE8 without jQuery
-        window.attachEvent('onload', function() {window.ReactRailsUJS.mountComponents()});
-      }
-    }
-  };
-})(document, window);
-;(function(document, window) {
-  // jQuery is optional. Use it to support legacy browsers.
-  var $ = (typeof window.jQuery !== 'undefined') && window.jQuery;
-  if ($) {
-    ReactRailsUJS.handleEvent = function(eventName, callback) {
-      $(document).on(eventName, callback);
+  if (ujs.jQuery) {
+    ujs.handleEvent = function(eventName, callback) {
+      ujs.jQuery(document).on(eventName, callback);
     };
-  } else {
-    ReactRailsUJS.handleEvent = function(eventName, callback) {
+    ujs.removeEvent = function(eventName, callback) {
+      ujs.jQuery(document).off(eventName, callback);
+    }
+  } else if ('addEventListener' in window) {
+    ujs.handleEvent = function(eventName, callback) {
       document.addEventListener(eventName, callback);
     };
+    ujs.removeEvent = function(eventName, callback) {
+      document.removeEventListener(eventName, callback);
+    };
+  } else {
+    ujs.handleEvent = function(eventName, callback) {
+      window.attachEvent(eventName, callback);
+    };
+    ujs.removeEvent = function(eventName, callback) {
+      window.detachEvent(eventName, callback);
+    };
   }
+
   // Detect which kind of events to set up:
   if (typeof Turbolinks !== 'undefined' && Turbolinks.supported) {
     if (typeof Turbolinks.EVENTS !== 'undefined') {
       // Turbolinks.EVENTS is in classic version 2.4.0+
-      ReactRailsUJS.TurbolinksClassic.setup();
+      turbolinksClassicEvents.setup(ujs)
     } else if (typeof Turbolinks.controller !== "undefined") {
       // Turbolinks.controller is in version 5+
-      ReactRailsUJS.Turbolinks.setup();
+      turbolinksEvents.setup(ujs);
     } else {
-      ReactRailsUJS.TurbolinksClassicDeprecated.setup();
+      turbolinksClassicDeprecatedEvents.setup(ujs);
     }
-  } else if ($ && typeof $.pjax === 'function') {
-    ReactRailsUJS.pjax.setup();
+  } else if (typeof $ !== "undefined" && typeof $.pjax === 'function') {
+    pjaxEvents.setup(ujs);
   } else {
-    ReactRailsUJS.Native.setup();
+    nativeEvents.setup(ujs);
   }
-})(document, window);
+}
 
 
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Make a function which:
+// - First tries to require the name
+// - Then falls back to global lookup
+var fromGlobal = __webpack_require__(0)
+var fromRequireContext = __webpack_require__(12)
+
+module.exports = function(reqctx) {
+  var fromCtx = fromRequireContext(reqctx)
+  return function(className) {
+    var component;
+    try {
+      // `require` will raise an error if this className isn't found:
+      component = fromCtx(className)
+    } catch (err) {
+      // fallback to global:
+      component = fromGlobal(className)
+    }
+    return component
+  }
+}
 
 
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var React = __webpack_require__(3)
+var ReactDOM = __webpack_require__(4)
+var ReactDOMServer = __webpack_require__(5)
+
+var detectEvents = __webpack_require__(1)
+var constructorFromGlobal = __webpack_require__(0)
+var constructorFromRequireContextWithGlobalFallback = __webpack_require__(2)
+
+var ReactRailsUJS = {
+  // This attribute holds the name of component which should be mounted
+  // example: `data-react-class="MyApp.Items.EditForm"`
+  CLASS_NAME_ATTR: 'data-react-class',
+
+  // This attribute holds JSON stringified props for initializing the component
+  // example: `data-react-props="{\"item\": { \"id\": 1, \"name\": \"My Item\"} }"`
+  PROPS_ATTR: 'data-react-props',
+
+  // If jQuery is detected, save a reference to it for event handlers
+  jQuery: (typeof window !== 'undefined') && (typeof window.jQuery !== 'undefined') && window.jQuery,
+
+  // helper method for the mount and unmount methods to find the
+  // `data-react-class` DOM elements
+  findDOMNodes: function(searchSelector) {
+    var classNameAttr = ReactRailsUJS.CLASS_NAME_ATTR
+    // we will use fully qualified paths as we do not bind the callbacks
+    var selector, parent;
+
+    switch (typeof searchSelector) {
+      case 'undefined':
+        selector = '[' + classNameAttr + ']';
+        parent = document;
+        break;
+      case 'object':
+        selector = '[' + classNameAttr + ']';
+        parent = searchSelector;
+        break;
+      case 'string':
+        selector = searchSelector + '[' + classNameAttr + '], ' +
+                   searchSelector + ' [' + classNameAttr + ']';
+        parent = document;
+        break
+      default:
+        break;
+    }
+
+    if (ReactRailsUJS.jQuery) {
+      return ReactRailsUJS.jQuery(selector, parent);
+    } else {
+      return parent.querySelectorAll(selector);
+    }
+  },
+
+  // Get the constructor for a className (returns a React class)
+  // Override this function to lookup classes in a custom way,
+  // the default is ReactRailsUJS.ComponentGlobal
+  getConstructor: constructorFromGlobal,
+
+  // Given a Webpack `require.context`,
+  // try finding components with `require`,
+  // then falling back to global lookup.
+  useContext: function(requireContext) {
+    this.getConstructor = constructorFromRequireContextWithGlobalFallback(requireContext)
+  },
+
+  // Render `componentName` with `props` to a string,
+  // using the specified `renderFunction` from `react-dom/server`.
+  serverRender: function(renderFunction, componentName, props) {
+    var componentClass = this.getConstructor(componentName)
+    var element = React.createElement(componentClass, props)
+    return ReactDOMServer[renderFunction](element)
+  },
+
+  // Within `searchSelector`, find nodes which should have React components
+  // inside them, and mount them with their props.
+  mountComponents: function(searchSelector) {
+    var ujs = ReactRailsUJS
+    var nodes = ujs.findDOMNodes(searchSelector);
+
+    for (var i = 0; i < nodes.length; ++i) {
+      var node = nodes[i];
+      var className = node.getAttribute(ujs.CLASS_NAME_ATTR);
+      var constructor = ujs.getConstructor(className);
+      var propsJson = node.getAttribute(ujs.PROPS_ATTR);
+      var props = propsJson && JSON.parse(propsJson);
+
+      if (!constructor) {
+        var message = "Cannot find component: '" + className + "'"
+        if (console && console.log) {
+          console.log("%c[react-rails] %c" + message + " for element", "font-weight: bold", "", node)
+        }
+        throw new Error(message + ". Make sure your component is available to render.")
+      } else {
+        ReactDOM.render(React.createElement(constructor, props), node);
+      }
+    }
+  },
+
+  // Within `searchSelector`, find nodes which have React components
+  // inside them, and unmount those components.
+  unmountComponents: function(searchSelector) {
+    var nodes = ReactRailsUJS.findDOMNodes(searchSelector);
+
+    for (var i = 0; i < nodes.length; ++i) {
+      var node = nodes[i];
+      ReactDOM.unmountComponentAtNode(node);
+    }
+  },
+
+  // Check the global context for installed libraries
+  // and figure out which library to hook up to (pjax, Turbolinks, jQuery)
+  // This is called on load, but you can call it again if needed
+  // (It will unmount itself)
+  detectEvents: function() {
+    detectEvents(this)
+  },
+}
+
+// These stable references are so that handlers can be added and removed:
+ReactRailsUJS.handleMount = function(e) {
+  var target = undefined;
+  if (e && e.target) {
+    target = e.target;
+  }
+  ReactRailsUJS.mountComponents(target);
+}
+ReactRailsUJS.handleUnmount = function(e) {
+  var target = undefined;
+  if (e && e.target) {
+    target = e.target;
+  }
+  ReactRailsUJS.unmountComponents(target);
+}
 
 
+if (typeof window !== "undefined") {
+  // Only setup events for browser (not server-rendering)
+  ReactRailsUJS.detectEvents()
+}
 
+// It's a bit of a no-no to populate the global namespace,
+// but we really need it!
+// We need access to this object for server rendering, and
+// we can't do a dynamic `require`, so we'll grab it from here:
+self.ReactRailsUJS = ReactRailsUJS
+
+module.exports = ReactRailsUJS
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  // Attach handlers to browser events to mount
+  // (There are no unmount handlers since the page is destroyed on navigation)
+  setup: function(ujs) {
+    if (ujs.jQuery) {
+      // Use jQuery if it's present:
+      ujs.handleEvent("ready", ujs.handleMount);
+    } else if ('addEventListener' in window) {
+      ujs.handleEvent('DOMContentLoaded', ujs.handleMount);
+    } else {
+      // add support to IE8 without jQuery
+      ujs.handleEvent('onload', ujs.handleMount);
+    }
+  },
+
+  teardown: function(ujs) {
+    ujs.removeEvent("ready", ujs.handleMount);
+    ujs.removeEvent('DOMContentLoaded', ujs.handleMount);
+    ujs.removeEvent('onload', ujs.handleMount);
+  }
+}
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  // pjax support
+  setup: function(ujs) {
+    ujs.handleEvent('ready', ujs.handleMount);
+    ujs.handleEvent('pjax:end', ujs.handleMount);
+    ujs.handleEvent('pjax:beforeReplace', ujs.handleUnmount);
+  },
+
+  teardown: function(ujs) {
+    ujs.removeEvent('ready', ujs.handleMount);
+    ujs.removeEvent('pjax:end', ujs.handleMount);
+    ujs.removeEvent('pjax:beforeReplace', ujs.handleUnmount);
+  },
+}
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  // Turbolinks 5+ got rid of named events (?!)
+  setup: function(ujs) {
+    ujs.handleEvent('DOMContentLoaded', ujs.handleMount)
+    ujs.handleEvent('turbolinks:render', ujs.handleMount)
+    ujs.handleEvent('turbolinks:before-render', ujs.handleUnmount)
+  },
+
+  teardown: function(ujs) {
+    ujs.removeEvent('DOMContentLoaded', ujs.handleMount)
+    ujs.removeEvent('turbolinks:render', ujs.handleMount)
+    ujs.removeEvent('turbolinks:before-render', ujs.handleUnmount)
+  },
+}
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  // Attach handlers to Turbolinks-Classic events
+  // for mounting and unmounting components
+  setup: function(ujs) {
+    ujs.handleEvent(Turbolinks.EVENTS.CHANGE, ujs.handleMount);
+    ujs.handleEvent(Turbolinks.EVENTS.BEFORE_UNLOAD, ujs.handleUnmount);
+  },
+  teardown: function(ujs) {
+    ujs.removeEvent(Turbolinks.EVENTS.CHANGE, ujs.handleMount);
+    ujs.removeEvent(Turbolinks.EVENTS.BEFORE_UNLOAD, ujs.handleUnmount);
+  }
+}
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  // Before Turbolinks 2.4.0, Turbolinks didn't
+  // have named events and didn't have a before-unload event.
+  // Also, it didn't work with the Turbolinks cache, see
+  // https://github.com/reactjs/react-rails/issues/87
+  setup: function(ujs) {
+    Turbolinks.pagesCached(0)
+    ujs.handleEvent('page:change', ujs.handleMount);
+    ujs.handleEvent('page:receive', ujs.handleUnmount);
+  },
+  teardown: function(ujs) {
+    ujs.removeEvent('page:change', ujs.handleMount);
+    ujs.removeEvent('page:receive', ujs.handleUnmount);
+  }
+}
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+// Load React components by requiring them from "components/", for example:
+//
+// - "pages/index" -> `require("components/pages/index")`
+// - "pages/show.Header" -> `require("components/pages/show").Header`
+// - "pages/show.Body.Content" -> `require("components/pages/show").Body.Content`
+//
+module.exports = function(reqctx) {
+  return function(className) {
+    var parts = className.split(".")
+    var filename = parts.shift()
+    var keys = parts
+    // Load the module:
+    var component = reqctx("./" + filename)
+    // Then access each key:
+    keys.forEach(function(k) {
+      component = component[k]
+    })
+    // support `export default`
+    if (component.__esModule) {
+      component = component["default"]
+    }
+    return component
+  }
+}
+
+
+/***/ })
+/******/ ]);
+});
 var BDM = React.createClass({
     displayName: "BDM",
 
@@ -62813,6 +63236,96 @@ var Agency = React.createClass({
         );
     }
 });
+var Invoices = React.createClass({
+	displayName: "Invoices",
+
+	render: function () {
+		var invoices = this.props.invoices;
+		var self = this;
+		return React.createElement(
+			"div",
+			{ className: "quotes invoices m-t-xl" },
+			React.createElement(
+				"p",
+				null,
+				"Invoice (",
+				invoices.length,
+				")"
+			),
+			React.createElement(
+				"div",
+				{ className: "list-quote" },
+				invoices.map(function (invoice, index) {
+					return React.createElement(
+						"div",
+						{ className: "item-quote row", key: index },
+						React.createElement(
+							"div",
+							{ className: "user seven columns" },
+							React.createElement("img", { src: "/assets/user1.png" }),
+							React.createElement(
+								"div",
+								{ className: "info" },
+								React.createElement(
+									"div",
+									{ className: "name" },
+									React.createElement(
+										"span",
+										null,
+										invoice.trady.name
+									)
+								),
+								React.createElement(
+									"p",
+									{ className: "description" },
+									invoice.trady && invoice.trady.company_name,
+									React.createElement("br", null),
+									invoice.trady && invoice.trady.trady_company ? invoice.trady.trady_company.trading_name : null
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "actions five columns content" },
+							React.createElement(
+								"p",
+								null,
+								"Total: ",
+								React.createElement(
+									"span",
+									null,
+									"$",
+									invoice.amount
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								"DUE: ",
+								React.createElement(
+									"span",
+									null,
+									moment(invoice.due_date).format('LL')
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"button",
+									{ type: "button", className: "btn btn-default btn-view", onClick: function (key, item) {
+											return self.props.viewInvoice('viewInvoice', invoice);
+										} },
+									"View Invoice"
+								)
+							)
+						)
+					);
+				})
+			)
+		);
+	}
+});
 var StepProgress = React.createClass({
     displayName: "StepProgress",
 
@@ -62889,11 +63402,13 @@ var FieldList = React.createClass({
     displayName: "FieldList",
 
     getInitialState: function () {
+        var _this = this;
+
         var existingContent = this.props.existingContent;
         var SampleField = this.props.SampleField;
         var Fields = [];
         var params = this.props.params;
-        var x = 1;
+        var x = 0;
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map(function (one, index) {
@@ -62904,17 +63419,38 @@ var FieldList = React.createClass({
             return { Fields: Fields,
                 x: x };
         } else {
-            return { Fields: [React.createElement(SampleField, { params: params, x: x })],
-                x: x };
+            if (!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
+                x = 1;
+                return { Fields: [React.createElement(SampleField, { params: params, x: x, removeField: function (position) {
+                            return _this.removeField(position);
+                        } })],
+                    x: x };
+            } else {}
+            return { Fields: [], x: x };
         }
     },
 
     addField: function () {
+        var _this2 = this;
+
         var SampleField = this.props.SampleField;
         var tmpFields = this.state.Fields.slice();
         var params = this.props.params;
-        tmpFields.push(React.createElement(SampleField, { x: ++this.state.x, params: params }));
+        tmpFields.push(React.createElement(SampleField, { x: ++this.state.x, params: params, removeField: function (position) {
+                return _this2.removeField(position);
+            }, validDate: function (flag) {
+                return _this2.props.validDate(flag);
+            } }));
         this.setState({ Fields: tmpFields });
+    },
+
+    removeField: function (x) {
+        var tmpFields = this.state.Fields;
+        tmpFields.splice(x - 1, 1);
+        this.setState({
+            Fields: tmpFields,
+            x: tmpFields.length
+        });
     },
 
     render: function () {
@@ -62932,10 +63468,119 @@ var FieldList = React.createClass({
                     );
                 })
             ),
+            React.createElement(ButtonAddAnotherItem, { flag: this.props.flag, x: this.state.x, addField: this.addField })
+        );
+    }
+});
+
+var ButtonAddAnotherItem = React.createClass({
+    displayName: "ButtonAddAnotherItem",
+
+    render: function () {
+        var self = this.props;
+        var x = self.x + 1;
+        switch (self.flag) {
+            case 'date':
+                {
+                    return React.createElement(
+                        "button",
+                        { type: "button", className: "button-add button-primary", onClick: this.props.addField },
+                        x <= 1 ? "Add Suggeted Appointment Times" : "Add Suggeted Appointment Times To The Section"
+                    );
+                }
+
+            case 'contact':
+                {
+                    return React.createElement(
+                        "button",
+                        { type: "button", className: "button-add button-primary", onClick: this.props.addField },
+                        x <= 1 ? "Add Access Contact" : "Add Access Contact To The Section"
+                    );
+                }
+            default:
+                return React.createElement(
+                    "button",
+                    { type: "button", className: "button-add button-primary", onClick: this.props.addField },
+                    "Add Another Item"
+                );
+        }
+    }
+});
+
+var FieldListForInvoice = React.createClass({
+    displayName: "FieldListForInvoice",
+
+    getInitialState: function () {
+        var _this3 = this;
+
+        var existingContent = this.props.existingContent;
+        var SampleField = this.props.SampleField;
+        var Fields = [];
+        var params = this.props.params;
+        var x = 1;
+
+        if (existingContent ? existingContent.length > 0 : false) {
+            existingContent.map(function (one, index) {
+                Fields.push(React.createElement(SampleField, { content: one, params: params }));
+                x = index + 1;
+            });
+
+            return { Fields: Fields,
+                x: x };
+        } else {
+            return { Fields: [React.createElement(SampleField, { params: params, x: x, removeField: function (position) {
+                        return _this3.removeField(position);
+                    } })],
+                x: x };
+        }
+    },
+
+    addField: function () {
+        var _this4 = this;
+
+        var SampleField = this.props.SampleField;
+        var tmpFields = this.state.Fields.slice();
+        var params = this.props.params;
+        tmpFields.push(React.createElement(SampleField, { x: ++this.state.x, params: params, removeField: function (position) {
+                return _this4.removeField(position);
+            } }));
+        this.setState({ Fields: tmpFields });
+    },
+
+    removeField: function (x) {
+        var tmpFields = this.state.Fields;
+        tmpFields.splice(x - 1, 1);
+        this.setState({
+            Fields: tmpFields,
+            x: tmpFields.length
+        });
+    },
+
+    render: function () {
+        return React.createElement(
+            "div",
+            { className: "fieldlist", style: { paddingBottom: '30px' } },
+            React.createElement(
+                "ul",
+                null,
+                this.state.Fields.map(function (Field, fieldIndex) {
+                    return React.createElement(
+                        "li",
+                        { key: fieldIndex },
+                        React.createElement(
+                            "h5",
+                            { className: "invoice-index" },
+                            " Invoice #",
+                            fieldIndex + 1
+                        ),
+                        Field
+                    );
+                })
+            ),
             React.createElement(
                 "button",
-                { type: "button", className: "button-add button-primary", onClick: this.addField },
-                " Add Another Item "
+                { type: "button", className: "button-add button-primary", style: { position: 'absolute', bottom: 0, right: 0 }, onClick: this.addField },
+                " Add New Invoice "
             )
         );
     }
@@ -63144,17 +63789,18 @@ var InvoiceItemField = React.createClass({
     },
 
     render: function () {
+        var _this5 = this;
+
         var invoice_item = this.props.content;
         var x = this.props.x;
         var invoice_id = this.props.params.x;
-        console.log("invoice_item", invoice_item);
         if (invoice_item) {
             x = invoice_item.id;
             invoice_id = invoice_item.invoice_id;
         }
         return React.createElement(
             "div",
-            { className: "invoiceitemfield", style: { display: this.state.remove ? 'none' : 'block' } },
+            { className: "invoiceitemfield" },
             React.createElement(
                 "fieldset",
                 null,
@@ -63192,7 +63838,9 @@ var InvoiceItemField = React.createClass({
             ),
             React.createElement(
                 "button",
-                { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+                { type: "button", className: "button-remove button-primary red", onClick: function (position) {
+                        return _this5.props.removeField(x);
+                    } },
                 " X "
             )
         );
@@ -63204,14 +63852,15 @@ var InvoiceField = React.createClass({
 
     getInitialState: function () {
         var invoice = this.props.content;
-        var amountExceptTax = invoice && invoice.amount ? invoice.amount / 1.1 : 0;
-        var amount = invoice && invoice.amount ? invoice.amount * 1.1 : 0;
-        var invoice_amount = invoice && invoice.amount ? invoice.amount : 0;
+        var invoice_total = invoice && invoice.amount ? invoice.amount : 0;
+        var items_total = invoice && invoice.amount ? invoice_total / 1.1 : 0;
+        var tax_total = invoice && invoice.amount ? invoice_total - invoice_total / 1.1 : 0;
         var tax = invoice && invoice.tax ? invoice.tax : false;
         return {
-            amountExceptTax: tax ? amountExceptTax : invoice_amount,
-            amount: tax ? invoice_amount : amount,
+            invoice_total: invoice_total,
+            items_total: tax ? items_total : invoice_total,
             tax: tax,
+            tax_total: tax ? tax_total : 0,
             remove: false
         };
     },
@@ -63221,20 +63870,27 @@ var InvoiceField = React.createClass({
     },
 
     calcInvoiceTotal: function (price) {
-        var amount = this.state.amount + price;
+        var invoice_total = this.state.invoice_total + price;
         this.setState({
-            amount: amount,
-            amountExceptTax: amount / 1.1
+            items_total: this.state.tax ? invoice_total / 1.1 : invoice_total,
+            invoice_total: invoice_total,
+            tax_total: this.state.tax ? invoice_total - invoice_total / 1.1 : 0
         });
     },
     onTax: function () {
+        var invoice_total = this.state.invoice_total;
+        var tax = this.state.tax;
         this.setState({
-            tax: !this.state.tax
+            tax: !tax,
+            invoice_total: invoice_total,
+            items_total: !tax ? invoice_total / 1.1 : invoice_total,
+            tax_total: !tax ? invoice_total - invoice_total / 1.1 : 0
         });
     },
     render: function () {
+        var _this6 = this;
+
         var invoice = this.props.content;
-        console.log("invoice", invoice);
         var invoice_items = invoice && invoice.invoice_items || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
@@ -63243,7 +63899,7 @@ var InvoiceField = React.createClass({
         }
         return React.createElement(
             "div",
-            { className: "invoicefield", style: { display: this.state.remove ? 'none' : 'block' } },
+            { className: "invoicefield" },
             React.createElement("input", { type: "hidden", value: invoice && invoice.maintenance_request_id ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id, name: 'ledger[invoices_attributes][' + x + '][maintenance_request_id]' }),
             React.createElement("input", { type: "hidden", value: invoice && invoice.trady_id ? invoice.trady_id : invoiceInfo.trady_id, name: 'ledger[invoices_attributes][' + x + '][trady_id]' }),
             React.createElement(
@@ -63252,7 +63908,7 @@ var InvoiceField = React.createClass({
                 React.createElement(
                     "div",
                     null,
-                    React.createElement(FieldList, { existingContent: invoice_items, SampleField: InvoiceItemField, params: { x: x, updatePrice: this.calcInvoiceTotal, remove: this.state.remove } }),
+                    React.createElement(FieldList, { existingContent: invoice_items, SampleField: InvoiceItemField, params: { x: x, updatePrice: this.calcInvoiceTotal, remove: this.state.remove }, flag: "invoice" }),
                     React.createElement(
                         "label",
                         null,
@@ -63272,7 +63928,27 @@ var InvoiceField = React.createClass({
                             null,
                             " Invoice Total : "
                         ),
-                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.tax ? this.state.amount.toFixed(2) : this.state.amountExceptTax.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
+                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.invoice_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][invoice_total]' })
+                    ),
+                    React.createElement(
+                        "div",
+                        null,
+                        React.createElement(
+                            "p",
+                            null,
+                            " Tax Total : "
+                        ),
+                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.tax_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][tax_total]' })
+                    ),
+                    React.createElement(
+                        "div",
+                        null,
+                        React.createElement(
+                            "p",
+                            null,
+                            " Items Total : "
+                        ),
+                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.items_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
                     ),
                     React.createElement(
                         "div",
@@ -63290,7 +63966,9 @@ var InvoiceField = React.createClass({
             ),
             React.createElement(
                 "button",
-                { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+                { type: "button", className: "button-remove button-primary red", onClick: function (position) {
+                        return _this6.props.removeField(x);
+                    } },
                 " Remove Invoice "
             )
         );
@@ -63320,20 +63998,15 @@ var InvoiceFields = React.createClass({
             React.createElement("input", { type: "hidden", value: this.props.trady_id, name: "ledger[trady_id]" }),
             React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "ledger[quote_id]" }),
             React.createElement("input", { type: "hidden", value: id, name: "ledger[ledger_id]" }),
-            React.createElement(FieldList, { existingContent: invoices, SampleField: InvoiceField, params: invoiceInfo }),
+            React.createElement("input", { type: "hidden", value: this.props.invoice_type, name: "ledger[invoice_type]" }),
+            React.createElement(FieldListForInvoice, { existingContent: invoices, SampleField: InvoiceField, params: invoiceInfo }),
             React.createElement(
                 "div",
                 { className: "qf-button", style: { marginBottom: '50px' } },
                 React.createElement(
-                    "button",
-                    { className: "button button-primary left" },
-                    " ",
-                    React.createElement(
-                        "a",
-                        { href: this.props.backlink },
-                        " Back "
-                    ),
-                    " "
+                    "a",
+                    { className: "button button-primary left", href: this.props.backlink },
+                    " Back "
                 ),
                 React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button button-primary green", "data-disable-with": "Next" })
             )
@@ -63430,194 +64103,1345 @@ var TradyCompanyInvoice = React.createClass({
             mailing: this.state.address });
     }
 });
-var AccessContactField = React.createClass({
-		displayName: "AccessContactField",
+var DetailInvoice = React.createClass({
+	displayName: "DetailInvoice",
 
-		getInitialState: function () {
-				return {
-						remove: false
-				};
-		},
-
-		generateAtt: function (name_id, x, type) {
-				if (name_id == "name") {
-						return "maintenance_request[access_contacts_attributes][" + x + "][" + type + "]";
-				} else if (name_id == "id") {
-						return "maintenance_request_access_contacts_attributes_" + x + "_" + type;
-				}
-		},
-
-		removeField: function () {
-				this.setState({ remove: true });
-		},
-
-		validateEmail: function (inputText, e, emailid) {
-				var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-				errorMessage = '';
-				if (!inputText.match(mailformat)) {
-						errorMessage = 'Invalid Email Address!';
-						document.getElementById(emailid).textContent = errorMessage;
-						e.target.classList.add("border_on_error");
-				} else {
-						document.getElementById(emailid).textContent = errorMessage;
-						e.target.classList.remove("border_on_error");
-				}
-		},
-
-		validatePhoneNumber: function (inputText, e, mobileid) {
-				var numbers = /^[0-9]+$/;
-				if (inputText.match(numbers)) {
-						errorMessage = '';
-						document.getElementById(mobileid).textContent = errorMessage;
-						e.target.classList.remove("border_on_error");
-				} else {
-						errorMessage = 'Invalid Mobile Number!';
-						document.getElementById(mobileid).textContent = errorMessage;
-						e.target.classList.add("border_on_error");
-				}
-		},
-
-		render: function () {
-				var _this = this;
-
-				var accessContact = this.props.content;
-				var x = this.props.x;
-				if (accessContact) {
-						x = accessContact.id;
-				}
-				var $fullnameid = 'errorboxfullname' + x;
-				var $emailid = 'errorboxemail' + x;
-				var $mobileid = 'errorboxmobile' + x;
-				return React.createElement(
-						"div",
-						{ className: "accesscontactfield", style: { display: this.state.remove ? 'none' : 'block' } },
+	render: function () {
+		var invoice_items = this.props.invoice_items;
+		var subTotal = 0;
+		var gst = 0;
+		if (!!invoice_items) {
+			return React.createElement(
+				"table",
+				{ className: "table" },
+				React.createElement(
+					"thead",
+					null,
+					React.createElement(
+						"tr",
+						null,
 						React.createElement(
-								"fieldset",
-								null,
-								React.createElement(
-										"p",
-										null,
-										" Relation "
-								),
-								React.createElement(
-										"select",
-										{ name: this.generateAtt("name", x, "relation"),
-												id: this.generateAtt("id", x, "relation") },
-										React.createElement(
-												"option",
-												{ value: "Tenant" },
-												"Tenant"
-										),
-										React.createElement(
-												"option",
-												{ value: "Husband" },
-												"Husband"
-										),
-										React.createElement(
-												"option",
-												{ value: "Son" },
-												"Son"
-										),
-										React.createElement(
-												"option",
-												{ value: "Wife" },
-												"Wife"
-										)
-								),
-								React.createElement(
-										"p",
-										null,
-										" Name "
-								),
-								React.createElement("input", { type: "text", placeholder: "Full name",
-										name: this.generateAtt("name", x, "name"),
-										id: this.generateAtt("id", x, "name"),
-										onBlur: function (e) {
-												var valid = true;
-												var errorMessage = '';
-												if (!e.target.value.length) {
-														valid = false;
-														errorMessage = 'This field is required';
-														document.getElementById($fullnameid).textContent = errorMessage;
-														e.target.classList.add("border_on_error");
-												} else if (e.target.value.length < 4) {
-														valid = false;
-														errorMessage = 'Full Name must be more than 3 letters';
-														document.getElementById($fullnameid).textContent = errorMessage;
-														e.target.classList.add("border_on_error");
-												} else if (e.target.value.length >= 4) {
-														valid = false;
-														errorMessage = '';
-														document.getElementById($fullnameid).textContent = errorMessage;
-														e.target.classList.remove("border_on_error");
-												}
-										} }),
-								React.createElement("p", { id: $fullnameid, className: "error" }),
-								React.createElement(
-										"p",
-										null,
-										" Email "
-								),
-								React.createElement("input", { type: "email", placeholder: "E-mail",
-										name: this.generateAtt("name", x, "email"),
-										id: this.generateAtt("id", x, "email"),
-										onBlur: function (e) {
-												var valid = true;
-												var errorMessage = '';
-												if (!e.target.value.length) {
-														valid = false;
-														errorMessage = 'This field is required';
-														document.getElementById($emailid).textContent = errorMessage;
-														e.target.classList.add("border_on_error");
-												} else if (e.target.value.length < 4) {
-														valid = false;
-														errorMessage = 'Name must be more than 3 letters';
-														document.getElementById($emailid).textContent = errorMessage;
-														e.target.classList.add("border_on_error");
-												} else if (e.target.value.length >= 4) {
-														_this.validateEmail(e.target.value, e, $emailid);
-												}
-										} }),
-								React.createElement("p", { id: $emailid, className: "error" }),
-								React.createElement(
-										"p",
-										null,
-										" Mobile "
-								),
-								React.createElement("input", { type: "tel", placeholder: "Mobile",
-										name: this.generateAtt("name", x, "mobile"),
-										id: this.generateAtt("id", x, "mobile"),
-										onBlur: function (e) {
-												var valid = true;
-												var errorMessage = '';
-												if (!e.target.value.length) {
-														errorMessage = 'Mobile Number is required';
-														document.getElementById($mobileid).textContent = errorMessage;
-														e.target.classList.add("border_on_error");
-												} else if (e.target.value.length < 8) {
-														errorMessage = 'Mobile Number must be more than 8 digits';
-														document.getElementById($mobileid).textContent = errorMessage;
-														e.target.classList.add("border_on_error");
-												}
-												if (e.target.value.length >= 8) {
-														_this.validatePhoneNumber(e.target.value, e, $mobileid);
-												}
-										}, maxLength: "10" }),
-								React.createElement("p", { id: $mobileid, className: "error" }),
-								React.createElement("input", { type: "hidden", value: this.state.remove,
-										name: this.generateAtt("name", x, "_destroy"),
-										id: this.generateAtt("id", x, "_destroy") })
+							"th",
+							null,
+							"Description"
 						),
 						React.createElement(
-								"button",
-								{ type: "button", className: "button-remove button-primary red", onClick: this.removeField },
-								" Remove "
+							"th",
+							null,
+							"Pricing"
+						),
+						React.createElement(
+							"th",
+							null,
+							"Rate"
+						),
+						React.createElement(
+							"th",
+							null,
+							"Hours"
+						),
+						React.createElement(
+							"th",
+							null,
+							"Total"
 						)
-				);
+					)
+				),
+				React.createElement(
+					"tbody",
+					null,
+					invoice_items.map(function (item, key) {
+						gst += !!item.gst_amount ? item.gst_amount : 0;
+						if (item.pricing_type == "Fixed Cost") {
+							subTotal += item.amount;
+						} else {
+							subTotal += item.amount * item.hours;
+						}
+						return React.createElement(
+							"tr",
+							{ key: key },
+							React.createElement(
+								"td",
+								null,
+								item.item_description
+							),
+							React.createElement(
+								"td",
+								null,
+								item.pricing_type
+							),
+							React.createElement(
+								"td",
+								null,
+								"$",
+								item.amount
+							),
+							React.createElement(
+								"td",
+								null,
+								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
+							),
+							React.createElement(
+								"td",
+								null,
+								"$",
+								item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours
+							)
+						);
+					}),
+					React.createElement(
+						"tr",
+						null,
+						React.createElement(
+							"td",
+							{ colSpan: "4", className: "text-right" },
+							"Subtotal:"
+						),
+						React.createElement(
+							"td",
+							null,
+							"$",
+							subTotal
+						)
+					),
+					React.createElement(
+						"tr",
+						null,
+						React.createElement(
+							"td",
+							{ colSpan: "4", className: "text-right" },
+							"GST:"
+						),
+						React.createElement(
+							"td",
+							null,
+							"$",
+							gst
+						)
+					),
+					React.createElement(
+						"tr",
+						null,
+						React.createElement(
+							"td",
+							{ colSpan: "4", className: "text-right" },
+							"Total:"
+						),
+						React.createElement(
+							"td",
+							null,
+							"$",
+							subTotal + gst
+						)
+					)
+				)
+			);
+		} else {
+			React.createElement(
+				"table",
+				null,
+				React.createElement(
+					"tr",
+					null,
+					React.createElement(
+						"th",
+						null,
+						"Description"
+					),
+					React.createElement(
+						"th",
+						null,
+						"Pricing"
+					),
+					React.createElement(
+						"th",
+						null,
+						"Hours"
+					),
+					React.createElement(
+						"th",
+						null,
+						"Amount"
+					)
+				),
+				React.createElement(
+					"tr",
+					null,
+					React.createElement(
+						"td",
+						{ colSpan: "4", className: "text-center" },
+						"Data is empty."
+					)
+				)
+			);
 		}
+	}
 });
-var AvailabilityField = React.createClass({
-  displayName: "AvailabilityField",
+
+var ModalViewInvoice = React.createClass({
+	displayName: "ModalViewInvoice",
+
+	getInitialState: function () {
+		return {
+			index: null,
+			invoice: this.props.invoice,
+			invoices: this.props.invoices
+		};
+	},
+
+	switchSlider: function (key, index) {
+		var position = 0;
+		var invoice = "";
+		if (key == "prev") {
+			position = index - 1 < 0 ? this.state.invoices.length - 1 : index - 1;
+		} else {
+			position = index + 1 > this.state.invoices.length - 1 ? 0 : index + 1;
+		}
+
+		invoice = this.state.invoices[position];
+		this.setState({
+			index: position,
+			invoice: invoice
+		});
+	},
+
+	componentWillMount: function () {
+		this.filterQuote(this.state.invoices);
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this.filterQuote(nextProps.invoices);
+		this.setState({
+			invoices: nextProps.invoices
+		});
+	},
+
+	filterQuote: function (invoices) {
+		for (var i = 0; i < invoices.length; i++) {
+			var item = invoices[i];
+			if (item.id == this.state.invoice.id) {
+				this.setState({
+					index: i + 1,
+					invoice: item
+				});
+				break;
+			}
+		}
+	},
+
+	printInvoice: function () {
+		$('.button-slider').toggle('hide');
+		var contents = $('#print-invoice').html();
+		var style = ".info-quote {border-bottom: 1px solid #3e4b54; clear: both; overflow: hidden;}" + ".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {width: 50%;overflow: hidden;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quot .table {width: 100%;}" + ".detail-quot .table tr td {padding-left: 0; padding: 3px 3px;}";
+		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
+		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
+		frame.open();
+		frame.write(htmlContent);
+		frame.write("</head><body>");
+		frame.write(contents);
+		frame.write("</body></html>");
+		frame.close();
+
+		// print just the modal div
+		setTimeout(function () {
+			$('#printframe')[0].contentWindow.print();
+			$('#printframe')[0].contentWindow.close();
+			$('.button-slider').toggle('show');
+		}, 1000);
+	},
+
+	render: function () {
+		var _this = this;
+
+		var self = this.props;
+		var invoice = this.state.invoice;
+		var total = 0;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							"Invoice"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "slider-quote", id: "print-invoice" },
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "show-quote", onTouchEnd: function (key, index) {
+										return _this.switchSlider('prev', _this.state.index);
+									} },
+								React.createElement(
+									"div",
+									{ className: "info-quote" },
+									React.createElement(
+										"div",
+										{ className: "info-trady" },
+										React.createElement(
+											"p",
+											null,
+											invoice.trady.name
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											!!invoice.trady.trady_company && invoice.trady.trady_company.address
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											!!invoice.trady.trady_company && invoice.trady.trady_company.email
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											"Abn: ",
+											!!invoice.trady.trady_company && invoice.trady.trady_company.abn
+										)
+									),
+									React.createElement(
+										"div",
+										{ className: "info-agency" },
+										React.createElement(
+											"p",
+											null,
+											self.agency.company_name
+										),
+										React.createElement(
+											"p",
+											null,
+											self.agency.address
+										)
+									)
+								),
+								React.createElement(
+									"div",
+									{ className: "detail-quote" },
+									React.createElement(
+										"div",
+										{ className: "info-maintenance" },
+										React.createElement(
+											"p",
+											null,
+											"Invoice #",
+											invoice.id
+										),
+										React.createElement(
+											"p",
+											null,
+											"For: ",
+											self.property.property_address
+										),
+										React.createElement(
+											"p",
+											null,
+											"Created: ",
+											moment(invoice.created_at).format("DD-MM-YYYY")
+										)
+									),
+									React.createElement(
+										"div",
+										{ className: "detail-quote" },
+										!!invoice.invoice_items && React.createElement(DetailInvoice, { invoice_items: invoice.invoice_items })
+									)
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "button-slider" },
+								React.createElement(
+									"button",
+									{ className: "btn-prev", onClick: function (key, index) {
+											return _this.switchSlider('prev', _this.state.index);
+										} },
+									React.createElement("i", { className: "fa fa-angle-left" })
+								),
+								React.createElement(
+									"button",
+									{ className: "btn-next", onClick: function (key, index) {
+											return _this.switchSlider('next', _this.state.index);
+										} },
+									React.createElement("i", { className: "fa fa-angle-right" })
+								)
+							)
+						)
+					),
+					React.createElement(
+						"p",
+						{ className: "due" },
+						"DUE: ",
+						React.createElement(
+							"span",
+							null,
+							moment(invoice.due_date).format('DD/MM/YYYY')
+						)
+					),
+					React.createElement(
+						"p",
+						{ className: "print" },
+						React.createElement(
+							"button",
+							{ className: "btn btn-default btn-print", onClick: this.printInvoice },
+							"Print"
+						)
+					)
+				)
+			),
+			React.createElement(
+				"div",
+				{ id: "modal-print" },
+				React.createElement("iframe", { id: "printframe" })
+			)
+		);
+	}
+});
+var PDFInvoices = React.createClass({
+	displayName: "PDFInvoices",
+
+	render: function () {
+		var invoice_pdf_files = this.props.invoice_pdf_files;
+		var self = this;
+		return React.createElement(
+			"div",
+			{ className: "quotes invoices m-t-xl" },
+			React.createElement(
+				"p",
+				null,
+				"PDF Invoice (",
+				invoice_pdf_files.length,
+				")"
+			),
+			React.createElement(
+				"div",
+				{ className: "list-quote" },
+				invoice_pdf_files.map(function (invoice, index) {
+					return React.createElement(
+						"div",
+						{ className: "item-quote row", key: index },
+						React.createElement(
+							"div",
+							{ className: "user seven columns" },
+							React.createElement("img", { src: "/assets/user1.png" }),
+							React.createElement(
+								"div",
+								{ className: "info" },
+								React.createElement(
+									"div",
+									{ className: "name" },
+									React.createElement(
+										"span",
+										null,
+										invoice.trady.name
+									)
+								),
+								React.createElement(
+									"p",
+									{ className: "description" },
+									invoice.trady && invoice.trady.company_name,
+									React.createElement("br", null),
+									invoice.trady && invoice.trady.trady_company ? invoice.trady.trady_company.trading_name : ""
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "actions five columns content" },
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"button",
+									{ type: "button", className: "btn btn-default btn-view", onClick: function (key, item) {
+											return self.props.viewPDFInvoice('viewPdfInvoice', invoice);
+										} },
+									"View"
+								)
+							)
+						)
+					);
+				})
+			)
+		);
+	}
+});
+var ModalViewPDFInvoice = React.createClass({
+	displayName: "ModalViewPDFInvoice",
+
+	getInitialState: function () {
+		return {
+			index: null,
+			invoice: this.props.invoice_pdf_file,
+			invoices: this.props.invoice_pdf_files
+		};
+	},
+
+	switchSlider: function (key, index) {
+		var position = 0;
+		var invoice = "";
+		if (key == "prev") {
+			position = index - 1 < 0 ? this.state.invoices.length - 1 : index - 1;
+		} else {
+			position = index + 1 > this.state.invoices.length - 1 ? 0 : index + 1;
+		}
+
+		invoice = this.state.invoices[position];
+		this.setState({
+			index: position,
+			invoice: invoice
+		});
+	},
+
+	componentWillMount: function () {
+		this.filterQuote(this.state.invoices);
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this.filterQuote(nextProps.invoice_pdf_files);
+		this.setState({
+			invoices: nextProps.invoice_pdf_files
+		});
+	},
+
+	filterQuote: function (invoices) {
+		for (var i = 0; i < invoices.length; i++) {
+			var item = invoices[i];
+			if (item.id == this.state.invoice.id) {
+				this.setState({
+					index: i + 1,
+					invoice: item
+				});
+				break;
+			}
+		}
+	},
+
+	render: function () {
+		var _this = this;
+
+		var self = this.props;
+		var invoice = this.state.invoice;
+		var total = 0;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							"PDF VIEWER"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "slider-quote" },
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "show-quote", onTouchEnd: function (key, index) {
+										return _this.switchSlider('prev', _this.state.index);
+									} },
+								React.createElement(
+									"div",
+									{ className: "info-quote" },
+									React.createElement(
+										"div",
+										{ className: "info-trady" },
+										React.createElement(
+											"p",
+											null,
+											invoice.trady.name
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											!!invoice.trady.trady_company && invoice.trady.trady_company.address
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											!!invoice.trady.trady_company && invoice.trady.trady_company.email
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											"Abn: ",
+											!!invoice.trady.trady_company && invoice.trady.trady_company.abn
+										)
+									),
+									React.createElement(
+										"div",
+										{ className: "info-agency" },
+										React.createElement(
+											"p",
+											null,
+											self.agency.company_name
+										),
+										React.createElement(
+											"p",
+											null,
+											self.agency.address
+										)
+									)
+								),
+								React.createElement(
+									"div",
+									{ className: "detail-quote" },
+									React.createElement(
+										"div",
+										{ className: "detail-quote" },
+										React.createElement("embed", { src: "/assets/pdf-sample2.pdf", className: "scroll-custom", width: "100%", height: "400px" })
+									)
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "button-slider" },
+								React.createElement(
+									"button",
+									{ className: "btn-prev", onClick: function (key, index) {
+											return _this.switchSlider('prev', _this.state.index);
+										} },
+									React.createElement("i", { className: "fa fa-angle-left" })
+								),
+								React.createElement(
+									"button",
+									{ className: "btn-next", onClick: function (key, index) {
+											return _this.switchSlider('next', _this.state.index);
+										} },
+									React.createElement("i", { className: "fa fa-angle-right" })
+								)
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var ContentLandlordAction = React.createClass({
+	displayName: "ContentLandlordAction",
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"ul",
+			null,
+			React.createElement(
+				"li",
+				{ className: "active" },
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return _this.props.onModalWith('requestQuote');
+						} },
+					React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
+					"Request quote"
+				)
+			),
+			React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ href: "/landlord_appointments/new?maintenance_request_id=" + this.props.maintenance_request.id },
+					React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+					"Fix Myself"
+				)
+			),
+			React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ href: "/job_completed?maintenance_request_id=" + this.props.maintenance_request.id },
+					React.createElement("i", { "aria-hidden": "true", className: "fa fa-user-plus" }),
+					"Job Completed"
+				)
+			)
+		);
+	}
+});
+
+var LandlordAction = React.createClass({
+	displayName: "LandlordAction",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showAction: function (e) {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					null,
+					"Actions:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showAction,
+					className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content", id: "actions-content" },
+				this.state.show && React.createElement(ContentLandlordAction, { onModalWith: function (modal) {
+						return _this2.props.onModalWith(modal);
+					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+			)
+		);
+	}
+});
+
+var LandlordActionMobile = React.createClass({
+	displayName: "LandlordActionMobile",
+
+	render: function () {
+		var _this3 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "actions-full", id: "actions-full" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Actions:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentLandlordAction, { onModalWith: function (modal) {
+							return _this3.props.onModalWith(modal);
+						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+				)
+			)
+		);
+	}
+});
+var ContentLandlordContact = React.createClass({
+	displayName: "ContentLandlordContact",
+
+	renderCallAgent: function () {
+		if (!!this.props.maintenance_request.agent) {
+			return React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					null,
+					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+					"Call Agent: ",
+					this.props.maintenance_request.agent.mobile_phone
+				)
+			);
+		} else if (!!this.props.maintenance_request.agency_admin) {
+			return React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					null,
+					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+					"Call Agent: ",
+					this.props.maintenance_request.agency_admin.mobile_phone
+				)
+			);
+		}
+
+		return null;
+	},
+
+	renderSendMessage: function () {
+		var _this = this;
+
+		if (!!this.props.landlord) {
+			return React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return _this.props.onModalWith('sendMessageLandlord');
+						} },
+					React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+					"Send Agent Message"
+				)
+			);
+		}
+	},
+
+	render: function () {
+		return React.createElement(
+			"ul",
+			null,
+			this.renderCallAgent(),
+			this.renderSendMessage()
+		);
+	}
+});
+
+var LandlordContact = React.createClass({
+	displayName: "LandlordContact",
+
+	getInitialState: function () {
+		return {
+			show: false
+		};
+	},
+
+	showContact: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header contact" },
+				React.createElement(
+					"a",
+					null,
+					"Contact:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showContact,
+					className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content" },
+				this.state.show && React.createElement(ContentLandlordContact, { onModalWith: function (modal) {
+						return _this2.props.onModalWith(modal);
+					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+			)
+		);
+	}
+});
+
+var LandlordContactMobile = React.createClass({
+	displayName: "LandlordContactMobile",
+
+	render: function () {
+		var _this3 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "actions-full contact-full" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header contact" },
+					React.createElement(
+						"a",
+						null,
+						"Contact:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentLandlordContact, { onModalWith: function (modal) {
+							return _this3.props.onModalWith(modal);
+						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+				)
+			)
+		);
+	}
+});
+var LandlordSideBarMobile = React.createClass({
+	displayName: "LandlordSideBarMobile",
+
+	getInitialState: function () {
+		return {
+			showAction: false,
+			showContact: false
+		};
+	},
+
+	show: function (key) {
+		if (key == 'action') {
+			this.setState({ showAction: !this.state.showAction });
+		} else {
+			this.setState({ showContact: !this.state.showContact });
+		}
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"div",
+				{ className: "sidebar-mobile" },
+				React.createElement(
+					"div",
+					{ className: "fixed" },
+					React.createElement(
+						"button",
+						{ className: "contact button-default", onClick: function (key) {
+								return _this.show('contact');
+							} },
+						"Contact"
+					),
+					React.createElement(
+						"button",
+						{ className: "actions button-default", onClick: function (key) {
+								return _this.show('action');
+							} },
+						"Actions"
+					)
+				)
+			),
+			!!this.state.showAction && React.createElement(LandlordActionMobile, { close: function (key) {
+					return _this.show('action');
+				}, onModalWith: function (modal) {
+					return _this.props.onModalWith(modal);
+				}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request }),
+			!!this.state.showContact && React.createElement(LandlordContactMobile, { close: function (key) {
+					return _this.show('contact');
+				}, onModalWith: function (modal) {
+					return _this.props.onModalWith(modal);
+				}, landlord: this.props.landlord, current_user: this.props.current_user, maintenance_request: this.props.maintenance_request })
+		);
+	}
+});
+
+var ModalNotification = React.createClass({
+	displayName: "ModalNotification",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: 'modal-header ' + (this.props.bgClass && this.props.bgClass) },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"aria-label": "Close",
+								"data-dismiss": "modal",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							this.props.title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							this.props.content
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var LandlordMaintenanceRequest = React.createClass({
+	displayName: "LandlordMaintenanceRequest",
+
+	getInitialState: function () {
+		return {
+			modal: "",
+			quote: null,
+			isModal: false,
+			quotes: this.props.quotes,
+			tradies: this.props.tradies,
+			landlord: this.props.landlord,
+			maintenance_request: this.props.maintenance_request,
+			tenants_conversation: this.props.tenants_conversation,
+			landlords_conversation: this.props.landlords_conversation,
+			notification: {
+				title: "",
+				content: "",
+				bgClass: ""
+			}
+		};
+	},
+
+	isClose: function () {
+		this.setState({ isModal: false });
+		this.setState({ modal: "" });
+		var body = document.getElementsByTagName('body')[0];
+		body.classList.remove("modal-open");
+		var div = document.getElementsByClassName('modal-backdrop in')[0];
+		div.parentNode.removeChild(div);
+	},
+
+	onModalWith: function (modal) {
+		this.setState({
+			modal: modal,
+			isModal: true
+		});
+	},
+
+	viewItem: function (key, item) {
+		switch (key) {
+			case 'viewQuote':
+				{
+					this.setState({
+						quote: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			default:
+				{
+					break;
+				}
+		}
+	},
+
+	sendMessageLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
+				landlords_conversation.push(res);
+
+				self.setState({
+					landlords_conversation: landlords_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Landlord",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateStatusQuote: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_status',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					quotes: res
+				});
+			},
+			error: function (err) {}
+		});
+	},
+
+	sendEmailLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/request_quote',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({ notification: {
+						title: "Request Another Quote",
+						content: "Send email is successfully.",
+						bgClass: "bg-success"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Request Another Quote",
+						content: "Send emaid is error!",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	requestQuote: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/tradies',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (params.trady.trady_request == "Work Order") {
+					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length - 1].id;
+					self.forceUpdate();
+				}
+				self.setState({
+					tradies: res,
+					notification: {
+						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
+						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
+						content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	renderModal: function () {
+		var _this2 = this;
+
+		if (this.state.isModal) {
+			var body = document.getElementsByTagName('body')[0];
+			body.className += " modal-open";
+			var div = document.getElementsByClassName('modal-backdrop in');
+
+			if (div.length === 0) {
+				div = document.createElement('div');
+				div.className = "modal-backdrop in";
+				body.appendChild(div);
+			}
+
+			switch (this.state.modal) {
+				case 'notification':
+					return React.createElement(ModalNotification, {
+						close: this.isClose,
+						bgClass: this.state.notification.bgClass,
+						title: this.state.notification.title,
+						content: this.state.notification.content
+					});
+
+				case 'sendMessageLandlord':
+					{
+						return React.createElement(ModalSendMessageLandlord, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							authToken: this.props.authenticity_token,
+							sendMessageLandlord: this.sendMessageLandlord,
+							landlords_conversation: this.state.landlords_conversation,
+							maintenance_request_id: this.state.maintenance_request.id
+						});
+					}
+
+				case 'viewQuote':
+					{
+						return React.createElement(ModalViewQuote, {
+							close: this.isClose,
+							quote: this.state.quote,
+							keyLandlord: "landlord",
+							quotes: this.state.quotes,
+							agency: this.props.agency,
+							property: this.props.property,
+							landlord: this.state.landlord,
+							onModalWith: this.onModalWith,
+							current_user: this.props.current_user,
+							updateStatusQuote: this.updateStatusQuote,
+							viewQuote: function (quote) {
+								return _this2.viewQuote(quote);
+							}
+						});
+					}
+
+				case 'requestQuote':
+					{
+						return React.createElement(ModalRequestModal, {
+							close: this.isClose,
+							keyTitle: "request-quote",
+							tradies: this.state.tradies,
+							requestQuote: this.requestQuote,
+							maintenance_request: this.state.maintenance_request
+						});
+					}
+
+				default:
+					return null;
+			}
+		}
+	},
+
+	render: function () {
+		var _this3 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "summary-container-index", id: "summary-container-index" },
+			React.createElement(
+				"div",
+				{ className: "main-summary" },
+				React.createElement(
+					"div",
+					{ className: "section" },
+					React.createElement(ItemMaintenanceRequest, {
+						gallery: this.props.gallery,
+						property: this.props.property,
+						maintenance_request: this.state.maintenance_request
+					}),
+					this.props.quotes.length > 0 ? React.createElement(Quotes, {
+						keyLandlord: "landlord",
+						quotes: this.state.quotes,
+						landlord: this.state.landlord,
+						onModalWith: this.onModalWith,
+						current_user: this.props.current_user,
+						updateStatusQuote: this.updateStatusQuote,
+						sendEmailLandlord: this.sendEmailLandlord,
+						viewQuote: function (key, item) {
+							return _this3.viewItem(key, item);
+						}
+					}) : null
+				),
+				React.createElement(
+					"div",
+					{ className: "sidebar" },
+					React.createElement(LandlordContact, { landlord: this.state.landlord, onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						}, current_user: this.props.current_user, maintenance_request: this.state.maintenance_request }),
+					React.createElement(LandlordAction, { landlord: this.state.landlord, onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						}, maintenance_request: this.state.maintenance_request })
+				)
+			),
+			React.createElement(LandlordSideBarMobile, { onModalWith: function (modal) {
+					return _this3.onModalWith(modal);
+				}, landlord: this.state.landlord, current_user: this.props.current_user, maintenance_request: this.state.maintenance_request }),
+			this.renderModal()
+		);
+	}
+});
+var AccessContactField = React.createClass({
+  displayName: "AccessContactField",
 
   getInitialState: function () {
     return {
@@ -63625,8 +65449,206 @@ var AvailabilityField = React.createClass({
     };
   },
 
+  generateAtt: function (name_id, x, type) {
+    if (name_id == "name") {
+      return "maintenance_request[access_contacts_attributes][" + x + "][" + type + "]";
+    } else if (name_id == "id") {
+      return "maintenance_request_access_contacts_attributes_" + x + "_" + type;
+    }
+  },
+
+  removeField: function () {
+    this.setState({ remove: true });
+  },
+
+  changeRelation: function (e, position) {
+    if (e.target.value == "Tenant") {
+      $("#maintenance_request_access_contacts_attributes_" + position + "_email").attr('required', 'required');
+    } else {
+      $("#maintenance_request_access_contacts_attributes_" + position + "_email").removeAttr("required");
+      $("#maintenance_request_access_contacts_attributes_" + position + "_email").removeClass("border_on_error");
+      document.getElementById('errorboxemail' + position).textContent = "";
+    }
+  },
+
+  validateEmail: function (inputText, e, emailid) {
+    if (!!e.target.required) {
+      var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      if (!inputText.match(mailformat)) {
+        document.getElementById(emailid).textContent = strInvalidEmail;
+        e.target.classList.add("border_on_error");
+      } else {
+        document.getElementById(emailid).textContent = strNone;
+        e.target.classList.remove("border_on_error");
+      }
+    }
+  },
+
+  validatePhoneNumber: function (inputText, e, mobileid) {
+    var numbers = /^[0-9]+$/;
+    if (inputText.match(numbers)) {
+      document.getElementById(mobileid).textContent = strNone;
+      e.target.classList.remove("border_on_error");
+    } else {
+      document.getElementById(mobileid).textContent = strInvalidMobile;
+      e.target.classList.add("border_on_error");
+    }
+  },
+
+  render: function () {
+    var _this = this;
+
+    var accessContact = this.props.content;
+    var x = this.props.x;
+    if (accessContact) {
+      x = accessContact.id;
+    }
+    var $fullnameid = 'errorboxfullname' + x;
+    var $emailid = 'errorboxemail' + x;
+    var $mobileid = 'errorboxmobile' + x;
+    return React.createElement(
+      "div",
+      { className: "accesscontactfield", style: { display: this.state.remove ? 'none' : 'block' } },
+      React.createElement(
+        "fieldset",
+        null,
+        React.createElement(
+          "p",
+          null,
+          " Relation "
+        ),
+        React.createElement(
+          "select",
+          {
+            name: this.generateAtt("name", x, "relation"),
+            id: this.generateAtt("id", x, "relation"),
+            onChange: function (e) {
+              _this.changeRelation(e, x);
+            }
+          },
+          React.createElement(
+            "option",
+            { value: "Tenant" },
+            "Tenant"
+          ),
+          React.createElement(
+            "option",
+            { value: "Husband" },
+            "Husband"
+          ),
+          React.createElement(
+            "option",
+            { value: "Son" },
+            "Son"
+          ),
+          React.createElement(
+            "option",
+            { value: "Wife" },
+            "Wife"
+          )
+        ),
+        React.createElement(
+          "p",
+          null,
+          " Name "
+        ),
+        React.createElement("input", {
+          required: "required",
+          type: "text", placeholder: "Full name",
+          id: this.generateAtt("id", x, "name"),
+          name: this.generateAtt("name", x, "name"),
+          onBlur: function (e) {
+            if (!e.target.value.length) {
+              document.getElementById($fullnameid).textContent = strRequireText;
+              e.target.classList.add("border_on_error");
+            } else if (e.target.value.length < 4) {
+              document.getElementById($fullnameid).textContent = strShortName;
+              e.target.classList.add("border_on_error");
+            } else if (e.target.value.length >= 4) {
+              document.getElementById($fullnameid).textContent = strNone;
+              e.target.classList.remove("border_on_error");
+            }
+          } }),
+        React.createElement("p", { id: $fullnameid, className: "error" }),
+        React.createElement(
+          "p",
+          null,
+          " Email "
+        ),
+        React.createElement("input", {
+          type: "email",
+          required: "required",
+          placeholder: "E-mail",
+          id: this.generateAtt("id", x, "email"),
+          name: this.generateAtt("name", x, "email"),
+          onBlur: function (e) {
+            if (!!e.target.required) {
+              if (!e.target.value.length) {
+                document.getElementById($emailid).textContent = strRequireText;
+                e.target.classList.add("border_on_error");
+              } else if (e.target.value.length < 4) {
+                document.getElementById($emailid).textContent = strShortEmail;
+                e.target.classList.add("border_on_error");
+              } else if (e.target.value.length >= 4) {
+                _this.validateEmail(e.target.value, e, $emailid);
+              }
+            }
+          } }),
+        React.createElement("p", { id: $emailid, className: "error" }),
+        React.createElement(
+          "p",
+          null,
+          " Mobile "
+        ),
+        React.createElement("input", {
+          required: "required",
+          type: "tel", placeholder: "Mobile",
+          name: this.generateAtt("name", x, "mobile"),
+          id: this.generateAtt("id", x, "mobile"),
+          onBlur: function (e) {
+            if (!e.target.value.length) {
+              document.getElementById($mobileid).textContent = strRequireMobile;
+              e.target.classList.add("border_on_error");
+            } else if (e.target.value.length < 8) {
+              document.getElementById($mobileid).textContent = strShortMobile;
+              e.target.classList.add("border_on_error");
+            }
+            if (e.target.value.length >= 8) {
+              _this.validatePhoneNumber(e.target.value, e, $mobileid);
+            }
+          }, maxLength: "10" }),
+        React.createElement("p", { id: $mobileid, className: "error" }),
+        React.createElement("input", { type: "hidden", value: this.state.remove,
+          name: this.generateAtt("name", x, "_destroy"),
+          id: this.generateAtt("id", x, "_destroy") })
+      ),
+      React.createElement(
+        "button",
+        { type: "button", className: "button-remove button-primary red", onClick: function (position) {
+            _this.props.removeField(x);
+          } },
+        " Remove "
+      )
+    );
+  }
+});
+var AvailabilityField = React.createClass({
+  displayName: "AvailabilityField",
+
+  getInitialState: function () {
+    return {
+      remove: false
+
+    };
+  },
+
   makeDate: function (byNum) {
     var date = [];
+    date.push(React.createElement(
+      "option",
+      { key: "-1", value: "" },
+      "--"
+    ));
     for (var i = 0; i < byNum; i++) {
       date.push(React.createElement(
         "option",
@@ -63652,33 +65674,30 @@ var AvailabilityField = React.createClass({
   onChange: function (e, datepickerrorid) {
     var tmpValue = e.target.value;
     var today = this.getToday();
-    errorMessage = '';
     if (tmpValue < today) {
-      errorMessage = 'You should select the date after today!';
-      document.getElementById(datepickerrorid).textContent = errorMessage;
+      document.getElementById(datepickerrorid).textContent = strErrSelectDate;
       e.target.classList.add("border_on_error");
     } else {
-      document.getElementById(datepickerrorid).textContent = errorMessage;
+      document.getElementById(datepickerrorid).textContent = strNone;
       e.target.classList.remove("border_on_error");
+      this.setState(function (state) {
+        return { currentValue: tmpValue };
+      });
     }
-    this.setState(function (state) {
-      state.currentValue.date = tmpValue;
-      return { currentValue: state.currentValue };
-    });
   },
 
   onChangeStartTime: function (e, timepickerrorid) {
     var startTime = (this.refs.startTimeHour.value * 60 + this.refs.startTimeMin.value) / 100;
     var finishTime = (this.refs.finishTimeHour.value * 60 + this.refs.finishTimeMin.value) / 100;
-    if (finishTime == 0) {
-      return;
-    }
     errorMessage = '';
     if (startTime > finishTime) {
-      errorMessage = 'You should select before than finish time!';
-      document.getElementById(timepickerrorid).textContent = errorMessage;
+      document.getElementById(timepickerrorid).textContent = strErrSelectTimeB;
+      setSubmitFlag = false;
+      this.props.validDate(true);
     } else {
-      document.getElementById(timepickerrorid).textContent = errorMessage;
+      document.getElementById(timepickerrorid).textContent = '';
+      setSubmitFlag = true;
+      this.props.validDate(false);
     }
   },
 
@@ -63687,10 +65706,13 @@ var AvailabilityField = React.createClass({
     var finishTime = (this.refs.finishTimeHour.value * 60 + this.refs.finishTimeMin.value) / 100;
     errorMessage = '';
     if (startTime > finishTime) {
-      errorMessage = 'You should select later than start time!';
-      document.getElementById(timepickerrorid).textContent = errorMessage;
+      document.getElementById(timepickerrorid).textContent = strErrSelectTimeL;
+      setSubmitFlag = false;
+      this.props.validDate(true);
     } else {
-      document.getElementById(timepickerrorid).textContent = errorMessage;
+      document.getElementById(timepickerrorid).textContent = '';
+      setSubmitFlag = true;
+      this.props.validDate(false);
     }
   },
 
@@ -63730,11 +65752,15 @@ var AvailabilityField = React.createClass({
           null,
           " Date "
         ),
-        React.createElement("input", { type: "date",
+        React.createElement("input", {
+          type: "date",
+          required: "required",
+          id: this.generateAtt("id", x, "date"),
           name: this.generateAtt("name", x, "date"),
-          id: this.generateAtt("id", x, "date"), onChange: function (e) {
+          onChange: function (e) {
             return _this.onChange(e, $datepickerrorid);
-          }, required: this.state.dateRequired }),
+          }
+        }),
         React.createElement("p", { id: $datepickerrorid, className: "error" }),
         React.createElement(
           "div",
@@ -63744,21 +65770,34 @@ var AvailabilityField = React.createClass({
             null,
             " Start time "
           ),
-          React.createElement("input", { type: "hidden", value: new Date().getFullYear(),
-            name: this.generateAtt("name", x, "start_time(1i)"),
-            id: this.generateAtt("id", x, "start_time_1i") }),
-          React.createElement("input", { type: "hidden", value: new Date().getMonth() + 1,
-            name: this.generateAtt("name", x, "start_time(2i)"),
-            id: this.generateAtt("id", x, "start_time_2i") }),
-          React.createElement("input", { type: "hidden", value: new Date().getDate(),
-            name: this.generateAtt("name", x, "start_time(3i)"),
-            id: this.generateAtt("id", x, "start_time_3i") }),
+          React.createElement("input", {
+            type: "hidden",
+            value: new Date().getFullYear(),
+            id: this.generateAtt("id", x, "start_time_1i"),
+            name: this.generateAtt("name", x, "start_time(1i)")
+          }),
+          React.createElement("input", {
+            type: "hidden",
+            value: new Date().getMonth() + 1,
+            id: this.generateAtt("id", x, "start_time_2i"),
+            name: this.generateAtt("name", x, "start_time(2i)")
+          }),
+          React.createElement("input", {
+            type: "hidden", value: new Date().getDate(),
+            id: this.generateAtt("id", x, "start_time_3i"),
+            name: this.generateAtt("name", x, "start_time(3i)")
+          }),
           React.createElement(
             "select",
-            { name: this.generateAtt("name", x, "start_time(4i)"),
-              id: this.generateAtt("id", x, "start_time_4i"), onChange: function (e) {
+            {
+              required: "required",
+              ref: "startTimeHour",
+              id: this.generateAtt("id", x, "start_time_4i"),
+              name: this.generateAtt("name", x, "start_time(4i)"),
+              onChange: function (e) {
                 return _this.onChangeStartTime(e, $timepickerrorid);
-              }, required: this.state.dateRequired, ref: "startTimeHour" },
+              }
+            },
             this.makeDate(24)
           ),
           React.createElement(
@@ -63768,10 +65807,15 @@ var AvailabilityField = React.createClass({
           ),
           React.createElement(
             "select",
-            { name: this.generateAtt("name", x, "start_time(5i)"),
-              id: this.generateAtt("id", x, "start_time_5i"), onChange: function (e) {
+            {
+              required: "required",
+              ref: "startTimeMin",
+              id: this.generateAtt("id", x, "start_time_5i"),
+              name: this.generateAtt("name", x, "start_time(5i)"),
+              onChange: function (e) {
                 return _this.onChangeStartTime(e, $timepickerrorid);
-              }, required: this.state.dateRequired, ref: "startTimeMin" },
+              }
+            },
             this.makeDate(60)
           )
         ),
@@ -63783,21 +65827,34 @@ var AvailabilityField = React.createClass({
             null,
             " Finish time "
           ),
-          React.createElement("input", { type: "hidden", value: new Date().getFullYear(),
-            name: this.generateAtt("name", x, "finish_time(1i)"),
-            id: this.generateAtt("id", x, "finish_time_1i") }),
-          React.createElement("input", { type: "hidden", value: new Date().getMonth() + 1,
-            name: this.generateAtt("name", x, "finish_time(2i)"),
-            id: this.generateAtt("id", x, "finish_time_2i") }),
-          React.createElement("input", { type: "hidden", value: new Date().getDate(),
+          React.createElement("input", {
+            type: "hidden",
+            value: new Date().getFullYear(),
+            id: this.generateAtt("id", x, "finish_time_1i"),
+            name: this.generateAtt("name", x, "finish_time(1i)")
+          }),
+          React.createElement("input", {
+            type: "hidden",
+            value: new Date().getMonth() + 1,
+            id: this.generateAtt("id", x, "finish_time_2i"),
+            name: this.generateAtt("name", x, "finish_time(2i)")
+          }),
+          React.createElement("input", {
+            type: "hidden", value: new Date().getDate(),
             name: this.generateAtt("name", x, "finish_time(3i)"),
-            id: this.generateAtt("id", x, "finish_time_3i") }),
+            id: this.generateAtt("id", x, "finish_time_3i")
+          }),
           React.createElement(
             "select",
-            { name: this.generateAtt("name", x, "finish_time(4i)"),
-              id: this.generateAtt("id", x, "finish_time_4i"), onChange: function (e) {
+            {
+              required: "required",
+              ref: "finishTimeHour",
+              id: this.generateAtt("id", x, "finish_time_4i"),
+              name: this.generateAtt("name", x, "finish_time(4i)"),
+              onChange: function (e) {
                 return _this.onChangeFinishTime(e, $timepickerrorid);
-              }, required: this.state.dateRequired, ref: "finishTimeHour" },
+              }
+            },
             this.makeDate(24)
           ),
           React.createElement(
@@ -63807,10 +65864,15 @@ var AvailabilityField = React.createClass({
           ),
           React.createElement(
             "select",
-            { name: this.generateAtt("name", x, "finish_time(5i)"),
-              id: this.generateAtt("id", x, "finish_time_5i"), onChange: function (e) {
+            {
+              required: "required",
+              ref: "finishTimeMin",
+              id: this.generateAtt("id", x, "finish_time_5i"),
+              name: this.generateAtt("name", x, "finish_time(5i)"),
+              onChange: function (e) {
                 return _this.onChangeFinishTime(e, $timepickerrorid);
-              }, required: this.state.dateRequired, ref: "finishTimeMin" },
+              }
+            },
             this.makeDate(60)
           )
         )
@@ -63819,17 +65881,26 @@ var AvailabilityField = React.createClass({
       React.createElement(
         "label",
         null,
-        React.createElement("input", { type: "checkbox", value: "1", onChange: this.onCheck,
-          name: this.generateAtt("name", x, "available_only_by_appointment"),
-          id: this.generateAtt("id", x, "available_only_by_appointment") }),
+        React.createElement("input", {
+          value: "1",
+          type: "checkbox",
+          onChange: this.onCheck,
+          id: this.generateAtt("id", x, "available_only_by_appointment"),
+          name: this.generateAtt("name", x, "available_only_by_appointment")
+        }),
         "Check box if accesss only available by appointment"
       ),
-      React.createElement("input", { type: "hidden", value: this.state.remove,
-        name: this.generateAtt("name", x, "_destroy"),
-        id: this.generateAtt("id", x, "_destroy") }),
+      React.createElement("input", {
+        type: "hidden",
+        value: this.state.remove,
+        id: this.generateAtt("id", x, "_destroy"),
+        name: this.generateAtt("name", x, "_destroy")
+      }),
       React.createElement(
         "button",
-        { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+        { type: "button", className: "button-remove button-primary red", onClick: function (position) {
+            return _this.props.removeField(x);
+          } },
         " Remove "
       )
     );
@@ -63839,262 +65910,1660 @@ var AvailabilityField = React.createClass({
     this.setState({ dateRequired: !this.state.dateRequired });
   }
 });
-var DropContent = React.createClass({
-    displayName: "DropContent",
+var ContentAction = React.createClass({
+	displayName: 'ContentAction',
 
-    render: function () {
-        var content = this.props.content;
-        return React.createElement(
-            "ul",
-            { className: "dropcontent" },
-            this.props.content.map(function (item, index) {
-                return React.createElement(
-                    "li",
-                    { key: index },
-                    React.createElement(
-                        "a",
-                        { href: item.href },
-                        " ",
-                        item.title
-                    ),
-                    " ",
-                    React.createElement(
-                        "span",
-                        null,
-                        item.count
-                    )
-                );
-            })
-        );
-    }
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			'ul',
+			null,
+			React.createElement(
+				'li',
+				null,
+				React.createElement(
+					'a',
+					{ onClick: function () {
+							return _this.props.onModalWith(!!_this.props.landlord ? 'confirm' : 'addAskLandlord');
+						} },
+					React.createElement('i', { className: 'fa fa-user' }),
+					'Ask Landlord'
+				)
+			),
+			React.createElement(
+				'li',
+				{ className: 'active' },
+				React.createElement(
+					'a',
+					{ onClick: function () {
+							return _this.props.onModalWith('requestQuote');
+						} },
+					React.createElement('i', { className: 'fa fa-file-text', 'aria-hidden': 'true' }),
+					'Request quote'
+				)
+			),
+			React.createElement(
+				'li',
+				null,
+				React.createElement(
+					'a',
+					{ onClick: function () {
+							return _this.props.onModalWith('sendWorkOrder');
+						} },
+					React.createElement('i', { className: 'icon-send', 'aria-hidden': 'true' }),
+					'Send work order'
+				)
+			),
+			React.createElement(
+				'li',
+				null,
+				React.createElement(
+					'a',
+					{ onClick: function () {
+							return _this.props.onModalWith('addLandlord');
+						} },
+					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-user-plus' }),
+					'Add Landlord'
+				)
+			),
+			React.createElement(
+				'li',
+				null,
+				React.createElement(
+					'a',
+					{ onClick: function () {
+							return _this.props.onModalWith('editLandlord');
+						} },
+					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-pencil' }),
+					'Edit Landlord'
+				)
+			)
+		);
+	}
 });
 
-var DropList = React.createClass({
-    displayName: "DropList",
-
-    propTypes: {
-        children: React.PropTypes.element
-    },
-    getInitialState: function () {
-        return { hidden: true };
-    },
-
-    onDrop: function () {
-        this.setState({ hidden: !this.state.hidden });
-    },
-
-    render: function () {
-        return React.createElement(
-            "div",
-            { className: "droplist" },
-            React.createElement(
-                "div",
-                { className: this.state.hidden ? 'title' : 'title active', onClick: this.onDrop },
-                this.props.title
-            ),
-            React.createElement(
-                "div",
-                { className: "content", style: { display: this.state.hidden ? 'none' : 'block' } },
-                React.createElement(DropContent, { content: this.props.content })
-            )
-        );
-    }
-});
-
-var P = React.createClass({
-    displayName: "P",
-
-    getInitialState: function () {
-        return {
-            expanded: false
-        };
-    },
-
-    readMore: function () {
-        this.setState({
-            expanded: !this.state.expanded
-        });
-    },
-
-    getMoreTextP: function () {
-        var maxLength = 200;
-        if (this.state.expanded || this.props.content.length < maxLength) {
-            return React.createElement(
-                "p",
-                { style: { display: "inline" } },
-                " ",
-                this.props.content,
-                " "
-            );
-        } else {
-            var content = this.props.content.substr(0, maxLength - 3) + "...";
-            return React.createElement(
-                "p",
-                { style: { display: "inline" } },
-                " ",
-                content,
-                " "
-            );
-        }
-    },
-
-    render: function () {
-        var expandedDiv = this.getMoreTextP();
-        var expanded = this.state.expanded;
-        var maxLength = 200;
-        return React.createElement(
-            "div",
-            { className: "readmore" },
-            expandedDiv,
-            this.props.content.length < maxLength ? null : React.createElement(
-                "a",
-                { onClick: this.readMore },
-                expanded ? 'less' : 'more'
-            )
-        );
-    }
-});
-
-var ImgSlider = React.createClass({
-    displayName: "ImgSlider",
-
-    getInitialState: function () {
-        return {
-            stlen: this.props.images ? this.props.images.length : 0,
-            stpos: 0,
-            stwidth: 300,
-            stx: 0
-        };
-    },
-
-    sliderTopRun: function (stpos) {
-        var stx = stpos * -this.state.stwidth;
-
-        this.setState({
-            stx: stx
-        });
-    },
-
-    sliderTopPrev: function () {
-        var stpos = this.state.stpos - 1;
-        if (stpos < 0) stpos = this.state.stlen - 1;
-        this.setState({
-            stpos: stpos
-        });
-        this.sliderTopRun(stpos);
-    },
-
-    sliderTopNext: function () {
-        var stpos = this.state.stpos + 1;
-        if (stpos >= this.state.stlen) stpos = 0;
-        this.setState({
-            stpos: stpos
-        });
-        this.sliderTopRun(stpos);
-    },
-
-    render: function () {
-        var styles = {
-            strip: {
-                left: this.state.stx,
-                width: this.state.stlen * this.state.stwidth
-            },
-            mask: {
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                zIndex: 70,
-                width: '100%',
-                height: 300,
-                overflow: 'hidden'
-            }
-        };
-        var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
-        return React.createElement(
-            "div",
-            { id: "slider" },
-            this.state.stlen > 1 ? React.createElement(
-                "div",
-                null,
-                React.createElement(
-                    "button",
-                    { className: "button btn prev", onClick: this.sliderTopPrev },
-                    React.createElement("i", { className: "fa fa-angle-left" })
-                ),
-                React.createElement(
-                    "button",
-                    { className: "button btn next", onClick: this.sliderTopNext },
-                    React.createElement("i", { className: "fa fa-angle-right" })
-                )
-            ) : null,
-            React.createElement(
-                "div",
-                { className: "mask", style: styles.mask },
-                React.createElement(
-                    "div",
-                    { className: "strip", style: styles.strip },
-                    this.state.stlen ? this.props.images.map(function (image, i) {
-                        return React.createElement(
-                            "span",
-                            { key: i, style: { width: subWidth } },
-                            React.createElement("img", { src: image.url, alt: "Uploading...", width: "100%" })
-                        );
-                    }) : React.createElement(
-                        "span",
-                        { style: { width: '100%' } },
-                        React.createElement("img", { src: "http://placehold.it/400x300", alt: "No image", width: "100%" })
-                    )
-                )
-            )
-        );
-    }
-});
-
-var DropforSort = React.createClass({
-    displayName: "DropforSort",
-
-    getInitialState: function () {
-        return {
-            sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
-        };
-    },
-
-    handleChange: function (event) {
-        this.setState({ sort_by_date: event.target.value });
-        this.refs.select.submit();
-    },
-
-    render: function () {
-        return React.createElement(
-            "form",
-            { name: "sort_by_date", action: "/maintenance_requests", method: "get", ref: "select" },
-            React.createElement("input", { type: "hidden", name: "page", value: this.props.page ? this.props.page : 1 }),
-            React.createElement(
-                "select",
-                { value: this.state.sort_by_date, name: "sort_by_date", onChange: this.handleChange },
-                React.createElement(
-                    "option",
-                    { value: "Oldest to Newest" },
-                    "Oldest to Newest"
-                ),
-                React.createElement(
-                    "option",
-                    { value: "Newest to Oldest" },
-                    "Newest to Oldest"
-                )
-            ),
-            React.createElement("input", { type: "submit", value: "Submit", style: { display: 'none' } })
-        );
-    }
-});
-var MaintenanceRequestsNew = React.createClass({
-	displayName: "MaintenanceRequestsNew",
+var Action = React.createClass({
+	displayName: 'Action',
 
 	getInitialState: function () {
 		return {
-			images: [],
-			cansubmit: false
+			show: true
 		};
+	},
+
+	showAction: function (e) {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			'div',
+			{ className: 'item' },
+			React.createElement(
+				'div',
+				{ className: 'header action' },
+				React.createElement(
+					'a',
+					null,
+					'Actions:'
+				),
+				React.createElement('i', {
+					'aria-hidden': 'true',
+					onClick: this.showAction,
+					className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+				})
+			),
+			React.createElement(
+				'div',
+				{ className: 'content', id: 'actions-content' },
+				this.state.show && React.createElement(ContentAction, { onModalWith: function (modal) {
+						return _this2.props.onModalWith(modal);
+					}, landlord: this.props.landlord })
+			)
+		);
+	}
+});
+
+var ActionMobile = React.createClass({
+	displayName: 'ActionMobile',
+
+	render: function () {
+		var _this3 = this;
+
+		return React.createElement(
+			'div',
+			{ className: 'actions-full', id: 'actions-full' },
+			React.createElement(
+				'div',
+				{ className: 'item' },
+				React.createElement(
+					'div',
+					{ className: 'header action' },
+					React.createElement(
+						'a',
+						null,
+						'Actions:'
+					),
+					React.createElement('i', {
+						'aria-hidden': 'true',
+						className: 'fa fa-close',
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					'div',
+					{ className: 'content' },
+					React.createElement(ContentAction, { onModalWith: function (modal) {
+							return _this3.props.onModalWith(modal);
+						}, landlord: this.props.landlord })
+				)
+			)
+		);
+	}
+});
+var Activity = React.createClass({
+	displayName: "Activity",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showActivity: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	content: function () {
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"ul",
+				null,
+				React.createElement(
+					"li",
+					{ className: "user" },
+					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+					React.createElement(
+						"p",
+						{ className: "info" },
+						React.createElement(
+							"span",
+							{ className: "title" },
+							"Request by",
+							React.createElement(
+								"strong",
+								null,
+								"Dereck Carlson"
+							)
+						),
+						React.createElement(
+							"span",
+							{ className: "time" },
+							"Sep 16, 2017 at 9am"
+						)
+					)
+				),
+				React.createElement(
+					"li",
+					{ className: "user" },
+					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+					React.createElement(
+						"p",
+						{ className: "info" },
+						React.createElement(
+							"span",
+							{ className: "title" },
+							"Request by",
+							React.createElement(
+								"strong",
+								null,
+								"Dereck Carlson"
+							)
+						),
+						React.createElement(
+							"span",
+							{ className: "time" },
+							"Sep 16, 2017 at 9am"
+						)
+					)
+				),
+				React.createElement(
+					"li",
+					{ className: "user" },
+					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+					React.createElement(
+						"p",
+						{ className: "info" },
+						React.createElement(
+							"span",
+							{ className: "title" },
+							"Request by",
+							React.createElement(
+								"strong",
+								null,
+								"Dereck Carlson"
+							)
+						),
+						React.createElement(
+							"span",
+							{ className: "time" },
+							"Sep 16, 2017 at 9am"
+						)
+					)
+				),
+				React.createElement(
+					"li",
+					{ className: "user" },
+					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+					React.createElement(
+						"p",
+						{ className: "info" },
+						React.createElement(
+							"span",
+							{ className: "title" },
+							"Request by ",
+							React.createElement(
+								"strong",
+								null,
+								"Dereck Carlson"
+							)
+						),
+						React.createElement(
+							"span",
+							{ className: "time" },
+							"Sep 16, 2017 at 9am"
+						)
+					)
+				)
+			),
+			React.createElement(
+				"button",
+				{ className: "view-more button-default" },
+				"View more"
+			)
+		);
+	},
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					null,
+					"Activity log:"
+				),
+				React.createElement("i", { className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right", "aria-hidden": "true", onClick: this.showActivity })
+			),
+			React.createElement(
+				"div",
+				{ className: "content text-center", id: "activity-content" },
+				this.state.show && this.content()
+			)
+		);
+	}
+});
+
+var ActivityMobile = React.createClass({
+	displayName: "ActivityMobile",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "activity-mobile" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Activity log:"
+					),
+					React.createElement("i", { className: "fa fa-angle-down", "aria-hidden": "true" })
+				),
+				React.createElement(
+					"div",
+					{ className: "content text-center" },
+					React.createElement(
+						"ul",
+						null,
+						React.createElement(
+							"li",
+							{ className: "user" },
+							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+							React.createElement(
+								"p",
+								{ className: "info" },
+								React.createElement(
+									"span",
+									{ className: "title" },
+									"Request by ",
+									React.createElement(
+										"strong",
+										null,
+										"Dereck Carlson"
+									)
+								),
+								React.createElement(
+									"span",
+									{ className: "time" },
+									"Sep 16, 2017 at 9am"
+								)
+							)
+						),
+						React.createElement(
+							"li",
+							{ className: "user" },
+							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+							React.createElement(
+								"p",
+								{ className: "info" },
+								React.createElement(
+									"span",
+									{ className: "title" },
+									"Request by ",
+									React.createElement(
+										"strong",
+										null,
+										"Dereck Carlson"
+									)
+								),
+								React.createElement(
+									"span",
+									{ className: "time" },
+									"Sep 16, 2017 at 9am"
+								)
+							)
+						),
+						React.createElement(
+							"li",
+							{ className: "user" },
+							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+							React.createElement(
+								"p",
+								{ className: "info" },
+								React.createElement(
+									"span",
+									{ className: "title" },
+									"Request by ",
+									React.createElement(
+										"strong",
+										null,
+										"Dereck Carlson"
+									)
+								),
+								React.createElement(
+									"span",
+									{ className: "time" },
+									"Sep 16, 2017 at 9am"
+								)
+							)
+						),
+						React.createElement(
+							"li",
+							{ className: "user" },
+							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+							React.createElement(
+								"p",
+								{ className: "info" },
+								React.createElement(
+									"span",
+									{ className: "title" },
+									"Request by ",
+									React.createElement(
+										"strong",
+										null,
+										"Dereck Carlson"
+									)
+								),
+								React.createElement(
+									"span",
+									{ className: "time" },
+									"Sep 16, 2017 at 9am"
+								)
+							)
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "text-center" },
+						React.createElement(
+							"button",
+							{ className: "view-more button-default" },
+							"View more"
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var ContentContact = React.createClass({
+	displayName: "ContentContact",
+
+	render: function () {
+		var selt = this;
+		var landlord = this.props.landlord;
+		if (!!landlord) {
+			return React.createElement(
+				"ul",
+				null,
+				React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						null,
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Landlord: ",
+						landlord.mobile
+					)
+				),
+				React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('sendMessageLandlord');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Message LandLord"
+					)
+				),
+				React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('sendMessageTenant');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Message Tenants"
+					)
+				)
+			);
+		} else {
+			return React.createElement(
+				"ul",
+				null,
+				React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('sendMessageTenant');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Message Tenants"
+					)
+				)
+			);
+		}
+	}
+});
+
+var Contact = React.createClass({
+	displayName: "Contact",
+
+	getInitialState: function () {
+		return {
+			show: false
+		};
+	},
+
+	showContact: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header contact" },
+				React.createElement(
+					"a",
+					null,
+					"Contact:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showContact,
+					className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content" },
+				this.state.show && React.createElement(ContentContact, { onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}, landlord: this.props.landlord })
+			)
+		);
+	}
+});
+
+var ContactMobile = React.createClass({
+	displayName: "ContactMobile",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "actions-full contact-full" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header contact" },
+					React.createElement(
+						"a",
+						null,
+						"Contact:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentContact, { onModalWith: function (modal) {
+							return _this2.props.onModalWith(modal);
+						}, landlord: this.props.landlord })
+				)
+			)
+		);
+	}
+});
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+var DropContent = React.createClass({
+  displayName: "DropContent",
+
+  render: function () {
+    var content = this.props.content;
+    return React.createElement(
+      "ul",
+      { className: "dropcontent" },
+      this.props.content.map(function (item, index) {
+        return React.createElement(
+          "li",
+          { key: index },
+          React.createElement(
+            "a",
+            { href: item.href },
+            " ",
+            item.title
+          ),
+          " ",
+          React.createElement(
+            "span",
+            null,
+            item.count
+          )
+        );
+      })
+    );
+  }
+});
+
+var DropList = React.createClass({
+  displayName: "DropList",
+
+  propTypes: {
+    children: React.PropTypes.element
+  },
+  getInitialState: function () {
+    return { hidden: true };
+  },
+
+  onDrop: function () {
+    this.setState({ hidden: !this.state.hidden });
+  },
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "droplist" },
+      React.createElement(
+        "div",
+        { className: this.state.hidden ? 'title' : 'title active', onClick: this.onDrop },
+        this.props.title
+      ),
+      React.createElement(
+        "div",
+        { className: "content", style: { display: this.state.hidden ? 'none' : 'block' } },
+        React.createElement(DropContent, { content: this.props.content })
+      )
+    );
+  }
+});
+
+var DropDownContent = React.createClass({
+  displayName: "DropDownContent",
+
+  render: function () {
+    var content = this.props.content;
+    var self = this;
+    return React.createElement(
+      "ul",
+      { className: "dropcontent" },
+      this.props.content.map(function (item, index) {
+        return React.createElement(
+          "li",
+          { key: index },
+          React.createElement(
+            "a",
+            { onClick: function (value) {
+                return self.props.getAction(item.value);
+              } },
+            item.title
+          ),
+          React.createElement(
+            "span",
+            null,
+            item.count
+          )
+        );
+      })
+    );
+  }
+});
+
+var DropDownList = React.createClass({
+  displayName: "DropDownList",
+
+  getInitialState: function () {
+    return { hidden: true };
+  },
+
+  onDrop: function () {
+    this.setState({ hidden: !this.state.hidden });
+  },
+
+  render: function () {
+    var _this = this;
+
+    return React.createElement(
+      "div",
+      { className: "droplist" },
+      React.createElement(
+        "div",
+        { className: this.state.hidden ? 'title' : 'title active', onClick: this.onDrop },
+        this.props.title
+      ),
+      React.createElement(
+        "div",
+        { className: "content", style: { display: this.state.hidden ? 'none' : 'block' } },
+        React.createElement(DropDownContent, { content: this.props.content, getAction: function (value) {
+            return _this.props.getAction(value);
+          } })
+      )
+    );
+  }
+});
+
+var DropDownMobileList = React.createClass({
+  displayName: "DropDownMobileList",
+
+  getInitialState: function () {
+    return { hidden: true };
+  },
+
+  onDrop: function (id) {
+    if (id != "over") {
+      this.setState({ hidden: !this.state.hidden });
+    } else {
+      this.setState({ hidden: true });
+    }
+  },
+
+  componentDidMount: function () {
+    var self = this;
+    $(document).bind('click', function (e) {
+      if (!e.target.matches('#' + self.props.id)) {
+        self.onDrop('over');
+      }
+    });
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    return React.createElement(
+      "div",
+      { className: "drop-mobile-list" },
+      React.createElement(
+        "button",
+        { id: this.props.id, className: 'btn-drop-mobile title ' + (!this.state.hidden && 'active'), onClick: function (id) {
+            return _this2.onDrop(_this2.props.id);
+          } },
+        this.props.title
+      ),
+      React.createElement(
+        "div",
+        { className: "content-mobile", style: { display: this.state.hidden ? 'none' : 'flex' } },
+        React.createElement(DropDownContent, { content: this.props.content, getAction: function (value) {
+            return _this2.props.getAction(value);
+          } })
+      )
+    );
+  }
+});
+
+var P = React.createClass({
+  displayName: "P",
+
+  getInitialState: function () {
+    return {
+      expanded: false
+    };
+  },
+
+  readMore: function () {
+    this.setState({
+      expanded: !this.state.expanded
+    });
+  },
+
+  getMoreTextP: function () {
+    var maxLength = 200;
+    if (this.state.expanded || this.props.content.length < maxLength) {
+      return React.createElement(
+        "p",
+        { style: { display: "inline" } },
+        " ",
+        this.props.content,
+        " "
+      );
+    } else {
+      var content = this.props.content.substr(0, maxLength - 3) + "...";
+      return React.createElement(
+        "p",
+        { style: { display: "inline" } },
+        " ",
+        content,
+        " "
+      );
+    }
+  },
+
+  render: function () {
+    var expandedDiv = this.getMoreTextP();
+    var expanded = this.state.expanded;
+    var maxLength = 200;
+    return React.createElement(
+      "div",
+      { className: "readmore" },
+      expandedDiv,
+      this.props.content.length < maxLength ? null : React.createElement(
+        "a",
+        { onClick: this.readMore },
+        expanded ? 'less' : 'more'
+      )
+    );
+  }
+});
+
+var ImgSlider = React.createClass({
+  displayName: "ImgSlider",
+
+  getInitialState: function () {
+    return {
+      stlen: this.props.images ? this.props.images.length : 0,
+      stpos: 0,
+      stwidth: 0,
+      stx: 0
+    };
+  },
+
+  sliderTopRun: function (stpos) {
+    var stx = stpos * -this.state.stwidth;
+
+    this.setState({
+      stx: stx
+    });
+  },
+
+  sliderTopPrev: function () {
+    var stpos = this.state.stpos - 1;
+    if (stpos < 0) stpos = this.state.stlen - 1;
+    this.setState({
+      stpos: stpos
+    });
+    this.sliderTopRun(stpos);
+  },
+
+  sliderTopNext: function () {
+    var stpos = this.state.stpos + 1;
+    if (stpos >= this.state.stlen) stpos = 0;
+    this.setState({
+      stpos: stpos
+    });
+    this.sliderTopRun(stpos);
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      stlen: nextProps.images ? nextProps.images.length : 0
+    });
+  },
+
+  componentDidMount: function () {
+    this.setState({
+      stwidth: $('#slider').width()
+    });
+  },
+
+  render: function () {
+    var styles = {
+      left: this.state.stx,
+      width: this.state.stlen * this.state.stwidth
+    };
+    var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
+    return React.createElement(
+      "div",
+      { id: "slider" },
+      this.state.stlen > 1 ? React.createElement(
+        "div",
+        null,
+        React.createElement(
+          "button",
+          { className: "button btn prev", onClick: this.sliderTopPrev },
+          React.createElement("i", { className: "fa fa-angle-left" })
+        ),
+        React.createElement(
+          "button",
+          { className: "button btn next", onClick: this.sliderTopNext },
+          React.createElement("i", { className: "fa fa-angle-right" })
+        )
+      ) : null,
+      React.createElement(
+        "div",
+        { className: "swiper-container swiper-container-horizontal" },
+        React.createElement(
+          "div",
+          { className: "swiper-wrapper slider", style: styles },
+          this.state.stlen ? this.props.images.map(function (image, i) {
+            return React.createElement("img", { key: i, className: "swiper-slide slide-image", src: image.url, style: { width: subWidth }, alt: "Uploading...", width: "100%" });
+          }) : null
+        )
+      )
+    );
+  }
+});
+
+var DropforSort = React.createClass({
+  displayName: "DropforSort",
+
+  getInitialState: function () {
+    return {
+      sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
+    };
+  },
+
+  handleChange: function (event) {
+    this.setState({ sort_by_date: event.target.value });
+    this.refs.select.submit();
+  },
+
+  render: function () {
+    return React.createElement(
+      "form",
+      { name: "sort_by_date", action: "/maintenance_requests", method: "get", ref: "select" },
+      React.createElement("input", { type: "hidden", name: "page", value: this.props.page ? this.props.page : 1 }),
+      React.createElement(
+        "select",
+        { className: "select-custom", value: this.state.sort_by_date, name: "sort_by_date", onChange: this.handleChange },
+        React.createElement(
+          "option",
+          { className: "option-custom", value: "Oldest to Newest" },
+          "Oldest to Newest"
+        ),
+        React.createElement(
+          "option",
+          { className: "option-custom", value: "Newest to Oldest" },
+          "Newest to Oldest"
+        )
+      ),
+      React.createElement("input", { type: "submit", value: "Submit", style: { display: 'none' } })
+    );
+  }
+});
+
+var ListMaintenanceRequest = React.createClass({
+  displayName: "ListMaintenanceRequest",
+
+  getInitialState: function () {
+    return {
+      page: 1,
+      data: [],
+      prePage: 3,
+      dataShow: [],
+      sortByDate: "Oldest to Newest",
+      valueAction: "",
+      filterDate: [{ value: "Oldest to Newest", name: "Oldest to Newest" }, { value: "Newest to Oldest", name: "Newest to Oldest" }],
+      actionRequests: [{
+        title: "Maintenance Request",
+        value: "Initiate Maintenance Request",
+        count: this.props.new_maintenance_requests_count
+      }, {
+        title: "Quote Received",
+        value: "Quote Received",
+        count: this.props.quotes_received_count
+      }, {
+        title: "New Invoice",
+        value: "New Invoice",
+        count: this.props.new_invoice_count
+      }, {
+        title: "Pending Payment",
+        value: "Pending Payment",
+        count: this.props.pending_payment_count
+      }],
+      awaitingAction: [{
+        title: "Awaiting Owner Initiation",
+        value: "Awaiting Owner Initiation",
+        count: this.props.awaiting_owner_initiation_count
+      }, {
+        title: "Awaiting Owner Instruction",
+        value: "Awaiting Owner Instruction",
+        count: this.props.awaiting_owner_instruction_count
+      }, {
+        title: "Quote Requested",
+        value: "Quote Requested",
+        count: this.props.quote_requested_count
+      }, {
+        title: "Awaiting Tradie Initiation",
+        value: "Awaiting Tradie Initiation",
+        count: this.props.awaiting_trady_initiation_count
+      }, {
+        title: "Awaiting Tradie`s Quote",
+        value: "Awaiting Quote",
+        count: this.props.awaiting_trady_quote_count
+      }, {
+        title: "Awaiting Quote Approval",
+        value: "Quote Received Awaiting Approval",
+        count: this.props.awaiting_quote_approval_count
+      }, {
+        title: "Quote Approved Tradie To Organise Appointment",
+        value: "Quote Approved Tradie To Organise Appointment",
+        count: this.props.trady_organise_appointment_count
+      }, {
+        title: "Tradie To Confirm Appointment",
+        value: "Tradie To Confirm Appointment",
+        count: this.props.trady_confirm_appointment_count
+      }, {
+        title: "Tenant To Confirm Appointment",
+        value: "Tenant To Confirm Appointment",
+        count: this.props.tenant_confirm_appointment_count
+      }, {
+        title: "Landlord To Confirm Appointment",
+        value: "Landlord To Confirm Appointment",
+        count: this.props.landlord_confirm_appointment_count
+      }, {
+        title: "Maintenance Scheduled - Awaiting Invoice",
+        value: "Maintenance Scheduled - Awaiting Invoice",
+        count: this.props.maintenance_scheduled_count
+      }]
+    };
+  },
+
+  getMaintenanceRequests: function () {
+    var page = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var sortByDate = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+    var self = this;
+    var page = !!page ? page : this.state.page;
+    var params = {
+      sort_by_date: sortByDate ? sortByDate : this.state.sortByDate
+    };
+
+    this.getData(this.props.link, page, params);
+  },
+
+  getData: function (link, page, params) {
+    var self = this;
+    $.ajax({
+      type: 'GET',
+      url: link,
+      data: params,
+      success: function (res) {
+        var data = [].concat(_toConsumableArray(res));
+        var dataShow = res.splice((page - 1) * self.state.prePage, self.state.prePage);
+        self.setState({
+          data: data,
+          dataShow: dataShow
+        });
+      },
+      error: function (err) {
+        self.setState({
+          data: [],
+          dataShow: []
+        });
+      }
+    });
+  },
+
+  componentWillMount: function () {
+    this.getMaintenanceRequests();
+  },
+
+  setPage: function (page) {
+    this.setState({
+      page: page
+    });
+    if (this.state.valueAction) {
+      this.getData("/maintenance_request_filter", page, {
+        sort_by_date: this.state.sortByDate,
+        maintenance_request_filter: this.state.valueAction
+      });
+    } else {
+      this.getData(this.props.link, page, { sort_by_date: this.state.sortByDate });
+    }
+  },
+
+  selectFilter: function (value) {
+    this.setState({
+      sortByDate: value
+    });
+
+    if (this.state.valueAction) {
+      this.getData("/maintenance_request_filter", this.state.page, {
+        sort_by_date: value,
+        maintenance_request_filter: this.state.valueAction
+      });
+    } else {
+      this.getData(this.props.link, this.state.page, { sort_by_date: value });
+    }
+  },
+
+  getAction: function (action) {
+    var self = this;
+    var params = {
+      sort_by_date: this.state.sortByDate,
+      maintenance_request_filter: action ? action : this.state.valueAction
+    };
+    this.setState({
+      page: 1,
+      valueAction: action
+    });
+
+    this.getData("/maintenance_request_filter", 1, params);
+  },
+
+  render: function () {
+    var _this3 = this;
+
+    var self = this;
+    var current_user_agent = this.props.current_user_agent;
+    var current_user_agency_admin = this.props.current_user_agency_admin;
+    return React.createElement(
+      "div",
+      { className: "maintenance-list container" },
+      React.createElement(DropforSortDate, { selectFilter: this.selectFilter, filterDate: this.state.filterDate, valueSelect: this.state.sortByDate }),
+      React.createElement(
+        "div",
+        { className: "main-column" },
+        React.createElement(
+          "div",
+          null,
+          this.state.dataShow.map(function (maintenance_request, key) {
+            return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link });
+          }),
+          this.state.data.length > this.state.prePage && React.createElement(Pagination, { page: this.state.page, total: this.state.data.length, prePage: this.state.prePage, setPage: this.setPage })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "side-column" },
+        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownList, {
+          "class": "action",
+          title: "Action Required",
+          content: this.state.actionRequests,
+          getAction: function (value) {
+            return _this3.getAction(value);
+          }
+        }) : null,
+        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownList, {
+          "class": "awaiting",
+          title: "Awaiting Action",
+          content: this.state.awaitingAction,
+          getAction: function (value) {
+            return _this3.getAction(value);
+          }
+        }) : null
+      ),
+      React.createElement(
+        "div",
+        { className: "action-mobile" },
+        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownMobileList, {
+          "class": "action",
+          id: "action-required",
+          title: "Action Required",
+          content: this.state.actionRequests,
+          getAction: function (value) {
+            return _this3.getAction(value);
+          }
+        }) : null,
+        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownMobileList, {
+          "class": "awaiting",
+          id: "awaiting-action",
+          title: "Awaiting Action",
+          content: this.state.awaitingAction,
+          getAction: function (value) {
+            return _this3.getAction(value);
+          }
+        }) : null
+      )
+    );
+  }
+});
+
+var MaintenanceRequestItem = React.createClass({
+  displayName: "MaintenanceRequestItem",
+
+  render: function () {
+    var maintenance_request = this.props.maintenance_request;
+    return React.createElement(
+      "div",
+      { className: "row m-t-lg maintenance-request" },
+      React.createElement(
+        "div",
+        { className: "image" },
+        React.createElement(ImgSlider, { images: maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{ url: "/uploads/maintenance_request_image/images/no_image.png" }] })
+      ),
+      React.createElement(
+        "div",
+        { className: "content" },
+        React.createElement(
+          "div",
+          { className: "info" },
+          React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+              "h3",
+              { className: "heading" },
+              React.createElement(
+                "a",
+                { href: this.props.link + "/" + maintenance_request.id },
+                maintenance_request.maintenance_heading
+              )
+            ),
+            maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu ? React.createElement(
+              "p",
+              { className: "status" },
+              maintenance_request.action_status.maintenance_request_status
+            ) : null
+          ),
+          React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+              "p",
+              { className: "created_at" },
+              moment(maintenance_request.created_at).format('LL')
+            ),
+            React.createElement(
+              "p",
+              { className: "type" },
+              "|",
+              maintenance_request.service_type
+            )
+          ),
+          React.createElement(
+            "div",
+            null,
+            React.createElement(P, { content: maintenance_request.maintenance_description })
+          ),
+          maintenance_request.property && maintenance_request.property.property_address ? React.createElement(
+            "p",
+            { className: "address" },
+            React.createElement("i", { className: "fa fa-map-marker" }),
+            maintenance_request.property.property_address
+          ) : null
+        )
+      )
+    );
+  }
+});
+
+var DropforSortDate = React.createClass({
+  displayName: "DropforSortDate",
+
+  handleChange: function (value) {
+    this.props.selectFilter(value);
+  },
+
+  showMenu: function () {
+    document.getElementById("menu").classList.toggle("show");
+  },
+
+  componentDidMount: function () {
+    window.onclick = function (e) {
+      if (!e.target.matches('.btn-show')) {
+        var myDropdown = document.getElementById("menu");
+        if (myDropdown && myDropdown.classList.contains('show')) {
+          myDropdown.classList.remove('show');
+        }
+      }
+    };
+  },
+
+  render: function () {
+    var self = this;
+    return React.createElement(
+      "div",
+      { className: "dropdown-custom" },
+      React.createElement(
+        "button",
+        { type: "button", className: "btn-show", onClick: this.showMenu },
+        self.props.valueSelect,
+        React.createElement("span", { className: "fa fa-angle-down" })
+      ),
+      React.createElement(
+        "ul",
+        { className: "dropdown-menu", id: "menu" },
+        self.props.filterDate.map(function (item, key) {
+          return React.createElement(
+            "li",
+            {
+              key: key,
+              onClick: function (value) {
+                return self.handleChange(item.value);
+              },
+              className: self.props.valueSelect == item.value && "active"
+            },
+            item.name
+          );
+        })
+      )
+    );
+  }
+});
+
+var Pagination = React.createClass({
+  displayName: "Pagination",
+
+  getInitialState: function () {
+    return {
+      totalPage: 0,
+      page: this.props.page
+    };
+  },
+
+  calculatePage: function (total) {
+    var totalPage = Math.ceil(total / this.props.prePage);
+    this.setState({
+      totalPage: totalPage
+    });
+  },
+
+  componentWillMount: function () {
+    this.calculatePage(this.props.total);
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      page: nextProps.page
+    });
+    this.calculatePage(nextProps.total);
+  },
+
+  switchPage: function (page) {
+    this.setState({
+      page: page
+    });
+
+    this.props.setPage(page);
+  },
+
+  render: function () {
+    var _this4 = this;
+
+    var sefl = this;
+    var paginations = [].concat(_toConsumableArray(Array(this.state.totalPage).keys())).map(function (key) {
+      var i = key + 1;
+      if (i == sefl.state.page) return React.createElement(
+        "em",
+        { key: "current", className: "current" },
+        i
+      );
+      return React.createElement(
+        "a",
+        { key: key, onClick: function (page) {
+            return sefl.switchPage(i);
+          } },
+        i
+      );
+    });
+    return React.createElement(
+      "div",
+      { className: "pagination" },
+      React.createElement(
+        "span",
+        {
+          className: "previous_page " + (this.state.page == 1 && "disabled"),
+          onClick: this.state.page > 1 ? function (page) {
+            return _this4.switchPage(_this4.state.page - 1);
+          } : ""
+        },
+        "< Back"
+      ),
+      paginations,
+      React.createElement(
+        "a",
+        {
+          key: "next",
+          className: "next_page " + (this.state.page == this.state.totalPage && "disabled"),
+          onClick: function (page) {
+            return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
+          }
+        },
+        "Next >"
+      )
+    );
+  }
+});
+var Carousel = React.createClass({
+	displayName: 'Carousel',
+
+	getInitialState: function () {
+		return {
+			stlen: this.props.gallery ? this.props.gallery.length : 0,
+			indexSlider: 0,
+			stpos: 0,
+			stwidth: 0,
+			stx: 0
+		};
+	},
+
+	sliderRun: function (stpos) {
+		var stx = stpos * -this.state.stwidth;
+		this.setState({
+			stx: stx,
+			stpos: stpos
+		});
+	},
+
+	sliderPrev: function (argument) {
+		var stpos = this.state.stpos - 1;
+		if (stpos < 0) stpos = this.state.stlen - 1;
+		this.sliderRun(stpos);
+	},
+
+	sliderNext: function () {
+		var stpos = this.state.stpos + 1;
+		if (stpos >= this.state.stlen) stpos = 0;
+		this.sliderRun(stpos);
+	},
+
+	componentDidMount: function () {
+		this.setState({
+			stwidth: $('.slider-custom').width()
+		});
+	},
+
+	render: function () {
+		var styles = {
+			left: this.state.stx,
+			width: this.state.stlen * this.state.stwidth
+		};
+		var temp = this;
+		var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
+		return React.createElement(
+			'div',
+			{ className: 'slider-custom' },
+			React.createElement(
+				'div',
+				{ className: 'swiper-container swiper-container-horizontal' },
+				React.createElement(
+					'div',
+					{ className: 'swiper-wrapper slider', style: styles },
+					this.props.gallery.map(function (img, index) {
+						return React.createElement('img', {
+							key: index,
+							src: img.url,
+							style: { width: subWidth },
+							className: 'swiper-slide slide-image'
+						});
+					})
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'swiper-pagination' },
+				this.props.gallery.lenght > 1 ? this.props.gallery.map(function (img, index) {
+					return React.createElement('span', {
+						key: index,
+						className: "swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active"),
+						onClick: function (stops) {
+							return temp.sliderRun(index);
+						}
+					});
+				}) : null
+			),
+			this.props.gallery.lenght > 1 && React.createElement('div', { className: 'swiper-button-next', onClick: this.sliderNext }),
+			this.props.gallery.lenght > 1 && React.createElement('div', { className: 'swiper-button-prev', onClick: this.sliderPrev })
+		);
+	}
+});
+
+var ItemMaintenanceRequest = React.createClass({
+	displayName: 'ItemMaintenanceRequest',
+
+	render: function () {
+		var maintenance = this.props.maintenance_request;
+		return React.createElement(
+			'div',
+			{ className: 'post' },
+			React.createElement(
+				'div',
+				{ className: 'info' },
+				React.createElement(
+					'div',
+					{ className: 'info-title' },
+					React.createElement(
+						'div',
+						{ className: 'title' },
+						React.createElement(
+							'span',
+							null,
+							maintenance.maintenance_heading
+						),
+						React.createElement(
+							'button',
+							{ className: 'button-primary', type: '' },
+							'Active'
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'author' },
+						React.createElement('i', { className: 'fa fa-map-marker', 'aria-hidden': 'true' }),
+						React.createElement(
+							'span',
+							{ className: 'address' },
+							this.props.property.property_address,
+							'.'
+						),
+						React.createElement(
+							'a',
+							{ className: 'time' },
+							moment(maintenance.created_at).startOf('day').fromNow()
+						),
+						React.createElement(
+							'a',
+							null,
+							'|'
+						),
+						React.createElement(
+							'a',
+							{ className: 'name-author' },
+							maintenance.service_type
+						)
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'actions' },
+					React.createElement(
+						'button',
+						{ className: 'button-primary update-status' },
+						'Update status'
+					),
+					React.createElement(
+						'button',
+						{ className: 'button-primary edit-detail' },
+						React.createElement('i', { className: 'fa fa-pencil', 'aria-hidden': 'true' }),
+						React.createElement(
+							'span',
+							null,
+							'Edit Details'
+						)
+					),
+					React.createElement(
+						'button',
+						{ className: 'button-primary assign-to' },
+						React.createElement('i', { className: 'icon-user', 'aria-hidden': 'true' }),
+						React.createElement(
+							'span',
+							null,
+							'Assign to'
+						),
+						React.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
+					)
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'content' },
+				this.props.gallery && React.createElement(Carousel, { gallery: this.props.gallery }),
+				React.createElement(
+					'div',
+					{ className: 'description' },
+					React.createElement(
+						'p',
+						null,
+						maintenance.maintenance_description
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'date-time' },
+					React.createElement(
+						'button',
+						null,
+						React.createElement(
+							'span',
+							{ className: 'vailability' },
+							'Availability: '
+						),
+						React.createElement(
+							'span',
+							{ className: 'time' },
+							maintenance.availability
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var setSubmitFlag = false;
+var MaintenanceRequestsNew = React.createClass({
+	displayName: 'MaintenanceRequestsNew',
+
+	getInitialState: function () {
+		this.getAgentEmail();
+		return {
+			images: [],
+			isAgent: true,
+			validName: false,
+			validDate: false,
+			validEmail: false,
+			validMobile: false,
+			agent_emails: null,
+			validHeading: false,
+			selectedRadio: "Agent",
+			validDescription: false
+		};
+	},
+
+	getAgentEmail: function () {
+		var self = this;
+		$.ajax({
+			type: 'GET',
+			url: '/agent_emails',
+			success: function (res) {
+				self.setState({
+					agent_emails: res
+				});
+			},
+			error: function (err) {
+				self.setState({
+					agent_emails: []
+				});
+			}
+		});
+	},
+
+	checkAgentEmail: function (e) {
+		if (this.state.selectedRadio == "Agent") {
+			var email = e.target.value;
+			var flag = false;
+			for (var i = 0; i < this.state.agent_emails.length; i++) {
+				var item = this.state.agent_emails[i];
+				if (!!email && email == item.email) {
+					flag = true;
+					break;
+				}
+			}
+
+			this.setState({
+				isAgent: flag
+			});
+		}
+
+		if (!e.target.value.length) {
+			document.getElementById("errAgentEamil").textContent = strRequireEmail;
+			e.target.classList.add("border_on_error");
+		} else if (e.target.value.length < 4) {
+			document.getElementById("errAgentEamil").textContent = strShortEmail;
+			e.target.classList.add("border_on_error");
+		} else if (e.target.value.length >= 4) {
+			this.validateEmail(e.target.value, e, true);
+		}
+	},
+
+	handleRadioChange: function (e) {
+		var value = e.currentTarget.value;
+		this.setState({
+			selectedRadio: value,
+			isAgent: value == "Owner" ? false : true
+		});
 	},
 
 	generateAtt: function (name_id, type) {
@@ -64149,62 +67618,103 @@ var MaintenanceRequestsNew = React.createClass({
 		readFile(0);
 	},
 
+	validDate: function (flag) {
+		this.setState({
+			validDate: flag
+		});
+	},
+
 	handleCheckSubmit: function (e) {
-		if (!this.state.cansubmit) {
+		if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
 			e.preventDefault();
+			document.getElementById("errCantSubmit").textContent = strCantSubmit;
 			return;
 		}
 		var XHR = new XMLHttpRequest();
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
-		FD["delete"]('maintenance_request[maintenance_request_image_attributes][images][]');
-		FD["delete"]('commit');
+		FD['delete']('maintenance_request[maintenance_request_image_attributes][images][]');
+		FD['delete']('commit');
 		this.state.images.map(function (image, index) {
 			var idx = index + 1;
 			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
 		});
 		FD.append('commit', 'Submit Maintenance Request');
 		XHR.addEventListener('loadend', function (event) {
-			window.location.href = event.currentTarget.responseURL;
-			console.log('Yeah! Data sent and response loaded.');
+			var validationObject;
+			var jsonObject = event.currentTarget.response;
+			IsJsonString = function (str) {
+				try {
+					JSON.parse(str);
+				} catch (e) {
+					return false;
+				}
+				return true;
+			};
+			setErrorMessage = function (id, strErrorMessage, validateObject) {
+				if (validateObject != undefined) {
+					document.getElementById(id).textContent = strErrorMessage;
+					document.getElementById(id).classList.add("border_on_error");
+				}
+			};
+			if (IsJsonString(jsonObject) == true) validationObject = JSON.parse(jsonObject);else window.location.href = event.currentTarget.responseURL;
+			if (validationObject['name'] != undefined) {
+				document.getElementById("errorbox").textContent = strErrName;
+				document.getElementById("errorbox").classList.add("border_on_error");
+			}
+			if (validationObject['email'] != undefined) {
+				document.getElementById("errorboxemail").textContent = strErrEmail;
+				document.getElementById("errorboxemail").classList.add("border_on_error");
+			}
+			if (validationObject['mobile'] != undefined) {
+				document.getElementById("errorboxmobile").textContent = strErrMobile;
+				document.getElementById("errorboxmobile").classList.add("border_on_error");
+			}
+			if (validationObject['maintenance_heading'] != undefined) {
+				document.getElementById("errorboxheading").textContent = strErrHeading;
+				document.getElementById("errorboxheading").classList.add("border_on_error");
+			}
+			if (validationObject['maintenance_description'] != undefined) {
+				document.getElementById("errorboxdescription").textContent = strErrDescription;
+				document.getElementById("errorboxdescription").classList.add("border_on_error");
+			}
 		});
-
-		XHR.addEventListener('error', function (event) {
-			console.log('Oups! Something went wrong.');
-		});
-
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
+		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
 		XHR.send(FD);
 		e.preventDefault();
+		return false;
 	},
 
-	validateEmail: function (inputText, e) {
-		var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-		errorMessage = '';
-		if (!inputText.match(mailformat)) {
-			errorMessage = 'Invalid Email Address!';
-			document.getElementById("errorboxemail").textContent = errorMessage;
-			e.target.classList.add("border_on_error");
-			this.setState({ cansubmit: false });
-		} else {
-			document.getElementById("errorboxemail").textContent = errorMessage;
+	getFormData: function (object) {
+		var formData = new FormData();
+		Object.keys(object).forEach(function (key) {
+			return formData.append(key, object[key]);
+		});
+		return formData;
+	},
+
+	validateEmail: function (inputText, e, agentFlag) {
+		if (EMAIL_REGEXP.test(inputText)) {
+			if (agentFlag == false) document.getElementById("errorboxemail").textContent = strNone;else document.getElementById("errAgentEamil").textContent = strNone;
 			e.target.classList.remove("border_on_error");
-			this.setState({ cansubmit: true });
+			this.setState({ validEmail: false });
+		} else {
+			if (agentFlag == false) document.getElementById("errorboxemail").textContent = strInvalidEmail;else document.getElementById("errAgentEamil").textContent = strInvalidEmail;
+			e.target.classList.add("border_on_error");
+			this.setState({ validEmail: true });
 		}
 	},
 
-	validatePhoneNumber: function (inputText, e) {
-		var numbers = /^[0-9]+$/;
-		if (inputText.match(numbers)) {
-			errorMessage = '';
-			document.getElementById("errorboxmobile").textContent = errorMessage;
+	validatePhoneNumber: function (inputText, e, agentFlag) {
+		if (NUMBER_REGEXP.test(inputText)) {
+			if (agentFlag == false) document.getElementById("errorboxmobile").textContent = strNone;else document.getElementById("errAgentMobile").textContent = strNone;
 			e.target.classList.remove("border_on_error");
-			this.setState({ cansubmit: true });
+			this.setState({ validMobile: false });
 		} else {
-			errorMessage = 'Invalid Mobile Number!';
-			document.getElementById("errorboxmobile").textContent = errorMessage;
+			if (agentFlag == false) document.getElementById("errorboxmobile").textContent = strInvalidMobile;else document.getElementById("errAgentMobile").textContent = strInvalidMobile;
 			e.target.classList.add("border_on_error");
-			this.setState({ cansubmit: false });
+			this.setState({ validMobile: true });
 		}
 	},
 
@@ -64217,1930 +67727,2783 @@ var MaintenanceRequestsNew = React.createClass({
 		if (images.length > 0) {
 			for (i = 0; i < images.length; i++) {
 				var imageObject = React.createElement(
-					"div",
-					{ className: "imgFrame", key: i },
-					React.createElement("img", { src: images[i].url }),
+					'div',
+					{ className: 'imgFrame', key: i },
+					React.createElement('img', { src: images[i].url }),
 					React.createElement(
-						"div",
-						{ className: "btnRemoveFrame", id: i, onClick: function (e) {
+						'div',
+						{ className: 'btnRemoveFrame', id: i, onClick: function (e) {
 								return _this2._handleRemoveFrame(e);
 							} },
-						"X"
+						'X'
 					)
 				);
 				$imagePreview.push(imageObject);
 			}
 		} else {
 			$imagePreview = React.createElement(
-				"div",
-				{ className: "previewText" },
-				"Please select an Image for Preview"
+				'div',
+				{ className: 'previewText' },
+				'Please select an Image for Preview'
 			);
 		}
 		return React.createElement(
-			"form",
-			{ role: "form", id: "new_maintenance_request", encType: "multipart/form-data", acceptCharset: "UTF-8", onSubmit: function (e) {
-					return _this2.handleCheckSubmit(e);
-				} },
-			React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+			'div',
+			null,
 			React.createElement(
-				"div",
-				{ className: "field" },
-				React.createElement(
-					"p",
-					null,
-					" Name "
-				),
-				React.createElement("input", { type: "text", placeholder: "Full name",
-					name: this.generateAtt("name", "name"),
-					id: this.generateAtt("id", "name"),
-					onBlur: function (e) {
-						var valid = true;
-						var errorMessage = '';
-						if (!e.target.value.length) {
-							valid = false;
-							errorMessage = 'Name is required';
-							document.getElementById("errorbox").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						} else if (e.target.value.length < 4) {
-							valid = false;
-							errorMessage = 'Name must be more than 3 letters';
-							document.getElementById("errorbox").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						} else if (e.target.value.length >= 4) {
-							valid = false;
-							errorMessage = '';
-							document.getElementById("errorbox").textContent = errorMessage;
-							e.target.classList.remove("border_on_error");
-							_this2.setState({ cansubmit: true });
-						}
-					}, required: true }),
-				React.createElement("p", { id: "errorbox", className: "error" }),
-				React.createElement(
-					"p",
-					null,
-					" Email "
-				),
-				React.createElement("input", { type: "email", placeholder: "E-mail",
-					name: this.generateAtt("name", "email"),
-					id: this.generateAtt("id", "email"),
-					onBlur: function (e) {
-						var valid = true;
-						var errorMessage = '';
-						if (!e.target.value.length) {
-							valid = false;
-							errorMessage = 'Email Address is required';
-							document.getElementById("errorboxemail").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						} else if (e.target.value.length < 4) {
-							valid = false;
-							errorMessage = 'Email Address must have more than 3 letters';
-							document.getElementById("errorboxemail").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						} else if (e.target.value.length >= 4) {
-							_this2.validateEmail(e.target.value, e);
-						}
-					}, required: true }),
-				React.createElement("p", { id: "errorboxemail", className: "error" }),
-				React.createElement(
-					"p",
-					null,
-					" Mobile "
-				),
-				React.createElement("input", { type: "tel", placeholder: "Mobile",
-					name: this.generateAtt("name", "mobile"),
-					id: this.generateAtt("id", "mobile"),
-					onBlur: function (e) {
-						var valid = true;
-						var errorMessage = '';
-						if (!e.target.value.length) {
-							errorMessage = 'Mobile Number is required';
-							document.getElementById("errorboxmobile").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						} else if (e.target.value.length < 8) {
-							errorMessage = 'Mobile Number must be more than 8 digits';
-							document.getElementById("errorboxmobile").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						}
-						if (e.target.value.length >= 8) {
-							_this2.validatePhoneNumber(e.target.value, e);
-						}
-					}, maxLength: "10", required: true }),
-				React.createElement("p", { id: "errorboxmobile", className: "error" })
+				'h1',
+				{ className: 'text-center' },
+				'New Maintenance Request'
 			),
-			React.createElement("hr", null),
 			React.createElement(
-				"div",
-				{ id: "access_contacts" },
-				React.createElement(FieldList, { SampleField: AccessContactField })
-			),
-			React.createElement("hr", null),
-			React.createElement(
-				"div",
-				{ className: "field" },
+				'form',
+				{ role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
+						return _this2.handleCheckSubmit(e);
+					} },
+				React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
+				React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
 				React.createElement(
-					"p",
-					null,
-					" Maintenance heading "
-				),
-				React.createElement("input", { type: "text",
-					name: this.generateAtt("name", "maintenance_heading"),
-					id: this.generateAtt("id", "maintenance_heading"),
-					onBlur: function (e) {
-						var valid = true;
-						var errorMessage = '';
-						if (!e.target.value.length) {
-							valid = false;
-							errorMessage = 'This field is required';
-							document.getElementById("errorboxheading").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						} else if (e.target.value.length < 4) {
-							valid = false;
-							errorMessage = 'Heading must be more than 3 letters';
-							document.getElementById("errorboxheading").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						}
-						if (e.target.value.length >= 4) {
-							valid = true;
-							errorMessage = '';
-							document.getElementById("errorboxheading").textContent = errorMessage;
-							e.target.classList.remove("border_on_error");
-							_this2.setState({ cansubmit: true });
-						}
-					}, required: true }),
-				React.createElement("p", { id: "errorboxheading", className: "error" }),
-				React.createElement(
-					"p",
-					null,
-					" Maintenance description "
-				),
-				React.createElement("textarea", {
-					name: this.generateAtt("name", "maintenance_description"),
-					id: this.generateAtt("id", "maintenance_description"),
-					onBlur: function (e) {
-						var valid = true;
-						var errorMessage = '';
-						if (!e.target.value.length) {
-							valid = false;
-							errorMessage = 'This field is required';
-							document.getElementById("errorboxdescription").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						} else if (e.target.value.length < 10) {
-							valid = false;
-							errorMessage = 'Description must be more than 10 letters';
-							document.getElementById("errorboxdescription").textContent = errorMessage;
-							e.target.classList.add("border_on_error");
-							_this2.setState({ cansubmit: false });
-						}
-						if (e.target.value.length >= 10) {
-							valid = true;
-							errorMessage = '';
-							document.getElementById("errorboxdescription").textContent = errorMessage;
-							e.target.classList.remove("border_on_error");
-							_this2.setState({ cansubmit: true });
-						}
-					}, required: true }),
-				React.createElement("p", { id: "errorboxdescription", className: "error" }),
-				React.createElement(
-					"p",
-					null,
-					" Images "
-				),
-				React.createElement("input", { className: "fileInput", type: "file", name: "maintenance_request[maintenance_request_image_attributes][images][]", id: "maintenance_request_maintenance_request_image_attributes_images", onChange: function (e) {
-						return _this2._handleImageChange(e);
-					}, multiple: true }),
-				React.createElement(
-					"div",
-					{ className: "imgPreview" },
-					$imagePreview
-				)
-			),
-			!this.props.current_user || this.props.current_user.tenant ? React.createElement(
-				"div",
-				{ className: "field" },
-				React.createElement("hr", null),
-				React.createElement(
-					"div",
-					{ className: "person_in_charge" },
+					'div',
+					{ className: 'field' },
 					React.createElement(
-						"label",
-						{ className: "one-half column" },
-						React.createElement("input", { type: "radio", value: "Agent",
-							name: this.generateAtt("name", "person_in_charge"),
-							id: this.generateAtt("id", "person_in_charge_agent"), required: true }),
-						"Agent"
+						'p',
+						null,
+						' Name '
 					),
+					React.createElement('input', {
+						required: true,
+						type: 'text',
+						placeholder: 'Full name',
+						ref: function (ref) {
+							return _this2.name = ref;
+						},
+						id: this.generateAtt("id", "name"),
+						name: this.generateAtt("name", "name"),
+						onBlur: function (e) {
+							if (!e.target.value.length) {
+								document.getElementById("errorbox").textContent = strRequireName;
+								e.target.classList.add("border_on_error");
+								_this2.setState({ validName: true });
+							} else if (e.target.value.length < 4) {
+								document.getElementById("errorbox").textContent = strShortName;
+								e.target.classList.add("border_on_error");
+								_this2.setState({ validName: true });
+							} else if (e.target.value.length >= 4) {
+								document.getElementById("errorbox").textContent = strNone;
+								e.target.classList.remove("border_on_error");
+								_this2.setState({ validName: false });
+							}
+						} }),
+					React.createElement('p', { id: 'errorbox', className: 'error' }),
 					React.createElement(
-						"label",
-						{ className: "one-half column" },
-						React.createElement("input", { type: "radio", value: "Owner",
-							name: this.generateAtt("name", "person_in_charge"),
-							id: this.generateAtt("id", "person_in_charge_owner"), required: true }),
-						"Owner"
+						'p',
+						null,
+						' Email '
+					),
+					React.createElement('input', {
+						required: true,
+						type: 'email',
+						placeholder: 'E-mail',
+						ref: function (ref) {
+							return _this2.email = ref;
+						},
+						id: this.generateAtt("id", "email"),
+						name: this.generateAtt("name", "email"),
+						onBlur: function (e) {
+							if (!e.target.value.length) {
+								document.getElementById("errorboxemail").textContent = strRequireEmail;
+								e.target.classList.add("border_on_error");
+							} else if (e.target.value.length < 4) {
+								document.getElementById("errorboxemail").textContent = strShortEmail;
+								e.target.classList.add("border_on_error");
+							} else if (e.target.value.length >= 4) {
+								_this2.validateEmail(e.target.value, e, false);
+							}
+						} }),
+					React.createElement('p', { id: 'errorboxemail', className: 'error' }),
+					React.createElement(
+						'p',
+						null,
+						' Mobile '
+					),
+					React.createElement('input', {
+						required: true,
+						type: 'tel',
+						maxLength: '10',
+						placeholder: 'Mobile',
+						ref: function (ref) {
+							return _this2.mobile = ref;
+						},
+						id: this.generateAtt("id", "mobile"),
+						name: this.generateAtt("name", "mobile"),
+						onBlur: function (e) {
+							if (!e.target.value.length) {
+								document.getElementById("errorboxmobile").textContent = strRequireMobile;
+								e.target.classList.add("border_on_error");
+							} else if (e.target.value.length < 8) {
+								document.getElementById("errorboxmobile").textContent = strShortMobile;
+								e.target.classList.add("border_on_error");
+							}
+							if (e.target.value.length >= 8) {
+								_this2.validatePhoneNumber(e.target.value, e, false);
+							}
+						} }),
+					React.createElement('p', { id: 'errorboxmobile', className: 'error' })
+				),
+				React.createElement('hr', null),
+				React.createElement(
+					'div',
+					{ id: 'access_contacts' },
+					React.createElement(FieldList, { SampleField: AccessContactField, flag: 'contact' })
+				),
+				React.createElement('hr', null),
+				React.createElement(
+					'div',
+					{ className: 'field' },
+					React.createElement(
+						'p',
+						null,
+						' Maintenance heading '
+					),
+					React.createElement('input', {
+						required: true,
+						type: 'text',
+						ref: function (ref) {
+							return _this2.maintenance_heading = ref;
+						},
+						id: this.generateAtt("id", "maintenance_heading"),
+						name: this.generateAtt("name", "maintenance_heading"),
+						onBlur: function (e) {
+							if (!e.target.value.length) {
+								document.getElementById("errorboxheading").textContent = strErrHeading;
+								e.target.classList.add("border_on_error");
+								_this2.setState({ validHeading: true });
+							} else {
+								document.getElementById("errorboxheading").textContent = "";
+								e.target.classList.remove("border_on_error");
+								_this2.setState({ validHeading: false });
+							}
+						}
+					}),
+					React.createElement('p', { id: 'errorboxheading', className: 'error' }),
+					React.createElement(
+						'p',
+						null,
+						' Maintenance description '
+					),
+					React.createElement('textarea', {
+						required: true,
+						ref: function (ref) {
+							return _this2.maintenance_description = ref;
+						},
+						id: this.generateAtt("id", "maintenance_description"),
+						name: this.generateAtt("name", "maintenance_description"),
+						onBlur: function (e) {
+							if (!e.target.value.length) {
+								document.getElementById("errorboxdescription").textContent = strErrDescription;
+								e.target.classList.add("border_on_error");
+								_this2.setState({ validDescription: true });
+							} else {
+								document.getElementById("errorboxdescription").textContent = "";
+								e.target.classList.remove("border_on_error");
+								_this2.setState({ validDescription: false });
+							}
+						}
+					}),
+					React.createElement('p', { id: 'errorboxdescription', className: 'error' }),
+					React.createElement(
+						'p',
+						null,
+						' Images '
+					),
+					React.createElement('input', {
+						multiple: true,
+						type: 'file',
+						className: 'fileInput',
+						onChange: function (e) {
+							return _this2._handleImageChange(e);
+						},
+						id: 'maintenance_request_maintenance_request_image_attributes_images',
+						name: 'maintenance_request[maintenance_request_image_attributes][images][]'
+					}),
+					React.createElement(
+						'div',
+						{ className: 'imgPreview' },
+						$imagePreview
 					)
 				),
+				!this.props.current_user || this.props.current_user.tenant ? React.createElement(
+					'div',
+					{ className: 'field' },
+					React.createElement('hr', null),
+					React.createElement(
+						'div',
+						null,
+						React.createElement(
+							'p',
+							null,
+							' Agent email '
+						),
+						React.createElement('input', {
+							required: true,
+							type: 'text',
+							onBlur: this.checkAgentEmail,
+							ref: function (ref) {
+								return _this2.agent_email = ref;
+							},
+							id: this.generateAtt("id", "agent_email"),
+							name: this.generateAtt("name", "agent_email")
+						}),
+						React.createElement('p', { id: 'errAgentEamil', className: 'error' }),
+						!this.state.isAgent ? React.createElement(
+							'div',
+							null,
+							React.createElement(
+								'p',
+								null,
+								' Real estate office '
+							),
+							React.createElement('input', {
+								required: true,
+								type: 'text',
+								ref: function (ref) {
+									return _this2.real_estate_office = ref;
+								},
+								id: this.generateAtt("id", "real_estate_office"),
+								name: this.generateAtt("name", "real_estate_office"),
+								onBlur: function (e) {
+									if (!e.target.value.length) {
+										e.target.classList.add("border_on_error");
+										document.getElementById("errRealEstateOffice").textContent = strRequireText;
+									} else if (e.target.value.length < 4) {
+										e.target.classList.add("border_on_error");
+										document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
+									} else if (e.target.value.length >= 4) {
+										e.target.classList.remove("border_on_error");
+										document.getElementById("errRealEstateOffice").textContent = strNone;
+									}
+								} }),
+							React.createElement('p', { id: 'errRealEstateOffice', className: 'error' }),
+							React.createElement(
+								'p',
+								null,
+								' Agent name '
+							),
+							React.createElement('input', {
+								required: true,
+								type: 'text',
+								ref: function (ref) {
+									return _this2.agent_name = ref;
+								},
+								id: this.generateAtt("id", "agent_name"),
+								name: this.generateAtt("name", "agent_name"),
+								onBlur: function (e) {
+									if (!e.target.value.length) {
+										e.target.classList.add("border_on_error");
+										document.getElementById("errAgentName").textContent = strRequireName;
+									} else if (e.target.value.length < 4) {
+										e.target.classList.add("border_on_error");
+										document.getElementById("errAgentName").textContent = strShortName;
+									} else if (e.target.value.length >= 4) {
+										e.target.classList.remove("border_on_error");
+										document.getElementById("errAgentName").textContent = strNone;
+									}
+								} }),
+							React.createElement('p', { id: 'errAgentName', className: 'error' }),
+							React.createElement(
+								'p',
+								null,
+								' Agent mobile '
+							),
+							React.createElement('input', {
+								required: true,
+								type: 'text',
+								maxLength: '10',
+								ref: function (ref) {
+									return _this2.agent_mobile = ref;
+								},
+								id: this.generateAtt("id", "agent_mobile"),
+								name: this.generateAtt("name", "agent_mobile"),
+								onBlur: function (e) {
+									if (!e.target.value.length) {
+										e.target.classList.add("border_on_error");
+										document.getElementById("errAgentMobile").textContent = strRequireMobile;
+									} else if (e.target.value.length < 8) {
+										e.target.classList.add("border_on_error");
+										document.getElementById("errAgentMobile").textContent = strShortMobile;
+									}
+									if (e.target.value.length >= 8) {
+										_this2.validatePhoneNumber(e.target.value, e, true);
+									}
+								} }),
+							React.createElement('p', { id: 'errAgentMobile', className: 'error' })
+						) : null
+					),
+					React.createElement('hr', null)
+				) : React.createElement('hr', null),
 				React.createElement(
-					"div",
-					null,
-					React.createElement(
-						"p",
-						null,
-						" Real estate office "
-					),
-					React.createElement("input", { type: "text",
-						name: this.generateAtt("name", "real_estate_office"),
-						id: this.generateAtt("id", "real_estate_office"), required: true }),
-					React.createElement(
-						"p",
-						null,
-						" Agent name "
-					),
-					React.createElement("input", { type: "text",
-						name: this.generateAtt("name", "agent_name"),
-						id: this.generateAtt("id", "agent_name"), required: true }),
-					React.createElement(
-						"p",
-						null,
-						" Agent email "
-					),
-					React.createElement("input", { type: "text",
-						name: this.generateAtt("name", "agent_email"),
-						id: this.generateAtt("id", "agent_email"), required: true }),
-					React.createElement(
-						"p",
-						null,
-						" Agent mobile "
-					),
-					React.createElement("input", { type: "text",
-						name: this.generateAtt("name", "agent_mobile"),
-						id: this.generateAtt("id", "agent_mobile"), required: true })
+					'div',
+					{ id: 'availabilities' },
+					React.createElement(FieldList, { SampleField: AvailabilityField, validDate: function (flag) {
+							return _this2.validDate(flag);
+						}, flag: 'date' })
 				),
-				React.createElement("hr", null)
-			) : React.createElement("hr", null),
-			React.createElement(
-				"div",
-				{ id: "availabilities" },
-				React.createElement(FieldList, { SampleField: AvailabilityField })
-			),
-			React.createElement("hr", null),
-			React.createElement("input", { type: "submit", className: "button-primary green", name: "commit", value: "Submit Maintenance Request", "data-disable-with": "Submit Maintenance Request" })
+				React.createElement('hr', null),
+				React.createElement('p', { id: 'errCantSubmit', className: 'error' }),
+				React.createElement(
+					'button',
+					{ type: 'submit', className: 'button-primary green', name: 'commit' },
+					'Submit Maintenance Request'
+				)
+			)
 		);
 	}
 });
-var Post = React.createClass({
-  displayName: 'Post',
-
-  componentDidMount: function () {
-    $(document).ready(function () {
-      new Swiper('.swiper-container', {
-        loop: true,
-        spaceBetween: 0,
-        slidesPerView: 1,
-        paginationClickable: true,
-        paginationClickable: true,
-        pagination: '.swiper-pagination'
-      });
-    });
-  },
-
-  render: function () {
-    var maintenance = this.props.maintenance_request;
-    return React.createElement(
-      'div',
-      { className: 'post' },
-      React.createElement(
-        'div',
-        { className: 'info' },
-        React.createElement(
-          'div',
-          { className: 'info-title' },
-          React.createElement(
-            'div',
-            { className: 'title' },
-            React.createElement(
-              'span',
-              null,
-              maintenance.maintenance_heading
-            ),
-            React.createElement(
-              'button',
-              { className: 'button-primary', type: '' },
-              'Active'
-            )
-          ),
-          React.createElement(
-            'div',
-            { className: 'author' },
-            React.createElement('i', { className: 'fa fa-map-marker', 'aria-hidden': 'true' }),
-            React.createElement(
-              'span',
-              { className: 'address' },
-              this.props.property.property_address,
-              '.'
-            ),
-            React.createElement(
-              'a',
-              { className: 'time' },
-              moment(maintenance.created_at).startOf('day').fromNow()
-            ),
-            React.createElement(
-              'a',
-              null,
-              '|'
-            ),
-            React.createElement(
-              'a',
-              { className: 'name-author' },
-              maintenance.service_type
-            )
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'actions' },
-          React.createElement(
-            'button',
-            { className: 'button-primary update-status' },
-            'Update status'
-          ),
-          React.createElement(
-            'button',
-            { className: 'button-primary edit-detail' },
-            React.createElement('i', { className: 'fa fa-pencil', 'aria-hidden': 'true' }),
-            React.createElement(
-              'span',
-              null,
-              'Edit Details'
-            )
-          ),
-          React.createElement(
-            'button',
-            { className: 'button-primary assign-to' },
-            React.createElement('i', { className: 'icon-user', 'aria-hidden': 'true' }),
-            React.createElement(
-              'span',
-              null,
-              'Assign to'
-            ),
-            React.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
-          )
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: 'content' },
-        React.createElement(
-          'div',
-          { className: 'slider-custom' },
-          React.createElement(
-            'div',
-            { className: 'swiper-container' },
-            React.createElement(
-              'div',
-              { className: 'swiper-wrapper slider' },
-              this.props.gallery.map(function (img, index) {
-                return React.createElement('img', {
-                  key: index,
-                  src: img.url,
-                  className: "swiper-slide slide-image img-1 " + (index === 0 && "active")
-                });
-              })
-            )
-          ),
-          React.createElement('div', { className: 'swiper-pagination swiper-pagination-custom' })
-        ),
-        React.createElement(
-          'div',
-          { className: 'description' },
-          React.createElement(
-            'p',
-            null,
-            maintenance.maintenance_description
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'date-time' },
-          React.createElement(
-            'button',
-            null,
-            React.createElement(
-              'span',
-              { className: 'vailability' },
-              'Availability: '
-            ),
-            React.createElement(
-              'span',
-              { className: 'time' },
-              maintenance.availability
-            )
-          )
-        )
-      )
-    );
-  }
-});
-
-var Quote = React.createClass({
-  displayName: 'Quote',
-
-  render: function () {
-    var quotes = this.props.quotes;
-    return React.createElement(
-      'div',
-      { className: 'quotes' },
-      React.createElement(
-        'p',
-        null,
-        'Quotes (',
-        quotes.length,
-        ')'
-      ),
-      React.createElement(
-        'div',
-        { className: 'list-quote' },
-        quotes.map(function (quote, index) {
-          return React.createElement(
-            'div',
-            { className: 'item-quote row', key: index },
-            React.createElement(
-              'div',
-              { className: 'user seven columns' },
-              React.createElement('img', { src: '/assets/user1.png' }),
-              React.createElement(
-                'div',
-                { className: 'info' },
-                React.createElement(
-                  'div',
-                  { className: 'name' },
-                  React.createElement(
-                    'span',
-                    null,
-                    quote.trady.name
-                  ),
-                  React.createElement(
-                    'button',
-                    { className: 'button-default ' + quote.status },
-                    React.createElement(
-                      'span',
-                      null,
-                      quote.status
-                    )
-                  )
-                ),
-                React.createElement(
-                  'p',
-                  { className: 'description' },
-                  quote.trady.company_name
-                )
-              )
-            ),
-            React.createElement(
-              'div',
-              { className: 'actions five columns' },
-              React.createElement(
-                'button',
-                { className: 'close button-default' },
-                React.createElement('i', { className: 'icon-close', 'aria-hidden': 'true' })
-              ),
-              React.createElement(
-                'button',
-                { className: 'reload button-default' },
-                React.createElement('i', { className: 'icon-reload', 'aria-hidden': 'true' })
-              ),
-              React.createElement(
-                'button',
-                { className: 'money button-default' },
-                quote.amount,
-                'AUD'
-              )
-            )
-          );
-        })
-      )
-    );
-  }
-});
-
-var Invoice = React.createClass({
-  displayName: 'Invoice',
-
-  render: function () {
-    var invoices = this.props.invoices;
-    return React.createElement(
-      'div',
-      { className: 'quotes m-t-xl' },
-      React.createElement(
-        'p',
-        null,
-        'Invoice (',
-        invoices.length,
-        ')'
-      ),
-      React.createElement(
-        'div',
-        { className: 'list-quote' },
-        invoices.map(function (invoice, index) {
-          return React.createElement(
-            'div',
-            { className: 'item-quote row' },
-            React.createElement(
-              'div',
-              { className: 'user seven columns' },
-              React.createElement('img', { src: '/assets/user1.png' }),
-              React.createElement(
-                'div',
-                { className: 'info' },
-                React.createElement(
-                  'div',
-                  { className: 'name' },
-                  React.createElement(
-                    'span',
-                    null,
-                    invoice.trady.name
-                  ),
-                  React.createElement(
-                    'button',
-                    { className: 'button-default ' + invoice.status },
-                    invoice.status
-                  )
-                ),
-                React.createElement(
-                  'p',
-                  { className: 'description' },
-                  invoice.trady.company_name
-                )
-              )
-            ),
-            React.createElement(
-              'div',
-              { className: 'actions five columns' },
-              React.createElement(
-                'button',
-                { className: 'close button-default' },
-                React.createElement('i', { className: 'icon-close', 'aria-hidden': 'true' })
-              ),
-              React.createElement(
-                'button',
-                { className: 'reload button-default' },
-                React.createElement('i', { className: 'icon-reload', 'aria-hidden': 'true' })
-              ),
-              React.createElement(
-                'button',
-                { className: 'money button-default' },
-                invoice.amount,
-                'AUD'
-              )
-            )
-          );
-        })
-      )
-    );
-  }
-});
-
-var ContentContact = React.createClass({
-  displayName: 'ContentContact',
-
-  render: function () {
-    return React.createElement(
-      'ul',
-      null,
-      React.createElement(
-        'li',
-        null,
-        React.createElement(
-          'a',
-          null,
-          React.createElement('i', { className: 'fa fa-phone', 'aria-hidden': 'true' }),
-          '468873353989'
-        )
-      ),
-      React.createElement(
-        'li',
-        null,
-        React.createElement(
-          'a',
-          null,
-          React.createElement('i', { className: 'fa fa-commenting', 'aria-hidden': 'true' }),
-          'Message LandLord'
-        )
-      )
-    );
-  }
-});
-
-var Contact = React.createClass({
-  displayName: 'Contact',
-
-  getInitialState: function () {
-    return {
-      show: false
-    };
-  },
-
-  showContact: function () {
-    this.setState({ show: !this.state.show });
-  },
-
-  render: function () {
-    return React.createElement(
-      'div',
-      { className: 'item' },
-      React.createElement(
-        'div',
-        { className: 'header contact' },
-        React.createElement(
-          'a',
-          null,
-          'Contact:'
-        ),
-        React.createElement('i', {
-          'aria-hidden': 'true',
-          onClick: this.showContact,
-          className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
-        })
-      ),
-      React.createElement(
-        'div',
-        { className: 'content' },
-        this.state.show && React.createElement(ContentContact, null)
-      )
-    );
-  }
-});
-
-var ContentAction = React.createClass({
-  displayName: 'ContentAction',
-
-  render: function () {
-    return React.createElement(
-      'ul',
-      null,
-      React.createElement(
-        'li',
-        null,
-        React.createElement(
-          'a',
-          { onClick: this.props.openModel },
-          React.createElement('i', { className: 'fa fa-user' }),
-          'Ask Landlord'
-        )
-      ),
-      React.createElement(
-        'li',
-        { className: 'active' },
-        React.createElement(
-          'a',
-          null,
-          React.createElement('i', { className: 'fa fa-file-text', 'aria-hidden': 'true' }),
-          'Request quote'
-        )
-      ),
-      React.createElement(
-        'li',
-        null,
-        React.createElement(
-          'a',
-          null,
-          React.createElement('i', { className: 'icon-send', 'aria-hidden': 'true' }),
-          'Send work order'
-        )
-      ),
-      React.createElement(
-        'li',
-        null,
-        React.createElement(
-          'a',
-          null,
-          React.createElement('i', { className: 'fa fa-user-plus', 'aria-hidden': 'true' }),
-          'Add Landlord'
-        )
-      ),
-      React.createElement(
-        'li',
-        null,
-        React.createElement(
-          'a',
-          null,
-          React.createElement('i', { className: 'fa fa-pencil', 'aria-hidden': 'true' }),
-          'Edit Landlord'
-        )
-      )
-    );
-  }
-});
-
-var Action = React.createClass({
-  displayName: 'Action',
-
-  getInitialState: function () {
-    return {
-      show: true
-    };
-  },
-
-  showAction: function (e) {
-    this.setState({ show: !this.state.show });
-  },
-
-  render: function () {
-    return React.createElement(
-      'div',
-      { className: 'item' },
-      React.createElement(
-        'div',
-        { className: 'header action' },
-        React.createElement(
-          'a',
-          null,
-          'Actions:'
-        ),
-        React.createElement('i', {
-          'aria-hidden': 'true',
-          onClick: this.showAction,
-          className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
-        })
-      ),
-      React.createElement(
-        'div',
-        { className: 'content', id: 'actions-content' },
-        this.state.show && React.createElement(ContentAction, { openModel: this.props.openModal })
-      )
-    );
-  }
-});
-
-var Activity = React.createClass({
-  displayName: 'Activity',
-
-  getInitialState: function () {
-    return {
-      show: true
-    };
-  },
-
-  showActivity: function () {
-    this.setState({ show: !this.state.show });
-  },
-
-  content: function () {
-    return React.createElement(
-      'div',
-      null,
-      React.createElement(
-        'ul',
-        null,
-        React.createElement(
-          'li',
-          { className: 'user' },
-          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-          React.createElement(
-            'p',
-            { className: 'info' },
-            React.createElement(
-              'span',
-              { className: 'title' },
-              'Request by',
-              React.createElement(
-                'strong',
-                null,
-                'Dereck Carlson'
-              )
-            ),
-            React.createElement(
-              'span',
-              { className: 'time' },
-              'Sep 16, 2017 at 9am'
-            )
-          )
-        ),
-        React.createElement(
-          'li',
-          { className: 'user' },
-          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-          React.createElement(
-            'p',
-            { className: 'info' },
-            React.createElement(
-              'span',
-              { className: 'title' },
-              'Request by',
-              React.createElement(
-                'strong',
-                null,
-                'Dereck Carlson'
-              )
-            ),
-            React.createElement(
-              'span',
-              { className: 'time' },
-              'Sep 16, 2017 at 9am'
-            )
-          )
-        ),
-        React.createElement(
-          'li',
-          { className: 'user' },
-          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-          React.createElement(
-            'p',
-            { className: 'info' },
-            React.createElement(
-              'span',
-              { className: 'title' },
-              'Request by',
-              React.createElement(
-                'strong',
-                null,
-                'Dereck Carlson'
-              )
-            ),
-            React.createElement(
-              'span',
-              { className: 'time' },
-              'Sep 16, 2017 at 9am'
-            )
-          )
-        ),
-        React.createElement(
-          'li',
-          { className: 'user' },
-          React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-          React.createElement(
-            'p',
-            { className: 'info' },
-            React.createElement(
-              'span',
-              { className: 'title' },
-              'Request by ',
-              React.createElement(
-                'strong',
-                null,
-                'Dereck Carlson'
-              )
-            ),
-            React.createElement(
-              'span',
-              { className: 'time' },
-              'Sep 16, 2017 at 9am'
-            )
-          )
-        )
-      ),
-      React.createElement(
-        'button',
-        { className: 'view-more button-default' },
-        'View more'
-      )
-    );
-  },
-
-  render: function () {
-    return React.createElement(
-      'div',
-      { className: 'item' },
-      React.createElement(
-        'div',
-        { className: 'header action' },
-        React.createElement(
-          'a',
-          null,
-          'Activity log:'
-        ),
-        React.createElement('i', { className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right", 'aria-hidden': 'true', onClick: this.showActivity })
-      ),
-      React.createElement(
-        'div',
-        { className: 'content text-center', id: 'activity-content' },
-        this.state.show && this.content()
-      )
-    );
-  }
-});
-
 var ModalConfirm = React.createClass({
-  displayName: 'ModalConfirm',
+	displayName: "ModalConfirm",
 
-  render: function () {
-    var _this = this;
+	render: function () {
+		var _this = this;
 
-    return React.createElement(
-      'div',
-      { className: 'modal-custom fade' },
-      React.createElement(
-        'div',
-        { className: 'modal-dialog' },
-        React.createElement(
-          'div',
-          { className: 'modal-content' },
-          React.createElement(
-            'div',
-            { className: 'modal-header' },
-            React.createElement(
-              'button',
-              {
-                type: 'button',
-                className: 'close',
-                'data-dismiss': 'modal',
-                'aria-label': 'Close',
-                onClick: this.props.close
-              },
-              React.createElement(
-                'span',
-                { 'aria-hidden': 'true' },
-                '×'
-              )
-            ),
-            React.createElement(
-              'h4',
-              { className: 'modal-title text-center' },
-              'Confirm Landlord'
-            )
-          ),
-          React.createElement(
-            'div',
-            { className: 'modal-body' },
-            React.createElement(
-              'p',
-              { className: 'text-center' },
-              'Is ',
-              this.props.landlord.name,
-              ' the correct landlord for ',
-              this.props.property.property_address
-            )
-          ),
-          React.createElement(
-            'div',
-            { className: 'modal-footer' },
-            React.createElement(
-              'button',
-              {
-                type: 'button',
-                className: 'btn btn-default success',
-                onClick: function () {
-                  return _this.props.onModalWith('edit');
-                },
-                'data-dismiss': 'modal'
-              },
-              'Yes'
-            ),
-            React.createElement(
-              'button',
-              {
-                type: 'button',
-                className: 'btn btn-primary cancel',
-                onClick: function () {
-                  return _this.props.onModalWith('add');
-                }
-              },
-              'No'
-            )
-          )
-        )
-      )
-    );
-  }
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							"Confirm Landlord"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							"Is ",
+							this.props.landlord.name,
+							" the correct landlord for ",
+							this.props.property.property_address
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-default success",
+								onClick: function () {
+									return _this.props.onModalWith('editAskLandlord');
+								},
+								"data-dismiss": "modal"
+							},
+							"Yes"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-primary cancel",
+								onClick: function () {
+									return _this.props.onModalWith('addAskLandlord');
+								}
+							},
+							"No"
+						)
+					)
+				)
+			)
+		);
+	}
 });
 
-var ModalAddLandlord = React.createClass({
-  displayName: 'ModalAddLandlord',
+var ModalAddAskLandlord = React.createClass({
+	displayName: "ModalAddAskLandlord",
 
-  getInitialState: function () {
-    return {
-      errorName: false,
-      errorEmail: false,
-      errorMobile: false
-    };
-  },
+	getInitialState: function () {
+		return {
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false
+		};
+	},
 
-  checkValidate: function (e) {
-    var key = e.target.id;
+	checkValidate: function (e) {
+		var key = e.target.id;
 
-    switch (key) {
-      case "name":
-        {
-          if (e.target.value == "") {
-            this.setState({ errorName: true });
-          } else {
-            this.setState({ errorName: false });
-          }
-          break;
-        }
+		switch (key) {
+			case "name":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorName: true });
+					} else {
+						this.setState({ errorName: false });
+					}
+					break;
+				}
 
-      case "mobile":
-        {
-          if (e.target.value == "") {
-            this.setState({ errorMobile: true });
-          } else {
-            this.setState({ errorMobile: false });
-          }
-          break;
-        }
+			case "mobile":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorMobile: true });
+					} else {
+						this.setState({ errorMobile: false });
+					}
+					break;
+				}
 
-      default:
-        {
-          var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
-          if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-            this.setState({ errorEmail: true });
-          } else {
-            this.setState({ errorEmail: false });
-          }
-          break;
-        }
-    }
-  },
+			default:
+				{
+					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+						this.setState({ errorEmail: true });
+					} else {
+						this.setState({ errorEmail: false });
+					}
+					break;
+				}
+		}
+	},
 
-  submit: function (e) {
-    e.preventDefault();
+	submit: function (e) {
+		e.preventDefault();
+		var flag = false;
+		if (this.name.value == "") {
+			this.setState({ errorName: true });
+			flag = true;
+		}
 
-    var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
-    if (this.name.value == "") {
-      this.setState({ errorName: true });
-      e.preventDefault();
-      return false;
-    }
-    if (this.mobile.value == "") {
-      this.setState({ errorMobile: true });
-      e.preventDefault();
-      return false;
-    }
+		if (this.mobile.value == "") {
+			this.setState({ errorMobile: true });
+			flag = true;
+		}
 
-    if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-      this.setState({ errorEmail: true });
-      e.preventDefault();
-      return false;
-    }
+		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+			this.setState({ errorEmail: true });
+			flag = true;
+		}
 
-    var params = {
-      authenticity_token: this.props.authToken,
-      landlord: {
-        name: this.name.value,
-        email: this.email.value,
-        mobile: this.mobile.value,
-        maintenance_request_id: this.props.maintenance_request_id
-      }
-    };
-    this.props.addLandlord(params);
-  },
+		if (!flag) {
+			var params = {
+				authenticity_token: this.props.authToken,
+				landlord: {
+					name: this.name.value,
+					email: this.email.value,
+					mobile: this.mobile.value,
+					maintenance_request_id: this.props.maintenance_request_id
+				}
+			};
+			this.props.addAskLandlord(params);
+		}
+		return;
+	},
 
-  render: function () {
-    var _this2 = this;
+	render: function () {
+		var _this2 = this;
 
-    return React.createElement(
-      'div',
-      { className: 'modal-custom fade' },
-      React.createElement(
-        'div',
-        { className: 'modal-dialog' },
-        React.createElement(
-          'div',
-          { className: 'modal-content' },
-          React.createElement(
-            'form',
-            { role: 'form', id: 'addForm', onSubmit: this.submit },
-            React.createElement(
-              'div',
-              { className: 'modal-header' },
-              React.createElement(
-                'button',
-                {
-                  type: 'button',
-                  className: 'close',
-                  'aria-label': 'Close',
-                  'data-dismiss': 'modal',
-                  onClick: this.props.close
-                },
-                React.createElement(
-                  'span',
-                  { 'aria-hidden': 'true' },
-                  '×'
-                )
-              ),
-              React.createElement(
-                'h4',
-                { className: 'modal-title text-center' },
-                'Forward Maintenance request'
-              )
-            ),
-            React.createElement(
-              'div',
-              { className: 'modal-body' },
-              React.createElement(
-                'div',
-                { className: 'row' },
-                React.createElement(
-                  'div',
-                  null,
-                  React.createElement(
-                    'label',
-                    null,
-                    'Name ',
-                    React.createElement(
-                      'strong',
-                      null,
-                      '*'
-                    ),
-                    ':'
-                  ),
-                  React.createElement('input', {
-                    id: 'name',
-                    type: 'text',
-                    name: 'landlord[name]',
-                    placeholder: 'Enter Name',
-                    ref: function (e) {
-                      return _this2.name = e;
-                    },
-                    onChange: this.checkValidate,
-                    className: "u-full-width " + (this.state.errorName && "has-error")
-                  })
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'row m-t-lg' },
-                React.createElement(
-                  'div',
-                  null,
-                  React.createElement(
-                    'label',
-                    null,
-                    'Mobile ',
-                    React.createElement(
-                      'strong',
-                      null,
-                      '*'
-                    ),
-                    ':'
-                  ),
-                  React.createElement('input', { className: "u-full-width " + (this.state.errorMobile && "has-error"), id: 'mobile', ref: function (e) {
-                      return _this2.mobile = e;
-                    }, name: 'landlord[mobile]', type: 'number', onChange: this.checkValidate, placeholder: 'Enter Mobile' })
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'row m-t-lg' },
-                React.createElement(
-                  'div',
-                  null,
-                  React.createElement(
-                    'label',
-                    null,
-                    'Email ',
-                    React.createElement(
-                      'strong',
-                      null,
-                      '*'
-                    ),
-                    ':'
-                  ),
-                  React.createElement('input', { className: "u-full-width " + (this.state.errorEmail && "has-error"), id: 'email', ref: function (e) {
-                      return _this2.email = e;
-                    }, name: 'landlord[email]', type: 'text', onChange: this.checkValidate, placeholder: 'Enter Email' })
-                )
-              )
-            ),
-            React.createElement(
-              'div',
-              { className: 'modal-footer' },
-              React.createElement(
-                'button',
-                {
-                  type: 'button',
-                  onClick: this.props.close,
-                  className: 'btn btn-primary cancel'
-                },
-                'Cancel'
-              ),
-              React.createElement(
-                'button',
-                { type: 'submit', className: 'btn btn-default success' },
-                'Submit'
-              )
-            )
-          )
-        )
-      )
-    );
-  }
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"form",
+						{ role: "form", id: "addForm", onSubmit: this.submit },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Forward Maintenance request"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Name ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "name",
+										type: "text",
+										name: "landlord[name]",
+										placeholder: "Enter Name",
+										ref: function (e) {
+											return _this2.name = e;
+										},
+										onChange: this.checkValidate,
+										className: "u-full-width " + (this.state.errorName && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Mobile ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", { className: "u-full-width " + (this.state.errorMobile && "has-error"), id: "mobile", ref: function (e) {
+											return _this2.mobile = e;
+										}, name: "landlord[mobile]", type: "number", onChange: this.checkValidate, placeholder: "Enter Mobile" })
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Email ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", { className: "u-full-width " + (this.state.errorEmail && "has-error"), id: "email", ref: function (e) {
+											return _this2.email = e;
+										}, name: "landlord[email]", type: "text", onChange: this.checkValidate, placeholder: "Enter Email" })
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									onClick: this.props.close,
+									className: "btn btn-primary cancel"
+								},
+								"Cancel"
+							),
+							React.createElement(
+								"button",
+								{ type: "submit", className: "btn btn-default success" },
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
 });
 
-var ModalEditLandlord = React.createClass({
-  displayName: 'ModalEditLandlord',
+var ModalEditAskLandlord = React.createClass({
+	displayName: "ModalEditAskLandlord",
 
-  getInitialState: function () {
-    return {
-      isEdit: false,
-      errorName: false,
-      errorEmail: false,
-      errorMobile: false
-    };
-  },
+	getInitialState: function () {
+		return {
+			isEdit: false,
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false
+		};
+	},
 
-  isEdit: function () {
-    this.setState({ isEdit: !this.state.isEdit });
-  },
+	isEdit: function () {
+		this.setState({ isEdit: !this.state.isEdit });
+	},
 
-  checkValidate: function (e) {
-    var key = e.target.id;
+	checkValidate: function (e) {
+		var key = e.target.id;
 
-    switch (key) {
-      case "name":
-        {
-          if (e.target.value == "") {
-            this.setState({ errorName: true });
-          } else {
-            this.setState({ errorName: false });
-          }
-          break;
-        }
+		switch (key) {
+			case "name":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorName: true });
+					} else {
+						this.setState({ errorName: false });
+					}
+					break;
+				}
 
-      case "mobile":
-        {
-          if (e.target.value == "") {
-            this.setState({ errorMobile: true });
-          } else {
-            this.setState({ errorMobile: false });
-          }
-          break;
-        }
+			case "mobile":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorMobile: true });
+					} else {
+						this.setState({ errorMobile: false });
+					}
+					break;
+				}
 
-      default:
-        {
-          var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
-          if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-            this.setState({ errorEmail: true });
-          } else {
-            this.setState({ errorEmail: false });
-          }
-          break;
-        }
-    }
-  },
+			default:
+				{
+					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+						this.setState({ errorEmail: true });
+					} else {
+						this.setState({ errorEmail: false });
+					}
+					break;
+				}
+		}
+	},
 
-  submit: function (e) {
-    e.preventDefault();
+	submit: function (e) {
+		e.preventDefault();
+		var flag = false;
 
-    var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
+		if (this.name.value == "") {
+			this.setState({ errorName: true });
+			flag = true;
+		}
+		if (this.mobile.value == "") {
+			this.setState({ errorMobile: true });
+			flag = true;
+		}
+		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+			this.setState({ errorEmail: true });
+			flag = true;
+		}
 
-    if (this.name.value == "") {
-      this.setState({ errorName: true });
-      e.preventDefault();
-      return false;
-    }
-    if (this.mobile.value == "") {
-      this.setState({ errorMobile: true });
-      e.preventDefault();
-      return false;
-    }
-    if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-      this.setState({ errorEmail: true });
-      e.preventDefault();
-      return false;
-    }
+		if (!flag) {
+			var params = {
+				authenticity_token: this.props.authToken,
+				landlord: {
+					name: this.name.value,
+					email: this.email.value,
+					mobile: this.mobile.value,
+					id: this.props.landlord.id,
+					maintenance_request_id: this.props.maintenance_request_id
+				}
+			};
+			this.props.editAskLandlord(params);
+		}
 
-    var params = {
-      authenticity_token: this.props.authToken,
-      landlord: {
-        name: this.name.value,
-        email: this.email.value,
-        mobile: this.mobile.value,
-        id: this.props.landlord.id,
-        maintenance_request_id: this.props.maintenance_request_id
-      }
-    };
-    this.props.editLandlord(params);
-  },
+		return;
+	},
 
-  render: function () {
-    var _this3 = this;
+	render: function () {
+		var _this3 = this;
 
-    return React.createElement(
-      'div',
-      { className: 'modal-custom fade' },
-      React.createElement(
-        'div',
-        { className: 'modal-dialog' },
-        React.createElement(
-          'div',
-          { className: 'modal-content' },
-          React.createElement(
-            'form',
-            { id: 'editForm', onSubmit: this.submit },
-            React.createElement(
-              'div',
-              { className: 'modal-header' },
-              React.createElement(
-                'button',
-                {
-                  type: 'button',
-                  className: 'close',
-                  'aria-label': 'Close',
-                  'data-dismiss': 'modal',
-                  onClick: this.props.close
-                },
-                React.createElement(
-                  'span',
-                  { 'aria-hidden': 'true' },
-                  '×'
-                )
-              ),
-              React.createElement(
-                'h4',
-                { className: 'modal-title text-center' },
-                'Forward Maintenance request'
-              )
-            ),
-            React.createElement(
-              'div',
-              { className: 'modal-body' },
-              React.createElement(
-                'div',
-                { className: 'row' },
-                React.createElement(
-                  'a',
-                  { className: 'btn-edit', onClick: this.isEdit },
-                  'Edit'
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'row m-t-lg' },
-                React.createElement(
-                  'div',
-                  { className: 'form-input' },
-                  React.createElement(
-                    'label',
-                    null,
-                    'Name ',
-                    React.createElement(
-                      'strong',
-                      null,
-                      '*'
-                    ),
-                    ':'
-                  ),
-                  React.createElement('input', {
-                    type: 'text',
-                    onChange: this.checkValidate,
-                    readOnly: !this.state.isEdit,
-                    id: 'name', ref: function (e) {
-                      return _this3.name = e;
-                    },
-                    defaultValue: this.props.landlord.name,
-                    className: (this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")
-                  })
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'row m-t-lg' },
-                React.createElement(
-                  'div',
-                  { className: 'form-input' },
-                  React.createElement(
-                    'label',
-                    null,
-                    'Mobile ',
-                    React.createElement(
-                      'strong',
-                      null,
-                      '*'
-                    ),
-                    ':'
-                  ),
-                  React.createElement('input', {
-                    id: 'mobile',
-                    type: 'number',
-                    ref: function (e) {
-                      return _this3.mobile = e;
-                    },
-                    onChange: this.checkValidate,
-                    readOnly: !this.state.isEdit,
-                    defaultValue: this.props.landlord.mobile,
-                    className: (this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")
-                  })
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'row m-t-lg' },
-                React.createElement(
-                  'div',
-                  { className: 'form-input' },
-                  React.createElement(
-                    'label',
-                    null,
-                    'Email ',
-                    React.createElement(
-                      'strong',
-                      null,
-                      '*'
-                    ),
-                    ':'
-                  ),
-                  React.createElement('input', {
-                    id: 'email',
-                    type: 'text',
-                    ref: function (e) {
-                      return _this3.email = e;
-                    },
-                    onChange: this.checkValidate,
-                    readOnly: !this.state.isEdit,
-                    defaultValue: this.props.landlord.email,
-                    className: (this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")
-                  })
-                )
-              )
-            ),
-            React.createElement(
-              'div',
-              { className: 'modal-footer' },
-              React.createElement(
-                'button',
-                {
-                  onClick: this.props.close,
-                  className: 'btn btn-primary cancel'
-                },
-                'Cancel'
-              ),
-              React.createElement(
-                'button',
-                { type: 'submit', className: 'btn btn-default success' },
-                'Submit'
-              )
-            )
-          )
-        )
-      )
-    );
-  }
-});
-
-var ActivityMobile = React.createClass({
-  displayName: 'ActivityMobile',
-
-  render: function () {
-    return React.createElement(
-      'div',
-      { className: 'activity-mobile' },
-      React.createElement(
-        'div',
-        { className: 'item' },
-        React.createElement(
-          'div',
-          { className: 'header action' },
-          React.createElement(
-            'a',
-            null,
-            'Activity log:'
-          ),
-          React.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
-        ),
-        React.createElement(
-          'div',
-          { className: 'content text-center' },
-          React.createElement(
-            'ul',
-            null,
-            React.createElement(
-              'li',
-              { className: 'user' },
-              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-              React.createElement(
-                'p',
-                { className: 'info' },
-                React.createElement(
-                  'span',
-                  { className: 'title' },
-                  'Request by ',
-                  React.createElement(
-                    'strong',
-                    null,
-                    'Dereck Carlson'
-                  )
-                ),
-                React.createElement(
-                  'span',
-                  { className: 'time' },
-                  'Sep 16, 2017 at 9am'
-                )
-              )
-            ),
-            React.createElement(
-              'li',
-              { className: 'user' },
-              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-              React.createElement(
-                'p',
-                { className: 'info' },
-                React.createElement(
-                  'span',
-                  { className: 'title' },
-                  'Request by ',
-                  React.createElement(
-                    'strong',
-                    null,
-                    'Dereck Carlson'
-                  )
-                ),
-                React.createElement(
-                  'span',
-                  { className: 'time' },
-                  'Sep 16, 2017 at 9am'
-                )
-              )
-            ),
-            React.createElement(
-              'li',
-              { className: 'user' },
-              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-              React.createElement(
-                'p',
-                { className: 'info' },
-                React.createElement(
-                  'span',
-                  { className: 'title' },
-                  'Request by ',
-                  React.createElement(
-                    'strong',
-                    null,
-                    'Dereck Carlson'
-                  )
-                ),
-                React.createElement(
-                  'span',
-                  { className: 'time' },
-                  'Sep 16, 2017 at 9am'
-                )
-              )
-            ),
-            React.createElement(
-              'li',
-              { className: 'user' },
-              React.createElement('img', { className: 'img-user', src: '/assets/user1.png' }),
-              React.createElement(
-                'p',
-                { className: 'info' },
-                React.createElement(
-                  'span',
-                  { className: 'title' },
-                  'Request by ',
-                  React.createElement(
-                    'strong',
-                    null,
-                    'Dereck Carlson'
-                  )
-                ),
-                React.createElement(
-                  'span',
-                  { className: 'time' },
-                  'Sep 16, 2017 at 9am'
-                )
-              )
-            )
-          ),
-          React.createElement(
-            'div',
-            { className: 'text-center' },
-            React.createElement(
-              'button',
-              { className: 'view-more button-default' },
-              'View more'
-            )
-          )
-        )
-      )
-    );
-  }
-});
-
-var ActionMobile = React.createClass({
-  displayName: 'ActionMobile',
-
-  render: function () {
-    return React.createElement(
-      'div',
-      { className: 'actions-full', id: 'actions-full' },
-      React.createElement(
-        'div',
-        { className: 'item' },
-        React.createElement(
-          'div',
-          { className: 'header action' },
-          React.createElement(
-            'a',
-            null,
-            'Actions:'
-          ),
-          React.createElement('i', {
-            'aria-hidden': 'true',
-            className: 'fa fa-close',
-            onClick: this.props.close
-          })
-        ),
-        React.createElement(
-          'div',
-          { className: 'content' },
-          React.createElement(ContentAction, { openModel: this.props.openModal })
-        )
-      )
-    );
-  }
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"form",
+						{ id: "editForm", onSubmit: this.submit },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Forward Maintenance request"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
+									"a",
+									{ className: "btn-edit", onClick: this.isEdit },
+									"Edit"
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									{ className: "form-input" },
+									React.createElement(
+										"label",
+										null,
+										"Name ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										type: "text",
+										onChange: this.checkValidate,
+										readOnly: !this.state.isEdit,
+										id: "name", ref: function (e) {
+											return _this3.name = e;
+										},
+										defaultValue: this.props.landlord.name,
+										className: (this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									{ className: "form-input" },
+									React.createElement(
+										"label",
+										null,
+										"Mobile ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "mobile",
+										type: "number",
+										ref: function (e) {
+											return _this3.mobile = e;
+										},
+										onChange: this.checkValidate,
+										readOnly: !this.state.isEdit,
+										defaultValue: this.props.landlord.mobile,
+										className: (this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									{ className: "form-input" },
+									React.createElement(
+										"label",
+										null,
+										"Email ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "email",
+										type: "text",
+										ref: function (e) {
+											return _this3.email = e;
+										},
+										onChange: this.checkValidate,
+										readOnly: !this.state.isEdit,
+										defaultValue: this.props.landlord.email,
+										className: (this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")
+									})
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									onClick: this.props.close,
+									className: "btn btn-primary cancel"
+								},
+								"Cancel"
+							),
+							React.createElement(
+								"button",
+								{ type: "submit", className: "btn btn-default success" },
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
 });
 
 var SideBarMobile = React.createClass({
-  displayName: 'SideBarMobile',
+	displayName: "SideBarMobile",
 
-  getInitialState: function () {
-    return {
-      showAction: false
-    };
-  },
+	getInitialState: function () {
+		return {
+			showAction: false,
+			showContact: false
+		};
+	},
 
-  showAction: function () {
-    this.setState({ showAction: !this.state.showAction });
-  },
+	show: function (key) {
+		if (key == 'action') {
+			this.setState({ showAction: !this.state.showAction });
+		} else {
+			this.setState({ showContact: !this.state.showContact });
+		}
+	},
 
-  render: function () {
-    return React.createElement(
-      'div',
-      null,
-      React.createElement(
-        'div',
-        { className: 'sidebar-mobile' },
-        React.createElement(
-          'div',
-          { className: 'fixed' },
-          React.createElement(
-            'button',
-            { className: 'contact button-default' },
-            'Contact'
-          ),
-          React.createElement(
-            'button',
-            { className: 'actions button-default', onClick: this.showAction },
-            'Actions'
-          )
-        )
-      ),
-      !!this.state.showAction && React.createElement(ActionMobile, { close: this.showAction, openModal: this.props.openModal })
-    );
-  }
+	render: function () {
+		var _this4 = this;
+
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"div",
+				{ className: "sidebar-mobile" },
+				React.createElement(
+					"div",
+					{ className: "fixed" },
+					React.createElement(
+						"button",
+						{ className: "contact button-default", onClick: function (key) {
+								return _this4.show('contact');
+							} },
+						"Contact"
+					),
+					React.createElement(
+						"button",
+						{ className: "actions button-default", onClick: function (key) {
+								return _this4.show('action');
+							} },
+						"Actions"
+					)
+				)
+			),
+			!!this.state.showAction && React.createElement(ActionMobile, { close: function (key) {
+					return _this4.show('action');
+				}, onModalWith: function (modal) {
+					return _this4.props.onModalWith(modal);
+				}, landlord: this.props.landlord }),
+			!!this.state.showContact && React.createElement(ContactMobile, { close: function (key) {
+					return _this4.show('contact');
+				}, onModalWith: function (modal) {
+					return _this4.props.onModalWith(modal);
+				}, landlord: this.props.landlord, current_user: this.props.current_user })
+		);
+	}
 });
 
+var ModalAddLandlord = React.createClass({
+	displayName: "ModalAddLandlord",
+
+	getInitialState: function () {
+		return {
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false
+		};
+	},
+
+	checkValidate: function (e) {
+		var key = e.target.id;
+
+		switch (key) {
+			case "name":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorName: true });
+					} else {
+						this.setState({ errorName: false });
+					}
+					break;
+				}
+
+			case "mobile":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorMobile: true });
+					} else {
+						this.setState({ errorMobile: false });
+					}
+					break;
+				}
+
+			default:
+				{
+					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+						this.setState({ errorEmail: true });
+					} else {
+						this.setState({ errorEmail: false });
+					}
+					break;
+				}
+		}
+	},
+
+	submit: function (e) {
+		e.preventDefault();
+		var flag = false;
+
+		if (this.name.value == "") {
+			this.setState({ errorName: true });
+			flag = true;
+		}
+
+		if (this.mobile.value == "") {
+			this.setState({ errorMobile: true });
+			flag = true;
+		}
+
+		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+			this.setState({ errorEmail: true });
+			flag = true;
+		}
+
+		if (!flag) {
+			var params = {
+				authenticity_token: this.props.authToken,
+				landlord: {
+					name: this.name.value,
+					email: this.email.value,
+					mobile: this.mobile.value,
+					maintenance_request_id: this.props.maintenance_request_id
+				}
+			};
+			this.props.addLandlord(params);
+		}
+
+		return;
+	},
+
+	render: function () {
+		var _this5 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"form",
+						{ role: "form", id: "addForm", onSubmit: this.submit },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Add Landlord"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Name ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "name",
+										type: "text",
+										name: "landlord[name]",
+										placeholder: "Enter Name",
+										ref: function (e) {
+											return _this5.name = e;
+										},
+										onChange: this.checkValidate,
+										className: "u-full-width " + (this.state.errorName && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Mobile ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "mobile",
+										type: "number",
+										name: "landlord[mobile]",
+										placeholder: "Enter Mobile",
+										ref: function (e) {
+											return _this5.mobile = e;
+										},
+										onChange: this.checkValidate,
+										className: "u-full-width " + (this.state.errorMobile && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Email ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "email",
+										type: "text",
+										name: "landlord[email]",
+										placeholder: "Enter Email",
+										ref: function (e) {
+											return _this5.email = e;
+										},
+										onChange: this.checkValidate,
+										className: "u-full-width " + (this.state.errorEmail && "has-error")
+									})
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									onClick: this.props.close,
+									className: "btn btn-primary cancel"
+								},
+								"Cancel"
+							),
+							React.createElement(
+								"button",
+								{ type: "submit", className: "btn btn-default success" },
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalEditLandlord = React.createClass({
+	displayName: "ModalEditLandlord",
+
+	getInitialState: function () {
+		return {
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false
+		};
+	},
+
+	checkValidate: function (e) {
+		var key = e.target.id;
+
+		switch (key) {
+			case "name":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorName: true });
+					} else {
+						this.setState({ errorName: false });
+					}
+					break;
+				}
+
+			case "mobile":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorMobile: true });
+					} else {
+						this.setState({ errorMobile: false });
+					}
+					break;
+				}
+
+			default:
+				{
+					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+						this.setState({ errorEmail: true });
+					} else {
+						this.setState({ errorEmail: false });
+					}
+					break;
+				}
+		}
+	},
+
+	submit: function (e) {
+		e.preventDefault();
+		var flag = false;
+
+		if (this.name.value == "") {
+			this.setState({ errorName: true });
+			flag = true;
+		}
+
+		if (this.mobile.value == "") {
+			this.setState({ errorMobile: true });
+			flag = true;
+		}
+
+		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+			this.setState({ errorEmail: true });
+			flag = true;
+		}
+
+		if (!flag) {
+			var params = {
+				authenticity_token: this.props.authToken,
+				landlord: {
+					name: this.name.value,
+					email: this.email.value,
+					mobile: this.mobile.value,
+					id: this.props.landlord.id,
+					maintenance_request_id: this.props.maintenance_request_id
+				}
+			};
+			this.props.editLandlord(params);
+		}
+	},
+
+	render: function () {
+		var _this6 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"form",
+						{ role: "form", id: "addForm", onSubmit: this.submit },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Edit Landlord"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Name ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "name",
+										type: "text",
+										name: "landlord[name]",
+										placeholder: "Enter Name",
+										ref: function (e) {
+											return _this6.name = e;
+										},
+										onChange: this.checkValidate,
+										defaultValue: this.props.landlord.name,
+										className: "u-full-width " + (this.state.errorName && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Mobile ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "mobile",
+										type: "number",
+										name: "landlord[mobile]",
+										placeholder: "Enter Mobile",
+										ref: function (e) {
+											return _this6.mobile = e;
+										},
+										onChange: this.checkValidate,
+										defaultValue: this.props.landlord.mobile,
+										className: "u-full-width " + (this.state.errorMobile && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										null,
+										"Email ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "email",
+										type: "text",
+										name: "landlord[email]",
+										placeholder: "Enter Email",
+										ref: function (e) {
+											return _this6.email = e;
+										},
+										onChange: this.checkValidate,
+										defaultValue: this.props.landlord.email,
+										className: "u-full-width " + (this.state.errorEmail && "has-error")
+									})
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									onClick: this.props.close,
+									className: "btn btn-primary cancel"
+								},
+								"Cancel"
+							),
+							React.createElement(
+								"button",
+								{ type: "submit", className: "btn btn-default success" },
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalRequestModal = React.createClass({
+	displayName: "ModalRequestModal",
+
+	getInitialState: function () {
+		return {
+			isAdd: false,
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false,
+			errorCompany: false,
+			maintenance_request: this.props.maintenance_request,
+			trady: {
+				name: null,
+				email: null,
+				mobile: null,
+				company_name: null
+			}
+		};
+	},
+
+	checkValidate: function (e) {
+		var key = e.target.id;
+
+		switch (key) {
+			case "company":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorCompany: true });
+					} else {
+						this.setState({ errorCompany: false });
+					}
+					this.state.trady.company_name = e.target.value;
+					this.forceUpdate();
+					break;
+				}
+
+			case "name":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorName: true });
+					} else {
+						this.setState({ errorName: false });
+					}
+					this.state.trady.name = e.target.value;
+					this.forceUpdate();
+					break;
+				}
+
+			case "mobile":
+				{
+					if (e.target.value == "") {
+						this.setState({ errorMobile: true });
+					} else {
+						this.setState({ errorMobile: false });
+					}
+					this.state.trady.mobile = e.target.value;
+					this.forceUpdate();
+					break;
+				}
+
+			default:
+				{
+					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
+						this.setState({ errorEmail: true });
+					} else {
+						this.setState({ errorEmail: false });
+					}
+					this.state.trady.email = e.target.value;
+					this.forceUpdate();
+					break;
+				}
+		}
+	},
+
+	componentWillMount: function () {
+		this.selectTrady(this.state.maintenance_request.trady_id);
+	},
+
+	selectTrady: function (id) {
+		var self = this.props;
+		if (!!id) {
+			for (var i = 0; i < self.tradies.length; i++) {
+				var item = self.tradies[i];
+				if (item.id == id) {
+					this.setState({
+						trady: item,
+						isAdd: false
+					});
+
+					return;
+				}
+			}
+		}
+
+		this.setState({
+			isAdd: true,
+			trady: {
+				name: null,
+				email: null,
+				mobile: null,
+				company_name: null
+			}
+		});
+	},
+
+	submit: function (e) {
+		e.preventDefault();
+		var flag = false;
+
+		if (this.company.value == "") {
+			this.setState({ errorCompany: true });
+			flag = true;
+		}
+
+		if (this.name.value == "") {
+			this.setState({ errorName: true });
+			flag = true;
+		}
+
+		if (this.mobile.value == "") {
+			this.setState({ errorMobile: true });
+			flag = true;
+		}
+
+		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
+			this.setState({ errorEmail: true });
+			flag = true;
+		}
+
+		if (!flag) {
+			var params = {
+				trady: {
+					name: this.name.value,
+					email: this.email.value,
+					mobile: this.mobile.value,
+					company_name: this.company.value,
+					maintenance_request_id: this.props.maintenance_request.id,
+					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
+					skill_required: this.props.maintenance_request.service_type,
+					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order"
+				}
+			};
+			this.props.requestQuote(params);
+		}
+
+		return;
+	},
+
+	render: function () {
+		var _this7 = this;
+
+		var self = this;
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"form",
+						{ role: "form", id: "addForm", onSubmit: this.submit },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								this.props.keyTitle == "request-quote" ? "Request Quote" : "Send Work Order"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
+									"label",
+									{ className: "label-custom" },
+									"Select Trady:"
+								),
+								React.createElement(
+									"select",
+									{
+										id: "trady",
+										className: "form-control",
+										ref: function (e) {
+											return _this7.trady_id = e;
+										},
+										onChange: function () {
+											return _this7.selectTrady(_this7.trady_id.value);
+										}
+									},
+									React.createElement(
+										"option",
+										{ value: "", selected: !self.props.maintenance_request.trady_id && "selected" },
+										"Select or Add New Tradie"
+									),
+									this.props.tradies.map(function (trady, index) {
+										return React.createElement(
+											"option",
+											{
+												key: index + 1,
+												value: trady.id,
+												selected: self.props.maintenance_request.trady_id == trady.id && "selected"
+											},
+											trady.name
+										);
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										{ className: "label-custom" },
+										"Company Name",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										type: "text",
+										id: "company",
+										ref: function (e) {
+											return _this7.company = e;
+										},
+										onChange: this.checkValidate,
+										placeholder: "Enter Company Name",
+										readOnly: !this.state.isAdd,
+										value: !!this.state.trady.company_name ? this.state.trady.company_name : "",
+										className: "input-custom u-full-width " + (this.state.errorCompany && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										{ className: "label-custom" },
+										"Name ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "name",
+										type: "text",
+										ref: function (e) {
+											return _this7.name = e;
+										},
+										placeholder: "Enter Name",
+										onChange: this.checkValidate,
+										readOnly: !this.state.isAdd,
+										value: !!this.state.trady.name ? this.state.trady.name : "",
+										className: "input-custom u-full-width " + (this.state.errorName && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										{ className: "label-custom" },
+										"Email ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "email",
+										type: "text",
+										placeholder: "Enter Email",
+										ref: function (e) {
+											return _this7.email = e;
+										},
+										onChange: this.checkValidate,
+										readOnly: !this.state.isAdd,
+										value: !!this.state.trady.email ? this.state.trady.email : "",
+										className: "input-custom u-full-width " + (this.state.errorEmail && "has-error")
+									})
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "row m-t-lg" },
+								React.createElement(
+									"div",
+									null,
+									React.createElement(
+										"label",
+										{ className: "label-custom" },
+										"Mobile ",
+										React.createElement(
+											"strong",
+											null,
+											"*"
+										),
+										":"
+									),
+									React.createElement("input", {
+										id: "mobile",
+										type: "number",
+										placeholder: "Enter Mobile",
+										ref: function (e) {
+											return _this7.mobile = e;
+										},
+										onChange: this.checkValidate,
+										readOnly: !this.state.isAdd,
+										value: !!this.state.trady.mobile ? this.state.trady.mobile : "",
+										className: "input-custom u-full-width " + (this.state.errorMobile && "has-error")
+									})
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									onClick: this.props.close,
+									className: "btn btn-primary cancel"
+								},
+								"Cancel"
+							),
+							React.createElement(
+								"button",
+								{ type: "submit", className: "btn btn-default success" },
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var MaintenanceRequest = React.createClass({
+	displayName: "MaintenanceRequest",
+
+	getInitialState: function () {
+		return {
+			modal: "",
+			quote: null,
+			invoice: null,
+			isModal: false,
+			invoice_pdf_file: null,
+			quotes: this.props.quotes,
+			tradies: this.props.tradies,
+			landlord: this.props.landlord,
+			invoices: this.props.invoices,
+			invoice_pdf_files: this.props.invoice_pdf_files,
+			maintenance_request: this.props.maintenance_request,
+			tenants_conversation: this.props.tenants_conversation,
+			landlords_conversation: this.props.landlords_conversation,
+			notification: {
+				title: "",
+				content: "",
+				bgClass: ""
+			}
+		};
+	},
+
+	isClose: function () {
+		this.setState({ isModal: false });
+		this.setState({ modal: "" });
+		var body = document.getElementsByTagName('body')[0];
+		body.classList.remove("modal-open");
+		var div = document.getElementsByClassName('modal-backdrop in')[0];
+		div.parentNode.removeChild(div);
+	},
+
+	onModalWith: function (modal) {
+		this.setState({
+			modal: modal,
+			isModal: true
+		});
+	},
+
+	viewItem: function (key, item) {
+		switch (key) {
+			case 'viewQuote':
+			case 'viewQuoteMessage':
+				{
+					this.setState({
+						quote: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewInvoice':
+				{
+					this.setState({
+						invoice: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewPdfInvoice':
+				{
+					this.setState({
+						invoice_pdf_file: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			default:
+				{
+					break;
+				}
+		}
+	},
+
+	addAskLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/create-and-notify-landlord',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					landlord: res,
+					notification: {
+						title: "Forward Maintenance request",
+						content: "Your Landlord has been created successfully!",
+						bgClass: "bg-success"
+					}
+				});
+				self.isClose();
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Forward Maintenance request",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	editAskLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/update-and-notify-landlord',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					landlord: res,
+					notification: {
+						title: "Forward Maintenance request",
+						content: "Your Landlord has been updated successfully!",
+						bgClass: "bg-success"
+					}
+				});
+				self.isClose();
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Forward Maintenance request",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	addLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/landlords',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					landlord: res,
+					notification: {
+						title: "Add Lanlord",
+						content: "Your Landlord has been added successfully!",
+						bgClass: "bg-success"
+					}
+				});
+				self.isClose();
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Add Lanlord",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	editLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/update-landlord',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					landlord: res,
+					notification: {
+						title: "Edit Lanlord",
+						content: "Your Landlord has been updated successfully!",
+						bgClass: "bg-success"
+					}
+				});
+				self.isClose();
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Edit Lanlord",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	sendMessageLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
+				landlords_conversation.push(res);
+
+				self.setState({
+					landlords_conversation: landlords_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Landlord",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	sendMessageTenant: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var tenants_conversation = !!self.state.tenants_conversation ? self.state.tenants_conversation : [];
+				tenants_conversation.push(res);
+				self.setState({
+					tenants_conversation: tenants_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Tenants",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	sendMessageQuote: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var quote = self.state.quote;
+				quote.conversation = quote.conversation ? quote.conversation : {};
+				var messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
+				messages.push(res);
+				quote.conversation.messages = messages;
+				self.setState({
+					quote: quote
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Trady",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateStatusQuote: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_status',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					quotes: res
+				});
+			},
+			error: function (err) {}
+		});
+	},
+
+	sendEmailLandlord: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/forward_quote',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({ notification: {
+						title: "Forward Landlord",
+						content: "The email about quote information was sent for Landlord.",
+						bgClass: "bg-success"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Forward Landlord",
+						content: "Send emaid is error!",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	requestQuote: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/tradies',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (params.trady.trady_request == "Work Order") {
+					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length - 1].id;
+					self.forceUpdate();
+				}
+				self.setState({
+					tradies: res,
+					notification: {
+						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
+						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
+						content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	renderModal: function () {
+		var _this8 = this;
+
+		if (this.state.isModal) {
+			var body = document.getElementsByTagName('body')[0];
+			body.className += " modal-open";
+			var div = document.getElementsByClassName('modal-backdrop in');
+
+			if (div.length === 0) {
+				div = document.createElement('div');
+				div.className = "modal-backdrop in";
+				body.appendChild(div);
+			}
+
+			switch (this.state.modal) {
+				case 'confirm':
+					return React.createElement(ModalConfirm, {
+						close: this.isClose,
+						landlord: this.state.landlord,
+						property: this.props.property,
+						onModalWith: function (modal) {
+							return _this8.onModalWith(modal);
+						}
+					});
+
+				case 'addAskLandlord':
+					return React.createElement(ModalAddAskLandlord, {
+						close: this.isClose,
+						addAskLandlord: this.addAskLandlord,
+						authToken: this.props.authenticity_token,
+						maintenance_request_id: this.state.maintenance_request.id
+					});
+
+				case 'editAskLandlord':
+					return React.createElement(ModalEditAskLandlord, {
+						close: this.isClose,
+						landlord: this.state.landlord,
+						editAskLandlord: this.editAskLandlord,
+						authToken: this.props.authenticity_token,
+						maintenance_request_id: this.state.maintenance_request.id
+					});
+
+				case 'notification':
+					return React.createElement(ModalNotification, {
+						close: this.isClose,
+						bgClass: this.state.notification.bgClass,
+						title: this.state.notification.title,
+						content: this.state.notification.content
+					});
+
+				case 'addLandlord':
+					return React.createElement(ModalAddLandlord, {
+						close: this.isClose,
+						addLandlord: this.addLandlord,
+						authToken: this.props.authenticity_token,
+						maintenance_request_id: this.state.maintenance_request.id
+					});
+
+				case 'editLandlord':
+					{
+						if (!!this.state.landlord) {
+							return React.createElement(ModalEditLandlord, {
+								close: this.isClose,
+								landlord: this.state.landlord,
+								editLandlord: this.editLandlord,
+								authToken: this.props.authenticity_token,
+								maintenance_request_id: this.state.maintenance_request.id
+							});
+						} else {
+							this.setState({ notification: {
+									title: "Edit Lanlord",
+									content: "Landlord is empty!",
+									bgClass: "bg-error"
+								} });
+							return React.createElement(ModalNotification, {
+								close: this.isClose,
+								title: this.state.notification.title,
+								content: this.state.notification.content
+							});
+						}
+					}
+
+				case 'sendMessageLandlord':
+					{
+						return React.createElement(ModalSendMessageLandlord, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							authToken: this.props.authenticity_token,
+							sendMessageLandlord: this.sendMessageLandlord,
+							landlords_conversation: this.state.landlords_conversation,
+							maintenance_request_id: this.state.maintenance_request.id
+						});
+					}
+
+				case 'sendMessageTenant':
+					{
+						return React.createElement(ModalSendMessageTenant, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							authToken: this.props.authenticity_token,
+							sendMessageTenant: this.sendMessageTenant,
+							tenants_conversation: this.state.tenants_conversation,
+							maintenance_request_id: this.state.maintenance_request.id
+						});
+					}
+
+				case 'viewQuote':
+					{
+						return React.createElement(ModalViewQuote, {
+							close: this.isClose,
+							quote: this.state.quote,
+							quotes: this.state.quotes,
+							agency: this.props.agency,
+							property: this.props.property,
+							landlord: this.state.landlord,
+							onModalWith: this.onModalWith,
+							viewQuote: function (quote) {
+								return _this8.viewQuote(quote);
+							},
+							updateStatusQuote: this.updateStatusQuote,
+							sendEmailLandlord: this.sendEmailLandlord, current_user: this.props.current_user
+						});
+					}
+
+				case 'viewQuoteMessage':
+					{
+						return React.createElement(ModalViewQuoteMessage, {
+							close: this.isClose,
+							quote: this.state.quote,
+							current_user: this.props.current_user,
+							sendMessageQuote: this.sendMessageQuote
+						});
+					}
+
+				case 'requestQuote':
+					{
+						return React.createElement(ModalRequestModal, {
+							close: this.isClose,
+							keyTitle: "request-quote",
+							tradies: this.state.tradies,
+							requestQuote: this.requestQuote,
+							maintenance_request: this.state.maintenance_request
+						});
+					}
+
+				case 'sendWorkOrder':
+					{
+						return React.createElement(ModalRequestModal, {
+							close: this.isClose,
+							keyTitle: "sen-work-order",
+							tradies: this.state.tradies,
+							requestQuote: this.requestQuote,
+							maintenance_request: this.state.maintenance_request
+						});
+					}
+
+				case 'viewInvoice':
+					{
+						return React.createElement(ModalViewInvoice, {
+							close: this.isClose,
+							agency: this.props.agency,
+							invoice: this.state.invoice,
+							invoices: this.state.invoices,
+							property: this.props.property
+						});
+
+						break;
+					}
+
+				case 'viewPdfInvoice':
+					{
+						return React.createElement(ModalViewPDFInvoice, {
+							close: this.isClose,
+							agency: this.props.agency,
+							invoice_pdf_file: this.state.invoice_pdf_file,
+							invoice_pdf_files: this.state.invoice_pdf_files,
+							property: this.props.property
+						});
+
+						break;
+					}
+
+				default:
+					return null;
+			}
+		}
+	},
+
+	summary: function (e) {
+		var _this9 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "summary-container-index", id: "summary-container-index" },
+			React.createElement(
+				"div",
+				{ className: "main-summary" },
+				React.createElement(
+					"div",
+					{ className: "section" },
+					React.createElement(ItemMaintenanceRequest, {
+						gallery: this.props.gallery,
+						property: this.props.property,
+						maintenance_request: this.state.maintenance_request
+					}),
+					this.props.quotes.length > 0 ? React.createElement(Quotes, {
+						quotes: this.state.quotes,
+						onModalWith: this.onModalWith,
+						landlord: this.state.landlord,
+						current_user: this.props.current_user,
+						updateStatusQuote: this.updateStatusQuote,
+						sendEmailLandlord: this.sendEmailLandlord,
+						viewQuote: function (key, item) {
+							return _this9.viewItem(key, item);
+						},
+						current_user_show_quote_message: this.props.current_user_show_quote_message
+					}) : null,
+					this.props.invoices.length > 0 && React.createElement(Invoices, { invoices: this.state.invoices, viewInvoice: function (key, item) {
+							return _this9.viewItem(key, item);
+						} }),
+					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, { invoice_pdf_files: this.state.invoice_pdf_files, viewPDFInvoice: function (key, item) {
+							return _this9.viewItem(key, item);
+						} })
+				),
+				React.createElement(
+					"div",
+					{ className: "sidebar" },
+					React.createElement(Contact, { landlord: this.state.landlord, onModalWith: function (modal) {
+							return _this9.onModalWith(modal);
+						}, current_user: this.props.current_user }),
+					React.createElement(Action, { landlord: this.state.landlord, onModalWith: function (modal) {
+							return _this9.onModalWith(modal);
+						} }),
+					React.createElement(Activity, null)
+				),
+				React.createElement(ActivityMobile, null)
+			),
+			React.createElement(SideBarMobile, { onModalWith: function (modal) {
+					return _this9.onModalWith(modal);
+				}, landlord: this.state.landlord, current_user: this.props.current_user }),
+			this.renderModal()
+		);
+	},
+
+	render: function () {
+		return React.createElement(
+			"div",
+			null,
+			this.summary()
+		);
+	}
+});
+var strNone = "";
+var strErrSelectTimeL = "You should select later than start time!";
+var strErrSelectTimeB = "You should select before than finish time!";
+var strErrSelectDate = "You should select the date after today!";
+var strErrName = "This name has already taken by anther person";
+var strErrEmail = "This Email Address has already taken by anther person";
+var strErrMobile = "This Phone Number has already taken by anther person";
+var strErrHeading = "This Maintenance Heading has already taken by anther person";
+var strErrDescription = "This Maintenance Description has already taken by anther person";
+var strInvalidEmail = "Invalid Email Address!";
+var strInvalidMobile = "Invalid Mobile Number!";
+var strRequireName = "Name is required";
+var strShortName = "Name must be more than 3 letters";
+var strRequireEmail = "Email Address is required";
+var strShortEmail = "Email Address must have more than 3 letters";
+var strRequireMobile = "Mobile Number is required";
+var strShortMobile = "Mobile Number must be more than 8 digits";
+var strRequireText = "This field is required";
+var strShortHeading = "Heading must be more than 3 letters";
+var strShortDescription = "Description must be more than 10 letters";
+var strShortRealEstate = "RealEstateOffice must be more than 3 letters";
+var strCantSubmit = "Can't submit the from data! Check all the forms in the right format.";
+var ContentMessage = React.createClass({
+	displayName: 'ContentMessage',
+
+	getInitialState: function () {
+		var messages = this.props.messages;
+		return {
+			messages: messages
+		};
+	},
+
+	autoScroll: function () {
+		$('#message').animate({
+			scrollTop: $('#message').get(0).scrollHeight
+		}, 200);
+	},
+
+	componentDidMount: function () {
+		this.autoScroll();
+	},
+
+	componentDidUpdate: function () {
+		this.autoScroll();
+	},
+
+	render: function () {
+		if (!!this.props.messages) {
+			var current_user = this.props.current_user;
+			return React.createElement(
+				'ul',
+				{ className: 'message scroll-custom', id: 'message' },
+				this.props.messages.map(function (item, key) {
+					return React.createElement(
+						'li',
+						{ key: key, className: 'item-message ' + (current_user && item.user_id == current_user.id && 'current-message') },
+						React.createElement(
+							'span',
+							null,
+							item.body
+						)
+					);
+				})
+			);
+		} else {
+			return React.createElement(
+				'p',
+				{ className: 'text-center', id: 'message' },
+				'Message is empty!'
+			);
+		}
+	}
+});
+var ModalSendMessageLandlord = React.createClass({
+	displayName: "ModalSendMessageLandlord",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		if (!this.message.value) {
+			this.setState({ errorMessage: true });
+			return;
+		}
+
+		var params = {
+			message: {
+				body: this.message.value,
+				conversation_type: 'Landlord',
+				maintenance_request_id: this.props.maintenance_request_id
+			},
+			authenticity_token: this.props.authToken
+		};
+
+		this.props.sendMessageLandlord(params);
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this = this;
+
+		var landlords_conversation = this.props.landlords_conversation;
+		var current_user = this.props.current_user;
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Landlord"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, { current_user: current_user, messages: landlords_conversation })
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this.message = rel;
+									},
+									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+								})
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var ModalSendMessageTenant = React.createClass({
+	displayName: "ModalSendMessageTenant",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		if (!this.message.value) {
+			this.setState({ errorMessage: true });
+			return;
+		}
+
+		var params = {
+			authenticity_token: this.props.authToken,
+			message: {
+				body: this.message.value,
+				conversation_type: 'Tenant',
+				maintenance_request_id: this.props.maintenance_request_id
+			}
+		};
+
+		this.props.sendMessageTenant(params);
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this = this;
+
+		var tenants_conversation = this.props.tenants_conversation;
+		var current_user = this.props.current_user;
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Tenants"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, { current_user: current_user, messages: tenants_conversation })
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this.message = rel;
+									},
+									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+								})
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
 var ModalNotification = React.createClass({
-  displayName: 'ModalNotification',
+	displayName: "ModalNotification",
 
-  render: function () {
-    return React.createElement(
-      'div',
-      { className: 'modal-custom fade' },
-      React.createElement(
-        'div',
-        { className: 'modal-dialog' },
-        React.createElement(
-          'div',
-          { className: 'modal-content' },
-          React.createElement(
-            'div',
-            { className: 'modal-header' },
-            React.createElement(
-              'button',
-              {
-                type: 'button',
-                className: 'close',
-                'aria-label': 'Close',
-                'data-dismiss': 'modal',
-                onClick: this.props.close
-              },
-              React.createElement(
-                'span',
-                { 'aria-hidden': 'true' },
-                '×'
-              )
-            ),
-            React.createElement(
-              'h4',
-              { className: 'modal-title text-center' },
-              this.props.title
-            )
-          ),
-          React.createElement(
-            'div',
-            { className: 'modal-body' },
-            React.createElement(
-              'p',
-              { className: 'text-center' },
-              this.props.content
-            )
-          )
-        )
-      )
-    );
-  }
-});
-
-var Summary = React.createClass({
-  displayName: 'Summary',
-
-  getInitialState: function () {
-    var landlord = this.props.landlord;
-
-    return {
-      modal: "",
-      isModal: false,
-      landlord: landlord,
-      notification: {
-        title: "",
-        content: ""
-      }
-    };
-  },
-
-  isClose: function () {
-    this.setState({ isModal: false });
-    this.setState({ modal: "" });
-    var body = document.getElementsByTagName('body')[0];
-    body.classList.remove("modal-open");
-    var div = document.getElementsByClassName('modal-backdrop in')[0];
-    div.parentNode.removeChild(div);
-  },
-
-  onModalWith: function (modal) {
-    this.setState({
-      modal: modal,
-      isModal: true
-    });
-  },
-
-  openModal: function () {
-    if (!this.state.landlord) {
-      this.onModalWith('add');
-    } else {
-      this.onModalWith('confirm');
-    }
-  },
-
-  addLandlord: function (params) {
-    var self = this;
-    $.ajax({
-      type: 'POST',
-      url: '/create-and-notify-landlord',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
-      },
-      data: params,
-      success: function (res) {
-        self.setState({
-          landlord: res,
-          notification: {
-            title: "Forward Maintenance request",
-            content: "Your Landlord has been created successfully!"
-          }
-        });
-        self.isClose();
-        self.onModalWith('notification');
-      },
-      error: function () {
-        self.setState({ notification: {
-            title: "Forward Maintenance request",
-            content: "Create Landlord error!"
-          } });
-        self.onModalWith('notification');
-      }
-    });
-  },
-
-  editLandlord: function (params) {
-    var self = this;
-    $.ajax({
-      type: 'POST',
-      url: '/update-and-notify-landlord',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
-      },
-      data: params,
-      success: function (res) {
-        self.setState({
-          landlord: res,
-          notification: {
-            title: "Forward Maintenance request",
-            content: "Your Landlord has been updated successfully!"
-          }
-        });
-        self.isClose();
-        self.onModalWith('notification');
-      },
-      error: function () {
-        self.setState({ notification: {
-            title: "Forward Maintenance request",
-            content: "Your Landlord has been updated successfully"
-          } });
-        self.onModalWith('notification');
-      }
-    });
-  },
-
-  renderModal: function () {
-    var _this4 = this;
-
-    if (this.state.isModal) {
-      var body = document.getElementsByTagName('body')[0];
-      body.className += " modal-open";
-      var div = document.getElementsByClassName('modal-backdrop in');
-
-      if (div.length === 0) {
-        div = document.createElement('div');
-        div.className = "modal-backdrop in";
-        body.appendChild(div);
-      }
-
-      if (this.state.modal == "confirm") {
-        return React.createElement(ModalConfirm, {
-          close: this.isClose,
-          landlord: this.state.landlord,
-          property: this.props.property,
-          onModalWith: function (modal) {
-            return _this4.onModalWith(modal);
-          }
-        });
-      } else if (this.state.modal == "add" && this.props.maintenance_request.id) {
-        return React.createElement(ModalAddLandlord, {
-          close: this.isClose,
-          addLandlord: this.addLandlord,
-          authToken: this.props.authenticity_token,
-          maintenance_request_id: this.props.maintenance_request.id
-        });
-      } else if (this.state.modal == "edit" && this.props.maintenance_request.id) {
-        return React.createElement(ModalEditLandlord, {
-          close: this.isClose,
-          landlord: this.state.landlord,
-          editLandlord: this.editLandlord,
-          authToken: this.props.authenticity_token,
-          maintenance_request_id: this.props.maintenance_request.id
-        });
-      } else if (this.state.modal = "notification") {
-        return React.createElement(ModalNotification, {
-          close: this.isClose,
-          title: this.state.notification.title,
-          content: this.state.notification.content
-        });
-      }
-    }
-
-    return null;
-  },
-
-  summary: function (e) {
-    return React.createElement(
-      'div',
-      { className: 'summary-container-index', id: 'summary-container-index' },
-      React.createElement(
-        'div',
-        { className: 'main-summary' },
-        React.createElement(
-          'div',
-          { className: 'section' },
-          React.createElement(Post, {
-            gallery: this.props.gallery,
-            property: this.props.property,
-            maintenance_request: this.props.maintenance_request
-          }),
-          this.props.quotes.length > 0 && React.createElement(Quote, { quotes: this.props.quotes }),
-          this.props.invoices.length > 0 && React.createElement(Invoice, { invoices: this.props.invoices })
-        ),
-        React.createElement(
-          'div',
-          { className: 'sidebar' },
-          React.createElement(Contact, null),
-          React.createElement(Action, { openModal: this.openModal }),
-          React.createElement(Activity, null)
-        ),
-        React.createElement(ActivityMobile, null)
-      ),
-      React.createElement(SideBarMobile, { openModal: this.openModal }),
-      this.renderModal()
-    );
-  },
-
-  render: function () {
-    return React.createElement(
-      'div',
-      null,
-      this.summary()
-    );
-  }
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: 'modal-header ' + (this.props.bgClass && this.props.bgClass) },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"aria-label": "Close",
+								"data-dismiss": "modal",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							this.props.title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							this.props.content
+						)
+					)
+				)
+			)
+		);
+	}
 });
 // var quotes = React.createClass({
 
@@ -66149,6 +70512,814 @@ var Summary = React.createClass({
 //     return <ul>{this.props.quotes.map(function(quote) {<li>{quote.amount}</li>})}</ul>;
 //   }
 // });
+var ButtonForwardLandlord = React.createClass({
+	displayName: "ButtonForwardLandlord",
+
+	sendEmail: function () {
+		if (!!this.props.landlord) {
+			var params = {
+				quote_id: this.props.quote.id,
+				maintenance_request_id: this.props.quote.maintenance_request_id
+			};
+
+			this.props.sendEmailLandlord(params);
+		} else {
+			this.props.onModalWith("addLandlord");
+		}
+	},
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-default",
+				onClick: this.sendEmail
+			},
+			"Forward to LandLord"
+		);
+	}
+});
+
+var ButtonAccept = React.createClass({
+	displayName: "ButtonAccept",
+
+	updateStatus: function () {
+		var params = {
+			status: "Approved",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-accept",
+				onClick: this.updateStatus
+			},
+			"Accept"
+		);
+	}
+});
+
+var ButtonDecline = React.createClass({
+	displayName: "ButtonDecline",
+
+	updateStatus: function () {
+		var params = {
+			status: "Declined",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-decline",
+				onClick: this.updateStatus
+			},
+			"Decline"
+		);
+	}
+});
+
+var ButtonRestore = React.createClass({
+	displayName: "ButtonRestore",
+
+	updateStatus: function () {
+		var params = {
+			status: "Restore",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id
+		};
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{ type: "button", className: "btn btn-default", onClick: this.updateStatus },
+			"Restore"
+		);
+	}
+});
+
+var ButtonCancle = React.createClass({
+	displayName: "ButtonCancle",
+
+	updateStatus: function () {
+		var params = {
+			status: "Cancel",
+			quote_id: this.props.quote.id,
+			maintenance_request_id: this.props.quote.maintenance_request_id
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-cancel",
+				onClick: this.updateStatus
+			},
+			"Cancel"
+		);
+	}
+});
+
+var ButtonView = React.createClass({
+	displayName: "ButtonView",
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"button",
+			{ type: "button", className: "btn btn-default", onClick: function (key, item) {
+					return _this.props.viewQuote('viewQuote', _this.props.quote);
+				} },
+			"View"
+		);
+	}
+});
+
+var ButtonRequestAnotherQuote = React.createClass({
+	displayName: "ButtonRequestAnotherQuote",
+
+	sendEmail: function () {
+		var params = {
+			maintenance_request_id: this.props.quote.maintenance_request_id
+		};
+
+		this.props.sendEmailLandlord(params);
+	},
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{ type: "button", className: "btn btn-default", onClick: this.sendEmail },
+			"Request Another Quote"
+		);
+	}
+});
+
+var ButtonQuoteMessage = React.createClass({
+	displayName: "ButtonQuoteMessage",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"button",
+			{ type: "button", className: "btn btn-message", onClick: function (key, item) {
+					return _this2.props.viewQuoteMessage('viewQuoteMessage', _this2.props.quote);
+				} },
+			"Message"
+		);
+	}
+});
+
+var ActionQuote = React.createClass({
+	displayName: "ActionQuote",
+
+	render: function () {
+		var quote = this.props.quote;
+		var self = this.props;
+		if (!!self.keyLandlord && self.keyLandlord == "landlord") {
+			return React.createElement(
+				"div",
+				{ className: "actions-quote" },
+				quote.status == "Active" && React.createElement(ButtonAccept, { updateStatusQuote: self.updateStatusQuote, quote: quote }),
+				quote.status == "Active" && React.createElement(ButtonRequestAnotherQuote, { sendEmailLandlord: self.sendEmailLandlord, quote: quote }),
+				!self.quotes && React.createElement(ButtonView, { viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}, quote: self.quote })
+			);
+		} else if (self.keyLandlord == "trady") {
+			return React.createElement(
+				"div",
+				{ className: "actions-quote" },
+				!!self.current_user_show_quote_message && React.createElement(ButtonQuoteMessage, { viewQuoteMessage: function (key, item) {
+						return self.viewQuote(key, item);
+					}, quote: self.quote }),
+				!self.quotes && React.createElement(ButtonView, { viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}, quote: self.quote })
+			);
+		} else {
+			return React.createElement(
+				"div",
+				{ className: "actions-quote" },
+				!!self.current_user_show_quote_message && React.createElement(ButtonQuoteMessage, { viewQuoteMessage: function (key, item) {
+						return self.viewQuote(key, item);
+					}, quote: self.quote }),
+				quote.status == "Active" && React.createElement(ButtonForwardLandlord, { sendEmailLandlord: self.sendEmailLandlord, quote: quote, onModalWith: self.onModalWith, landlord: self.landlord }),
+				quote.status == "Active" && React.createElement(ButtonAccept, { updateStatusQuote: self.updateStatusQuote, quote: quote }),
+				quote.status == "Active" && React.createElement(ButtonDecline, { updateStatusQuote: self.updateStatusQuote, quote: quote }),
+				quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved" ? React.createElement(ButtonRestore, { updateStatusQuote: self.updateStatusQuote, quote: quote }) : null,
+				!self.quotes && React.createElement(ButtonView, { viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}, quote: self.quote }),
+				quote.status == "Approved" && React.createElement(ButtonCancle, { updateStatusQuote: self.updateStatusQuote, quote: quote })
+			);
+		}
+	}
+});
+
+var Quotes = React.createClass({
+	displayName: "Quotes",
+
+	render: function () {
+		var quotes = this.props.quotes;
+		var self = this.props;
+		return React.createElement(
+			"div",
+			{ className: "quotes" },
+			React.createElement(
+				"p",
+				null,
+				"Quotes (",
+				quotes.length,
+				")"
+			),
+			React.createElement(
+				"div",
+				{ className: "list-quote" },
+				quotes.map(function (quote, index) {
+					return React.createElement(
+						"div",
+						{ className: "item-quote row", key: index },
+						React.createElement(
+							"div",
+							{ className: "user seven columns" },
+							React.createElement("img", { src: "/assets/user1.png" }),
+							React.createElement(
+								"div",
+								{ className: "info" },
+								React.createElement(
+									"div",
+									{ className: "name" },
+									React.createElement(
+										"span",
+										null,
+										quote.trady.name
+									),
+									React.createElement(
+										"button",
+										{ className: 'button-default ' + quote.status },
+										React.createElement(
+											"span",
+											null,
+											quote.status
+										)
+									)
+								),
+								React.createElement(
+									"p",
+									{ className: "description" },
+									quote.trady && quote.trady.name,
+									" ",
+									React.createElement("br", null),
+									quote.trady && quote.trady.trady_company ? quote.trady.trady_company.trading_name : null
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "actions five columns" },
+							React.createElement(
+								"p",
+								{ className: "price" },
+								"Amount: ",
+								quote.amount,
+								"AUD"
+							)
+						),
+						!!self.current_user ? React.createElement(ActionQuote, {
+							quote: quote,
+							landlord: self.landlord,
+							keyLandlord: self.keyLandlord,
+							onModalWith: self.onModalWith,
+							updateStatusQuote: self.updateStatusQuote,
+							sendEmailLandlord: self.sendEmailLandlord,
+							viewQuote: function (key, item) {
+								return self.viewQuote(key, item);
+							},
+							current_user_show_quote_message: self.current_user_show_quote_message
+						}) : null
+					);
+				})
+			)
+		);
+	}
+});
+
+var DetailQuote = React.createClass({
+	displayName: "DetailQuote",
+
+	render: function () {
+		var quote_items = this.props.quote_items;
+		var subTotal = 0;
+		var gst = 0;
+		if (!!quote_items) {
+			return React.createElement(
+				"table",
+				{ className: "table" },
+				React.createElement(
+					"thead",
+					null,
+					React.createElement(
+						"tr",
+						null,
+						React.createElement(
+							"th",
+							null,
+							"Description"
+						),
+						React.createElement(
+							"th",
+							null,
+							"Pricing"
+						),
+						React.createElement(
+							"th",
+							null,
+							"Rate"
+						),
+						React.createElement(
+							"th",
+							null,
+							"Hours"
+						),
+						React.createElement(
+							"th",
+							null,
+							"Total"
+						)
+					)
+				),
+				React.createElement(
+					"tbody",
+					null,
+					quote_items.map(function (item, key) {
+						gst += !!item.gst_amount ? item.gst_amount : 0;
+						if (item.pricing_type == "Fixed Cost") {
+							subTotal += item.amount;
+						} else {
+							subTotal += item.amount * item.hours;
+						}
+						return React.createElement(
+							"tr",
+							{ key: key },
+							React.createElement(
+								"td",
+								null,
+								item.item_description
+							),
+							React.createElement(
+								"td",
+								null,
+								item.pricing_type
+							),
+							React.createElement(
+								"td",
+								null,
+								"$",
+								item.amount
+							),
+							React.createElement(
+								"td",
+								null,
+								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
+							),
+							React.createElement(
+								"td",
+								null,
+								"$",
+								item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours
+							)
+						);
+					}),
+					React.createElement(
+						"tr",
+						null,
+						React.createElement(
+							"td",
+							{ colSpan: "4", className: "text-right" },
+							"Subtotal:"
+						),
+						React.createElement(
+							"td",
+							null,
+							"$",
+							subTotal
+						)
+					),
+					React.createElement(
+						"tr",
+						null,
+						React.createElement(
+							"td",
+							{ colSpan: "4", className: "text-right" },
+							"GST:"
+						),
+						React.createElement(
+							"td",
+							null,
+							"$",
+							gst
+						)
+					),
+					React.createElement(
+						"tr",
+						null,
+						React.createElement(
+							"td",
+							{ colSpan: "4", className: "text-right" },
+							"Total:"
+						),
+						React.createElement(
+							"td",
+							null,
+							"$",
+							subTotal + gst
+						)
+					)
+				)
+			);
+		} else {
+			React.createElement(
+				"table",
+				null,
+				React.createElement(
+					"tr",
+					null,
+					React.createElement(
+						"th",
+						null,
+						"Description"
+					),
+					React.createElement(
+						"th",
+						null,
+						"Pricing"
+					),
+					React.createElement(
+						"th",
+						null,
+						"Hours"
+					),
+					React.createElement(
+						"th",
+						null,
+						"Amount"
+					)
+				),
+				React.createElement(
+					"tr",
+					null,
+					React.createElement(
+						"td",
+						{ colSpan: "4", className: "text-center" },
+						"Data is empty."
+					)
+				)
+			);
+		}
+	}
+});
+
+var ModalViewQuote = React.createClass({
+	displayName: "ModalViewQuote",
+
+	getInitialState: function () {
+		var quote = this.props.quote;
+		var quotes = this.props.quotes;
+
+		return {
+			index: null,
+			quote: quote,
+			quotes: quotes
+		};
+	},
+
+	switchSlider: function (key, index) {
+		var position = 0;
+		var quote = "";
+		if (key == "prev") {
+			position = index - 1 < 0 ? this.state.quotes.length - 1 : index - 1;
+		} else {
+			position = index + 1 > this.state.quotes.length - 1 ? 0 : index + 1;
+		}
+
+		quote = this.state.quotes[position];
+		this.setState({
+			index: position,
+			quote: quote
+		});
+	},
+
+	componentWillMount: function () {
+		this.filterQuote(this.state.quotes);
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this.filterQuote(nextProps.quotes);
+		this.setState({
+			quotes: nextProps.quotes
+		});
+	},
+
+	filterQuote: function (quotes) {
+		for (var i = 0; i < quotes.length; i++) {
+			var item = quotes[i];
+			if (item.id == this.state.quote.id) {
+				this.setState({
+					index: i + 1,
+					quote: item
+				});
+				break;
+			}
+		}
+	},
+
+	render: function () {
+		var _this3 = this;
+
+		var self = this.props;
+		var quote = this.state.quote;
+		var total = 0;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							"Quote"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "slider-quote" },
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "show-quote", onTouchEnd: function (key, index) {
+										return _this3.switchSlider('prev', _this3.state.index);
+									} },
+								React.createElement(
+									"div",
+									{ className: "info-quote" },
+									React.createElement(
+										"div",
+										{ className: "info-trady" },
+										React.createElement(
+											"p",
+											null,
+											quote.trady.name
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											!!quote.trady.trady_company && quote.trady.trady_company.address
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											!!quote.trady.trady_company && quote.trady.trady_company.email
+										),
+										React.createElement(
+											"p",
+											{ className: "" },
+											"Abn: ",
+											!!quote.trady.trady_company && quote.trady.trady_company.abn
+										)
+									),
+									React.createElement(
+										"div",
+										{ className: "info-agency" },
+										React.createElement(
+											"p",
+											null,
+											self.agency ? self.agency.company_name : null
+										),
+										React.createElement(
+											"p",
+											null,
+											self.agency ? self.agency.address : null
+										)
+									)
+								),
+								React.createElement(
+									"div",
+									{ className: "detail-quote" },
+									React.createElement(
+										"div",
+										{ className: "info-maintenance" },
+										React.createElement(
+											"p",
+											null,
+											"Quote #",
+											quote.id
+										),
+										React.createElement(
+											"p",
+											null,
+											"For: ",
+											self.property.property_address
+										),
+										React.createElement(
+											"p",
+											null,
+											"Created: ",
+											moment(quote.created_at).format("DD-MM-YYYY")
+										)
+									),
+									React.createElement(
+										"div",
+										{ className: "detail-quote" },
+										!!quote.quote_items && React.createElement(DetailQuote, { quote_items: quote.quote_items })
+									)
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "button-slider" },
+								React.createElement(
+									"button",
+									{ className: "btn-prev", onClick: function (key, index) {
+											return _this3.switchSlider('prev', _this3.state.index);
+										} },
+									React.createElement("i", { className: "fa fa-angle-left" })
+								),
+								React.createElement(
+									"button",
+									{ className: "btn-next", onClick: function (key, index) {
+											return _this3.switchSlider('next', _this3.state.index);
+										} },
+									React.createElement("i", { className: "fa fa-angle-right" })
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer-quote" },
+							!!self.current_user && React.createElement(ActionQuote, { keyLandlord: this.props.keyLandlord, quotes: this.state.quotes, quote: quote, updateStatusQuote: self.updateStatusQuote, sendEmailLandlord: self.sendEmailLandlord, onModalWith: self.onModalWith, landlord: self.landlord })
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalViewQuoteMessage = React.createClass({
+	displayName: "ModalViewQuoteMessage",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		if (!this.message.value) {
+			this.setState({ errorMessage: true });
+			return;
+		}
+
+		var params = {
+			message: {
+				body: this.message.value,
+				conversation_type: 'Quote',
+				quote_id: this.props.quote.id
+			}
+		};
+
+		this.props.sendMessageQuote(params);
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this4 = this;
+
+		var current_user = this.props.current_user;
+		var quote = this.props.quote;
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Trady"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, { current_user: current_user, messages: quote.conversation && quote.conversation.messages ? quote.conversation.messages : null })
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this4.message = rel;
+									},
+									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+								})
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
 var QuoteField = React.createClass({
     displayName: 'QuoteField',
 
@@ -66194,6 +71365,7 @@ var QuoteField = React.createClass({
                     ' Item description '
                 ),
                 React.createElement('input', { type: 'text',
+                    required: true,
                     id: 'quote_quote_items_attributes_' + x + '_item_description',
                     name: 'quote[quote_items_attributes][' + x + '][item_description]',
                     defaultValue: quote ? quote.item_description : ''
@@ -66204,6 +71376,7 @@ var QuoteField = React.createClass({
                     ' Amount '
                 ),
                 React.createElement('input', { type: 'text',
+                    required: true,
                     id: 'quote_quote_items_attributes_' + x + '_amount',
                     name: 'quote[quote_items_attributes][' + x + '][amount]',
                     defaultValue: quote ? quote.amount : ''
@@ -66239,6 +71412,7 @@ var QuoteField = React.createClass({
                         ' Number of Hours '
                     ),
                     React.createElement('input', { type: 'text',
+                        required: true,
                         id: 'quote_quote_items_attributes_' + x + '_hours',
                         name: 'quote[quote_items_attributes][' + x + '][hours]',
                         defaultValue: quote ? quote.hours : ''
@@ -66272,7 +71446,9 @@ var QuoteFields = React.createClass({
             React.createElement('input', { type: 'hidden', value: this.props.trady_id, name: 'quote[trady_id]', id: 'quote_trady_id' }),
             React.createElement('input', { type: 'hidden', value: this.props.status, name: 'quote[status]', id: 'quote_status' }),
             React.createElement('input', { type: 'hidden', value: this.props.delivery_status, name: 'quote[delivery_status]', id: 'quote_delivery_status' }),
-            React.createElement(FieldList, { existingContent: this.props.quote_items, SampleField: QuoteField }),
+            React.createElement('input', { type: 'hidden', value: this.props.quote_type, name: 'quote[quote_type]', id: 'quote_type' }),
+            React.createElement('input', { type: 'hidden', value: this.props.system_plan, name: 'quote[system_plan]', id: 'system_plan' }),
+            React.createElement(FieldList, { existingContent: this.props.quote_items, SampleField: QuoteField, flag: 'quote' }),
             React.createElement(
                 'label',
                 { className: 'quote_tax' },
@@ -66285,21 +71461,18 @@ var QuoteFields = React.createClass({
                 'div',
                 { className: 'qf-button' },
                 React.createElement(
-                    'button',
-                    { className: 'button' },
-                    ' ',
-                    React.createElement(
-                        'a',
-                        { href: this.props.backlink },
-                        ' Back '
-                    ),
-                    ' '
+                    'a',
+                    { className: 'button m-r-lg', href: this.props.backlink },
+                    ' Back '
                 ),
                 React.createElement('input', { type: 'submit', name: 'commit', value: 'Next', className: 'button-primary green', 'data-disable-with': 'Next' })
             )
         );
     }
 });
+var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
+var PHONE_REGEXP = new RegExp('^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$', 'i');
+var NUMBER_REGEXP = new RegExp('^[0-9]*$', 'i');
 var Footer = React.createClass({
     displayName: "Footer",
 
@@ -66518,6 +71691,37 @@ var Footer = React.createClass({
         );
     }
 });
+var MenuAgency = [{
+  url: "/agency_admin_maintenance_requests",
+  name: "Agency Admin Maintenance Requests"
+}, {
+  url: "/agents/new",
+  name: "Add Agent"
+}, {
+  url: "/agency_admins/new",
+  name: "Add Agency Admin"
+}];
+
+var MenuAgent = [{
+  url: "/agent_maintenance_requests",
+  name: "Agent Maintenance Request"
+}];
+
+var MenuTrady = [{
+  url: "/trady_maintenance_requests",
+  name: "Trady Maintenance Request"
+}];
+
+var MenuTenant = [{
+  url: "/tenant_maintenance_requests",
+  name: "Tenant Maintenance Request"
+}];
+
+var MenuLandlord = [{
+  url: "/landlord_maintenance_requests",
+  name: "Landlord Maintenance Request"
+}];
+
 var MobileMenu = React.createClass({
   displayName: "MobileMenu",
 
@@ -66580,15 +71784,72 @@ var Header = React.createClass({
         }
     }
   },
-  componentDidMount: function () {
-    $(document).bind('click', this.clickDocument);
+
+  showMenu: function () {
+    document.getElementById("menu-bar").classList.toggle("show");
   },
+
+  componentDidMount: function (e) {
+    $(document).bind('click', this.clickDocument);
+    $(document).bind('click', function (e) {
+      if (!e.target.matches('.btn-menu')) {
+        var myDropdown = document.getElementById("menu-bar");
+        if (myDropdown && myDropdown.classList.contains('show')) {
+          myDropdown.classList.remove('show');
+        }
+      }
+    });
+  },
+
   componentWillUnmount: function () {
     $(document).unbind('click', this.clickDocument);
   },
+
+  menuBar: function () {
+    var dataMenu = [];
+    if (!!this.props.user_agency_admin) dataMenu = [].concat(MenuAgency);else if (!!this.props.user_agent) dataMenu = [].concat(MenuAgent);else if (!!this.props.user_trady) dataMenu = [].concat(MenuTrady);else if (!!this.props.user_tenant) dataMenu = [].concat(MenuTenant);else if (!!this.props.user_landlord) dataMenu = [].concat(MenuLandlord);
+
+    return dataMenu.map(function (item, key) {
+      return React.createElement(
+        "li",
+        { key: key },
+        React.createElement(
+          "a",
+          { href: item.url },
+          item.name
+        )
+      );
+    });
+  },
+
+  Search: function () {
+    return React.createElement(
+      "div",
+      { className: "search" },
+      React.createElement(
+        "form",
+        { action: "/search", className: "form-search", "accept-charset": "UTF-8", method: "get" },
+        React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+        React.createElement("input", {
+          id: "query",
+          name: "query",
+          type: "search",
+          className: "input-search",
+          placeholder: "Search..."
+        }),
+        React.createElement(
+          "button",
+          { name: "button", type: "submit", className: "btn-search" },
+          React.createElement("i", { className: "fa fa-search" })
+        )
+      )
+    );
+  },
+
   header: function (e) {
     var logged_in = this.props.logged_in;
     var current_user = this.props.current_user;
+    var expanded = this.props.expanded;
 
     return React.createElement(
       "nav",
@@ -66597,18 +71858,28 @@ var Header = React.createClass({
         MobileMenu,
         { ref: "Bar" },
         logged_in ? React.createElement(
-          "span",
-          { className: "mobile-menu-items" },
+          "ul",
+          { className: "menu-mobile" },
           React.createElement(
-            "a",
-            { href: this.props.conversations_path },
-            " Inbox "
+            "li",
+            null,
+            React.createElement("img", { src: "/assets/user1.png" }),
+            React.createElement(
+              "span",
+              null,
+              "Hi, ",
+              this.props.current_user.name
+            )
           ),
+          this.menuBar(),
           React.createElement(
-            "a",
-            { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
-            " Sign Out ",
-            this.props.current_user.email
+            "li",
+            null,
+            React.createElement(
+              "a",
+              { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
+              "Sign Out"
+            )
           )
         ) : React.createElement(
           "span",
@@ -66627,10 +71898,10 @@ var Header = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "container" },
+        { className: "container container-custom" },
         React.createElement(
           "div",
-          { className: e ? "column forhome" : "column" },
+          { className: "column header-custom " + (e && "forhome") },
           React.createElement(
             "div",
             { className: "logo" },
@@ -66642,28 +71913,86 @@ var Header = React.createClass({
             )
           ),
           logged_in ? React.createElement(
-            "span",
-            { className: "log_in" },
-            React.createElement(
+            "div",
+            null,
+            !expanded ? React.createElement(
               "div",
-              { className: "menu-button", onClick: this.showItems, ref: "showItems" },
-              " S "
-            ),
-            this.state.isItems ? React.createElement(
-              "span",
-              { className: "desktop-menu-items", ref: "Items" },
+              { className: "header-right" },
+              this.Search(),
               React.createElement(
-                "a",
-                { href: this.props.conversations_path },
-                " Inbox "
+                "div",
+                { className: "question" },
+                React.createElement("i", { className: "fa fa-question" })
               ),
               React.createElement(
-                "a",
-                { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
-                " Sign Out ",
-                this.props.current_user.email
+                "div",
+                { className: "notification" },
+                React.createElement("i", { className: "fa fa-bell" })
+              ),
+              React.createElement(
+                "div",
+                { className: "menu-bar dropdown-custom" },
+                React.createElement(
+                  "button",
+                  { type: "button", className: "btn-menu", onClick: this.showMenu },
+                  React.createElement("img", { src: "/assets/user1.png" }),
+                  React.createElement(
+                    "span",
+                    null,
+                    "Hi, ",
+                    this.props.current_user.name,
+                    React.createElement("i", { className: "fa fa-angle-down" })
+                  )
+                ),
+                React.createElement(
+                  "ul",
+                  { className: "dropdown-menu", id: "menu-bar" },
+                  this.menuBar(),
+                  React.createElement(
+                    "li",
+                    { ref: "Items" },
+                    React.createElement(
+                      "a",
+                      { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
+                      " Sign Out"
+                    )
+                  )
+                )
               )
-            ) : null
+            ) : React.createElement(
+              "div",
+              { className: "log_in" },
+              React.createElement(
+                "div",
+                { className: "menu-button", onClick: this.showItems, ref: "showItems" },
+                " S "
+              ),
+              this.state.isItems ? React.createElement(
+                "ul",
+                { className: "desktop-menu-items" },
+                React.createElement(
+                  "li",
+                  null,
+                  React.createElement("img", { src: "/assets/user1.png" }),
+                  React.createElement(
+                    "span",
+                    null,
+                    "Hi, ",
+                    this.props.current_user.name
+                  )
+                ),
+                this.menuBar(),
+                React.createElement(
+                  "li",
+                  { ref: "Items" },
+                  React.createElement(
+                    "a",
+                    { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
+                    " Sign Out"
+                  )
+                )
+              ) : null
+            )
           ) : React.createElement(
             "span",
             { className: "desktop-menu-items" },
@@ -66696,713 +72025,2645 @@ var Header = React.createClass({
     );
   }
 });
-var TradyCompanies = React.createClass({
-		displayName: "TradyCompanies",
+var ContentTenantContact = React.createClass({
+	displayName: "ContentTenantContact",
 
-		getInitialState: function () {
-				return { same_Address: false,
-						address: this.props.address,
-						mailing: this.props.mailing_address };
-		},
-
-		handleChange: function (event) {
-				this.setState({ address: event.target.value });
-				if (this.state.same_Address) {
-						this.setState({ mailing: event.target.value,
-								address: event.target.value });
-				}
-		},
-
-		render: function () {
-				return React.createElement(
-						"form",
-						{ role: "form", id: "new_trady_company", action: this.props.id ? '/trady_companies/' + this.props.id : '/trady_companies', acceptCharset: "UTF-8", method: "post" },
-						React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
-						React.createElement("input", { type: "hidden", name: "_method", value: this.props._method }),
-						React.createElement(
-								"p",
-								null,
-								" Company name "
-						),
-						React.createElement("input", { defaultValue: this.props.company_name, type: "text",
-								name: "trady_company[company_name]",
-								id: "trady_company_company_name", required: true }),
-						React.createElement(
-								"p",
-								null,
-								" Trading name "
-						),
-						React.createElement("input", { defaultValue: this.props.trading_name, type: "text",
-								name: "trady_company[trading_name]",
-								id: "trady_company_trading_name", required: true }),
-						React.createElement(
-								"p",
-								null,
-								" Abn "
-						),
-						React.createElement("input", { defaultValue: this.props.abn, type: "text",
-								name: "trady_company[abn]",
-								id: "trady_company_abn", required: true }),
-						React.createElement(
-								"label",
-								null,
-								React.createElement("input", { defaultValue: this.props.gst_registration, type: "checkbox",
-										name: "trady_company[gst_registration]",
-										id: "trady_company_gst_registration" }),
-								"GST  registration"
-						),
-						React.createElement(
-								"p",
-								null,
-								" Address "
-						),
-						React.createElement("input", { defaultValue: this.props.address, type: "text", onChange: this.handleChange,
-								name: "trady_company[address]",
-								id: "trady_company_address", required: true }),
-						React.createElement(
-								"div",
-								{ className: "field" },
-								React.createElement(
-										"label",
-										null,
-										React.createElement("input", { defaultValue: this.props.mailing_address_same, type: "checkbox", onChange: this.onSame,
-												name: "trady_company[mailing_address_same]",
-												id: "trady_company_mailing_address_same" }),
-										"Mailing Address same as Above"
-								),
-								React.createElement(
-										"p",
-										null,
-										" Mailing address "
-								),
-								React.createElement("input", { value: this.state.mailing, type: "text",
-										name: "trady_company[mailing_address]",
-										id: "trady_company_mailing_address", required: true })
-						),
-						React.createElement(
-								"p",
-								null,
-								" Mobile number "
-						),
-						React.createElement("input", { defaultValue: this.props.mobile_number, type: "text",
-								name: "trady_company[mobile_number]",
-								id: "trady_company_mobile_number", required: true }),
-						React.createElement(
-								"p",
-								null,
-								" Company Email "
-						),
-						React.createElement("input", { defaultValue: this.props.email, type: "text",
-								name: "trady_company[email]",
-								id: "trady_company_email", required: true }),
-						React.createElement(
-								"p",
-								null,
-								"Tradie Email : ",
-								this.props.email,
-								React.createElement("br", null),
-								"Click Here To Edit Tradie/User Email"
-						),
-						React.createElement("input", { value: this.props.maintenance_request_id, type: "hidden", name: "trady_company[maintenance_request_id]", id: "trady_company_maintenance_request_id" }),
-						React.createElement("input", { value: this.props.trady_id, type: "hidden", name: "trady_company[trady_id]", id: "trady_company_trady_id" }),
-						React.createElement("input", { value: this.props.work_flow, type: "hidden", name: "trady_company[work_flow]", id: "trady_company_work_flow" }),
-						React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button-primary green", "data-disable-with": "Next" })
-				);
-		},
-		onSame: function () {
-				this.setState({ same_Address: !this.state.same_Address,
-						mailing: this.state.address });
-		}
+	render: function () {
+		var selt = this;
+		var landlord = this.props.landlord;
+		return React.createElement(
+			"ul",
+			null,
+			React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return selt.props.onModalWith('sendAgentMessage');
+						} },
+					React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+					"Send Agent Message"
+				)
+			)
+		);
+	}
 });
-(function() {
-  var slice = [].slice;
 
-  this.ActionCable = {
-    INTERNAL: {
-      "message_types": {
-        "welcome": "welcome",
-        "ping": "ping",
-        "confirmation": "confirm_subscription",
-        "rejection": "reject_subscription"
-      },
-      "default_mount_path": "/cable",
-      "protocols": ["actioncable-v1-json", "actioncable-unsupported"]
-    },
-    createConsumer: function(url) {
-      var ref;
-      if (url == null) {
-        url = (ref = this.getConfig("url")) != null ? ref : this.INTERNAL.default_mount_path;
+var TenantContact = React.createClass({
+	displayName: "TenantContact",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showContact: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header contact" },
+				React.createElement(
+					"a",
+					null,
+					"Contact:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showContact,
+					className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content" },
+				this.state.show && React.createElement(ContentTenantContact, { onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					} })
+			)
+		);
+	}
+});
+
+var TenantContactMobile = React.createClass({
+	displayName: "TenantContactMobile",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "actions-full contact-full" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header contact" },
+					React.createElement(
+						"a",
+						null,
+						"Contact:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentTenantContact, { onModalWith: function (modal) {
+							return _this2.props.onModalWith(modal);
+						}, landlord: this.props.landlord })
+				)
+			)
+		);
+	}
+});
+var TenantSideBarMobile = React.createClass({
+	displayName: "TenantSideBarMobile",
+
+	getInitialState: function () {
+		return {
+			showContact: false
+		};
+	},
+
+	show: function (key) {
+		this.setState({ showContact: !this.state.showContact });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"div",
+				{ className: "sidebar-mobile tenant-content" },
+				React.createElement(
+					"div",
+					{ className: "fixed" },
+					React.createElement(
+						"button",
+						{ className: "contact button-default", onClick: this.show },
+						"Contact"
+					)
+				)
+			),
+			!!this.state.showContact && React.createElement(TenantContactMobile, { close: this.show, onModalWith: function (modal) {
+					return _this.props.onModalWith(modal);
+				} })
+		);
+	}
+});
+
+var TenantMaintenanceRequest = React.createClass({
+	displayName: "TenantMaintenanceRequest",
+
+	getInitialState: function () {
+		return {
+			modal: "",
+			isModal: false,
+			landlord: this.props.landlord,
+			maintenance_request: this.props.maintenance_request,
+			tenants_conversation: this.props.tenants_conversation,
+			notification: {
+				title: "",
+				content: "",
+				bgClass: ""
+			}
+		};
+	},
+
+	isClose: function () {
+		this.setState({ isModal: false });
+		this.setState({ modal: "" });
+		var body = document.getElementsByTagName('body')[0];
+		body.classList.remove("modal-open");
+		var div = document.getElementsByClassName('modal-backdrop in')[0];
+		div.parentNode.removeChild(div);
+	},
+
+	onModalWith: function (modal) {
+		this.setState({
+			modal: modal,
+			isModal: true
+		});
+	},
+
+	sendAgentMessage: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var tenants_conversation = !!self.state.tenants_conversation ? self.state.tenants_conversation : [];
+				tenants_conversation.push(res);
+
+				self.setState({
+					tenants_conversation: tenants_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Landlord",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	renderModal: function () {
+		if (this.state.isModal) {
+			var body = document.getElementsByTagName('body')[0];
+			body.className += " modal-open";
+			var div = document.getElementsByClassName('modal-backdrop in');
+
+			if (div.length === 0) {
+				div = document.createElement('div');
+				div.className = "modal-backdrop in";
+				body.appendChild(div);
+			}
+
+			switch (this.state.modal) {
+				case 'sendAgentMessage':
+					{
+						return React.createElement(ModalSendMessageTenant, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							sendMessageTenant: this.sendAgentMessage,
+							tenants_conversation: this.state.tenants_conversation,
+							maintenance_request_id: this.state.maintenance_request.id
+						});
+					}
+
+				default:
+					return null;
+			}
+		}
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "summary-container-index", id: "summary-container-index" },
+			React.createElement(
+				"div",
+				{ className: "main-summary" },
+				React.createElement(
+					"div",
+					{ className: "section" },
+					React.createElement(ItemMaintenanceRequest, {
+						gallery: this.props.gallery,
+						property: this.props.property,
+						maintenance_request: this.state.maintenance_request
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "sidebar" },
+					React.createElement(TenantContact, { onModalWith: function (modal) {
+							return _this2.onModalWith(modal);
+						}, current_user: this.props.current_user })
+				)
+			),
+			React.createElement(TenantSideBarMobile, { onModalWith: function (modal) {
+					return _this2.onModalWith(modal);
+				}, current_user: this.props.current_user }),
+			this.renderModal()
+		);
+	}
+});
+var EditTradyCompany = React.createClass({
+  displayName: "EditTradyCompany",
+
+  getInitialState: function () {
+    return {
+      errorABN: false,
+      openModal: false,
+      errorPhone: false,
+      errorEmail: false,
+      errorAddress: false,
+      same_Address: false,
+      errorBsbNumber: false,
+      errorBankNumber: false,
+      errorCompanyName: false,
+      errorTradingName: false,
+      errorAccountName: false,
+      errorMailingAdress: false,
+      address: this.props.address,
+      mailing_address: this.props.mailing_address,
+      gst_registration: !!this.props.gst_registration ? true : false,
+      notification: {
+        title: "",
+        bgClass: "",
+        contnet: ""
       }
-      return new ActionCable.Consumer(this.createWebSocketURL(url));
-    },
-    getConfig: function(name) {
-      var element;
-      element = document.head.querySelector("meta[name='action-cable-" + name + "']");
-      return element != null ? element.getAttribute("content") : void 0;
-    },
-    createWebSocketURL: function(url) {
-      var a;
-      if (url && !/^wss?:/i.test(url)) {
-        a = document.createElement("a");
-        a.href = url;
-        a.href = a.href;
-        a.protocol = a.protocol.replace("http", "ws");
-        return a.href;
-      } else {
-        return url;
-      }
-    },
-    startDebugging: function() {
-      return this.debugging = true;
-    },
-    stopDebugging: function() {
-      return this.debugging = null;
-    },
-    log: function() {
-      var messages;
-      messages = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-      if (this.debugging) {
-        messages.push(Date.now());
-        return console.log.apply(console, ["[ActionCable]"].concat(slice.call(messages)));
-      }
+    };
+  },
+
+  handleChange: function (event) {
+    this.setState({ address: event.target.value });
+    if (!!this.state.same_Address) {
+      this.setState({
+        mailing_address: this.address.value
+      });
     }
-  };
+  },
 
-  if (typeof window !== "undefined" && window !== null) {
-    window.ActionCable = this.ActionCable;
-  }
+  onSame: function () {
+    if (!this.state.same_Address) {
+      this.setState({
+        mailing_address: this.state.address
 
-  if (typeof module !== "undefined" && module !== null) {
-    module.exports = this.ActionCable;
-  }
-
-}).call(this);
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-  ActionCable.ConnectionMonitor = (function() {
-    var clamp, now, secondsSince;
-
-    ConnectionMonitor.pollInterval = {
-      min: 3,
-      max: 30
-    };
-
-    ConnectionMonitor.staleThreshold = 6;
-
-    function ConnectionMonitor(connection) {
-      this.connection = connection;
-      this.visibilityDidChange = bind(this.visibilityDidChange, this);
-      this.reconnectAttempts = 0;
+      });
     }
 
-    ConnectionMonitor.prototype.start = function() {
-      if (!this.isRunning()) {
-        this.startedAt = now();
-        delete this.stoppedAt;
-        this.startPolling();
-        document.addEventListener("visibilitychange", this.visibilityDidChange);
-        return ActionCable.log("ConnectionMonitor started. pollInterval = " + (this.getPollInterval()) + " ms");
-      }
-    };
+    this.setState({
+      same_Address: !this.state.same_Address
+    });
+  },
 
-    ConnectionMonitor.prototype.stop = function() {
-      if (this.isRunning()) {
-        this.stoppedAt = now();
-        this.stopPolling();
-        document.removeEventListener("visibilitychange", this.visibilityDidChange);
-        return ActionCable.log("ConnectionMonitor stopped");
-      }
-    };
+  changeMailingAddress: function (e) {
+    this.setState({
+      mailing_address: e.target.value
+    });
+  },
 
-    ConnectionMonitor.prototype.isRunning = function() {
-      return (this.startedAt != null) && (this.stoppedAt == null);
-    };
-
-    ConnectionMonitor.prototype.recordPing = function() {
-      return this.pingedAt = now();
-    };
-
-    ConnectionMonitor.prototype.recordConnect = function() {
-      this.reconnectAttempts = 0;
-      this.recordPing();
-      delete this.disconnectedAt;
-      return ActionCable.log("ConnectionMonitor recorded connect");
-    };
-
-    ConnectionMonitor.prototype.recordDisconnect = function() {
-      this.disconnectedAt = now();
-      return ActionCable.log("ConnectionMonitor recorded disconnect");
-    };
-
-    ConnectionMonitor.prototype.startPolling = function() {
-      this.stopPolling();
-      return this.poll();
-    };
-
-    ConnectionMonitor.prototype.stopPolling = function() {
-      return clearTimeout(this.pollTimeout);
-    };
-
-    ConnectionMonitor.prototype.poll = function() {
-      return this.pollTimeout = setTimeout((function(_this) {
-        return function() {
-          _this.reconnectIfStale();
-          return _this.poll();
-        };
-      })(this), this.getPollInterval());
-    };
-
-    ConnectionMonitor.prototype.getPollInterval = function() {
-      var interval, max, min, ref;
-      ref = this.constructor.pollInterval, min = ref.min, max = ref.max;
-      interval = 5 * Math.log(this.reconnectAttempts + 1);
-      return Math.round(clamp(interval, min, max) * 1000);
-    };
-
-    ConnectionMonitor.prototype.reconnectIfStale = function() {
-      if (this.connectionIsStale()) {
-        ActionCable.log("ConnectionMonitor detected stale connection. reconnectAttempts = " + this.reconnectAttempts + ", pollInterval = " + (this.getPollInterval()) + " ms, time disconnected = " + (secondsSince(this.disconnectedAt)) + " s, stale threshold = " + this.constructor.staleThreshold + " s");
-        this.reconnectAttempts++;
-        if (this.disconnectedRecently()) {
-          return ActionCable.log("ConnectionMonitor skipping reopening recent disconnect");
-        } else {
-          ActionCable.log("ConnectionMonitor reopening");
-          return this.connection.reopen();
-        }
-      }
-    };
-
-    ConnectionMonitor.prototype.connectionIsStale = function() {
-      var ref;
-      return secondsSince((ref = this.pingedAt) != null ? ref : this.startedAt) > this.constructor.staleThreshold;
-    };
-
-    ConnectionMonitor.prototype.disconnectedRecently = function() {
-      return this.disconnectedAt && secondsSince(this.disconnectedAt) < this.constructor.staleThreshold;
-    };
-
-    ConnectionMonitor.prototype.visibilityDidChange = function() {
-      if (document.visibilityState === "visible") {
-        return setTimeout((function(_this) {
-          return function() {
-            if (_this.connectionIsStale() || !_this.connection.isOpen()) {
-              ActionCable.log("ConnectionMonitor reopening stale connection on visibilitychange. visbilityState = " + document.visibilityState);
-              return _this.connection.reopen();
-            }
-          };
-        })(this), 200);
-      }
-    };
-
-    now = function() {
-      return new Date().getTime();
-    };
-
-    secondsSince = function(time) {
-      return (now() - time) / 1000;
-    };
-
-    clamp = function(number, min, max) {
-      return Math.max(min, Math.min(max, number));
-    };
-
-    return ConnectionMonitor;
-
-  })();
-
-}).call(this);
-(function() {
-  var i, message_types, protocols, ref, supportedProtocols, unsupportedProtocol,
-    slice = [].slice,
-    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  ref = ActionCable.INTERNAL, message_types = ref.message_types, protocols = ref.protocols;
-
-  supportedProtocols = 2 <= protocols.length ? slice.call(protocols, 0, i = protocols.length - 1) : (i = 0, []), unsupportedProtocol = protocols[i++];
-
-  ActionCable.Connection = (function() {
-    Connection.reopenDelay = 500;
-
-    function Connection(consumer) {
-      this.consumer = consumer;
-      this.open = bind(this.open, this);
-      this.subscriptions = this.consumer.subscriptions;
-      this.monitor = new ActionCable.ConnectionMonitor(this);
-      this.disconnected = true;
-    }
-
-    Connection.prototype.send = function(data) {
-      if (this.isOpen()) {
-        this.webSocket.send(JSON.stringify(data));
-        return true;
-      } else {
-        return false;
-      }
-    };
-
-    Connection.prototype.open = function() {
-      if (this.isActive()) {
-        ActionCable.log("Attempted to open WebSocket, but existing socket is " + (this.getState()));
-        throw new Error("Existing connection must be closed before opening");
-      } else {
-        ActionCable.log("Opening WebSocket, current state is " + (this.getState()) + ", subprotocols: " + protocols);
-        if (this.webSocket != null) {
-          this.uninstallEventHandlers();
-        }
-        this.webSocket = new WebSocket(this.consumer.url, protocols);
-        this.installEventHandlers();
-        this.monitor.start();
-        return true;
-      }
-    };
-
-    Connection.prototype.close = function(arg) {
-      var allowReconnect, ref1;
-      allowReconnect = (arg != null ? arg : {
-        allowReconnect: true
-      }).allowReconnect;
-      if (!allowReconnect) {
-        this.monitor.stop();
-      }
-      if (this.isActive()) {
-        return (ref1 = this.webSocket) != null ? ref1.close() : void 0;
-      }
-    };
-
-    Connection.prototype.reopen = function() {
-      var error, error1;
-      ActionCable.log("Reopening WebSocket, current state is " + (this.getState()));
-      if (this.isActive()) {
-        try {
-          return this.close();
-        } catch (error1) {
-          error = error1;
-          return ActionCable.log("Failed to reopen WebSocket", error);
-        } finally {
-          ActionCable.log("Reopening WebSocket in " + this.constructor.reopenDelay + "ms");
-          setTimeout(this.open, this.constructor.reopenDelay);
-        }
-      } else {
-        return this.open();
-      }
-    };
-
-    Connection.prototype.getProtocol = function() {
-      var ref1;
-      return (ref1 = this.webSocket) != null ? ref1.protocol : void 0;
-    };
-
-    Connection.prototype.isOpen = function() {
-      return this.isState("open");
-    };
-
-    Connection.prototype.isActive = function() {
-      return this.isState("open", "connecting");
-    };
-
-    Connection.prototype.isProtocolSupported = function() {
-      var ref1;
-      return ref1 = this.getProtocol(), indexOf.call(supportedProtocols, ref1) >= 0;
-    };
-
-    Connection.prototype.isState = function() {
-      var ref1, states;
-      states = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-      return ref1 = this.getState(), indexOf.call(states, ref1) >= 0;
-    };
-
-    Connection.prototype.getState = function() {
-      var ref1, state, value;
-      for (state in WebSocket) {
-        value = WebSocket[state];
-        if (value === ((ref1 = this.webSocket) != null ? ref1.readyState : void 0)) {
-          return state.toLowerCase();
-        }
-      }
-      return null;
-    };
-
-    Connection.prototype.installEventHandlers = function() {
-      var eventName, handler;
-      for (eventName in this.events) {
-        handler = this.events[eventName].bind(this);
-        this.webSocket["on" + eventName] = handler;
-      }
-    };
-
-    Connection.prototype.uninstallEventHandlers = function() {
-      var eventName;
-      for (eventName in this.events) {
-        this.webSocket["on" + eventName] = function() {};
-      }
-    };
-
-    Connection.prototype.events = {
-      message: function(event) {
-        var identifier, message, ref1, type;
-        if (!this.isProtocolSupported()) {
-          return;
-        }
-        ref1 = JSON.parse(event.data), identifier = ref1.identifier, message = ref1.message, type = ref1.type;
-        switch (type) {
-          case message_types.welcome:
-            this.monitor.recordConnect();
-            return this.subscriptions.reload();
-          case message_types.ping:
-            return this.monitor.recordPing();
-          case message_types.confirmation:
-            return this.subscriptions.notify(identifier, "connected");
-          case message_types.rejection:
-            return this.subscriptions.reject(identifier);
-          default:
-            return this.subscriptions.notify(identifier, "received", message);
-        }
-      },
-      open: function() {
-        ActionCable.log("WebSocket onopen event, using '" + (this.getProtocol()) + "' subprotocol");
-        this.disconnected = false;
-        if (!this.isProtocolSupported()) {
-          ActionCable.log("Protocol is unsupported. Stopping monitor and disconnecting.");
-          return this.close({
-            allowReconnect: false
+  checkValidate: function (e) {
+    var target = e.target.id;
+    switch (target.key) {
+      case 'email':
+        {
+          if (EMAIL_REGEXP.test(target.value)) return this.setState({
+            errorEmail: false
+          });else return this.setState({
+            errorEmail: true
           });
         }
-      },
-      close: function(event) {
-        ActionCable.log("WebSocket onclose event");
-        if (this.disconnected) {
-          return;
+      case 'mobile_number':
+        {
+          if (PHONE_REGEXP.test(target.value)) return this.setState({
+            errorPhone: false
+          });else return this.setState({
+            errorPhone: true
+          });
         }
-        this.disconnected = true;
-        this.monitor.recordDisconnect();
-        return this.subscriptions.notifyAll("disconnected", {
-          willAttemptReconnect: this.monitor.isRunning()
-        });
-      },
-      error: function() {
-        return ActionCable.log("WebSocket onerror event");
-      }
-    };
+      case "bsb_number":
+        {
+          if (NUMBER_REGEXP.test(target.value)) return this.setState({
+            errorBsbNumber: false
+          });else return this.setState({
+            errorBsbNumber: true
+          });
+        }
+      case "bank_account_number":
+        {
+          if (NUMBER_REGEXP.test(target.value)) return this.setState({
+            errorBankNumber: false
+          });else return this.setState({
+            errorBankNumber: true
+          });
+        }
+      case "abn":
+        {
+          if (NUMBER_REGEXP.test(target.value)) return this.setState({
+            errorABN: false
+          });else return this.setState({
+            errorABN: true
+          });
+        }
+      default:
+        break;
+    }
+  },
 
-    return Connection;
+  edit: function (e) {
+    var _this = this;
 
-  })();
-
-}).call(this);
-(function() {
-  var slice = [].slice;
-
-  ActionCable.Subscriptions = (function() {
-    function Subscriptions(consumer) {
-      this.consumer = consumer;
-      this.subscriptions = [];
+    var flag = false;
+    if (!this.company_name.value) {
+      flag = true;
+      this.setState({
+        errorCompanyName: true
+      });
     }
 
-    Subscriptions.prototype.create = function(channelName, mixin) {
-      var channel, params, subscription;
-      channel = channelName;
-      params = typeof channel === "object" ? channel : {
-        channel: channel
-      };
-      subscription = new ActionCable.Subscription(this.consumer, params, mixin);
-      return this.add(subscription);
-    };
+    if (!this.trading_name.value) {
+      flag = true;
+      this.setState({
+        errorTradingName: true
+      });
+    }
 
-    Subscriptions.prototype.add = function(subscription) {
-      this.subscriptions.push(subscription);
-      this.consumer.ensureActiveConnection();
-      this.notify(subscription, "initialized");
-      this.sendCommand(subscription, "subscribe");
-      return subscription;
-    };
+    if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
+      flag = true;
+      this.setState({
+        errorTradingName: true
+      });
+    }
 
-    Subscriptions.prototype.remove = function(subscription) {
-      this.forget(subscription);
-      if (!this.findAll(subscription.identifier).length) {
-        this.sendCommand(subscription, "unsubscribe");
+    if (!this.address.value) {
+      flag = true;
+      this.setState({
+        errorAddress: true
+      });
+    }
+
+    if (!this.mailing_address.value) {
+      flag = true;
+      this.setState({
+        errorTradingName: true
+      });
+    }
+
+    if (!this.email.value || !EMAIL_REGEXP.test(this.email.value)) {
+      flag = true;
+      this.setState({
+        errorEmail: true
+      });
+    }
+
+    if (!this.mobile_number.value || !PHONE_REGEXP.test(this.mobile_number.value)) {
+      flag = true;
+      this.setState({
+        errorPhone: true
+      });
+    }
+
+    if (!this.account_name.value) {
+      flag = true;
+      this.setState({
+        errorAccountName: true
+      });
+    }
+
+    if (!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
+      flag = true;
+      this.setState({
+        errorBsbNumber: true
+      });
+    }
+
+    if (!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
+      flag = true;
+      this.setState({
+        errorBankNumber: true
+      });
+    }
+
+    if (!flag) {
+      var params;
+
+      (function () {
+        params = {
+          trady_company: {
+            abn: _this.abn.value,
+            email: _this.email.value,
+            address: _this.address.value,
+            trady_id: _this.props.trady_id,
+            quote_id: _this.props.quote_id,
+            ledger_id: _this.props.ledger_id,
+            trady_company_id: _this.props.id,
+            work_flow: _this.props.work_flow,
+            quote_type: _this.props.quote_type,
+            bsb_number: _this.bsb_number.value,
+            pdf_file_id: _this.props.pdf_file_id,
+            system_plan: _this.props.system_plan,
+            company_name: _this.company_name.value,
+            trading_name: _this.trading_name.value,
+            account_name: _this.account_name.value,
+            invoice_type: _this.props.invoice_type,
+            mobile_number: _this.mobile_number.value,
+            mailing_address: _this.mailing_address.value,
+            gst_registration: _this.state.gst_registration,
+            bank_account_number: _this.bank_account_number.value,
+            maintenance_request_id: _this.props.maintenance_request_id
+          }
+        };
+
+        var self = _this;
+        $.ajax({
+          type: 'PUT',
+          url: '/trady_companies/' + self.props.id,
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+          },
+          data: params,
+          success: function (res) {},
+          error: function (err) {}
+        });
+      })();
+    }
+
+    e.preventDefault();
+    return;
+  },
+
+  renderButtonBack: function () {
+    if (this.props.system_plan == "Invoice") {
+      return React.createElement(
+        "a",
+        { className: "btn btn-default btn-back m-r-lg", href: "/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.id },
+        "Back"
+      );
+    } else if (this.props.system_plan == "Quote") {
+      return React.createElement(
+        "a",
+        { className: "btn btn-default btn-back m-r-lg", href: "/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id },
+        "Back"
+      );
+    }
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    return React.createElement(
+      "form",
+      { role: "form", className: "form-horizontal", id: "new_trady_company", onSubmit: this.edit },
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Company name"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "company_name",
+            placeholder: "Company Name",
+            defaultValue: this.props.company_name,
+            ref: function (ref) {
+              return _this2.company_name = ref;
+            },
+            className: "form-control " + (this.state.errorCompanyName ? "has-error" : "")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Trading name"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "trading_name",
+            className: "form-control",
+            placeholder: "Trading Name",
+            defaultValue: this.props.trading_name,
+            ref: function (ref) {
+              return _this2.trading_name = ref;
+            },
+            className: "form-control " + (!!this.state.errorTradingName && "has-error")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Abn"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            id: "abn",
+            type: "text",
+            placeholder: "Abn",
+            defaultValue: this.props.abn,
+            ref: function (ref) {
+              return _this2.abn = ref;
+            },
+            className: "form-control " + (!!this.state.errorABN && "has-error")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "div",
+          { className: "col-sm-10 col-sm-offset-2" },
+          React.createElement("input", {
+            type: "checkbox",
+            id: "gst_registration",
+            onChange: function () {
+              _this2.setState({
+                gst_registration: !_this2.state.gst_registration
+              });
+            },
+            checked: !!this.state.gst_registration ? "checked" : false
+          }),
+          "GST  Registration"
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Address"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "address",
+            placeholder: "Address",
+            defaultValue: this.state.address,
+            onChange: this.handleChange,
+            ref: function (ref) {
+              return _this2.address = ref;
+            },
+            className: "form-control " + (!!this.state.errorAddress && "has-error")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement("input", {
+          type: "checkbox",
+          onChange: this.onSame,
+          id: "mailing_address_same"
+        }),
+        "Mailing Address same as Above"
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Mailing address"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "mailing_address",
+            placeholder: "Mailing Address",
+            value: this.state.mailing_address,
+            onChange: this.changeMailingAddress,
+            ref: function (ref) {
+              return _this2.mailing_address = ref;
+            },
+            className: "form-control " + (!!this.state.errorMailingAdress && "has-error")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Mobile number"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "mobile_number",
+            placeholder: "Mobile Number",
+            onChange: this.checkValidate,
+            defaultValue: this.props.mobile_number,
+            ref: function (ref) {
+              return _this2.mobile_number = ref;
+            },
+            className: "form-control " + (!!this.state.errorPhone && "has-error")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Company Email"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            id: "email",
+            type: "text",
+            placeholder: "Email",
+            onChange: this.checkValidate,
+            defaultValue: this.props.email,
+            ref: function (ref) {
+              return _this2.email = ref;
+            },
+            className: "form-control " + (!!this.state.errorEmail && "has-error")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Account name"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "account_name",
+            placeholder: "Account Name",
+            defaultValue: this.props.account_name,
+            ref: function (ref) {
+              return _this2.account_name = ref;
+            },
+            className: "form-control " + (!!this.state.errorAccountName ? "has-error" : "")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Bsb number"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "bsb_number",
+            placeholder: "BSB Number",
+            onChange: this.checkValidate,
+            defaultValue: this.props.bsb_number,
+            ref: function (ref) {
+              return _this2.bsb_number = ref;
+            },
+            className: "form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")
+          })
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          { className: "control-label col-sm-2 required" },
+          "Bank account number"
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-10" },
+          React.createElement("input", {
+            required: true,
+            type: "text",
+            id: "bank_account_number",
+            placeholder: "Bank Account Number",
+            defaultValue: this.props.bank_account_number,
+            ref: function (ref) {
+              return _this2.bank_account_number = ref;
+            },
+            className: "form-control " + (!!this.state.errorBankNumber ? "has-error" : "")
+          })
+        )
+      ),
+      this.renderButtonBack(),
+      React.createElement(
+        "button",
+        { type: "submit", className: "button-primary green option-button" },
+        "Next"
+      )
+    );
+  }
+});
+var AddTradycompany = React.createClass({
+  displayName: "AddTradycompany",
+
+  getInitialState: function () {
+    return {
+      errorABN: false,
+      openModal: false,
+      errorPhone: false,
+      errorEmail: false,
+      errorAddress: false,
+      same_Address: false,
+      errorBsbNumber: false,
+      errorBankNumber: false,
+      errorCompanyName: false,
+      errorTradingName: false,
+      errorAccountName: false,
+      errorMailingAdress: false,
+      address: this.props.address,
+      mailing_address: this.props.mailing_address,
+      gst_registration: !!this.props.gst_registration ? true : false,
+      notification: {
+        title: "",
+        bgClass: "",
+        contnet: ""
       }
-      return subscription;
     };
+  },
 
-    Subscriptions.prototype.reject = function(identifier) {
-      var i, len, ref, results, subscription;
-      ref = this.findAll(identifier);
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        subscription = ref[i];
-        this.forget(subscription);
-        this.notify(subscription, "rejected");
-        results.push(subscription);
+  handleChange: function (event) {
+    this.setState({ address: event.target.value });
+    if (!!this.state.same_Address) {
+      this.setState({
+        mailing_address: this.address.value
+      });
+    }
+  },
+
+  onSame: function () {
+    if (!this.state.same_Address) {
+      this.setState({
+        mailing_address: this.state.address
+
+      });
+    }
+
+    this.setState({
+      same_Address: !this.state.same_Address
+    });
+  },
+
+  openModalNotification: function (params) {
+    if (params) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += "modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if (div.length === 0) {
+        div = document.createElement('div');
+        div.className = "modal-backdrop in";
+        body.appendChild(div);
       }
-      return results;
-    };
+      this.setState({
+        openModal: true,
+        notification: {
+          title: params.title,
+          bgClass: params.bgClass,
+          content: params.content
+        }
+      });
+    }
+  },
 
-    Subscriptions.prototype.forget = function(subscription) {
-      var s;
-      this.subscriptions = (function() {
-        var i, len, ref, results;
-        ref = this.subscriptions;
-        results = [];
-        for (i = 0, len = ref.length; i < len; i++) {
-          s = ref[i];
-          if (s !== subscription) {
-            results.push(s);
+  closeModal: function () {
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    div.parentNode.removeChild(div);
+    this.setState({
+      openModal: false,
+      notification: {
+        title: "",
+        bgClass: "",
+        content: ""
+      }
+    });
+  },
+
+  checkValidate: function (e) {
+    var target = e.target.id;
+    switch (target.key) {
+      case 'email':
+        {
+          if (EMAIL_REGEXP.test(target.value)) return this.setState({
+            errorEmail: false
+          });else return this.setState({
+            errorEmail: true
+          });
+        }
+      case 'mobile_number':
+        {
+          if (PHONE_REGEXP.test(target.value)) return this.setState({
+            errorPhone: false
+          });else return this.setState({
+            errorPhone: true
+          });
+        }
+      case "bsb_number":
+        {
+          if (NUMBER_REGEXP.test(target.value)) return this.setState({
+            errorBsbNumber: false
+          });else return this.setState({
+            errorBsbNumber: true
+          });
+        }
+      case "bank_account_number":
+        {
+          if (NUMBER_REGEXP.test(target.value)) return this.setState({
+            errorBankNumber: false
+          });else return this.setState({
+            errorBankNumber: true
+          });
+        }
+      case "abn":
+        {
+          if (NUMBER_REGEXP.test(target.value)) return this.setState({
+            errorABN: false
+          });else return this.setState({
+            errorABN: true
+          });
+        }
+      default:
+        break;
+    }
+  },
+
+  changeMailingAddress: function (e) {
+    this.setState({
+      mailing_address: e.target.value
+    });
+  },
+
+  onSubmit: function (e) {
+    var _this = this;
+
+    var flag = false;
+
+    if (!this.company_name.value) {
+      flag = true;
+      this.setState({
+        errorCompanyName: true
+      });
+    }
+
+    if (!this.trading_name.value) {
+      flag = true;
+      this.setState({
+        errorTradingName: true
+      });
+    }
+
+    if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
+      flag = true;
+      this.setState({
+        errorTradingName: true
+      });
+    }
+
+    if (!this.address.value) {
+      flag = true;
+      this.setState({
+        errorAddress: true
+      });
+    }
+
+    if (!this.mailing_address.value) {
+      flag = true;
+      this.setState({
+        errorTradingName: true
+      });
+    }
+
+    if (!this.email.value || !EMAIL_REGEXP.test(this.email.value)) {
+      flag = true;
+      this.setState({
+        errorEmail: true
+      });
+    }
+
+    if (!this.mobile_number.value || !PHONE_REGEXP.test(this.mobile_number.value)) {
+      flag = true;
+      this.setState({
+        errorPhone: true
+      });
+    }
+
+    if (!this.account_name.value) {
+      flag = true;
+      this.setState({
+        errorAccountName: true
+      });
+    }
+
+    if (!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
+      flag = true;
+      this.setState({
+        errorBsbNumber: true
+      });
+    }
+
+    if (!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
+      flag = true;
+      this.setState({
+        errorBankNumber: true
+      });
+    }
+
+    if (!flag) {
+      var params;
+
+      (function () {
+        params = {
+          trady_company: {
+            abn: _this.abn.value,
+            email: _this.email.value,
+            address: _this.address.value,
+            trady_id: _this.props.trady_id,
+            quote_id: _this.props.quote_id,
+            work_flow: _this.props.work_flow,
+            bsb_number: _this.bsb_number.value,
+            quote_type: _this.props.quote_type,
+            system_plan: _this.props.system_plan,
+            company_name: _this.company_name.value,
+            trading_name: _this.trading_name.value,
+            invoice_type: _this.props.invoice_type,
+            account_name: _this.account_name.value,
+            mobile_number: _this.mobile_number.value,
+            mailing_address: _this.mailing_address.value,
+            gst_registration: _this.state.gst_registration,
+            bank_account_number: _this.bank_account_number.value,
+            trady_company_id: _this.props.id ? _this.props.id : null,
+            maintenance_request_id: _this.props.maintenance_request_id,
+            quote_id: _this.props.quote_id ? _this.props.quote_id : null,
+            ledger_id: _this.props.ledger_id ? _this.props.ledger_id : null,
+            pdf_file_id: _this.props.pdf_file_id ? _this.props.pdf_file_id : null
+          }
+        };
+
+        var self = _this;
+        $.ajax({
+          type: 'POST',
+          url: '/trady_companies',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+          },
+          data: params,
+          success: function (res) {},
+          error: function (err) {
+            self.openModalNotification({
+              bgClass: 'bg-error',
+              title: "Add Trady Company",
+              content: "Add trady company is error!"
+            });
+          }
+        });
+      })();
+    }
+
+    e.preventDefault();
+
+    return;
+  },
+
+  renderButtonBack: function () {
+    if (this.props.system_plan == "Invoice") {
+      return React.createElement(
+        "a",
+        { className: "btn btn-default btn-back m-r-lg", href: "/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.trady_company_id },
+        "Back"
+      );
+    } else if (this.props.system_plan == "Quote") {
+      return React.createElement(
+        "a",
+        { className: "btn btn-default btn-back m-r-lg", href: "/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id },
+        "Back"
+      );
+    }
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "form",
+        { role: "form", className: "form-horizontal", id: "new_trady_company", onSubmit: this.onSubmit },
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Company name"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "company_name",
+              placeholder: "Company Name",
+              defaultValue: this.props.company_name,
+              ref: function (ref) {
+                return _this2.company_name = ref;
+              },
+              className: "form-control " + (this.state.errorCompanyName ? "has-error" : "")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Trading name"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "trading_name",
+              placeholder: "Trading Name",
+              defaultValue: this.props.trading_name,
+              ref: function (ref) {
+                return _this2.trading_name = ref;
+              },
+              className: "form-control " + (!!this.state.errorTradingName && "has-error")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Abn"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              id: "abn",
+              type: "text",
+              placeholder: "Abn",
+              defaultValue: this.props.abn,
+              ref: function (ref) {
+                return _this2.abn = ref;
+              },
+              className: "form-control " + (!!this.state.errorABN && "has-error")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement("input", {
+            type: "checkbox",
+            id: "gst_registration",
+            onChange: function () {
+              _this2.setState({
+                gst_registration: !_this2.state.gst_registration
+              });
+            },
+            checked: !!this.state.gst_registration ? "checked" : false
+          }),
+          "GST  Registration"
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Address"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "address",
+              placeholder: "Address",
+              defaultValue: this.state.address,
+              onChange: this.handleChange,
+              ref: function (ref) {
+                return _this2.address = ref;
+              },
+              className: "form-control " + (!!this.state.errorAddress && "has-error")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement("input", {
+            type: "checkbox",
+            onChange: this.onSame,
+            id: "mailing_address_same"
+          }),
+          "Mailing Address same as Above"
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Mailing address"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "mailing_address",
+              placeholder: "Mailing Address",
+              value: this.state.mailing_address,
+              onChange: this.changeMailingAddress,
+              ref: function (ref) {
+                return _this2.mailing_address = ref;
+              },
+              className: "form-control " + (!!this.state.errorMailingAdress && "has-error")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Mobile number"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "mobile_number",
+              placeholder: "Mobile Number",
+              onChange: this.checkValidate,
+              defaultValue: this.props.mobile_number,
+              ref: function (ref) {
+                return _this2.mobile_number = ref;
+              },
+              className: "form-control " + (!!this.state.errorPhone && "has-error")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Company Email"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              id: "email",
+              type: "text",
+              placeholder: "Email",
+              onChange: this.checkValidate,
+              defaultValue: this.props.email,
+              ref: function (ref) {
+                return _this2.email = ref;
+              },
+              className: "form-control " + (!!this.state.errorEmail && "has-error")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Account name"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "account_name",
+              placeholder: "Account Name",
+              defaultValue: this.props.account_name,
+              ref: function (ref) {
+                return _this2.account_name = ref;
+              },
+              className: "form-control " + (!!this.state.errorAccountName ? "has-error" : "")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Bsb number"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "bsb_number",
+              placeholder: "BSB Number",
+              onChange: this.checkValidate,
+              defaultValue: this.props.bsb_number,
+              ref: function (ref) {
+                return _this2.bsb_number = ref;
+              },
+              className: "form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "label",
+            { className: "control-label col-sm-2 required" },
+            "Bank account number"
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              required: true,
+              type: "text",
+              id: "bank_account_number",
+              placeholder: "Bank Account Number",
+              defaultValue: this.props.bank_account_number,
+              ref: function (ref) {
+                return _this2.bank_account_number = ref;
+              },
+              className: "form-control " + (!!this.state.errorBankNumber ? "has-error" : "")
+            })
+          )
+        ),
+        this.renderButtonBack(),
+        React.createElement(
+          "button",
+          { type: "submit", name: "commit", value: "Next", className: "button-primary green option-button" },
+          "Next"
+        )
+      ),
+      this.state.openModal ? React.createElement(ModalNotification, {
+        title: this.state.notification.title,
+        content: this.state.notification.content,
+        close: this.closeModal,
+        bgClass: this.state.notification.bgClass
+      }) : null
+    );
+  }
+});
+var ContentTradyAction = React.createClass({
+	displayName: "ContentTradyAction",
+
+	render: function () {
+		var maintenance_request = this.props.maintenance_request;
+		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+		var maintenance_trady_id = maintenance_request.trady_id;
+		if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
+			return React.createElement(
+				"ul",
+				null,
+				React.createElement(
+					"li",
+					{ className: "active" },
+					React.createElement(
+						"a",
+						{ href: "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id },
+						React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
+						"Create or Upload Quote"
+					)
+				),
+				React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ href: "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=" },
+						React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+						"Create or Upload Invoice"
+					)
+				)
+			);
+		} else if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
+			return null;
+		} else {
+			return React.createElement(
+				"ul",
+				null,
+				React.createElement(
+					"li",
+					{ className: "active" },
+					React.createElement(
+						"a",
+						{ href: "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id },
+						React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
+						"Create or Upload Quote"
+					)
+				),
+				!!this.props.assigned_trady ? React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ href: "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=" },
+						React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+						"Create or Upload Invoice"
+					)
+				) : null
+			);
+		}
+	}
+});
+
+var TradyAction = React.createClass({
+	displayName: "TradyAction",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showAction: function (e) {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					null,
+					"Actions:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showAction,
+					className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content", id: "actions-content" },
+				this.state.show ? React.createElement(ContentTradyAction, {
+					landlord: this.props.landlord,
+					assigned_trady: this.props.assigned_trady,
+					signed_in_trady: this.props.signed_in_trady,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				}) : null
+			)
+		);
+	}
+});
+
+var TradyActionMobile = React.createClass({
+	displayName: "TradyActionMobile",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "actions-full", id: "actions-full" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Actions:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentTradyAction, {
+						landlord: this.props.landlord,
+						landlord: this.props.landlord,
+						assigned_trady: this.props.assigned_trady,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
+							return _this2.props.onModalWith(modal);
+						}
+					})
+				)
+			)
+		);
+	}
+});
+var ContentTradyContact = React.createClass({
+	displayName: "ContentTradyContact",
+
+	renderCallAgent: function () {
+		if (!!this.props.maintenance_request.agent) {
+			return React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					null,
+					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+					"Call Agent: ",
+					this.props.maintenance_request.agent.mobile_phone
+				)
+			);
+		} else if (!!this.props.maintenance_request.agency_admin) {
+			return React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					null,
+					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+					"Call Agent: ",
+					this.props.maintenance_request.agency_admin.mobile_phone
+				)
+			);
+		}
+
+		return null;
+	},
+
+	render: function () {
+		return React.createElement(
+			"ul",
+			null,
+			this.renderCallAgent()
+		);
+	}
+});
+
+var TradyContact = React.createClass({
+	displayName: "TradyContact",
+
+	getInitialState: function () {
+		return {
+			show: false
+		};
+	},
+
+	showContact: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header contact" },
+				React.createElement(
+					"a",
+					null,
+					"Contact:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showContact,
+					className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content" },
+				this.state.show && React.createElement(ContentTradyContact, { onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+			)
+		);
+	}
+});
+
+var TradyContactMobile = React.createClass({
+	displayName: "TradyContactMobile",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "actions-full contact-full" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header contact" },
+					React.createElement(
+						"a",
+						null,
+						"Contact:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentTradyContact, { onModalWith: function (modal) {
+							return _this2.props.onModalWith(modal);
+						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+				)
+			)
+		);
+	}
+});
+var TradySideBarMobile = React.createClass({
+	displayName: "TradySideBarMobile",
+
+	getInitialState: function () {
+		return {
+			showAction: false,
+			showContact: false
+		};
+	},
+
+	show: function (key) {
+		if (key == 'action') {
+			this.setState({ showAction: !this.state.showAction });
+		} else {
+			this.setState({ showContact: !this.state.showContact });
+		}
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"div",
+				{ className: "sidebar-mobile" },
+				React.createElement(
+					"div",
+					{ className: "fixed" },
+					React.createElement(
+						"button",
+						{ className: "contact button-default", onClick: function (key) {
+								return _this.show('contact');
+							} },
+						"Contact"
+					),
+					React.createElement(
+						"button",
+						{ className: "actions button-default", onClick: function (key) {
+								return _this.show('action');
+							} },
+						"Actions"
+					)
+				)
+			),
+			!!this.state.showAction && React.createElement(TradyActionMobile, { close: function (key) {
+					return _this.show('action');
+				}, onModalWith: function (modal) {
+					return _this.props.onModalWith(modal);
+				}, landlord: this.props.landlord, assigned_trady: this.props.assigned_trady, signed_in_trady: this.props.signed_in_trady, maintenance_request: this.props.maintenance_request }),
+			!!this.state.showContact && React.createElement(TradyContactMobile, { close: function (key) {
+					return _this.show('contact');
+				}, onModalWith: function (modal) {
+					return _this.props.onModalWith(modal);
+				}, landlord: this.props.landlord, current_user: this.props.current_user, maintenance_request: this.props.maintenance_request })
+		);
+	}
+});
+
+var ModalNotification = React.createClass({
+	displayName: "ModalNotification",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: 'modal-header ' + (this.props.bgClass && this.props.bgClass) },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"aria-label": "Close",
+								"data-dismiss": "modal",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							this.props.title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							this.props.content
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var TradyMaintenanceRequest = React.createClass({
+	displayName: "TradyMaintenanceRequest",
+
+	getInitialState: function () {
+		return {
+			modal: "",
+			quote: null,
+			invoice: null,
+			isModal: false,
+			invoice_pdf_file: null,
+			quotes: this.props.quotes,
+			tradies: this.props.tradies,
+			landlord: this.props.landlord,
+			invoices: this.props.invoices,
+			invoice_pdf_files: this.props.invoice_pdf_files,
+			maintenance_request: this.props.maintenance_request,
+			tenants_conversation: this.props.tenants_conversation,
+			landlords_conversation: this.props.landlords_conversation,
+			notification: {
+				title: "",
+				content: "",
+				bgClass: ""
+			}
+		};
+	},
+
+	isClose: function () {
+		this.setState({ isModal: false });
+		this.setState({ modal: "" });
+		var body = document.getElementsByTagName('body')[0];
+		body.classList.remove("modal-open");
+		var div = document.getElementsByClassName('modal-backdrop in')[0];
+		div.parentNode.removeChild(div);
+	},
+
+	onModalWith: function (modal) {
+		this.setState({
+			modal: modal,
+			isModal: true
+		});
+	},
+
+	sendMessageQuote: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var quote = self.state.quote;
+				quote.conversation = quote.conversation ? quote.conversation : {};
+				var messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
+				messages.push(res);
+				quote.conversation.messages = messages;
+				self.setState({
+					quote: quote
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Trady",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	viewItem: function (key, item) {
+		switch (key) {
+			case 'viewQuote':
+			case 'viewQuoteMessage':
+				{
+					this.setState({
+						quote: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewInvoice':
+				{
+					this.setState({
+						invoice: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewPdfInvoice':
+				{
+					this.setState({
+						invoice_pdf_file: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			default:
+				{
+					break;
+				}
+		}
+	},
+
+	renderModal: function () {
+		var _this2 = this;
+
+		if (this.state.isModal) {
+			var body = document.getElementsByTagName('body')[0];
+			body.className += " modal-open";
+			var div = document.getElementsByClassName('modal-backdrop in');
+
+			if (div.length === 0) {
+				div = document.createElement('div');
+				div.className = "modal-backdrop in";
+				body.appendChild(div);
+			}
+
+			switch (this.state.modal) {
+				case 'notification':
+					return React.createElement(ModalNotification, {
+						close: this.isClose,
+						bgClass: this.state.notification.bgClass,
+						title: this.state.notification.title,
+						content: this.state.notification.content
+					});
+
+				case 'viewQuote':
+					{
+						return React.createElement(ModalViewQuote, {
+							close: this.isClose,
+							quote: this.state.quote,
+							keyLandlord: "trady",
+							quotes: this.state.quotes,
+							agency: this.props.agency,
+							property: this.props.property,
+							onModalWith: this.onModalWith,
+							current_user: this.props.current_user,
+							viewQuote: function (quote) {
+								return _this2.viewQuote(quote);
+							}
+						});
+					}
+
+				case 'viewQuoteMessage':
+					{
+						return React.createElement(ModalViewQuoteMessage, {
+							close: this.isClose,
+							quote: this.state.quote,
+							current_user: this.props.current_user,
+							sendMessageQuote: this.sendMessageQuote
+						});
+					}
+
+				case 'viewInvoice':
+					{
+						return React.createElement(ModalViewInvoice, {
+							close: this.isClose,
+							agency: this.props.agency,
+							invoice: this.state.invoice,
+							invoices: this.state.invoices,
+							property: this.props.property
+						});
+					}
+
+				case 'viewPdfInvoice':
+					{
+						return React.createElement(ModalViewPDFInvoice, {
+							close: this.isClose,
+							agency: this.props.agency,
+							invoice_pdf_file: this.state.invoice_pdf_file,
+							invoice_pdf_files: this.state.invoice_pdf_files,
+							property: this.props.property
+						});
+					}
+
+				default:
+					return null;
+			}
+		}
+	},
+
+	render: function () {
+		var _this3 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "summary-container-index", id: "summary-container-index" },
+			React.createElement(
+				"div",
+				{ className: "main-summary" },
+				React.createElement(
+					"div",
+					{ className: "section" },
+					React.createElement(ItemMaintenanceRequest, {
+						gallery: this.props.gallery,
+						property: this.props.property,
+						maintenance_request: this.state.maintenance_request
+					}),
+					this.props.quotes.length > 0 ? React.createElement(Quotes, {
+						keyLandlord: "trady",
+						quotes: this.state.quotes,
+						landlord: this.state.landlord,
+						onModalWith: this.onModalWith,
+						current_user: this.props.current_user,
+						viewQuote: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						current_user_show_quote_message: this.props.current_user_show_quote_message
+					}) : null,
+					this.props.invoices.length > 0 ? React.createElement(Invoices, {
+						invoices: this.state.invoices,
+						viewInvoice: function (key, item) {
+							return _this3.viewItem(key, item);
+						}
+					}) : null,
+					this.props.invoice_pdf_files.length > 0 ? React.createElement(PDFInvoices, {
+						invoice_pdf_files: this.state.invoice_pdf_files,
+						viewPDFInvoice: function (key, item) {
+							return _this3.viewItem(key, item);
+						}
+					}) : null
+				),
+				React.createElement(
+					"div",
+					{ className: "sidebar" },
+					React.createElement(TradyContact, {
+						landlord: this.state.landlord,
+						onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						},
+						current_user: this.props.current_user,
+						maintenance_request: this.state.maintenance_request
+					}),
+					React.createElement(TradyAction, {
+						landlord: this.state.landlord,
+						assigned_trady: this.props.assigned_trady,
+						signed_in_trady: this.props.signed_in_trady,
+						onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						},
+						maintenance_request: this.state.maintenance_request
+					})
+				)
+			),
+			React.createElement(TradySideBarMobile, {
+				landlord: this.state.landlord,
+				current_user: this.props.current_user,
+				assigned_trady: this.props.assigned_trady,
+				signed_in_trady: this.props.signed_in_trady,
+				onModalWith: function (modal) {
+					return _this3.onModalWith(modal);
+				},
+				maintenance_request: this.state.maintenance_request
+			}),
+			this.renderModal()
+		);
+	}
+});
+(function() {
+  (function() {
+    (function() {
+      var slice = [].slice;
+
+      this.ActionCable = {
+        INTERNAL: {
+          "message_types": {
+            "welcome": "welcome",
+            "ping": "ping",
+            "confirmation": "confirm_subscription",
+            "rejection": "reject_subscription"
+          },
+          "default_mount_path": "/cable",
+          "protocols": ["actioncable-v1-json", "actioncable-unsupported"]
+        },
+        createConsumer: function(url) {
+          var ref;
+          if (url == null) {
+            url = (ref = this.getConfig("url")) != null ? ref : this.INTERNAL.default_mount_path;
+          }
+          return new ActionCable.Consumer(this.createWebSocketURL(url));
+        },
+        getConfig: function(name) {
+          var element;
+          element = document.head.querySelector("meta[name='action-cable-" + name + "']");
+          return element != null ? element.getAttribute("content") : void 0;
+        },
+        createWebSocketURL: function(url) {
+          var a;
+          if (url && !/^wss?:/i.test(url)) {
+            a = document.createElement("a");
+            a.href = url;
+            a.href = a.href;
+            a.protocol = a.protocol.replace("http", "ws");
+            return a.href;
+          } else {
+            return url;
+          }
+        },
+        startDebugging: function() {
+          return this.debugging = true;
+        },
+        stopDebugging: function() {
+          return this.debugging = null;
+        },
+        log: function() {
+          var messages;
+          messages = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+          if (this.debugging) {
+            messages.push(Date.now());
+            return console.log.apply(console, ["[ActionCable]"].concat(slice.call(messages)));
           }
         }
-        return results;
-      }).call(this);
-      return subscription;
-    };
+      };
 
-    Subscriptions.prototype.findAll = function(identifier) {
-      var i, len, ref, results, s;
-      ref = this.subscriptions;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        s = ref[i];
-        if (s.identifier === identifier) {
-          results.push(s);
+    }).call(this);
+  }).call(this);
+
+  var ActionCable = this.ActionCable;
+
+  (function() {
+    (function() {
+      var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+      ActionCable.ConnectionMonitor = (function() {
+        var clamp, now, secondsSince;
+
+        ConnectionMonitor.pollInterval = {
+          min: 3,
+          max: 30
+        };
+
+        ConnectionMonitor.staleThreshold = 6;
+
+        function ConnectionMonitor(connection) {
+          this.connection = connection;
+          this.visibilityDidChange = bind(this.visibilityDidChange, this);
+          this.reconnectAttempts = 0;
         }
-      }
-      return results;
-    };
 
-    Subscriptions.prototype.reload = function() {
-      var i, len, ref, results, subscription;
-      ref = this.subscriptions;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        subscription = ref[i];
-        results.push(this.sendCommand(subscription, "subscribe"));
-      }
-      return results;
-    };
+        ConnectionMonitor.prototype.start = function() {
+          if (!this.isRunning()) {
+            this.startedAt = now();
+            delete this.stoppedAt;
+            this.startPolling();
+            document.addEventListener("visibilitychange", this.visibilityDidChange);
+            return ActionCable.log("ConnectionMonitor started. pollInterval = " + (this.getPollInterval()) + " ms");
+          }
+        };
 
-    Subscriptions.prototype.notifyAll = function() {
-      var args, callbackName, i, len, ref, results, subscription;
-      callbackName = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-      ref = this.subscriptions;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        subscription = ref[i];
-        results.push(this.notify.apply(this, [subscription, callbackName].concat(slice.call(args))));
-      }
-      return results;
-    };
+        ConnectionMonitor.prototype.stop = function() {
+          if (this.isRunning()) {
+            this.stoppedAt = now();
+            this.stopPolling();
+            document.removeEventListener("visibilitychange", this.visibilityDidChange);
+            return ActionCable.log("ConnectionMonitor stopped");
+          }
+        };
 
-    Subscriptions.prototype.notify = function() {
-      var args, callbackName, i, len, results, subscription, subscriptions;
-      subscription = arguments[0], callbackName = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
-      if (typeof subscription === "string") {
-        subscriptions = this.findAll(subscription);
-      } else {
-        subscriptions = [subscription];
-      }
-      results = [];
-      for (i = 0, len = subscriptions.length; i < len; i++) {
-        subscription = subscriptions[i];
-        results.push(typeof subscription[callbackName] === "function" ? subscription[callbackName].apply(subscription, args) : void 0);
-      }
-      return results;
-    };
+        ConnectionMonitor.prototype.isRunning = function() {
+          return (this.startedAt != null) && (this.stoppedAt == null);
+        };
 
-    Subscriptions.prototype.sendCommand = function(subscription, command) {
-      var identifier;
-      identifier = subscription.identifier;
-      return this.consumer.send({
-        command: command,
-        identifier: identifier
-      });
-    };
+        ConnectionMonitor.prototype.recordPing = function() {
+          return this.pingedAt = now();
+        };
 
-    return Subscriptions;
+        ConnectionMonitor.prototype.recordConnect = function() {
+          this.reconnectAttempts = 0;
+          this.recordPing();
+          delete this.disconnectedAt;
+          return ActionCable.log("ConnectionMonitor recorded connect");
+        };
 
-  })();
+        ConnectionMonitor.prototype.recordDisconnect = function() {
+          this.disconnectedAt = now();
+          return ActionCable.log("ConnectionMonitor recorded disconnect");
+        };
 
-}).call(this);
-(function() {
-  ActionCable.Subscription = (function() {
-    var extend;
+        ConnectionMonitor.prototype.startPolling = function() {
+          this.stopPolling();
+          return this.poll();
+        };
 
-    function Subscription(consumer, params, mixin) {
-      this.consumer = consumer;
-      if (params == null) {
-        params = {};
-      }
-      this.identifier = JSON.stringify(params);
-      extend(this, mixin);
-    }
+        ConnectionMonitor.prototype.stopPolling = function() {
+          return clearTimeout(this.pollTimeout);
+        };
 
-    Subscription.prototype.perform = function(action, data) {
-      if (data == null) {
-        data = {};
-      }
-      data.action = action;
-      return this.send(data);
-    };
+        ConnectionMonitor.prototype.poll = function() {
+          return this.pollTimeout = setTimeout((function(_this) {
+            return function() {
+              _this.reconnectIfStale();
+              return _this.poll();
+            };
+          })(this), this.getPollInterval());
+        };
 
-    Subscription.prototype.send = function(data) {
-      return this.consumer.send({
-        command: "message",
-        identifier: this.identifier,
-        data: JSON.stringify(data)
-      });
-    };
+        ConnectionMonitor.prototype.getPollInterval = function() {
+          var interval, max, min, ref;
+          ref = this.constructor.pollInterval, min = ref.min, max = ref.max;
+          interval = 5 * Math.log(this.reconnectAttempts + 1);
+          return Math.round(clamp(interval, min, max) * 1000);
+        };
 
-    Subscription.prototype.unsubscribe = function() {
-      return this.consumer.subscriptions.remove(this);
-    };
+        ConnectionMonitor.prototype.reconnectIfStale = function() {
+          if (this.connectionIsStale()) {
+            ActionCable.log("ConnectionMonitor detected stale connection. reconnectAttempts = " + this.reconnectAttempts + ", pollInterval = " + (this.getPollInterval()) + " ms, time disconnected = " + (secondsSince(this.disconnectedAt)) + " s, stale threshold = " + this.constructor.staleThreshold + " s");
+            this.reconnectAttempts++;
+            if (this.disconnectedRecently()) {
+              return ActionCable.log("ConnectionMonitor skipping reopening recent disconnect");
+            } else {
+              ActionCable.log("ConnectionMonitor reopening");
+              return this.connection.reopen();
+            }
+          }
+        };
 
-    extend = function(object, properties) {
-      var key, value;
-      if (properties != null) {
-        for (key in properties) {
-          value = properties[key];
-          object[key] = value;
+        ConnectionMonitor.prototype.connectionIsStale = function() {
+          var ref;
+          return secondsSince((ref = this.pingedAt) != null ? ref : this.startedAt) > this.constructor.staleThreshold;
+        };
+
+        ConnectionMonitor.prototype.disconnectedRecently = function() {
+          return this.disconnectedAt && secondsSince(this.disconnectedAt) < this.constructor.staleThreshold;
+        };
+
+        ConnectionMonitor.prototype.visibilityDidChange = function() {
+          if (document.visibilityState === "visible") {
+            return setTimeout((function(_this) {
+              return function() {
+                if (_this.connectionIsStale() || !_this.connection.isOpen()) {
+                  ActionCable.log("ConnectionMonitor reopening stale connection on visibilitychange. visbilityState = " + document.visibilityState);
+                  return _this.connection.reopen();
+                }
+              };
+            })(this), 200);
+          }
+        };
+
+        now = function() {
+          return new Date().getTime();
+        };
+
+        secondsSince = function(time) {
+          return (now() - time) / 1000;
+        };
+
+        clamp = function(number, min, max) {
+          return Math.max(min, Math.min(max, number));
+        };
+
+        return ConnectionMonitor;
+
+      })();
+
+    }).call(this);
+    (function() {
+      var i, message_types, protocols, ref, supportedProtocols, unsupportedProtocol,
+        slice = [].slice,
+        bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+        indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+      ref = ActionCable.INTERNAL, message_types = ref.message_types, protocols = ref.protocols;
+
+      supportedProtocols = 2 <= protocols.length ? slice.call(protocols, 0, i = protocols.length - 1) : (i = 0, []), unsupportedProtocol = protocols[i++];
+
+      ActionCable.Connection = (function() {
+        Connection.reopenDelay = 500;
+
+        function Connection(consumer) {
+          this.consumer = consumer;
+          this.open = bind(this.open, this);
+          this.subscriptions = this.consumer.subscriptions;
+          this.monitor = new ActionCable.ConnectionMonitor(this);
+          this.disconnected = true;
         }
-      }
-      return object;
-    };
 
-    return Subscription;
+        Connection.prototype.send = function(data) {
+          if (this.isOpen()) {
+            this.webSocket.send(JSON.stringify(data));
+            return true;
+          } else {
+            return false;
+          }
+        };
 
-  })();
+        Connection.prototype.open = function() {
+          if (this.isActive()) {
+            ActionCable.log("Attempted to open WebSocket, but existing socket is " + (this.getState()));
+            throw new Error("Existing connection must be closed before opening");
+          } else {
+            ActionCable.log("Opening WebSocket, current state is " + (this.getState()) + ", subprotocols: " + protocols);
+            if (this.webSocket != null) {
+              this.uninstallEventHandlers();
+            }
+            this.webSocket = new WebSocket(this.consumer.url, protocols);
+            this.installEventHandlers();
+            this.monitor.start();
+            return true;
+          }
+        };
 
-}).call(this);
-(function() {
-  ActionCable.Consumer = (function() {
-    function Consumer(url) {
-      this.url = url;
-      this.subscriptions = new ActionCable.Subscriptions(this);
-      this.connection = new ActionCable.Connection(this);
-    }
+        Connection.prototype.close = function(arg) {
+          var allowReconnect, ref1;
+          allowReconnect = (arg != null ? arg : {
+            allowReconnect: true
+          }).allowReconnect;
+          if (!allowReconnect) {
+            this.monitor.stop();
+          }
+          if (this.isActive()) {
+            return (ref1 = this.webSocket) != null ? ref1.close() : void 0;
+          }
+        };
 
-    Consumer.prototype.send = function(data) {
-      return this.connection.send(data);
-    };
+        Connection.prototype.reopen = function() {
+          var error;
+          ActionCable.log("Reopening WebSocket, current state is " + (this.getState()));
+          if (this.isActive()) {
+            try {
+              return this.close();
+            } catch (error1) {
+              error = error1;
+              return ActionCable.log("Failed to reopen WebSocket", error);
+            } finally {
+              ActionCable.log("Reopening WebSocket in " + this.constructor.reopenDelay + "ms");
+              setTimeout(this.open, this.constructor.reopenDelay);
+            }
+          } else {
+            return this.open();
+          }
+        };
 
-    Consumer.prototype.connect = function() {
-      return this.connection.open();
-    };
+        Connection.prototype.getProtocol = function() {
+          var ref1;
+          return (ref1 = this.webSocket) != null ? ref1.protocol : void 0;
+        };
 
-    Consumer.prototype.disconnect = function() {
-      return this.connection.close({
-        allowReconnect: false
-      });
-    };
+        Connection.prototype.isOpen = function() {
+          return this.isState("open");
+        };
 
-    Consumer.prototype.ensureActiveConnection = function() {
-      if (!this.connection.isActive()) {
-        return this.connection.open();
-      }
-    };
+        Connection.prototype.isActive = function() {
+          return this.isState("open", "connecting");
+        };
 
-    return Consumer;
+        Connection.prototype.isProtocolSupported = function() {
+          var ref1;
+          return ref1 = this.getProtocol(), indexOf.call(supportedProtocols, ref1) >= 0;
+        };
 
-  })();
+        Connection.prototype.isState = function() {
+          var ref1, states;
+          states = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+          return ref1 = this.getState(), indexOf.call(states, ref1) >= 0;
+        };
 
+        Connection.prototype.getState = function() {
+          var ref1, state, value;
+          for (state in WebSocket) {
+            value = WebSocket[state];
+            if (value === ((ref1 = this.webSocket) != null ? ref1.readyState : void 0)) {
+              return state.toLowerCase();
+            }
+          }
+          return null;
+        };
+
+        Connection.prototype.installEventHandlers = function() {
+          var eventName, handler;
+          for (eventName in this.events) {
+            handler = this.events[eventName].bind(this);
+            this.webSocket["on" + eventName] = handler;
+          }
+        };
+
+        Connection.prototype.uninstallEventHandlers = function() {
+          var eventName;
+          for (eventName in this.events) {
+            this.webSocket["on" + eventName] = function() {};
+          }
+        };
+
+        Connection.prototype.events = {
+          message: function(event) {
+            var identifier, message, ref1, type;
+            if (!this.isProtocolSupported()) {
+              return;
+            }
+            ref1 = JSON.parse(event.data), identifier = ref1.identifier, message = ref1.message, type = ref1.type;
+            switch (type) {
+              case message_types.welcome:
+                this.monitor.recordConnect();
+                return this.subscriptions.reload();
+              case message_types.ping:
+                return this.monitor.recordPing();
+              case message_types.confirmation:
+                return this.subscriptions.notify(identifier, "connected");
+              case message_types.rejection:
+                return this.subscriptions.reject(identifier);
+              default:
+                return this.subscriptions.notify(identifier, "received", message);
+            }
+          },
+          open: function() {
+            ActionCable.log("WebSocket onopen event, using '" + (this.getProtocol()) + "' subprotocol");
+            this.disconnected = false;
+            if (!this.isProtocolSupported()) {
+              ActionCable.log("Protocol is unsupported. Stopping monitor and disconnecting.");
+              return this.close({
+                allowReconnect: false
+              });
+            }
+          },
+          close: function(event) {
+            ActionCable.log("WebSocket onclose event");
+            if (this.disconnected) {
+              return;
+            }
+            this.disconnected = true;
+            this.monitor.recordDisconnect();
+            return this.subscriptions.notifyAll("disconnected", {
+              willAttemptReconnect: this.monitor.isRunning()
+            });
+          },
+          error: function() {
+            return ActionCable.log("WebSocket onerror event");
+          }
+        };
+
+        return Connection;
+
+      })();
+
+    }).call(this);
+    (function() {
+      var slice = [].slice;
+
+      ActionCable.Subscriptions = (function() {
+        function Subscriptions(consumer) {
+          this.consumer = consumer;
+          this.subscriptions = [];
+        }
+
+        Subscriptions.prototype.create = function(channelName, mixin) {
+          var channel, params, subscription;
+          channel = channelName;
+          params = typeof channel === "object" ? channel : {
+            channel: channel
+          };
+          subscription = new ActionCable.Subscription(this.consumer, params, mixin);
+          return this.add(subscription);
+        };
+
+        Subscriptions.prototype.add = function(subscription) {
+          this.subscriptions.push(subscription);
+          this.consumer.ensureActiveConnection();
+          this.notify(subscription, "initialized");
+          this.sendCommand(subscription, "subscribe");
+          return subscription;
+        };
+
+        Subscriptions.prototype.remove = function(subscription) {
+          this.forget(subscription);
+          if (!this.findAll(subscription.identifier).length) {
+            this.sendCommand(subscription, "unsubscribe");
+          }
+          return subscription;
+        };
+
+        Subscriptions.prototype.reject = function(identifier) {
+          var i, len, ref, results, subscription;
+          ref = this.findAll(identifier);
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            subscription = ref[i];
+            this.forget(subscription);
+            this.notify(subscription, "rejected");
+            results.push(subscription);
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.forget = function(subscription) {
+          var s;
+          this.subscriptions = (function() {
+            var i, len, ref, results;
+            ref = this.subscriptions;
+            results = [];
+            for (i = 0, len = ref.length; i < len; i++) {
+              s = ref[i];
+              if (s !== subscription) {
+                results.push(s);
+              }
+            }
+            return results;
+          }).call(this);
+          return subscription;
+        };
+
+        Subscriptions.prototype.findAll = function(identifier) {
+          var i, len, ref, results, s;
+          ref = this.subscriptions;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            s = ref[i];
+            if (s.identifier === identifier) {
+              results.push(s);
+            }
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.reload = function() {
+          var i, len, ref, results, subscription;
+          ref = this.subscriptions;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            subscription = ref[i];
+            results.push(this.sendCommand(subscription, "subscribe"));
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.notifyAll = function() {
+          var args, callbackName, i, len, ref, results, subscription;
+          callbackName = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+          ref = this.subscriptions;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            subscription = ref[i];
+            results.push(this.notify.apply(this, [subscription, callbackName].concat(slice.call(args))));
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.notify = function() {
+          var args, callbackName, i, len, results, subscription, subscriptions;
+          subscription = arguments[0], callbackName = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+          if (typeof subscription === "string") {
+            subscriptions = this.findAll(subscription);
+          } else {
+            subscriptions = [subscription];
+          }
+          results = [];
+          for (i = 0, len = subscriptions.length; i < len; i++) {
+            subscription = subscriptions[i];
+            results.push(typeof subscription[callbackName] === "function" ? subscription[callbackName].apply(subscription, args) : void 0);
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.sendCommand = function(subscription, command) {
+          var identifier;
+          identifier = subscription.identifier;
+          return this.consumer.send({
+            command: command,
+            identifier: identifier
+          });
+        };
+
+        return Subscriptions;
+
+      })();
+
+    }).call(this);
+    (function() {
+      ActionCable.Subscription = (function() {
+        var extend;
+
+        function Subscription(consumer, params, mixin) {
+          this.consumer = consumer;
+          if (params == null) {
+            params = {};
+          }
+          this.identifier = JSON.stringify(params);
+          extend(this, mixin);
+        }
+
+        Subscription.prototype.perform = function(action, data) {
+          if (data == null) {
+            data = {};
+          }
+          data.action = action;
+          return this.send(data);
+        };
+
+        Subscription.prototype.send = function(data) {
+          return this.consumer.send({
+            command: "message",
+            identifier: this.identifier,
+            data: JSON.stringify(data)
+          });
+        };
+
+        Subscription.prototype.unsubscribe = function() {
+          return this.consumer.subscriptions.remove(this);
+        };
+
+        extend = function(object, properties) {
+          var key, value;
+          if (properties != null) {
+            for (key in properties) {
+              value = properties[key];
+              object[key] = value;
+            }
+          }
+          return object;
+        };
+
+        return Subscription;
+
+      })();
+
+    }).call(this);
+    (function() {
+      ActionCable.Consumer = (function() {
+        function Consumer(url) {
+          this.url = url;
+          this.subscriptions = new ActionCable.Subscriptions(this);
+          this.connection = new ActionCable.Connection(this);
+        }
+
+        Consumer.prototype.send = function(data) {
+          return this.connection.send(data);
+        };
+
+        Consumer.prototype.connect = function() {
+          return this.connection.open();
+        };
+
+        Consumer.prototype.disconnect = function() {
+          return this.connection.close({
+            allowReconnect: false
+          });
+        };
+
+        Consumer.prototype.ensureActiveConnection = function() {
+          if (!this.connection.isActive()) {
+            return this.connection.open();
+          }
+        };
+
+        return Consumer;
+
+      })();
+
+    }).call(this);
+  }).call(this);
+
+  if (typeof module === "object" && module.exports) {
+    module.exports = ActionCable;
+  } else if (typeof define === "function" && define.amd) {
+    define(ActionCable);
+  }
 }).call(this);
 // Action Cable provides the framework to deal with WebSockets in Rails.
 // You can generate new channels where WebSocket features live using the rails generate channel command.
