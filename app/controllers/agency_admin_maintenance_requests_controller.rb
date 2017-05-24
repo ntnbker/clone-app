@@ -1,5 +1,5 @@
 class AgencyAdminMaintenanceRequestsController < ApplicationController
-  
+  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   def index
     if params[:sort_by_date] == "Newest to Oldest"
       @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC')
@@ -103,4 +103,15 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   def update
     
   end
+  private
+
+  def email_auto_login(id)
+      if current_user == nil
+        user = User.find_by(id:id)
+        auto_login(user)
+      end 
+  end
+
+
+
 end 
