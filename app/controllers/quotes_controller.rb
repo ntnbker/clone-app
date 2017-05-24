@@ -7,18 +7,37 @@ class QuotesController < ApplicationController
     @maintenance_request_id= params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
+    @quote_type = params[:quote_type]
+    @system_plan = params[:system_plan]
+
+    
   end
 
   def create
     
     @quote = Quote.new(quote_params)
+    @quote_type = params[:quote][:quote_type]
+    @system_plan = params[:quote][:system_plan]
+
+    # @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
+    # quote_request = QuoteRequest.where(:trady_id=>params[:quote][:trady_id], :maintenance_request_id=>params[:quote][:maintenance_request_id]).first
     
-    @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
-    
+
     if @quote.save
-      @quote.update_attribute(:amount,@total)
-      
-      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
+      @quote.calculate_quote_items_totals
+      @quote.calculate_tax
+      # @quote.update_attribute(:amount,@total)
+
+      # if the quote id has been set then do nothing. if the quote_id in blank then fill it in. 
+      # if quote_request.quote_id.blank?
+      #   quote.update_attribute(:quote_id, @quote.id)
+      # else  
+
+      # end 
+
+      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
+      #######TradyStatus.create(maintenance_request_id:params[:quote][:maintenance_request_id],status:"Awaiting Quote Approval")
+
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:quote][:trady_id]
@@ -29,25 +48,31 @@ class QuotesController < ApplicationController
 
   def edit
     @quote = Quote.find_by(id:params[:id])
+    @quote_id = @quote.id
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
-    
+    @quote_type = params[:quote_type]
+    @system_plan = params[:system_plan]
     @trady_company = @trady.trady_company
+
   end
 
   def update
     
     @quote = Quote.find_by(id:params[:id])
-    @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
+    # @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
     @maintenance_request_id = params[:quote][:maintenance_request_id]
     @trady = Trady.find_by(id:params[:quote][:trady_id])
     
     @trady_company = @trady.trady_company
+    @quote_type = params[:quote][:quote_type]
+    @system_plan = params[:quote][:system_plan]
 
     if @quote.update(quote_params)
-      @quote.update_attribute(:amount,@total)
+      @quote.calculate_quote_items_totals
+      @quote.calculate_tax
       flash[:success] = "Your Quote has been updated"
-      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id])
+      redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
     else
       flash[:danger] = "Sorry Something went wrong "
       render :edit
@@ -58,7 +83,10 @@ class QuotesController < ApplicationController
     #this controller is to show the quote before sending in the quote email 
     @quote = Quote.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
-    @trady_id = params[:trady_id] 
+    @trady = Trady.find_by(id:params[:trady_id])
+    @trady_id = params[:trady_id]
+    @quote_type = params[:quote_type]
+    @system_plan = params[:system_plan]
   end
 
   def show_quote
@@ -80,6 +108,8 @@ class QuotesController < ApplicationController
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
+
+
         else
           quote.update_attribute(:status, "Declined")
           trady = quote.trady
@@ -108,7 +138,7 @@ class QuotesController < ApplicationController
     end   
 
     respond_to do |format|
-      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => [:trady])}}
+      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})}}
       
     end
 
@@ -122,6 +152,15 @@ class QuotesController < ApplicationController
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
     @quote.update_attribute(:delivery_status, true)
+
+    quote_request = QuoteRequest.where(:trady_id=>@quote.trady.id, :maintenance_request_id=>@maintenance_request.id).first
+
+    if quote_request.quote_id.blank?
+      quote_request.update_attribute(:quote_id, @quote.id)
+    else  
+
+    end
+
 
     flash[:success] = "Your Quote has been sent Thank you"
     if @landlord == nil 
@@ -163,7 +202,9 @@ class QuotesController < ApplicationController
 
   def landlord_decides_quote
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    quotes = maintenance_request.quotes
+    quotes = maintenance_request.quotes.where(:delivery_status=>true)
+    
+    # @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     if params[:status] == "Approved" 
       quotes.each do |quote|
         if quote.id == params[:quote_id].to_i && params[:status] == "Approved"
@@ -178,17 +219,17 @@ class QuotesController < ApplicationController
           quote.update_attribute(:status, "Declined")
           trady = quote.trady
           #EMAIL AGENT QUOTE DECLINED
-          TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+          # TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
       end
-    # elsif params[:status] == "Declined"
-    #   quote = Quote.find_by(id: params[:quote_id])
-    #   trady = quote.trady
-    #   quote.update_attribute(:status,"Declined")
-    #   TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
-    #   #email the person who got declined
     
+      
     end 
+    q = quotes.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    respond_to do |format|
+      format.json {render :json => q}
+      
+    end
     
   end
 

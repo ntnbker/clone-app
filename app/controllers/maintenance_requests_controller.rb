@@ -8,11 +8,19 @@ class MaintenanceRequestsController < ApplicationController
   authorize_resource :class => false
 
   def new
+    
+    if current_user != nil 
+      @role = current_user.role.roleable_type
+    else
+      @role = nil
+    end 
+      
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
+    
   end
 
   def create
@@ -23,7 +31,8 @@ class MaintenanceRequestsController < ApplicationController
 
 
     if current_user == nil || current_user.tenant?
-      @maintenance_request.perform_realestate_validations = true
+      @maintenance_request.perform_realestate_validations = false
+      ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
       the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email]) 
       the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email]) 
         if the_agency_admin
@@ -33,6 +42,7 @@ class MaintenanceRequestsController < ApplicationController
         end
         if the_agent
           @agent = the_agent
+          @agency_admin = @agent.agency.agency_admins.first
           @maintenance_request.agent_id = @agent.id
           @agency = @agent.agency
         end
@@ -232,11 +242,17 @@ class MaintenanceRequestsController < ApplicationController
 
       MaintenanceRequest.last.reindex
       if current_user == nil
-        flash[:danger]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
+        flash[:success]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
         redirect_to root_path
-      elsif current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? 
+      elsif current_user.agency_admin? 
         flash[:success]= "Thank You for creating a Maintenance Request"
-        redirect_to maintenance_request_path(@maintenance_request)
+        redirect_to agency_admin_maintenance_request_path(@maintenance_request)
+      elsif current_user.agent? 
+        flash[:success]= "Thank You for creating a Maintenance Request"
+        redirect_to agent_maintenance_request_path(@maintenance_request)
+      elsif current_user.tenant? 
+        flash[:success]= "Thank You for creating a Maintenance Request"
+        redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
       
     else
@@ -396,7 +412,7 @@ class MaintenanceRequestsController < ApplicationController
   private
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:image,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], maintenance_request_image_attributes:[:id, :maintenance_request_id,{images: []},:_destroy])
+    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], maintenance_request_image_attributes:[:id, :maintenance_request_id,{images: []},:_destroy])
   end
 
   def set_user

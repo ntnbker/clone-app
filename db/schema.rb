@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419062431) do
+ActiveRecord::Schema.define(version: 20170523170207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +157,7 @@ ActiveRecord::Schema.define(version: 20170419062431) do
     t.datetime "updated_at",             null: false
     t.string   "conversation_type"
     t.integer  "maintenance_request_id"
+    t.integer  "quote_id"
   end
 
   create_table "gods", force: :cascade do |t|
@@ -201,6 +202,7 @@ ActiveRecord::Schema.define(version: 20170419062431) do
     t.float    "gst_amount"
     t.date     "due_date"
     t.boolean  "delivery_status"
+    t.boolean  "print_status"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -284,13 +286,22 @@ ActiveRecord::Schema.define(version: 20170419062431) do
   create_table "quote_items", force: :cascade do |t|
     t.integer "quote_id"
     t.string  "item_description"
-    t.integer "amount"
+    t.float   "amount"
     t.string  "pricing_type"
     t.float   "hours"
+    t.float   "total_per_hour"
+  end
+
+  create_table "quote_requests", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.integer  "trady_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "quote_id"
   end
 
   create_table "quotes", force: :cascade do |t|
-    t.integer  "amount"
+    t.float    "amount"
     t.integer  "maintenance_request_id"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
@@ -298,6 +309,7 @@ ActiveRecord::Schema.define(version: 20170419062431) do
     t.string   "status"
     t.boolean  "delivery_status"
     t.boolean  "tax"
+    t.float    "gst_amount"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -374,6 +386,13 @@ ActiveRecord::Schema.define(version: 20170419062431) do
     t.integer  "trady_id"
   end
 
+  create_table "trady_statuses", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.string   "status"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "uploaded_invoices", force: :cascade do |t|
     t.string   "invoices",               default: [],              array: true
     t.integer  "maintenance_request_id"
@@ -381,6 +400,16 @@ ActiveRecord::Schema.define(version: 20170419062431) do
     t.datetime "updated_at",                          null: false
     t.integer  "trady_id"
     t.boolean  "delivery_status"
+  end
+
+  create_table "uploaded_quotes", force: :cascade do |t|
+    t.string   "quotes",                 default: [],              array: true
+    t.integer  "maintenance_request_id"
+    t.boolean  "delivery_status"
+    t.integer  "trady_id"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "status"
   end
 
   create_table "user_conversations", force: :cascade do |t|

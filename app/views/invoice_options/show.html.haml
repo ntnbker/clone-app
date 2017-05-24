@@ -1,4 +1,5 @@
 %div.container.invoice-form
+  %h1.text-center Invoices
   %h4 Please Choose One
   %div
     %h5.optionheader Option 1
@@ -7,8 +8,15 @@
       Please Click 
       %b Upload Invoice
       to upload a PDF of your invoice.
-    %button.button-primary.green.option-button
-      =link_to "Upload Invoice", confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"pdf_file" )  
+
+      %div
+        -if current_user.trady.nil? || current_user.trady.trady_company.nil?
+          %button.button-primary.green.option-button
+            =link_to "Upload Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id ) 
+        -else
+          %button.button-primary.green.option-button
+            =link_to "Upload Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id) 
+
   %hr
   %div  
     %h5.optionheader Option 2
@@ -16,7 +24,11 @@
       Easily make invoices using our platform by clicking the 
       %b Create Invoice
       button below.
-    %button.button-primary.green.option-button
-      =link_to "Create Invoice", confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"system_invoice")
+    -if current_user.trady.nil? || current_user.trady.trady_company.nil?
+      %button.button-primary.green.option-button
+        =link_to "Create Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id ) 
+    -else
+      %button.button-primary.green.option-button
+        =link_to "Create Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id) 
     %button.button-primary
       =link_to "Back To Maintenance Request", maintenance_request_path(@maintenance_request_id)

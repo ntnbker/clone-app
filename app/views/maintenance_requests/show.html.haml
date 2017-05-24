@@ -173,17 +173,17 @@
           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
           =f.submit "Submit Message", :class=>"btn btn-default"
 
-=bootstrap_form_for(@landlord,remote: true) do |f|
-  %div{:class=>"modal fade", :id=>"create-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
-    %div{:class=>"modal-dialog", :role=>"document"}
-      %div{:class=>"modal-content"}
-        Please add landlord before attempting to send a quote to the landlord.
-        %div{:class=>"modal-body"}
-          =f.text_field :name, class: "landlord_fields"
-          =f.text_field :email, class: "landlord_fields"
-          =f.phone_field :mobile, class: "landlord_fields"
-          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-          =f.submit "Add Landlord", :class=>"btn btn-default"
+/ =bootstrap_form_for(@landlord,remote: true) do |f|
+/   %div{:class=>"modal fade", :id=>"create-landlord-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+/     %div{:class=>"modal-dialog", :role=>"document"}
+/       %div{:class=>"modal-content"}
+/         Please add landlord before attempting to send a quote to the landlord.
+/         %div{:class=>"modal-body"}
+/           =f.text_field :name, class: "landlord_fields"
+/           =f.text_field :email, class: "landlord_fields"
+/           =f.phone_field :mobile, class: "landlord_fields"
+/           =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+/           =f.submit "Add Landlord", :class=>"btn btn-default"
           
 
 =bootstrap_form_for(@tradie, remote: true) do |f|
@@ -227,6 +227,22 @@
 
 
 
+
+Quote Conversation
+%div{:class=>"modal fade", :id=>"landlord-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+  %div{:class=>"modal-dialog", :role=>"document"}
+    %div{:class=>"modal-content"}
+      %div{:class=>"modal-body message_modal"}
+        %div.messages_container    
+          / = render partial: "messages/message", collection: @landlords_conversation, as: :message   
+        %div{:id=>"errors_div"}
+        =bootstrap_form_for(@message,remote: true,url:"/quote_messages", method: :post) do |f|
+          =f.text_field :body, class: "message_body"
+          =f.hidden_field :conversation_type, value:"Trady"
+          =f.hidden_field :quote_id, value:@quotes.first.id
+          =f.submit "Submit Message", :class=>"btn btn-default"
+          %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+            Close
 
 
 

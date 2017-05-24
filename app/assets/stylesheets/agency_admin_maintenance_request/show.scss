@@ -7,9 +7,37 @@ $color-green: #7dc691;
 $color-gray: #3e4b54;
 $color-gray-dark: #baccd8;
 $color-red: #e34f4f;
+$color-black: #000000;
+$color-blue-light: #7646FF;
 
 body{
   position: relative;
+}
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 15px;
+  background-color: #F5F5F5;
+  margin-right: 0px;
+  padding: 0 10px;
+}
+body::-webkit-scrollbar {
+  width: 5px;
+  background-color: #F5F5F5;
+  margin-right: 0px;
+  padding: 0 10px;
+}
+body::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: rgba(0, 0, 0, 0.5);
+  margin-right: 0px;
+  padding: 0 10px;
+}
+#modal-print {
+  display: none;
+  margin: 0 auto;
+  position: relative;
+  top: 100px;
 }
 .modal-open {
   overflow: hidden;
@@ -27,6 +55,243 @@ body{
   filter: alpha(opacity=50);
   opacity: .5;
 }
+.form-group {
+  margin-bottom: 15px;
+}
+.has-error {
+  border-color: $color-red !important;
+}
+.m-r-lg {
+  margin-right: 20px;
+}
+.btn-back {
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  line-height: 38px;
+  color: #222;
+  text-decoration: none;
+}
+.modal-custom {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    outline: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    .modal-dialog {
+      -webkit-transform: translate(0,0);
+      -ms-transform: translate(0,0);
+      -o-transform: translate(0,0);
+      transform: translate(0,0);
+      width: 500px;
+      margin: 30px auto;
+    }
+    .modal-content {
+      position: relative;
+      background-color: #fff;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      border: 1px solid #999;
+      border: 1px solid rgba(0,0,0,.2);
+      outline: 0;
+      -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      font-weight: 400;
+      font-size: 14px;
+      .due {
+        margin-left: 20px;
+        margin-bottom: 10px;
+      }
+      .print {
+        display: flex;
+        justify-content: flex-end;
+        margin-right: 20px;
+      }
+    }
+    .readonly {
+      background-color: $color-grey;
+    }
+    .modal-header {
+      padding: 15px;
+      border-bottom: 1px solid #e5e5e5;
+      background-color: $color-grey-dark;
+      .modal-title {
+        margin-bottom: 0px;
+        font-size: 16px;
+        color: $color-white;
+        font-weight: 500;
+        font-size: 20px;
+        text-transform: uppercase;
+        text-align: center;
+      }
+      .close {
+        float: right;
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1;
+        color: $color-white;
+        text-shadow: 0 1px 0 $color-white;
+        filter: alpha(opacity=20);
+        opacity: .8;
+        padding: 0;
+        cursor: pointer;
+        background: 0 0;
+        border: 0;
+        margin-top: -2px;
+        height: auto;
+        span {
+          border: 1px solid $color-white;
+          border-radius: 100%;
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          line-height: 18px;
+          text-align: center;
+          color: $color-white;
+        }
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+    .bg-success {
+      background-color: $color-green;
+    }
+    .bg-error {
+      background-color: $color-red
+    }
+    .modal-body {
+      position: relative;
+      padding: 15px;
+      text-transform: uppercase;
+      overflow: hidden;
+      padding-bottom: 0;
+      text-align: center;
+      .scroll-custom::-webkit-scrollbar-track
+      {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 15px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      .scroll-custom::-webkit-scrollbar
+      {
+        width: 5px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      .scroll-custom::-webkit-scrollbar-thumb
+      {
+        border-radius: 15px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: rgba(0, 0, 0, 0.5);
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      label {
+        font-weight: 400;
+        float: left;
+        text-transform: uppercase;
+        width: 80px;
+        line-height: 38px;
+        strong {
+          color: $color-red;
+          font-weight: 500;
+          font-size: 20px;
+        }
+      }
+      .label-custom {
+        width: 140px;
+        text-align: left;
+      }
+      input {
+        width: 80%;
+      }
+      .input-custom {
+        width: 64%;
+      }
+      .message {
+        list-style: none;
+        max-height: 300px;
+        overflow-y: scroll;
+        overflow-x: inherit;
+        margin-bottom: 0px;
+      }
+      .item-message {
+        width: 100%;
+        position: relative;
+        margin-top: 20px;
+        text-align: left;
+        &:after {
+          bottom: 100%;
+          left: 6%;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+          border-bottom-color: $color-grey;
+          border-width: 8px;
+          margin-left: -8px;
+        }
+        span {
+          background-color: $color-grey;
+          color: $color-black;
+          display: inline-block;
+          text-transform: capitalize;
+          border-radius: 5px;
+          padding: 5px 20px;
+          display: inline-block;
+          margin-right: 5px;
+          margin-left: 10px;
+        }
+      }
+      .current-message {
+        text-align: right;
+        &:after {
+          border-bottom-color: $color-green;
+          left: 96%;
+        }
+        span {
+          background-color: $color-green;
+          color: $color-white;
+        }
+      }
+    }
+    .modal-footer {
+      padding: 15px;
+      text-align: center;
+      border-top: none;
+      overflow: hidden; 
+      button {
+        border: none;
+        color: $color-white;
+        text-transform: uppercase;
+      }
+      .textarea-message {
+        width: 100%;
+        margin-bottom: 1px;
+      }
+      .success {
+        background-color: $color-green;
+        margin-right: 10px;
+      }
+      .cancel {
+        background-color: $color-red;
+        margin-right: 10px;
+      }
+    }
+  }
 .summary-container-index {
   background-color: $color-grey;
   clear: both;
@@ -140,7 +405,13 @@ body{
       margin-top: 20px;
       .slider-custom {
         position: relative;
+        .swiper-container {
+          .slider {
+            transition: all .6s;
+          }
+        }
         .swiper-pagination {
+          position: initial;
           bottom: -30px;
           .swiper-pagination-bullet {
             width: 30px;
@@ -155,9 +426,15 @@ body{
         .swiper-pagination-bullet-active {
           background-color: $color-green !important;
         }
+        .swiper-button-next {
+          top: 43%;
+        }
+        .swiper-button-prev {
+          top: 43%;
+        }
       }
       .description {
-        margin-top: 50px;
+        margin-top: 30px;
         color: $color-grey-dark;
         font-size: 16px;
         font-weight: 300;
@@ -241,7 +518,7 @@ body{
           border-color: $color-green;
           color: $color-green;
         }
-        &.Pending {
+        &.Active {
           border-color: $color-gray;
           color: $color-gray;
         }
@@ -249,11 +526,18 @@ body{
           border-color: $color-red;
           color: $color-red;
         }
+        &.Cancelled {
+
+        }
       }
       .actions {
         margin-top: 20px;
         margin-bottom: 20px;
         overflow: hidden;
+        .price {
+          float: right;
+          margin-right: 10px;
+        }
         button {
           background-color: $color-grey;
           height: 43px;
@@ -290,11 +574,53 @@ body{
             margin-right: 20px;
           }
         }
+        .btn-view {
+          margin-right: 0px !important;
+          background-color: $color-white;
+          height: 35px;
+          width: auto;
+          padding: 0 20px;
+          line-height: 35px;
+          font-weight: 400;
+          font-size: 14px;
+          color: $color-black;
+          margin-left: 0px;
+          border: 1px solid $color-black;
+        }
       }
     }
     .actions {
       button {
         float: right;
+      }
+    }
+    .actions-quote {
+      overflow: hidden;
+      clear: both;
+      margin-left: 20px;
+      float: right;
+      margin-bottom: 20px;
+      button {
+        padding: 0 20px;
+        height: 33px;
+        margin-right: 15px;
+        margin-bottom: 5px;
+        font-size: 14px;
+      }
+      .btn-accept {
+        background-color: $color-green;
+        border-color: $color-green;
+        color: $color-white;
+      }
+      .btn-decline {
+        background-color: $color-red;
+        border-color: $color-red;
+        color: $color-white;
+      }
+      .btn-cancel {
+        background-color: $color-gray;
+        border-color: $color-gray;
+        color: $color-white;
       }
     }
   }
@@ -499,124 +825,8 @@ body{
       }
     }
   }
-  .modal-custom {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1050;
-    display: block;
-    outline: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    .modal-dialog {
-      -webkit-transform: translate(0,0);
-      -ms-transform: translate(0,0);
-      -o-transform: translate(0,0);
-      transform: translate(0,0);
-      width: 500px;
-      margin: 30px auto;
-    }
-    .modal-content {
-      position: relative;
-      background-color: #fff;
-      -webkit-background-clip: padding-box;
-      background-clip: padding-box;
-      border: 1px solid #999;
-      border: 1px solid rgba(0,0,0,.2);
-      outline: 0;
-      -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
-      box-shadow: 0 3px 9px rgba(0,0,0,0.5);
-      font-weight: 400;
-      font-size: 14px;
-    }
-    .modal-header {
-      padding: 15px;
-      border-bottom: 1px solid #e5e5e5;
-      background-color: $color-grey-dark;
-      .modal-title {
-        margin-bottom: 0px;
-        font-size: 16px;
-        color: $color-white;
-        font-weight: 500;
-        font-size: 20px;
-        text-transform: uppercase;
-      }
-      .close {
-        float: right;
-        font-size: 21px;
-        font-weight: 700;
-        line-height: 1;
-        color: $color-white;
-        text-shadow: 0 1px 0 $color-white;
-        filter: alpha(opacity=20);
-        opacity: .8;
-        padding: 0;
-        cursor: pointer;
-        background: 0 0;
-        border: 0;
-        margin-top: -2px;
-        height: auto;
-        span {
-          border: 1px solid $color-white;
-          border-radius: 100%;
-          width: 20px;
-          height: 20px;
-          display: inline-block;
-          line-height: 18px;
-          text-align: center;
-          color: $color-white;
-        }
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
-    .modal-body {
-      position: relative;
-      padding: 15px;
-      text-transform: uppercase;
-      label {
-        font-weight: 400;
-        float: left;
-        text-transform: uppercase;
-        width: 80px;
-        line-height: 38px;
-        strong {
-          color: $color-red;
-          font-weight: 500;
-          font-size: 20px;
-        }
-      }
-      input {
-        width: 80%;
-      }
-      .readonly {
-        background-color: $color-grey;
-      }
-      .has-error {
-        border-color: $color-red;
-      }
-    }
-    .modal-footer {
-      padding: 15px;
-      text-align: center;
-      border-top: 1px solid #e5e5e5;
-      button {
-        border: none;
-        color: $color-white;
-        text-transform: uppercase;
-      }
-      .success {
-        background-color: $color-green;
-        margin-right: 10px;
-      }
-      .cancel {
-        background-color: $color-red;
-        margin-right: 10px;
-      }
-    }
+  .actions-full {
+    background-color: $color-green;
   }
   form {
     margin-bottom: 0px;
@@ -636,6 +846,134 @@ body{
     line-height: 25px;
     border-radius: 3px;
     cursor: pointer;
+  }
+  .show-quote {
+    text-transform: initial;
+    .info-quote {
+      border-bottom: 1px solid $color-gray;
+      clear: both;
+      overflow: hidden;
+    }
+    .info-trady {
+      width: 50%;
+      float: left;
+      margin-bottom: 15px;
+      overflow: hidden;
+      p {
+        margin-bottom: 0px;
+        text-align: left;
+      }
+    }
+    .info-agency {
+      width: 50%;
+      overflow: hidden;
+      p {
+        text-align: right;
+        overflow: hidden;
+        margin-bottom: 0px;
+      }
+    }
+    .detail-quote {
+      .info-maintenance {
+        margin-top: 10px;
+        p {
+          text-align: center;
+          margin-bottom: 0;
+        }
+      }
+    }
+    .detail-quote {
+      margin-top: 15px;
+      .table {
+        width: 100%;
+        tr td {
+          padding-left: 0;
+          padding: 3px 3px;
+        }
+      }
+    }
+  }
+  .actions-quote {
+    overflow: hidden;
+    clear: both;
+    margin-left: 20px;
+    float: right;
+    margin-bottom: 20px;
+    text-align: center;
+    button {
+      padding: 0 20px;
+      height: 33px;
+      margin-right: 15px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: $color-black;
+      text-transform: capitalize !important;
+    }
+    .btn-accept {
+      background-color: $color-green;
+      border-color: $color-green;
+      color: $color-white;
+    }
+    .btn-decline {
+      background-color: $color-red;
+      border-color: $color-red;
+      color: $color-white;
+    }
+    .btn-cancel {
+      background-color: $color-gray;
+      border-color: $color-gray;
+      color: $color-white;
+    }
+    .btn-default {
+      border: 1px solid $color-gray !important;
+      color: $color-black !important;
+    }
+    .btn-message {
+      border: 1px solid $color-red;
+      color: $color-red;
+    }
+  }
+  .modal-custom .modal-footer-quote {
+    overflow: hidden;
+    text-align: left;
+    .actions-quote {
+      margin-left: 0px;
+    }
+  }
+  .slider-quote {
+    position: relative;
+    .button-slider { 
+      button {
+        line-height: 30px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        position: absolute;
+        padding: 0px;
+      }
+      .btn-prev {
+        top: 40%;
+        left: 5px;
+      }
+      .btn-next {
+        top: 40%;
+        right: 5px;
+      }
+    }
+  }
+  .tenant-content {
+    left: 35% !important;
+  }
+  .invoices .content{
+
+  }
+  .invoices .content p{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+  }
+  .invoices .content p span{
+    margin-left: 5px;
   }
   @media (min-width: 320px) and (max-width: 480px) {
     .main-summary {
@@ -698,12 +1036,31 @@ body{
       display: block;
     }
 
+    .quotes .item-quote .actions {
+      margin-top: 0px;
+      .price {
+        float: left;
+        margin-left: 20px;
+      }
+    }
+
     .modal-custom .modal-dialog {
-      width: 300px;
+      width: 90%;
 
       .modal-body input{
-        width: 70%;
+        width: 100%;
       }
+    }
+
+    .invoices .content p {
+      justify-content: flex-start;
+      margin-right: 0px;
+      margin-left: 20px;
+    }
+
+    .invoices .content .btn-view {
+      width: 100px;
+      justify-content: flex-start;
     }
   }
   @media (min-width: 481px) and (max-width: 640px) {
@@ -748,11 +1105,16 @@ body{
       }
       .item-quote {
         .actions {
-          margin-top: 10px;
+          margin-top: 0px;
           margin-bottom: 10px;
           button {
             font-size: 12px;
           }
+
+          .price {
+          float: left;
+          margin-left: 20px;
+        }
         }
       }
     }
@@ -776,6 +1138,9 @@ body{
     }
     .activity-mobile {
       display: block;
+    }
+    .modal-custom .modal-dialog {
+      width: 80%;
     }
   }
   @media (min-width: 641px) and (max-width: 768px) {
@@ -1114,5 +1479,11 @@ body{
   }
   .text-center {
     text-align: center;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .text-left {
+    text-align: left;
   }
 }

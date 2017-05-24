@@ -2,20 +2,26 @@ class UploadedInvoicesController < ApplicationController
   
   def new
     @file = UploadedInvoice.new
-
-
     @maintenance_request_id = params[:maintenance_request_id]
-    @trady_id = params[:trady_id]
+    @trady = Trady.find_by(id:params[:trady_id])
+    @trady_id = @trady.id
     @quote_id = params[:quote_id]
+    @trady_company = @trady.trady_company
+    @trady_company_id = @trady_company.id
   end
 
   def create
     
     @file = UploadedInvoice.new(file_params)
+    maintenance_request_id = params[:uploaded_invoice][:maintenance_request_id]
+    trady_id = params[:uploaded_invoice][:trady_id]
+    quote_id = params[:uploaded_invoice][:quote_id]
+    invoice_type = params[:uploaded_invoice][:invoice_type]
+    system_plan = params[:uploaded_invoice][:system_plan]
     
     if @file.save
       flash[:success] = "Thank you for uploading your invoice(s)"
-      redirect_to uploaded_invoice_path(@file, maintenance_request_id:params[:uploaded_invoice][:maintenance_request_id], trady_id:params[:uploaded_invoice][:trady_id], quote_id:params[:uploaded_invoice][:quote_id])
+      redirect_to uploaded_invoice_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, invoice_type:invoice_type, system_plan:system_plan)
     else
       flash[:danger] = "Something went wrong."
       render :new
@@ -34,14 +40,22 @@ class UploadedInvoicesController < ApplicationController
     @trady_company_id = @trady.trady_company
     @trady_id = @trady.id
     @quote_id = params[:quote_id]
+    # @invoice_type = params[:invoice_type]
+    # @system_plan = params[:system_plan]
+    
   end
 
   def update
     @file = UploadedInvoice.find_by(id:params[:id])
-    
+    maintenance_request_id = params[:uploaded_invoice][:maintenance_request_id]
+    trady_id = params[:uploaded_invoice][:trady_id]
+    quote_id = params[:uploaded_invoice][:quote_id]
+    invoice_type = params[:uploaded_invoice][:invoice_type]
+    system_plan = params[:uploaded_invoice][:system_plan]
+
     if @file.update(file_params)
       flash[:success] = "Thank you for uploading your invoice(s)"
-      redirect_to uploaded_invoice_path(@file, maintenance_request_id:params[:uploaded_invoice][:maintenance_request_id], trady_id:params[:uploaded_invoice][:trady_id], quote_id:params[:uploaded_invoice][:quote_id])
+      redirect_to uploaded_invoice_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, invoice_type:invoice_type, system_plan:system_plan)
     else
       flash[:danger] = "Something went wrong."
       render :new
@@ -55,6 +69,10 @@ class UploadedInvoicesController < ApplicationController
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_id = params[:trady_id]
     @quote_id = params[:quote_id]
+    @invoice_type = params[:invoice_type]
+    @system_plan = params[:system_plan]
+
+    
   end
 
   def send_invoice

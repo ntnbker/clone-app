@@ -4,14 +4,32 @@
 	padding: 30px;
 	background: white;
 	border-radius: 4px;
-	border-color: #edf1f4;
-	box-shadow: 0 1px 10px #888888;
+	border: 1px solid #edf1f4;
+	/*box-shadow: 0 1px 10px #888888;*/
     margin: 30px auto;
 
 	button.button-primary.option-button {
 		margin: 0;
-		height: 30px;
+		height: 38px;
 		padding: 0px 10px;
+	}
+
+	.info-invoice {
+		display: flex;
+		justify-content: space-between;
+		flex-direction: row;
+
+		.title {
+			font-weight: bold;
+		}
+	}
+
+	.invoice-left {
+		flex: 1;
+	}
+
+	.invoice-right {
+		flex: 1;
 	}
 
 	.optionheader {
@@ -62,18 +80,19 @@
 				color: white;
 			}
 		}
-
-		&.left {
-		    width: 100px;
-		    bottom: 30px;
-		    position: absolute;
-		    margin: 0;
-		}
-
 		&.right {
 		    bottom: 30px;
 		    position: absolute;
 		    right: 30px;
+		    margin: 0;
+		}
+	}
+
+	a {
+		&.left {
+		    width: 100px;
+		    bottom: 30px;
+		    position: absolute;
 		    margin: 0;
 		}
 	}
@@ -136,11 +155,21 @@
 			}
 			.field {
 				p {
-					display: inline;
+					display: inline-block;
+					width: 115px;
 				}
 				input {
 					display: inline-block;
 					width: auto;
+				}
+				input[type="date"] {
+					height: 38px;
+					padding: 6px 10px;
+					background-color: #fff;
+					border: 1px solid #D1D1D1;
+					border-radius: 4px;
+					box-shadow: none;
+					box-sizing: border-box;
 				}
 			}
 		}
@@ -245,9 +274,24 @@
 		}
 	}
 
-	/* For Desktop */
 	@media (min-width: 550px) {
-		width: 480px;
+		h4 {
+			font-size: 2.4rem;
+		}
+		h5 {
+			font-size: 1.8rem;
+		}
+	}
+
+	/* For Desktop */
+	@media (min-width: 786px) {
+		width: 700px;
+	}
+
+	@media (max-width: 640px) {
+		.info-invoice {
+			flex-direction: column;
+		}
 	}
 }
 
@@ -346,6 +390,12 @@
 		.bar {
 			width: 200px;
 		}
+		h4 {
+			font-size: 2.4rem;
+		}
+		h5 {
+			font-size: 1.8rem;
+		}
 	}
 }
 
@@ -381,4 +431,7 @@
 .center-block-horiz {
   margin-left: auto !important;
   margin-right: auto !important;
+}
+.text-center {
+	text-align: center;
 }

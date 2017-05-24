@@ -1,32 +1,94 @@
 var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
-	getInitialState() {
-    	return { 
+	getInitialState: function() {
+		this.getAgentEmail();
+  	return { 
 			images: [],
+			isAgent: true,
 			validName: false,
+			validDate: false,
 			validEmail: false,
 			validMobile: false,
-			validDate: false,
+			agent_emails: null,
+			validHeading: false,
+			selectedRadio: "Agent",
+			validDescription: false,
 		};
-  	},
+	},
 
-    generateAtt(name_id, type) {
-    	if (name_id == "name") {
-    		return "maintenance_request[" + type + "]";
-    	}
-    	else if (name_id == "id") {
-    		return "maintenance_request_" + type;
-    	}
-    },
+	getAgentEmail: function() {
+		const self = this;
+		$.ajax({
+			type: 'GET',
+			url: '/agent_emails',
+			success: function(res){
+				self.setState({
+					agent_emails: res
+				});
+			},
+			error: function(err) {
+				self.setState({
+					agent_emails: []
+				});
+			}
+		});
+	},
 
-	_handleRemoveFrame(e) {
+	checkAgentEmail: function(e) {
+		if(this.state.selectedRadio == "Agent") {
+			const email = e.target.value;
+			var flag = false;
+			for(var i = 0; i < this.state.agent_emails.length; i++) {
+				const item = this.state.agent_emails[i];
+				if(!!email && email == item.email) {
+					flag= true;
+					break;
+				}
+			}
+
+			this.setState({
+				isAgent: flag
+			});
+		}
+		
+		if (!e.target.value.length) {
+			document.getElementById("errAgentEamil").textContent = strRequireEmail;
+			e.target.classList.add("border_on_error");
+		}
+		else if(e.target.value.length < 4){
+			document.getElementById("errAgentEamil").textContent = strShortEmail;
+			e.target.classList.add("border_on_error");
+		}
+		else if(e.target.value.length >= 4){
+			this.validateEmail(e.target.value, e, true);
+		}
+	},
+
+	handleRadioChange: function(e) {
+		const value = e.currentTarget.value;
+		this.setState({
+      selectedRadio: value,
+      isAgent: value == "Owner" ? false :true
+    });
+	},
+
+  generateAtt: function(name_id, type) {
+  	if (name_id == "name") {
+  		return "maintenance_request[" + type + "]";
+  	}
+  	else if (name_id == "id") {
+  		return "maintenance_request_" + type;
+  	}
+  },
+
+	_handleRemoveFrame: function(e) {
 		let {images} = this.state;
 		var index = e.target.id;
 		images.splice(index, 1);
 		this.setState({images: images});
 	},
 
-	_handleImageChange(e) {
+	_handleImageChange: function(e) {
 		e.preventDefault();
 		var files = e.target.files;
 		var reader = new FileReader();
@@ -59,10 +121,16 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		}
 		readFile(0);
- 	 },
+	},
+
+	validDate: function(flag) {
+		this.setState({
+			validDate: flag
+		});
+	},
 
 	handleCheckSubmit: function(e) {
-		if(!this.state.validName || !this.state.validEmail || !this.state.validMobile || !this.state.validDate) {
+		if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
 			e.preventDefault();
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
 			return;
@@ -120,33 +188,39 @@ var MaintenanceRequestsNew = React.createClass({
 		});
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
+		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
 		XHR.send(FD);
-		e.preventDefault();				
+		e.preventDefault();
+  	return false;
+	},
+
+	getFormData: function (object) {
+    const formData = new FormData();
+    Object.keys(object).forEach(key => formData.append(key, object[key]));
+    return formData;
 	},
 
 	validateEmail: function(inputText, e, agentFlag){
-		var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-		if(!inputText.match(mailformat)){
-			if(agentFlag == false)
-				document.getElementById("errorboxemail").textContent = strInvalidEmail;
-			else
-				document.getElementById("errAgentEamil").textContent = strInvalidEmail;
-			e.target.classList.add("border_on_error");
-			this.setState({validEmail: false});
-		}
-		else{
+		if(EMAIL_REGEXP.test(inputText)){
 			if(agentFlag == false)
 				document.getElementById("errorboxemail").textContent = strNone;
 			else
 				document.getElementById("errAgentEamil").textContent = strNone;
 			e.target.classList.remove("border_on_error");
+			this.setState({validEmail: false});
+		}
+		else{
+			if(agentFlag == false)
+				document.getElementById("errorboxemail").textContent = strInvalidEmail;
+			else
+				document.getElementById("errAgentEamil").textContent = strInvalidEmail;
+			e.target.classList.add("border_on_error");
 			this.setState({validEmail: true});
 		}
 	},
 
 	validatePhoneNumber:function(inputText, e, agentFlag){
-		var numbers = /^[0-9]+$/;
-		if(inputText.match(numbers)){
+		if(NUMBER_REGEXP.test(inputText)){
 			if(agentFlag == false)
 				document.getElementById("errorboxmobile").textContent = strNone;
 			else
@@ -176,215 +250,261 @@ var MaintenanceRequestsNew = React.createClass({
 				$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
 			}
 		return (
-			<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
-				<input type='hidden' name='authenticity_token' value={this.props.authenticity_token} />
-				<div className="field">
-					<p> Name </p>
-			  		<input type="text" placeholder="Full name"
-			  	  		 name={this.generateAtt("name", "name")}
-			  	  		   id={this.generateAtt("id", "name")} 
-					   onBlur={(e) => {
+			<div>
+				<h1 className="text-center">New Maintenance Request</h1>
+				<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
+					<input name="utf8" type="hidden" value="✓" /> 
+					<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
+					<div className="field">
+						<p> Name </p>
+			  		<input 
+			  			required
+			  			type="text"
+			  			placeholder="Full name"
+			  			ref={(ref) => this.name = ref}
+			  	  	id={this.generateAtt("id", "name")} 
+	  	  		 	name={this.generateAtt("name", "name")}
+					   	onBlur={(e) => {
 							if (!e.target.value.length) {
 									document.getElementById("errorbox").textContent = strRequireName;
 									e.target.classList.add("border_on_error");
-									this.setState({validName: false});
-								}
+									this.setState({validName: true});
+							}
 							else if(e.target.value.length < 4){
 									document.getElementById("errorbox").textContent = strShortName;
 									e.target.classList.add("border_on_error");
-									this.setState({validName: false});
+									this.setState({validName: true});
 								}
 							else if(e.target.value.length >= 4){
 									document.getElementById("errorbox").textContent = strNone;
 									e.target.classList.remove("border_on_error");
-									this.setState({validName: true});
+									this.setState({validName: false});
 								}
-							}} 	required />
-					<p id="errorbox" className="error"></p>
-					
-					<p> Email </p>
-					<input type="email" placeholder="E-mail"
-	 	           		  name={this.generateAtt("name", "email")}
-	 	           		   	id={this.generateAtt("id", "email")}
-						onBlur={(e) => {
-							if (!e.target.value.length) {
+							}}/>
+						<p id="errorbox" className="error"></p>
+						
+						<p> Email </p>
+						<input
+							required
+							type="email" 
+							placeholder="E-mail"
+							ref={(ref) => this.email = ref}
+	     		   	id={this.generateAtt("id", "email")}
+	       		  name={this.generateAtt("name", "email")}
+							onBlur={(e) => {
+								if (!e.target.value.length) {
 									document.getElementById("errorboxemail").textContent = strRequireEmail;
 									e.target.classList.add("border_on_error");
-									this.setState({validEmail: false});
 								}
-							else if(e.target.value.length < 4){
+								else if(e.target.value.length < 4){
 									document.getElementById("errorboxemail").textContent = strShortEmail;
 									e.target.classList.add("border_on_error");
-									this.setState({validEmail: false});
 								}
-							else if(e.target.value.length >= 4){
+								else if(e.target.value.length >= 4){
 									this.validateEmail(e.target.value, e, false);
 								}
-							}}  required />
-					<p id="errorboxemail" className="error"></p>
-					
-					<p> Mobile </p>
-		        	<input type="tel" placeholder="Mobile"
-						name={this.generateAtt("name", "mobile")}
+							}}/>
+						<p id="errorboxemail" className="error"></p>
+						
+						<p> Mobile </p>
+	        	<input 
+	        		required 
+	        		type="tel" 
+	        		maxLength="10"
+	        		placeholder="Mobile"
+	        		ref={(ref) => this.mobile = ref}
 						  id={this.generateAtt("id", "mobile")}
-					  onBlur={(e) => {
-						if (!e.target.value.length) {
-								document.getElementById("errorboxmobile").textContent = strRequireMobile;
-								e.target.classList.add("border_on_error");
-								this.setState({validMobile: false});
-							}
-						else if(e.target.value.length < 8){
-								document.getElementById("errorboxmobile").textContent = strShortMobile;
-								e.target.classList.add("border_on_error");
-								this.setState({validMobile: false});
-							}
-						if(e.target.value.length >= 8){
-								this.validatePhoneNumber(e.target.value, e, false);
-							}
-						}} maxLength="10" required />																														
-					<p id="errorboxmobile" className="error"></p>
-				</div>
-				
-				<hr/>
-				
-				<div id="access_contacts">
-					<FieldList SampleField={AccessContactField} />
-				</div>
-
-				<hr/>
-
-				<div className="field">
-					<p> Maintenance heading </p>
-					<input type="text"
-						  name={this.generateAtt("name", "maintenance_heading")}
-							id={this.generateAtt("id", "maintenance_heading")}
-						/>
-
-					<p> Maintenance description </p>
-					<textarea 
-						  name={this.generateAtt("name", "maintenance_description")}
-							id={this.generateAtt("id", "maintenance_description")} >
-					</textarea>
-					<p id="errorboxdescription" className="error"></p>
-
-					<p> Images </p>
-					<input className="fileInput" type="file" name="maintenance_request[maintenance_request_image_attributes][images][]" id="maintenance_request_maintenance_request_image_attributes_images" onChange={(e)=>this._handleImageChange(e)} multiple />
-							
-					<div className="imgPreview">{$imagePreview}</div>
-
-				</div>
-
-				{ (!this.props.current_user || this.props.current_user.tenant) ?
-					<div className="field">
-						<hr/>
-						<div className="person_in_charge">
-							<label className="one-half column">
-								<input type="radio" value="Agent"
-									   name={this.generateAtt("name", "person_in_charge")}
-									     id={this.generateAtt("id", "person_in_charge_agent")} required />
-								Agent
-							</label>
-
-							<label className="one-half column">
-							    <input type="radio" value="Owner"
-							    	   name={this.generateAtt("name", "person_in_charge")}
-							    	     id={this.generateAtt("id", "person_in_charge_owner")} required />
-								Owner
-				    	    </label>
-						</div>
-
-						<div>
-							<p> Real estate office </p>
-							<input type="text"
-								   name={this.generateAtt("name", "real_estate_office")}
-								     id={this.generateAtt("id", "real_estate_office")} 
-								 onBlur={(e) => {
-									if (!e.target.value.length) {
-											document.getElementById("errRealEstateOffice").textContent = strRequireText;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length < 4){
-											document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length >= 4){
-											document.getElementById("errRealEstateOffice").textContent = strNone;
-											e.target.classList.remove("border_on_error");
-										}
-									}} 	required />
-							<p id="errRealEstateOffice" className="error"></p>
-
-	 						<p> Agent name </p>
-							<input type="text"
-								   name={this.generateAtt("name", "agent_name")}
-								     id={this.generateAtt("id", "agent_name")} 
-								 onBlur={(e) => {
-									if (!e.target.value.length) {
-											document.getElementById("errAgentName").textContent = strRequireName;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length < 4){
-											document.getElementById("errAgentName").textContent = strShortName;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length >= 4){
-											document.getElementById("errAgentName").textContent = strNone;
-											e.target.classList.remove("border_on_error");
-										}
-									}} 	required />
-							<p id="errAgentName" className="error"></p>
-
-	 						<p> Agent email </p>
-							<input type="text"
-								   name={this.generateAtt("name", "agent_email")}
-								     id={this.generateAtt("id", "agent_email")} 
-								 onBlur={(e) => {
-									if (!e.target.value.length) {
-											document.getElementById("errAgentEamil").textContent = strRequireEmail;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length < 4){
-											document.getElementById("errAgentEamil").textContent = strShortEmail;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length >= 4){
-											this.validateEmail(e.target.value, e, true);
-										}
-									}}  required />
-							<p id="errAgentEamil" className="error"></p>
-	 						<p> Agent mobile </p>
-							<input type="text"
-								   name={this.generateAtt("name", "agent_mobile")}
-								     id={this.generateAtt("id", "agent_mobile")} 
-								 onBlur={(e) => {
-									if (!e.target.value.length) {
-											document.getElementById("errAgentMobile").textContent = strRequireMobile;
-											e.target.classList.add("border_on_error");
-										}
-									else if(e.target.value.length < 8){
-											document.getElementById("errAgentMobile").textContent = strShortMobile;
-											e.target.classList.add("border_on_error");
-										}
-									if(e.target.value.length >= 8){
-											this.validatePhoneNumber(e.target.value, e, true);
-										}
-									}} maxLength="10" required />
-							<p id="errAgentMobile" className="error"></p>
-						</div>
-						<hr/>
+							name={this.generateAtt("name", "mobile")}
+						  onBlur={(e) => {
+							if (!e.target.value.length) {
+									document.getElementById("errorboxmobile").textContent = strRequireMobile;
+									e.target.classList.add("border_on_error");
+								}
+							else if(e.target.value.length < 8){
+									document.getElementById("errorboxmobile").textContent = strShortMobile;
+									e.target.classList.add("border_on_error");
+								}
+							if(e.target.value.length >= 8){
+									this.validatePhoneNumber(e.target.value, e, false);
+								}
+							}}/>																														
+						<p id="errorboxmobile" className="error"></p>
 					</div>
-					:
-					<hr/>
-				}
 
-				<div id="availabilities">
-					<FieldList SampleField={AvailabilityField} />
-				</div>
-				
-				<hr/>
-				<p id="errCantSubmit" className="error"></p>
-				<input type="submit" className="button-primary green" name="commit" value="Submit Maintenance Request" data-disable-with="Submit Maintenance Request" />
-			</form>
+					<hr/>
+					<div id="access_contacts">
+						<FieldList SampleField={AccessContactField} flag="contact"/>
+					</div>
+
+					<hr/>
+
+					<div className="field">
+						<p> Maintenance heading </p>
+						<input
+							required
+							type="text"
+							ref={(ref) => this.maintenance_heading = ref}
+							id={this.generateAtt("id", "maintenance_heading")}
+						  name={this.generateAtt("name", "maintenance_heading")}
+							onBlur={(e) => {
+								if (!e.target.value.length) {
+									document.getElementById("errorboxheading").textContent = strErrHeading;
+									e.target.classList.add("border_on_error");
+									this.setState({validHeading: true});
+								}
+								else {
+									document.getElementById("errorboxheading").textContent = "";
+									e.target.classList.remove("border_on_error");
+									this.setState({validHeading: false});
+								}
+							}} 
+					 	/>
+						<p id="errorboxheading" className="error"></p>
+
+						<p> Maintenance description </p>
+						<textarea 
+							required
+							ref={(ref) => this.maintenance_description = ref}
+							id={this.generateAtt("id", "maintenance_description")} 
+						  name={this.generateAtt("name", "maintenance_description")}
+							onBlur={(e) => {
+								if (!e.target.value.length) {
+									document.getElementById("errorboxdescription").textContent = strErrDescription;
+									e.target.classList.add("border_on_error");
+									this.setState({validDescription: true});
+								}
+								else {
+									document.getElementById("errorboxdescription").textContent = "";
+									e.target.classList.remove("border_on_error");
+									this.setState({validDescription: false});
+								}
+							}} 
+						>
+						</textarea>
+						<p id="errorboxdescription" className="error"></p>
+
+						<p> Images </p>
+						<input 
+							multiple 
+							type="file" 
+							className="fileInput" 
+							onChange={(e)=>this._handleImageChange(e)} 
+							id="maintenance_request_maintenance_request_image_attributes_images" 
+							name="maintenance_request[maintenance_request_image_attributes][images][]" 
+						/>
+								
+						<div className="imgPreview">{$imagePreview}</div>
+
+					</div>
+
+					{ (!this.props.current_user || this.props.current_user.tenant) ?
+						<div className="field">
+							<hr/>
+
+							<div>
+								<p> Agent email </p>
+								<input 
+									required
+									type="text"
+								 	onBlur={this.checkAgentEmail}
+									ref={(ref) => this.agent_email = ref}
+						     	id={this.generateAtt("id", "agent_email")} 
+							   	name={this.generateAtt("name", "agent_email")}
+							 	/>
+								<p id="errAgentEamil" className="error"></p>
+								{	!this.state.isAgent ?
+										<div>
+										<p> Real estate office </p>
+										<input
+											required 
+											type="text"
+											ref={(ref) => this.real_estate_office = ref}
+								     	id={this.generateAtt("id", "real_estate_office")} 
+									   	name={this.generateAtt("name", "real_estate_office")}
+										 	onBlur={(e) => {
+												if (!e.target.value.length) {
+														e.target.classList.add("border_on_error");
+														document.getElementById("errRealEstateOffice").textContent = strRequireText;
+													}
+												else if(e.target.value.length < 4){
+														e.target.classList.add("border_on_error");
+														document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
+													}
+												else if(e.target.value.length >= 4){
+														e.target.classList.remove("border_on_error");
+														document.getElementById("errRealEstateOffice").textContent = strNone;
+													}
+												}}/>
+										<p id="errRealEstateOffice" className="error"></p>
+
+				 						<p> Agent name </p>
+										<input 
+											required
+											type="text"
+											ref={(ref) => this.agent_name = ref}
+								     	id={this.generateAtt("id", "agent_name")} 
+									   	name={this.generateAtt("name", "agent_name")}
+										 	onBlur={(e) => {
+												if (!e.target.value.length) {
+													e.target.classList.add("border_on_error");
+													document.getElementById("errAgentName").textContent = strRequireName;
+												}
+												else if(e.target.value.length < 4){
+													e.target.classList.add("border_on_error");
+													document.getElementById("errAgentName").textContent = strShortName;
+												}
+												else if(e.target.value.length >= 4){
+													e.target.classList.remove("border_on_error");
+													document.getElementById("errAgentName").textContent = strNone;
+												}
+											}}/>
+										<p id="errAgentName" className="error"></p>
+
+				 						<p> Agent mobile </p>
+										<input 
+											required
+											type="text"
+											maxLength="10"
+											ref={(ref) => this.agent_mobile = ref}
+								     	id={this.generateAtt("id", "agent_mobile")} 
+									   	name={this.generateAtt("name", "agent_mobile")}
+										 	onBlur={(e) => {
+												if (!e.target.value.length) {
+													e.target.classList.add("border_on_error");
+													document.getElementById("errAgentMobile").textContent = strRequireMobile;
+												}
+												else if(e.target.value.length < 8){
+													e.target.classList.add("border_on_error");
+													document.getElementById("errAgentMobile").textContent = strShortMobile;
+												}
+												if(e.target.value.length >= 8){
+													this.validatePhoneNumber(e.target.value, e, true);
+												}
+											}}/>
+										<p id="errAgentMobile" className="error"></p>
+										</div>
+										:
+										null
+								}
+								
+							</div>
+							<hr/>
+						</div>
+						:
+						<hr/>
+					}
+
+					<div id="availabilities">
+						<FieldList SampleField={AvailabilityField} validDate={(flag) => this.validDate(flag)} flag="date"/>
+					</div>
+					
+					<hr/>
+					<p id="errCantSubmit" className="error"></p>
+					<button type="submit" className="button-primary green" name="commit">
+						Submit Maintenance Request
+					</button>
+				</form>
+			</div>
 		);
 	}	
 });

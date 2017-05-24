@@ -29,6 +29,10 @@ class MaintenanceRequest < ApplicationRecord
   belongs_to :trady
   has_one :maintenance_request_image, inverse_of: :maintenance_request
   has_many :uploaded_invoices
+  has_many :uploaded_quotes
+  has_many :trady_statuses
+  has_many :quote_requests
+
 
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
@@ -74,11 +78,11 @@ class MaintenanceRequest < ApplicationRecord
     current_user_role = current_user.role.roleable_type
     
     if current_user_role == "AgencyAdmin"
-      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
     elsif current_user_role == "Agent"
-      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
-    elsif current_user_role == "Trady"
-      maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    # elsif current_user_role == "Trady"
+    #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
     end 
 
     return maintenance_request_array
@@ -90,11 +94,11 @@ class MaintenanceRequest < ApplicationRecord
     current_user_role = current_user.role.roleable_type
     
     if current_user_role == "AgencyAdmin"
-      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
     elsif current_user_role == "Agent"
-      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params})
-    elsif current_user == "Trady"
-      maintenance_request_array =  MaintenanceRequest.where(trady_id: current_user.role.roleable_id)
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    # elsif current_user == "Trady"
+    #   maintenance_request_array =  MaintenanceRequest.where(trady_id: current_user.role.roleable_id)
     end 
     
     if maintenance_request_array #we dont really need another full method for this we can just add a setter and getter and set it in the method above
@@ -112,6 +116,16 @@ class MaintenanceRequest < ApplicationRecord
   def delivered_uploaded_invoices
     self.uploaded_invoices.where(delivery_status: true).order("created_at DESC")
   end
+
+  def trady_delivered_uploaded_invoices (maintenance_request_id, trady_id)
+    self.uploaded_invoices.where(trady_id:trady_id,:delivery_status=> true, :maintenance_request_id => maintenance_request_id).order("created_at DESC")
+  end
+
+
+
+  # def self.with_tradies_quote_request(trady_id)
+  #   MaintenanceRequest.joins(:quotes).where(quotes:{trady_id:trady_id}).distinct
+  # end
 
   # def find_trady_maintenance_requests(current_user)
   #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})

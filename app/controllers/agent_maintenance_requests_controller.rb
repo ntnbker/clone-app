@@ -1,10 +1,11 @@
 class AgentMaintenanceRequestsController < ApplicationController 
   def index
-    if params[:sort_by_date] == "Newest to Oldest"
-       @maintenance_requests = current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-    else
-      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-    end
+    # if params[:sort_by_date] == "Newest to Oldest"
+       @maintenance_requests = current_user.agent.maintenance_requests
+    #    .order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+    # else
+    #   @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+    # end
 
     @page = params[:page]
     @sort_by_date = params[:sort_by_date]
@@ -24,13 +25,40 @@ class AgentMaintenanceRequestsController < ApplicationController
     @tenant_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tenant To Confirm Appointment")
     @landlord_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Landlord To Confirm Appointment")
     @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")
+  
+
+
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+
+    respond_to do |format|
+      format.json {render json:maintenance_requests_json}
+      format.html
+    end 
+
+
+
+
+
+
+
+
   end
 
   def show
+    @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     # @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices
+    
+    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
+    @agency = @current_user.agent.agency
+    quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
+
+    @email_quote_id = params[:email_quote_id]
+
+
+    @invoice_pdf_files = @maintenance_request.delivered_uploaded_invoices.as_json(:include => {:trady => {:include => :trady_company}})
+    @invoices = @maintenance_request.delivered_invoices.as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
+
 
     @message = Message.new
     
@@ -70,7 +98,8 @@ class AgentMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation}}
+
+      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files => @invoice_pdf_files, tradies_with_quote_requests:quote_request_trady_list}}
       format.html{render :show}
     end 
 

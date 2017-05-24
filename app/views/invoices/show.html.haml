@@ -1,68 +1,114 @@
 =react_component('StepProgress', {:step => 3})
 
-%div.container.invoice-form
-  -@ledger.invoices.each_with_index do |invoice, index| 
-    %div.row
-      %h5
-        ="Invoice # #{index+1}"
-    %div.invoice-info
-      -invoice.invoice_items.each do |f|
-        %div.row
-          -if f.pricing_type == "Hourly"
-            %p #{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour)
-            %span $ #{f.total_per_hour}
-          -elsif f.pricing_type == "Fixed Cost"
-            %p #{f.item_description.capitalize}
-            %span $ #{f.amount.to_f}
+%div.container.invoice-form 
+  %div.info-invoice
+    %div.invoice-left
+      %h6
+        %span.title
+          ="Name:"
+        %span
+          ="#{@trady.name.capitalize}"
+      %h6
+        %span.title
+          ="Company Name:"
+        %span
+          ="#{@trady.trady_company.company_name.capitalize}"
+      %h6
+        %span.title
+          ="Company Trading Name:"
+        %span
+          ="#{@trady.trady_company.trading_name.capitalize}"
+      %h6
+        %span.title ABN:
+        %span
+          ="#{@trady.trady_company.trading_name.capitalize}"
+      %h6
+        %span.title Address:
+        %span
+          ="#{@trady.trady_company.address}"
+    %div.invoice-right
+      %h6
+        %span.title Mailing Address
+        %span
+          ="#{@trady.trady_company.mailing_address}"
+      %h6
+        %span.title Email:
+        %span
+          ="#{@trady.trady_company.email}"
+      %h6
+        %span.title Mobile:
+        %span
+        ="#{@trady.trady_company.mobile_number}"
+      %h6
+        %span.title Bank Account Name:
+        %span
+        ="#{@trady.trady_company.trading_name.capitalize}"
 
+  %hr
+  
+  -@ledger.invoices.each_with_index do |invoice, index| 
+  
+    %h5.text-center
+      ="Invoice # #{index+1}"
+
+    %table{:style=>"width:100%"}
+      %tr
+        %th Description
+        %th Pricing
+        %th Rate
+        %th Hours
+        %th Total
+      -invoice.invoice_items.each do |f|
+        %tr
+          %td
+            ="#{f.item_description.capitalize}"
+          %td 
+            ="#{f.pricing_type}"
+          %td 
+            ="$ #{f.amount.to_f}"
+          %td
+            -if f.pricing_type == 'Fixed Cost'
+              ="N/A"
+            -elsif f.pricing_type == 'Hourly'
+              = "#{f.hours}"
+          %td
+            -if f.pricing_type == 'Fixed Cost'
+              = "$ #{f.amount}"
+            -elsif f.pricing_type == 'Hourly'
+              ="$#{f.amount * f.hours}"
       -if invoice.tax == true
-        %p Before Tax
-        %span $ #{ (invoice.amount - invoice.gst_amount).round(2)}
-        %br
-        %p GST
-        %span $ #{ (invoice.amount - invoice.amount/1.10).round(2)}
+        %tr
+          %td{:colspan => 4} Before Tax
+          %td
+            = "$ #{ (invoice.amount - invoice.gst_amount).round(2)}"
+        %tr
+          %td{:colspan => 4} GST
+          %td
+            = "$ #{ (invoice.gst_amount).round(2)}"
       -elsif invoice.tax == false
-        %p GST
-        %span $ 0.00
-      %hr    
-      %h6
-        %b
-          %p Total
-          %span $ #{invoice.amount.round(3)}
-      %h6
-        %b
-          ="Invoice Due: #{invoice.due_on}"
-    %hr
+        %tr
+          %td{:colspan => 4} GST
+          %td
+            = "$ 0.00"
+      %tr
+        %td{:colspan => 4} Invoice Total
+        %td
+          = "$ #{invoice.amount.round(3)}"
+          
+    %h6
+      %b
+        ="Invoice Due: #{invoice.due_on}"
+
+  %hr
   %div.grand-total
     %h5
       ="Grand Total : $ #{@ledger.grand_total.round(3)}"
   %div.qf-button
     %button.button.button-primary.left
-      =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id)
+      =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan)
     %button.button.button-primary.green.right
       =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id ), method: :post
 
 
-  /   -if @invoice.prepaid_or_postpaid == "Prepaid"
-  /     %p
-  /       Payment Required Before Work Can Commense
-  /     %p 
-  /       ="Amount Due: $#{@invoice.payment_installment_amount}"
-  /   -elsif @invoice.prepaid_or_postpaid == "PostPaid"
-  /     %p
-  /       Payment Required After Work Completed
-  / Display the all invoices here and each of their items 
+
     
-/   %p.invoice-show.row
-/     %span
-/       =f.item_description
-/     %span
-/       $
-/       =f.amount 
-/ %hr
-/ %p.invoice-show.row
-/   %span
-/     Total
-/   %span
-/     $
-/     =@invoice.amount

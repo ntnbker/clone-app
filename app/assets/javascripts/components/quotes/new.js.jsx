@@ -33,6 +33,7 @@ var QuoteField = React.createClass({
             <fieldset>
                 <p> Item description </p>
                 <input type="text"
+                        required
                        id={'quote_quote_items_attributes_' + x + '_item_description'}
                        name={'quote[quote_items_attributes][' + x + '][item_description]'}
                        defaultValue={quote ? quote.item_description : ''}
@@ -40,6 +41,7 @@ var QuoteField = React.createClass({
 
                 <p> Amount </p>
                 <input type="text"
+                        required
                        id={'quote_quote_items_attributes_' + x + '_amount'}
                        name={'quote[quote_items_attributes][' + x + '][amount]'}
                        defaultValue={quote ? quote.amount : ''}
@@ -58,6 +60,7 @@ var QuoteField = React.createClass({
                     ? <div>
                         <p> Number of Hours </p>
                         <input type="text"
+                                required
                                id={'quote_quote_items_attributes_' + x + '_hours'}
                                name={'quote[quote_items_attributes][' + x + '][hours]'}
                                defaultValue={quote ? quote.hours : ''}
@@ -88,8 +91,9 @@ var QuoteFields = React.createClass({
             <input type="hidden" value={this.props.trady_id} name="quote[trady_id]" id="quote_trady_id" />
             <input type="hidden" value={this.props.status} name="quote[status]" id="quote_status" />
             <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
-
-            <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} />
+            <input type="hidden" value={this.props.quote_type} name="quote[quote_type]" id="quote_type" />
+            <input type="hidden" value={this.props.system_plan} name="quote[system_plan]" id="system_plan" />
+            <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} flag="quote"/>
 
             <label className="quote_tax">
                 <input type="hidden" value="0" name="quote[tax]" />
@@ -100,7 +104,7 @@ var QuoteFields = React.createClass({
             <hr />
 
             <div className="qf-button">
-                <button className="button"> <a href={this.props.backlink}> Back </a> </button>
+                <a className="button m-r-lg" href={this.props.backlink}> Back </a>
                 <input type="submit" name="commit" value="Next" className="button-primary green" data-disable-with="Next" />
             </div>
         </form>

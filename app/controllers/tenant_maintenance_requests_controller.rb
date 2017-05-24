@@ -6,9 +6,21 @@ class TenantMaintenanceRequestsController < ApplicationController
     else
       @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
     end
+
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+
+    respond_to do |format|
+      format.json {render json:maintenance_requests_json}
+      format.html
+    end 
+
+
+
+    
   end
 
   def show
+    @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)

@@ -1,7 +1,50 @@
+const MenuAgency = [
+  {
+    url: "/agency_admin_maintenance_requests",
+    name: "Agency Admin Maintenance Requests",
+  },
+  {
+    url: "/agents/new",
+    name: "Add Agent",
+  },
+  {
+    url: "/agency_admins/new",
+    name: "Add Agency Admin",
+  }
+];
+
+const MenuAgent = [
+  {
+    url: "/agent_maintenance_requests",
+    name: "Agent Maintenance Request",
+  },
+];
+
+const MenuTrady = [
+  {
+    url: "/trady_maintenance_requests",
+    name: "Trady Maintenance Request",
+  }
+];
+
+const MenuTenant = [
+  {
+    url: "/tenant_maintenance_requests",
+    name: "Tenant Maintenance Request",
+  }
+];
+
+const MenuLandlord = [
+  {
+    url: "/landlord_maintenance_requests",
+    name: "Landlord Maintenance Request",
+  }
+];
+
 var MobileMenu = React.createClass({
   getInitialState: function() {
     return {
-      visible: false  
+      visible: false
     };
   },
 
@@ -30,11 +73,11 @@ var Header = React.createClass({
       };
     },
 
-    showBar() {
+    showBar: function() {
       this.refs.Bar.show();
     },
 
-    showItems() {
+    showItems: function() {
       this.setState({ isItems: !this.state.isItems,
                       isClicked: !this.state.isClicked });
     },
@@ -50,25 +93,97 @@ var Header = React.createClass({
         }
       }
     },
-    componentDidMount: function() {
-        $(document).bind('click', this.clickDocument);
+
+    showMenu: function() {
+      document.getElementById("menu-bar").classList.toggle("show");
     },
+
+    componentDidMount: function(e) {
+        $(document).bind('click', this.clickDocument);
+        $(document).bind('click', function(e) {
+          if (!e.target.matches('.btn-menu')) {
+            var myDropdown = document.getElementById("menu-bar");
+            if (myDropdown && myDropdown.classList.contains('show')) {
+              myDropdown.classList.remove('show');
+            }
+          }
+        });
+    },
+
     componentWillUnmount: function() {
         $(document).unbind('click', this.clickDocument);
     },
-    header(e) {
+
+    menuBar: function() {
+      var dataMenu = [];
+      if(!!this.props.user_agency_admin)
+        dataMenu = [...MenuAgency];
+      else if(!!this.props.user_agent) 
+        dataMenu = [...MenuAgent];
+      else if(!!this.props.user_trady) 
+        dataMenu = [...MenuTrady];
+      else if(!!this.props.user_tenant)
+        dataMenu = [...MenuTenant];
+      else if(!!this.props.user_landlord)
+        dataMenu = [...MenuLandlord];
+
+      return(       
+        dataMenu.map((item, key) => {
+          return (
+            <li key={key}>
+              <a href={item.url}>
+                {item.name}
+              </a>
+            </li>
+          );
+        })
+      );
+    },
+
+    Search: function() {
+      return (
+        <div className="search">
+          <form action="/search" className="form-search" accept-charset="UTF-8" method="get">
+            <input name="utf8" type="hidden" value="✓" />
+            <input 
+              id="query" 
+              name="query" 
+              type="search" 
+              className="input-search"
+              placeholder="Search..."
+            />
+            <button name="button" type="submit" className="btn-search">
+              <i className="fa fa-search"></i>
+            </button>
+          </form>
+        </div>
+      );
+    },
+
+    header: function(e) {
         var logged_in = this.props.logged_in;
         var current_user = this.props.current_user;
+        var expanded = this.props.expanded
 
         return <nav className="header-expanded">
 
           <MobileMenu ref="Bar">
             {
-            logged_in
-              ? <span className="mobile-menu-items">
-                  <a href={this.props.conversations_path}> Inbox </a>
-                  <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out {this.props.current_user.email}</a>
-                </span>
+            logged_in ?
+              <ul className="menu-mobile">
+                  <li>
+                    <img src="/assets/user1.png" />
+                    <span>
+                      Hi, {this.props.current_user.name}
+                    </span>
+                  </li>
+                  { this.menuBar() }
+                  <li>
+                    <a href={this.props.logout_path} data-method="delete" rel="nofollow"> 
+                      Sign Out
+                    </a>
+                  </li>
+              </ul>
               : <span className="mobile-menu-items">
                   <a href={this.props.menu_login_path} > Login </a>
                   <a href={this.props.new_agency_path} className="register"> Register </a>
@@ -76,27 +191,65 @@ var Header = React.createClass({
             }
           </MobileMenu>
 
-          <div className="container">
-              <div className={e ? "column forhome" : "column"}>
+          <div className="container container-custom">
+              <div className={"column header-custom " + (e && "forhome")}>
                   <div className="logo">
                     <img src="/assets/logo.png" alt="logo" />
                     <a href={this.props.root_path}> MaintenanceApp </a>
                   </div>
-                
                   {
-                  logged_in
-                    ? <span className="log_in">
-                        <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
+                    logged_in? 
+                      <div>
                         {
-                        this.state.isItems
-                          ? <span className="desktop-menu-items" ref="Items">
-                              <a href={this.props.conversations_path}> Inbox </a>
-                              <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out {this.props.current_user.email}</a>
-                            </span>
-                          : null
+                          !expanded ?
+                            <div className="header-right">
+                              { this.Search() }
+                              <div className="question">
+                                <i className="fa fa-question" />
+                              </div>
+                              <div className="notification">
+                                <i className="fa fa-bell" />
+                              </div>
+                              <div className="menu-bar dropdown-custom">
+                                <button type="button" className="btn-menu" onClick={this.showMenu}>
+                                  <img src="/assets/user1.png" />
+                                  <span>
+                                    Hi, {this.props.current_user.name}
+                                    <i className="fa fa-angle-down"/>
+                                  </span>
+                                </button>
+                                <ul className="dropdown-menu" id="menu-bar">
+                                  { this.menuBar() }
+                                  <li  ref="Items">
+                                    <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            :
+                            <div className="log_in">
+                              <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
+                              {
+                              this.state.isItems ?
+                                <ul className="desktop-menu-items"> 
+                                  <li>
+                                    <img src="/assets/user1.png" />
+                                    <span>
+                                      Hi, {this.props.current_user.name}
+                                    </span>
+                                  </li>
+                                  { this.menuBar() }
+                                  <li  ref="Items">
+                                    <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                                  </li>
+                                </ul>
+                                : null
+                              }
+                          </div>
                         }
-                      </span>
-                    : <span className="desktop-menu-items">
+                      </div>
+                      : 
+                      <span className="desktop-menu-items">
                         <a href={this.props.menu_login_path} > Login </a>
                         <a href={this.props.new_agency_path} className="register"> Register </a>
                       </span>
