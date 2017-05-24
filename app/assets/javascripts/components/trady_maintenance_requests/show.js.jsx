@@ -98,9 +98,40 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageQuote: function(params) {
+		const self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_messages',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				let quote = self.state.quote
+				quote.conversation = quote.conversation ? quote.conversation : {};
+				const messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
+				messages.push(res);
+				quote.conversation.messages = messages;
+				self.setState({
+					quote: quote
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Message Trady",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	viewItem: function(key, item) {
 		switch(key) {
-			case 'viewQuote': {
+			case 'viewQuote':
+			case 'viewQuoteMessage': {
 				this.setState({
 					quote: item
 				});
@@ -134,7 +165,6 @@ var TradyMaintenanceRequest = React.createClass({
 		
 	},
 
-	
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -172,6 +202,17 @@ var TradyMaintenanceRequest = React.createClass({
 							viewQuote={(quote) => this.viewQuote(quote)} 
 						/>
 					);
+				}
+
+				case 'viewQuoteMessage': {
+					return (
+						<ModalViewQuoteMessage
+							close={this.isClose}
+							quote={this.state.quote}
+							current_user={this.props.current_user}
+							sendMessageQuote={this.sendMessageQuote} 
+						/>
+					)
 				}
 
 				case 'viewInvoice': {
@@ -222,6 +263,7 @@ var TradyMaintenanceRequest = React.createClass({
 									onModalWith={this.onModalWith} 
 									current_user={this.props.current_user} 
 									viewQuote={(key, item) => this.viewItem(key, item)} 
+									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 								: null
 						}

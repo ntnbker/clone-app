@@ -80,18 +80,19 @@
 				color: white;
 			}
 		}
-
-		&.left {
-		    width: 100px;
-		    bottom: 30px;
-		    position: absolute;
-		    margin: 0;
-		}
-
 		&.right {
 		    bottom: 30px;
 		    position: absolute;
 		    right: 30px;
+		    margin: 0;
+		}
+	}
+
+	a {
+		&.left {
+		    width: 100px;
+		    bottom: 30px;
+		    position: absolute;
 		    margin: 0;
 		}
 	}

@@ -144,6 +144,16 @@ var ButtonRequestAnotherQuote = React.createClass({
 	}
 });
 
+var ButtonQuoteMessage = React.createClass({
+	render: function() {
+		return (
+			<button type="button" className="btn btn-message" onClick={(key, item) => this.props.viewQuoteMessage('viewQuoteMessage', this.props.quote)}>
+				Message
+			</button>
+		);
+	}
+});
+
 var ActionQuote = React.createClass({
 	render: function(){
 		const quote = this.props.quote;
@@ -159,12 +169,14 @@ var ActionQuote = React.createClass({
 		}else if(self.keyLandlord == "trady") {
 			return (
 				<div className="actions-quote">
+					{ !!self.current_user_show_quote_message && <ButtonQuoteMessage viewQuoteMessage={(key, item) => self.viewQuote(key, item)} quote={self.quote} />}
 					{ !self.quotes && <ButtonView viewQuote={(key, item) => self.viewQuote(key, item)} quote={self.quote}/> }
 				</div>
 			);
 		}else {
 			return (
 				<div className="actions-quote">
+					{ !!self.current_user_show_quote_message && <ButtonQuoteMessage viewQuoteMessage={(key, item) => self.viewQuote(key, item)} quote={self.quote} />}
 					{ quote.status == "Active" && <ButtonForwardLandlord sendEmailLandlord={self.sendEmailLandlord} quote={quote} onModalWith={self.onModalWith} landlord={self.landlord} /> }
 					{ quote.status == "Active" && <ButtonAccept updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
 					{ quote.status == "Active" && <ButtonDecline updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
@@ -209,7 +221,19 @@ var Quotes = React.createClass({
 								<div className="actions five columns">
 									<p className="price">Amount: {quote.amount}AUD</p>
 								</div>
-								{ !!self.current_user && <ActionQuote keyLandlord={self.keyLandlord} viewQuote={(key, item) => self.viewQuote(key, item)} quote={quote} updateStatusQuote={self.updateStatusQuote} sendEmailLandlord={self.sendEmailLandlord} landlord={self.landlord} onModalWith={self.onModalWith}/> }
+								{ !!self.current_user ?
+										<ActionQuote 
+											quote={quote} 
+											landlord={self.landlord} 
+											keyLandlord={self.keyLandlord} 
+											onModalWith={self.onModalWith}
+											updateStatusQuote={self.updateStatusQuote} 
+											sendEmailLandlord={self.sendEmailLandlord} 
+											viewQuote={(key, item) => self.viewQuote(key, item)} 
+											current_user_show_quote_message={self.current_user_show_quote_message}
+										/>
+										: null
+								}
 							</div>
 						);
 					})
@@ -434,6 +458,82 @@ var ModalViewQuote = React.createClass({
 						</div>
 						
 					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalViewQuoteMessage = React.createClass({
+	getInitialState: function() {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function(e) {
+		e.preventDefault();
+
+		if(!this.message.value) {
+			this.setState({errorMessage: true});
+			return
+		}
+
+		const params = {
+			message: {
+				body: this.message.value,
+				conversation_type: 'Quote',
+				quote_id: this.props.quote.id,
+			}
+		}
+
+		this.props.sendMessageQuote(params);
+		this.message.value = "";
+	},
+
+	render: function() {
+		const current_user = this.props.current_user;
+		var quote = this.props.quote;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<form role="form">
+						<div className="modal-content">
+							<div className="modal-header">
+								<button 
+									type="button" 
+									className="close"
+									data-dismiss="modal" 
+									aria-label="Close" 
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Message Trady</h4>
+							</div>
+							<div className="modal-body">
+								{<ContentMessage current_user={current_user} messages={quote.conversation && quote.conversation.messages ? quote.conversation.messages : null} />}
+							</div>
+							<div className="modal-footer">
+								<div>
+									<textarea 
+										placeholder="Message" 
+										readOnly={!current_user}
+										ref={(rel) => this.message = rel}
+										className={'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')}
+									/>
+								</div>
+								<button 
+									type="submit"
+									onClick={this.onSubmit}
+									disabled={!current_user} 
+									className="btn btn-default success" 
+								>
+									Submit
+								</button>
+							</div>
+						</div>
+					</form>
 				</div>
 			</div>
 		);
