@@ -12,6 +12,7 @@ header {
           margin-bottom: 0px;
           display: flex;
           align-items: center;
+          position: relative;
         }
         .input-search {
           height: 35px;
@@ -19,37 +20,46 @@ header {
           margin: 0;
           border: none;
           border-radius: 0;
-          background: transparent;
-          border-bottom: 1px solid #ddd;
+          background: #313E46;
           color: #fff;
+          border-radius: 20px;
+          padding-left: 40px;
+          font-size: 12px;
+          width: 180px;
+          line-height: 36px;
           &::placeholder {
-            color: #ccc;
+            color: #fff;
           }
           ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-            color: #ccc;
+            color: #fff;
           }
           ::-moz-placeholder { /* Firefox 19+ */
-            color: #ccc;
+            color: #fff;
           }
           :-ms-input-placeholder { /* IE 10+ */
-            color: #ccc;
+            color: #fff;
           }
           :-moz-placeholder { /* Firefox 18- */
-            color: #ccc;
+            color: #fff;
           }
         }
         .btn-search {
-          width: 36px;
-          height: 36px;
+          width: 35px;
+          height: 35px;
           background-color: #fff;
           border: none;
           border-radius: 0;
           padding: 0;
           border-radius: 0;
           background: transparent;
-          border-bottom: 1px solid #ddd;
+          position: absolute;
+          top: auto;
+          left: 5px;
           i {
             color: #fff;
+            font-size: 12px;
+            line-height: 35px;
+            display: inline-block;
           }
         }
       }
@@ -62,25 +72,35 @@ header {
         margin-bottom: 0;
         position: relative;
         width: auto;
-        padding-top: 10px;
         .btn-menu {
-          width: 100%;
+          margin-left: 0px;
           font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
           font-size: 16px;
+          display: flex;
+          align-items: center;
+          height: 100%;
+          img {
+            width: 35px;
+            height: 35px;
+          }
+          span {
+            font-size: 14px;
+            padding-left: 10px;
+          }
         }
         .dropdown-menu {
           position: absolute;
           top: 100%;
           width: 300px;
-          left: -30px;
+          right: 0;
           &:after {
             border: solid transparent;
             border-width: 10px;
             content: " ";
             position: absolute;
             bottom: 100%;
-            left: 45%;
-            border-bottom-color: #ddd;
+            right: 0;
+            border-bottom-color: #FFF;
             pointer-events: none;
             width: 0;
             height: 0;
@@ -89,8 +109,39 @@ header {
             a {
               color: #000;
               text-decoration: none;
+              width: 100%;
+              display: inline-block;
+            }
+            &:hover{
+              background-color: #7DC691;
             }
           }
+        }
+      }
+      .header-right {
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: row;
+        height: 100%;
+      }
+      .question {
+        height: 100%;
+        margin: 0 10px 0 30px;
+        display: none;
+        align-items: center;
+        i {
+          color: #fff;
+          font-size: 18px;
+        }
+      }
+      .notification {
+        height: 100%;
+        margin: 0 30px 0 10px;
+        display: none;
+        align-items: center;
+        i {
+          color: #fff;
+          font-size: 16px;
         }
       }
     }
@@ -101,7 +152,7 @@ header {
       .log_in {
         display: block;
         .desktop-menu-items {
-          width: 205px;
+          width: 300px;
           background-color: white;
           border: 1px solid #ccc;
           border-color: rgba(0,0,0,.2);
@@ -111,6 +162,9 @@ header {
           position: absolute;
           right: 0;
           top: 80px;
+          list-style: none;
+          padding: 0;
+          margin: 0;
 
           &:before {
             content: "\A";
@@ -121,12 +175,41 @@ header {
             top: -10px;
             right: 13px;
           }
-
-          a {
-            display: block;
-            padding: 0 20px;
-            color: black;
-          }
+          li {
+            margin-bottom: 0;
+            height: 40px;
+            border-top: 1px solid #ddd;
+            a {
+              display: block;
+              padding: 0;
+              margin-left: 10px;
+              color: black;
+              line-height: 40px;
+            }
+            &:hover {
+              background-color: #7DC691;
+            }
+            &:first-child {
+              height: 40px;
+              border-top: none;
+              display: flex;
+              align-items: center;
+              flex-direction: row;
+              justify-content: flex-start;
+              img {
+                width: 35px;
+                height: 35px;
+                padding-left: 10px;
+              }
+              span {
+                padding-left: 10px;
+                font-size: 16px;
+              }
+              &:hover {
+                background: transparent;
+              }
+            }
+          } 
         }
       }
     }
@@ -168,7 +251,11 @@ header {
       line-height: 65px;
       padding-top: 10px;
       float: right;
-
+      margin-bottom: 0px;
+      list-style: none;
+      li {
+        margin-bottom: 0;
+      }
       a {
         color: white;
         font-size: 16px;
@@ -233,6 +320,21 @@ header {
             color: #000;
           }
         }
+        &:first-child {
+          display: inline-block;
+          width: 100%;
+          img {
+            width: 35px;
+            height: 35px;
+          }
+          span {
+            padding-left: 20px;
+            color: #fff;
+          }
+          &:hover {
+            background: transparent;
+          }
+        }
       }
     }
 
@@ -245,6 +347,12 @@ header {
       }
       .menu-btn {
         display: none;
+      }
+      .header-custom .notification {
+        display: flex;
+      }
+      .header-custom .question {
+        display: flex;
       }
       .forhome .log_in .menu-button {
         display: inline-block;
