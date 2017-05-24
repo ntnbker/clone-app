@@ -104,7 +104,7 @@ var QuoteFields = React.createClass({
             <hr />
 
             <div className="qf-button">
-                <button className="button"> <a href={this.props.backlink}> Back </a> </button>
+                <a className="button m-r-lg" href={this.props.backlink}> Back </a>
                 <input type="submit" name="commit" value="Next" className="button-primary green" data-disable-with="Next" />
             </div>
         </form>

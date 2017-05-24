@@ -514,7 +514,7 @@ var InvoiceFields = React.createClass({
             <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
             <div className="qf-button" style={{marginBottom: '50px'}}>
-                <button className="button button-primary left"> <a href={this.props.backlink}> Back </a> </button>
+                <a className="button button-primary left" href={this.props.backlink}> Back </a>
                 <input type="submit" name="commit" value="Next" className="button button-primary green" data-disable-with="Next" />
             </div>
         </form>

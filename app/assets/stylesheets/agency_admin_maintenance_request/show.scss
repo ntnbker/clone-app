@@ -928,6 +928,10 @@ body::-webkit-scrollbar-thumb {
       border: 1px solid $color-gray !important;
       color: $color-black !important;
     }
+    .btn-message {
+      border: 1px solid $color-red;
+      color: $color-red;
+    }
   }
   .modal-custom .modal-footer-quote {
     overflow: hidden;

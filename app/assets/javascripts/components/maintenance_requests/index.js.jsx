@@ -57,8 +57,8 @@ var DropDownContent = React.createClass({
 
 var DropDownList = React.createClass({
   getInitialState: function() {
-      return {hidden : true}
-    },
+    return {hidden : true}
+  },
 
   onDrop() {
     this.setState({hidden: !this.state.hidden});
@@ -72,6 +72,43 @@ var DropDownList = React.createClass({
         </div>
         <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
             <DropDownContent content={this.props.content} getAction={(value) => this.props.getAction(value)} />
+        </div>
+      </div>
+    );
+  }
+});
+
+var DropDownMobileList = React.createClass({
+  getInitialState: function() {
+    return {hidden: true}
+  },
+
+  onDrop: function(id) {
+    if(id != "over") {
+      this.setState({hidden: !this.state.hidden});
+    }else {
+      this.setState({hidden: true});
+    }
+  },
+
+  componentDidMount: function() {
+    const self = this;
+    $(document).bind('click', function(e) {
+      if (!e.target.matches('#' + self.props.id)) {
+        self.onDrop('over');
+      }
+      
+    });
+  },
+
+  render: function() {
+    return (
+      <div className="drop-mobile-list">
+        <button id={this.props.id} className={'btn-drop-mobile title ' + (!this.state.hidden && 'active')} onClick={(id) => this.onDrop(this.props.id)}>
+          {this.props.title}
+        </button>
+        <div className="content-mobile"  style={{display: this.state.hidden ? 'none' : 'flex'}}>
+          <DropDownContent content={this.props.content} getAction={(value) => this.props.getAction(value)} />
         </div>
       </div>
     );
@@ -125,7 +162,7 @@ var ImgSlider = React.createClass({
         return {
            stlen: this.props.images ? this.props.images.length : 0,
            stpos: 0,
-           stwidth: 300,
+           stwidth: 0,
            stx: 0
        };
     },
@@ -162,21 +199,16 @@ var ImgSlider = React.createClass({
       });
     },
 
+    componentDidMount: function() {
+      this.setState({
+        stwidth: $('#slider').width()
+      });
+    },
+
     render: function() {
-        let styles = {
-          strip: {
-            left: this.state.stx,
-            width: this.state.stlen * this.state.stwidth,
-          },
-          mask: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            zIndex: 70,
-            width: '100%',
-            height: 300,
-            overflow: 'hidden',
-          }
+        var styles = {
+          left: this.state.stx,
+          width: this.state.stlen * this.state.stwidth,
         };
         var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
         return <div id="slider">
@@ -187,16 +219,13 @@ var ImgSlider = React.createClass({
                 </div>
               : null
             }
-            <div className="mask" id="mak" style={styles.mask}>
-                <div className="strip" style={styles.strip}>
-                { this.state.stlen
-                  ? this.props.images.map((image, i) => {
-                    return <span key={i} style={{width: subWidth}}>
-                        <img src={image.url} alt="Uploading..." width='100%'/>
-                    </span>
-                  })
-                  : 
-                  null
+            <div className="swiper-container swiper-container-horizontal">
+                <div className="swiper-wrapper slider" style={styles}>
+                { this.state.stlen ? 
+                    this.props.images.map((image, i) => {
+                      return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." width='100%'/>
+                    })
+                    : null
                 }
                 </div>
             </div>
@@ -442,6 +471,30 @@ var ListMaintenanceRequest = React.createClass({
             : null
           }
         </div>
+        <div className="action-mobile">
+          {
+            (!!current_user_agent || !!current_user_agency_admin) ?
+              <DropDownMobileList 
+                class="action" 
+                id="action-required"
+                title="Action Required" 
+                content={this.state.actionRequests} 
+                getAction={(value) => this.getAction(value)}
+              />
+              : null
+          }
+          {
+            (!!current_user_agent || !!current_user_agency_admin) ?
+              <DropDownMobileList 
+                class="awaiting" 
+                id="awaiting-action"
+                title="Awaiting Action" 
+                content={this.state.awaitingAction} 
+                getAction={(value) => this.getAction(value)} 
+              />
+              : null
+          }
+        </div>
       </div>
     );
   }
@@ -511,7 +564,7 @@ var DropforSortDate = React.createClass({
     window.onclick = function(e) {
       if (!e.target.matches('.btn-show')) {
         var myDropdown = document.getElementById("menu");
-          if (myDropdown.classList.contains('show')) {
+          if (myDropdown && myDropdown.classList.contains('show')) {
             myDropdown.classList.remove('show');
           }
       }

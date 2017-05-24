@@ -218,7 +218,7 @@ var EditTradyCompany = React.createClass({
 				},
 				data: params,
 				success: function(res){
-					window.location = window.location.origin + "/quotes/new?maintenance_request_id=" + self.props.maintenance_request_id + "&quote_type=" + self.props.quote_type + "&system_plan=" + self.props.system_plan + "&trady_id=" + self.props.trady_id;
+					
 				},
 				error: function(err) {
 				

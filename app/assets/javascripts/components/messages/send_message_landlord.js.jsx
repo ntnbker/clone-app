@@ -28,7 +28,7 @@ var ModalSendMessageLandlord = React.createClass({
 
 	render: function() {
 		var landlords_conversation = this.props.landlords_conversation
-		var current_user = this.props.current_user
+		const current_user = this.props.current_user
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">

@@ -204,10 +204,10 @@ form#new_maintenance_request {
     margin-top: 30px;
     .main-column {
         background: white;
-        padding: 5px;
+        padding: 0;
         border-radius: 4px;
-        border-color: #edf1f4;
-        box-shadow: 0 1px 10px #888888;
+        border: 1px solid #888888;
+        box-shadow: none;
         position: relative;
         width: calc(100% - 300px);
         padding-bottom: 70px;
@@ -293,6 +293,62 @@ form#new_maintenance_request {
             border-radius: 5px;
         }
     }
+    .action-mobile {
+        display: none;
+        position: fixed;
+        bottom: 50px;
+        justify-content: center;
+        flex-direction: row;
+        width: 100%;
+        z-index: 100;
+        left: 0;
+        .drop-mobile-list {
+            &:first-child {
+                padding-right: 10px;
+            }
+            &:last-child {
+                padding-left: 10px;
+            }
+            .btn-drop-mobile {
+                background-color: #7dc691;
+                color: #fff;
+                height: 50px;
+                line-height: 50px;
+                display: inline-block;
+                border: none;
+                &.active {
+                    background-color: #8499aa;
+                }
+            }
+            .content-mobile {
+                position: fixed;
+                bottom: 80px;
+                z-index: 100;
+                display: none;
+                width: 100%;
+                left: 0;
+                justify-content: center;
+                flex-direction: row;
+                .dropcontent {
+                    width: 350px;
+                    background-color: #fff;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    li {
+                        margin-bottom: 0;
+                        height: 40px;
+                        line-height: 40px;
+                        padding-left: 10px;
+                        a{
+                            &:hover, &:active {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     @media (max-width: 1200px) {
         .main-column {
             width: calc(100% - 50px);
@@ -301,10 +357,30 @@ form#new_maintenance_request {
             width: 40px;
         }
     }
-    @media (max-width: 750px) {
+    @media (max-width: 768px) {
         .main-column {
+            width: 100%;
             .info {
                 width: 100%;
+            }
+        }
+        .side-column {
+            display: none;
+        }
+        .action-mobile {
+            display: flex;
+        }
+        .dropdown-custom {
+            margin: 0 auto 20px;
+        }
+    }
+    @media (max-width: 360px) {
+        .action-mobile .drop-mobile-list {
+            .content-mobile .dropcontent{
+                width: 330px;
+            }
+            .btn-drop-mobile {
+                padding: 0 10px;
             }
         }
     }
@@ -313,17 +389,16 @@ form#new_maintenance_request {
 #slider {
     position: relative;
     width: 100%;
-    height: 300px;
+    max-height: 300px;
     .btn {
         position: absolute;
         z-index: 71;
-        font-size: 32px;
-        line-height: 30px;
+        font-size: 50px;
         cursor: pointer;
         padding: 0 5px;
         margin: 0;
-        color: white;
-        background: #7dc691;
+        color: #3385DC;
+        border: none;
     }
     .prev {
         top: 50%;
@@ -371,12 +446,18 @@ form#new_maintenance_request {
 .maintenance-request {
     display: flex;
     flex-direction: row;
+    margin-bottom: 15px;
     .image {
-        width: 300px;
-        height: 300px;
+        width: 250px;
+        .slider {
+            transition: all .6s;
+            .slide-image {
+                max-height: 300px;
+            }
+        }
     }
     .content {
-        width: calc(100% - 300px);
+        width: calc(100% - 250px);
     }
 }
 
@@ -384,18 +465,35 @@ form#new_maintenance_request {
     .maintenance-request {
         flex-direction: column;
         align-items: center;
+        .image {
+            width: 80%;
+        }
         .content {
-            width: 300px;
+            width: 80%;
+        }
+    }
+}
+
+@media(max-width: 480px) {
+    .maintenance-request {
+        flex-direction: column;
+        align-items: center;
+        .image {
+            width: 90%;
+        }
+        .content {
+            width: 90%;
         }
     }
 }
 
 .dropdown-custom {
     width: 200px;
-    border: 1px solid #D1D1D1;
+    border: none;
     background-color: #7DC691;
     height: 38px;
     margin-bottom: 15px;
+    border-radius: 5px;
     button {
         line-height: 38px;
         border: none;
