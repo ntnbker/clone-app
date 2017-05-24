@@ -9,7 +9,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
 
-    @m = MaintenanceRequest.with_tradies_quote_request(current_user.trady.id)
+    # @m = MaintenanceRequest.with_tradies_quote_request(current_user.trady.id)
 
 
 

@@ -6,7 +6,7 @@ class TradyMaintenanceRequest
 
 
     maintenance_requests_with_quote_requests = QuoteRequest.where(trady_id:trady_id).pluck(:maintenance_request_id)
-    binding.pry
+
     quoting_maintenance_request_ids = Quote.where(trady_id: trady_id, delivery_status: true).pluck(:maintenance_request_id)
     
     all_maintenance_requests = MaintenanceRequest.where(trady_id: trady_id).or(MaintenanceRequest.where(id: quoting_maintenance_request_ids)).or(MaintenanceRequest.where(id:maintenance_requests_with_quote_requests))
@@ -22,11 +22,29 @@ class TradyMaintenanceRequest
 
 
   def self.filtered_trady_maintenance_requests(trady_id, parameter)
-    mr = self.find_trady_maintenance_requests(trady_id)
     
-    requests = mr.pluck(:id)
-
-    # mr.joins(:trady_action_status).where(trady_action_status:{status:parameter})
+    if parameter == "Quote Requests"
+      quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil).pluck(:maintenance_request_id)
+      maintenance_requests = MaintenanceRequest.where(id:quote_request_mr_ids)
+    elsif parameter == "Awaiting Quote Approvals"
+      quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active").pluck(:maintenance_request_id)
+      maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids)
+    elsif parameter == "Appointments Required"
+    
+    elsif parameter == "Awaiting Appointment Confirmation"
+    
+    elsif parameter == "Alternate Appointment Requested"
+    
+    elsif parameter == "Job Booked"
+    
+    elsif parameter == "Awaiting Payment"
+    
+    elsif parameter == "Job Complete"
+    
+    elsif parameter == "Declined Quotes"
+    
+    end 
+    return maintenance_requests  
   end
 
 
