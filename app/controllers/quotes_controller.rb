@@ -108,7 +108,7 @@ class QuotesController < ApplicationController
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
-
+          maintenance_request.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
 
         else
           quote.update_attribute(:status, "Declined")
@@ -213,7 +213,7 @@ class QuotesController < ApplicationController
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           #EMAIL AGENT QUOTE APPROVED
-          maintenance_request.action_status.update_attribute(:agent_status,"Quote Approved Tradie To Organise Appointment")
+          maintenance_request.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
           quote.update_attribute(:status, params[:status])
         else
           quote.update_attribute(:status, "Declined")

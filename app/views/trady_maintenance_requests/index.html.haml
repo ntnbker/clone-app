@@ -33,4 +33,16 @@
     trady filters
 
 
-=link_to "INDEX", trady_maintenance_requests_path, remote: true
+=link_to "Quote Requests", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Quote Requests"), remote: true
+
+=link_to "Awaiting Quote Approvals", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Awaiting Quote Approvals"), remote: true
+
+=link_to "Appointments Required", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Appointments Required"), remote: true
+=link_to "Awaiting Appointment Confirmation", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Awaiting Appointment Confirmation"), remote: true
+=link_to "Alternate Appointment Requested", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Alternate Appointment Requested"), remote: true
+=link_to "Job Booked", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Job Booked"), remote: true
+=link_to "Awaiting Payment", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Awaiting Payment"), remote: true
+=link_to "Jobs Completed", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Job Complete"), remote: true
+
+=link_to "Declined Quotes", trady_filtered_maintenance_requests_path(trady_id:current_user.trady.id,maintenance_request_filter:"Declined Quotes"), remote: true
+

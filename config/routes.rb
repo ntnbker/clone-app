@@ -176,6 +176,7 @@ Rails.application.routes.draw do
   ##########SEARCH RESOURCES/ROUTES##################
   ###################################################
     get "maintenance_request_filter", to: "maintenance_request_filters#filtered_maintenance_requests", :as => :filtered_maintenance_requests
+    get "trady_maintenance_request_filter", to: "maintenance_request_filters#trady_filtered_maintenance_requests", :as => :trady_filtered_maintenance_requests
     resources :summaries, only:[:index]
   ###################################################
   ##########AGENT EMAILS RESOURCES/ROUTES############
