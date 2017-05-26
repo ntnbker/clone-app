@@ -155,34 +155,108 @@ var ButtonQuoteMessage = React.createClass({
 });
 
 var ActionQuote = React.createClass({
+	getInitialState: function() {
+		return {
+			quote: this.props.quote
+		};
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			quote: nextProps.quote.id == this.state.quote.id ? nextProps.quote : this.state.quote
+		});
+	},
+
 	render: function(){
-		const quote = this.props.quote;
+		const quote = this.state.quote;
 		const self = this.props;
 		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return (
 				<div className="actions-quote">
-					{ quote.status == "Active" && <ButtonAccept updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
-					{ quote.status == "Active" && <ButtonRequestAnotherQuote sendEmailLandlord={self.sendEmailLandlord} quote={quote} /> }
-					{ !self.quotes && <ButtonView viewQuote={(key, item) => self.viewQuote(key, item)} quote={self.quote}/> }
+					{ quote.status == "Active" && 
+							<ButtonAccept 
+								quote={quote} 
+								updateStatusQuote={self.updateStatusQuote} 
+							/> 
+					}
+					{ quote.status == "Active" && 
+							<ButtonRequestAnotherQuote 
+								quote={quote} 
+								sendEmailLandlord={self.sendEmailLandlord} 
+							/> 
+					}
+					{ !self.quotes && 
+							<ButtonView 
+								quote={self.quote}
+								viewQuote={(key, item) => self.viewQuote(key, item)} 
+							/> 
+					}
 				</div>
 			);
 		}else if(self.keyLandlord == "trady") {
 			return (
 				<div className="actions-quote">
-					{ !!self.current_user_show_quote_message && <ButtonQuoteMessage viewQuoteMessage={(key, item) => self.viewQuote(key, item)} quote={self.quote} />}
-					{ !self.quotes && <ButtonView viewQuote={(key, item) => self.viewQuote(key, item)} quote={self.quote}/> }
+					{ (!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation) && 
+							<ButtonQuoteMessage 
+								quote={quote} 
+								viewQuoteMessage={(key, item) => self.viewQuote(key, item)} 
+							/>
+					}
+					{ !self.quotes && 
+							<ButtonView 
+								viewQuote={(key, item) => self.viewQuote(key, item)} 
+								quote={self.quote}
+							/> 
+					}
 				</div>
 			);
 		}else {
 			return (
 				<div className="actions-quote">
-					{ !!self.current_user_show_quote_message && <ButtonQuoteMessage viewQuoteMessage={(key, item) => self.viewQuote(key, item)} quote={self.quote} />}
-					{ quote.status == "Active" && <ButtonForwardLandlord sendEmailLandlord={self.sendEmailLandlord} quote={quote} onModalWith={self.onModalWith} landlord={self.landlord} /> }
-					{ quote.status == "Active" && <ButtonAccept updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
-					{ quote.status == "Active" && <ButtonDecline updateStatusQuote={self.updateStatusQuote} quote={quote} /> }
-					{ (quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved") ? <ButtonRestore updateStatusQuote={self.updateStatusQuote} quote={quote} /> : null }
-					{ !self.quotes && <ButtonView viewQuote={(key, item) => self.viewQuote(key, item)} quote={self.quote}/> }
-					{ quote.status == "Approved" && <ButtonCancle updateStatusQuote={self.updateStatusQuote} quote={quote} />}
+					{ (!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation) && 
+							<ButtonQuoteMessage 
+								quote={quote} 
+								viewQuoteMessage={(key, item) => self.viewQuote(key, item)} 
+							/>
+					}
+					{ quote.status == "Active" && 
+							<ButtonForwardLandlord 
+								quote={quote} 
+								landlord={self.landlord} 
+								onModalWith={self.onModalWith} 
+								sendEmailLandlord={self.sendEmailLandlord} 
+							/> 
+					}
+					{ quote.status == "Active" && 
+							<ButtonAccept 
+								quote={quote} 
+								updateStatusQuote={self.updateStatusQuote} 
+							/> 
+					}
+					{ quote.status == "Active" && 
+							<ButtonDecline 
+								quote={quote} 
+								updateStatusQuote={self.updateStatusQuote} 
+							/> 
+					}
+					{ (quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved") && 
+							<ButtonRestore 
+								quote={quote} 
+								updateStatusQuote={self.updateStatusQuote} 
+							/>
+					}
+					{ !self.quotes && 
+							<ButtonView 
+								quote={self.quote}
+								viewQuote={(key, item) => self.viewQuote(key, item)} 
+							/> 
+					}
+					{ quote.status == "Approved" && 
+							<ButtonCancle 
+								quote={quote} 
+								updateStatusQuote={self.updateStatusQuote} 
+							/>
+					}
 				</div>
 			);
 		}
@@ -190,8 +264,20 @@ var ActionQuote = React.createClass({
 });
 
 var Quotes = React.createClass({
+	getInitialState: function() {
+		return {
+			quotes: this.props.quotes
+		};
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			quotes: nextProps.quotes
+		});
+	},
+
 	render: function() {
-		const quotes = this.props.quotes;
+		const quotes = this.state.quotes;
 		const self = this.props;
 		return (
 			<div className="quotes">
@@ -214,16 +300,17 @@ var Quotes = React.createClass({
 										</div>
 										<p className="description">
 											{quote.trady && quote.trady.name} <br />
-											{(quote.trady && quote.trady.trady_company) ? quote.trady.trady_company.trading_name : null}
+											{(quote.trady && quote.trady.trady_company) && quote.trady.trady_company.trading_name}
 										</p>
 									</div>
 								</div>
 								<div className="actions five columns">
 									<p className="price">Amount: {quote.amount}AUD</p>
 								</div>
-								{ !!self.current_user ?
+								{ !!self.current_user &&
 										<ActionQuote 
 											quote={quote} 
+											key={quote.id}
 											landlord={self.landlord} 
 											keyLandlord={self.keyLandlord} 
 											onModalWith={self.onModalWith}
@@ -232,7 +319,6 @@ var Quotes = React.createClass({
 											viewQuote={(key, item) => self.viewQuote(key, item)} 
 											current_user_show_quote_message={self.current_user_show_quote_message}
 										/>
-										: null
 								}
 							</div>
 						);
@@ -453,7 +539,17 @@ var ModalViewQuote = React.createClass({
 								</div>
 							</div>
 							<div className="modal-footer-quote">
-								{ !!self.current_user && <ActionQuote keyLandlord={this.props.keyLandlord} quotes={this.state.quotes} quote={quote} updateStatusQuote={self.updateStatusQuote} sendEmailLandlord={self.sendEmailLandlord} onModalWith={self.onModalWith} landlord={self.landlord} /> }
+								{ !!self.current_user && 
+									<ActionQuote 
+										quote={quote} 
+										landlord={self.landlord} 
+										quotes={this.state.quotes} 
+										onModalWith={self.onModalWith} 
+										keyLandlord={this.props.keyLandlord} 
+										updateStatusQuote={self.updateStatusQuote} 
+										sendEmailLandlord={self.sendEmailLandlord} 
+									/> 
+								}
 							</div>
 						</div>
 						

@@ -93,6 +93,7 @@ header {
           top: 100%;
           width: 300px;
           right: 0;
+          border: 1px solid #D1D1D1;
           &:after {
             border: solid transparent;
             border-width: 10px;
@@ -148,7 +149,7 @@ header {
 
     .forhome {
       position: absolute;
-
+      left: 0;
       .log_in {
         display: block;
         .desktop-menu-items {
