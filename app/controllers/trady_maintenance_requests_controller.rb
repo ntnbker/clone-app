@@ -25,7 +25,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     @job_complete = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Job Complete")
     @declined_quotes = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Declined Quotes")
 
-    binding.pry
+    
   end
 
   def show
