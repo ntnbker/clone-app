@@ -24,6 +24,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     @awaiting_payment = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Awaiting Payment")
     @job_complete = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Job Complete")
     @declined_quotes = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Declined Quotes")
+
   end
 
   def show
