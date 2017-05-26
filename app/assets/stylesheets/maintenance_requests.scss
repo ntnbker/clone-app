@@ -205,8 +205,7 @@ form#new_maintenance_request {
     .main-column {
         background: white;
         padding: 0;
-        border-radius: 4px;
-        border: 1px solid #888888;
+       
         box-shadow: none;
         position: relative;
         width: calc(100% - 300px);
@@ -278,9 +277,14 @@ form#new_maintenance_request {
         span {
             text-decoration: none;
             color: #8499aa;
-            padding: 7px 12px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            display: inline-block;
             border: 1px solid white;
             border-radius: 5px;
+            line-height: 30px;
+            margin: 0 2px;
             &:hover {
                 border: 1px solid #8499aa;
                 border-radius: 5px;
@@ -289,8 +293,13 @@ form#new_maintenance_request {
         em {
             color: white;
             background: #8499aa;
-            padding: 7px 12px;
+            width: 30px;
+            height: 30px;
+            display: inline-block;
             border-radius: 5px;
+            border: 1px solid #8499aa;
+            text-align: center;
+            line-height: 30px;
         }
     }
     .action-mobile {
@@ -324,25 +333,49 @@ form#new_maintenance_request {
                 position: fixed;
                 bottom: 80px;
                 z-index: 100;
-                display: none;
+                display: flex;
                 width: 100%;
                 left: 0;
                 justify-content: center;
                 flex-direction: row;
+                &.show {
+                    .dropcontent {
+                        height: 400px;
+                        border: 1px solid #ddd;
+                    }
+                }
                 .dropcontent {
-                    width: 350px;
+                    width: 370px;
                     background-color: #fff;
-                    border: 1px solid #ddd;
                     border-radius: 5px;
+                    overflow: hidden;
+                    height: 0;
+                    transition: all 0.5s ease 0s;
+                    -moz-transition: all 0.5s ease 0s;
+                    -webkit-transition: all 0.5s ease 0s;
+                    -o-transition: all 0.5s ease 0s;
+                    -ms-transition: all 0.5s ease 0s;
                     li {
                         margin-bottom: 0;
                         height: 40px;
-                        line-height: 40px;
                         padding-left: 10px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: flex-start;
                         a{
+                            display: inline-block;
                             &:hover, &:active {
                                 text-decoration: underline;
                             }
+                        }
+                        span {
+                            width: 20px;
+                            height: 20px;
+                            padding: 0;
+                            display: inline-block;
+                            text-align: center;
+                            margin: auto;
                         }
                     }
                 }
@@ -374,6 +407,13 @@ form#new_maintenance_request {
             margin: 0 auto 20px;
         }
     }
+    @media (max-width: 480px) {
+        .action-mobile .drop-mobile-list {
+            .btn-drop-mobile {
+                padding: 0 15px;
+            }
+        }
+    }
     @media (max-width: 360px) {
         .action-mobile .drop-mobile-list {
             .content-mobile .dropcontent{
@@ -393,20 +433,20 @@ form#new_maintenance_request {
     .btn {
         position: absolute;
         z-index: 71;
-        font-size: 50px;
+        font-size: 40px;
         cursor: pointer;
         padding: 0 5px;
         margin: 0;
-        color: #3385DC;
+        color: #fff;
         border: none;
     }
     .prev {
-        top: 50%;
+        top: 45%;
         left: 0px;
         transform: translateY(-50%);
     }
     .next {
-        top: 50%;
+        top: 45%;
         right: 0px;
         transform: translateY(-50%);
     }
@@ -449,10 +489,12 @@ form#new_maintenance_request {
     margin-bottom: 15px;
     .image {
         width: 250px;
+        margin-left: 10px;
         .slider {
             transition: all .6s;
             .slide-image {
-                max-height: 300px;
+                max-height: 250px;
+                min-height: 250px;
             }
         }
     }
@@ -466,6 +508,7 @@ form#new_maintenance_request {
         flex-direction: column;
         align-items: center;
         .image {
+            margin-left: 0;
             width: 80%;
         }
         .content {

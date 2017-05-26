@@ -30,8 +30,32 @@ var Carousel = React.createClass({
   },
 
 	componentDidMount: function() {
+		const self = this;
 		this.setState({
 			stwidth: $('.slider-custom').width()
+		});
+		
+		$( window ).resize(function() {
+			self.setState({
+				stwidth: $('.slider-custom').width()
+			});
+		});
+
+		$(".slider-custom").on("touchstart", function(event){
+      var xClick = event.originalEvent.touches[0].pageX;
+	    $(this).one("touchmove", function(event){
+	    	debugger
+	        var xMove = event.originalEvent.touches[0].pageX;
+	        if( Math.floor(xClick - xMove) > 10 ){
+	            self.sliderNext();
+	        }
+	        else if( Math.floor(xClick - xMove) < -10 ){
+	            self.sliderPrev();
+	        }
+	    });
+	    $(".slider-custom").on("touchend", function(){
+	            $(this).off("touchmove");
+	    });
 		});
 	},
 
@@ -45,7 +69,7 @@ var Carousel = React.createClass({
 		return (
 			<div className="slider-custom">
 				<div className="swiper-container swiper-container-horizontal">
-					<div className="swiper-wrapper slider" style={styles}>
+					<div className="swiper-wrapper slider" style={styles} id="mySlider">
 					{
 						this.props.gallery.map(function(img, index) {
 							return (
@@ -62,7 +86,7 @@ var Carousel = React.createClass({
 				</div>
 				<div className="swiper-pagination">
 				{
-					this.props.gallery.lenght > 1 ?
+					this.props.gallery.length > 1 ?
 						this.props.gallery.map(function(img, index) {
 							return (
 								<span 
@@ -78,10 +102,10 @@ var Carousel = React.createClass({
 				}					
 				</div>
 				{
-					this.props.gallery.lenght > 1 && <div className="swiper-button-next" onClick={this.sliderNext}></div>
+					this.props.gallery.length > 1 && <div className="btn-slider btn-next" onClick={this.sliderNext}><i className="fa fa-angle-right"></i></div>
 				}
 				{
-					this.props.gallery.lenght > 1 && <div className="swiper-button-prev" onClick={this.sliderPrev}></div>
+					this.props.gallery.length > 1 && <div className="btn-slider btn-prev" onClick={this.sliderPrev}><i className="fa fa-angle-left"></i></div>
 				}
         
 			</div>
