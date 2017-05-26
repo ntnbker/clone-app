@@ -23,8 +23,136 @@ var TradySideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && <TradyActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} assigned_trady={this.props.assigned_trady} signed_in_trady={this.props.signed_in_trady} maintenance_request={this.props.maintenance_request}/> }
+				{ !!this.state.showAction && 
+					<TradyActionMobile 
+						landlord={this.props.landlord} 
+						invoices={this.props.invoices}
+						close={(key) => this.show('action')} 
+						assigned_trady={this.props.assigned_trady} 
+						signed_in_trady={this.props.signed_in_trady} 
+						invoice_pdf_files={this.props.invoice_pdf_files}
+						maintenance_request={this.props.maintenance_request}
+						onModalWith={(modal) => this.props.onModalWith(modal)} 
+					/> 
+				}
 				{ !!this.state.showContact && <TradyContactMobile close={(key) => this.show('contact')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} current_user={this.props.current_user} maintenance_request={this.props.maintenance_request} /> }
+			</div>
+		);
+	}
+});
+
+var ModalConfirmAddInvoice = React.createClass({
+	jobCompleted: function() {
+		let params = {
+			maintenance_request_id: this.props.maintenance_request.id
+		};
+
+		this.props.jobCompleted(params);
+	},
+
+	createInvoice: function() {
+		const maintenance_request = this.props.maintenance_request;
+		const trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+		const maintenance_trady_id = maintenance_request.trady_id;
+		this.props.close();
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+	},
+
+	render: function() {
+		const maintenance_request = this.props.maintenance_request;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button 
+								type="button" 
+								className="close"
+								data-dismiss="modal" 
+								aria-label="Close" 
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">Job Completed</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">
+								Has the job Been completed for "{maintenance_request.maintenance_heading}"
+							</p>
+						</div>
+						<div className="modal-footer">
+							<button 
+								data-dismiss="modal"
+							 	onClick={this.jobCompleted}
+								className="btn btn-default success" 
+							>Yes</button>
+							<button 
+								type="button" 
+								onClick={this.createInvoice}
+								className="btn btn-primary cancel" 
+							>No</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalMarkJobAsCompleted = React.createClass({
+	jobCompleted: function() {
+		let params = {
+			maintenance_request_id: this.props.maintenance_request.id
+		};
+
+		this.props.jobCompleted(params);
+	},
+
+	createInvoice: function() {
+		const maintenance_request = this.props.maintenance_request;
+		const trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+		const maintenance_trady_id = maintenance_request.trady_id;
+		this.props.close();
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id + "&quote_id=";
+	},
+
+	render: function() {
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button 
+								type="button" 
+								className="close"
+								data-dismiss="modal" 
+								aria-label="Close" 
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">Mark Job As Completed</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">
+								There are no invoices for this maintenance request would you like to create an invoice and mark job as completed ?
+							</p>
+						</div>
+						<div className="modal-footer">
+							<button 
+								data-dismiss="modal"
+							 	onClick={this.jobCompleted}
+								className="btn btn-default success" 
+							>Yes</button>
+							<button 
+								type="button" 
+								onClick={this.createInvoice}
+								className="btn btn-primary cancel" 
+							>No</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		);
 	}
@@ -128,6 +256,34 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	jobCompleted: function(params){
+		const self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/job_completed',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({notification: {
+					title: "Job Completed",
+					content: "Job Completed was successfully!",
+					bgClass: "bg-success",
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Message Trady",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	viewItem: function(key, item) {
 		switch(key) {
 			case 'viewQuote':
@@ -154,6 +310,16 @@ var TradyMaintenanceRequest = React.createClass({
 					invoice_pdf_file: item
 				});
 
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewConfirm': {
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewMarkJob': {
 				this.onModalWith(key);
 				break;
 			}
@@ -238,6 +404,30 @@ var TradyMaintenanceRequest = React.createClass({
 							/>
 					);
 				}
+
+				case 'viewConfirm': {
+					return (
+						<ModalConfirmAddInvoice 
+							close={this.isClose}
+							jobCompleted={this.jobCompleted}
+							signed_in_trady={this.props.signed_in_trady}
+							trady={this.props.current_user_show_quote_message}
+							maintenance_request={this.props.maintenance_request}
+						/>
+					);
+				}
+
+				case 'viewMarkJob': {
+					return (
+						<ModalMarkJobAsCompleted
+							close={this.isClose}
+							jobCompleted={this.jobCompleted}
+							signed_in_trady={this.props.signed_in_trady}
+							trady={this.props.current_user_show_quote_message}
+							maintenance_request={this.props.maintenance_request}
+						/>
+					);
+				}
 					
 				default:
 					return null;
@@ -255,7 +445,7 @@ var TradyMaintenanceRequest = React.createClass({
 							property={this.props.property} 
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{ this.props.quotes.length > 0 ?
+						{ this.props.quotes.length > 0 &&
 								<Quotes 
 									keyLandlord="trady"
 									quotes={this.state.quotes} 
@@ -265,48 +455,48 @@ var TradyMaintenanceRequest = React.createClass({
 									viewQuote={(key, item) => this.viewItem(key, item)} 
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
-								: null
 						}
-						{	this.props.invoices.length > 0 ?
+						{	this.props.invoices.length > 0 &&
 						 		<Invoices 
 							 		invoices={this.state.invoices} 
 							 		viewInvoice={(key, item) => this.viewItem(key, item)} 
 						 		/>
-						 		:
-						 		null
 					 	}
-						{	this.props.invoice_pdf_files.length > 0 ?
+						{	this.props.invoice_pdf_files.length > 0 &&
 							<PDFInvoices 
 								invoice_pdf_files={this.state.invoice_pdf_files} 
 								viewPDFInvoice={(key, item) => this.viewItem(key, item)} 
 							/>
-							:
-							null
 						}
 					</div>
 					<div className="sidebar">
 						<TradyContact 
 							landlord={this.state.landlord} 
-							onModalWith={(modal) => this.onModalWith(modal)} 
 							current_user={this.props.current_user} 
+							onModalWith={(modal) => this.onModalWith(modal)} 
 							maintenance_request={this.state.maintenance_request} 
 						/>
 						<TradyAction 
 							landlord={this.state.landlord} 
+							invoices={this.props.invoices}
 							assigned_trady={this.props.assigned_trady}
 							signed_in_trady={this.props.signed_in_trady} 
 							onModalWith={(modal) => this.onModalWith(modal)}
+							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					</div>
 				</div>
 				<TradySideBarMobile 
 					landlord={this.state.landlord} 
+					invoices={this.props.invoices}
 					current_user={this.props.current_user} 
 					assigned_trady={this.props.assigned_trady}
 					signed_in_trady={this.props.signed_in_trady} 
+					invoice_pdf_files={this.props.invoice_pdf_files}
 					onModalWith={(modal) => this.onModalWith(modal)} 
-					maintenance_request={this.state.maintenance_request} 
+					viewModal={(key, item) => this.viewItem(key, item)} 
+					maintenance_request={this.state.maintenance_request}
 				/>
 				{ this.renderModal() }
 			</div>
