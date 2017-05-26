@@ -43,8 +43,8 @@ var DropDownContent = React.createClass({
           return (
             <li key={index}>
               <a onClick={(value) => self.props.getAction(item.value)}> 
-                {item.title}
                 <span>{item.count}</span>
+                <b className="name">{item.title}</b>
               </a> 
             </li>
           );
@@ -57,7 +57,7 @@ var DropDownContent = React.createClass({
 
 var DropDownList = React.createClass({
   getInitialState: function() {
-    return {hidden : true}
+    return {hidden : false}
   },
 
   onDrop() {
@@ -458,39 +458,39 @@ var ListMaintenanceRequest = React.createClass({
     const current_user_agent = this.props.current_user_agent;
     const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
-      <div className="maintenance-list container">
+      <div className="maintenance-list">
         { <DropforSortDate selectFilter={this.selectFilter} filterDate={this.state.filterDate} valueSelect={this.state.sortByDate} />}
-        <div className="main-column">
-          <div>
-            {
-              this.state.dataShow.map(function(maintenance_request, key) {
-                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
-              })
-            }
-            { this.state.data.length > this.state.prePage && <Pagination page={this.state.page} total={this.state.data.length} prePage={this.state.prePage} setPage={this.setPage} /> }
+        <div className="maintenance-content">
+          <div className="main-column">
+            <div>
+              {
+                this.state.dataShow.map(function(maintenance_request, key) {
+                  return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                })
+              }
+              { this.state.data.length > this.state.prePage && <Pagination page={this.state.page} total={this.state.data.length} prePage={this.state.prePage} setPage={this.setPage} /> }
+            </div>
           </div>
-        </div>
-        <div className="side-column">
-          { 
-            (!!current_user_agent || !!current_user_agency_admin) ?
-            <DropDownList 
-              class="action" 
-              title="Action Required" 
-              content={this.state.actionRequests} 
-              getAction={(value) => this.getAction(value)}
-            />
-            : null
-          }
-          {
-            (!!current_user_agent || !!current_user_agency_admin) ?
-            <DropDownList 
-              class="awaiting" 
-              title="Awaiting Action" 
-              content={this.state.awaitingAction} 
-              getAction={(value) => this.getAction(value)} 
-            />
-            : null
-          }
+          <div className="side-column">
+            { 
+              (!!current_user_agent || !!current_user_agency_admin) &&
+                <DropDownList 
+                  class="action" 
+                  title="Action Required" 
+                  content={this.state.actionRequests} 
+                  getAction={(value) => this.getAction(value)}
+                />
+            }
+            {
+              (!!current_user_agent || !!current_user_agency_admin) &&
+                <DropDownList 
+                  class="awaiting" 
+                  title="Awaiting Action" 
+                  content={this.state.awaitingAction} 
+                  getAction={(value) => this.getAction(value)} 
+                />
+            }
+          </div>
         </div>
         <div className="action-mobile">
           {

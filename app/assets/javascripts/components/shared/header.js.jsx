@@ -69,7 +69,8 @@ var Header = React.createClass({
     getInitialState: function() {
       return {
         isItems: !this.props.expanded,
-        isClicked: false
+        isClicked: false,
+        isShow: false,
       };
     },
 
@@ -94,20 +95,28 @@ var Header = React.createClass({
       }
     },
 
-    showMenu: function() {
-      document.getElementById("menu-bar").classList.toggle("show");
+    showMenu: function(flag) {
+      let myDropdown = document.getElementById("menu-bar");
+      if(this.state.isShow) {
+        myDropdown.classList.remove('show');
+        if(flag != 'hide') {
+          this.setState({
+            isShow: false
+          });
+        }
+      }else{
+        if(flag == 'show') {
+          myDropdown.classList.toggle("show");
+          this.setState({
+            isShow: true
+          });
+        }
+      }
     },
 
     componentDidMount: function(e) {
         $(document).bind('click', this.clickDocument);
-        $(document).bind('click', function(e) {
-          if (!e.target.matches('.btn-menu')) {
-            var myDropdown = document.getElementById("menu-bar");
-            if (myDropdown && myDropdown.classList.contains('show')) {
-              myDropdown.classList.remove('show');
-            }
-          }
-        });
+        $(document).bind('click', (flag) => this.showMenu(this.state.isShow));
     },
 
     componentWillUnmount: function() {
@@ -211,7 +220,7 @@ var Header = React.createClass({
                                 <i className="fa fa-bell" />
                               </div>
                               <div className="menu-bar dropdown-custom">
-                                <button type="button" className="btn-menu" onClick={this.showMenu}>
+                                <button type="button" className="btn-menu" onClick={(flag) => this.showMenu(!this.state.isShow ? 'show' : 'hide')}>
                                   <img src="/assets/user1.png" />
                                   <span>
                                     Hi, {this.props.current_user.name}
@@ -230,7 +239,7 @@ var Header = React.createClass({
                             <div className="log_in">
                               <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
                               {
-                              this.state.isItems ?
+                              this.state.isItems &&
                                 <ul className="desktop-menu-items"> 
                                   <li>
                                     <img src="/assets/user1.png" />
@@ -243,7 +252,6 @@ var Header = React.createClass({
                                     <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
                                   </li>
                                 </ul>
-                                : null
                               }
                           </div>
                         }
