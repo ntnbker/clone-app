@@ -11,12 +11,19 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     # @m = MaintenanceRequest.with_tradies_quote_request(current_user.trady.id)
 
+    trady_id = current_user.trady.id
 
+    @maintenance_requests =TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).paginate(:page => params[:page], :per_page => 3)
 
-    @maintenance_requests =TradyMaintenanceRequest.find_trady_maintenance_requests(current_user.trady.id).paginate(:page => params[:page], :per_page => 3)
-
-    
-
+    @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")
+    @awaiting_quote_approvals = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Awaiting Quote Approval")
+    @appointments_required = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Appointments Required")
+    @awaiting_appointment_confirmation = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Awaiting Appointment Confirmation")
+    @alternate_appointment_requested = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Alternate Appointment Requested")
+    @job_booked = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Job Booked")
+    @awaiting_payment = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Awaiting Payment")
+    @job_complete = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Job Complete")
+    @declined_quotes = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Declined Quotes")
 
   end
 

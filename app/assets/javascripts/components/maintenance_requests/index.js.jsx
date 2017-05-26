@@ -1,7 +1,7 @@
 var DropContent = React.createClass({
     render: function() {
         var content = this.props.content;
-        return <ul className="dropcontent">
+        return <ul className="dropcontent drop-content">
             {
                 this.props.content.map((item, index) => 
                     <li key={index}><a href={item.href}> {item.title}</a> <span>{item.count}</span></li>)
@@ -43,9 +43,9 @@ var DropDownContent = React.createClass({
           return (
             <li key={index}>
               <a onClick={(value) => self.props.getAction(item.value)}> 
-                {item.title}
+                <span>{item.count}</span>
+                <b className="name">{item.title}</b>
               </a> 
-              <span>{item.count}</span>
             </li>
           );
         })
@@ -57,7 +57,7 @@ var DropDownContent = React.createClass({
 
 var DropDownList = React.createClass({
   getInitialState: function() {
-    return {hidden : true}
+    return {hidden : false}
   },
 
   onDrop() {
@@ -97,7 +97,6 @@ var DropDownMobileList = React.createClass({
       if (!e.target.matches('#' + self.props.id)) {
         self.onDrop('over');
       }
-      
     });
   },
 
@@ -107,7 +106,7 @@ var DropDownMobileList = React.createClass({
         <button id={this.props.id} className={'btn-drop-mobile title ' + (!this.state.hidden && 'active')} onClick={(id) => this.onDrop(this.props.id)}>
           {this.props.title}
         </button>
-        <div className="content-mobile"  style={{display: this.state.hidden ? 'none' : 'flex'}}>
+        <div className={"content-mobile " + (!this.state.hidden && 'show')}>
           <DropDownContent content={this.props.content} getAction={(value) => this.props.getAction(value)} />
         </div>
       </div>
@@ -200,8 +199,32 @@ var ImgSlider = React.createClass({
     },
 
     componentDidMount: function() {
-      this.setState({
+      const self = this;
+
+      self.setState({
         stwidth: $('#slider').width()
+      });
+
+      $( window ).resize(function() {
+        self.setState({
+          stwidth: $('#slider').width()
+        });
+      });
+      
+      $("." + self.props.nameClass).on("touchstart", function(event){
+        var xClick = event.originalEvent.touches[0].pageX;
+        $(this).one("touchmove", function(event){
+            var xMove = event.originalEvent.touches[0].pageX;
+            if( Math.floor(xClick - xMove) > 10 ){
+                self.sliderTopNext();
+            }
+            else if( Math.floor(xClick - xMove) < -10 ){
+                self.sliderTopPrev();
+            }
+        });
+        $("." + self.props.nameClass).on("touchend", function(){
+          $(this).off("touchmove");
+        });
       });
     },
 
@@ -212,20 +235,18 @@ var ImgSlider = React.createClass({
         };
         var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
         return <div id="slider">
-            { this.state.stlen > 1
-              ? <div>
+            { this.state.stlen > 1 && 
+                <div>
                     <button className="button btn prev" onClick={this.sliderTopPrev}><i className="fa fa-angle-left"></i></button>
                     <button className="button btn next" onClick={this.sliderTopNext}><i className="fa fa-angle-right"></i></button>
                 </div>
-              : null
             }
-            <div className="swiper-container swiper-container-horizontal">
+            <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
                 <div className="swiper-wrapper slider" style={styles}>
-                { this.state.stlen ? 
+                { this.state.stlen &&
                     this.props.images.map((image, i) => {
-                      return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." width='100%'/>
+                      return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
                     })
-                    : null
                 }
                 </div>
             </div>
@@ -437,39 +458,39 @@ var ListMaintenanceRequest = React.createClass({
     const current_user_agent = this.props.current_user_agent;
     const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
-      <div className="maintenance-list container">
+      <div className="maintenance-list">
         { <DropforSortDate selectFilter={this.selectFilter} filterDate={this.state.filterDate} valueSelect={this.state.sortByDate} />}
-        <div className="main-column">
-          <div>
-            {
-              this.state.dataShow.map(function(maintenance_request, key) {
-                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
-              })
-            }
-            { this.state.data.length > this.state.prePage && <Pagination page={this.state.page} total={this.state.data.length} prePage={this.state.prePage} setPage={this.setPage} /> }
+        <div className="maintenance-content">
+          <div className="main-column">
+            <div>
+              {
+                this.state.dataShow.map(function(maintenance_request, key) {
+                  return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                })
+              }
+              { this.state.data.length > this.state.prePage && <Pagination page={this.state.page} total={this.state.data.length} prePage={this.state.prePage} setPage={this.setPage} /> }
+            </div>
           </div>
-        </div>
-        <div className="side-column">
-          { 
-            (!!current_user_agent || !!current_user_agency_admin) ?
-            <DropDownList 
-              class="action" 
-              title="Action Required" 
-              content={this.state.actionRequests} 
-              getAction={(value) => this.getAction(value)}
-            />
-            : null
-          }
-          {
-            (!!current_user_agent || !!current_user_agency_admin) ?
-            <DropDownList 
-              class="awaiting" 
-              title="Awaiting Action" 
-              content={this.state.awaitingAction} 
-              getAction={(value) => this.getAction(value)} 
-            />
-            : null
-          }
+          <div className="side-column">
+            { 
+              (!!current_user_agent || !!current_user_agency_admin) &&
+                <DropDownList 
+                  class="action" 
+                  title="Action Required" 
+                  content={this.state.actionRequests} 
+                  getAction={(value) => this.getAction(value)}
+                />
+            }
+            {
+              (!!current_user_agent || !!current_user_agency_admin) &&
+                <DropDownList 
+                  class="awaiting" 
+                  title="Awaiting Action" 
+                  content={this.state.awaitingAction} 
+                  getAction={(value) => this.getAction(value)} 
+                />
+            }
+          </div>
         </div>
         <div className="action-mobile">
           {
@@ -506,7 +527,7 @@ var MaintenanceRequestItem = React.createClass({
     return (
       <div className="row m-t-lg maintenance-request">
         <div className="image">
-          {<ImgSlider images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} />}
+          {<ImgSlider nameClass={"slider-custom-" + maintenance_request.id} images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} />}
         </div>
         <div className="content">
           <div className="info">
@@ -517,9 +538,8 @@ var MaintenanceRequestItem = React.createClass({
                 </a>
               </h3>
               {
-                maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu ? 
+                maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu &&
                   <p className="status">{maintenance_request.action_status.maintenance_request_status}</p>
-                  : null
               }
               
             </div>
@@ -536,12 +556,11 @@ var MaintenanceRequestItem = React.createClass({
               { <P content={maintenance_request.maintenance_description} /> }
             </div>
             {
-              maintenance_request.property && maintenance_request.property.property_address ? 
+              maintenance_request.property && maintenance_request.property.property_address &&
               <p className="address">
                 <i className="fa fa-map-marker"></i>
                 {maintenance_request.property.property_address}
               </p>
-              : null
             }
             
           </div>
@@ -602,15 +621,20 @@ var DropforSortDate = React.createClass({
 var Pagination = React.createClass({
   getInitialState: function() {
     return {
+      group: 1,
+      numbGroup: 5,
       totalPage: 0,
+      totalGroup: 0,
       page: this.props.page,
     }
   },
 
   calculatePage: function(total) {
-    var totalPage = Math.ceil(total / this.props.prePage);
+    let totalPage = Math.ceil(total / this.props.prePage);
+    let totalGroup = Math.ceil(totalPage / this.state.numbGroup);
     this.setState({
-      totalPage: totalPage
+      totalPage: totalPage, 
+      totalGroup: totalGroup,
     });
   },
 
@@ -626,36 +650,68 @@ var Pagination = React.createClass({
   },
 
   switchPage: function(page) {
+    let group = 1;
+    if(page > this.state.page) {
+      group = page > this.state.group * this.state.numbGroup ? this.state.group + 1 : this.state.group;
+    }else {
+      group = page <= (this.state.group - 1) * this.state.numbGroup ? this.state.group - 1 : this.state.group;
+    }
+
     this.setState({
-      page: page
+      page: page,
+      group: group,
+    });
+
+    this.props.setPage(page);
+  },
+
+  switchGroup: function(group) {
+    let page = (group - 1) * this.state.numbGroup + 1;
+    this.setState({
+      page: page,
+      group: group,
     });
 
     this.props.setPage(page);
   },
 
   render: function() {
-    const sefl = this;
-    const paginations = [...Array(this.state.totalPage).keys()].map((key) => {
-      var i = key + 1;
-      if(i == sefl.state.page) 
-        return <em key="current" className="current">{i}</em>
-      return <a key={key} onClick={(page) => sefl.switchPage(i)}>{i}</a>
+    const self = this;
+    const paginations = [...Array(this.state.numbGroup).keys()].map((key) => {
+      var i = (self.state.group - 1) * self.state.numbGroup + key + 1;
+      if(i <= self.state.totalPage) {
+        if(i == self.state.page) 
+          return <em key="current" className="current">{i}</em>
+        return <a key={key} onClick={(page) => self.switchPage(i)}>{i}</a>
+      }
+      
+      return
     });
     return (
       <div className="pagination">
-        <span 
-          className={"previous_page " + (this.state.page == 1 && "disabled")} 
+        <a 
+          className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")} 
           onClick={this.state.page > 1 ? (page) => this.switchPage(this.state.page-1) : ""}
         >
-          &lt; Back
-        </span> 
+        </a> 
+        {
+          this.state.group > 1 &&
+            <a onClick={(group) => this.switchGroup(this.state.group - 1)}>
+              ...
+            </a>
+        }
         { paginations }
+        {
+          this.state.group < this.state.totalGroup &&
+            <a onClick={(group) => this.switchGroup(this.state.group + 1)}>
+              ...
+            </a>
+        }
         <a 
           key="next" 
-          className={"next_page " + (this.state.page == this.state.totalPage && "disabled")} 
+          className={"next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled")} 
           onClick={(page) => this.switchPage(this.state.page < this.state.totalPage ? this.state.page+1 : this.state.page)}
         >
-          Next &gt;
         </a>
       </div>
     );

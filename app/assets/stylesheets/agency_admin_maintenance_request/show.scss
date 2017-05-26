@@ -432,6 +432,21 @@ body::-webkit-scrollbar-thumb {
         .swiper-button-prev {
           top: 43%;
         }
+        .btn-slider {
+          position: absolute;
+          top: 40%;
+          z-index: 100;
+          &.btn-next {
+            right: 30px;
+          }
+          &.btn-prev {
+            left: 30px;
+          }
+          i {
+            color: #fff;
+            font-size: 60px;
+          }
+        }
       }
       .description {
         margin-top: 30px;
