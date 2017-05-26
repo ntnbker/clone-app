@@ -66506,7 +66506,7 @@ var DropContent = React.createClass({
     var content = this.props.content;
     return React.createElement(
       "ul",
-      { className: "dropcontent" },
+      { className: "dropcontent drop-content" },
       this.props.content.map(function (item, index) {
         return React.createElement(
           "li",
@@ -66579,12 +66579,16 @@ var DropDownContent = React.createClass({
             { onClick: function (value) {
                 return self.props.getAction(item.value);
               } },
-            item.title
-          ),
-          React.createElement(
-            "span",
-            null,
-            item.count
+            React.createElement(
+              "span",
+              null,
+              item.count
+            ),
+            React.createElement(
+              "b",
+              { className: "name" },
+              item.title
+            )
           )
         );
       })
@@ -66596,7 +66600,7 @@ var DropDownList = React.createClass({
   displayName: "DropDownList",
 
   getInitialState: function () {
-    return { hidden: true };
+    return { hidden: false };
   },
 
   onDrop: function () {
@@ -66664,7 +66668,7 @@ var DropDownMobileList = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "content-mobile", style: { display: this.state.hidden ? 'none' : 'flex' } },
+        { className: "content-mobile " + (!this.state.hidden && 'show') },
         React.createElement(DropDownContent, { content: this.props.content, getAction: function (value) {
             return _this2.props.getAction(value);
           } })
@@ -66772,8 +66776,31 @@ var ImgSlider = React.createClass({
   },
 
   componentDidMount: function () {
-    this.setState({
+    var self = this;
+
+    self.setState({
       stwidth: $('#slider').width()
+    });
+
+    $(window).resize(function () {
+      self.setState({
+        stwidth: $('#slider').width()
+      });
+    });
+
+    $("." + self.props.nameClass).on("touchstart", function (event) {
+      var xClick = event.originalEvent.touches[0].pageX;
+      $(this).one("touchmove", function (event) {
+        var xMove = event.originalEvent.touches[0].pageX;
+        if (Math.floor(xClick - xMove) > 10) {
+          self.sliderTopNext();
+        } else if (Math.floor(xClick - xMove) < -10) {
+          self.sliderTopPrev();
+        }
+      });
+      $("." + self.props.nameClass).on("touchend", function () {
+        $(this).off("touchmove");
+      });
     });
   },
 
@@ -66786,7 +66813,7 @@ var ImgSlider = React.createClass({
     return React.createElement(
       "div",
       { id: "slider" },
-      this.state.stlen > 1 ? React.createElement(
+      this.state.stlen > 1 && React.createElement(
         "div",
         null,
         React.createElement(
@@ -66799,16 +66826,16 @@ var ImgSlider = React.createClass({
           { className: "button btn next", onClick: this.sliderTopNext },
           React.createElement("i", { className: "fa fa-angle-right" })
         )
-      ) : null,
+      ),
       React.createElement(
         "div",
-        { className: "swiper-container swiper-container-horizontal" },
+        { className: "swiper-container swiper-container-horizontal " + this.props.nameClass },
         React.createElement(
           "div",
           { className: "swiper-wrapper slider", style: styles },
-          this.state.stlen ? this.props.images.map(function (image, i) {
-            return React.createElement("img", { key: i, className: "swiper-slide slide-image", src: image.url, style: { width: subWidth }, alt: "Uploading...", width: "100%" });
-          }) : null
+          this.state.stlen && this.props.images.map(function (image, i) {
+            return React.createElement("img", { key: i, className: "swiper-slide slide-image", src: image.url, style: { width: subWidth }, alt: "Uploading..." });
+          })
         )
       )
     );
@@ -67021,39 +67048,43 @@ var ListMaintenanceRequest = React.createClass({
     var current_user_agency_admin = this.props.current_user_agency_admin;
     return React.createElement(
       "div",
-      { className: "maintenance-list container" },
+      { className: "maintenance-list" },
       React.createElement(DropforSortDate, { selectFilter: this.selectFilter, filterDate: this.state.filterDate, valueSelect: this.state.sortByDate }),
       React.createElement(
         "div",
-        { className: "main-column" },
+        { className: "maintenance-content" },
         React.createElement(
           "div",
-          null,
-          this.state.dataShow.map(function (maintenance_request, key) {
-            return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link });
+          { className: "main-column" },
+          React.createElement(
+            "div",
+            null,
+            this.state.dataShow.map(function (maintenance_request, key) {
+              return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link });
+            }),
+            this.state.data.length > this.state.prePage && React.createElement(Pagination, { page: this.state.page, total: this.state.data.length, prePage: this.state.prePage, setPage: this.setPage })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "side-column" },
+          (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownList, {
+            "class": "action",
+            title: "Action Required",
+            content: this.state.actionRequests,
+            getAction: function (value) {
+              return _this3.getAction(value);
+            }
           }),
-          this.state.data.length > this.state.prePage && React.createElement(Pagination, { page: this.state.page, total: this.state.data.length, prePage: this.state.prePage, setPage: this.setPage })
+          (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownList, {
+            "class": "awaiting",
+            title: "Awaiting Action",
+            content: this.state.awaitingAction,
+            getAction: function (value) {
+              return _this3.getAction(value);
+            }
+          })
         )
-      ),
-      React.createElement(
-        "div",
-        { className: "side-column" },
-        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownList, {
-          "class": "action",
-          title: "Action Required",
-          content: this.state.actionRequests,
-          getAction: function (value) {
-            return _this3.getAction(value);
-          }
-        }) : null,
-        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownList, {
-          "class": "awaiting",
-          title: "Awaiting Action",
-          content: this.state.awaitingAction,
-          getAction: function (value) {
-            return _this3.getAction(value);
-          }
-        }) : null
       ),
       React.createElement(
         "div",
@@ -67092,7 +67123,7 @@ var MaintenanceRequestItem = React.createClass({
       React.createElement(
         "div",
         { className: "image" },
-        React.createElement(ImgSlider, { images: maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{ url: "/uploads/maintenance_request_image/images/no_image.png" }] })
+        React.createElement(ImgSlider, { nameClass: "slider-custom-" + maintenance_request.id, images: maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{ url: "/uploads/maintenance_request_image/images/no_image.png" }] })
       ),
       React.createElement(
         "div",
@@ -67112,11 +67143,11 @@ var MaintenanceRequestItem = React.createClass({
                 maintenance_request.maintenance_heading
               )
             ),
-            maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu ? React.createElement(
+            maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu && React.createElement(
               "p",
               { className: "status" },
               maintenance_request.action_status.maintenance_request_status
-            ) : null
+            )
           ),
           React.createElement(
             "div",
@@ -67138,12 +67169,12 @@ var MaintenanceRequestItem = React.createClass({
             null,
             React.createElement(P, { content: maintenance_request.maintenance_description })
           ),
-          maintenance_request.property && maintenance_request.property.property_address ? React.createElement(
+          maintenance_request.property && maintenance_request.property.property_address && React.createElement(
             "p",
             { className: "address" },
             React.createElement("i", { className: "fa fa-map-marker" }),
             maintenance_request.property.property_address
-          ) : null
+          )
         )
       )
     );
@@ -67209,15 +67240,20 @@ var Pagination = React.createClass({
 
   getInitialState: function () {
     return {
+      group: 1,
+      numbGroup: 5,
       totalPage: 0,
+      totalGroup: 0,
       page: this.props.page
     };
   },
 
   calculatePage: function (total) {
     var totalPage = Math.ceil(total / this.props.prePage);
+    var totalGroup = Math.ceil(totalPage / this.state.numbGroup);
     this.setState({
-      totalPage: totalPage
+      totalPage: totalPage,
+      totalGroup: totalGroup
     });
   },
 
@@ -67233,8 +67269,26 @@ var Pagination = React.createClass({
   },
 
   switchPage: function (page) {
+    var group = 1;
+    if (page > this.state.page) {
+      group = page > this.state.group * this.state.numbGroup ? this.state.group + 1 : this.state.group;
+    } else {
+      group = page <= (this.state.group - 1) * this.state.numbGroup ? this.state.group - 1 : this.state.group;
+    }
+
     this.setState({
-      page: page
+      page: page,
+      group: group
+    });
+
+    this.props.setPage(page);
+  },
+
+  switchGroup: function (group) {
+    var page = (group - 1) * this.state.numbGroup + 1;
+    this.setState({
+      page: page,
+      group: group
     });
 
     this.props.setPage(page);
@@ -67243,47 +67297,57 @@ var Pagination = React.createClass({
   render: function () {
     var _this4 = this;
 
-    var sefl = this;
-    var paginations = [].concat(_toConsumableArray(Array(this.state.totalPage).keys())).map(function (key) {
-      var i = key + 1;
-      if (i == sefl.state.page) return React.createElement(
-        "em",
-        { key: "current", className: "current" },
-        i
-      );
-      return React.createElement(
-        "a",
-        { key: key, onClick: function (page) {
-            return sefl.switchPage(i);
-          } },
-        i
-      );
+    var self = this;
+    var paginations = [].concat(_toConsumableArray(Array(this.state.numbGroup).keys())).map(function (key) {
+      var i = (self.state.group - 1) * self.state.numbGroup + key + 1;
+      if (i <= self.state.totalPage) {
+        if (i == self.state.page) return React.createElement(
+          "em",
+          { key: "current", className: "current" },
+          i
+        );
+        return React.createElement(
+          "a",
+          { key: key, onClick: function (page) {
+              return self.switchPage(i);
+            } },
+          i
+        );
+      }
+
+      return;
     });
     return React.createElement(
       "div",
       { className: "pagination" },
-      React.createElement(
-        "span",
-        {
-          className: "previous_page " + (this.state.page == 1 && "disabled"),
-          onClick: this.state.page > 1 ? function (page) {
-            return _this4.switchPage(_this4.state.page - 1);
-          } : ""
-        },
-        "< Back"
+      React.createElement("a", {
+        className: "previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled"),
+        onClick: this.state.page > 1 ? function (page) {
+          return _this4.switchPage(_this4.state.page - 1);
+        } : ""
+      }),
+      this.state.group > 1 && React.createElement(
+        "a",
+        { onClick: function (group) {
+            return _this4.switchGroup(_this4.state.group - 1);
+          } },
+        "..."
       ),
       paginations,
-      React.createElement(
+      this.state.group < this.state.totalGroup && React.createElement(
         "a",
-        {
-          key: "next",
-          className: "next_page " + (this.state.page == this.state.totalPage && "disabled"),
-          onClick: function (page) {
-            return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
-          }
-        },
-        "Next >"
-      )
+        { onClick: function (group) {
+            return _this4.switchGroup(_this4.state.group + 1);
+          } },
+        "..."
+      ),
+      React.createElement("a", {
+        key: "next",
+        className: "next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled"),
+        onClick: function (page) {
+          return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
+        }
+      })
     );
   }
 });
@@ -67321,8 +67385,31 @@ var Carousel = React.createClass({
 	},
 
 	componentDidMount: function () {
+		var self = this;
 		this.setState({
 			stwidth: $('.slider-custom').width()
+		});
+
+		$(window).resize(function () {
+			self.setState({
+				stwidth: $('.slider-custom').width()
+			});
+		});
+
+		$(".slider-custom").on("touchstart", function (event) {
+			var xClick = event.originalEvent.touches[0].pageX;
+			$(this).one("touchmove", function (event) {
+				debugger;
+				var xMove = event.originalEvent.touches[0].pageX;
+				if (Math.floor(xClick - xMove) > 10) {
+					self.sliderNext();
+				} else if (Math.floor(xClick - xMove) < -10) {
+					self.sliderPrev();
+				}
+			});
+			$(".slider-custom").on("touchend", function () {
+				$(this).off("touchmove");
+			});
 		});
 	},
 
@@ -67341,7 +67428,7 @@ var Carousel = React.createClass({
 				{ className: 'swiper-container swiper-container-horizontal' },
 				React.createElement(
 					'div',
-					{ className: 'swiper-wrapper slider', style: styles },
+					{ className: 'swiper-wrapper slider', style: styles, id: 'mySlider' },
 					this.props.gallery.map(function (img, index) {
 						return React.createElement('img', {
 							key: index,
@@ -67355,7 +67442,7 @@ var Carousel = React.createClass({
 			React.createElement(
 				'div',
 				{ className: 'swiper-pagination' },
-				this.props.gallery.lenght > 1 ? this.props.gallery.map(function (img, index) {
+				this.props.gallery.length > 1 ? this.props.gallery.map(function (img, index) {
 					return React.createElement('span', {
 						key: index,
 						className: "swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active"),
@@ -67365,8 +67452,16 @@ var Carousel = React.createClass({
 					});
 				}) : null
 			),
-			this.props.gallery.lenght > 1 && React.createElement('div', { className: 'swiper-button-next', onClick: this.sliderNext }),
-			this.props.gallery.lenght > 1 && React.createElement('div', { className: 'swiper-button-prev', onClick: this.sliderPrev })
+			this.props.gallery.length > 1 && React.createElement(
+				'div',
+				{ className: 'btn-slider btn-next', onClick: this.sliderNext },
+				React.createElement('i', { className: 'fa fa-angle-right' })
+			),
+			this.props.gallery.length > 1 && React.createElement(
+				'div',
+				{ className: 'btn-slider btn-prev', onClick: this.sliderPrev },
+				React.createElement('i', { className: 'fa fa-angle-left' })
+			)
 		);
 	}
 });
@@ -70695,45 +70790,95 @@ var ButtonQuoteMessage = React.createClass({
 var ActionQuote = React.createClass({
 	displayName: "ActionQuote",
 
+	getInitialState: function () {
+		return {
+			quote: this.props.quote
+		};
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this.setState({
+			quote: nextProps.quote.id == this.state.quote.id ? nextProps.quote : this.state.quote
+		});
+	},
+
 	render: function () {
-		var quote = this.props.quote;
+		var quote = this.state.quote;
 		var self = this.props;
 		if (!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				quote.status == "Active" && React.createElement(ButtonAccept, { updateStatusQuote: self.updateStatusQuote, quote: quote }),
-				quote.status == "Active" && React.createElement(ButtonRequestAnotherQuote, { sendEmailLandlord: self.sendEmailLandlord, quote: quote }),
-				!self.quotes && React.createElement(ButtonView, { viewQuote: function (key, item) {
+				quote.status == "Active" && React.createElement(ButtonAccept, {
+					quote: quote,
+					updateStatusQuote: self.updateStatusQuote
+				}),
+				quote.status == "Active" && React.createElement(ButtonRequestAnotherQuote, {
+					quote: quote,
+					sendEmailLandlord: self.sendEmailLandlord
+				}),
+				!self.quotes && React.createElement(ButtonView, {
+					quote: self.quote,
+					viewQuote: function (key, item) {
 						return self.viewQuote(key, item);
-					}, quote: self.quote })
+					}
+				})
 			);
 		} else if (self.keyLandlord == "trady") {
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && React.createElement(ButtonQuoteMessage, { viewQuoteMessage: function (key, item) {
+				!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation && React.createElement(ButtonQuoteMessage, {
+					quote: quote,
+					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
-					}, quote: self.quote }),
-				!self.quotes && React.createElement(ButtonView, { viewQuote: function (key, item) {
+					}
+				}),
+				!self.quotes && React.createElement(ButtonView, {
+					viewQuote: function (key, item) {
 						return self.viewQuote(key, item);
-					}, quote: self.quote })
+					},
+					quote: self.quote
+				})
 			);
 		} else {
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && React.createElement(ButtonQuoteMessage, { viewQuoteMessage: function (key, item) {
+				!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation && React.createElement(ButtonQuoteMessage, {
+					quote: quote,
+					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
-					}, quote: self.quote }),
-				quote.status == "Active" && React.createElement(ButtonForwardLandlord, { sendEmailLandlord: self.sendEmailLandlord, quote: quote, onModalWith: self.onModalWith, landlord: self.landlord }),
-				quote.status == "Active" && React.createElement(ButtonAccept, { updateStatusQuote: self.updateStatusQuote, quote: quote }),
-				quote.status == "Active" && React.createElement(ButtonDecline, { updateStatusQuote: self.updateStatusQuote, quote: quote }),
-				quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved" ? React.createElement(ButtonRestore, { updateStatusQuote: self.updateStatusQuote, quote: quote }) : null,
-				!self.quotes && React.createElement(ButtonView, { viewQuote: function (key, item) {
+					}
+				}),
+				quote.status == "Active" && React.createElement(ButtonForwardLandlord, {
+					quote: quote,
+					landlord: self.landlord,
+					onModalWith: self.onModalWith,
+					sendEmailLandlord: self.sendEmailLandlord
+				}),
+				quote.status == "Active" && React.createElement(ButtonAccept, {
+					quote: quote,
+					updateStatusQuote: self.updateStatusQuote
+				}),
+				quote.status == "Active" && React.createElement(ButtonDecline, {
+					quote: quote,
+					updateStatusQuote: self.updateStatusQuote
+				}),
+				quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved" && React.createElement(ButtonRestore, {
+					quote: quote,
+					updateStatusQuote: self.updateStatusQuote
+				}),
+				!self.quotes && React.createElement(ButtonView, {
+					quote: self.quote,
+					viewQuote: function (key, item) {
 						return self.viewQuote(key, item);
-					}, quote: self.quote }),
-				quote.status == "Approved" && React.createElement(ButtonCancle, { updateStatusQuote: self.updateStatusQuote, quote: quote })
+					}
+				}),
+				quote.status == "Approved" && React.createElement(ButtonCancle, {
+					quote: quote,
+					updateStatusQuote: self.updateStatusQuote
+				})
 			);
 		}
 	}
@@ -70742,8 +70887,20 @@ var ActionQuote = React.createClass({
 var Quotes = React.createClass({
 	displayName: "Quotes",
 
+	getInitialState: function () {
+		return {
+			quotes: this.props.quotes
+		};
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this.setState({
+			quotes: nextProps.quotes
+		});
+	},
+
 	render: function () {
-		var quotes = this.props.quotes;
+		var quotes = this.state.quotes;
 		var self = this.props;
 		return React.createElement(
 			"div",
@@ -70793,7 +70950,7 @@ var Quotes = React.createClass({
 									quote.trady && quote.trady.name,
 									" ",
 									React.createElement("br", null),
-									quote.trady && quote.trady.trady_company ? quote.trady.trady_company.trading_name : null
+									quote.trady && quote.trady.trady_company && quote.trady.trady_company.trading_name
 								)
 							)
 						),
@@ -70808,8 +70965,9 @@ var Quotes = React.createClass({
 								"AUD"
 							)
 						),
-						!!self.current_user ? React.createElement(ActionQuote, {
+						!!self.current_user && React.createElement(ActionQuote, {
 							quote: quote,
+							key: quote.id,
 							landlord: self.landlord,
 							keyLandlord: self.keyLandlord,
 							onModalWith: self.onModalWith,
@@ -70819,7 +70977,7 @@ var Quotes = React.createClass({
 								return self.viewQuote(key, item);
 							},
 							current_user_show_quote_message: self.current_user_show_quote_message
-						}) : null
+						})
 					);
 				})
 			)
@@ -71204,7 +71362,15 @@ var ModalViewQuote = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "modal-footer-quote" },
-							!!self.current_user && React.createElement(ActionQuote, { keyLandlord: this.props.keyLandlord, quotes: this.state.quotes, quote: quote, updateStatusQuote: self.updateStatusQuote, sendEmailLandlord: self.sendEmailLandlord, onModalWith: self.onModalWith, landlord: self.landlord })
+							!!self.current_user && React.createElement(ActionQuote, {
+								quote: quote,
+								landlord: self.landlord,
+								quotes: this.state.quotes,
+								onModalWith: self.onModalWith,
+								keyLandlord: this.props.keyLandlord,
+								updateStatusQuote: self.updateStatusQuote,
+								sendEmailLandlord: self.sendEmailLandlord
+							})
 						)
 					)
 				)
@@ -71760,7 +71926,8 @@ var Header = React.createClass({
   getInitialState: function () {
     return {
       isItems: !this.props.expanded,
-      isClicked: false
+      isClicked: false,
+      isShow: false
     };
   },
 
@@ -71785,19 +71952,31 @@ var Header = React.createClass({
     }
   },
 
-  showMenu: function () {
-    document.getElementById("menu-bar").classList.toggle("show");
+  showMenu: function (flag) {
+    var myDropdown = document.getElementById("menu-bar");
+    if (this.state.isShow) {
+      myDropdown.classList.remove('show');
+      if (flag != 'hide') {
+        this.setState({
+          isShow: false
+        });
+      }
+    } else {
+      if (flag == 'show') {
+        myDropdown.classList.toggle("show");
+        this.setState({
+          isShow: true
+        });
+      }
+    }
   },
 
   componentDidMount: function (e) {
+    var _this = this;
+
     $(document).bind('click', this.clickDocument);
-    $(document).bind('click', function (e) {
-      if (!e.target.matches('.btn-menu')) {
-        var myDropdown = document.getElementById("menu-bar");
-        if (myDropdown && myDropdown.classList.contains('show')) {
-          myDropdown.classList.remove('show');
-        }
-      }
+    $(document).bind('click', function (flag) {
+      return _this.showMenu(_this.state.isShow);
     });
   },
 
@@ -71847,6 +72026,8 @@ var Header = React.createClass({
   },
 
   header: function (e) {
+    var _this2 = this;
+
     var logged_in = this.props.logged_in;
     var current_user = this.props.current_user;
     var expanded = this.props.expanded;
@@ -71934,7 +72115,9 @@ var Header = React.createClass({
                 { className: "menu-bar dropdown-custom" },
                 React.createElement(
                   "button",
-                  { type: "button", className: "btn-menu", onClick: this.showMenu },
+                  { type: "button", className: "btn-menu", onClick: function (flag) {
+                      return _this2.showMenu(!_this2.state.isShow ? 'show' : 'hide');
+                    } },
                   React.createElement("img", { src: "/assets/user1.png" }),
                   React.createElement(
                     "span",
@@ -71967,7 +72150,7 @@ var Header = React.createClass({
                 { className: "menu-button", onClick: this.showItems, ref: "showItems" },
                 " S "
               ),
-              this.state.isItems ? React.createElement(
+              this.state.isItems && React.createElement(
                 "ul",
                 { className: "desktop-menu-items" },
                 React.createElement(
@@ -71991,7 +72174,7 @@ var Header = React.createClass({
                     " Sign Out"
                   )
                 )
-              ) : null
+              )
             )
           ) : React.createElement(
             "span",
@@ -73410,64 +73593,106 @@ var AddTradycompany = React.createClass({
     );
   }
 });
+var CreactOrUploadQuote = React.createClass({
+	displayName: "CreactOrUploadQuote",
+
+	render: function () {
+		return React.createElement(
+			"li",
+			{ className: "active" },
+			React.createElement(
+				"a",
+				{ href: this.props.link },
+				React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
+				"Create or Upload Quote"
+			)
+		);
+	}
+});
+
+var CreateOrUploadInvoice = React.createClass({
+	displayName: "CreateOrUploadInvoice",
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ onClick: function (modal) {
+						return _this.props.onModalWith('viewConfirm');
+					} },
+				React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+				"Create or Upload Imvoice"
+			)
+		);
+	}
+});
+
+var MarkJobAsCompleted = React.createClass({
+	displayName: "MarkJobAsCompleted",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ onClick: function (modal) {
+						return _this2.props.onModalWith('viewMarkJob');
+					} },
+				React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+				"Mark Job As Completed"
+			)
+		);
+	}
+});
+
 var ContentTradyAction = React.createClass({
 	displayName: "ContentTradyAction",
 
 	render: function () {
+		var _this3 = this;
+
 		var maintenance_request = this.props.maintenance_request;
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
 		var maintenance_trady_id = maintenance_request.trady_id;
+		var link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
 		if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return React.createElement(
 				"ul",
 				null,
-				React.createElement(
-					"li",
-					{ className: "active" },
-					React.createElement(
-						"a",
-						{ href: "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id },
-						React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
-						"Create or Upload Quote"
-					)
-				),
-				React.createElement(
-					"li",
-					null,
-					React.createElement(
-						"a",
-						{ href: "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=" },
-						React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
-						"Create or Upload Invoice"
-					)
-				)
+				React.createElement(CreactOrUploadQuote, { link: link }),
+				React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
+						return _this3.props.onModalWith(modal);
+					} }),
+				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
+						return _this3.props.onModalWith(modal);
+					} })
 			);
 		} else if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
-			return null;
+			return React.createElement(
+				"ul",
+				null,
+				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
+						return _this3.props.onModalWith(modal);
+					} })
+			);
 		} else {
 			return React.createElement(
 				"ul",
 				null,
-				React.createElement(
-					"li",
-					{ className: "active" },
-					React.createElement(
-						"a",
-						{ href: "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id },
-						React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
-						"Create or Upload Quote"
-					)
-				),
-				!!this.props.assigned_trady ? React.createElement(
-					"li",
-					null,
-					React.createElement(
-						"a",
-						{ href: "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=" },
-						React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
-						"Create or Upload Invoice"
-					)
-				) : null
+				React.createElement(CreactOrUploadQuote, { link: link }),
+				!!this.props.assigned_trady && React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
+						return _this3.props.onModalWith(modal);
+					} }),
+				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
+						return _this3.props.onModalWith(modal);
+					} })
 			);
 		}
 	}
@@ -73487,7 +73712,7 @@ var TradyAction = React.createClass({
 	},
 
 	render: function () {
-		var _this = this;
+		var _this4 = this;
 
 		return React.createElement(
 			"div",
@@ -73509,15 +73734,17 @@ var TradyAction = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content", id: "actions-content" },
-				this.state.show ? React.createElement(ContentTradyAction, {
+				this.state.show && React.createElement(ContentTradyAction, {
 					landlord: this.props.landlord,
+					invoices: this.props.invoices,
 					assigned_trady: this.props.assigned_trady,
 					signed_in_trady: this.props.signed_in_trady,
+					invoice_pdf_files: this.props.invoice_pdf_files,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
-						return _this.props.onModalWith(modal);
+						return _this4.props.onModalWith(modal);
 					}
-				}) : null
+				})
 			)
 		);
 	}
@@ -73527,7 +73754,7 @@ var TradyActionMobile = React.createClass({
 	displayName: "TradyActionMobile",
 
 	render: function () {
-		var _this2 = this;
+		var _this5 = this;
 
 		return React.createElement(
 			"div",
@@ -73555,10 +73782,12 @@ var TradyActionMobile = React.createClass({
 					React.createElement(ContentTradyAction, {
 						landlord: this.props.landlord,
 						landlord: this.props.landlord,
+						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
+						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
-							return _this2.props.onModalWith(modal);
+							return _this5.props.onModalWith(modal);
 						}
 					})
 				)
@@ -73735,16 +73964,208 @@ var TradySideBarMobile = React.createClass({
 					)
 				)
 			),
-			!!this.state.showAction && React.createElement(TradyActionMobile, { close: function (key) {
+			!!this.state.showAction && React.createElement(TradyActionMobile, {
+				landlord: this.props.landlord,
+				invoices: this.props.invoices,
+				close: function (key) {
 					return _this.show('action');
-				}, onModalWith: function (modal) {
+				},
+				assigned_trady: this.props.assigned_trady,
+				signed_in_trady: this.props.signed_in_trady,
+				invoice_pdf_files: this.props.invoice_pdf_files,
+				maintenance_request: this.props.maintenance_request,
+				onModalWith: function (modal) {
 					return _this.props.onModalWith(modal);
-				}, landlord: this.props.landlord, assigned_trady: this.props.assigned_trady, signed_in_trady: this.props.signed_in_trady, maintenance_request: this.props.maintenance_request }),
+				}
+			}),
 			!!this.state.showContact && React.createElement(TradyContactMobile, { close: function (key) {
 					return _this.show('contact');
 				}, onModalWith: function (modal) {
 					return _this.props.onModalWith(modal);
 				}, landlord: this.props.landlord, current_user: this.props.current_user, maintenance_request: this.props.maintenance_request })
+		);
+	}
+});
+
+var ModalConfirmAddInvoice = React.createClass({
+	displayName: "ModalConfirmAddInvoice",
+
+	jobCompleted: function () {
+		var params = {
+			maintenance_request_id: this.props.maintenance_request.id
+		};
+
+		this.props.jobCompleted(params);
+	},
+
+	createInvoice: function () {
+		var maintenance_request = this.props.maintenance_request;
+		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+		var maintenance_trady_id = maintenance_request.trady_id;
+		this.props.close();
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+	},
+
+	render: function () {
+		var maintenance_request = this.props.maintenance_request;
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							"Job Completed"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							"Has the job Been completed for \"",
+							maintenance_request.maintenance_heading,
+							"\""
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								"data-dismiss": "modal",
+								onClick: this.jobCompleted,
+								className: "btn btn-default success"
+							},
+							"Yes"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								onClick: this.createInvoice,
+								className: "btn btn-primary cancel"
+							},
+							"No"
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalMarkJobAsCompleted = React.createClass({
+	displayName: "ModalMarkJobAsCompleted",
+
+	jobCompleted: function () {
+		var params = {
+			maintenance_request_id: this.props.maintenance_request.id
+		};
+
+		this.props.jobCompleted(params);
+	},
+
+	createInvoice: function () {
+		var maintenance_request = this.props.maintenance_request;
+		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+		var maintenance_trady_id = maintenance_request.trady_id;
+		this.props.close();
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id + "&quote_id=";
+	},
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							"Mark Job As Completed"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							"There are no invoices for this maintenance request would you like to create an invoice and mark job as completed ?"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								"data-dismiss": "modal",
+								onClick: this.jobCompleted,
+								className: "btn btn-default success"
+							},
+							"Yes"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								onClick: this.createInvoice,
+								className: "btn btn-primary cancel"
+							},
+							"No"
+						)
+					)
+				)
+			)
 		);
 	}
 });
@@ -73873,6 +74294,34 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	jobCompleted: function (params) {
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/job_completed',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({ notification: {
+						title: "Job Completed",
+						content: "Job Completed was successfully!",
+						bgClass: "bg-success"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Trady",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	viewItem: function (key, item) {
 		switch (key) {
 			case 'viewQuote':
@@ -73902,6 +74351,18 @@ var TradyMaintenanceRequest = React.createClass({
 						invoice_pdf_file: item
 					});
 
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewConfirm':
+				{
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewMarkJob':
+				{
 					this.onModalWith(key);
 					break;
 				}
@@ -73985,6 +74446,28 @@ var TradyMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'viewConfirm':
+					{
+						return React.createElement(ModalConfirmAddInvoice, {
+							close: this.isClose,
+							jobCompleted: this.jobCompleted,
+							signed_in_trady: this.props.signed_in_trady,
+							trady: this.props.current_user_show_quote_message,
+							maintenance_request: this.props.maintenance_request
+						});
+					}
+
+				case 'viewMarkJob':
+					{
+						return React.createElement(ModalMarkJobAsCompleted, {
+							close: this.isClose,
+							jobCompleted: this.jobCompleted,
+							signed_in_trady: this.props.signed_in_trady,
+							trady: this.props.current_user_show_quote_message,
+							maintenance_request: this.props.maintenance_request
+						});
+					}
+
 				default:
 					return null;
 			}
@@ -74008,7 +74491,7 @@ var TradyMaintenanceRequest = React.createClass({
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
-					this.props.quotes.length > 0 ? React.createElement(Quotes, {
+					this.props.quotes.length > 0 && React.createElement(Quotes, {
 						keyLandlord: "trady",
 						quotes: this.state.quotes,
 						landlord: this.state.landlord,
@@ -74018,49 +74501,56 @@ var TradyMaintenanceRequest = React.createClass({
 							return _this3.viewItem(key, item);
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
-					}) : null,
-					this.props.invoices.length > 0 ? React.createElement(Invoices, {
+					}),
+					this.props.invoices.length > 0 && React.createElement(Invoices, {
 						invoices: this.state.invoices,
 						viewInvoice: function (key, item) {
 							return _this3.viewItem(key, item);
 						}
-					}) : null,
-					this.props.invoice_pdf_files.length > 0 ? React.createElement(PDFInvoices, {
+					}),
+					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
 						invoice_pdf_files: this.state.invoice_pdf_files,
 						viewPDFInvoice: function (key, item) {
 							return _this3.viewItem(key, item);
 						}
-					}) : null
+					})
 				),
 				React.createElement(
 					"div",
 					{ className: "sidebar" },
 					React.createElement(TradyContact, {
 						landlord: this.state.landlord,
+						current_user: this.props.current_user,
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
 						},
-						current_user: this.props.current_user,
 						maintenance_request: this.state.maintenance_request
 					}),
 					React.createElement(TradyAction, {
 						landlord: this.state.landlord,
+						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
 						signed_in_trady: this.props.signed_in_trady,
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
 						},
+						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.state.maintenance_request
 					})
 				)
 			),
 			React.createElement(TradySideBarMobile, {
 				landlord: this.state.landlord,
+				invoices: this.props.invoices,
 				current_user: this.props.current_user,
 				assigned_trady: this.props.assigned_trady,
 				signed_in_trady: this.props.signed_in_trady,
+				invoice_pdf_files: this.props.invoice_pdf_files,
 				onModalWith: function (modal) {
 					return _this3.onModalWith(modal);
+				},
+				viewModal: function (key, item) {
+					return _this3.viewItem(key, item);
 				},
 				maintenance_request: this.state.maintenance_request
 			}),
