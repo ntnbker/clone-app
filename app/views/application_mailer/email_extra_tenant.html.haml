@@ -7,7 +7,7 @@
       =@tenant_name.capitalize
       a maintenance request has been submitted. To following along with the progress click the button below.
       %button
-        =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request, user_id:@user.id)
+        =link_to "#{@maintenance_request.maintenance_heading}", tenant_maintenance_request_url(@maintenance_request, user_id:@user.id)
 
 
      

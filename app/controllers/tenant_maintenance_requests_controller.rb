@@ -1,5 +1,5 @@
 class TenantMaintenanceRequestsController < ApplicationController
-  
+  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   def index
     if params[:sort_by_date] == "Newest to Oldest"
       @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
@@ -69,6 +69,15 @@ class TenantMaintenanceRequestsController < ApplicationController
     end 
 
  
+  end
+
+  private
+
+  def email_auto_login(id)
+      if current_user == nil
+        user = User.find_by(id:id)
+        auto_login(user)
+      end 
   end
 
 end

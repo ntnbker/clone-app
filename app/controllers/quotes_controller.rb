@@ -151,7 +151,7 @@ class QuotesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
-    @quote.update_attribute(:delivery_status, true)
+    
 
     quote_request = QuoteRequest.where(:trady_id=>@quote.trady.id, :maintenance_request_id=>@maintenance_request.id).first
 
@@ -161,19 +161,29 @@ class QuotesController < ApplicationController
 
     end
 
+    if @quote.delivery_status == false
+      flash[:success] = "Your Quote has been sent Thank you"
+      @quote.update_attribute(:delivery_status, true)
+      if @landlord == nil 
+        AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
+        @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Action Required")
+      else
 
-    flash[:success] = "Your Quote has been sent Thank you"
-    if @landlord == nil 
-      AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
-      @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Action Required")
-    else
-
-      #this stuff has to go into the new end point for when they forward the quote.
-      AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
-      LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
-      @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
+        #this stuff has to go into the new end point for when they forward the quote.
+        AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
+        LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
+        @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
+      end 
+    elsif @quote.delivery_status ==true
+      redirect_to trady_maintenance_requests_path
     end 
+      
+
+
+
   end
+
+
 
   def forward_quote
     

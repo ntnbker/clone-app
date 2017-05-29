@@ -60,18 +60,6 @@ class MaintenanceRequestsController < ApplicationController
       @maintenance_request.perform_realestate_validations = false
     end 
 
-
-    # if current_user.agency_admin?
-    #   @agency_admin = current_user.agency_admin
-    #   @maintenance_request.agency_admin_id = @agency_admin.id
-    #   @maintenance_request.perform_realestate_validations = false
-    # elsif current_user.agent?
-    #   @agent = current_user.agent
-    #   @maintenance_request.agent_id = @agent.id
-    #   @maintenance_request.perform_realestate_validations = false
-    # elsif current_user == nil || current_user.tenant?
-    #   @maintenance_request.perform_realestate_validations = true
-    # end 
     
     
     if @maintenance_request.valid?

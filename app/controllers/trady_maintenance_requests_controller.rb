@@ -1,5 +1,5 @@
 class TradyMaintenanceRequestsController < ApplicationController
-
+  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   def index
     # if params[:sort_by_date] == "Newest to Oldest"
     #   @maintenance_requests = current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
@@ -110,7 +110,14 @@ class TradyMaintenanceRequestsController < ApplicationController
       format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices}}
       format.html{render :show}
     end 
+  end
 
- 
+  private
+
+  def email_auto_login(id)
+      if current_user == nil
+        user = User.find_by(id:id)
+        auto_login(user)
+      end 
   end
 end 
