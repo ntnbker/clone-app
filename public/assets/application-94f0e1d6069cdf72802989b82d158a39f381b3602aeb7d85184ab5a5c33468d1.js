@@ -64745,7 +64745,7 @@ var ModalViewPDFInvoice = React.createClass({
 									React.createElement(
 										"div",
 										{ className: "detail-quote" },
-										React.createElement("embed", { src: "/assets/pdf-sample2.pdf", className: "scroll-custom", width: "100%", height: "400px" })
+										!!invoice.invoices[0] && React.createElement("embed", { src: invoice.invoices[0].url, className: "scroll-custom", width: "100%", height: "400px" })
 									)
 								)
 							),
@@ -66514,10 +66514,8 @@ var DropContent = React.createClass({
           React.createElement(
             "a",
             { href: item.href },
-            " ",
             item.title
           ),
-          " ",
           React.createElement(
             "span",
             null,
@@ -66535,6 +66533,7 @@ var DropList = React.createClass({
   propTypes: {
     children: React.PropTypes.element
   },
+
   getInitialState: function () {
     return { hidden: true };
   },
@@ -66661,9 +66660,13 @@ var DropDownMobileList = React.createClass({
       { className: "drop-mobile-list" },
       React.createElement(
         "button",
-        { id: this.props.id, className: 'btn-drop-mobile title ' + (!this.state.hidden && 'active'), onClick: function (id) {
+        {
+          id: this.props.id,
+          onClick: function (id) {
             return _this2.onDrop(_this2.props.id);
-          } },
+          },
+          className: 'btn-drop-mobile title ' + (!this.state.hidden && 'active')
+        },
         this.props.title
       ),
       React.createElement(
@@ -66722,7 +66725,7 @@ var P = React.createClass({
       "div",
       { className: "readmore" },
       expandedDiv,
-      this.props.content.length < maxLength ? null : React.createElement(
+      this.props.content.length >= maxLength && React.createElement(
         "a",
         { onClick: this.readMore },
         expanded ? 'less' : 'more'
@@ -66792,9 +66795,9 @@ var ImgSlider = React.createClass({
       var xClick = event.originalEvent.touches[0].pageX;
       $(this).one("touchmove", function (event) {
         var xMove = event.originalEvent.touches[0].pageX;
-        if (Math.floor(xClick - xMove) > 10) {
+        if (Math.ceil(xClick - xMove) > 5) {
           self.sliderTopNext();
-        } else if (Math.floor(xClick - xMove) < -10) {
+        } else if (Math.ceil(xClick - xMove) < -5) {
           self.sliderTopPrev();
         }
       });
@@ -66898,7 +66901,7 @@ var ListMaintenanceRequest = React.createClass({
         count: this.props.new_maintenance_requests_count
       }, {
         title: "Quote Received",
-        value: "Quote Received",
+        value: "Quote Received Awaiting Approval",
         count: this.props.quotes_received_count
       }, {
         title: "New Invoice",
@@ -67049,7 +67052,11 @@ var ListMaintenanceRequest = React.createClass({
     return React.createElement(
       "div",
       { className: "maintenance-list" },
-      React.createElement(DropforSortDate, { selectFilter: this.selectFilter, filterDate: this.state.filterDate, valueSelect: this.state.sortByDate }),
+      React.createElement(DropforSortDate, {
+        selectFilter: this.selectFilter,
+        filterDate: this.state.filterDate,
+        valueSelect: this.state.sortByDate
+      }),
       React.createElement(
         "div",
         { className: "maintenance-content" },
@@ -67062,7 +67069,12 @@ var ListMaintenanceRequest = React.createClass({
             this.state.dataShow.map(function (maintenance_request, key) {
               return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link });
             }),
-            this.state.data.length > this.state.prePage && React.createElement(Pagination, { page: this.state.page, total: this.state.data.length, prePage: this.state.prePage, setPage: this.setPage })
+            this.state.data.length > this.state.prePage && React.createElement(Pagination, {
+              page: this.state.page,
+              setPage: this.setPage,
+              total: this.state.data.length,
+              prePage: this.state.prePage
+            })
           )
         ),
         React.createElement(
@@ -67089,7 +67101,7 @@ var ListMaintenanceRequest = React.createClass({
       React.createElement(
         "div",
         { className: "action-mobile" },
-        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownMobileList, {
+        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownMobileList, {
           "class": "action",
           id: "action-required",
           title: "Action Required",
@@ -67097,8 +67109,8 @@ var ListMaintenanceRequest = React.createClass({
           getAction: function (value) {
             return _this3.getAction(value);
           }
-        }) : null,
-        !!current_user_agent || !!current_user_agency_admin ? React.createElement(DropDownMobileList, {
+        }),
+        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownMobileList, {
           "class": "awaiting",
           id: "awaiting-action",
           title: "Awaiting Action",
@@ -67106,7 +67118,7 @@ var ListMaintenanceRequest = React.createClass({
           getAction: function (value) {
             return _this3.getAction(value);
           }
-        }) : null
+        })
       )
     );
   }
@@ -67123,7 +67135,10 @@ var MaintenanceRequestItem = React.createClass({
       React.createElement(
         "div",
         { className: "image" },
-        React.createElement(ImgSlider, { nameClass: "slider-custom-" + maintenance_request.id, images: maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{ url: "/uploads/maintenance_request_image/images/no_image.png" }] })
+        React.createElement(ImgSlider, {
+          nameClass: "slider-custom-" + maintenance_request.id,
+          images: maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{ url: "/uploads/maintenance_request_image/images/no_image.png" }]
+        })
       ),
       React.createElement(
         "div",
@@ -67158,9 +67173,13 @@ var MaintenanceRequestItem = React.createClass({
               moment(maintenance_request.created_at).format('LL')
             ),
             React.createElement(
+              "span",
+              null,
+              " | "
+            ),
+            React.createElement(
               "p",
               { className: "type" },
-              "|",
               maintenance_request.service_type
             )
           ),
@@ -67399,11 +67418,10 @@ var Carousel = React.createClass({
 		$(".slider-custom").on("touchstart", function (event) {
 			var xClick = event.originalEvent.touches[0].pageX;
 			$(this).one("touchmove", function (event) {
-				debugger;
 				var xMove = event.originalEvent.touches[0].pageX;
-				if (Math.floor(xClick - xMove) > 10) {
+				if (Math.ceil(xClick - xMove) > 5) {
 					self.sliderNext();
-				} else if (Math.floor(xClick - xMove) < -10) {
+				} else if (Math.ceil(xClick - xMove) < -5) {
 					self.sliderPrev();
 				}
 			});
@@ -70828,7 +70846,7 @@ var ActionQuote = React.createClass({
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation && React.createElement(ButtonQuoteMessage, {
+				!!self.current_user_show_quote_message && quote.status != "Declined" && !!quote.conversation && React.createElement(ButtonQuoteMessage, {
 					quote: quote,
 					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
@@ -70845,7 +70863,7 @@ var ActionQuote = React.createClass({
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation && React.createElement(ButtonQuoteMessage, {
+				!!self.current_user_show_quote_message && quote.status != "Declined" && React.createElement(ButtonQuoteMessage, {
 					quote: quote,
 					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
@@ -71925,9 +71943,9 @@ var Header = React.createClass({
 
   getInitialState: function () {
     return {
-      isItems: !this.props.expanded,
+      isShow: false,
       isClicked: false,
-      isShow: false
+      isItems: !this.props.expanded
     };
   },
 
@@ -71954,15 +71972,15 @@ var Header = React.createClass({
 
   showMenu: function (flag) {
     var myDropdown = document.getElementById("menu-bar");
-    if (this.state.isShow) {
+    if (flag == 'hide' && !!this.state.isShow) {
       myDropdown.classList.remove('show');
-      if (flag != 'hide') {
+    } else if (flag != 'hide') {
+      if (!!this.state.isShow) {
+        myDropdown.classList.remove('show');
         this.setState({
           isShow: false
         });
-      }
-    } else {
-      if (flag == 'show') {
+      } else {
         myDropdown.classList.toggle("show");
         this.setState({
           isShow: true
@@ -71976,7 +71994,7 @@ var Header = React.createClass({
 
     $(document).bind('click', this.clickDocument);
     $(document).bind('click', function (flag) {
-      return _this.showMenu(_this.state.isShow);
+      return _this.showMenu('hide');
     });
   },
 
@@ -72026,8 +72044,6 @@ var Header = React.createClass({
   },
 
   header: function (e) {
-    var _this2 = this;
-
     var logged_in = this.props.logged_in;
     var current_user = this.props.current_user;
     var expanded = this.props.expanded;
@@ -72115,9 +72131,7 @@ var Header = React.createClass({
                 { className: "menu-bar dropdown-custom" },
                 React.createElement(
                   "button",
-                  { type: "button", className: "btn-menu", onClick: function (flag) {
-                      return _this2.showMenu(!_this2.state.isShow ? 'show' : 'hide');
-                    } },
+                  { type: "button", className: "btn-menu", onClick: this.showMenu },
                   React.createElement("img", { src: "/assets/user1.png" }),
                   React.createElement(
                     "span",
@@ -73625,7 +73639,7 @@ var CreateOrUploadInvoice = React.createClass({
 						return _this.props.onModalWith('viewConfirm');
 					} },
 				React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
-				"Create or Upload Imvoice"
+				"Create or Upload Invoice"
 			)
 		);
 	}
@@ -74003,7 +74017,7 @@ var ModalConfirmAddInvoice = React.createClass({
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
 		var maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id + "&quote_id=";
 	},
 
 	render: function () {
@@ -74038,7 +74052,7 @@ var ModalConfirmAddInvoice = React.createClass({
 						React.createElement(
 							"h4",
 							{ className: "modal-title text-center" },
-							"Job Completed"
+							"Job Complete"
 						)
 					),
 					React.createElement(
@@ -74130,7 +74144,7 @@ var ModalMarkJobAsCompleted = React.createClass({
 						React.createElement(
 							"h4",
 							{ className: "modal-title text-center" },
-							"Mark Job As Completed"
+							"Mark Job As Complete"
 						)
 					),
 					React.createElement(
@@ -74305,17 +74319,17 @@ var TradyMaintenanceRequest = React.createClass({
 			data: params,
 			success: function (res) {
 				self.setState({ notification: {
+						bgClass: "bg-success",
 						title: "Job Completed",
-						content: "Job Completed was successfully!",
-						bgClass: "bg-success"
+						content: "Job Complete was successfully!"
 					} });
 				self.onModalWith('notification');
 			},
 			error: function (err) {
 				self.setState({ notification: {
-						title: "Message Trady",
-						content: err.responseText,
-						bgClass: "bg-error"
+						bgClass: "bg-error",
+						title: "Job Completed",
+						content: err.responseText
 					} });
 				self.onModalWith('notification');
 			}
