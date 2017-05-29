@@ -17,7 +17,7 @@ var CreateOrUploadInvoice = React.createClass({
 			<li>
 				<a onClick={(modal) => this.props.onModalWith('viewConfirm')}>
 					<i className="icon-send" aria-hidden="true" />
-					Create or Upload Imvoice
+					Create or Upload Invoice
 				</a>
 			</li>
 		);

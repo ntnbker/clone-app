@@ -196,7 +196,7 @@ var ActionQuote = React.createClass({
 		}else if(self.keyLandlord == "trady") {
 			return (
 				<div className="actions-quote">
-					{ (!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation) && 
+					{ (!!self.current_user_show_quote_message && quote.status != "declined" && !!quote.conversation) && 
 							<ButtonQuoteMessage 
 								quote={quote} 
 								viewQuoteMessage={(key, item) => self.viewQuote(key, item)} 
@@ -213,7 +213,7 @@ var ActionQuote = React.createClass({
 		}else {
 			return (
 				<div className="actions-quote">
-					{ (!!self.current_user_show_quote_message && (quote.status == "Active" || quote.status == "Approved") && !!quote.conversation) && 
+					{ (!!self.current_user_show_quote_message && quote.status != "declined") && 
 							<ButtonQuoteMessage 
 								quote={quote} 
 								viewQuoteMessage={(key, item) => self.viewQuote(key, item)} 

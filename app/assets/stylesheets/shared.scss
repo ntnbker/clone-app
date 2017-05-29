@@ -370,17 +370,35 @@ header {
   }
 }
 
+@media(max-width: 768px) {
+  header .header-expanded {
+    .header-custom .header-right {
+      margin-right: 70px;
+    }
+    .menu-btn {
+      top: 28%;
+      margin: 0;
+    }
+  }
+}
+
 @media (max-width: 640px) {
   header {
     .header-expanded {
       .header-custom {
         flex-direction: column;
         align-items: center;
+        .header-right {
+          margin-right: 0;
+        }
         .search {
           .form-search {
             padding-bottom: 10px;
           }
         }
+      }
+      .menu-btn {
+        right: 10px;
       }
     }
   }

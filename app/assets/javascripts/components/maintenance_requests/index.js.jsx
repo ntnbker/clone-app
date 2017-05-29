@@ -4,7 +4,15 @@ var DropContent = React.createClass({
         return <ul className="dropcontent drop-content">
             {
                 this.props.content.map((item, index) => 
-                    <li key={index}><a href={item.href}> {item.title}</a> <span>{item.count}</span></li>)
+                  <li key={index}>
+                    <a href={item.href}> 
+                      {item.title}
+                    </a> 
+                    <span>
+                      {item.count}
+                    </span>
+                  </li>
+                )
             }
         </ul>
     }
@@ -24,10 +32,12 @@ var DropList = React.createClass({
 
 	render: function() {
 		return <div className="droplist">
-			<div className={this.state.hidden ? 'title' : 'title active'} onClick={this.onDrop}>{this.props.title}</div>
-            <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
-                <DropContent content={this.props.content}/>
-            </div>
+			<div className={this.state.hidden ? 'title' : 'title active'} onClick={this.onDrop}>
+        {this.props.title}
+      </div>
+      <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
+          <DropContent content={this.props.content}/>
+      </div>
 		</div>
 	}
 });
@@ -103,7 +113,11 @@ var DropDownMobileList = React.createClass({
   render: function() {
     return (
       <div className="drop-mobile-list">
-        <button id={this.props.id} className={'btn-drop-mobile title ' + (!this.state.hidden && 'active')} onClick={(id) => this.onDrop(this.props.id)}>
+        <button 
+          id={this.props.id} 
+          onClick={(id) => this.onDrop(this.props.id)}
+          className={'btn-drop-mobile title ' + (!this.state.hidden && 'active')} 
+        >
           {this.props.title}
         </button>
         <div className={"content-mobile " + (!this.state.hidden && 'show')}>
@@ -237,8 +251,12 @@ var ImgSlider = React.createClass({
         return <div id="slider">
             { this.state.stlen > 1 && 
                 <div>
-                    <button className="button btn prev" onClick={this.sliderTopPrev}><i className="fa fa-angle-left"></i></button>
-                    <button className="button btn next" onClick={this.sliderTopNext}><i className="fa fa-angle-right"></i></button>
+                    <button className="button btn prev" onClick={this.sliderTopPrev}>
+                      <i className="fa fa-angle-left"></i>
+                    </button>
+                    <button className="button btn next" onClick={this.sliderTopNext}>
+                      <i className="fa fa-angle-right"></i>
+                    </button>
                 </div>
             }
             <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
@@ -459,7 +477,13 @@ var ListMaintenanceRequest = React.createClass({
     const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
       <div className="maintenance-list">
-        { <DropforSortDate selectFilter={this.selectFilter} filterDate={this.state.filterDate} valueSelect={this.state.sortByDate} />}
+        { 
+          <DropforSortDate 
+            selectFilter={this.selectFilter} 
+            filterDate={this.state.filterDate} 
+            valueSelect={this.state.sortByDate} 
+          />
+        }
         <div className="maintenance-content">
           <div className="main-column">
             <div>
@@ -468,7 +492,14 @@ var ListMaintenanceRequest = React.createClass({
                   return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
                 })
               }
-              { this.state.data.length > this.state.prePage && <Pagination page={this.state.page} total={this.state.data.length} prePage={this.state.prePage} setPage={this.setPage} /> }
+              { this.state.data.length > this.state.prePage && 
+                <Pagination 
+                  page={this.state.page} 
+                  setPage={this.setPage} 
+                  total={this.state.data.length} 
+                  prePage={this.state.prePage} 
+                /> 
+              }
             </div>
           </div>
           <div className="side-column">
@@ -494,7 +525,7 @@ var ListMaintenanceRequest = React.createClass({
         </div>
         <div className="action-mobile">
           {
-            (!!current_user_agent || !!current_user_agency_admin) ?
+            (!!current_user_agent || !!current_user_agency_admin) &&
               <DropDownMobileList 
                 class="action" 
                 id="action-required"
@@ -502,10 +533,9 @@ var ListMaintenanceRequest = React.createClass({
                 content={this.state.actionRequests} 
                 getAction={(value) => this.getAction(value)}
               />
-              : null
           }
           {
-            (!!current_user_agent || !!current_user_agency_admin) ?
+            (!!current_user_agent || !!current_user_agency_admin) &&
               <DropDownMobileList 
                 class="awaiting" 
                 id="awaiting-action"
@@ -513,7 +543,6 @@ var ListMaintenanceRequest = React.createClass({
                 content={this.state.awaitingAction} 
                 getAction={(value) => this.getAction(value)} 
               />
-              : null
           }
         </div>
       </div>
@@ -527,7 +556,12 @@ var MaintenanceRequestItem = React.createClass({
     return (
       <div className="row m-t-lg maintenance-request">
         <div className="image">
-          {<ImgSlider nameClass={"slider-custom-" + maintenance_request.id} images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} />}
+          {
+            <ImgSlider 
+              nameClass={"slider-custom-" + maintenance_request.id} 
+              images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} 
+            />
+          }
         </div>
         <div className="content">
           <div className="info">
@@ -547,8 +581,8 @@ var MaintenanceRequestItem = React.createClass({
               <p className="created_at">
                 { moment(maintenance_request.created_at).format('LL')}
               </p>
+              <span> | </span>
               <p className="type">
-                 | 
                 {maintenance_request.service_type}
               </p>
             </div>
@@ -557,10 +591,10 @@ var MaintenanceRequestItem = React.createClass({
             </div>
             {
               maintenance_request.property && maintenance_request.property.property_address &&
-              <p className="address">
-                <i className="fa fa-map-marker"></i>
-                {maintenance_request.property.property_address}
-              </p>
+                <p className="address">
+                  <i className="fa fa-map-marker"></i>
+                  {maintenance_request.property.property_address}
+                </p>
             }
             
           </div>

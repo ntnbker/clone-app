@@ -268,7 +268,7 @@ var TradyMaintenanceRequest = React.createClass({
 			success: function(res){
 				self.setState({notification: {
 					title: "Job Completed",
-					content: "Job Completed was successfully!",
+					content: "Job Complete was successfully!",
 					bgClass: "bg-success",
 				}});
 				self.onModalWith('notification');
