@@ -44,16 +44,16 @@ var Carousel = React.createClass({
 		$(".slider-custom").on("touchstart", function(event){
       var xClick = event.originalEvent.touches[0].pageX;
 	    $(this).one("touchmove", function(event){
-	        var xMove = event.originalEvent.touches[0].pageX;
-	        if( Math.floor(xClick - xMove) > 10 ){
-	            self.sliderNext();
-	        }
-	        else if( Math.floor(xClick - xMove) < -10 ){
-	            self.sliderPrev();
-	        }
+        var xMove = event.originalEvent.touches[0].pageX;
+        if(Math.ceil(xClick - xMove) > 5 ){
+          self.sliderNext();
+        }
+        else if( Math.ceil(xClick - xMove) < -5 ){
+          self.sliderPrev();
+        }
 	    });
 	    $(".slider-custom").on("touchend", function(){
-	            $(this).off("touchmove");
+        $(this).off("touchmove");
 	    });
 		});
 	},

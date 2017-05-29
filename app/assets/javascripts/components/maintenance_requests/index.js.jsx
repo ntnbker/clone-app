@@ -1,34 +1,35 @@
 var DropContent = React.createClass({
-    render: function() {
-        var content = this.props.content;
-        return <ul className="dropcontent drop-content">
-            {
-                this.props.content.map((item, index) => 
-                  <li key={index}>
-                    <a href={item.href}> 
-                      {item.title}
-                    </a> 
-                    <span>
-                      {item.count}
-                    </span>
-                  </li>
-                )
-            }
-        </ul>
+  render: function() {
+    var content = this.props.content;
+    return <ul className="dropcontent drop-content">
+    {
+      this.props.content.map((item, index) => 
+        <li key={index}>
+          <a href={item.href}> 
+            {item.title}
+          </a> 
+          <span>
+            {item.count}
+          </span>
+        </li>
+      )
     }
+    </ul>
+  }
 });
 
 var DropList = React.createClass({
 	propTypes: {
 		children: React.PropTypes.element
 	},
-    getInitialState: function() {
-    	return {hidden : true}
-  	},
 
-  	onDrop() {
-  		this.setState({hidden: !this.state.hidden});
-  	},
+  getInitialState: function() {
+  	return {hidden : true}
+	},
+
+	onDrop() {
+		this.setState({hidden: !this.state.hidden});
+	},
 
 	render: function() {
 		return <div className="droplist">
@@ -129,171 +130,169 @@ var DropDownMobileList = React.createClass({
 });
 
 var P = React.createClass({
-    getInitialState: function() {
-        return {
-           expanded: false
-       };
-    },
+  getInitialState: function() {
+      return {
+         expanded: false
+     };
+  },
 
-    readMore: function() {
-        this.setState({
-            expanded: !this.state.expanded
-        });       
-    },
+  readMore: function() {
+      this.setState({
+          expanded: !this.state.expanded
+      });       
+  },
 
-    getMoreTextP: function() {
-	    var maxLength = 200;
-       	if (this.state.expanded || this.props.content.length < maxLength) {
-        	return <p style={{display: "inline"}}> {this.props.content} </p>;
-        } else {
-        	var content = this.props.content.substr(0,maxLength-3) + "...";
-			return <p style={{display: "inline"}}> {content} </p>;
+  getMoreTextP: function() {
+    var maxLength = 200;
+   	if (this.state.expanded || this.props.content.length < maxLength) {
+    	return <p style={{display: "inline"}}> {this.props.content} </p>;
+    } else {
+    	var content = this.props.content.substr(0,maxLength-3) + "...";
+		  return <p style={{display: "inline"}}> {content} </p>;
+    } 
+  },
+  
+  render: function() {
+    var expandedDiv = this.getMoreTextP();
+    var expanded = this.state.expanded;
+    var maxLength = 200;
+    return (
+      <div className="readmore">
+        { expandedDiv }
+        {
+        	this.props.content.length >= maxLength &&
+            <a onClick={this.readMore}>{expanded ? 'less' : 'more'}</a>
         }
-    },
-    
-    render: function() {
-     var expandedDiv = this.getMoreTextP();
-     var expanded = this.state.expanded;
-     var maxLength = 200;
-     return (
-         <div className="readmore">
-            { expandedDiv }
-            {
-            	this.props.content.length < maxLength 
-            	? null
-            	: <a onClick={this.readMore}>{expanded ? 'less' : 'more'}</a>
-            }
-            
-         </div>
-     );
-	}
+      </div>
+    );
+  }
 });
 
 
 var ImgSlider = React.createClass({
-    getInitialState: function() {
-        return {
-           stlen: this.props.images ? this.props.images.length : 0,
-           stpos: 0,
-           stwidth: 0,
-           stx: 0
-       };
-    },
+  getInitialState: function() {
+      return {
+         stlen: this.props.images ? this.props.images.length : 0,
+         stpos: 0,
+         stwidth: 0,
+         stx: 0
+     };
+  },
 
-    sliderTopRun(stpos) {
-        var stx = stpos * -this.state.stwidth;
+  sliderTopRun(stpos) {
+      var stx = stpos * -this.state.stwidth;
 
-        this.setState({
-            stx: stx
-        });
-    },
-
-    sliderTopPrev() {
-        var stpos = this.state.stpos - 1;
-        if(stpos < 0) stpos = this.state.stlen - 1;
-        this.setState({
-            stpos: stpos
-        });
-        this.sliderTopRun(stpos);
-    },
-
-    sliderTopNext() {
-        var stpos = this.state.stpos + 1;
-        if(stpos >= this.state.stlen) stpos = 0;
-        this.setState({
-            stpos: stpos
-        }); 
-        this.sliderTopRun(stpos);
-    },
-
-    componentWillReceiveProps: function(nextProps) {
       this.setState({
-        stlen: nextProps.images ? nextProps.images.length : 0
+          stx: stx
       });
-    },
+  },
 
-    componentDidMount: function() {
-      const self = this;
+  sliderTopPrev() {
+      var stpos = this.state.stpos - 1;
+      if(stpos < 0) stpos = this.state.stlen - 1;
+      this.setState({
+          stpos: stpos
+      });
+      this.sliderTopRun(stpos);
+  },
 
+  sliderTopNext() {
+      var stpos = this.state.stpos + 1;
+      if(stpos >= this.state.stlen) stpos = 0;
+      this.setState({
+          stpos: stpos
+      }); 
+      this.sliderTopRun(stpos);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      stlen: nextProps.images ? nextProps.images.length : 0
+    });
+  },
+
+  componentDidMount: function() {
+    const self = this;
+
+    self.setState({
+      stwidth: $('#slider').width()
+    });
+
+    $( window ).resize(function() {
       self.setState({
         stwidth: $('#slider').width()
       });
-
-      $( window ).resize(function() {
-        self.setState({
-          stwidth: $('#slider').width()
-        });
+    });
+    
+    $("." + self.props.nameClass).on("touchstart", function(event){
+      var xClick = event.originalEvent.touches[0].pageX;
+      $(this).one("touchmove", function(event){
+        var xMove = event.originalEvent.touches[0].pageX;
+        if( Math.ceil(xClick - xMove) > 5 ){
+          self.sliderTopNext();
+        }
+        else if( Math.ceil(xClick - xMove) < -5 ){
+          self.sliderTopPrev();
+        }
       });
-      
-      $("." + self.props.nameClass).on("touchstart", function(event){
-        var xClick = event.originalEvent.touches[0].pageX;
-        $(this).one("touchmove", function(event){
-            var xMove = event.originalEvent.touches[0].pageX;
-            if( Math.floor(xClick - xMove) > 10 ){
-                self.sliderTopNext();
-            }
-            else if( Math.floor(xClick - xMove) < -10 ){
-                self.sliderTopPrev();
-            }
-        });
-        $("." + self.props.nameClass).on("touchend", function(){
-          $(this).off("touchmove");
-        });
+      $("." + self.props.nameClass).on("touchend", function(){
+        $(this).off("touchmove");
       });
-    },
+    });
+  },
 
-    render: function() {
-        var styles = {
-          left: this.state.stx,
-          width: this.state.stlen * this.state.stwidth,
-        };
-        var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
-        return <div id="slider">
-            { this.state.stlen > 1 && 
-                <div>
-                    <button className="button btn prev" onClick={this.sliderTopPrev}>
-                      <i className="fa fa-angle-left"></i>
-                    </button>
-                    <button className="button btn next" onClick={this.sliderTopNext}>
-                      <i className="fa fa-angle-right"></i>
-                    </button>
-                </div>
-            }
-            <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
-                <div className="swiper-wrapper slider" style={styles}>
-                { this.state.stlen &&
-                    this.props.images.map((image, i) => {
-                      return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
-                    })
-                }
-                </div>
-            </div>
+  render: function() {
+    var styles = {
+      left: this.state.stx,
+      width: this.state.stlen * this.state.stwidth,
+    };
+    var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
+    return <div id="slider">
+      { this.state.stlen > 1 && 
+          <div>
+            <button className="button btn prev" onClick={this.sliderTopPrev}>
+              <i className="fa fa-angle-left"></i>
+            </button>
+            <button className="button btn next" onClick={this.sliderTopNext}>
+              <i className="fa fa-angle-right"></i>
+            </button>
+          </div>
+      }
+      <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
+        <div className="swiper-wrapper slider" style={styles}>
+        { this.state.stlen &&
+            this.props.images.map((image, i) => {
+              return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
+            })
+        }
         </div>
-    }
+      </div>
+    </div>
+  }
 });
 
 var DropforSort = React.createClass({
-    getInitialState: function() {
-        return {
-          sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
-       };
-    },
+  getInitialState: function() {
+      return {
+        sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
+     };
+  },
 
-    handleChange(event) {
-      this.setState({sort_by_date: event.target.value});
-      this.refs.select.submit();
-    },
+  handleChange(event) {
+    this.setState({sort_by_date: event.target.value});
+    this.refs.select.submit();
+  },
 
-    render: function() {
-      return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
-        <input type="hidden" name="page" value={this.props.page ? this.props.page : 1}/>
-        <select className="select-custom" value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
-          <option className="option-custom" value="Oldest to Newest">Oldest to Newest</option>
-          <option className="option-custom" value="Newest to Oldest">Newest to Oldest</option>
-        </select>
-        <input type="submit" value="Submit" style={{display:'none'}}/>
-      </form>
-    }
+  render: function() {
+    return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
+      <input type="hidden" name="page" value={this.props.page ? this.props.page : 1}/>
+      <select className="select-custom" value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
+        <option className="option-custom" value="Oldest to Newest">Oldest to Newest</option>
+        <option className="option-custom" value="Newest to Oldest">Newest to Oldest</option>
+      </select>
+      <input type="submit" value="Submit" style={{display:'none'}}/>
+    </form>
+  }
 });
 
 var ListMaintenanceRequest = React.createClass({
