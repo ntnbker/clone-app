@@ -1,33 +1,44 @@
 var DropContent = React.createClass({
-    render: function() {
-        var content = this.props.content;
-        return <ul className="dropcontent drop-content">
-            {
-                this.props.content.map((item, index) => 
-                    <li key={index}><a href={item.href}> {item.title}</a> <span>{item.count}</span></li>)
-            }
-        </ul>
+  render: function() {
+    var content = this.props.content;
+    return <ul className="dropcontent drop-content">
+    {
+      this.props.content.map((item, index) => 
+        <li key={index}>
+          <a href={item.href}> 
+            {item.title}
+          </a> 
+          <span>
+            {item.count}
+          </span>
+        </li>
+      )
     }
+    </ul>
+  }
 });
 
 var DropList = React.createClass({
 	propTypes: {
 		children: React.PropTypes.element
 	},
-    getInitialState: function() {
-    	return {hidden : true}
-  	},
 
-  	onDrop() {
-  		this.setState({hidden: !this.state.hidden});
-  	},
+  getInitialState: function() {
+  	return {hidden : true}
+	},
+
+	onDrop() {
+		this.setState({hidden: !this.state.hidden});
+	},
 
 	render: function() {
 		return <div className="droplist">
-			<div className={this.state.hidden ? 'title' : 'title active'} onClick={this.onDrop}>{this.props.title}</div>
-            <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
-                <DropContent content={this.props.content}/>
-            </div>
+			<div className={this.state.hidden ? 'title' : 'title active'} onClick={this.onDrop}>
+        {this.props.title}
+      </div>
+      <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
+          <DropContent content={this.props.content}/>
+      </div>
 		</div>
 	}
 });
@@ -103,7 +114,11 @@ var DropDownMobileList = React.createClass({
   render: function() {
     return (
       <div className="drop-mobile-list">
-        <button id={this.props.id} className={'btn-drop-mobile title ' + (!this.state.hidden && 'active')} onClick={(id) => this.onDrop(this.props.id)}>
+        <button 
+          id={this.props.id} 
+          onClick={(id) => this.onDrop(this.props.id)}
+          className={'btn-drop-mobile title ' + (!this.state.hidden && 'active')} 
+        >
           {this.props.title}
         </button>
         <div className={"content-mobile " + (!this.state.hidden && 'show')}>
@@ -115,167 +130,169 @@ var DropDownMobileList = React.createClass({
 });
 
 var P = React.createClass({
-    getInitialState: function() {
-        return {
-           expanded: false
-       };
-    },
+  getInitialState: function() {
+      return {
+         expanded: false
+     };
+  },
 
-    readMore: function() {
-        this.setState({
-            expanded: !this.state.expanded
-        });       
-    },
+  readMore: function() {
+      this.setState({
+          expanded: !this.state.expanded
+      });       
+  },
 
-    getMoreTextP: function() {
-	    var maxLength = 200;
-       	if (this.state.expanded || this.props.content.length < maxLength) {
-        	return <p style={{display: "inline"}}> {this.props.content} </p>;
-        } else {
-        	var content = this.props.content.substr(0,maxLength-3) + "...";
-			return <p style={{display: "inline"}}> {content} </p>;
+  getMoreTextP: function() {
+    var maxLength = 200;
+   	if (this.state.expanded || this.props.content.length < maxLength) {
+    	return <p style={{display: "inline"}}> {this.props.content} </p>;
+    } else {
+    	var content = this.props.content.substr(0,maxLength-3) + "...";
+		  return <p style={{display: "inline"}}> {content} </p>;
+    } 
+  },
+  
+  render: function() {
+    var expandedDiv = this.getMoreTextP();
+    var expanded = this.state.expanded;
+    var maxLength = 200;
+    return (
+      <div className="readmore">
+        { expandedDiv }
+        {
+        	this.props.content.length >= maxLength &&
+            <a onClick={this.readMore}>{expanded ? 'less' : 'more'}</a>
         }
-    },
-    
-    render: function() {
-     var expandedDiv = this.getMoreTextP();
-     var expanded = this.state.expanded;
-     var maxLength = 200;
-     return (
-         <div className="readmore">
-            { expandedDiv }
-            {
-            	this.props.content.length < maxLength 
-            	? null
-            	: <a onClick={this.readMore}>{expanded ? 'less' : 'more'}</a>
-            }
-            
-         </div>
-     );
-	}
+      </div>
+    );
+  }
 });
 
 
 var ImgSlider = React.createClass({
-    getInitialState: function() {
-        return {
-           stlen: this.props.images ? this.props.images.length : 0,
-           stpos: 0,
-           stwidth: 0,
-           stx: 0
-       };
-    },
+  getInitialState: function() {
+      return {
+         stlen: this.props.images ? this.props.images.length : 0,
+         stpos: 0,
+         stwidth: 0,
+         stx: 0
+     };
+  },
 
-    sliderTopRun(stpos) {
-        var stx = stpos * -this.state.stwidth;
+  sliderTopRun(stpos) {
+      var stx = stpos * -this.state.stwidth;
 
-        this.setState({
-            stx: stx
-        });
-    },
-
-    sliderTopPrev() {
-        var stpos = this.state.stpos - 1;
-        if(stpos < 0) stpos = this.state.stlen - 1;
-        this.setState({
-            stpos: stpos
-        });
-        this.sliderTopRun(stpos);
-    },
-
-    sliderTopNext() {
-        var stpos = this.state.stpos + 1;
-        if(stpos >= this.state.stlen) stpos = 0;
-        this.setState({
-            stpos: stpos
-        }); 
-        this.sliderTopRun(stpos);
-    },
-
-    componentWillReceiveProps: function(nextProps) {
       this.setState({
-        stlen: nextProps.images ? nextProps.images.length : 0
+          stx: stx
       });
-    },
+  },
 
-    componentDidMount: function() {
-      const self = this;
+  sliderTopPrev() {
+      var stpos = this.state.stpos - 1;
+      if(stpos < 0) stpos = this.state.stlen - 1;
+      this.setState({
+          stpos: stpos
+      });
+      this.sliderTopRun(stpos);
+  },
 
+  sliderTopNext() {
+      var stpos = this.state.stpos + 1;
+      if(stpos >= this.state.stlen) stpos = 0;
+      this.setState({
+          stpos: stpos
+      }); 
+      this.sliderTopRun(stpos);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      stlen: nextProps.images ? nextProps.images.length : 0
+    });
+  },
+
+  componentDidMount: function() {
+    const self = this;
+
+    self.setState({
+      stwidth: $('#slider').width()
+    });
+
+    $( window ).resize(function() {
       self.setState({
         stwidth: $('#slider').width()
       });
-
-      $( window ).resize(function() {
-        self.setState({
-          stwidth: $('#slider').width()
-        });
+    });
+    
+    $("." + self.props.nameClass).on("touchstart", function(event){
+      var xClick = event.originalEvent.touches[0].pageX;
+      $(this).one("touchmove", function(event){
+        var xMove = event.originalEvent.touches[0].pageX;
+        if( Math.ceil(xClick - xMove) > 5 ){
+          self.sliderTopNext();
+        }
+        else if( Math.ceil(xClick - xMove) < -5 ){
+          self.sliderTopPrev();
+        }
       });
-      
-      $("." + self.props.nameClass).on("touchstart", function(event){
-        var xClick = event.originalEvent.touches[0].pageX;
-        $(this).one("touchmove", function(event){
-            var xMove = event.originalEvent.touches[0].pageX;
-            if( Math.floor(xClick - xMove) > 10 ){
-                self.sliderTopNext();
-            }
-            else if( Math.floor(xClick - xMove) < -10 ){
-                self.sliderTopPrev();
-            }
-        });
-        $("." + self.props.nameClass).on("touchend", function(){
-          $(this).off("touchmove");
-        });
+      $("." + self.props.nameClass).on("touchend", function(){
+        $(this).off("touchmove");
       });
-    },
+    });
+  },
 
-    render: function() {
-        var styles = {
-          left: this.state.stx,
-          width: this.state.stlen * this.state.stwidth,
-        };
-        var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
-        return <div id="slider">
-            { this.state.stlen > 1 && 
-                <div>
-                    <button className="button btn prev" onClick={this.sliderTopPrev}><i className="fa fa-angle-left"></i></button>
-                    <button className="button btn next" onClick={this.sliderTopNext}><i className="fa fa-angle-right"></i></button>
-                </div>
-            }
-            <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
-                <div className="swiper-wrapper slider" style={styles}>
-                { this.state.stlen &&
-                    this.props.images.map((image, i) => {
-                      return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
-                    })
-                }
-                </div>
-            </div>
+  render: function() {
+    var styles = {
+      left: this.state.stx,
+      width: this.state.stlen * this.state.stwidth,
+    };
+    var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
+    return <div id="slider">
+      { this.state.stlen > 1 && 
+          <div>
+            <button className="button btn prev" onClick={this.sliderTopPrev}>
+              <i className="fa fa-angle-left"></i>
+            </button>
+            <button className="button btn next" onClick={this.sliderTopNext}>
+              <i className="fa fa-angle-right"></i>
+            </button>
+          </div>
+      }
+      <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
+        <div className="swiper-wrapper slider" style={styles}>
+        { this.state.stlen &&
+            this.props.images.map((image, i) => {
+              return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
+            })
+        }
         </div>
-    }
+      </div>
+    </div>
+  }
 });
 
 var DropforSort = React.createClass({
-    getInitialState: function() {
-        return {
-          sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
-       };
-    },
+  getInitialState: function() {
+      return {
+        sort_by_date: this.props.sort_by_date ? this.props.sort_by_date : ''
+     };
+  },
 
-    handleChange(event) {
-      this.setState({sort_by_date: event.target.value});
-      this.refs.select.submit();
-    },
+  handleChange(event) {
+    this.setState({sort_by_date: event.target.value});
+    this.refs.select.submit();
+  },
 
-    render: function() {
-      return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
-        <input type="hidden" name="page" value={this.props.page ? this.props.page : 1}/>
-        <select className="select-custom" value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
-          <option className="option-custom" value="Oldest to Newest">Oldest to Newest</option>
-          <option className="option-custom" value="Newest to Oldest">Newest to Oldest</option>
-        </select>
-        <input type="submit" value="Submit" style={{display:'none'}}/>
-      </form>
-    }
+  render: function() {
+    return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
+      <input type="hidden" name="page" value={this.props.page ? this.props.page : 1}/>
+      <select className="select-custom" value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
+        <option className="option-custom" value="Oldest to Newest">Oldest to Newest</option>
+        <option className="option-custom" value="Newest to Oldest">Newest to Oldest</option>
+      </select>
+      <input type="submit" value="Submit" style={{display:'none'}}/>
+    </form>
+  }
 });
 
 var ListMaintenanceRequest = React.createClass({
@@ -459,7 +476,13 @@ var ListMaintenanceRequest = React.createClass({
     const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
       <div className="maintenance-list">
-        { <DropforSortDate selectFilter={this.selectFilter} filterDate={this.state.filterDate} valueSelect={this.state.sortByDate} />}
+        { 
+          <DropforSortDate 
+            selectFilter={this.selectFilter} 
+            filterDate={this.state.filterDate} 
+            valueSelect={this.state.sortByDate} 
+          />
+        }
         <div className="maintenance-content">
           <div className="main-column">
             <div>
@@ -468,7 +491,14 @@ var ListMaintenanceRequest = React.createClass({
                   return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
                 })
               }
-              { this.state.data.length > this.state.prePage && <Pagination page={this.state.page} total={this.state.data.length} prePage={this.state.prePage} setPage={this.setPage} /> }
+              { this.state.data.length > this.state.prePage && 
+                <Pagination 
+                  page={this.state.page} 
+                  setPage={this.setPage} 
+                  total={this.state.data.length} 
+                  prePage={this.state.prePage} 
+                /> 
+              }
             </div>
           </div>
           <div className="side-column">
@@ -494,7 +524,7 @@ var ListMaintenanceRequest = React.createClass({
         </div>
         <div className="action-mobile">
           {
-            (!!current_user_agent || !!current_user_agency_admin) ?
+            (!!current_user_agent || !!current_user_agency_admin) &&
               <DropDownMobileList 
                 class="action" 
                 id="action-required"
@@ -502,10 +532,9 @@ var ListMaintenanceRequest = React.createClass({
                 content={this.state.actionRequests} 
                 getAction={(value) => this.getAction(value)}
               />
-              : null
           }
           {
-            (!!current_user_agent || !!current_user_agency_admin) ?
+            (!!current_user_agent || !!current_user_agency_admin) &&
               <DropDownMobileList 
                 class="awaiting" 
                 id="awaiting-action"
@@ -513,7 +542,6 @@ var ListMaintenanceRequest = React.createClass({
                 content={this.state.awaitingAction} 
                 getAction={(value) => this.getAction(value)} 
               />
-              : null
           }
         </div>
       </div>
@@ -527,7 +555,12 @@ var MaintenanceRequestItem = React.createClass({
     return (
       <div className="row m-t-lg maintenance-request">
         <div className="image">
-          {<ImgSlider nameClass={"slider-custom-" + maintenance_request.id} images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} />}
+          {
+            <ImgSlider 
+              nameClass={"slider-custom-" + maintenance_request.id} 
+              images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} 
+            />
+          }
         </div>
         <div className="content">
           <div className="info">
@@ -547,8 +580,8 @@ var MaintenanceRequestItem = React.createClass({
               <p className="created_at">
                 { moment(maintenance_request.created_at).format('LL')}
               </p>
+              <span> | </span>
               <p className="type">
-                 | 
                 {maintenance_request.service_type}
               </p>
             </div>
@@ -557,10 +590,10 @@ var MaintenanceRequestItem = React.createClass({
             </div>
             {
               maintenance_request.property && maintenance_request.property.property_address &&
-              <p className="address">
-                <i className="fa fa-map-marker"></i>
-                {maintenance_request.property.property_address}
-              </p>
+                <p className="address">
+                  <i className="fa fa-map-marker"></i>
+                  {maintenance_request.property.property_address}
+                </p>
             }
             
           </div>

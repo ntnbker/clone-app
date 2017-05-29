@@ -55,7 +55,7 @@ var ModalConfirmAddInvoice = React.createClass({
 		const trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
 		const maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id + "&quote_id=";
 	},
 
 	render: function() {
@@ -74,7 +74,7 @@ var ModalConfirmAddInvoice = React.createClass({
 							>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title text-center">Job Completed</h4>
+							<h4 className="modal-title text-center">Job Complete</h4>
 						</div>
 						<div className="modal-body">
 							<p className="text-center">
@@ -132,7 +132,7 @@ var ModalMarkJobAsCompleted = React.createClass({
 							>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title text-center">Mark Job As Completed</h4>
+							<h4 className="modal-title text-center">Mark Job As Complete</h4>
 						</div>
 						<div className="modal-body">
 							<p className="text-center">
@@ -267,17 +267,17 @@ var TradyMaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.setState({notification: {
-					title: "Job Completed",
-					content: "Job Completed was successfully!",
 					bgClass: "bg-success",
+					title: "Job Completed",
+					content: "Job Complete was successfully!",
 				}});
 				self.onModalWith('notification');
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Message Trady",
-					content: err.responseText,
 					bgClass: "bg-error",
+					title: "Job Completed",
+					content: err.responseText,
 				}});
 				self.onModalWith('notification');
 			}

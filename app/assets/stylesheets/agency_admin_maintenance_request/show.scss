@@ -994,8 +994,8 @@ body::-webkit-scrollbar-thumb {
     .main-summary {
       margin: auto 10px;
       .section {
-        padding: 20px 15px 25px;
-        width: calc(100% - 20px)
+        padding: 20px 5px 25px;
+        width: calc(100% - 10px);
       }
     }
     .post {
