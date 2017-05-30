@@ -4,21 +4,27 @@
       -@agency_admin.errors.full_messages.each do |message|
         %p
           =message
-  %h4
+  %h4.text-center
     Add Another Agency Admin to this agency
   =form_for @agency_admin do |f|
-    =f.label :email
-    =f.email_field :email
-    =f.label :first_name
-    =f.text_field :first_name
-    =f.label :last_name
-    =f.text_field :last_name
-    =f.label :mobile_phone
-    =f.telephone_field :mobile_phone
-    =f.label :license_number
-    =f.text_field :license_number
-    =f.hidden_field :agency_id, value:@agency_id
-    =f.submit "Submit"
+    %div.form-group
+      =f.label :email
+      =f.email_field :email, required: true
+    %div.form-group
+      =f.label :first_name
+      =f.text_field :first_name, required: true
+    %div.form-group
+      =f.label :last_name
+      =f.text_field :last_name, required: true
+    %div.form-group
+      =f.label :mobile_phone
+      =f.telephone_field :mobile_phone, required: true
+    %div.form-group
+      =f.label :license_number
+      =f.text_field :license_number, required: true
+      =f.hidden_field :agency_id, value:@agency_id
+    %div.form-group
+      =f.button "Submit"
 
 
   / =bootstrap_nested_form_for(@user, url: agency_admins_path, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
