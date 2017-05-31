@@ -6,6 +6,7 @@ class AppointmentsController < ApplicationController
     @appointment.comments.build
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @maintenance_request_id = maintenance_request.id
+    @appointments = maintenance_request.appointments
     
 
 
