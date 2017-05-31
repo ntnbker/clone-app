@@ -2,7 +2,7 @@ var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
 	getInitialState: function() {
 		this.getAgentEmail();
-  	return { 
+			return { 
 			images: [],
 			isAgent: true,
 			validName: false,
@@ -67,19 +67,19 @@ var MaintenanceRequestsNew = React.createClass({
 	handleRadioChange: function(e) {
 		const value = e.currentTarget.value;
 		this.setState({
-      selectedRadio: value,
-      isAgent: value == "Owner" ? false :true
+			selectedRadio: value,
+			isAgent: value == "Owner" ? false :true
     });
 	},
 
-  generateAtt: function(name_id, type) {
-  	if (name_id == "name") {
-  		return "maintenance_request[" + type + "]";
-  	}
-  	else if (name_id == "id") {
-  		return "maintenance_request_" + type;
-  	}
-  },
+	generateAtt: function(name_id, type) {
+		if (name_id == "name") {
+			return "maintenance_request[" + type + "]";
+		}
+		else if (name_id == "id") {
+			return "maintenance_request_" + type;
+		}
+	},
 
 	_handleRemoveFrame: function(e) {
 		let {images} = this.state;
@@ -189,15 +189,21 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
+		XHR.upload.addEventListener('loadstart', function(e) {
+			$("#spinner").css('display', 'flex');
+		});
+		XHR.upload.addEventListener('loadend', function(e) {
+				$("#spinner").css('display', 'none');
+		});
 		XHR.send(FD);
 		e.preventDefault();
   	return false;
 	},
 
 	getFormData: function (object) {
-    const formData = new FormData();
-    Object.keys(object).forEach(key => formData.append(key, object[key]));
-    return formData;
+	const formData = new FormData();
+	Object.keys(object).forEach(key => formData.append(key, object[key]));
+	return formData;
 	},
 
 	validateEmail: function(inputText, e, agentFlag){
@@ -289,8 +295,8 @@ var MaintenanceRequestsNew = React.createClass({
 							type="email" 
 							placeholder="E-mail"
 							ref={(ref) => this.email = ref}
-	     		   	id={this.generateAtt("id", "email")}
-	       		  name={this.generateAtt("name", "email")}
+				   	id={this.generateAtt("id", "email")}
+						  name={this.generateAtt("name", "email")}
 							onBlur={(e) => {
 								if (!e.target.value.length) {
 									document.getElementById("errorboxemail").textContent = strRequireEmail;
@@ -307,12 +313,12 @@ var MaintenanceRequestsNew = React.createClass({
 						<p id="errorboxemail" className="error"></p>
 						
 						<p> Mobile </p>
-	        	<input 
-	        		required 
-	        		type="tel" 
-	        		maxLength="10"
-	        		placeholder="Mobile"
-	        		ref={(ref) => this.mobile = ref}
+					<input 
+						required 
+						type="tel" 
+						maxLength="10"
+						placeholder="Mobile"
+						ref={(ref) => this.mobile = ref}
 						  id={this.generateAtt("id", "mobile")}
 							name={this.generateAtt("name", "mobile")}
 						  onBlur={(e) => {
@@ -408,7 +414,7 @@ var MaintenanceRequestsNew = React.createClass({
 									type="text"
 								 	onBlur={this.checkAgentEmail}
 									ref={(ref) => this.agent_email = ref}
-						     	id={this.generateAtt("id", "agent_email")} 
+								id={this.generateAtt("id", "agent_email")} 
 							   	name={this.generateAtt("name", "agent_email")}
 							 	/>
 								<p id="errAgentEamil" className="error"></p>
@@ -419,7 +425,7 @@ var MaintenanceRequestsNew = React.createClass({
 											required 
 											type="text"
 											ref={(ref) => this.real_estate_office = ref}
-								     	id={this.generateAtt("id", "real_estate_office")} 
+										id={this.generateAtt("id", "real_estate_office")} 
 									   	name={this.generateAtt("name", "real_estate_office")}
 										 	onBlur={(e) => {
 												if (!e.target.value.length) {
@@ -442,7 +448,7 @@ var MaintenanceRequestsNew = React.createClass({
 											required
 											type="text"
 											ref={(ref) => this.agent_name = ref}
-								     	id={this.generateAtt("id", "agent_name")} 
+										id={this.generateAtt("id", "agent_name")} 
 									   	name={this.generateAtt("name", "agent_name")}
 										 	onBlur={(e) => {
 												if (!e.target.value.length) {
@@ -466,7 +472,7 @@ var MaintenanceRequestsNew = React.createClass({
 											type="text"
 											maxLength="10"
 											ref={(ref) => this.agent_mobile = ref}
-								     	id={this.generateAtt("id", "agent_mobile")} 
+										id={this.generateAtt("id", "agent_mobile")} 
 									   	name={this.generateAtt("name", "agent_mobile")}
 										 	onBlur={(e) => {
 												if (!e.target.value.length) {

@@ -44,16 +44,29 @@ var DropList = React.createClass({
 });
 
 var DropDownContent = React.createClass({
+  getInitialState: function() {
+    return {
+      valueAction: this.props.valueAction
+    };
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
   render: function() {
     var content = this.props.content;
-    const self = this;
+    const props = this.props;
+    const state = this.state;
     return (
       <ul className="dropcontent">
       {
-        this.props.content.map((item, index) => {
+        content.map((item, index) => {
           return (
-            <li key={index}>
-              <a onClick={(value) => self.props.getAction(item.value)}> 
+            <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+              <a onClick={(value) => props.getAction(item.value)}> 
                 <span>{item.count}</span>
                 <b className="name">{item.title}</b>
               </a> 
@@ -68,11 +81,17 @@ var DropDownContent = React.createClass({
 
 var DropDownList = React.createClass({
   getInitialState: function() {
-    return {hidden : false}
+    return {hidden : false, valueAction: this.props.valueAction}
   },
 
   onDrop() {
     this.setState({hidden: !this.state.hidden});
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
   },
 
   render: function() {
@@ -82,7 +101,11 @@ var DropDownList = React.createClass({
           {this.props.title}
         </div>
         <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
-            <DropDownContent content={this.props.content} getAction={(value) => this.props.getAction(value)} />
+            <DropDownContent 
+              content={this.props.content}
+              valueAction={this.state.valueAction}
+              getAction={(value) => this.props.getAction(value)} 
+            />
         </div>
       </div>
     );
@@ -91,14 +114,18 @@ var DropDownList = React.createClass({
 
 var DropDownMobileList = React.createClass({
   getInitialState: function() {
-    return {hidden: true}
+    return {hidden: true, valueAction: this.props.valueAction}
   },
 
   onDrop: function(id) {
     if(id != "over") {
-      this.setState({hidden: !this.state.hidden});
+      this.setState({
+        hidden: !this.state.hidden
+      });
     }else {
-      this.setState({hidden: true});
+      this.setState({
+        hidden: true
+      });
     }
   },
 
@@ -111,18 +138,30 @@ var DropDownMobileList = React.createClass({
     });
   },
 
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
   render: function() {
+    const props = this.props;
+    const state = this.state;
     return (
       <div className="drop-mobile-list">
         <button 
-          id={this.props.id} 
-          onClick={(id) => this.onDrop(this.props.id)}
-          className={'btn-drop-mobile title ' + (!this.state.hidden && 'active')} 
+          id={props.id} 
+          onClick={(id) => this.onDrop(props.id)}
+          className={'btn-drop-mobile title ' + (!state.hidden && 'active')} 
         >
           {this.props.title}
         </button>
-        <div className={"content-mobile " + (!this.state.hidden && 'show')}>
-          <DropDownContent content={this.props.content} getAction={(value) => this.props.getAction(value)} />
+        <div className={"content-mobile " + (!state.hidden && 'show')}>
+          <DropDownContent 
+            content={props.content}
+            valueAction={state.valueAction}
+            getAction={(value) => props.getAction(value)} 
+          />
         </div>
       </div>
     );
@@ -218,7 +257,7 @@ var ImgSlider = React.createClass({
       stwidth: $('#slider').width()
     });
 
-    $( window ).resize(function() {
+    $('#slider').resize(function() {
       self.setState({
         stwidth: $('#slider').width()
       });
@@ -387,6 +426,53 @@ var ListMaintenanceRequest = React.createClass({
           count: this.props.maintenance_scheduled_count
         }
       ],
+      tradyFilter: [
+        {
+          title: "Quote Requests",
+          value: "Quote Requests",
+          count: this.props.quote_request
+        },
+        {
+          title: "Awaiting Quote Approvals",
+          value: "Awaiting Quote Approvals",
+          count: this.props.awaiting_quote_approvals
+        },
+        {
+          title: "Appointments Required",
+          value: "Appointments Required",
+          count: this.props.appointments_required
+        },
+        {
+          title: "Awaiting Appointment Confirmation",
+          value: "Awaiting Appointment Confirmation",
+          count: this.props.awaiting_appointment_confirmation
+        },
+        {
+          title: "Alternate Appointment Requested",
+          value: "Alternate Appointment Requested",
+          count: this.props.alternate_appointment_requested
+        },
+        {
+          title: "Job Booked",
+          value: "Job Booked",
+          count: this.props.job_booked
+        },
+        {
+          title: "Awaiting Payment",
+          value: "Awaiting Payment",
+          count: this.props.awaiting_payment
+        },
+        {
+          title: "Jobs Completed",
+          value: "Job Complete",
+          count: this.props.job_complete
+        },
+        {
+          title: "Declined Quotes",
+          value: "Declined Quotes",
+          count: this.props.declined_quotes
+        },
+      ]
     };
   },
 
@@ -432,10 +518,18 @@ var ListMaintenanceRequest = React.createClass({
       page: page
     });
     if(this.state.valueAction) {
-      this.getData("/maintenance_request_filter", page, {
-        sort_by_date: this.state.sortByDate,
-        maintenance_request_filter: this.state.valueAction,
-      });
+      if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+        this.getData("/maintenance_request_filter", page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }else if(!!this.props.current_user_trady) {
+        this.getData("/trady_maintenance_request_filter", page, {
+          sort_by_date: this.state.sortByDate,
+          trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }
     }else {
       this.getData(this.props.link, page, {sort_by_date: this.state.sortByDate});
     }
@@ -447,10 +541,18 @@ var ListMaintenanceRequest = React.createClass({
     });
 
     if(this.state.valueAction) {
-      this.getData("/maintenance_request_filter", this.state.page, {
-        sort_by_date: value,
-        maintenance_request_filter: this.state.valueAction
-      });
+      if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+        this.getData("/maintenance_request_filter", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction
+        });
+      }else if(!!this.props.current_user_trady) {
+        this.getData("/trady_maintenance_request_filter", this.state.page, {
+          sort_by_date: value,
+          trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }
     }else {
       this.getData(this.props.link, this.state.page, {sort_by_date: value});
     }
@@ -467,13 +569,19 @@ var ListMaintenanceRequest = React.createClass({
       valueAction: action,
     });
 
-    this.getData("/maintenance_request_filter", 1, params);
+    if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+      this.getData("/maintenance_request_filter", 1, params);
+    } else if(!!this.props.current_user_trady) {
+      params.trady_id = this.props.current_user_trady.id;
+      this.getData("/trady_maintenance_request_filter", 1, params);
+    }
   },
 
   render: function() {
     const self = this;
     const current_user_agent = this.props.current_user_agent;
     const current_user_agency_admin = this.props.current_user_agency_admin;
+    const current_user_trady = this.props.current_user_trady;
     return (
       <div className="maintenance-list">
         { 
@@ -508,6 +616,7 @@ var ListMaintenanceRequest = React.createClass({
                   class="action" 
                   title="Action Required" 
                   content={this.state.actionRequests} 
+                  valueAction={this.state.valueAction}
                   getAction={(value) => this.getAction(value)}
                 />
             }
@@ -517,7 +626,19 @@ var ListMaintenanceRequest = React.createClass({
                   class="awaiting" 
                   title="Awaiting Action" 
                   content={this.state.awaitingAction} 
+                  valueAction={this.state.valueAction}
                   getAction={(value) => this.getAction(value)} 
+                />
+            }
+            {
+              (!!current_user_trady) && 
+                <DropDownList
+                  class="trady" 
+                  id="trady-filter"
+                  title="Trady Filter" 
+                  content={this.state.tradyFilter} 
+                  valueAction={this.state.valueAction}
+                  getAction={(value) => this.getAction(value)}
                 />
             }
           </div>
@@ -530,6 +651,7 @@ var ListMaintenanceRequest = React.createClass({
                 id="action-required"
                 title="Action Required" 
                 content={this.state.actionRequests} 
+                valueAction={this.state.valueAction}
                 getAction={(value) => this.getAction(value)}
               />
           }
@@ -539,8 +661,20 @@ var ListMaintenanceRequest = React.createClass({
                 class="awaiting" 
                 id="awaiting-action"
                 title="Awaiting Action" 
-                content={this.state.awaitingAction} 
+                content={this.state.awaitingAction}
+                valueAction={this.state.valueAction}
                 getAction={(value) => this.getAction(value)} 
+              />
+          }
+          {
+            (!!current_user_trady) &&
+              <DropDownMobileList 
+                class="trady" 
+                id="trady-filter"
+                title="Trady Filter" 
+                content={this.state.tradyFilter}
+                valueAction={this.state.valueAction}
+                getAction={(value) => this.getAction(value)}
               />
           }
         </div>

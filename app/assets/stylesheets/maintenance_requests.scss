@@ -198,13 +198,14 @@ form#new_maintenance_request {
             padding: 2px 5px;
             margin-right: 5px;
         }
-        &:hover {
+        &:hover, &.active {
             a {
                 color: #7dc691;
             }
             span {
                 background-color: #7dc691;
                 color: white;
+                border-radius: 3px;
             }
         }
     }
@@ -339,6 +340,7 @@ form#new_maintenance_request {
                 display: inline-block;
                 border: none;
                 border-radius: 0;
+                font-weight: 600;
                 &.active {
                     background-color: #8499aa;
                 }
@@ -424,7 +426,7 @@ form#new_maintenance_request {
         }
         .action-mobile .drop-mobile-list {
             .content-mobile .dropcontent{
-                width: 420px;
+                width: 435px;
             }
             .btn-drop-mobile {
                 padding: 0 40px;
@@ -434,7 +436,7 @@ form#new_maintenance_request {
     @media (max-width: 480px) {
         .action-mobile .drop-mobile-list {
             .content-mobile .dropcontent{
-                width: 320px;
+                width: 335px;
             }
             .btn-drop-mobile {
                 padding: 0 15px;
@@ -447,7 +449,7 @@ form#new_maintenance_request {
                 width: 300px;
             }
             .btn-drop-mobile {
-                padding: 0 10px;
+                padding: 0 5px;
             }
         }
     }
