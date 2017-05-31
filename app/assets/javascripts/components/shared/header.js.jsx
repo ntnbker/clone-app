@@ -97,19 +97,21 @@ var Header = React.createClass({
 
     showMenu: function(flag) {
       let myDropdown = document.getElementById("menu-bar");
-      if(flag == 'hide' && !!this.state.isShow) {
-        myDropdown.classList.remove('show');
-      }else if(flag != 'hide'){
-        if(!!this.state.isShow) {
+      if(myDropdown) {
+        if(flag == 'hide' && !!this.state.isShow) {
           myDropdown.classList.remove('show');
-          this.setState({
-            isShow: false
-          });
-        }else {
-          myDropdown.classList.toggle("show");
-          this.setState({
-            isShow: true
-          });
+        }else if(flag != 'hide'){
+          if(!!this.state.isShow) {
+            myDropdown.classList.remove('show');
+            this.setState({
+              isShow: false
+            });
+          }else {
+            myDropdown.classList.toggle("show");
+            this.setState({
+              isShow: true
+            });
+          }
         }
       }
     },
@@ -149,10 +151,10 @@ var Header = React.createClass({
       );
     },
 
-    Search: function() {
+    search: function() {
       return (
         <div className="search">
-          <form action="/search" className="form-search" accept-charset="UTF-8" method="get">
+          <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
             <input name="utf8" type="hidden" value="✓" />
             <input 
               id="query" 
@@ -170,109 +172,118 @@ var Header = React.createClass({
     },
 
     header: function(e) {
-      var logged_in = this.props.logged_in;
-      var current_user = this.props.current_user;
-      var expanded = this.props.expanded
+      const props = this.props;
+      const expanded = this.props.expanded;
+      const logged_in = this.props.logged_in;
+      const current_user = this.props.current_user;
 
-      return <nav className="header-expanded">
-        <MobileMenu ref="Bar">
-          {
-          logged_in ?
-            <ul className="menu-mobile">
-                <li>
-                  <img src="/assets/user1.png" />
-                  <span>
-                    Hi, {this.props.current_user.name}
-                  </span>
-                </li>
-                { this.menuBar() }
-                <li>
-                  <a href={this.props.logout_path} data-method="delete" rel="nofollow"> 
-                    Sign Out
-                  </a>
-                </li>
-            </ul>
-            : <span className="mobile-menu-items">
-                <a href={this.props.menu_login_path} > Login </a>
-                <a href={this.props.new_agency_path} className="register"> Register </a>
-              </span>
-          }
-        </MobileMenu>
+      return (
+        <nav className="header-expanded">
+          <MobileMenu ref="Bar">
+            {
+              logged_in ?
+                <ul className="menu-mobile">
+                    <li>
+                      <img src="/assets/user1.png" />
+                      <span>
+                        Hi, {current_user.name}
+                      </span>
+                    </li>
+                    { this.menuBar() }
+                    <li>
+                      <a href={props.logout_path} data-method="delete" rel="nofollow"> 
+                        Sign Out
+                      </a>
+                    </li>
+                </ul>
+                : 
+                <span className="mobile-menu-items">
+                  <a href={props.menu_login_path} > Login </a>
+                  <a href={props.new_agency_path} className="register"> Register </a>
+                </span>
+            }
+          </MobileMenu>
 
-        <div className="container container-custom">
-          <div className={"column header-custom " + (e && "forhome")}>
-              <div className="logo">
-                <img src="/assets/logo.png" alt="logo" />
-                <a href={this.props.root_path}> MaintenanceApp </a>
-              </div>
-              {
-                logged_in? 
-                  <div>
-                    {
-                      !expanded ?
-                        <div className="header-right">
-                          { this.Search() }
-                          <div className="question">
-                            <i className="fa fa-question" />
-                          </div>
-                          <div className="notification">
-                            <i className="fa fa-bell" />
-                          </div>
-                          <div className="menu-bar dropdown-custom">
-                            <button type="button" className="btn-menu" onClick={this.showMenu}>
-                              <img src="/assets/user1.png" />
-                              <span>
-                                Hi, {this.props.current_user.name}
-                                <i className="fa fa-angle-down"/>
-                              </span>
-                            </button>
-                            <ul className="dropdown-menu" id="menu-bar">
-                              { this.menuBar() }
-                              <li  ref="Items">
-                                <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        :
-                        <div className="log_in">
-                          <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
-                          {
-                          this.state.isItems &&
-                            <ul className="desktop-menu-items"> 
-                              <li>
+          <div className="container container-custom">
+            <div className={"column header-custom " + (e && "forhome")}>
+                <div className="logo">
+                  <img src="/assets/logo.png" alt="logo" />
+                  <a href={props.root_path}> MaintenanceApp </a>
+                </div>
+                {
+                  logged_in? 
+                    <div>
+                      {
+                        !expanded ?
+                          <div className="header-right">
+                            { this.search() }
+                            <div className="question">
+                              <i className="fa fa-question" />
+                            </div>
+                            <div className="notification">
+                              <i className="fa fa-bell" />
+                            </div>
+                            <div className="menu-bar dropdown-custom">
+                              <button type="button" className="btn-menu" onClick={this.showMenu}>
                                 <img src="/assets/user1.png" />
                                 <span>
-                                  Hi, {this.props.current_user.name}
+                                  Hi, {current_user.name}
+                                  <i className="fa fa-angle-down"/>
                                 </span>
-                              </li>
-                              { this.menuBar() }
-                              <li  ref="Items">
-                                <a href={this.props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
-                              </li>
-                            </ul>
-                          }
-                      </div>
-                    }
-                  </div>
-                  : 
-                  <span className="desktop-menu-items">
-                    <a href={this.props.menu_login_path} > Login </a>
-                    <a href={this.props.new_agency_path} className="register"> Register </a>
-                  </span>
-              }
-          </div>
+                              </button>
+                              <ul className="dropdown-menu" id="menu-bar">
+                                { this.menuBar() }
+                                <li  ref="Items">
+                                  <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          :
+                          <div className="log_in">
+                            <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
+                            {
+                            this.state.isItems &&
+                              <ul className="desktop-menu-items"> 
+                                <li>
+                                  <img src="/assets/user1.png" />
+                                  <span>
+                                    Hi, {current_user.name}
+                                  </span>
+                                </li>
+                                { this.menuBar() }
+                                <li  ref="Items">
+                                  <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                                </li>
+                              </ul>
+                            }
+                          </div>
+                      }
+                    </div>
+                    : 
+                    <span className="desktop-menu-items">
+                      <a href={props.menu_login_path} > Login </a>
+                      <a href={props.new_agency_path} className="register"> Register </a>
+                    </span>
+                }
+            </div>
 
-          <button className="menu-btn button" onClick={this.showBar}> ☰ </button>
-        </div>
-      </nav>
+            <button className="menu-btn button" onClick={this.showBar}> ☰ </button>
+          </div>
+        </nav>
+      );
     },
 
     render: function() {
-        return <div>
-            { this.props.expanded
-            ? this.header(true)
-            : this.header() }
+      return (
+        <div>
+          { this.props.expanded ? 
+              this.header(true)
+              :
+              this.header()
+          }
         </div>
+      );
+      
     }
 });

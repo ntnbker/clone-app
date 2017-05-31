@@ -1,0 +1,32 @@
+.new_agent, .new_agency_admin {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	align-items: center;
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		width: 350px;
+		input {
+			width: 100%;
+		}
+		button {
+			background-color: #7dc691;
+			border-color: #7dc691;
+			color: #fff;
+			&:hover, &:active{
+				background-color: #2FA342;
+				border-color: #2FA342;
+			}
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.new_agent, .new_agency_admin {
+		.form-group {
+			width: 300px;
+		}
+	}
+}
