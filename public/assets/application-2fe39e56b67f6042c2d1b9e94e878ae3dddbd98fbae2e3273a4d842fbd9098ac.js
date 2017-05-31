@@ -66563,20 +66563,33 @@ var DropList = React.createClass({
 var DropDownContent = React.createClass({
   displayName: "DropDownContent",
 
+  getInitialState: function () {
+    return {
+      valueAction: this.props.valueAction
+    };
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
   render: function () {
     var content = this.props.content;
-    var self = this;
+    var props = this.props;
+    var state = this.state;
     return React.createElement(
       "ul",
       { className: "dropcontent" },
-      this.props.content.map(function (item, index) {
+      content.map(function (item, index) {
         return React.createElement(
           "li",
-          { key: index },
+          { key: index, className: state.valueAction == item.value ? 'active' : '' },
           React.createElement(
             "a",
             { onClick: function (value) {
-                return self.props.getAction(item.value);
+                return props.getAction(item.value);
               } },
             React.createElement(
               "span",
@@ -66599,11 +66612,17 @@ var DropDownList = React.createClass({
   displayName: "DropDownList",
 
   getInitialState: function () {
-    return { hidden: false };
+    return { hidden: false, valueAction: this.props.valueAction };
   },
 
   onDrop: function () {
     this.setState({ hidden: !this.state.hidden });
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
   },
 
   render: function () {
@@ -66620,9 +66639,13 @@ var DropDownList = React.createClass({
       React.createElement(
         "div",
         { className: "content", style: { display: this.state.hidden ? 'none' : 'block' } },
-        React.createElement(DropDownContent, { content: this.props.content, getAction: function (value) {
+        React.createElement(DropDownContent, {
+          content: this.props.content,
+          valueAction: this.state.valueAction,
+          getAction: function (value) {
             return _this.props.getAction(value);
-          } })
+          }
+        })
       )
     );
   }
@@ -66632,14 +66655,18 @@ var DropDownMobileList = React.createClass({
   displayName: "DropDownMobileList",
 
   getInitialState: function () {
-    return { hidden: true };
+    return { hidden: true, valueAction: this.props.valueAction };
   },
 
   onDrop: function (id) {
     if (id != "over") {
-      this.setState({ hidden: !this.state.hidden });
+      this.setState({
+        hidden: !this.state.hidden
+      });
     } else {
-      this.setState({ hidden: true });
+      this.setState({
+        hidden: true
+      });
     }
   },
 
@@ -66652,29 +66679,41 @@ var DropDownMobileList = React.createClass({
     });
   },
 
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
   render: function () {
     var _this2 = this;
 
+    var props = this.props;
+    var state = this.state;
     return React.createElement(
       "div",
       { className: "drop-mobile-list" },
       React.createElement(
         "button",
         {
-          id: this.props.id,
+          id: props.id,
           onClick: function (id) {
-            return _this2.onDrop(_this2.props.id);
+            return _this2.onDrop(props.id);
           },
-          className: 'btn-drop-mobile title ' + (!this.state.hidden && 'active')
+          className: 'btn-drop-mobile title ' + (!state.hidden && 'active')
         },
         this.props.title
       ),
       React.createElement(
         "div",
-        { className: "content-mobile " + (!this.state.hidden && 'show') },
-        React.createElement(DropDownContent, { content: this.props.content, getAction: function (value) {
-            return _this2.props.getAction(value);
-          } })
+        { className: "content-mobile " + (!state.hidden && 'show') },
+        React.createElement(DropDownContent, {
+          content: props.content,
+          valueAction: state.valueAction,
+          getAction: function (value) {
+            return props.getAction(value);
+          }
+        })
       )
     );
   }
@@ -66785,7 +66824,7 @@ var ImgSlider = React.createClass({
       stwidth: $('#slider').width()
     });
 
-    $(window).resize(function () {
+    $('#slider').resize(function () {
       self.setState({
         stwidth: $('#slider').width()
       });
@@ -66956,6 +66995,43 @@ var ListMaintenanceRequest = React.createClass({
         title: "Maintenance Scheduled - Awaiting Invoice",
         value: "Maintenance Scheduled - Awaiting Invoice",
         count: this.props.maintenance_scheduled_count
+      }],
+      tradyFilter: [{
+        title: "Quote Requests",
+        value: "Quote Requests",
+        count: this.props.quote_request
+      }, {
+        title: "Awaiting Quote Approvals",
+        value: "Awaiting Quote Approvals",
+        count: this.props.awaiting_quote_approvals
+      }, {
+        title: "Appointments Required",
+        value: "Appointments Required",
+        count: this.props.appointments_required
+      }, {
+        title: "Awaiting Appointment Confirmation",
+        value: "Awaiting Appointment Confirmation",
+        count: this.props.awaiting_appointment_confirmation
+      }, {
+        title: "Alternate Appointment Requested",
+        value: "Alternate Appointment Requested",
+        count: this.props.alternate_appointment_requested
+      }, {
+        title: "Job Booked",
+        value: "Job Booked",
+        count: this.props.job_booked
+      }, {
+        title: "Awaiting Payment",
+        value: "Awaiting Payment",
+        count: this.props.awaiting_payment
+      }, {
+        title: "Jobs Completed",
+        value: "Job Complete",
+        count: this.props.job_complete
+      }, {
+        title: "Declined Quotes",
+        value: "Declined Quotes",
+        count: this.props.declined_quotes
       }]
     };
   },
@@ -67005,10 +67081,18 @@ var ListMaintenanceRequest = React.createClass({
       page: page
     });
     if (this.state.valueAction) {
-      this.getData("/maintenance_request_filter", page, {
-        sort_by_date: this.state.sortByDate,
-        maintenance_request_filter: this.state.valueAction
-      });
+      if (!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+        this.getData("/maintenance_request_filter", page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_trady) {
+        this.getData("/trady_maintenance_request_filter", page, {
+          sort_by_date: this.state.sortByDate,
+          trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction
+        });
+      }
     } else {
       this.getData(this.props.link, page, { sort_by_date: this.state.sortByDate });
     }
@@ -67020,10 +67104,18 @@ var ListMaintenanceRequest = React.createClass({
     });
 
     if (this.state.valueAction) {
-      this.getData("/maintenance_request_filter", this.state.page, {
-        sort_by_date: value,
-        maintenance_request_filter: this.state.valueAction
-      });
+      if (!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+        this.getData("/maintenance_request_filter", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_trady) {
+        this.getData("/trady_maintenance_request_filter", this.state.page, {
+          sort_by_date: value,
+          trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction
+        });
+      }
     } else {
       this.getData(this.props.link, this.state.page, { sort_by_date: value });
     }
@@ -67040,7 +67132,12 @@ var ListMaintenanceRequest = React.createClass({
       valueAction: action
     });
 
-    this.getData("/maintenance_request_filter", 1, params);
+    if (!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+      this.getData("/maintenance_request_filter", 1, params);
+    } else if (!!this.props.current_user_trady) {
+      params.trady_id = this.props.current_user_trady.id;
+      this.getData("/trady_maintenance_request_filter", 1, params);
+    }
   },
 
   render: function () {
@@ -67049,6 +67146,7 @@ var ListMaintenanceRequest = React.createClass({
     var self = this;
     var current_user_agent = this.props.current_user_agent;
     var current_user_agency_admin = this.props.current_user_agency_admin;
+    var current_user_trady = this.props.current_user_trady;
     return React.createElement(
       "div",
       { className: "maintenance-list" },
@@ -67084,6 +67182,7 @@ var ListMaintenanceRequest = React.createClass({
             "class": "action",
             title: "Action Required",
             content: this.state.actionRequests,
+            valueAction: this.state.valueAction,
             getAction: function (value) {
               return _this3.getAction(value);
             }
@@ -67092,6 +67191,17 @@ var ListMaintenanceRequest = React.createClass({
             "class": "awaiting",
             title: "Awaiting Action",
             content: this.state.awaitingAction,
+            valueAction: this.state.valueAction,
+            getAction: function (value) {
+              return _this3.getAction(value);
+            }
+          }),
+          !!current_user_trady && React.createElement(DropDownList, {
+            "class": "trady",
+            id: "trady-filter",
+            title: "Trady Filter",
+            content: this.state.tradyFilter,
+            valueAction: this.state.valueAction,
             getAction: function (value) {
               return _this3.getAction(value);
             }
@@ -67106,6 +67216,7 @@ var ListMaintenanceRequest = React.createClass({
           id: "action-required",
           title: "Action Required",
           content: this.state.actionRequests,
+          valueAction: this.state.valueAction,
           getAction: function (value) {
             return _this3.getAction(value);
           }
@@ -67115,6 +67226,17 @@ var ListMaintenanceRequest = React.createClass({
           id: "awaiting-action",
           title: "Awaiting Action",
           content: this.state.awaitingAction,
+          valueAction: this.state.valueAction,
+          getAction: function (value) {
+            return _this3.getAction(value);
+          }
+        }),
+        !!current_user_trady && React.createElement(DropDownMobileList, {
+          "class": "trady",
+          id: "trady-filter",
+          title: "Trady Filter",
+          content: this.state.tradyFilter,
+          valueAction: this.state.valueAction,
           getAction: function (value) {
             return _this3.getAction(value);
           }
@@ -67794,6 +67916,12 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
+		XHR.upload.addEventListener('loadstart', function (e) {
+			$("#spinner").css('display', 'flex');
+		});
+		XHR.upload.addEventListener('loadend', function (e) {
+			$("#spinner").css('display', 'none');
+		});
 		XHR.send(FD);
 		e.preventDefault();
 		return false;
@@ -71972,19 +72100,21 @@ var Header = React.createClass({
 
   showMenu: function (flag) {
     var myDropdown = document.getElementById("menu-bar");
-    if (flag == 'hide' && !!this.state.isShow) {
-      myDropdown.classList.remove('show');
-    } else if (flag != 'hide') {
-      if (!!this.state.isShow) {
+    if (myDropdown) {
+      if (flag == 'hide' && !!this.state.isShow) {
         myDropdown.classList.remove('show');
-        this.setState({
-          isShow: false
-        });
-      } else {
-        myDropdown.classList.toggle("show");
-        this.setState({
-          isShow: true
-        });
+      } else if (flag != 'hide') {
+        if (!!this.state.isShow) {
+          myDropdown.classList.remove('show');
+          this.setState({
+            isShow: false
+          });
+        } else {
+          myDropdown.classList.toggle("show");
+          this.setState({
+            isShow: true
+          });
+        }
       }
     }
   },
@@ -72019,13 +72149,13 @@ var Header = React.createClass({
     });
   },
 
-  Search: function () {
+  search: function () {
     return React.createElement(
       "div",
       { className: "search" },
       React.createElement(
         "form",
-        { action: "/search", className: "form-search", "accept-charset": "UTF-8", method: "get" },
+        { action: "/search", className: "form-search", acceptCharset: "UTF-8", method: "get" },
         React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
         React.createElement("input", {
           id: "query",
@@ -72044,9 +72174,10 @@ var Header = React.createClass({
   },
 
   header: function (e) {
+    var props = this.props;
+    var expanded = this.props.expanded;
     var logged_in = this.props.logged_in;
     var current_user = this.props.current_user;
-    var expanded = this.props.expanded;
 
     return React.createElement(
       "nav",
@@ -72065,7 +72196,7 @@ var Header = React.createClass({
               "span",
               null,
               "Hi, ",
-              this.props.current_user.name
+              current_user.name
             )
           ),
           this.menuBar(),
@@ -72074,7 +72205,7 @@ var Header = React.createClass({
             null,
             React.createElement(
               "a",
-              { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
+              { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
               "Sign Out"
             )
           )
@@ -72083,12 +72214,12 @@ var Header = React.createClass({
           { className: "mobile-menu-items" },
           React.createElement(
             "a",
-            { href: this.props.menu_login_path },
+            { href: props.menu_login_path },
             " Login "
           ),
           React.createElement(
             "a",
-            { href: this.props.new_agency_path, className: "register" },
+            { href: props.new_agency_path, className: "register" },
             " Register "
           )
         )
@@ -72105,7 +72236,7 @@ var Header = React.createClass({
             React.createElement("img", { src: "/assets/logo.png", alt: "logo" }),
             React.createElement(
               "a",
-              { href: this.props.root_path },
+              { href: props.root_path },
               " MaintenanceApp "
             )
           ),
@@ -72115,7 +72246,7 @@ var Header = React.createClass({
             !expanded ? React.createElement(
               "div",
               { className: "header-right" },
-              this.Search(),
+              this.search(),
               React.createElement(
                 "div",
                 { className: "question" },
@@ -72137,7 +72268,7 @@ var Header = React.createClass({
                     "span",
                     null,
                     "Hi, ",
-                    this.props.current_user.name,
+                    current_user.name,
                     React.createElement("i", { className: "fa fa-angle-down" })
                   )
                 ),
@@ -72150,7 +72281,7 @@ var Header = React.createClass({
                     { ref: "Items" },
                     React.createElement(
                       "a",
-                      { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
+                      { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
                       " Sign Out"
                     )
                   )
@@ -72175,7 +72306,7 @@ var Header = React.createClass({
                     "span",
                     null,
                     "Hi, ",
-                    this.props.current_user.name
+                    current_user.name
                   )
                 ),
                 this.menuBar(),
@@ -72184,7 +72315,7 @@ var Header = React.createClass({
                   { ref: "Items" },
                   React.createElement(
                     "a",
-                    { href: this.props.logout_path, "data-method": "delete", rel: "nofollow" },
+                    { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
                     " Sign Out"
                   )
                 )
@@ -72195,12 +72326,12 @@ var Header = React.createClass({
             { className: "desktop-menu-items" },
             React.createElement(
               "a",
-              { href: this.props.menu_login_path },
+              { href: props.menu_login_path },
               " Login "
             ),
             React.createElement(
               "a",
-              { href: this.props.new_agency_path, className: "register" },
+              { href: props.new_agency_path, className: "register" },
               " Register "
             )
           )
@@ -72221,6 +72352,33 @@ var Header = React.createClass({
       this.props.expanded ? this.header(true) : this.header()
     );
   }
+});
+var Spinner = React.createClass({
+	displayName: "Spinner",
+
+	componentDidMount: function () {
+		/*$(document).ajaxStart(function() {
+  	$("#spinner").css('display', 'flex');
+  });
+  	$(document).ajaxStop(function() {
+  	$("#spinner").css('display', 'none');
+  });*/
+	},
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ id: "spinner", className: "spinner-content" },
+			React.createElement("div", { className: "spinner-bg" }),
+			React.createElement(
+				"div",
+				{ className: "spinner" },
+				React.createElement("div", { className: "bounce1" }),
+				React.createElement("div", { className: "bounce2" }),
+				React.createElement("div", { className: "bounce3" })
+			)
+		);
+	}
 });
 var ContentTenantContact = React.createClass({
 	displayName: "ContentTenantContact",
