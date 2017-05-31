@@ -13,10 +13,14 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     trady_id = current_user.trady.id
 
-    @maintenance_requests =TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).paginate(:page => params[:page], :per_page => 3)
+    if params[:sort_by_date] == "Newest to Oldest"
+      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at DESC')
+    else
+      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at ASC')
+    end
 
     @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")
-    @awaiting_quote_approvals = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Awaiting Quote Approval")
+    @awaiting_quote_approvals = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Awaiting Quote Approvals")
     @appointments_required = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Appointments Required")
     @awaiting_appointment_confirmation = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Awaiting Appointment Confirmation")
     @alternate_appointment_requested = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Alternate Appointment Requested")
@@ -25,6 +29,12 @@ class TradyMaintenanceRequestsController < ApplicationController
     @job_complete = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Job Complete")
     @declined_quotes = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Declined Quotes")
 
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+
+    respond_to do |format|
+      format.json {render json:maintenance_requests_json}
+      format.html
+    end
   end
 
   def show

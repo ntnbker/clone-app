@@ -23,6 +23,8 @@
 
     =yield :head
   %body
+    = render 'shared/spinner'
+    
     %header
       - if content_for? :expanded
         = render 'shared/nav', {:expanded => true}
