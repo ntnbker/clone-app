@@ -67,7 +67,7 @@ class LandlordsController < ApplicationController
       respond_to do |format|
         format.json {render json:user.landlord, notice:"Maintenance Request Successfully Sent" }
       end
-    
+    Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord")
     elsif user && !user.landlord?
       respond_to do |format|
       format.json{render json: "User Email Already has other Role please user another email", status: :ok }
@@ -89,6 +89,7 @@ class LandlordsController < ApplicationController
 
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
           maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+          Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord")
         else
           format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
         end
@@ -108,6 +109,7 @@ class LandlordsController < ApplicationController
 
         LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
         maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord")
       else
         format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
       end

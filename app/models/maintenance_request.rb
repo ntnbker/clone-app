@@ -32,7 +32,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :uploaded_quotes
   has_many :trady_statuses
   has_many :quote_requests
-
+  has_many :logs
 
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations

@@ -30,7 +30,8 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @message = Message.new
     
     @tradie = Trady.new
-     
+    @logs = @maintenance_request.logs 
+    
     if @maintenance_request.maintenance_request_image != nil
       @gallery = @maintenance_request.maintenance_request_image.images
     end 
@@ -64,7 +65,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@current_user.agent,:quote=>@quotes}}
+      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@current_user.agent,:quote=>@quotes,logs:@logs}}
       format.html{render :show}
     end 
 

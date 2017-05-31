@@ -82,7 +82,7 @@ class UploadedInvoicesController < ApplicationController
     maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", maintenance_request_status:"Completed")
     invoice = UploadedInvoice.find_by(id:params[:pdf_invoice_id])
     invoice.update_attribute(:delivery_status, true)
-     
+    Log.create(maintenance_request_id:@maintenance_request.id, action:"Invoice has been uploaded")
 
     redirect_to invoice_sent_success_path(maintenance_request_id: params[:maintenance_request_id], trady_id: params[:trady_id] )
   end

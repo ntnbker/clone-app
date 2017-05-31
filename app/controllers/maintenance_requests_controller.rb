@@ -242,6 +242,8 @@ class MaintenanceRequestsController < ApplicationController
         flash[:success]= "Thank You for creating a Maintenance Request"
         redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
+
+      Log.create(maintenance_request_id:@maintenance_request.id, action:"Request Created")
       
     else
       

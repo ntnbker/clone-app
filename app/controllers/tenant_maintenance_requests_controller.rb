@@ -27,9 +27,9 @@ class TenantMaintenanceRequestsController < ApplicationController
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
     @message = Message.new
-    
     @tradie = Trady.new
-     
+    @logs = @maintenance_request.logs
+
     if @maintenance_request.maintenance_request_image != nil
       @gallery = @maintenance_request.maintenance_request_image.images
     end 
@@ -64,7 +64,7 @@ class TenantMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation}}
+      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, logs:@logs}}
       format.html{render :show}
     end 
 
