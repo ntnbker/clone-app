@@ -54,7 +54,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     
 
     
-    @signed_in_trady = current_user.trady
+    @signed_in_trady = @current_user.trady
     if @maintenance_request.trady != nil
       @assigned_trady = @maintenance_request.trady 
       
