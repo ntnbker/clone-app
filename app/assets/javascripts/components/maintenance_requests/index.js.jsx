@@ -1,15 +1,15 @@
 var DropContent = React.createClass({
-  render: function() {
-    var content = this.props.content;
-    return <ul className="dropcontent drop-content">
-    {
-      this.props.content.map((item, index) => 
-        <li key={index}>
-          <a href={item.href}> 
-            {item.title}
+                render: function() {
+                var content = this.props.content;
+                return <ul className="dropcontent drop-content">
+                {
+                this.props.content.map((item, index) => 
+                <li key={index}>
+                <a href={item.href}> 
+                {item.title}
           </a> 
           <span>
-            {item.count}
+                {item.count}
           </span>
         </li>
       )
@@ -65,8 +65,8 @@ var DropDownContent = React.createClass({
       {
         content.map((item, index) => {
           return (
-            <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
-              <a onClick={(value) => props.getAction(item.value)}> 
+                <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+                <a onClick={(value) => props.getAction(item.value)}> 
                 <span>{item.count}</span>
                 <b className="name">{item.title}</b>
               </a> 
@@ -122,7 +122,7 @@ var DropDownMobileList = React.createClass({
       this.setState({
         hidden: !this.state.hidden
       });
-    }else {
+    }else if(!this.state.hidden){
       this.setState({
         hidden: true
       });
@@ -244,6 +244,12 @@ var ImgSlider = React.createClass({
       this.sliderTopRun(stpos);
   },
 
+  setWidth: function() {
+    this.setState({
+      stwidth: $('#slider').width()
+    });
+  },
+
   componentWillReceiveProps: function(nextProps) {
     this.setState({
       stlen: nextProps.images ? nextProps.images.length : 0
@@ -252,16 +258,14 @@ var ImgSlider = React.createClass({
 
   componentDidMount: function() {
     const self = this;
+    
+    if($('#slider')) {
+      this.setWidth();
 
-    self.setState({
-      stwidth: $('#slider').width()
-    });
-
-    $('#slider').resize(function() {
-      self.setState({
-        stwidth: $('#slider').width()
+      $(window).resize(function() {
+        self.setWidth();
       });
-    });
+    }
     
     $("." + self.props.nameClass).on("touchstart", function(event){
       var xClick = event.originalEvent.touches[0].pageX;
@@ -596,7 +600,7 @@ var ListMaintenanceRequest = React.createClass({
             <div>
               {
                 this.state.dataShow.map(function(maintenance_request, key) {
-                  return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
                 })
               }
               { this.state.data.length > this.state.prePage && 
@@ -701,12 +705,12 @@ var MaintenanceRequestItem = React.createClass({
             <div className="row">
               <h3 className="heading">
                 <a href={this.props.link + "/" + maintenance_request.id}>
-                  {maintenance_request.maintenance_heading}
+                {maintenance_request.maintenance_heading}
                 </a>
               </h3>
               {
                 maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu &&
-                  <p className="status">{maintenance_request.action_status.maintenance_request_status}</p>
+                <p className="status">{maintenance_request.action_status.maintenance_request_status}</p>
               }
               
             </div>

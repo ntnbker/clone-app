@@ -361,8 +361,21 @@ var SideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && <ActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} /> }
-				{ !!this.state.showContact && <ContactMobile close={(key) => this.show('contact')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} current_user={this.props.current_user} /> }
+				{ !!this.state.showAction && 
+						<ActionMobile 
+							landlord={this.props.landlord}
+							close={(key) => this.show('action')}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/> 
+				}
+				{ !!this.state.showContact && 
+						<ContactMobile 
+							landlord={this.props.landlord}
+							close={(key) => this.show('contact')}
+							current_user={this.props.current_user}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/> 
+				}
 			</div>
 		);
 	}
@@ -1394,16 +1407,11 @@ var MaintenanceRequest = React.createClass({
 							/>
 						);
 					}else {
-						this.setState({notification: {
-							title: "Edit Lanlord",
-							content: "Landlord is empty!",
-							bgClass: "bg-error",
-						}});
 						return (
 							<ModalNotification 
 								close={this.isClose} 
-								title={this.state.notification.title} 
-								content={this.state.notification.content}
+								title="Edit Lanlord"
+								content="Landlord is empty!"
 							/>
 						);
 					}
