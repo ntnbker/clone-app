@@ -220,7 +220,7 @@ class QuotesController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     LandlordRequestsQuoteEmailWorker.perform_async(maintenance_request.id)
     landlord = maintenance_request.property.landlord
-    Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord Requests Quote" name:landlord.name)
+    Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord Requests Quote", name:landlord.name)
     maintenance_request.action_status.update_columns(agent_status:"Quote Requested", action_category:"Action Required")
     
     #Send Email to the agent  
