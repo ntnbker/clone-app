@@ -266,9 +266,8 @@ var Header = React.createClass({
                       <a href={props.new_agency_path} className="register"> Register </a>
                     </span>
                 }
+              <button className="menu-btn button" onClick={this.showBar}> ☰ </button>
             </div>
-
-            <button className="menu-btn button" onClick={this.showBar}> ☰ </button>
           </div>
         </nav>
       );

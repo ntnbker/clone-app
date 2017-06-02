@@ -485,7 +485,9 @@ var TradyMaintenanceRequest = React.createClass({
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.state.maintenance_request}
 						/>
+						<Activity logs={this.props.logs} />
 					</div>
+					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<TradySideBarMobile 
 					landlord={this.state.landlord} 
