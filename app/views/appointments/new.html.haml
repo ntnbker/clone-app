@@ -1,28 +1,26 @@
-This is where we will make an appointment 
 %div.container
-  %h3 
-    Set Appointment Time
   %div.well
-    = form_for @appointment do |f|
-      =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
-      =f.hidden_field :tenant_id, value:@tenant_id
-      =f.hidden_field :trady_id, value:@trady_id
-      =f.hidden_field :status, value:"Active"
-      =f.hidden_field :current_user_role, value:"#{current_user.role.roleable_type}"
-      =f.date_field :date
-      
-      =f.time_select :time, {ampm: true}
-      %br
-      %h4
-      =f.fields_for :comments do |comments_form|
-        Comment:
-        =comments_form.text_area :body
-        =comments_form.hidden_field :tenant_id, value:@tenant_id
-        =comments_form.hidden_field :trady_id, value:@trady_id
-        =comments_form.hidden_field :landlord_id, value:@landlord_id
-      %br
-      =f.submit "Submit Appointment Time and Comment"
-
-
-
-
+    %h4.text-center 
+      Set Appointment Time
+    %div.appointment  
+      = form_for @appointment do |f|
+        =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+        =f.hidden_field :tenant_id, value:@tenant_id
+        =f.hidden_field :trady_id, value:@trady_id
+        =f.hidden_field :status, value:"Active"
+        =f.hidden_field :current_user_role, value:"#{current_user.role.roleable_type}"
+        %div.form-group
+          =f.fields_for :comments do |comments_form|
+            =comments_form.text_area :body, placeholder: "Comment", class: "text-center", required: true
+            =comments_form.hidden_field :tenant_id, value:@tenant_id
+            =comments_form.hidden_field :trady_id, value:@trady_id
+            =comments_form.hidden_field :landlord_id, value:@landlord_id
+        %div.form-group.date-time
+          %div.date
+            =f.label :date
+            =f.date_field :date, required: true
+          %div.time
+            =f.label :time, required: true
+            =f.time_select :time, {ampm: true}
+        %div.form-group.text-center
+          =f.button "Submit Appointment Time and Comment"
