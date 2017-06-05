@@ -40,6 +40,7 @@ gem 'sidekiq'
 gem 'font-awesome-rails'
 gem "aws-sdk", "~> 2.1"
 gem "shrine"
+gem "roda"
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
 
