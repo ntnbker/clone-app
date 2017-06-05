@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170529054811) do
+ActiveRecord::Schema.define(version: 20170605085059) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -171,6 +171,13 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.integer "user_id"
   end
 
+  create_table "images", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.text     "image_data"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "invoice_items", force: :cascade do |t|
     t.integer  "invoice_id"
     t.text     "item_description"
@@ -242,6 +249,7 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.integer  "maintenance_request_id"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.text     "image_data"
   end
 
   create_table "maintenance_requests", force: :cascade do |t|

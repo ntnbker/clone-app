@@ -16,8 +16,8 @@ gem 'jquery-ui-rails'
 # gem 'redis', '~> 3.0'
 gem 'pg'
 gem 'bootstrap_form'
-gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
-gem 'carrierwave-aws'
+# gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
+# gem 'carrierwave-aws'
 gem 'mini_magick'
 gem 'stripe'
 gem 'figaro', '~> 1.1.0'
@@ -38,7 +38,8 @@ gem 'searchkick'
 gem 'redis'
 gem 'sidekiq'
 gem 'font-awesome-rails'
-
+gem "aws-sdk", "~> 2.1"
+gem "shrine"
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
 
