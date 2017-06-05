@@ -1,20 +1,21 @@
 var ContentLandlordContact = React.createClass({
 	renderCallAgent: function() {
-		if(!!this.props.maintenance_request.agent) {
+		const maintenance_request = this.props.maintenance_request;
+		if(!!maintenance_request.agent) {
 			return (
 				<li>
-					<a>
+					<a href={"tel:" + maintenance_request.agent.mobile_phone}>
 						<i className="fa fa-phone" aria-hidden="true" />
-						Call Agent: {this.props.maintenance_request.agent.mobile_phone}
+						Call Agent: {maintenance_request.agent.mobile_phone}
 					</a>
 				</li>
 			);
-		}else if(!!this.props.maintenance_request.agency_admin) {
+		}else if(!!maintenance_request.agency_admin) {
 			return (
 				<li>
-					<a>
+					<a href={"tel:" + maintenance_request.agency_admin.mobile_phone}>
 						<i className="fa fa-phone" aria-hidden="true" />
-						Call Agent: {this.props.maintenance_request.agency_admin.mobile_phone}
+						Call Agent: {maintenance_request.agency_admin.mobile_phone}
 					</a>
 				</li>
 			);
@@ -49,7 +50,7 @@ var ContentLandlordContact = React.createClass({
 var LandlordContact = React.createClass({
 	getInitialState: function() {
 		return {
-			show: false
+			show: true
 		};
 	},
 

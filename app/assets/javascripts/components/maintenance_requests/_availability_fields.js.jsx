@@ -16,6 +16,42 @@ var AvailabilityField = React.createClass({
       return date;
     },
 
+    makeHour: function(byNum) {
+      var date=[];
+      date.push(<option key="-1" value="">--</option>);
+      var value = "";
+      for (var i=0; i<byNum; i++) {
+        if(i == 0) {
+          value = "12 AM";
+        } else if(i <= 11) {
+          value = i < 10 ? "0" + i : i;
+          value += " AM";
+        } else if(i == 12) {
+          value = i + " PM";
+        } else if(i >= 13) {
+          value = (i - 12) < 10 ? "0" + (i - 12) : (i - 12);
+          value += " PM";
+        }
+        date.push(
+          <option key={i} value={i}>
+            { value }
+          </option>
+        );
+      }
+      return date;
+    },
+
+    makeMinute: function() {
+      const data = [0, 15, 30, 45];
+      var date=[];
+      date.push(<option key="-1" value="">--</option>);
+      data.map((item, key) => {
+        date.push(<option key={key} value={item}>{item == 0 ? item + "0" : item}</option>);
+      });
+      
+      return date;
+    },
+
     removeField() {
       this.setState({remove: true});
     },
@@ -140,7 +176,7 @@ var AvailabilityField = React.createClass({
                 name={this.generateAtt("name", x, "start_time(4i)")}
                 onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
               >
-                { this.makeDate(24) }
+                { this.makeHour(24) }
               </select>
 
               <span> : </span>
@@ -152,7 +188,7 @@ var AvailabilityField = React.createClass({
                 name={this.generateAtt("name", x, "start_time(5i)")}
                 onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
               >
-                { this.makeDate(60) }
+                { this.makeMinute() }
               </select>
             </div>
 
@@ -185,7 +221,7 @@ var AvailabilityField = React.createClass({
                 name={this.generateAtt("name", x, "finish_time(4i)")}
                 onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)}
               >
-                { this.makeDate(24) }
+                { this.makeHour(24) }
               </select>
 
               <span> : </span>
@@ -197,7 +233,7 @@ var AvailabilityField = React.createClass({
                 name={this.generateAtt("name", x, "finish_time(5i)")}
                 onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} 
               >
-                { this.makeDate(60) }
+                { this.makeMinute() }
               </select>
             </div>
           </fieldset>

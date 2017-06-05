@@ -142,7 +142,7 @@ var ModalMarkJobAsCompleted = React.createClass({
 						<div className="modal-footer">
 							<button 
 								data-dismiss="modal"
-							 	onClick={this.jobCompleted}
+							 	onClick={this.createInvoice}
 								className="btn btn-default success" 
 							>Yes</button>
 							<button 
@@ -421,7 +421,6 @@ var TradyMaintenanceRequest = React.createClass({
 					return (
 						<ModalMarkJobAsCompleted
 							close={this.isClose}
-							jobCompleted={this.jobCompleted}
 							signed_in_trady={this.props.signed_in_trady}
 							trady={this.props.current_user_show_quote_message}
 							maintenance_request={this.props.maintenance_request}
