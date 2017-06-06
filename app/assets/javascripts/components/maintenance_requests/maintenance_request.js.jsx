@@ -4,69 +4,71 @@ var Carousel = React.createClass({
 			stlen: this.props.gallery ? this.props.gallery.length : 0,
 			indexSlider: 0,
 			stpos: 0,
-     	stwidth: 0,
-     	stx: 0
+			stwidth: 0,
+			stx: 0
 		};
 	},
 
 	sliderRun: function(stpos) {
-    var stx = stpos * -this.state.stwidth;
-    this.setState({
-        stx: stx,
-    		stpos: stpos,
-    });
-  },
+		var stx = stpos * -this.state.stwidth;
+		this.setState({
+			stx: stx,
+			stpos: stpos,
+		});
+	},
 
-  sliderPrev: function(argument) {
-    var stpos = this.state.stpos - 1;
-    if(stpos < 0) stpos = this.state.stlen - 1;
-    this.sliderRun(stpos);
-  },
+	sliderPrev: function(argument) {
+		var stpos = this.state.stpos - 1;
+		if(stpos < 0) stpos = this.state.stlen - 1;
+		this.sliderRun(stpos);
+	},
 
-  sliderNext: function() {
-    var stpos = this.state.stpos + 1;
-    if(stpos >= this.state.stlen) stpos = 0;
-    this.sliderRun(stpos);
-  },
+	sliderNext: function() {
+		var stpos = this.state.stpos + 1;
+		if(stpos >= this.state.stlen) stpos = 0;
+		this.sliderRun(stpos);
+	},
 
 	componentDidMount: function() {
 		const self = this;
-		this.setState({
-			stwidth: $('.slider-custom').width()
-		});
-		
-		$( window ).resize(function() {
-			self.setState({
-				stwidth: $('.slider-custom').width()
+		if($('#slider-detail')) {
+			this.setState({
+				stwidth: $('#slider-detail').width()
 			});
-		});
+			
+			$( window ).resize(function() {
+				self.setState({
+					stwidth: $('#slider-detail').width()
+				});
+			});
 
-		$(".slider-custom").on("touchstart", function(event){
-      var xClick = event.originalEvent.touches[0].pageX;
-	    $(this).one("touchmove", function(event){
-        var xMove = event.originalEvent.touches[0].pageX;
-        if(Math.ceil(xClick - xMove) > 5 ){
-          self.sliderNext();
-        }
-        else if( Math.ceil(xClick - xMove) < -5 ){
-          self.sliderPrev();
-        }
-	    });
-	    $(".slider-custom").on("touchend", function(){
-        $(this).off("touchmove");
-	    });
-		});
+			$("#slider-detail").on("touchstart", function(event){
+				var xClick = event.originalEvent.touches[0].pageX;
+				$(this).one("touchmove", function(event){
+					var xMove = event.originalEvent.touches[0].pageX;
+					if(Math.ceil(xClick - xMove) > 5 ){
+						self.sliderNext();
+					}
+					else if( Math.ceil(xClick - xMove) < -5 ){
+						self.sliderPrev();
+					}
+				});
+				$("#slider-detail").on("touchend", function(){
+					$(this).off("touchmove");
+				});
+			});
+		}
 	},
 
 	render: function() {
 		var styles = {
-      left: this.state.stx,
-      width: this.state.stlen * this.state.stwidth,
-    };
+			left: this.state.stx,
+			width: this.state.stlen * this.state.stwidth,
+		};
 		const temp = this;
 		var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
 		return (
-			<div className="slider-custom">
+			<div className="slider-custom" id="slider-detail">
 				<div className="swiper-container swiper-container-horizontal">
 					<div className="swiper-wrapper slider" style={styles} id="mySlider">
 					{
@@ -106,7 +108,7 @@ var Carousel = React.createClass({
 				{
 					this.props.gallery.length > 1 && <div className="btn-slider btn-prev" onClick={this.sliderPrev}><i className="fa fa-angle-left"></i></div>
 				}
-        
+		
 			</div>
 		);
 	}

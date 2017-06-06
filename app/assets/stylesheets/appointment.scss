@@ -1,0 +1,77 @@
+.appointment {
+	width: 400px;
+	margin: auto;
+	margin-top: 30px;
+	p {
+		margin-bottom: 0px;
+	}
+	.comment {
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		width: 100%;
+		margin-bottom: 20px;
+	}
+	.content {
+		margin-left: 15px;
+		margin-top: 5px;
+		font-size: 16px;
+	}
+	.detail {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		font-size: 12px;
+		line-height: 20px;
+		.status {
+			font-weight: bold;
+			font-size: 12px;
+			text-align: center;
+			display: inline-block;
+			margin-right: 5px;
+			line-height: 25px;
+		}
+		.date-time {
+			font-size: 12px;
+			line-height: 25px;
+			margin-left: 5px;
+			margin-right: 10px;
+		}
+	}
+	.new_appointment, .edit_appointment, .new_comment {
+		margin-top: 30px;
+		.form-group {
+			textarea {
+				width: 100%;
+			}
+			button {
+				background-color: #7dc691;
+				border-color: #7dc691;
+				color: #fff;
+				&:hover, &:active{
+					background-color: #2FA342;
+					border-color: #2FA342;
+				}
+			}
+		}
+		.date-time {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			font-size: 14px;
+			.date {
+				input {
+					height: 38px;
+					padding: 6px 10px;
+					background-color: #fff;
+					border: 1px solid #D1D1D1;
+					border-radius: 4px;
+					box-shadow: none;
+					box-sizing: border-box;
+				}
+			}
+		}
+	}
+	.edit_appointment {
+		margin-top: 0px;
+	}
+}

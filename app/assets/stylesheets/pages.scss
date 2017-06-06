@@ -7,27 +7,75 @@
 		
 	.header {
 		background-image: url(/assets/slider.png);
-	    background-size: cover;
-	    background-position: center center;
-	    height: 764px;
+		background-size: cover;
+		background-position: center center;
+		height: 764px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 
-	    form {
-	    	position: absolute;
-	    	text-align: center;
-	    	width: 100%;
-	    	top: 500px;
+		.form-address {
+			width: 350px;
+			margin: auto;
+			display: flex;
+			flex-wrap: wrap;
+			flex-direction: column;
 
-	    	select {
-	    		width: 40%;
-	    		margin: 5px 0;
-	    	}
-	    	input[type="text"] {
-    		    width: calc(80% - 100px);
-	    	}
-	    	input[type="submit"] {
-	    		width: 100px;
-	    	}
-	    }
+			.select {
+				display: flex;
+				justify-content: space-between;
+				select {
+					width: 49%;
+					border: none;
+					border-radius: 0;
+				}
+			}
+			.input-address {
+				margin-top: 20px;
+				input {
+					border: none;
+					border-radius: 0;
+					width: 100%;
+				}
+			}
+			.btn-submit {
+				margin-top: 20px;
+				text-align: center;
+				button {
+					width: 150px;
+					border: none;
+					border-radius: 0;
+				}
+			}
+			.has-error {
+				border: 1px solid red !important;
+				&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+				  color: red;
+				}
+				&::-moz-placeholder { /* Firefox 19+ */
+				  color: red;
+				}
+				&:-ms-input-placeholder { /* IE 10+ */
+				  color: red;
+				}
+				&:-moz-placeholder { /* Firefox 18- */
+				  color: red;
+				}
+
+				&::-webkit-select-placeholder { /* Chrome/Opera/Safari */
+				  color: red;
+				}
+				&::-moz-placeholder { /* Firefox 19+ */
+				  color: red;
+				}
+				&:-ms-select-placeholder { /* IE 10+ */
+				  color: red;
+				}
+				&:-moz-placeholder { /* Firefox 18- */
+				  color: red;
+				}
+			}
+	  }
 	}
 
 	.main {
@@ -42,15 +90,15 @@
 
 			img {
 				display: block;
-			    margin: 30px auto 0;
+				margin: 30px auto 0;
 			}
 			h4 {
 				color: #7dc691;
 				font-size: 14px;
-			    text-align: center;
-			    text-transform: uppercase;
-			    width: 100px;
-			    margin: 15px auto;
+				text-align: center;
+				text-transform: uppercase;
+				width: 100px;
+				margin: 15px auto;
 			}
 			p {
 				color: #849aaa;
@@ -68,12 +116,12 @@
 				height: 100px;
 			}
 			img {
-			    margin: auto;
-			    display: table-cell;
-			    opacity: .5;
-			    filter: grayscale(100%);
-			    max-width: 100%;
-			    transform: translate(0%,-50%);
+				margin: auto;
+				display: table-cell;
+				opacity: .5;
+				filter: grayscale(100%);
+				max-width: 100%;
+				transform: translate(0%,-50%);
 			}
 		}
 	}
@@ -86,20 +134,42 @@
 	/* For Desktop Nav */
 	@media (min-width: 550px) {
 		.header form {
-	    	select {
-	    		width: 10%;
-	    		min-width: 120px;
-	    	}
-	    	input[type="text"] {
-	    		width: 15%;
-	    		min-width: 170px;
-	    	}
-    	}
+			select {
+				width: 10%;
+				min-width: 120px;
+			}
+			input[type="text"] {
+				width: 15%;
+				min-width: 170px;
+			}
+		}
+	}
+
+	@media (max-width: 480px) {
+		.header {
+			.form-address {
+				width: 300px;
+				.select {
+					flex-direction: column;
+					select {
+						width: 100%;
+						&:last-child {
+							margin-top: 20px;
+						}
+					}
+				}
+				.btn-submit {
+					button {
+						width: 100%;
+					}
+				}
+			}
+		}
 	}
 }
 
 body {	
-    background: #f4f8fb;
+	background: #f4f8fb;
 }
 
 .well {
@@ -110,8 +180,8 @@ body {
 	/*box-shadow: 0 1px 10px #888888;*/
 
 	
-    margin-top: 30px;
-    min-height: calc(100vh - 210px);
+	margin-top: 30px;
+	min-height: calc(100vh - 210px);
 }
 
 .button-primary {

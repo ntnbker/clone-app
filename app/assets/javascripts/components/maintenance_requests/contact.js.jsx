@@ -6,7 +6,7 @@ var ContentContact = React.createClass({
 			return (
 				<ul>
 					<li>
-						<a>
+						<a href={"tel:" + landlord.mobile}>
 							<i className="fa fa-phone" aria-hidden="true" />
 							Landlord: {landlord.mobile}
 						</a>
@@ -43,7 +43,7 @@ var ContentContact = React.createClass({
 var Contact = React.createClass({
 	getInitialState: function() {
 		return {
-			show: false
+			show: true
 		};
 	},
 

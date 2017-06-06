@@ -372,6 +372,10 @@ header {
 
 @media(max-width: 768px) {
   header .header-expanded {
+    .forhome {
+      display: flex;
+      justify-content: center;
+    }
     .header-custom .header-right {
       margin-right: 70px;
     }

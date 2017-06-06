@@ -361,8 +361,21 @@ var SideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && <ActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} /> }
-				{ !!this.state.showContact && <ContactMobile close={(key) => this.show('contact')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} current_user={this.props.current_user} /> }
+				{ !!this.state.showAction && 
+						<ActionMobile 
+							landlord={this.props.landlord}
+							close={(key) => this.show('action')}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/> 
+				}
+				{ !!this.state.showContact && 
+						<ContactMobile 
+							landlord={this.props.landlord}
+							close={(key) => this.show('contact')}
+							current_user={this.props.current_user}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/> 
+				}
 			</div>
 		);
 	}
@@ -1394,16 +1407,11 @@ var MaintenanceRequest = React.createClass({
 							/>
 						);
 					}else {
-						this.setState({notification: {
-							title: "Edit Lanlord",
-							content: "Landlord is empty!",
-							bgClass: "bg-error",
-						}});
 						return (
 							<ModalNotification 
 								close={this.isClose} 
-								title={this.state.notification.title} 
-								content={this.state.notification.content}
+								title="Edit Lanlord"
+								content="Landlord is empty!"
 							/>
 						);
 					}
@@ -1543,16 +1551,16 @@ var MaintenanceRequest = React.createClass({
 							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
 						 		/>
 						 		: null
-						 	}
+					 	}
 						{this.props.invoices.length > 0 && <Invoices invoices={this.state.invoices} viewInvoice={(key, item) => this.viewItem(key, item)} />}
 						{this.props.invoice_pdf_files.length > 0 && <PDFInvoices invoice_pdf_files={this.state.invoice_pdf_files} viewPDFInvoice={(key, item) => this.viewItem(key, item)} />}
 					</div>
 					<div className="sidebar">
 						<Contact landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />
 						<Action landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} />
-						<Activity />
+						<Activity logs={this.props.logs} />
 					</div>
-					<ActivityMobile />
+					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<SideBarMobile onModalWith={(modal) => this.onModalWith(modal)} landlord={this.state.landlord} current_user={this.props.current_user} />
 				{ this.renderModal() }

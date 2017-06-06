@@ -1,3 +1,33 @@
+var ContentActivity = React.createClass({
+	render: function() {
+		return (
+			<div>
+				<ul>
+				{
+					this.props.logs.map((item, index) => {
+						return (
+							<li key={index} className="user">
+								<img className="img-user" src="/assets/user1.png" />
+								<p className="info">
+									<span className="title">
+										{ item.action } 
+										<strong> { item.name }</strong>
+									</span>
+									<span className="time">{ moment(item.created_at).format('lll') }</span>
+								</p>
+							</li>
+						);
+					})
+				}
+				</ul>
+				<button className="view-more button-default">
+					View more
+				</button>
+			</div>
+		);
+	}
+});
+
 var Activity = React.createClass({
 	getInitialState: function() {
 		return {
@@ -9,65 +39,18 @@ var Activity = React.createClass({
 		this.setState({show: !this.state.show});
 	},
 
-	content: function() {
-		return (
-			<div>
-				<ul>
-					<li className="user">
-						<img className="img-user" src="/assets/user1.png" />
-						<p className="info">
-							<span className="title">
-								Request by 
-								<strong>Dereck Carlson</strong>
-							</span>
-							<span className="time">Sep 16, 2017 at 9am</span>
-						</p>
-					</li>
-					<li className="user">
-						<img className="img-user" src="/assets/user1.png" />
-						<p className="info">
-							<span className="title">
-								Request by 
-								<strong>Dereck Carlson</strong>
-							</span>
-							<span className="time">Sep 16, 2017 at 9am</span>
-						</p>
-					</li>
-					<li className="user">
-						<img className="img-user" src="/assets/user1.png" />
-						<p className="info">
-							<span className="title">
-								Request by 
-								<strong>Dereck Carlson</strong>
-							</span>
-							<span className="time">Sep 16, 2017 at 9am</span>
-						</p>
-					</li>
-					<li className="user">
-						<img className="img-user" src="/assets/user1.png" />
-						<p className="info">
-							<span className="title">
-							Request by <strong>Dereck Carlson</strong></span>
-							<span className="time">Sep 16, 2017 at 9am</span>
-						</p>
-					</li>
-				</ul>
-				<button className="view-more button-default">
-					View more
-				</button>
-			</div>
-		);
-	},
-
 	render: function() {
 		return (
 			<div className="item">
 				<div className="header action">
-					<a >Activity log:</a>
+					<a>Activity log:</a>
 					<i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showActivity}></i>
 				</div>
 				<div className="content text-center" id="activity-content">
-					{ this.state.show && this.content() }
+					{ (this.state.show && this.props.logs.length) ?
+							<ContentActivity logs={this.props.logs} />
+							: null
+					}
 				</div>
 			</div>
 		);
@@ -84,41 +67,10 @@ var ActivityMobile = React.createClass({
 						<i className="fa fa-angle-down" aria-hidden="true"></i>
 					</div>
 					<div className="content text-center">
-						<ul>
-							<li className="user">
-								<img className="img-user" src="/assets/user1.png" />
-								<p className="info">
-									<span className="title">Request by <strong>Dereck Carlson</strong></span>
-									<span className="time">Sep 16, 2017 at 9am</span>
-								</p>
-							</li>
-							<li className="user">
-								<img className="img-user" src="/assets/user1.png" />
-								<p className="info">
-									<span className="title">Request by <strong>Dereck Carlson</strong></span>
-									<span className="time">Sep 16, 2017 at 9am</span>
-								</p>
-							</li>
-							<li className="user">
-								<img className="img-user" src="/assets/user1.png" />
-								<p className="info">
-									<span className="title">Request by <strong>Dereck Carlson</strong></span>
-									<span className="time">Sep 16, 2017 at 9am</span>
-								</p>
-							</li>
-							<li className="user">
-								<img className="img-user" src="/assets/user1.png" />
-								<p className="info">
-									<span className="title">Request by <strong>Dereck Carlson</strong></span>
-									<span className="time">Sep 16, 2017 at 9am</span>
-								</p>
-							</li>
-						</ul>
-						<div className="text-center">
-							<button className="view-more button-default">
-								View more
-							</button>
-						</div>
+					{ this.props.logs.length ?
+							<ContentActivity logs={this.props.logs} />
+							: null
+					}
 					</div>
 				</div>
 			</div>
