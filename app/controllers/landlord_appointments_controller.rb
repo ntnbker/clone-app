@@ -19,11 +19,16 @@ class LandlordAppointmentsController < ApplicationController
     trady_id = params[:appointment][:trady_id]
     landlord_id = maintenance_request.property.landlord.id
 
+    landlord = maintenance_request.property.landlord
+
+
     # requester = params[:appointment][:current_user_role]
     if @appointment.valid?
       @appointment.save
       LandlordRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, landlord_id)
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord suggested appointment time")
+
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord suggested appointment time", name:landlord.name)
+
       maintenance_request.action_status.update_columns(agent_status:"Tenant To Confirm Appointment")
       redirect_to root_path
       
@@ -62,6 +67,9 @@ class LandlordAppointmentsController < ApplicationController
      appointment_id = @appointment.id
      landlord_id = params[:appointment][:landlord_id]
      tenant_id = params[:appointment][:tenant_id] 
+     tenant = Tenant.find_by(id:params[:appointment][:tenant_id])
+     landlord = Landlord.find_by(id: params[:appointment][:landlord_id])
+
     if @appointment.update(appointment_params)
       flash[:success] = "Thank you for picking a new appointment time. We will send the new time to the person for confirmation"
 
@@ -70,12 +78,16 @@ class LandlordAppointmentsController < ApplicationController
       if params[:appointment][:current_user_role] == "Tenant"
         LandlordAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request_id, appointment_id, landlord_id, tenant_id)
         maintenance_request.action_status.update_attribute(:agent_status, "Landlord To Confirm Appointment")
-        Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant suggested appointment time")
+
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant suggested appointment time", name:tenant.name)
+
         #send email to trady letting them know that a new appointment time has been picked 
       elsif params[:appointment][:current_user_role] == "Landlord"
         TenantAlternativeLandlordAppointmentTimePickedEmailWorker.perform_async(maintenance_request_id, appointment_id, landlord_id, tenant_id)
         maintenance_request.action_status.update_attribute(:agent_status, "Tenant To Confirm Appointment")
-        Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord suggested appointment time")
+
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord suggested appointment time", name:landlord.name)
+
         #send an email to the tenant saying another appointment has been picked
       else
           #do nothing
@@ -99,6 +111,8 @@ class LandlordAppointmentsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     landlord_id = params[:landlord_id]
     tenant_id = params[:tenant_id]
+    tenant = Tenant.find_by(id:params[:tenant_id])
+    landlord = Landlord.find_by(id: params[:landlord_id])
 
     
     #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 
@@ -108,11 +122,13 @@ class LandlordAppointmentsController < ApplicationController
     if params[:current_user_role] == "Landlord"
       TenantAppointmentAcceptedLandlordEmailWorker.perform_async(maintenance_request_id,appointment_id,landlord_id,tenant_id)
       maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled - Awaiting Invoice")
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord confirmed appointment")
+
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord confirmed appointment", name:landlord.name)
     elsif params[:current_user_role] == "Tenant"
       LandlordAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,landlord_id,tenant_id)
       maintenance_request.action_status.update_attribute(:agent_status, "Maintenance Scheduled - Awaiting Invoice")
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant confirmed appointment")
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant confirmed appointment", name:tenant.name)
+
     end 
     flash[:success] = "Thank you for accepting the appointment."
     redirect_to root_path
