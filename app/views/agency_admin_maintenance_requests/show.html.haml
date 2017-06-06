@@ -1,6 +1,2 @@
-= react_component 'MaintenanceRequest', {:landlord => @landlord, :quotes => @quotes, :property => @maintenance_request.property, :invoices => @maintenance_request.delivered_invoices, :gallery => @gallery, :authenticity_token => form_authenticity_token, :maintenance_request => @maintenance_request, :tenants_conversation => @tenants_conversation, :landlords_conversation => @landlords_conversation, :current_user => @current_user, :current_user_show_quote_message => @current_user.agency_admin, :agency => @agency, :tradies => @all_tradies, :invoices => @invoices, :invoice_pdf_files => @invoice_pdf_files, :tradies_with_quote_requests => @quote_request_trady_list}
 
-
--@logs.each do |log|
-  =log.action
-  =log.name
+= react_component 'MaintenanceRequest', {:landlord => @landlord, :quotes => @quotes, :property => @maintenance_request.property, :invoices => @maintenance_request.delivered_invoices, :gallery => @gallery, :authenticity_token => form_authenticity_token, :maintenance_request => @maintenance_request, :tenants_conversation => @tenants_conversation, :landlords_conversation => @landlords_conversation, :current_user => @current_user, :current_user_show_quote_message => @current_user.agency_admin, :agency => @agency, :tradies => @all_tradies, :invoices => @invoices, :invoice_pdf_files => @invoice_pdf_files, :tradies_with_quote_requests => @quote_request_trady_list, :logs => @logs}

@@ -71,7 +71,9 @@ class TradiesController < ApplicationController
 
       if params[:trady][:trady_request] == "Quote"
         TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+
         Log.create(maintenance_request_id:mr.id, action:"Quote Requested", name:name)
+
         # TradyStatus.create(maintenance_request_id:mr.id,status:"Quote Requested")
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
         if quote_request
@@ -82,7 +84,9 @@ class TradiesController < ApplicationController
 
         
       elsif params[:trady][:trady_request] == "Work Order"
+
         Log.create(maintenance_request_id:mr.id, action:"Work Order Requested", name:name)
+
         TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
         mr.update_attribute(:trady_id, @user.trady.id )
       end 
@@ -109,7 +113,9 @@ class TradiesController < ApplicationController
             end
                 
             if params[:trady][:trady_request] == "Quote"
+
               Log.create(maintenance_request_id:mr.id, action:"Quote Requested", name:name)
+
               TradyEmailWorker.perform_async(@user.trady.id,mr.id)
               TradyStatus.create(maintenance_request_id:mr.id,status:"Quote Requested")
               quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
@@ -119,7 +125,9 @@ class TradiesController < ApplicationController
                 QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
               end 
             elsif params[:trady][:trady_request] == "Work Order"
+
               Log.create(maintenance_request_id:mr.id, action:"Work Order Requested", name:name)
+
               TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
               mr.update_attribute(:trady_id, @user.trady.id )
             end 

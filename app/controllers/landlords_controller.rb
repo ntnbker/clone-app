@@ -89,7 +89,9 @@ class LandlordsController < ApplicationController
 
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
           maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+
           Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord", name:@landlord.name)
+
         else
           format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
         end
@@ -109,7 +111,9 @@ class LandlordsController < ApplicationController
 
         LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
         maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+
         Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord", name:@landlord.name)
+
       else
         format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
       end

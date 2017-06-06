@@ -1,15 +1,15 @@
 var DropContent = React.createClass({
-  render: function() {
-    var content = this.props.content;
-    return <ul className="dropcontent drop-content">
-    {
-      this.props.content.map((item, index) => 
-        <li key={index}>
-          <a href={item.href}> 
-            {item.title}
+                render: function() {
+                var content = this.props.content;
+                return <ul className="dropcontent drop-content">
+                {
+                this.props.content.map((item, index) => 
+                <li key={index}>
+                <a href={item.href}> 
+                {item.title}
           </a> 
           <span>
-            {item.count}
+                {item.count}
           </span>
         </li>
       )
@@ -117,25 +117,10 @@ var DropDownMobileList = React.createClass({
     return {hidden: true, valueAction: this.props.valueAction}
   },
 
-  onDrop: function(id) {
-    if(id != "over") {
-      this.setState({
+  onDrop: function() {
+    this.setState({
         hidden: !this.state.hidden
       });
-    }else {
-      this.setState({
-        hidden: true
-      });
-    }
-  },
-
-  componentDidMount: function() {
-    const self = this;
-    $(document).bind('click', function(e) {
-      if (!e.target.matches('#' + self.props.id)) {
-        self.onDrop('over');
-      }
-    });
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -151,12 +136,20 @@ var DropDownMobileList = React.createClass({
       <div className="drop-mobile-list">
         <button 
           id={props.id} 
-          onClick={(id) => this.onDrop(props.id)}
+          onClick={this.onDrop}
           className={'btn-drop-mobile title ' + (!state.hidden && 'active')} 
         >
           {this.props.title}
         </button>
-        <div className={"content-mobile " + (!state.hidden && 'show')}>
+        <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
+          <div className="header-action">
+            <a>{this.props.title}</a>
+            <i 
+              aria-hidden="true" 
+              className="fa fa-close" 
+              onClick={this.onDrop}
+            />
+          </div>
           <DropDownContent 
             content={props.content}
             valueAction={state.valueAction}
@@ -210,12 +203,12 @@ var P = React.createClass({
 
 var ImgSlider = React.createClass({
   getInitialState: function() {
-      return {
-         stlen: this.props.images ? this.props.images.length : 0,
-         stpos: 0,
-         stwidth: 0,
-         stx: 0
-     };
+    return {
+      stx: 0,
+      stpos: 0,
+      stwidth: 0,
+      stlen: this.props.images.length > 0 ? this.props.images.length : 1,
+    };
   },
 
   sliderTopRun(stpos) {
@@ -244,24 +237,28 @@ var ImgSlider = React.createClass({
       this.sliderTopRun(stpos);
   },
 
+  setWidth: function() {
+    this.setState({
+      stwidth: $('#slider').width()
+    });
+  },
+
   componentWillReceiveProps: function(nextProps) {
     this.setState({
-      stlen: nextProps.images ? nextProps.images.length : 0
+      stlen: nextProps.images.length > 0 ? nextProps.images.length : 1
     });
   },
 
   componentDidMount: function() {
     const self = this;
+    
+    if($('#slider')) {
+      this.setWidth();
 
-    self.setState({
-      stwidth: $('#slider').width()
-    });
-
-    $('#slider').resize(function() {
-      self.setState({
-        stwidth: $('#slider').width()
+      $(window).resize(function() {
+        self.setWidth();
       });
-    });
+    }
     
     $("." + self.props.nameClass).on("touchstart", function(event){
       var xClick = event.originalEvent.touches[0].pageX;
@@ -286,6 +283,7 @@ var ImgSlider = React.createClass({
       width: this.state.stlen * this.state.stwidth,
     };
     var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
+    const images = this.props.images.length > 0 ? this.props.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}];
     return <div id="slider">
       { this.state.stlen > 1 && 
           <div>
@@ -299,8 +297,8 @@ var ImgSlider = React.createClass({
       }
       <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
         <div className="swiper-wrapper slider" style={styles}>
-        { this.state.stlen &&
-            this.props.images.map((image, i) => {
+        { images.length > 0 &&
+            images.map((image, i) => {
               return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
             })
         }
@@ -596,7 +594,7 @@ var ListMaintenanceRequest = React.createClass({
             <div>
               {
                 this.state.dataShow.map(function(maintenance_request, key) {
-                  return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
                 })
               }
               { this.state.data.length > this.state.prePage && 
@@ -701,12 +699,12 @@ var MaintenanceRequestItem = React.createClass({
             <div className="row">
               <h3 className="heading">
                 <a href={this.props.link + "/" + maintenance_request.id}>
-                  {maintenance_request.maintenance_heading}
+                {maintenance_request.maintenance_heading}
                 </a>
               </h3>
               {
                 maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu &&
-                  <p className="status">{maintenance_request.action_status.maintenance_request_status}</p>
+                <p className="status">{maintenance_request.action_status.maintenance_request_status}</p>
               }
               
             </div>

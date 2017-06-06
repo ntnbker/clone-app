@@ -436,6 +436,7 @@ body::-webkit-scrollbar-thumb {
           position: absolute;
           top: 40%;
           z-index: 100;
+          cursor: pointer;
           &.btn-next {
             right: 30px;
           }
