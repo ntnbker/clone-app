@@ -27,8 +27,6 @@ class MaintenanceRequestsController < ApplicationController
     
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
-    
-    binding.pry
 
     if current_user == nil || current_user.tenant?
       @maintenance_request.perform_realestate_validations = false
