@@ -41,7 +41,7 @@ gem 'font-awesome-rails'
 
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
-
+gem 'twilio-ruby', '~> 4.11.1'
 gem 'rails_12factor', group: :production
 
 group :development, :test do
