@@ -6,7 +6,18 @@ var TenantSideBarMobile = React.createClass({
 	},
 
 	show: function(key) {
+		const height = $( window ).height();
 		this.setState({showContact: !this.state.showContact});
+		$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+	},
+
+	componentDidMount: function() {
+		$(document).bind("resize", function() {
+			const height = $(window).height();
+			if($('#contacts-full')) {
+	    	$('#contacts-full').css('height', height);
+			}
+		})
 	},
 
 	render: function() {
