@@ -13,8 +13,8 @@ class MaintenanceRequestFiltersController < ApplicationController
       @maintenance_requests = MaintenanceRequest.find_maintenance_requests(c, p).order('created_at ASC')
     end
 
-    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
-
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    
     respond_to do |format|
       format.json {render json:@maintenance_requests_json}
       format.html
@@ -36,7 +36,7 @@ class MaintenanceRequestFiltersController < ApplicationController
       @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(t, p).order('created_at ASC')
     end
 
-    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|
       format.json {render json:@maintenance_requests_json}
