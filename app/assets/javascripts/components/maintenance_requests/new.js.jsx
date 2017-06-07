@@ -145,7 +145,7 @@ var MaintenanceRequestsNew = React.createClass({
 		FD.delete('commit');
 		this.state.dataImages.map((image, index) => {
 			var idx = index + 1;
-			FD.append('maintenance_request[images_attributes][image][]', JSON.stringify(image));
+			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
 		});
 		FD.append('commit', 'Submit Maintenance Request');
 		XHR.addEventListener('loadend', function(event) {
