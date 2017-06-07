@@ -64904,28 +64904,29 @@ var ContentLandlordContact = React.createClass({
 	displayName: "ContentLandlordContact",
 
 	renderCallAgent: function () {
-		if (!!this.props.maintenance_request.agent) {
+		var maintenance_request = this.props.maintenance_request;
+		if (!!maintenance_request.agent) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					null,
+					{ href: "tel:" + maintenance_request.agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					this.props.maintenance_request.agent.mobile_phone
+					maintenance_request.agent.mobile_phone
 				)
 			);
-		} else if (!!this.props.maintenance_request.agency_admin) {
+		} else if (!!maintenance_request.agency_admin) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					null,
+					{ href: "tel:" + maintenance_request.agency_admin.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					this.props.maintenance_request.agency_admin.mobile_phone
+					maintenance_request.agency_admin.mobile_phone
 				)
 			);
 		}
@@ -64967,7 +64968,7 @@ var LandlordContact = React.createClass({
 
 	getInitialState: function () {
 		return {
-			show: false
+			show: true
 		};
 	},
 
@@ -65659,6 +65660,54 @@ var AvailabilityField = React.createClass({
     return date;
   },
 
+  makeHour: function (byNum) {
+    var date = [];
+    date.push(React.createElement(
+      "option",
+      { key: "-1", value: "" },
+      "--"
+    ));
+    var value = "";
+    for (var i = 0; i < byNum; i++) {
+      if (i == 0) {
+        value = "12 AM";
+      } else if (i <= 11) {
+        value = i < 10 ? "0" + i : i;
+        value += " AM";
+      } else if (i == 12) {
+        value = i + " PM";
+      } else if (i >= 13) {
+        value = i - 12 < 10 ? "0" + (i - 12) : i - 12;
+        value += " PM";
+      }
+      date.push(React.createElement(
+        "option",
+        { key: i, value: i },
+        value
+      ));
+    }
+    return date;
+  },
+
+  makeMinute: function () {
+    var data = [0, 15, 30, 45];
+    var date = [];
+    date.push(React.createElement(
+      "option",
+      { key: "-1", value: "" },
+      "--"
+    ));
+    data.map(function (item, key) {
+      date.push(React.createElement(
+        "option",
+        { key: key, value: item },
+        item == 0 ? item + "0" : item
+      ));
+    });
+
+    return date;
+  },
+
   removeField: function () {
     this.setState({ remove: true });
   },
@@ -65798,7 +65847,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeStartTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(24)
+            this.makeHour(24)
           ),
           React.createElement(
             "span",
@@ -65816,7 +65865,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeStartTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(60)
+            this.makeMinute()
           )
         ),
         React.createElement(
@@ -65855,7 +65904,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeFinishTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(24)
+            this.makeHour(24)
           ),
           React.createElement(
             "span",
@@ -65873,7 +65922,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeFinishTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(60)
+            this.makeMinute()
           )
         )
       ),
@@ -66064,6 +66113,53 @@ var ActionMobile = React.createClass({
 		);
 	}
 });
+var ContentActivity = React.createClass({
+	displayName: "ContentActivity",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"ul",
+				null,
+				this.props.logs.map(function (item, index) {
+					return React.createElement(
+						"li",
+						{ key: index, className: "user" },
+						React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+						React.createElement(
+							"p",
+							{ className: "info" },
+							React.createElement(
+								"span",
+								{ className: "title" },
+								item.action,
+								React.createElement(
+									"strong",
+									null,
+									" ",
+									item.name
+								)
+							),
+							React.createElement(
+								"span",
+								{ className: "time" },
+								moment(item.created_at).format('lll')
+							)
+						)
+					);
+				})
+			),
+			React.createElement(
+				"button",
+				{ className: "view-more button-default" },
+				"View more"
+			)
+		);
+	}
+});
+
 var Activity = React.createClass({
 	displayName: "Activity",
 
@@ -66075,118 +66171,6 @@ var Activity = React.createClass({
 
 	showActivity: function () {
 		this.setState({ show: !this.state.show });
-	},
-
-	content: function () {
-		return React.createElement(
-			"div",
-			null,
-			React.createElement(
-				"ul",
-				null,
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				),
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				),
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				),
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by ",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				)
-			),
-			React.createElement(
-				"button",
-				{ className: "view-more button-default" },
-				"View more"
-			)
-		);
 	},
 
 	render: function () {
@@ -66206,7 +66190,7 @@ var Activity = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content text-center", id: "activity-content" },
-				this.state.show && this.content()
+				this.state.show && this.props.logs.length ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
 			)
 		);
 	}
@@ -66235,115 +66219,7 @@ var ActivityMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content text-center" },
-					React.createElement(
-						"ul",
-						null,
-						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
-							)
-						),
-						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
-							)
-						),
-						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
-							)
-						),
-						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
-							)
-						)
-					),
-					React.createElement(
-						"div",
-						{ className: "text-center" },
-						React.createElement(
-							"button",
-							{ className: "view-more button-default" },
-							"View more"
-						)
-					)
+					this.props.logs.length ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
 				)
 			)
 		);
@@ -66364,7 +66240,7 @@ var ContentContact = React.createClass({
 					null,
 					React.createElement(
 						"a",
-						null,
+						{ href: "tel:" + landlord.mobile },
 						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 						"Landlord: ",
 						landlord.mobile
@@ -66421,7 +66297,7 @@ var Contact = React.createClass({
 
 	getInitialState: function () {
 		return {
-			show: false
+			show: true
 		};
 	},
 
@@ -66658,24 +66534,9 @@ var DropDownMobileList = React.createClass({
     return { hidden: true, valueAction: this.props.valueAction };
   },
 
-  onDrop: function (id) {
-    if (id != "over") {
-      this.setState({
-        hidden: !this.state.hidden
-      });
-    } else {
-      this.setState({
-        hidden: true
-      });
-    }
-  },
-
-  componentDidMount: function () {
-    var self = this;
-    $(document).bind('click', function (e) {
-      if (!e.target.matches('#' + self.props.id)) {
-        self.onDrop('over');
-      }
+  onDrop: function () {
+    this.setState({
+      hidden: !this.state.hidden
     });
   },
 
@@ -66686,8 +66547,6 @@ var DropDownMobileList = React.createClass({
   },
 
   render: function () {
-    var _this2 = this;
-
     var props = this.props;
     var state = this.state;
     return React.createElement(
@@ -66697,16 +66556,28 @@ var DropDownMobileList = React.createClass({
         "button",
         {
           id: props.id,
-          onClick: function (id) {
-            return _this2.onDrop(props.id);
-          },
+          onClick: this.onDrop,
           className: 'btn-drop-mobile title ' + (!state.hidden && 'active')
         },
         this.props.title
       ),
       React.createElement(
         "div",
-        { className: "content-mobile " + (!state.hidden && 'show') },
+        { className: "content-mobile action-mobile " + (!state.hidden && 'show') },
+        React.createElement(
+          "div",
+          { className: "header-action" },
+          React.createElement(
+            "a",
+            null,
+            this.props.title
+          ),
+          React.createElement("i", {
+            "aria-hidden": "true",
+            className: "fa fa-close",
+            onClick: this.onDrop
+          })
+        ),
         React.createElement(DropDownContent, {
           content: props.content,
           valueAction: state.valueAction,
@@ -66778,10 +66649,10 @@ var ImgSlider = React.createClass({
 
   getInitialState: function () {
     return {
-      stlen: this.props.images ? this.props.images.length : 0,
+      stx: 0,
       stpos: 0,
       stwidth: 0,
-      stx: 0
+      stlen: this.props.images.length > 0 ? this.props.images.length : 1
     };
   },
 
@@ -66811,24 +66682,28 @@ var ImgSlider = React.createClass({
     this.sliderTopRun(stpos);
   },
 
+  setWidth: function () {
+    this.setState({
+      stwidth: $('#slider').width()
+    });
+  },
+
   componentWillReceiveProps: function (nextProps) {
     this.setState({
-      stlen: nextProps.images ? nextProps.images.length : 0
+      stlen: nextProps.images.length > 0 ? nextProps.images.length : 1
     });
   },
 
   componentDidMount: function () {
     var self = this;
 
-    self.setState({
-      stwidth: $('#slider').width()
-    });
+    if ($('#slider')) {
+      this.setWidth();
 
-    $('#slider').resize(function () {
-      self.setState({
-        stwidth: $('#slider').width()
+      $(window).resize(function () {
+        self.setWidth();
       });
-    });
+    }
 
     $("." + self.props.nameClass).on("touchstart", function (event) {
       var xClick = event.originalEvent.touches[0].pageX;
@@ -66852,6 +66727,7 @@ var ImgSlider = React.createClass({
       width: this.state.stlen * this.state.stwidth
     };
     var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
+    var images = this.props.images.length > 0 ? this.props.images : [{ url: "/uploads/maintenance_request_image/images/no_image.png" }];
     return React.createElement(
       "div",
       { id: "slider" },
@@ -66875,7 +66751,7 @@ var ImgSlider = React.createClass({
         React.createElement(
           "div",
           { className: "swiper-wrapper slider", style: styles },
-          this.state.stlen && this.props.images.map(function (image, i) {
+          images.length > 0 && images.map(function (image, i) {
             return React.createElement("img", { key: i, className: "swiper-slide slide-image", src: image.url, style: { width: subWidth }, alt: "Uploading..." });
           })
         )
@@ -67141,7 +67017,7 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   render: function () {
-    var _this3 = this;
+    var _this2 = this;
 
     var self = this;
     var current_user_agent = this.props.current_user_agent;
@@ -67184,7 +67060,7 @@ var ListMaintenanceRequest = React.createClass({
             content: this.state.actionRequests,
             valueAction: this.state.valueAction,
             getAction: function (value) {
-              return _this3.getAction(value);
+              return _this2.getAction(value);
             }
           }),
           (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownList, {
@@ -67193,7 +67069,7 @@ var ListMaintenanceRequest = React.createClass({
             content: this.state.awaitingAction,
             valueAction: this.state.valueAction,
             getAction: function (value) {
-              return _this3.getAction(value);
+              return _this2.getAction(value);
             }
           }),
           !!current_user_trady && React.createElement(DropDownList, {
@@ -67203,7 +67079,7 @@ var ListMaintenanceRequest = React.createClass({
             content: this.state.tradyFilter,
             valueAction: this.state.valueAction,
             getAction: function (value) {
-              return _this3.getAction(value);
+              return _this2.getAction(value);
             }
           })
         )
@@ -67218,7 +67094,7 @@ var ListMaintenanceRequest = React.createClass({
           content: this.state.actionRequests,
           valueAction: this.state.valueAction,
           getAction: function (value) {
-            return _this3.getAction(value);
+            return _this2.getAction(value);
           }
         }),
         (!!current_user_agent || !!current_user_agency_admin) && React.createElement(DropDownMobileList, {
@@ -67228,7 +67104,7 @@ var ListMaintenanceRequest = React.createClass({
           content: this.state.awaitingAction,
           valueAction: this.state.valueAction,
           getAction: function (value) {
-            return _this3.getAction(value);
+            return _this2.getAction(value);
           }
         }),
         !!current_user_trady && React.createElement(DropDownMobileList, {
@@ -67238,7 +67114,7 @@ var ListMaintenanceRequest = React.createClass({
           content: this.state.tradyFilter,
           valueAction: this.state.valueAction,
           getAction: function (value) {
-            return _this3.getAction(value);
+            return _this2.getAction(value);
           }
         })
       )
@@ -67436,7 +67312,7 @@ var Pagination = React.createClass({
   },
 
   render: function () {
-    var _this4 = this;
+    var _this3 = this;
 
     var self = this;
     var paginations = [].concat(_toConsumableArray(Array(this.state.numbGroup).keys())).map(function (key) {
@@ -67464,13 +67340,13 @@ var Pagination = React.createClass({
       React.createElement("a", {
         className: "previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled"),
         onClick: this.state.page > 1 ? function (page) {
-          return _this4.switchPage(_this4.state.page - 1);
+          return _this3.switchPage(_this3.state.page - 1);
         } : ""
       }),
       this.state.group > 1 && React.createElement(
         "a",
         { onClick: function (group) {
-            return _this4.switchGroup(_this4.state.group - 1);
+            return _this3.switchGroup(_this3.state.group - 1);
           } },
         "..."
       ),
@@ -67478,7 +67354,7 @@ var Pagination = React.createClass({
       this.state.group < this.state.totalGroup && React.createElement(
         "a",
         { onClick: function (group) {
-            return _this4.switchGroup(_this4.state.group + 1);
+            return _this3.switchGroup(_this3.state.group + 1);
           } },
         "..."
       ),
@@ -67486,7 +67362,7 @@ var Pagination = React.createClass({
         key: "next",
         className: "next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled"),
         onClick: function (page) {
-          return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
+          return _this3.switchPage(_this3.state.page < _this3.state.totalPage ? _this3.state.page + 1 : _this3.state.page);
         }
       })
     );
@@ -67527,30 +67403,32 @@ var Carousel = React.createClass({
 
 	componentDidMount: function () {
 		var self = this;
-		this.setState({
-			stwidth: $('.slider-custom').width()
-		});
+		if ($('#slider-detail')) {
+			this.setState({
+				stwidth: $('#slider-detail').width()
+			});
 
-		$(window).resize(function () {
-			self.setState({
-				stwidth: $('.slider-custom').width()
+			$(window).resize(function () {
+				self.setState({
+					stwidth: $('#slider-detail').width()
+				});
 			});
-		});
 
-		$(".slider-custom").on("touchstart", function (event) {
-			var xClick = event.originalEvent.touches[0].pageX;
-			$(this).one("touchmove", function (event) {
-				var xMove = event.originalEvent.touches[0].pageX;
-				if (Math.ceil(xClick - xMove) > 5) {
-					self.sliderNext();
-				} else if (Math.ceil(xClick - xMove) < -5) {
-					self.sliderPrev();
-				}
+			$("#slider-detail").on("touchstart", function (event) {
+				var xClick = event.originalEvent.touches[0].pageX;
+				$(this).one("touchmove", function (event) {
+					var xMove = event.originalEvent.touches[0].pageX;
+					if (Math.ceil(xClick - xMove) > 5) {
+						self.sliderNext();
+					} else if (Math.ceil(xClick - xMove) < -5) {
+						self.sliderPrev();
+					}
+				});
+				$("#slider-detail").on("touchend", function () {
+					$(this).off("touchmove");
+				});
 			});
-			$(".slider-custom").on("touchend", function () {
-				$(this).off("touchmove");
-			});
-		});
+		}
 	},
 
 	render: function () {
@@ -67562,7 +67440,7 @@ var Carousel = React.createClass({
 		var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
 		return React.createElement(
 			'div',
-			{ className: 'slider-custom' },
+			{ className: 'slider-custom', id: 'slider-detail' },
 			React.createElement(
 				'div',
 				{ className: 'swiper-container swiper-container-horizontal' },
@@ -68903,16 +68781,25 @@ var SideBarMobile = React.createClass({
 					)
 				)
 			),
-			!!this.state.showAction && React.createElement(ActionMobile, { close: function (key) {
+			!!this.state.showAction && React.createElement(ActionMobile, {
+				landlord: this.props.landlord,
+				close: function (key) {
 					return _this4.show('action');
-				}, onModalWith: function (modal) {
+				},
+				onModalWith: function (modal) {
 					return _this4.props.onModalWith(modal);
-				}, landlord: this.props.landlord }),
-			!!this.state.showContact && React.createElement(ContactMobile, { close: function (key) {
+				}
+			}),
+			!!this.state.showContact && React.createElement(ContactMobile, {
+				landlord: this.props.landlord,
+				close: function (key) {
 					return _this4.show('contact');
-				}, onModalWith: function (modal) {
+				},
+				current_user: this.props.current_user,
+				onModalWith: function (modal) {
 					return _this4.props.onModalWith(modal);
-				}, landlord: this.props.landlord, current_user: this.props.current_user })
+				}
+			})
 		);
 	}
 });
@@ -70223,15 +70110,10 @@ var MaintenanceRequest = React.createClass({
 								maintenance_request_id: this.state.maintenance_request.id
 							});
 						} else {
-							this.setState({ notification: {
-									title: "Edit Lanlord",
-									content: "Landlord is empty!",
-									bgClass: "bg-error"
-								} });
 							return React.createElement(ModalNotification, {
 								close: this.isClose,
-								title: this.state.notification.title,
-								content: this.state.notification.content
+								title: "Edit Lanlord",
+								content: "Landlord is empty!"
 							});
 						}
 					}
@@ -70387,9 +70269,9 @@ var MaintenanceRequest = React.createClass({
 					React.createElement(Action, { landlord: this.state.landlord, onModalWith: function (modal) {
 							return _this9.onModalWith(modal);
 						} }),
-					React.createElement(Activity, null)
+					React.createElement(Activity, { logs: this.props.logs })
 				),
-				React.createElement(ActivityMobile, null)
+				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
 			React.createElement(SideBarMobile, { onModalWith: function (modal) {
 					return _this9.onModalWith(modal);
@@ -70410,11 +70292,11 @@ var strNone = "";
 var strErrSelectTimeL = "You should select later than start time!";
 var strErrSelectTimeB = "You should select before than finish time!";
 var strErrSelectDate = "You should select the date after today!";
-var strErrName = "This name has already taken by anther person";
-var strErrEmail = "This Email Address has already taken by anther person";
-var strErrMobile = "This Phone Number has already taken by anther person";
-var strErrHeading = "This Maintenance Heading has already taken by anther person";
-var strErrDescription = "This Maintenance Description has already taken by anther person";
+var strErrName = "This name has already taken by another person";
+var strErrEmail = "This Email Address has already taken by another person";
+var strErrMobile = "This Phone Number has already taken by another person";
+var strErrHeading = "This Maintenance Heading has already taken by another person";
+var strErrDescription = "This Maintenance Description has already taken by another person";
 var strInvalidEmail = "Invalid Email Address!";
 var strInvalidMobile = "Invalid Mobile Number!";
 var strRequireName = "Name is required";
@@ -72334,12 +72216,12 @@ var Header = React.createClass({
               { href: props.new_agency_path, className: "register" },
               " Register "
             )
+          ),
+          React.createElement(
+            "button",
+            { className: "menu-btn button", onClick: this.showBar },
+            " ☰ "
           )
-        ),
-        React.createElement(
-          "button",
-          { className: "menu-btn button", onClick: this.showBar },
-          " ☰ "
         )
       )
     );
@@ -73971,28 +73853,29 @@ var ContentTradyContact = React.createClass({
 	displayName: "ContentTradyContact",
 
 	renderCallAgent: function () {
-		if (!!this.props.maintenance_request.agent) {
+		var maintenance_request = this.props.maintenance_request;
+		if (!!maintenance_request.agent) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					null,
+					{ href: "tel:" + maintenance_request.agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					this.props.maintenance_request.agent.mobile_phone
+					maintenance_request.agent.mobile_phone
 				)
 			);
-		} else if (!!this.props.maintenance_request.agency_admin) {
+		} else if (!!maintenance_request.agency_admin) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					null,
+					{ href: "tel:" + maintenance_request.agency_admin.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					this.props.maintenance_request.agency_admin.mobile_phone
+					maintenance_request.agency_admin.mobile_phone
 				)
 			);
 		}
@@ -74014,7 +73897,7 @@ var TradyContact = React.createClass({
 
 	getInitialState: function () {
 		return {
-			show: false
+			show: true
 		};
 	},
 
@@ -74321,7 +74204,7 @@ var ModalMarkJobAsCompleted = React.createClass({
 							"button",
 							{
 								"data-dismiss": "modal",
-								onClick: this.jobCompleted,
+								onClick: this.createInvoice,
 								className: "btn btn-default success"
 							},
 							"Yes"
@@ -74633,7 +74516,6 @@ var TradyMaintenanceRequest = React.createClass({
 					{
 						return React.createElement(ModalMarkJobAsCompleted, {
 							close: this.isClose,
-							jobCompleted: this.jobCompleted,
 							signed_in_trady: this.props.signed_in_trady,
 							trady: this.props.current_user_show_quote_message,
 							maintenance_request: this.props.maintenance_request
@@ -74708,8 +74590,10 @@ var TradyMaintenanceRequest = React.createClass({
 						},
 						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.state.maintenance_request
-					})
-				)
+					}),
+					React.createElement(Activity, { logs: this.props.logs })
+				),
+				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
 			React.createElement(TradySideBarMobile, {
 				landlord: this.state.landlord,
