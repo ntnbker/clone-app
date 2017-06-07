@@ -228,7 +228,7 @@ class MaintenanceRequestsController < ApplicationController
       end 
       
       
-      binding.pry
+      
      
       EmailWorker.perform_async(@maintenance_request.id)
       
