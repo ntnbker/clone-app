@@ -12,12 +12,13 @@ gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-ui-rails'
+gem 'jquery-fileupload-rails'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 gem 'pg'
 gem 'bootstrap_form'
-gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
-gem 'carrierwave-aws'
+# gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
+# gem 'carrierwave-aws'
 gem 'mini_magick'
 gem 'stripe'
 gem 'figaro', '~> 1.1.0'
@@ -38,7 +39,9 @@ gem 'searchkick'
 gem 'redis'
 gem 'sidekiq'
 gem 'font-awesome-rails'
-
+gem "aws-sdk", "~> 2.1"
+gem "shrine"
+gem "roda"
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
 

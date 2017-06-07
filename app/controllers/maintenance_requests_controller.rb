@@ -27,14 +27,13 @@ class MaintenanceRequestsController < ApplicationController
     
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
-    
-
 
     if current_user == nil || current_user.tenant?
       @maintenance_request.perform_realestate_validations = false
       ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
       the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email]) 
       the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email]) 
+
         if the_agency_admin
           @agency_admin = the_agency_admin
           @maintenance_request.agency_admin_id = @agency_admin.id
@@ -46,6 +45,12 @@ class MaintenanceRequestsController < ApplicationController
           @maintenance_request.agent_id = @agent.id
           @agency = @agent.agency
         end
+        if the_agency_admin == nil || the_agent == nil
+          @agent = nil
+          @agency_admin = nil
+          @maintenance_request.agent_id = nil
+          @agency = nil
+        end 
 
     elsif current_user.agency_admin?
       @agency_admin = current_user.agency_admin
@@ -402,7 +407,7 @@ class MaintenanceRequestsController < ApplicationController
   private
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], maintenance_request_image_attributes:[:id, :maintenance_request_id,{images: []},:_destroy])
+    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
   end
 
   def set_user

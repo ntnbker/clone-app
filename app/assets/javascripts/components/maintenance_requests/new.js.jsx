@@ -5,6 +5,7 @@ var MaintenanceRequestsNew = React.createClass({
 			return { 
 			images: [],
 			isAgent: true,
+			dataImages: [],
 			validName: false,
 			validDate: false,
 			validEmail: false,
@@ -82,15 +83,18 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleRemoveFrame: function(e) {
-		let {images} = this.state;
+		let {images, dataImages} = this.state;
 		var index = e.target.id;
 		images.splice(index, 1);
-		this.setState({images: images});
+		dataImages.splice(index, 1);
+		this.setState({
+			images: images,
+			dataImages: dataImages
+		});
 	},
 
 	_handleImageChange: function(e) {
-		e.preventDefault();
-		var files = e.target.files;
+		var files = e.files;
 		var reader = new FileReader();
 		var images = this.state.images;
 				
@@ -137,11 +141,11 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 		var XHR = new XMLHttpRequest();
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
-		FD.delete('maintenance_request[maintenance_request_image_attributes][images][]');
+		FD.delete('maintenance_request[images_attributes][image][]');
 		FD.delete('commit');
-		this.state.images.map((image, index) => {
+		this.state.dataImages.map((image, index) => {
 			var idx = index + 1;
-			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
+			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
 		});
 		FD.append('commit', 'Submit Maintenance Request');
 		XHR.addEventListener('loadend', function(event) {
@@ -177,14 +181,14 @@ var MaintenanceRequestsNew = React.createClass({
 				document.getElementById("errorboxmobile").textContent = strErrMobile;
 				document.getElementById("errorboxmobile").classList.add("border_on_error");
 			}
-			if(validationObject['maintenance_heading'] != undefined) {
+			/*if(validationObject['maintenance_heading'] != undefined) {
 				document.getElementById("errorboxheading").textContent = strErrHeading;
 				document.getElementById("errorboxheading").classList.add("border_on_error");
 			}
 			if(validationObject['maintenance_description'] != undefined) {
 				document.getElementById("errorboxdescription").textContent = strErrDescription;
 				document.getElementById("errorboxdescription").classList.add("border_on_error");
-			}
+			}*/
 		});
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
@@ -242,6 +246,52 @@ var MaintenanceRequestsNew = React.createClass({
 			e.target.classList.add("border_on_error");
 			this.setState({validMobile: true});
 		}
+	},
+
+	updateImage: function(image) {
+  	let {dataImages} = this.state;
+  	dataImages.push(image);
+  	this.setState({
+  		dataImages: dataImages
+  	});
+  },
+
+	componentDidMount: function() {
+		let self = this;
+	  $('[type=file]').fileupload({
+	    add: function(e, data) {
+	      data.progressBar = $('<div class="progress" style="width: 300px"><div class="progress-bar"></div></div>').insertAfter(".form-group");
+	      var options = {
+	        extension: data.files[0].name.match(/(\.\w+)?$/)[0], // set extension
+	        _: Date.now(),                                       // prevent caching
+	      }
+	      $.getJSON('/images/cache/presign', options, function(result) {
+	        data.formData = result['fields'];
+	        data.url = result['url'];
+	        data.paramName = 'file';
+	        data.submit();
+	      });
+	    },
+	    progress: function(e, data) {
+	      var progress = parseInt(data.loaded / data.total * 100, 10);
+	      var percentage = progress.toString() + '%'
+	      data.progressBar.find(".progress-bar").css("width", percentage).html(percentage);
+	    },
+	    done: function(e, data) {
+	      data.progressBar.remove();
+	      var image = {
+	        id: data.formData.key.match(/cache\/(.+)/)[1], // we have to remove the prefix part
+	        storage: 'cache',
+	        metadata: {
+	          size:      data.files[0].size,
+	          filename:  data.files[0].name.match(/[^\/\\]*$/)[0], // IE returns full path
+	          mime_type: data.files[0].type
+	        }
+	      }
+	     	self.updateImage(image);
+	      self._handleImageChange(data);
+	    }
+	  });
 	},
 
 	render: function(){
@@ -347,44 +397,18 @@ var MaintenanceRequestsNew = React.createClass({
 					<div className="field">
 						<p> Maintenance heading </p>
 						<input
-							required
 							type="text"
 							ref={(ref) => this.maintenance_heading = ref}
 							id={this.generateAtt("id", "maintenance_heading")}
 						  name={this.generateAtt("name", "maintenance_heading")}
-							onBlur={(e) => {
-								if (!e.target.value.length) {
-									document.getElementById("errorboxheading").textContent = strErrHeading;
-									e.target.classList.add("border_on_error");
-									this.setState({validHeading: true});
-								}
-								else {
-									document.getElementById("errorboxheading").textContent = "";
-									e.target.classList.remove("border_on_error");
-									this.setState({validHeading: false});
-								}
-							}} 
 					 	/>
 						<p id="errorboxheading" className="error"></p>
 
 						<p> Maintenance description </p>
 						<textarea 
-							required
 							ref={(ref) => this.maintenance_description = ref}
 							id={this.generateAtt("id", "maintenance_description")} 
 						  name={this.generateAtt("name", "maintenance_description")}
-							onBlur={(e) => {
-								if (!e.target.value.length) {
-									document.getElementById("errorboxdescription").textContent = strErrDescription;
-									e.target.classList.add("border_on_error");
-									this.setState({validDescription: true});
-								}
-								else {
-									document.getElementById("errorboxdescription").textContent = "";
-									e.target.classList.remove("border_on_error");
-									this.setState({validDescription: false});
-								}
-							}} 
 						>
 						</textarea>
 						<p id="errorboxdescription" className="error"></p>
@@ -393,10 +417,9 @@ var MaintenanceRequestsNew = React.createClass({
 						<input 
 							multiple 
 							type="file" 
-							className="fileInput" 
-							onChange={(e)=>this._handleImageChange(e)} 
-							id="maintenance_request_maintenance_request_image_attributes_images" 
-							name="maintenance_request[maintenance_request_image_attributes][images][]" 
+							className="fileInput form-group"
+							id="maintenance_request_images_attributes" 
+							name="maintenance_request[images_attributes][image][]" 
 						/>
 								
 						<div className="imgPreview">{$imagePreview}</div>
