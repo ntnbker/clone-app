@@ -7,7 +7,7 @@ class TenantMaintenanceRequestsController < ApplicationController
       @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
     end
 
-    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|
       format.json {render json:maintenance_requests_json}
