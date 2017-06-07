@@ -73,7 +73,7 @@ var Contact = React.createClass({
 var ContactMobile = React.createClass({
 	render: function() {
 		return (
-			<div className="actions-full contact-full">
+			<div className="actions-full contact-full" id="contacts-full">
 				<div className="item">
 					<div className="header contact">
 						<a>Contact:</a>

@@ -14,7 +14,6 @@ class MaintenanceRequestFiltersController < ApplicationController
     end
 
     @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
-    binding.pry
     respond_to do |format|
       format.json {render json:@maintenance_requests_json}
       format.html

@@ -23,8 +23,24 @@ var LandlordSideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && <LandlordActionMobile close={(key) => this.show('action')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
-				{ !!this.state.showContact && <LandlordContactMobile close={(key) => this.show('contact')} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} current_user={this.props.current_user} maintenance_request={this.props.maintenance_request} /> }
+				{ !!this.state.showAction && 
+						<LandlordActionMobile 
+							landlord={this.props.landlord} 
+							close={(key) => this.show('action')} 
+							requestQuote={this.props.requestQuote}
+							maintenance_request={this.props.maintenance_request} 
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
+						/> 
+				}
+				{ !!this.state.showContact && 
+						<LandlordContactMobile 
+							landlord={this.props.landlord} 
+							close={(key) => this.show('contact')} 
+							current_user={this.props.current_user} 
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
+							maintenance_request={this.props.maintenance_request} 
+						/> 
+				}
 			</div>
 		);
 	}
@@ -188,25 +204,24 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
-	requestQuote: function(params) {
+	requestQuote: function() {
 		const self = this;
+		var params = {
+			maintenance_request_id: this.props.maintenance_request.id
+		};
 		$.ajax({
 			type: 'POST',
-			url: '/tradies',
+			url: '/request_quote',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
 			data: params,
 			success: function(res){
-				if(params.trady.trady_request == "Work Order") {
-					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
-					self.forceUpdate();
-				} 
 				self.setState({
 					tradies: res,
 					notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						title: "Request Quote",
+						content: "the request quote has sent successfully",
 						bgClass: "bg-success",
 					},
 				});
@@ -214,8 +229,8 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-					content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error" ,
+					title: "Request Quote",
+					content: "The request quote is error",
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -276,18 +291,6 @@ var LandlordMaintenanceRequest = React.createClass({
 						/>
 					);
 				}
-
-				case 'requestQuote': {
-					return (
-						<ModalRequestModal
-							close={this.isClose} 
-							keyTitle="request-quote"
-							tradies={this.state.tradies}
-							requestQuote={this.requestQuote}
-							maintenance_request={this.state.maintenance_request}
-						/>
-					);
-				}
 					
 				default:
 					return null;
@@ -305,26 +308,42 @@ var LandlordMaintenanceRequest = React.createClass({
 							property={this.props.property} 
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{ this.props.quotes.length > 0 ?
+						{ this.props.quotes.length > 0 &&
 								<Quotes 
 									keyLandlord="landlord"
 									quotes={this.state.quotes} 
 									landlord={this.state.landlord} 
 									onModalWith={this.onModalWith} 
+									
 									current_user={this.props.current_user} 
 									updateStatusQuote={this.updateStatusQuote} 
-									sendEmailLandlord={this.sendEmailLandlord} 
+									sendEmailLandlord={this.sendEmailLandlord}
 									viewQuote={(key, item) => this.viewItem(key, item)} 
 								/>
-								: null
 						}
 					</div>
 					<div className="sidebar">
-						<LandlordContact landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} maintenance_request={this.state.maintenance_request} />
-						<LandlordAction landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} maintenance_request={this.state.maintenance_request} />
+						<LandlordContact 
+							landlord={this.state.landlord} 
+							onModalWith={(modal) => this.onModalWith(modal)} 
+							current_user={this.props.current_user} 
+							maintenance_request={this.state.maintenance_request} 
+						/>
+						<LandlordAction 
+							landlord={this.state.landlord} 
+							requestQuote={this.requestQuote}
+							onModalWith={(modal) => this.onModalWith(modal)} 
+							maintenance_request={this.state.maintenance_request} 
+						/>
 					</div>
 				</div>
-				<LandlordSideBarMobile onModalWith={(modal) => this.onModalWith(modal)} landlord={this.state.landlord} current_user={this.props.current_user} maintenance_request={this.state.maintenance_request} />
+				<LandlordSideBarMobile 
+					landlord={this.state.landlord} 
+					requestQuote={this.requestQuote} 
+					current_user={this.props.current_user} 
+					onModalWith={(modal) => this.onModalWith(modal)} 
+					maintenance_request={this.state.maintenance_request}
+				/>
 				{ this.renderModal() }
 			</div>
 		);

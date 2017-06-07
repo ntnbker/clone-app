@@ -1,11 +1,13 @@
 var Carousel = React.createClass({
 	getInitialState: function() {
+		const gallery = this.props.gallery.length > 0 ? this.props.gallery : ["/uploads/maintenance_request_image/images/no_image.png"];
 		return {
-			stlen: this.props.gallery ? this.props.gallery.length : 0,
-			indexSlider: 0,
+			stx: 0,
 			stpos: 0,
 			stwidth: 0,
-			stx: 0
+			indexSlider: 0,
+			gallery: gallery,
+			stlen: gallery.length,
 		};
 	},
 
@@ -72,11 +74,11 @@ var Carousel = React.createClass({
 				<div className="swiper-container swiper-container-horizontal">
 					<div className="swiper-wrapper slider" style={styles} id="mySlider">
 					{
-						this.props.gallery.map(function(img, index) {
+						this.state.gallery.map(function(img, index) {
 							return (
 								<img
 									key={index} 
-									src={img.url} 
+									src={img} 
 									style={{width: subWidth}}
 									className="swiper-slide slide-image"
 								/>
@@ -87,8 +89,8 @@ var Carousel = React.createClass({
 				</div>
 				<div className="swiper-pagination">
 				{
-					this.props.gallery.length > 1 ?
-						this.props.gallery.map(function(img, index) {
+					this.state.gallery.length > 1 ?
+						this.state.gallery.map(function(img, index) {
 							return (
 								<span 
 									key={index} 
@@ -159,7 +161,7 @@ var ItemMaintenanceRequest = React.createClass({
 					</div>
 				</div>
 				<div className="content">
-					{this.props.gallery && <Carousel gallery={this.props.gallery} />}
+					{<Carousel gallery={this.props.gallery} />}
 					<div className="description">
 						<p>{maintenance.maintenance_description}</p>
 					</div>

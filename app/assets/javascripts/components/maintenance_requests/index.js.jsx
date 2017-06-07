@@ -117,17 +117,26 @@ var DropDownMobileList = React.createClass({
     return {hidden: true, valueAction: this.props.valueAction}
   },
 
-  onDrop: function() {
-    this.setState({
-        hidden: !this.state.hidden
-      });
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    this.setState({
-      valueAction: nextProps.valueAction
-    });
-  },
+  onDrop: function(id) { 
+    if(id != "over") { 
+      this.setState({ 
+        hidden: !this.state.hidden 
+      }); 
+    }else if(!this.state.hidden){ 
+      this.setState({ 
+        hidden: true 
+      }); 
+    } 
+  }, 
+ 
+  componentDidMount: function() { 
+    const self = this; 
+    $(document).bind('click', function(e) { 
+      if (!e.target.matches('#' + self.props.id)) { 
+        self.onDrop('over'); 
+      } 
+    }); 
+  }, 
 
   render: function() {
     const props = this.props;
@@ -136,20 +145,12 @@ var DropDownMobileList = React.createClass({
       <div className="drop-mobile-list">
         <button 
           id={props.id} 
-          onClick={this.onDrop}
+          onClick={(id) => this.onDrop(props.id)}
           className={'btn-drop-mobile title ' + (!state.hidden && 'active')} 
         >
           {this.props.title}
         </button>
         <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
-          <div className="header-action">
-            <a>{this.props.title}</a>
-            <i 
-              aria-hidden="true" 
-              className="fa fa-close" 
-              onClick={this.onDrop}
-            />
-          </div>
           <DropDownContent 
             content={props.content}
             valueAction={state.valueAction}
@@ -207,7 +208,7 @@ var ImgSlider = React.createClass({
       stx: 0,
       stpos: 0,
       stwidth: 0,
-      stlen: this.props.images.length > 0 ? this.props.images.length : 1,
+      stlen: this.props.images.length,
     };
   },
 
@@ -221,7 +222,9 @@ var ImgSlider = React.createClass({
 
   sliderTopPrev() {
       var stpos = this.state.stpos - 1;
-      if(stpos < 0) stpos = this.state.stlen - 1;
+      if(stpos < 0) {
+        stpos = this.state.stlen - 1;
+      }
       this.setState({
           stpos: stpos
       });
@@ -230,7 +233,9 @@ var ImgSlider = React.createClass({
 
   sliderTopNext() {
       var stpos = this.state.stpos + 1;
-      if(stpos >= this.state.stlen) stpos = 0;
+      if(stpos >= this.state.stlen) {
+        stpos = 0;
+      }
       this.setState({
           stpos: stpos
       }); 
@@ -238,9 +243,12 @@ var ImgSlider = React.createClass({
   },
 
   setWidth: function() {
-    this.setState({
-      stwidth: $('#slider').width()
-    });
+    const slider = $('#slider');
+    if(!!slider) {
+      this.setState({
+        stwidth: slider.width()
+      });
+    }
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -283,7 +291,7 @@ var ImgSlider = React.createClass({
       width: this.state.stlen * this.state.stwidth,
     };
     var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
-    const images = this.props.images.length > 0 ? this.props.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}];
+    const images = this.props.images;
     return <div id="slider">
       { this.state.stlen > 1 && 
           <div>
@@ -297,10 +305,10 @@ var ImgSlider = React.createClass({
       }
       <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
         <div className="swiper-wrapper slider" style={styles}>
-        { images.length > 0 &&
-            images.map((image, i) => {
-              return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
-            })
+        {
+          images.map((image, i) => {
+            return <img key={i} className="swiper-slide slide-image" src={image} style={{width: subWidth}} alt="Uploading..." />
+          })
         }
         </div>
       </div>
@@ -690,7 +698,7 @@ var MaintenanceRequestItem = React.createClass({
           {
             <ImgSlider 
               nameClass={"slider-custom-" + maintenance_request.id} 
-              images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} 
+              images={maintenance_request.get_image_urls.length > 0 ? maintenance_request.get_image_urls : ["/uploads/maintenance_request_image/images/no_image.png"]} 
             />
           }
         </div>

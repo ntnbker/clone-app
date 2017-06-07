@@ -181,14 +181,14 @@ var MaintenanceRequestsNew = React.createClass({
 				document.getElementById("errorboxmobile").textContent = strErrMobile;
 				document.getElementById("errorboxmobile").classList.add("border_on_error");
 			}
-			if(validationObject['maintenance_heading'] != undefined) {
+			/*if(validationObject['maintenance_heading'] != undefined) {
 				document.getElementById("errorboxheading").textContent = strErrHeading;
 				document.getElementById("errorboxheading").classList.add("border_on_error");
 			}
 			if(validationObject['maintenance_description'] != undefined) {
 				document.getElementById("errorboxdescription").textContent = strErrDescription;
 				document.getElementById("errorboxdescription").classList.add("border_on_error");
-			}
+			}*/
 		});
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
@@ -397,44 +397,18 @@ var MaintenanceRequestsNew = React.createClass({
 					<div className="field">
 						<p> Maintenance heading </p>
 						<input
-							required
 							type="text"
 							ref={(ref) => this.maintenance_heading = ref}
 							id={this.generateAtt("id", "maintenance_heading")}
 						  name={this.generateAtt("name", "maintenance_heading")}
-							onBlur={(e) => {
-								if (!e.target.value.length) {
-									document.getElementById("errorboxheading").textContent = strErrHeading;
-									e.target.classList.add("border_on_error");
-									this.setState({validHeading: true});
-								}
-								else {
-									document.getElementById("errorboxheading").textContent = "";
-									e.target.classList.remove("border_on_error");
-									this.setState({validHeading: false});
-								}
-							}} 
 					 	/>
 						<p id="errorboxheading" className="error"></p>
 
 						<p> Maintenance description </p>
 						<textarea 
-							required
 							ref={(ref) => this.maintenance_description = ref}
 							id={this.generateAtt("id", "maintenance_description")} 
 						  name={this.generateAtt("name", "maintenance_description")}
-							onBlur={(e) => {
-								if (!e.target.value.length) {
-									document.getElementById("errorboxdescription").textContent = strErrDescription;
-									e.target.classList.add("border_on_error");
-									this.setState({validDescription: true});
-								}
-								else {
-									document.getElementById("errorboxdescription").textContent = "";
-									e.target.classList.remove("border_on_error");
-									this.setState({validDescription: false});
-								}
-							}} 
 						>
 						</textarea>
 						<p id="errorboxdescription" className="error"></p>
