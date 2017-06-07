@@ -7,7 +7,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
       @maintenance_requests = current_user.landlord.order_maintenance_request_by_ascending.paginate(:page => params[:page], :per_page => 3)
     end
 
-    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:maintenance_request_image=>{}, :property=>{} })
+    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|
       format.json {render json:maintenance_requests_json}
@@ -32,8 +32,8 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @tradie = Trady.new
     @logs = @maintenance_request.logs 
     
-    if @maintenance_request.maintenance_request_image != nil
-      @gallery = @maintenance_request.maintenance_request_image.images
+    if @maintenance_request.images != nil
+      @gallery = @maintenance_request.get_image_urls
     end 
 
     if  @maintenance_request.property.landlord != nil
@@ -65,7 +65,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@current_user.agent,:quote=>@quotes,logs:@logs}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@current_user.agent,:quote=>@quotes,logs:@logs}}
       format.html{render :show}
     end 
 

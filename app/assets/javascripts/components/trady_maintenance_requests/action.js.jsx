@@ -55,14 +55,7 @@ var ContentTradyAction = React.createClass({
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
-			return (
-				<ul>
-					{
-						(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) &&
-							<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
-					}
-				</ul>
-			)
+			return  null;
 		}else {
 			return(
 				<ul>
@@ -102,7 +95,7 @@ var TradyAction = React.createClass({
 						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} 
 					/>
 				</div>
-				<div className="content" id="actions-content">
+				<div className="content">
 					{ this.state.show &&
 						 	<ContentTradyAction 
 						  	landlord={this.props.landlord} 

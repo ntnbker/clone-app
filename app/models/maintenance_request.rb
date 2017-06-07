@@ -33,12 +33,13 @@ class MaintenanceRequest < ApplicationRecord
   has_many :trady_statuses
   has_many :quote_requests
   has_many :logs
-
+  has_many :images, inverse_of: :maintenance_request
   validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
   validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
 
   accepts_nested_attributes_for :maintenance_request_image, allow_destroy: true
+  accepts_nested_attributes_for :images, allow_destroy: true
   accepts_nested_attributes_for :access_contacts, allow_destroy: true
   accepts_nested_attributes_for :availabilities, allow_destroy: true
   
@@ -119,6 +120,15 @@ class MaintenanceRequest < ApplicationRecord
 
   def trady_delivered_uploaded_invoices (maintenance_request_id, trady_id)
     self.uploaded_invoices.where(trady_id:trady_id,:delivery_status=> true, :maintenance_request_id => maintenance_request_id).order("created_at DESC")
+  end
+
+
+  def get_image_urls
+    image_array = []
+    self.images.each do |image|
+      image_array.push(image.image_url)
+    end 
+    return image_array
   end
 
 

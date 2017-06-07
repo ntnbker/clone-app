@@ -27,3 +27,4 @@
 dump.rdb
 /uploads/uploaded_invoice
 /uploads/maintenance_request_image
+public/uploads

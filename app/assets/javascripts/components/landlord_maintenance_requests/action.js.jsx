@@ -1,9 +1,22 @@
 var ContentLandlordAction = React.createClass({
+	getInitialState: function() {
+		return {
+			isClick: false
+		};
+	},
+
+	requestQuote: function() {
+		this.props.requestQuote();
+		this.setState({
+			isClick: true
+		});
+	},
+
 	render: function() {
 		return (
 			<ul>
 				<li className="active">
-					<a onClick={() => this.props.onModalWith('requestQuote')}>
+					<a onClick={!this.state.isClick && this.requestQuote}>
 						<i className="fa fa-file-text" aria-hidden="true" />
 						Request quote
 					</a>
@@ -48,7 +61,14 @@ var LandlordAction = React.createClass({
 					/>
 				</div>
 				<div className="content" id="actions-content">
-					{ this.state.show && <ContentLandlordAction onModalWith={(modal) => this.props.onModalWith(modal)}  landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
+					{ this.state.show && 
+							<ContentLandlordAction 
+								landlord={this.props.landlord} 
+								requestQuote={this.props.requestQuote}
+								maintenance_request={this.props.maintenance_request} 
+								onModalWith={(modal) => this.props.onModalWith(modal)}  
+							/>
+					}
 				</div>
 			</div>
 		);
@@ -69,7 +89,7 @@ var LandlordActionMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						<ContentLandlordAction onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} />
+						<ContentLandlordAction requestQuote={this.props.requestQuote} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} />
 					</div>
 				</div>
 			</div>
