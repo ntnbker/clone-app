@@ -42,7 +42,7 @@ var TradySideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && 
+				{
 					<TradyActionMobile 
 						landlord={this.props.landlord} 
 						invoices={this.props.invoices}

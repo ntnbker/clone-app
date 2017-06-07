@@ -95,7 +95,7 @@ var TradyAction = React.createClass({
 						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} 
 					/>
 				</div>
-				<div className="content" id="actions-content">
+				<div className="content">
 					{ this.state.show &&
 						 	<ContentTradyAction 
 						  	landlord={this.props.landlord} 
