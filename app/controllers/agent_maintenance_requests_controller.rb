@@ -64,8 +64,8 @@ class AgentMaintenanceRequestsController < ApplicationController
     
     @tradie = Trady.new
      
-    if @maintenance_request.maintenance_request_image != nil
-      @gallery = @maintenance_request.maintenance_request_image.images
+    if @maintenance_request.images != nil
+      @gallery = @maintenance_request.get_image_urls
     end 
 
     if  @maintenance_request.property.landlord != nil
@@ -99,7 +99,7 @@ class AgentMaintenanceRequestsController < ApplicationController
 
     respond_to do |format|
 
-      format.json { render :json=>{:gallery=>@gallery.as_json, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files => @invoice_pdf_files, tradies_with_quote_requests:quote_request_trady_list, logs:@logs}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files => @invoice_pdf_files, tradies_with_quote_requests:quote_request_trady_list, logs:@logs}}
       format.html{render :show}
     end 
 

@@ -123,6 +123,15 @@ class MaintenanceRequest < ApplicationRecord
   end
 
 
+  def get_image_urls
+    image_array = []
+    self.images.each do |image|
+      image_array.push(image.image_url)
+    end 
+    return image_array
+  end
+
+
 
   # def self.with_tradies_quote_request(trady_id)
   #   MaintenanceRequest.joins(:quotes).where(quotes:{trady_id:trady_id}).distinct
