@@ -7,11 +7,30 @@ var LandlordSideBarMobile = React.createClass({
 	},
 
 	show: function(key) {
+		const height = $( window ).height();
 		if(key == 'action') {
 			this.setState({showAction: !this.state.showAction});
+			this.setState({showContact: false});
+			$('#actions-full').css('height', this.state.showAction ? 0 : height);
 		}else {
+			this.setState({showAction: false});
 			this.setState({showContact: !this.state.showContact});
+			$('#contacts-full').css('height', this.state.showContact ? 0 : height);
 		}
+
+	},
+
+	componentDidMount: function() {
+		$(document).bind("resize", function() {
+			const height = $(window).height();
+			if($('#actions-full')) {
+				$('#actions-full').css('height', height);
+			}
+
+			if($('#contacts-full')) {
+	    	$('#contacts-full').css('height', height);
+			}
+		})
 	},
 
 	render: function() {
@@ -23,7 +42,7 @@ var LandlordSideBarMobile = React.createClass({
 						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
 					</div>
 				</div>
-				{ !!this.state.showAction && 
+				{
 						<LandlordActionMobile 
 							landlord={this.props.landlord} 
 							close={(key) => this.show('action')} 
@@ -32,7 +51,7 @@ var LandlordSideBarMobile = React.createClass({
 							onModalWith={(modal) => this.props.onModalWith(modal)} 
 						/> 
 				}
-				{ !!this.state.showContact && 
+				{
 						<LandlordContactMobile 
 							landlord={this.props.landlord} 
 							close={(key) => this.show('contact')} 
