@@ -14,6 +14,6 @@
     %p When the job has been completed please click on the button below to let us know the job was completed. Thank You. 
 
     %button
-      =link_to "Job Completed", maintenance_request_url(@maintenance_request,user_id:@landlord.user.id)
+      =link_to "Job Completed", landlord_maintenance_request_url(@maintenance_request,user_id:@landlord.user.id)
 
     
