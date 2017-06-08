@@ -138,6 +138,12 @@ var DropDownMobileList = React.createClass({
     }); 
   }, 
 
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
   render: function() {
     const props = this.props;
     const state = this.state;

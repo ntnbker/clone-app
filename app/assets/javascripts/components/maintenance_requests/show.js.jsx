@@ -347,27 +347,27 @@ var SideBarMobile = React.createClass({
 	show: function(key) {
 		const height = $( window ).height();
 		if(key == 'action') {
-			this.setState({showAction: !this.state.showAction});
+			this.setState({showAction: true});
 			this.setState({showContact: false});
-			$('#actions-full').css('height', this.state.showAction ? 0 : height);
+			$('#actions-full').css({'height': 350, 'border-width': 1});
 		}else {
 			this.setState({showAction: false});
-			this.setState({showContact: !this.state.showContact});
-			$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+			this.setState({showContact: true});
+			$('#contacts-full').css({'height': 350, 'border-width': 1});
 		}
+	},
 
+	close: function() {
+		this.setState({showAction: false});
+		this.setState({showContact: false});
+		$('#actions-full').css({'height': 0, 'border-width': 0});
+		$('#contacts-full').css({'height': 0, 'border-width': 0});
 	},
 
 	componentDidMount: function() {
-		$(document).bind("resize", function() {
-			const height = $(window).height();
-			if($('#actions-full')) {
-				$('#actions-full').css('height', height);
-			}
-
-			if($('#contacts-full')) {
-	    	$('#contacts-full').css('height', height);
-			}
+		const self = this;
+		$(document).bind("click", function() {
+			self.close();
 		})
 	},
 
@@ -376,25 +376,37 @@ var SideBarMobile = React.createClass({
 			<div>
 				<div className="sidebar-mobile">
 					<div className="fixed">       
-						<button className="contact button-default" onClick={(key) => this.show('contact')}>Contact</button>
-						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
+						<button 
+							className={"contact button-default " + (!!this.state.showContact && 'active')}
+							onClick={(key) => this.show('contact')}
+						>
+							Contact
+						</button>
+						<button 
+							className={"actions button-default " + (!!this.state.showAction && 'active')}
+							onClick={(key) => this.show('action')}
+						>
+							Actions
+						</button>
 					</div>
 				</div>
-				{
-					<ActionMobile 
-						landlord={this.props.landlord}
-						close={(key) => this.show('action')}
-						onModalWith={(modal) => this.props.onModalWith(modal)}
-					/> 
-				}
-				{
+				<div className="action-mobile">
+					{
+						<ActionMobile 
+							landlord={this.props.landlord}
+							close={this.close}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/> 
+					}
+					{
 						<ContactMobile 
 							landlord={this.props.landlord}
-							close={(key) => this.show('contact')}
+							close={this.close}
 							current_user={this.props.current_user}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/> 
-				}
+					}
+				</div>
 			</div>
 		);
 	}
@@ -848,6 +860,7 @@ var ModalRequestModal = React.createClass({
 					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
 					skill_required: this.props.maintenance_request.service_type,
 					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
+					item: this.state.trady,
 				},
 			};
 			this.props.requestQuote(params);
@@ -993,6 +1006,7 @@ var MaintenanceRequest = React.createClass({
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
+			tradies_with_quote_requests: this.props.tradies_with_quote_requests,
 			notification: {
 				title: "",
 				content: "",
@@ -1317,6 +1331,58 @@ var MaintenanceRequest = React.createClass({
 
 	requestQuote: function(params) {
 		const self = this;
+		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
+		let flag = false;
+		tradies_with_quote_requests.map((item, index) => {
+			if(params.trady.trady_id == item.id) {
+				flag = true;
+			}
+		});
+		
+		if(!!flag) {
+			self.setState({
+				notification: {
+					title: "Request Quote",
+					content: "We have already send a request quote to the person. Please pick another person",
+					bgClass: "bg-error",
+				},
+			});
+			self.onModalWith('notification');
+		}else {
+			$.ajax({
+				type: 'POST',
+				url: '/tradies',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+				},
+				data: params,
+				success: function(res){
+					tradies_with_quote_requests.push(params.trady.item);
+					self.setState({
+						tradies: res,
+						tradies_with_quote_requests: tradies_with_quote_requests,
+						notification: {
+							title: "Request Quote",
+							content: "the request quote has sent successfully",
+							bgClass: "bg-success",
+						},
+					});
+					self.onModalWith('notification');
+				},
+				error: function(err) {
+					self.setState({notification: {
+						title: "Request Quote",
+						content: "The request quote is error",
+						bgClass: "bg-error",
+					}});
+					self.onModalWith('notification');
+				}
+			});	
+		}
+	},
+
+	sendWorkOrder: function(params) {
+		const self = this;
 		$.ajax({
 			type: 'POST',
 			url: '/tradies',
@@ -1325,15 +1391,12 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				if(params.trady.trady_request == "Work Order") {
-					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
-					self.forceUpdate();
-				} 
+				self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
 				self.setState({
 					tradies: res,
 					notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						title: "Send Work Order",
+						content: "the work order has sent successfully",
 						bgClass: "bg-success",
 					},
 				});
@@ -1341,8 +1404,8 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-					content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error" ,
+					title: "Send Work Order",
+					content: "The work order is error" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1508,7 +1571,7 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose} 
 							keyTitle="sen-work-order"
 							tradies={this.state.tradies}
-							requestQuote={this.requestQuote}
+							requestQuote={this.sendWorkOrder}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					);
@@ -1571,17 +1634,38 @@ var MaintenanceRequest = React.createClass({
 						 		/>
 						 		: null
 					 	}
-						{this.props.invoices.length > 0 && <Invoices invoices={this.state.invoices} viewInvoice={(key, item) => this.viewItem(key, item)} />}
-						{this.props.invoice_pdf_files.length > 0 && <PDFInvoices invoice_pdf_files={this.state.invoice_pdf_files} viewPDFInvoice={(key, item) => this.viewItem(key, item)} />}
+						{	this.props.invoices.length > 0 && 
+								<Invoices 
+									invoices={this.state.invoices} 
+									viewInvoice={(key, item) => this.viewItem(key, item)} 
+								/>
+						}
+						{	this.props.invoice_pdf_files.length > 0 && 
+								<PDFInvoices 
+									invoice_pdf_files={this.state.invoice_pdf_files} 
+									viewPDFInvoice={(key, item) => this.viewItem(key, item)} 
+								/>
+						}
 					</div>
 					<div className="sidebar">
-						<Contact landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />
-						<Action landlord={this.state.landlord} onModalWith={(modal) => this.onModalWith(modal)} />
+						<Contact 
+							landlord={this.state.landlord} 
+							current_user={this.props.current_user} 
+							onModalWith={(modal) => this.onModalWith(modal)} 
+						/>
+						<Action 
+							landlord={this.state.landlord} 
+							onModalWith={(modal) => this.onModalWith(modal)} 
+						/>
 						<Activity logs={this.props.logs} />
 					</div>
 					<ActivityMobile logs={this.props.logs} />
 				</div>
-				<SideBarMobile onModalWith={(modal) => this.onModalWith(modal)} landlord={this.state.landlord} current_user={this.props.current_user} />
+				<SideBarMobile 
+					landlord={this.state.landlord} 
+					current_user={this.props.current_user} 
+					onModalWith={(modal) => this.onModalWith(modal)} 
+				/>
 				{ this.renderModal() }
 			</div>
 		);

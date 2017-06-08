@@ -5,30 +5,44 @@ var TenantSideBarMobile = React.createClass({
 		};
 	},
 
-	show: function(key) {
-		const height = $( window ).height();
-		this.setState({showContact: !this.state.showContact});
-		$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+	show: function() {
+		this.setState({showContact: true});
+		$('#contacts-full').css({'height': 150, 'border-width': 1});
+	},
+
+	close: function() {
+		this.setState({showContact: false});
+		$('#contacts-full').css({'height': 0, 'border-width': 0});
 	},
 
 	componentDidMount: function() {
-		$(document).bind("resize", function() {
-			const height = $(window).height();
-			if($('#contacts-full')) {
-	    	$('#contacts-full').css('height', height);
-			}
+		const self = this;
+		$(document).bind("click", function() {
+			self.close();
 		})
 	},
 
 	render: function() {
 		return (
 			<div>
-				<div className="sidebar-mobile tenant-content">
+				<div className="sidebar-mobile">
 					<div className="fixed">       
-						<button className="contact button-default" onClick={this.show}>Contact</button>
+						<button 
+							className={"contact button-default " + (!!this.state.showContact && 'active')}
+							onClick={this.show}
+						>
+							Contact
+						</button>
 					</div>
 				</div>
-				{ !!this.state.showContact && <TenantContactMobile close={this.show} onModalWith={(modal) => this.props.onModalWith(modal)} /> }
+				<div className="action-mobile">
+					{ 
+						<TenantContactMobile 
+							close={this.close} 
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
+						/> 
+					}
+				</div>
 			</div>
 		);
 	}

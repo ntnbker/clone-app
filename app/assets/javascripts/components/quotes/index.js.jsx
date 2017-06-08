@@ -1,4 +1,10 @@
 var ButtonForwardLandlord = React.createClass({
+	getInitialState: function() {
+		return {
+			isSend: this.props.quote.forwarded_to_landlord
+		};
+	},
+
 	sendEmail: function() {
 		if(!!this.props.landlord){
 			const params = { 
@@ -7,17 +13,24 @@ var ButtonForwardLandlord = React.createClass({
 			};
 
 			this.props.sendEmailLandlord(params);
+			this.setState({
+				isSend: true
+			});
 		}else {
 			this.props.onModalWith("addLandlord");
 		}
 	},
 
 	render: function() {
+		const style = {
+			opacity: this.state.isSend ? 0.5 : 1
+		};
 		return (
 			<button 
 				type="button" 
+				style={style}
+				onClick={!this.state.isSend && this.sendEmail}
 				className="btn btn-default"
-				onClick={this.sendEmail}
 			>
 				Forward to LandLord
 			</button>

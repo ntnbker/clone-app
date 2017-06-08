@@ -46,7 +46,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
 
     @agency = @current_user.agency_admin.agency
 
-    quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
+    @quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
 
     @email_quote_id = params[:email_quote_id]
     @logs = @maintenance_request.logs
@@ -92,7 +92,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, invoice_pdf_files:@invoice_pdf_files, tradies_with_quote_requests:quote_request_trady_list, logs:@logs}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, invoice_pdf_files:@invoice_pdf_files, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs}}
       format.html{render :show}
     end 
 

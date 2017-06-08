@@ -9,27 +9,27 @@ var LandlordSideBarMobile = React.createClass({
 	show: function(key) {
 		const height = $( window ).height();
 		if(key == 'action') {
-			this.setState({showAction: !this.state.showAction});
+			this.setState({showAction: true});
 			this.setState({showContact: false});
-			$('#actions-full').css('height', this.state.showAction ? 0 : height);
+			$('#actions-full').css({'height': 250, 'border-width': 1});
 		}else {
 			this.setState({showAction: false});
-			this.setState({showContact: !this.state.showContact});
-			$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+			this.setState({showContact: true});
+			$('#contacts-full').css({'height': 250, 'border-width': 1});
 		}
+	},
 
+	close: function() {
+		this.setState({showAction: false});
+		this.setState({showContact: false});
+		$('#actions-full').css({'height': 0, 'border-width': 0});
+		$('#contacts-full').css({'height': 0, 'border-width': 0});
 	},
 
 	componentDidMount: function() {
-		$(document).bind("resize", function() {
-			const height = $(window).height();
-			if($('#actions-full')) {
-				$('#actions-full').css('height', height);
-			}
-
-			if($('#contacts-full')) {
-	    	$('#contacts-full').css('height', height);
-			}
+		const self = this;
+		$(document).bind("click", function() {
+			self.close();
 		})
 	},
 
@@ -38,28 +38,40 @@ var LandlordSideBarMobile = React.createClass({
 			<div>
 				<div className="sidebar-mobile">
 					<div className="fixed">       
-						<button className="contact button-default" onClick={(key) => this.show('contact')}>Contact</button>
-						<button className="actions button-default" onClick={(key) => this.show('action')}>Actions</button>
+						<button 
+							className={"contact button-default " + (!!this.state.showContact && 'active')}
+							onClick={(key) => this.show('contact')}
+						>
+							Contact
+						</button>
+						<button 
+							className={"actions button-default " + (!!this.state.showAction && 'active')}
+							onClick={(key) => this.show('action')}
+						>
+							Actions
+						</button>
 					</div>
 				</div>
-				{
+				<div className="action-mobile">
+					{
 						<LandlordActionMobile 
 							landlord={this.props.landlord} 
-							close={(key) => this.show('action')} 
+							close={this.close} 
 							requestQuote={this.props.requestQuote}
 							maintenance_request={this.props.maintenance_request} 
 							onModalWith={(modal) => this.props.onModalWith(modal)} 
 						/> 
-				}
-				{
+					}
+					{
 						<LandlordContactMobile 
 							landlord={this.props.landlord} 
-							close={(key) => this.show('contact')} 
+							close={this.close} 
 							current_user={this.props.current_user} 
 							onModalWith={(modal) => this.props.onModalWith(modal)} 
 							maintenance_request={this.props.maintenance_request} 
 						/> 
-				}
+					}
+				</div>
 			</div>
 		);
 	}

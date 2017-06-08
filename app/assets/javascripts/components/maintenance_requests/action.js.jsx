@@ -8,7 +8,7 @@ var ContentAction = React.createClass({
 						Ask Landlord
 					</a>
 				</li>
-				<li className="active">
+				<li className="">
 					<a onClick={() => this.props.onModalWith('requestQuote')}>
 						<i className="fa fa-file-text" aria-hidden="true" />
 						Request quote
@@ -16,7 +16,7 @@ var ContentAction = React.createClass({
 				</li>
 				<li>
 					<a onClick={() => this.props.onModalWith('sendWorkOrder')}>
-						<i className="icon-send" aria-hidden="true" />
+						<i className="fa fa-send" aria-hidden="true" />
 						Send work order
 					</a>
 				</li>
@@ -26,12 +26,15 @@ var ContentAction = React.createClass({
 						Add Landlord
 					</a>
 				</li>
-				<li>
-					<a onClick={() => this.props.onModalWith('editLandlord')}>
-						<i aria-hidden="true" className="fa fa-pencil" />
-						Edit Landlord
-					</a>
-				</li>
+				{
+					!!this.props.landlord &&
+						<li>
+							<a onClick={() => this.props.onModalWith('editLandlord')}>
+								<i aria-hidden="true" className="fa fa-pencil" />
+								Edit Landlord
+							</a>
+						</li>
+				}
 			</ul>
 		);
 	}
@@ -60,7 +63,12 @@ var Action = React.createClass({
 					/>
 				</div>
 				<div className="content" id="actions-content">
-					{ this.state.show && <ContentAction onModalWith={(modal) => this.props.onModalWith(modal)}  landlord={this.props.landlord} /> }
+					{ this.state.show && 
+							<ContentAction 
+								landlord={this.props.landlord} 
+								onModalWith={(modal) => this.props.onModalWith(modal)}  
+							/> 
+					}
 				</div>
 			</div>
 		);
@@ -81,7 +89,10 @@ var ActionMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						<ContentAction onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} />
+						<ContentAction 
+							landlord={this.props.landlord} 
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
+						/>
 					</div>
 				</div>
 			</div>
