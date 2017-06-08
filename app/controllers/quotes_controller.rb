@@ -206,6 +206,8 @@ class QuotesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
+    @quote.update_attribute(:forwarded_to_landlord, true)
+
     if @maintenance_request.agent == nil  
       name = "#{@maintenance_request.agency_admin.first_name}" + " #{@maintenance_request.agency_admin.last_name}"
     elsif @maintenance_request.agency_admin == nil  

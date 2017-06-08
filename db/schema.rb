@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170605085059) do
+ActiveRecord::Schema.define(version: 20170608054734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -326,6 +326,7 @@ ActiveRecord::Schema.define(version: 20170605085059) do
     t.boolean  "delivery_status"
     t.boolean  "tax"
     t.float    "gst_amount"
+    t.boolean  "forwarded_to_landlord"
   end
 
   create_table "roles", force: :cascade do |t|
