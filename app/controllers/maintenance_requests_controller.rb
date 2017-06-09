@@ -36,7 +36,6 @@ class MaintenanceRequestsController < ApplicationController
 
         if the_agency_admin
           @agency_admin = the_agency_admin
-          @agent = nil 
           @maintenance_request.agency_admin_id = @agency_admin.id
           @agency = @agency_admin.agency
         end
