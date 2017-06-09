@@ -20,9 +20,6 @@ var ContentActivity = React.createClass({
 					})
 				}
 				</ul>
-				<button className="view-more button-default">
-					View more
-				</button>
 			</div>
 		);
 	}
@@ -46,7 +43,7 @@ var Activity = React.createClass({
 					<a>Activity log:</a>
 					<i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showActivity}></i>
 				</div>
-				<div className="content text-center" id="activity-content">
+				<div className="content text-center activity-content" id="activity-content">
 					{ (this.state.show && this.props.logs.length) ?
 							<ContentActivity logs={this.props.logs} />
 							: null
@@ -66,7 +63,7 @@ var ActivityMobile = React.createClass({
 						<a >Activity log:</a>
 						<i className="fa fa-angle-down" aria-hidden="true"></i>
 					</div>
-					<div className="content text-center">
+					<div className="content text-center activity-content">
 					{ this.props.logs.length ?
 							<ContentActivity logs={this.props.logs} />
 							: null

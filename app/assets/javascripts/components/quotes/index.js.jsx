@@ -32,7 +32,7 @@ var ButtonForwardLandlord = React.createClass({
 				onClick={!this.state.isSend && this.sendEmail}
 				className="btn btn-default"
 			>
-				Forward to LandLord
+				{!!this.state.isSend ? 'Send to Landlord' : 'Forward to LandLord'}
 			</button>
 		);
 	}

@@ -150,13 +150,27 @@ var ModalAddAskLandlord = React.createClass({
 									<div className="row m-t-lg">
 										<div>
 											<label>Mobile <strong>*</strong>:</label>
-											<input className={"u-full-width " + (this.state.errorMobile && "has-error")} id="mobile" ref={e => this.mobile = e} name="landlord[mobile]" type="number" onChange={this.checkValidate} placeholder="Enter Mobile"/>
+											<input 
+												type="number" 
+												name="landlord[mobile]" 
+												placeholder="Enter Mobile"
+												onChange={this.checkValidate} 
+												id="mobile" ref={e => this.mobile = e} 
+												className={"u-full-width " + (this.state.errorMobile && "has-error")} 
+											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Email <strong>*</strong>:</label>
-											<input className={"u-full-width " + (this.state.errorEmail && "has-error")} id="email" ref={e => this.email = e} name="landlord[email]" type="text" onChange={this.checkValidate} placeholder="Enter Email"/>
+											<input 
+												type="text" 
+												name="landlord[email]" 
+												placeholder="Enter Email"
+												onChange={this.checkValidate} 
+												id="email" ref={e => this.email = e} 
+												className={"u-full-width " + (this.state.errorEmail && "has-error")} 
+											/>
 										</div>
 									</div>
 							</div>
@@ -871,6 +885,9 @@ var ModalRequestModal = React.createClass({
 
 	render: function() {
 		const self = this;
+		const style = {
+			background: this.state.isAdd ? 'none' : '#f2f2f2'
+		};
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -919,10 +936,11 @@ var ModalRequestModal = React.createClass({
 											<input
 												type="text" 
 												id="company" 
+												style={style}
 												ref={e => this.company = e}
+												readOnly={!this.state.isAdd}
 												onChange={this.checkValidate} 
 												placeholder="Enter Company Name"
-												readOnly={!this.state.isAdd}
 												value={!!this.state.trady.company_name ? this.state.trady.company_name : ""}
 												className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")} 
 											/>
@@ -934,10 +952,11 @@ var ModalRequestModal = React.createClass({
 											<input
 												id="name" 
 												type="text" 
-												ref={e => this.name = e}
+												style={style}
 												placeholder="Enter Name"
-												onChange={this.checkValidate}
+												ref={e => this.name = e}
 												readOnly={!this.state.isAdd}
+												onChange={this.checkValidate}
 												value={!!this.state.trady.name ? this.state.trady.name : ""}
 												className={"input-custom u-full-width " + (this.state.errorName && "has-error")} 
 											/>
@@ -949,10 +968,11 @@ var ModalRequestModal = React.createClass({
 											<input
 												id="email" 
 												type="text" 
+												style={style}
 												placeholder="Enter Email"
 												ref={e => this.email = e} 
-												onChange={this.checkValidate}
 												readOnly={!this.state.isAdd}
+												onChange={this.checkValidate}
 												value={!!this.state.trady.email ? this.state.trady.email : ""} 
 												className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")} 
 											/>
@@ -964,10 +984,11 @@ var ModalRequestModal = React.createClass({
 											<input 
 												id="mobile" 
 												type="number" 
+												style={style}
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e} 
-												onChange={this.checkValidate}
 												readOnly={!this.state.isAdd}
+												onChange={this.checkValidate}
 												value={!!this.state.trady.mobile ? this.state.trady.mobile : ""} 
 												className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")} 
 											/>
