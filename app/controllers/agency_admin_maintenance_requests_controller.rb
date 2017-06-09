@@ -58,8 +58,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     
     @tradie = Trady.new
     @tenant_and_landlord_appointments = Appointment.tenant_and_landlord_appointments(@maintenance_request.id)
-    @tenant_and_trady_appointments = Appointment.tenant_and_trady_appointments(@maintenance_request_id)
-     
+    @tenant_and_trady_appointments = Appointment.tenant_and_trady_appointments(@maintenance_request.id)
+    
     if @maintenance_request.images != nil
       @gallery = @maintenance_request.get_image_urls
     end 
