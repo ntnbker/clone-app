@@ -69718,26 +69718,27 @@ var LandlordSideBarMobile = React.createClass({
 	show: function (key) {
 		var height = $(window).height();
 		if (key == 'action') {
-			this.setState({ showAction: !this.state.showAction });
+			this.setState({ showAction: true });
 			this.setState({ showContact: false });
-			$('#actions-full').css('height', this.state.showAction ? 0 : height);
+			$('#actions-full').css({ 'height': 250, 'border-width': 1 });
 		} else {
 			this.setState({ showAction: false });
-			this.setState({ showContact: !this.state.showContact });
-			$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+			this.setState({ showContact: true });
+			$('#contacts-full').css({ 'height': 250, 'border-width': 1 });
 		}
 	},
 
-	componentDidMount: function () {
-		$(document).bind("resize", function () {
-			var height = $(window).height();
-			if ($('#actions-full')) {
-				$('#actions-full').css('height', height);
-			}
+	close: function () {
+		this.setState({ showAction: false });
+		this.setState({ showContact: false });
+		$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+	},
 
-			if ($('#contacts-full')) {
-				$('#contacts-full').css('height', height);
-			}
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
 		});
 	},
 
@@ -69755,42 +69756,48 @@ var LandlordSideBarMobile = React.createClass({
 					{ className: 'fixed' },
 					React.createElement(
 						'button',
-						{ className: 'contact button-default', onClick: function (key) {
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: function (key) {
 								return _this.show('contact');
-							} },
+							}
+						},
 						'Contact'
 					),
 					React.createElement(
 						'button',
-						{ className: 'actions button-default', onClick: function (key) {
+						{
+							className: "actions button-default " + (!!this.state.showAction && 'active'),
+							onClick: function (key) {
 								return _this.show('action');
-							} },
+							}
+						},
 						'Actions'
 					)
 				)
 			),
-			React.createElement(LandlordActionMobile, {
-				landlord: this.props.landlord,
-				close: function (key) {
-					return _this.show('action');
-				},
-				requestQuote: this.props.requestQuote,
-				maintenance_request: this.props.maintenance_request,
-				onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				}
-			}),
-			React.createElement(LandlordContactMobile, {
-				landlord: this.props.landlord,
-				close: function (key) {
-					return _this.show('contact');
-				},
-				current_user: this.props.current_user,
-				onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				},
-				maintenance_request: this.props.maintenance_request
-			})
+			React.createElement(
+				'div',
+				{ className: 'action-mobile' },
+				React.createElement(LandlordActionMobile, {
+					landlord: this.props.landlord,
+					close: this.close,
+					requestQuote: this.props.requestQuote,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				}),
+				React.createElement(LandlordContactMobile, {
+					landlord: this.props.landlord,
+					close: this.close,
+					current_user: this.props.current_user,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					},
+					maintenance_request: this.props.maintenance_request
+				})
+			)
 		);
 	}
 });
@@ -70678,7 +70685,7 @@ var ContentAction = React.createClass({
 			),
 			React.createElement(
 				'li',
-				{ className: 'active' },
+				{ className: '' },
 				React.createElement(
 					'a',
 					{ onClick: function () {
@@ -70696,7 +70703,7 @@ var ContentAction = React.createClass({
 					{ onClick: function () {
 							return _this.props.onModalWith('sendWorkOrder');
 						} },
-					React.createElement('i', { className: 'icon-send', 'aria-hidden': 'true' }),
+					React.createElement('i', { className: 'fa fa-send', 'aria-hidden': 'true' }),
 					'Send work order'
 				)
 			),
@@ -70712,7 +70719,7 @@ var ContentAction = React.createClass({
 					'Add Landlord'
 				)
 			),
-			React.createElement(
+			!!this.props.landlord && React.createElement(
 				'li',
 				null,
 				React.createElement(
@@ -70764,9 +70771,12 @@ var Action = React.createClass({
 			React.createElement(
 				'div',
 				{ className: 'content', id: 'actions-content' },
-				this.state.show && React.createElement(ContentAction, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentAction, {
+					landlord: this.props.landlord,
+					onModalWith: function (modal) {
 						return _this2.props.onModalWith(modal);
-					}, landlord: this.props.landlord })
+					}
+				})
 			)
 		);
 	}
@@ -70801,9 +70811,12 @@ var ActionMobile = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'content' },
-					React.createElement(ContentAction, { onModalWith: function (modal) {
+					React.createElement(ContentAction, {
+						landlord: this.props.landlord,
+						onModalWith: function (modal) {
 							return _this3.props.onModalWith(modal);
-						}, landlord: this.props.landlord })
+						}
+					})
 				)
 			)
 		);
@@ -70846,11 +70859,6 @@ var ContentActivity = React.createClass({
 						)
 					);
 				})
-			),
-			React.createElement(
-				"button",
-				{ className: "view-more button-default" },
-				"View more"
 			)
 		);
 	}
@@ -70885,7 +70893,7 @@ var Activity = React.createClass({
 			),
 			React.createElement(
 				"div",
-				{ className: "content text-center", id: "activity-content" },
+				{ className: "content text-center activity-content", id: "activity-content" },
 				this.state.show && this.props.logs.length ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
 			)
 		);
@@ -70914,7 +70922,7 @@ var ActivityMobile = React.createClass({
 				),
 				React.createElement(
 					"div",
-					{ className: "content text-center" },
+					{ className: "content text-center activity-content" },
 					this.props.logs.length ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
 				)
 			)
@@ -71046,7 +71054,7 @@ var ContactMobile = React.createClass({
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -71248,6 +71256,12 @@ var DropDownMobileList = React.createClass({
       if (!e.target.matches('#' + self.props.id)) {
         self.onDrop('over');
       }
+    });
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      valueAction: nextProps.valueAction
     });
   },
 
@@ -72407,7 +72421,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleImageChange: function (e) {
-		var _this = this;
+		var _this2 = this;
 
 		var files = e.files;
 		var reader = new FileReader();
@@ -72415,7 +72429,7 @@ var MaintenanceRequestsNew = React.createClass({
 
 		readFile = function (index) {
 			if (index >= files.length) {
-				_this.setState({
+				_this2.setState({
 					images: images
 				});
 				return;
@@ -72504,12 +72518,6 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
-		XHR.upload.addEventListener('loadstart', function (e) {
-			$("#spinner").css('display', 'flex');
-		});
-		XHR.upload.addEventListener('loadend', function (e) {
-			$("#spinner").css('display', 'none');
-		});
 		XHR.send(FD);
 		e.preventDefault();
 		return false;
@@ -72556,8 +72564,23 @@ var MaintenanceRequestsNew = React.createClass({
 		});
 	},
 
+	removeImage: function (file) {
+		var dataImages = this.state.dataImages;
+
+		for (var i = 0; i < this.state.dataImages.length; i++) {
+			var image = this.state.dataImages[i];
+			if (file.name == image.metadata.filename) {
+				dataImages.splice(i, 1);
+				break;
+			}
+		}
+		this.setState({
+			dataImages: dataImages
+		});
+	},
+
 	componentDidMount: function () {
-		var self = this;
+		var currentThis = this;
 		$('[type=file]').fileupload({
 			add: function (e, data) {
 				data.progressBar = $('<div class="progress" style="width: 300px"><div class="progress-bar"></div></div>').insertAfter(".form-group");
@@ -72566,6 +72589,7 @@ var MaintenanceRequestsNew = React.createClass({
 					_: Date.now() };
 				// prevent caching
 				$.getJSON('/images/cache/presign', options, function (result) {
+					debugger;
 					data.formData = result['fields'];
 					data.url = result['url'];
 					data.paramName = 'file';
@@ -72592,10 +72616,99 @@ var MaintenanceRequestsNew = React.createClass({
 				self._handleImageChange(data);
 			}
 		});
+
+		Dropzone.autoDiscover = false;
+		this.dropzone = new Dropzone('#demo-upload', {
+			parallelUploads: 1,
+			thumbnailHeight: 120,
+			thumbnailWidth: 120,
+			maxFilesize: 10,
+			filesizeBase: 1000
+		});
+
+		this.dropzone.on("addedfile", function (file) {
+			var removeButton = Dropzone.createElement("<a href=\"#\">Remove file</a>");
+			var _this = this;
+			removeButton.addEventListener("click", function (e) {
+				currentThis.removeImage(file);
+				e.preventDefault();
+				e.stopPropagation();
+				_this.removeFile(file);
+			});
+			file.previewElement.appendChild(removeButton);
+		});
+
+		var minSteps = 6,
+		    maxSteps = 60,
+		    timeBetweenSteps = 100,
+		    bytesPerStep = 100000;
+
+		this.dropzone.uploadFiles = function (files) {
+			var self = this;
+
+			for (var i = 0; i < files.length; i++) {
+
+				var file = files[i];
+				var filename = file;
+				var options = {
+					extension: filename.name.match(/(\.\w+)?$/)[0], // set extension
+					_: Date.now() };
+
+				// prevent caching
+				// start upload file into S3
+				$.getJSON('/images/cache/presign', options, function (result) {
+					var fd = new FormData();
+					$.each(result.fields, function (key, value) {
+						fd.append(key, value);
+					});
+					fd.append('file', file);
+					$.ajax({
+						type: 'POST',
+						url: result['url'],
+						enctype: 'multipart/form-data',
+						processData: false,
+						contentType: false,
+						data: fd,
+						xhr: function () {
+							var xhr = new window.XMLHttpRequest();
+							//Download progress
+							xhr.upload.addEventListener("progress", function (evt) {
+								var percentComplete = evt.loaded / evt.total;
+								file.upload = {
+									progress: 100 * percentComplete,
+									total: evt.total,
+									bytesSent: evt.loaded
+								};
+								self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
+								if (file.upload.progress == 100) {
+									file.status = Dropzone.SUCCESS;
+									self.emit("success", file, 'success', null);
+									self.emit("complete", file);
+									self.processQueue();
+								}
+							}, false);
+							return xhr;
+						},
+						success: function () {
+							var image = {
+								id: result.fields.key.match(/cache\/(.+)/)[1],
+								storage: 'cache',
+								metadata: {
+									size: file.size,
+									filename: file.name.match(/[^\/\\]*$/)[0],
+									mime_type: file.type
+								}
+							};
+							currentThis.updateImage(image);
+						}
+					});
+				});
+			}
+		};
 	},
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		var images = this.state.images;
 
@@ -72609,7 +72722,7 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement(
 						'div',
 						{ className: 'btnRemoveFrame', id: i, onClick: function (e) {
-								return _this2._handleRemoveFrame(e);
+								return _this3._handleRemoveFrame(e);
 							} },
 						'X'
 					)
@@ -72634,7 +72747,7 @@ var MaintenanceRequestsNew = React.createClass({
 			React.createElement(
 				'form',
 				{ role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
-						return _this2.handleCheckSubmit(e);
+						return _this3.handleCheckSubmit(e);
 					} },
 				React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
 				React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
@@ -72651,7 +72764,7 @@ var MaintenanceRequestsNew = React.createClass({
 						type: 'text',
 						placeholder: 'Full name',
 						ref: function (ref) {
-							return _this2.name = ref;
+							return _this3.name = ref;
 						},
 						id: this.generateAtt("id", "name"),
 						name: this.generateAtt("name", "name"),
@@ -72659,15 +72772,15 @@ var MaintenanceRequestsNew = React.createClass({
 							if (!e.target.value.length) {
 								document.getElementById("errorbox").textContent = strRequireName;
 								e.target.classList.add("border_on_error");
-								_this2.setState({ validName: true });
+								_this3.setState({ validName: true });
 							} else if (e.target.value.length < 4) {
 								document.getElementById("errorbox").textContent = strShortName;
 								e.target.classList.add("border_on_error");
-								_this2.setState({ validName: true });
+								_this3.setState({ validName: true });
 							} else if (e.target.value.length >= 4) {
 								document.getElementById("errorbox").textContent = strNone;
 								e.target.classList.remove("border_on_error");
-								_this2.setState({ validName: false });
+								_this3.setState({ validName: false });
 							}
 						} }),
 					React.createElement('p', { id: 'errorbox', className: 'error' }),
@@ -72681,7 +72794,7 @@ var MaintenanceRequestsNew = React.createClass({
 						type: 'email',
 						placeholder: 'E-mail',
 						ref: function (ref) {
-							return _this2.email = ref;
+							return _this3.email = ref;
 						},
 						id: this.generateAtt("id", "email"),
 						name: this.generateAtt("name", "email"),
@@ -72693,7 +72806,7 @@ var MaintenanceRequestsNew = React.createClass({
 								document.getElementById("errorboxemail").textContent = strShortEmail;
 								e.target.classList.add("border_on_error");
 							} else if (e.target.value.length >= 4) {
-								_this2.validateEmail(e.target.value, e, false);
+								_this3.validateEmail(e.target.value, e, false);
 							}
 						} }),
 					React.createElement('p', { id: 'errorboxemail', className: 'error' }),
@@ -72708,7 +72821,7 @@ var MaintenanceRequestsNew = React.createClass({
 						maxLength: '10',
 						placeholder: 'Mobile',
 						ref: function (ref) {
-							return _this2.mobile = ref;
+							return _this3.mobile = ref;
 						},
 						id: this.generateAtt("id", "mobile"),
 						name: this.generateAtt("name", "mobile"),
@@ -72721,7 +72834,7 @@ var MaintenanceRequestsNew = React.createClass({
 								e.target.classList.add("border_on_error");
 							}
 							if (e.target.value.length >= 8) {
-								_this2.validatePhoneNumber(e.target.value, e, false);
+								_this3.validatePhoneNumber(e.target.value, e, false);
 							}
 						} }),
 					React.createElement('p', { id: 'errorboxmobile', className: 'error' })
@@ -72744,7 +72857,7 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement('input', {
 						type: 'text',
 						ref: function (ref) {
-							return _this2.maintenance_heading = ref;
+							return _this3.maintenance_heading = ref;
 						},
 						id: this.generateAtt("id", "maintenance_heading"),
 						name: this.generateAtt("name", "maintenance_heading")
@@ -72757,7 +72870,7 @@ var MaintenanceRequestsNew = React.createClass({
 					),
 					React.createElement('textarea', {
 						ref: function (ref) {
-							return _this2.maintenance_description = ref;
+							return _this3.maintenance_description = ref;
 						},
 						id: this.generateAtt("id", "maintenance_description"),
 						name: this.generateAtt("name", "maintenance_description")
@@ -72768,17 +72881,14 @@ var MaintenanceRequestsNew = React.createClass({
 						null,
 						' Images '
 					),
-					React.createElement('input', {
-						multiple: true,
-						type: 'file',
-						className: 'fileInput form-group',
-						id: 'maintenance_request_images_attributes',
-						name: 'maintenance_request[images_attributes][image][]'
-					}),
 					React.createElement(
-						'div',
-						{ className: 'imgPreview' },
-						$imagePreview
+						'form',
+						{ action: '/', className: 'dropzone needsclick dz-clickable', id: 'demo-upload' },
+						React.createElement(
+							'div',
+							{ className: 'dz-message needsclick' },
+							'Drop files here or click to upload.'
+						)
 					)
 				),
 				!this.props.current_user || this.props.current_user.tenant ? React.createElement(
@@ -72798,7 +72908,7 @@ var MaintenanceRequestsNew = React.createClass({
 							type: 'text',
 							onBlur: this.checkAgentEmail,
 							ref: function (ref) {
-								return _this2.agent_email = ref;
+								return _this3.agent_email = ref;
 							},
 							id: this.generateAtt("id", "agent_email"),
 							name: this.generateAtt("name", "agent_email")
@@ -72816,7 +72926,7 @@ var MaintenanceRequestsNew = React.createClass({
 								required: true,
 								type: 'text',
 								ref: function (ref) {
-									return _this2.real_estate_office = ref;
+									return _this3.real_estate_office = ref;
 								},
 								id: this.generateAtt("id", "real_estate_office"),
 								name: this.generateAtt("name", "real_estate_office"),
@@ -72842,7 +72952,7 @@ var MaintenanceRequestsNew = React.createClass({
 								required: true,
 								type: 'text',
 								ref: function (ref) {
-									return _this2.agent_name = ref;
+									return _this3.agent_name = ref;
 								},
 								id: this.generateAtt("id", "agent_name"),
 								name: this.generateAtt("name", "agent_name"),
@@ -72869,7 +72979,7 @@ var MaintenanceRequestsNew = React.createClass({
 								type: 'text',
 								maxLength: '10',
 								ref: function (ref) {
-									return _this2.agent_mobile = ref;
+									return _this3.agent_mobile = ref;
 								},
 								id: this.generateAtt("id", "agent_mobile"),
 								name: this.generateAtt("name", "agent_mobile"),
@@ -72882,7 +72992,7 @@ var MaintenanceRequestsNew = React.createClass({
 										document.getElementById("errAgentMobile").textContent = strShortMobile;
 									}
 									if (e.target.value.length >= 8) {
-										_this2.validatePhoneNumber(e.target.value, e, true);
+										_this3.validatePhoneNumber(e.target.value, e, true);
 									}
 								} }),
 							React.createElement('p', { id: 'errAgentMobile', className: 'error' })
@@ -72894,7 +73004,7 @@ var MaintenanceRequestsNew = React.createClass({
 					'div',
 					{ id: 'availabilities' },
 					React.createElement(FieldList, { SampleField: AvailabilityField, validDate: function (flag) {
-							return _this2.validDate(flag);
+							return _this3.validDate(flag);
 						}, flag: 'date' })
 				),
 				React.createElement('hr', null),
@@ -73161,9 +73271,16 @@ var ModalAddAskLandlord = React.createClass({
 										),
 										":"
 									),
-									React.createElement("input", { className: "u-full-width " + (this.state.errorMobile && "has-error"), id: "mobile", ref: function (e) {
+									React.createElement("input", {
+										type: "number",
+										name: "landlord[mobile]",
+										placeholder: "Enter Mobile",
+										onChange: this.checkValidate,
+										id: "mobile", ref: function (e) {
 											return _this2.mobile = e;
-										}, name: "landlord[mobile]", type: "number", onChange: this.checkValidate, placeholder: "Enter Mobile" })
+										},
+										className: "u-full-width " + (this.state.errorMobile && "has-error")
+									})
 								)
 							),
 							React.createElement(
@@ -73183,9 +73300,16 @@ var ModalAddAskLandlord = React.createClass({
 										),
 										":"
 									),
-									React.createElement("input", { className: "u-full-width " + (this.state.errorEmail && "has-error"), id: "email", ref: function (e) {
+									React.createElement("input", {
+										type: "text",
+										name: "landlord[email]",
+										placeholder: "Enter Email",
+										onChange: this.checkValidate,
+										id: "email", ref: function (e) {
 											return _this2.email = e;
-										}, name: "landlord[email]", type: "text", onChange: this.checkValidate, placeholder: "Enter Email" })
+										},
+										className: "u-full-width " + (this.state.errorEmail && "has-error")
+									})
 								)
 							)
 						),
@@ -73478,26 +73602,27 @@ var SideBarMobile = React.createClass({
 	show: function (key) {
 		var height = $(window).height();
 		if (key == 'action') {
-			this.setState({ showAction: !this.state.showAction });
+			this.setState({ showAction: true });
 			this.setState({ showContact: false });
-			$('#actions-full').css('height', this.state.showAction ? 0 : height);
+			$('#actions-full').css({ 'height': 350, 'border-width': 1 });
 		} else {
 			this.setState({ showAction: false });
-			this.setState({ showContact: !this.state.showContact });
-			$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+			this.setState({ showContact: true });
+			$('#contacts-full').css({ 'height': 350, 'border-width': 1 });
 		}
 	},
 
-	componentDidMount: function () {
-		$(document).bind("resize", function () {
-			var height = $(window).height();
-			if ($('#actions-full')) {
-				$('#actions-full').css('height', height);
-			}
+	close: function () {
+		this.setState({ showAction: false });
+		this.setState({ showContact: false });
+		$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+	},
 
-			if ($('#contacts-full')) {
-				$('#contacts-full').css('height', height);
-			}
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
 		});
 	},
 
@@ -73515,39 +73640,45 @@ var SideBarMobile = React.createClass({
 					{ className: "fixed" },
 					React.createElement(
 						"button",
-						{ className: "contact button-default", onClick: function (key) {
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: function (key) {
 								return _this4.show('contact');
-							} },
+							}
+						},
 						"Contact"
 					),
 					React.createElement(
 						"button",
-						{ className: "actions button-default", onClick: function (key) {
+						{
+							className: "actions button-default " + (!!this.state.showAction && 'active'),
+							onClick: function (key) {
 								return _this4.show('action');
-							} },
+							}
+						},
 						"Actions"
 					)
 				)
 			),
-			React.createElement(ActionMobile, {
-				landlord: this.props.landlord,
-				close: function (key) {
-					return _this4.show('action');
-				},
-				onModalWith: function (modal) {
-					return _this4.props.onModalWith(modal);
-				}
-			}),
-			React.createElement(ContactMobile, {
-				landlord: this.props.landlord,
-				close: function (key) {
-					return _this4.show('contact');
-				},
-				current_user: this.props.current_user,
-				onModalWith: function (modal) {
-					return _this4.props.onModalWith(modal);
-				}
-			})
+			React.createElement(
+				"div",
+				{ className: "action-mobile" },
+				React.createElement(ActionMobile, {
+					landlord: this.props.landlord,
+					close: this.close,
+					onModalWith: function (modal) {
+						return _this4.props.onModalWith(modal);
+					}
+				}),
+				React.createElement(ContactMobile, {
+					landlord: this.props.landlord,
+					close: this.close,
+					current_user: this.props.current_user,
+					onModalWith: function (modal) {
+						return _this4.props.onModalWith(modal);
+					}
+				})
+			)
 		);
 	}
 });
@@ -74173,7 +74304,8 @@ var ModalRequestModal = React.createClass({
 					maintenance_request_id: this.props.maintenance_request.id,
 					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
 					skill_required: this.props.maintenance_request.service_type,
-					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order"
+					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
+					item: this.state.trady
 				}
 			};
 			this.props.requestQuote(params);
@@ -74186,6 +74318,9 @@ var ModalRequestModal = React.createClass({
 		var _this7 = this;
 
 		var self = this;
+		var style = {
+			background: this.state.isAdd ? 'none' : '#f2f2f2'
+		};
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -74283,12 +74418,13 @@ var ModalRequestModal = React.createClass({
 									React.createElement("input", {
 										type: "text",
 										id: "company",
+										style: style,
 										ref: function (e) {
 											return _this7.company = e;
 										},
+										readOnly: !this.state.isAdd,
 										onChange: this.checkValidate,
 										placeholder: "Enter Company Name",
-										readOnly: !this.state.isAdd,
 										value: !!this.state.trady.company_name ? this.state.trady.company_name : "",
 										className: "input-custom u-full-width " + (this.state.errorCompany && "has-error")
 									})
@@ -74314,12 +74450,13 @@ var ModalRequestModal = React.createClass({
 									React.createElement("input", {
 										id: "name",
 										type: "text",
+										style: style,
+										placeholder: "Enter Name",
 										ref: function (e) {
 											return _this7.name = e;
 										},
-										placeholder: "Enter Name",
-										onChange: this.checkValidate,
 										readOnly: !this.state.isAdd,
+										onChange: this.checkValidate,
 										value: !!this.state.trady.name ? this.state.trady.name : "",
 										className: "input-custom u-full-width " + (this.state.errorName && "has-error")
 									})
@@ -74345,12 +74482,13 @@ var ModalRequestModal = React.createClass({
 									React.createElement("input", {
 										id: "email",
 										type: "text",
+										style: style,
 										placeholder: "Enter Email",
 										ref: function (e) {
 											return _this7.email = e;
 										},
-										onChange: this.checkValidate,
 										readOnly: !this.state.isAdd,
+										onChange: this.checkValidate,
 										value: !!this.state.trady.email ? this.state.trady.email : "",
 										className: "input-custom u-full-width " + (this.state.errorEmail && "has-error")
 									})
@@ -74376,12 +74514,13 @@ var ModalRequestModal = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										style: style,
 										placeholder: "Enter Mobile",
 										ref: function (e) {
 											return _this7.mobile = e;
 										},
-										onChange: this.checkValidate,
 										readOnly: !this.state.isAdd,
+										onChange: this.checkValidate,
 										value: !!this.state.trady.mobile ? this.state.trady.mobile : "",
 										className: "input-custom u-full-width " + (this.state.errorMobile && "has-error")
 									})
@@ -74431,6 +74570,7 @@ var MaintenanceRequest = React.createClass({
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
+			tradies_with_quote_requests: this.props.tradies_with_quote_requests,
 			notification: {
 				title: "",
 				content: "",
@@ -74756,6 +74896,58 @@ var MaintenanceRequest = React.createClass({
 
 	requestQuote: function (params) {
 		var self = this;
+		var tradies_with_quote_requests = this.state.tradies_with_quote_requests;
+		var flag = false;
+		tradies_with_quote_requests.map(function (item, index) {
+			if (params.trady.trady_id == item.id) {
+				flag = true;
+			}
+		});
+
+		if (!!flag) {
+			self.setState({
+				notification: {
+					title: "Request Quote",
+					content: "We have already send a request quote to the person. Please pick another person",
+					bgClass: "bg-error"
+				}
+			});
+			self.onModalWith('notification');
+		} else {
+			$.ajax({
+				type: 'POST',
+				url: '/tradies',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+				},
+				data: params,
+				success: function (res) {
+					tradies_with_quote_requests.push(params.trady.item);
+					self.setState({
+						tradies: res,
+						tradies_with_quote_requests: tradies_with_quote_requests,
+						notification: {
+							title: "Request Quote",
+							content: "the request quote has sent successfully",
+							bgClass: "bg-success"
+						}
+					});
+					self.onModalWith('notification');
+				},
+				error: function (err) {
+					self.setState({ notification: {
+							title: "Request Quote",
+							content: "The request quote is error",
+							bgClass: "bg-error"
+						} });
+					self.onModalWith('notification');
+				}
+			});
+		}
+	},
+
+	sendWorkOrder: function (params) {
+		var self = this;
 		$.ajax({
 			type: 'POST',
 			url: '/tradies',
@@ -74764,15 +74956,12 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
-				if (params.trady.trady_request == "Work Order") {
-					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length - 1].id;
-					self.forceUpdate();
-				}
+				self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length - 1].id;
 				self.setState({
 					tradies: res,
 					notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						title: "Send Work Order",
+						content: "the work order has sent successfully",
 						bgClass: "bg-success"
 					}
 				});
@@ -74780,8 +74969,8 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function (err) {
 				self.setState({ notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error",
+						title: "Send Work Order",
+						content: "The work order is error",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -74935,7 +75124,7 @@ var MaintenanceRequest = React.createClass({
 							close: this.isClose,
 							keyTitle: "sen-work-order",
 							tradies: this.state.tradies,
-							requestQuote: this.requestQuote,
+							requestQuote: this.sendWorkOrder,
 							maintenance_request: this.state.maintenance_request
 						});
 					}
@@ -75001,29 +75190,46 @@ var MaintenanceRequest = React.createClass({
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
 					}) : null,
-					this.props.invoices.length > 0 && React.createElement(Invoices, { invoices: this.state.invoices, viewInvoice: function (key, item) {
+					this.props.invoices.length > 0 && React.createElement(Invoices, {
+						invoices: this.state.invoices,
+						viewInvoice: function (key, item) {
 							return _this9.viewItem(key, item);
-						} }),
-					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, { invoice_pdf_files: this.state.invoice_pdf_files, viewPDFInvoice: function (key, item) {
+						}
+					}),
+					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						invoice_pdf_files: this.state.invoice_pdf_files,
+						viewPDFInvoice: function (key, item) {
 							return _this9.viewItem(key, item);
-						} })
+						}
+					})
 				),
 				React.createElement(
 					"div",
 					{ className: "sidebar" },
-					React.createElement(Contact, { landlord: this.state.landlord, onModalWith: function (modal) {
+					React.createElement(Contact, {
+						landlord: this.state.landlord,
+						current_user: this.props.current_user,
+						onModalWith: function (modal) {
 							return _this9.onModalWith(modal);
-						}, current_user: this.props.current_user }),
-					React.createElement(Action, { landlord: this.state.landlord, onModalWith: function (modal) {
+						}
+					}),
+					React.createElement(Action, {
+						landlord: this.state.landlord,
+						onModalWith: function (modal) {
 							return _this9.onModalWith(modal);
-						} }),
+						}
+					}),
 					React.createElement(Activity, { logs: this.props.logs })
 				),
 				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
-			React.createElement(SideBarMobile, { onModalWith: function (modal) {
+			React.createElement(SideBarMobile, {
+				landlord: this.state.landlord,
+				current_user: this.props.current_user,
+				onModalWith: function (modal) {
 					return _this9.onModalWith(modal);
-				}, landlord: this.state.landlord, current_user: this.props.current_user }),
+				}
+			}),
 			this.renderModal()
 		);
 	},
@@ -75386,6 +75592,12 @@ var ModalNotification = React.createClass({
 var ButtonForwardLandlord = React.createClass({
 	displayName: "ButtonForwardLandlord",
 
+	getInitialState: function () {
+		return {
+			isSend: this.props.quote.forwarded_to_landlord
+		};
+	},
+
 	sendEmail: function () {
 		if (!!this.props.landlord) {
 			var params = {
@@ -75394,20 +75606,27 @@ var ButtonForwardLandlord = React.createClass({
 			};
 
 			this.props.sendEmailLandlord(params);
+			this.setState({
+				isSend: true
+			});
 		} else {
 			this.props.onModalWith("addLandlord");
 		}
 	},
 
 	render: function () {
+		var style = {
+			opacity: this.state.isSend ? 0.5 : 1
+		};
 		return React.createElement(
 			"button",
 			{
 				type: "button",
-				className: "btn btn-default",
-				onClick: this.sendEmail
+				style: style,
+				onClick: !this.state.isSend && this.sendEmail,
+				className: "btn btn-default"
 			},
-			"Forward to LandLord"
+			!!this.state.isSend ? 'Send to Landlord' : 'Forward to LandLord'
 		);
 	}
 });
@@ -77125,18 +77344,20 @@ var TenantSideBarMobile = React.createClass({
 		};
 	},
 
-	show: function (key) {
-		var height = $(window).height();
-		this.setState({ showContact: !this.state.showContact });
-		$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+	show: function () {
+		this.setState({ showContact: true });
+		$('#contacts-full').css({ 'height': 150, 'border-width': 1 });
+	},
+
+	close: function () {
+		this.setState({ showContact: false });
+		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
 	},
 
 	componentDidMount: function () {
-		$(document).bind("resize", function () {
-			var height = $(window).height();
-			if ($('#contacts-full')) {
-				$('#contacts-full').css('height', height);
-			}
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
 		});
 	},
 
@@ -77148,20 +77369,30 @@ var TenantSideBarMobile = React.createClass({
 			null,
 			React.createElement(
 				'div',
-				{ className: 'sidebar-mobile tenant-content' },
+				{ className: 'sidebar-mobile' },
 				React.createElement(
 					'div',
 					{ className: 'fixed' },
 					React.createElement(
 						'button',
-						{ className: 'contact button-default', onClick: this.show },
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: this.show
+						},
 						'Contact'
 					)
 				)
 			),
-			!!this.state.showContact && React.createElement(TenantContactMobile, { close: this.show, onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				} })
+			React.createElement(
+				'div',
+				{ className: 'action-mobile' },
+				React.createElement(TenantContactMobile, {
+					close: this.close,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				})
+			)
 		);
 	}
 });
@@ -78739,26 +78970,27 @@ var TradySideBarMobile = React.createClass({
 	show: function (key) {
 		var height = $(window).height();
 		if (key == 'action') {
-			this.setState({ showAction: !this.state.showAction });
+			this.setState({ showAction: true });
 			this.setState({ showContact: false });
-			$('#actions-full').css('height', this.state.showAction ? 0 : height);
+			$('#actions-full').css({ 'height': 200, 'border-width': 1 });
 		} else {
 			this.setState({ showAction: false });
-			this.setState({ showContact: !this.state.showContact });
-			$('#contacts-full').css('height', this.state.showContact ? 0 : height);
+			this.setState({ showContact: true });
+			$('#contacts-full').css({ 'height': 200, 'border-width': 1 });
 		}
 	},
 
-	componentDidMount: function () {
-		$(document).bind("resize", function () {
-			var height = $(window).height();
-			if ($('#actions-full')) {
-				$('#actions-full').css('height', height);
-			}
+	close: function () {
+		this.setState({ showAction: false });
+		this.setState({ showContact: false });
+		$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+	},
 
-			if ($('#contacts-full')) {
-				$('#contacts-full').css('height', height);
-			}
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
 		});
 	},
 
@@ -78776,44 +79008,50 @@ var TradySideBarMobile = React.createClass({
 					{ className: 'fixed' },
 					React.createElement(
 						'button',
-						{ className: 'contact button-default', onClick: function (key) {
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: function (key) {
 								return _this.show('contact');
-							} },
+							}
+						},
 						'Contact'
 					),
 					React.createElement(
 						'button',
-						{ className: 'actions button-default', onClick: function (key) {
+						{
+							className: "actions button-default " + (!!this.state.showAction && 'active'),
+							onClick: function (key) {
 								return _this.show('action');
-							} },
+							}
+						},
 						'Actions'
 					)
 				)
 			),
-			React.createElement(TradyActionMobile, {
-				landlord: this.props.landlord,
-				invoices: this.props.invoices,
-				close: function (key) {
-					return _this.show('action');
-				},
-				assigned_trady: this.props.assigned_trady,
-				signed_in_trady: this.props.signed_in_trady,
-				invoice_pdf_files: this.props.invoice_pdf_files,
-				maintenance_request: this.props.maintenance_request,
-				onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				}
-			}),
-			React.createElement(TradyContactMobile, {
-				close: function (key) {
-					return _this.show('contact');
-				},
-				onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				},
-				landlord: this.props.landlord,
-				current_user: this.props.current_user,
-				maintenance_request: this.props.maintenance_request })
+			React.createElement(
+				'div',
+				{ className: 'action-mobile' },
+				React.createElement(TradyActionMobile, {
+					landlord: this.props.landlord,
+					invoices: this.props.invoices,
+					close: this.close,
+					assigned_trady: this.props.assigned_trady,
+					signed_in_trady: this.props.signed_in_trady,
+					invoice_pdf_files: this.props.invoice_pdf_files,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				}),
+				React.createElement(TradyContactMobile, {
+					close: this.close,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					},
+					landlord: this.props.landlord,
+					current_user: this.props.current_user,
+					maintenance_request: this.props.maintenance_request })
+			)
 		);
 	}
 });
