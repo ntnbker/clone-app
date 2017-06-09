@@ -45,7 +45,7 @@ class MaintenanceRequestsController < ApplicationController
           @maintenance_request.agent_id = @agent.id
           @agency = @agent.agency
         end
-        if the_agency_admin == nil || the_agent == nil
+        if the_agency_admin == nil && the_agent == nil
           @agent = nil
           @agency_admin = nil
           @maintenance_request.agent_id = nil
@@ -80,19 +80,23 @@ class MaintenanceRequestsController < ApplicationController
         #look up property
         @property = Property.find_by(property_address:@customer_input.address)
         #CREATE PROPERTY
-        if !@property
-          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id, agency_id:@agency.id)
-          @maintenance_request.property_id = @property.id
-          
+        
 
+
+
+        if @property
+          @maintenance_request.property_id = @property.id
           if @tenant.property_id.nil?
             @tenant.update_attribute(:property_id, @property.id)
           else
             @tenant.property_id = @tenant.property_id
-          end 
+          end
         
         else
           #@property = Property.find_by(property_address:@customer_input.address)
+          
+          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id, agency_id:@agency.id)
+          
           @maintenance_request.property_id = @property.id
           if @tenant.property_id.nil?
             @tenant.update_attribute(:property_id, @property.id)
@@ -100,6 +104,42 @@ class MaintenanceRequestsController < ApplicationController
             @tenant.property_id = @tenant.property_id
           end 
         end 
+
+
+
+        # if !@property
+        #   @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id, agency_id:@agency.id)
+        #   @maintenance_request.property_id = @property.id
+          
+
+        #   if @tenant.property_id.nil?
+        #     @tenant.update_attribute(:property_id, @property.id)
+        #   else
+        #     @tenant.property_id = @tenant.property_id
+        #   end 
+        
+        # else
+        #   #@property = Property.find_by(property_address:@customer_input.address)
+        #   @maintenance_request.property_id = @property.id
+        #   if @tenant.property_id.nil?
+        #     @tenant.update_attribute(:property_id, @property.id)
+        #   else
+        #     @tenant.property_id = @tenant.property_id
+        #   end 
+        # end 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         #@maintenance_request.tenant_id = @tenant.id
         @maintenance_request.service_type = @customer_input.tradie
