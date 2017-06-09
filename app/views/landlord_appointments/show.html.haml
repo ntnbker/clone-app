@@ -4,6 +4,12 @@
       =@maintenance_request.maintenance_heading
     %p.maintenance-content
       =@maintenance_request.maintenance_description
+    -if @appointment.status == "Active"
+      %h5
+        Suggested Appointment Time
+    -elsif @appointment.status == "Accepted"
+      %h5
+        Accepted Appointment Time
     %div.date-time
       %p
         Appointment Date: 
@@ -21,10 +27,11 @@
             %span.time
               = comment.created_at.strftime("%b %d, %Y %H:%M")
 
-    %div.btn-action
-      %button.accept
-        =link_to "Accept Appointment", accept_landlord_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, landlord_id:@landlord_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
+    -if @appointment.status == "Active"
+      %div.btn-action
+        %button.accept
+          =link_to "Accept Appointment", accept_landlord_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, landlord_id:@landlord_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
 
-        / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
-      %button.other
-        =link_to "Suggest Other Appointment Time", edit_landlord_appointment_path(@appointment,maintenance_request_id:@maintenance_request.id, landlord_id:@landlord_id, tenant_id:@tenant_id)
+          / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
+        %button.other
+          =link_to "Suggest Other Appointment Time", edit_landlord_appointment_path(@appointment,maintenance_request_id:@maintenance_request.id, landlord_id:@landlord_id, tenant_id:@tenant_id)
