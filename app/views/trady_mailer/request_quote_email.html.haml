@@ -13,7 +13,7 @@
 
     %p If you can send us a Quote on how much it would cost to get this fixed that would be great. To submit the Quote click on the link below. 
 
-    =link_to "View Maintenance Request", trady_maintenance_request_url(@maintenance_request,user_id:@trady.user.id)
+    =link_to "View Maintenance Request", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id)
 
 
     / -if @trady.trady_company.nil?
