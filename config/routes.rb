@@ -183,8 +183,12 @@ Rails.application.routes.draw do
   ################################################### 
     resources :agent_emails, only:[:index]
   ###################################################
-  ##########AGENT EMAILS RESOURCES/ROUTES############
+  ##########PRINT STATUS RESOURCES/ROUTES############
   ###################################################
     post "update_print_status"=> "print_statuses#update" 
+  ###################################################
+  ##########REASSIGN AGENTS RESOURCES/ROUTES############
+  ###################################################
+    post "reassign_to"=> "reassign_maintenance_requests#reassign" 
     
  end

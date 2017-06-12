@@ -63,6 +63,8 @@ class AgentMaintenanceRequestsController < ApplicationController
     @message = Message.new
     
     @tradie = Trady.new
+    @all_agents = @agency.agents
+    @all_agency_admins = @agency.agency_admins
      
     if @maintenance_request.images != nil
       @gallery = @maintenance_request.get_image_urls
@@ -99,7 +101,7 @@ class AgentMaintenanceRequestsController < ApplicationController
 
     respond_to do |format|
 
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files => @invoice_pdf_files, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files => @invoice_pdf_files, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins}}
       format.html{render :show}
     end 
 

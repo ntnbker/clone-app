@@ -24,32 +24,9 @@ class Agency < ApplicationRecord
   
   validates_associated :agency_admins
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   attr_accessor :perform_presence_validation
+
+  
 
 
 
