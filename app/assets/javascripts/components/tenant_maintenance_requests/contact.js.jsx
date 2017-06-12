@@ -29,7 +29,7 @@ var TenantContact = React.createClass({
 	render: function() {
 		return (
 			<div className="item">
-				<div className="header contact">
+				<div className="header action">
 					<a>Contact:</a>
 					<i
 						aria-hidden="true" 

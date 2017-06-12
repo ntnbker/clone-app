@@ -7,23 +7,34 @@ var TradySideBarMobile = React.createClass({
 	},
 
 	show: function(key) {
-		const height = $( window ).height();
 		if(key == 'action') {
 			this.setState({showAction: true});
 			this.setState({showContact: false});
-			$('#actions-full').css({'height': 200, 'border-width': 1});
+			if($('#actions-full').length > 0) {
+				$('#actions-full').css({'height': 250, 'border-width': 1});
+			}
 		}else {
 			this.setState({showAction: false});
 			this.setState({showContact: true});
-			$('#contacts-full').css({'height': 200, 'border-width': 1});
+			if($('#contacts-full').length > 0) {
+				$('#contacts-full').css({'height': this.props.tenants.length * 50 + 150, 'border-width': 1});
+			}
 		}
 	},
 
 	close: function() {
-		this.setState({showAction: false});
-		this.setState({showContact: false});
-		$('#actions-full').css({'height': 0, 'border-width': 0});
-		$('#contacts-full').css({'height': 0, 'border-width': 0});
+		if(!!this.state.showAction) {
+			this.setState({showAction: false});
+		}
+		if(!!this.state.showContact) {
+			this.setState({showContact: false});
+		}
+		if($('#actions-full').length > 0) {
+			$('#actions-full').css({'height': 0, 'border-width': 0});
+		}
+		if($('#contacts-full').length > 0) {
+			$('#contacts-full').css({'height': 0, 'border-width': 0});
+		}
 	},
 
 	componentDidMount: function() {
@@ -55,9 +66,9 @@ var TradySideBarMobile = React.createClass({
 				<div className="action-mobile">
 					{
 						<TradyActionMobile 
+							close={this.close} 
 							landlord={this.props.landlord} 
 							invoices={this.props.invoices}
-							close={this.close} 
 							assigned_trady={this.props.assigned_trady} 
 							signed_in_trady={this.props.signed_in_trady} 
 							invoice_pdf_files={this.props.invoice_pdf_files}
@@ -67,11 +78,14 @@ var TradySideBarMobile = React.createClass({
 					}
 					{ 
 						<TradyContactMobile 
-						close={this.close} 
-						onModalWith={(modal) => this.props.onModalWith(modal)} 
-						landlord={this.props.landlord} 
-						current_user={this.props.current_user} 
-						maintenance_request={this.props.maintenance_request} /> 
+							close={this.close} 
+							agent={this.props.agent}
+							tenants={this.props.tenants}
+							landlord={this.props.landlord} 
+							current_user={this.props.current_user} 
+							maintenance_request={this.props.maintenance_request} 
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
+						/> 
 					}
 				</div>
 			</div>
@@ -508,6 +522,8 @@ var TradyMaintenanceRequest = React.createClass({
 					</div>
 					<div className="sidebar">
 						<TradyContact 
+							agent={this.props.agent}
+							tenants={this.props.tenants}
 							landlord={this.state.landlord} 
 							current_user={this.props.current_user} 
 							onModalWith={(modal) => this.onModalWith(modal)} 
@@ -527,6 +543,8 @@ var TradyMaintenanceRequest = React.createClass({
 					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<TradySideBarMobile 
+					agent={this.props.agent}
+					tenants={this.props.tenants}
 					landlord={this.state.landlord} 
 					invoices={this.props.invoices}
 					current_user={this.props.current_user} 

@@ -140,3 +140,20 @@
 		}
 	}
 }
+
+.content-appointment{
+	background-color: #fff;
+	list-style: none;
+	li {
+		width: 100%;
+		.btn-view {
+			display: block;
+	    margin: auto;
+	    padding: 0;
+	    width: 130px;
+	    font-size: 13px;
+	    border-radius: 5px;
+	    height: 35px;
+		}
+	}
+}

@@ -218,7 +218,7 @@ var ImgSlider = React.createClass({
     };
   },
 
-  sliderTopRun(stpos) {
+  sliderTopRun: function(stpos) {
       var stx = stpos * -this.state.stwidth;
 
       this.setState({
@@ -226,7 +226,7 @@ var ImgSlider = React.createClass({
       });
   },
 
-  sliderTopPrev() {
+  sliderTopPrev: function() {
       var stpos = this.state.stpos - 1;
       if(stpos < 0) {
         stpos = this.state.stlen - 1;
@@ -237,7 +237,7 @@ var ImgSlider = React.createClass({
       this.sliderTopRun(stpos);
   },
 
-  sliderTopNext() {
+  sliderTopNext: function() {
       var stpos = this.state.stpos + 1;
       if(stpos >= this.state.stlen) {
         stpos = 0;
@@ -250,7 +250,7 @@ var ImgSlider = React.createClass({
 
   setWidth: function() {
     const slider = $('#slider');
-    if(!!slider) {
+    if(slider.length > 0) {
       this.setState({
         stwidth: slider.width()
       });
@@ -266,7 +266,7 @@ var ImgSlider = React.createClass({
   componentDidMount: function() {
     const self = this;
     
-    if($('#slider')) {
+    if($('#slider').length > 0) {
       this.setWidth();
 
       $(window).resize(function() {

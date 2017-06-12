@@ -1,4 +1,4 @@
-var ModalConfirm = React.createClass({
+	var ModalConfirm = React.createClass({
 	render: function() {
 		return (
 			<div className="modal-custom fade">
@@ -405,21 +405,17 @@ var SideBarMobile = React.createClass({
 					</div>
 				</div>
 				<div className="action-mobile">
-					{
-						<ActionMobile 
-							landlord={this.props.landlord}
-							close={this.close}
-							onModalWith={(modal) => this.props.onModalWith(modal)}
-						/> 
-					}
-					{
-						<ContactMobile 
-							landlord={this.props.landlord}
-							close={this.close}
-							current_user={this.props.current_user}
-							onModalWith={(modal) => this.props.onModalWith(modal)}
-						/> 
-					}
+					<ActionMobile 
+						landlord={this.props.landlord}
+						close={this.close}
+						onModalWith={(modal) => this.props.onModalWith(modal)}
+					/> 
+					<ContactMobile 
+						landlord={this.props.landlord}
+						close={this.close}
+						current_user={this.props.current_user}
+						onModalWith={(modal) => this.props.onModalWith(modal)}
+					/> 
 				</div>
 			</div>
 		);
@@ -745,6 +741,7 @@ var ModalRequestModal = React.createClass({
 		return {
 			isAdd: false,
 			errorName: false,
+			isDisable: false,
 			errorEmail: false,
 			errorMobile: false,
 			errorCompany: false,
@@ -764,9 +761,15 @@ var ModalRequestModal = React.createClass({
 		switch(key) {
 			case "company": {
 					if(e.target.value == "") {
-						this.setState({errorCompany: true});
+						this.setState({
+							isDisable: true,
+							errorCompany: true
+						});
 					}else {
-						this.setState({errorCompany: false});
+						this.setState({
+							isDisable: false,
+							errorCompany: false
+						});
 					}
 					this.state.trady.company_name = e.target.value;
 					this.forceUpdate();
@@ -775,9 +778,15 @@ var ModalRequestModal = React.createClass({
 
 			case "name": {
 					if(e.target.value == "") {
-						this.setState({errorName: true});
+						this.setState({
+							isDisable: true,
+							errorName: true
+						});
 					}else {
-						this.setState({errorName: false});
+						this.setState({
+							isDisable: false,
+							errorName: false
+						});
 					}
 					this.state.trady.name = e.target.value;
 					this.forceUpdate();
@@ -786,9 +795,15 @@ var ModalRequestModal = React.createClass({
 
 			case "mobile": {
 				if(e.target.value == "") {
-					this.setState({errorMobile: true});
+					this.setState({
+						isDisable: true,
+						errorMobile: true
+					});
 				}else {
-					this.setState({errorMobile: false});
+					this.setState({
+						isDisable: false,
+						errorMobile: false
+					});
 				}        
 				this.state.trady.mobile = e.target.value;
 					this.forceUpdate();
@@ -797,9 +812,15 @@ var ModalRequestModal = React.createClass({
 
 			default: {
 				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
+					this.setState({
+						isDisable: true,
+						errorEmail: true
+					});
 				}else {
-					this.setState({errorEmail: false});
+					this.setState({
+						isDisable: false,
+						errorEmail: false
+					});
 				}
 				this.state.trady.email = e.target.value;
 					this.forceUpdate();
@@ -821,6 +842,11 @@ var ModalRequestModal = React.createClass({
 					this.setState({
 						trady: item,
 						isAdd: false,
+						isDisable: false,
+						errorName: false,
+						errorEmail: false,
+						errorMobile: false,
+						errorCompany: false,
 					});
 
 					return;
@@ -830,12 +856,17 @@ var ModalRequestModal = React.createClass({
 
 		this.setState({
 			isAdd: true,
+			isDisable: false,
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false,
+			errorCompany: false,
 			trady: {
 				name: null,
 				email: null,
 				mobile: null,
 				company_name: null,
-			}
+			},
 		});
 	},
 
@@ -844,22 +875,34 @@ var ModalRequestModal = React.createClass({
 		let flag = false;
 
 		if(this.company.value == "") {
-			this.setState({errorCompany: true});
+			this.setState({
+				isDisable: true,
+				errorCompany: true
+			});
 			flag = true;
 		}
 
 		if(this.name.value == "") {
-			this.setState({errorName: true});
+			this.setState({
+				isDisable: true,
+				errorName: true
+			});
 			flag = true;
 		}
 
 		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
+			this.setState({
+				isDisable: true,
+				errorMobile: true
+			});
 			flag = true;
 		}
 
 		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
+			this.setState({
+				isDisable: true,
+				errorEmail: true
+			});
 			flag = true;
 		} 
 
@@ -878,6 +921,9 @@ var ModalRequestModal = React.createClass({
 				},
 			};
 			this.props.requestQuote(params);
+			this.setState({
+				isDisable: true
+			});
 		}
 
 		return
@@ -885,6 +931,7 @@ var ModalRequestModal = React.createClass({
 
 	render: function() {
 		const self = this;
+		const state = this.state;
 		const style = {
 			background: this.state.isAdd ? 'none' : '#f2f2f2'
 		};
@@ -1000,8 +1047,16 @@ var ModalRequestModal = React.createClass({
 									type="button" 
 									onClick={this.props.close}
 									className="btn btn-primary cancel" 
-								>Cancel</button>
-								<button type="submit" className="btn btn-default success">Submit</button>
+								>
+									Cancel
+								</button>
+								<button 
+									type="submit" 
+									className="btn btn-default success"
+									disabled={(!!state.isDisable) ? true : false}
+								>
+									Submit
+								</button>
 							</div>
 						</form>
 					</div>
@@ -1679,13 +1734,31 @@ var MaintenanceRequest = React.createClass({
 							onModalWith={(modal) => this.onModalWith(modal)} 
 						/>
 						<Activity logs={this.props.logs} />
+						<TenantTradieAppointment 
+							onModalWith={(modal) => this.onModalWith(modal)}
+							appointments={this.props.tenant_and_trady_appointments}
+						/>
+						<TenantTradieAppointment 
+							onModalWith={(modal) => this.onModalWith(modal)}
+							appointments={this.props.tenant_and_landlord_appointments}
+						/>
 					</div>
 					<ActivityMobile logs={this.props.logs} />
+					<TenantTradieAppointmentMobile 
+						onModalWith={(modal) => this.props.onModalWith(modal)}
+						appointments={this.props.tenant_and_trady_appointments}
+					/>
+					<TenantLandlordAppointmentMobile 
+						onModalWith={(modal) => this.props.onModalWith(modal)}
+						appointments={this.props.tenant_and_landlord_appointments}
+					/>
 				</div>
 				<SideBarMobile 
 					landlord={this.state.landlord} 
 					current_user={this.props.current_user} 
 					onModalWith={(modal) => this.onModalWith(modal)} 
+					tenant_and_trady_appointments={this.props.tenant_and_trady_appointments}
+					tenant_and_landlord_appointments={this.props.tenant_and_landlord_appointments}
 				/>
 				{ this.renderModal() }
 			</div>

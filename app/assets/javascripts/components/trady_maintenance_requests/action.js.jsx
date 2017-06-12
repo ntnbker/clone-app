@@ -42,16 +42,13 @@ var ContentTradyAction = React.createClass({
 		const maintenance_request = this.props.maintenance_request;
 		const trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
 		const maintenance_trady_id = maintenance_request.trady_id;
-		const link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+		const link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
 		if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return (
 				<ul>
 					{ <CreactOrUploadQuote link={link} /> }
 					{ <CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />}
-					{
-						(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) &&
-							<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
-					}
+					{	<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />}
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
@@ -64,7 +61,7 @@ var ContentTradyAction = React.createClass({
 							<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
 					{
-						(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) &&
+						(!!this.props.assigned_trady || !!this.props.signed_in_trady) &&
 							<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
 				</ul>

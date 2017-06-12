@@ -692,3 +692,12 @@ form#new_maintenance_request {
         display: block;
     }
 }
+.dropzone {
+    border: 2px dashed #0087F7;
+    padding: 10px 10px;
+    .dz-preview {
+        margin: 0px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+    }
+}

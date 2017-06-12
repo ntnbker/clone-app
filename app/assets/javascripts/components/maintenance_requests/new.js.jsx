@@ -243,149 +243,109 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	updateImage: function(image) {
-  	let {dataImages} = this.state;
-  	dataImages.push(image);
-  	this.setState({
-  		dataImages: dataImages
-  	});
-  },
-
-  removeImage: function(file) {
-  	let {dataImages} = this.state;
-  	for(var i = 0; i < this.state.dataImages.length; i++ ){
-  		var image = this.state.dataImages[i];
-  		if(file.name == image.metadata.filename) {
-  			dataImages.splice(i, 1);
-  			break;
-  		}
-  	}
+		let {dataImages} = this.state;
+		dataImages.push(image);
 		this.setState({
 			dataImages: dataImages
 		});
-  },
+	},
+
+	removeImage: function(file) {
+		let {dataImages} = this.state;
+		for(var i = 0; i < this.state.dataImages.length; i++ ){
+			var image = this.state.dataImages[i];
+			if(file.name == image.metadata.filename) {
+				dataImages.splice(i, 1);
+				break;
+			}
+		}
+		this.setState({
+			dataImages: dataImages
+		});
+	},
 
 	componentDidMount: function() {
 		let currentThis = this;
-	  $('[type=file]').fileupload({
-	    add: function(e, data) {
-	      data.progressBar = $('<div class="progress" style="width: 300px"><div class="progress-bar"></div></div>').insertAfter(".form-group");
-	      var options = {
-	        extension: data.files[0].name.match(/(\.\w+)?$/)[0], // set extension
-	        _: Date.now(),                                       // prevent caching
-	      }
-	      $.getJSON('/images/cache/presign', options, function(result) {
-	      	debugger
-	        data.formData = result['fields'];
-	        data.url = result['url'];
-	        data.paramName = 'file';
-	        data.submit();
-	      });
-	    },
-	    progress: function(e, data) {
-	      var progress = parseInt(data.loaded / data.total * 100, 10);
-	      var percentage = progress.toString() + '%'
-	      data.progressBar.find(".progress-bar").css("width", percentage).html(percentage);
-	    },
-	    done: function(e, data) {
-	      data.progressBar.remove();
-	      var image = {
-	        id: data.formData.key.match(/cache\/(.+)/)[1], // we have to remove the prefix part
-	        storage: 'cache',
-	        metadata: {
-	          size:      data.files[0].size,
-	          filename:  data.files[0].name.match(/[^\/\\]*$/)[0], // IE returns full path
-	          mime_type: data.files[0].type
-	        }
-	      }
-	     	self.updateImage(image);
-	      self._handleImageChange(data);
-	    }
-	  });
 
-    Dropzone.autoDiscover = false;
-    this.dropzone = new Dropzone('#demo-upload', {
-        parallelUploads: 1,
-        thumbnailHeight: 120,
-        thumbnailWidth: 120,
-        maxFilesize: 10,
-        filesizeBase: 1000,
-    });
+		Dropzone.autoDiscover = false;
+		this.dropzone = new Dropzone('#upload-image', {
+			maxFilesize: 10,
+			resizeWidth: 960,
+			resizeHeight: 600,
+			filesizeBase: 1000,
+			resizeQuality: 0.5,
+			thumbnailWidth: 120,
+			parallelUploads: 10,
+			thumbnailHeight: 120,
+			addRemoveLinks: true,
+			dictRemoveFile: "Remove"
+		});
 
-    this.dropzone.on("addedfile", function(file){
-	      var removeButton = Dropzone.createElement("<a href=\"#\">Remove file</a>");
-        var _this = this;
-        removeButton.addEventListener("click", function(e) {
-        	currentThis.removeImage(file); 
-          e.preventDefault();
-          e.stopPropagation();
-          _this.removeFile(file);
-        });
-        file.previewElement.appendChild(removeButton);
-    });
+		this.dropzone.init = function() {
 
-    var minSteps = 6,
-        maxSteps = 60,
-        timeBetweenSteps = 100,
-        bytesPerStep = 100000;
+		};
 
-    this.dropzone.uploadFiles = function(files) {
-      var self = this;
+		this.dropzone.on("removedfile", function(file) {
+			currentThis.removeImage(file); 
+		});
 
-      for (var i = 0; i < files.length; i++) {
+		this.dropzone.uploadFiles = function(files) {
+			var self = this;
 
-      	var file = files[i];
-      	var filename = file;
-      	const options = {
-	        extension: filename.name.match(/(\.\w+)?$/)[0], // set extension
-	        _: Date.now(),                                       // prevent caching
-	      }
+			for (var i = 0; i < files.length; i++) {
+				var file = files[i];
+				var filename = file;
+				const options = {
+					extension: filename.name.match(/(\.\w+)?$/)[0],
+					_: Date.now(),
+				}
 
-      	// start upload file into S3
-	      $.getJSON('/images/cache/presign', options, function(result) {
-	      	var fd = new FormData();
-	      	$.each(result.fields, function(key, value) {
-	      		fd.append(key, value);
-	      	});
-	      	fd.append('file', file);
-	      	$.ajax({
+				// start upload file into S3
+				$.getJSON('/images/cache/presign', options, function(result) {
+					var fd = new FormData();
+					$.each(result.fields, function(key, value) {
+						fd.append(key, value);
+					});
+					fd.append('file', file);
+					$.ajax({
 						type: 'POST',
 						url: result['url'],
 						enctype: 'multipart/form-data',
 						processData: false,
-	    			contentType: false,
-	          data: fd,
-	          xhr: function () {
-				        var xhr = new window.XMLHttpRequest();
-				        //Download progress
-				        xhr.upload.addEventListener("progress", function (evt) {
-				            var percentComplete = evt.loaded / evt.total;
-			              file.upload = {
-			                progress: 100 * percentComplete,
-			                total: evt.total,
-			                bytesSent: evt.loaded
-			              };
-			              self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
-			              if (file.upload.progress == 100) {
-			                file.status = Dropzone.SUCCESS;
-			                self.emit("success", file, 'success', null);
-			                self.emit("complete", file);
-			                self.processQueue();
-			              }
-				        }, false);
-				        return xhr;
-				    },
-	          success: function() {
-	          	var image = {
-				        id: result.fields.key.match(/cache\/(.+)/)[1],
-				        storage: 'cache',
-				        metadata: {
-				          size:      file.size,
-				          filename:  file.name.match(/[^\/\\]*$/)[0],
-				          mime_type: file.type
-				        }
-				      }
-				     	currentThis.updateImage(image);
-	          }
+						contentType: false,
+						data: fd,
+						xhr: function () {
+							var xhr = new window.XMLHttpRequest();
+							//Download progress
+							xhr.upload.addEventListener("progress", function (evt) {
+								var percentComplete = evt.loaded / evt.total;
+								file.upload = {
+									progress: 100 * percentComplete,
+									total: evt.total,
+									bytesSent: evt.loaded
+								};
+								self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
+								if (file.upload.progress == 100) {
+									file.status = Dropzone.SUCCESS;
+									self.emit("success", file, 'success', null);
+									self.emit("complete", file);
+									self.processQueue();
+								}
+							}, false);
+							return xhr;
+						},
+						success: function() {
+							var image = {
+								id: result.fields.key.match(/cache\/(.+)/)[1],
+								storage: 'cache',
+								metadata: {
+									size:  file.size,
+									filename:  file.name.match(/[^\/\\]*$/)[0],
+									mime_type: file.type
+								}
+							};
+							currentThis.updateImage(image);
+						}
 					});
 	      });
       }
@@ -406,7 +366,7 @@ var MaintenanceRequestsNew = React.createClass({
 		return (
 			<div>
 				<h1 className="text-center">New Maintenance Request</h1>
-				<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
+				<form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
 					<input name="utf8" type="hidden" value="✓" /> 
 					<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 					<div className="field">
@@ -512,7 +472,7 @@ var MaintenanceRequestsNew = React.createClass({
 						<p id="errorboxdescription" className="error"></p>
 
 						<p> Images </p>
-						<form action="/" className="dropzone needsclick dz-clickable" id="demo-upload">
+						<form key="upload" action="/" className="dropzone needsclick dz-clickable" id="upload-image">
 		          <div className="dz-message needsclick">
 		            Drop files here or click to upload.
 		          </div>
