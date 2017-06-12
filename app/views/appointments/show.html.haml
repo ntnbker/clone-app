@@ -4,6 +4,12 @@
       =@maintenance_request.maintenance_heading
     %p.maintenance-content
       =@maintenance_request.maintenance_description
+    -if @appointment.status == "Active"
+      %h5
+        Suggested Appointment Time
+    -elsif @appointment.status == "Accepted"
+      %h5
+        Accepted Appointment Time
     %div.date-time
       %p
         Appointment Date: 
