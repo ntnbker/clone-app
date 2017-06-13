@@ -8,8 +8,8 @@ class User < ApplicationRecord
     validates_confirmation_of :password, if: -> { new_record? || changes[:crypted_password] }
   #ASSOCIATIONS
     
-    has_one :role
-
+    has_many :roles
+    has_one :current_role
     #here we setup the relationship that a user can have with each type of user
     #ie a user can only have one agent row in a table aka being one agent
     
@@ -31,79 +31,20 @@ class User < ApplicationRecord
 
 
 
-    ##CALLBACKS
-    before_save :create_tokens
+  ##CALLBACKS
+  before_save :create_tokens
+  after_create :create_current_role
   def create_tokens
     self.set_password_token = SecureRandom.hex(10)
     self.id_token = SecureRandom.hex(10)
   end
 
-
-
-
-
-
-
-
-    
-  
-  #here we ask what type of role the user is then we use it to 
-  #define the abilities is has in the Ability model
-  def god?
-    user = self.role
-    
-    if user == nil
-      return false
-    elsif user.roleable_type == "God"
-      return true 
-    end 
-  end
-  
-  def agent?
-    user = self.role
-    if user == nil
-      return false
-    elsif user.roleable_type == "Agent"
-      return true
-    end 
+  def create_current_role
+    CurrentRole.create(user_id:self.id)
   end
 
-  def agency_admin?
-    user = self.role
-    if user == nil
-      return false
-    elsif user.roleable_type == "AgencyAdmin"
-      return true
-    end 
-  end
 
-  def tenant?
-    user = self.role
-    if user == nil
-      return false
-    elsif user.roleable_type == "Tenant"
-      return true
-    end
-  end
-
-  def landlord?
-    user = self.role
-    if user == nil
-      return false
-    elsif user.roleable_type == "Landlord"
-      return true
-    end
-  end
-
-  def trady?
-    user = self.role
-    if user == nil
-      return false
-    elsif user.roleable_type == "Trady"
-      return true
-    end
-  end
-  
+ 
   #HERE WE ADD MESSAGING SYSTEM ASSOCIATIONS
   ###FIRST SYSTEM#####
     # has_many :conversations
@@ -123,6 +64,220 @@ class User < ApplicationRecord
     attr_accessor :relation
     attr_accessor :name
     attr_accessor :mobile
+    attr_accessor :role_picked
+
+
+
+##HERE WE ASK IF THE USER HAS THAT TYPE OF ROLE##
+  def is_god?
+    answer = false
+    roles = self.roles
+
+      roles.each do |role|
+        if role.roleable_type == "God"
+          answer = true 
+        end 
+      end 
+    return answer
+
+  end
+  
+  def is_agent?
+    answer = false
+    roles = self.roles
+
+      roles.each do |role|
+        if role.roleable_type == "Agent"
+          answer = true 
+        end 
+      end 
+    return answer
+  end
+
+  def is_agency_admin?
+    answer = false
+    roles = self.roles
+
+      roles.each do |role|
+        if role.roleable_type == "AgencyAdmin"
+          answer = true 
+        end 
+      end 
+    return answer
+  end
+
+  def is_tenant?
+    answer = false
+    roles = self.roles
+
+      roles.each do |role|
+        if role.roleable_type == "Tenant"
+          answer = true 
+        end 
+      end 
+    return answer
+  end
+
+  def is_landlord?
+    answer = false
+    roles = self.roles
+
+      roles.each do |role|
+        if role.roleable_type == "Landlord"
+          answer = true 
+        end 
+      end 
+    return answer
+  end
+
+  def is_trady?
+    answer = false
+    roles = self.roles
+
+      roles.each do |role|
+        if role.roleable_type == "Trady"
+          answer = true 
+        end 
+      end 
+    return answer
+  end
+
+
+
+  ##This tells us what type of role they are currently using## 
+  # We also use this in the ability calss to tell them if they can go 
+  # to a certain end point
+
+  def logged_in_as_god?
+    if self.current_role.role == "God"
+      return true 
+    else
+      return false
+    end
+  end
+
+  def logged_in_as_agency_admin?
+    if self.current_role.role == "AgencyAdmin"
+      return true 
+    else
+      return false
+    end
+  end
+
+  def logged_in_as_agent?
+    if self.current_role.role == "Agent"
+      return true 
+    else
+      return false
+    end
+  end
+
+  def logged_in_as_tenant?
+    if self.current_role.role == "Tenant"
+      return true 
+    else
+      return false
+    end
+  end
+
+  def logged_in_as_landlord?
+    if self.current_role.role == "Landlord"
+      return true 
+    else
+      return false
+    end
+  end
+
+  def logged_in_as_trady?
+    if self.current_role.role == "Trady"
+      return true 
+    else
+      return false
+    end
+  end
+
+  def logged_in_as_nobody?
+    if self.current_role.role == nil
+      return true 
+    else
+      return false
+    end
+  end
+
+
+
+
+
+
+  # OLD AUTHORIZATION SYSTEM
+
+    
+  
+  #here we ask what type of role the user is then we use it to 
+  #define the abilities is has in the Ability model
+  # def god?
+  #   user = self.role
+    
+  #   if user == nil
+  #     return false
+  #   elsif user.roleable_type == "God"
+  #     return true 
+  #   end 
+  # end
+  
+  # def agent?
+  #   user = self.role
+  #   if user == nil
+  #     return false
+  #   elsif user.roleable_type == "Agent"
+  #     return true
+  #   end 
+  # end
+
+  # def agency_admin?
+  #   user = self.role
+  #   if user == nil
+  #     return false
+  #   elsif user.roleable_type == "AgencyAdmin"
+  #     return true
+  #   end 
+  # end
+
+  # def tenant?
+  #   user = self.role
+  #   if user == nil
+  #     return false
+  #   elsif user.roleable_type == "Tenant"
+  #     return true
+  #   end
+  # end
+
+  # def landlord?
+  #   user = self.role
+  #   if user == nil
+  #     return false
+  #   elsif user.roleable_type == "Landlord"
+  #     return true
+  #   end
+  # end
+
+  # def trady?
+  #   user = self.role
+  #   if user == nil
+  #     return false
+  #   elsif user.roleable_type == "Trady"
+  #     return true
+  #   end
+  # end
+
+
+
+
+
+
+
+
+
     
 
 end
