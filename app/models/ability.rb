@@ -87,7 +87,7 @@ class Ability
         can :ordered_maintenance_requests, :maintenance_request
       end 
 
-      if @user.logged_in_as_nobody?
+      if @user
         
         # can :new, MaintenanceRequest
         can :new, AgencyAdmin

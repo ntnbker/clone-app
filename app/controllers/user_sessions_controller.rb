@@ -49,16 +49,16 @@ class UserSessionsController < ApplicationController
   end
 
   def menu_bar_login_form_new
-    binding.pry
+    
   end
 
   def menu_bar_login_form_create
     
     @user = login(params[:email], params[:password])
-    binding.pry
+    
     if logged_in? && @user.has_role(params[:role_picked])
       @user.current_role.update_attribute(:role, params[:role_picked])
-      binding.pry
+      
       if @user.logged_in_as("God")
         flash[:success] = "You are now signed in"
         redirect_to god_path(@user.role)

@@ -18,9 +18,9 @@ class AgenciesController < ApplicationController
       @agency_admin.update_attribute(:email, params[:user][:email])
       @agency_admin.roles << role
       role.save
-      auto_login(@user)
+      
       flash[:success] = "Thank you for signing up."
-      redirect_to agency_admin_path(@agency_admin)
+      redirect_to root_path
     else
       @user = User.new(user_params)  
       flash[:danger] = "Sorry something went wrong"

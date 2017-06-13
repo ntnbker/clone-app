@@ -33,7 +33,7 @@ class User < ApplicationRecord
 
   ##CALLBACKS
   before_save :create_tokens
-  after_create :create_current_role
+  after_create :create_current_role, unless: :current_role_exists?
   def create_tokens
     self.set_password_token = SecureRandom.hex(10)
     self.id_token = SecureRandom.hex(10)
@@ -41,6 +41,15 @@ class User < ApplicationRecord
 
   def create_current_role
     CurrentRole.create(user_id:self.id)
+  end
+
+  def current_role_exists?
+    current_role_row = CurrentRole.where(user_id:self.id).first
+    if current_role_row
+      return true
+    else
+      return false
+    end 
   end
 
 
@@ -80,6 +89,30 @@ class User < ApplicationRecord
       end 
     return answer
 
+  end
+
+   ##This tells us what type of role they are currently using## 
+  # We also use this in the ability calss to tell them if they can go 
+  # to a certain end point
+
+  def logged_in_as(the_role)
+    if self.current_role.role == the_role
+      return true 
+    else
+      return false
+    end
+  end
+
+  # def logged_in_as_nobody?
+  #   if self.current_role.role == nil
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
+
+  def get_role(the_role)
+    self.roles.where(user_id:self.id,roleable_type:the_role).first
   end
 
 
@@ -158,17 +191,7 @@ class User < ApplicationRecord
 
 
 
-  ##This tells us what type of role they are currently using## 
-  # We also use this in the ability calss to tell them if they can go 
-  # to a certain end point
 
-  def logged_in_as(the_role)
-    if self.current_role.role == the_role
-      return true 
-    else
-      return false
-    end
-  end
 
   # def logged_in_as_god?
   #   if self.current_role.role == "God"
@@ -218,17 +241,17 @@ class User < ApplicationRecord
   #   end
   # end
 
-  def logged_in_as_nobody?
-    if self.current_role.role == nil
-      return true 
-    else
-      return false
-    end
-  end
+  # def logged_in_as_nobody?
+  #   if self.current_role.role == nil
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
 
-  def get_role(the_role)
-    self.roles.where(user_id:self.id,roleable_type:the_role).first
-  end
+  # def get_role(the_role)
+  #   self.roles.where(user_id:self.id,roleable_type:the_role).first
+  # end
 
 
 

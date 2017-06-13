@@ -29,7 +29,7 @@ class AgentsController < ApplicationController
 
 
   def show
-    @agent = Agent.find_by(id:current_user.role.roleable_id)
+    # @agent = Agent.find_by(id:current_user.role.roleable_id)
   end
 
   private
