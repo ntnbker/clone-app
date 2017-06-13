@@ -55,16 +55,26 @@ var Activity = React.createClass({
 });
 
 var ActivityMobile = React.createClass({
+	getInitialState: function() {
+		return {
+			show: true
+		};
+	},
+
+	showActivity: function() {
+		this.setState({show: !this.state.show});
+	},
+
 	render: function() {
 		return (
 			<div className="activity-mobile">
 				<div className="item">
 					<div className="header action">
 						<a >Activity log:</a>
-						<i className="fa fa-angle-down" aria-hidden="true"></i>
+						<i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showActivity}></i>
 					</div>
 					<div className="content text-center activity-content">
-					{ this.props.logs.length ?
+					{ (this.props.logs.length && !!this.state.show) ?
 							<ContentActivity logs={this.props.logs} />
 							: null
 					}

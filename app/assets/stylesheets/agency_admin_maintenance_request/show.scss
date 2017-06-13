@@ -308,11 +308,11 @@ body::-webkit-scrollbar-thumb {
     background-color: $color-white;
     margin-right: 25px;
     max-width: none;
-    width: calc(100% - 345px);
+    width: calc(100% - 365px);
     padding: 40px 30px 50px;
   }
   .sidebar {
-    width: 245px;
+    width: 270px;
     float: right;
   }
   .post {
@@ -1416,7 +1416,7 @@ body::-webkit-scrollbar-thumb {
     .section {
       float: left;
       margin-right: 10px;
-      width: calc(100% - 290px);
+      width: calc(100% - 310px);
       padding: 40px 15px 50px;
     }
     .post {
@@ -1462,7 +1462,7 @@ body::-webkit-scrollbar-thumb {
     .section {
       float: left;
       margin-right: 20px;
-      width: calc(100% - 315px);
+      width: calc(100% - 335px);
       padding: 40px 25px 50px;
     }
     .post {
@@ -1507,12 +1507,12 @@ body::-webkit-scrollbar-thumb {
   }
   @media (min-width: 1366px) {
     .main-summary {
-      margin: auto 50px;
+      margin: auto 30px;
     }
     .section {
       float: left;
       margin-right: 25px;
-      width: calc(100% - 345px);
+      width: calc(100% - 365px);
       padding: 40px 30px 50px;
     }
     .post {

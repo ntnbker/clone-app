@@ -1073,6 +1073,7 @@ var MaintenanceRequest = React.createClass({
 			quote: null,
 			invoice: null,
 			isModal: false,
+			appointment: null,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
@@ -1133,6 +1134,14 @@ var MaintenanceRequest = React.createClass({
 					invoice_pdf_file: item
 				});
 
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewAppointment': {
+				this.setState({
+					appointment: item
+				});
 				this.onModalWith(key);
 				break;
 			}
@@ -1680,6 +1689,15 @@ var MaintenanceRequest = React.createClass({
 					
 					break;	
 				}
+
+				case 'viewAppointment': {
+					return (
+						<ModalViewAppointment
+							close={this.isClose}
+							appointment={this.state.appointment}
+						/>
+					);
+				}
 					
 				default:
 					return null;
@@ -1735,21 +1753,21 @@ var MaintenanceRequest = React.createClass({
 						/>
 						<Activity logs={this.props.logs} />
 						<TenantTradieAppointment 
-							onModalWith={(modal) => this.onModalWith(modal)}
+							viewItem={(key, item) => this.viewItem(key, item)}
 							appointments={this.props.tenant_and_trady_appointments}
 						/>
-						<TenantTradieAppointment 
-							onModalWith={(modal) => this.onModalWith(modal)}
+						<TenantLandlordAppointment 
+							viewItem={(key, item) => this.viewItem(key, item)}
 							appointments={this.props.tenant_and_landlord_appointments}
 						/>
 					</div>
 					<ActivityMobile logs={this.props.logs} />
 					<TenantTradieAppointmentMobile 
-						onModalWith={(modal) => this.props.onModalWith(modal)}
+						viewItem={(key, item) => this.viewItem(key, item)}
 						appointments={this.props.tenant_and_trady_appointments}
 					/>
 					<TenantLandlordAppointmentMobile 
-						onModalWith={(modal) => this.props.onModalWith(modal)}
+						viewItem={(key, item) => this.viewItem(key, item)}
 						appointments={this.props.tenant_and_landlord_appointments}
 					/>
 				</div>
@@ -1757,8 +1775,7 @@ var MaintenanceRequest = React.createClass({
 					landlord={this.state.landlord} 
 					current_user={this.props.current_user} 
 					onModalWith={(modal) => this.onModalWith(modal)} 
-					tenant_and_trady_appointments={this.props.tenant_and_trady_appointments}
-					tenant_and_landlord_appointments={this.props.tenant_and_landlord_appointments}
+					viewItem={(key, item) => this.viewItem(key, item)}
 				/>
 				{ this.renderModal() }
 			</div>
