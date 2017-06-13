@@ -78,10 +78,10 @@ class MaintenanceRequest < ApplicationRecord
   def self.find_maintenance_requests(current_user, params)
     current_user_role = current_user.role.roleable_type
     
-    if current_user_role == "AgencyAdmin"
-      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
-    elsif current_user_role == "Agent"
-      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    if current_user.logged_in_as("AgencyAdmin")
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.get_role("AgencyAdmin").id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    elsif current_user.logged_in_as("Agent")
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.get_role("Agent").id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
     # elsif current_user_role == "Trady"
     #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
     end 
@@ -92,12 +92,12 @@ class MaintenanceRequest < ApplicationRecord
 
 
   def self.find_maintenance_requests_total(current_user, params)
-    current_user_role = current_user.role.roleable_type
+    # current_user_role = current_user.role.roleable_type
     
-    if current_user_role == "AgencyAdmin"
-      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
-    elsif current_user_role == "Agent"
-      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    if current_user.logged_in_as("AgencyAdmin")
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.get_role("AgencyAdmin").id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    elsif current_user.logged_in_as("Agent")
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.get_role("Agent").id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
     # elsif current_user == "Trady"
     #   maintenance_request_array =  MaintenanceRequest.where(trady_id: current_user.role.roleable_id)
     end 

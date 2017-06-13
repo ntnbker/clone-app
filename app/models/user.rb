@@ -69,78 +69,92 @@ class User < ApplicationRecord
 
 
 ##HERE WE ASK IF THE USER HAS THAT TYPE OF ROLE##
-  def is_god?
+  def has_role(the_role)
     answer = false
     roles = self.roles
 
       roles.each do |role|
-        if role.roleable_type == "God"
+        if role.roleable_type == the_role
           answer = true 
         end 
       end 
     return answer
 
   end
+
+
+  # def is_god?
+  #   answer = false
+  #   roles = self.roles
+
+  #     roles.each do |role|
+  #       if role.roleable_type == "God"
+  #         answer = true 
+  #       end 
+  #     end 
+  #   return answer
+
+  # end
   
-  def is_agent?
-    answer = false
-    roles = self.roles
+  # def is_agent?
+  #   answer = false
+  #   roles = self.roles
 
-      roles.each do |role|
-        if role.roleable_type == "Agent"
-          answer = true 
-        end 
-      end 
-    return answer
-  end
+  #     roles.each do |role|
+  #       if role.roleable_type == "Agent"
+  #         answer = true 
+  #       end 
+  #     end 
+  #   return answer
+  # end
 
-  def is_agency_admin?
-    answer = false
-    roles = self.roles
+  # def is_agency_admin?
+  #   answer = false
+  #   roles = self.roles
 
-      roles.each do |role|
-        if role.roleable_type == "AgencyAdmin"
-          answer = true 
-        end 
-      end 
-    return answer
-  end
+  #     roles.each do |role|
+  #       if role.roleable_type == "AgencyAdmin"
+  #         answer = true 
+  #       end 
+  #     end 
+  #   return answer
+  # end
 
-  def is_tenant?
-    answer = false
-    roles = self.roles
+  # def is_tenant?
+  #   answer = false
+  #   roles = self.roles
 
-      roles.each do |role|
-        if role.roleable_type == "Tenant"
-          answer = true 
-        end 
-      end 
-    return answer
-  end
+  #     roles.each do |role|
+  #       if role.roleable_type == "Tenant"
+  #         answer = true 
+  #       end 
+  #     end 
+  #   return answer
+  # end
 
-  def is_landlord?
-    answer = false
-    roles = self.roles
+  # def is_landlord?
+  #   answer = false
+  #   roles = self.roles
 
-      roles.each do |role|
-        if role.roleable_type == "Landlord"
-          answer = true 
-        end 
-      end 
-    return answer
-  end
+  #     roles.each do |role|
+  #       if role.roleable_type == "Landlord"
+  #         answer = true 
+  #       end 
+  #     end 
+  #   return answer
+  # end
 
-  def is_trady?
-    answer = false
-    roles = self.roles
+  # def is_trady?
+  #   answer = false
+  #   roles = self.roles
 
-      roles.each do |role|
-        if role.roleable_type == "Trady"
-          answer = true 
-        end 
-      end 
-    return answer
-  end
+  #     roles.each do |role|
+  #       if role.roleable_type == "Trady"
+  #         answer = true 
+  #       end 
+  #     end 
+  #   return answer
+  # end
 
 
 
@@ -148,53 +162,61 @@ class User < ApplicationRecord
   # We also use this in the ability calss to tell them if they can go 
   # to a certain end point
 
-  def logged_in_as_god?
-    if self.current_role.role == "God"
+  def logged_in_as(the_role)
+    if self.current_role.role == the_role
       return true 
     else
       return false
     end
   end
 
-  def logged_in_as_agency_admin?
-    if self.current_role.role == "AgencyAdmin"
-      return true 
-    else
-      return false
-    end
-  end
+  # def logged_in_as_god?
+  #   if self.current_role.role == "God"
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
 
-  def logged_in_as_agent?
-    if self.current_role.role == "Agent"
-      return true 
-    else
-      return false
-    end
-  end
+  # def logged_in_as_agency_admin?
+  #   if self.current_role.role == "AgencyAdmin"
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
 
-  def logged_in_as_tenant?
-    if self.current_role.role == "Tenant"
-      return true 
-    else
-      return false
-    end
-  end
+  # def logged_in_as_agent?
+  #   if self.current_role.role == "Agent"
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
 
-  def logged_in_as_landlord?
-    if self.current_role.role == "Landlord"
-      return true 
-    else
-      return false
-    end
-  end
+  # def logged_in_as_tenant?
+  #   if self.current_role.role == "Tenant"
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
 
-  def logged_in_as_trady?
-    if self.current_role.role == "Trady"
-      return true 
-    else
-      return false
-    end
-  end
+  # def logged_in_as_landlord?
+  #   if self.current_role.role == "Landlord"
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
+
+  # def logged_in_as_trady?
+  #   if self.current_role.role == "Trady"
+  #     return true 
+  #   else
+  #     return false
+  #   end
+  # end
 
   def logged_in_as_nobody?
     if self.current_role.role == nil
@@ -202,6 +224,10 @@ class User < ApplicationRecord
     else
       return false
     end
+  end
+
+  def get_role(the_role)
+    self.roles.where(user_id:self.id,roleable_type:the_role).first
   end
 
 

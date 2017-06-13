@@ -12,7 +12,7 @@ class Ability
       @user = user || User.new # guest user (not logged in)
 
       
-      if @user.is_god? && @user.logged_in_as_god?
+      if @user.has_role("God") && @user.logged_in_as("God")
         can :manage, :all
         can :read_show, Agent
         
@@ -23,7 +23,7 @@ class Ability
         can :read_show, MaintenanceRequest
       end
 
-      if @user.is_agent? && @user.logged_in_as_agent?
+      if @user.has_role("Agent") && @user.logged_in_as("Agent")
         can :read_show, Agent
         
         can :read, Service
@@ -36,7 +36,7 @@ class Ability
         can :show, :agent_maintenance_request
       end
 
-      if @user.is_agency_admin? && @user.logged_in_as_agency_admin?
+      if @user.has_role("AgencyAdmin") && @user.logged_in_as("AgencyAdmin")
         can :read_show, Agent
         
         can :read, Service
@@ -64,11 +64,11 @@ class Ability
         can :ordered_maintenance_requests, :maintenance_request
       end
 
-      if @user.is_landlord? && @user.logged_in_as_landlord?
+      if @user.has_role("Landlord") && @user.logged_in_as("Landlord")
         can :show, :maintenance_request
       end 
 
-      if @user.is_tenant? && @user.logged_in_as_tenant?
+      if @user.has_role("Tenant") && @user.logged_in_as("Tenant")
         
         can :read_index, Tenant
         can :read_show, Tenant
@@ -81,9 +81,7 @@ class Ability
         can :edit, :appointment
       end 
 
-      if @user.is_trady? && @user.logged_in_as_trady?
-        
-        
+      if @user.has_role("Trady") && @user.logged_in_as("Trady")
         can :index, :maintenance_request
         can :show, :maintenance_request
         can :ordered_maintenance_requests, :maintenance_request
