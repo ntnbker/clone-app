@@ -103,6 +103,7 @@ form#new_maintenance_request {
             position: relative;
             overflow: hidden;
             transition: all 1s linear 0s;
+            height: 100%;
             &:after {
                 //content: "";
                 position: absolute;
@@ -138,6 +139,27 @@ form#new_maintenance_request {
     textarea,
     select {
         width: 100%;
+    }
+    .fileInput {
+        margin-bottom: 5px;
+    }
+    #img-render {
+        margin-top: 5px;
+        .img {
+            margin-right: 5px;
+            width: 120px;
+            height: 120px;
+            display: inline-block;
+            text-align: center;
+            img {
+                width: 120px;
+                height: 120px;
+                border-radius: 10px;
+            }
+            .remove {
+                cursor: pointer;
+            }
+        }
     }
     /* For Desktop Nav */
     @media (min-width: 550px) {
