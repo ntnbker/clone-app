@@ -1,19 +1,19 @@
 class TradiesController < ApplicationController 
 
-  def trady_information
-    @your_int = 123
-    gon.your_int = @your_int
+  # def trady_information
+  #   @your_int = 123
+  #   gon.your_int = @your_int
 
 
-    @trady = Trady.find_by(id:params[:trady_id])
-    name = @trady.name
-    gon.trady_name = name
+  #   @trady = Trady.find_by(id:params[:trady_id])
+  #   name = @trady.name
+  #   gon.trady_name = name
     
-    respond_to do |format|
-      format.js
+  #   respond_to do |format|
+  #     format.js
 
-    end 
-  end
+  #   end 
+  # end
 
   def create
     
