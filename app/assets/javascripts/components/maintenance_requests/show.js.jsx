@@ -152,10 +152,12 @@ var ModalAddAskLandlord = React.createClass({
 											<label>Mobile <strong>*</strong>:</label>
 											<input 
 												type="number" 
+												minLength="10"
+												maxLength="11"
 												name="landlord[mobile]" 
 												placeholder="Enter Mobile"
 												onChange={this.checkValidate} 
-												id="mobile" ref={e => this.mobile = e} 
+												id="mobile" ref={e => this.mobile = e}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")} 
 											/>
 										</div>
@@ -312,9 +314,11 @@ var ModalEditAskLandlord = React.createClass({
 											<input 
 												id="mobile" 
 												type="number" 
+												minLength="10"
+												maxLength="11"
 												ref={e => this.mobile = e} 
 												onChange={this.checkValidate} 
-												readOnly={!this.state.isEdit} 
+												readOnly={!this.state.isEdit}
 												defaultValue={this.props.landlord.mobile} 
 												className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")}
 											/>
@@ -363,19 +367,31 @@ var SideBarMobile = React.createClass({
 		if(key == 'action') {
 			this.setState({showAction: true});
 			this.setState({showContact: false});
-			$('#actions-full').css({'height': 350, 'border-width': 1});
+			if($('#actions-full')) {
+				$('#actions-full').css({'height': 350, 'border-width': 1});
+			}
 		}else {
 			this.setState({showAction: false});
 			this.setState({showContact: true});
-			$('#contacts-full').css({'height': 350, 'border-width': 1});
+			if($('#contacts-full')) {
+				$('#contacts-full').css({'height': 350, 'border-width': 1});
+			}
 		}
 	},
 
 	close: function() {
-		this.setState({showAction: false});
-		this.setState({showContact: false});
-		$('#actions-full').css({'height': 0, 'border-width': 0});
-		$('#contacts-full').css({'height': 0, 'border-width': 0});
+		if(!!this.state.showAction) {
+			this.setState({showAction: false});
+		}
+		if(!!this.state.showContact) {
+			this.setState({showContact: false});
+		}
+		if($('#actions-full')) {
+			$('#actions-full').css({'height': 0, 'border-width': 0});
+		}
+		if($('#contacts-full')) {
+			$('#contacts-full').css({'height': 0, 'border-width': 0});
+		}
 	},
 
 	componentDidMount: function() {
@@ -538,7 +554,9 @@ var ModalAddLandlord = React.createClass({
 											<label>Mobile <strong>*</strong>:</label>
 											<input 
 												id="mobile" 
-												type="number" 
+												type="number"
+												minLength="10"
+												maxLength="11"
 												name="landlord[mobile]" 
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e} 
@@ -694,7 +712,9 @@ var ModalEditLandlord = React.createClass({
 											<label>Mobile <strong>*</strong>:</label>
 											<input 
 												id="mobile"
-												type="number" 
+												type="number"
+												minLength="10"
+												maxLength="11"
 												name="landlord[mobile]" 
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e} 
@@ -1030,8 +1050,10 @@ var ModalRequestModal = React.createClass({
 											<label className="label-custom">Mobile <strong>*</strong>:</label>
 											<input 
 												id="mobile" 
-												type="number" 
+												type="number"
 												style={style}
+												min="10"
+												max="11"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e} 
 												readOnly={!this.state.isAdd}

@@ -885,7 +885,7 @@ body::-webkit-scrollbar-thumb {
   }
   .action-mobile {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
   }
   .actions-full {
     display: block;
@@ -1110,6 +1110,7 @@ body::-webkit-scrollbar-thumb {
     .actions-full{
       bottom: 90px;
       width: 320px;
+      left: calc((100% - 320px) / 2);
     }
     .sidebar-mobile {
       display: block;
@@ -1310,6 +1311,7 @@ body::-webkit-scrollbar-thumb {
     }
     .actions-full {
       width: 320px;
+      left: calc((100% - 320px) / 2);
     }
     .sidebar-mobile {
       display: block;

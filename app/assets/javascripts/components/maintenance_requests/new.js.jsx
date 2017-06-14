@@ -536,8 +536,9 @@ var MaintenanceRequestsNew = React.createClass({
 						<p> Mobile </p>
 					<input 
 						required 
-						type="tel" 
-						maxLength="10"
+						type="text" 
+						minLength="10"
+						maxLength="11"
 						placeholder="Mobile"
 						ref={(ref) => this.mobile = ref}
 						  id={this.generateAtt("id", "mobile")}
@@ -683,7 +684,8 @@ var MaintenanceRequestsNew = React.createClass({
 										<input 
 											required
 											type="text"
-											maxLength="10"
+											maxLength="11"
+											minLength="10"
 											ref={(ref) => this.agent_mobile = ref}
 											id={this.generateAtt("id", "agent_mobile")} 
 											name={this.generateAtt("name", "agent_mobile")}
