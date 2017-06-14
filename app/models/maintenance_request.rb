@@ -76,7 +76,7 @@ class MaintenanceRequest < ApplicationRecord
 
 
   def self.find_maintenance_requests(current_user, params)
-    current_user_role = current_user.role.roleable_type
+    # current_user_role = current_user.role.roleable_type
     
     if current_user.logged_in_as("AgencyAdmin")
       maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.get_role("AgencyAdmin").id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct

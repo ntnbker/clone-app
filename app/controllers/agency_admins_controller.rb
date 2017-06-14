@@ -12,25 +12,50 @@ class AgencyAdminsController < ApplicationController
   def create
     @agency_admin = AgencyAdmin.new(agency_admin_params)
 
-    
-    if @agency_admin.valid?
+    existing_user = User.find_by(email:params[:agency_admin][:email])
+    if existing_user
+      existing_role = existing_user.get_role("AgencyAdmin").present?
+    end 
+    if existing_user && existing_role == false
+      role = Role.new(user_id:existing_user.id)
       
-      @user = User.create(email:params[:agency_admin][:email],password:SecureRandom.hex(5))
       
-      @agency_admin.save
-      @agency_admin.update_attribute(:user_id, @user.id)
-      role = Role.create(user_id:@user.id)
+      @agency_admin = AgencyAdmin.create(agency_admin_params)
+      
+      
       @agency_admin.roles << role
-
-      flash[:succes] = "You have added a new Agency Administrator to your team"
-      UserSetPasswordEmailWorker.perform_async(@user.id)
-      redirect_to new_agency_admin_path
-      
-      
-    else
-      flash[:danger] = "Something went wrong"
+      role.save
+      flash[:success] = "Thank you for adding another Agency Admin."
+      new_agency_admin_path
+    elsif existing_user && existing_role == true
+      @agency_admin = AgencyAdmin.new(agency_admin_params) 
+      flash[:danger] = "Sorry this person is already an Agency Administrator"
       render :new
-    end
+    else 
+      if @agency_admin.valid?
+      
+        @user = User.create(email:params[:agency_admin][:email],password:SecureRandom.hex(5))
+        
+        @agency_admin.save
+        @agency_admin.update_attribute(:user_id, @user.id)
+        role = Role.create(user_id:@user.id)
+        @agency_admin.roles << role
+
+        flash[:succes] = "You have added a new Agency Administrator to your team"
+        UserSetPasswordEmailWorker.perform_async(@user.id)
+        redirect_to new_agency_admin_path
+      
+      
+      else
+        @agency_admin = AgencyAdmin.new(agency_admin_params)
+        flash[:danger] = "Something went wrong"
+        render :new
+      end 
+    end 
+
+
+
+
   end
   
 
