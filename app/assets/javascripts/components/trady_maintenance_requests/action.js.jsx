@@ -56,14 +56,11 @@ var ContentTradyAction = React.createClass({
 		}else {
 			return(
 				<ul>
-					{ <CreactOrUploadQuote link={link} /> }
+					<CreactOrUploadQuote link={link} />
 					{ !!this.props.assigned_trady &&
 							<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					{
-						(!!this.props.assigned_trady || !!this.props.signed_in_trady) &&
-							<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
-					}
+					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}

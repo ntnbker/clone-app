@@ -743,6 +743,9 @@ var MaintenanceRequestItem = React.createClass({
             }
             
           </div>
+          <div className="view">
+            <a className="btn-view" href={this.props.link + "/" + maintenance_request.id}>View</a>
+          </div>
         </div>
       </div>
     );

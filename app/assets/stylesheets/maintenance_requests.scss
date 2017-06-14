@@ -91,8 +91,7 @@ form#new_maintenance_request {
         border-radius: 10px;
         margin: 0;
         padding: 0;
-        height: 15px;
-        line-height: 15px;
+        height: 7px;
         overflow: hidden;
         position: relative;
         .progress-bar {
@@ -140,8 +139,42 @@ form#new_maintenance_request {
     select {
         width: 100%;
     }
-    .fileInput {
-        margin-bottom: 5px;
+    .browse-wrap {
+        top: 0;
+        left: 0;
+        margin: 10px 0px;
+        cursor: pointer;
+        overflow: hidden;
+        padding: 20px 30px;
+        background-color: #f6f7f8;
+        border: solid 1px #d2d2d7;
+        position: relative;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .title {
+        color:#3b5998;
+        font-size:14px;
+        font-weight:bold;
+        font-family:tahoma, arial, sans-serif;
+        i {
+            display: inline-block;
+            margin-right: 5px;
+        }
+    }
+    .upload {
+        right:0;
+        margin:0;
+        bottom:0;
+        padding:0;
+        opacity:0;
+        height:300px;
+        outline:none;
+        cursor:inherit;
+        position:absolute;
+        font-size:1000px !important;
     }
     #img-render {
         margin-top: 5px;
@@ -308,7 +341,7 @@ form#new_maintenance_request {
             h3.heading {
                 display: inline-block;
                 a {
-                    font-size: 20px;
+                    font-size: 26px;
                     color: #849aaa;
                     text-decoration: none;
                     letter-spacing: .1px;
@@ -339,6 +372,24 @@ form#new_maintenance_request {
                 }
                 font-size: 15px;
                 color: #69605b;
+            }
+        }
+        .view {
+            .btn-view {
+                width: 100px;
+                height: 30px;
+                border: none;
+                display: inline-block;
+                border-radius: 5px;
+                text-align: center;
+                line-height: 30px;
+                margin-top: 5px;
+                text-decoration: none;
+                color: #fff;
+                background-color: #34b249;
+                &:hover, &:active {
+                    background-color: #2FA342;
+                }
             }
         }
         .pagination {
@@ -626,6 +677,11 @@ form#new_maintenance_request {
                 max-height: 250px;
                 min-height: 250px;
             }
+        }
+    }
+    .heading {
+        a {
+            font-size: 18px;
         }
     }
     .content {

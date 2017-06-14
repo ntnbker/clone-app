@@ -3,8 +3,8 @@ var BDM = React.createClass({
         return <div>
             <p> Bdm verification </p>
             <input type="text" placeholder="Bdm verification"
-                    name="user[agency_admin_attributes][agency_attributes][bdm_verification_status]"
-                    id="user_agency_admin_attributes_agency_attributes_bdm_verification_status" required />
+                    name="user[agency_admin_attributes][agency_attributes][bdm_verification_id]"
+                    id="user_agency_admin_attributes_agency_attributes_bdm_verification_id" required />
         </div>
     }
 });

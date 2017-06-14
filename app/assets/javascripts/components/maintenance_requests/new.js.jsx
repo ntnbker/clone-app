@@ -309,17 +309,18 @@ var MaintenanceRequestsNew = React.createClass({
 							var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
 							var progress = $('.progress');
 							if(progress.length == 0) {
-								$('<div class="progress" style="width: 300px"><div class="progress-bar" style="width: ' +  percentComplete + '%">' + percentComplete + '% </div></div>').insertAfter("#input-file");
+								$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
 							}else {
 								var progressBar = $('.progress .progress-bar');
 								progressBar.css('width', percentComplete + '%');
-								progressBar.html(percentComplete + '%');
 							}
+							$('#title-upload').html('Uploading ' + percentComplete + '%');
 						}, false);
 						return xhr;
 					},
 					success: function() {
 						setTimeout(function() {
+							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
 							$('.progress').remove();
 						}, 1000);
 						var image = {
@@ -584,14 +585,20 @@ var MaintenanceRequestsNew = React.createClass({
 						<p id="errorboxdescription" className="error"></p>
 
 						<p> Images </p>
-						<input
-							multiple
-							type="file"
-							id="input-file"
-							className="fileInput"
-							accept="image/jpeg, image/png"
-							onChange={(e)=>this._handleImageChange(e)}
-						/>
+						<div className="browse-wrap">
+							<div className="title" id="title-upload">
+								<i className="fa fa-upload" />
+								Choose a file to upload
+							</div>
+							<input 
+								multiple
+								type="file"
+								id="input-file"
+								className="upload inputfile" 
+								accept="image/jpeg, image/png"
+								onChange={(e)=>this._handleImageChange(e)}
+							/>
+						</div>
 						<div id="img-render">
 							{
 								images.map((img, index) => {
@@ -618,11 +625,11 @@ var MaintenanceRequestsNew = React.createClass({
 								<input 
 									required
 									type="text"
-								 	onBlur={this.checkAgentEmail}
+									onBlur={this.checkAgentEmail}
 									ref={(ref) => this.agent_email = ref}
-								id={this.generateAtt("id", "agent_email")} 
-							   	name={this.generateAtt("name", "agent_email")}
-							 	/>
+									id={this.generateAtt("id", "agent_email")} 
+									name={this.generateAtt("name", "agent_email")}
+								/>
 								<p id="errAgentEamil" className="error"></p>
 								{	!this.state.isAgent ?
 										<div>
@@ -631,9 +638,9 @@ var MaintenanceRequestsNew = React.createClass({
 											required 
 											type="text"
 											ref={(ref) => this.real_estate_office = ref}
-										id={this.generateAtt("id", "real_estate_office")} 
-									   	name={this.generateAtt("name", "real_estate_office")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "real_estate_office")} 
+											name={this.generateAtt("name", "real_estate_office")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 														e.target.classList.add("border_on_error");
 														document.getElementById("errRealEstateOffice").textContent = strRequireText;
@@ -654,9 +661,9 @@ var MaintenanceRequestsNew = React.createClass({
 											required
 											type="text"
 											ref={(ref) => this.agent_name = ref}
-										id={this.generateAtt("id", "agent_name")} 
-									   	name={this.generateAtt("name", "agent_name")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "agent_name")} 
+											name={this.generateAtt("name", "agent_name")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 													e.target.classList.add("border_on_error");
 													document.getElementById("errAgentName").textContent = strRequireName;
