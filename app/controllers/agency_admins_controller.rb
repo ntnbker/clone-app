@@ -30,7 +30,7 @@ class AgencyAdminsController < ApplicationController
     elsif existing_user && existing_role == true
       @agency_admin = AgencyAdmin.new(agency_admin_params) 
       flash[:danger] = "Sorry this person is already an Agency Administrator"
-      render :new
+      redirect_to new_agency_admin_path
     else 
       if @agency_admin.valid?
       
