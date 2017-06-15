@@ -7,12 +7,16 @@ var TenantSideBarMobile = React.createClass({
 
 	show: function() {
 		this.setState({showContact: true});
-		$('#contacts-full').css({'height': 150, 'border-width': 1});
+		if($('#contacts-full').length > 0) {
+			$('#contacts-full').css({'height': 150, 'border-width': 1});
+		}
 	},
 
 	close: function() {
 		this.setState({showContact: false});
-		$('#contacts-full').css({'height': 0, 'border-width': 0});
+		if($('#contacts-full').length > 0) {
+			$('#contacts-full').css({'height': 0, 'border-width': 0});
+		}
 	},
 
 	componentDidMount: function() {

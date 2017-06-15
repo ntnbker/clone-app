@@ -308,11 +308,11 @@ body::-webkit-scrollbar-thumb {
     background-color: $color-white;
     margin-right: 25px;
     max-width: none;
-    width: calc(100% - 345px);
+    width: calc(100% - 365px);
     padding: 40px 30px 50px;
   }
   .sidebar {
-    width: 245px;
+    width: 270px;
     float: right;
   }
   .post {
@@ -680,8 +680,8 @@ body::-webkit-scrollbar-thumb {
       }
     }
     .activity-content {
-      height: 280px;
-      overflow-y: scroll;
+      max-height: 280px;
+      overflow-y: auto;
       &::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         border-radius: 15px;
@@ -710,7 +710,7 @@ body::-webkit-scrollbar-thumb {
         margin-bottom: 0;
       }
       li {
-        margin-left: 34px;
+        margin-left: 20px;
         height: 50px;
         margin-bottom: 0px;
         cursor: pointer;
@@ -846,8 +846,8 @@ body::-webkit-scrollbar-thumb {
     width: 100%;
     padding-top: 20px;
     .activity-content {
-      height: 280px;
-      overflow-y: scroll !important;
+      max-height: 280px;
+      overflow-y: auto !important;
       &::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         border-radius: 15px;
@@ -885,11 +885,11 @@ body::-webkit-scrollbar-thumb {
   }
   .action-mobile {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
   }
   .actions-full {
     display: block;
-    background-color: $color-green;
+    background-color: $color-white;
     border-color: $color-grey-dark;
     border-style: solid;
     border-width: 0;
@@ -1110,6 +1110,7 @@ body::-webkit-scrollbar-thumb {
     .actions-full{
       bottom: 90px;
       width: 320px;
+      left: calc((100% - 320px) / 2);
     }
     .sidebar-mobile {
       display: block;
@@ -1220,6 +1221,7 @@ body::-webkit-scrollbar-thumb {
     .actions-full {
       width: 355px;
       bottom: 75px;
+      left: calc((100% - 355px) / 2);
     }
     .sidebar-mobile {
       display: flex;
@@ -1310,6 +1312,7 @@ body::-webkit-scrollbar-thumb {
     }
     .actions-full {
       width: 320px;
+      left: calc((100% - 320px) / 2);
     }
     .sidebar-mobile {
       display: block;
@@ -1391,6 +1394,7 @@ body::-webkit-scrollbar-thumb {
     .actions-full {
       width: 375px;
       bottom: 100px;
+      left: calc((100% - 375px) / 2);
     }
     .sidebar-mobile {
       display: block;
@@ -1416,7 +1420,7 @@ body::-webkit-scrollbar-thumb {
     .section {
       float: left;
       margin-right: 10px;
-      width: calc(100% - 290px);
+      width: calc(100% - 310px);
       padding: 40px 15px 50px;
     }
     .post {
@@ -1462,7 +1466,7 @@ body::-webkit-scrollbar-thumb {
     .section {
       float: left;
       margin-right: 20px;
-      width: calc(100% - 315px);
+      width: calc(100% - 335px);
       padding: 40px 25px 50px;
     }
     .post {
@@ -1507,12 +1511,12 @@ body::-webkit-scrollbar-thumb {
   }
   @media (min-width: 1366px) {
     .main-summary {
-      margin: auto 50px;
+      margin: auto 30px;
     }
     .section {
       float: left;
       margin-right: 25px;
-      width: calc(100% - 345px);
+      width: calc(100% - 365px);
       padding: 40px 30px 50px;
     }
     .post {

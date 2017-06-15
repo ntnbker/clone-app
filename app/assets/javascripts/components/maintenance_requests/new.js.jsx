@@ -94,7 +94,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleImageChange: function(e) {
-		var files = e.files;
+		var files = e.target.files;
 		var reader = new FileReader();
 		var images = this.state.images;
 				
@@ -116,7 +116,7 @@ var MaintenanceRequestsNew = React.createClass({
 			if (!fileAlreadyExists) {
 				reader.readAsDataURL(file);
 				reader.onload = function(e) {
-					images.push({url: e.target.result, fileInfo: file});
+					images.push({url: e.target.result, fileInfo: file, isUpload: false});
 					readFile(index + 1);
 				}
 			}
@@ -125,6 +125,7 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		}
 		readFile(0);
+		e.target.value = '';
 	},
 
 	validDate: function(flag) {
@@ -199,9 +200,9 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	getFormData: function (object) {
-	const formData = new FormData();
-	Object.keys(object).forEach(key => formData.append(key, object[key]));
-	return formData;
+		const formData = new FormData();
+		Object.keys(object).forEach(key => formData.append(key, object[key]));
+		return formData;
 	},
 
 	validateEmail: function(inputText, e, agentFlag){
@@ -243,154 +244,226 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	updateImage: function(image) {
-  	let {dataImages} = this.state;
-  	dataImages.push(image);
-  	this.setState({
-  		dataImages: dataImages
-  	});
-  },
-
-  removeImage: function(file) {
-  	let {dataImages} = this.state;
-  	for(var i = 0; i < this.state.dataImages.length; i++ ){
-  		var image = this.state.dataImages[i];
-  		if(file.name == image.metadata.filename) {
-  			dataImages.splice(i, 1);
-  			break;
-  		}
-  	}
+		let {dataImages} = this.state;
+		dataImages.push(image);
 		this.setState({
 			dataImages: dataImages
 		});
-  },
+	},
+
+	removeImage: function(index) {
+		let {images, dataImages} = this.state;
+		images.splice(index, 1);
+		dataImages.splice(index, 1);
+		this.setState({
+			images: images,
+			dataImages: dataImages
+		});
+	},
+
+	loadImage: function(e, image, key) {
+		const img = e.target;
+		const maxSize = 250000; // byte
+		const self = this;
+		if(!image.isUpload) {
+			var target_img = {};
+			var {images} = this.state;
+			var file = image.fileInfo;
+			image.isUpload = true;
+			images[key] = image;
+			this.setState({
+				images: images
+			});
+
+			if(file.size > maxSize) {
+				var quality =  Math.ceil(maxSize/file.size * 100);
+				target_img.src = self.reduceQuality(img, file.type, quality).src;
+			}else {
+				target_img.src = image.url;
+			}
+
+			var filename = file;
+			const options = {
+				extension: filename.name.match(/(\.\w+)?$/)[0],
+				_: Date.now(),
+			}
+
+			// start upload file into S3
+			$.getJSON('/images/cache/presign', options, function(result) {
+				var fd = new FormData();
+				$.each(result.fields, function(key, value) {
+					fd.append(key, value);
+				});
+
+				fd.append('file', self.dataURItoBlob(target_img.src));
+				$.ajax({
+					type: 'POST',
+					url: result['url'],
+					enctype: 'multipart/form-data',
+					processData: false,
+					contentType: false,
+					data: fd,
+					xhr: function () {
+						var xhr = new window.XMLHttpRequest();
+						xhr.upload.addEventListener("progress", function (evt) {
+							var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+							var progress = $('.progress');
+							if(progress.length == 0) {
+								$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
+							}else {
+								var progressBar = $('.progress .progress-bar');
+								progressBar.css('width', percentComplete + '%');
+							}
+							$('#title-upload').html('Uploading ' + percentComplete + '%');
+						}, false);
+						return xhr;
+					},
+					success: function() {
+						setTimeout(function() {
+							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+							$('.progress').remove();
+						}, 1000);
+						var image = {
+							id: result.fields.key.match(/cache\/(.+)/)[1],
+							storage: 'cache',
+							metadata: {
+								size:  file.size,
+								filename:  file.name.match(/[^\/\\]*$/)[0],
+								mime_type: file.type
+							}
+						};
+						self.updateImage(image);
+					}
+				});
+			});
+		}
+	},
 
 	componentDidMount: function() {
-		let currentThis = this;
-	  $('[type=file]').fileupload({
-	    add: function(e, data) {
-	      data.progressBar = $('<div class="progress" style="width: 300px"><div class="progress-bar"></div></div>').insertAfter(".form-group");
-	      var options = {
-	        extension: data.files[0].name.match(/(\.\w+)?$/)[0], // set extension
-	        _: Date.now(),                                       // prevent caching
-	      }
-	      $.getJSON('/images/cache/presign', options, function(result) {
-	      	debugger
-	        data.formData = result['fields'];
-	        data.url = result['url'];
-	        data.paramName = 'file';
-	        data.submit();
-	      });
-	    },
-	    progress: function(e, data) {
-	      var progress = parseInt(data.loaded / data.total * 100, 10);
-	      var percentage = progress.toString() + '%'
-	      data.progressBar.find(".progress-bar").css("width", percentage).html(percentage);
-	    },
-	    done: function(e, data) {
-	      data.progressBar.remove();
-	      var image = {
-	        id: data.formData.key.match(/cache\/(.+)/)[1], // we have to remove the prefix part
-	        storage: 'cache',
-	        metadata: {
-	          size:      data.files[0].size,
-	          filename:  data.files[0].name.match(/[^\/\\]*$/)[0], // IE returns full path
-	          mime_type: data.files[0].type
-	        }
-	      }
-	     	self.updateImage(image);
-	      self._handleImageChange(data);
-	    }
-	  });
 
-    Dropzone.autoDiscover = false;
-    this.dropzone = new Dropzone('#demo-upload', {
-        parallelUploads: 1,
-        thumbnailHeight: 120,
-        thumbnailWidth: 120,
-        maxFilesize: 10,
-        filesizeBase: 1000,
-    });
+		/*Dropzone.autoDiscover = false;
+		this.dropzone = new Dropzone('#upload-image', {
+			maxFilesize: 10,
+			resizeWidth: 960,
+			resizeHeight: 600,
+			filesizeBase: 1000,
+			resizeQuality: 0.5,
+			parallelUploads: 10,
+			thumbnailWidth: 120,
+			addRemoveLinks: true,
+			thumbnailHeight: 120,
+			dictRemoveFile: "Remove"
+		});
 
-    this.dropzone.on("addedfile", function(file){
-	      var removeButton = Dropzone.createElement("<a href=\"#\">Remove file</a>");
-        var _this = this;
-        removeButton.addEventListener("click", function(e) {
-        	currentThis.removeImage(file); 
-          e.preventDefault();
-          e.stopPropagation();
-          _this.removeFile(file);
-        });
-        file.previewElement.appendChild(removeButton);
-    });
+		this.dropzone.on("removedfile", function(file) {
+			currentThis.removeImage(file); 
+		});
 
-    var minSteps = 6,
-        maxSteps = 60,
-        timeBetweenSteps = 100,
-        bytesPerStep = 100000;
+		this.dropzone.uploadFiles = function(files) {
+			var self = this;
 
-    this.dropzone.uploadFiles = function(files) {
-      var self = this;
+			for (var i = 0; i < files.length; i++) {
+				var file = files[i];
+				var filename = file;
+				const options = {
+					extension: filename.name.match(/(\.\w+)?$/)[0],
+					_: Date.now(),
+				}
 
-      for (var i = 0; i < files.length; i++) {
-
-      	var file = files[i];
-      	var filename = file;
-      	const options = {
-	        extension: filename.name.match(/(\.\w+)?$/)[0], // set extension
-	        _: Date.now(),                                       // prevent caching
-	      }
-
-      	// start upload file into S3
-	      $.getJSON('/images/cache/presign', options, function(result) {
-	      	var fd = new FormData();
-	      	$.each(result.fields, function(key, value) {
-	      		fd.append(key, value);
-	      	});
-	      	fd.append('file', file);
-	      	$.ajax({
-						type: 'POST',
-						url: result['url'],
-						enctype: 'multipart/form-data',
-						processData: false,
-	    			contentType: false,
-	          data: fd,
-	          xhr: function () {
-				        var xhr = new window.XMLHttpRequest();
-				        //Download progress
-				        xhr.upload.addEventListener("progress", function (evt) {
-				            var percentComplete = evt.loaded / evt.total;
-			              file.upload = {
-			                progress: 100 * percentComplete,
-			                total: evt.total,
-			                bytesSent: evt.loaded
-			              };
-			              self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
-			              if (file.upload.progress == 100) {
-			                file.status = Dropzone.SUCCESS;
-			                self.emit("success", file, 'success', null);
-			                self.emit("complete", file);
-			                self.processQueue();
-			              }
-				        }, false);
-				        return xhr;
-				    },
-	          success: function() {
-	          	var image = {
-				        id: result.fields.key.match(/cache\/(.+)/)[1],
-				        storage: 'cache',
-				        metadata: {
-				          size:      file.size,
-				          filename:  file.name.match(/[^\/\\]*$/)[0],
-				          mime_type: file.type
-				        }
-				      }
-				     	currentThis.updateImage(image);
-	          }
+				// start upload file into S3
+				$.getJSON('/images/cache/presign', options, function(result) {
+					var fd = new FormData();
+					$.each(result.fields, function(key, value) {
+						fd.append(key, value);
 					});
+					var source = {};
+					var reader = new FileReader();
+					reader.readAsDataURL(file);
+					reader.onload = function(e) {
+						source = e.target.result;
+						fd.append('file', currentThis.dataURItoBlob(source));
+						$.ajax({
+							type: 'POST',
+							url: result['url'],
+							enctype: 'multipart/form-data',
+							processData: false,
+							contentType: false,
+							data: fd,
+							xhr: function () {
+								var xhr = new window.XMLHttpRequest();
+								xhr.upload.addEventListener("progress", function (evt) {
+									var percentComplete = evt.loaded / evt.total;
+									file.upload = {
+										progress: 100 * percentComplete,
+										total: evt.total,
+										bytesSent: evt.loaded
+									};
+									self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
+									if (file.upload.progress == 100) {
+										file.status = Dropzone.SUCCESS;
+										self.emit("success", file, 'success', null);
+										self.emit("complete", file);
+										self.processQueue();
+									}
+								}, false);
+								return xhr;
+							},
+							success: function() {
+								var image = {
+									id: result.fields.key.match(/cache\/(.+)/)[1],
+									storage: 'cache',
+									metadata: {
+										size:  file.size,
+										filename:  file.name.match(/[^\/\\]*$/)[0],
+										mime_type: file.type
+									}
+								};
+								currentThis.updateImage(image);
+							}
+						});
+					}
 	      });
       }
-    }
+    }*/
   },
+
+	reduceQuality: function(source_img, type, quality) {
+		var mime_type = "image/jpeg";
+		if(typeof output_format !== "undefined" && output_format=="image/png"){
+			mime_type = "image/png";
+		}
+
+
+		var cvs = document.createElement('canvas');
+		cvs.width = source_img.naturalWidth;
+		cvs.height = source_img.naturalHeight;
+		var ctx = cvs.getContext("2d").drawImage(source_img, 0, 0);
+		var newImageData = cvs.toDataURL(mime_type, quality/100);
+		var result_image = new Image();
+		result_image.src = newImageData;
+		return result_image;
+	},
+
+  dataURItoBlob: function(dataURI) {
+    'use strict'
+    var byteString, 
+        mimestring 
+
+    if(dataURI.split(',')[0].indexOf('base64') !== -1 ) {
+        byteString = atob(dataURI.split(',')[1])
+    } else {
+        byteString = decodeURI(dataURI.split(',')[1])
+    }
+
+    mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+    var content = new Array();
+    for (var i = 0; i < byteString.length; i++) {
+        content[i] = byteString.charCodeAt(i)
+    }
+
+    return new Blob([new Uint8Array(content)], {type: mimestring});
+	},
 
 	render: function(){
 		let {images} = this.state;
@@ -406,7 +479,7 @@ var MaintenanceRequestsNew = React.createClass({
 		return (
 			<div>
 				<h1 className="text-center">New Maintenance Request</h1>
-				<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
+				<form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
 					<input name="utf8" type="hidden" value="✓" /> 
 					<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 					<div className="field">
@@ -443,8 +516,8 @@ var MaintenanceRequestsNew = React.createClass({
 							type="email" 
 							placeholder="E-mail"
 							ref={(ref) => this.email = ref}
-				   	id={this.generateAtt("id", "email")}
-						  name={this.generateAtt("name", "email")}
+							id={this.generateAtt("id", "email")}
+							name={this.generateAtt("name", "email")}
 							onBlur={(e) => {
 								if (!e.target.value.length) {
 									document.getElementById("errorboxemail").textContent = strRequireEmail;
@@ -463,8 +536,9 @@ var MaintenanceRequestsNew = React.createClass({
 						<p> Mobile </p>
 					<input 
 						required 
-						type="tel" 
-						maxLength="10"
+						type="text" 
+						minLength="10"
+						maxLength="11"
 						placeholder="Mobile"
 						ref={(ref) => this.mobile = ref}
 						  id={this.generateAtt("id", "mobile")}
@@ -498,26 +572,49 @@ var MaintenanceRequestsNew = React.createClass({
 							type="text"
 							ref={(ref) => this.maintenance_heading = ref}
 							id={this.generateAtt("id", "maintenance_heading")}
-						  name={this.generateAtt("name", "maintenance_heading")}
-					 	/>
+							name={this.generateAtt("name", "maintenance_heading")}
+						/>
 						<p id="errorboxheading" className="error"></p>
 
 						<p> Maintenance description </p>
 						<textarea 
 							ref={(ref) => this.maintenance_description = ref}
 							id={this.generateAtt("id", "maintenance_description")} 
-						  name={this.generateAtt("name", "maintenance_description")}
+							name={this.generateAtt("name", "maintenance_description")}
 						>
 						</textarea>
 						<p id="errorboxdescription" className="error"></p>
 
 						<p> Images </p>
-						<form action="/" className="dropzone needsclick dz-clickable" id="demo-upload">
-		          <div className="dz-message needsclick">
-		            Drop files here or click to upload.
-		          </div>
-		        </form>
-
+						<div className="browse-wrap">
+							<div className="title" id="title-upload">
+								<i className="fa fa-upload" />
+								Choose a file to upload
+							</div>
+							<input 
+								multiple
+								type="file"
+								id="input-file"
+								className="upload inputfile" 
+								accept="image/jpeg, image/png"
+								onChange={(e)=>this._handleImageChange(e)}
+							/>
+						</div>
+						<div id="img-render">
+							{
+								images.map((img, index) => {
+									return (
+										<div key={index} className="img">
+											<img  
+												src={img.url}
+												onLoad={(e, image, key) => this.loadImage(e, img, index)}
+											/>
+											<a className="remove" onClick={(key) => this.removeImage(index)}>Remove</a>
+										</div>
+									);
+								})
+							}
+						</div>
 					</div>
 
 					{ (!this.props.current_user || this.props.current_user.tenant) ?
@@ -529,11 +626,11 @@ var MaintenanceRequestsNew = React.createClass({
 								<input 
 									required
 									type="text"
-								 	onBlur={this.checkAgentEmail}
+									onBlur={this.checkAgentEmail}
 									ref={(ref) => this.agent_email = ref}
-								id={this.generateAtt("id", "agent_email")} 
-							   	name={this.generateAtt("name", "agent_email")}
-							 	/>
+									id={this.generateAtt("id", "agent_email")} 
+									name={this.generateAtt("name", "agent_email")}
+								/>
 								<p id="errAgentEamil" className="error"></p>
 								{	!this.state.isAgent ?
 										<div>
@@ -542,9 +639,9 @@ var MaintenanceRequestsNew = React.createClass({
 											required 
 											type="text"
 											ref={(ref) => this.real_estate_office = ref}
-										id={this.generateAtt("id", "real_estate_office")} 
-									   	name={this.generateAtt("name", "real_estate_office")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "real_estate_office")} 
+											name={this.generateAtt("name", "real_estate_office")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 														e.target.classList.add("border_on_error");
 														document.getElementById("errRealEstateOffice").textContent = strRequireText;
@@ -565,9 +662,9 @@ var MaintenanceRequestsNew = React.createClass({
 											required
 											type="text"
 											ref={(ref) => this.agent_name = ref}
-										id={this.generateAtt("id", "agent_name")} 
-									   	name={this.generateAtt("name", "agent_name")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "agent_name")} 
+											name={this.generateAtt("name", "agent_name")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 													e.target.classList.add("border_on_error");
 													document.getElementById("errAgentName").textContent = strRequireName;
@@ -587,11 +684,12 @@ var MaintenanceRequestsNew = React.createClass({
 										<input 
 											required
 											type="text"
-											maxLength="10"
+											maxLength="11"
+											minLength="10"
 											ref={(ref) => this.agent_mobile = ref}
-										id={this.generateAtt("id", "agent_mobile")} 
-									   	name={this.generateAtt("name", "agent_mobile")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "agent_mobile")} 
+											name={this.generateAtt("name", "agent_mobile")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 													e.target.classList.add("border_on_error");
 													document.getElementById("errAgentMobile").textContent = strRequireMobile;

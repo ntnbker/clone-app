@@ -19,32 +19,41 @@ var Carousel = React.createClass({
 		});
 	},
 
-	sliderPrev: function(argument) {
+	sliderPrev: function() {
 		var stpos = this.state.stpos - 1;
-		if(stpos < 0) stpos = this.state.stlen - 1;
+		if(stpos < 0) {
+			stpos = this.state.stlen - 1;
+		}
 		this.sliderRun(stpos);
 	},
 
 	sliderNext: function() {
 		var stpos = this.state.stpos + 1;
-		if(stpos >= this.state.stlen) stpos = 0;
+		if(stpos >= this.state.stlen) {
+			stpos = 0;
+		}
 		this.sliderRun(stpos);
+	},
+
+	setWidth: function(width) {
+		if(width) {
+			this.setState({
+				stwidth: width
+			});
+		}
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		if($('#slider-detail')) {
-			this.setState({
-				stwidth: $('#slider-detail').width()
-			});
+		var sliderDetail = $('#slider-detail')
+		if(sliderDetail.length > 0) {
+			this.setWidth(sliderDetail.width())
 			
 			$( window ).resize(function() {
-				self.setState({
-					stwidth: $('#slider-detail').width()
-				});
+				self.setWidth(sliderDetail.width());
 			});
 
-			$("#slider-detail").on("touchstart", function(event){
+			sliderDetail.on("touchstart", function(event){
 				var xClick = event.originalEvent.touches[0].pageX;
 				$(this).one("touchmove", function(event){
 					var xMove = event.originalEvent.touches[0].pageX;
@@ -55,7 +64,7 @@ var Carousel = React.createClass({
 						self.sliderPrev();
 					}
 				});
-				$("#slider-detail").on("touchend", function(){
+				sliderDetail.on("touchend", function(){
 					$(this).off("touchmove");
 				});
 			});
