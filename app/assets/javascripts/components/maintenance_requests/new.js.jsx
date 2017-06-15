@@ -609,7 +609,7 @@ var MaintenanceRequestsNew = React.createClass({
 												src={img.url}
 												onLoad={(e, image, key) => this.loadImage(e, img, index)}
 											/>
-											<a className="remove" onClick={(index) => this.removeImage(index)}>Remove</a>
+											<a className="remove" onClick={(key) => this.removeImage(index)}>Remove</a>
 										</div>
 									);
 								})

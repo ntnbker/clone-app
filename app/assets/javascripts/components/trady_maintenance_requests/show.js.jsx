@@ -11,7 +11,7 @@ var TradySideBarMobile = React.createClass({
 			this.setState({showAction: true});
 			this.setState({showContact: false});
 			if($('#actions-full').length > 0) {
-				$('#actions-full').css({'height': 250, 'border-width': 1});
+				$('#actions-full').css({'height': 300, 'border-width': 1});
 			}
 		}else {
 			this.setState({showAction: false});
@@ -65,8 +65,9 @@ var TradySideBarMobile = React.createClass({
 				</div>
 				<div className="action-mobile">
 					{
-						<TradyActionMobile 
+						<TradyActionMobile
 							close={this.close} 
+							trady={this.props.trady}
 							landlord={this.props.landlord} 
 							invoices={this.props.invoices}
 							assigned_trady={this.props.assigned_trady} 
@@ -529,7 +530,8 @@ var TradyMaintenanceRequest = React.createClass({
 							onModalWith={(modal) => this.onModalWith(modal)} 
 							maintenance_request={this.state.maintenance_request} 
 						/>
-						<TradyAction 
+						<TradyAction
+							trady={this.props.trady}
 							landlord={this.state.landlord} 
 							invoices={this.props.invoices}
 							assigned_trady={this.props.assigned_trady}
@@ -543,6 +545,7 @@ var TradyMaintenanceRequest = React.createClass({
 					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<TradySideBarMobile 
+					trady={this.props.trady}
 					agent={this.props.agent}
 					tenants={this.props.tenants}
 					landlord={this.state.landlord} 

@@ -62,11 +62,21 @@ var ModalAddAskLandlord = React.createClass({
 			}
 
 			case "mobile": {
-				if(e.target.value == "") {
+				let value = e.target.value
+				if(value == "") {
 					this.setState({errorMobile: true});
 				}else {
-					this.setState({errorMobile: false});
-				}        
+					if( 10 <= value.length && value.length <= 11) {
+						this.setState({errorMobile: false});
+					}else {
+						if(value.length > 11) {
+							value = value.substring(0, 11);
+							e.target.value = value;
+						}else if(value.length < 10) {
+							this.setState({errorMobile: true});
+						}
+					}
+				}
 				break;
 			}
 
@@ -220,11 +230,21 @@ var ModalEditAskLandlord = React.createClass({
 			}
 
 			case "mobile": {
-				if(e.target.value == "") {
+				let value = e.target.value
+				if(value == "") {
 					this.setState({errorMobile: true});
 				}else {
-					this.setState({errorMobile: false});
-				}        
+					if( 10 <= value.length && value.length <= 11) {
+						this.setState({errorMobile: false});
+					}else {
+						if(value.length > 11) {
+							value = value.substring(0, 11);
+							e.target.value = value;
+						}else if(value.length < 10) {
+							this.setState({errorMobile: true});
+						}
+					}
+				}
 				break;
 			}
 
@@ -461,11 +481,21 @@ var ModalAddLandlord = React.createClass({
 			}
 
 			case "mobile": {
-				if(e.target.value == "") {
+				let value = e.target.value
+				if(value == "") {
 					this.setState({errorMobile: true});
 				}else {
-					this.setState({errorMobile: false});
-				}        
+					if( 10 <= value.length && value.length <= 11) {
+						this.setState({errorMobile: false});
+					}else {
+						if(value.length > 11) {
+							value = value.substring(0, 11);
+							e.target.value = value;
+						}else if(value.length < 10) {
+							this.setState({errorMobile: true});
+						}
+					}
+				}      
 				break;
 			}
 
@@ -619,11 +649,21 @@ var ModalEditLandlord = React.createClass({
 			}
 
 			case "mobile": {
-				if(e.target.value == "") {
+				let value = e.target.value
+				if(value == "") {
 					this.setState({errorMobile: true});
 				}else {
-					this.setState({errorMobile: false});
-				}        
+					if( 10 <= value.length && value.length <= 11) {
+						this.setState({errorMobile: false});
+					}else {
+						if(value.length > 11) {
+							value = value.substring(0, 11);
+							e.target.value = value;
+						}else if(value.length < 10) {
+							this.setState({errorMobile: true});
+						}
+					}
+				}
 				break;
 			}
 
@@ -814,19 +854,32 @@ var ModalRequestModal = React.createClass({
 			}
 
 			case "mobile": {
-				if(e.target.value == "") {
+				let value = e.target.value;
+				if(value == "") {
 					this.setState({
 						isDisable: true,
 						errorMobile: true
 					});
 				}else {
-					this.setState({
-						isDisable: false,
-						errorMobile: false
-					});
-				}        
-				this.state.trady.mobile = e.target.value;
-					this.forceUpdate();
+					if( 10 <= value.length && value.length <= 11) {
+						this.setState({
+							isDisable: false,
+							errorMobile: false
+						});
+					}else {
+						if(value.length > 11) {
+							value = value.substring(0, 11);
+							e.target.value = value;
+						}else if(value.length < 10) {
+							this.setState({
+								isDisable: true,
+								errorMobile: true
+							});
+						}
+					}
+				}
+				this.state.trady.mobile = value;		
+				this.forceUpdate();
 				break;
 			}
 
@@ -843,7 +896,7 @@ var ModalRequestModal = React.createClass({
 					});
 				}
 				this.state.trady.email = e.target.value;
-					this.forceUpdate();
+				this.forceUpdate();
 				break;
 			}
 		}
@@ -851,6 +904,21 @@ var ModalRequestModal = React.createClass({
 
 	componentWillMount: function() {
 		this.selectTrady(this.state.maintenance_request.trady_id);
+	},
+
+	checkLength: function(e) {
+		var value = e.target.value;
+		if(value.length > 11) {
+			this.setState({
+				isDisable: true,
+				errorMobile: true,
+			});
+		}else {
+			this.setState({
+				isDisable: false,
+				errorMobile: false
+			});
+		}
 	},
 
 	selectTrady: function(id) {
@@ -1052,12 +1120,11 @@ var ModalRequestModal = React.createClass({
 												id="mobile" 
 												type="number"
 												style={style}
-												min="10"
-												max="11"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e} 
 												readOnly={!this.state.isAdd}
 												onChange={this.checkValidate}
+												onKeyPress={(e) => this.checkLength(e)}
 												value={!!this.state.trady.mobile ? this.state.trady.mobile : ""} 
 												className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")} 
 											/>

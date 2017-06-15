@@ -353,7 +353,7 @@ var ListMaintenanceRequest = React.createClass({
       data: [],
       prePage: 3,
       dataShow: [],
-      sortByDate: "Oldest to Newest",
+      sortByDate: "Newest to Oldest",
       valueAction: "",
       filterDate: [
         {value: "Oldest to Newest", name: "Oldest to Newest"},

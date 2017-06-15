@@ -1221,6 +1221,7 @@ body::-webkit-scrollbar-thumb {
     .actions-full {
       width: 355px;
       bottom: 75px;
+      left: calc((100% - 355px) / 2);
     }
     .sidebar-mobile {
       display: flex;
@@ -1393,6 +1394,7 @@ body::-webkit-scrollbar-thumb {
     .actions-full {
       width: 375px;
       bottom: 100px;
+      left: calc((100% - 375px) / 2);
     }
     .sidebar-mobile {
       display: block;
