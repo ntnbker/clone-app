@@ -115,7 +115,7 @@ class MaintenanceRequestsController < ApplicationController
                   #
                   contact = User.find_by(email:value)
                   if contact
-                    existing_role = contact.get_role("AgencyAdmin").present?
+                    existing_role = contact.get_role("Tenant").present?
                   end 
                   
                   if contact && existing_role == false
@@ -173,7 +173,7 @@ class MaintenanceRequestsController < ApplicationController
                     #
                     contact = User.find_by(email:value)
                     if contact
-                      existing_role = contact.get_role("AgencyAdmin").present?
+                      existing_role = contact.get_role("Tenant").present?
                     end 
                     
                     if contact && existing_role == false
@@ -232,7 +232,7 @@ class MaintenanceRequestsController < ApplicationController
                     #
                     contact = User.find_by(email:value)
                     if contact
-                      existing_role = contact.get_role("AgencyAdmin").present?
+                      existing_role = contact.get_role("Tenant").present?
                     end 
                     
                     if contact && existing_role == false
@@ -244,6 +244,7 @@ class MaintenanceRequestsController < ApplicationController
                       @contact_tenant.roles << role
                       TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                     elsif contact && existing_role == true
+                      binding.pry
                       TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
                       contact.tenant.update_attribute(:property_id,@property.id)
                     else 
@@ -276,7 +277,7 @@ class MaintenanceRequestsController < ApplicationController
         redirect_to root_path
       elsif current_user.logged_in_as("AgencyAdmin") 
         flash[:success]= "Thank You for creating a Maintenance Request"
-        redirect_to agency_admin_maintenance_request_path(@maintenance_request)
+        redirect_to agency_admin_maintenance_request_path(@maintenance_request,id:@maintenance_request.id)
       elsif current_user.logged_in_as("Agent")
         flash[:success]= "Thank You for creating a Maintenance Request"
         redirect_to agent_maintenance_request_path(@maintenance_request)
