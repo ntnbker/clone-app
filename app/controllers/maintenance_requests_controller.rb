@@ -298,150 +298,150 @@ class MaintenanceRequestsController < ApplicationController
     end 
   end
 
-  def show
-    @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @quote = @quotes.where(:status=>"Approved").first if !nil
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices
+  # def show
+  #   @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+  #   @tenants = @maintenance_request.tenants
+  #   @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
+  #   @quote = @quotes.where(:status=>"Approved").first if !nil
+  #   @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
-    if @quote
-      @quote_id = @quote.id
-    else
-      @quote_id = ''
-    end 
+  #   if @quote
+  #     @quote_id = @quote.id
+  #   else
+  #     @quote_id = ''
+  #   end 
 
-    @message = Message.new
+  #   @message = Message.new
     
-    @tradie = Trady.new
+  #   @tradie = Trady.new
      
-    if @maintenance_request.maintenance_request_image != nil
-      @gallery = @maintenance_request.maintenance_request_image.images
-    end 
+  #   if @maintenance_request.maintenance_request_image != nil
+  #     @gallery = @maintenance_request.maintenance_request_image.images
+  #   end 
 
-    if @maintenance_request.property.landlord == nil
-      @landlord = Landlord.new
-    elsif @maintenance_request.property.landlord != nil
-      @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
-    end 
+  #   if @maintenance_request.property.landlord == nil
+  #     @landlord = Landlord.new
+  #   elsif @maintenance_request.property.landlord != nil
+  #     @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
+  #   end 
     
-    if @maintenance_request.trady != nil
-      @trady_id = @maintenance_request.trady.id
-      if @maintenance_request.trady.trady_company != nil
-        @trady_company_id = @maintenance_request.trady.trady_company.id
-      end 
-    end 
+  #   if @maintenance_request.trady != nil
+  #     @trady_id = @maintenance_request.trady.id
+  #     if @maintenance_request.trady.trady_company != nil
+  #       @trady_company_id = @maintenance_request.trady.trady_company.id
+  #     end 
+  #   end 
    
-    if !@maintenance_request.invoices.empty? 
-      @invoice = @maintenance_request.invoices.first
-    end 
+  #   if !@maintenance_request.invoices.empty? 
+  #     @invoice = @maintenance_request.invoices.first
+  #   end 
 
-    if @maintenance_request.agency_admin != nil
-      if @maintenance_request.agency_admin.agency.tradies !=nil
-        @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
-      else 
-        @all_tradies= []
-      end 
-    end 
+  #   if @maintenance_request.agency_admin != nil
+  #     if @maintenance_request.agency_admin.agency.tradies !=nil
+  #       @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+  #     else 
+  #       @all_tradies= []
+  #     end 
+  #   end 
 
-    if @maintenance_request.agent != nil
-      if @maintenance_request.agent.agency.tradies !=nil 
-        @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
-      else 
-        @all_tradies= []
-      end
-    end 
+  #   if @maintenance_request.agent != nil
+  #     if @maintenance_request.agent.agency.tradies !=nil 
+  #       @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+  #     else 
+  #       @all_tradies= []
+  #     end
+  #   end 
     
 
 
 
-    if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
-      @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
-    end 
+  #   if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
+  #     @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
+  #   end 
 
-    if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
-      @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
-    end 
+  #   if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
+  #     @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
+  #   end 
     
-  end
+  # end
 
 
-  def index
+  # def index
 
-    if params[:sort_by_date] == "Newest to Oldest"
-      sort = "DESC"
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      end
-    else
-      sort = "ASC"
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      end 
-    end
+  #   if params[:sort_by_date] == "Newest to Oldest"
+  #     sort = "DESC"
+  #     @maintenance_requests = if current_user.agency_admin?
+  #       current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.agent?
+  #       current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.tenant?
+  #       current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.trady?
+  #       current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     end
+  #   else
+  #     sort = "ASC"
+  #     @maintenance_requests = if current_user.agency_admin?
+  #       current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.agent?
+  #       current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.tenant?
+  #       current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.trady?
+  #       current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     end 
+  #   end
 
-    @page = params[:page]
-    @sort_by_date = params[:sort_by_date]
-    @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
-    @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
-    @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
-    @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
+  #   @page = params[:page]
+  #   @sort_by_date = params[:sort_by_date]
+  #   @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
+  #   @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
+  #   @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
+  #   @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
     
-    @awaiting_owner_initiation_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Initiation")
-    @awaiting_owner_instruction_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Instruction")
-    @quote_requested_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Requested")
-    @awaiting_trady_initiation_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Tradie Initiation")
-    @awaiting_trady_quote_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Quote")
-    @awaiting_quote_approval_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received Awaiting Approval")
-    @trady_organise_appointment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Approved Tradie To Organise Appointment")
-    @trady_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tradie To Confirm Appointment")
-    @tenant_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tenant To Confirm Appointment")
-    @landlord_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Landlord To Confirm Appointment")
-    @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")
-  end
+  #   @awaiting_owner_initiation_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Initiation")
+  #   @awaiting_owner_instruction_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Instruction")
+  #   @quote_requested_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Requested")
+  #   @awaiting_trady_initiation_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Tradie Initiation")
+  #   @awaiting_trady_quote_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Quote")
+  #   @awaiting_quote_approval_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received Awaiting Approval")
+  #   @trady_organise_appointment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Approved Tradie To Organise Appointment")
+  #   @trady_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tradie To Confirm Appointment")
+  #   @tenant_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tenant To Confirm Appointment")
+  #   @landlord_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Landlord To Confirm Appointment")
+  #   @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")
+  # end
 
 
-  def ordered_maintenance_requests
+  # def ordered_maintenance_requests
     
-    if params[:sort_by_date] == "Oldest to Newest"
-      sort = "ASC"
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      end 
-    elsif params[:sort_by_date] == "Newest to Oldest"
-      sort = "DESC"
+  #   if params[:sort_by_date] == "Oldest to Newest"
+  #     sort = "ASC"
+  #     @maintenance_requests = if current_user.agency_admin?
+  #       current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.agent?
+  #       current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.tenant?
+  #       current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.trady?
+  #       current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+  #     end 
+  #   elsif params[:sort_by_date] == "Newest to Oldest"
+  #     sort = "DESC"
 
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      end
+  #     @maintenance_requests = if current_user.agency_admin?
+  #       current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.agent?
+  #       current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.tenant?
+  #       current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     elsif current_user.trady?
+  #       current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+  #     end
 
-    end 
+  #   end 
 
-  end
+  # end
 
 
   private
