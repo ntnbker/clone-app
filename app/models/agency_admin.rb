@@ -10,7 +10,7 @@ class AgencyAdmin <ApplicationRecord
   # validates_uniqueness_of :email
 
   accepts_nested_attributes_for :agency
-  validates_associated :user
+  # validates_associated :user
 
 
 

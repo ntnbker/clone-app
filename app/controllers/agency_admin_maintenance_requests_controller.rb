@@ -113,6 +113,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   private
 
   def email_auto_login(id)
+    ###HERE WE HAVE TO ADD THE ROLE NEEDED FOR THAT VIEW IF THEY ARE NOT SIGNED IN AS THAT 
+    ###ROLE TELL THEM TO SIGN OUT AND SIGN IN AS THAT ROLL
       if current_user == nil
         user = User.find_by(id:id)
         auto_login(user)
