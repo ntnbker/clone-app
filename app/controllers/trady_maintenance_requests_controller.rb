@@ -138,7 +138,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
 
-      if current_user  && answer && current_user.has_role("Trady")
+      if current_user  && answer && user.has_role("Trady")
         logout
         
         auto_login(user)

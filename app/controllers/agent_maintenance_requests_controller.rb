@@ -128,7 +128,7 @@ class AgentMaintenanceRequestsController < ApplicationController
 
 
 
-      if current_user  && answer && current_user.has_role("Agent")
+      if current_user  && answer && user.has_role("Agent")
         logout
         
         auto_login(user)
