@@ -85,7 +85,7 @@ class TenantMaintenanceRequestsController < ApplicationController
 
 
 
-      if current_user  && answer && current_user.has_role("Tenant")
+      if current_user  && answer && user.has_role("Tenant")
         logout
         
         auto_login(user)
