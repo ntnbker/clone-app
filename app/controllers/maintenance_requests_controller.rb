@@ -277,7 +277,7 @@ class MaintenanceRequestsController < ApplicationController
         redirect_to root_path
       elsif current_user.logged_in_as("AgencyAdmin") 
         flash[:success]= "Thank You for creating a Maintenance Request"
-        redirect_to agency_admin_maintenance_request_path(@maintenance_request,id:@maintenance_request.id)
+        redirect_to agency_admin_maintenance_request_path(@maintenance_request)
       elsif current_user.logged_in_as("Agent")
         flash[:success]= "Thank You for creating a Maintenance Request"
         redirect_to agent_maintenance_request_path(@maintenance_request)
