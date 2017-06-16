@@ -4,14 +4,6 @@ class ReassignMaintenanceRequestsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     user = User.find_by(email:params[:email])
 
-
-    if the user is both an agent and agencyadmin then assign it to as an agencyadmin
-
-      if they are only and agent then assign as agent 
-
-        if they are only agency admin then assign to agency admin
-
-
     if user.has_role("AgencyAdmin") && user.has_role("Agent")
       maintenance_request.update_attribute(:agency_admin_id, user.agency_admin.id)
     elsif user.has_role("AgencyAdmin")
