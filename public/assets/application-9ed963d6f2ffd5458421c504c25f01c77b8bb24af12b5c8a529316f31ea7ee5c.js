@@ -67620,268 +67620,362 @@ module.exports = function(reqctx) {
 /******/ ]);
 });
 var BDM = React.createClass({
-    displayName: "BDM",
+  displayName: "BDM",
 
-    render: function () {
-        return React.createElement(
-            "div",
-            null,
-            React.createElement(
-                "p",
-                null,
-                " Bdm verification "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Bdm verification",
-                name: "user[agency_admin_attributes][agency_attributes][bdm_verification_status]",
-                id: "user_agency_admin_attributes_agency_attributes_bdm_verification_status", required: true })
-        );
-    }
+  render: function () {
+    return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "p",
+        null,
+        " Bdm verification "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Bdm verification",
+        id: "user_agency_admin_attributes_agency_attributes_bdm_verification_id",
+        name: "user[agency_admin_attributes][agency_attributes][bdm_verification_id]"
+      })
+    );
+  }
 });
 
 var AgencyAttributes = React.createClass({
-    displayName: "AgencyAttributes",
+  displayName: "AgencyAttributes",
 
-    getInitialState: function () {
-        return { showBDM: false,
-            same_Address: false,
-            address: '',
-            mailing: '' };
-    },
+  getInitialState: function () {
+    return {
+      showBDM: false,
+      same_Address: false,
+      address: '',
+      mailing: ''
+    };
+  },
 
-    generateAtt: function (name_id, type) {
-        if (name_id == "name") {
-            return "user[agency_admin_attributes][agency_attributes][" + type + "]";
-        } else if (name_id == "id") {
-            return "user_agency_admin_attributes_agency_attributes_" + type;
-        }
-    },
-
-    handleChange: function (event) {
-        this.setState({ address: event.target.value });
-        if (this.state.same_Address) {
-            this.setState({ mailing: event.target.value,
-                address: event.target.value });
-        }
-    },
-
-    render: function () {
-        return React.createElement(
-            "div",
-            { className: "fields" },
-            React.createElement(
-                "h4",
-                null,
-                " Agency Information "
-            ),
-            React.createElement(
-                "p",
-                null,
-                " Company Name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Company Name",
-                name: this.generateAtt("name", "company_name"),
-                id: this.generateAtt("id", "company_name"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Business name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Business name",
-                name: this.generateAtt("name", "business_name"),
-                id: this.generateAtt("id", "business_name"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Abn "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Abn",
-                name: this.generateAtt("name", "abn"),
-                id: this.generateAtt("id", "abn"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Address "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Address", onChange: this.handleChange,
-                name: this.generateAtt("name", "address"),
-                id: this.generateAtt("id", "address"), required: true }),
-            React.createElement(
-                "div",
-                { className: "field" },
-                React.createElement(
-                    "label",
-                    null,
-                    React.createElement("input", { type: "checkbox", value: "1", onChange: this.onSame,
-                        name: this.generateAtt("name", "mailing_same_address"),
-                        id: this.generateAtt("id", "mailing_same_address") }),
-                    "Mailing address same as billing address"
-                ),
-                React.createElement(
-                    "p",
-                    null,
-                    " Mailing address "
-                ),
-                React.createElement("input", { type: "text", placeholder: "Mailing address", value: this.state.mailing,
-                    name: this.generateAtt("name", "mailing_address"),
-                    id: this.generateAtt("id", "mailing_address"), required: true })
-            ),
-            React.createElement(
-                "p",
-                null,
-                " Phone "
-            ),
-            React.createElement("input", { type: "tel", placeholder: "Phone",
-                name: this.generateAtt("name", "phone"),
-                id: this.generateAtt("id", "phone") }),
-            React.createElement(
-                "p",
-                null,
-                " Mobile phone "
-            ),
-            React.createElement("input", { type: "tel", placeholder: "Mobile phone",
-                name: this.generateAtt("name", "mobile_phone"),
-                id: this.generateAtt("id", "mobile_phone") }),
-            React.createElement(
-                "div",
-                { className: "license-type" },
-                React.createElement(
-                    "p",
-                    null,
-                    " License Type "
-                ),
-                React.createElement(
-                    "label",
-                    { className: "one-half column" },
-                    React.createElement("input", { type: "radio", value: "Individual License",
-                        name: this.generateAtt("name", "license_type"),
-                        id: this.generateAtt("id", "license_type_individual_license"), required: true }),
-                    "Individual License"
-                ),
-                React.createElement(
-                    "label",
-                    { className: "one-half column" },
-                    React.createElement("input", { type: "radio", value: "Corporate License",
-                        name: this.generateAtt("name", "license_type"),
-                        id: this.generateAtt("id", "license_type_corporate_license"), required: true }),
-                    "Corporate License"
-                )
-            ),
-            React.createElement(
-                "p",
-                null,
-                " License number "
-            ),
-            React.createElement("input", { type: "text", placeholder: "License number",
-                name: this.generateAtt("name", "license_number"),
-                id: this.generateAtt("id", "license_number"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Corporation license number "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Corporation license number",
-                name: this.generateAtt("name", "corporation_license_number"),
-                id: this.generateAtt("id", "corporation_license_number"), required: true }),
-            React.createElement(
-                "div",
-                { className: "field" },
-                React.createElement(
-                    "label",
-                    null,
-                    React.createElement("input", { type: "checkbox", value: "1", onChange: this.onBDM,
-                        name: this.generateAtt("name", "bdm_verification_status"),
-                        id: this.generateAtt("id", "bdm_verification_status") }),
-                    "I Have BDM verfication status"
-                ),
-                this.state.showBDM ? React.createElement(BDM, null) : null
-            )
-        );
-    },
-    onBDM: function () {
-        this.setState({ showBDM: !this.state.showBDM });
-    },
-    onSame: function () {
-        this.setState({ same_Address: !this.state.same_Address,
-            mailing: this.state.address });
+  generateAtt: function (name_id, type) {
+    if (name_id == "name") {
+      return "user[agency_admin_attributes][agency_attributes][" + type + "]";
+    } else if (name_id == "id") {
+      return "user_agency_admin_attributes_agency_attributes_" + type;
     }
+  },
+
+  handleChange: function (event) {
+    this.setState({ address: event.target.value });
+    if (this.state.same_Address) {
+      this.setState({
+        mailing: event.target.value,
+        address: event.target.value
+      });
+    }
+  },
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "fields" },
+      React.createElement(
+        "h4",
+        null,
+        " Agency Information "
+      ),
+      React.createElement(
+        "p",
+        null,
+        " Company Name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Company Name",
+        id: this.generateAtt("id", "company_name"),
+        name: this.generateAtt("name", "company_name")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Business name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Business name",
+        id: this.generateAtt("id", "business_name"),
+        name: this.generateAtt("name", "business_name")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Abn "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Abn",
+        id: this.generateAtt("id", "abn"),
+        name: this.generateAtt("name", "abn")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Address "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Address",
+        onChange: this.handleChange,
+        id: this.generateAtt("id", "address"),
+        name: this.generateAtt("name", "address")
+      }),
+      React.createElement(
+        "div",
+        { className: "field" },
+        React.createElement(
+          "label",
+          null,
+          React.createElement("input", {
+            value: "1",
+            type: "checkbox",
+            onChange: this.onSame,
+            id: this.generateAtt("id", "mailing_same_address"),
+            name: this.generateAtt("name", "mailing_same_address")
+          }),
+          "Mailing address same as billing address"
+        ),
+        React.createElement(
+          "p",
+          null,
+          " Mailing address "
+        ),
+        React.createElement("input", {
+          required: true,
+          type: "text",
+          value: this.state.mailing,
+          placeholder: "Mailing address",
+          id: this.generateAtt("id", "mailing_address"),
+          name: this.generateAtt("name", "mailing_address")
+        })
+      ),
+      React.createElement(
+        "p",
+        null,
+        " Phone "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "tel",
+        placeholder: "Phone",
+        id: this.generateAtt("id", "phone"),
+        name: this.generateAtt("name", "phone")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Mobile phone "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "tel",
+        placeholder: "Mobile phone",
+        id: this.generateAtt("id", "mobile_phone"),
+        name: this.generateAtt("name", "mobile_phone")
+      }),
+      React.createElement(
+        "div",
+        { className: "license-type" },
+        React.createElement(
+          "p",
+          null,
+          " License Type "
+        ),
+        React.createElement(
+          "label",
+          { className: "one-half column" },
+          React.createElement("input", {
+            required: true,
+            type: "radio",
+            value: "Individual License",
+            name: this.generateAtt("name", "license_type"),
+            id: this.generateAtt("id", "license_type_individual_license")
+          }),
+          "Individual License"
+        ),
+        React.createElement(
+          "label",
+          { className: "one-half column" },
+          React.createElement("input", {
+            required: true,
+            type: "radio",
+            value: "Corporate License",
+            name: this.generateAtt("name", "license_type"),
+            id: this.generateAtt("id", "license_type_corporate_license")
+          }),
+          "Corporate License"
+        )
+      ),
+      React.createElement(
+        "p",
+        null,
+        " License number "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "License number",
+        id: this.generateAtt("id", "license_number"),
+        name: this.generateAtt("name", "license_number")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Corporation license number "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Corporation license number",
+        id: this.generateAtt("id", "corporation_license_number"),
+        name: this.generateAtt("name", "corporation_license_number")
+      }),
+      React.createElement(
+        "div",
+        { className: "field" },
+        React.createElement(
+          "label",
+          null,
+          React.createElement("input", {
+            type: "checkbox",
+            value: "1",
+            onChange: this.onBDM,
+            id: this.generateAtt("id", "bdm_verification_status"),
+            name: this.generateAtt("name", "bdm_verification_status")
+          }),
+          "I Have BDM verfication status"
+        ),
+        this.state.showBDM && React.createElement(BDM, null)
+      )
+    );
+  },
+  onBDM: function () {
+    this.setState({ showBDM: !this.state.showBDM });
+  },
+  onSame: function () {
+    this.setState({
+      same_Address: !this.state.same_Address,
+      mailing: this.state.address
+    });
+  }
 });
 
 var Agency = React.createClass({
-    displayName: "Agency",
+  displayName: "Agency",
 
-    render: function () {
-        return React.createElement(
-            "form",
-            { role: "form", className: "agencies", id: "new_user", action: "/agencies", acceptCharset: "UTF-8", method: "post" },
-            React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
-            React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
-            React.createElement(
-                "p",
-                null,
-                " Email "
-            ),
-            React.createElement("input", { type: "email", placeholder: "Email",
-                name: "user[email]",
-                id: "user_email", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Password "
-            ),
-            React.createElement("input", { type: "password", placeholder: "Password",
-                name: "user[password]",
-                id: "user_password", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Password confirmation "
-            ),
-            React.createElement("input", { type: "password", placeholder: "Password",
-                name: "user[password_confirmation]",
-                id: "user_password_confirmation", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " First name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "First name",
-                name: "user[agency_admin_attributes][first_name]",
-                id: "user_agency_admin_attributes_first_name", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Last name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Last name",
-                name: "user[agency_admin_attributes][last_name]",
-                id: "user_agency_admin_attributes_last_name", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Mobile phone "
-            ),
-            React.createElement("input", { type: "tel", placeholder: "Mobile phone",
-                name: "user[agency_admin_attributes][mobile_phone]",
-                id: "user_agency_admin_attributes_mobile_phone" }),
-            React.createElement("hr", null),
-            React.createElement(AgencyAttributes, null),
-            React.createElement("input", { type: "submit", name: "commit", value: "Sign Up", className: "button-primary green", "data-disable-with": "Sign Up" }),
-            React.createElement(
-                "div",
-                { className: "have-account" },
-                React.createElement(
-                    "p",
-                    null,
-                    "Already have an Account?"
-                ),
-                React.createElement(
-                    "a",
-                    { href: "/login" },
-                    "Login"
-                )
-            )
-        );
-    }
+  render: function () {
+    return React.createElement(
+      "form",
+      { role: "form", className: "agencies", id: "new_user", action: "/agencies", acceptCharset: "UTF-8", method: "post" },
+      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+      React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+      React.createElement(
+        "p",
+        null,
+        " Email "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "email",
+        id: "user_email",
+        name: "user[email]",
+        placeholder: "Email"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Password "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "password",
+        id: "user_password",
+        name: "user[password]",
+        placeholder: "Password"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Password confirmation "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "password",
+        placeholder: "Password",
+        id: "user_password_confirmation",
+        name: "user[password_confirmation]"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " First name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "First name",
+        id: "user_agency_admin_attributes_first_name",
+        name: "user[agency_admin_attributes][first_name]"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Last name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Last name",
+        id: "user_agency_admin_attributes_last_name",
+        name: "user[agency_admin_attributes][last_name]"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Mobile phone "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "tel",
+        placeholder: "Mobile phone",
+        id: "user_agency_admin_attributes_mobile_phone",
+        name: "user[agency_admin_attributes][mobile_phone]"
+      }),
+      React.createElement("hr", null),
+      React.createElement(AgencyAttributes, null),
+      React.createElement("input", {
+        type: "submit",
+        name: "commit",
+        value: "Sign Up",
+        "data-disable-with": "Sign Up",
+        className: "button-primary green"
+      }),
+      React.createElement(
+        "div",
+        { className: "have-account" },
+        React.createElement(
+          "p",
+          null,
+          "Already have an Account?"
+        ),
+        React.createElement(
+          "a",
+          { href: "/login" },
+          "Login"
+        )
+      )
+    );
+  }
 });
 var Invoices = React.createClass({
 	displayName: "Invoices",
@@ -69682,7 +69776,7 @@ var LandlordContactMobile = React.createClass({
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -70903,6 +70997,16 @@ var Activity = React.createClass({
 var ActivityMobile = React.createClass({
 	displayName: "ActivityMobile",
 
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showActivity: function () {
+		this.setState({ show: !this.state.show });
+	},
+
 	render: function () {
 		return React.createElement(
 			"div",
@@ -70918,12 +71022,217 @@ var ActivityMobile = React.createClass({
 						null,
 						"Activity log:"
 					),
-					React.createElement("i", { className: "fa fa-angle-down", "aria-hidden": "true" })
+					React.createElement("i", { className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right", "aria-hidden": "true", onClick: this.showActivity })
 				),
 				React.createElement(
 					"div",
 					{ className: "content text-center activity-content" },
-					this.props.logs.length ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
+					this.props.logs.length && !!this.state.show ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
+				)
+			)
+		);
+	}
+});
+var Appointment = React.createClass({
+	displayName: "Appointment",
+
+	render: function () {
+		var _this = this;
+
+		var appointment = this.props.appointment;
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"div",
+				{ className: "date-time" },
+				React.createElement(
+					"p",
+					{ className: "date" },
+					React.createElement(
+						"span",
+						null,
+						"Date: "
+					),
+					React.createElement(
+						"span",
+						null,
+						moment(appointment.created_at).format('dddd LL')
+					)
+				),
+				React.createElement(
+					"p",
+					{ className: "time" },
+					React.createElement(
+						"span",
+						null,
+						"Time: "
+					),
+					React.createElement(
+						"span",
+						null,
+						moment(appointment.created_at).format('LT')
+					)
+				)
+			),
+			React.createElement(
+				"div",
+				null,
+				React.createElement(
+					"button",
+					{ className: "btn-view", onClick: function (key, item) {
+							return _this.props.viewItem('viewAppointment', appointment);
+						} },
+					"View Details"
+				)
+			)
+		);
+	}
+});
+
+var ContentAppointment = React.createClass({
+	displayName: "ContentAppointment",
+
+	render: function () {
+		var _this2 = this;
+
+		var appointments = this.props.appointments;
+		return React.createElement(
+			"ul",
+			{ className: "content-appointment" },
+			appointments.map(function (appointment, key) {
+				return React.createElement(Appointment, {
+					key: key,
+					appointment: appointment,
+					viewItem: function (key, item) {
+						return _this2.props.viewItem(key, item);
+					}
+				});
+			})
+		);
+	}
+});
+
+var ModalViewAppointment = React.createClass({
+	displayName: "ModalViewAppointment",
+
+	render: function () {
+		var appointment = this.props.appointment;
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"aria-label": "Close",
+								"data-dismiss": "modal",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							"Appointment"
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"div",
+							{ className: "modal-appointment" },
+							React.createElement(
+								"div",
+								{ className: "info" },
+								React.createElement(
+									"p",
+									{ className: "status" },
+									React.createElement(
+										"span",
+										null,
+										"Status:"
+									),
+									React.createElement(
+										"span",
+										null,
+										" ",
+										appointment.status
+									)
+								),
+								React.createElement(
+									"p",
+									{ className: "date" },
+									React.createElement(
+										"span",
+										null,
+										"Date:"
+									),
+									React.createElement(
+										"span",
+										null,
+										" ",
+										moment(appointment.created_at).format('dddd LL')
+									)
+								),
+								React.createElement(
+									"p",
+									{ className: "time" },
+									React.createElement(
+										"span",
+										null,
+										"Time:"
+									),
+									React.createElement(
+										"span",
+										null,
+										" ",
+										moment(appointment.created_at).format('LT')
+									)
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								"Comments"
+							),
+							React.createElement(
+								"div",
+								{ className: "comments" },
+								appointment.comments.map(function (comment, key) {
+									return React.createElement(
+										"div",
+										{ key: key, className: "comment" },
+										React.createElement(
+											"p",
+											{ className: "content" },
+											comment.body
+										),
+										React.createElement(
+											"p",
+											{ className: "date-time" },
+											moment(comment.created_at).format('LLL')
+										)
+									);
+								})
+							)
+						)
+					)
 				)
 			)
 		);
@@ -71397,7 +71706,7 @@ var ImgSlider = React.createClass({
 
   setWidth: function () {
     var slider = $('#slider');
-    if (!!slider) {
+    if (slider.length > 0) {
       this.setState({
         stwidth: slider.width()
       });
@@ -71413,7 +71722,7 @@ var ImgSlider = React.createClass({
   componentDidMount: function () {
     var self = this;
 
-    if ($('#slider')) {
+    if ($('#slider').length > 0) {
       this.setWidth();
 
       $(window).resize(function () {
@@ -71523,7 +71832,7 @@ var ListMaintenanceRequest = React.createClass({
       data: [],
       prePage: 3,
       dataShow: [],
-      sortByDate: "Oldest to Newest",
+      sortByDate: "Newest to Oldest",
       valueAction: "",
       filterDate: [{ value: "Oldest to Newest", name: "Oldest to Newest" }, { value: "Newest to Oldest", name: "Newest to Oldest" }],
       actionRequests: [{
@@ -71908,6 +72217,15 @@ var MaintenanceRequestItem = React.createClass({
             React.createElement("i", { className: "fa fa-map-marker" }),
             maintenance_request.property.property_address
           )
+        ),
+        React.createElement(
+          "div",
+          { className: "view" },
+          React.createElement(
+            "a",
+            { className: "btn-view", href: this.props.link + "/" + maintenance_request.id },
+            "View"
+          )
         )
       )
     );
@@ -72085,7 +72403,7 @@ var Pagination = React.createClass({
   }
 });
 var Carousel = React.createClass({
-	displayName: 'Carousel',
+	displayName: "Carousel",
 
 	getInitialState: function () {
 		var gallery = this.props.gallery.length > 0 ? this.props.gallery : ["/uploads/maintenance_request_image/images/no_image.png"];
@@ -72107,32 +72425,41 @@ var Carousel = React.createClass({
 		});
 	},
 
-	sliderPrev: function (argument) {
+	sliderPrev: function () {
 		var stpos = this.state.stpos - 1;
-		if (stpos < 0) stpos = this.state.stlen - 1;
+		if (stpos < 0) {
+			stpos = this.state.stlen - 1;
+		}
 		this.sliderRun(stpos);
 	},
 
 	sliderNext: function () {
 		var stpos = this.state.stpos + 1;
-		if (stpos >= this.state.stlen) stpos = 0;
+		if (stpos >= this.state.stlen) {
+			stpos = 0;
+		}
 		this.sliderRun(stpos);
+	},
+
+	setWidth: function (width) {
+		if (width) {
+			this.setState({
+				stwidth: width
+			});
+		}
 	},
 
 	componentDidMount: function () {
 		var self = this;
-		if ($('#slider-detail')) {
-			this.setState({
-				stwidth: $('#slider-detail').width()
-			});
+		var sliderDetail = $('#slider-detail');
+		if (sliderDetail.length > 0) {
+			this.setWidth(sliderDetail.width());
 
 			$(window).resize(function () {
-				self.setState({
-					stwidth: $('#slider-detail').width()
-				});
+				self.setWidth(sliderDetail.width());
 			});
 
-			$("#slider-detail").on("touchstart", function (event) {
+			sliderDetail.on("touchstart", function (event) {
 				var xClick = event.originalEvent.touches[0].pageX;
 				$(this).one("touchmove", function (event) {
 					var xMove = event.originalEvent.touches[0].pageX;
@@ -72142,7 +72469,7 @@ var Carousel = React.createClass({
 						self.sliderPrev();
 					}
 				});
-				$("#slider-detail").on("touchend", function () {
+				sliderDetail.on("touchend", function () {
 					$(this).off("touchmove");
 				});
 			});
@@ -72157,29 +72484,29 @@ var Carousel = React.createClass({
 		var temp = this;
 		var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
 		return React.createElement(
-			'div',
-			{ className: 'slider-custom', id: 'slider-detail' },
+			"div",
+			{ className: "slider-custom", id: "slider-detail" },
 			React.createElement(
-				'div',
-				{ className: 'swiper-container swiper-container-horizontal' },
+				"div",
+				{ className: "swiper-container swiper-container-horizontal" },
 				React.createElement(
-					'div',
-					{ className: 'swiper-wrapper slider', style: styles, id: 'mySlider' },
+					"div",
+					{ className: "swiper-wrapper slider", style: styles, id: "mySlider" },
 					this.state.gallery.map(function (img, index) {
-						return React.createElement('img', {
+						return React.createElement("img", {
 							key: index,
 							src: img,
 							style: { width: subWidth },
-							className: 'swiper-slide slide-image'
+							className: "swiper-slide slide-image"
 						});
 					})
 				)
 			),
 			React.createElement(
-				'div',
-				{ className: 'swiper-pagination' },
+				"div",
+				{ className: "swiper-pagination" },
 				this.state.gallery.length > 1 ? this.state.gallery.map(function (img, index) {
-					return React.createElement('span', {
+					return React.createElement("span", {
 						key: index,
 						className: "swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active"),
 						onClick: function (stops) {
@@ -72189,132 +72516,132 @@ var Carousel = React.createClass({
 				}) : null
 			),
 			this.props.gallery.length > 1 && React.createElement(
-				'div',
-				{ className: 'btn-slider btn-next', onClick: this.sliderNext },
-				React.createElement('i', { className: 'fa fa-angle-right' })
+				"div",
+				{ className: "btn-slider btn-next", onClick: this.sliderNext },
+				React.createElement("i", { className: "fa fa-angle-right" })
 			),
 			this.props.gallery.length > 1 && React.createElement(
-				'div',
-				{ className: 'btn-slider btn-prev', onClick: this.sliderPrev },
-				React.createElement('i', { className: 'fa fa-angle-left' })
+				"div",
+				{ className: "btn-slider btn-prev", onClick: this.sliderPrev },
+				React.createElement("i", { className: "fa fa-angle-left" })
 			)
 		);
 	}
 });
 
 var ItemMaintenanceRequest = React.createClass({
-	displayName: 'ItemMaintenanceRequest',
+	displayName: "ItemMaintenanceRequest",
 
 	render: function () {
 		var maintenance = this.props.maintenance_request;
 		return React.createElement(
-			'div',
-			{ className: 'post' },
+			"div",
+			{ className: "post" },
 			React.createElement(
-				'div',
-				{ className: 'info' },
+				"div",
+				{ className: "info" },
 				React.createElement(
-					'div',
-					{ className: 'info-title' },
+					"div",
+					{ className: "info-title" },
 					React.createElement(
-						'div',
-						{ className: 'title' },
+						"div",
+						{ className: "title" },
 						React.createElement(
-							'span',
+							"span",
 							null,
 							maintenance.maintenance_heading
 						),
 						React.createElement(
-							'button',
-							{ className: 'button-primary', type: '' },
-							'Active'
+							"button",
+							{ className: "button-primary", type: "" },
+							"Active"
 						)
 					),
 					React.createElement(
-						'div',
-						{ className: 'author' },
-						React.createElement('i', { className: 'fa fa-map-marker', 'aria-hidden': 'true' }),
+						"div",
+						{ className: "author" },
+						React.createElement("i", { className: "fa fa-map-marker", "aria-hidden": "true" }),
 						React.createElement(
-							'span',
-							{ className: 'address' },
+							"span",
+							{ className: "address" },
 							this.props.property.property_address,
-							'.'
+							"."
 						),
 						React.createElement(
-							'a',
-							{ className: 'time' },
+							"a",
+							{ className: "time" },
 							moment(maintenance.created_at).startOf('day').fromNow()
 						),
 						React.createElement(
-							'a',
+							"a",
 							null,
-							'|'
+							"|"
 						),
 						React.createElement(
-							'a',
-							{ className: 'name-author' },
+							"a",
+							{ className: "name-author" },
 							maintenance.service_type
 						)
 					)
 				),
 				React.createElement(
-					'div',
-					{ className: 'actions' },
+					"div",
+					{ className: "actions" },
 					React.createElement(
-						'button',
-						{ className: 'button-primary update-status' },
-						'Update status'
+						"button",
+						{ className: "button-primary update-status" },
+						"Update status"
 					),
 					React.createElement(
-						'button',
-						{ className: 'button-primary edit-detail' },
-						React.createElement('i', { className: 'fa fa-pencil', 'aria-hidden': 'true' }),
+						"button",
+						{ className: "button-primary edit-detail" },
+						React.createElement("i", { className: "fa fa-pencil", "aria-hidden": "true" }),
 						React.createElement(
-							'span',
+							"span",
 							null,
-							'Edit Details'
+							"Edit Details"
 						)
 					),
 					React.createElement(
-						'button',
-						{ className: 'button-primary assign-to' },
-						React.createElement('i', { className: 'icon-user', 'aria-hidden': 'true' }),
+						"button",
+						{ className: "button-primary assign-to" },
+						React.createElement("i", { className: "icon-user", "aria-hidden": "true" }),
 						React.createElement(
-							'span',
+							"span",
 							null,
-							'Assign to'
+							"Assign to"
 						),
-						React.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
+						React.createElement("i", { className: "fa fa-angle-down", "aria-hidden": "true" })
 					)
 				)
 			),
 			React.createElement(
-				'div',
-				{ className: 'content' },
+				"div",
+				{ className: "content" },
 				React.createElement(Carousel, { gallery: this.props.gallery }),
 				React.createElement(
-					'div',
-					{ className: 'description' },
+					"div",
+					{ className: "description" },
 					React.createElement(
-						'p',
+						"p",
 						null,
 						maintenance.maintenance_description
 					)
 				),
 				React.createElement(
-					'div',
-					{ className: 'date-time' },
+					"div",
+					{ className: "date-time" },
 					React.createElement(
-						'button',
+						"button",
 						null,
 						React.createElement(
-							'span',
-							{ className: 'vailability' },
-							'Availability: '
+							"span",
+							{ className: "vailability" },
+							"Availability: "
 						),
 						React.createElement(
-							'span',
-							{ className: 'time' },
+							"span",
+							{ className: "time" },
 							maintenance.availability
 						)
 					)
@@ -72421,15 +72748,15 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleImageChange: function (e) {
-		var _this2 = this;
+		var _this = this;
 
-		var files = e.files;
+		var files = e.target.files;
 		var reader = new FileReader();
 		var images = this.state.images;
 
 		readFile = function (index) {
 			if (index >= files.length) {
-				_this2.setState({
+				_this.setState({
 					images: images
 				});
 				return;
@@ -72445,7 +72772,7 @@ var MaintenanceRequestsNew = React.createClass({
 			if (!fileAlreadyExists) {
 				reader.readAsDataURL(file);
 				reader.onload = function (e) {
-					images.push({ url: e.target.result, fileInfo: file });
+					images.push({ url: e.target.result, fileInfo: file, isUpload: false });
 					readFile(index + 1);
 				};
 			} else {
@@ -72453,6 +72780,7 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		};
 		readFile(0);
+		e.target.value = '';
 	},
 
 	validDate: function (flag) {
@@ -72564,151 +72892,220 @@ var MaintenanceRequestsNew = React.createClass({
 		});
 	},
 
-	removeImage: function (file) {
-		var dataImages = this.state.dataImages;
+	removeImage: function (index) {
+		var _state2 = this.state;
+		var images = _state2.images;
+		var dataImages = _state2.dataImages;
 
-		for (var i = 0; i < this.state.dataImages.length; i++) {
-			var image = this.state.dataImages[i];
-			if (file.name == image.metadata.filename) {
-				dataImages.splice(i, 1);
-				break;
-			}
-		}
+		images.splice(index, 1);
+		dataImages.splice(index, 1);
 		this.setState({
+			images: images,
 			dataImages: dataImages
 		});
 	},
 
-	componentDidMount: function () {
-		var currentThis = this;
-		$('[type=file]').fileupload({
-			add: function (e, data) {
-				data.progressBar = $('<div class="progress" style="width: 300px"><div class="progress-bar"></div></div>').insertAfter(".form-group");
-				var options = {
-					extension: data.files[0].name.match(/(\.\w+)?$/)[0], // set extension
-					_: Date.now() };
-				// prevent caching
-				$.getJSON('/images/cache/presign', options, function (result) {
-					debugger;
-					data.formData = result['fields'];
-					data.url = result['url'];
-					data.paramName = 'file';
-					data.submit();
-				});
-			},
-			progress: function (e, data) {
-				var progress = parseInt(data.loaded / data.total * 100, 10);
-				var percentage = progress.toString() + '%';
-				data.progressBar.find(".progress-bar").css("width", percentage).html(percentage);
-			},
-			done: function (e, data) {
-				data.progressBar.remove();
-				var image = {
-					id: data.formData.key.match(/cache\/(.+)/)[1], // we have to remove the prefix part
-					storage: 'cache',
-					metadata: {
-						size: data.files[0].size,
-						filename: data.files[0].name.match(/[^\/\\]*$/)[0], // IE returns full path
-						mime_type: data.files[0].type
-					}
-				};
-				self.updateImage(image);
-				self._handleImageChange(data);
-			}
-		});
+	loadImage: function (e, image, key) {
+		var img = e.target;
+		var maxSize = 250000; // byte
+		var self = this;
+		if (!image.isUpload) {
+			var target_img = {};
+			var images = this.state.images;
 
-		Dropzone.autoDiscover = false;
-		this.dropzone = new Dropzone('#demo-upload', {
-			parallelUploads: 1,
-			thumbnailHeight: 120,
-			thumbnailWidth: 120,
-			maxFilesize: 10,
-			filesizeBase: 1000
-		});
-
-		this.dropzone.on("addedfile", function (file) {
-			var removeButton = Dropzone.createElement("<a href=\"#\">Remove file</a>");
-			var _this = this;
-			removeButton.addEventListener("click", function (e) {
-				currentThis.removeImage(file);
-				e.preventDefault();
-				e.stopPropagation();
-				_this.removeFile(file);
+			var file = image.fileInfo;
+			image.isUpload = true;
+			images[key] = image;
+			this.setState({
+				images: images
 			});
-			file.previewElement.appendChild(removeButton);
-		});
 
-		var minSteps = 6,
-		    maxSteps = 60,
-		    timeBetweenSteps = 100,
-		    bytesPerStep = 100000;
-
-		this.dropzone.uploadFiles = function (files) {
-			var self = this;
-
-			for (var i = 0; i < files.length; i++) {
-
-				var file = files[i];
-				var filename = file;
-				var options = {
-					extension: filename.name.match(/(\.\w+)?$/)[0], // set extension
-					_: Date.now() };
-
-				// prevent caching
-				// start upload file into S3
-				$.getJSON('/images/cache/presign', options, function (result) {
-					var fd = new FormData();
-					$.each(result.fields, function (key, value) {
-						fd.append(key, value);
-					});
-					fd.append('file', file);
-					$.ajax({
-						type: 'POST',
-						url: result['url'],
-						enctype: 'multipart/form-data',
-						processData: false,
-						contentType: false,
-						data: fd,
-						xhr: function () {
-							var xhr = new window.XMLHttpRequest();
-							//Download progress
-							xhr.upload.addEventListener("progress", function (evt) {
-								var percentComplete = evt.loaded / evt.total;
-								file.upload = {
-									progress: 100 * percentComplete,
-									total: evt.total,
-									bytesSent: evt.loaded
-								};
-								self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
-								if (file.upload.progress == 100) {
-									file.status = Dropzone.SUCCESS;
-									self.emit("success", file, 'success', null);
-									self.emit("complete", file);
-									self.processQueue();
-								}
-							}, false);
-							return xhr;
-						},
-						success: function () {
-							var image = {
-								id: result.fields.key.match(/cache\/(.+)/)[1],
-								storage: 'cache',
-								metadata: {
-									size: file.size,
-									filename: file.name.match(/[^\/\\]*$/)[0],
-									mime_type: file.type
-								}
-							};
-							currentThis.updateImage(image);
-						}
-					});
-				});
+			if (file.size > maxSize) {
+				var quality = Math.ceil(maxSize / file.size * 100);
+				target_img.src = self.reduceQuality(img, file.type, quality).src;
+			} else {
+				target_img.src = image.url;
 			}
-		};
+
+			var filename = file;
+			var options = {
+				extension: filename.name.match(/(\.\w+)?$/)[0],
+				_: Date.now()
+			};
+
+			// start upload file into S3
+			$.getJSON('/images/cache/presign', options, function (result) {
+				var fd = new FormData();
+				$.each(result.fields, function (key, value) {
+					fd.append(key, value);
+				});
+
+				fd.append('file', self.dataURItoBlob(target_img.src));
+				$.ajax({
+					type: 'POST',
+					url: result['url'],
+					enctype: 'multipart/form-data',
+					processData: false,
+					contentType: false,
+					data: fd,
+					xhr: function () {
+						var xhr = new window.XMLHttpRequest();
+						xhr.upload.addEventListener("progress", function (evt) {
+							var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+							var progress = $('.progress');
+							if (progress.length == 0) {
+								$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+							} else {
+								var progressBar = $('.progress .progress-bar');
+								progressBar.css('width', percentComplete + '%');
+							}
+							$('#title-upload').html('Uploading ' + percentComplete + '%');
+						}, false);
+						return xhr;
+					},
+					success: function () {
+						setTimeout(function () {
+							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+							$('.progress').remove();
+						}, 1000);
+						var image = {
+							id: result.fields.key.match(/cache\/(.+)/)[1],
+							storage: 'cache',
+							metadata: {
+								size: file.size,
+								filename: file.name.match(/[^\/\\]*$/)[0],
+								mime_type: file.type
+							}
+						};
+						self.updateImage(image);
+					}
+				});
+			});
+		}
+	},
+
+	componentDidMount: function () {
+
+		/*Dropzone.autoDiscover = false;
+  this.dropzone = new Dropzone('#upload-image', {
+  	maxFilesize: 10,
+  	resizeWidth: 960,
+  	resizeHeight: 600,
+  	filesizeBase: 1000,
+  	resizeQuality: 0.5,
+  	parallelUploads: 10,
+  	thumbnailWidth: 120,
+  	addRemoveLinks: true,
+  	thumbnailHeight: 120,
+  	dictRemoveFile: "Remove"
+  });
+  	this.dropzone.on("removedfile", function(file) {
+  	currentThis.removeImage(file); 
+  });
+  	this.dropzone.uploadFiles = function(files) {
+  	var self = this;
+  		for (var i = 0; i < files.length; i++) {
+  		var file = files[i];
+  		var filename = file;
+  		const options = {
+  			extension: filename.name.match(/(\.\w+)?$/)[0],
+  			_: Date.now(),
+  		}
+  			// start upload file into S3
+  		$.getJSON('/images/cache/presign', options, function(result) {
+  			var fd = new FormData();
+  			$.each(result.fields, function(key, value) {
+  				fd.append(key, value);
+  			});
+  			var source = {};
+  			var reader = new FileReader();
+  			reader.readAsDataURL(file);
+  			reader.onload = function(e) {
+  				source = e.target.result;
+  				fd.append('file', currentThis.dataURItoBlob(source));
+  				$.ajax({
+  					type: 'POST',
+  					url: result['url'],
+  					enctype: 'multipart/form-data',
+  					processData: false,
+  					contentType: false,
+  					data: fd,
+  					xhr: function () {
+  						var xhr = new window.XMLHttpRequest();
+  						xhr.upload.addEventListener("progress", function (evt) {
+  							var percentComplete = evt.loaded / evt.total;
+  							file.upload = {
+  								progress: 100 * percentComplete,
+  								total: evt.total,
+  								bytesSent: evt.loaded
+  							};
+  							self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
+  							if (file.upload.progress == 100) {
+  								file.status = Dropzone.SUCCESS;
+  								self.emit("success", file, 'success', null);
+  								self.emit("complete", file);
+  								self.processQueue();
+  							}
+  						}, false);
+  						return xhr;
+  					},
+  					success: function() {
+  						var image = {
+  							id: result.fields.key.match(/cache\/(.+)/)[1],
+  							storage: 'cache',
+  							metadata: {
+  								size:  file.size,
+  								filename:  file.name.match(/[^\/\\]*$/)[0],
+  								mime_type: file.type
+  							}
+  						};
+  						currentThis.updateImage(image);
+  					}
+  				});
+  			}
+       });
+      }
+    }*/
+	},
+
+	reduceQuality: function (source_img, type, quality) {
+		var mime_type = "image/jpeg";
+		if (typeof output_format !== "undefined" && output_format == "image/png") {
+			mime_type = "image/png";
+		}
+
+		var cvs = document.createElement('canvas');
+		cvs.width = source_img.naturalWidth;
+		cvs.height = source_img.naturalHeight;
+		var ctx = cvs.getContext("2d").drawImage(source_img, 0, 0);
+		var newImageData = cvs.toDataURL(mime_type, quality / 100);
+		var result_image = new Image();
+		result_image.src = newImageData;
+		return result_image;
+	},
+
+	dataURItoBlob: function (dataURI) {
+		'use strict';
+		var byteString, mimestring;
+
+		if (dataURI.split(',')[0].indexOf('base64') !== -1) {
+			byteString = atob(dataURI.split(',')[1]);
+		} else {
+			byteString = decodeURI(dataURI.split(',')[1]);
+		}
+
+		mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+		var content = new Array();
+		for (var i = 0; i < byteString.length; i++) {
+			content[i] = byteString.charCodeAt(i);
+		}
+
+		return new Blob([new Uint8Array(content)], { type: mimestring });
 	},
 
 	render: function () {
-		var _this3 = this;
+		var _this2 = this;
 
 		var images = this.state.images;
 
@@ -72722,7 +73119,7 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement(
 						'div',
 						{ className: 'btnRemoveFrame', id: i, onClick: function (e) {
-								return _this3._handleRemoveFrame(e);
+								return _this2._handleRemoveFrame(e);
 							} },
 						'X'
 					)
@@ -72746,8 +73143,8 @@ var MaintenanceRequestsNew = React.createClass({
 			),
 			React.createElement(
 				'form',
-				{ role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
-						return _this3.handleCheckSubmit(e);
+				{ key: 'add', role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
+						return _this2.handleCheckSubmit(e);
 					} },
 				React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
 				React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
@@ -72764,7 +73161,7 @@ var MaintenanceRequestsNew = React.createClass({
 						type: 'text',
 						placeholder: 'Full name',
 						ref: function (ref) {
-							return _this3.name = ref;
+							return _this2.name = ref;
 						},
 						id: this.generateAtt("id", "name"),
 						name: this.generateAtt("name", "name"),
@@ -72772,15 +73169,15 @@ var MaintenanceRequestsNew = React.createClass({
 							if (!e.target.value.length) {
 								document.getElementById("errorbox").textContent = strRequireName;
 								e.target.classList.add("border_on_error");
-								_this3.setState({ validName: true });
+								_this2.setState({ validName: true });
 							} else if (e.target.value.length < 4) {
 								document.getElementById("errorbox").textContent = strShortName;
 								e.target.classList.add("border_on_error");
-								_this3.setState({ validName: true });
+								_this2.setState({ validName: true });
 							} else if (e.target.value.length >= 4) {
 								document.getElementById("errorbox").textContent = strNone;
 								e.target.classList.remove("border_on_error");
-								_this3.setState({ validName: false });
+								_this2.setState({ validName: false });
 							}
 						} }),
 					React.createElement('p', { id: 'errorbox', className: 'error' }),
@@ -72794,7 +73191,7 @@ var MaintenanceRequestsNew = React.createClass({
 						type: 'email',
 						placeholder: 'E-mail',
 						ref: function (ref) {
-							return _this3.email = ref;
+							return _this2.email = ref;
 						},
 						id: this.generateAtt("id", "email"),
 						name: this.generateAtt("name", "email"),
@@ -72806,7 +73203,7 @@ var MaintenanceRequestsNew = React.createClass({
 								document.getElementById("errorboxemail").textContent = strShortEmail;
 								e.target.classList.add("border_on_error");
 							} else if (e.target.value.length >= 4) {
-								_this3.validateEmail(e.target.value, e, false);
+								_this2.validateEmail(e.target.value, e, false);
 							}
 						} }),
 					React.createElement('p', { id: 'errorboxemail', className: 'error' }),
@@ -72817,11 +73214,12 @@ var MaintenanceRequestsNew = React.createClass({
 					),
 					React.createElement('input', {
 						required: true,
-						type: 'tel',
-						maxLength: '10',
+						type: 'text',
+						minLength: '10',
+						maxLength: '11',
 						placeholder: 'Mobile',
 						ref: function (ref) {
-							return _this3.mobile = ref;
+							return _this2.mobile = ref;
 						},
 						id: this.generateAtt("id", "mobile"),
 						name: this.generateAtt("name", "mobile"),
@@ -72834,7 +73232,7 @@ var MaintenanceRequestsNew = React.createClass({
 								e.target.classList.add("border_on_error");
 							}
 							if (e.target.value.length >= 8) {
-								_this3.validatePhoneNumber(e.target.value, e, false);
+								_this2.validatePhoneNumber(e.target.value, e, false);
 							}
 						} }),
 					React.createElement('p', { id: 'errorboxmobile', className: 'error' })
@@ -72857,7 +73255,7 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement('input', {
 						type: 'text',
 						ref: function (ref) {
-							return _this3.maintenance_heading = ref;
+							return _this2.maintenance_heading = ref;
 						},
 						id: this.generateAtt("id", "maintenance_heading"),
 						name: this.generateAtt("name", "maintenance_heading")
@@ -72870,7 +73268,7 @@ var MaintenanceRequestsNew = React.createClass({
 					),
 					React.createElement('textarea', {
 						ref: function (ref) {
-							return _this3.maintenance_description = ref;
+							return _this2.maintenance_description = ref;
 						},
 						id: this.generateAtt("id", "maintenance_description"),
 						name: this.generateAtt("name", "maintenance_description")
@@ -72882,13 +73280,47 @@ var MaintenanceRequestsNew = React.createClass({
 						' Images '
 					),
 					React.createElement(
-						'form',
-						{ action: '/', className: 'dropzone needsclick dz-clickable', id: 'demo-upload' },
+						'div',
+						{ className: 'browse-wrap' },
 						React.createElement(
 							'div',
-							{ className: 'dz-message needsclick' },
-							'Drop files here or click to upload.'
-						)
+							{ className: 'title', id: 'title-upload' },
+							React.createElement('i', { className: 'fa fa-upload' }),
+							'Choose a file to upload'
+						),
+						React.createElement('input', {
+							multiple: true,
+							type: 'file',
+							id: 'input-file',
+							className: 'upload inputfile',
+							accept: 'image/jpeg, image/png',
+							onChange: function (e) {
+								return _this2._handleImageChange(e);
+							}
+						})
+					),
+					React.createElement(
+						'div',
+						{ id: 'img-render' },
+						images.map(function (img, index) {
+							return React.createElement(
+								'div',
+								{ key: index, className: 'img' },
+								React.createElement('img', {
+									src: img.url,
+									onLoad: function (e, image, key) {
+										return _this2.loadImage(e, img, index);
+									}
+								}),
+								React.createElement(
+									'a',
+									{ className: 'remove', onClick: function (key) {
+											return _this2.removeImage(index);
+										} },
+									'Remove'
+								)
+							);
+						})
 					)
 				),
 				!this.props.current_user || this.props.current_user.tenant ? React.createElement(
@@ -72908,7 +73340,7 @@ var MaintenanceRequestsNew = React.createClass({
 							type: 'text',
 							onBlur: this.checkAgentEmail,
 							ref: function (ref) {
-								return _this3.agent_email = ref;
+								return _this2.agent_email = ref;
 							},
 							id: this.generateAtt("id", "agent_email"),
 							name: this.generateAtt("name", "agent_email")
@@ -72926,7 +73358,7 @@ var MaintenanceRequestsNew = React.createClass({
 								required: true,
 								type: 'text',
 								ref: function (ref) {
-									return _this3.real_estate_office = ref;
+									return _this2.real_estate_office = ref;
 								},
 								id: this.generateAtt("id", "real_estate_office"),
 								name: this.generateAtt("name", "real_estate_office"),
@@ -72952,7 +73384,7 @@ var MaintenanceRequestsNew = React.createClass({
 								required: true,
 								type: 'text',
 								ref: function (ref) {
-									return _this3.agent_name = ref;
+									return _this2.agent_name = ref;
 								},
 								id: this.generateAtt("id", "agent_name"),
 								name: this.generateAtt("name", "agent_name"),
@@ -72977,9 +73409,10 @@ var MaintenanceRequestsNew = React.createClass({
 							React.createElement('input', {
 								required: true,
 								type: 'text',
-								maxLength: '10',
+								maxLength: '11',
+								minLength: '10',
 								ref: function (ref) {
-									return _this3.agent_mobile = ref;
+									return _this2.agent_mobile = ref;
 								},
 								id: this.generateAtt("id", "agent_mobile"),
 								name: this.generateAtt("name", "agent_mobile"),
@@ -72992,7 +73425,7 @@ var MaintenanceRequestsNew = React.createClass({
 										document.getElementById("errAgentMobile").textContent = strShortMobile;
 									}
 									if (e.target.value.length >= 8) {
-										_this3.validatePhoneNumber(e.target.value, e, true);
+										_this2.validatePhoneNumber(e.target.value, e, true);
 									}
 								} }),
 							React.createElement('p', { id: 'errAgentMobile', className: 'error' })
@@ -73004,7 +73437,7 @@ var MaintenanceRequestsNew = React.createClass({
 					'div',
 					{ id: 'availabilities' },
 					React.createElement(FieldList, { SampleField: AvailabilityField, validDate: function (flag) {
-							return _this3.validDate(flag);
+							return _this2.validDate(flag);
 						}, flag: 'date' })
 				),
 				React.createElement('hr', null),
@@ -73129,10 +73562,20 @@ var ModalAddAskLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -73273,6 +73716,8 @@ var ModalAddAskLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										type: "number",
+										minLength: "10",
+										maxLength: "11",
 										name: "landlord[mobile]",
 										placeholder: "Enter Mobile",
 										onChange: this.checkValidate,
@@ -73370,10 +73815,20 @@ var ModalEditAskLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -73524,6 +73979,8 @@ var ModalEditAskLandlord = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										minLength: "10",
+										maxLength: "11",
 										ref: function (e) {
 											return _this3.mobile = e;
 										},
@@ -73604,19 +74061,31 @@ var SideBarMobile = React.createClass({
 		if (key == 'action') {
 			this.setState({ showAction: true });
 			this.setState({ showContact: false });
-			$('#actions-full').css({ 'height': 350, 'border-width': 1 });
+			if ($('#actions-full')) {
+				$('#actions-full').css({ 'height': 350, 'border-width': 1 });
+			}
 		} else {
 			this.setState({ showAction: false });
 			this.setState({ showContact: true });
-			$('#contacts-full').css({ 'height': 350, 'border-width': 1 });
+			if ($('#contacts-full')) {
+				$('#contacts-full').css({ 'height': 350, 'border-width': 1 });
+			}
 		}
 	},
 
 	close: function () {
-		this.setState({ showAction: false });
-		this.setState({ showContact: false });
-		$('#actions-full').css({ 'height': 0, 'border-width': 0 });
-		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		if (!!this.state.showAction) {
+			this.setState({ showAction: false });
+		}
+		if (!!this.state.showContact) {
+			this.setState({ showContact: false });
+		}
+		if ($('#actions-full')) {
+			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		}
+		if ($('#contacts-full')) {
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
 	},
 
 	componentDidMount: function () {
@@ -73710,10 +74179,20 @@ var ModalAddLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -73857,6 +74336,8 @@ var ModalAddLandlord = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										minLength: "10",
+										maxLength: "11",
 										name: "landlord[mobile]",
 										placeholder: "Enter Mobile",
 										ref: function (e) {
@@ -73950,10 +74431,20 @@ var ModalEditLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -74097,6 +74588,8 @@ var ModalEditLandlord = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										minLength: "10",
+										maxLength: "11",
 										name: "landlord[mobile]",
 										placeholder: "Enter Mobile",
 										ref: function (e) {
@@ -74172,6 +74665,7 @@ var ModalRequestModal = React.createClass({
 		return {
 			isAdd: false,
 			errorName: false,
+			isDisable: false,
 			errorEmail: false,
 			errorMobile: false,
 			errorCompany: false,
@@ -74192,9 +74686,15 @@ var ModalRequestModal = React.createClass({
 			case "company":
 				{
 					if (e.target.value == "") {
-						this.setState({ errorCompany: true });
+						this.setState({
+							isDisable: true,
+							errorCompany: true
+						});
 					} else {
-						this.setState({ errorCompany: false });
+						this.setState({
+							isDisable: false,
+							errorCompany: false
+						});
 					}
 					this.state.trady.company_name = e.target.value;
 					this.forceUpdate();
@@ -74204,9 +74704,15 @@ var ModalRequestModal = React.createClass({
 			case "name":
 				{
 					if (e.target.value == "") {
-						this.setState({ errorName: true });
+						this.setState({
+							isDisable: true,
+							errorName: true
+						});
 					} else {
-						this.setState({ errorName: false });
+						this.setState({
+							isDisable: false,
+							errorName: false
+						});
 					}
 					this.state.trady.name = e.target.value;
 					this.forceUpdate();
@@ -74215,12 +74721,31 @@ var ModalRequestModal = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
-						this.setState({ errorMobile: true });
+					var value = e.target.value;
+					if (value == "") {
+						this.setState({
+							isDisable: true,
+							errorMobile: true
+						});
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({
+								isDisable: false,
+								errorMobile: false
+							});
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({
+									isDisable: true,
+									errorMobile: true
+								});
+							}
+						}
 					}
-					this.state.trady.mobile = e.target.value;
+					this.state.trady.mobile = value;
 					this.forceUpdate();
 					break;
 				}
@@ -74228,9 +74753,15 @@ var ModalRequestModal = React.createClass({
 			default:
 				{
 					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-						this.setState({ errorEmail: true });
+						this.setState({
+							isDisable: true,
+							errorEmail: true
+						});
 					} else {
-						this.setState({ errorEmail: false });
+						this.setState({
+							isDisable: false,
+							errorEmail: false
+						});
 					}
 					this.state.trady.email = e.target.value;
 					this.forceUpdate();
@@ -74243,6 +74774,21 @@ var ModalRequestModal = React.createClass({
 		this.selectTrady(this.state.maintenance_request.trady_id);
 	},
 
+	checkLength: function (e) {
+		var value = e.target.value;
+		if (value.length > 11) {
+			this.setState({
+				isDisable: true,
+				errorMobile: true
+			});
+		} else {
+			this.setState({
+				isDisable: false,
+				errorMobile: false
+			});
+		}
+	},
+
 	selectTrady: function (id) {
 		var self = this.props;
 		if (!!id) {
@@ -74251,7 +74797,12 @@ var ModalRequestModal = React.createClass({
 				if (item.id == id) {
 					this.setState({
 						trady: item,
-						isAdd: false
+						isAdd: false,
+						isDisable: false,
+						errorName: false,
+						errorEmail: false,
+						errorMobile: false,
+						errorCompany: false
 					});
 
 					return;
@@ -74261,6 +74812,11 @@ var ModalRequestModal = React.createClass({
 
 		this.setState({
 			isAdd: true,
+			isDisable: false,
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false,
+			errorCompany: false,
 			trady: {
 				name: null,
 				email: null,
@@ -74275,22 +74831,34 @@ var ModalRequestModal = React.createClass({
 		var flag = false;
 
 		if (this.company.value == "") {
-			this.setState({ errorCompany: true });
+			this.setState({
+				isDisable: true,
+				errorCompany: true
+			});
 			flag = true;
 		}
 
 		if (this.name.value == "") {
-			this.setState({ errorName: true });
+			this.setState({
+				isDisable: true,
+				errorName: true
+			});
 			flag = true;
 		}
 
 		if (this.mobile.value == "") {
-			this.setState({ errorMobile: true });
+			this.setState({
+				isDisable: true,
+				errorMobile: true
+			});
 			flag = true;
 		}
 
 		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({ errorEmail: true });
+			this.setState({
+				isDisable: true,
+				errorEmail: true
+			});
 			flag = true;
 		}
 
@@ -74309,6 +74877,9 @@ var ModalRequestModal = React.createClass({
 				}
 			};
 			this.props.requestQuote(params);
+			this.setState({
+				isDisable: true
+			});
 		}
 
 		return;
@@ -74318,6 +74889,7 @@ var ModalRequestModal = React.createClass({
 		var _this7 = this;
 
 		var self = this;
+		var state = this.state;
 		var style = {
 			background: this.state.isAdd ? 'none' : '#f2f2f2'
 		};
@@ -74521,6 +75093,9 @@ var ModalRequestModal = React.createClass({
 										},
 										readOnly: !this.state.isAdd,
 										onChange: this.checkValidate,
+										onKeyPress: function (e) {
+											return _this7.checkLength(e);
+										},
 										value: !!this.state.trady.mobile ? this.state.trady.mobile : "",
 										className: "input-custom u-full-width " + (this.state.errorMobile && "has-error")
 									})
@@ -74541,7 +75116,11 @@ var ModalRequestModal = React.createClass({
 							),
 							React.createElement(
 								"button",
-								{ type: "submit", className: "btn btn-default success" },
+								{
+									type: "submit",
+									className: "btn btn-default success",
+									disabled: !!state.isDisable ? true : false
+								},
 								"Submit"
 							)
 						)
@@ -74561,6 +75140,7 @@ var MaintenanceRequest = React.createClass({
 			quote: null,
 			invoice: null,
 			isModal: false,
+			appointment: null,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
@@ -74624,6 +75204,15 @@ var MaintenanceRequest = React.createClass({
 						invoice_pdf_file: item
 					});
 
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewAppointment':
+				{
+					this.setState({
+						appointment: item
+					});
 					this.onModalWith(key);
 					break;
 				}
@@ -75155,6 +75744,14 @@ var MaintenanceRequest = React.createClass({
 						break;
 					}
 
+				case 'viewAppointment':
+					{
+						return React.createElement(ModalViewAppointment, {
+							close: this.isClose,
+							appointment: this.state.appointment
+						});
+					}
+
 				default:
 					return null;
 			}
@@ -75219,15 +75816,42 @@ var MaintenanceRequest = React.createClass({
 							return _this9.onModalWith(modal);
 						}
 					}),
-					React.createElement(Activity, { logs: this.props.logs })
+					React.createElement(Activity, { logs: this.props.logs }),
+					React.createElement(TenantTradieAppointment, {
+						viewItem: function (key, item) {
+							return _this9.viewItem(key, item);
+						},
+						appointments: this.props.tenant_and_trady_appointments
+					}),
+					React.createElement(TenantLandlordAppointment, {
+						viewItem: function (key, item) {
+							return _this9.viewItem(key, item);
+						},
+						appointments: this.props.tenant_and_landlord_appointments
+					})
 				),
-				React.createElement(ActivityMobile, { logs: this.props.logs })
+				React.createElement(ActivityMobile, { logs: this.props.logs }),
+				React.createElement(TenantTradieAppointmentMobile, {
+					viewItem: function (key, item) {
+						return _this9.viewItem(key, item);
+					},
+					appointments: this.props.tenant_and_trady_appointments
+				}),
+				React.createElement(TenantLandlordAppointmentMobile, {
+					viewItem: function (key, item) {
+						return _this9.viewItem(key, item);
+					},
+					appointments: this.props.tenant_and_landlord_appointments
+				})
 			),
 			React.createElement(SideBarMobile, {
 				landlord: this.state.landlord,
 				current_user: this.props.current_user,
 				onModalWith: function (modal) {
 					return _this9.onModalWith(modal);
+				},
+				viewItem: function (key, item) {
+					return _this9.viewItem(key, item);
 				}
 			}),
 			this.renderModal()
@@ -75264,6 +75888,174 @@ var strShortHeading = "Heading must be more than 3 letters";
 var strShortDescription = "Description must be more than 10 letters";
 var strShortRealEstate = "RealEstateOffice must be more than 3 letters";
 var strCantSubmit = "Can't submit the from data! Check all the forms in the right format.";
+var TenantLandlordAppointment = React.createClass({
+	displayName: "TenantLandlordAppointment",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					{ onClick: this.show },
+					"Tenant & Landlord Appointments"
+				)
+			),
+			this.state.show && this.props.appointments.length ? React.createElement(ContentAppointment, {
+				appointments: this.props.appointments,
+				viewItem: function (key, item) {
+					return _this.props.viewItem(key, item);
+				}
+			}) : null
+		);
+	}
+});
+
+var TenantLandlordAppointmentMobile = React.createClass({
+	displayName: "TenantLandlordAppointmentMobile",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "activity-mobile" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Tenant & Landlord Appointments"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						onClick: this.show,
+						className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+					})
+				),
+				this.props.appointments.length && !!this.state.show ? React.createElement(ContentAppointment, {
+					appointments: this.props.appointments,
+					viewItem: function (key, item) {
+						return _this2.props.viewItem(key, item);
+					}
+				}) : null
+			)
+		);
+	}
+});
+var TenantTradieAppointment = React.createClass({
+	displayName: "TenantTradieAppointment",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					{ onClick: this.show },
+					"Tenant & Tradie Appointment"
+				)
+			),
+			this.state.show && this.props.appointments.length ? React.createElement(ContentAppointment, {
+				appointments: this.props.appointments,
+				viewItem: function (key, item) {
+					return _this.props.viewItem(key, item);
+				}
+			}) : null
+		);
+	}
+});
+
+var TenantTradieAppointmentMobile = React.createClass({
+	displayName: "TenantTradieAppointmentMobile",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "activity-mobile" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Tenant & Tradie Appointment"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						onClick: this.show,
+						className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+					})
+				),
+				this.props.appointments.length && !!this.state.show ? React.createElement(ContentAppointment, {
+					appointments: this.props.appointments,
+					viewItem: function (key, item) {
+						return _this2.props.viewItem(key, item);
+					}
+				}) : null
+			)
+		);
+	}
+});
 var ContentMessage = React.createClass({
 	displayName: 'ContentMessage',
 
@@ -77275,7 +78067,7 @@ var TenantContact = React.createClass({
 			{ className: "item" },
 			React.createElement(
 				"div",
-				{ className: "header contact" },
+				{ className: "header action" },
 				React.createElement(
 					"a",
 					null,
@@ -77312,7 +78104,7 @@ var TenantContactMobile = React.createClass({
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -77346,12 +78138,16 @@ var TenantSideBarMobile = React.createClass({
 
 	show: function () {
 		this.setState({ showContact: true });
-		$('#contacts-full').css({ 'height': 150, 'border-width': 1 });
+		if ($('#contacts-full').length > 0) {
+			$('#contacts-full').css({ 'height': 150, 'border-width': 1 });
+		}
 	},
 
 	close: function () {
 		this.setState({ showContact: false });
-		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		if ($('#contacts-full').length > 0) {
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
 	},
 
 	componentDidMount: function () {
@@ -78668,7 +79464,7 @@ var CreateOrUploadInvoice = React.createClass({
 				{ onClick: function (modal) {
 						return _this.props.onModalWith('viewConfirm');
 					} },
-				React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+				React.createElement("i", { className: "fa fa-send", "aria-hidden": "true" }),
 				"Create or Upload Invoice"
 			)
 		);
@@ -78689,8 +79485,26 @@ var MarkJobAsCompleted = React.createClass({
 				{ onClick: function (modal) {
 						return _this2.props.onModalWith('viewMarkJob');
 					} },
-				React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+				React.createElement("i", { className: "fa fa-send", "aria-hidden": "true" }),
 				"Mark Job As Completed"
+			)
+		);
+	}
+});
+
+var CreateAppointment = React.createClass({
+	displayName: "CreateAppointment",
+
+	render: function () {
+		var props = this.props;
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ href: "/appointments/new?maintenance_request_id=" + props.maintenance_request.id + "&trady_id=" + props.trady.id },
+				React.createElement("i", { className: "fa fa-plus", "aria-hidden": "true" }),
+				"Create Appointment"
 			)
 		);
 	}
@@ -78705,7 +79519,7 @@ var ContentTradyAction = React.createClass({
 		var maintenance_request = this.props.maintenance_request;
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
 		var maintenance_trady_id = maintenance_request.trady_id;
-		var link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+		var link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
 		if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return React.createElement(
 				"ul",
@@ -78714,12 +79528,17 @@ var ContentTradyAction = React.createClass({
 				React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
 						return _this3.props.onModalWith(modal);
 					} }),
-				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
+				React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
 						return _this3.props.onModalWith(modal);
-					} })
+					} }),
+				React.createElement(CreateAppointment, { trady: this.props.trady, maintenance_request: maintenance_request })
 			);
 		} else if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
-			return null;
+			return React.createElement(
+				"ul",
+				null,
+				React.createElement(CreateAppointment, { trady: this.props.trady, maintenance_request: maintenance_request })
+			);
 		} else {
 			return React.createElement(
 				"ul",
@@ -78728,9 +79547,10 @@ var ContentTradyAction = React.createClass({
 				!!this.props.assigned_trady && React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
 						return _this3.props.onModalWith(modal);
 					} }),
-				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
+				React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
 						return _this3.props.onModalWith(modal);
-					} })
+					} }),
+				React.createElement(CreateAppointment, { trady: this.props.trady, maintenance_request: maintenance_request })
 			);
 		}
 	}
@@ -78773,6 +79593,7 @@ var TradyAction = React.createClass({
 				"div",
 				{ className: "content" },
 				this.state.show && React.createElement(ContentTradyAction, {
+					trady: this.props.trady,
 					landlord: this.props.landlord,
 					invoices: this.props.invoices,
 					assigned_trady: this.props.assigned_trady,
@@ -78818,6 +79639,7 @@ var TradyActionMobile = React.createClass({
 					"div",
 					{ className: "content" },
 					React.createElement(ContentTradyAction, {
+						trady: this.props.trady,
 						landlord: this.props.landlord,
 						landlord: this.props.landlord,
 						invoices: this.props.invoices,
@@ -78836,30 +79658,41 @@ var TradyActionMobile = React.createClass({
 var ContentTradyContact = React.createClass({
 	displayName: "ContentTradyContact",
 
-	renderCallAgent: function () {
-		var maintenance_request = this.props.maintenance_request;
-		if (!!maintenance_request.agent) {
+	renderTenant: function () {
+		var tenants = this.props.tenants.length > 0 ? this.props.tenants : [];
+		if (tenants.length > 0) {
+			return tenants.map(function (tenant, key) {
+				return React.createElement(
+					"li",
+					{ key: tenant.id },
+					React.createElement(
+						"a",
+						{ href: "tel:" + tenant.mobile },
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Call Tenant ",
+						key + 1,
+						": ",
+						tenant.mobile
+					)
+				);
+			});
+		}
+
+		return null;
+	},
+
+	renderAgent: function () {
+		var agent = this.props.agent;
+		if (!!agent) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					{ href: "tel:" + maintenance_request.agent.mobile_phone },
+					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					maintenance_request.agent.mobile_phone
-				)
-			);
-		} else if (!!maintenance_request.agency_admin) {
-			return React.createElement(
-				"li",
-				null,
-				React.createElement(
-					"a",
-					{ href: "tel:" + maintenance_request.agency_admin.mobile_phone },
-					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-					"Call Agent: ",
-					maintenance_request.agency_admin.mobile_phone
+					agent.mobile_phone
 				)
 			);
 		}
@@ -78871,7 +79704,8 @@ var ContentTradyContact = React.createClass({
 		return React.createElement(
 			"ul",
 			null,
-			this.renderCallAgent()
+			this.renderTenant(),
+			this.renderAgent()
 		);
 	}
 });
@@ -78912,9 +79746,15 @@ var TradyContact = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content" },
-				this.state.show && React.createElement(ContentTradyContact, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentTradyContact, {
+					agent: this.props.agent,
+					tenants: this.props.tenants,
+					landlord: this.props.landlord,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
 						return _this.props.onModalWith(modal);
-					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+					}
+				})
 			)
 		);
 	}
@@ -78934,7 +79774,7 @@ var TradyContactMobile = React.createClass({
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -78949,9 +79789,15 @@ var TradyContactMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentTradyContact, { onModalWith: function (modal) {
+					React.createElement(ContentTradyContact, {
+						agent: this.props.agent,
+						tenants: this.props.tenants,
+						landlord: this.props.landlord,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
 							return _this2.props.onModalWith(modal);
-						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+						}
+					})
 				)
 			)
 		);
@@ -78968,23 +79814,34 @@ var TradySideBarMobile = React.createClass({
 	},
 
 	show: function (key) {
-		var height = $(window).height();
 		if (key == 'action') {
 			this.setState({ showAction: true });
 			this.setState({ showContact: false });
-			$('#actions-full').css({ 'height': 200, 'border-width': 1 });
+			if ($('#actions-full').length > 0) {
+				$('#actions-full').css({ 'height': 300, 'border-width': 1 });
+			}
 		} else {
 			this.setState({ showAction: false });
 			this.setState({ showContact: true });
-			$('#contacts-full').css({ 'height': 200, 'border-width': 1 });
+			if ($('#contacts-full').length > 0) {
+				$('#contacts-full').css({ 'height': this.props.tenants.length * 50 + 150, 'border-width': 1 });
+			}
 		}
 	},
 
 	close: function () {
-		this.setState({ showAction: false });
-		this.setState({ showContact: false });
-		$('#actions-full').css({ 'height': 0, 'border-width': 0 });
-		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		if (!!this.state.showAction) {
+			this.setState({ showAction: false });
+		}
+		if (!!this.state.showContact) {
+			this.setState({ showContact: false });
+		}
+		if ($('#actions-full').length > 0) {
+			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		}
+		if ($('#contacts-full').length > 0) {
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
 	},
 
 	componentDidMount: function () {
@@ -79032,9 +79889,10 @@ var TradySideBarMobile = React.createClass({
 				'div',
 				{ className: 'action-mobile' },
 				React.createElement(TradyActionMobile, {
+					close: this.close,
+					trady: this.props.trady,
 					landlord: this.props.landlord,
 					invoices: this.props.invoices,
-					close: this.close,
 					assigned_trady: this.props.assigned_trady,
 					signed_in_trady: this.props.signed_in_trady,
 					invoice_pdf_files: this.props.invoice_pdf_files,
@@ -79045,12 +79903,15 @@ var TradySideBarMobile = React.createClass({
 				}),
 				React.createElement(TradyContactMobile, {
 					close: this.close,
-					onModalWith: function (modal) {
-						return _this.props.onModalWith(modal);
-					},
+					agent: this.props.agent,
+					tenants: this.props.tenants,
 					landlord: this.props.landlord,
 					current_user: this.props.current_user,
-					maintenance_request: this.props.maintenance_request })
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				})
 			)
 		);
 	}
@@ -79587,6 +80448,8 @@ var TradyMaintenanceRequest = React.createClass({
 					'div',
 					{ className: 'sidebar' },
 					React.createElement(TradyContact, {
+						agent: this.props.agent,
+						tenants: this.props.tenants,
 						landlord: this.state.landlord,
 						current_user: this.props.current_user,
 						onModalWith: function (modal) {
@@ -79595,6 +80458,7 @@ var TradyMaintenanceRequest = React.createClass({
 						maintenance_request: this.state.maintenance_request
 					}),
 					React.createElement(TradyAction, {
+						trady: this.props.trady,
 						landlord: this.state.landlord,
 						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
@@ -79610,6 +80474,9 @@ var TradyMaintenanceRequest = React.createClass({
 				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
 			React.createElement(TradySideBarMobile, {
+				trady: this.props.trady,
+				agent: this.props.agent,
+				tenants: this.props.tenants,
 				landlord: this.state.landlord,
 				invoices: this.props.invoices,
 				current_user: this.props.current_user,
