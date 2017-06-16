@@ -52,8 +52,8 @@ Rails.application.routes.draw do
   ##########MR RESOURCES/ROUTES######################
   ###################################################
     get 'ordered_maintenance_requests' => "maintenance_requests#ordered_maintenance_requests"
-    resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
-  
+    resources :maintenance_requests, only:[:index,:new,:create,:destroy, :show]
+    post "update_maintenance_request" => "maintenance_requests#update"
   ###################################################
   ##########MESSAGING RESOURCES/ROUTES###############
   ###################################################
