@@ -34,6 +34,7 @@ class Ability
         can :ordered_maintenance_requests, :maintenance_request
         can :index, :agent_maintenance_request
         can :show, :agent_maintenance_request
+        can :update, :maintenance_request
       end
 
       if @user.has_role("AgencyAdmin") && @user.logged_in_as("AgencyAdmin")
@@ -48,9 +49,11 @@ class Ability
         can :show, :maintenance_request
         can :index, :maintenance_request
         can :create, :maintenance_request
+        can :update, :maintenance_request
 
         can :create, :agency_admin
         can :new, :agency_admin
+        
         # can :new, AgencyAdmin
         # can :read_show, AgencyAdmin
 
