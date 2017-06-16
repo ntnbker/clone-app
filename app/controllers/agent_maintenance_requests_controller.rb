@@ -1,4 +1,5 @@
 class AgentMaintenanceRequestsController < ApplicationController 
+  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   def index
     # if params[:sort_by_date] == "Newest to Oldest"
        @maintenance_requests = current_user.agent.maintenance_requests
@@ -109,6 +110,35 @@ class AgentMaintenanceRequestsController < ApplicationController
     end 
 
   
+  end
+
+  private
+
+  def email_auto_login(id)
+    ###HERE WE HAVE TO ADD THE ROLE NEEDED FOR THAT VIEW IF THEY ARE NOT SIGNED IN AS THAT 
+    ###ROLE TELL THEM TO SIGN OUT AND SIGN IN AS THAT ROLL
+      user = User.find_by(id:id)
+      
+      
+      if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("AgencyAdmin")
+        answer = true
+      else
+        answer = false
+      end 
+
+
+
+      if current_user  && answer && current_user.has_role("Agent")
+        logout
+        
+        auto_login(user)
+        user.current_role.update_attribute(:role, "Agent")
+      elsif current_user == nil
+        auto_login(user)
+        user.current_role.update_attribute(:role, "Agent")
+      elsif current_user && current_user.logged_in_as("Agent")
+          #do nothing
+      end  
   end
 
 end 

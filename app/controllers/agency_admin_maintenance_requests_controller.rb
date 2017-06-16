@@ -115,9 +115,27 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   def email_auto_login(id)
     ###HERE WE HAVE TO ADD THE ROLE NEEDED FOR THAT VIEW IF THEY ARE NOT SIGNED IN AS THAT 
     ###ROLE TELL THEM TO SIGN OUT AND SIGN IN AS THAT ROLL
-      if current_user == nil
-        user = User.find_by(id:id)
+      user = User.find_by(id:id)
+      
+      
+      if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
+        answer = true
+      else
+        answer = false
+      end 
+
+
+
+      if current_user  && answer && current_user.has_role("AgencyAdmin")
+        logout
+        
         auto_login(user)
+        user.current_role.update_attribute(:role, "AgencyAdmin")
+      elsif current_user == nil
+        auto_login(user)
+        user.current_role.update_attribute(:role, "AgencyAdmin")
+      elsif current_user && current_user.logged_in_as("AgencyAdmin")
+          #do nothing
       end 
   end
 
