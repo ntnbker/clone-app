@@ -164,6 +164,7 @@ class QuotesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
+    @trady = @quote.trady
     trady = @quote.trady
 
     quote_request = QuoteRequest.where(:trady_id=>@quote.trady.id, :maintenance_request_id=>@maintenance_request.id).first
