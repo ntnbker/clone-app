@@ -12,10 +12,28 @@ class QuoteOptionsController < ApplicationController
 
   def email_auto_login(id)
 
-    if current_user == nil
-      user = User.find_by(id:id)
-      auto_login(user)
-    end 
+    user = User.find_by(id:id)
+      
+      
+      if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Agent")
+        answer = true
+      else
+        answer = false
+      end 
+
+
+
+      if current_user  && answer && user.has_role("Trady")
+        logout
+        
+        auto_login(user)
+        user.current_role.update_attribute(:role, "Trady")
+      elsif current_user == nil
+        auto_login(user)
+        user.current_role.update_attribute(:role, "Trady")
+      elsif current_user && current_user.logged_in_as("Trady")
+          #do nothing
+      end 
   end
 
 end 
