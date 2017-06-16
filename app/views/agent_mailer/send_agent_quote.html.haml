@@ -72,9 +72,9 @@
           Hi, a quote has been submitted by a trady for the maintenance request
           =@maintenance_request.maintenance_heading
         %div.text-center
-          -if @user.role.roleable_type == "AgencyAdmin"
+          -if @user.has_role("AgencyAdmin")
             =link_to "See Quote", agency_admin_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@user.id), class: 'btn'
-          -elsif @user.role.roleable_type = "Agent"
+          -elsif @user.has_role("Agent")
             =link_to "See Quote", agent_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@user.id), class: 'btn'
         %p.thank
           Thanks so much!
