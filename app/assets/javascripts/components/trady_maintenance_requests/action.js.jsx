@@ -79,7 +79,9 @@ var ContentTradyAction = React.createClass({
 					{ !!this.props.assigned_trady &&
 							<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{ !!this.props.assigned_trady &&
+						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
+					}
 					<CreateAppointment trady={this.props.trady} maintenance_request={maintenance_request} />
 				</ul>
 			);

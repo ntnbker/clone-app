@@ -1235,6 +1235,11 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'editMaintenanceRequest': {
+				this.onModalWith(key);
+				break;
+			}
+
 			default: {
 				break;
 			}
@@ -1586,6 +1591,72 @@ var MaintenanceRequest = React.createClass({
 			}
 		});
 	},
+
+	assignToUser: function(email) {
+		const self = this;
+		var params = {
+			maintenance_request_id:  self.state.maintenance_request.id,
+			email: email
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/reassign_to',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Assign Matenance Request",
+						content: "The Assign Matenance Request was successfully",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Assign Matenance Request",
+					content: "The Assign Matenance Request was error" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	editMaintenanceRequest: function(params) {
+		const self = this;
+		params.maintenance_request_id = this.state.maintenance_request.id;
+		$.ajax({
+			type: 'POST',
+			url: '/update_maintenance_request',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Edit Maintenance Request",
+						content: "The Maintenance Request was update",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Edit Maintenance Request",
+					content: "The Maintenance Request didnt update!" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
 	
 	renderModal: function() {
 		if(this.state.isModal) {
@@ -1787,6 +1858,16 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 				}
+
+				case 'editMaintenanceRequest': {
+					return (
+						<EditMaintenanceRequest
+							close={this.isClose}
+							maintenance_request={this.state.maintenance_request}
+							editMaintenanceRequest={this.editMaintenanceRequest}
+						/>
+					);
+				}
 					
 				default:
 					return null;
@@ -1799,10 +1880,15 @@ var MaintenanceRequest = React.createClass({
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
 					<div className="section">
-						<ItemMaintenanceRequest 
+						<ItemMaintenanceRequest
 							gallery={this.props.gallery} 
-							property={this.props.property} 
+							property={this.props.property}
+							all_agents={this.props.all_agents}
+							all_agency_admins={this.props.all_agency_admins}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
+							show_assign={this.props.current_user_show_quote_message}
 						/>
 						{	this.props.quotes.length > 0 ?
 						 		<Quotes 
@@ -1860,7 +1946,7 @@ var MaintenanceRequest = React.createClass({
 						appointments={this.props.tenant_and_landlord_appointments}
 					/>
 				</div>
-				<SideBarMobile 
+				<SideBarMobile
 					landlord={this.state.landlord} 
 					current_user={this.props.current_user} 
 					onModalWith={(modal) => this.onModalWith(modal)} 

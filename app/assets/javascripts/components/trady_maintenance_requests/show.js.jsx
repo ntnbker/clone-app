@@ -105,10 +105,9 @@ var ModalConfirmAddInvoice = React.createClass({
 
 	createInvoice: function() {
 		const maintenance_request = this.props.maintenance_request;
-		const trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
 		const maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id + "&quote_id=";
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
 	},
 
 	render: function() {

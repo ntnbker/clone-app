@@ -268,6 +268,18 @@ body::-webkit-scrollbar-thumb {
         }
       }
     }
+    .edit-maintenance-request {
+      label {
+        width: 100%;
+        text-align: left;
+      }
+      input {
+        width: 100%;
+      }
+      textarea {
+        width: 100%;
+      }
+    }
     .modal-footer {
       padding: 15px;
       text-align: center;
@@ -1063,6 +1075,59 @@ body::-webkit-scrollbar-thumb {
   }
   .invoices .content p span{
     margin-left: 5px;
+  }
+  .dropdown-assign {
+    position: absolute;
+    z-index: 100;
+    border: 1px solid #879FBB;
+    background-color: #fff;
+    margin-top: 45px;
+    width: 220px;
+    border-radius: 5px;
+    &:after {
+      bottom: 100%;
+      left: 6%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-bottom-color: #879FBB;
+      border-width: 10px;
+    }
+    ul {
+      list-style: none;
+      margin-bottom: 0px;
+      li {
+        width: 100%;
+        a {
+          width: 100%;
+          display: inline-block;
+          text-align: center;
+          margin-top: 5px;
+          cursor: pointer;
+          color: #000;
+          text-transform: capitalize;
+          &:hover, &:active {
+            color: #7DC691;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    p {
+      width: 100%;
+      margin-bottom: 0px;
+      height: 35px;
+      line-height: 35px;
+      font-size: 16px;
+      text-align: center;
+      border-bottom: 1px solid #879FBB;
+      &.agent {
+        border-top: 1px solid #879FBB;
+      }
+    }
   }
   @media (min-width: 320px) and (max-width: 480px) {
     .main-summary {
