@@ -2,31 +2,4 @@
 
 
 
-
-
-%div.container
-  
-  %h3 Quotes
-  -@non_json_quotes.each do |quote|
-    -quote.quote_items.each do |f|
-      %div.well
-        %h5
-          =quote.trady.name
-        %h6
-          =quote.trady.company_name  
-        
-        %p
-        total:
-        ="$" + quote.amount.to_s
-        -if quote.status == "Active"
-          %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
-            =link_to "Approve", landlord_decides_quote_path(quote_id:quote.id,status:"Approved", maintenance_request_id:@maintenance_request.id), method: :post, remote: true
-          %button{:type=>"button", :class=>"btn btn-primary btn-lg"}
-            =link_to "Request Another Quote", request_quote_path(maintenance_request_id:@maintenance_request.id), method: :post
-          
-        %button{:type=>"button", :class=>"btn btn-primary btn-lg"} 
-          View
-
-
-
  
