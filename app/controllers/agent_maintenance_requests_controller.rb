@@ -119,7 +119,7 @@ class AgentMaintenanceRequestsController < ApplicationController
     ###ROLE TELL THEM TO SIGN OUT AND SIGN IN AS THAT ROLL
       user = User.find_by(id:id)
       
-      
+    if current_user
       if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("AgencyAdmin")
         answer = true
       else
@@ -138,6 +138,10 @@ class AgentMaintenanceRequestsController < ApplicationController
         user.current_role.update_attribute(:role, "Agent")
       elsif current_user && current_user.logged_in_as("Agent")
           #do nothing
+      end 
+      else
+        auto_login(user)
+        user.current_role.update_attribute(:role, "Agent")
       end  
   end
 
