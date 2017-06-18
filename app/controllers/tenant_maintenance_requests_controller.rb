@@ -98,5 +98,6 @@ class TenantMaintenanceRequestsController < ApplicationController
         user.current_role.update_attribute(:role, "Tenant")
 
       end
+  end 
 
 end
