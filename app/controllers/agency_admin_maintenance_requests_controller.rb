@@ -117,18 +117,15 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     ###ROLE TELL THEM TO SIGN OUT AND SIGN IN AS THAT ROLL
       user = User.find_by(id:id)
       
-      
+    if current_user
       if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
         answer = true
       else
         answer = false
       end 
-
-
-
+      
       if current_user  && answer && user.has_role("AgencyAdmin")
         logout
-        
         auto_login(user)
         user.current_role.update_attribute(:role, "AgencyAdmin")
       elsif current_user == nil
@@ -137,6 +134,11 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
       elsif current_user && current_user.logged_in_as("AgencyAdmin")
           #do nothing
       end 
+    else 
+      auto_login(user)
+      user.current_role.update_attribute(:role, "AgencyAdmin")
+    end 
+
   end
 
 
