@@ -1630,6 +1630,7 @@ var MaintenanceRequest = React.createClass({
 	editMaintenanceRequest: function(params) {
 		const self = this;
 		params.maintenance_request_id = this.state.maintenance_request.id;
+		let {maintenance_request} = this.state;
 		$.ajax({
 			type: 'POST',
 			url: '/update_maintenance_request',
@@ -1638,7 +1639,10 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				maintenance_request.maintenance_heading = res.maintenance_heading;
+				maintenance_request.maintenance_description = res.maintenance_description
 				self.setState({
+					maintenance_request: maintenance_request,
 					notification: {
 						title: "Edit Maintenance Request",
 						content: "The Maintenance Request was update",

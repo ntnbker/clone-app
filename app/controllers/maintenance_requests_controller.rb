@@ -301,7 +301,7 @@ class MaintenanceRequestsController < ApplicationController
 
     maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description])
     respond_to do |format|
-      format.json {render maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description]}
+      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description]}}
       format.html {render body: nil}
 
     end
