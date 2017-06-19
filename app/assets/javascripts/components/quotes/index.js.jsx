@@ -193,6 +193,12 @@ var ActionQuote = React.createClass({
 							/> 
 					}
 					{ quote.status == "Active" && 
+							<ButtonDecline 
+								quote={quote} 
+								updateStatusQuote={self.updateStatusQuote} 
+							/> 
+					}
+					{ quote.status == "Active" && 
 							<ButtonRequestAnotherQuote 
 								quote={quote} 
 								sendEmailLandlord={self.sendEmailLandlord} 
