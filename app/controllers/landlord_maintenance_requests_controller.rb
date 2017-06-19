@@ -76,18 +76,15 @@ class LandlordMaintenanceRequestsController < ApplicationController
   def email_auto_login(id)
       user = User.find_by(id:id)
       
-      
+    if current_user  
       if current_user.logged_in_as("Tenant") || current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
         answer = true
       else
         answer = false
       end 
 
-
-
       if current_user  && answer && user.has_role("Landlord")
         logout
-        
         auto_login(user)
         user.current_role.update_attribute(:role, "Landlord")
       elsif current_user == nil
@@ -95,7 +92,12 @@ class LandlordMaintenanceRequestsController < ApplicationController
         user.current_role.update_attribute(:role, "Landlord")
       elsif current_user && current_user.logged_in_as("Landlord")
           #do nothing
-      end 
+      end
+    else
+      auto_login(user)
+      user.current_role.update_attribute(:role, "Landlord")
+
+    end  
   end
 
 end 

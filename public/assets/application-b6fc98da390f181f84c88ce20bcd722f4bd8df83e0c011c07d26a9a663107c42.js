@@ -79518,6 +79518,7 @@ var ContentTradyAction = React.createClass({
 
 		var maintenance_request = this.props.maintenance_request;
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+
 		var maintenance_trady_id = maintenance_request.trady_id;
 		var link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
 		if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {

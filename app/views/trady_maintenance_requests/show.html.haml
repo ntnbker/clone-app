@@ -4,6 +4,8 @@
 =link_to "Job Complete", job_completed_path(maintenance_request_id:@maintenance_request.id)
 =link_to "Create Appointment", new_appointment_path(maintenance_request_id:@maintenance_request.id, trady_id:@current_user.trady.id)
 
+=link_to "Create quote", quote_options_path(maintenance_request_id:@maintenance_request.id, trady_id:@current_user.trady.id)
+
 
 / -if @maintenance_request.trady.id != current_user.trady.id
 /   %h2 
