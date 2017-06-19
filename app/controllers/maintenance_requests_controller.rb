@@ -88,7 +88,7 @@ class MaintenanceRequestsController < ApplicationController
       ############################    
       if @user && existing_role == false
         role = Role.new(user_id:@user.id)
-        @tenant = Tenant.create(user_id:@user.id,name:params[:maintenance_request][:name],email:params[:maintenance_request][:email],mobile:params[:maintenance_request][:mobile])
+        @tenant = Tenant.create(user_id:@user.id,full_name:params[:maintenance_request][:name],email:params[:maintenance_request][:email],mobile:params[:maintenance_request][:mobile])
         @tenant.roles << role
         role.save
         

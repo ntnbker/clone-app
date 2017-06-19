@@ -65,46 +65,57 @@ class LandlordsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id])
     property = maintenance_request.property
     
-    if user && user.landlord?
-      
+   if user
+      existing_role = user.get_role("Landlord").present?
+    end
+    
+    if user && existing_role == false
+      role = Role.new(user_id:user.id)
+      @landlord.roles << role
+      role.save
+      @landlord.user_id = user.id
+      @landlord.save
       property.update_attribute(:landlord_id, user.landlord.id)
-      
-      LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id], user.landlord.id )
+
+      LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
       maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
-      
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord", name:@landlord.name)
       respond_to do |format|
         format.json {render json:user.landlord, notice:"Maintenance Request Successfully Sent" }
       end
-    Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord")
-    elsif user && !user.landlord?
+
+
+    elsif user && existing_role == true
+      property.update_attribute(:landlord_id, user.landlord.id)
+      LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],user.landlord.id)
+      maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord", name:user.landlord.name)
       respond_to do |format|
-      format.json{render json: "User Email Already has other Role please user another email", status: :ok }
-      end 
+        format.json {render json:user.landlord, notice:"Maintenance Request Successfully Sent" }
+      end
     else 
-      
-      respond_to do |format|
-        if @landlord.valid?
+      if @landlord.valid?
            
-          format.json {render json:@landlord, :notice=>"Maintenance Request Successfully Sent" }
-          
           @user = User.create(email:params[:landlord][:email],password:SecureRandom.hex(5))
           @landlord.user_id = @user.id
           @landlord.save
-          role = Role.create(user_id:@user.id)
+          role = Role.new(user_id:@user.id)
           @landlord.roles << role
-          
+          role.save
           property.update_attribute(:landlord_id, @user.landlord.id)
 
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
           maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
 
           Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord", name:@landlord.name)
-
-        else
-          format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
+        respond_to do |format|
+          format.json {render json:@user.landlord, notice:"Maintenance Request Successfully Sent" }
         end
+      else
+        @user = User.new(user_params)  
+        format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
       end 
-    end
+    end 
   end 
 
   def update_and_notify_landlord
