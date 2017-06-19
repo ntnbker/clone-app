@@ -250,7 +250,7 @@ var ImgSlider = React.createClass({
 
   setWidth: function() {
     const slider = $('#slider');
-    if(slider.length > 0) {
+    if(slider.length > 0 && slider.width() > 0) {
       this.setState({
         stwidth: slider.width()
       });

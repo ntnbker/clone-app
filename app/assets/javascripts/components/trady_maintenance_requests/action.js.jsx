@@ -148,9 +148,9 @@ var TradyActionMobile = React.createClass({
 						<ContentTradyAction
 							trady={this.props.trady}
 							landlord={this.props.landlord} 
-							landlord={this.props.landlord} 
 							invoices={this.props.invoices}
 					 		assigned_trady={this.props.assigned_trady}
+							signed_in_trady={this.props.signed_in_trady} 
 							invoice_pdf_files={this.props.invoice_pdf_files}
 					 		maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}

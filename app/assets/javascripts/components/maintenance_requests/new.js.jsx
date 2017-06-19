@@ -94,15 +94,15 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleImageChange: function(e) {
-		var files = e.target.files;
+		const files = e.target.files;
 		var reader = new FileReader();
 		var images = this.state.images;
-				
 		readFile = (index) => {
 			if (index >= files.length) {
 				this.setState({
 					images: images
 				});
+				e.target.value = '';
 				return;
 			}
 			var file = files[index];
@@ -125,7 +125,6 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		}
 		readFile(0);
-		e.target.value = '';
 	},
 
 	validDate: function(flag) {
