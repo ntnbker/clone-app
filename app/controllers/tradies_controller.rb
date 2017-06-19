@@ -97,7 +97,9 @@ class TradiesController < ApplicationController
         mr.update_attribute(:trady_id, @user.trady.id )
       end 
       mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
-
+      respond_to do |format|
+        format.json{render json:@all_tradies}
+      end
 
 ####NEW USER STARTS HERE
     else 
