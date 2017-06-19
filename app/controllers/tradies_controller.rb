@@ -75,7 +75,7 @@ class TradiesController < ApplicationController
         format.json{render json:@all_tradies}
       end
     elsif @user && existing_role == true
-      
+      binding.pry
       if AgencyTrady.where(:agency_id=>@agency.id, :trady_id => @user.trady.id).present? 
         #do nothing
       else
