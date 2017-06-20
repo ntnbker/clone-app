@@ -7,6 +7,12 @@ var Spinner = React.createClass({
 		$(document).ajaxStop(function() {
 			$("#spinner").css('display', 'none');
 		});*/
+
+		$(document).bind('ajaxSend', function(e) {
+			$("#spinner").css('display', 'flex');
+		}).bind('ajaxComplete', function(e) {
+			$("#spinner").css('display', 'none');
+		});
 	},
 
 	render: function() {
@@ -14,7 +20,7 @@ var Spinner = React.createClass({
 			<div id="spinner" className="spinner-content">
 				<div className="spinner-bg"></div>
 				<div className="spinner">
-				  <div className="bounce1"></div>
+					<div className="bounce1"></div>
 				  <div className="bounce2"></div>
 				  <div className="bounce3"></div>
 				</div>

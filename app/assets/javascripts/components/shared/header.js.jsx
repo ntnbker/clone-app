@@ -126,11 +126,15 @@ var Header = React.createClass({
       }
 
       $(document).bind(event, function(e) {
-        if(e.target.id != "menu-bar") {
-          self.hideBar();
-        }
         self.clickDocument(e);
         self.closeMenu();
+        if(e.target.id != "btn-menu-bar") {
+          self.hideBar();
+          var className = e.target.class;
+          if(className && className.indexOf('click')) {
+            e.target.click();
+          }
+        }
       });  
     },
 
@@ -176,7 +180,7 @@ var Header = React.createClass({
         dataMenu.map((item, key) => {
           return (
             <li key={key}>
-              <a href={item.url}>
+              <a href={item.url} className="click">
                 {item.name}
               </a>
             </li>
@@ -225,15 +229,15 @@ var Header = React.createClass({
                     </li>
                     { this.menuBar() }
                     <li>
-                      <a href={props.logout_path} data-method="delete" rel="nofollow"> 
+                      <a href={props.logout_path} className="click" data-method="delete" rel="nofollow"> 
                         Sign Out
                       </a>
                     </li>
                 </ul>
                 : 
                 <span className="mobile-menu-items">
-                  <a href={props.menu_login_path} > Login </a>
-                  <a href={props.new_agency_path} className="register"> Register </a>
+                  <a href={props.menu_login_path} className="click" > Login </a>
+                  <a href={props.new_agency_path} className="register click"> Register </a>
                 </span>
             }
           </MobileMenu>
@@ -258,14 +262,14 @@ var Header = React.createClass({
                               <i className="fa fa-bell" />
                             </div>
                             <div className="menu-bar dropdown-custom">
-                              <button type="button" className="btn-menu" id="btn-menu-header" onClick={this.showMenu}>
+                              <button type="button" className="btn-menu" onClick={this.showMenu}>
                                 <img src="/assets/user1.png" />
                                 <span>
                                   Hi, {current_user.name}
                                   <i className="fa fa-angle-down"/>
                                 </span>
                               </button>
-                              <ul className="dropdown-menu">
+                              <ul className="dropdown-menu" id="menu-bar">
                                 { this.menuBar() }
                                 <li  ref="Items">
                                   <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
@@ -300,7 +304,7 @@ var Header = React.createClass({
                       <a href={props.new_agency_path} className="register"> Register </a>
                     </span>
                 }
-              <button className="menu-btn button" id="menu-bar" onClick={this.showBar}> ☰ </button>
+              <button className="menu-btn button" id="btn-menu-bar" onClick={this.showBar}> ☰ </button>
             </div>
           </div>
         </nav>

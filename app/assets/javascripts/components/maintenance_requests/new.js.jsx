@@ -139,7 +139,6 @@ var MaintenanceRequestsNew = React.createClass({
 			return;
 		}
 		var XHR = new XMLHttpRequest();
-		debugger
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
 		this.state.dataImages.map((image, index) => {
 			var idx = index + 1;
@@ -191,6 +190,12 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
+		XHR.upload.addEventListener('loadstart', function(e) {
+			$("#spinner").css('display', 'flex');
+		});
+		XHR.upload.addEventListener('loadend', function(e) {
+				$("#spinner").css('display', 'none');
+		});
 		XHR.send(FD);
 		e.preventDefault();
   	return false;
