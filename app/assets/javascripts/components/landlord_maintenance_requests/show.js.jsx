@@ -296,6 +296,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					return (
 						<ModalSendMessageLandlord 
 							close={this.isClose} 
+							title="Message Agent"
 							current_user={this.props.current_user} 
 							authToken={this.props.authenticity_token}
 							sendMessageLandlord={this.sendMessageLandlord}

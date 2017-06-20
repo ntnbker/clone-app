@@ -102,13 +102,12 @@ var MaintenanceRequestsNew = React.createClass({
 				this.setState({
 					images: images
 				});
-				e.target.value = '';
 				return;
 			}
 			var file = files[index];
 			var fileAlreadyExists = false;
 			for (var i = 0; i < images.length; i ++) {
-				if (images[i].fileInfo.name == file.name) {
+				if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
 					fileAlreadyExists = true;
 					break;
 				}
@@ -124,7 +123,7 @@ var MaintenanceRequestsNew = React.createClass({
 				readFile(index + 1);
 			}
 		}
-		readFile(0);
+		readFile(0);	
 	},
 
 	validDate: function(flag) {
@@ -140,9 +139,8 @@ var MaintenanceRequestsNew = React.createClass({
 			return;
 		}
 		var XHR = new XMLHttpRequest();
+		debugger
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
-		FD.delete('maintenance_request[images_attributes][image][]');
-		FD.delete('commit');
 		this.state.dataImages.map((image, index) => {
 			var idx = index + 1;
 			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
@@ -193,6 +191,7 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
+		debugger
 		XHR.send(FD);
 		e.preventDefault();
   	return false;
@@ -305,15 +304,16 @@ var MaintenanceRequestsNew = React.createClass({
 					xhr: function () {
 						var xhr = new window.XMLHttpRequest();
 						xhr.upload.addEventListener("progress", function (evt) {
-							var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
-							var progress = $('.progress');
-							if(progress.length == 0) {
-								$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
-							}else {
-								var progressBar = $('.progress .progress-bar');
-								progressBar.css('width', percentComplete + '%');
+							if(evt.loaded > 0 && evt.total > 0) {
+								var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+								var progress = $('.progress');
+								if(progress.length == 0) {
+									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
+								}else {
+									$('.progress .progress-bar').css('width', percentComplete + '%');
+								}
+								$('#title-upload').html('Uploading ' + percentComplete + '%');
 							}
-							$('#title-upload').html('Uploading ' + percentComplete + '%');
 						}, false);
 						return xhr;
 					},
@@ -321,7 +321,7 @@ var MaintenanceRequestsNew = React.createClass({
 						setTimeout(function() {
 							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
 							$('.progress').remove();
-						}, 1000);
+						}, 500);
 						var image = {
 							id: result.fields.key.match(/cache\/(.+)/)[1],
 							storage: 'cache',

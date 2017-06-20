@@ -44,18 +44,14 @@ const MenuLandlord = [
 var MobileMenu = React.createClass({
   getInitialState: function() {
     return {
-      visible: false
+      visible: this.props.isShow
     };
   },
 
-  show: function() {
-    this.setState({ visible: true });
-    document.addEventListener("click", this.hide);
-  },
-
-  hide: function() {
-    document.removeEventListener("click", this.hide);
-    this.setState({ visible: false });
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      visible: nextProps.isShow
+    });
   },
 
   render: function() {
@@ -69,13 +65,20 @@ var Header = React.createClass({
     getInitialState: function() {
       return {
         isShow: false,
+        isShowBar: false,
         isClicked: false,
         isItems: !this.props.expanded,
       };
     },
 
     showBar: function() {
-      this.refs.Bar.show();
+      this.setState({ isShowBar: !this.state.isShowBar });
+    },
+
+    hideBar: function() {
+      if(this.state.isShowBar) {
+        this.setState({ isShowBar: false });
+      }
     },
 
     showItems: function() {
@@ -95,34 +98,65 @@ var Header = React.createClass({
       }
     },
 
-    showMenu: function(flag) {
+    showMenu: function() {
       let myDropdown = document.getElementById("menu-bar");
-      if(myDropdown) {
-        if(flag == 'hide' && !!this.state.isShow) {
-          myDropdown.classList.remove('show');
-        }else if(flag != 'hide'){
-          if(!!this.state.isShow) {
-            myDropdown.classList.remove('show');
-            this.setState({
-              isShow: false
-            });
-          }else {
-            myDropdown.classList.toggle("show");
-            this.setState({
-              isShow: true
-            });
-          }
-        }
+      if(myDropdown && !this.state.isShow) {
+        myDropdown.classList.toggle("show");
+        this.setState({
+          isShow: true
+        });
       }
     },
 
+    closeMenu: function() {
+      let myDropdown = document.getElementById("menu-bar");
+      if(myDropdown && this.state.isShow) {
+        myDropdown.classList.remove('show');
+        this.setState({
+          isShow: false
+        });
+      } 
+    },
+
     componentDidMount: function(e) {
-      $(document).bind('click', this.clickDocument);
-      $(document).bind('click', (flag) => this.showMenu('hide'));
+      const self = this;
+      var event = "click";
+      if(this.iOS()) {
+        event += " touchstart";
+      }
+
+      $(document).bind(event, function(e) {
+        if(e.target.id != "menu-bar") {
+          self.hideBar();
+        }
+        self.clickDocument(e);
+        self.closeMenu();
+      });  
     },
 
     componentWillUnmount: function() {
       $(document).unbind('click', this.clickDocument);
+    },
+
+    iOS: function() {
+      const iDevices = [
+        'iPad Simulator',
+        'iPhone Simulator',
+        'iPod Simulator',
+        'iPad',
+        'iPhone',
+        'iPod'
+      ];
+
+      if (!!navigator.platform) {
+        while (iDevices.length) {
+          if (navigator.platform === iDevices.pop()){ 
+            return true;
+          }
+        }
+      }
+
+      return false;
     },
 
     menuBar: function() {
@@ -179,7 +213,7 @@ var Header = React.createClass({
 
       return (
         <nav className="header-expanded">
-          <MobileMenu ref="Bar">
+          <MobileMenu ref="Bar" id="bar" isShow={this.state.isShowBar}>
             {
               logged_in ?
                 <ul className="menu-mobile">
@@ -224,14 +258,14 @@ var Header = React.createClass({
                               <i className="fa fa-bell" />
                             </div>
                             <div className="menu-bar dropdown-custom">
-                              <button type="button" className="btn-menu" onClick={this.showMenu}>
+                              <button type="button" className="btn-menu" id="btn-menu-header" onClick={this.showMenu}>
                                 <img src="/assets/user1.png" />
                                 <span>
                                   Hi, {current_user.name}
                                   <i className="fa fa-angle-down"/>
                                 </span>
                               </button>
-                              <ul className="dropdown-menu" id="menu-bar">
+                              <ul className="dropdown-menu">
                                 { this.menuBar() }
                                 <li  ref="Items">
                                   <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
@@ -266,7 +300,7 @@ var Header = React.createClass({
                       <a href={props.new_agency_path} className="register"> Register </a>
                     </span>
                 }
-              <button className="menu-btn button" onClick={this.showBar}> ☰ </button>
+              <button className="menu-btn button" id="menu-bar" onClick={this.showBar}> ☰ </button>
             </div>
           </div>
         </nav>
