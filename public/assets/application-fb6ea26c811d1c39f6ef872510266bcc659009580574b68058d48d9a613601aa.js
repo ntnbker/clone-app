@@ -70140,6 +70140,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					{
 						return React.createElement(ModalSendMessageLandlord, {
 							close: this.isClose,
+							title: 'Message Agent',
 							current_user: this.props.current_user,
 							authToken: this.props.authenticity_token,
 							sendMessageLandlord: this.sendMessageLandlord,
@@ -71899,7 +71900,7 @@ var ImgSlider = React.createClass({
 
   setWidth: function () {
     var slider = $('#slider');
-    if (slider.length > 0) {
+    if (slider.length > 0 && slider.width() > 0) {
       this.setState({
         stwidth: slider.width()
       });
@@ -73062,7 +73063,6 @@ var MaintenanceRequestsNew = React.createClass({
 		var files = e.target.files;
 		var reader = new FileReader();
 		var images = this.state.images;
-
 		readFile = function (index) {
 			if (index >= files.length) {
 				_this.setState({
@@ -73073,7 +73073,7 @@ var MaintenanceRequestsNew = React.createClass({
 			var file = files[index];
 			var fileAlreadyExists = false;
 			for (var i = 0; i < images.length; i++) {
-				if (images[i].fileInfo.name == file.name) {
+				if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
 					fileAlreadyExists = true;
 					break;
 				}
@@ -73089,7 +73089,6 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		};
 		readFile(0);
-		e.target.value = '';
 	},
 
 	validDate: function (flag) {
@@ -73105,9 +73104,8 @@ var MaintenanceRequestsNew = React.createClass({
 			return;
 		}
 		var XHR = new XMLHttpRequest();
+		debugger;
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
-		FD['delete']('maintenance_request[images_attributes][image][]');
-		FD['delete']('commit');
 		this.state.dataImages.map(function (image, index) {
 			var idx = index + 1;
 			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
@@ -73260,15 +73258,16 @@ var MaintenanceRequestsNew = React.createClass({
 					xhr: function () {
 						var xhr = new window.XMLHttpRequest();
 						xhr.upload.addEventListener("progress", function (evt) {
-							var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
-							var progress = $('.progress');
-							if (progress.length == 0) {
-								$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
-							} else {
-								var progressBar = $('.progress .progress-bar');
-								progressBar.css('width', percentComplete + '%');
+							if (evt.loaded > 0 && evt.total > 0) {
+								var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+								var progress = $('.progress');
+								if (progress.length == 0) {
+									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+								} else {
+									$('.progress .progress-bar').css('width', percentComplete + '%');
+								}
+								$('#title-upload').html('Uploading ' + percentComplete + '%');
 							}
-							$('#title-upload').html('Uploading ' + percentComplete + '%');
 						}, false);
 						return xhr;
 					},
@@ -73276,7 +73275,7 @@ var MaintenanceRequestsNew = React.createClass({
 						setTimeout(function () {
 							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
 							$('.progress').remove();
-						}, 1000);
+						}, 500);
 						var image = {
 							id: result.fields.key.match(/cache\/(.+)/)[1],
 							storage: 'cache',
@@ -76579,7 +76578,7 @@ var ModalSendMessageLandlord = React.createClass({
 							React.createElement(
 								"h4",
 								{ className: "modal-title text-center" },
-								"Message Landlord"
+								this.props.title ? this.props.title : "Message Landlord"
 							)
 						),
 						React.createElement(
@@ -78088,18 +78087,14 @@ var MobileMenu = React.createClass({
 
   getInitialState: function () {
     return {
-      visible: false
+      visible: this.props.isShow
     };
   },
 
-  show: function () {
-    this.setState({ visible: true });
-    document.addEventListener("click", this.hide);
-  },
-
-  hide: function () {
-    document.removeEventListener("click", this.hide);
-    this.setState({ visible: false });
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      visible: nextProps.isShow
+    });
   },
 
   render: function () {
@@ -78121,13 +78116,20 @@ var Header = React.createClass({
   getInitialState: function () {
     return {
       isShow: false,
+      isShowBar: false,
       isClicked: false,
       isItems: !this.props.expanded
     };
   },
 
   showBar: function () {
-    this.refs.Bar.show();
+    this.setState({ isShowBar: !this.state.isShowBar });
+  },
+
+  hideBar: function () {
+    if (this.state.isShowBar) {
+      this.setState({ isShowBar: false });
+    }
   },
 
   showItems: function () {
@@ -78147,38 +78149,58 @@ var Header = React.createClass({
     }
   },
 
-  showMenu: function (flag) {
+  showMenu: function () {
     var myDropdown = document.getElementById("menu-bar");
-    if (myDropdown) {
-      if (flag == 'hide' && !!this.state.isShow) {
-        myDropdown.classList.remove('show');
-      } else if (flag != 'hide') {
-        if (!!this.state.isShow) {
-          myDropdown.classList.remove('show');
-          this.setState({
-            isShow: false
-          });
-        } else {
-          myDropdown.classList.toggle("show");
-          this.setState({
-            isShow: true
-          });
-        }
-      }
+    if (myDropdown && !this.state.isShow) {
+      myDropdown.classList.toggle("show");
+      this.setState({
+        isShow: true
+      });
+    }
+  },
+
+  closeMenu: function () {
+    var myDropdown = document.getElementById("menu-bar");
+    if (myDropdown && this.state.isShow) {
+      myDropdown.classList.remove('show');
+      this.setState({
+        isShow: false
+      });
     }
   },
 
   componentDidMount: function (e) {
-    var _this = this;
+    var self = this;
+    var event = "click";
+    if (this.iOS()) {
+      event += " touchstart";
+    }
 
-    $(document).bind('click', this.clickDocument);
-    $(document).bind('click', function (flag) {
-      return _this.showMenu('hide');
+    $(document).bind(event, function (e) {
+      if (e.target.id != "menu-bar") {
+        self.hideBar();
+      }
+      self.clickDocument(e);
+      self.closeMenu();
     });
   },
 
   componentWillUnmount: function () {
     $(document).unbind('click', this.clickDocument);
+  },
+
+  iOS: function () {
+    var iDevices = ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'];
+
+    if (!!navigator.platform) {
+      while (iDevices.length) {
+        if (navigator.platform === iDevices.pop()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   },
 
   menuBar: function () {
@@ -78233,7 +78255,7 @@ var Header = React.createClass({
       { className: "header-expanded" },
       React.createElement(
         MobileMenu,
-        { ref: "Bar" },
+        { ref: "Bar", id: "bar", isShow: this.state.isShowBar },
         logged_in ? React.createElement(
           "ul",
           { className: "menu-mobile" },
@@ -78311,7 +78333,7 @@ var Header = React.createClass({
                 { className: "menu-bar dropdown-custom" },
                 React.createElement(
                   "button",
-                  { type: "button", className: "btn-menu", onClick: this.showMenu },
+                  { type: "button", className: "btn-menu", id: "btn-menu-header", onClick: this.showMenu },
                   React.createElement("img", { src: "/assets/user1.png" }),
                   React.createElement(
                     "span",
@@ -78323,7 +78345,7 @@ var Header = React.createClass({
                 ),
                 React.createElement(
                   "ul",
-                  { className: "dropdown-menu", id: "menu-bar" },
+                  { className: "dropdown-menu" },
                   this.menuBar(),
                   React.createElement(
                     "li",
@@ -78386,7 +78408,7 @@ var Header = React.createClass({
           ),
           React.createElement(
             "button",
-            { className: "menu-btn button", onClick: this.showBar },
+            { className: "menu-btn button", id: "menu-bar", onClick: this.showBar },
             " ☰ "
           )
         )
@@ -80050,9 +80072,9 @@ var TradyActionMobile = React.createClass({
 					React.createElement(ContentTradyAction, {
 						trady: this.props.trady,
 						landlord: this.props.landlord,
-						landlord: this.props.landlord,
 						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
+						signed_in_trady: this.props.signed_in_trady,
 						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
