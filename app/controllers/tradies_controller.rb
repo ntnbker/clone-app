@@ -1,5 +1,7 @@
 class TradiesController < ApplicationController 
-
+  before_action :require_login, only:[:create]
+  
+  # before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   def create
     
     @user = User.find_by(email:params[:trady][:email])
@@ -75,7 +77,7 @@ class TradiesController < ApplicationController
         format.json{render json:@all_tradies}
       end
     elsif @user && existing_role == true
-      binding.pry
+      
       if AgencyTrady.where(:agency_id=>@agency.id, :trady_id => @user.trady.id).present? 
         #do nothing
       else

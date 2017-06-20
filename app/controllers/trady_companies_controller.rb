@@ -1,6 +1,7 @@
 class TradyCompaniesController < ApplicationController
   before_action(only: [:new]) { email_auto_login(params[:user_id]) }
-  
+  before_action :require_login, only:[:new,:create,:edit,:update]
+  before_action(only:[:show,:index]) {allow("Trady")}
 
 
   def new
@@ -278,15 +279,15 @@ class TradyCompaniesController < ApplicationController
 
 
 
-  def edit_trady_company_invoice_workflow
-    @trady_company = TradyCompany.find_by(id:params[:id])
-    @maintenance_request_id = params[:maintenance_request_id]
-    @trady_id = params[:trady_id]
-  end
+  # def edit_trady_company_invoice_workflow
+  #   @trady_company = TradyCompany.find_by(id:params[:id])
+  #   @maintenance_request_id = params[:maintenance_request_id]
+  #   @trady_id = params[:trady_id]
+  # end
 
-  def update_trady_company_invoice_workflow
+  # def update_trady_company_invoice_workflow
     
-  end
+  # end
 
 
 
@@ -299,11 +300,35 @@ class TradyCompaniesController < ApplicationController
     end
 
     def email_auto_login(id)
-      if current_user == nil
-        user = User.find_by(id:id)
+      user = User.find_by(id:id)
+    
+    if current_user
+      if current_user
+        if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Agent")
+          answer = true
+        else
+          answer = false
+        end 
+      else
         auto_login(user)
+        user.current_role.update_attribute(:role, "Trady")
       end 
-    end
+
+      if current_user  && answer && user.has_role("Trady")
+        logout
+        auto_login(user)
+        user.current_role.update_attribute(:role, "Trady")
+      elsif current_user == nil
+        auto_login(user)
+        user.current_role.update_attribute(:role, "Trady")
+      elsif current_user && current_user.logged_in_as("Trady")
+          #do nothing
+      end 
+    else
+      auto_login(user)
+      user.current_role.update_attribute(:role, "Trady")
+    end 
+  end
 
 
 end 

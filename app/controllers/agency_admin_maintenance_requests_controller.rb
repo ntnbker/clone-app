@@ -1,5 +1,9 @@
 class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action :require_login, only:[:show,:index]
+  
+  before_action(only:[:show,:index]) {allow("AgencyAdmin")}
+  
   def index
     if params[:sort_by_date] == "Newest to Oldest"
       @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC')
@@ -106,16 +110,26 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
 
   end
 
-  def update
+  # def update
     
-  end
+  # end
   
   private
 
+  # def require_agency_admin
+  #   if current_user.has_role("AgencyAdmin") && current_user.logged_in_as("AgencyAdmin")
+  #     #do nothing 
+
+  #   else
+  #     flash[:notice] = "You are not authorized to see that page"
+  #     redirect_to root_path
+  #   end 
+  
+  # end
+
   def email_auto_login(id)
-    ###HERE WE HAVE TO ADD THE ROLE NEEDED FOR THAT VIEW IF THEY ARE NOT SIGNED IN AS THAT 
-    ###ROLE TELL THEM TO SIGN OUT AND SIGN IN AS THAT ROLL
-      user = User.find_by(id:id)
+    
+    user = User.find_by(id:id)
       
     if current_user
       if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")

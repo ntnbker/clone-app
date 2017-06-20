@@ -1,6 +1,8 @@
 class QuoteOptionsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  
+  before_action :require_login, only:[:show]
+
+  before_action(only:[:show,:index]) {allow("Trady")}
   def show
     @maintenance_request= MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @trady = Trady.find_by(id:params[:trady_id])

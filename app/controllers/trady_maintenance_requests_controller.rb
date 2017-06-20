@@ -1,16 +1,12 @@
 class TradyMaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action :require_login, only:[:show,:index]
+  
+  before_action(only:[:show,:index]) {allow("Trady")}
+  # authorize_resource :class => false
+
   def index
-    # if params[:sort_by_date] == "Newest to Oldest"
-    #   @maintenance_requests = current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-    # else
-    #   @maintenance_requests = current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-    # end
-
-
-
-    # @m = MaintenanceRequest.with_tradies_quote_request(current_user.trady.id)
-
+    
     trady_id = current_user.trady.id
 
     if params[:sort_by_date] == "Newest to Oldest"
@@ -128,6 +124,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
   def email_auto_login(id)
       user = User.find_by(id:id)
+    
     if current_user
       if current_user
         if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Agent")

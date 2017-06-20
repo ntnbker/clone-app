@@ -38,21 +38,23 @@ class Ability
       end
 
       if @user.has_role("AgencyAdmin") && @user.logged_in_as("AgencyAdmin")
-        can :read_show, Agent
+          can :show, :agency_admin_maintenance_requests
+          can :index, :agency_admin_maintenance_requests
+        # can :read_show, Agent
         
-        can :read, Service
+        # can :read, Service
         
-        can :create, MaintenanceRequest
-        can :new, MaintenanceRequest
-        can :read_show, MaintenanceRequest
+        # can :create, MaintenanceRequest
+        # can :new, MaintenanceRequest
+        # can :read_show, MaintenanceRequest
 
-        can :show, :maintenance_request
-        can :index, :maintenance_request
-        can :create, :maintenance_request
-        can :update, :maintenance_request
+        # can :show, :maintenance_request
+        # can :index, :maintenance_request
+        # can :create, :maintenance_request
+        # can :update, :maintenance_request
 
-        can :create, :agency_admin
-        can :new, :agency_admin
+        # can :create, :agency_admin
+        # can :new, :agency_admin
         
         # can :new, AgencyAdmin
         # can :read_show, AgencyAdmin
@@ -85,9 +87,9 @@ class Ability
       end 
 
       if @user.has_role("Trady") && @user.logged_in_as("Trady")
-        can :index, :maintenance_request
-        can :show, :maintenance_request
-        can :ordered_maintenance_requests, :maintenance_request
+        can :index, :trady_maintenance_request
+        can :show, :trady_maintenance_request
+        # can :ordered_maintenance_requests, :maintenance_request
       end 
 
       if @user

@@ -1,12 +1,11 @@
 class AgentMaintenanceRequestsController < ApplicationController 
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action :require_login, only:[:show,:index]
+  before_action(only:[:show,:index]) {allow("Agent")}
   def index
-    # if params[:sort_by_date] == "Newest to Oldest"
-       @maintenance_requests = current_user.agent.maintenance_requests
-    #    .order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-    # else
-    #   @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-    # end
+    
+    @maintenance_requests = current_user.agent.maintenance_requests
+    
 
     @page = params[:page]
     @sort_by_date = params[:sort_by_date]

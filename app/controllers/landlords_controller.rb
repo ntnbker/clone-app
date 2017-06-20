@@ -1,4 +1,8 @@
 class LandlordsController < ApplicationController
+  before_action :require_login, only:[:create,:update,:create_and_notify_landlord, :update_and_notify_landlord]
+  
+  #before_action(only:[:show,:index]) {allow("AgencyAdmin")}
+
   def create
     
     @landlord = Landlord.new(landlord_params)
