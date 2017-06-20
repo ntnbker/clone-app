@@ -191,7 +191,6 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
-		debugger
 		XHR.send(FD);
 		e.preventDefault();
   	return false;
