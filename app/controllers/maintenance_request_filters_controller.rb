@@ -1,10 +1,10 @@
 class MaintenanceRequestFiltersController < ApplicationController 
-  
+  before_action :require_login
+
   def filtered_maintenance_requests 
     c = current_user
     p = params[:maintenance_request_filter]
-    # .paginate(:page => params[:page])
-    # @maintenance_requests = MaintenanceRequest.find_maintenance_requests(c, p)
+    
     
 
     if params[:sort_by_date] == "Newest to Oldest"

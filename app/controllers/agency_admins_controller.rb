@@ -1,8 +1,9 @@
 class AgencyAdminsController < ApplicationController
   
   
-  before_action :require_login, only: [:show,:maintenance_request_index]
-  authorize_resource :class => false
+  before_action :require_login, only: [:new,:create]
+  before_action(only:[:new,:create]) {allow("AgencyAdmin")}
+  
   
   def new
     @agency_admin = AgencyAdmin.new
@@ -18,11 +19,7 @@ class AgencyAdminsController < ApplicationController
     end 
     if existing_user && existing_role == false
       role = Role.new(user_id:existing_user.id)
-      
-      
       @agency_admin = AgencyAdmin.create(agency_admin_params)
-      
-      
       @agency_admin.roles << role
       role.save
       flash[:success] = "Thank you for adding another Agency Admin."
@@ -60,9 +57,9 @@ class AgencyAdminsController < ApplicationController
   
 
 
-  def show
-    @agency_admin = AgencyAdmin.find_by(id:current_user.id)
-  end
+  # def show
+  #   @agency_admin = AgencyAdmin.find_by(id:current_user.id)
+  # end
 
   # def maintenance_request_index
   #   @maintenance_requests = current_user.agency_admin.maintenance_requests

@@ -3,7 +3,7 @@ class MaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   # before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
   before_action :set_user, only:[:new,:create]
-  before_action :require_login, only:[:show,:index, :ordered_maintenance_requests]
+  
   before_action :customer_input_session, only:[:create,:new]
   authorize_resource :class => false
 
@@ -88,7 +88,7 @@ class MaintenanceRequestsController < ApplicationController
       ############################    
       if @user && existing_role == false
         role = Role.new(user_id:@user.id)
-        @tenant = Tenant.create(user_id:@user.id,name:params[:maintenance_request][:name],email:params[:maintenance_request][:email],mobile:params[:maintenance_request][:mobile])
+        @tenant = Tenant.create(user_id:@user.id,full_name:params[:maintenance_request][:name],email:params[:maintenance_request][:email],mobile:params[:maintenance_request][:mobile])
         @tenant.roles << role
         role.save
         

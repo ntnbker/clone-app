@@ -23,7 +23,7 @@ class PagesController < ApplicationController
           redirect_to new_maintenance_request_path
         else
           flash[:notice] = "As an Agent please login"
-          redirect_to login_path
+          redirect_to menu_login_path
         end 
 
       elsif params[:form_fields][:user_role] == "Tenant"

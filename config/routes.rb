@@ -15,9 +15,9 @@ Rails.application.routes.draw do
     resources :user_sessions, only:[:create]
     resources :users, only:[:create,:update]
     get 'sign_up' => 'users#new', :as =>:sign_up
-    get 'login' => 'user_sessions#new', :as => :login
-    get 'menu-login' => 'user_sessions#menu_bar_login_form_new', :as => :menu_login
-    post 'menulogin' => 'user_sessions#menu_bar_login_form_create'
+    # get 'login' => 'user_sessions#new', :as => :login
+    get 'login' => 'user_sessions#new', :as => :menu_login
+    post 'menulogin' => 'user_sessions#create'
     delete 'logout' => 'user_sessions#destroy', :as => :logout
     resources :password_resets, only:[:new, :create, :edit,:update]
     resources :passwords, only:[:edit, :update]

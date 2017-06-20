@@ -10,8 +10,6 @@ class AgenciesController < ApplicationController
     
     @user = User.new(user_params)
 
-    
-
     existing_user = User.find_by(email:params[:user][:email])
     if existing_user
       existing_role = existing_user.get_role("AgencyAdmin").present?
@@ -53,11 +51,6 @@ class AgenciesController < ApplicationController
     end 
 
 
-
-
-
-    
-    
   end
   
   private
@@ -65,8 +58,6 @@ class AgenciesController < ApplicationController
   def user_params
     params.require(:user).permit(:id,:email,:password,:password_confirmation, agency_admin_attributes: [:id,:first_name,:last_name,:mobile_phone, agency_attributes:[:id, :company_name,:business_name,:abn,:address,:mailing_same_address ,:mailing_address, :phone, :mobile_phone,:license_number,:license_type, :corporation_license_number,:bdm_verification_status,:bdm_verification_id]])
   end
-
-  
 
 end 
 

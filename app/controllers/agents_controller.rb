@@ -1,15 +1,13 @@
 class AgentsController < ApplicationController 
-
+  before_action :require_login, only:[:show,:index]
+  before_action(only:[:show,:index]) {allow("AgencyAdmin")}
+  
   def new
     @agent = Agent.new
     @agency_id = current_user.agency_admin.agency.id
-    
   end
 
   def create
-    
-  
-
     @agent = Agent.new(agent_params)
     existing_user = User.find_by(email:params[:agent][:email])
     if existing_user
@@ -18,8 +16,6 @@ class AgentsController < ApplicationController
     if existing_user && existing_role == false
       role = Role.new(user_id:existing_user.id)
       @agent = Agent.create(agency_admin_params)
-      
-      
       @agent.roles << role
       role.save
       flash[:success] = "Thank you for adding another Agent to your team."
@@ -45,23 +41,14 @@ class AgentsController < ApplicationController
         render :new
       end 
     end 
-
-
-
-
-
   end
 
-
-  def show
-    # @agent = Agent.find_by(id:current_user.role.roleable_id)
-  end
 
   private
 
-  def agent_params
-    params.require(:agent).permit(:agency_id,:email, :name, :mobile_phone, :last_name, :license_number)
-  end
+    def agent_params
+      params.require(:agent).permit(:agency_id,:email, :name, :mobile_phone, :last_name, :license_number)
+    end
 
 end 
 
