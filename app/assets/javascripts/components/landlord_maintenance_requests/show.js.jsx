@@ -20,10 +20,14 @@ var LandlordSideBarMobile = React.createClass({
 	},
 
 	close: function() {
-		this.setState({showAction: false});
-		this.setState({showContact: false});
-		$('#actions-full').css({'height': 0, 'border-width': 0});
-		$('#contacts-full').css({'height': 0, 'border-width': 0});
+		if($('#actions-full').length > 0) {
+			this.setState({showAction: false});
+			$('#actions-full').css({'height': 0, 'border-width': 0});
+		}
+		if($('#contacts-full').length > 0) {
+			this.setState({showContact: false});
+			$('#contacts-full').css({'height': 0, 'border-width': 0});
+		}
 	},
 
 	componentDidMount: function() {
@@ -53,24 +57,21 @@ var LandlordSideBarMobile = React.createClass({
 					</div>
 				</div>
 				<div className="action-mobile">
-					{
-						<LandlordActionMobile 
-							landlord={this.props.landlord} 
-							close={this.close} 
-							requestQuote={this.props.requestQuote}
-							maintenance_request={this.props.maintenance_request} 
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
-						/> 
-					}
-					{
-						<LandlordContactMobile 
-							landlord={this.props.landlord} 
-							close={this.close} 
-							current_user={this.props.current_user} 
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
-							maintenance_request={this.props.maintenance_request} 
-						/> 
-					}
+					<LandlordActionMobile 
+						landlord={this.props.landlord} 
+						close={this.close} 
+						requestQuote={this.props.requestQuote}
+						maintenance_request={this.props.maintenance_request} 
+						onModalWith={(modal) => this.props.onModalWith(modal)} 
+					/> 
+					<LandlordContactMobile
+						agent={this.props.agent}
+						landlord={this.props.landlord} 
+						close={this.close} 
+						current_user={this.props.current_user} 
+						onModalWith={(modal) => this.props.onModalWith(modal)} 
+						maintenance_request={this.props.maintenance_request} 
+					/> 
 				</div>
 			</div>
 		);
@@ -356,6 +357,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					</div>
 					<div className="sidebar">
 						<LandlordContact 
+							agent={this.props.agent}
 							landlord={this.state.landlord} 
 							onModalWith={(modal) => this.onModalWith(modal)} 
 							current_user={this.props.current_user} 
@@ -369,7 +371,8 @@ var LandlordMaintenanceRequest = React.createClass({
 						/>
 					</div>
 				</div>
-				<LandlordSideBarMobile 
+				<LandlordSideBarMobile
+					agent={this.props.agent}
 					landlord={this.state.landlord} 
 					requestQuote={this.requestQuote} 
 					current_user={this.props.current_user} 

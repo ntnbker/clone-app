@@ -378,6 +378,7 @@ form#new_maintenance_request {
             }
         }
         .view {
+            margin-left: 5px;
             .btn-view {
                 width: 100px;
                 height: 30px;
@@ -402,6 +403,9 @@ form#new_maintenance_request {
             transform: translate(-50%, 0);
             display: table;
         }
+    }
+    .main-landlord {
+        width: 100% !important;
     }
     .side-column {
         width: 400px;
@@ -483,8 +487,29 @@ form#new_maintenance_request {
                 display: flex; 
                 &.show {
                     .dropcontent {
-                        height: 450px;
                         border: 1px solid #ddd;
+                    }
+                }
+                .content-action {
+                    &::-webkit-scrollbar-track {
+                      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                      border-radius: 15px;
+                      background-color: #F5F5F5;
+                      margin-right: 0px;
+                      padding: 0 10px;
+                    }
+                    &::-webkit-scrollbar {
+                      width: 5px;
+                      background-color: #F5F5F5;
+                      margin-right: 0px;
+                      padding: 0 10px;
+                    }
+                    &::-webkit-scrollbar-thumb {
+                      border-radius: 15px;
+                      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+                      background-color: rgba(0, 0, 0, 0.5);
+                      margin-right: 0px;
+                      padding: 0 10px;
                     }
                 }
                 .header-action {

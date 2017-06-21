@@ -93,7 +93,9 @@ var Header = React.createClass({
             // Inside of the component.
         } else {
             // Outside of the component.
-            this.setState({ isItems: false});
+            if(this.state.isItems === true) {
+              this.setState({ isItems: false});
+            }
         }
       }
     },

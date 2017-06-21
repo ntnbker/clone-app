@@ -168,7 +168,7 @@ var AddTradycompany = React.createClass({
   	if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
   		flag = true;
   		this.setState({
-  			errorTradingName: true
+  			errorABN: true
   		});
   	}
 
@@ -182,7 +182,7 @@ var AddTradycompany = React.createClass({
   	if(!this.mailing_address.value) {
   		flag = true;
   		this.setState({
-  			errorTradingName: true
+  			errorMailingAdress: true
   		});
   	}
 

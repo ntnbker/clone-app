@@ -51,9 +51,29 @@ var DropDownContent = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
+    if(nextProps.isHide === true || nextProps.isHide === false) {
+      this.setHeight(nextProps.isHide);
+    }
     this.setState({
       valueAction: nextProps.valueAction
     });
+  },
+
+  setHeight: function(flag) {
+    if(!flag) {
+      var dropdown = $('.show .content-action');
+      var heightScreen = $(window).height() - 90;
+      if(heightScreen < 450) {
+        dropdown.css({
+          "height": heightScreen,
+          "overflow-y": "scroll"
+        });
+      }else {
+        dropdown.css("height", 450);
+      }
+    }else {
+      $('.content-mobile .dropcontent').css('height', 0);
+    }
   },
 
   render: function() {
@@ -61,7 +81,7 @@ var DropDownContent = React.createClass({
     const props = this.props;
     const state = this.state;
     return (
-      <ul className="dropcontent">
+      <ul className="dropcontent content-action">
       {
         content.map((item, index) => {
           return (
@@ -157,7 +177,8 @@ var DropDownMobileList = React.createClass({
           {this.props.title}
         </button>
         <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
-          <DropDownContent 
+          <DropDownContent
+            isHide={state.hidden}
             content={props.content}
             valueAction={state.valueAction}
             getAction={(value) => props.getAction(value)} 
@@ -592,8 +613,9 @@ var ListMaintenanceRequest = React.createClass({
   render: function() {
     const self = this;
     const current_user_agent = this.props.current_user_agent;
-    const current_user_agency_admin = this.props.current_user_agency_admin;
     const current_user_trady = this.props.current_user_trady;
+    const current_user_landlord = this.props.current_user_landlord;
+    const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
       <div className="maintenance-list">
         { 
@@ -604,7 +626,7 @@ var ListMaintenanceRequest = React.createClass({
           />
         }
         <div className="maintenance-content">
-          <div className="main-column">
+          <div className={"main-column " + (!!current_user_landlord && "main-landlord")}>
             <div>
               {
                 this.state.dataShow.map(function(maintenance_request, key) {

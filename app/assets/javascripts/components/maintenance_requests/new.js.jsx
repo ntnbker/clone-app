@@ -193,9 +193,11 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.upload.addEventListener('loadstart', function(e) {
 			$("#spinner").css('display', 'flex');
 		});
-		XHR.upload.addEventListener('loadend', function(e) {
+		XHR.onreadystatechange = function() {
+			if (XHR.readyState==4) {
 				$("#spinner").css('display', 'none');
-		});
+			}
+		}
 		XHR.send(FD);
 		e.preventDefault();
   	return false;
