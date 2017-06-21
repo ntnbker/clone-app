@@ -1,6 +1,6 @@
 class MaintenanceRequestsController < ApplicationController 
   
-  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  # before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   # before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
   before_action :set_user, only:[:new,:create]
   
@@ -319,13 +319,13 @@ class MaintenanceRequestsController < ApplicationController
     @user = User.new
   end
 
-  def email_auto_login(id)
+  # def email_auto_login(id)
 
-    if current_user == nil
-      user = User.find_by(id:id)
-      auto_login(user)
-    end 
-  end
+  #   if current_user == nil
+  #     user = User.find_by(id:id)
+  #     auto_login(user)
+  #   end 
+  # end
 
   def maintenance_request_stakeholders(maintenance_request_id)
     # mr = MaintenanceRequest.find_by(id:maintenance_request_id)

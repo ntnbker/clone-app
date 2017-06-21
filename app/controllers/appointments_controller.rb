@@ -17,44 +17,20 @@ class AppointmentsController < ApplicationController
   end
 
   def create
-    
-    
     @appointment = Appointment.new(appointment_params)
     maintenance_request = MaintenanceRequest.find_by(id:params[:appointment][:maintenance_request_id])
     tenant_id = params[:appointment][:tenant_id]
     trady_id = params[:appointment][:trady_id]
     trady = Trady.find_by(id:params[:appointment][:trady_id])
-    # landlord_id = maintenance_request.property.landlord.id
-    # requester = params[:appointment][:current_user_role]
     if @appointment.valid?
       @appointment.save
-
-      # if requester == "Trady"
-      #   TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, trady_id)
-      # elsif requester == "Landlord"
-      #   LandlordRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, landlord_id)
-      # end
-
-
       Log.create(maintenance_request_id:maintenance_request.id, action:"Tradie suggested appointment time", name:trady.name)
-
-      
       TradyRequestsInitialAppointmentEmailWorker.perform_async(maintenance_request.id, @appointment.id,tenant_id, trady_id)
       maintenance_request.action_status.update_columns(agent_status:"Tenant To Confirm Appointment", trady_status:"Awaiting Appointment Confirmation")
-
-      
       redirect_to root_path
-      
     else
       render :new
     end 
-
-
-
-
-     
-
-
   end
 
   def show

@@ -1,5 +1,6 @@
 class AgentMaintenanceRequestsController < ApplicationController 
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action(only:[:show]) {belong_to_agent}
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Agent")}
   def index
@@ -114,34 +115,55 @@ class AgentMaintenanceRequestsController < ApplicationController
   private
 
   def email_auto_login(id)
-    ###HERE WE HAVE TO ADD THE ROLE NEEDED FOR THAT VIEW IF THEY ARE NOT SIGNED IN AS THAT 
-    ###ROLE TELL THEM TO SIGN OUT AND SIGN IN AS THAT ROLL
+   email_params= params[:user_id]
+    
+    if email_params
       user = User.find_by(id:id)
-      
-    if current_user
-      if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("AgencyAdmin")
-        answer = true
-      else
-        answer = false
-      end 
+      if user  
+        if current_user
+          if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("AgencyAdmin")
+            answer = true
+          else
+            answer = false
+          end 
 
 
 
-      if current_user  && answer && user.has_role("Agent")
-        logout
-        
-        auto_login(user)
-        user.current_role.update_attribute(:role, "Agent")
-      elsif current_user == nil
-        auto_login(user)
-        user.current_role.update_attribute(:role, "Agent")
-      elsif current_user && current_user.logged_in_as("Agent")
-          #do nothing
-      end 
-      else
-        auto_login(user)
-        user.current_role.update_attribute(:role, "Agent")
-      end  
+          if current_user  && answer && user.has_role("Agent")
+            logout
+            auto_login(user)
+            user.current_role.update_attribute(:role, "Agent")
+          elsif current_user == nil
+            auto_login(user)
+            user.current_role.update_attribute(:role, "Agent")
+          elsif current_user && current_user.logged_in_as("Agent")
+              #do nothing
+          end 
+        else
+          auto_login(user)
+          user.current_role.update_attribute(:role, "Agent")
+        end
+      else 
+        flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
+        redirect_to root_path
+      end
+    else
+      #do nothing
+    end   
+  end
+
+  def belong_to_agent
+    
+    
+    maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+    
+    if current_user.agent.id == maintenance_request.agent_id
+      #do nothing
+    else 
+      flash[:notice] = "Sorry you can't see that."
+      redirect_to root_path
+    end 
+  
   end
 
 end 
