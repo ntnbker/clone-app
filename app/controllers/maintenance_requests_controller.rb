@@ -11,6 +11,11 @@ class MaintenanceRequestsController < ApplicationController
     
     if current_user != nil 
       @role = current_user.current_role
+
+      if @role == "Tenant"
+        
+      else
+      end 
     else
       @role = nil
     end 
@@ -20,6 +25,8 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request.availabilities.build
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
+
+
     
   end
 
