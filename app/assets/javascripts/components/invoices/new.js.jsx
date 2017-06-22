@@ -79,24 +79,44 @@ var FieldList = React.createClass({
     },
 
     removeField: function(x) {
-        var tmpFields = this.state.Fields;
-        tmpFields.splice(x-1, 1);
+        const self = this;
+        var {Fields} = this.state;
+        Fields.splice(x-1, 1);
+        var tmpFields = [];
+        var SampleField = this.props.SampleField;
+        var params = this.props.params;
+        Fields.map((item, index) => {
+            tmpFields.push(
+                <SampleField 
+                    x={index + 1} 
+                    params={params} 
+                    removeField={(position) => self.removeField(position)} 
+                    validDate={(flag) => self.props.validDate(flag)}
+                />
+            );
+        });
         this.setState({
             Fields: tmpFields,
-            x: tmpFields.length,
+            x: tmpFields.length + 1
         });
     },
 
     render: function(){    
         return <div className="fieldlist">
-            <ul>
-                {this.state.Fields.map((Field, fieldIndex) => 
-                    <li key={fieldIndex}>
-                        {Field}
-                    </li>
-                )}
+            <ul id="fieldList">
+                {
+                    this.state.Fields.map((Field, index) => {
+                        return (
+                            <li key={index}>
+                                {Field}
+                            </li>
+                        );
+                    })
+                }
             </ul>
-            <ButtonAddAnotherItem flag={this.props.flag} x={this.state.x} addField={this.addField}/>
+            <div className="text-center">
+                <ButtonAddAnotherItem flag={this.props.flag} x={this.state.x} addField={this.addField}/>
+            </div>
         </div>
     }
 });

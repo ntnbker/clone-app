@@ -94,9 +94,12 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleImageChange: function(e) {
+		const self = this;
 		const files = e.target.files;
 		var reader = new FileReader();
+		var fr = new FileReader();
 		var images = this.state.images;
+		var orientation;
 		readFile = (index) => {
 			if (index >= files.length) {
 				this.setState({
@@ -113,10 +116,15 @@ var MaintenanceRequestsNew = React.createClass({
 				}
 			}
 			if (!fileAlreadyExists) {
-				reader.readAsDataURL(file);
-				reader.onload = function(e) {
-					images.push({url: e.target.result, fileInfo: file, isUpload: false});
-					readFile(index + 1);
+				var fr = new FileReader();
+				fr.readAsArrayBuffer(file);
+				fr.onload = function(e) {
+					orientation = self.getOrientation(e.target.result);
+					reader.readAsDataURL(file);
+					reader.onload = function(e) {
+						images.push({url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation});
+						readFile(index + 1);
+					}
 				}
 			}
 			else {
@@ -124,6 +132,29 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		}
 		readFile(0);	
+	},
+
+	getOrientation: function(result) {
+    var view = new DataView(result);
+    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    var length = view.byteLength, offset = 2;
+    while (offset < length) {
+      var marker = view.getUint16(offset, false);
+      offset += 2;
+      if (marker == 0xFFE1) {
+        if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+        var little = view.getUint16(offset += 6, false) == 0x4949;
+        offset += view.getUint32(offset + 4, little);
+        var tags = view.getUint16(offset, little);
+        offset += 2;
+        for (var i = 0; i < tags; i++)
+          if (view.getUint16(offset + (i * 12), little) == 0x0112)
+            return view.getUint16(offset + (i * 12) + 8, little);
+      }
+      else if ((marker & 0xFF00) != 0xFF00) break;
+      else offset += view.getUint16(offset, false);
+    }
+    return -1;  
 	},
 
 	validDate: function(flag) {
@@ -281,7 +312,7 @@ var MaintenanceRequestsNew = React.createClass({
 
 			if(file.size > maxSize) {
 				var quality =  Math.ceil(maxSize/file.size * 100);
-				target_img.src = self.reduceQuality(img, file.type, quality).src;
+				target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
 			}else {
 				target_img.src = image.url;
 			}
@@ -344,130 +375,82 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 	},
 
-	componentDidMount: function() {
-
-		/*Dropzone.autoDiscover = false;
-		this.dropzone = new Dropzone('#upload-image', {
-			maxFilesize: 10,
-			resizeWidth: 960,
-			resizeHeight: 600,
-			filesizeBase: 1000,
-			resizeQuality: 0.5,
-			parallelUploads: 10,
-			thumbnailWidth: 120,
-			addRemoveLinks: true,
-			thumbnailHeight: 120,
-			dictRemoveFile: "Remove"
-		});
-
-		this.dropzone.on("removedfile", function(file) {
-			currentThis.removeImage(file); 
-		});
-
-		this.dropzone.uploadFiles = function(files) {
-			var self = this;
-
-			for (var i = 0; i < files.length; i++) {
-				var file = files[i];
-				var filename = file;
-				const options = {
-					extension: filename.name.match(/(\.\w+)?$/)[0],
-					_: Date.now(),
-				}
-
-				// start upload file into S3
-				$.getJSON('/images/cache/presign', options, function(result) {
-					var fd = new FormData();
-					$.each(result.fields, function(key, value) {
-						fd.append(key, value);
-					});
-					var source = {};
-					var reader = new FileReader();
-					reader.readAsDataURL(file);
-					reader.onload = function(e) {
-						source = e.target.result;
-						fd.append('file', currentThis.dataURItoBlob(source));
-						$.ajax({
-							type: 'POST',
-							url: result['url'],
-							enctype: 'multipart/form-data',
-							processData: false,
-							contentType: false,
-							data: fd,
-							xhr: function () {
-								var xhr = new window.XMLHttpRequest();
-								xhr.upload.addEventListener("progress", function (evt) {
-									var percentComplete = evt.loaded / evt.total;
-									file.upload = {
-										progress: 100 * percentComplete,
-										total: evt.total,
-										bytesSent: evt.loaded
-									};
-									self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
-									if (file.upload.progress == 100) {
-										file.status = Dropzone.SUCCESS;
-										self.emit("success", file, 'success', null);
-										self.emit("complete", file);
-										self.processQueue();
-									}
-								}, false);
-								return xhr;
-							},
-							success: function() {
-								var image = {
-									id: result.fields.key.match(/cache\/(.+)/)[1],
-									storage: 'cache',
-									metadata: {
-										size:  file.size,
-										filename:  file.name.match(/[^\/\\]*$/)[0],
-										mime_type: file.type
-									}
-								};
-								currentThis.updateImage(image);
-							}
-						});
-					}
-	      });
-      }
-    }*/
-  },
-
-	reduceQuality: function(source_img, type, quality) {
+	reduceQuality: function(source_img, type, quality, orientation) {
 		var mime_type = "image/jpeg";
 		if(typeof output_format !== "undefined" && output_format=="image/png"){
 			mime_type = "image/png";
 		}
 
+		var cvs = document.createElement('canvas'),
+				width = source_img.naturalWidth,
+				height = source_img.naturalHeight,
+				ctx = cvs.getContext("2d");
 
-		var cvs = document.createElement('canvas');
-		cvs.width = source_img.naturalWidth;
-		cvs.height = source_img.naturalHeight;
-		var ctx = cvs.getContext("2d").drawImage(source_img, 0, 0);
+		// set proper canvas dimensions before transform & export
+		if ([5,6,7,8].indexOf(orientation) > -1) {
+			cvs.width = height;
+			cvs.height = width;
+		} else {
+			cvs.width = width;
+			cvs.height = height;
+		}
+
+		// transform context before drawing image
+		switch (orientation) {
+			case 1:
+				ctx.transform(1, 0, 0, 1, 0, 0);
+			case 2: 
+				ctx.transform(-1, 0, 0, 1, width, 0); 
+				break;
+			case 3: 
+				ctx.transform(-1, 0, 0, -1, width, height );
+				break;
+			case 4: 
+				ctx.transform(1, 0, 0, -1, 0, height ); 
+				break;
+			case 5: 
+				ctx.transform(0, 1, 1, 0, 0, 0); 
+				break;
+			case 6: 
+				ctx.transform(0, 1, -1, 0, height , 0);
+				break;
+			case 7: 
+				ctx.transform(0, -1, -1, 0, height , width); 
+				break;
+			case 8: 
+				ctx.transform(0, -1, 1, 0, 0, width);
+				break;
+		}
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+		ctx.fillRect(0, 0, cvs.width, cvs.height);
+		ctx.strokeRect(0, 0, cvs.width, cvs.height);
+		ctx.lineWidth = 0;
+    ctx.rotate(0);
+		ctx.drawImage(source_img, 0, 0);
 		var newImageData = cvs.toDataURL(mime_type, quality/100);
 		var result_image = new Image();
 		result_image.src = newImageData;
 		return result_image;
 	},
 
-  dataURItoBlob: function(dataURI) {
-    'use strict'
-    var byteString, 
-        mimestring 
+	dataURItoBlob: function(dataURI) {
+		var byteString, 
+				mimestring;
 
-    if(dataURI.split(',')[0].indexOf('base64') !== -1 ) {
-        byteString = atob(dataURI.split(',')[1])
-    } else {
-        byteString = decodeURI(dataURI.split(',')[1])
-    }
+		if(dataURI.split(',')[0].indexOf('base64') !== -1 ) {
+			byteString = atob(dataURI.split(',')[1])
+		} else {
+			byteString = decodeURI(dataURI.split(',')[1])
+		}
 
-    mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0]
+		mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0]
 
-    var content = new Array();
-    for (var i = 0; i < byteString.length; i++) {
-        content[i] = byteString.charCodeAt(i)
-    }
+		var content = new Array();
+		for (var i = 0; i < byteString.length; i++) {
+			content[i] = byteString.charCodeAt(i)
+		}
 
-    return new Blob([new Uint8Array(content)], {type: mimestring});
+		return new Blob([new Uint8Array(content)], {type: mimestring});
 	},
 
 	render: function(){
@@ -589,6 +572,15 @@ var MaintenanceRequestsNew = React.createClass({
 						>
 						</textarea>
 						<p id="errorboxdescription" className="error"></p>
+
+						<p> Appointment Availability and Access Instructions </p>
+						<input
+							type="text"
+							ref={(ref) => this.maintenance_heading = ref}
+							id={this.generateAtt("id", "availability_and_access")}
+							name={this.generateAtt("name", "availability_and_access")}
+						/>
+						<p id="erroravailabilityandaccess" className="error"></p>
 
 						<p> Images </p>
 						<div className="browse-wrap">
@@ -719,16 +711,12 @@ var MaintenanceRequestsNew = React.createClass({
 						:
 						<hr/>
 					}
-
-					<div id="availabilities">
-						<FieldList SampleField={AvailabilityField} validDate={(flag) => this.validDate(flag)} flag="date"/>
-					</div>
-					
-					<hr/>
 					<p id="errCantSubmit" className="error"></p>
-					<button type="submit" className="button-primary green" name="commit">
-						Submit Maintenance Request
-					</button>
+					<div className="text-center">
+						<button type="submit" className="button-primary green" name="commit">
+							Submit Maintenance Request
+						</button>
+					</div>
 				</form>
 			</div>
 		);

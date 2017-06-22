@@ -5,9 +5,9 @@ class TenantMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("Tenant")}
   def index
     if params[:sort_by_date] == "Newest to Oldest"
-      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC')
     else
-      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC')
     end
 
     maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)

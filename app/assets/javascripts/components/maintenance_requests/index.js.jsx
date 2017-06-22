@@ -614,6 +614,7 @@ var ListMaintenanceRequest = React.createClass({
     const self = this;
     const current_user_agent = this.props.current_user_agent;
     const current_user_trady = this.props.current_user_trady;
+    const current_user_tenant = this.props.current_user_tenant;
     const current_user_landlord = this.props.current_user_landlord;
     const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
@@ -626,7 +627,7 @@ var ListMaintenanceRequest = React.createClass({
           />
         }
         <div className="maintenance-content">
-          <div className={"main-column " + (!!current_user_landlord && "main-landlord")}>
+          <div className={"main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord")}>
             <div>
               {
                 this.state.dataShow.map(function(maintenance_request, key) {
