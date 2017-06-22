@@ -137,6 +137,7 @@ class MaintenanceRequestsController < ApplicationController
                     role = Role.create(user_id:user.id)
                     @contact_tenant.save
                     @contact_tenant.roles << role
+                    UserSetPasswordEmailWorker.perform_async(user.id)
                     TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                   end 
                 end 
@@ -195,6 +196,7 @@ class MaintenanceRequestsController < ApplicationController
                       role = Role.create(user_id:user.id)
                       @contact_tenant.save
                       @contact_tenant.roles << role
+                      UserSetPasswordEmailWorker.perform_async(user.id)
                       TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                     end 
                   end 
@@ -216,7 +218,7 @@ class MaintenanceRequestsController < ApplicationController
           @maintenance_request.service_type = @customer_input.tradie
           @maintenance_request.save
           @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
-          
+          UserSetPasswordEmailWorker.perform_async(@user.id)
           
           #CREATE TENANTS
           access_contact_params = params[:maintenance_request][:access_contacts_attributes]
@@ -255,6 +257,7 @@ class MaintenanceRequestsController < ApplicationController
                       role = Role.create(user_id:user.id)
                       @contact_tenant.save
                       @contact_tenant.roles << role
+                      UserSetPasswordEmailWorker.perform_async(user.id)
                       TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                     end 
                   end 

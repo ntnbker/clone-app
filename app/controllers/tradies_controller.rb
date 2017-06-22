@@ -113,7 +113,7 @@ class TradiesController < ApplicationController
         role = Role.create(user_id:@user.id)
         @trady.roles << role
         @trady.save
-
+        UserSetPasswordEmailWorker.perform_async(@user.id)
        
             
         if params[:trady][:trady_request] == "Quote"

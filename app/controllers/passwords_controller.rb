@@ -16,7 +16,7 @@ class PasswordsController < ApplicationController
   def update
     @token = params[:password_token]
     @user = User.find_by(set_password_token:params[:password_token])
-
+    # @user_type = params[:user_type]
     if @user.blank?
       not_authenticated
       return
@@ -28,7 +28,7 @@ class PasswordsController < ApplicationController
     if @user.change_password!(params[:user][:password])
       @user.update_attribute(:set_password_token, SecureRandom.hex(10))
       flash[:success] = 'Password was successfully set.'
-      redirect_to root_path
+      redirect_to menu_login_path
     else
       render :action => "edit"
     end
