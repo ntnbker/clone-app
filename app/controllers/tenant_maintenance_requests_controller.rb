@@ -1,5 +1,6 @@
 class TenantMaintenanceRequestsController < ApplicationController
-  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action(only:[:show]) { email_auto_login(params[:user_id]) }
+  before_action(only:[:show]) {belongs_to_tenant}
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Tenant")}
   def index
@@ -76,30 +77,59 @@ class TenantMaintenanceRequestsController < ApplicationController
   private
 
   def email_auto_login(id)
+    email_params = params[:user_id]
+    if email_params
       user = User.find_by(id:id)
-      
-      if current_user
-        if current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
-          answer = true
-        else
-          answer = false
-        end 
+      if user 
+        if current_user
+          if current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
+            answer = true
+          else
+            answer = false
+          end 
 
-        if current_user  && answer && user.has_role("Tenant")
-          logout
-          auto_login(user)
-          user.current_role.update_attribute(:role, "Tenant")
-        elsif current_user == nil
-          auto_login(user)
-          user.current_role.update_attribute(:role, "Tenant")
-        elsif current_user && current_user.logged_in_as("Tenant")
-            #do nothing
-        end 
+          if current_user  && answer && user.has_role("Tenant")
+            logout
+            auto_login(user)
+            user.current_role.update_attribute(:role, "Tenant")
+          elsif current_user == nil
+            auto_login(user)
+            user.current_role.update_attribute(:role, "Tenant")
+          elsif current_user && current_user.logged_in_as("Tenant")
+              #do nothing
+          end 
+        else 
+          # if user 
+            auto_login(user)
+            user.current_role.update_attribute(:role, "Tenant")
+          # else
+          #   flash[:notice] = "Please log in first"
+          #   redirect_to menu_login_path
+          # end  
+        end
       else 
-        auto_login(user)
-        user.current_role.update_attribute(:role, "Tenant")
-
-      end
+        flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
+        redirect_to root_path
+      end 
+    else
+      #do nothing
+    end 
   end 
+  def belongs_to_tenant
+    maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+    
+    tenants = MaintenanceRequest.tenants
+    id_array = []
+    tenants.each do |tenant|
+      
+      id_array.push(tenant.user_id)
+    end
+    if id_array.include?(current_user.id)
+      #do nothing 
+    else
+      flash[:notice] = "Sorry you can't see that."
+      redirect_to root_path
+    end
+  end
 
 end

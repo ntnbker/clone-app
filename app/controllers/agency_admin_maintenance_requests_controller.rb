@@ -1,9 +1,12 @@
 class AgencyAdminMaintenanceRequestsController < ApplicationController
-  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action :require_login, only:[:show,:index]
   
+  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action(only:[:show]) {belongs_to_agency_admin}
+  before_action :require_login, only:[:show,:index]
+
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   
+
   def index
     if params[:sort_by_date] == "Newest to Oldest"
       @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC')
@@ -128,31 +131,54 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   # end
 
   def email_auto_login(id)
+    email_params= params[:user_id]
     
-    user = User.find_by(id:id)
-      
-    if current_user
-      if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
-        answer = true
-      else
-        answer = false
-      end 
-      
-      if current_user  && answer && user.has_role("AgencyAdmin")
-        logout
-        auto_login(user)
-        user.current_role.update_attribute(:role, "AgencyAdmin")
-      elsif current_user == nil
-        auto_login(user)
-        user.current_role.update_attribute(:role, "AgencyAdmin")
-      elsif current_user && current_user.logged_in_as("AgencyAdmin")
-          #do nothing
-      end 
-    else 
-      auto_login(user)
-      user.current_role.update_attribute(:role, "AgencyAdmin")
+    if email_params
+      user = User.find_by(id:id)
+      if user  
+        if current_user
+          if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
+            answer = true
+          else
+            answer = false
+          end 
+          
+          if current_user  && answer && user.has_role("AgencyAdmin")
+            logout
+            auto_login(user)
+            user.current_role.update_attribute(:role, "AgencyAdmin")
+          elsif current_user == nil
+            auto_login(user)
+            user.current_role.update_attribute(:role, "AgencyAdmin")
+          elsif current_user && current_user.logged_in_as("AgencyAdmin")
+              #do nothing
+          end 
+        else 
+          
+            auto_login(user)
+            user.current_role.update_attribute(:role, "AgencyAdmin")
+           
+        end 
+      else 
+        flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
+        redirect_to root_path
+      end
+    else
+      #do nothing
     end 
 
+  end
+
+  def belongs_to_agency_admin
+    
+    maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+    binding.pry
+    if current_user.agency_admin.id == maintenance_request.agency_admin_id
+      #do nothing
+    else 
+      flash[:notice] = "Sorry you can't see that."
+      redirect_to root_path
+    end 
   end
 
 
