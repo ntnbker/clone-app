@@ -68186,11 +68186,28 @@ var FieldList = React.createClass({
     },
 
     removeField: function (x) {
-        var tmpFields = this.state.Fields;
-        tmpFields.splice(x - 1, 1);
+        var self = this;
+        var Fields = this.state.Fields;
+
+        Fields.splice(x - 1, 1);
+        var tmpFields = [];
+        var SampleField = this.props.SampleField;
+        var params = this.props.params;
+        Fields.map(function (item, index) {
+            tmpFields.push(React.createElement(SampleField, {
+                x: index + 1,
+                params: params,
+                removeField: function (position) {
+                    return self.removeField(position);
+                },
+                validDate: function (flag) {
+                    return self.props.validDate(flag);
+                }
+            }));
+        });
         this.setState({
             Fields: tmpFields,
-            x: tmpFields.length
+            x: tmpFields.length + 1
         });
     },
 
@@ -68200,16 +68217,20 @@ var FieldList = React.createClass({
             { className: "fieldlist" },
             React.createElement(
                 "ul",
-                null,
-                this.state.Fields.map(function (Field, fieldIndex) {
+                { id: "fieldList" },
+                this.state.Fields.map(function (Field, index) {
                     return React.createElement(
                         "li",
-                        { key: fieldIndex },
+                        { key: index },
                         Field
                     );
                 })
             ),
-            React.createElement(ButtonAddAnotherItem, { flag: this.props.flag, x: this.state.x, addField: this.addField })
+            React.createElement(
+                "div",
+                { className: "text-center" },
+                React.createElement(ButtonAddAnotherItem, { flag: this.props.flag, x: this.state.x, addField: this.addField })
+            )
         );
     }
 });
@@ -70427,11 +70448,15 @@ var AccessContactField = React.createClass({
           id: this.generateAtt("id", x, "_destroy") })
       ),
       React.createElement(
-        "button",
-        { type: "button", className: "button-remove button-primary red", onClick: function (position) {
-            _this.props.removeField(x);
-          } },
-        " Remove "
+        "div",
+        { className: "text-center" },
+        React.createElement(
+          "button",
+          { type: "button", className: "button-remove button-primary red", onClick: function (position) {
+              _this.props.removeField(x);
+            } },
+          " Remove "
+        )
       )
     );
   }
@@ -72267,6 +72292,7 @@ var ListMaintenanceRequest = React.createClass({
     var self = this;
     var current_user_agent = this.props.current_user_agent;
     var current_user_trady = this.props.current_user_trady;
+    var current_user_tenant = this.props.current_user_tenant;
     var current_user_landlord = this.props.current_user_landlord;
     var current_user_agency_admin = this.props.current_user_agency_admin;
     return React.createElement(
@@ -72282,7 +72308,7 @@ var ListMaintenanceRequest = React.createClass({
         { className: "maintenance-content" },
         React.createElement(
           "div",
-          { className: "main-column " + (!!current_user_landlord && "main-landlord") },
+          { className: "main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord") },
           React.createElement(
             "div",
             null,
@@ -73087,9 +73113,12 @@ var MaintenanceRequestsNew = React.createClass({
 	_handleImageChange: function (e) {
 		var _this = this;
 
+		var self = this;
 		var files = e.target.files;
 		var reader = new FileReader();
+		var fr = new FileReader();
 		var images = this.state.images;
+		var orientation;
 		readFile = function (index) {
 			if (index >= files.length) {
 				_this.setState({
@@ -73106,16 +73135,41 @@ var MaintenanceRequestsNew = React.createClass({
 				}
 			}
 			if (!fileAlreadyExists) {
-				reader.readAsDataURL(file);
-				reader.onload = function (e) {
-					images.push({ url: e.target.result, fileInfo: file, isUpload: false });
-					readFile(index + 1);
+				var fr = new FileReader();
+				fr.readAsArrayBuffer(file);
+				fr.onload = function (e) {
+					orientation = self.getOrientation(e.target.result);
+					reader.readAsDataURL(file);
+					reader.onload = function (e) {
+						images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
+						readFile(index + 1);
+					};
 				};
 			} else {
 				readFile(index + 1);
 			}
 		};
 		readFile(0);
+	},
+
+	getOrientation: function (result) {
+		var view = new DataView(result);
+		if (view.getUint16(0, false) != 0xFFD8) return -2;
+		var length = view.byteLength,
+		    offset = 2;
+		while (offset < length) {
+			var marker = view.getUint16(offset, false);
+			offset += 2;
+			if (marker == 0xFFE1) {
+				if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+				var little = view.getUint16(offset += 6, false) == 0x4949;
+				offset += view.getUint32(offset + 4, little);
+				var tags = view.getUint16(offset, little);
+				offset += 2;
+				for (var i = 0; i < tags; i++) if (view.getUint16(offset + i * 12, little) == 0x0112) return view.getUint16(offset + i * 12 + 8, little);
+			} else if ((marker & 0xFF00) != 0xFF00) break;else offset += view.getUint16(offset, false);
+		}
+		return -1;
 	},
 
 	validDate: function (flag) {
@@ -73263,7 +73317,7 @@ var MaintenanceRequestsNew = React.createClass({
 
 			if (file.size > maxSize) {
 				var quality = Math.ceil(maxSize / file.size * 100);
-				target_img.src = self.reduceQuality(img, file.type, quality).src;
+				target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
 			} else {
 				target_img.src = image.url;
 			}
@@ -73326,100 +73380,58 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 	},
 
-	componentDidMount: function () {
-
-		/*Dropzone.autoDiscover = false;
-  this.dropzone = new Dropzone('#upload-image', {
-  	maxFilesize: 10,
-  	resizeWidth: 960,
-  	resizeHeight: 600,
-  	filesizeBase: 1000,
-  	resizeQuality: 0.5,
-  	parallelUploads: 10,
-  	thumbnailWidth: 120,
-  	addRemoveLinks: true,
-  	thumbnailHeight: 120,
-  	dictRemoveFile: "Remove"
-  });
-  	this.dropzone.on("removedfile", function(file) {
-  	currentThis.removeImage(file); 
-  });
-  	this.dropzone.uploadFiles = function(files) {
-  	var self = this;
-  		for (var i = 0; i < files.length; i++) {
-  		var file = files[i];
-  		var filename = file;
-  		const options = {
-  			extension: filename.name.match(/(\.\w+)?$/)[0],
-  			_: Date.now(),
-  		}
-  			// start upload file into S3
-  		$.getJSON('/images/cache/presign', options, function(result) {
-  			var fd = new FormData();
-  			$.each(result.fields, function(key, value) {
-  				fd.append(key, value);
-  			});
-  			var source = {};
-  			var reader = new FileReader();
-  			reader.readAsDataURL(file);
-  			reader.onload = function(e) {
-  				source = e.target.result;
-  				fd.append('file', currentThis.dataURItoBlob(source));
-  				$.ajax({
-  					type: 'POST',
-  					url: result['url'],
-  					enctype: 'multipart/form-data',
-  					processData: false,
-  					contentType: false,
-  					data: fd,
-  					xhr: function () {
-  						var xhr = new window.XMLHttpRequest();
-  						xhr.upload.addEventListener("progress", function (evt) {
-  							var percentComplete = evt.loaded / evt.total;
-  							file.upload = {
-  								progress: 100 * percentComplete,
-  								total: evt.total,
-  								bytesSent: evt.loaded
-  							};
-  							self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
-  							if (file.upload.progress == 100) {
-  								file.status = Dropzone.SUCCESS;
-  								self.emit("success", file, 'success', null);
-  								self.emit("complete", file);
-  								self.processQueue();
-  							}
-  						}, false);
-  						return xhr;
-  					},
-  					success: function() {
-  						var image = {
-  							id: result.fields.key.match(/cache\/(.+)/)[1],
-  							storage: 'cache',
-  							metadata: {
-  								size:  file.size,
-  								filename:  file.name.match(/[^\/\\]*$/)[0],
-  								mime_type: file.type
-  							}
-  						};
-  						currentThis.updateImage(image);
-  					}
-  				});
-  			}
-       });
-      }
-    }*/
-	},
-
-	reduceQuality: function (source_img, type, quality) {
+	reduceQuality: function (source_img, type, quality, orientation) {
 		var mime_type = "image/jpeg";
 		if (typeof output_format !== "undefined" && output_format == "image/png") {
 			mime_type = "image/png";
 		}
 
-		var cvs = document.createElement('canvas');
-		cvs.width = source_img.naturalWidth;
-		cvs.height = source_img.naturalHeight;
-		var ctx = cvs.getContext("2d").drawImage(source_img, 0, 0);
+		var cvs = document.createElement('canvas'),
+		    width = source_img.naturalWidth,
+		    height = source_img.naturalHeight,
+		    ctx = cvs.getContext("2d");
+
+		// set proper canvas dimensions before transform & export
+		if ([5, 6, 7, 8].indexOf(orientation) > -1) {
+			cvs.width = height;
+			cvs.height = width;
+		} else {
+			cvs.width = width;
+			cvs.height = height;
+		}
+
+		// transform context before drawing image
+		switch (orientation) {
+			case 1:
+				ctx.transform(1, 0, 0, 1, 0, 0);
+			case 2:
+				ctx.transform(-1, 0, 0, 1, width, 0);
+				break;
+			case 3:
+				ctx.transform(-1, 0, 0, -1, width, height);
+				break;
+			case 4:
+				ctx.transform(1, 0, 0, -1, 0, height);
+				break;
+			case 5:
+				ctx.transform(0, 1, 1, 0, 0, 0);
+				break;
+			case 6:
+				ctx.transform(0, 1, -1, 0, height, 0);
+				break;
+			case 7:
+				ctx.transform(0, -1, -1, 0, height, width);
+				break;
+			case 8:
+				ctx.transform(0, -1, 1, 0, 0, width);
+				break;
+		}
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+		ctx.fillRect(0, 0, cvs.width, cvs.height);
+		ctx.strokeRect(0, 0, cvs.width, cvs.height);
+		ctx.lineWidth = 0;
+		ctx.rotate(0);
+		ctx.drawImage(source_img, 0, 0);
 		var newImageData = cvs.toDataURL(mime_type, quality / 100);
 		var result_image = new Image();
 		result_image.src = newImageData;
@@ -73427,7 +73439,6 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	dataURItoBlob: function (dataURI) {
-		'use strict';
 		var byteString, mimestring;
 
 		if (dataURI.split(',')[0].indexOf('base64') !== -1) {
@@ -73619,6 +73630,20 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement(
 						'p',
 						null,
+						' Appointment Availability and Access Instructions '
+					),
+					React.createElement('input', {
+						type: 'text',
+						ref: function (ref) {
+							return _this2.maintenance_heading = ref;
+						},
+						id: this.generateAtt("id", "availability_and_access"),
+						name: this.generateAtt("name", "availability_and_access")
+					}),
+					React.createElement('p', { id: 'erroravailabilityandaccess', className: 'error' }),
+					React.createElement(
+						'p',
+						null,
 						' Images '
 					),
 					React.createElement(
@@ -73775,19 +73800,15 @@ var MaintenanceRequestsNew = React.createClass({
 					),
 					React.createElement('hr', null)
 				) : React.createElement('hr', null),
-				React.createElement(
-					'div',
-					{ id: 'availabilities' },
-					React.createElement(FieldList, { SampleField: AvailabilityField, validDate: function (flag) {
-							return _this2.validDate(flag);
-						}, flag: 'date' })
-				),
-				React.createElement('hr', null),
 				React.createElement('p', { id: 'errCantSubmit', className: 'error' }),
 				React.createElement(
-					'button',
-					{ type: 'submit', className: 'button-primary green', name: 'commit' },
-					'Submit Maintenance Request'
+					'div',
+					{ className: 'text-center' },
+					React.createElement(
+						'button',
+						{ type: 'submit', className: 'button-primary green', name: 'commit' },
+						'Submit Maintenance Request'
+					)
 				)
 			)
 		);
@@ -79565,11 +79586,11 @@ var AddTradycompany = React.createClass({
             mailing_address: _this.mailing_address.value,
             gst_registration: _this.state.gst_registration,
             bank_account_number: _this.bank_account_number.value,
-            trady_company_id: _this.props.id ? _this.props.id : null,
             maintenance_request_id: _this.props.maintenance_request_id,
             quote_id: _this.props.quote_id ? _this.props.quote_id : null,
             ledger_id: _this.props.ledger_id ? _this.props.ledger_id : null,
-            pdf_file_id: _this.props.pdf_file_id ? _this.props.pdf_file_id : null
+            pdf_file_id: _this.props.pdf_file_id ? _this.props.pdf_file_id : null,
+            trady_company_id: _this.props.trady_company_id ? _this.props.trady_company_id : null
           }
         };
 
