@@ -253,7 +253,7 @@ class MaintenanceRequestsController < ApplicationController
                       @contact_tenant.roles << role
                       TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                     elsif contact && existing_role == true
-                      binding.pry
+                      
                       TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
                       contact.tenant.update_attribute(:property_id,@property.id)
                     else 
