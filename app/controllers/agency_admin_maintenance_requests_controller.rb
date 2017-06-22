@@ -172,7 +172,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   def belongs_to_agency_admin
     
     maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    binding.pry
+    
     if current_user.agency_admin.id == maintenance_request.agency_admin_id
       #do nothing
     else 
