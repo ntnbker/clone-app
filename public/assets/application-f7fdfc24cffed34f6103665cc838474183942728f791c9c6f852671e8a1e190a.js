@@ -69659,29 +69659,17 @@ var ContentLandlordContact = React.createClass({
 	displayName: "ContentLandlordContact",
 
 	renderCallAgent: function () {
-		var maintenance_request = this.props.maintenance_request;
-		if (!!maintenance_request.agent) {
+		var agent = this.props.agent;
+		if (!!agent) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					{ href: "tel:" + maintenance_request.agent.mobile_phone },
+					{ href: "tel:" + agent.phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					maintenance_request.agent.mobile_phone
-				)
-			);
-		} else if (!!maintenance_request.agency_admin) {
-			return React.createElement(
-				"li",
-				null,
-				React.createElement(
-					"a",
-					{ href: "tel:" + maintenance_request.agency_admin.mobile_phone },
-					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-					"Call Agent: ",
-					maintenance_request.agency_admin.mobile_phone
+					agent.phone
 				)
 			);
 		}
@@ -69754,9 +69742,14 @@ var LandlordContact = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content" },
-				this.state.show && React.createElement(ContentLandlordContact, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentLandlordContact, {
+					agent: this.props.agent,
+					landlord: this.props.landlord,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
 						return _this2.props.onModalWith(modal);
-					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+					}
+				})
 			)
 		);
 	}
@@ -69791,9 +69784,14 @@ var LandlordContactMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentLandlordContact, { onModalWith: function (modal) {
+					React.createElement(ContentLandlordContact, {
+						agent: this.props.agent,
+						landlord: this.props.landlord,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
 							return _this3.props.onModalWith(modal);
-						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+						}
+					})
 				)
 			)
 		);
@@ -69823,10 +69821,14 @@ var LandlordSideBarMobile = React.createClass({
 	},
 
 	close: function () {
-		this.setState({ showAction: false });
-		this.setState({ showContact: false });
-		$('#actions-full').css({ 'height': 0, 'border-width': 0 });
-		$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		if ($('#actions-full').length > 0) {
+			this.setState({ showAction: false });
+			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		}
+		if ($('#contacts-full').length > 0) {
+			this.setState({ showContact: false });
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
 	},
 
 	componentDidMount: function () {
@@ -69883,6 +69885,7 @@ var LandlordSideBarMobile = React.createClass({
 					}
 				}),
 				React.createElement(LandlordContactMobile, {
+					agent: this.props.agent,
 					landlord: this.props.landlord,
 					close: this.close,
 					current_user: this.props.current_user,
@@ -70209,6 +70212,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					'div',
 					{ className: 'sidebar' },
 					React.createElement(LandlordContact, {
+						agent: this.props.agent,
 						landlord: this.state.landlord,
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
@@ -70227,6 +70231,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				)
 			),
 			React.createElement(LandlordSideBarMobile, {
+				agent: this.props.agent,
 				landlord: this.state.landlord,
 				requestQuote: this.requestQuote,
 				current_user: this.props.current_user,
@@ -71653,9 +71658,29 @@ var DropDownContent = React.createClass({
   },
 
   componentWillReceiveProps: function (nextProps) {
+    if (nextProps.isHide === true || nextProps.isHide === false) {
+      this.setHeight(nextProps.isHide);
+    }
     this.setState({
       valueAction: nextProps.valueAction
     });
+  },
+
+  setHeight: function (flag) {
+    if (!flag) {
+      var dropdown = $('.show .content-action');
+      var heightScreen = $(window).height() - 90;
+      if (heightScreen < 450) {
+        dropdown.css({
+          "height": heightScreen,
+          "overflow-y": "scroll"
+        });
+      } else {
+        dropdown.css("height", 450);
+      }
+    } else {
+      $('.content-mobile .dropcontent').css('height', 0);
+    }
   },
 
   render: function () {
@@ -71664,7 +71689,7 @@ var DropDownContent = React.createClass({
     var state = this.state;
     return React.createElement(
       "ul",
-      { className: "dropcontent" },
+      { className: "dropcontent content-action" },
       content.map(function (item, index) {
         return React.createElement(
           "li",
@@ -71791,6 +71816,7 @@ var DropDownMobileList = React.createClass({
         "div",
         { className: "content-mobile action-mobile " + (!state.hidden && 'show') },
         React.createElement(DropDownContent, {
+          isHide: state.hidden,
           content: props.content,
           valueAction: state.valueAction,
           getAction: function (value) {
@@ -72240,8 +72266,9 @@ var ListMaintenanceRequest = React.createClass({
 
     var self = this;
     var current_user_agent = this.props.current_user_agent;
-    var current_user_agency_admin = this.props.current_user_agency_admin;
     var current_user_trady = this.props.current_user_trady;
+    var current_user_landlord = this.props.current_user_landlord;
+    var current_user_agency_admin = this.props.current_user_agency_admin;
     return React.createElement(
       "div",
       { className: "maintenance-list" },
@@ -72255,7 +72282,7 @@ var ListMaintenanceRequest = React.createClass({
         { className: "maintenance-content" },
         React.createElement(
           "div",
-          { className: "main-column" },
+          { className: "main-column " + (!!current_user_landlord && "main-landlord") },
           React.createElement(
             "div",
             null,
@@ -73104,7 +73131,6 @@ var MaintenanceRequestsNew = React.createClass({
 			return;
 		}
 		var XHR = new XMLHttpRequest();
-		debugger;
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
 		this.state.dataImages.map(function (image, index) {
 			var idx = index + 1;
@@ -73153,6 +73179,14 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
 		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
+		XHR.upload.addEventListener('loadstart', function (e) {
+			$("#spinner").css('display', 'flex');
+		});
+		XHR.onreadystatechange = function () {
+			if (XHR.readyState == 4) {
+				$("#spinner").css('display', 'none');
+			}
+		};
 		XHR.send(FD);
 		e.preventDefault();
 		return false;
@@ -78144,7 +78178,9 @@ var Header = React.createClass({
         // Inside of the component.
       } else {
           // Outside of the component.
-          this.setState({ isItems: false });
+          if (this.state.isItems === true) {
+            this.setState({ isItems: false });
+          }
         }
     }
   },
@@ -78177,11 +78213,15 @@ var Header = React.createClass({
     }
 
     $(document).bind(event, function (e) {
-      if (e.target.id != "menu-bar") {
-        self.hideBar();
-      }
       self.clickDocument(e);
       self.closeMenu();
+      if (e.target.id != "btn-menu-bar") {
+        self.hideBar();
+        var className = e.target["class"];
+        if (className && className.indexOf('click')) {
+          e.target.click();
+        }
+      }
     });
   },
 
@@ -78213,7 +78253,7 @@ var Header = React.createClass({
         { key: key },
         React.createElement(
           "a",
-          { href: item.url },
+          { href: item.url, className: "click" },
           item.name
         )
       );
@@ -78276,7 +78316,7 @@ var Header = React.createClass({
             null,
             React.createElement(
               "a",
-              { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
+              { href: props.logout_path, className: "click", "data-method": "delete", rel: "nofollow" },
               "Sign Out"
             )
           )
@@ -78285,12 +78325,12 @@ var Header = React.createClass({
           { className: "mobile-menu-items" },
           React.createElement(
             "a",
-            { href: props.menu_login_path },
+            { href: props.menu_login_path, className: "click" },
             " Login "
           ),
           React.createElement(
             "a",
-            { href: props.new_agency_path, className: "register" },
+            { href: props.new_agency_path, className: "register click" },
             " Register "
           )
         )
@@ -78333,7 +78373,7 @@ var Header = React.createClass({
                 { className: "menu-bar dropdown-custom" },
                 React.createElement(
                   "button",
-                  { type: "button", className: "btn-menu", id: "btn-menu-header", onClick: this.showMenu },
+                  { type: "button", className: "btn-menu", onClick: this.showMenu },
                   React.createElement("img", { src: "/assets/user1.png" }),
                   React.createElement(
                     "span",
@@ -78345,7 +78385,7 @@ var Header = React.createClass({
                 ),
                 React.createElement(
                   "ul",
-                  { className: "dropdown-menu" },
+                  { className: "dropdown-menu", id: "menu-bar" },
                   this.menuBar(),
                   React.createElement(
                     "li",
@@ -78408,7 +78448,7 @@ var Header = React.createClass({
           ),
           React.createElement(
             "button",
-            { className: "menu-btn button", id: "menu-bar", onClick: this.showBar },
+            { className: "menu-btn button", id: "btn-menu-bar", onClick: this.showBar },
             " ☰ "
           )
         )
@@ -78425,7 +78465,7 @@ var Header = React.createClass({
   }
 });
 var Spinner = React.createClass({
-	displayName: "Spinner",
+	displayName: 'Spinner',
 
 	componentDidMount: function () {
 		/*$(document).ajaxStart(function() {
@@ -78434,19 +78474,25 @@ var Spinner = React.createClass({
   	$(document).ajaxStop(function() {
   	$("#spinner").css('display', 'none');
   });*/
+
+		$(document).bind('ajaxSend', function (e) {
+			$("#spinner").css('display', 'flex');
+		}).bind('ajaxComplete', function (e) {
+			$("#spinner").css('display', 'none');
+		});
 	},
 
 	render: function () {
 		return React.createElement(
-			"div",
-			{ id: "spinner", className: "spinner-content" },
-			React.createElement("div", { className: "spinner-bg" }),
+			'div',
+			{ id: 'spinner', className: 'spinner-content' },
+			React.createElement('div', { className: 'spinner-bg' }),
 			React.createElement(
-				"div",
-				{ className: "spinner" },
-				React.createElement("div", { className: "bounce1" }),
-				React.createElement("div", { className: "bounce2" }),
-				React.createElement("div", { className: "bounce3" })
+				'div',
+				{ className: 'spinner' },
+				React.createElement('div', { className: 'bounce1' }),
+				React.createElement('div', { className: 'bounce2' }),
+				React.createElement('div', { className: 'bounce3' })
 			)
 		);
 	}
@@ -79443,7 +79489,7 @@ var AddTradycompany = React.createClass({
     if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
       flag = true;
       this.setState({
-        errorTradingName: true
+        errorABN: true
       });
     }
 
@@ -79457,7 +79503,7 @@ var AddTradycompany = React.createClass({
     if (!this.mailing_address.value) {
       flag = true;
       this.setState({
-        errorTradingName: true
+        errorMailingAdress: true
       });
     }
 
