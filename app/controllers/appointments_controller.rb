@@ -50,16 +50,6 @@ class AppointmentsController < ApplicationController
           #do nothing
       end 
 
-
-
-
-
-
-
-      
-
-
-
       appointment_and_comments = @appointment.as_json(:include => {:comments =>{}})
       respond_to do |format|
       format.json {render :json=>{appointment_and_comments:appointment_and_comments}}
@@ -144,10 +134,10 @@ class AppointmentsController < ApplicationController
     appointment_id = appointment.id
     maintenance_request_id = params[:maintenance_request_id]
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    trady_id = params[:trady_id]
-    tenant_id = params[:tenant_id]
+    trady_id = appointment.trady_id
+    tenant_id = appointment.tenant_id
     trady = Trady.find_by(id: trady_id)
-    tenant = Tenant.find_by(id: params[:tenant_id])
+    tenant = Tenant.find_by(id: tenant_id)
     #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 
     
     
@@ -163,9 +153,14 @@ class AppointmentsController < ApplicationController
       Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant confirmed appointment", name:tenant.name)
 
     end 
-    flash[:success] = "Thank you for accepting the appointment."
-    redirect_to root_path
-    
+    respond_to do |format|
+      format.json {render :json=>{note:"You have accepted the appointment."}}
+    end
+  end
+
+  def decline_appointment
+    appointment = Appointment.find_by(id:params[:appointment_id])
+    appointment.update_attribute(:status,"Declined")
   end
 
   private
