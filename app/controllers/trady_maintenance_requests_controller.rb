@@ -78,7 +78,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     @message = Message.new
     
-    @trady = @signed_in_trady
+    @trady = @signed_in_trady.as_json(:include => {:user => {:include => :current_role}})
      
     if @maintenance_request.images != nil
       @gallery = @maintenance_request.get_image_urls
@@ -132,7 +132,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     respond_to do |format|
 
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, appointments:@appointments}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, appointments:@appointments,trady:@trady}}
       format.html{render :show}
     end 
   end
