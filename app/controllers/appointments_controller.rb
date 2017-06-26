@@ -169,7 +169,7 @@ class AppointmentsController < ApplicationController
   private
     
     def appointment_params
-      params.require(:appointment).permit(:date, :time,:status,  :comment,:tenant_id,  :trady_id, :maintenance_request_id, :tenant_id, comments_attributes:[:id, :body, :tenant_id, :trady_id ,:appointment_id])  
+      params.require(:appointment).permit(:date, :time,:status,  :comment,:tenant_id,  :trady_id, :maintenance_request_id, :tenant_id,:appointment_type, comments_attributes:[:id, :body, :tenant_id, :trady_id ,:appointment_id])  
     end
 
     def email_auto_login(id)
