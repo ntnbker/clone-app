@@ -156,6 +156,7 @@ Rails.application.routes.draw do
     resources :landlord_appointments, only:[:new,:create,:show, :edit]
     put "update_landlord_appointment" =>"landlord_appointments#update"
     post "accept_landlord_appointment" =>"landlord_appointments#accept_appointment", :as =>:accept_landlord_appointment
+    post "decline_landlord_appointment" => "landlord_appointments#decline_appointment", :as =>:decline_landlord_appointment
   ###################################################
   ##########COMMENTS RESOURCES/ROUTES################
   ###################################################

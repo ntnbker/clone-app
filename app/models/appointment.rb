@@ -9,7 +9,7 @@ class Appointment < ApplicationRecord
   accepts_nested_attributes_for :comments
   validates_associated :comments
 
-  attr_accessor :current_user_role
+  #attr_accessor :current_user_role
 
 
   def self.tenant_and_landlord_appointments(maintenance_request_id)
