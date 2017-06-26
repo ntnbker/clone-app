@@ -119,10 +119,11 @@ class TradyMaintenanceRequestsController < ApplicationController
     @appointment.comments.build
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     
-    @appointments = @maintenance_request.appointments.as_json(:include => {:comments =>{}})
+    #@appointments = @maintenance_request.appointments.as_json(:include => {:comments =>{}})
     
-
-     
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").as_json(:include => {:comments =>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").as_json(:include => {:comments =>{}})
+    
     # we dont need thishere only in tenant controller show @tenant_id  = maintenance_request.property.tenants.first.id
 
     #we need to have the tradys_id in the form
@@ -132,7 +133,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, appointments:@appointments, :current_role => @current_role, :appointments => @appointments}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :current_role => @current_role, :quote_appointments => @quote_appointments}}
       format.html{render :show}
     end 
   end
