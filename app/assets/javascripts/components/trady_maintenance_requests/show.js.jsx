@@ -465,9 +465,10 @@ var TradyMaintenanceRequest = React.createClass({
 
 	acceptAppointment: function(appointment) {
 		const self = this;
-		const {authenticity_token} = this.props;
+		const {authenticity_token, current_role} = this.props;
 		var params = {
 			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : '',
 			maintenance_request_id: this.state.maintenance_request.id,
 		};
 		$.ajax({

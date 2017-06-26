@@ -78,7 +78,7 @@ var AppointmentRequest = React.createClass({
 				<div className="header action">
 					<a onClick={this.show}>Appointment Request</a>
 				</div>
-				{ (this.state.show && this.props.appointments.length) ?
+				{ (this.state.show && this.props.appointments) ?
 						<ListAppointment 
 							appointments={appointments}
 							current_role={this.props.current_role}
