@@ -51,6 +51,20 @@ var CreateAppointment = React.createClass({
 	}
 });
 
+var CreateAppointmentForQuote = React.createClass({
+	render: function() {
+		const props = this.props;
+		return (
+			<li>
+				<a onClick={(modal) => this.props.onModalWith('createAppointmentForQuote')}>
+					<i className="fa fa-plus" aria-hidden="true" />
+					Create Appointment For Quote
+				</a>
+			</li>
+		);
+	}
+});
+
 var ContentTradyAction = React.createClass({
 	render: function() {
 		const maintenance_request = this.props.maintenance_request;
@@ -65,6 +79,7 @@ var ContentTradyAction = React.createClass({
 					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {

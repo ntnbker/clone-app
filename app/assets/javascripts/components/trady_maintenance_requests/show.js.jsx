@@ -11,7 +11,7 @@ var TradySideBarMobile = React.createClass({
 			this.setState({showAction: true});
 			this.setState({showContact: false});
 			if($('#actions-full').length > 0) {
-				$('#actions-full').css({'height': 300, 'border-width': 1});
+				$('#actions-full').css({'height': 350, 'border-width': 1});
 			}
 		}else {
 			this.setState({showAction: false});
@@ -253,6 +253,7 @@ var TradyMaintenanceRequest = React.createClass({
 			invoices: this.props.invoices,
 			appointments: this.props.appointments,
 			invoice_pdf_files: this.props.invoice_pdf_files,
+			quote_appointments: this.props.quote_appointments,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
@@ -281,14 +282,24 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	updateAppointment: function(appointment) {
-		const {appointments} = this.state;
-		let data = appointments.map((item, key) => {
-			item.status = item.id == appointment.id ? appointment.status : item.status;
-			return item;
-		});
-		this.setState({
-			appointments: data
-		});
+		const {appointments, quote_appointments} = this.state;
+		if(appointment.appointment_type == "Work Order Appointment") {
+			let data = appointments.map((item, key) => {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				appointments: data
+			});
+		}else {
+			let data = quote_appointments.map((item, key) => {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				quote_appointments: data
+			});
+		}
 	},
 
 	sendMessageQuote: function(params) {
@@ -353,13 +364,13 @@ var TradyMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenants, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments} = this.state;
+		const {appointments, quote_appointments} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
 		fd.append('appointment[date]', params.date);
 		fd.append('appointment[time]', params.time);
-		fd.append('appointment[appointment_type]', 'Work Order Appointment');
+		fd.append('appointment[appointment_type]', params.appointment_type);
 		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
 		fd.append('appointment[tenant_id]', tenants.length > 0 ? tenants[0].id : '');
 		fd.append('appointment[trady_id]', signed_in_trady ? signed_in_trady.id : '');
@@ -379,21 +390,29 @@ var TradyMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
-				appointments.push(res.appointment_and_comments);
-				self.setState({
-					appointments: appointments
-				});
+				if(params.appointment_type == 'Work Order Appointment') {
+					appointments.push(res.appointment_and_comments);
+					self.setState({
+						appointments: appointments
+					});
+				}else {
+					quote_appointments.push(res.appointment_and_comments);
+					self.setState({
+						quote_appointments: quote_appointments
+					});			
+				}
+
 				self.setState({notification: {
 					bgClass: "bg-success",
-					title: "Create Appoinment",
-					content: "Create Appointment was successfully",
+					title: params.appointment_type == 'Work Order Appointment' ? "Create Appoinment" : "Create Appoinment For Quote",
+					content: params.appointment_type == 'Work Order Appointment' ? "Create Appointment was successfully" : "Create Appointment For Quote was successfully",
 				}});
 				self.onModalWith('notification');
 			},
 			error: function(err) {
 				self.setState({notification: {
 					bgClass: "bg-error",
-					title: "Create Appoinment",
+					title: params.appointment_type == 'Work Order Appointment' ? "Create Appoinment" : "Create Appoinment For Quote",
 					content: err.responseText,
 				}});
 				self.onModalWith('notification');
@@ -432,17 +451,10 @@ var TradyMaintenanceRequest = React.createClass({
 				break;
 			}
 
-			case 'viewConfirm': {
-				this.onModalWith(key);
-				break;
-			}
-
-			case 'viewMarkJob': {
-				this.onModalWith(key);
-				break;
-			}
-
-			case 'createAppointment': {
+			case 'viewConfirm':
+			case 'viewMarkJob':
+			case 'createAppointment':
+			case 'createAppointmentForQuote': {
 				this.onModalWith(key);
 				break;
 			}
@@ -633,6 +645,19 @@ var TradyMaintenanceRequest = React.createClass({
 					return (
 						<ModalAddAppointment
 							close={this.isClose}
+							title="Create Appointment"
+							type="Work Order Appointment"
+							addAppointment={(params) => this.addAppointment(params)}
+						/>
+					);
+				}
+
+				case 'createAppointmentForQuote': {
+					return (
+						<ModalAddAppointment
+							close={this.isClose}
+							title="Create Appointment For Quote"
+							type="Quote Appointment"
 							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);
@@ -642,6 +667,8 @@ var TradyMaintenanceRequest = React.createClass({
 					return (
 						<ModalAppointment
 							close={this.isClose}
+							title="Appointment Request"
+							type="Work Order Appointment"
 							appointment={this.state.appointment}
 							current_role={this.props.current_role}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -657,7 +684,7 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
-		const {appointments} = this.props;
+		const {appointments, quote_appointments} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -712,6 +739,15 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 						<AppointmentRequest 
 							appointments={appointments}
+							title="Work Order Appointments"
+							current_role={this.props.trady.user.current_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
+						<AppointmentRequest 
+							title="Quote Appointments"
+							appointments={quote_appointments}
 							current_role={this.props.trady.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -721,6 +757,15 @@ var TradyMaintenanceRequest = React.createClass({
 					</div>
 					<AppointmentRequestMobile 
 						appointments={appointments}
+						title="Work Order Appointments"
+						current_role={this.props.trady.user.current_role}
+						viewItem={(key, item) => this.viewItem(key, item)}
+						acceptAppointment={(value) => this.acceptAppointment(value)}
+						declineAppointment={(value) => this.declineAppointment(value)}
+					/>
+					<AppointmentRequestMobile 
+						title="Quote Appointments"
+						appointments={quote_appointments}
 						current_role={this.props.trady.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
 						acceptAppointment={(value) => this.acceptAppointment(value)}

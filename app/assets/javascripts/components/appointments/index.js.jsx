@@ -72,11 +72,16 @@ var AppointmentRequest = React.createClass({
 	},
 
 	render: function() {
-		const {appointments} = this.props;
+		const {appointments, title} = this.props;
 		return (
 			<div className="item">
 				<div className="header action">
-					<a onClick={this.show}>Appointment Request</a>
+					<a>{title}</a>
+					<i 
+							aria-hidden="true" 
+							onClick={this.show} 
+							className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} 
+						/>
 				</div>
 				{ (this.state.show && this.props.appointments.length) ?
 						<ListAppointment 
@@ -105,12 +110,12 @@ var AppointmentRequestMobile = React.createClass({
 	},
 
 	render: function() {
-		const {appointments} = this.props;
+		const {appointments, title} = this.props;
 		return (
 			<div className="activity-mobile">
 				<div className="item">
 					<div className="header action">
-						<a>Appointment Request</a>
+						<a>{title}</a>
 						<i 
 							aria-hidden="true" 
 							onClick={this.show} 
