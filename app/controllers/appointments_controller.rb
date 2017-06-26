@@ -153,8 +153,9 @@ class AppointmentsController < ApplicationController
       Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant confirmed appointment", name:tenant.name)
 
     end 
+    appointment_and_comments = appointment.as_json(:include => {:comments =>{}})
     respond_to do |format|
-      format.json {render :json=>{appointment:appointment,note:"You have accepted the appointment."}}
+      format.json {render :json=>{appointment:appointment_and_comments,note:"You have accepted the appointment."}}
     end
   end
 

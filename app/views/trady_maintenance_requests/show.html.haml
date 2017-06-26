@@ -1,4 +1,4 @@
-= react_component 'TradyMaintenanceRequest', {:landlord => @landlord, :quotes => @quotes, :property => @maintenance_request.property, :invoices => @maintenance_request.delivered_invoices, :gallery => @gallery, :authenticity_token => form_authenticity_token, :maintenance_request => @maintenance_request, :tenants_conversation => @tenants_conversation, :landlords_conversation => @landlords_conversation, :current_user => @current_user, :current_user_show_quote_message => @current_user.trady, :agency => @agency, :tradies => @all_tradies, :invoices => @invoices, :invoice_pdf_files => @invoice_pdf_files, :assigned_trady => @assigned_trady, :signed_in_trady => @signed_in_trady, :logs => @logs, :agent => @agent, :tenants => @tenants, :trady => @current_user.trady}
+= react_component 'TradyMaintenanceRequest', {:landlord => @landlord, :quotes => @quotes, :property => @maintenance_request.property, :invoices => @maintenance_request.delivered_invoices, :gallery => @gallery, :authenticity_token => form_authenticity_token, :maintenance_request => @maintenance_request, :tenants_conversation => @tenants_conversation, :landlords_conversation => @landlords_conversation, :current_user => @current_user, :current_user_show_quote_message => @current_user.trady, :agency => @agency, :tradies => @all_tradies, :invoices => @invoices, :invoice_pdf_files => @invoice_pdf_files, :assigned_trady => @assigned_trady, :signed_in_trady => @signed_in_trady, :logs => @logs, :agent => @agent, :tenants => @tenants, :trady => @current_user.trady, :current_role => @current_role, :appointments => @appointments}
 
 
 =link_to "Job Complete", job_completed_path(maintenance_request_id:@maintenance_request.id)
@@ -18,31 +18,31 @@
 
 
 
-  %div.container
-    %div.well
-      %h4.text-center 
-        Set Appointment Time
-      %div.appointment  
-        = form_for @appointment, remote: true do |f|
-          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-          =f.hidden_field :tenant_id, value: @tenants.first.id
-          =f.hidden_field :trady_id, value:@signed_in_trady.id
-          =f.hidden_field :appointment_type, value:"Work Order Appointment"
-          =f.hidden_field :status, value:"Active"
-          =f.hidden_field :current_user_role, value:"#{current_user.current_role.role}"
-          %div.form-group
-            =f.fields_for :comments do |comments_form|
-              =comments_form.text_area :body, placeholder: "Comment", class: "text-center", required: true
-              =comments_form.hidden_field :tenant_id, value: @tenants.first.id
-              =comments_form.hidden_field :trady_id, value:@signed_in_trady.id
-             
-          %div.form-group.date-time
-            %div.date
-              =f.label :date
-              =f.date_field :date, required: true
-            %div.time
-              =f.label :time, required: true
-              =f.time_select :time, {ampm: true}
-          %div.form-group.text-center
-            =f.button "Submit Appointment Time and Comment"
+%div.container
+  %div.well
+    %h4.text-center 
+      Set Appointment Time
+    %div.appointment  
+      = form_for @appointment, remote: true do |f|
+        =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+        =f.hidden_field :tenant_id, value: @tenants.first.id
+        =f.hidden_field :trady_id, value:@signed_in_trady.id
+        =f.hidden_field :appointment_type, value:"Work Order Appointment"
+        =f.hidden_field :status, value:"Active"
+        =f.hidden_field :current_user_role, value:"#{current_user.current_role.role}"
+        %div.form-group
+          =f.fields_for :comments do |comments_form|
+            =comments_form.text_area :body, placeholder: "Comment", class: "text-center", required: true
+            =comments_form.hidden_field :tenant_id, value: @tenants.first.id
+            =comments_form.hidden_field :trady_id, value:@signed_in_trady.id
+           
+        %div.form-group.date-time
+          %div.date
+            =f.label :date
+            =f.date_field :date, required: true
+          %div.time
+            =f.label :time, required: true
+            =f.time_select :time, {ampm: true}
+        %div.form-group.text-center
+          =f.button "Submit Appointment Time and Comment"
 

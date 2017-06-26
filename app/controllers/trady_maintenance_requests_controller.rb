@@ -36,6 +36,7 @@ class TradyMaintenanceRequestsController < ApplicationController
   def show
 
     @current_user = current_user
+    @current_role = current_user.current_role
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @logs = @maintenance_request.logs
     if @maintenance_request.agency_admin == nil
@@ -131,8 +132,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, appointments:@appointments,trady:@trady}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, appointments:@appointments, :current_role => @current_role, :appointments => @appointments}}
       format.html{render :show}
     end 
   end

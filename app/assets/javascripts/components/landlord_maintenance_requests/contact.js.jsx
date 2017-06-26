@@ -4,9 +4,9 @@ var ContentLandlordContact = React.createClass({
 		if(!!agent) {
 			return (
 				<li>
-					<a href={"tel:" + agent.phone}>
+					<a href={"tel:" + agent.mobile_phone}>
 						<i className="fa fa-phone" aria-hidden="true" />
-						Call Agent: {agent.phone}
+						Call Agent: {agent.mobile_phone}
 					</a>
 				</li>
 			);
