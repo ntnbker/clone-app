@@ -245,11 +245,13 @@ var TradyMaintenanceRequest = React.createClass({
 			quote: null,
 			invoice: null,
 			isModal: false,
+			appointment: null,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
+			appointments: this.props.appointments,
 			invoice_pdf_files: this.props.invoice_pdf_files,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -275,6 +277,17 @@ var TradyMaintenanceRequest = React.createClass({
 		this.setState({
 			modal: modal,
 			isModal: true, 
+		});
+	},
+
+	updateAppointment: function(appointment) {
+		const {appointments} = this.state;
+		let data = appointments.map((item, key) => {
+			item.status = item.id == appointment.id ? appointment.status : item.status;
+			return item;
+		});
+		this.setState({
+			appointments: data
 		});
 	},
 
@@ -336,6 +349,59 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	addAppointment: function(params) {
+		const self = this;
+		const {tenants, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
+		const maintenance_request_id = this.state.maintenance_request.id;
+		const {appointments} = this.state;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', 'Work Order Appointment');
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenants.length > 0 ? tenants[0].id : '');
+		fd.append('appointment[trady_id]', signed_in_trady ? signed_in_trady.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenants.length > 0 ? tenants[0].id : '');
+		fd.append('appointment[comments_attributes][0][trady_id]', signed_in_trady ? signed_in_trady.id : '');
+
+		$.ajax({
+			type: 'POST',
+			url: '/appointments',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function(res){
+				appointments.push(res.appointment_and_comments);
+				self.setState({
+					appointments: appointments
+				});
+				self.setState({notification: {
+					bgClass: "bg-success",
+					title: "Create Appoinment",
+					content: "Create Appointment was successfully",
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Create Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+		
+	},
+
 	viewItem: function(key, item) {
 		switch(key) {
 			case 'viewQuote':
@@ -376,11 +442,93 @@ var TradyMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'createAppointment': {
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewAppointment': {
+				this.setState({
+					appointment: item
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
 			default: {
 				break;
 			}
 		}
 		
+	},
+
+	acceptAppointment: function(appointment) {
+		const self = this;
+		const {authenticity_token} = this.props;
+		var params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id,
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/accept_appointment',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.updateAppointment(res.appointment);
+				self.setState({notification: {
+					bgClass: "bg-success",
+					title: "Accept Appoinment",
+					content: res.note,
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Accept Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	declineAppointment: function(appointment) {
+		const self = this;
+		const {authenticity_token} = this.props;
+		const params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id,
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/decline_appointment',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.updateAppointment(res.appointment);
+				self.setState({notification: {
+					bgClass: "bg-success",
+					title: "Decline Appoinment",
+					content: res.note,
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Decline Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	renderModal: function() {
@@ -479,6 +627,27 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					);
 				}
+
+				case 'createAppointment': {
+					return (
+						<ModalAddAppointment
+							close={this.isClose}
+							addAppointment={(params) => this.addAppointment(params)}
+						/>
+					);
+				}
+
+				case 'viewAppointment': {
+					return (
+						<ModalAppointment
+							close={this.isClose}
+							appointment={this.state.appointment}
+							current_role={this.props.current_role}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
+					);
+				}
 					
 				default:
 					return null;
@@ -487,6 +656,7 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
+		const {appointments} = this.props;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -539,8 +709,22 @@ var TradyMaintenanceRequest = React.createClass({
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.state.maintenance_request}
 						/>
+						<AppointmentRequest 
+							appointments={appointments}
+							current_role={this.props.current_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
 						<Activity logs={this.props.logs} />
 					</div>
+					<AppointmentRequestMobile 
+						appointments={appointments}
+						current_role={this.props.current_role}
+						viewItem={(key, item) => this.viewItem(key, item)}
+						acceptAppointment={(value) => this.acceptAppointment(value)}
+						declineAppointment={(value) => this.declineAppointment(value)}
+					/>
 					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<TradySideBarMobile 

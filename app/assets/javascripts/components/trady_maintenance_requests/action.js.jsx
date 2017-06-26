@@ -42,7 +42,7 @@ var CreateAppointment = React.createClass({
 		const props = this.props;
 		return (
 			<li>
-				<a href={"/appointments/new?maintenance_request_id=" + props.maintenance_request.id + "&trady_id=" + props.trady.id}>
+				<a onClick={(modal) => this.props.onModalWith('createAppointment')}>
 					<i className="fa fa-plus" aria-hidden="true" />
 					Create Appointment
 				</a>
@@ -64,15 +64,11 @@ var ContentTradyAction = React.createClass({
 					<CreactOrUploadQuote link={link} />
 					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
-					<CreateAppointment trady={this.props.trady} maintenance_request={maintenance_request} />
+					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
-			return (
-				<ul>
-					<CreateAppointment trady={this.props.trady} maintenance_request={maintenance_request} />
-				</ul>
-			);
+			return null;
 		}else {
 			return(
 				<ul>
@@ -83,7 +79,6 @@ var ContentTradyAction = React.createClass({
 					{ !!this.props.assigned_trady &&
 						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					<CreateAppointment trady={this.props.trady} maintenance_request={maintenance_request} />
 				</ul>
 			);
 		}

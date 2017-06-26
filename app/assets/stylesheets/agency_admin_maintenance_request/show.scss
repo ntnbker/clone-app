@@ -288,7 +288,7 @@ body::-webkit-scrollbar-thumb {
       button {
         border: none;
         color: $color-white;
-        text-transform: uppercase;
+        text-transform: capitalize;
       }
       .textarea-message {
         width: 100%;
@@ -1534,7 +1534,7 @@ body::-webkit-scrollbar-thumb {
     .section {
       float: left;
       margin-right: 20px;
-      width: calc(100% - 335px);
+      width: calc(100% - 340px);
       padding: 40px 25px 50px;
     }
     .post {
