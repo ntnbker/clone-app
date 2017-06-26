@@ -30,8 +30,9 @@ class TenantMaintenanceRequestsController < ApplicationController
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
     @message = Message.new
-    @tradie = Trady.new
+    # @tradie = Trady.new
     @logs = @maintenance_request.logs
+    @tenant = @current_user.tenant.as_json(:include => {:user => {:include => :current_role}})
 
     if @maintenance_request.images != nil
       @gallery = @maintenance_request.get_image_urls
@@ -66,8 +67,19 @@ class TenantMaintenanceRequestsController < ApplicationController
       @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
     end 
 
+    @appointment = Appointment.new
+    @appointment.comments.build
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+
+
+    
+
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").as_json(:include => {:comments =>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").as_json(:include => {:comments =>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").as_json(:include => {:comments =>{}})
+
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, logs:@logs}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, logs:@logs, quote_appointments:@quote_appointments, work_order_appointments:@work_order_appointments,landlord_appointments:@landlord_appointments, tenant:@tenant}}
       format.html{render :show}
     end 
 
