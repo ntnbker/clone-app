@@ -83,10 +83,11 @@ var ModalAppointment = React.createClass({
 						<div className="modal-footer button-appointment-mobile">
 						{
 							(appointment.status == "Active" && appointment.current_user_role != current_role.role) &&
-								<div>
-									<BtnDeclineAppointment clickDecline={() => {this.props.declineAppointment(appointment)}} />
-									<BtnAcceptAppointment clickAccept={() => {this.props.acceptAppointment(appointment)}} />
-								</div>
+								<BtnDeclineAppointment clickDecline={() => {this.props.declineAppointment(appointment)}} />
+						}
+						{
+							(appointment.status == "Active" && appointment.current_user_role != current_role.role) &&
+								<BtnAcceptAppointment clickAccept={() => {this.props.acceptAppointment(appointment)}} />
 						}
 						</div>
 					</div>

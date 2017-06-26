@@ -712,7 +712,7 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 						<AppointmentRequest 
 							appointments={appointments}
-							current_role={this.props.current_role}
+							current_role={this.props.trady.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 							declineAppointment={(value) => this.declineAppointment(value)}
@@ -721,7 +721,7 @@ var TradyMaintenanceRequest = React.createClass({
 					</div>
 					<AppointmentRequestMobile 
 						appointments={appointments}
-						current_role={this.props.current_role}
+						current_role={this.props.trady.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
 						acceptAppointment={(value) => this.acceptAppointment(value)}
 						declineAppointment={(value) => this.declineAppointment(value)}
