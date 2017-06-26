@@ -43,12 +43,14 @@ var BtnViewAppointment = React.createClass({
 });
 
 var ModalAppointment = React.createClass({
-	clickAccept: function() {
-		debugger
- 	},
-
 	render: function() {
 		const {appointment, current_role} = this.props;
+		var title = "";
+		if(appointment.appointment_type == "Work Order Appointment") {
+			title = "Appointment Request";
+		}else if(appointment.appointment_type == "Quote Appointment"){
+			title = "Appointment Request For Quote"
+		}
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -63,7 +65,7 @@ var ModalAppointment = React.createClass({
 							>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title text-center">Appointment Request</h4>
+							<h4 className="modal-title text-center">{title}</h4>
 						</div>
 						<div className="modal-body modal-appointment">
 							<CommentAppointment comments={appointment.comments} />

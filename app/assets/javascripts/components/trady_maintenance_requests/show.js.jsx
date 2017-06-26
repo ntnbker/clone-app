@@ -667,8 +667,6 @@ var TradyMaintenanceRequest = React.createClass({
 					return (
 						<ModalAppointment
 							close={this.isClose}
-							title="Appointment Request"
-							type="Work Order Appointment"
 							appointment={this.state.appointment}
 							current_role={this.props.current_role}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -746,7 +744,7 @@ var TradyMaintenanceRequest = React.createClass({
 							declineAppointment={(value) => this.declineAppointment(value)}
 						/>
 						<AppointmentRequest 
-							title="Quote Appointments"
+							title="Appointments For Quotes"
 							appointments={quote_appointments}
 							current_role={this.props.trady.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
@@ -764,7 +762,7 @@ var TradyMaintenanceRequest = React.createClass({
 						declineAppointment={(value) => this.declineAppointment(value)}
 					/>
 					<AppointmentRequestMobile 
-						title="Quote Appointments"
+						title="Appointments For Quotes"
 						appointments={quote_appointments}
 						current_role={this.props.trady.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
