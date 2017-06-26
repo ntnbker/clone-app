@@ -115,10 +115,12 @@ class TenantMaintenanceRequestsController < ApplicationController
       #do nothing
     end 
   end 
+  
+
   def belongs_to_tenant
     maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     
-    tenants = MaintenanceRequest.tenants
+    tenants = maintenance_request.tenants
     id_array = []
     tenants.each do |tenant|
       
