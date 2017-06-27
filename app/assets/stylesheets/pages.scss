@@ -27,14 +27,33 @@
 				select {
 					width: 49%;
 					border: none;
-					border-radius: 0;
+					border-radius: 4px;
+					&:required:invalid {
+						color: #7D7D7D;
+					}
+					&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+					  color: #7D7D7D;
+					  text-align: center;
+					}
+					&::-moz-placeholder { /* Firefox 19+ */
+					  color: #7D7D7D;
+					  text-align: center;
+					}
+					&:-ms-input-placeholder { /* IE 10+ */
+					  color: #7D7D7D;
+					  text-align: center;
+					}
+					&:-moz-placeholder { /* Firefox 18- */
+					  color: #7D7D7D;
+					  text-align: center;
+					}
 				}
 			}
 			.input-address {
 				margin-top: 20px;
 				input {
 					border: none;
-					border-radius: 0;
+					border-radius: 4px;
 					width: 100%;
 				}
 			}
@@ -44,7 +63,7 @@
 				button {
 					width: 150px;
 					border: none;
-					border-radius: 0;
+					border-radius: 4px;
 				}
 			}
 			.has-error {
@@ -56,19 +75,6 @@
 				  color: red;
 				}
 				&:-ms-input-placeholder { /* IE 10+ */
-				  color: red;
-				}
-				&:-moz-placeholder { /* Firefox 18- */
-				  color: red;
-				}
-
-				&::-webkit-select-placeholder { /* Chrome/Opera/Safari */
-				  color: red;
-				}
-				&::-moz-placeholder { /* Firefox 19+ */
-				  color: red;
-				}
-				&:-ms-select-placeholder { /* IE 10+ */
 				  color: red;
 				}
 				&:-moz-placeholder { /* Firefox 18- */
@@ -142,6 +148,19 @@
 				width: 15%;
 				min-width: 170px;
 			}
+		}
+	}
+
+	@media (max-width: 768px) {
+		.header .form-address .select select {
+			text-align: center;
+  		text-align-last: center;
+			&:required:invalid{
+				text-align: center;
+			}
+		}
+		.header .form-address .input-address input {
+			text-align: center;
 		}
 	}
 

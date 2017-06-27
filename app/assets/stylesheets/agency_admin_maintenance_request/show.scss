@@ -828,7 +828,7 @@ body::-webkit-scrollbar-thumb {
   .sidebar-mobile {
     display: none;
     position: fixed;
-    bottom: 35px;
+    bottom: 0px;
     z-index: 100;
     overflow: hidden;
     width: 100%;
@@ -842,12 +842,12 @@ body::-webkit-scrollbar-thumb {
       padding: 0;
       border: none;
       &.contact {
-        background-color: $color-green;
+        background-color: #ff5a5f;
         box-shadow: 0.2px 0.2px 20px $color-grey-1;
       }
       &.actions {
         margin-left: 20px;
-        background-color: $color-green;
+        background-color: #ff5a5f;
         box-shadow: 0.2px 0.2px 20px $color-grey-1;
       }
       &.active {
@@ -915,7 +915,7 @@ body::-webkit-scrollbar-thumb {
     margin: 0px;
     transition: all 0.5s ease 0s;
     border-radius: 0;
-    bottom: 90px;
+    bottom: 55px;
     .item {
       border-radius: 0;
       height: 100%;
@@ -1176,7 +1176,7 @@ body::-webkit-scrollbar-thumb {
       display: none;
     }
     .actions-full{
-      bottom: 90px;
+      bottom: 55px;
       width: 320px;
       left: calc((100% - 320px) / 2);
     }
@@ -1288,12 +1288,12 @@ body::-webkit-scrollbar-thumb {
     }
     .actions-full {
       width: 355px;
-      bottom: 75px;
+      bottom: 55px;
       left: calc((100% - 355px) / 2);
     }
     .sidebar-mobile {
       display: flex;
-      bottom: 20px;
+      bottom: 0px;
       justify-content: center;
       button {
         height: 50px;

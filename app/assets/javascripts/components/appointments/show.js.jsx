@@ -46,11 +46,23 @@ var ModalAppointment = React.createClass({
 	render: function() {
 		const {appointment, current_role} = this.props;
 		var title = "";
-		if(appointment.appointment_type == "Work Order Appointment") {
-			title = "Appointment Request";
-		}else if(appointment.appointment_type == "Quote Appointment"){
-			title = "Appointment Request For Quote"
+		switch(appointment.appointment_type) {
+			case 'Work Order Appointment': 
+				title = "Appointment Request";
+				break;
+
+			case 'Quote Appointment': 
+				title = "Appointment Request For Quote"
+				break;
+
+			case 'Landlord Appointment': 
+				title = 'Landlord Appointment';
+				break;
+
+			default:
+				break;
 		}
+
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">

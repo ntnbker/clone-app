@@ -327,13 +327,15 @@ form#new_maintenance_request {
     .main-column {
         background: white;
         padding: 0;
-       
         box-shadow: none;
         position: relative;
         width: calc(100% - 450px);
         padding-bottom: 70px;
         min-height: calc(100vh - 210px);
         display: inline-block;
+        hr {
+            margin: 0 30px;
+        }
         .info {
             margin-left: 5px;
             display: inline-block;
@@ -450,7 +452,7 @@ form#new_maintenance_request {
     .action-mobile {
         display: none;
         position: fixed;
-        bottom: 20px;
+        bottom: 0px;
         justify-content: center;
         flex-direction: row;
         width: 100%;
@@ -464,7 +466,7 @@ form#new_maintenance_request {
                 padding-left: 10px;
             }
             .btn-drop-mobile {
-                background-color: #7dc691;
+                background-color: #ff5a5f;
                 color: #fff;
                 height: 50px;
                 line-height: 50px;
@@ -478,7 +480,7 @@ form#new_maintenance_request {
             }
             .action-mobile {
                 position: fixed; 
-                bottom: 80px; 
+                bottom: 55px; 
                 z-index: 100; 
                 display: flex;  
                 left: 0; 
@@ -702,8 +704,9 @@ form#new_maintenance_request {
         .slider {
             transition: all .6s;
             .slide-image {
-                max-height: 250px;
-                min-height: 250px;
+                height: 250px;
+                width: 250px;
+                border-radius: 10px;
             }
         }
     }
@@ -713,7 +716,9 @@ form#new_maintenance_request {
         }
     }
     .content {
-        width: calc(100% - 250px);
+        display: inline-block;
+        margin-left: 15px;
+        margin-right: 15px;
         .info {
             span {
                 color: #69605b;
@@ -752,9 +757,10 @@ form#new_maintenance_request {
 .dropdown-custom {
     width: 200px;
     border: none;
-    background-color: #7DC691;
+    background-color: #2FA342;
     height: 38px;
     margin-bottom: 15px;
+    border-radius: 4px;
     button {
         line-height: 38px;
         border: none;

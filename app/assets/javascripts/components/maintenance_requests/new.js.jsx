@@ -298,7 +298,7 @@ var MaintenanceRequestsNew = React.createClass({
 
 	loadImage: function(e, image, key) {
 		const img = e.target;
-		const maxSize = 250000; // byte
+		const maxSize = 500000; // byte
 		const self = this;
 		if(!image.isUpload) {
 			var target_img = {};
@@ -466,12 +466,10 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		return (
 			<div>
-				<h1 className="text-center">New Maintenance Request</h1>
 				<form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
 					<input name="utf8" type="hidden" value="✓" /> 
 					<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 					<div className="field">
-						<p> Name </p>
 			  		<input 
 			  			required
 			  			type="text"
@@ -498,7 +496,6 @@ var MaintenanceRequestsNew = React.createClass({
 							}}/>
 						<p id="errorbox" className="error"></p>
 						
-						<p> Email </p>
 						<input
 							required
 							type="email" 
@@ -521,14 +518,13 @@ var MaintenanceRequestsNew = React.createClass({
 							}}/>
 						<p id="errorboxemail" className="error"></p>
 						
-						<p> Mobile </p>
-					<input 
-						required 
-						type="text" 
-						minLength="10"
-						maxLength="11"
-						placeholder="Mobile"
-						ref={(ref) => this.mobile = ref}
+						<input 
+							required 
+							type="text" 
+							minLength="10"
+							maxLength="11"
+							placeholder="Mobile"
+							ref={(ref) => this.mobile = ref}
 						  id={this.generateAtt("id", "mobile")}
 							name={this.generateAtt("name", "mobile")}
 						  onBlur={(e) => {
@@ -555,38 +551,26 @@ var MaintenanceRequestsNew = React.createClass({
 					<hr/>
 
 					<div className="field">
-						<p> Maintenance heading </p>
-						<input
-							type="text"
-							ref={(ref) => this.maintenance_heading = ref}
-							id={this.generateAtt("id", "maintenance_heading")}
-							name={this.generateAtt("name", "maintenance_heading")}
-						/>
-						<p id="errorboxheading" className="error"></p>
-
-						<p> Maintenance description </p>
-						<textarea 
+						<textarea
+							placeholder="Maintenance Description"
 							ref={(ref) => this.maintenance_description = ref}
 							id={this.generateAtt("id", "maintenance_description")} 
 							name={this.generateAtt("name", "maintenance_description")}
-						>
-						</textarea>
+						/>
 						<p id="errorboxdescription" className="error"></p>
 
-						<p> Appointment Availability and Access Instructions </p>
-						<input
+						<textarea
 							type="text"
 							ref={(ref) => this.maintenance_heading = ref}
 							id={this.generateAtt("id", "availability_and_access")}
 							name={this.generateAtt("name", "availability_and_access")}
+							placeholder="Appointment Availability and Access Instructions"
 						/>
 						<p id="erroravailabilityandaccess" className="error"></p>
-
-						<p> Images </p>
 						<div className="browse-wrap">
 							<div className="title" id="title-upload">
 								<i className="fa fa-upload" />
-								Choose a file to upload
+								Choose a image to upload
 							</div>
 							<input 
 								multiple
@@ -619,10 +603,10 @@ var MaintenanceRequestsNew = React.createClass({
 							<hr/>
 
 							<div>
-								<p> Agent email </p>
-								<input 
+								<input
 									required
 									type="text"
+									placeholder="Agent email"
 									onBlur={this.checkAgentEmail}
 									ref={(ref) => this.agent_email = ref}
 									id={this.generateAtt("id", "agent_email")} 
@@ -630,11 +614,11 @@ var MaintenanceRequestsNew = React.createClass({
 								/>
 								<p id="errAgentEamil" className="error"></p>
 								{	!this.state.isAgent ?
-										<div>
-										<p> Real estate office </p>
+									<div>
 										<input
 											required 
 											type="text"
+											placeholder="Real estate office"
 											ref={(ref) => this.real_estate_office = ref}
 											id={this.generateAtt("id", "real_estate_office")} 
 											name={this.generateAtt("name", "real_estate_office")}
@@ -654,10 +638,10 @@ var MaintenanceRequestsNew = React.createClass({
 												}}/>
 										<p id="errRealEstateOffice" className="error"></p>
 
-				 						<p> Agent name </p>
-										<input 
+										<input
 											required
 											type="text"
+											placeholder="Agent name"
 											ref={(ref) => this.agent_name = ref}
 											id={this.generateAtt("id", "agent_name")} 
 											name={this.generateAtt("name", "agent_name")}
@@ -677,12 +661,12 @@ var MaintenanceRequestsNew = React.createClass({
 											}}/>
 										<p id="errAgentName" className="error"></p>
 
-				 						<p> Agent mobile </p>
 										<input 
 											required
 											type="text"
 											maxLength="11"
 											minLength="10"
+											placeholder="Agent mobile"
 											ref={(ref) => this.agent_mobile = ref}
 											id={this.generateAtt("id", "agent_mobile")} 
 											name={this.generateAtt("name", "agent_mobile")}

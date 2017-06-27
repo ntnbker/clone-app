@@ -286,11 +286,10 @@ var ImgSlider = React.createClass({
 
   componentDidMount: function() {
     const self = this;
-    
     if($('#slider').length > 0) {
       this.setWidth();
 
-      $(window).resize(function() {
+      $(window).on('load resize', function() {
         self.setWidth();
       });
     }
@@ -630,8 +629,13 @@ var ListMaintenanceRequest = React.createClass({
           <div className={"main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord")}>
             <div>
               {
-                this.state.dataShow.map(function(maintenance_request, key) {
-                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                this.state.dataShow.map((maintenance_request, key) => {
+                  return (
+                    <div>
+                      <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                      <hr />
+                    </div>
+                  );
                 })
               }
               { this.state.data.length > this.state.prePage && 
