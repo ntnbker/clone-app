@@ -1,7 +1,7 @@
 const MenuAgency = [
   {
     url: "/agency_admin_maintenance_requests",
-    name: "Agency Admin Maintenance Requests",
+    name: "My Maintenance Requests",
   },
   {
     url: "/agents/new",
@@ -16,28 +16,28 @@ const MenuAgency = [
 const MenuAgent = [
   {
     url: "/agent_maintenance_requests",
-    name: "Agent Maintenance Request",
+    name: "My Maintenance Requests",
   },
 ];
 
 const MenuTrady = [
   {
     url: "/trady_maintenance_requests",
-    name: "Trady Maintenance Request",
+    name: "My Maintenance Requests",
   }
 ];
 
 const MenuTenant = [
   {
     url: "/tenant_maintenance_requests",
-    name: "Tenant Maintenance Request",
+    name: "My Maintenance Requests",
   }
 ];
 
 const MenuLandlord = [
   {
     url: "/landlord_maintenance_requests",
-    name: "Landlord Maintenance Request",
+    name: "My Maintenance Requests",
   }
 ];
 
@@ -226,7 +226,7 @@ var Header = React.createClass({
                     <li>
                       <img src="/assets/user1.png" />
                       <span>
-                        Hi, {current_user.name}
+                        Hi, {props.role}
                       </span>
                     </li>
                     { this.menuBar() }
@@ -267,7 +267,7 @@ var Header = React.createClass({
                               <button type="button" className="btn-menu" onClick={this.showMenu}>
                                 <img src="/assets/user1.png" />
                                 <span>
-                                  Hi, {current_user.name}
+                                  Hi, {props.role}
                                   <i className="fa fa-angle-down"/>
                                 </span>
                               </button>
@@ -288,7 +288,7 @@ var Header = React.createClass({
                                 <li>
                                   <img src="/assets/user1.png" />
                                   <span>
-                                    Hi, {current_user.name}
+                                    Hi, {props.role}
                                   </span>
                                 </li>
                                 { this.menuBar() }
