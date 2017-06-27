@@ -245,8 +245,10 @@ var TradyMaintenanceRequest = React.createClass({
 			quote: null,
 			invoice: null,
 			isModal: false,
+			isDecline: false,
 			appointment: null,
 			invoice_pdf_file: null,
+			appointmentUpdate: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
 			landlord: this.props.landlord,
@@ -364,7 +366,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenants, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, quote_appointments} = this.state;
+		const {appointments, quote_appointments, isDecline, appointmentUpdate} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -390,6 +392,10 @@ var TradyMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				if(!!isDecline) {
+					self.declineAppointment(appointmentUpdate);
+				}
+
 				if(params.appointment_type == 'Work Order Appointment') {
 					appointments.push(res.appointment_and_comments);
 					self.setState({
@@ -510,6 +516,27 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	decline: function(appointment) {
+		let key = '';
+		switch(appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment,
+		});
+	},
+
 	declineAppointment: function(appointment) {
 		const self = this;
 		const {authenticity_token} = this.props;
@@ -526,12 +553,9 @@ var TradyMaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.updateAppointment(res.appointment);
-				self.setState({notification: {
-					bgClass: "bg-success",
-					title: "Decline Appoinment",
-					content: res.note,
-				}});
-				self.onModalWith('notification');
+				self.setState({
+					idDecline: false
+				});
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -741,7 +765,7 @@ var TradyMaintenanceRequest = React.createClass({
 							current_role={this.props.trady.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.declineAppointment(value)}
+							declineAppointment={(value) => this.decline(value)}
 						/>
 						<AppointmentRequest 
 							title="Appointments For Quotes"
@@ -749,7 +773,7 @@ var TradyMaintenanceRequest = React.createClass({
 							current_role={this.props.trady.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.declineAppointment(value)}
+							declineAppointment={(value) => this.decline(value)}
 						/>
 						<Activity logs={this.props.logs} />
 					</div>
@@ -759,7 +783,7 @@ var TradyMaintenanceRequest = React.createClass({
 						current_role={this.props.trady.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
 						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.declineAppointment(value)}
+						declineAppointment={(value) => this.decline(value)}
 					/>
 					<AppointmentRequestMobile 
 						title="Appointments For Quotes"
@@ -767,7 +791,7 @@ var TradyMaintenanceRequest = React.createClass({
 						current_role={this.props.trady.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
 						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.declineAppointment(value)}
+						declineAppointment={(value) => this.decline(value)}
 					/>
 					<ActivityMobile logs={this.props.logs} />
 				</div>
