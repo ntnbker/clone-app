@@ -284,7 +284,7 @@ class MaintenanceRequestsController < ApplicationController
 
       MaintenanceRequest.last.reindex
       if current_user == nil
-        flash[:success]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
+        flash[:notice]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
         redirect_to root_path
       elsif current_user.logged_in_as("AgencyAdmin") 
         flash[:success]= "Thank You for creating a Maintenance Request"

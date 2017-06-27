@@ -48,7 +48,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   def show
     @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    # @tenants = @maintenance_request.tenants
+    @tenants = @maintenance_request.tenants
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
 
     @agency = @current_user.agency_admin.agency
@@ -64,9 +64,9 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @message = Message.new
     
     @tradie = Trady.new
-    @tenant_and_landlord_appointments = Appointment.tenant_and_landlord_appointments(@maintenance_request.id).as_json(:include=>{:comments=>{}})
-    @tenant_and_trady_appointments = Appointment.tenant_and_trady_appointments(@maintenance_request.id).as_json(:include=>{:comments=>{}})
-    
+    @worker_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").as_json(:include=>{:comments=>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").as_json(:include=>{:comments=>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").as_json(:include=>{:comments=>{}})
     
     @all_agents = @agency.agents
     @all_agency_admins = @agency.agency_admins
@@ -105,7 +105,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     end 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, invoice_pdf_files:@invoice_pdf_files, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins,tenant_and_trady_appointments:@tenant_and_trady_appointments,tenant_and_landlord_appointments:@tenant_and_landlord_appointments}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, invoice_pdf_files:@invoice_pdf_files, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins,work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants}}
       format.html{render :show}
     end 
 
