@@ -82,9 +82,9 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @appointment = Appointment.new
     @appointment.comments.build
     # maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    
+    @signed_in_landlord = @current_user.landlord.as_json(:include => {:user => {:include => :current_role}})
     @appointments = @maintenance_request.appointments.as_json(:include => {:comments =>{}})
-    
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").as_json(:include => {:comments =>{}})
 
      
     # we dont need thishere only in tenant controller show @tenant_id  = maintenance_request.property.tenants.first.id
@@ -98,7 +98,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, appointments:@appointments}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord,:signed_in_landlord=>@signed_in_landlord ,:tenant=>@tenants.first,:all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, appointments:@appointments}}
       format.html{render :show}
     end 
 
