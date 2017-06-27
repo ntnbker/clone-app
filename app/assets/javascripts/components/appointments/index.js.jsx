@@ -1,4 +1,43 @@
 var InfoAppointment = React.createClass({
+	getInitialState: function() {
+		return {
+			arrRole: ['AgencyAdmin', 'Agent']
+		};
+	},
+
+	btnView: function() {
+		const {appointment, current_role} = this.props;
+		if(this.state.arrRole.includes(current_role.role)) {
+			return <BtnViewAppointment clickView={this.props.clickView}/>
+		}else if(appointment.status != 'Declined') {
+			return <BtnViewAppointment clickView={this.props.clickView}/>
+		}else {
+			return null;
+		}
+	},
+
+	btnAccept: function() {
+		const {appointment, current_role} = this.props;
+		if(this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if(appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return <BtnAcceptAppointment clickAccept={this.props.clickAccept}/>
+		}else {
+			return null;
+		}
+	},
+
+	btnDecline: function() {
+		const {appointment, current_role} = this.props;
+		if(this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if(appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return <BtnDeclineAppointment clickDecline={this.props.clickDecline}/>
+		}else {
+			return null;
+		}
+	},
+
 	render: function() {
 		const {appointment, current_role} = this.props;
 		return (
@@ -18,18 +57,9 @@ var InfoAppointment = React.createClass({
 					</p>
 				</div>
 				<div className="button-appointment btn-appointment-mobile">
-					{
-						appointment.status != 'Declined' &&
-							<BtnViewAppointment clickView={this.props.clickView}/>
-					}
-					{
-						(appointment.status == "Active" && appointment.current_user_role != current_role.role) &&
-							<BtnAcceptAppointment clickAccept={this.props.clickAccept}/>
-					}
-					{
-						(appointment.status == "Active" && appointment.current_user_role != current_role.role) &&
-							<BtnDeclineAppointment clickDecline={this.props.clickDecline}/>
-					}
+					{this.btnView()}
+					{this.btnAccept()}
+					{this.btnDecline()}
 				</div>
 			</li>
 		);

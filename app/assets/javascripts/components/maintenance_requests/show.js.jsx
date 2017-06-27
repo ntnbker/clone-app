@@ -1854,21 +1854,24 @@ var MaintenanceRequest = React.createClass({
 					break;	
 				}
 
-				case 'viewAppointment': {
-					return (
-						<ModalViewAppointment
-							close={this.isClose}
-							appointment={this.state.appointment}
-						/>
-					);
-				}
-
 				case 'editMaintenanceRequest': {
 					return (
 						<EditMaintenanceRequest
 							close={this.isClose}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
+						/>
+					);
+				}
+
+				case 'viewAppointment': {
+					return (
+						<ModalAppointment
+							close={this.isClose}
+							appointment={this.state.appointment}
+							current_role={this.props.current_user_role}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
 						/>
 					);
 				}
@@ -1880,6 +1883,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	summary(e) {
+		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role} = this.props;
 		return ( 
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -1930,25 +1934,45 @@ var MaintenanceRequest = React.createClass({
 							landlord={this.state.landlord} 
 							onModalWith={(modal) => this.onModalWith(modal)} 
 						/>
+						<AppointmentRequest 
+							appointments={work_order_appointments}
+							title="Work Order Appointments"
+							current_role={current_user_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+						/>
+						<AppointmentRequest 
+							title="Appointments For Quotes"
+							appointments={quote_appointments}
+							current_role={current_user_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+						/>
+						<AppointmentRequest 
+							title="Landlord Appointments"
+							appointments={landlord_appointments}
+							current_role={current_user_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+						/>
 						<Activity logs={this.props.logs} />
-						<TenantTradieAppointment 
-							viewItem={(key, item) => this.viewItem(key, item)}
-							appointments={this.props.tenant_and_trady_appointments}
-						/>
-						<TenantLandlordAppointment 
-							viewItem={(key, item) => this.viewItem(key, item)}
-							appointments={this.props.tenant_and_landlord_appointments}
-						/>
 					</div>
+					<AppointmentRequestMobile 
+						appointments={work_order_appointments}
+						title="Work Order Appointments"
+						current_role={current_user_role}
+						viewItem={(key, item) => this.viewItem(key, item)}
+					/>
+					<AppointmentRequestMobile 
+						title="Appointments For Quotes"
+						appointments={quote_appointments}
+						current_role={current_user_role}
+						viewItem={(key, item) => this.viewItem(key, item)}
+					/>
+					<AppointmentRequestMobile 
+						title="Landlord Appointments"
+						current_role={current_user_role}
+						appointments={landlord_appointments}
+						viewItem={(key, item) => this.viewItem(key, item)}
+					/>
 					<ActivityMobile logs={this.props.logs} />
-					<TenantTradieAppointmentMobile 
-						viewItem={(key, item) => this.viewItem(key, item)}
-						appointments={this.props.tenant_and_trady_appointments}
-					/>
-					<TenantLandlordAppointmentMobile 
-						viewItem={(key, item) => this.viewItem(key, item)}
-						appointments={this.props.tenant_and_landlord_appointments}
-					/>
 				</div>
 				<SideBarMobile
 					landlord={this.state.landlord} 
