@@ -136,8 +136,8 @@ class LandlordAppointmentsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     landlord_id = appointment.landlord_id
     tenant_id = appointment.tenant_id
-    tenant = Tenant.find_by(id:params[:tenant_id])
-    landlord = Landlord.find_by(id: params[:landlord_id])
+    tenant = Tenant.find_by(id:tenant_id)
+    landlord = Landlord.find_by(id: landlord_id)
 
     
     #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 
