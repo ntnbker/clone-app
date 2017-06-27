@@ -43,6 +43,34 @@ var BtnViewAppointment = React.createClass({
 });
 
 var ModalAppointment = React.createClass({
+	getInitialState: function() {
+		return {
+			arrRole: ['AgencyAdmin', 'Agent']
+		};
+	},
+
+	btnAccept: function() {
+		const {appointment, current_role} = this.props;
+		if(this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if(appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return <BtnAcceptAppointment clickAccept={this.props.clickAccept}/>
+		}else {
+			return null;
+		}
+	},
+
+	btnDecline: function() {
+		const {appointment, current_role} = this.props;
+		if(this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if(appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return <BtnDeclineAppointment clickDecline={this.props.clickDecline}/>
+		}else {
+			return null;
+		}
+	},
+
 	render: function() {
 		const {appointment, current_role} = this.props;
 		var title = "";
@@ -95,14 +123,8 @@ var ModalAppointment = React.createClass({
 							</p>
 						</div>
 						<div className="modal-footer button-appointment-mobile">
-						{
-							(appointment.status == "Active" && appointment.current_user_role != current_role.role) &&
-								<BtnDeclineAppointment clickDecline={() => {this.props.declineAppointment(appointment)}} />
-						}
-						{
-							(appointment.status == "Active" && appointment.current_user_role != current_role.role) &&
-								<BtnAcceptAppointment clickAccept={() => {this.props.acceptAppointment(appointment)}} />
-						}
+						{this.btnDecline()}
+						{this.btnAccept()}
 						</div>
 					</div>
 				</div>
