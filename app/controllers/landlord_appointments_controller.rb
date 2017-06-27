@@ -137,7 +137,7 @@ class LandlordAppointmentsController < ApplicationController
     landlord_id = appointment.landlord_id
     tenant_id = appointment.tenant_id
     tenant = Tenant.find_by(id:tenant_id)
-    landlord = Landlord.find_by(id: landlord_id)
+    landlord = Landlord.find_by(id:landlord_id)
 
     
     #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 

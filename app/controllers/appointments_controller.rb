@@ -36,14 +36,14 @@ class AppointmentsController < ApplicationController
         TradyAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request.id, @appointment.id, trady.id, tenant.id)
         maintenance_request.action_status.update_columns(agent_status: "Tradie To Confirm Appointment",trady_status:"Alternate Appointment Requested")
 
-        Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant requested alternate appointment time", name:tenant.name)
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant requested a different appointment.", name:tenant.name)
 
         #send email to trady letting them know that a new appointment time has been picked 
       elsif params[:appointment][:current_user_role] == "Trady"
         TenantAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request.id, @appointment.id, trady.id, tenant.id)
         maintenance_request.action_status.update_columns(agent_status: "Tenant To Confirm Appointment", trady_status:"Awaiting Appointment Confirmation")
 
-        Log.create(maintenance_request_id:maintenance_request.id, action:"Tradie requested alternate appointment time", name:trady.name)
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Tradie requested an appointment.", name:trady.name)
 
         #send an email to the tenant saying another appointment has been picked
       else
