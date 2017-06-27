@@ -57,9 +57,13 @@ var TenantMaintenanceRequest = React.createClass({
 		return {
 			modal: "",
 			isModal: false,
+			appointment: null,
 			landlord: this.props.landlord,
+			appointments: this.props.appointments,
+			quote_appointments: this.props.quote_appointments,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
+			landlord_appointments: this.props.landlord_appointments,
 			notification: {
 				title: "",
 				content: "",
@@ -82,6 +86,24 @@ var TenantMaintenanceRequest = React.createClass({
 			modal: modal,
 			isModal: true, 
 		});
+	},
+
+	viewItem: function(key, item) {
+		switch(key) {
+			case 'viewAppointment': {
+				this.setState({
+					appointment: item
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			default: {
+				break;
+			}
+		}
+		
 	},
 
 	sendAgentMessage: function(params) {
@@ -111,6 +133,96 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 		});
 	},
+
+	updateAppointment: function(appointment) {
+		const {appointments, quote_appointments} = this.state;
+		if(appointment.appointment_type == "Work Order Appointment") {
+			let data = appointments.map((item, key) => {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				appointments: data
+			});
+		}else if(appointment.appointment_type == "Quote Appointment"){
+			let data = quote_appointments.map((item, key) => {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				quote_appointments: data
+			});
+		}
+	},
+
+	acceptAppointment: function(appointment) {
+		const self = this;
+		const {authenticity_token, tenant} = this.props;
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role : '',
+			maintenance_request_id: this.state.maintenance_request.id,
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/accept_appointment',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.updateAppointment(res.appointment);
+				self.setState({notification: {
+					bgClass: "bg-success",
+					title: "Accept Appoinment",
+					content: res.note,
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Accept Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	declineAppointment: function(appointment) {
+		const self = this;
+		const {authenticity_token} = this.props;
+		const params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id,
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/decline_appointment',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.updateAppointment(res.appointment);
+				self.setState({notification: {
+					bgClass: "bg-success",
+					title: "Decline Appoinment",
+					content: res.note,
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Decline Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
 	
 	renderModal: function() {
 		if(this.state.isModal) {
@@ -125,6 +237,17 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 
 			switch(this.state.modal) {
+				case 'notification': {
+					return (
+						<ModalNotification 
+							close={this.isClose} 
+							bgClass={this.state.notification.bgClass}
+							title={this.state.notification.title} 
+							content={this.state.notification.content}
+						/>
+					);
+				}
+
 				case 'sendAgentMessage': {
 					return (
 						<ModalSendMessageTenant 
@@ -136,6 +259,18 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					);
 				}
+
+				case 'viewAppointment': {
+					return (
+						<ModalAppointment
+							close={this.isClose}
+							appointment={this.state.appointment}
+							current_role={this.props.tenant.user.current_role}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
+					);
+				}
 					
 				default:
 					return null;
@@ -144,6 +279,7 @@ var TenantMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
+		const {appointments, quote_appointments, landlord_appointments} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -156,7 +292,55 @@ var TenantMaintenanceRequest = React.createClass({
 					</div>
 					<div className="sidebar">
 						<TenantContact onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />
+						<AppointmentRequest 
+							appointments={appointments}
+							title="Work Order Appointments"
+							current_role={this.props.tenant.user.current_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
+						<AppointmentRequest 
+							title="Appointments For Quotes"
+							appointments={quote_appointments}
+							current_role={this.props.tenant.user.current_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
+						<AppointmentRequest 
+							title="Landlord Appointments"
+							appointments={landlord_appointments}
+							current_role={this.props.tenant.user.current_role}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							acceptAppointment={(value) => this.acceptAppointment(value)}
+							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
 					</div>
+					<AppointmentRequestMobile 
+						appointments={appointments}
+						title="Work Order Appointments"
+						current_role={this.props.tenant.user.current_role}
+						viewItem={(key, item) => this.viewItem(key, item)}
+						acceptAppointment={(value) => this.acceptAppointment(value)}
+						declineAppointment={(value) => this.declineAppointment(value)}
+					/>
+					<AppointmentRequestMobile 
+						title="Appointments For Quotes"
+						appointments={quote_appointments}
+						current_role={this.props.tenant.user.current_role}
+						viewItem={(key, item) => this.viewItem(key, item)}
+						acceptAppointment={(value) => this.acceptAppointment(value)}
+						declineAppointment={(value) => this.declineAppointment(value)}
+					/>
+					<AppointmentRequestMobile 
+						title="Landlord Appointments"
+						appointments={landlord_appointments}
+						current_role={this.props.tenant.user.current_role}
+						viewItem={(key, item) => this.viewItem(key, item)}
+						acceptAppointment={(value) => this.acceptAppointment(value)}
+						declineAppointment={(value) => this.declineAppointment(value)}
+					/>
 				</div>
 				<TenantSideBarMobile onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />
 				{ this.renderModal() }

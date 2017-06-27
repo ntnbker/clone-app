@@ -96,15 +96,17 @@ var ModalAddAppointment = React.createClass({
 		e.preventDefault();
 		const time = $('#hour').val() + ':' + $('#minute').val();
 		var params = {
-			date: this.date.value,
 			time: time,
+			date: this.date.value,
 			body: this.comment.value,
+			appointment_type: this.props.type,
 		};
 		this.props.addAppointment(params);
 	},
 
 	render: function() {
 		var appointment = this.props.appointment ? this.props.appointment : {};
+		const {title} = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -120,7 +122,7 @@ var ModalAddAppointment = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Create Appointment</h4>
+								<h4 className="modal-title text-center">{title}</h4>
 							</div>
 							<div className="modal-body modal-appointment">
 								<CommentAppointment comments={appointment.comments} />
