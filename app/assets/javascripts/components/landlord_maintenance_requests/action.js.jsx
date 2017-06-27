@@ -22,9 +22,9 @@ var ContentLandlordAction = React.createClass({
 					</a>
 				</li>
 				<li>
-					<a href={"/landlord_appointments/new?maintenance_request_id=" + this.props.maintenance_request.id}>
+					<a onClick={() => this.props.onModalWith('createAppointment')}>
 						<i className="icon-send" aria-hidden="true" />
-						Fix Myself
+						Create appointment to fix myself
 					</a>
 				</li>
 				<li>
@@ -89,7 +89,12 @@ var LandlordActionMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						<ContentLandlordAction requestQuote={this.props.requestQuote} onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} />
+						<ContentLandlordAction 
+							landlord={this.props.landlord} 
+							requestQuote={this.props.requestQuote} 
+							maintenance_request={this.props.maintenance_request} 
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
+						/>
 					</div>
 				</div>
 			</div>

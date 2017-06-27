@@ -58,6 +58,7 @@ var TenantMaintenanceRequest = React.createClass({
 			modal: "",
 			isModal: false,
 			appointment: null,
+			appointmentUpdate: null,
 			landlord: this.props.landlord,
 			appointments: this.props.appointments,
 			quote_appointments: this.props.quote_appointments,
@@ -99,6 +100,13 @@ var TenantMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'createAppointment':
+			case 'createAppointmentForQuote':
+			case 'createLandlordAppointment': {
+				this.onModalWith(key);
+				break;
+			}
+
 			default: {
 				break;
 			}
@@ -134,24 +142,131 @@ var TenantMaintenanceRequest = React.createClass({
 		});
 	},
 
+	addAppointment: function(params) {
+		const self = this;
+		const {tenant, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
+		const maintenance_request_id = this.state.maintenance_request.id;
+		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate} = this.state;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', params.appointment_type);
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenant ? tenant.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenant > 0 ? tenant.id : '');
+
+		if(params.appointment_type == "Landlord Appointment") {
+			fd.append('appointment[landlord_id]', appointmentUpdate ? appointmentUpdate.landlord_id : '');
+			fd.append('appointment[comments_attributes][0][landlord_id]', appointmentUpdate ? appointmentUpdate.landlord_id : '');
+		}else {
+			fd.append('appointment[trady_id]', appointmentUpdate ? appointmentUpdate.trady_id : '');
+			fd.append('appointment[comments_attributes][0][trady_id]', appointmentUpdate ? appointmentUpdate.trady_id : '');
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: params.appointment_type == "Landlord Appointment" ? '/landlord_appointments' : '/appointments',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function(res){
+				let title = '';
+				let	content = '';
+				switch(params.appointment_type) {
+					case 'Work Order Appointment':
+						title = "Create Appoinment";
+						content = "Create Appointment was successfully";
+						appointments.push(res.appointment_and_comments);
+						self.setState({
+							appointments: appointments
+						});
+						break;
+
+					case 'Quote Appointment':
+						title = "Create Appoinment For Quote";
+						content = "Create Appointment For Quote was successfully";
+						quote_appointments.push(res.appointment_and_comments);
+						self.setState({
+							quote_appointments: quote_appointments
+						});
+						break;
+
+					case 'Landlord Appointment':
+						title = "Create Landlord Appoinment";
+						content = "Create Landlord Appointment was successfully";
+						landlord_appointments.push(res.appointment_and_comments);
+						self.setState({
+							landlord_appointments: landlord_appointments
+						});
+						break;
+
+					default:
+						break;	
+				}
+
+				self.setState({notification: {
+					title: title,
+					content: content,
+					bgClass: "bg-success",
+				}});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Error",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+		
+	},
+
 	updateAppointment: function(appointment) {
-		const {appointments, quote_appointments} = this.state;
-		if(appointment.appointment_type == "Work Order Appointment") {
-			let data = appointments.map((item, key) => {
-				item.status = item.id == appointment.id ? appointment.status : item.status;
-				return item;
-			});
-			this.setState({
-				appointments: data
-			});
-		}else if(appointment.appointment_type == "Quote Appointment"){
-			let data = quote_appointments.map((item, key) => {
-				item.status = item.id == appointment.id ? appointment.status : item.status;
-				return item;
-			});
-			this.setState({
-				quote_appointments: data
-			});
+		const {appointments, quote_appointments, landlord_appointments} = this.state;
+		let data = []
+		switch(appointment.appointment_type) {
+			case 'Work Order Appointment':
+				data = appointments.map((item, key) => {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					appointments: data
+				});
+				break;
+
+			case 'Quote Appointment': 
+				data = quote_appointments.map((item, key) => {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					quote_appointments: data
+				});
+				break;
+
+			case 'Landlord Appointment': 
+				data = landlord_appointments.map((item, key) => {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					landlord_appointments: data
+				});
+				break;
+
+			default: 
+				break;
 		}
 	},
 
@@ -165,7 +280,7 @@ var TenantMaintenanceRequest = React.createClass({
 		};
 		$.ajax({
 			type: 'POST',
-			url: '/accept_appointment',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/accept_landlord_appointment' : '/accept_appointment',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
 			},
@@ -199,19 +314,34 @@ var TenantMaintenanceRequest = React.createClass({
 		};
 		$.ajax({
 			type: 'POST',
-			url: '/decline_appointment',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/decline_landlord_appointment' : '/decline_appointment',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
 			},
 			data: params,
 			success: function(res){
 				self.updateAppointment(res.appointment);
-				self.setState({notification: {
-					bgClass: "bg-success",
-					title: "Decline Appoinment",
-					content: res.note,
-				}});
-				self.onModalWith('notification');
+				let key = '';
+				switch(res.appointment.appointment_type) {
+					case 'Work Order Appointment': 
+						key = 'createAppointment';
+						break;
+
+					case 'Quote Appointment': 
+						key = 'createAppointmentForQuote';
+						break;
+
+					case 'Landlord Appointment': 
+						key = 'createLandlordAppointment';
+						break;
+
+					default:
+						break;
+				}
+				self.onModalWith(key);
+				self.setState({
+					appointmentUpdate: res.appointment
+				});
 			},
 			error: function(err) {
 				self.setState({notification: {
@@ -268,6 +398,39 @@ var TenantMaintenanceRequest = React.createClass({
 							current_role={this.props.tenant.user.current_role}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 							declineAppointment={(value) => this.declineAppointment(value)}
+						/>
+					);
+				}
+
+				case 'createAppointment': {
+					return (
+						<ModalAddAppointment
+							close={this.isClose}
+							title="Create Appointment"
+							type="Work Order Appointment"
+							addAppointment={(params) => this.addAppointment(params)}
+						/>
+					);
+				}
+
+				case 'createAppointmentForQuote': {
+					return (
+						<ModalAddAppointment
+							close={this.isClose}
+							title="Create Appointment For Quote"
+							type="Quote Appointment"
+							addAppointment={(params) => this.addAppointment(params)}
+						/>
+					);
+				}
+
+				case 'createLandlordAppointment': {
+					return (
+						<ModalAddAppointment
+							close={this.isClose}
+							title="Create Landlord Appointment"
+							type="Landlord Appointment"
+							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);
 				}
