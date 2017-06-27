@@ -15,6 +15,7 @@ class Trady < ApplicationRecord
   has_many :uploaded_invoices
   has_many :uploaded_quotes
   has_many :quote_requests
+  has_many :skills
   validates_presence_of :company_name
   validates_presence_of :name
   validates_presence_of :email
@@ -33,6 +34,12 @@ class Trady < ApplicationRecord
     end 
     "#{name.capitalize} the #{skill} #{company_name}"
   end
+
+  # def self.skills_needed(trady_id,skill)
+  #   skills = Skill.where(trady_id:trady_id).pluck()
+    
+    
+  # end
 
 end 
 

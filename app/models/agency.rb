@@ -27,6 +27,11 @@ class Agency < ApplicationRecord
   attr_accessor :perform_presence_validation
 
   
+  def skilled_tradies_required(skill_params)
+    trady_ids = self.tradies.pluck(:id)
+    tradies_with_desired_skill = Skill.where(trady_id:trady_ids, skill:skill_params).pluck(:trady_id)
+    the_tradies = Trady.where(id:tradies_with_desired_skill)
+  end
 
 
 

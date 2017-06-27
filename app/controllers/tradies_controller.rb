@@ -16,7 +16,7 @@ class TradiesController < ApplicationController
 
     if mr.agency_admin != nil
       if mr.agency_admin.agency.tradies !=nil
-        @all_tradies = mr.agency_admin.agency.tradies.where(:skill=>mr.service_type) 
+        @all_tradies = mr.agency_admin.agency.skilled_tradies_required(mr.service_type) 
       else 
         @all_tradies= []
       end 
@@ -24,7 +24,7 @@ class TradiesController < ApplicationController
 
     if mr.agent != nil
       if mr.agent.agency.tradies !=nil 
-        @all_tradies = mr.agent.agency.tradies.where(:skill=>mr.service_type) 
+        @all_tradies = mr.agent.agency.skilled_tradies_required(mr.service_type) 
       else 
         @all_tradies= []
       end
@@ -50,7 +50,7 @@ class TradiesController < ApplicationController
       @trady.update_attribute(:user_id, @user.id)
       @trady.roles << role
       role.save
-
+      Skill.create(trady_id:@trady.id, skill:mr.service_type )
       if AgencyTrady.where(:agency_id=>@agency.id, :trady_id => @user.trady.id).present? 
         #do nothing
       else
@@ -77,6 +77,14 @@ class TradiesController < ApplicationController
         format.json{render json:@all_tradies}
       end
     elsif @user && existing_role == true
+
+      skill = @user.trady.skills.where(skill:mr.service_type).first
+
+      if skill
+        #do nothing
+      else
+        Skill.create(trady_id:@user.trady.id, skill:mr.service_type)
+      end 
       
       if AgencyTrady.where(:agency_id=>@agency.id, :trady_id => @user.trady.id).present? 
         #do nothing
@@ -109,10 +117,12 @@ class TradiesController < ApplicationController
         
         @user = User.create(email:params[:trady][:email],password:SecureRandom.hex(5))
         @trady.user_id = @user.id
-        @trady.skill = params[:trady][:skill_required]
+        #@trady.skill = params[:trady][:skill_required]
+
         role = Role.create(user_id:@user.id)
         @trady.roles << role
         @trady.save
+        Skill.create(trady_id:@trady.id, skill:mr.service_type )
         UserSetPasswordEmailWorker.perform_async(@user.id)
        
             
