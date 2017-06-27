@@ -7,9 +7,11 @@ class ReassignMaintenanceRequestsController < ApplicationController
     if user.has_role("AgencyAdmin") && user.has_role("Agent")
       maintenance_request.update_attribute(:agency_admin_id, user.agency_admin.id)
     elsif user.has_role("AgencyAdmin")
-      maintenance_request.update_attribute(:agency_admin_id, user.agency_admin.id)
+      
+      maintenance_request.update_columns(agency_admin_id: user.agency_admin.id, agent_id: nil)
     elsif user.has_role("Agent")
-      maintenance_request.update_attribute(:agent_id, user.agent.id)
+      
+      maintenance_request.update_columns(agent_id: user.agent.id, agency_admin_id: nil)
     end 
 
     if current_user.current_role("AgencyAdmin")
