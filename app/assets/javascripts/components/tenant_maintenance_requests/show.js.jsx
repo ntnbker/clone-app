@@ -57,6 +57,7 @@ var TenantMaintenanceRequest = React.createClass({
 		return {
 			modal: "",
 			isModal: false,
+			isDecline: false,
 			appointment: null,
 			appointmentUpdate: null,
 			landlord: this.props.landlord,
@@ -146,7 +147,7 @@ var TenantMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenant, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate} = this.state;
+		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate, isDecline} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -180,6 +181,9 @@ var TenantMaintenanceRequest = React.createClass({
 			success: function(res){
 				let title = '';
 				let	content = '';
+				if(!!isDecline) {
+					self.declineAppointment(appointmentUpdate);
+				}
 				switch(params.appointment_type) {
 					case 'Work Order Appointment':
 						title = "Create Appoinment";
@@ -305,6 +309,31 @@ var TenantMaintenanceRequest = React.createClass({
 		});
 	},
 
+	decline: function(appointment) {
+		let key = '';
+		switch(appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			case 'Landlord Appointment': 
+				key = 'createLandlordAppointment'
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment,
+		});
+	},
+
 	declineAppointment: function(appointment) {
 		const self = this;
 		const {authenticity_token} = this.props;
@@ -321,26 +350,8 @@ var TenantMaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.updateAppointment(res.appointment);
-				let key = '';
-				switch(res.appointment.appointment_type) {
-					case 'Work Order Appointment': 
-						key = 'createAppointment';
-						break;
-
-					case 'Quote Appointment': 
-						key = 'createAppointmentForQuote';
-						break;
-
-					case 'Landlord Appointment': 
-						key = 'createLandlordAppointment';
-						break;
-
-					default:
-						break;
-				}
-				self.onModalWith(key);
 				self.setState({
-					appointmentUpdate: res.appointment
+					isDecline: false
 				});
 			},
 			error: function(err) {
@@ -454,14 +465,17 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					</div>
 					<div className="sidebar">
-						<TenantContact onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />
+						<TenantContact 
+							current_user={this.props.current_user} 
+							onModalWith={(modal) => this.onModalWith(modal)} 
+						/>
 						<AppointmentRequest 
 							appointments={appointments}
 							title="Work Order Appointments"
 							current_role={this.props.tenant.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.declineAppointment(value)}
+							declineAppointment={(value) => this.decline(value)}
 						/>
 						<AppointmentRequest 
 							title="Appointments For Quotes"
@@ -469,7 +483,7 @@ var TenantMaintenanceRequest = React.createClass({
 							current_role={this.props.tenant.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.declineAppointment(value)}
+							declineAppointment={(value) => this.decline(value)}
 						/>
 						<AppointmentRequest 
 							title="Landlord Appointments"
@@ -477,7 +491,7 @@ var TenantMaintenanceRequest = React.createClass({
 							current_role={this.props.tenant.user.current_role}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.declineAppointment(value)}
+							declineAppointment={(value) => this.decline(value)}
 						/>
 					</div>
 					<AppointmentRequestMobile 
@@ -486,7 +500,7 @@ var TenantMaintenanceRequest = React.createClass({
 						current_role={this.props.tenant.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
 						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.declineAppointment(value)}
+						declineAppointment={(value) => this.decline(value)}
 					/>
 					<AppointmentRequestMobile 
 						title="Appointments For Quotes"
@@ -494,7 +508,7 @@ var TenantMaintenanceRequest = React.createClass({
 						current_role={this.props.tenant.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
 						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.declineAppointment(value)}
+						declineAppointment={(value) => this.decline(value)}
 					/>
 					<AppointmentRequestMobile 
 						title="Landlord Appointments"
@@ -502,7 +516,7 @@ var TenantMaintenanceRequest = React.createClass({
 						current_role={this.props.tenant.user.current_role}
 						viewItem={(key, item) => this.viewItem(key, item)}
 						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.declineAppointment(value)}
+						declineAppointment={(value) => this.decline(value)}
 					/>
 				</div>
 				<TenantSideBarMobile onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />

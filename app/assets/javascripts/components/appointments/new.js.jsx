@@ -94,10 +94,9 @@ var CommentAppointment = React.createClass({
 var ModalAddAppointment = React.createClass({
 	submit: function(e) {
 		e.preventDefault();
-		const time = $('#hour').val() + ':' + $('#minute').val();
 		var params = {
-			time: time,
 			date: this.date.value,
+			time: this.time.value,
 			body: this.comment.value,
 			appointment_type: this.props.type,
 		};
@@ -106,6 +105,9 @@ var ModalAddAppointment = React.createClass({
 
 	render: function() {
 		var appointment = this.props.appointment ? this.props.appointment : {};
+		const now = new Date();
+		const date = now.getMonth() + '/' + now.getDate() + '/' + now.getFullYear();
+		const time = now.getHours() + ':' + now.getMinutes();
 		const {title} = this.props;
 		return (
 			<div className="modal-custom fade">
@@ -134,18 +136,24 @@ var ModalAddAppointment = React.createClass({
 										<div className="date">
 											<label>Date</label>
 											<input 
-												required 
+												required
 												id="date"
-												type="date"
-												onChange={this.checkValidate}
+												type="text"
+												readOnly={true}
+												defaultValue={date}
 												ref={ref => this.date = ref}
 											/>
 										</div>
 										<div className="time">
 											<label>Time</label>
-											<SelectTime 
-												onChange={this.checkValidate}
-											/>
+											<input 
+												required 
+												id="date"
+												type="text"
+												readOnly={true}
+												defaultValue={time}
+												ref={ref => this.time = ref}
+												/>
 										</div>
 									</div>
 								</div>
