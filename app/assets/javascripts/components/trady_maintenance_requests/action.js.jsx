@@ -83,7 +83,12 @@ var ContentTradyAction = React.createClass({
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
-			return null;
+			return (
+				<ul>
+					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+				</ul>
+			);
 		}else {
 			return(
 				<ul>
@@ -94,6 +99,8 @@ var ContentTradyAction = React.createClass({
 					{ !!this.props.assigned_trady &&
 						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
+					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}
