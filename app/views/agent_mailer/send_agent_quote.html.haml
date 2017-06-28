@@ -32,6 +32,8 @@
           .main
             width: 85%
             margin: auto
+            margin-top: 30%
+            margin-bottom: 30%
             color: #849aaa
             font-weight: 600
             font-size: 16px
@@ -90,8 +92,16 @@
 
       .main
         %p.content
-          Hi, a quote has been submitted by a trady for the maintenance request
-          =@maintenance_request.maintenance_heading
+        -if @user.has_role("AgencyAdmin")
+          Hi
+          ="#{@user.agency_admin.first_name.capitalize}"
+          , a quote has been submitted by a trady for a maintenance request. To take a look click the button below.
+          
+        -elsif @user.has_role("Agent")
+          Hi
+          ="#{@user.agent.name.capitalize}"
+          , a quote has been submitted by a trady for a maintenance request. To take a look click the button below.
+          
         %div.text-center
           -if @user.has_role("AgencyAdmin")
             =link_to "See Quote", agency_admin_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@user.id), class: 'btn'
@@ -101,7 +111,7 @@
           Thanks so much!
 
         %p.team
-          The Team MaintenanceApp
+          The MaintenanceApp Team
 
       .footer
         .contact

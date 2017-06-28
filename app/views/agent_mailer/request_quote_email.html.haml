@@ -32,6 +32,8 @@
           .main
             width: 85%
             margin: auto
+            margin-top: 30%
+            margin-bottom: 30%
             color: #849aaa
             font-weight: 600
             font-size: 16px
@@ -90,20 +92,20 @@
 
       .main
         %p.content
-          Hi, a quote has been requested for the maintenance request
-          =@maintenance_request.maintenance_heading
-      
-        %p.text-center
-          Click the link below to request quotes from tradies
+          Hi  
+          ="#{@trady.name.capitalize}" 
+          
+          , we would love a quote for a maintenance work order we recieved. Please click the link below to view the information so you may submit a quote for the job.
+          
         
         %div.text-center
-          =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
+          =link_to "View Maintenance Request", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id), class: 'btn'
 
         %p.thank
-          Thanks so much!
+          Thanks :)
 
         %p.team
-          The Team MaintenanceApp
+          The MaintenanceApp Team 
 
       .footer
         .contact
