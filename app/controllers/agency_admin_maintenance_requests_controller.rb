@@ -64,9 +64,9 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @message = Message.new
     
     @tradie = Trady.new
-    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").as_json(:include=>{:comments=>{}})
-    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").as_json(:include=>{:comments=>{}})
-    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").as_json(:include=>{:comments=>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
 
     @all_agents = @agency.agents
     @all_agency_admins = @agency.agency_admins

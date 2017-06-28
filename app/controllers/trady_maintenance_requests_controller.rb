@@ -121,8 +121,8 @@ class TradyMaintenanceRequestsController < ApplicationController
     
     #@appointments = @maintenance_request.appointments.as_json(:include => {:comments =>{}})
     
-    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").as_json(:include => {:comments =>{}})
-    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").as_json(:include => {:comments =>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
     
     # we dont need thishere only in tenant controller show @tenant_id  = maintenance_request.property.tenants.first.id
 

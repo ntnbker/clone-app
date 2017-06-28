@@ -84,7 +84,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     # maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @signed_in_landlord = @current_user.landlord.as_json(:include => {:user => {:include => :current_role}})
     
-    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").as_json(:include => {:comments =>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
 
      
     # we dont need thishere only in tenant controller show @tenant_id  = maintenance_request.property.tenants.first.id

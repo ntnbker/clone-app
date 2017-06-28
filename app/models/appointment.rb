@@ -24,12 +24,8 @@ class Appointment < ApplicationRecord
     return appointments
   end
 
-  # def method_name
-    
-  # end
 
-  # quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil).pluck(:maintenance_request_id)
-  # maintenance_requests = MaintenanceRequest.where(id:quote_request_mr_ids)
+ 
 
 end 
 
