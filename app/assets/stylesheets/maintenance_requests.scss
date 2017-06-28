@@ -325,14 +325,14 @@ form#new_maintenance_request {
     width: 90%;
     overflow: hidden;
     .main-column {
-        background: white;
         padding: 0;
         box-shadow: none;
         position: relative;
-        width: calc(100% - 450px);
+        width: calc(100% - 420px);
         padding-bottom: 70px;
         min-height: calc(100vh - 210px);
         display: inline-block;
+        overflow: hidden;
         hr {
             margin: 0 30px;
         }
@@ -399,11 +399,18 @@ form#new_maintenance_request {
             }
         }
         .pagination {
+            width: 100%;
+            text-align: center;
+            border-radius: 5px;
+            background: white;
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translate(-50%, 0);
             display: table;
+            .content {
+                padding: 10px;
+            }
         }
     }
     .main-landlord {
@@ -695,12 +702,16 @@ form#new_maintenance_request {
 }
 
 .maintenance-request {
+    background-color: white;
     display: flex;
     flex-direction: row;
     margin-bottom: 15px;
-    margin-left: 10px;
+    border-radius: 5px;
     .image {
         width: 250px;
+        padding-left: 15px;
+        padding-top: 15px;
+        padding-bottom: 15px;
         .slider {
             transition: all .6s;
             .slide-image {

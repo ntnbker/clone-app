@@ -397,12 +397,12 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 
 				if(params.appointment_type == 'Work Order Appointment') {
-					appointments.push(res.appointment_and_comments);
+					appointments.unshift(res.appointment_and_comments);
 					self.setState({
 						appointments: appointments
 					});
 				}else {
-					quote_appointments.push(res.appointment_and_comments);
+					quote_appointments.unshift(res.appointment_and_comments);
 					self.setState({
 						quote_appointments: quote_appointments
 					});			

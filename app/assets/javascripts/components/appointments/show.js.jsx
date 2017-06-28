@@ -72,7 +72,7 @@ var ModalAppointment = React.createClass({
 	},
 
 	render: function() {
-		const {appointment, current_role} = this.props;
+		const {appointment, current_role, comments} = this.props;
 		var title = "";
 		switch(appointment.appointment_type) {
 			case 'Work Order Appointment': 
@@ -108,7 +108,7 @@ var ModalAppointment = React.createClass({
 							<h4 className="modal-title text-center">{title}</h4>
 						</div>
 						<div className="modal-body modal-appointment">
-							<CommentAppointment comments={appointment.comments} />
+							<CommentAppointment comments={comments} />
 							<p className="">
 								<span>Status: </span>
 								<span>{appointment.status}</span>

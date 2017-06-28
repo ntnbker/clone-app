@@ -54,18 +54,40 @@ var TenantSideBarMobile = React.createClass({
 
 var TenantMaintenanceRequest = React.createClass({
 	getInitialState: function() {
+		const {landlord, appointments, quote_appointments, maintenance_request, tenants_conversation, landlord_appointments} = this.props;
+		const comments = [],
+					quoteComments = [],
+					landlordComments = [];
+		appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
+		landlord_appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				landlordComments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			isModal: false,
 			isDecline: false,
 			appointment: null,
+			landlord: landlord,
+			comments: comments,
 			appointmentUpdate: null,
-			landlord: this.props.landlord,
-			appointments: this.props.appointments,
-			quote_appointments: this.props.quote_appointments,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlord_appointments: this.props.landlord_appointments,
+			appointments: appointments,
+			quoteComments: quoteComments,
+			landlordComments: landlordComments,
+			quote_appointments: quote_appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlord_appointments: landlord_appointments,
 			notification: {
 				title: "",
 				content: "",
@@ -147,7 +169,7 @@ var TenantMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenant, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate, isDecline} = this.state;
+		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate, isDecline, comments, quoteComments, landlordComments} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -188,7 +210,8 @@ var TenantMaintenanceRequest = React.createClass({
 					case 'Work Order Appointment':
 						title = "Create Appoinment";
 						content = "Create Appointment was successfully";
-						appointments.push(res.appointment_and_comments);
+						appointments.unshift(res.appointment_and_comments);
+						comments.push(res.appointment_and_comments.comments[0]);
 						self.setState({
 							appointments: appointments
 						});
@@ -197,7 +220,9 @@ var TenantMaintenanceRequest = React.createClass({
 					case 'Quote Appointment':
 						title = "Create Appoinment For Quote";
 						content = "Create Appointment For Quote was successfully";
-						quote_appointments.push(res.appointment_and_comments);
+						quote_appointments.unshift(res.appointment_and_comments);
+						quoteComments.push(res.appointment_and_comments.comments);
+						quote
 						self.setState({
 							quote_appointments: quote_appointments
 						});
@@ -206,7 +231,8 @@ var TenantMaintenanceRequest = React.createClass({
 					case 'Landlord Appointment':
 						title = "Create Landlord Appoinment";
 						content = "Create Landlord Appointment was successfully";
-						landlord_appointments.push(res.appointment_and_comments);
+						landlord_appointments.unshift(res.appointment_and_comments);
+						landlordComments.push(res.appointment_and_comments.comments);
 						self.setState({
 							landlord_appointments: landlord_appointments
 						});
@@ -402,9 +428,28 @@ var TenantMaintenanceRequest = React.createClass({
 				}
 
 				case 'viewAppointment': {
+					const {comments, quoteComments, landlordComments, appointment} = this.state;
+					let commentShow = [];
+					switch(appointment.appointment_type) {
+						case 'Work Order Appointment': 
+							commentShow = [...comments];
+							break;
+
+						case 'Quote Appointment': 
+							commentShow = [...quoteComments];
+							break;
+
+						case 'Landlord Appointment': 
+							commentShow = [...landlordComments];
+							break;
+
+						default: 
+							break;
+					}
 					return (
 						<ModalAppointment
 							close={this.isClose}
+							comments={commentShow}
 							appointment={this.state.appointment}
 							current_role={this.props.tenant.user.current_role}
 							acceptAppointment={(value) => this.acceptAppointment(value)}

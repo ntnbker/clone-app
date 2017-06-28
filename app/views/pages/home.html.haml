@@ -8,7 +8,7 @@
           = h.select :user_role, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }), {:include_blank => "I`m a.."}, {required: true}
           = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), {:include_blank => "I need a.."}, {required: true}
         .input-address
-          = h.text_field :address, id:'pac-input', :placeholder => 'For my place at..', disable:true, required: true, hide_label: true, :onKeyup => "getAddressOfGoogleMap()"
+          = h.text_area :address, id:'pac-input', :placeholder => 'For my place at..', disable:true, required: true, hide_label: true, :onKeyup => "getAddressOfGoogleMap()"
         .btn-submit
           = h.button "Send", class: 'button-primary green'
   

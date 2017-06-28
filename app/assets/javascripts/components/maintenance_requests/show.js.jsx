@@ -442,13 +442,14 @@ var SideBarMobile = React.createClass({
 				</div>
 				<div className="action-mobile">
 					<ActionMobile 
-						landlord={this.props.landlord}
 						close={this.close}
+						landlord={this.props.landlord}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/> 
 					<ContactMobile 
-						landlord={this.props.landlord}
+						tenants={this.props.tenants}
 						close={this.close}
+						landlord={this.props.landlord}
 						current_user={this.props.current_user}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/> 
@@ -1883,7 +1884,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	summary(e) {
-		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role} = this.props;
+		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants} = this.props;
 		return ( 
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -1926,7 +1927,8 @@ var MaintenanceRequest = React.createClass({
 					</div>
 					<div className="sidebar">
 						<Contact 
-							landlord={this.state.landlord} 
+							landlord={this.state.landlord}
+							tenants={tenants}
 							current_user={this.props.current_user} 
 							onModalWith={(modal) => this.onModalWith(modal)} 
 						/>
@@ -1976,6 +1978,7 @@ var MaintenanceRequest = React.createClass({
 				</div>
 				<SideBarMobile
 					landlord={this.state.landlord} 
+					tenants={tenants}
 					current_user={this.props.current_user} 
 					onModalWith={(modal) => this.onModalWith(modal)} 
 					viewItem={(key, item) => this.viewItem(key, item)}

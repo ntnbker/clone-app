@@ -321,7 +321,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				if(!!isDecline) {
 					self.declineAppointment(appointmentUpdate);
 				}
-				appointments.push(res.appointment_and_comments);
+				appointments.unshift(res.appointment_and_comments);
 				self.setState({
 					appointments: appointments
 				});

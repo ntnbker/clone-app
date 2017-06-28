@@ -633,7 +633,6 @@ var ListMaintenanceRequest = React.createClass({
                   return (
                     <div>
                       <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
-                      <hr />
                     </div>
                   );
                 })
@@ -726,7 +725,7 @@ var MaintenanceRequestItem = React.createClass({
   render: function() {
     const maintenance_request = this.props.maintenance_request;
     return (
-      <div className="row m-t-lg maintenance-request">
+      <div className="row maintenance-request">
         <div className="image">
           {
             <ImgSlider 
@@ -740,7 +739,7 @@ var MaintenanceRequestItem = React.createClass({
             <div className="row">
               <h3 className="heading">
                 <a href={this.props.link + "/" + maintenance_request.id}>
-                {maintenance_request.maintenance_heading}
+                {maintenance_request.maintenance_description.substring(0,10) + "..."}
                 </a>
               </h3>
               {
@@ -757,9 +756,6 @@ var MaintenanceRequestItem = React.createClass({
               <p className="type">
                 {maintenance_request.service_type}
               </p>
-            </div>
-            <div>
-              { <P content={maintenance_request.maintenance_description} /> }
             </div>
             {
               maintenance_request.property && maintenance_request.property.property_address &&
@@ -896,32 +892,35 @@ var Pagination = React.createClass({
       
       return
     });
+
     return (
       <div className="pagination">
-        <a 
-          className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")} 
-          onClick={this.state.page > 1 ? (page) => this.switchPage(this.state.page-1) : ""}
-        >
-        </a> 
-        {
-          this.state.group > 1 &&
-            <a onClick={(group) => this.switchGroup(this.state.group - 1)}>
-              ...
-            </a>
-        }
-        { paginations }
-        {
-          this.state.group < this.state.totalGroup &&
-            <a onClick={(group) => this.switchGroup(this.state.group + 1)}>
-              ...
-            </a>
-        }
-        <a 
-          key="next" 
-          className={"next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled")} 
-          onClick={(page) => this.switchPage(this.state.page < this.state.totalPage ? this.state.page+1 : this.state.page)}
-        >
-        </a>
+        <div className="content">
+          <a 
+            className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")} 
+            onClick={this.state.page > 1 ? (page) => this.switchPage(this.state.page-1) : ""}
+          >
+          </a> 
+          {
+            this.state.group > 1 &&
+              <a onClick={(group) => this.switchGroup(this.state.group - 1)}>
+                ...
+              </a>
+          }
+          { paginations }
+          {
+            this.state.group < this.state.totalGroup &&
+              <a onClick={(group) => this.switchGroup(this.state.group + 1)}>
+                ...
+              </a>
+          }
+          <a 
+            key="next" 
+            className={"next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled")} 
+            onClick={(page) => this.switchPage(this.state.page < this.state.totalPage ? this.state.page+1 : this.state.page)}
+          >
+          </a>
+        </div>
       </div>
     );
   }

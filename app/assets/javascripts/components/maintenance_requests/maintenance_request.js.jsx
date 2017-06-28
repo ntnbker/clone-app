@@ -256,11 +256,9 @@ var ItemMaintenanceRequest = React.createClass({
 					<div className="description">
 						<p>{maintenance.maintenance_description}</p>
 					</div>
-					<div className="date-time">
-						<button>
-							<span className="vailability">Availability: </span>
-							<span className="time">{maintenance.availability}</span>
-						</button>
+					<div className="vailability">
+							<p className="header">Tenant Availability and Access Instructions: </p>
+							<p className="description">{maintenance.availability_and_access}</p>
 					</div>
 				</div>
 			</div>
