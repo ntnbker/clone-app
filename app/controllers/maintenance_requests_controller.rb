@@ -6,7 +6,7 @@ class MaintenanceRequestsController < ApplicationController
   before_action :set_user, only:[:new,:create]
   
   before_action :customer_input_session, only:[:create,:new]
-  authorize_resource :class => false
+  #authorize_resource :class => false
 
   def new
     
@@ -75,7 +75,7 @@ class MaintenanceRequestsController < ApplicationController
 
     
     
-        if @maintenance_request.valid?
+    if @maintenance_request.valid?
 
       @user = User.find_by(email: params[:maintenance_request][:email])
       if @user

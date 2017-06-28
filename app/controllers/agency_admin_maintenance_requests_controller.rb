@@ -81,7 +81,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     
     if @maintenance_request.agency_admin != nil
       if @maintenance_request.agency_admin.agency.tradies !=nil
-        @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
       else 
         @all_tradies= []
       end 
@@ -89,7 +89,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
 
     if @maintenance_request.agent != nil
       if @maintenance_request.agent.agency.tradies !=nil 
-        @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type) 
       else 
         @all_tradies= []
       end
@@ -172,13 +172,15 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   def belongs_to_agency_admin
     
     maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    
-    if current_user.agency_admin.id == maintenance_request.agency_admin_id
-      #do nothing
-    else 
-      flash[:notice] = "Sorry you can't see that."
-      redirect_to root_path
-    end 
+    if current_user
+      if current_user.agency_admin.id == maintenance_request.agency_admin_id
+        #do nothing
+      else 
+        flash[:notice] = "Sorry you can't see that."
+        redirect_to root_path
+      end 
+    end
+  
   end
 
 

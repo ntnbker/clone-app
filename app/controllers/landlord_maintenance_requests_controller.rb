@@ -52,21 +52,21 @@ class LandlordMaintenanceRequestsController < ApplicationController
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end 
     
-    if @maintenance_request.agency_admin != nil
-      if @maintenance_request.agency_admin.agency.tradies !=nil
-        @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
-      else 
-        @all_tradies= []
-      end 
-    end 
+    # if @maintenance_request.agency_admin != nil
+    #   if @maintenance_request.agency_admin.agency.tradies !=nil
+    #     @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+    #   else 
+    #     @all_tradies= []
+    #   end 
+    # end 
 
-    if @maintenance_request.agent != nil
-      if @maintenance_request.agent.agency.tradies !=nil 
-        @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
-      else 
-        @all_tradies= []
-      end
-    end 
+    # if @maintenance_request.agent != nil
+    #   if @maintenance_request.agent.agency.tradies !=nil 
+    #     @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+    #   else 
+    #     @all_tradies= []
+    #   end
+    # end 
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
       @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
@@ -98,7 +98,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord,:signed_in_landlord=>@signed_in_landlord ,:tenant=>@tenants.first,:all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, landlord_appointments:@landlord_appointments}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord,:signed_in_landlord=>@signed_in_landlord ,:tenant=>@tenants.first, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, landlord_appointments:@landlord_appointments}}
       format.html{render :show}
     end 
 
@@ -144,12 +144,13 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
   def belongs_to_landlord
     maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    
-    if current_user.landlord.id == maintenance_request.property.landlord_id
-      #do nothing
-    else 
-      flash[:notice] = "Sorry you can't see that."
-      redirect_to root_path
+    if current_user
+      if current_user.landlord.id == maintenance_request.property.landlord_id
+        #do nothing
+      else 
+        flash[:notice] = "Sorry you can't see that."
+        redirect_to root_path
+      end 
     end 
   end
 

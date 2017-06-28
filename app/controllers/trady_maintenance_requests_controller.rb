@@ -89,21 +89,21 @@ class TradyMaintenanceRequestsController < ApplicationController
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end 
     
-    if @maintenance_request.agency_admin != nil
-      if @maintenance_request.agency_admin.agency.tradies !=nil
-        @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
-      else 
-        @all_tradies= []
-      end 
-    end 
+    # if @maintenance_request.agency_admin != nil
+    #   if @maintenance_request.agency_admin.agency.tradies !=nil
+    #     @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+    #   else 
+    #     @all_tradies= []
+    #   end 
+    # end 
 
-    if @maintenance_request.agent != nil
-      if @maintenance_request.agent.agency.tradies !=nil 
-        @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
-      else 
-        @all_tradies= []
-      end
-    end 
+    # if @maintenance_request.agent != nil
+    #   if @maintenance_request.agent.agency.tradies !=nil 
+    #     @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+    #   else 
+    #     @all_tradies= []
+    #   end
+    # end 
     
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
@@ -133,7 +133,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments}}
+      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments}}
       format.html{render :show}
     end 
   end
@@ -182,15 +182,16 @@ class TradyMaintenanceRequestsController < ApplicationController
 
   def belongs_to_trady
     #get all their MR then compare it to this one does their list have this one yes then ok no then redirect
-
-    mrs = TradyMaintenanceRequest.find_trady_maintenance_requests(current_user.trady.id).where(id:params[:id])
-    
-    if !mrs.empty?
-      #do nothing 
-    else
-      flash[:notice] = "Sorry you can't see that."
-      redirect_to root_path
-    end
+    if current_user
+      mrs = TradyMaintenanceRequest.find_trady_maintenance_requests(current_user.trady.id).where(id:params[:id])
+      
+      if !mrs.empty?
+        #do nothing 
+      else
+        flash[:notice] = "Sorry you can't see that."
+        redirect_to root_path
+      end
+    end 
   end
 
 

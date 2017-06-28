@@ -1,14 +1,19 @@
 !!! 5
 %html(lang="en-US")
   %body
-    %p 
-      Hi,a maintenance request has been made. Please click the link below to view it
+    -if @maintenance_request.agent 
+      %p 
+      Hi
+      ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
+      a maintenance request has been made. Please click the button below to view it.
       
-
-    -if @maintenance_request.agent == nil
-      =link_to "#{@maintenance_request.maintenance_heading}", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id)
-    -elsif @maintenance_request.agency_admin == nil
-      =link_to "#{@maintenance_request.maintenance_heading}", agent_maintenance_request_url(@maintenance_request,user_id:@user.id)
+      =link_to "View Maintenance Request", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id)
+    -elsif @maintenance_request.agency_admin
+      %p 
+      Hi
+      ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
+      a maintenance request has been made. Please click the button below to view it.
+      =link_to "View Maintenance Request", agent_maintenance_request_url(@maintenance_request,user_id:@user.id)
      
 
 
