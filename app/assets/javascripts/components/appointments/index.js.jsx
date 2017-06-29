@@ -40,11 +40,18 @@ var InfoAppointment = React.createClass({
 
 	render: function() {
 		const {appointment, current_role} = this.props;
+		var date = new Date(Date.parse(appointment.time)).toUTCString();
+		var arrDate = date.split(" ");
+		var hour = arrDate[4] ? arrDate[4] : "00:00";
+		var arrHour = hour.split(':');
+		var h =  parseInt(arrHour[0]);
+		var m = arrHour[1];
+    var time = (h > 12) ? (h-12 + ':' + m +' PM') : (h + ':' + m +' AM');
 		return (
 			<li className="li-appointment">
 				<div className="status">
 					<span>Status: </span>
-					<span>{appointment.status}</span>
+					<span className={"bt-status " + appointment.status}>{appointment.status}</span>
 				</div>
 				<div className="date-time">
 					<p className="date">
@@ -53,7 +60,7 @@ var InfoAppointment = React.createClass({
 					</p>
 					<p className="time">
 						<span>Time: </span>
-						<span>{ moment(appointment.time).format('LT') }</span>
+						<span>{ time }</span>
 					</p>
 				</div>
 				<div className="button-appointment btn-appointment-mobile">

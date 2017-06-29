@@ -91,6 +91,13 @@ var ModalAppointment = React.createClass({
 				break;
 		}
 
+		var date = new Date(Date.parse(appointment.time)).toUTCString();
+		var arrDate = date.split(" ");
+		var hour = arrDate[4] ? arrDate[4] : "00:00";
+		var arrHour = hour.split(':');
+		var h =  parseInt(arrHour[0]);
+		var m = arrHour[1];
+    var time = (h > 12) ? (h-12 + ':' + m +' PM') : (h + ':' + m +' AM');
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -111,7 +118,7 @@ var ModalAppointment = React.createClass({
 							<CommentAppointment comments={comments} />
 							<p className="">
 								<span>Status: </span>
-								<span>{appointment.status}</span>
+								<span className={"bt-status " + appointment.status}>{appointment.status}</span>
 							</p>
 							<p className="">
 								<span>Date: </span>
@@ -119,7 +126,7 @@ var ModalAppointment = React.createClass({
 							</p>
 							<p className="">
 								<span>Time: </span>
-								<span>{ moment(appointment.time).format('LT') }</span>
+								<span>{ time }</span>
 							</p>
 						</div>
 						<div className="modal-footer button-appointment-mobile">
