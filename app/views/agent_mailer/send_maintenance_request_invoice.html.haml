@@ -92,23 +92,21 @@
           %span
             MaintenanceApp
       .main
-        %p.content
-          -if @user.has_role("AgencyAdmin")
+        -if @maintenance_request.agent 
+          %p.content 
             Hi
-            ="#{@user.agency_admin.first_name.capitalize}"
-            , an invoice has been submitted by a trady for a maintenance request. 
+            ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
+            , an invoice has been submitted by a trady for a maintenance request. Please click the button below to view it.
+          %div.text-center
+            =link_to "View Invoice", agent_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
             
-          -elsif @user.has_role("Agent")
+        -elsif @maintenance_request.agency_admin
+          %p.content 
             Hi
-            ="#{@user.agent.name.capitalize}"
-            , an invoice has been submitted by a trady for a maintenance request. 
-        
-        
-        %p.text-center
-          Click the button below to see the invoice
-
-        %div.text-center
-          =link_to "View Invoice", maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
+            ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
+            , an invoice has been submitted by a trady for a maintenance request.. Please click the button below to view it.
+          %div.text-center
+            =link_to "View Invoice", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
 
         %p.content-thank
 
