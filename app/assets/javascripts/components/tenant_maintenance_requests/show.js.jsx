@@ -467,6 +467,7 @@ var TenantMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							title="Create Appointment"
 							type="Work Order Appointment"
+							comments={this.state.comments}
 							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);
@@ -476,8 +477,9 @@ var TenantMaintenanceRequest = React.createClass({
 					return (
 						<ModalAddAppointment
 							close={this.isClose}
-							title="Create Appointment For Quote"
 							type="Quote Appointment"
+							comments={this.state.quoteComments}
+							title="Create Appointment For Quote"
 							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);
@@ -487,8 +489,9 @@ var TenantMaintenanceRequest = React.createClass({
 					return (
 						<ModalAddAppointment
 							close={this.isClose}
-							title="Create Landlord Appointment"
 							type="Landlord Appointment"
+							title="Create Landlord Appointment"
+							comments={this.state.landlordComments}
 							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);

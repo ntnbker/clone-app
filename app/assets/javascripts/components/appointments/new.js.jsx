@@ -123,7 +123,7 @@ var ModalAddAppointment = React.createClass({
 		const now = new Date();
 		const date = now.getMonth() + '/' + now.getDate() + '/' + now.getFullYear();
 		const time = now.getHours() + ':' + now.getMinutes();
-		const {title} = this.props;
+		const {title, comments} = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -143,6 +143,7 @@ var ModalAddAppointment = React.createClass({
 							</div>
 							<div className="modal-body modal-appointment">
 								<div className="new_appointment"> 
+									<CommentAppointment comments={comments} />
 									<div className="form-group">
 										<textarea ref={ref => this.comment = ref} placeholder="Comment" className="text-center"/>
 									</div>

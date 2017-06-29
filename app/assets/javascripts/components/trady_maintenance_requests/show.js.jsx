@@ -690,6 +690,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							title="Create Appointment"
 							type="Work Order Appointment"
+							comments={this.state.comments}
 							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);
@@ -699,8 +700,9 @@ var TradyMaintenanceRequest = React.createClass({
 					return (
 						<ModalAddAppointment
 							close={this.isClose}
-							title="Create Appointment For Quote"
 							type="Quote Appointment"
+							comments={this.state.quoteComments}
+							title="Create Appointment For Quote"
 							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);

@@ -515,6 +515,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							title="Create Appoinment"
 							type="Landlord Appointment"
+							comments={this.state.comments}
 							addAppointment={(params) => this.addAppointment(params)}
 						/>
 					);
