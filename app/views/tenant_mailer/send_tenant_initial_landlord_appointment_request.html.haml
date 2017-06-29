@@ -94,7 +94,7 @@
           Hi #{@tenant.name.capitalize},
           An appointment with #{@landlord.name.capitalize} the landlord has been made. To accept or suggest another appointment time please click the button below.
         %div.text-center
-           =link_to "View Appointment", tenant_maintenance_request_url(id:@maintenance_request.id, user_id:@tenant.user.id), class: 'btn'
+          =link_to "View Appointment", tenant_maintenance_request_url(id:@maintenance_request.id, user_id:@tenant.user.id), class: 'btn'
         %p.thank
           Thank you :)
 
