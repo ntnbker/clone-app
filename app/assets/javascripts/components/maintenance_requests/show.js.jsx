@@ -1158,17 +1158,40 @@ var ModalRequestModal = React.createClass({
 
 var MaintenanceRequest = React.createClass({
 	getInitialState: function() {
+		const {work_order_appointments, quote_appointments, landlord_appointments} = this.props;
+		const comments = [],
+					quoteComments = [],
+					landlordComments = [];
+		work_order_appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
+		landlord_appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				landlordComments.unshift(appointment.comments[0]);
+			}
+		});
+
 		return {
 			modal: "",
 			quote: null,
 			invoice: null,
 			isModal: false,
 			appointment: null,
+			comments: comments,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
+			quoteComments: quoteComments,
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
+			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.invoice_pdf_files,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -1866,13 +1889,30 @@ var MaintenanceRequest = React.createClass({
 				}
 
 				case 'viewAppointment': {
+					const {comments, quoteComments, landlordComments, appointment} = this.state;
+					let commentShow = [];
+					switch(appointment.appointment_type) {
+						case 'Work Order Appointment': 
+							commentShow = [...comments];
+							break;
+
+						case 'Quote Appointment': 
+							commentShow = [...quoteComments];
+							break;
+
+						case 'Landlord Appointment': 
+							commentShow = [...landlordComments];
+							break;
+
+						default: 
+							break;
+					}
 					return (
 						<ModalAppointment
 							close={this.isClose}
-							appointment={this.state.appointment}
+							comments={commentShow}
+							appointment={appointment}
 							current_role={this.props.current_user_role}
-							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.declineAppointment(value)}
 						/>
 					);
 				}
