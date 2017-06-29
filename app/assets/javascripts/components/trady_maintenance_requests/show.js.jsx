@@ -240,25 +240,40 @@ var ModalNotification = React.createClass({
 
 var TradyMaintenanceRequest = React.createClass({
 	getInitialState: function() {
+		const {quotes, tradies, landlord, invoices, appointments, invoice_pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation} = this.props;
+		const comments = [],
+					quoteComments = [];
+		appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			quote: null,
 			invoice: null,
 			isModal: false,
+			quotes: quotes,
+			tradies: tradies,
 			isDecline: false,
 			appointment: null,
+			comments: comments,
+			landlord: landlord,
+			invoices: invoices,
 			invoice_pdf_file: null,
 			appointmentUpdate: null,
-			quotes: this.props.quotes,
-			tradies: this.props.tradies,
-			landlord: this.props.landlord,
-			invoices: this.props.invoices,
-			appointments: this.props.appointments,
-			invoice_pdf_files: this.props.invoice_pdf_files,
-			quote_appointments: this.props.quote_appointments,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
+			appointments: appointments,
+			quoteComments: quoteComments,
+			invoice_pdf_files: invoice_pdf_files,
+			quote_appointments: quote_appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlords_conversation: landlords_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -366,7 +381,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenants, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, quote_appointments, isDecline, appointmentUpdate} = this.state;
+		const {appointments, quote_appointments, isDecline, appointmentUpdate, comments, quoteComments} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -398,12 +413,16 @@ var TradyMaintenanceRequest = React.createClass({
 
 				if(params.appointment_type == 'Work Order Appointment') {
 					appointments.unshift(res.appointment_and_comments);
+					comments.push(res.appointment_and_comments.comments[0]);
 					self.setState({
+						comments: comments,
 						appointments: appointments
 					});
 				}else {
 					quote_appointments.unshift(res.appointment_and_comments);
+					quoteComments.push(res.appointment_and_comments.comments);
 					self.setState({
+						quoteComments: quoteComments,
 						quote_appointments: quote_appointments
 					});			
 				}
@@ -688,9 +707,24 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 
 				case 'viewAppointment': {
+					const {comments, quoteComments, appointment} = this.state;
+					let commentShow = [];
+					switch(appointment.appointment_type) {
+						case 'Work Order Appointment': 
+							commentShow = [...comments];
+							break;
+
+						case 'Quote Appointment': 
+							commentShow = [...quoteComments];
+							break;
+
+						default: 
+							break;
+					}
 					return (
 						<ModalAppointment
 							close={this.isClose}
+							comments={commentShow}
 							appointment={this.state.appointment}
 							current_role={this.props.current_role}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -759,40 +793,53 @@ var TradyMaintenanceRequest = React.createClass({
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.state.maintenance_request}
 						/>
-						<AppointmentRequest 
-							appointments={appointments}
-							title="Work Order Appointments"
-							current_role={this.props.trady.user.current_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.decline(value)}
-						/>
-						<AppointmentRequest 
-							title="Appointments For Quotes"
-							appointments={quote_appointments}
-							current_role={this.props.trady.user.current_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.decline(value)}
-						/>
+						{
+							appointments.length > 0 &&
+								<AppointmentRequest 
+									appointments={appointments}
+									title="Work Order Appointments"
+									current_role={this.props.trady.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
+						{
+							quote_appointments.length > 0 &&
+								<AppointmentRequest 
+									title="Appointments For Quotes"
+									appointments={quote_appointments}
+									current_role={this.props.trady.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
+						
 						<Activity logs={this.props.logs} />
 					</div>
-					<AppointmentRequestMobile 
-						appointments={appointments}
-						title="Work Order Appointments"
-						current_role={this.props.trady.user.current_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.decline(value)}
-					/>
-					<AppointmentRequestMobile 
-						title="Appointments For Quotes"
-						appointments={quote_appointments}
-						current_role={this.props.trady.user.current_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.decline(value)}
-					/>
+					{
+						appointments.length > 0 &&
+							<AppointmentRequestMobile 
+								appointments={appointments}
+								title="Work Order Appointments"
+								current_role={this.props.trady.user.current_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
+								declineAppointment={(value) => this.decline(value)}
+							/>
+					}
+					{
+						quote_appointments.length > 0 &&
+							<AppointmentRequestMobile 
+								title="Appointments For Quotes"
+								appointments={quote_appointments}
+								current_role={this.props.trady.user.current_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
+								declineAppointment={(value) => this.decline(value)}
+							/>
+					}
 					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<TradySideBarMobile 

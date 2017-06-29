@@ -108,20 +108,28 @@ var ModalNotification = React.createClass({
 
 var LandlordMaintenanceRequest = React.createClass({
 	getInitialState: function() {
+		const {quotes, tradies, landlord, appointments, maintenance_request, tenants_conversation, landlords_conversation} = this.props;
+		const comments = [];
+		appointments.map((appointment, key) => {
+			if(appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			quote: null,
 			isModal: false,
+			quotes: quotes,
 			isDecline: false,
+			tradies: tradies,
 			appointment: null,
+			landlord: landlord,
+			comments: comments,
 			appointmentUpdate: null,
-			quotes: this.props.quotes,
-			tradies: this.props.tradies,
-			landlord: this.props.landlord,
-			appointments: this.props.appointments,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
+			appointments: appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlords_conversation: landlords_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -292,7 +300,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenants, current_role, landlord, authenticity_token, tenant} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, isDecline, appointmentUpdate} = this.state;
+		const {appointments, isDecline, appointmentUpdate, comments} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -322,8 +330,10 @@ var LandlordMaintenanceRequest = React.createClass({
 					self.declineAppointment(appointmentUpdate);
 				}
 				appointments.unshift(res.appointment_and_comments);
+				comments.push(res.appointment_and_comments.comments[0]);
 				self.setState({
-					appointments: appointments
+					comments: comments,
+					appointments: appointments,
 				});
 
 				self.setState({notification: {
@@ -490,6 +500,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					return (
 						<ModalAppointment
 							close={this.isClose}
+							comments={this.state.comments}
 							appointment={this.state.appointment}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 							current_role={this.props.signed_in_landlord.user.current_role}
@@ -554,23 +565,29 @@ var LandlordMaintenanceRequest = React.createClass({
 							onModalWith={(modal) => this.onModalWith(modal)} 
 							maintenance_request={this.state.maintenance_request} 
 						/>
-						<AppointmentRequest 
-							title="Landlord Appointments"
-							appointments={appointments}
-							current_role={this.props.signed_in_landlord.user.current_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.decline(value)}
-						/>
+						{
+							appointments.length > 0 &&
+								<AppointmentRequest 
+									title="Landlord Appointments"
+									appointments={appointments}
+									current_role={this.props.signed_in_landlord.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
 					</div>
-					<AppointmentRequestMobile 
-						appointments={appointments}
-						title="Landlord Appointments"
-						current_role={this.props.signed_in_landlord.user.current_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.decline(value)}
-					/>
+					{
+						appointments.length > 0 &&
+							<AppointmentRequestMobile 
+								appointments={appointments}
+								title="Landlord Appointments"
+								current_role={this.props.signed_in_landlord.user.current_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
+								declineAppointment={(value) => this.decline(value)}
+							/>
+					}
 				</div>
 				<LandlordSideBarMobile
 					agent={this.props.agent}

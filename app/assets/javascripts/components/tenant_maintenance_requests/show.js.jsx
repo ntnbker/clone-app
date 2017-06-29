@@ -213,7 +213,8 @@ var TenantMaintenanceRequest = React.createClass({
 						appointments.unshift(res.appointment_and_comments);
 						comments.push(res.appointment_and_comments.comments[0]);
 						self.setState({
-							appointments: appointments
+							comments: comments,
+							appointments: appointments,
 						});
 						break;
 
@@ -224,6 +225,7 @@ var TenantMaintenanceRequest = React.createClass({
 						quoteComments.push(res.appointment_and_comments.comments);
 						quote
 						self.setState({
+							quoteComments: quoteComments,
 							quote_appointments: quote_appointments
 						});
 						break;
@@ -234,6 +236,7 @@ var TenantMaintenanceRequest = React.createClass({
 						landlord_appointments.unshift(res.appointment_and_comments);
 						landlordComments.push(res.appointment_and_comments.comments);
 						self.setState({
+							landlordComments: landlordComments,
 							landlord_appointments: landlord_appointments
 						});
 						break;
@@ -514,55 +517,74 @@ var TenantMaintenanceRequest = React.createClass({
 							current_user={this.props.current_user} 
 							onModalWith={(modal) => this.onModalWith(modal)} 
 						/>
-						<AppointmentRequest 
-							appointments={appointments}
-							title="Work Order Appointments"
-							current_role={this.props.tenant.user.current_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.decline(value)}
-						/>
-						<AppointmentRequest 
-							title="Appointments For Quotes"
-							appointments={quote_appointments}
-							current_role={this.props.tenant.user.current_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.decline(value)}
-						/>
-						<AppointmentRequest 
-							title="Landlord Appointments"
-							appointments={landlord_appointments}
-							current_role={this.props.tenant.user.current_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.decline(value)}
-						/>
+						{
+							(appointments.length > 0) && 
+								<AppointmentRequest 
+									appointments={appointments}
+									title="Work Order Appointments"
+									current_role={this.props.tenant.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
+						{
+							(quote_appointments.length > 0) &&
+								<AppointmentRequest 
+									title="Appointments For Quotes"
+									appointments={quote_appointments}
+									current_role={this.props.tenant.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
+						{
+							(landlord_appointments.length > 0) &&
+								<AppointmentRequest 
+									title="Landlord Appointments"
+									appointments={landlord_appointments}
+									current_role={this.props.tenant.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
+						
 					</div>
-					<AppointmentRequestMobile 
-						appointments={appointments}
-						title="Work Order Appointments"
-						current_role={this.props.tenant.user.current_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.decline(value)}
-					/>
-					<AppointmentRequestMobile 
-						title="Appointments For Quotes"
-						appointments={quote_appointments}
-						current_role={this.props.tenant.user.current_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.decline(value)}
-					/>
-					<AppointmentRequestMobile 
-						title="Landlord Appointments"
-						appointments={landlord_appointments}
-						current_role={this.props.tenant.user.current_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-						acceptAppointment={(value) => this.acceptAppointment(value)}
-						declineAppointment={(value) => this.decline(value)}
-					/>
+					{
+						(appointments.length > 0) &&
+							<AppointmentRequestMobile 
+								appointments={appointments}
+								title="Work Order Appointments"
+								current_role={this.props.tenant.user.current_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
+								declineAppointment={(value) => this.decline(value)}
+							/>
+					}
+					{
+						(quote_appointments.length > 0) &&
+							<AppointmentRequestMobile 
+								title="Appointments For Quotes"
+								appointments={quote_appointments}
+								current_role={this.props.tenant.user.current_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
+								declineAppointment={(value) => this.decline(value)}
+							/>
+					}
+					{
+						(landlord_appointments.length > 0) &&
+							<AppointmentRequestMobile 
+								title="Landlord Appointments"
+								appointments={landlord_appointments}
+								current_role={this.props.tenant.user.current_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
+								declineAppointment={(value) => this.decline(value)}
+							/>
+					}
 				</div>
 				<TenantSideBarMobile onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />
 				{ this.renderModal() }

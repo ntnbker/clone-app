@@ -1936,44 +1936,62 @@ var MaintenanceRequest = React.createClass({
 							landlord={this.state.landlord} 
 							onModalWith={(modal) => this.onModalWith(modal)} 
 						/>
-						<AppointmentRequest 
-							appointments={work_order_appointments}
-							title="Work Order Appointments"
-							current_role={current_user_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-						/>
-						<AppointmentRequest 
-							title="Appointments For Quotes"
-							appointments={quote_appointments}
-							current_role={current_user_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-						/>
-						<AppointmentRequest 
-							title="Landlord Appointments"
-							appointments={landlord_appointments}
-							current_role={current_user_role}
-							viewItem={(key, item) => this.viewItem(key, item)}
-						/>
+						{
+							work_order_appointments.length > 0 &&
+								<AppointmentRequest 
+									appointments={work_order_appointments}
+									title="Work Order Appointments"
+									current_role={current_user_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+								/>
+						}
+						{
+							quote_appointments.length > 0 &&
+								<AppointmentRequest 
+									title="Appointments For Quotes"
+									appointments={quote_appointments}
+									current_role={current_user_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+								/>
+						}
+						{
+							landlord_appointments.length > 0 &&
+								<AppointmentRequest 
+									title="Landlord Appointments"
+									appointments={landlord_appointments}
+									current_role={current_user_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+								/>
+						}
 						<Activity logs={this.props.logs} />
 					</div>
-					<AppointmentRequestMobile 
-						appointments={work_order_appointments}
-						title="Work Order Appointments"
-						current_role={current_user_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-					/>
-					<AppointmentRequestMobile 
-						title="Appointments For Quotes"
-						appointments={quote_appointments}
-						current_role={current_user_role}
-						viewItem={(key, item) => this.viewItem(key, item)}
-					/>
-					<AppointmentRequestMobile 
-						title="Landlord Appointments"
-						current_role={current_user_role}
-						appointments={landlord_appointments}
-						viewItem={(key, item) => this.viewItem(key, item)}
-					/>
+					{
+						work_order_appointments.length > 0 &&
+							<AppointmentRequestMobile 
+								appointments={work_order_appointments}
+								title="Work Order Appointments"
+								current_role={current_user_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+							/>
+					}
+					{
+						quote_appointments.length > 0 &&
+							<AppointmentRequestMobile 
+								title="Appointments For Quotes"
+								appointments={quote_appointments}
+								current_role={current_user_role}
+								viewItem={(key, item) => this.viewItem(key, item)}
+							/>
+					}
+					{ 
+						landlord_appointments.length > 0 &&
+							<AppointmentRequestMobile 
+								title="Landlord Appointments"
+								current_role={current_user_role}
+								appointments={landlord_appointments}
+								viewItem={(key, item) => this.viewItem(key, item)}
+							/>
+					}
 					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<SideBarMobile

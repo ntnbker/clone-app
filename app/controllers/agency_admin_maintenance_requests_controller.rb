@@ -46,6 +46,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   end
 
   def show
+    binding.pry
     @current_user = current_user
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @tenants = @maintenance_request.tenants

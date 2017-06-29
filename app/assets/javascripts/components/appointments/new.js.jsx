@@ -68,10 +68,24 @@ var SelectTime = React.createClass({
 });
 
 var CommentAppointment = React.createClass({
+	autoScroll: function() {
+		$('#message').animate({
+  		scrollTop: $('#message').get(0).scrollHeight
+  	}, 200);
+	},
+
+	componentDidMount: function() {
+		this.autoScroll();
+	},
+
+	componentDidUpdate: function() {
+		this.autoScroll();
+	},
+	
 	render: function() {
 		const comments = this.props.comments ? this.props.comments : [];
 		return (
-			<div className="comments">
+			<div className="comments" id="message">
 				{
 					comments.map((comment, key) => 
 						<div key={comment.id} className="comment">

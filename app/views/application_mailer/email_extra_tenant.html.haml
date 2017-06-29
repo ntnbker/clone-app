@@ -1,7 +1,7 @@
 !!! 5
 %html(lang="en-US")
   %head
-    %link{:href => "https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&amp;subset=latin-ext,vietnamese"}
+    %link{:href => "https://fonts.googleapis.com/css?family=Raleway:400,600,700&amp;subset=latin-ext", :rel => "stylesheet"}
     %style{:type => "text/css"}
       :sass
         body
@@ -17,7 +17,8 @@
             .logo
               height: 60px
               display: flex
-              padding-top: 10px
+              padding-top: 20px
+              padding-bottom: 20px
               align-items: center
               justify-content: center
               text-decoration: none
@@ -25,39 +26,61 @@
                 color: #fff
                 font-size: 24px
                 text-decoration: none
+                font-weight: 600
                 padding-left: 5px
                 font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif
           .main
-            width: 490px
+            width: 85%
             margin: auto
+            color: #849aaa
+            font-weight: 600
+            font-size: 16px
+            font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif
+            .content
+              margin-top: 70px
+              text-align: center
+            .team
+              margin-bottom: 70px
             .btn
               display: inline-block
-              width: 200px
+              width: 230px
               height: 40px
-              background-color: #34b249
+              background-color: #7dc691
               color: #fff
               text-decoration: none
               font-size: 16px
               border: none
               line-height: 40px
               text-transform: capitalize
-              &:hover
-                background-color: #2FA342
+              border-radius: 5px
+              margin-top: 20px
+              margin-bottom: 20px
+              &:hover, &:active
+                background-color: #7dc691
           .footer
             background-color: #F4F8FB
             height: 80px
             display: flex
-            flex-direction: row
-            justify-content: space-between
+            flex-direction: column-reverse
+            justify-content: center
             align-items: center
             .contact
               margin-left: 10px
+              color: #849aaa
+              font-weight: 600
+              font-size: 16px
+              font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif
             .share
               margin-right: 10px
               .link-share
                 text-decoration: none
                 margin-left: 10px
                 display: inline-block
+        @media (max-width: 480px)
+          .container-email
+            width: 350px
+            .main
+              width: 95%
 
   %body
     .container-email
