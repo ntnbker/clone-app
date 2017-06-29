@@ -142,7 +142,7 @@ class AppointmentsController < ApplicationController
     tenant = Tenant.find_by(id: tenant_id)
     #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 
     
-    binding.pry
+    
     #params[:current_user_role] We have to distinguish between the trady accepting and the tenant accepting
     if params[:current_user_role] == "Trady"
       TenantAppointmentAcceptedEmailWorker.perform_async(maintenance_request.id,appointment.id,trady.id,tenant.id)
