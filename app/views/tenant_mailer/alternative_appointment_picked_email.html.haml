@@ -91,7 +91,7 @@
             MaintenanceApp
       .main
         %p.content
-           Hi #{@tenant.name.capitalize}, #{@trady.name.capitalize} the tradie has requested an alternative appointment. To accept or suggest a new appointment with the trady please click the button below.
+          Hi #{@tenant.name.capitalize}, #{@trady.name.capitalize} the tradie has requested an appointment time. To accept or suggest a new appointment with the trady please click the button below.
 
         %div.text-center
           =link_to "View Appointment", tenant_maintenance_request_url(id:@maintenance_request.id, user_id:@tenant.user.id), class: 'btn'

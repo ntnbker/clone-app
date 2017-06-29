@@ -94,7 +94,7 @@
           Hi #{@trady.name.capitalize}, an appointment with #{@tenant.name.capitalize} for the maintenance request been accepted. When the job has been completed please click on the button below to send the invoice for your services. 
 
         %div.text-center
-           =link_to "View Appointment", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id), class: 'btn'
+          =link_to "View Appointment", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id), class: 'btn'
         %p.thank
           Thank you :)
 

@@ -94,7 +94,7 @@
           Hi #{@trady.name.capitalize}, your quote offer has been accepted. To Setup an appointment with the tenant please click the button below. 
 
         %div.text-center
-           =link_to "View Appointment", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id), class: 'btn'
+          =link_to "Create Appointment", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id), class: 'btn'
         %p.thank
           Thank you :)
 

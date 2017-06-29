@@ -93,15 +93,21 @@
             MaintenanceApp
 
       .main
-        %p.content
-          Hi  
-          ="#{@trady.name.capitalize}" 
-          
-          , we would love a quote for a maintenance work order we recieved. Please click the link below to view the information so you may submit a quote for the job.
-          
-        
-        %div.text-center
-          =link_to "View Maintenance Request", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id), class: 'btn'
+        -if @maintenance_request.agent 
+          %p.content 
+            Hi
+            ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
+            the landlord has requested a quote from a tradie. To send a quote request to a tradie(s), please click the button below.
+          %div.text-center
+            =link_to "Request Quote From Tradie", agent_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
+            
+        -elsif @maintenance_request.agency_admin
+          %p.content 
+            Hi
+            ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
+            the landlord has requested a quote from a tradie. To send a quote request to a tradie(s), please click the button below.
+          %div.text-center
+            =link_to "Request Quote From Tradie", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
 
         %p.thank
           Thanks :)
