@@ -30,8 +30,9 @@
         = render 'shared/nav', {:expanded => true}
       - else
         = render 'shared/nav'
-    %section.content.clearfix
       = render 'shared/messages'
+    %section.content.clearfix
+      
       = yield
 
 

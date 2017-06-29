@@ -134,7 +134,7 @@ class AppointmentsController < ApplicationController
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Accepted")
     appointment_id = appointment.id
-    maintenance_request_id = params[:maintenance_request_id]
+    #maintenance_request_id = params[:maintenance_request_id]
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     trady_id = appointment.trady_id
     tenant_id = appointment.tenant_id
@@ -142,15 +142,15 @@ class AppointmentsController < ApplicationController
     tenant = Tenant.find_by(id: tenant_id)
     #OK NOW WE HAVE TO SEND THE EMAIL TO THE TRADY AND WE HAVE TO CHANGE THE AGENT STATUS TO THE 
     
-    
+    binding.pry
     #params[:current_user_role] We have to distinguish between the trady accepting and the tenant accepting
     if params[:current_user_role] == "Trady"
-      TenantAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+      TenantAppointmentAcceptedEmailWorker.perform_async(maintenance_request.id,appointment.id,trady.id,tenant.id)
       maintenance_request.action_status.update_columns(agent_status: "Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
 
       Log.create(maintenance_request_id:maintenance_request.id, action:"Trady confirmed appointment", name:trady.name)
-    elsif params[:current_user_role] == "Tenant"
-      TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request_id,appointment_id,trady_id,tenant_id)
+    elsif params[:current_user_role][:role] == "Tenant"
+      TradyAppointmentAcceptedEmailWorker.perform_async(maintenance_request.id,appointment.id,trady.id,tenant.id)
       maintenance_request.action_status.update_columns(agent_status: "Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
       Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant confirmed appointment", name:tenant.name)
 

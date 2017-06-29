@@ -7,12 +7,12 @@ class ApplicationMailer < ActionMailer::Base
   def send_agency_admin_or_agent_maintenance_request_email(maintenance_request)
      @maintenance_request = maintenance_request
     
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email
     end
 
     track user: @user
