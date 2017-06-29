@@ -67977,6 +67977,756 @@ var Agency = React.createClass({
     );
   }
 });
+var InfoAppointment = React.createClass({
+	displayName: 'InfoAppointment',
+
+	getInitialState: function () {
+		return {
+			arrRole: ['AgencyAdmin', 'Agent']
+		};
+	},
+
+	btnView: function () {
+		var _props = this.props;
+		var appointment = _props.appointment;
+		var current_role = _props.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return React.createElement(BtnViewAppointment, { clickView: this.props.clickView });
+		} else if (appointment.status != 'Declined') {
+			return React.createElement(BtnViewAppointment, { clickView: this.props.clickView });
+		} else {
+			return null;
+		}
+	},
+
+	btnAccept: function () {
+		var _props2 = this.props;
+		var appointment = _props2.appointment;
+		var current_role = _props2.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnAcceptAppointment, { clickAccept: this.props.clickAccept });
+		} else {
+			return null;
+		}
+	},
+
+	btnDecline: function () {
+		var _props3 = this.props;
+		var appointment = _props3.appointment;
+		var current_role = _props3.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnDeclineAppointment, { clickDecline: this.props.clickDecline });
+		} else {
+			return null;
+		}
+	},
+
+	render: function () {
+		var _props4 = this.props;
+		var appointment = _props4.appointment;
+		var current_role = _props4.current_role;
+
+		var date = new Date(Date.parse(appointment.time)).toUTCString();
+		var arrDate = date.split(" ");
+		var hour = arrDate[4] ? arrDate[4] : "00:00";
+		var arrHour = hour.split(':');
+		var h = parseInt(arrHour[0]);
+		var m = arrHour[1];
+		var time = h > 12 ? h - 12 + ':' + m + ' PM' : h + ':' + m + ' AM';
+		return React.createElement(
+			'li',
+			{ className: 'li-appointment' },
+			React.createElement(
+				'div',
+				{ className: 'status' },
+				React.createElement(
+					'span',
+					null,
+					'Status: '
+				),
+				React.createElement(
+					'span',
+					{ className: "bt-status " + appointment.status },
+					appointment.status
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'date-time' },
+				React.createElement(
+					'p',
+					{ className: 'date' },
+					React.createElement(
+						'span',
+						null,
+						'Date: '
+					),
+					React.createElement(
+						'span',
+						null,
+						moment(appointment.date).format('dddd LL')
+					)
+				),
+				React.createElement(
+					'p',
+					{ className: 'time' },
+					React.createElement(
+						'span',
+						null,
+						'Time: '
+					),
+					React.createElement(
+						'span',
+						null,
+						time
+					)
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'button-appointment btn-appointment-mobile' },
+				this.btnView(),
+				this.btnAccept(),
+				this.btnDecline()
+			)
+		);
+	}
+});
+
+var ListAppointment = React.createClass({
+	displayName: 'ListAppointment',
+
+	render: function () {
+		var _this = this;
+
+		var appointments = this.props.appointments;
+
+		return React.createElement(
+			'ul',
+			{ className: 'content-appointment' },
+			appointments.map(function (appointment, key) {
+				return React.createElement(InfoAppointment, {
+					key: key,
+					appointment: appointment,
+					current_role: _this.props.current_role,
+					clickAccept: function () {
+						_this.props.acceptAppointment(appointment);
+					},
+					clickDecline: function () {
+						_this.props.declineAppointment(appointment);
+					},
+					clickView: function () {
+						_this.props.viewItem('viewAppointment', appointment);
+					}
+				});
+			})
+		);
+	}
+});
+
+var AppointmentRequest = React.createClass({
+	displayName: 'AppointmentRequest',
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		var _props5 = this.props;
+		var appointments = _props5.appointments;
+		var title = _props5.title;
+
+		return React.createElement(
+			'div',
+			{ className: 'item' },
+			React.createElement(
+				'div',
+				{ className: 'header action' },
+				React.createElement(
+					'a',
+					null,
+					title
+				),
+				React.createElement('i', {
+					'aria-hidden': 'true',
+					onClick: this.show,
+					className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+				})
+			),
+			this.state.show && this.props.appointments.length ? React.createElement(ListAppointment, {
+				appointments: appointments,
+				current_role: this.props.current_role,
+				viewItem: function (key, item) {
+					return _this2.props.viewItem(key, item);
+				},
+				acceptAppointment: function (value) {
+					return _this2.props.acceptAppointment(value);
+				},
+				declineAppointment: function (value) {
+					return _this2.props.declineAppointment(value);
+				}
+			}) : null
+		);
+	}
+});
+
+var AppointmentRequestMobile = React.createClass({
+	displayName: 'AppointmentRequestMobile',
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this3 = this;
+
+		var _props6 = this.props;
+		var appointments = _props6.appointments;
+		var title = _props6.title;
+
+		return React.createElement(
+			'div',
+			{ className: 'activity-mobile' },
+			React.createElement(
+				'div',
+				{ className: 'item' },
+				React.createElement(
+					'div',
+					{ className: 'header action' },
+					React.createElement(
+						'a',
+						null,
+						title
+					),
+					React.createElement('i', {
+						'aria-hidden': 'true',
+						onClick: this.show,
+						className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+					})
+				),
+				appointments.length && !!this.state.show ? React.createElement(ListAppointment, {
+					appointments: appointments,
+					current_role: this.props.current_role,
+					viewItem: function (key, item) {
+						return _this3.props.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.props.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.props.declineAppointment(value);
+					}
+				}) : null
+			)
+		);
+	}
+});
+var SelectTime = React.createClass({
+	displayName: "SelectTime",
+
+	getInitialState: function () {
+		return null;
+	},
+
+	makeHour: function () {
+		var date = [];
+		date.push(React.createElement(
+			"option",
+			{ key: "-1", value: "" },
+			"--"
+		));
+		var value = "";
+		for (var i = 0; i < 24; i++) {
+			if (i == 0) {
+				value = "12 AM";
+			} else if (i <= 11) {
+				value = i < 10 ? "0" + i : i;
+				value += " AM";
+			} else if (i == 12) {
+				value = i + " PM";
+			} else if (i >= 13) {
+				value = i - 12 < 10 ? "0" + (i - 12) : i - 12;
+				value += " PM";
+			}
+			date.push(React.createElement(
+				"option",
+				{ key: i, value: i },
+				value
+			));
+		}
+		return date;
+	},
+
+	makeMinute: function () {
+		var data = [0, 15, 30, 45];
+		var date = [];
+		date.push(React.createElement(
+			"option",
+			{ key: "-1", value: "" },
+			"--"
+		));
+		data.map(function (item, key) {
+			date.push(React.createElement(
+				"option",
+				{ key: key, value: item },
+				item == 0 ? item + "0" : item
+			));
+		});
+
+		return date;
+	},
+
+	render: function () {
+		var _this = this;
+
+		var errorTime = this.props.errorTime;
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"select",
+				{
+					required: true,
+					id: "hour",
+					name: "hour",
+					ref: function (ref) {
+						return _this.hour = ref;
+					},
+					onChange: this.props.onChange,
+					className: "select-hour"
+				},
+				this.makeHour()
+			),
+			React.createElement(
+				"select",
+				{
+					id: "minute",
+					name: "minute",
+					onChange: this.props.onChange,
+					ref: function (ref) {
+						return _this.minute = ref;
+					},
+					className: "select-hour"
+				},
+				this.makeMinute()
+			)
+		);
+	}
+});
+
+var CommentAppointment = React.createClass({
+	displayName: "CommentAppointment",
+
+	autoScroll: function () {
+		$('#message').animate({
+			scrollTop: $('#message').get(0).scrollHeight
+		}, 200);
+	},
+
+	componentDidMount: function () {
+		this.autoScroll();
+	},
+
+	componentDidUpdate: function () {
+		this.autoScroll();
+	},
+
+	render: function () {
+		var comments = this.props.comments ? this.props.comments : [];
+		return React.createElement(
+			"div",
+			{ className: "comments", id: "message" },
+			comments.map(function (comment, key) {
+				return React.createElement(
+					"div",
+					{ key: comment.id, className: "comment" },
+					React.createElement(
+						"p",
+						{ className: "content" },
+						comment.body
+					),
+					React.createElement(
+						"p",
+						{ className: "detail" },
+						React.createElement(
+							"span",
+							{ className: "date-time" },
+							moment(comment.created_at).format('lll')
+						)
+					)
+				);
+			})
+		);
+	}
+});
+
+var ModalAddAppointment = React.createClass({
+	displayName: "ModalAddAppointment",
+
+	submit: function (e) {
+		e.preventDefault();
+		var time = $('#hour').val() + ':' + $('#minute').val();
+		var params = {
+			time: time,
+			date: this.date.value,
+			body: this.comment.value,
+			appointment_type: this.props.type
+		};
+		this.props.addAppointment(params);
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		var appointment = this.props.appointment ? this.props.appointment : {};
+		var now = new Date();
+		var date = now.getMonth() + '/' + now.getDate() + '/' + now.getFullYear();
+		var time = now.getHours() + ':' + now.getMinutes();
+		var _props = this.props;
+		var title = _props.title;
+		var comments = _props.comments;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ onSubmit: this.submit },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								title
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body modal-appointment" },
+							React.createElement(
+								"div",
+								{ className: "new_appointment" },
+								React.createElement(CommentAppointment, { comments: comments }),
+								React.createElement(
+									"div",
+									{ className: "form-group" },
+									React.createElement("textarea", { ref: function (ref) {
+											return _this2.comment = ref;
+										}, placeholder: "Comment", className: "text-center" })
+								),
+								React.createElement(
+									"div",
+									{ className: "form-group date-time" },
+									React.createElement(
+										"div",
+										{ className: "date" },
+										React.createElement(
+											"label",
+											null,
+											"Date"
+										),
+										React.createElement("input", {
+											required: true,
+											id: "date",
+											type: "date",
+											defaultValue: date,
+											ref: function (ref) {
+												return _this2.date = ref;
+											}
+										})
+									),
+									React.createElement(
+										"div",
+										{ className: "time" },
+										React.createElement(
+											"label",
+											null,
+											"Time"
+										),
+										React.createElement(SelectTime, { onChange: this.checkValidate })
+									)
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									"data-dismiss": "modal",
+									className: "btn btn-default success"
+								},
+								"Submit Comment and Appointment Time"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var BtnAcceptAppointment = React.createClass({
+	displayName: "BtnAcceptAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				"data-dismiss": "modal",
+				className: "btn-success",
+				onClick: this.props.clickAccept
+			},
+			"Accept"
+		);
+	}
+});
+
+var BtnDeclineAppointment = React.createClass({
+	displayName: "BtnDeclineAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn-decline",
+				onClick: this.props.clickDecline
+			},
+			"Decline"
+		);
+	}
+});
+
+var BtnViewAppointment = React.createClass({
+	displayName: "BtnViewAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				"data-dismiss": "modal",
+				className: "btn-view-detail",
+				onClick: this.props.clickView
+			},
+			"View Deails"
+		);
+	}
+});
+
+var ModalAppointment = React.createClass({
+	displayName: "ModalAppointment",
+
+	getInitialState: function () {
+		return {
+			arrRole: ['AgencyAdmin', 'Agent']
+		};
+	},
+
+	btnAccept: function () {
+		var _this = this;
+
+		var _props = this.props;
+		var appointment = _props.appointment;
+		var current_role = _props.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnAcceptAppointment, { clickAccept: function () {
+					return _this.props.acceptAppointment(appointment);
+				} });
+		} else {
+			return null;
+		}
+	},
+
+	btnDecline: function () {
+		var _this2 = this;
+
+		var _props2 = this.props;
+		var appointment = _props2.appointment;
+		var current_role = _props2.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnDeclineAppointment, { clickDecline: function () {
+					return _this2.props.declineAppointment(appointment);
+				} });
+		} else {
+			return null;
+		}
+	},
+
+	render: function () {
+		var _props3 = this.props;
+		var appointment = _props3.appointment;
+		var current_role = _props3.current_role;
+		var comments = _props3.comments;
+
+		var title = "";
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				title = "Appointment Request";
+				break;
+
+			case 'Quote Appointment':
+				title = "Appointment Request For Quote";
+				break;
+
+			case 'Landlord Appointment':
+				title = 'Landlord Appointment';
+				break;
+
+			default:
+				break;
+		}
+
+		var date = new Date(Date.parse(appointment.time)).toUTCString();
+		var arrDate = date.split(" ");
+		var hour = arrDate[4] ? arrDate[4] : "00:00";
+		var arrHour = hour.split(':');
+		var h = parseInt(arrHour[0]);
+		var m = arrHour[1];
+		var time = h > 12 ? h - 12 + ':' + m + ' PM' : h + ':' + m + ' AM';
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body modal-appointment" },
+						React.createElement(CommentAppointment, { comments: comments }),
+						React.createElement(
+							"p",
+							{ className: "" },
+							React.createElement(
+								"span",
+								null,
+								"Status: "
+							),
+							React.createElement(
+								"span",
+								{ className: "bt-status " + appointment.status },
+								appointment.status
+							)
+						),
+						React.createElement(
+							"p",
+							{ className: "" },
+							React.createElement(
+								"span",
+								null,
+								"Date: "
+							),
+							React.createElement(
+								"span",
+								null,
+								moment(appointment.date).format('dddd LL')
+							)
+						),
+						React.createElement(
+							"p",
+							{ className: "" },
+							React.createElement(
+								"span",
+								null,
+								"Time: "
+							),
+							React.createElement(
+								"span",
+								null,
+								time
+							)
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer button-appointment-mobile" },
+						this.btnDecline(),
+						this.btnAccept()
+					)
+				)
+			)
+		);
+	}
+});
 var Invoices = React.createClass({
 	displayName: "Invoices",
 
@@ -69553,6 +70303,8 @@ var ContentLandlordAction = React.createClass({
 	},
 
 	render: function () {
+		var _this = this;
+
 		return React.createElement(
 			"ul",
 			null,
@@ -69571,9 +70323,11 @@ var ContentLandlordAction = React.createClass({
 				null,
 				React.createElement(
 					"a",
-					{ href: "/landlord_appointments/new?maintenance_request_id=" + this.props.maintenance_request.id },
+					{ onClick: function () {
+							return _this.props.onModalWith('createAppointment');
+						} },
 					React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
-					"Fix Myself"
+					"Create appointment to fix myself"
 				)
 			),
 			React.createElement(
@@ -69604,7 +70358,7 @@ var LandlordAction = React.createClass({
 	},
 
 	render: function () {
-		var _this = this;
+		var _this2 = this;
 
 		return React.createElement(
 			"div",
@@ -69631,7 +70385,7 @@ var LandlordAction = React.createClass({
 					requestQuote: this.props.requestQuote,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
-						return _this.props.onModalWith(modal);
+						return _this2.props.onModalWith(modal);
 					}
 				})
 			)
@@ -69643,7 +70397,7 @@ var LandlordActionMobile = React.createClass({
 	displayName: "LandlordActionMobile",
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		return React.createElement(
 			"div",
@@ -69668,9 +70422,14 @@ var LandlordActionMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentLandlordAction, { requestQuote: this.props.requestQuote, onModalWith: function (modal) {
-							return _this2.props.onModalWith(modal);
-						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+					React.createElement(ContentLandlordAction, {
+						landlord: this.props.landlord,
+						requestQuote: this.props.requestQuote,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
+							return _this3.props.onModalWith(modal);
+						}
+					})
 				)
 			)
 		);
@@ -69687,10 +70446,10 @@ var ContentLandlordContact = React.createClass({
 				null,
 				React.createElement(
 					"a",
-					{ href: "tel:" + agent.phone },
+					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					agent.phone
+					agent.mobile_phone
 				)
 			);
 		}
@@ -69976,16 +70735,36 @@ var LandlordMaintenanceRequest = React.createClass({
 	displayName: 'LandlordMaintenanceRequest',
 
 	getInitialState: function () {
+		var _props = this.props;
+		var quotes = _props.quotes;
+		var tradies = _props.tradies;
+		var landlord = _props.landlord;
+		var appointments = _props.appointments;
+		var maintenance_request = _props.maintenance_request;
+		var tenants_conversation = _props.tenants_conversation;
+		var landlords_conversation = _props.landlords_conversation;
+
+		var comments = [];
+		appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			quote: null,
 			isModal: false,
-			quotes: this.props.quotes,
-			tradies: this.props.tradies,
-			landlord: this.props.landlord,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
+			quotes: quotes,
+			isDecline: false,
+			tradies: tradies,
+			appointment: null,
+			landlord: landlord,
+			comments: comments,
+			appointmentUpdate: null,
+			appointments: appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlords_conversation: landlords_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -70016,6 +70795,22 @@ var LandlordMaintenanceRequest = React.createClass({
 				{
 					this.setState({
 						quote: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'createAppointment':
+				{
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewAppointment':
+				{
+					this.setState({
+						appointment: item
 					});
 
 					this.onModalWith(key);
@@ -70137,6 +70932,166 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
+	addAppointment: function (params) {
+		var self = this;
+		var _props2 = this.props;
+		var tenants = _props2.tenants;
+		var current_role = _props2.current_role;
+		var landlord = _props2.landlord;
+		var authenticity_token = _props2.authenticity_token;
+		var tenant = _props2.tenant;
+
+		var maintenance_request_id = this.state.maintenance_request.id;
+		var _state = this.state;
+		var appointments = _state.appointments;
+		var isDecline = _state.isDecline;
+		var appointmentUpdate = _state.appointmentUpdate;
+		var comments = _state.comments;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', params.appointment_type);
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenant ? tenant.id : '');
+		fd.append('appointment[landlord_id]', landlord ? landlord.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenant ? tenant.id : '');
+		fd.append('appointment[comments_attributes][0][landlord_id]', landlord ? landlord.id : '');
+
+		$.ajax({
+			type: 'POST',
+			url: '/landlord_appointments',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function (res) {
+				if (!!isDecline) {
+					self.declineAppointment(appointmentUpdate);
+				}
+				appointments.unshift(res.appointment_and_comments);
+				comments.push(res.appointment_and_comments.comments[0]);
+				self.setState({
+					comments: comments,
+					appointments: appointments
+				});
+
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Create Appoinment",
+						content: "Create Appointment was successfully"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Create Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateAppointment: function (appointment) {
+		var appointments = this.state.appointments;
+
+		var data = appointments.map(function (item, key) {
+			item.status = item.id == appointment.id ? appointment.status : item.status;
+			return item;
+		});
+		this.setState({
+			appointments: data
+		});
+	},
+
+	acceptAppointment: function (appointment) {
+		var self = this;
+		var _props3 = this.props;
+		var authenticity_token = _props3.authenticity_token;
+		var current_role = _props3.current_role;
+		var landlord = _props3.landlord;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : '',
+			maintenance_request_id: this.state.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/accept_landlord_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Accept Appoinment",
+						content: res.note
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Accept Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	decline: function (appointment) {
+		this.onModalWith('createAppointment');
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	declineAppointment: function (appointment) {
+		var self = this;
+		var authenticity_token = this.props.authenticity_token;
+
+		var params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/decline_landlord_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Decline Appoinment",
+						content: res.note
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isDecline: false
+				});
+			}
+		});
+	},
+
 	renderModal: function () {
 		var _this2 = this;
 
@@ -70192,6 +71147,35 @@ var LandlordMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'viewAppointment':
+					{
+						return React.createElement(ModalAppointment, {
+							close: this.isClose,
+							comments: this.state.comments,
+							appointment: this.state.appointment,
+							acceptAppointment: function (value) {
+								return _this2.acceptAppointment(value);
+							},
+							current_role: this.props.signed_in_landlord.user.current_role,
+							declineAppointment: function (value) {
+								return _this2.decline(value);
+							}
+						});
+					}
+
+				case 'createAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							title: 'Create Appoinment',
+							type: 'Landlord Appointment',
+							comments: this.state.comments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
 				default:
 					return null;
 			}
@@ -70200,6 +71184,8 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	render: function () {
 		var _this3 = this;
+
+		var appointments = this.state.appointments;
 
 		return React.createElement(
 			'div',
@@ -70248,8 +71234,36 @@ var LandlordMaintenanceRequest = React.createClass({
 							return _this3.onModalWith(modal);
 						},
 						maintenance_request: this.state.maintenance_request
+					}),
+					appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Landlord Appointments',
+						appointments: appointments,
+						current_role: this.props.signed_in_landlord.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
 					})
-				)
+				),
+				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					appointments: appointments,
+					title: 'Landlord Appointments',
+					current_role: this.props.signed_in_landlord.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				})
 			),
 			React.createElement(LandlordSideBarMobile, {
 				agent: this.props.agent,
@@ -71274,11 +72288,34 @@ var ContentContact = React.createClass({
 
 	render: function () {
 		var selt = this;
-		var landlord = this.props.landlord;
+		var _props = this.props;
+		var landlord = _props.landlord;
+		var tenants = _props.tenants;
+
+		var tenantMobile = [];
+		if (tenants) {
+			tenantMobile = tenants.map(function (tenant, key) {
+				return React.createElement(
+					"li",
+					{ key: tenant.id },
+					React.createElement(
+						"a",
+						{ href: "tel:" + tenant.mobile },
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Tenant ",
+						key + 1,
+						": ",
+						tenant.mobile
+					)
+				);
+			});
+		}
+
 		if (!!landlord) {
 			return React.createElement(
 				"ul",
 				null,
+				tenantMobile,
 				React.createElement(
 					"li",
 					null,
@@ -71319,6 +72356,7 @@ var ContentContact = React.createClass({
 			return React.createElement(
 				"ul",
 				null,
+				tenantMobile,
 				React.createElement(
 					"li",
 					null,
@@ -71372,9 +72410,13 @@ var Contact = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content" },
-				this.state.show && React.createElement(ContentContact, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentContact, {
+					tenants: this.props.tenants,
+					landlord: this.props.landlord,
+					onModalWith: function (modal) {
 						return _this.props.onModalWith(modal);
-					}, landlord: this.props.landlord })
+					}
+				})
 			)
 		);
 	}
@@ -71409,9 +72451,13 @@ var ContactMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentContact, { onModalWith: function (modal) {
+					React.createElement(ContentContact, {
+						tenants: this.props.tenants,
+						landlord: this.props.landlord,
+						onModalWith: function (modal) {
 							return _this2.props.onModalWith(modal);
-						}, landlord: this.props.landlord })
+						}
+					})
 				)
 			)
 		);
@@ -71966,11 +73012,10 @@ var ImgSlider = React.createClass({
 
   componentDidMount: function () {
     var self = this;
-
     if ($('#slider').length > 0) {
       this.setWidth();
 
-      $(window).resize(function () {
+      $(window).on('load resize', function () {
         self.setWidth();
       });
     }
@@ -72313,7 +73358,11 @@ var ListMaintenanceRequest = React.createClass({
             "div",
             null,
             this.state.dataShow.map(function (maintenance_request, key) {
-              return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link });
+              return React.createElement(
+                "div",
+                null,
+                React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link })
+              );
             }),
             this.state.data.length > this.state.prePage && React.createElement(Pagination, {
               page: this.state.page,
@@ -72401,7 +73450,7 @@ var MaintenanceRequestItem = React.createClass({
     var maintenance_request = this.props.maintenance_request;
     return React.createElement(
       "div",
-      { className: "row m-t-lg maintenance-request" },
+      { className: "row maintenance-request" },
       React.createElement(
         "div",
         { className: "image" },
@@ -72425,7 +73474,7 @@ var MaintenanceRequestItem = React.createClass({
               React.createElement(
                 "a",
                 { href: this.props.link + "/" + maintenance_request.id },
-                maintenance_request.maintenance_heading
+                maintenance_request.maintenance_description.substring(0, 10) + "..."
               )
             ),
             maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu && React.createElement(
@@ -72452,11 +73501,6 @@ var MaintenanceRequestItem = React.createClass({
               { className: "type" },
               maintenance_request.service_type
             )
-          ),
-          React.createElement(
-            "div",
-            null,
-            React.createElement(P, { content: maintenance_request.maintenance_description })
           ),
           maintenance_request.property && maintenance_request.property.property_address && React.createElement(
             "p",
@@ -72615,37 +73659,42 @@ var Pagination = React.createClass({
 
       return;
     });
+
     return React.createElement(
       "div",
       { className: "pagination" },
-      React.createElement("a", {
-        className: "previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled"),
-        onClick: this.state.page > 1 ? function (page) {
-          return _this4.switchPage(_this4.state.page - 1);
-        } : ""
-      }),
-      this.state.group > 1 && React.createElement(
-        "a",
-        { onClick: function (group) {
-            return _this4.switchGroup(_this4.state.group - 1);
-          } },
-        "..."
-      ),
-      paginations,
-      this.state.group < this.state.totalGroup && React.createElement(
-        "a",
-        { onClick: function (group) {
-            return _this4.switchGroup(_this4.state.group + 1);
-          } },
-        "..."
-      ),
-      React.createElement("a", {
-        key: "next",
-        className: "next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled"),
-        onClick: function (page) {
-          return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
-        }
-      })
+      React.createElement(
+        "div",
+        { className: "content" },
+        React.createElement("a", {
+          className: "previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled"),
+          onClick: this.state.page > 1 ? function (page) {
+            return _this4.switchPage(_this4.state.page - 1);
+          } : ""
+        }),
+        this.state.group > 1 && React.createElement(
+          "a",
+          { onClick: function (group) {
+              return _this4.switchGroup(_this4.state.group - 1);
+            } },
+          "..."
+        ),
+        paginations,
+        this.state.group < this.state.totalGroup && React.createElement(
+          "a",
+          { onClick: function (group) {
+              return _this4.switchGroup(_this4.state.group + 1);
+            } },
+          "..."
+        ),
+        React.createElement("a", {
+          key: "next",
+          className: "next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled"),
+          onClick: function (page) {
+            return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
+          }
+        })
+      )
     );
   }
 });
@@ -72993,20 +74042,16 @@ var ItemMaintenanceRequest = React.createClass({
 				),
 				React.createElement(
 					"div",
-					{ className: "date-time" },
+					{ className: "vailability" },
 					React.createElement(
-						"button",
-						null,
-						React.createElement(
-							"span",
-							{ className: "vailability" },
-							"Availability: "
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							maintenance.availability
-						)
+						"p",
+						{ className: "header" },
+						"Tenant Availability and Access Instructions: "
+					),
+					React.createElement(
+						"p",
+						{ className: "description" },
+						maintenance.availability_and_access
 					)
 				)
 			)
@@ -73302,7 +74347,7 @@ var MaintenanceRequestsNew = React.createClass({
 
 	loadImage: function (e, image, key) {
 		var img = e.target;
-		var maxSize = 250000; // byte
+		var maxSize = 500000; // byte
 		var self = this;
 		if (!image.isUpload) {
 			var target_img = {};
@@ -73490,11 +74535,6 @@ var MaintenanceRequestsNew = React.createClass({
 			'div',
 			null,
 			React.createElement(
-				'h1',
-				{ className: 'text-center' },
-				'New Maintenance Request'
-			),
-			React.createElement(
 				'form',
 				{ key: 'add', role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
 						return _this2.handleCheckSubmit(e);
@@ -73504,11 +74544,6 @@ var MaintenanceRequestsNew = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'field' },
-					React.createElement(
-						'p',
-						null,
-						' Name '
-					),
 					React.createElement('input', {
 						required: true,
 						type: 'text',
@@ -73534,11 +74569,6 @@ var MaintenanceRequestsNew = React.createClass({
 							}
 						} }),
 					React.createElement('p', { id: 'errorbox', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Email '
-					),
 					React.createElement('input', {
 						required: true,
 						type: 'email',
@@ -73560,11 +74590,6 @@ var MaintenanceRequestsNew = React.createClass({
 							}
 						} }),
 					React.createElement('p', { id: 'errorboxemail', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Mobile '
-					),
 					React.createElement('input', {
 						required: true,
 						type: 'text',
@@ -73600,26 +74625,8 @@ var MaintenanceRequestsNew = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'field' },
-					React.createElement(
-						'p',
-						null,
-						' Maintenance heading '
-					),
-					React.createElement('input', {
-						type: 'text',
-						ref: function (ref) {
-							return _this2.maintenance_heading = ref;
-						},
-						id: this.generateAtt("id", "maintenance_heading"),
-						name: this.generateAtt("name", "maintenance_heading")
-					}),
-					React.createElement('p', { id: 'errorboxheading', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Maintenance description '
-					),
 					React.createElement('textarea', {
+						placeholder: 'Maintenance Description',
 						ref: function (ref) {
 							return _this2.maintenance_description = ref;
 						},
@@ -73627,25 +74634,16 @@ var MaintenanceRequestsNew = React.createClass({
 						name: this.generateAtt("name", "maintenance_description")
 					}),
 					React.createElement('p', { id: 'errorboxdescription', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Appointment Availability and Access Instructions '
-					),
-					React.createElement('input', {
+					React.createElement('textarea', {
 						type: 'text',
 						ref: function (ref) {
 							return _this2.maintenance_heading = ref;
 						},
 						id: this.generateAtt("id", "availability_and_access"),
-						name: this.generateAtt("name", "availability_and_access")
+						name: this.generateAtt("name", "availability_and_access"),
+						placeholder: 'Appointment Availability and Access Instructions'
 					}),
 					React.createElement('p', { id: 'erroravailabilityandaccess', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Images '
-					),
 					React.createElement(
 						'div',
 						{ className: 'browse-wrap' },
@@ -73653,7 +74651,7 @@ var MaintenanceRequestsNew = React.createClass({
 							'div',
 							{ className: 'title', id: 'title-upload' },
 							React.createElement('i', { className: 'fa fa-upload' }),
-							'Choose a file to upload'
+							'Choose a image to upload'
 						),
 						React.createElement('input', {
 							multiple: true,
@@ -73697,14 +74695,10 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement(
 						'div',
 						null,
-						React.createElement(
-							'p',
-							null,
-							' Agent email '
-						),
 						React.createElement('input', {
 							required: true,
 							type: 'text',
+							placeholder: 'Agent email',
 							onBlur: this.checkAgentEmail,
 							ref: function (ref) {
 								return _this2.agent_email = ref;
@@ -73716,14 +74710,10 @@ var MaintenanceRequestsNew = React.createClass({
 						!this.state.isAgent ? React.createElement(
 							'div',
 							null,
-							React.createElement(
-								'p',
-								null,
-								' Real estate office '
-							),
 							React.createElement('input', {
 								required: true,
 								type: 'text',
+								placeholder: 'Real estate office',
 								ref: function (ref) {
 									return _this2.real_estate_office = ref;
 								},
@@ -73742,14 +74732,10 @@ var MaintenanceRequestsNew = React.createClass({
 									}
 								} }),
 							React.createElement('p', { id: 'errRealEstateOffice', className: 'error' }),
-							React.createElement(
-								'p',
-								null,
-								' Agent name '
-							),
 							React.createElement('input', {
 								required: true,
 								type: 'text',
+								placeholder: 'Agent name',
 								ref: function (ref) {
 									return _this2.agent_name = ref;
 								},
@@ -73768,16 +74754,12 @@ var MaintenanceRequestsNew = React.createClass({
 									}
 								} }),
 							React.createElement('p', { id: 'errAgentName', className: 'error' }),
-							React.createElement(
-								'p',
-								null,
-								' Agent mobile '
-							),
 							React.createElement('input', {
 								required: true,
 								type: 'text',
 								maxLength: '11',
 								minLength: '10',
+								placeholder: 'Agent mobile',
 								ref: function (ref) {
 									return _this2.agent_mobile = ref;
 								},
@@ -73814,6 +74796,8 @@ var MaintenanceRequestsNew = React.createClass({
 		);
 	}
 });
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var ModalConfirm = React.createClass({
 	displayName: "ModalConfirm",
 
@@ -74496,15 +75480,16 @@ var SideBarMobile = React.createClass({
 				"div",
 				{ className: "action-mobile" },
 				React.createElement(ActionMobile, {
-					landlord: this.props.landlord,
 					close: this.close,
+					landlord: this.props.landlord,
 					onModalWith: function (modal) {
 						return _this4.props.onModalWith(modal);
 					}
 				}),
 				React.createElement(ContactMobile, {
-					landlord: this.props.landlord,
+					tenants: this.props.tenants,
 					close: this.close,
+					landlord: this.props.landlord,
 					current_user: this.props.current_user,
 					onModalWith: function (modal) {
 						return _this4.props.onModalWith(modal);
@@ -75498,17 +76483,44 @@ var MaintenanceRequest = React.createClass({
 	displayName: "MaintenanceRequest",
 
 	getInitialState: function () {
+		var _props = this.props;
+		var work_order_appointments = _props.work_order_appointments;
+		var quote_appointments = _props.quote_appointments;
+		var landlord_appointments = _props.landlord_appointments;
+
+		var comments = [],
+		    quoteComments = [],
+		    landlordComments = [];
+		work_order_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
+		landlord_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				landlordComments.unshift(appointment.comments[0]);
+			}
+		});
+
 		return {
 			modal: "",
 			quote: null,
 			invoice: null,
 			isModal: false,
 			appointment: null,
+			comments: comments,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
+			quoteComments: quoteComments,
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
+			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.invoice_pdf_files,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -76184,20 +77196,45 @@ var MaintenanceRequest = React.createClass({
 						break;
 					}
 
-				case 'viewAppointment':
-					{
-						return React.createElement(ModalViewAppointment, {
-							close: this.isClose,
-							appointment: this.state.appointment
-						});
-					}
-
 				case 'editMaintenanceRequest':
 					{
 						return React.createElement(EditMaintenanceRequest, {
 							close: this.isClose,
 							maintenance_request: this.state.maintenance_request,
 							editMaintenanceRequest: this.editMaintenanceRequest
+						});
+					}
+
+				case 'viewAppointment':
+					{
+						var _state = this.state;
+						var comments = _state.comments;
+						var quoteComments = _state.quoteComments;
+						var landlordComments = _state.landlordComments;
+						var appointment = _state.appointment;
+
+						var commentShow = [];
+						switch (appointment.appointment_type) {
+							case 'Work Order Appointment':
+								commentShow = [].concat(_toConsumableArray(comments));
+								break;
+
+							case 'Quote Appointment':
+								commentShow = [].concat(_toConsumableArray(quoteComments));
+								break;
+
+							case 'Landlord Appointment':
+								commentShow = [].concat(_toConsumableArray(landlordComments));
+								break;
+
+							default:
+								break;
+						}
+						return React.createElement(ModalAppointment, {
+							close: this.isClose,
+							comments: commentShow,
+							appointment: appointment,
+							current_role: this.props.current_user_role
 						});
 					}
 
@@ -76209,6 +77246,13 @@ var MaintenanceRequest = React.createClass({
 
 	summary: function (e) {
 		var _this9 = this;
+
+		var _props2 = this.props;
+		var work_order_appointments = _props2.work_order_appointments;
+		var landlord_appointments = _props2.landlord_appointments;
+		var quote_appointments = _props2.quote_appointments;
+		var current_user_role = _props2.current_user_role;
+		var tenants = _props2.tenants;
 
 		return React.createElement(
 			"div",
@@ -76263,6 +77307,7 @@ var MaintenanceRequest = React.createClass({
 					{ className: "sidebar" },
 					React.createElement(Contact, {
 						landlord: this.state.landlord,
+						tenants: tenants,
 						current_user: this.props.current_user,
 						onModalWith: function (modal) {
 							return _this9.onModalWith(modal);
@@ -76274,36 +77319,61 @@ var MaintenanceRequest = React.createClass({
 							return _this9.onModalWith(modal);
 						}
 					}),
-					React.createElement(Activity, { logs: this.props.logs }),
-					React.createElement(TenantTradieAppointment, {
+					work_order_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						appointments: work_order_appointments,
+						title: "Work Order Appointments",
+						current_role: current_user_role,
 						viewItem: function (key, item) {
 							return _this9.viewItem(key, item);
-						},
-						appointments: this.props.tenant_and_trady_appointments
+						}
 					}),
-					React.createElement(TenantLandlordAppointment, {
+					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: "Appointments For Quotes",
+						appointments: quote_appointments,
+						current_role: current_user_role,
 						viewItem: function (key, item) {
 							return _this9.viewItem(key, item);
-						},
-						appointments: this.props.tenant_and_landlord_appointments
-					})
+						}
+					}),
+					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: "Landlord Appointments",
+						appointments: landlord_appointments,
+						current_role: current_user_role,
+						viewItem: function (key, item) {
+							return _this9.viewItem(key, item);
+						}
+					}),
+					React.createElement(Activity, { logs: this.props.logs })
 				),
-				React.createElement(ActivityMobile, { logs: this.props.logs }),
-				React.createElement(TenantTradieAppointmentMobile, {
+				work_order_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					appointments: work_order_appointments,
+					title: "Work Order Appointments",
+					current_role: current_user_role,
 					viewItem: function (key, item) {
 						return _this9.viewItem(key, item);
-					},
-					appointments: this.props.tenant_and_trady_appointments
+					}
 				}),
-				React.createElement(TenantLandlordAppointmentMobile, {
+				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: "Appointments For Quotes",
+					appointments: quote_appointments,
+					current_role: current_user_role,
 					viewItem: function (key, item) {
 						return _this9.viewItem(key, item);
-					},
-					appointments: this.props.tenant_and_landlord_appointments
-				})
+					}
+				}),
+				landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: "Landlord Appointments",
+					current_role: current_user_role,
+					appointments: landlord_appointments,
+					viewItem: function (key, item) {
+						return _this9.viewItem(key, item);
+					}
+				}),
+				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
 			React.createElement(SideBarMobile, {
 				landlord: this.state.landlord,
+				tenants: tenants,
 				current_user: this.props.current_user,
 				onModalWith: function (modal) {
 					return _this9.onModalWith(modal);
@@ -78108,7 +79178,7 @@ var Footer = React.createClass({
 });
 var MenuAgency = [{
   url: "/agency_admin_maintenance_requests",
-  name: "Agency Admin Maintenance Requests"
+  name: "My Maintenance Requests"
 }, {
   url: "/agents/new",
   name: "Add Agent"
@@ -78119,22 +79189,22 @@ var MenuAgency = [{
 
 var MenuAgent = [{
   url: "/agent_maintenance_requests",
-  name: "Agent Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MenuTrady = [{
   url: "/trady_maintenance_requests",
-  name: "Trady Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MenuTenant = [{
   url: "/tenant_maintenance_requests",
-  name: "Tenant Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MenuLandlord = [{
   url: "/landlord_maintenance_requests",
-  name: "Landlord Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MobileMenu = React.createClass({
@@ -78328,7 +79398,7 @@ var Header = React.createClass({
               "span",
               null,
               "Hi, ",
-              current_user.name
+              props.role
             )
           ),
           this.menuBar(),
@@ -78400,7 +79470,7 @@ var Header = React.createClass({
                     "span",
                     null,
                     "Hi, ",
-                    current_user.name,
+                    props.role,
                     React.createElement("i", { className: "fa fa-angle-down" })
                   )
                 ),
@@ -78438,7 +79508,7 @@ var Header = React.createClass({
                     "span",
                     null,
                     "Hi, ",
-                    current_user.name
+                    props.role
                   )
                 ),
                 this.menuBar(),
@@ -78624,6 +79694,8 @@ var TenantContactMobile = React.createClass({
 		);
 	}
 });
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var TenantSideBarMobile = React.createClass({
 	displayName: 'TenantSideBarMobile',
 
@@ -78694,12 +79766,47 @@ var TenantMaintenanceRequest = React.createClass({
 	displayName: 'TenantMaintenanceRequest',
 
 	getInitialState: function () {
+		var _props = this.props;
+		var landlord = _props.landlord;
+		var appointments = _props.appointments;
+		var quote_appointments = _props.quote_appointments;
+		var maintenance_request = _props.maintenance_request;
+		var tenants_conversation = _props.tenants_conversation;
+		var landlord_appointments = _props.landlord_appointments;
+
+		var comments = [],
+		    quoteComments = [],
+		    landlordComments = [];
+		appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
+		landlord_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				landlordComments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			isModal: false,
-			landlord: this.props.landlord,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
+			isDecline: false,
+			appointment: null,
+			landlord: landlord,
+			comments: comments,
+			appointmentUpdate: null,
+			appointments: appointments,
+			quoteComments: quoteComments,
+			landlordComments: landlordComments,
+			quote_appointments: quote_appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlord_appointments: landlord_appointments,
 			notification: {
 				title: "",
 				content: "",
@@ -78722,6 +79829,33 @@ var TenantMaintenanceRequest = React.createClass({
 			modal: modal,
 			isModal: true
 		});
+	},
+
+	viewItem: function (key, item) {
+		switch (key) {
+			case 'viewAppointment':
+				{
+					this.setState({
+						appointment: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'createAppointment':
+			case 'createAppointmentForQuote':
+			case 'createLandlordAppointment':
+				{
+					this.onModalWith(key);
+					break;
+				}
+
+			default:
+				{
+					break;
+				}
+		}
 	},
 
 	sendAgentMessage: function (params) {
@@ -78752,7 +79886,259 @@ var TenantMaintenanceRequest = React.createClass({
 		});
 	},
 
+	addAppointment: function (params) {
+		var self = this;
+		var _props2 = this.props;
+		var tenant = _props2.tenant;
+		var current_role = _props2.current_role;
+		var signed_in_trady = _props2.signed_in_trady;
+		var landlord = _props2.landlord;
+		var authenticity_token = _props2.authenticity_token;
+
+		var maintenance_request_id = this.state.maintenance_request.id;
+		var _state = this.state;
+		var appointments = _state.appointments;
+		var quote_appointments = _state.quote_appointments;
+		var landlord_appointments = _state.landlord_appointments;
+		var appointmentUpdate = _state.appointmentUpdate;
+		var isDecline = _state.isDecline;
+		var comments = _state.comments;
+		var quoteComments = _state.quoteComments;
+		var landlordComments = _state.landlordComments;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', params.appointment_type);
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenant ? tenant.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenant > 0 ? tenant.id : '');
+
+		if (params.appointment_type == "Landlord Appointment") {
+			fd.append('appointment[landlord_id]', appointmentUpdate ? appointmentUpdate.landlord_id : '');
+			fd.append('appointment[comments_attributes][0][landlord_id]', appointmentUpdate ? appointmentUpdate.landlord_id : '');
+		} else {
+			fd.append('appointment[trady_id]', appointmentUpdate ? appointmentUpdate.trady_id : '');
+			fd.append('appointment[comments_attributes][0][trady_id]', appointmentUpdate ? appointmentUpdate.trady_id : '');
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: params.appointment_type == "Landlord Appointment" ? '/landlord_appointments' : '/appointments',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function (res) {
+				var title = '';
+				var content = '';
+				if (!!isDecline) {
+					self.declineAppointment(appointmentUpdate);
+				}
+				switch (params.appointment_type) {
+					case 'Work Order Appointment':
+						title = "Create Appoinment";
+						content = "Create Appointment was successfully";
+						appointments.unshift(res.appointment_and_comments);
+						comments.push(res.appointment_and_comments.comments[0]);
+						self.setState({
+							comments: comments,
+							appointments: appointments
+						});
+						break;
+
+					case 'Quote Appointment':
+						title = "Create Appoinment For Quote";
+						content = "Create Appointment For Quote was successfully";
+						quote_appointments.unshift(res.appointment_and_comments);
+						quoteComments.push(res.appointment_and_comments.comments);
+						quote;
+						self.setState({
+							quoteComments: quoteComments,
+							quote_appointments: quote_appointments
+						});
+						break;
+
+					case 'Landlord Appointment':
+						title = "Create Landlord Appoinment";
+						content = "Create Landlord Appointment was successfully";
+						landlord_appointments.unshift(res.appointment_and_comments);
+						landlordComments.push(res.appointment_and_comments.comments);
+						self.setState({
+							landlordComments: landlordComments,
+							landlord_appointments: landlord_appointments
+						});
+						break;
+
+					default:
+						break;
+				}
+
+				self.setState({ notification: {
+						title: title,
+						content: content,
+						bgClass: "bg-success"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Error",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateAppointment: function (appointment) {
+		var _state2 = this.state;
+		var appointments = _state2.appointments;
+		var quote_appointments = _state2.quote_appointments;
+		var landlord_appointments = _state2.landlord_appointments;
+
+		var data = [];
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				data = appointments.map(function (item, key) {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					appointments: data
+				});
+				break;
+
+			case 'Quote Appointment':
+				data = quote_appointments.map(function (item, key) {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					quote_appointments: data
+				});
+				break;
+
+			case 'Landlord Appointment':
+				data = landlord_appointments.map(function (item, key) {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					landlord_appointments: data
+				});
+				break;
+
+			default:
+				break;
+		}
+	},
+
+	acceptAppointment: function (appointment) {
+		var self = this;
+		var _props3 = this.props;
+		var authenticity_token = _props3.authenticity_token;
+		var tenant = _props3.tenant;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role : '',
+			maintenance_request_id: this.state.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/accept_landlord_appointment' : '/accept_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Accept Appoinment",
+						content: res.note
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Accept Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	decline: function (appointment) {
+		var key = '';
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			case 'Landlord Appointment':
+				key = 'createLandlordAppointment';
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	declineAppointment: function (appointment) {
+		var self = this;
+		var authenticity_token = this.props.authenticity_token;
+
+		var params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/decline_landlord_appointment' : '/decline_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isDecline: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function () {
+		var _this2 = this;
+
 		if (this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
 			body.className += " modal-open";
@@ -78765,6 +80151,16 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 
 			switch (this.state.modal) {
+				case 'notification':
+					{
+						return React.createElement(ModalNotification, {
+							close: this.isClose,
+							bgClass: this.state.notification.bgClass,
+							title: this.state.notification.title,
+							content: this.state.notification.content
+						});
+					}
+
 				case 'sendAgentMessage':
 					{
 						return React.createElement(ModalSendMessageTenant, {
@@ -78776,6 +80172,84 @@ var TenantMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'viewAppointment':
+					{
+						var _state3 = this.state;
+						var comments = _state3.comments;
+						var quoteComments = _state3.quoteComments;
+						var landlordComments = _state3.landlordComments;
+						var appointment = _state3.appointment;
+
+						var commentShow = [];
+						switch (appointment.appointment_type) {
+							case 'Work Order Appointment':
+								commentShow = [].concat(_toConsumableArray(comments));
+								break;
+
+							case 'Quote Appointment':
+								commentShow = [].concat(_toConsumableArray(quoteComments));
+								break;
+
+							case 'Landlord Appointment':
+								commentShow = [].concat(_toConsumableArray(landlordComments));
+								break;
+
+							default:
+								break;
+						}
+						return React.createElement(ModalAppointment, {
+							close: this.isClose,
+							comments: commentShow,
+							appointment: this.state.appointment,
+							current_role: this.props.tenant.user.current_role,
+							acceptAppointment: function (value) {
+								return _this2.acceptAppointment(value);
+							},
+							declineAppointment: function (value) {
+								return _this2.decline(value);
+							}
+						});
+					}
+
+				case 'createAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							title: 'Create Appointment',
+							type: 'Work Order Appointment',
+							comments: this.state.comments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'createAppointmentForQuote':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							type: 'Quote Appointment',
+							comments: this.state.quoteComments,
+							title: 'Create Appointment For Quote',
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'createLandlordAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							type: 'Landlord Appointment',
+							title: 'Create Landlord Appointment',
+							comments: this.state.landlordComments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
 				default:
 					return null;
 			}
@@ -78783,7 +80257,12 @@ var TenantMaintenanceRequest = React.createClass({
 	},
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
+
+		var _state4 = this.state;
+		var appointments = _state4.appointments;
+		var quote_appointments = _state4.quote_appointments;
+		var landlord_appointments = _state4.landlord_appointments;
 
 		return React.createElement(
 			'div',
@@ -78803,13 +80282,100 @@ var TenantMaintenanceRequest = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'sidebar' },
-					React.createElement(TenantContact, { onModalWith: function (modal) {
-							return _this2.onModalWith(modal);
-						}, current_user: this.props.current_user })
-				)
+					React.createElement(TenantContact, {
+						current_user: this.props.current_user,
+						onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						}
+					}),
+					appointments.length > 0 && React.createElement(AppointmentRequest, {
+						appointments: appointments,
+						title: 'Work Order Appointments',
+						current_role: this.props.tenant.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					}),
+					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Appointments For Quotes',
+						appointments: quote_appointments,
+						current_role: this.props.tenant.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					}),
+					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Landlord Appointments',
+						appointments: landlord_appointments,
+						current_role: this.props.tenant.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					})
+				),
+				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					appointments: appointments,
+					title: 'Work Order Appointments',
+					current_role: this.props.tenant.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				}),
+				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: 'Appointments For Quotes',
+					appointments: quote_appointments,
+					current_role: this.props.tenant.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				}),
+				landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: 'Landlord Appointments',
+					appointments: landlord_appointments,
+					current_role: this.props.tenant.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				})
 			),
 			React.createElement(TenantSideBarMobile, { onModalWith: function (modal) {
-					return _this2.onModalWith(modal);
+					return _this3.onModalWith(modal);
 				}, current_user: this.props.current_user }),
 			this.renderModal()
 		);
@@ -79993,15 +81559,41 @@ var CreateAppointment = React.createClass({
 	displayName: "CreateAppointment",
 
 	render: function () {
+		var _this3 = this;
+
 		var props = this.props;
 		return React.createElement(
 			"li",
 			null,
 			React.createElement(
 				"a",
-				{ href: "/appointments/new?maintenance_request_id=" + props.maintenance_request.id + "&trady_id=" + props.trady.id },
+				{ onClick: function (modal) {
+						return _this3.props.onModalWith('createAppointment');
+					} },
 				React.createElement("i", { className: "fa fa-plus", "aria-hidden": "true" }),
 				"Create Appointment"
+			)
+		);
+	}
+});
+
+var CreateAppointmentForQuote = React.createClass({
+	displayName: "CreateAppointmentForQuote",
+
+	render: function () {
+		var _this4 = this;
+
+		var props = this.props;
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ onClick: function (modal) {
+						return _this4.props.onModalWith('createAppointmentForQuote');
+					} },
+				React.createElement("i", { className: "fa fa-plus", "aria-hidden": "true" }),
+				"Create Appointment For Quote"
 			)
 		);
 	}
@@ -80011,7 +81603,7 @@ var ContentTradyAction = React.createClass({
 	displayName: "ContentTradyAction",
 
 	render: function () {
-		var _this3 = this;
+		var _this5 = this;
 
 		var maintenance_request = this.props.maintenance_request;
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
@@ -80024,18 +81616,28 @@ var ContentTradyAction = React.createClass({
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+						return _this5.props.onModalWith(modal);
 					} }),
 				React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+						return _this5.props.onModalWith(modal);
 					} }),
-				React.createElement(CreateAppointment, { trady: this.props.trady, maintenance_request: maintenance_request })
+				React.createElement(CreateAppointment, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} })
 			);
 		} else if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
 			return React.createElement(
 				"ul",
 				null,
-				React.createElement(CreateAppointment, { trady: this.props.trady, maintenance_request: maintenance_request })
+				React.createElement(CreateAppointment, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} })
 			);
 		} else {
 			return React.createElement(
@@ -80043,12 +81645,17 @@ var ContentTradyAction = React.createClass({
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				!!this.props.assigned_trady && React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+						return _this5.props.onModalWith(modal);
 					} }),
 				!!this.props.assigned_trady && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+						return _this5.props.onModalWith(modal);
 					} }),
-				React.createElement(CreateAppointment, { trady: this.props.trady, maintenance_request: maintenance_request })
+				!!this.props.assigned_trady && React.createElement(CreateAppointment, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} })
 			);
 		}
 	}
@@ -80068,7 +81675,7 @@ var TradyAction = React.createClass({
 	},
 
 	render: function () {
-		var _this4 = this;
+		var _this6 = this;
 
 		return React.createElement(
 			"div",
@@ -80099,7 +81706,7 @@ var TradyAction = React.createClass({
 					invoice_pdf_files: this.props.invoice_pdf_files,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
-						return _this4.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					}
 				})
 			)
@@ -80111,7 +81718,7 @@ var TradyActionMobile = React.createClass({
 	displayName: "TradyActionMobile",
 
 	render: function () {
-		var _this5 = this;
+		var _this7 = this;
 
 		return React.createElement(
 			"div",
@@ -80145,7 +81752,7 @@ var TradyActionMobile = React.createClass({
 						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
-							return _this5.props.onModalWith(modal);
+							return _this7.props.onModalWith(modal);
 						}
 					})
 				)
@@ -80301,6 +81908,8 @@ var TradyContactMobile = React.createClass({
 		);
 	}
 });
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var TradySideBarMobile = React.createClass({
 	displayName: 'TradySideBarMobile',
 
@@ -80316,7 +81925,7 @@ var TradySideBarMobile = React.createClass({
 			this.setState({ showAction: true });
 			this.setState({ showContact: false });
 			if ($('#actions-full').length > 0) {
-				$('#actions-full').css({ 'height': 300, 'border-width': 1 });
+				$('#actions-full').css({ 'height': 350, 'border-width': 1 });
 			}
 		} else {
 			this.setState({ showAction: false });
@@ -80653,20 +82262,51 @@ var TradyMaintenanceRequest = React.createClass({
 	displayName: 'TradyMaintenanceRequest',
 
 	getInitialState: function () {
+		var _props = this.props;
+		var quotes = _props.quotes;
+		var tradies = _props.tradies;
+		var landlord = _props.landlord;
+		var invoices = _props.invoices;
+		var appointments = _props.appointments;
+		var invoice_pdf_files = _props.invoice_pdf_files;
+		var quote_appointments = _props.quote_appointments;
+		var maintenance_request = _props.maintenance_request;
+		var tenants_conversation = _props.tenants_conversation;
+		var landlords_conversation = _props.landlords_conversation;
+
+		var comments = [],
+		    quoteComments = [];
+		appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			quote: null,
 			invoice: null,
 			isModal: false,
+			quotes: quotes,
+			tradies: tradies,
+			isDecline: false,
+			appointment: null,
+			comments: comments,
+			landlord: landlord,
+			invoices: invoices,
 			invoice_pdf_file: null,
-			quotes: this.props.quotes,
-			tradies: this.props.tradies,
-			landlord: this.props.landlord,
-			invoices: this.props.invoices,
-			invoice_pdf_files: this.props.invoice_pdf_files,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
+			appointmentUpdate: null,
+			appointments: appointments,
+			quoteComments: quoteComments,
+			invoice_pdf_files: invoice_pdf_files,
+			quote_appointments: quote_appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlords_conversation: landlords_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -80689,6 +82329,30 @@ var TradyMaintenanceRequest = React.createClass({
 			modal: modal,
 			isModal: true
 		});
+	},
+
+	updateAppointment: function (appointment) {
+		var _state = this.state;
+		var appointments = _state.appointments;
+		var quote_appointments = _state.quote_appointments;
+
+		if (appointment.appointment_type == "Work Order Appointment") {
+			var data = appointments.map(function (item, key) {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				appointments: data
+			});
+		} else {
+			var data = quote_appointments.map(function (item, key) {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				quote_appointments: data
+			});
+		}
 	},
 
 	sendMessageQuote: function (params) {
@@ -80749,6 +82413,86 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	addAppointment: function (params) {
+		var self = this;
+		var _props2 = this.props;
+		var tenants = _props2.tenants;
+		var current_role = _props2.current_role;
+		var signed_in_trady = _props2.signed_in_trady;
+		var landlord = _props2.landlord;
+		var authenticity_token = _props2.authenticity_token;
+
+		var maintenance_request_id = this.state.maintenance_request.id;
+		var _state2 = this.state;
+		var appointments = _state2.appointments;
+		var quote_appointments = _state2.quote_appointments;
+		var isDecline = _state2.isDecline;
+		var appointmentUpdate = _state2.appointmentUpdate;
+		var comments = _state2.comments;
+		var quoteComments = _state2.quoteComments;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', params.appointment_type);
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenants.length > 0 ? tenants[0].id : '');
+		fd.append('appointment[trady_id]', signed_in_trady ? signed_in_trady.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenants.length > 0 ? tenants[0].id : '');
+		fd.append('appointment[comments_attributes][0][trady_id]', signed_in_trady ? signed_in_trady.id : '');
+
+		$.ajax({
+			type: 'POST',
+			url: '/appointments',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function (res) {
+				if (!!isDecline) {
+					self.declineAppointment(appointmentUpdate);
+				}
+
+				if (params.appointment_type == 'Work Order Appointment') {
+					appointments.unshift(res.appointment_and_comments);
+					comments.push(res.appointment_and_comments.comments[0]);
+					self.setState({
+						comments: comments,
+						appointments: appointments
+					});
+				} else {
+					quote_appointments.unshift(res.appointment_and_comments);
+					quoteComments.push(res.appointment_and_comments.comments);
+					self.setState({
+						quoteComments: quoteComments,
+						quote_appointments: quote_appointments
+					});
+				}
+
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: params.appointment_type == 'Work Order Appointment' ? "Create Appoinment" : "Create Appoinment For Quote",
+						content: params.appointment_type == 'Work Order Appointment' ? "Create Appointment was successfully" : "Create Appointment For Quote was successfully"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: params.appointment_type == 'Work Order Appointment' ? "Create Appoinment" : "Create Appoinment For Quote",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	viewItem: function (key, item) {
 		switch (key) {
 			case 'viewQuote':
@@ -80783,13 +82527,20 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 
 			case 'viewConfirm':
+			case 'viewMarkJob':
+			case 'createAppointment':
+			case 'createAppointmentForQuote':
 				{
 					this.onModalWith(key);
 					break;
 				}
 
-			case 'viewMarkJob':
+			case 'viewAppointment':
 				{
+					this.setState({
+						appointment: item
+					});
+
 					this.onModalWith(key);
 					break;
 				}
@@ -80799,6 +82550,97 @@ var TradyMaintenanceRequest = React.createClass({
 					break;
 				}
 		}
+	},
+
+	acceptAppointment: function (appointment) {
+		var self = this;
+		var _props3 = this.props;
+		var authenticity_token = _props3.authenticity_token;
+		var current_role = _props3.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : '',
+			maintenance_request_id: this.state.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/accept_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Accept Appoinment",
+						content: res.note
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Accept Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	decline: function (appointment) {
+		var key = '';
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	declineAppointment: function (appointment) {
+		var self = this;
+		var authenticity_token = this.props.authenticity_token;
+
+		var params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/decline_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					idDecline: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	renderModal: function () {
@@ -80894,6 +82736,66 @@ var TradyMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'createAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							title: 'Create Appointment',
+							type: 'Work Order Appointment',
+							comments: this.state.comments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'createAppointmentForQuote':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							type: 'Quote Appointment',
+							comments: this.state.quoteComments,
+							title: 'Create Appointment For Quote',
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'viewAppointment':
+					{
+						var _state3 = this.state;
+						var comments = _state3.comments;
+						var quoteComments = _state3.quoteComments;
+						var appointment = _state3.appointment;
+
+						var commentShow = [];
+						switch (appointment.appointment_type) {
+							case 'Work Order Appointment':
+								commentShow = [].concat(_toConsumableArray(comments));
+								break;
+
+							case 'Quote Appointment':
+								commentShow = [].concat(_toConsumableArray(quoteComments));
+								break;
+
+							default:
+								break;
+						}
+						return React.createElement(ModalAppointment, {
+							close: this.isClose,
+							comments: commentShow,
+							appointment: this.state.appointment,
+							current_role: this.props.current_role,
+							declineAppointment: function (value) {
+								return _this2.decline(value);
+							},
+							acceptAppointment: function (value) {
+								return _this2.acceptAppointment(value);
+							}
+						});
+					}
+
 				default:
 					return null;
 			}
@@ -80902,6 +82804,10 @@ var TradyMaintenanceRequest = React.createClass({
 
 	render: function () {
 		var _this3 = this;
+
+		var _state4 = this.state;
+		var appointments = _state4.appointments;
+		var quote_appointments = _state4.quote_appointments;
 
 		return React.createElement(
 			'div',
@@ -80966,8 +82872,64 @@ var TradyMaintenanceRequest = React.createClass({
 						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.state.maintenance_request
 					}),
+					appointments.length > 0 && React.createElement(AppointmentRequest, {
+						appointments: appointments,
+						title: 'Work Order Appointments',
+						current_role: this.props.trady.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					}),
+					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Appointments For Quotes',
+						appointments: quote_appointments,
+						current_role: this.props.trady.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					}),
 					React.createElement(Activity, { logs: this.props.logs })
 				),
+				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					appointments: appointments,
+					title: 'Work Order Appointments',
+					current_role: this.props.trady.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				}),
+				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: 'Appointments For Quotes',
+					appointments: quote_appointments,
+					current_role: this.props.trady.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				}),
 				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
 			React.createElement(TradySideBarMobile, {
