@@ -727,8 +727,8 @@ var TradyMaintenanceRequest = React.createClass({
 							comments={commentShow}
 							appointment={this.state.appointment}
 							current_role={this.props.current_role}
+							declineAppointment={(value) => this.decline(value)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
-							declineAppointment={(value) => this.declineAppointment(value)}
 						/>
 					);
 				}

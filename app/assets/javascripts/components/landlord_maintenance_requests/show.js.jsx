@@ -504,7 +504,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							appointment={this.state.appointment}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 							current_role={this.props.signed_in_landlord.user.current_role}
-							declineAppointment={(value) => this.declineAppointment(value)}
+							declineAppointment={(value) => this.decline(value)}
 						/>
 					);
 				}

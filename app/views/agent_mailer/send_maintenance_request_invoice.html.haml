@@ -32,6 +32,8 @@
           .main
             width: 85%
             margin: auto
+            margin-top: 30%
+            margin-bottom: 30%
             color: #849aaa
             font-weight: 600
             font-size: 16px
@@ -91,13 +93,22 @@
             MaintenanceApp
       .main
         %p.content
-          Hi, an invoice has been submitted by a trady for the maintenance request
+          -if @user.has_role("AgencyAdmin")
+            Hi
+            ="#{@user.agency_admin.first_name.capitalize}"
+            , an invoice has been submitted by a trady for a maintenance request. 
+            
+          -elsif @user.has_role("Agent")
+            Hi
+            ="#{@user.agent.name.capitalize}"
+            , an invoice has been submitted by a trady for a maintenance request. 
+        
         
         %p.text-center
           Click the button below to see the invoice
 
         %div.text-center
-          =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@user.id), :class => 'btn'
+          =link_to "View Invoice", maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
 
         %p.content-thank
 

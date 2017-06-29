@@ -54,7 +54,7 @@ var ModalAppointment = React.createClass({
 		if(this.state.arrRole.includes(current_role.role)) {
 			return null;
 		} else if(appointment.status == "Active" && appointment.current_user_role != current_role.role) {
-			return <BtnAcceptAppointment clickAccept={this.props.clickAccept}/>
+			return <BtnAcceptAppointment clickAccept={() => this.props.acceptAppointment(appointment)}/>
 		}else {
 			return null;
 		}
@@ -65,7 +65,7 @@ var ModalAppointment = React.createClass({
 		if(this.state.arrRole.includes(current_role.role)) {
 			return null;
 		} else if(appointment.status == "Active" && appointment.current_user_role != current_role.role) {
-			return <BtnDeclineAppointment clickDecline={this.props.clickDecline}/>
+			return <BtnDeclineAppointment clickDecline={() => this.props.declineAppointment(appointment)}/>
 		}else {
 			return null;
 		}
@@ -115,11 +115,11 @@ var ModalAppointment = React.createClass({
 							</p>
 							<p className="">
 								<span>Date: </span>
-								<span>{ moment(appointment.created_at).format('dddd LL') }</span>
+								<span>{ moment(appointment.date).format('dddd LL') }</span>
 							</p>
 							<p className="">
 								<span>Time: </span>
-								<span>{ moment(appointment.created_at).format('LT') }</span>
+								<span>{ moment(appointment.time).format('LT') }</span>
 							</p>
 						</div>
 						<div className="modal-footer button-appointment-mobile">

@@ -55,7 +55,7 @@ class MessagesController < ApplicationController
 
 
     #     #if the conversation Type is tenant then use this email worker
-    #     #TenantMessageNotificationEmailWorker.perform_async(params[:message][:maintenance_request_id]) 
+    # TenantMessageNotificationEmailWorker.perform_async(params[:message][:maintenance_request_id]) 
         
     # end 
     

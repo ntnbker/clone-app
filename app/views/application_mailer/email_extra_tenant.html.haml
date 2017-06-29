@@ -32,6 +32,8 @@
           .main
             width: 85%
             margin: auto
+            margin-top: 30%
+            margin-bottom: 30%
             color: #849aaa
             font-weight: 600
             font-size: 16px
@@ -95,9 +97,6 @@
           Hi
           =@tenant_name.capitalize
           ,Thank you for submiting a maintenance request. To following along with the progress click the button below.
-      
-        %p.text-center
-          Click the link below to request quotes from tradies
         
         %div.text-center
           =link_to "View Maintenance Request", tenant_maintenance_request_url(@maintenance_request, user_id:@user.id), class: 'btn'

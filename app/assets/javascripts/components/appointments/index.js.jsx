@@ -49,11 +49,11 @@ var InfoAppointment = React.createClass({
 				<div className="date-time">
 					<p className="date">
 						<span>Date: </span>
-						<span>{ moment(appointment.created_at).format('dddd LL') }</span>
+						<span>{ moment(appointment.date).format('dddd LL') }</span>
 					</p>
 					<p className="time">
 						<span>Time: </span>
-						<span>{ moment(appointment.created_at).format('LT') }</span>
+						<span>{ moment(appointment.time).format('LT') }</span>
 					</p>
 				</div>
 				<div className="button-appointment btn-appointment-mobile">

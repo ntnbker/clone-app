@@ -32,6 +32,8 @@
           .main
             width: 85%
             margin: auto
+            margin-top: 30%
+            margin-bottom: 30%
             color: #849aaa
             font-weight: 600
             font-size: 16px
@@ -81,7 +83,6 @@
             width: 350px
             .main
               width: 95%
-  
   %body
     .container-email
       .header
@@ -91,16 +92,16 @@
             MaintenanceApp
       .main
         %p.content
-          Hi, landlord named "#{@landlord.name}" a maintenance request has been submitted and we would like your input click the link to view it.
+          Hi #{@landlord.name}, we received a maintenance request and would love your input on what you would like us to do. To view and act on the maintenance request click on the button below
 
         %div.text-center
-          =link_to "#{@maintenance_request.maintenance_heading}", landlord_maintenance_request_url(@maintenance_request,user_id:@landlord.user.id), class: 'btn'
+          =link_to "View Maintnenace Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id), class: 'btn'
 
         %p.thank
-          Thanks so much!
+          Thank you :)
 
         %p.team
-          The Team MaintenanceApp
+          The MaintenanceApp Team
 
       .footer
         .contact

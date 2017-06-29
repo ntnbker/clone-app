@@ -1,11 +1,11 @@
-!!! 5
-%html(lang="en-US")
+/ !!! 5
+/ %html(lang="en-US")
   
-  %body
-    %p 
-      Hi, a maintenance request has been submitted. To following along with the progress click the link
-    %p
-      =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@maintenance_request.tenants.first.user_id)
+/   %body
+/     %p 
+/       Hi, a maintenance request has been submitted. To following along with the progress click the link
+/     %p
+/       =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@maintenance_request.tenants.first.user_id)
 
 
      
