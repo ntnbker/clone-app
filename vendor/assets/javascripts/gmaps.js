@@ -7,8 +7,26 @@ $( document ).ready(function() {
   var $input = $('#refresh');
 
   $(document).on('change keyup paste', 'input[type="email"]', function(e){
-    var value = e.target.value;
-    e.target.value = value.toLowerCase();
+    if (e.ctrlKey) {
+        if (e.keyCode == 65 || e.keyCode == 97) { // 'A' or 'a'
+          e.target.select();
+        } 
+    }else {
+      if(e.key != "Control") {
+        var value = $(this).val();
+        if(/^[A-Z]/.test(e.key)) {
+          $(this).val(value.toLowerCase());
+        }
+      }
+    }
+  });
+
+  $(document).on('keydown', 'input[type="email"]', function(e){
+    if (e.ctrlKey) {
+        if (e.keyCode == 65 || e.keyCode == 97) { // 'A' or 'a'
+          e.target.select();
+        } 
+    }
   });
 
   $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
