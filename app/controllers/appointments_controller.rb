@@ -173,7 +173,7 @@ class AppointmentsController < ApplicationController
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Cancelled")
     respond_to do |format|
-      format.json {render :json=>{appointment:appointment ,note:"You have declined the appointment."}}
+      format.json {render :json=>{appointment:appointment ,note:"You have cancelled the appointment."}}
     end
   end
 
