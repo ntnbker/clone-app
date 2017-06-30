@@ -76,6 +76,7 @@ var TenantMaintenanceRequest = React.createClass({
 		return {
 			modal: "",
 			isModal: false,
+			isCancel: false,
 			isDecline: false,
 			appointment: null,
 			landlord: landlord,
@@ -169,7 +170,7 @@ var TenantMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenant, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate, isDecline, comments, quoteComments, landlordComments} = this.state;
+		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate, isDecline, comments, quoteComments, landlordComments, isCancel} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -206,6 +207,9 @@ var TenantMaintenanceRequest = React.createClass({
 				if(!!isDecline) {
 					self.declineAppointment(appointmentUpdate);
 				}
+				if(!!isCancel) {
+					self.cancelAppointment(appointmentUpdate);
+				}
 				switch(params.appointment_type) {
 					case 'Work Order Appointment':
 						title = "Create Appoinment";
@@ -223,7 +227,6 @@ var TenantMaintenanceRequest = React.createClass({
 						content = "Create Appointment For Quote was successfully";
 						quote_appointments.unshift(res.appointment_and_comments);
 						quoteComments.push(res.appointment_and_comments.comments);
-						quote
 						self.setState({
 							quoteComments: quoteComments,
 							quote_appointments: quote_appointments
@@ -393,6 +396,59 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 		});
 	},
+
+	cancel: function(appointment) {
+		let key = '';
+		switch(appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment,
+		});
+	},
+
+	cancelAppointment: function(appointment) {
+		const self = this;
+		const {authenticity_token, tenant} = this.props;
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role : '',
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_appointment',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCacnel: false
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Decline Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
 	
 	renderModal: function() {
 		if(this.state.isModal) {
@@ -454,6 +510,7 @@ var TenantMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							comments={commentShow}
 							appointment={this.state.appointment}
+							cancelAppointment={(value) => this.cancel(value)}
 							current_role={this.props.tenant.user.current_role}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 							declineAppointment={(value) => this.decline(value)}
@@ -525,6 +582,7 @@ var TenantMaintenanceRequest = React.createClass({
 								<AppointmentRequest 
 									appointments={appointments}
 									title="Work Order Appointments"
+									cancelAppointment={(value) => this.cancel(value)}
 									current_role={this.props.tenant.user.current_role}
 									viewItem={(key, item) => this.viewItem(key, item)}
 									acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -536,6 +594,7 @@ var TenantMaintenanceRequest = React.createClass({
 								<AppointmentRequest 
 									title="Appointments For Quotes"
 									appointments={quote_appointments}
+									cancelAppointment={(value) => this.cancel(value)}
 									current_role={this.props.tenant.user.current_role}
 									viewItem={(key, item) => this.viewItem(key, item)}
 									acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -560,6 +619,7 @@ var TenantMaintenanceRequest = React.createClass({
 							<AppointmentRequestMobile 
 								appointments={appointments}
 								title="Work Order Appointments"
+								cancelAppointment={(value) => this.cancel(value)}
 								current_role={this.props.tenant.user.current_role}
 								viewItem={(key, item) => this.viewItem(key, item)}
 								acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -571,10 +631,11 @@ var TenantMaintenanceRequest = React.createClass({
 							<AppointmentRequestMobile 
 								title="Appointments For Quotes"
 								appointments={quote_appointments}
+								cancelAppointment={(value) => this.cancel(value)}
 								current_role={this.props.tenant.user.current_role}
 								viewItem={(key, item) => this.viewItem(key, item)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
 								declineAppointment={(value) => this.decline(value)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
 							/>
 					}
 					{

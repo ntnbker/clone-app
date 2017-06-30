@@ -193,7 +193,7 @@
 				border: 1px solid #7dc691;
 				color: #7dc691;
 			}
-			.Declined {
+			.Declined, .Cancelled {
 				border: 1px solid #e76565;
 				color: #e76565;
 			}
@@ -299,7 +299,7 @@
 		border: 1px solid #7dc691;
 		color: #7dc691;
 	}
-	.Declined {
+	.Declined, .Cancelled {
 		border: 1px solid #e76565;
 		color: #e76565;
 	}

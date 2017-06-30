@@ -263,6 +263,7 @@ var TradyMaintenanceRequest = React.createClass({
 			invoice: null,
 			isModal: false,
 			quotes: quotes,
+			isCancel: false,
 			tradies: tradies,
 			isDecline: false,
 			appointment: null,
@@ -385,7 +386,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenants, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, quote_appointments, isDecline, appointmentUpdate, comments, quoteComments} = this.state;
+		const {appointments, quote_appointments, isDecline, appointmentUpdate, comments, quoteComments, isCancel} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -413,6 +414,10 @@ var TradyMaintenanceRequest = React.createClass({
 			success: function(res){
 				if(!!isDecline) {
 					self.declineAppointment(appointmentUpdate);
+				}
+
+				if(!!isCancel) {
+					self.cancelAppointment(appointmentUpdate);
 				}
 
 				if(params.appointment_type == 'Work Order Appointment') {
@@ -591,6 +596,59 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	cancel: function(appointment) {
+		let key = '';
+		switch(appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment,
+		});
+	},
+
+	cancelAppointment: function(appointment) {
+		const self = this;
+		const {authenticity_token, current_role} = this.props;
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : '',
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_appointment',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCacnel: false
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Decline Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -733,6 +791,7 @@ var TradyMaintenanceRequest = React.createClass({
 							comments={commentShow}
 							appointment={this.state.appointment}
 							current_role={this.props.current_role}
+							cancelAppointment={(value) => this.cancel(value)}
 							declineAppointment={(value) => this.decline(value)}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 						/>
@@ -804,6 +863,7 @@ var TradyMaintenanceRequest = React.createClass({
 								<AppointmentRequest 
 									appointments={appointments}
 									title="Work Order Appointments"
+									cancelAppointment={(value) => this.cancel(value)}
 									current_role={this.props.trady.user.current_role}
 									viewItem={(key, item) => this.viewItem(key, item)}
 									acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -815,6 +875,7 @@ var TradyMaintenanceRequest = React.createClass({
 								<AppointmentRequest 
 									title="Appointments For Quotes"
 									appointments={quote_appointments}
+									cancelAppointment={(value) => this.cancel(value)}
 									current_role={this.props.trady.user.current_role}
 									viewItem={(key, item) => this.viewItem(key, item)}
 									acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -829,6 +890,7 @@ var TradyMaintenanceRequest = React.createClass({
 							<AppointmentRequestMobile 
 								appointments={appointments}
 								title="Work Order Appointments"
+								cancelAppointment={(value) => this.cancel(value)}
 								current_role={this.props.trady.user.current_role}
 								viewItem={(key, item) => this.viewItem(key, item)}
 								acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -840,6 +902,7 @@ var TradyMaintenanceRequest = React.createClass({
 							<AppointmentRequestMobile 
 								title="Appointments For Quotes"
 								appointments={quote_appointments}
+								cancelAppointment={(value) => this.cancel(value)}
 								current_role={this.props.trady.user.current_role}
 								viewItem={(key, item) => this.viewItem(key, item)}
 								acceptAppointment={(value) => this.acceptAppointment(value)}

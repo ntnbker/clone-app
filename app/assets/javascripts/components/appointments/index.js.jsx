@@ -38,6 +38,15 @@ var InfoAppointment = React.createClass({
 		}
 	},
 
+	btnCancel: function() {
+		const {appointment} = this.props;
+		if(appointment.status == "Accepted" && appointment.appointment_type != "Landlord Appointment") {
+			return <BtnCancelAppointment clickCancel={this.props.clickCancel} />
+		}
+
+		return null;
+	},
+
 	render: function() {
 		const {appointment, current_role} = this.props;
 		var date = new Date(Date.parse(appointment.time)).toUTCString();
@@ -67,6 +76,7 @@ var InfoAppointment = React.createClass({
 					{this.btnView()}
 					{this.btnAccept()}
 					{this.btnDecline()}
+					{this.btnCancel()}
 				</div>
 			</li>
 		);
@@ -85,6 +95,7 @@ var ListAppointment = React.createClass({
 								key={key} 
 								appointment={appointment}
 								current_role={this.props.current_role}
+								clickCancel={() => this.props.cancelAppointment(appointment)}
 								clickAccept={() => {this.props.acceptAppointment(appointment)}}
 								clickDecline={() => {this.props.declineAppointment(appointment)}}
 								clickView={() => {this.props.viewItem('viewAppointment', appointment)}}
@@ -125,6 +136,7 @@ var AppointmentRequest = React.createClass({
 							appointments={appointments}
 							current_role={this.props.current_role}
 							viewItem={(key, item) => this.props.viewItem(key, item)}
+							cancelAppointment={(value) => this.props.cancelAppointment(value)}
 							acceptAppointment={(value) => this.props.acceptAppointment(value)}
 							declineAppointment={(value) => this.props.declineAppointment(value)}
 						/>
@@ -164,6 +176,7 @@ var AppointmentRequestMobile = React.createClass({
 								appointments={appointments}
 								current_role={this.props.current_role}
 								viewItem={(key, item) => this.props.viewItem(key, item)}
+								cancelAppointment={(value) => this.props.cancelAppointment(value)}
 								acceptAppointment={(value) => this.props.acceptAppointment(value)}
 								declineAppointment={(value) => this.props.declineAppointment(value)}
 							/>

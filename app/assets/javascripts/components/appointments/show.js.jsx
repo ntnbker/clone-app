@@ -42,6 +42,20 @@ var BtnViewAppointment = React.createClass({
 	}
 });
 
+var BtnCancelAppointment = React.createClass({
+	render: function() {
+		return (
+			<button
+				type="button"
+				className="btn-decline"
+				onClick={this.props.clickCancel}
+			>
+				Cancel
+			</button>
+		);
+	}
+});
+
 var ModalAppointment = React.createClass({
 	getInitialState: function() {
 		return {
@@ -69,6 +83,15 @@ var ModalAppointment = React.createClass({
 		}else {
 			return null;
 		}
+	},
+
+	btnCancel: function() {
+		const {appointment} = this.props;
+		if(appointment.status == "Accepted" && appointment.appointment_type != "Landlord Appointment") {
+			return <BtnCancelAppointment clickCancel={() => this.props.cancelAppointment(appointment)} />
+		}
+
+		return null;
 	},
 
 	render: function() {
@@ -132,6 +155,7 @@ var ModalAppointment = React.createClass({
 						<div className="modal-footer button-appointment-mobile">
 						{this.btnDecline()}
 						{this.btnAccept()}
+						{this.btnCancel()}
 						</div>
 					</div>
 				</div>
