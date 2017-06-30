@@ -207,6 +207,9 @@ var Agency = React.createClass({
         id="user_email" 
         name="user[email]"
         placeholder="Email"
+        autoCapitalize="off"
+        autoCorrect="off"
+        autoComplete="off"
       />
 
       <p> Password </p>

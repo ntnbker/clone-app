@@ -176,11 +176,14 @@ var ModalAddAskLandlord = React.createClass({
 										<div>
 											<label>Email <strong>*</strong>:</label>
 											<input 
-												type="text" 
+												type="email" 
 												name="landlord[email]" 
 												placeholder="Enter Email"
 												onChange={this.checkValidate} 
-												id="email" ref={e => this.email = e} 
+												id="email" ref={e => this.email = e}
+												autoCapitalize="off"
+												autoCorrect="off"
+												autoComplete="off"
 												className={"u-full-width " + (this.state.errorEmail && "has-error")} 
 											/>
 										</div>
@@ -350,6 +353,9 @@ var ModalEditAskLandlord = React.createClass({
 											<input 
 												id="email"
 												type="text"
+												autoCapitalize="off"
+												autoCorrect="off"
+												autoComplete="off"
 												ref={e => this.email = e}
 												onChange={this.checkValidate}
 												readOnly={!this.state.isEdit}
@@ -601,7 +607,10 @@ var ModalAddLandlord = React.createClass({
 											<label>Email <strong>*</strong>:</label>
 											<input 
 												id="email" 
-												type="text" 
+												type="email"
+												autoCapitalize="off"
+												autoCorrect="off"
+												autoComplete="off"
 												name="landlord[email]" 
 												placeholder="Enter Email"
 												ref={e => this.email = e} 
@@ -770,7 +779,10 @@ var ModalEditLandlord = React.createClass({
 											<label>Email <strong>*</strong>:</label>
 											<input 
 												id="email" 
-												type="text" 
+												type="email"
+												autoCapitalize="off"
+												autoCorrect="off"
+												autoComplete="off"
 												name="landlord[email]" 
 												placeholder="Enter Email"
 												ref={e => this.email = e} 
@@ -1103,8 +1115,11 @@ var ModalRequestModal = React.createClass({
 											<label className="label-custom">Email <strong>*</strong>:</label>
 											<input
 												id="email" 
-												type="text" 
+												type="email" 
 												style={style}
+												autoCapitalize="off"
+												autoCorrect="off"
+												autoComplete="off"
 												placeholder="Enter Email"
 												ref={e => this.email = e} 
 												readOnly={!this.state.isAdd}
