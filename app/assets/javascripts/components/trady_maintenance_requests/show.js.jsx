@@ -96,15 +96,19 @@ var TradySideBarMobile = React.createClass({
 
 var ModalConfirmAddInvoice = React.createClass({
 	jobCompleted: function() {
+		const {maintenance_request} = this.props;
+		const maintenance_trady_id = maintenance_request.trady_id;
+
 		let params = {
-			maintenance_request_id: this.props.maintenance_request.id
+			maintenance_request_id: maintenance_request.id
 		};
 
 		this.props.jobCompleted(params);
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
 	},
 
 	createInvoice: function() {
-		const maintenance_request = this.props.maintenance_request;
+		const {maintenance_request} = this.props;
 		const maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
 		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
