@@ -150,6 +150,7 @@ Rails.application.routes.draw do
     resources :appointments, only:[:new,:create,:show, :edit, :update]
     post "accept_appointment" =>"appointments#accept_appointment", :as =>:accept_appointment
     post "decline_appointment" => "appointments#decline_appointment"
+    post "cancel_appointment" => "appointments#cancel_appointment"
   ###################################################################
   ##########LANDLORD AND TENANT APPOINTMENTS RESOURCES/ROUTES########
   ###################################################################
