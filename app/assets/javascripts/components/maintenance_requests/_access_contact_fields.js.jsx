@@ -103,6 +103,9 @@ var AccessContactField = React.createClass({
             type="email" 
             required="required"
             placeholder="E-mail"
+            autoCapitalize="off"
+            autoCorrect="off"
+            autoComplete="off"
 						id={this.generateAtt("id", x, "email")} 
             name={this.generateAtt("name", x, "email")}
 						onBlur={(e) => {

@@ -603,8 +603,11 @@ var TradyCompanyInvoice = React.createClass({
                         name="trady_company[mobile_number]"
                         id="trady_company_mobile_number" required />
 
-                <input type="text" placeholder="Email" defaultValue={this.props.email}
+                <input type="email" placeholder="Email" defaultValue={this.props.email}
                         name="trady_company[email]"
+                        autoCapitalize="off"
+                        autoCorrect="off"
+                        autoComplete="off"
                         id="trady_company_email" required />
 
                 <input type="text" placeholder="Bank Account Number" defaultValue={this.props.account_name}

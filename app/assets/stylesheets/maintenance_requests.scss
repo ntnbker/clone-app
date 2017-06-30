@@ -381,6 +381,7 @@ form#new_maintenance_request {
         }
         .view {
             margin-left: 5px;
+            margin-bottom: 15px;
             .btn-view {
                 width: 100px;
                 height: 30px;
@@ -745,6 +746,7 @@ form#new_maintenance_request {
         .image {
             margin-left: 0;
             width: 80%;
+            padding-left: 0;
         }
         .content {
             width: 80%;
@@ -758,6 +760,7 @@ form#new_maintenance_request {
         align-items: center;
         .image {
             width: 90%;
+            padding-left: 0;
         }
         .content {
             width: 90%;

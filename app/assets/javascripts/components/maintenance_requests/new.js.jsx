@@ -498,7 +498,10 @@ var MaintenanceRequestsNew = React.createClass({
 						
 						<input
 							required
-							type="email" 
+							type="email"
+							autoCapitalize="off"
+							autoCorrect="off"
+							autoComplete="off"
 							placeholder="E-mail"
 							ref={(ref) => this.email = ref}
 							id={this.generateAtt("id", "email")}
@@ -605,7 +608,10 @@ var MaintenanceRequestsNew = React.createClass({
 							<div>
 								<input
 									required
-									type="text"
+									type="email"
+									autoCapitalize="off"
+									autoCorrect="off"
+									autoComplete="off"
 									placeholder="Agent email"
 									onBlur={this.checkAgentEmail}
 									ref={(ref) => this.agent_email = ref}

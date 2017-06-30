@@ -40,12 +40,6 @@ var EditMaintenanceRequest = React.createClass({
 	submit: function(e) {
 		e.preventDefault();
 		let flag = false;
-		if(this.title.value == "") {
-			this.setState({
-				errorTitle: true
-			});
-			flag = true;
-		}
 
 		if(this.description.value == "") {
 			this.setState({
@@ -59,7 +53,6 @@ var EditMaintenanceRequest = React.createClass({
 		}
 
 		var params = {
-			maintenance_heading: this.title.value,
 			maintenance_description: this.description.value
 		};
 		this.props.editMaintenanceRequest(params);
@@ -86,19 +79,6 @@ var EditMaintenanceRequest = React.createClass({
 								<h4 className="modal-title text-center">Edit Maintenance Request</h4>
 							</div>
 							<div className="modal-body edit-maintenance-request">
-									<div className="row">
-										<div>
-											<label className="u-full-width">Maintenance Request Title:</label>
-											<input 
-												type="text" 
-												placeholder="Enter Title"
-												ref={e => this.title = e}
-												onChange={(e, key) => this.checkValidate(e, 'title')} 
-												defaultValue={maintenance_request.maintenance_heading}
-												className={"u-full-width " + (this.state.errorTitle && "has-error")} 
-											/>
-										</div>
-									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Maintenance Request Description:</label>

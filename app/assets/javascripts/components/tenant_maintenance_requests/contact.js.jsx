@@ -1,7 +1,6 @@
 var ContentTenantContact = React.createClass({
 	render: function() {
 		const selt = this;
-		const landlord = this.props.landlord;
 		return (
 			<ul>
 				<li>
