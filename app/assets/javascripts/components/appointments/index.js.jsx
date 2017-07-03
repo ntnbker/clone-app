@@ -40,7 +40,7 @@ var InfoAppointment = React.createClass({
 
 	btnCancel: function() {
 		const {appointment} = this.props;
-		if(appointment.status == "Accepted" && appointment.appointment_type != "Landlord Appointment") {
+		if(appointment.status == "Accepted") {
 			return <BtnCancelAppointment clickCancel={this.props.clickCancel} />
 		}
 

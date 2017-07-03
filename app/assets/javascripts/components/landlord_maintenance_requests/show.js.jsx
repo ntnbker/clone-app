@@ -120,6 +120,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			quote: null,
 			isModal: false,
 			quotes: quotes,
+			isCancel: false,
 			isDecline: false,
 			tradies: tradies,
 			appointment: null,
@@ -300,7 +301,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		const self = this;
 		const {tenants, current_role, landlord, authenticity_token, tenant} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
-		const {appointments, isDecline, appointmentUpdate, comments} = this.state;
+		const {appointments, isDecline, appointmentUpdate, comments, isCancel} = this.state;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -328,6 +329,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function(res){
 				if(!!isDecline) {
 					self.declineAppointment(appointmentUpdate);
+				}
+				if(!!isCancel) {
+					self.cancelAppointment(appointmentUpdate);
 				}
 				appointments.unshift(res.appointment_and_comments);
 				comments.push(res.appointment_and_comments.comments[0]);
@@ -437,6 +441,45 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					isDecline: false
 				});
+			}
+		});
+	},
+
+	cancel: function(appointment) {
+		this.onModalWith('createAppointment');
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment,
+		});
+	},
+
+	cancelAppointment: function(appointment) {
+		const self = this;
+		const {authenticity_token, tenant, current_role} = this.props;
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : '',
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_landlord_appointment',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCacnel: false
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Cancel Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
 			}
 		});
 	},
@@ -571,10 +614,11 @@ var LandlordMaintenanceRequest = React.createClass({
 								<AppointmentRequest 
 									title="Landlord Appointments"
 									appointments={appointments}
-									current_role={this.props.signed_in_landlord.user.current_role}
+									cancelAppointment={(value) => this.cancel(value)}
 									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
 									declineAppointment={(value) => this.decline(value)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									current_role={this.props.signed_in_landlord.user.current_role}
 								/>
 						}
 					</div>
@@ -583,10 +627,11 @@ var LandlordMaintenanceRequest = React.createClass({
 							<AppointmentRequestMobile 
 								appointments={appointments}
 								title="Landlord Appointments"
-								current_role={this.props.signed_in_landlord.user.current_role}
+								cancelAppointment={(value) => this.cancel(value)}
 								viewItem={(key, item) => this.viewItem(key, item)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
 								declineAppointment={(value) => this.decline(value)}
+								acceptAppointment={(value) => this.acceptAppointment(value)}
+								current_role={this.props.signed_in_landlord.user.current_role}
 							/>
 					}
 				</div>

@@ -485,6 +485,9 @@ form#new_maintenance_request {
                 &.active {
                     background-color: #8499aa;
                 }
+                &.trady-filter {
+                    padding: 0 20px;
+                }
             }
             .action-mobile {
                 position: fixed; 

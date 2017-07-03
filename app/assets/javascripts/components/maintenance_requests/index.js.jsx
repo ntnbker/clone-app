@@ -172,7 +172,7 @@ var DropDownMobileList = React.createClass({
         <button 
           id={props.id} 
           onClick={(id) => this.onDrop(props.id)}
-          className={'btn-drop-mobile title ' + (!state.hidden && 'active')} 
+          className={'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')} 
         >
           {this.props.title}
         </button>
