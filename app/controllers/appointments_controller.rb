@@ -164,6 +164,18 @@ class AppointmentsController < ApplicationController
   def decline_appointment
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Declined")
+
+    tenant = appointment.tenant
+    trady = appointment.trady
+    
+    if params[:current_user_role] == "Trady"
+      #Email the tenant that a new appointment will be suggested to them. 
+      
+        TradyDeclinedAppointmentEmailWorker.perform_async(tenant.id)
+    elsif params[:current_user_role] == "Tenant"
+      #email the trady that a new appointment will be suggested to them. 
+        TenantDeclinedAppointmentEmailWorker.perform_async(trady.id)
+    end 
     respond_to do |format|
       format.json {render :json=>{appointment:appointment ,note:"You have declined the appointment."}}
     end
