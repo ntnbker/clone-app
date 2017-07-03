@@ -64,6 +64,12 @@ class TenantMailer < ActionMailer::Base
     track extra: {maintenance_request_id:@maintenance_request.id}
     mail(from:"ron@email.com",to:@tenant.email, subject:"Hi your appointment time was accepted")
   end
+
+  def trady_cancelled_appointment_email(tenant_object)
+    
+    @tenant = tenant_object
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Cancelled")
+  end
   
   
 

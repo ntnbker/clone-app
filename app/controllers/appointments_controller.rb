@@ -172,6 +172,18 @@ class AppointmentsController < ApplicationController
   def cancel_appointment
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Cancelled")
+    tenant = appointment.tenant
+    trady = appointment.trady
+    
+    if params[:current_user_role] == "Trady"
+      #Email the tenant that a new appointment will be suggested to them. 
+      
+        TradyCancelledAppointmentEmailWorker.perform_async(tenant.id)
+    elsif params[:current_user_role] == "Tenant"
+      #email the trady that a new appointment will be suggested to them. 
+        TenantCancelledAppointmentEmailWorker.perform_async(trady.id)
+    end 
+        
     respond_to do |format|
       format.json {render :json=>{appointment:appointment ,note:"You have cancelled the appointment."}}
     end

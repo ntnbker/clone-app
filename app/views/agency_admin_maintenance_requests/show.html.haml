@@ -1,1 +1,18 @@
 = react_component 'MaintenanceRequest', {:landlord => @landlord, :quotes => @quotes, :property => @maintenance_request.property, :invoices => @maintenance_request.delivered_invoices, :gallery => @gallery, :authenticity_token => form_authenticity_token, :maintenance_request => @maintenance_request, :tenants_conversation => @tenants_conversation, :landlords_conversation => @landlords_conversation, :current_user => @current_user, :current_user_show_quote_message => @current_user.agency_admin, :agency => @agency, :tradies => @all_tradies, :invoices => @invoices, :invoice_pdf_files => @invoice_pdf_files, :tradies_with_quote_requests => @quote_request_trady_list, :logs => @logs, :tradies_with_quote_requests => @quote_request_trady_list, :work_order_appointments => @work_order_appointments, :landlord_appointments => @landlord_appointments, :quote_appointments => @quote_appointments, :all_agents => @all_agents, :all_agency_admins => @all_agency_admins, :current_user_role => @current_user.current_role, :tenants => @tenants}
+
+
+%div{:class=>"modal fade", :id=>"tenant-message-modal", :tabindex=>"-1", :role=>"dialog", "aria-labelledby"=>"myModalLabel"}
+  %div{:class=>"modal-dialog", :role=>"document"}
+    %div{:class=>"modal-content"}
+      %div{:class=>"modal-body message_modal"}
+        %div.messages_container    
+          = render partial: "messages/message", collection: @tenants_conversation, as: :message   
+        %div{:id=>"errors_div"}
+        =bootstrap_form_for(@message,remote: true,url:"/messages", method: :post) do |f|
+          =f.text_field :body, class: "message_body"
+          =f.hidden_field :conversation_type, value: "Trady_Agent"
+          =f.hidden_field :role, value: @current_user.current_role.role
+          =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+          =f.submit "Submit Message", :class=>"btn btn-default"
+          %button{:type=>"button", :class=>"btn btn-default", "data-dismiss"=>"modal"}
+            Close

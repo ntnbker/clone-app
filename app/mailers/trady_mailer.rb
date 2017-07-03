@@ -58,6 +58,12 @@ class TradyMailer < ActionMailer::Base
     track extra: {maintenance_request_id:@maintenance_request.id}
     mail(to:@trady.email, subject:"Work Order")
   end
+
+  def tenant_cancelled_appointment_email(trady_object)
+    @trady = trady_object
+    mail(from:"ron@email.com",to:@trady.email, subject:"Appointment Cancelled")
+  end
+  
 end 
 
 
