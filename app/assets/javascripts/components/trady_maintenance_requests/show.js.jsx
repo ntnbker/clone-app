@@ -326,6 +326,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 	sendMessageQuote: function(params) {
 		const self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/quote_messages',
@@ -678,6 +679,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote}
 							keyLandlord="trady" 
+							landlord={this.props.landlord}
 							quotes={this.state.quotes}
 							agency={this.props.agency}
 							property={this.props.property}
@@ -882,8 +884,6 @@ var TradyMaintenanceRequest = React.createClass({
 									declineAppointment={(value) => this.decline(value)}
 								/>
 						}
-						
-						<Activity logs={this.props.logs} />
 					</div>
 					{
 						appointments.length > 0 &&
@@ -909,7 +909,6 @@ var TradyMaintenanceRequest = React.createClass({
 								declineAppointment={(value) => this.decline(value)}
 							/>
 					}
-					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<TradySideBarMobile 
 					trady={this.props.trady}
