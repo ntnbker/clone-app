@@ -70,6 +70,11 @@ class TenantMailer < ActionMailer::Base
     @tenant = tenant_object
     mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Cancelled")
   end
+
+  def trady_declined_appointment_email(tenant_object)
+    @tenant = tenant_object
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Declined")
+  end
   
   
 
