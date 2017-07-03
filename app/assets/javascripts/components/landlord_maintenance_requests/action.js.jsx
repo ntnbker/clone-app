@@ -27,12 +27,6 @@ var ContentLandlordAction = React.createClass({
 						Create appointment to fix myself
 					</a>
 				</li>
-				<li>
-					<a href={"/job_completed?maintenance_request_id=" + this.props.maintenance_request.id}>
-						<i aria-hidden="true" className="fa fa-user-plus" />
-						Job Completed
-					</a>
-				</li>
 			</ul>
 		);
 	}
