@@ -158,6 +158,7 @@ Rails.application.routes.draw do
     put "update_landlord_appointment" =>"landlord_appointments#update"
     post "accept_landlord_appointment" =>"landlord_appointments#accept_appointment", :as =>:accept_landlord_appointment
     post "decline_landlord_appointment" => "landlord_appointments#decline_appointment", :as =>:decline_landlord_appointment
+    post "cancel_landlord_appointment" => "appointments#cancel_landlord_appointment"
   ###################################################
   ##########COMMENTS RESOURCES/ROUTES################
   ###################################################

@@ -169,6 +169,14 @@ class LandlordAppointmentsController < ApplicationController
     end
   end
 
+  def cancel_appointment
+    appointment = Appointment.find_by(id:params[:appointment_id])
+    appointment.update_attribute(:status,"Declined")
+    respond_to do |format|
+      format.json {render :json=>{appointment:appointment ,note:"You have cancelled the appointment."}}
+    end
+  end
+
   private
     
     def appointment_params
