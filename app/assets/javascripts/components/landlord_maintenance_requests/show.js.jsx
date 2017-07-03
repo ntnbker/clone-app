@@ -189,6 +189,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	sendMessageLandlord: function(params) {
 		const self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -237,6 +238,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	sendEmailLandlord: function(params) {
 		const self = this;
+		params.message.role = current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/request_quote',
@@ -587,7 +589,6 @@ var LandlordMaintenanceRequest = React.createClass({
 									quotes={this.state.quotes} 
 									landlord={this.state.landlord} 
 									onModalWith={this.onModalWith} 
-									
 									current_user={this.props.current_user} 
 									updateStatusQuote={this.updateStatusQuote} 
 									sendEmailLandlord={this.sendEmailLandlord}
@@ -621,6 +622,7 @@ var LandlordMaintenanceRequest = React.createClass({
 									current_role={this.props.signed_in_landlord.user.current_role}
 								/>
 						}
+						<ActivityMobile logs={this.props.logs} />
 					</div>
 					{
 						appointments.length > 0 &&
@@ -634,6 +636,7 @@ var LandlordMaintenanceRequest = React.createClass({
 								current_role={this.props.signed_in_landlord.user.current_role}
 							/>
 					}
+					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<LandlordSideBarMobile
 					agent={this.props.agent}

@@ -453,10 +453,11 @@ var SideBarMobile = React.createClass({
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/> 
 					<ContactMobile 
-						tenants={this.props.tenants}
 						close={this.close}
+						tenants={this.props.tenants}
 						landlord={this.props.landlord}
 						current_user={this.props.current_user}
+						assigned_trady={this.props.assigned_trady}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/> 
 				</div>
@@ -1208,6 +1209,7 @@ var MaintenanceRequest = React.createClass({
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.invoice_pdf_files,
+			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
@@ -1416,6 +1418,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendMessageLandlord: function(params) {
 		const self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -1444,6 +1447,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendMessageTenant: function(params) {
 		const self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -1469,8 +1473,39 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageTrady: function(params) {
+		const {authenticity_token, maintenance_request, current_user_role} = this.props;
+		const self = this;
+		params.message.maintenance_request_id = maintenance_request.id;
+		params.message.role = current_user_role.role;
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				const trady_conversation = !!self.state.trady_conversation ? self.state.trady_conversation : [];
+				trady_conversation.push(res);
+				self.setState({
+					trady_conversation: trady_conversation
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Message Trady",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	sendMessageQuote: function(params) {
 		const self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/quote_messages',
@@ -1813,6 +1848,17 @@ var MaintenanceRequest = React.createClass({
 					);
 				}
 
+				case 'sendMessageTrady': {
+					return (
+						<ModalSendMessageTrady 
+							close={this.isClose} 
+							current_user={this.props.current_user} 
+							sendMessageTrady={this.sendMessageTrady}
+							trady_conversation={this.state.trady_conversation}
+						/>
+					);
+				}
+
 				case 'viewQuote': {
 					return (
 						<ModalViewQuote 
@@ -1982,9 +2028,10 @@ var MaintenanceRequest = React.createClass({
 					</div>
 					<div className="sidebar">
 						<Contact 
-							landlord={this.state.landlord}
 							tenants={tenants}
+							landlord={this.state.landlord}
 							current_user={this.props.current_user} 
+							assigned_trady={this.props.assigned_trady}
 							onModalWith={(modal) => this.onModalWith(modal)} 
 						/>
 						<Action 
@@ -2050,9 +2097,10 @@ var MaintenanceRequest = React.createClass({
 					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<SideBarMobile
-					landlord={this.state.landlord} 
 					tenants={tenants}
+					landlord={this.state.landlord} 
 					current_user={this.props.current_user} 
+					assigned_trady={this.props.assigned_trady}
 					onModalWith={(modal) => this.onModalWith(modal)} 
 					viewItem={(key, item) => this.viewItem(key, item)}
 				/>

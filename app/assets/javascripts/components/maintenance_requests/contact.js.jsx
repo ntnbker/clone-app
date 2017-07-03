@@ -1,7 +1,7 @@
 var ContentContact = React.createClass({
 	render: function() {
 		const selt = this;
-		const {landlord, tenants} = this.props;
+		const {landlord, tenants, assigned_trady} = this.props;
 		var tenantMobile = [];
 		if(tenants) {
 			tenantMobile = tenants.map((tenant, key) => {
@@ -38,6 +38,15 @@ var ContentContact = React.createClass({
 							Message Tenants
 						</a>
 					</li>
+					{
+						assigned_trady && 
+						<li>
+							<a onClick={() => selt.props.onModalWith('sendMessageTrady')}>
+								<i className="fa fa-commenting" aria-hidden="true" />
+								Message Trady
+							</a>
+						</li>
+					}
 				</ul>
 			);
 		}else {
@@ -50,6 +59,15 @@ var ContentContact = React.createClass({
 							Message Tenants
 						</a>
 					</li>
+					{
+						assigned_trady && 
+						<li>
+							<a onClick={() => selt.props.onModalWith('sendMessageTrady')}>
+								<i className="fa fa-commenting" aria-hidden="true" />
+								Message Trady
+							</a>
+						</li>
+					}
 				</ul>
 			);
 		}
@@ -83,6 +101,7 @@ var Contact = React.createClass({
 							<ContentContact 
 								tenants={this.props.tenants} 
 								landlord={this.props.landlord} 
+								assigned_trady={this.props.assigned_trady}
 								onModalWith={(modal) => this.props.onModalWith(modal)} 
 							/> 
 					}
@@ -109,6 +128,7 @@ var ContactMobile = React.createClass({
 						<ContentContact 
 							tenants={this.props.tenants} 
 							landlord={this.props.landlord}
+							assigned_trady={this.props.assigned_trady}
 							onModalWith={(modal) => this.props.onModalWith(modal)} 
 						/>
 					</div>
