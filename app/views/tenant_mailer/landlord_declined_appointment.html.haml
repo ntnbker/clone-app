@@ -89,20 +89,16 @@
           %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
-
       .main
         %p.content
-          Hi #{@landlord.name.capitalize}, #{@tenant.name.capitalize} has accepted your appointment time.
-        %p.content
-          To view the details again please click on the button below.
-        %div.text-center
-          =link_to "View Maintenance Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id), class: 'btn'
-
+          Hi #{@tenant.name.capitalize},
+          the appointment suggested with the landlord to fix the maintenance request issue has been declined. You will recieve an email with a new suggested appointment time. 
+        
         %p.thank
-          Thank you
+          Thank you :)
 
         %p.team
-          The MaintenanceApp Team :)
+          The MaintenanceApp Team
 
       .footer
         .contact
@@ -116,3 +112,5 @@
             = image_tag "http://localhost:3000/assets/ico-instagram.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
             = image_tag "http://localhost:3000/assets/ico-google.png", :class => 'img'
+
+    

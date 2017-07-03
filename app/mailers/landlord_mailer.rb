@@ -39,6 +39,22 @@ class LandlordMailer < ActionMailer::Base
     mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment Accepted")
   end
 
+  def tenant_cancelled_landlord_appointment_email(landlord_object)
+    @landlord = landlord_object
+    mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment Cancelled")
+  end
+
+  def tenant_declined_landlord_appointment_email(landlord_object)
+    @landlord = landlord_object
+    mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment Cancelled")
+  end
+
+
+  def quote_has_been_approved_email(maintenance_request_object)
+    @landlord = maintenance_request_object.property.landlord
+    @maintenance_request = maintenance_request_object
+    mail(from:"ron@email.com",to:@landlord.email, subject:"Quote for Maintenance Request Has Been Approved.")
+  end
   
 
 end 

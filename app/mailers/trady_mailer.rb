@@ -63,6 +63,11 @@ class TradyMailer < ActionMailer::Base
     @trady = trady_object
     mail(from:"ron@email.com",to:@trady.email, subject:"Appointment Cancelled")
   end
+
+  def tenant_declined_appointment_email(trady_object)
+    @trady = trady_object
+    mail(from:"ron@email.com",to:@trady.email, subject:"Appointment Declined")
+  end
   
 end 
 

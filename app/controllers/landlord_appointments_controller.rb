@@ -164,6 +164,16 @@ class LandlordAppointmentsController < ApplicationController
   def decline_appointment
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Declined")
+
+    if params[:current_user_role] == "Landlord"
+      #Email the tenant that a new appointment will be suggested to them. 
+      
+        LandlordDeclineddAppointmentEmailWorker.perform_async(tenant.id)
+    elsif params[:current_user_role] == "Tenant"
+      #email the landlord that a new appointment will be suggested to them. 
+        TenantDeclinedLandlordAppointmentEmailWorker.perform_async(landlord.id)
+    end 
+
     respond_to do |format|
       format.json {render :json=>{appointment:appointment ,note:"You have declined the appointment."}}
     end
@@ -172,6 +182,20 @@ class LandlordAppointmentsController < ApplicationController
   def cancel_appointment
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Cancelled")
+    tenant = appointment.tenant
+    landlord = appointment.landlord
+    
+    if params[:current_user_role] == "Landlord"
+      #Email the tenant that a new appointment will be suggested to them. 
+      
+        LandlordCancelledAppointmentEmailWorker.perform_async(tenant.id)
+    elsif params[:current_user_role] == "Tenant"
+      #email the landlord that a new appointment will be suggested to them. 
+        TenantCancelledLandlordAppointmentEmailWorker.perform_async(landlord.id)
+    end 
+
+
+
     respond_to do |format|
       format.json {render :json=>{appointment:appointment ,note:"You have cancelled the appointment."}}
     end

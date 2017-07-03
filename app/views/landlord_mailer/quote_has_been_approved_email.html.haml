@@ -92,9 +92,9 @@
 
       .main
         %p.content
-          Hi #{@landlord.name.capitalize}, #{@tenant.name.capitalize} has accepted your appointment time.
+          Hi #{@landlord.name.capitalize}, a quote for a maintenance request has been approved.
         %p.content
-          To view the details again please click on the button below.
+          To view the details please click on the button below.
         %div.text-center
           =link_to "View Maintenance Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id), class: 'btn'
 
