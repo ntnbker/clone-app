@@ -408,6 +408,10 @@ var TenantMaintenanceRequest = React.createClass({
 				key = 'createAppointmentForQuote';
 				break;
 
+			case 'Landlord Appointment': 
+				key = 'createLandlordAppointment';
+				break;
+
 			default:
 				break;
 		}
@@ -423,12 +427,11 @@ var TenantMaintenanceRequest = React.createClass({
 		const {authenticity_token, tenant} = this.props;
 		var params = {
 			appointment_id: appointment.id,
-			current_user_role: tenant.user.current_role ? tenant.user.current_role : '',
+			current_user_role: tenant.user.current_role ? tenant.user.current_role.role : '',
 		};
-
 		$.ajax({
 			type: 'POST',
-			url: '/cancel_appointment',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/cancel_landlord_appointment' : '/cancel_appointment',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
 			},
@@ -442,7 +445,7 @@ var TenantMaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					bgClass: "bg-error",
-					title: "Decline Appoinment",
+					title: "Cancel Appoinment",
 					content: err.responseText,
 				}});
 				self.onModalWith('notification');
@@ -606,6 +609,7 @@ var TenantMaintenanceRequest = React.createClass({
 								<AppointmentRequest 
 									title="Landlord Appointments"
 									appointments={landlord_appointments}
+									cancelAppointment={(value) => this.cancel(value)}
 									current_role={this.props.tenant.user.current_role}
 									viewItem={(key, item) => this.viewItem(key, item)}
 									acceptAppointment={(value) => this.acceptAppointment(value)}
@@ -643,6 +647,7 @@ var TenantMaintenanceRequest = React.createClass({
 							<AppointmentRequestMobile 
 								title="Landlord Appointments"
 								appointments={landlord_appointments}
+								cancelAppointment={(value) => this.cancel(value)}
 								current_role={this.props.tenant.user.current_role}
 								viewItem={(key, item) => this.viewItem(key, item)}
 								acceptAppointment={(value) => this.acceptAppointment(value)}
