@@ -33784,6 +33784,21 @@ $( document ).ready(function() {
     // This resets the web page when we go back to the home page
   var $input = $('#refresh');
 
+  $(document).on('change keyup paste', 'input[type="email"]', function(e){
+    if (e.ctrlKey) {
+        if (e.keyCode == 65 || e.keyCode == 97) { // 'A' or 'a'
+          e.target.select();
+        } 
+    }else {
+      if(e.key != "Control") {
+        var value = $(this).val();
+        if(/^[A-Z]/.test(e.key)) {
+          $(this).val(value.toLowerCase());
+        }
+      }
+    }
+  });
+
   $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
   // google.maps.event.addDomListener(window, 'turbolinks:load', initialize);
 });
@@ -67889,7 +67904,10 @@ var Agency = React.createClass({
         type: "email",
         id: "user_email",
         name: "user[email]",
-        placeholder: "Email"
+        placeholder: "Email",
+        autoCapitalize: "off",
+        autoCorrect: "off",
+        autoComplete: "off"
       }),
       React.createElement(
         "p",
@@ -68028,6 +68046,16 @@ var InfoAppointment = React.createClass({
 		}
 	},
 
+	btnCancel: function () {
+		var appointment = this.props.appointment;
+
+		if (appointment.status == "Accepted") {
+			return React.createElement(BtnCancelAppointment, { clickCancel: this.props.clickCancel });
+		}
+
+		return null;
+	},
+
 	render: function () {
 		var _props4 = this.props;
 		var appointment = _props4.appointment;
@@ -68094,7 +68122,8 @@ var InfoAppointment = React.createClass({
 				{ className: 'button-appointment btn-appointment-mobile' },
 				this.btnView(),
 				this.btnAccept(),
-				this.btnDecline()
+				this.btnDecline(),
+				this.btnCancel()
 			)
 		);
 	}
@@ -68116,6 +68145,9 @@ var ListAppointment = React.createClass({
 					key: key,
 					appointment: appointment,
 					current_role: _this.props.current_role,
+					clickCancel: function () {
+						return _this.props.cancelAppointment(appointment);
+					},
 					clickAccept: function () {
 						_this.props.acceptAppointment(appointment);
 					},
@@ -68174,6 +68206,9 @@ var AppointmentRequest = React.createClass({
 				viewItem: function (key, item) {
 					return _this2.props.viewItem(key, item);
 				},
+				cancelAppointment: function (value) {
+					return _this2.props.cancelAppointment(value);
+				},
 				acceptAppointment: function (value) {
 					return _this2.props.acceptAppointment(value);
 				},
@@ -68230,6 +68265,9 @@ var AppointmentRequestMobile = React.createClass({
 					current_role: this.props.current_role,
 					viewItem: function (key, item) {
 						return _this3.props.viewItem(key, item);
+					},
+					cancelAppointment: function (value) {
+						return _this3.props.cancelAppointment(value);
 					},
 					acceptAppointment: function (value) {
 						return _this3.props.acceptAppointment(value);
@@ -68560,6 +68598,22 @@ var BtnViewAppointment = React.createClass({
 	}
 });
 
+var BtnCancelAppointment = React.createClass({
+	displayName: "BtnCancelAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn-decline",
+				onClick: this.props.clickCancel
+			},
+			"Cancel"
+		);
+	}
+});
+
 var ModalAppointment = React.createClass({
 	displayName: "ModalAppointment",
 
@@ -68603,6 +68657,20 @@ var ModalAppointment = React.createClass({
 		} else {
 			return null;
 		}
+	},
+
+	btnCancel: function () {
+		var _this3 = this;
+
+		var appointment = this.props.appointment;
+
+		if (appointment.status == "Accepted") {
+			return React.createElement(BtnCancelAppointment, { clickCancel: function () {
+					return _this3.props.cancelAppointment(appointment);
+				} });
+		}
+
+		return null;
 	},
 
 	render: function () {
@@ -68720,7 +68788,8 @@ var ModalAppointment = React.createClass({
 						"div",
 						{ className: "modal-footer button-appointment-mobile" },
 						this.btnDecline(),
-						this.btnAccept()
+						this.btnAccept(),
+						this.btnCancel()
 					)
 				)
 			)
@@ -68735,7 +68804,7 @@ var Invoices = React.createClass({
 		var self = this;
 		return React.createElement(
 			"div",
-			{ className: "quotes invoices m-t-xl" },
+			{ className: "quotes invoices m-t-xl", id: "invoices" },
 			React.createElement(
 				"p",
 				null,
@@ -69006,7 +69075,7 @@ var ButtonAddAnotherItem = React.createClass({
                     return React.createElement(
                         "button",
                         { type: "button", className: "button-add button-primary", onClick: this.props.addField },
-                        x <= 1 ? "Add Access Contact" : "Add Access Contact To The Section"
+                        x <= 1 ? "Add Access Contact" : "Add Another Premise Access Contact"
                     );
                 }
             default:
@@ -69137,62 +69206,53 @@ var AdditionalInvoice = React.createClass({
             React.createElement(
                 "fieldset",
                 null,
-                React.createElement(
-                    "p",
-                    null,
-                    " Item description "
-                ),
-                React.createElement("input", { type: "text",
-                    name: 'invoice[invoice_items_attributes][' + x + '][item_description]',
-                    defaultValue: quote ? quote.item_description : ''
+                React.createElement("input", {
+                    type: "text",
+                    placeholder: "Item description",
+                    defaultValue: quote ? quote.item_description : '',
+                    name: 'invoice[invoice_items_attributes][' + x + '][item_description]'
                 }),
                 React.createElement(
-                    "p",
-                    null,
-                    " Amount "
-                ),
-                React.createElement("input", { type: "text",
-                    name: 'invoice[invoice_items_attributes][' + x + '][amount]',
-                    defaultValue: quote ? quote.amount : ''
-                }),
-                React.createElement(
-                    "p",
-                    null,
-                    " Pricing type "
-                ),
-                React.createElement(
-                    "select",
-                    { value: this.state.pricing_type,
-                        onChange: this.onPricing,
-                        name: 'invoice[invoice_items_attributes][' + x + '][pricing_type]' },
-                    React.createElement(
-                        "option",
-                        { value: "Fixed Cost" },
-                        "Fixed Cost"
-                    ),
-                    React.createElement(
-                        "option",
-                        { value: "Hourly" },
-                        "Hourly"
-                    )
-                ),
-                this.state.hours_input ? React.createElement(
                     "div",
-                    null,
+                    { className: "amount" },
                     React.createElement(
-                        "p",
-                        null,
-                        " Number of Hours "
+                        "select",
+                        {
+                            onChange: this.onPricing,
+                            value: this.state.pricing_type,
+                            name: 'invoice[invoice_items_attributes][' + x + '][pricing_type]',
+                            className: "text-center " + (this.state.hours_input && 'hour select')
+                        },
+                        React.createElement(
+                            "option",
+                            { value: "Fixed Cost" },
+                            "Fixed Cost"
+                        ),
+                        React.createElement(
+                            "option",
+                            { value: "Hourly" },
+                            "Hourly"
+                        )
                     ),
-                    React.createElement("input", { type: "text",
+                    React.createElement("input", {
+                        type: "number",
+                        placeholder: "Amount",
+                        defaultValue: quote ? quote.amount : '',
+                        name: 'invoice[invoice_items_attributes][' + x + '][amount]',
+                        className: "text-center " + (!!this.state.hours_input && 'hour price')
+                    }),
+                    this.state.hours_input ? React.createElement("input", {
+                        type: "number",
+                        placeholder: "Of Hours",
+                        defaultValue: quote ? quote.hours : '',
                         name: 'invoice[invoice_items_attributes][' + x + '][hours]',
-                        defaultValue: quote ? quote.hours : ''
+                        className: "text-center " + (this.state.hours_input && 'hour')
+                    }) : React.createElement("input", { type: "hidden",
+                        name: 'invoice[invoice_items_attributes][' + x + '][hours]'
                     })
-                ) : React.createElement("input", { type: "hidden",
-                    name: 'invoice[invoice_items_attributes][' + x + '][hours]'
-                }),
+                ),
                 React.createElement("input", { type: "hidden", value: this.state.remove, name: 'invoice[invoice_items_attributes][' + x + '][_destroy]' }),
-                quote ? React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]' }) : null
+                quote && React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]' })
             ),
             React.createElement(
                 "button",
@@ -69316,37 +69376,62 @@ var InvoiceItemField = React.createClass({
             React.createElement(
                 "fieldset",
                 null,
-                React.createElement("input", { type: "text", placeholder: "Item description", defaultValue: invoice_item ? invoice_item.item_description : null,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]' }),
-                React.createElement("input", { type: "text", placeholder: "Amount", value: this.state.amount, onChange: this.onAmount,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]' }),
+                React.createElement("input", {
+                    type: "text",
+                    className: "text-center",
+                    placeholder: "Item description",
+                    defaultValue: invoice_item ? invoice_item.item_description : null,
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'
+                }),
                 React.createElement(
-                    "p",
-                    null,
-                    " Pricing type : "
-                ),
-                React.createElement(
-                    "select",
-                    { value: this.state.pricing_type,
-                        onChange: this.onPricing,
-                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'
-                    },
+                    "div",
+                    { className: "amount" },
                     React.createElement(
-                        "option",
-                        { value: "Fixed Cost" },
-                        "Fixed Cost"
+                        "select",
+                        {
+                            onChange: this.onPricing,
+                            value: this.state.pricing_type,
+                            className: "text-center " + (!!this.state.hours_input && 'hour price'),
+                            name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'
+                        },
+                        React.createElement(
+                            "option",
+                            { value: "Fixed Cost" },
+                            "Fixed Cost"
+                        ),
+                        React.createElement(
+                            "option",
+                            { value: "Hourly" },
+                            "Hourly"
+                        )
                     ),
-                    React.createElement(
-                        "option",
-                        { value: "Hourly" },
-                        "Hourly"
-                    )
+                    React.createElement("input", {
+                        type: "number",
+                        placeholder: "Amount",
+                        defaultValue: this.state.amount,
+                        onChange: this.onAmount,
+                        className: "text-center " + (!!this.state.hours_input && 'hour price'),
+                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'
+                    }),
+                    this.state.hours_input ? React.createElement("input", {
+                        type: "number",
+                        onChange: this.onHours,
+                        placeholder: "Number of Hours",
+                        defaultValue: this.state.numofhours,
+                        className: "text-center " + (this.state.hours_input && 'hour'),
+                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
+                    }) : React.createElement("input", {
+                        type: "hidden",
+                        value: 1,
+                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
+                    })
                 ),
-                this.state.hours_input ? React.createElement("input", { type: "text", placeholder: "Number of Hours", value: this.state.numofhours, onChange: this.onHours,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]' }) : React.createElement("input", { type: "hidden", value: 1,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]' }),
                 React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
-                invoice_item ? React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]' }) : null
+                invoice_item && React.createElement("input", {
+                    value: x,
+                    type: "hidden",
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'
+                })
             ),
             React.createElement(
                 "button",
@@ -69588,8 +69673,11 @@ var TradyCompanyInvoice = React.createClass({
             React.createElement("input", { type: "text", placeholder: "Mobile Number", defaultValue: this.props.mobile_number,
                 name: "trady_company[mobile_number]",
                 id: "trady_company_mobile_number", required: true }),
-            React.createElement("input", { type: "text", placeholder: "Email", defaultValue: this.props.email,
+            React.createElement("input", { type: "email", placeholder: "Email", defaultValue: this.props.email,
                 name: "trady_company[email]",
+                autoCapitalize: "off",
+                autoCorrect: "off",
+                autoComplete: "off",
                 id: "trady_company_email", required: true }),
             React.createElement("input", { type: "text", placeholder: "Bank Account Number", defaultValue: this.props.account_name,
                 name: "trady_company[bank_account_number]",
@@ -69619,10 +69707,11 @@ var DetailInvoice = React.createClass({
 	displayName: "DetailInvoice",
 
 	render: function () {
-		var invoice_items = this.props.invoice_items;
+		var invoice = this.props.invoice;
+
 		var subTotal = 0;
 		var gst = 0;
-		if (!!invoice_items) {
+		if (!!invoice) {
 			return React.createElement(
 				"table",
 				{ className: "table" },
@@ -69645,25 +69734,24 @@ var DetailInvoice = React.createClass({
 						React.createElement(
 							"th",
 							null,
-							"Rate"
-						),
-						React.createElement(
-							"th",
-							null,
 							"Hours"
 						),
 						React.createElement(
 							"th",
-							null,
-							"Total"
+							{ className: "text-right" },
+							"Rate"
+						),
+						React.createElement(
+							"th",
+							{ className: "text-right" },
+							"Amount"
 						)
 					)
 				),
 				React.createElement(
 					"tbody",
 					null,
-					invoice_items.map(function (item, key) {
-						gst += !!item.gst_amount ? item.gst_amount : 0;
+					invoice.invoice_items.map(function (item, key) {
 						if (item.pricing_type == "Fixed Cost") {
 							subTotal += item.amount;
 						} else {
@@ -69686,103 +69774,68 @@ var DetailInvoice = React.createClass({
 								"td",
 								null,
 								"$",
-								item.amount
+								item.amount.toFixed(2)
 							),
 							React.createElement(
 								"td",
-								null,
+								{ className: "text-right" },
 								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
 							),
 							React.createElement(
 								"td",
-								null,
+								{ className: "text-right" },
 								"$",
-								item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours
+								item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2)
 							)
 						);
 					}),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-b-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
+							{ className: "text-right border-none font-bold p-b-n" },
 							"Subtotal:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "border-none text-right p-b-n" },
 							"$",
-							subTotal
+							subTotal.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-t-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"GST:"
+							{ className: "text-right p-t-n" },
+							"GST 10%:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right p-t-n" },
 							"$",
-							gst
+							invoice.gst_amount.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"Total:"
+							{ className: "text-right font-bold border-none" },
+							"Amount Due (AUD):"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right font-bold border-none" },
 							"$",
-							subTotal + gst
+							subTotal + invoice.gst_amount
 						)
-					)
-				)
-			);
-		} else {
-			React.createElement(
-				"table",
-				null,
-				React.createElement(
-					"tr",
-					null,
-					React.createElement(
-						"th",
-						null,
-						"Description"
-					),
-					React.createElement(
-						"th",
-						null,
-						"Pricing"
-					),
-					React.createElement(
-						"th",
-						null,
-						"Hours"
-					),
-					React.createElement(
-						"th",
-						null,
-						"Amount"
-					)
-				),
-				React.createElement(
-					"tr",
-					null,
-					React.createElement(
-						"td",
-						{ colSpan: "4", className: "text-center" },
-						"Data is empty."
 					)
 				)
 			);
@@ -69844,9 +69897,10 @@ var ModalViewInvoice = React.createClass({
 	printInvoice: function () {
 		$('.button-slider').toggle('hide');
 		var contents = $('#print-invoice').html();
-		var style = ".info-quote {border-bottom: 1px solid #3e4b54; clear: both; overflow: hidden;}" + ".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {width: 50%;overflow: hidden;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quot .table {width: 100%;}" + ".detail-quot .table tr td {padding-left: 0; padding: 3px 3px;}";
+		var style = ".info-quote {border-bottom: 1px solid #3e4b54; clear: both; overflow: hidden;}" + ".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {width: 50%;overflow: hidden;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}" + "#print-invoice { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important;display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:first-child {width: 60px;display: inline-block;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3;}" + ".font-bold { font-weight: bold;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}";
+
 		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
-		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
+		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
 		frame.open();
 		frame.write(htmlContent);
 		frame.write("</head><body>");
@@ -69867,20 +69921,100 @@ var ModalViewInvoice = React.createClass({
 
 		var self = this.props;
 		var invoice = this.state.invoice;
+
 		var total = 0;
 
 		return React.createElement(
 			"div",
-			{ className: "modal-custom fade" },
+			{ className: "modal-custom modal-quote fade" },
 			React.createElement(
 				"div",
 				{ className: "modal-dialog" },
 				React.createElement(
 					"div",
-					{ className: "modal-content" },
+					{ className: "modal-content", id: "print-invoice" },
 					React.createElement(
 						"div",
 						{ className: "modal-header" },
+						React.createElement(
+							"div",
+							{ className: "logo" },
+							React.createElement("img", { src: "/assets/logo.png" })
+						),
+						React.createElement(
+							"div",
+							{ className: "info-trady" },
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Business: "
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.company_name
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"ABN:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.abn
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Address:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.address
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Phone:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.mobile_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Email:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.email
+								)
+							)
+						),
 						React.createElement(
 							"button",
 							{
@@ -69895,16 +70029,11 @@ var ModalViewInvoice = React.createClass({
 								{ "aria-hidden": "true" },
 								"×"
 							)
-						),
-						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Invoice"
 						)
 					),
 					React.createElement(
 						"div",
-						{ className: "slider-quote", id: "print-invoice" },
+						{ className: "slider-quote" },
 						React.createElement(
 							"div",
 							{ className: "modal-body" },
@@ -69920,25 +70049,28 @@ var ModalViewInvoice = React.createClass({
 										"div",
 										{ className: "info-trady" },
 										React.createElement(
-											"p",
+											"div",
 											null,
-											invoice.trady.name
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!invoice.trady.trady_company && invoice.trady.trady_company.address
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!invoice.trady.trady_company && invoice.trady.trady_company.email
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											"Abn: ",
-											!!invoice.trady.trady_company && invoice.trady.trady_company.abn
+											React.createElement(
+												"p",
+												{ className: "color-grey bill-to" },
+												"Bill To"
+											),
+											React.createElement(
+												"p",
+												null,
+												self.landlord && self.landlord.name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.company_name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.address
+											)
 										)
 									),
 									React.createElement(
@@ -69947,12 +70079,47 @@ var ModalViewInvoice = React.createClass({
 										React.createElement(
 											"p",
 											null,
-											self.agency.company_name
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Invoice Number: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												invoice.id
+											)
 										),
 										React.createElement(
 											"p",
 											null,
-											self.agency.address
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Invoice Date: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												moment(invoice.created_at).format("LL")
+											)
+										),
+										React.createElement(
+											"p",
+											null,
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Payment Date: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												moment(invoice.due_date).format("LL")
+											)
 										)
 									)
 								),
@@ -69961,30 +70128,8 @@ var ModalViewInvoice = React.createClass({
 									{ className: "detail-quote" },
 									React.createElement(
 										"div",
-										{ className: "info-maintenance" },
-										React.createElement(
-											"p",
-											null,
-											"Invoice #",
-											invoice.id
-										),
-										React.createElement(
-											"p",
-											null,
-											"For: ",
-											self.property.property_address
-										),
-										React.createElement(
-											"p",
-											null,
-											"Created: ",
-											moment(invoice.created_at).format("DD-MM-YYYY")
-										)
-									),
-									React.createElement(
-										"div",
 										{ className: "detail-quote" },
-										!!invoice.invoice_items && React.createElement(DetailInvoice, { invoice_items: invoice.invoice_items })
+										!!invoice.invoice_items && React.createElement(DetailInvoice, { invoice: invoice })
 									)
 								)
 							),
@@ -70009,13 +70154,97 @@ var ModalViewInvoice = React.createClass({
 						)
 					),
 					React.createElement(
-						"p",
-						{ className: "due" },
-						"DUE: ",
+						"div",
+						{ className: "footer" },
 						React.createElement(
-							"span",
-							null,
-							moment(invoice.due_date).format('DD/MM/YYYY')
+							"div",
+							{ className: "bank" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("i", { className: "fa fa-bank" }),
+								React.createElement(
+									"p",
+									{ className: "font-bold" },
+									"Bank Deposit"
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									{ className: "font-bold" },
+									"BSB:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.bsb_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									{ className: "font-bold" },
+									"Account Number:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.bank_account_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									{ className: "font-bold" },
+									"Account Name:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.account_name
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "contact" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("i", { className: "fa fa-envelope-o" }),
+								React.createElement(
+									"p",
+									{ className: "font-bold" },
+									"Mail"
+								)
+							),
+							React.createElement(
+								"p",
+								{ className: "font-bold" },
+								"Make your cheque payable to:"
+							),
+							React.createElement(
+								"p",
+								null,
+								invoice.trady.trady_company.account_name
+							),
+							React.createElement(
+								"p",
+								{ className: "font-bold" },
+								"Detach this section and mail with your cheque to:"
+							),
+							React.createElement(
+								"p",
+								null,
+								invoice.trady.trady_company.address
+							)
 						)
 					),
 					React.createElement(
@@ -70328,16 +70557,6 @@ var ContentLandlordAction = React.createClass({
 						} },
 					React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
 					"Create appointment to fix myself"
-				)
-			),
-			React.createElement(
-				"li",
-				null,
-				React.createElement(
-					"a",
-					{ href: "/job_completed?maintenance_request_id=" + this.props.maintenance_request.id },
-					React.createElement("i", { "aria-hidden": "true", className: "fa fa-user-plus" }),
-					"Job Completed"
 				)
 			)
 		);
@@ -70755,6 +70974,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			quote: null,
 			isModal: false,
 			quotes: quotes,
+			isCancel: false,
 			isDecline: false,
 			tradies: tradies,
 			appointment: null,
@@ -70826,6 +71046,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	sendMessageLandlord: function (params) {
 		var self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -70872,6 +71093,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	sendEmailLandlord: function (params) {
 		var self = this;
+		params.message.role = current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/request_quote',
@@ -70947,6 +71169,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		var isDecline = _state.isDecline;
 		var appointmentUpdate = _state.appointmentUpdate;
 		var comments = _state.comments;
+		var isCancel = _state.isCancel;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -70974,6 +71197,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function (res) {
 				if (!!isDecline) {
 					self.declineAppointment(appointmentUpdate);
+				}
+				if (!!isCancel) {
+					self.cancelAppointment(appointmentUpdate);
 				}
 				appointments.unshift(res.appointment_and_comments);
 				comments.push(res.appointment_and_comments.comments[0]);
@@ -71061,11 +71287,14 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	declineAppointment: function (appointment) {
 		var self = this;
-		var authenticity_token = this.props.authenticity_token;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var current_role = _props4.current_role;
 
 		var params = {
 			appointment_id: appointment.id,
-			maintenance_request_id: this.state.maintenance_request.id
+			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: current_role ? current_role.role : ''
 		};
 		$.ajax({
 			type: 'POST',
@@ -71088,6 +71317,48 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					isDecline: false
 				});
+			}
+		});
+	},
+
+	cancel: function (appointment) {
+		this.onModalWith('createAppointment');
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	cancelAppointment: function (appointment) {
+		var self = this;
+		var _props5 = this.props;
+		var authenticity_token = _props5.authenticity_token;
+		var current_role = _props5.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_landlord_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCacnel: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Cancel Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
 			}
 		});
 	},
@@ -71182,6 +71453,25 @@ var LandlordMaintenanceRequest = React.createClass({
 		}
 	},
 
+	autoScroll: function (key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			if (!!href.indexOf('email_quote_id')) {
+				self.autoScroll('quotes');
+			} else if (!!href.indexOf('send_maintenance_request_invoice')) {
+				self.autoScroll('invoices');
+			}
+		};
+	},
+
 	render: function () {
 		var _this3 = this;
 
@@ -71206,7 +71496,6 @@ var LandlordMaintenanceRequest = React.createClass({
 						quotes: this.state.quotes,
 						landlord: this.state.landlord,
 						onModalWith: this.onModalWith,
-
 						current_user: this.props.current_user,
 						updateStatusQuote: this.updateStatusQuote,
 						sendEmailLandlord: this.sendEmailLandlord,
@@ -71238,32 +71527,40 @@ var LandlordMaintenanceRequest = React.createClass({
 					appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Landlord Appointments',
 						appointments: appointments,
-						current_role: this.props.signed_in_landlord.user.current_role,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
 						viewItem: function (key, item) {
 							return _this3.viewItem(key, item);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
 						},
 						acceptAppointment: function (value) {
 							return _this3.acceptAppointment(value);
 						},
-						declineAppointment: function (value) {
-							return _this3.decline(value);
-						}
-					})
+						current_role: this.props.signed_in_landlord.user.current_role
+					}),
+					React.createElement(ActivityMobile, { logs: this.props.logs })
 				),
 				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					appointments: appointments,
 					title: 'Landlord Appointments',
-					current_role: this.props.signed_in_landlord.user.current_role,
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
 					viewItem: function (key, item) {
 						return _this3.viewItem(key, item);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
 					},
 					acceptAppointment: function (value) {
 						return _this3.acceptAppointment(value);
 					},
-					declineAppointment: function (value) {
-						return _this3.decline(value);
-					}
-				})
+					current_role: this.props.signed_in_landlord.user.current_role
+				}),
+				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
 			React.createElement(LandlordSideBarMobile, {
 				agent: this.props.agent,
@@ -71418,6 +71715,9 @@ var AccessContactField = React.createClass({
           type: "email",
           required: "required",
           placeholder: "E-mail",
+          autoCapitalize: "off",
+          autoCorrect: "off",
+          autoComplete: "off",
           id: this.generateAtt("id", x, "email"),
           name: this.generateAtt("name", x, "email"),
           onBlur: function (e) {
@@ -72291,6 +72591,7 @@ var ContentContact = React.createClass({
 		var _props = this.props;
 		var landlord = _props.landlord;
 		var tenants = _props.tenants;
+		var assigned_trady = _props.assigned_trady;
 
 		var tenantMobile = [];
 		if (tenants) {
@@ -72350,6 +72651,18 @@ var ContentContact = React.createClass({
 						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
 						"Message Tenants"
 					)
+				),
+				assigned_trady && React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('sendMessageTrady');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Message Trady"
+					)
 				)
 			);
 		} else {
@@ -72367,6 +72680,18 @@ var ContentContact = React.createClass({
 							} },
 						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
 						"Message Tenants"
+					)
+				),
+				assigned_trady && React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('sendMessageTrady');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Message Trady"
 					)
 				)
 			);
@@ -72413,6 +72738,7 @@ var Contact = React.createClass({
 				this.state.show && React.createElement(ContentContact, {
 					tenants: this.props.tenants,
 					landlord: this.props.landlord,
+					assigned_trady: this.props.assigned_trady,
 					onModalWith: function (modal) {
 						return _this.props.onModalWith(modal);
 					}
@@ -72454,6 +72780,7 @@ var ContactMobile = React.createClass({
 					React.createElement(ContentContact, {
 						tenants: this.props.tenants,
 						landlord: this.props.landlord,
+						assigned_trady: this.props.assigned_trady,
 						onModalWith: function (modal) {
 							return _this2.props.onModalWith(modal);
 						}
@@ -72509,12 +72836,6 @@ var EditMaintenanceRequest = React.createClass({
 	submit: function (e) {
 		e.preventDefault();
 		var flag = false;
-		if (this.title.value == "") {
-			this.setState({
-				errorTitle: true
-			});
-			flag = true;
-		}
 
 		if (this.description.value == "") {
 			this.setState({
@@ -72528,7 +72849,6 @@ var EditMaintenanceRequest = React.createClass({
 		}
 
 		var params = {
-			maintenance_heading: this.title.value,
 			maintenance_description: this.description.value
 		};
 		this.props.editMaintenanceRequest(params);
@@ -72578,31 +72898,6 @@ var EditMaintenanceRequest = React.createClass({
 						React.createElement(
 							'div',
 							{ className: 'modal-body edit-maintenance-request' },
-							React.createElement(
-								'div',
-								{ className: 'row' },
-								React.createElement(
-									'div',
-									null,
-									React.createElement(
-										'label',
-										{ className: 'u-full-width' },
-										'Maintenance Request Title:'
-									),
-									React.createElement('input', {
-										type: 'text',
-										placeholder: 'Enter Title',
-										ref: function (e) {
-											return _this.title = e;
-										},
-										onChange: function (e, key) {
-											return _this.checkValidate(e, 'title');
-										},
-										defaultValue: maintenance_request.maintenance_heading,
-										className: "u-full-width " + (this.state.errorTitle && "has-error")
-									})
-								)
-							),
 							React.createElement(
 								'div',
 								{ className: 'row m-t-lg' },
@@ -72879,7 +73174,7 @@ var DropDownMobileList = React.createClass({
           onClick: function (id) {
             return _this2.onDrop(props.id);
           },
-          className: 'btn-drop-mobile title ' + (!state.hidden && 'active')
+          className: 'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')
         },
         this.props.title
       ),
@@ -73130,6 +73425,14 @@ var ListMaintenanceRequest = React.createClass({
         value: "Initiate Maintenance Request",
         count: this.props.new_maintenance_requests_count
       }, {
+        title: "Awaiting Tradie`s Quote",
+        value: "Awaiting Quote",
+        count: this.props.awaiting_trady_quote_count
+      }, {
+        title: "Quote Requested",
+        value: "Quote Requested",
+        count: this.props.quote_requested_count
+      }, {
         title: "Quote Received",
         value: "Quote Received Awaiting Approval",
         count: this.props.quotes_received_count
@@ -73151,17 +73454,9 @@ var ListMaintenanceRequest = React.createClass({
         value: "Awaiting Owner Instruction",
         count: this.props.awaiting_owner_instruction_count
       }, {
-        title: "Quote Requested",
-        value: "Quote Requested",
-        count: this.props.quote_requested_count
-      }, {
         title: "Awaiting Tradie Initiation",
         value: "Awaiting Tradie Initiation",
         count: this.props.awaiting_trady_initiation_count
-      }, {
-        title: "Awaiting Tradie`s Quote",
-        value: "Awaiting Quote",
-        count: this.props.awaiting_trady_quote_count
       }, {
         title: "Awaiting Quote Approval",
         value: "Quote Received Awaiting Approval",
@@ -74572,6 +74867,9 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement('input', {
 						required: true,
 						type: 'email',
+						autoCapitalize: 'off',
+						autoCorrect: 'off',
+						autoComplete: 'off',
 						placeholder: 'E-mail',
 						ref: function (ref) {
 							return _this2.email = ref;
@@ -74697,7 +74995,10 @@ var MaintenanceRequestsNew = React.createClass({
 						null,
 						React.createElement('input', {
 							required: true,
-							type: 'text',
+							type: 'email',
+							autoCapitalize: 'off',
+							autoCorrect: 'off',
+							autoComplete: 'off',
 							placeholder: 'Agent email',
 							onBlur: this.checkAgentEmail,
 							ref: function (ref) {
@@ -75093,13 +75394,16 @@ var ModalAddAskLandlord = React.createClass({
 										":"
 									),
 									React.createElement("input", {
-										type: "text",
+										type: "email",
 										name: "landlord[email]",
 										placeholder: "Enter Email",
 										onChange: this.checkValidate,
 										id: "email", ref: function (e) {
 											return _this2.email = e;
 										},
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										className: "u-full-width " + (this.state.errorEmail && "has-error")
 									})
 								)
@@ -75358,6 +75662,9 @@ var ModalEditAskLandlord = React.createClass({
 									React.createElement("input", {
 										id: "email",
 										type: "text",
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										ref: function (e) {
 											return _this3.email = e;
 										},
@@ -75487,10 +75794,11 @@ var SideBarMobile = React.createClass({
 					}
 				}),
 				React.createElement(ContactMobile, {
-					tenants: this.props.tenants,
 					close: this.close,
+					tenants: this.props.tenants,
 					landlord: this.props.landlord,
 					current_user: this.props.current_user,
+					assigned_trady: this.props.assigned_trady,
 					onModalWith: function (modal) {
 						return _this4.props.onModalWith(modal);
 					}
@@ -75715,7 +76023,10 @@ var ModalAddLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "text",
+										type: "email",
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										name: "landlord[email]",
 										placeholder: "Enter Email",
 										ref: function (e) {
@@ -75968,7 +76279,10 @@ var ModalEditLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "text",
+										type: "email",
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										name: "landlord[email]",
 										placeholder: "Enter Email",
 										ref: function (e) {
@@ -76401,8 +76715,11 @@ var ModalRequestModal = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "text",
+										type: "email",
 										style: style,
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										placeholder: "Enter Email",
 										ref: function (e) {
 											return _this7.email = e;
@@ -76522,6 +76839,7 @@ var MaintenanceRequest = React.createClass({
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.invoice_pdf_files,
+			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
@@ -76735,6 +77053,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendMessageLandlord: function (params) {
 		var self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -76763,6 +77082,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendMessageTenant: function (params) {
 		var self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -76788,8 +77108,43 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageTrady: function (params) {
+		var _props2 = this.props;
+		var authenticity_token = _props2.authenticity_token;
+		var maintenance_request = _props2.maintenance_request;
+		var current_user_role = _props2.current_user_role;
+
+		var self = this;
+		params.message.maintenance_request_id = maintenance_request.id;
+		params.message.role = current_user_role.role;
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var trady_conversation = !!self.state.trady_conversation ? self.state.trady_conversation : [];
+				trady_conversation.push(res);
+				self.setState({
+					trady_conversation: trady_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Trady",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	sendMessageQuote: function (params) {
 		var self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/quote_messages',
@@ -77120,6 +77475,16 @@ var MaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'sendMessageTrady':
+					{
+						return React.createElement(ModalSendMessageTrady, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							sendMessageTrady: this.sendMessageTrady,
+							trady_conversation: this.state.trady_conversation
+						});
+					}
+
 				case 'viewQuote':
 					{
 						return React.createElement(ModalViewQuote, {
@@ -77244,15 +77609,34 @@ var MaintenanceRequest = React.createClass({
 		}
 	},
 
+	autoScroll: function (key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			if (!!href.indexOf('email_quote_id')) {
+				self.autoScroll('quotes');
+			} else if (!!href.indexOf('send_maintenance_request_invoice')) {
+				self.autoScroll('invoices');
+			}
+		};
+	},
+
 	summary: function (e) {
 		var _this9 = this;
 
-		var _props2 = this.props;
-		var work_order_appointments = _props2.work_order_appointments;
-		var landlord_appointments = _props2.landlord_appointments;
-		var quote_appointments = _props2.quote_appointments;
-		var current_user_role = _props2.current_user_role;
-		var tenants = _props2.tenants;
+		var _props3 = this.props;
+		var work_order_appointments = _props3.work_order_appointments;
+		var landlord_appointments = _props3.landlord_appointments;
+		var quote_appointments = _props3.quote_appointments;
+		var current_user_role = _props3.current_user_role;
+		var tenants = _props3.tenants;
 
 		return React.createElement(
 			"div",
@@ -77306,9 +77690,10 @@ var MaintenanceRequest = React.createClass({
 					"div",
 					{ className: "sidebar" },
 					React.createElement(Contact, {
-						landlord: this.state.landlord,
 						tenants: tenants,
+						landlord: this.state.landlord,
 						current_user: this.props.current_user,
+						assigned_trady: this.props.assigned_trady,
 						onModalWith: function (modal) {
 							return _this9.onModalWith(modal);
 						}
@@ -77372,9 +77757,10 @@ var MaintenanceRequest = React.createClass({
 				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
 			React.createElement(SideBarMobile, {
-				landlord: this.state.landlord,
 				tenants: tenants,
+				landlord: this.state.landlord,
 				current_user: this.props.current_user,
+				assigned_trady: this.props.assigned_trady,
 				onModalWith: function (modal) {
 					return _this9.onModalWith(modal);
 				},
@@ -77851,6 +78237,222 @@ var ModalSendMessageTenant = React.createClass({
 		);
 	}
 });
+var ModalSendMessageTrady = React.createClass({
+	displayName: "ModalSendMessageTrady",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		if (!this.message.value) {
+			this.setState({ errorMessage: true });
+			return;
+		}
+
+		var params = {
+			message: {
+				body: this.message.value,
+				conversation_type: 'Trady_Agent'
+			}
+		};
+
+		this.props.sendMessageTrady(params);
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this = this;
+
+		var _props = this.props;
+		var trady_conversation = _props.trady_conversation;
+		var current_user = _props.current_user;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Trady"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, { current_user: current_user, messages: trady_conversation })
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this.message = rel;
+									},
+									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+								})
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var ModalSendMessageAgent = React.createClass({
+	displayName: "ModalSendMessageAgent",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		if (!this.message.value) {
+			this.setState({ errorMessage: true });
+			return;
+		}
+
+		var params = {
+			message: {
+				body: this.message.value,
+				conversation_type: 'Trady_Agent'
+			}
+		};
+
+		this.props.sendMessageAgent(params);
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this = this;
+
+		var _props = this.props;
+		var trady_agent_conversation = _props.trady_agent_conversation;
+		var current_user = _props.current_user;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Agent"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, { current_user: current_user, messages: trady_agent_conversation })
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this.message = rel;
+									},
+									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+								})
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
 var ModalNotification = React.createClass({
 	displayName: "ModalNotification",
 
@@ -78147,7 +78749,7 @@ var ActionQuote = React.createClass({
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && quote.status != "Declined" && !!quote.conversation && React.createElement(ButtonQuoteMessage, {
+				!!self.current_user_show_quote_message && quote.status != "Declined" && React.createElement(ButtonQuoteMessage, {
 					quote: quote,
 					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
@@ -78223,7 +78825,7 @@ var Quotes = React.createClass({
 		var self = this.props;
 		return React.createElement(
 			"div",
-			{ className: "quotes" },
+			{ className: "quotes", id: "quotes" },
 			React.createElement(
 				"p",
 				null,
@@ -78308,10 +78910,11 @@ var DetailQuote = React.createClass({
 	displayName: "DetailQuote",
 
 	render: function () {
-		var quote_items = this.props.quote_items;
+		var quote = this.props.quote;
+
 		var subTotal = 0;
 		var gst = 0;
-		if (!!quote_items) {
+		if (!!quote) {
 			return React.createElement(
 				"table",
 				{ className: "table" },
@@ -78334,25 +78937,24 @@ var DetailQuote = React.createClass({
 						React.createElement(
 							"th",
 							null,
-							"Rate"
-						),
-						React.createElement(
-							"th",
-							null,
 							"Hours"
 						),
 						React.createElement(
 							"th",
-							null,
-							"Total"
+							{ className: "text-right" },
+							"Rate"
+						),
+						React.createElement(
+							"th",
+							{ className: "text-right" },
+							"Amount"
 						)
 					)
 				),
 				React.createElement(
 					"tbody",
 					null,
-					quote_items.map(function (item, key) {
-						gst += !!item.gst_amount ? item.gst_amount : 0;
+					quote.quote_items.map(function (item, key) {
 						if (item.pricing_type == "Fixed Cost") {
 							subTotal += item.amount;
 						} else {
@@ -78374,65 +78976,68 @@ var DetailQuote = React.createClass({
 							React.createElement(
 								"td",
 								null,
-								"$",
-								item.amount
-							),
-							React.createElement(
-								"td",
-								null,
 								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
 							),
 							React.createElement(
 								"td",
-								null,
+								{ className: "text-right" },
 								"$",
-								item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours
+								item.amount.toFixed(2)
+							),
+							React.createElement(
+								"td",
+								{ className: "text-right" },
+								"$",
+								item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2)
 							)
 						);
 					}),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-b-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
+							{ className: "text-right border-none font-bold p-b-n" },
 							"Subtotal:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "border-none text-right p-b-n" },
 							"$",
-							subTotal
+							subTotal.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-t-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"GST:"
+							{ className: "text-right p-t-n" },
+							"GST 10%:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right p-t-n" },
 							"$",
-							gst
+							quote.gst_amount.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"Total:"
+							{ className: "text-right font-bold border-none" },
+							"Amount Due (AUD):"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right font-bold border-none" },
 							"$",
-							subTotal + gst
+							(subTotal + quote.gst_amount).toFixed(2)
 						)
 					)
 				)
@@ -78542,7 +79147,7 @@ var ModalViewQuote = React.createClass({
 
 		return React.createElement(
 			"div",
-			{ className: "modal-custom fade" },
+			{ className: "modal-custom modal-quote fade" },
 			React.createElement(
 				"div",
 				{ className: "modal-dialog" },
@@ -78552,6 +79157,85 @@ var ModalViewQuote = React.createClass({
 					React.createElement(
 						"div",
 						{ className: "modal-header" },
+						React.createElement(
+							"div",
+							{ className: "logo" },
+							React.createElement("img", { src: "/assets/logo.png" })
+						),
+						React.createElement(
+							"div",
+							{ className: "info-trady" },
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Business: "
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.company_name
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"ABN:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.abn
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Address:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.address
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Phone:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.mobile_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Email:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.email
+								)
+							)
+						),
 						React.createElement(
 							"button",
 							{
@@ -78566,11 +79250,6 @@ var ModalViewQuote = React.createClass({
 								{ "aria-hidden": "true" },
 								"×"
 							)
-						),
-						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Quote"
 						)
 					),
 					React.createElement(
@@ -78591,25 +79270,28 @@ var ModalViewQuote = React.createClass({
 										"div",
 										{ className: "info-trady" },
 										React.createElement(
-											"p",
+											"div",
 											null,
-											quote.trady.name
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!quote.trady.trady_company && quote.trady.trady_company.address
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!quote.trady.trady_company && quote.trady.trady_company.email
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											"Abn: ",
-											!!quote.trady.trady_company && quote.trady.trady_company.abn
+											React.createElement(
+												"p",
+												{ className: "color-grey bill-to" },
+												"Bill To"
+											),
+											React.createElement(
+												"p",
+												null,
+												self.landlord && self.landlord.name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.company_name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.address
+											)
 										)
 									),
 									React.createElement(
@@ -78618,12 +79300,32 @@ var ModalViewQuote = React.createClass({
 										React.createElement(
 											"p",
 											null,
-											self.agency ? self.agency.company_name : null
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Quote Number: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												quote.id
+											)
 										),
 										React.createElement(
 											"p",
 											null,
-											self.agency ? self.agency.address : null
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Quote Date: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												moment(quote.created_at).format("LL")
+											)
 										)
 									)
 								),
@@ -78632,30 +79334,8 @@ var ModalViewQuote = React.createClass({
 									{ className: "detail-quote" },
 									React.createElement(
 										"div",
-										{ className: "info-maintenance" },
-										React.createElement(
-											"p",
-											null,
-											"Quote #",
-											quote.id
-										),
-										React.createElement(
-											"p",
-											null,
-											"For: ",
-											self.property.property_address
-										),
-										React.createElement(
-											"p",
-											null,
-											"Created: ",
-											moment(quote.created_at).format("DD-MM-YYYY")
-										)
-									),
-									React.createElement(
-										"div",
 										{ className: "detail-quote" },
-										!!quote.quote_items && React.createElement(DetailQuote, { quote_items: quote.quote_items })
+										!!quote.quote_items && React.createElement(DetailQuote, { quote: quote })
 									)
 								)
 							),
@@ -78765,7 +79445,7 @@ var ModalViewQuoteMessage = React.createClass({
 							React.createElement(
 								"h4",
 								{ className: "modal-title text-center" },
-								"Message Trady"
+								"Message Quote"
 							)
 						),
 						React.createElement(
@@ -78845,69 +79525,66 @@ var QuoteField = React.createClass({
                 'fieldset',
                 null,
                 React.createElement(
-                    'p',
-                    null,
-                    ' Item description '
-                ),
-                React.createElement('input', { type: 'text',
-                    required: true,
-                    id: 'quote_quote_items_attributes_' + x + '_item_description',
-                    name: 'quote[quote_items_attributes][' + x + '][item_description]',
-                    defaultValue: quote ? quote.item_description : ''
-                }),
-                React.createElement(
-                    'p',
-                    null,
-                    ' Amount '
-                ),
-                React.createElement('input', { type: 'text',
-                    required: true,
-                    id: 'quote_quote_items_attributes_' + x + '_amount',
-                    name: 'quote[quote_items_attributes][' + x + '][amount]',
-                    defaultValue: quote ? quote.amount : ''
-                }),
-                React.createElement(
-                    'p',
-                    null,
-                    ' Pricing type '
-                ),
-                React.createElement(
-                    'select',
-                    { value: this.state.pricing_type,
-                        onChange: this.onPricing,
-                        name: 'quote[quote_items_attributes][' + x + '][pricing_type]',
-                        id: 'quote_quote_items_attributes_' + x + '_pricing_type' },
-                    React.createElement(
-                        'option',
-                        { value: 'Fixed Cost' },
-                        'Fixed Cost'
-                    ),
-                    React.createElement(
-                        'option',
-                        { value: 'Hourly' },
-                        'Hourly'
-                    )
-                ),
-                this.state.hours_input ? React.createElement(
                     'div',
                     null,
-                    React.createElement(
-                        'p',
-                        null,
-                        ' Number of Hours '
-                    ),
-                    React.createElement('input', { type: 'text',
+                    React.createElement('input', {
                         required: true,
-                        id: 'quote_quote_items_attributes_' + x + '_hours',
-                        name: 'quote[quote_items_attributes][' + x + '][hours]',
-                        defaultValue: quote ? quote.hours : ''
+                        type: 'text',
+                        placeholder: 'Item description',
+                        className: 'text-center',
+                        defaultValue: quote ? quote.item_description : '',
+                        id: 'quote_quote_items_attributes_' + x + '_item_description',
+                        name: 'quote[quote_items_attributes][' + x + '][item_description]'
                     })
-                ) : React.createElement('input', { type: 'hidden',
-                    id: 'quote_quote_items_attributes_' + x + '_hours',
-                    name: 'quote[quote_items_attributes][' + x + '][hours]'
-                }),
-                React.createElement('input', { type: 'hidden', value: this.state.remove, name: 'quote[quote_items_attributes][' + x + '][_destroy]', id: 'quote_quote_items_attributes_' + x + '__destroy' }),
-                quote ? React.createElement('input', { type: 'hidden', value: x, name: 'quote[quote_items_attributes][' + x + '][id]', id: 'quote_iquote_items_attributes_' + x + '_id' }) : null
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'amount' },
+                    React.createElement(
+                        'select',
+                        {
+                            onChange: this.onPricing,
+                            value: this.state.pricing_type,
+                            className: "text-center " + (this.state.hours_input && 'hour select'),
+                            id: 'quote_quote_items_attributes_' + x + '_pricing_type',
+                            name: 'quote[quote_items_attributes][' + x + '][pricing_type]'
+                        },
+                        React.createElement(
+                            'option',
+                            { value: 'Fixed Cost' },
+                            'Fixed Cost'
+                        ),
+                        React.createElement(
+                            'option',
+                            { value: 'Hourly' },
+                            'Hourly'
+                        )
+                    ),
+                    React.createElement('input', {
+                        required: true,
+                        type: 'number',
+                        placeholder: 'Amount',
+                        defaultValue: quote ? quote.amount : '',
+                        className: "text-center " + (!!this.state.hours_input && 'hour price'),
+                        id: 'quote_quote_items_attributes_' + x + '_amount',
+                        name: 'quote[quote_items_attributes][' + x + '][amount]'
+                    }),
+                    this.state.hours_input ? React.createElement('input', {
+                        required: true,
+                        type: 'number',
+                        placeholder: 'Of Hours',
+                        defaultValue: quote ? quote.hours : '',
+                        className: "text-center " + (this.state.hours_input && 'hour'),
+                        id: 'quote_quote_items_attributes_' + x + '_hours',
+                        name: 'quote[quote_items_attributes][' + x + '][hours]'
+                    }) : React.createElement('input', {
+                        type: 'hidden',
+                        id: 'quote_quote_items_attributes_' + x + '_hours',
+                        name: 'quote[quote_items_attributes][' + x + '][hours]'
+                    }),
+                    React.createElement('input', { type: 'hidden', value: this.state.remove, name: 'quote[quote_items_attributes][' + x + '][_destroy]', id: 'quote_quote_items_attributes_' + x + '__destroy' }),
+                    quote && React.createElement('input', { type: 'hidden', value: x, name: 'quote[quote_items_attributes][' + x + '][id]', id: 'quote_iquote_items_attributes_' + x + '_id' })
+                )
             ),
             React.createElement(
                 'button',
@@ -79593,7 +80270,6 @@ var ContentTenantContact = React.createClass({
 
 	render: function () {
 		var selt = this;
-		var landlord = this.props.landlord;
 		return React.createElement(
 			"ul",
 			null,
@@ -79795,6 +80471,7 @@ var TenantMaintenanceRequest = React.createClass({
 		return {
 			modal: "",
 			isModal: false,
+			isCancel: false,
 			isDecline: false,
 			appointment: null,
 			landlord: landlord,
@@ -79860,6 +80537,7 @@ var TenantMaintenanceRequest = React.createClass({
 
 	sendAgentMessage: function (params) {
 		var self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -79905,6 +80583,7 @@ var TenantMaintenanceRequest = React.createClass({
 		var comments = _state.comments;
 		var quoteComments = _state.quoteComments;
 		var landlordComments = _state.landlordComments;
+		var isCancel = _state.isCancel;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -79941,6 +80620,9 @@ var TenantMaintenanceRequest = React.createClass({
 				if (!!isDecline) {
 					self.declineAppointment(appointmentUpdate);
 				}
+				if (!!isCancel) {
+					self.cancelAppointment(appointmentUpdate);
+				}
 				switch (params.appointment_type) {
 					case 'Work Order Appointment':
 						title = "Create Appoinment";
@@ -79958,7 +80640,6 @@ var TenantMaintenanceRequest = React.createClass({
 						content = "Create Appointment For Quote was successfully";
 						quote_appointments.unshift(res.appointment_and_comments);
 						quoteComments.push(res.appointment_and_comments.comments);
-						quote;
 						self.setState({
 							quoteComments: quoteComments,
 							quote_appointments: quote_appointments
@@ -80110,7 +80791,8 @@ var TenantMaintenanceRequest = React.createClass({
 
 		var params = {
 			appointment_id: appointment.id,
-			maintenance_request_id: this.state.maintenance_request.id
+			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role.role : ''
 		};
 		$.ajax({
 			type: 'POST',
@@ -80129,6 +80811,65 @@ var TenantMaintenanceRequest = React.createClass({
 				self.setState({ notification: {
 						bgClass: "bg-error",
 						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancel: function (appointment) {
+		var key = '';
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			case 'Landlord Appointment':
+				key = 'createLandlordAppointment';
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	cancelAppointment: function (appointment) {
+		var self = this;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var tenant = _props4.tenant;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role.role : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/cancel_landlord_appointment' : '/cancel_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCacnel: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Cancel Appoinment",
 						content: err.responseText
 					} });
 				self.onModalWith('notification');
@@ -80201,6 +80942,9 @@ var TenantMaintenanceRequest = React.createClass({
 							close: this.isClose,
 							comments: commentShow,
 							appointment: this.state.appointment,
+							cancelAppointment: function (value) {
+								return _this2.cancel(value);
+							},
 							current_role: this.props.tenant.user.current_role,
 							acceptAppointment: function (value) {
 								return _this2.acceptAppointment(value);
@@ -80256,6 +81000,25 @@ var TenantMaintenanceRequest = React.createClass({
 		}
 	},
 
+	autoScroll: function (key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			if (!!href.indexOf('email_quote_id')) {
+				self.autoScroll('quotes');
+			} else if (!!href.indexOf('send_maintenance_request_invoice')) {
+				self.autoScroll('invoices');
+			}
+		};
+	},
+
 	render: function () {
 		var _this3 = this;
 
@@ -80291,6 +81054,9 @@ var TenantMaintenanceRequest = React.createClass({
 					appointments.length > 0 && React.createElement(AppointmentRequest, {
 						appointments: appointments,
 						title: 'Work Order Appointments',
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
 						current_role: this.props.tenant.user.current_role,
 						viewItem: function (key, item) {
 							return _this3.viewItem(key, item);
@@ -80305,6 +81071,9 @@ var TenantMaintenanceRequest = React.createClass({
 					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Appointments For Quotes',
 						appointments: quote_appointments,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
 						current_role: this.props.tenant.user.current_role,
 						viewItem: function (key, item) {
 							return _this3.viewItem(key, item);
@@ -80319,6 +81088,9 @@ var TenantMaintenanceRequest = React.createClass({
 					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Landlord Appointments',
 						appointments: landlord_appointments,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
 						current_role: this.props.tenant.user.current_role,
 						viewItem: function (key, item) {
 							return _this3.viewItem(key, item);
@@ -80334,6 +81106,9 @@ var TenantMaintenanceRequest = React.createClass({
 				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					appointments: appointments,
 					title: 'Work Order Appointments',
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
 					current_role: this.props.tenant.user.current_role,
 					viewItem: function (key, item) {
 						return _this3.viewItem(key, item);
@@ -80348,20 +81123,26 @@ var TenantMaintenanceRequest = React.createClass({
 				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: 'Appointments For Quotes',
 					appointments: quote_appointments,
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
 					current_role: this.props.tenant.user.current_role,
 					viewItem: function (key, item) {
 						return _this3.viewItem(key, item);
 					},
-					acceptAppointment: function (value) {
-						return _this3.acceptAppointment(value);
-					},
 					declineAppointment: function (value) {
 						return _this3.decline(value);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
 					}
 				}),
 				landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: 'Landlord Appointments',
 					appointments: landlord_appointments,
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
 					current_role: this.props.tenant.user.current_role,
 					viewItem: function (key, item) {
 						return _this3.viewItem(key, item);
@@ -81805,12 +82586,34 @@ var ContentTradyContact = React.createClass({
 		return null;
 	},
 
+	renderMessageAgent: function () {
+		var _this = this;
+
+		var assigned_trady = this.props.assigned_trady;
+
+		if (!!assigned_trady) {
+			return React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return _this.props.onModalWith('sendMessageAgent');
+						} },
+					React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+					"Message Agent"
+				)
+			);
+		}
+	},
+
 	render: function () {
 		return React.createElement(
 			"ul",
 			null,
 			this.renderTenant(),
-			this.renderAgent()
+			this.renderAgent(),
+			this.renderMessageAgent()
 		);
 	}
 });
@@ -81829,7 +82632,7 @@ var TradyContact = React.createClass({
 	},
 
 	render: function () {
-		var _this = this;
+		var _this2 = this;
 
 		return React.createElement(
 			"div",
@@ -81855,9 +82658,10 @@ var TradyContact = React.createClass({
 					agent: this.props.agent,
 					tenants: this.props.tenants,
 					landlord: this.props.landlord,
+					assigned_trady: this.props.assigned_trady,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
-						return _this.props.onModalWith(modal);
+						return _this2.props.onModalWith(modal);
 					}
 				})
 			)
@@ -81869,7 +82673,7 @@ var TradyContactMobile = React.createClass({
 	displayName: "TradyContactMobile",
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		return React.createElement(
 			"div",
@@ -81898,9 +82702,10 @@ var TradyContactMobile = React.createClass({
 						agent: this.props.agent,
 						tenants: this.props.tenants,
 						landlord: this.props.landlord,
+						assigned_trady: this.props.assigned_trady,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
-							return _this2.props.onModalWith(modal);
+							return _this3.props.onModalWith(modal);
 						}
 					})
 				)
@@ -81931,7 +82736,7 @@ var TradySideBarMobile = React.createClass({
 			this.setState({ showAction: false });
 			this.setState({ showContact: true });
 			if ($('#contacts-full').length > 0) {
-				$('#contacts-full').css({ 'height': this.props.tenants.length * 50 + 150, 'border-width': 1 });
+				$('#contacts-full').css({ 'height': this.props.tenants.length * 50 + 200, 'border-width': 1 });
 			}
 		}
 	},
@@ -82014,6 +82819,7 @@ var TradySideBarMobile = React.createClass({
 					tenants: this.props.tenants,
 					landlord: this.props.landlord,
 					current_user: this.props.current_user,
+					assigned_trady: this.props.assigned_trady,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
 						return _this.props.onModalWith(modal);
@@ -82028,15 +82834,21 @@ var ModalConfirmAddInvoice = React.createClass({
 	displayName: 'ModalConfirmAddInvoice',
 
 	jobCompleted: function () {
+		var maintenance_request = this.props.maintenance_request;
+
+		var maintenance_trady_id = maintenance_request.trady_id;
+
 		var params = {
-			maintenance_request_id: this.props.maintenance_request.id
+			maintenance_request_id: maintenance_request.id
 		};
 
 		this.props.jobCompleted(params);
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
 	},
 
 	createInvoice: function () {
 		var maintenance_request = this.props.maintenance_request;
+
 		var maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
 		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
@@ -82273,6 +83085,7 @@ var TradyMaintenanceRequest = React.createClass({
 		var maintenance_request = _props.maintenance_request;
 		var tenants_conversation = _props.tenants_conversation;
 		var landlords_conversation = _props.landlords_conversation;
+		var trady_agent_conversation = _props.trady_agent_conversation;
 
 		var comments = [],
 		    quoteComments = [];
@@ -82292,6 +83105,7 @@ var TradyMaintenanceRequest = React.createClass({
 			invoice: null,
 			isModal: false,
 			quotes: quotes,
+			isCancel: false,
 			tradies: tradies,
 			isDecline: false,
 			appointment: null,
@@ -82307,6 +83121,7 @@ var TradyMaintenanceRequest = React.createClass({
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
+			trady_agent_conversation: trady_agent_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -82357,6 +83172,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 	sendMessageQuote: function (params) {
 		var self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/quote_messages',
@@ -82430,6 +83246,7 @@ var TradyMaintenanceRequest = React.createClass({
 		var appointmentUpdate = _state2.appointmentUpdate;
 		var comments = _state2.comments;
 		var quoteComments = _state2.quoteComments;
+		var isCancel = _state2.isCancel;
 
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
@@ -82457,6 +83274,10 @@ var TradyMaintenanceRequest = React.createClass({
 			success: function (res) {
 				if (!!isDecline) {
 					self.declineAppointment(appointmentUpdate);
+				}
+
+				if (!!isCancel) {
+					self.cancelAppointment(appointmentUpdate);
 				}
 
 				if (params.appointment_type == 'Work Order Appointment') {
@@ -82613,11 +83434,14 @@ var TradyMaintenanceRequest = React.createClass({
 
 	declineAppointment: function (appointment) {
 		var self = this;
-		var authenticity_token = this.props.authenticity_token;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var current_role = _props4.current_role;
 
 		var params = {
 			appointment_id: appointment.id,
-			maintenance_request_id: this.state.maintenance_request.id
+			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: current_role ? current_role.role : ''
 		};
 		$.ajax({
 			type: 'POST',
@@ -82637,6 +83461,95 @@ var TradyMaintenanceRequest = React.createClass({
 						bgClass: "bg-error",
 						title: "Decline Appoinment",
 						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancel: function (appointment) {
+		var key = '';
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				key = 'createAppointment';
+				break;
+
+			case 'Quote Appointment':
+				key = 'createAppointmentForQuote';
+				break;
+
+			default:
+				break;
+		}
+		this.onModalWith(key);
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	cancelAppointment: function (appointment) {
+		var self = this;
+		var _props5 = this.props;
+		var authenticity_token = _props5.authenticity_token;
+		var current_role = _props5.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : ''
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCacnel: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	sendMessageAgent: function (params) {
+		var _props6 = this.props;
+		var authenticity_token = _props6.authenticity_token;
+		var maintenance_request = _props6.maintenance_request;
+		var current_role = _props6.current_role;
+
+		var self = this;
+		params.message.maintenance_request_id = maintenance_request.id;
+		params.message.role = current_role ? current_role.role : '', $.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var trady_agent_conversation = !!self.state.trady_agent_conversation ? self.state.trady_agent_conversation : [];
+				trady_agent_conversation.push(res);
+				self.setState({
+					trady_agent_conversation: trady_agent_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Agent",
+						content: err.responseText,
+						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
 			}
@@ -82672,6 +83585,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close: this.isClose,
 							quote: this.state.quote,
 							keyLandlord: 'trady',
+							landlord: this.props.landlord,
 							quotes: this.state.quotes,
 							agency: this.props.agency,
 							property: this.props.property,
@@ -82693,12 +83607,23 @@ var TradyMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'sendMessageAgent':
+					{
+						return React.createElement(ModalSendMessageAgent, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							sendMessageAgent: this.sendMessageAgent,
+							trady_agent_conversation: this.state.trady_agent_conversation
+						});
+					}
+
 				case 'viewInvoice':
 					{
 						return React.createElement(ModalViewInvoice, {
 							close: this.isClose,
 							agency: this.props.agency,
 							invoice: this.state.invoice,
+							landlord: this.state.landlord,
 							invoices: this.state.invoices,
 							property: this.props.property
 						});
@@ -82787,6 +83712,9 @@ var TradyMaintenanceRequest = React.createClass({
 							comments: commentShow,
 							appointment: this.state.appointment,
 							current_role: this.props.current_role,
+							cancelAppointment: function (value) {
+								return _this2.cancel(value);
+							},
 							declineAppointment: function (value) {
 								return _this2.decline(value);
 							},
@@ -82800,6 +83728,25 @@ var TradyMaintenanceRequest = React.createClass({
 					return null;
 			}
 		}
+	},
+
+	autoScroll: function (key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			if (href.indexOf('email_quote_id') != -1) {
+				self.autoScroll('quotes');
+			} else if (href.indexOf('send_maintenance_request_invoice') != -1) {
+				self.autoScroll('invoices');
+			}
+		};
 	},
 
 	render: function () {
@@ -82855,6 +83802,7 @@ var TradyMaintenanceRequest = React.createClass({
 						tenants: this.props.tenants,
 						landlord: this.state.landlord,
 						current_user: this.props.current_user,
+						assigned_trady: this.props.assigned_trady,
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
 						},
@@ -82875,6 +83823,9 @@ var TradyMaintenanceRequest = React.createClass({
 					appointments.length > 0 && React.createElement(AppointmentRequest, {
 						appointments: appointments,
 						title: 'Work Order Appointments',
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
 						current_role: this.props.trady.user.current_role,
 						viewItem: function (key, item) {
 							return _this3.viewItem(key, item);
@@ -82889,6 +83840,9 @@ var TradyMaintenanceRequest = React.createClass({
 					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Appointments For Quotes',
 						appointments: quote_appointments,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
 						current_role: this.props.trady.user.current_role,
 						viewItem: function (key, item) {
 							return _this3.viewItem(key, item);
@@ -82899,12 +83853,14 @@ var TradyMaintenanceRequest = React.createClass({
 						declineAppointment: function (value) {
 							return _this3.decline(value);
 						}
-					}),
-					React.createElement(Activity, { logs: this.props.logs })
+					})
 				),
 				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					appointments: appointments,
 					title: 'Work Order Appointments',
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
 					current_role: this.props.trady.user.current_role,
 					viewItem: function (key, item) {
 						return _this3.viewItem(key, item);
@@ -82919,6 +83875,9 @@ var TradyMaintenanceRequest = React.createClass({
 				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: 'Appointments For Quotes',
 					appointments: quote_appointments,
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
 					current_role: this.props.trady.user.current_role,
 					viewItem: function (key, item) {
 						return _this3.viewItem(key, item);
@@ -82929,8 +83888,7 @@ var TradyMaintenanceRequest = React.createClass({
 					declineAppointment: function (value) {
 						return _this3.decline(value);
 					}
-				}),
-				React.createElement(ActivityMobile, { logs: this.props.logs })
+				})
 			),
 			React.createElement(TradySideBarMobile, {
 				trady: this.props.trady,
