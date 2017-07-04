@@ -81,6 +81,8 @@
         @media (max-width: 480px)
           .container-email
             width: 350px
+            .main
+              width: 95%
 
   %body
     .container-email
@@ -91,18 +93,27 @@
             MaintenanceApp
 
       .main
-        %p.content
-          Hi #{@landlord.name.capitalize}, a quote for a maintenance request has been approved.
-        %p.content
-          To view the details please click on the button below.
-        %div.text-center
-          =link_to "View Maintenance Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id,:anchor=>"quote_area"), class: 'btn'
+        -if @maintenance_request.agent 
+          %p.content 
+            Hi
+            ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
+            a trady has sent you a message. To see the message and responde, please click the button below.
+          %div.text-center
+            =link_to "View Maintenance Request Message", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"Open Trady Message"), class: 'btn'
+            
+        -elsif @maintenance_request.agency_admin
+          %p.content 
+            Hi
+            ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
+            a trady has sent you a message. To see the message and responde, please click the button below.
+          %div.text-center
+            =link_to "View Maintenance Request Message", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"Open Trady Message"), class: 'btn'
 
         %p.thank
-          Thank you
+          Thanks :)
 
         %p.team
-          The MaintenanceApp Team :)
+          The MaintenanceApp Team 
 
       .footer
         .contact

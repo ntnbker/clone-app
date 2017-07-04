@@ -106,9 +106,9 @@
           
         %div.text-center
           -if @user.has_role("AgencyAdmin")
-            =link_to "See Quote", agency_admin_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@user.id), class: 'btn'
+            =link_to "See Quote", agency_admin_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@user.id, :anchor=>"quote_area"), class: 'btn'
           -elsif @user.has_role("Agent")
-            =link_to "See Quote", agent_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@user.id), class: 'btn'
+            =link_to "See Quote", agent_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@user.id,:anchor=>"quote_area"), class: 'btn'
         %p.thank
           Thanks so much!
 

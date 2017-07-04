@@ -55,6 +55,12 @@ class LandlordMailer < ActionMailer::Base
     @maintenance_request = maintenance_request_object
     mail(from:"ron@email.com",to:@landlord.email, subject:"Quote for Maintenance Request Has Been Approved.")
   end
+
+  def notify_landlord_about_message(maintenance_request_object)
+    @landlord = maintenance_request_object.property.landlord
+    @maintenance_request = maintenance_request_object
+    mail(from:"ron@email.com",to:@landlord.email, subject:"You have a new message.")
+  end
   
 
 end 

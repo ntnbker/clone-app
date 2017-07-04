@@ -57,11 +57,13 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
 
     @email_quote_id = params[:email_quote_id]
+    @email_invoice_id = params[:invoice_quote_id]
     @logs = @maintenance_request.logs
     # @pdf_files = @maintenance_request.delivered_uploaded_invoices
     @invoice_pdf_files = @maintenance_request.delivered_uploaded_invoices.as_json(:include => {:trady => {:include => :trady_company}})
     @invoices = @maintenance_request.delivered_invoices.as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
-    
+    @open_message = params[:message]
+    @open_quote_message = params[:quote_message]
     @message = Message.new
     
     @tradie = Trady.new

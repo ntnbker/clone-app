@@ -32,7 +32,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
 
     @message = Message.new
-    
+    @open_message = params[:message]
     @tradie = Trady.new
     @logs = @maintenance_request.logs 
 

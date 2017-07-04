@@ -81,7 +81,8 @@
         @media (max-width: 480px)
           .container-email
             width: 350px
-
+            .main
+              width: 95%
   %body
     .container-email
       .header
@@ -89,20 +90,18 @@
           %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
-
       .main
         %p.content
-          Hi #{@landlord.name.capitalize}, a quote for a maintenance request has been approved.
-        %p.content
-          To view the details please click on the button below.
+          Hi #{@landlord.name}, there is a new message from your agent about the maintenance request. To view it and respond click on the button below.
+
         %div.text-center
-          =link_to "View Maintenance Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id,:anchor=>"quote_area"), class: 'btn'
+          =link_to "View Maintnenace Request Message", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id, message:"Open Message"), class: 'btn'
 
         %p.thank
-          Thank you
+          Thank you :)
 
         %p.team
-          The MaintenanceApp Team :)
+          The MaintenanceApp Team
 
       .footer
         .contact

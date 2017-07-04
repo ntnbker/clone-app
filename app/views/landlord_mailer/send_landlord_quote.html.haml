@@ -94,7 +94,7 @@
           Hi #{@landlord.name.capitalize}, a quote has been submitted by a tradie for the maintenance request. To take a look at the quote please click the buttom below. 
 
         %div.text-center
-          =link_to "View Quote", landlord_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@landlord.user.id), class: 'btn'
+          =link_to "View Quote", landlord_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@landlord.user.id,:anchor=>"quote_area"), class: 'btn'
 
         %p.thank
           Thank you :)

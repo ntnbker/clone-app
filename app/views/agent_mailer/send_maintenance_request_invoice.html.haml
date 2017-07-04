@@ -98,7 +98,7 @@
             ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
             , an invoice has been submitted by a trady for a maintenance request. Please click the button below to view it.
           %div.text-center
-            =link_to "View Invoice", agent_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
+            =link_to "View Invoice", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,:anchor=>"invoice_area"), class: 'btn'
             
         -elsif @maintenance_request.agency_admin
           %p.content 
@@ -106,7 +106,7 @@
             ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
             , an invoice has been submitted by a trady for a maintenance request.. Please click the button below to view it.
           %div.text-center
-            =link_to "View Invoice", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
+            =link_to "View Invoice", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,:anchor=>"invoice_area"), class: 'btn'
 
         %p.content-thank
 

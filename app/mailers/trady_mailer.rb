@@ -68,6 +68,12 @@ class TradyMailer < ActionMailer::Base
     @trady = trady_object
     mail(from:"ron@email.com",to:@trady.email, subject:"Appointment Declined")
   end
+
+  def notify_picked_trady_about_message(maintenance_request)
+    @maintenance_request = maintenance_request
+    @trady = @maintenance_request.trady 
+    mail(from:"ron@email.com",to:@trady.email, subject:"An agent has sent you a message.")
+  end
   
 end 
 

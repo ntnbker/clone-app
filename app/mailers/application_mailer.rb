@@ -59,11 +59,13 @@ class ApplicationMailer < ActionMailer::Base
   end
 
 
-  def tenant_message_notify_email(maintenance_request, tenant_email, tenant_id, tenant_name)
+  def tenant_message_notify_email(maintenance_request, user)
     @maintenance_request = maintenance_request
-    @tenant_name = tenant_name
-    @tenant_id = tenant_id
-    mail(from:"ron@email.com", to:tenant_email, subject: "New Maintenance Request Message")
+    # @tenant_name = tenant_name
+    # @tenant_id = tenant_id
+    @tenant = user.tenant
+    @user = user
+    mail(from:"ron@email.com", to:user.email, subject: "New Maintenance Request Message")
   end
 
   def message_notification_email(maintenance_request)
@@ -79,7 +81,7 @@ class ApplicationMailer < ActionMailer::Base
     email_array.each do |email|
       user = User.find_by(email:email)
       
-      ApplicationMailer.tenant_message_notify_email(maintenance_request,email,user.id, user.tenant.full_name).deliver
+      ApplicationMailer.tenant_message_notify_email(maintenance_request,user).deliver
     end 
     
   end

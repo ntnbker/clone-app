@@ -76,7 +76,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     # else
     #   @quote_id = ''
     # end 
-
+    @open_message = params[:message]
     @message = Message.new
     
     @trady = @signed_in_trady.as_json(:include => {:user => {:include => :current_role}})

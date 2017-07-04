@@ -89,20 +89,17 @@
           %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
-
       .main
         %p.content
-          Hi #{@landlord.name.capitalize}, a quote for a maintenance request has been approved.
-        %p.content
-          To view the details please click on the button below.
-        %div.text-center
-          =link_to "View Maintenance Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id,:anchor=>"quote_area"), class: 'btn'
+          Hi #{@trady.name.capitalize}, an agent has sent you a maintenance request message. To view and respond to the message please click the button below.
 
+        %div.text-center
+          =link_to "View Maintenance Request Message", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id, message:"Open Agent Message"), class: 'btn'
         %p.thank
-          Thank you
+          Thank you :)
 
         %p.team
-          The MaintenanceApp Team :)
+          The MaintenanceApp Team
 
       .footer
         .contact
@@ -116,3 +113,5 @@
             = image_tag "http://localhost:3000/assets/ico-instagram.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
             = image_tag "http://localhost:3000/assets/ico-google.png", :class => 'img'
+
+    
