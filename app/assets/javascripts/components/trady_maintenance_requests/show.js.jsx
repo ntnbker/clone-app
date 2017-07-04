@@ -17,7 +17,7 @@ var TradySideBarMobile = React.createClass({
 			this.setState({showAction: false});
 			this.setState({showContact: true});
 			if($('#contacts-full').length > 0) {
-				$('#contacts-full').css({'height': this.props.tenants.length * 50 + 150, 'border-width': 1});
+				$('#contacts-full').css({'height': this.props.tenants.length * 50 + 200, 'border-width': 1});
 			}
 		}
 	},
@@ -83,7 +83,8 @@ var TradySideBarMobile = React.createClass({
 							agent={this.props.agent}
 							tenants={this.props.tenants}
 							landlord={this.props.landlord} 
-							current_user={this.props.current_user} 
+							current_user={this.props.current_user}
+							assigned_trady={this.props.assigned_trady}
 							maintenance_request={this.props.maintenance_request} 
 							onModalWith={(modal) => this.props.onModalWith(modal)} 
 						/> 
@@ -244,7 +245,7 @@ var ModalNotification = React.createClass({
 
 var TradyMaintenanceRequest = React.createClass({
 	getInitialState: function() {
-		const {quotes, tradies, landlord, invoices, appointments, invoice_pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation} = this.props;
+		const {quotes, tradies, landlord, invoices, appointments, invoice_pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
 		const comments = [],
 					quoteComments = [];
 		appointments.map((appointment, key) => {
@@ -279,6 +280,7 @@ var TradyMaintenanceRequest = React.createClass({
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
+			trady_agent_conversation: trady_agent_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -568,10 +570,11 @@ var TradyMaintenanceRequest = React.createClass({
 
 	declineAppointment: function(appointment) {
 		const self = this;
-		const {authenticity_token} = this.props;
+		const {authenticity_token, current_role} = this.props;
 		const params = {
 			appointment_id: appointment.id,
 			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: current_role ? current_role.role : '',
 		};
 		$.ajax({
 			type: 'POST',
@@ -650,6 +653,36 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageAgent: function(params) {
+		const {authenticity_token, maintenance_request, current_role} = this.props;
+		const self = this;
+		params.message.maintenance_request_id = maintenance_request.id;
+		params.message.role = current_role ? current_role.role : '',
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				const trady_agent_conversation = !!self.state.trady_agent_conversation ? self.state.trady_agent_conversation : [];
+				trady_agent_conversation.push(res);
+				self.setState({
+					trady_agent_conversation: trady_agent_conversation
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Message Agent",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -699,6 +732,17 @@ var TradyMaintenanceRequest = React.createClass({
 							sendMessageQuote={this.sendMessageQuote} 
 						/>
 					)
+				}
+
+				case 'sendMessageAgent': {
+					return (
+						<ModalSendMessageAgent 
+							close={this.isClose} 
+							current_user={this.props.current_user} 
+							sendMessageAgent={this.sendMessageAgent}
+							trady_agent_conversation={this.state.trady_agent_conversation}
+						/>
+					);
 				}
 
 				case 'viewInvoice': {
@@ -846,7 +890,8 @@ var TradyMaintenanceRequest = React.createClass({
 							agent={this.props.agent}
 							tenants={this.props.tenants}
 							landlord={this.state.landlord} 
-							current_user={this.props.current_user} 
+							current_user={this.props.current_user}
+							assigned_trady={this.props.assigned_trady}
 							onModalWith={(modal) => this.onModalWith(modal)} 
 							maintenance_request={this.state.maintenance_request} 
 						/>

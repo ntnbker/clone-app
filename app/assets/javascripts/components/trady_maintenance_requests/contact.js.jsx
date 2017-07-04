@@ -35,11 +35,26 @@ var ContentTradyContact = React.createClass({
 		return null;
 	},
 
+	renderMessageAgent: function() {
+		const {assigned_trady} = this.props;
+		if(!!assigned_trady) {
+			return (
+				<li>
+					<a onClick={() => this.props.onModalWith('sendMessageAgent')}>
+						<i className="fa fa-commenting" aria-hidden="true" />
+						Message Agent
+					</a>
+				</li>
+			);
+		}
+	},
+
 	render: function() {
 		return (
 			<ul>
 				{this.renderTenant()}
 				{this.renderAgent()}
+				{this.renderMessageAgent()}
 			</ul>
 		);
 	}
@@ -72,7 +87,8 @@ var TradyContact = React.createClass({
 							<ContentTradyContact 
 								agent={this.props.agent}
 								tenants={this.props.tenants}
-								landlord={this.props.landlord} 
+								landlord={this.props.landlord}
+								assigned_trady={this.props.assigned_trady}
 								maintenance_request={this.props.maintenance_request}
 								onModalWith={(modal) => this.props.onModalWith(modal)} 
 							/> 
@@ -101,7 +117,8 @@ var TradyContactMobile = React.createClass({
 							<ContentTradyContact
 								agent={this.props.agent}
 								tenants={this.props.tenants}
-								landlord={this.props.landlord} 
+								landlord={this.props.landlord}
+								assigned_trady={this.props.assigned_trady}
 								maintenance_request={this.props.maintenance_request} 
 								onModalWith={(modal) => this.props.onModalWith(modal)} 
 							/> 

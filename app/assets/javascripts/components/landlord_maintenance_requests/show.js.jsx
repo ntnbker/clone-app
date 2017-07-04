@@ -417,10 +417,11 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	declineAppointment: function(appointment) {
 		const self = this;
-		const {authenticity_token} = this.props;
+		const {authenticity_token, current_role} = this.props;
 		const params = {
 			appointment_id: appointment.id,
 			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: current_role ? current_role.role : '',
 		};
 		$.ajax({
 			type: 'POST',
@@ -457,7 +458,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	cancelAppointment: function(appointment) {
 		const self = this;
-		const {authenticity_token, tenant, current_role} = this.props;
+		const {authenticity_token, current_role} = this.props;
 		var params = {
 			appointment_id: appointment.id,
 			current_user_role: current_role ? current_role.role : '',

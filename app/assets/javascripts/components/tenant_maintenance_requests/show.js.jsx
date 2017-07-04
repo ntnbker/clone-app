@@ -373,6 +373,7 @@ var TenantMaintenanceRequest = React.createClass({
 		const params = {
 			appointment_id: appointment.id,
 			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role.role : '',
 		};
 		$.ajax({
 			type: 'POST',
