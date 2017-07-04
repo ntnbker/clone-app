@@ -851,6 +851,26 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
+	autoScroll: function(key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+		
+	},
+
+	componentDidMount: function() {
+		const href = window.location.href;
+		const self = this;
+		window.onload = function () {
+	    if(href.indexOf('email_quote_id') != -1) {
+				self.autoScroll('quotes');
+			}else if(href.indexOf('send_maintenance_request_invoice') != -1) {
+				self.autoScroll('invoices');
+			}
+		}
+	},
+
 	render: function() {
 		const {appointments, quote_appointments} = this.state;
 		return (

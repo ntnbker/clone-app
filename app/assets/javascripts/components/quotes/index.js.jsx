@@ -299,7 +299,7 @@ var Quotes = React.createClass({
 		const quotes = this.state.quotes;
 		const self = this.props;
 		return (
-			<div className="quotes">
+			<div className="quotes" id="quotes">
 				<p>
 					Quotes ({quotes.length})
 				</p>
