@@ -144,7 +144,8 @@ body::-webkit-scrollbar-thumb {
         cursor: pointer;
         background: 0 0;
         border: 0;
-        margin-top: -2px;
+        margin-top: 2px;
+        margin-right: 5px;
         height: auto;
         span {
           border: 1px solid $color-white;
@@ -972,7 +973,6 @@ body::-webkit-scrollbar-thumb {
   .show-quote {
     text-transform: initial;
     .info-quote {
-      border-bottom: 1px solid $color-gray;
       clear: both;
       overflow: hidden;
     }
@@ -1008,9 +1008,15 @@ body::-webkit-scrollbar-thumb {
       margin-top: 15px;
       .table {
         width: 100%;
+        font-size: 13px;
+        th {
+          color: #b3b3b3;
+          font-size: 13px;
+          text-transform: uppercase;
+        }
         tr td {
           padding-left: 0;
-          padding: 3px 3px;
+          padding: 10px 3px;
         }
       }
     }
@@ -1074,11 +1080,11 @@ body::-webkit-scrollbar-thumb {
         padding: 0px;
       }
       .btn-prev {
-        top: 40%;
+        top: 34%;
         left: 5px;
       }
       .btn-next {
-        top: 40%;
+        top: 34%;
         right: 5px;
       }
     }

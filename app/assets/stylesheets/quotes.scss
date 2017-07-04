@@ -4,7 +4,7 @@ form#new_quote {
 	margin: 20px auto;
 
 	p {
-	    margin: 20px 0 5px;
+		margin: 20px 0 5px;
 	}
 
 	.quotefield {
@@ -72,6 +72,27 @@ form#new_quote {
 	input[type="text"] {
 		width: 100%;
 	}
+	.amount {
+		display: flex;
+		margin-top: 10px;
+		select {
+			width: 49%;
+			margin-right: 1%;
+		}
+		input[type="number"] {
+			width: 49%;
+			margin-left: 1%;
+		}
+		.hour {
+			width: 32% !important;
+			&.select {
+				margin-right: 2%;
+			}
+			&.price {
+				margin-right: 2%;
+			}
+		}
+	}
 
 	/* For Desktop */
 	@media (min-width: 550px) {
@@ -136,6 +157,114 @@ form#new_quote {
 	}
 }
 
+.modal-quote {
+	color: #404040;
+	position: relative;
+	.modal-dialog {
+		width: 700px !important;
+	}
+	.modal-header {
+		background-color: #fff !important;
+		display: flex;
+
+		.logo {
+			img {
+				width: 80px;
+			}
+		}
+		.info-trady {
+			margin-left: 15px;
+			p {
+				margin-bottom: 0px;
+				font-size: 12px;
+				span {
+					&:first-child {
+						width: 60px;
+						display: inline-block;
+					}
+					&:last-child {
+						padding-left: 5px;
+					}
+				}
+			}
+		}
+		.close {
+			border: 1px solid #ccc !important;
+			border-radius: 50% !important;
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			span {
+				color: #ccc !important;
+			}
+		}
+	}
+	.info-quote {
+		font-size: 13px;
+		.bill-to {
+			font-size: 16px;
+		}
+		.info-agency {
+			p {
+				text-align: left !important;
+				span {
+					&:first-child {
+						width: 120px;
+				    display: inline-block;
+				    text-align: right;
+					}
+				}
+			}
+		}
+	}
+	.footer {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		font-size: 12px;
+		border-top: 1px solid #ccc;
+		padding-top: 15px;
+		i{
+			font-size: 36px;
+		}
+		p {
+			margin-bottom: 5px;
+		}
+		.bank {
+			margin-left: 25px;
+			flex: 1;
+			span {
+				&:first-child {
+					width: 110px;
+					display: inline-block;
+				};
+			}
+		}
+		.contact {
+			margin-left: 15px;
+			flex: 1;
+		}
+	}
+	.border-none {
+		border: none !important;
+	}
+	.color-grey {
+		color: #b3b3b3;
+	}
+	.font-bold {
+		font-weight: bold;
+	}
+	.m-t-md {
+		margin-top: 10px;
+	}
+	.p-t-n {
+		padding-top: 0 !important;
+	}
+	.p-b-n {
+		padding-bottom: 0 !important;
+	}
+}
+
 @media (max-width: 768px) {
 	.quote { 
 		.info-quote {
@@ -144,6 +273,10 @@ form#new_quote {
 	}
 	.quote-items {
 		margin: 0 15px;
+	}
+
+	.modal-quote .modal-dialog {
+		width: 90% !important;
 	}
 }
 

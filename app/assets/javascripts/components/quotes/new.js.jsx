@@ -31,50 +31,60 @@ var QuoteField = React.createClass({
         }
         return <div className="quotefield" style={{display: this.state.remove ? 'none' : 'block' }}>
             <fieldset>
-                <p> Item description </p>
-                <input type="text"
+                <div>
+                    <input 
                         required
-                       id={'quote_quote_items_attributes_' + x + '_item_description'}
-                       name={'quote[quote_items_attributes][' + x + '][item_description]'}
-                       defaultValue={quote ? quote.item_description : ''}
+                        type="text"
+                        placeholder="Item description"
+                        className="text-center"
+                        defaultValue={quote ? quote.item_description : ''}
+                        id={'quote_quote_items_attributes_' + x + '_item_description'}
+                        name={'quote[quote_items_attributes][' + x + '][item_description]'}
                     />
-
-                <p> Amount </p>
-                <input type="text"
+                </div>
+                <div className="amount">
+                    <select 
+                        onChange={this.onPricing}
+                        value={this.state.pricing_type}
+                        className={"text-center " + (this.state.hours_input && 'hour select')}
+                        id={'quote_quote_items_attributes_' + x + '_pricing_type'}
+                        name={'quote[quote_items_attributes][' + x + '][pricing_type]'}
+                    >
+                        <option value="Fixed Cost">Fixed Cost</option>
+                        <option value="Hourly">Hourly</option>
+                    </select>
+                    <input 
                         required
-                       id={'quote_quote_items_attributes_' + x + '_amount'}
-                       name={'quote[quote_items_attributes][' + x + '][amount]'}
-                       defaultValue={quote ? quote.amount : ''}
+                        type="number"
+                        placeholder="Amount"
+                        defaultValue={quote ? quote.amount : ''}
+                        className={"text-center " +  (!!this.state.hours_input && 'hour price')}
+                        id={'quote_quote_items_attributes_' + x + '_amount'}
+                        name={'quote[quote_items_attributes][' + x + '][amount]'}
                     />
-
-                <p> Pricing type </p>
-                <select value={this.state.pricing_type}
-                     onChange={this.onPricing}
-                         name={'quote[quote_items_attributes][' + x + '][pricing_type]'}
-                           id={'quote_quote_items_attributes_' + x + '_pricing_type'}>
-                    <option value="Fixed Cost">Fixed Cost</option>
-                    <option value="Hourly">Hourly</option>
-                </select>
-                {
-                    this.state.hours_input
-                    ? <div>
-                        <p> Number of Hours </p>
-                        <input type="text"
+                    {
+                        this.state.hours_input ? 
+                            <input 
                                 required
-                               id={'quote_quote_items_attributes_' + x + '_hours'}
-                               name={'quote[quote_items_attributes][' + x + '][hours]'}
-                               defaultValue={quote ? quote.hours : ''}
+                                type="number"
+                                placeholder="Of Hours"
+                                defaultValue={quote ? quote.hours : ''}
+                                className={"text-center " + (this.state.hours_input && 'hour')}
+                                id={'quote_quote_items_attributes_' + x + '_hours'}
+                                name={'quote[quote_items_attributes][' + x + '][hours]'}
                             />
-                     </div>
-                    : <input type="hidden"
-                             id={'quote_quote_items_attributes_' + x + '_hours'}
-                             name={'quote[quote_items_attributes][' + x + '][hours]'}
-                        />
-                }
-                <input type="hidden" value={this.state.remove} name={'quote[quote_items_attributes][' + x + '][_destroy]'} id={'quote_quote_items_attributes_' + x + '__destroy'}/>
-                {quote
-                ? <input type="hidden" value={x} name={'quote[quote_items_attributes][' + x + '][id]'} id={'quote_iquote_items_attributes_' + x + '_id'} />
-                : null }
+                            : <input 
+                                type="hidden"
+                                id={'quote_quote_items_attributes_' + x + '_hours'}
+                                name={'quote[quote_items_attributes][' + x + '][hours]'}
+                            />
+                    }
+                    <input type="hidden" value={this.state.remove} name={'quote[quote_items_attributes][' + x + '][_destroy]'} id={'quote_quote_items_attributes_' + x + '__destroy'}/>
+                    {   quote && 
+                        <input type="hidden" value={x} name={'quote[quote_items_attributes][' + x + '][id]'} id={'quote_iquote_items_attributes_' + x + '_id'} />
+                    }
+                </div>
+                
             </fieldset>
             <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
         </div>

@@ -59,7 +59,6 @@
 	input {
 		display: block;
 		width: 100%;
-		margin: 5px 0;
 	}
 
 	input[type="submit"] {
@@ -283,6 +282,28 @@
 		}
 	}
 
+	.amount {
+		display: flex;
+		margin-top: 10px;
+		select {
+			width: 49%;
+			margin-right: 1%;
+		}
+		input[type="number"] {
+			width: 49%;
+			margin-left: 1%;
+		}
+		.hour {
+			width: 32% !important;
+			&.select {
+				margin-right: 2%;
+			}
+			&.price {
+				margin-right: 2%;
+			}
+		}
+	}
+
 	/* For Desktop */
 	@media (min-width: 786px) {
 		width: 700px;
@@ -349,7 +370,6 @@
 
 		&.done {
 			background: #296781;
-			z-index: -1;
 			.label {
 			    color: #FFF;
 		        background: linear-gradient(to bottom, #4ee7cd 0%,#00cdab 50%,#4ee7cd 100%);

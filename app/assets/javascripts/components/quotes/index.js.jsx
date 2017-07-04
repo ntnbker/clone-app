@@ -351,10 +351,10 @@ var Quotes = React.createClass({
 
 var DetailQuote = React.createClass({
 	render: function() {
-		const quote_items = this.props.quote_items;
+		const {quote} = this.props;
 		let subTotal = 0;
 		let gst = 0;
-		if(!!quote_items) {
+		if(!!quote) {
 			return (
 				<table  className="table">
 				<thead>
@@ -366,20 +366,19 @@ var DetailQuote = React.createClass({
 							Pricing
 						</th>
 						<th>
-							Rate
-						</th>
-						<th>
 							Hours
 						</th>
-						<th>
-							Total
+						<th className="text-right">
+							Rate
+						</th>
+						<th className="text-right">
+							Amount
 						</th>
 					</tr>
 					</thead>
 					<tbody>
 					{
-						quote_items.map(function(item, key) {
-							gst += !!item.gst_amount ? item.gst_amount : 0;
+						quote.quote_items.map(function(item, key) {
 							if(item.pricing_type == "Fixed Cost") {
 								subTotal += item.amount;
 							}else {
@@ -389,35 +388,38 @@ var DetailQuote = React.createClass({
 								<tr key={key}>
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
-									<td>${item.amount}</td>
 									<td>{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
-									<td>${ item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours }</td>
+									<td className="text-right">${item.amount.toFixed(2)}</td>
+									<td className="text-right">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
 								</tr>
 							);
 						})
 					}
 					<tr>
-						<td colSpan="4" className="text-right">
+						<td colSpan="3" className="border-none p-b-n"></td>
+						<td className="text-right border-none font-bold p-b-n">
 							Subtotal:
 						</td>
-						<td>
-							${subTotal}
+						<td className="border-none text-right p-b-n">
+							${subTotal.toFixed(2)}
 						</td>
 					</tr>
 					<tr>
-						<td colSpan="4" className="text-right">
-							GST:
+						<td colSpan="3" className="border-none p-t-n"></td>
+						<td className="text-right p-t-n">
+							GST 10%:
 						</td>
-						<td>
-							${gst}
+						<td className="text-right p-t-n">
+							${(quote.gst_amount).toFixed(2)}
 						</td>
 					</tr>
 					<tr>
-						<td colSpan="4" className="text-right">
-							Total:
+						<td colSpan="3" className="border-none"></td>
+						<td className="text-right font-bold border-none">
+							Amount Due (AUD):
 						</td>
-						<td>
-							${subTotal + gst}
+						<td className="text-right font-bold border-none">
+							${(subTotal + quote.gst_amount).toFixed(2)}
 						</td>
 					</tr>
 					</tbody>
@@ -505,12 +507,47 @@ var ModalViewQuote = React.createClass({
 		const self = this.props;
 		const quote = this.state.quote;
 		let total = 0;
-
+		
 		return (
-			<div className="modal-custom fade">
+			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
+							<div className="logo">
+								<img src="/assets/logo.png" />
+							</div>
+							<div className="info-trady">
+								<p>
+									<span>Business: </span>
+									<span>
+										{quote.trady.company_name}
+									</span>
+								</p>
+								<p>
+									<span>ABN:</span>
+									<span>
+										{quote.trady.trady_company.abn}
+									</span>
+								</p>
+								<p>
+									<span>Address:</span>
+									<span>
+										{quote.trady.trady_company.address}
+									</span>
+								</p>
+								<p>
+									<span>Phone:</span>
+									<span>
+										{quote.trady.trady_company.mobile_number}
+									</span>
+								</p>
+								<p>
+									<span>Email:</span>
+									<span>
+										{quote.trady.trady_company.email}
+									</span>
+								</p>
+							</div>
 							<button 
 								type="button" 
 								className="close"
@@ -520,31 +557,33 @@ var ModalViewQuote = React.createClass({
 							>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title text-center">Quote</h4>
 						</div>
 						<div className="slider-quote">
 							<div className="modal-body">
 								<div className="show-quote" onTouchEnd={(key, index) => this.switchSlider('prev', this.state.index)}>
 									<div className="info-quote">
 										<div className="info-trady">
-											<p>{quote.trady.name}</p>
-											<p className="">{!!quote.trady.trady_company && quote.trady.trady_company.address}</p>
-											<p className="">{!!quote.trady.trady_company && quote.trady.trady_company.email}</p>
-											<p className="">Abn: {!!quote.trady.trady_company && quote.trady.trady_company.abn}</p>
+											<div>
+												<p className="color-grey bill-to">Bill To</p>
+												<p>{self.landlord && self.landlord.name}</p>
+												<p>{self.agency && self.agency.company_name}</p>
+												<p>{self.agency && self.agency.address}</p>
+											</div>
 										</div>
 										<div className="info-agency">
-											<p>{self.agency ? self.agency.company_name: null}</p>
-											<p>{self.agency ? self.agency.address : null}</p>
+											<p>
+												<span className="font-bold">Quote Number: </span>
+												<span> {quote.id}</span>
+											</p>
+											<p>
+												<span className="font-bold">Quote Date: </span>
+												<span> { moment(quote.created_at).format("LL") }</span>
+											</p>
 										</div>
 									</div>
 									<div className="detail-quote">
-										<div className="info-maintenance">
-											<p>Quote #{quote.id}</p>
-											<p>For: {self.property.property_address}</p>
-											<p>Created: { moment(quote.created_at).format("DD-MM-YYYY") }</p>
-										</div>
 										<div className="detail-quote">
-											{!!quote.quote_items && <DetailQuote quote_items={quote.quote_items} />}
+											{!!quote.quote_items && <DetailQuote quote={quote} />}
 										</div>
 									</div>
 								</div>
@@ -624,7 +663,7 @@ var ModalViewQuoteMessage = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Message Trady</h4>
+								<h4 className="modal-title text-center">Message Quote</h4>
 							</div>
 							<div className="modal-body">
 								{<ContentMessage current_user={current_user} messages={quote.conversation && quote.conversation.messages ? quote.conversation.messages : null} />}

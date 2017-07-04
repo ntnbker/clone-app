@@ -751,6 +751,7 @@ var TradyMaintenanceRequest = React.createClass({
 								close={this.isClose}
 								agency={this.props.agency}
 							 	invoice={this.state.invoice} 
+					 			landlord={this.state.landlord}
 							 	invoices={this.state.invoices}
 								property={this.props.property}
 							/>
