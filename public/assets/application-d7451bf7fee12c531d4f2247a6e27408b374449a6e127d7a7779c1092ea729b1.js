@@ -33792,7 +33792,7 @@ $( document ).ready(function() {
     }else {
       if(e.key != "Control") {
         var value = $(this).val();
-        if(/^[A-Z]/.test(e.key)) {
+        if(/^[A-Z]/.test(value)) {
           $(this).val(value.toLowerCase());
         }
       }
@@ -68539,8 +68539,79 @@ var ModalAddAppointment = React.createClass({
 									"data-dismiss": "modal",
 									className: "btn btn-default success"
 								},
-								"Submit Comment and Appointment Time"
+								"Create Appointment"
 							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalConfirmAppointment = React.createClass({
+	displayName: "ModalConfirmAppointment",
+
+	render: function () {
+		var _props2 = this.props;
+		var title = _props2.title;
+		var content = _props2.content;
+		var btnContent = _props2.btnContent;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							content
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-default success",
+								onClick: this.props.openModal,
+								"data-dismiss": "modal"
+							},
+							btnContent
 						)
 					)
 				)
@@ -69075,7 +69146,7 @@ var ButtonAddAnotherItem = React.createClass({
                     return React.createElement(
                         "button",
                         { type: "button", className: "button-add button-primary", onClick: this.props.addField },
-                        x <= 1 ? "Add Access Contact" : "Add Another Premise Access Contact"
+                        "Add Another Premise Access Contact"
                     );
                 }
             default:
@@ -69834,7 +69905,7 @@ var DetailInvoice = React.createClass({
 							"td",
 							{ className: "text-right font-bold border-none" },
 							"$",
-							subTotal + invoice.gst_amount
+							(subTotal + invoice.gst_amount).toFixed(2)
 						)
 					)
 				)
@@ -69897,7 +69968,7 @@ var ModalViewInvoice = React.createClass({
 	printInvoice: function () {
 		$('.button-slider').toggle('hide');
 		var contents = $('#print-invoice').html();
-		var style = ".info-quote {border-bottom: 1px solid #3e4b54; clear: both; overflow: hidden;}" + ".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {width: 50%;overflow: hidden;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}" + "#print-invoice { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important;display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:first-child {width: 60px;display: inline-block;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3;}" + ".font-bold { font-weight: bold;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}";
+		var style = ".info-quote {clear: both; overflow: hidden;}" + ".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {width: 50%;overflow: hidden;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}" + "#print-invoice { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important;display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:first-child {width: 60px;display: inline-block;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3;}" + ".font-bold { font-weight: bold;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}";
 
 		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
 		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
@@ -71278,7 +71349,7 @@ var LandlordMaintenanceRequest = React.createClass({
 	},
 
 	decline: function (appointment) {
-		this.onModalWith('createAppointment');
+		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
 			isDecline: true,
 			appointmentUpdate: appointment
@@ -71305,24 +71376,23 @@ var LandlordMaintenanceRequest = React.createClass({
 			data: params,
 			success: function (res) {
 				self.updateAppointment(res.appointment);
-				self.setState({ notification: {
-						bgClass: "bg-success",
-						title: "Decline Appoinment",
-						content: res.note
-					} });
-				self.onModalWith('notification');
-			},
-			error: function (err) {
-				self.updateAppointment(res.appointment);
 				self.setState({
 					isDecline: false
 				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
 			}
 		});
 	},
 
 	cancel: function (appointment) {
-		this.onModalWith('createAppointment');
+		this.onModalWith('confirmCancelAppointment');
 		this.setState({
 			isCancel: true,
 			appointmentUpdate: appointment
@@ -71349,7 +71419,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.updateAppointment(res.appointment);
 				self.setState({
-					isCacnel: false
+					isCancel: false
 				});
 			},
 			error: function (err) {
@@ -71434,6 +71504,32 @@ var LandlordMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'confirmCancelAppointment':
+					{
+						return React.createElement(ModalConfirmAppointment, {
+							close: this.isClose,
+							title: 'Cancel Appointment',
+							btnContent: 'Create and Cancel',
+							openModal: function () {
+								return _this2.onModalWith('createAppointment');
+							},
+							content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+						});
+					}
+
+				case 'confirmDeclineAppointment':
+					{
+						return React.createElement(ModalConfirmAppointment, {
+							close: this.isClose,
+							title: 'Decline Appointment',
+							btnContent: 'Create and Decline',
+							openModal: function () {
+								return _this2.onModalWith('createAppointment');
+							},
+							content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+						});
+					}
+
 				case 'createAppointment':
 					{
 						return React.createElement(ModalAddAppointment, {
@@ -71460,16 +71556,48 @@ var LandlordMaintenanceRequest = React.createClass({
 		}, 500);
 	},
 
+	openAppointment: function (appointment_id) {
+		var appointment = '';
+		var appointments = this.state.appointments;
+
+		appointments.map(function (item, key) {
+			if (item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if (appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
+	},
+
 	componentDidMount: function () {
 		var href = window.location.href;
 		var self = this;
 		window.onload = function () {
-			if (!!href.indexOf('email_quote_id')) {
+			var json = self.getUrlVars(href);
+			if (href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
-			} else if (!!href.indexOf('send_maintenance_request_invoice')) {
+			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
+			} else if (href.indexOf('open_message') >= 0) {
+				self.onModalWith('sendMessageLandlord');
+			} else if (href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
 			}
 		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
 	},
 
 	render: function () {
@@ -73434,7 +73562,7 @@ var ListMaintenanceRequest = React.createClass({
         count: this.props.quote_requested_count
       }, {
         title: "Quote Received",
-        value: "Quote Received Awaiting Approval",
+        value: "Quote Received",
         count: this.props.quotes_received_count
       }, {
         title: "New Invoice",
@@ -74913,13 +75041,11 @@ var MaintenanceRequestsNew = React.createClass({
 						} }),
 					React.createElement('p', { id: 'errorboxmobile', className: 'error' })
 				),
-				React.createElement('hr', null),
 				React.createElement(
 					'div',
-					{ id: 'access_contacts' },
+					{ id: 'access_contacts', className: 'm-b-lg' },
 					React.createElement(FieldList, { SampleField: AccessContactField, flag: 'contact' })
 				),
-				React.createElement('hr', null),
 				React.createElement(
 					'div',
 					{ className: 'field' },
@@ -77616,16 +77742,65 @@ var MaintenanceRequest = React.createClass({
 		}, 500);
 	},
 
+	openQuoteMesssage: function (quote_id) {
+		var quotes = this.state.quotes;
+
+		var quote = '';
+		quotes.map(function (item, key) {
+			if (item.id == quote_id) {
+				quote = item;
+				return;
+			}
+		});
+
+		if (quote) {
+			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
 	componentDidMount: function () {
 		var href = window.location.href;
 		var self = this;
 		window.onload = function () {
-			if (!!href.indexOf('email_quote_id')) {
+			if (href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
-			} else if (!!href.indexOf('send_maintenance_request_invoice')) {
+			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
 			}
+
+			var json = self.getUrlVars(href);
+			switch (json.message) {
+				case 'open_landlord_message':
+					self.onModalWith('sendMessageLandlord');
+					break;
+
+				case 'open_tenant_message':
+					self.onModalWith('sendMessageTenant');
+					break;
+
+				case 'open_trady_message':
+					self.onModalWith('sendMessageTrady');
+					break;
+
+				case 'open_quote_message':
+					self.openQuoteMesssage(json.quote_message_id);
+					break;
+
+				default:
+					break;
+			}
 		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
 	},
 
 	summary: function (e) {
@@ -80731,8 +80906,16 @@ var TenantMaintenanceRequest = React.createClass({
 		var params = {
 			appointment_id: appointment.id,
 			current_user_role: tenant.user.current_role ? tenant.user.current_role : '',
-			maintenance_request_id: this.state.maintenance_request.id
+			maintenance_request_id: this.state.maintenance_request.id,
+			appointment_type: appointment.appointment_type == 'Work Order Appointment' ? 'work_order_appointment' : 'quote_appointment'
 		};
+
+		if (appointment.appointment_type == 'Work Order Appointment') {
+			params.appointment_type = "work_order_appointment";
+		} else if (appointment.appointment_type == 'Quote Appointment') {
+			params.appointment_type = 'quote_appointment';
+		}
+
 		$.ajax({
 			type: 'POST',
 			url: appointment.appointment_type == 'Landlord Appointment' ? '/accept_landlord_appointment' : '/accept_appointment',
@@ -80761,24 +80944,7 @@ var TenantMaintenanceRequest = React.createClass({
 	},
 
 	decline: function (appointment) {
-		var key = '';
-		switch (appointment.appointment_type) {
-			case 'Work Order Appointment':
-				key = 'createAppointment';
-				break;
-
-			case 'Quote Appointment':
-				key = 'createAppointmentForQuote';
-				break;
-
-			case 'Landlord Appointment':
-				key = 'createLandlordAppointment';
-				break;
-
-			default:
-				break;
-		}
-		this.onModalWith(key);
+		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
 			isDecline: true,
 			appointmentUpdate: appointment
@@ -80787,7 +80953,9 @@ var TenantMaintenanceRequest = React.createClass({
 
 	declineAppointment: function (appointment) {
 		var self = this;
-		var authenticity_token = this.props.authenticity_token;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var tenant = _props4.tenant;
 
 		var params = {
 			appointment_id: appointment.id,
@@ -80820,23 +80988,7 @@ var TenantMaintenanceRequest = React.createClass({
 
 	cancel: function (appointment) {
 		var key = '';
-		switch (appointment.appointment_type) {
-			case 'Work Order Appointment':
-				key = 'createAppointment';
-				break;
-
-			case 'Quote Appointment':
-				key = 'createAppointmentForQuote';
-				break;
-
-			case 'Landlord Appointment':
-				key = 'createLandlordAppointment';
-				break;
-
-			default:
-				break;
-		}
-		this.onModalWith(key);
+		this.onModalWith('confirmCancelAppointment');
 		this.setState({
 			isCancel: true,
 			appointmentUpdate: appointment
@@ -80845,9 +80997,9 @@ var TenantMaintenanceRequest = React.createClass({
 
 	cancelAppointment: function (appointment) {
 		var self = this;
-		var _props4 = this.props;
-		var authenticity_token = _props4.authenticity_token;
-		var tenant = _props4.tenant;
+		var _props5 = this.props;
+		var authenticity_token = _props5.authenticity_token;
+		var tenant = _props5.tenant;
 
 		var params = {
 			appointment_id: appointment.id,
@@ -80863,7 +81015,7 @@ var TenantMaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.updateAppointment(res.appointment);
 				self.setState({
-					isCacnel: false
+					isCancel: false
 				});
 			},
 			error: function (err) {
@@ -80955,6 +81107,82 @@ var TenantMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'confirmCancelAppointment':
+					{
+						var _ret = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								case 'Landlord Appointment':
+									key = 'createLandlordAppointment';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Cancel Appointment',
+									btnContent: 'Create and Cancel',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret === 'object') return _ret.v;
+					}
+
+				case 'confirmDeclineAppointment':
+					{
+						var _ret2 = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								case 'Landlord Appointment':
+									key = 'createLandlordAppointment';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Decline Appointment',
+									btnContent: 'Create and Decline',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret2 === 'object') return _ret2.v;
+					}
+
 				case 'createAppointment':
 					{
 						return React.createElement(ModalAddAppointment, {
@@ -81000,32 +81228,57 @@ var TenantMaintenanceRequest = React.createClass({
 		}
 	},
 
-	autoScroll: function (key) {
-		var offset = $('#' + key).offset();
-		$('body').animate({
-			scrollTop: offset.top
-		}, 500);
+	openAppointment: function (appointment_id) {
+		var appointment = '';
+		var _state4 = this.state;
+		var appointments = _state4.appointments;
+		var quote_appointments = _state4.quote_appointments;
+		var landlord_appointments = _state4.landlord_appointments;
+
+		var data = [].concat(_toConsumableArray(appointments), _toConsumableArray(quote_appointments), _toConsumableArray(landlord_appointments));
+		data.map(function (item, key) {
+			if (item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if (appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
 	},
 
 	componentDidMount: function () {
 		var href = window.location.href;
 		var self = this;
 		window.onload = function () {
-			if (!!href.indexOf('email_quote_id')) {
-				self.autoScroll('quotes');
-			} else if (!!href.indexOf('send_maintenance_request_invoice')) {
-				self.autoScroll('invoices');
+			var json = self.getUrlVars(href);
+			if (href.indexOf('open_agent_message') >= 0) {
+				self.onModalWith('sendAgentMessage');
+			} else if (href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
 			}
 		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
 	},
 
 	render: function () {
 		var _this3 = this;
 
-		var _state4 = this.state;
-		var appointments = _state4.appointments;
-		var quote_appointments = _state4.quote_appointments;
-		var landlord_appointments = _state4.landlord_appointments;
+		var _state5 = this.state;
+		var appointments = _state5.appointments;
+		var quote_appointments = _state5.quote_appointments;
+		var landlord_appointments = _state5.landlord_appointments;
 
 		return React.createElement(
 			'div',
@@ -83382,7 +83635,8 @@ var TradyMaintenanceRequest = React.createClass({
 		var params = {
 			appointment_id: appointment.id,
 			current_user_role: current_role ? current_role.role : '',
-			maintenance_request_id: this.state.maintenance_request.id
+			maintenance_request_id: this.state.maintenance_request.id,
+			appointment_type: appointment.appointment_type == 'Work Order Appointment' ? 'work_order_appointment' : 'quote_appointment'
 		};
 		$.ajax({
 			type: 'POST',
@@ -83412,20 +83666,7 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	decline: function (appointment) {
-		var key = '';
-		switch (appointment.appointment_type) {
-			case 'Work Order Appointment':
-				key = 'createAppointment';
-				break;
-
-			case 'Quote Appointment':
-				key = 'createAppointmentForQuote';
-				break;
-
-			default:
-				break;
-		}
-		this.onModalWith(key);
+		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
 			isDecline: true,
 			appointmentUpdate: appointment
@@ -83453,7 +83694,7 @@ var TradyMaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.updateAppointment(res.appointment);
 				self.setState({
-					idDecline: false
+					isDecline: false
 				});
 			},
 			error: function (err) {
@@ -83468,20 +83709,7 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	cancel: function (appointment) {
-		var key = '';
-		switch (appointment.appointment_type) {
-			case 'Work Order Appointment':
-				key = 'createAppointment';
-				break;
-
-			case 'Quote Appointment':
-				key = 'createAppointmentForQuote';
-				break;
-
-			default:
-				break;
-		}
-		this.onModalWith(key);
+		this.onModalWith('confirmCancelAppointment');
 		this.setState({
 			isCancel: true,
 			appointmentUpdate: appointment
@@ -83509,7 +83737,7 @@ var TradyMaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.updateAppointment(res.appointment);
 				self.setState({
-					isCacnel: false
+					isCancel: false
 				});
 			},
 			error: function (err) {
@@ -83605,6 +83833,74 @@ var TradyMaintenanceRequest = React.createClass({
 							current_user: this.props.current_user,
 							sendMessageQuote: this.sendMessageQuote
 						});
+					}
+
+				case 'confirmCancelAppointment':
+					{
+						var _ret = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Cancel Appointment',
+									btnContent: 'Create and Cancel',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret === 'object') return _ret.v;
+					}
+
+				case 'confirmDeclineAppointment':
+					{
+						var _ret2 = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Decline Appointment',
+									btnContent: 'Create and Decline',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret2 === 'object') return _ret2.v;
 					}
 
 				case 'sendMessageAgent':
@@ -83737,24 +84033,86 @@ var TradyMaintenanceRequest = React.createClass({
 		}, 500);
 	},
 
+	openQuoteMesssage: function (quote_id) {
+		var quotes = this.state.quotes;
+
+		var quote = '';
+		quotes.map(function (item, key) {
+			if (item.id == quote_id) {
+				quote = item;
+				return;
+			}
+		});
+
+		if (quote) {
+			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
+	openAppointment: function (appointment_id) {
+		var appointment = '';
+		var _state4 = this.state;
+		var appointments = _state4.appointments;
+		var quote_appointments = _state4.quote_appointments;
+
+		var data = [].concat(_toConsumableArray(appointments), _toConsumableArray(quote_appointments));
+		data.map(function (item, key) {
+			if (item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if (appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
+	},
+
 	componentDidMount: function () {
 		var href = window.location.href;
 		var self = this;
 		window.onload = function () {
-			if (href.indexOf('email_quote_id') != -1) {
+			var json = self.getUrlVars(href);
+			if (href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
-			} else if (href.indexOf('send_maintenance_request_invoice') != -1) {
+			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
+			} else if (href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
+			} else {
+				switch (json.message) {
+					case 'open_agent_message':
+						self.onModalWith('sendMessageAgent');
+						break;
+
+					case 'open_quote_message':
+						self.openQuoteMesssage(json.quote_message_id);
+						break;
+
+					default:
+						break;
+				}
 			}
 		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
 	},
 
 	render: function () {
 		var _this3 = this;
 
-		var _state4 = this.state;
-		var appointments = _state4.appointments;
-		var quote_appointments = _state4.quote_appointments;
+		var _state5 = this.state;
+		var appointments = _state5.appointments;
+		var quote_appointments = _state5.quote_appointments;
 
 		return React.createElement(
 			'div',
