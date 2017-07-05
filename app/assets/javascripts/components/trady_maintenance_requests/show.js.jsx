@@ -519,6 +519,7 @@ var TradyMaintenanceRequest = React.createClass({
 			appointment_id: appointment.id,
 			current_user_role: current_role ? current_role.role : '',
 			maintenance_request_id: this.state.maintenance_request.id,
+			appointment_type: appointment.appointment_type == 'Work Order Appointment' ? 'work_order_appointment' : 'quote_appointment',
 		};
 		$.ajax({
 			type: 'POST',

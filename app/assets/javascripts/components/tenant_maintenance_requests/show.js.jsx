@@ -314,7 +314,15 @@ var TenantMaintenanceRequest = React.createClass({
 			appointment_id: appointment.id,
 			current_user_role: tenant.user.current_role ? tenant.user.current_role : '',
 			maintenance_request_id: this.state.maintenance_request.id,
+			appointment_type: appointment.appointment_type == 'Work Order Appointment' ? 'work_order_appointment' : 'quote_appointment',
 		};
+		
+		if(appointment.appointment_type == 'Work Order Appointment'){
+			params.appointment_type = "work_order_appointment";
+		}else if(appointment.appointment_type == 'Quote Appointment') {
+			params.appointment_type = 'quote_appointment'
+		}
+		
 		$.ajax({
 			type: 'POST',
 			url: appointment.appointment_type == 'Landlord Appointment' ? '/accept_landlord_appointment' : '/accept_appointment',
