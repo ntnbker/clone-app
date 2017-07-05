@@ -14,7 +14,7 @@ $( document ).ready(function() {
     }else {
       if(e.key != "Control") {
         var value = $(this).val();
-        if(/^[A-Z]/.test(e.key)) {
+        if(/^[A-Z]/.test(value)) {
           $(this).val(value.toLowerCase());
         }
       }

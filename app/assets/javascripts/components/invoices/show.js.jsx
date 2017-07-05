@@ -68,7 +68,7 @@ var DetailInvoice = React.createClass({
 							Amount Due (AUD):
 						</td>
 						<td className="text-right font-bold border-none">
-							${subTotal + invoice.gst_amount}
+							${(subTotal + invoice.gst_amount).toFixed(2)}
 						</td>
 					</tr>
 					</tbody>
@@ -130,7 +130,7 @@ var ModalViewInvoice = React.createClass({
 	printInvoice: function() {
 		$('.button-slider').toggle('hide');	
 		var contents = $('#print-invoice').html();
-		var style = ".info-quote {border-bottom: 1px solid #3e4b54; clear: both; overflow: hidden;}" +
+		var style = ".info-quote {clear: both; overflow: hidden;}" +
 								".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" +
 								".info-trady p {margin-bottom: 0px;}" +
 								".info-agency {width: 50%;overflow: hidden;}" +
