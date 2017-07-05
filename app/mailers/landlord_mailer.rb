@@ -46,7 +46,7 @@ class LandlordMailer < ActionMailer::Base
 
   def tenant_declined_landlord_appointment_email(landlord_object)
     @landlord = landlord_object
-    mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment Cancelled")
+    mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment Time Declined")
   end
 
 

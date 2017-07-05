@@ -99,7 +99,7 @@
             ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
             the landlord has sent you a message. To see the message and responde, please click the button below.
           %div.text-center
-            =link_to "View Maintenance Request Message", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"Open Landlord Message"), class: 'btn'
+            =link_to "View Maintenance Request Message", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_landlord_message"), class: 'btn'
             
         -elsif @maintenance_request.agency_admin
           %p.content 
@@ -107,7 +107,7 @@
             ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
             the landlord has sent you a message. To see the message and responde, please click the button below.
           %div.text-center
-            =link_to "View Maintenance Request Message", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"Open Landlord Message"), class: 'btn'
+            =link_to "View Maintenance Request Message", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_landlord_message"), class: 'btn'
 
         %p.thank
           Thanks :)

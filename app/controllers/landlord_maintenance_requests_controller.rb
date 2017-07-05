@@ -1,7 +1,8 @@
 class LandlordMaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action(only:[:show]) {belongs_to_landlord}
+  
   before_action :require_login, only:[:show,:index]
+  before_action(only:[:show]) {belongs_to_landlord}
   before_action(only:[:show,:index]) {allow("Landlord")}
   
   def index
@@ -110,7 +111,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     email_params= params[:user_id]
     
     if email_params  
-      user = User.find_by(id:id)
+      user = User.find_by(id:params[:user_id])
       if user   
         if current_user  
           if current_user.logged_in_as("Tenant") || current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
@@ -123,7 +124,8 @@ class LandlordMaintenanceRequestsController < ApplicationController
             logout
             auto_login(user)
             user.current_role.update_attribute(:role, "Landlord")
-          elsif current_user == nil
+          
+          elsif current_user == nil && user.has_role("Landlord")
             auto_login(user)
             user.current_role.update_attribute(:role, "Landlord")
           elsif current_user && current_user.logged_in_as("Landlord")
@@ -144,6 +146,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
   def belongs_to_landlord
     maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+    
     if current_user
       if current_user.landlord.id == maintenance_request.property.landlord_id
         #do nothing
