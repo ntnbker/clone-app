@@ -198,7 +198,7 @@ class QuotesController < ApplicationController
         #this stuff has to go into the new end point for when they forward the quote.
         AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
         # LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
-        @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
+        @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Awaiting Action")
       end 
     elsif @quote.delivery_status ==true
       redirect_to trady_maintenance_requests_path
