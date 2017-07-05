@@ -1,11 +1,11 @@
 class AgencyAdminMaintenanceRequestsController < ApplicationController
   
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action(only:[:show]) {belongs_to_agency_admin}
+  
   before_action :require_login, only:[:show,:index]
 
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
-  
+  before_action(only:[:show]) {belongs_to_agency_admin}
 
   def index
     if params[:sort_by_date] == "Newest to Oldest"
@@ -63,7 +63,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @invoice_pdf_files = @maintenance_request.delivered_uploaded_invoices.as_json(:include => {:trady => {:include => :trady_company}})
     @invoices = @maintenance_request.delivered_invoices.as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
     @open_message = params[:message]
-    @open_quote_message = params[:quote_message]
+    @open_quote_message = params[:quote_message_id]
     @message = Message.new
     
     @tradie = Trady.new

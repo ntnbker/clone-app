@@ -2,9 +2,9 @@ class LandlordMaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   
   before_action :require_login, only:[:show,:index]
-  before_action(only:[:show]) {belongs_to_landlord}
-  before_action(only:[:show,:index]) {allow("Landlord")}
   
+  before_action(only:[:show,:index]) {allow("Landlord")}
+  before_action(only:[:show]) {belongs_to_landlord}
   def index
     if params[:sort_by_date] == "Newest to Oldest"
       @maintenance_requests = current_user.landlord.order_maintenance_request_by_descending

@@ -135,6 +135,24 @@ class MessagesController < ApplicationController
         format.js{render json:@message.errors}
       end
     end
+
+    conversation_type = params[:message][:conversation_type]
+    role = params[:message][:role]
+    quote = Quote.find_by(id:params[:message][:quote_id])
+    maintenance_request = quote.maintenance_request
+    if conversation_type == "Quote"
+      if role == "AgencyAdmin" || role == "Agent"
+        #email the trady 
+        TradyAgentQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote.id)
+      elsif role == "Trady"
+        AgentTradyQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote.id)
+        #email the agent  
+      end 
+    end 
+
+
+
+
   end
 
 

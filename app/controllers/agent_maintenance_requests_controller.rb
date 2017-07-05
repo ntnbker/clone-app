@@ -1,8 +1,9 @@
 class AgentMaintenanceRequestsController < ApplicationController 
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action(only:[:show]) {belong_to_agent}
+  
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Agent")}
+  before_action(only:[:show]) {belong_to_agent}
   def index
     
     @maintenance_requests = current_user.agent.maintenance_requests
@@ -57,7 +58,7 @@ class AgentMaintenanceRequestsController < ApplicationController
     @email_quote_id = params[:email_quote_id]
     @email_invoice_id = params[:invoice_quote_id]
     @open_message = params[:message]
-    @open_quote_message = params[:quote_message]
+    @open_quote_message = params[:quote_message_id]
     @invoice_pdf_files = @maintenance_request.delivered_uploaded_invoices.as_json(:include => {:trady => {:include => :trady_company}})
     @invoices = @maintenance_request.delivered_invoices.as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
     @logs = @maintenance_request.logs

@@ -112,5 +112,19 @@ class AgentMailer < ActionMailer::Base
     mail from:"ron@email.com", to:email, subject:"A trady has sent you a message."
   end
 
+  def notify_agent_about_trady_quote_message(maintenance_request, quote)
+    @maintenance_request = maintenance_request
+    
+    if @maintenance_request.agent == nil
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    elsif @maintenance_request.agency_admin == nil
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    end
+    @quote = quote
+    mail from:"ron@email.com", to:email, subject:"A trady has sent you a quote message."
+  end
+
 end 
 

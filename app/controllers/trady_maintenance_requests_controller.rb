@@ -1,8 +1,9 @@
 class TradyMaintenanceRequestsController < ApplicationController
   before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action(only:[:show]) {belongs_to_trady}
+  
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Trady")}
+  before_action(only:[:show]) {belongs_to_trady}
   # authorize_resource :class => false
 
   def index
@@ -49,7 +50,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     @tenants = @maintenance_request.tenants
 
-    
+    @quote_message_id = params[:quote_message_id]
     
 
     
