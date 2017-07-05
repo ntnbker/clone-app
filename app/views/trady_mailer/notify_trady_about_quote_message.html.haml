@@ -94,7 +94,7 @@
           Hi #{@trady.name.capitalize}, an agent has sent you a message about a quote you submitted. To view and respond to the message please click the button below.
 
         %div.text-center
-          =link_to "View Quote Message", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id,quote_message_id:@quote.id), class: 'btn'
+          =link_to "View Quote Message", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id,message:"open_quote_message",quote_message_id:@quote.id), class: 'btn'
         %p.thank
           Thank you :)
 
