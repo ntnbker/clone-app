@@ -1992,6 +1992,21 @@ var MaintenanceRequest = React.createClass({
 		
 	},
 
+	openQuoteMesssage: function(quote_id) {
+		const {quotes} = this.state;
+		let quote = '';
+		quotes.map((item, key) => {
+			if(item.id == quote_id) {
+				quote = item;
+				return;
+			}
+		});
+
+		if(quote) {
+			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
 	componentDidMount: function() {
 		const href = window.location.href;
 		const self = this;
@@ -2014,6 +2029,10 @@ var MaintenanceRequest = React.createClass({
 
 				case 'open_trady_message': 
 					self.onModalWith('sendMessageTrady');
+					break;
+
+				case 'open_quote_message':
+					self.openQuoteMesssage(json.quote_message_id);
 					break;
 
 				default:

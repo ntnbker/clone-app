@@ -432,18 +432,17 @@ var LandlordMaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.updateAppointment(res.appointment);
-				self.setState({notification: {
-					bgClass: "bg-success",
-					title: "Decline Appoinment",
-					content: res.note,
-				}});
-				self.onModalWith('notification');
-			},
-			error: function(err) {
-				self.updateAppointment(res.appointment);
 				self.setState({
 					isDecline: false
 				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Decline Appoinment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
 			}
 		});
 	},

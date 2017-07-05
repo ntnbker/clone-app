@@ -882,7 +882,21 @@ var TradyMaintenanceRequest = React.createClass({
 		$('body').animate({
 			scrollTop: offset.top
 		}, 500);
-		
+	},
+
+	openQuoteMesssage: function(quote_id) {
+		const {quotes} = this.state;
+		let quote = '';
+		quotes.map((item, key) => {
+			if(item.id == quote_id) {
+				quote = item;
+				return;
+			}
+		});
+
+		if(quote) {
+			this.viewItem('viewQuoteMessage', quote);
+		}
 	},
 
 	componentDidMount: function() {
@@ -893,10 +907,33 @@ var TradyMaintenanceRequest = React.createClass({
 				self.autoScroll('quotes');
 			}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
-			}else if(href.indexOf('open_agent_message') >= 0) {
-				self.onModalWith('sendMessageAgent');
+			}
+
+			const json = self.getUrlVars(href);
+			switch(json.message) {
+				case 'open_agent_message': 
+						self.onModalWith('sendMessageAgent');
+					break;
+
+				case 'open_quote_message':
+					self.openQuoteMesssage(json.quote_message_id);
+					break;
+
+				default:
+					break;
 			}
 		}
+	},
+
+	getUrlVars: function(url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
 	},
 
 	render: function() {
