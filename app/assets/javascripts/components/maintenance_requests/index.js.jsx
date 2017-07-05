@@ -397,7 +397,7 @@ var ListMaintenanceRequest = React.createClass({
         },
         {
           title: "Quote Received", 
-          value: "Quote Received Awaiting Approval", 
+          value: "Quote Received", 
           count: this.props.quotes_received_count,
         },
         { 
