@@ -546,12 +546,9 @@ var MaintenanceRequestsNew = React.createClass({
 						<p id="errorboxmobile" className="error"></p>
 					</div>
 
-					<hr/>
-					<div id="access_contacts">
+					<div id="access_contacts" className="m-b-lg">
 						<FieldList SampleField={AccessContactField} flag="contact"/>
 					</div>
-
-					<hr/>
 
 					<div className="field">
 						<textarea
