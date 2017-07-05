@@ -34,6 +34,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
     @message = Message.new
     @open_message = params[:message]
+    @open_appoinment = params[:appointment_id]
     @tradie = Trady.new
     @logs = @maintenance_request.logs 
 

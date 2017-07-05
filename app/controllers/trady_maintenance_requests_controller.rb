@@ -78,6 +78,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     #   @quote_id = ''
     # end 
     @open_message = params[:message]
+    @open_appoinment = params[:appointment_id]
     @message = Message.new
     
     @trady = @signed_in_trady.as_json(:include => {:user => {:include => :current_role}})

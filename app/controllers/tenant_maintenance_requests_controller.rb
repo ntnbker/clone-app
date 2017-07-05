@@ -30,6 +30,7 @@ class TenantMaintenanceRequestsController < ApplicationController
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
     @open_message = params[:message]
+    @open_appoinment = params[:appointment_id]
     @message = Message.new
     # @tradie = Trady.new
     @logs = @maintenance_request.logs

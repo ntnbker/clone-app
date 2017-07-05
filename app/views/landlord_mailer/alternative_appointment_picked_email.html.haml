@@ -96,7 +96,7 @@
           A different appointment time with #{@tenant.name.capitalize} has been requested. To confirm or suggest another appointment time and date with the tenant click the button below.
         
         %div.text-center
-          =link_to "View Appointment", landlord_maintenance_request_url(id:@maintenance_request.id, user_id:@landlord.user.id), class: 'btn'
+          =link_to "View Appointment", landlord_maintenance_request_url(id:@maintenance_request.id, user_id:@landlord.user.id, appointment_id:@appointment.id), class: 'btn'
 
         %p.thank
           Thank you
