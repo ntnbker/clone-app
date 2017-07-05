@@ -899,28 +899,47 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
+	openAppointment: function(appointment_id) {
+		let appointment = '';
+		const {appointments, quote_appointments} = this.state;
+		const data = [...appointments, ...quote_appointments];
+		data.map((item, key) => {
+			if(item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if(appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
+	},
+
 	componentDidMount: function() {
 		const href = window.location.href;
 		const self = this;
 		window.onload = function () {
+			const json = self.getUrlVars(href);
 			if(href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
 			}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
-			}
 
-			const json = self.getUrlVars(href);
-			switch(json.message) {
-				case 'open_agent_message': 
-						self.onModalWith('sendMessageAgent');
-					break;
+			}else if(href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
+			}else {
+				switch(json.message) {
+					case 'open_agent_message': 
+							self.onModalWith('sendMessageAgent');
+						break;
 
-				case 'open_quote_message':
-					self.openQuoteMesssage(json.quote_message_id);
-					break;
+					case 'open_quote_message':
+						self.openQuoteMesssage(json.quote_message_id);
+						break;
 
-				default:
-					break;
+					default:
+						break;
+				}
 			}
 		}
 	},

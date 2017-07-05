@@ -604,18 +604,47 @@ var LandlordMaintenanceRequest = React.createClass({
 		
 	},
 
+	openAppointment: function(appointment_id) {
+		let appointment = '';
+		const {appointments} = this.state;
+		appointments.map((item, key) => {
+			if(item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if(appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
+	},
+
 	componentDidMount: function() {
 		const href = window.location.href;
 		const self = this;
 		window.onload = function () {
+			const json = self.getUrlVars(href);
 			if(href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
 			}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
 			}else if(href.indexOf('open_message') >= 0) {
 				self.onModalWith('sendMessageLandlord');
+			}else if(href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
 			}
 		}
+	},
+
+	getUrlVars: function(url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
 	},
 
 	render: function() {
