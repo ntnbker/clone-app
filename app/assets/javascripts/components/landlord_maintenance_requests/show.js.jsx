@@ -408,7 +408,7 @@ var LandlordMaintenanceRequest = React.createClass({
 	},
 
 	decline: function(appointment) {
-		this.onModalWith('createAppointment');
+		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
 			isDecline: true,
 			appointmentUpdate: appointment,
@@ -449,7 +449,7 @@ var LandlordMaintenanceRequest = React.createClass({
 	},
 
 	cancel: function(appointment) {
-		this.onModalWith('createAppointment');
+		this.onModalWith('confirmCancelAppointment');
 		this.setState({
 			isCancel: true,
 			appointmentUpdate: appointment,
@@ -473,7 +473,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function(res){
 				self.updateAppointment(res.appointment);
 				self.setState({
-					isCacnel: false
+					isCancel: false
 				});
 			},
 			error: function(err) {
@@ -551,6 +551,30 @@ var LandlordMaintenanceRequest = React.createClass({
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 							current_role={this.props.signed_in_landlord.user.current_role}
 							declineAppointment={(value) => this.decline(value)}
+						/>
+					);
+				}
+
+				case 'confirmCancelAppointment': {
+					return (
+						<ModalConfirmAppointment
+							close={this.isClose}
+							title="Cancel Appointment"
+							btnContent="Create and Cancel"
+							openModal={() => this.onModalWith('createAppointment')}
+							content="Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time."
+						/>
+					);
+				}
+
+				case 'confirmDeclineAppointment': {
+					return (
+						<ModalConfirmAppointment
+							close={this.isClose}
+							title="Decline Appointment"
+							btnContent="Create and Decline"
+							openModal={() => this.onModalWith('createAppointment')}
+							content="Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time."
 						/>
 					);
 				}

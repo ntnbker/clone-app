@@ -343,24 +343,7 @@ var TenantMaintenanceRequest = React.createClass({
 	},
 
 	decline: function(appointment) {
-		let key = '';
-		switch(appointment.appointment_type) {
-			case 'Work Order Appointment':
-				key = 'createAppointment';
-				break;
-
-			case 'Quote Appointment':
-				key = 'createAppointmentForQuote';
-				break;
-
-			case 'Landlord Appointment': 
-				key = 'createLandlordAppointment'
-				break;
-
-			default:
-				break;
-		}
-		this.onModalWith(key);
+		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
 			isDecline: true,
 			appointmentUpdate: appointment,
@@ -401,23 +384,7 @@ var TenantMaintenanceRequest = React.createClass({
 
 	cancel: function(appointment) {
 		let key = '';
-		switch(appointment.appointment_type) {
-			case 'Work Order Appointment':
-				key = 'createAppointment';
-				break;
-
-			case 'Quote Appointment':
-				key = 'createAppointmentForQuote';
-				break;
-
-			case 'Landlord Appointment': 
-				key = 'createLandlordAppointment';
-				break;
-
-			default:
-				break;
-		}
-		this.onModalWith(key);
+		this.onModalWith('confirmCancelAppointment');
 		this.setState({
 			isCancel: true,
 			appointmentUpdate: appointment,
@@ -441,7 +408,7 @@ var TenantMaintenanceRequest = React.createClass({
 			success: function(res){
 				self.updateAppointment(res.appointment);
 				self.setState({
-					isCacnel: false
+					isCancel: false
 				});
 			},
 			error: function(err) {
@@ -519,6 +486,66 @@ var TenantMaintenanceRequest = React.createClass({
 							current_role={this.props.tenant.user.current_role}
 							acceptAppointment={(value) => this.acceptAppointment(value)}
 							declineAppointment={(value) => this.decline(value)}
+						/>
+					);
+				}
+
+				case 'confirmCancelAppointment': {
+					const {appointmentUpdate} = this.state;
+					let key = '';
+					switch(appointmentUpdate.appointment_type) {
+						case 'Work Order Appointment': 
+							key = 'createAppointment';
+							break;
+
+						case 'Quote Appointment': 
+							key = 'createAppointmentForQuote';
+							break;
+
+						case 'Landlord Appointment': 
+							key = 'createLandlordAppointment';
+							break;
+
+						default: 
+							break;
+					}
+					return (
+						<ModalConfirmAppointment
+							close={this.isClose}
+							title="Cancel Appointment"
+							btnContent="Create and Cancel"
+							openModal={() => this.onModalWith(key)}
+							content="Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time."
+						/>
+					);
+				}
+
+				case 'confirmDeclineAppointment': {
+					const {appointmentUpdate} = this.state;
+					let key = '';
+					switch(appointmentUpdate.appointment_type) {
+						case 'Work Order Appointment': 
+							key = 'createAppointment';
+							break;
+
+						case 'Quote Appointment': 
+							key = 'createAppointmentForQuote';
+							break;
+
+						case 'Landlord Appointment': 
+							key = 'createLandlordAppointment';
+							break;
+
+						default: 
+							break;
+					}
+					return (
+						<ModalConfirmAppointment
+							close={this.isClose}
+							title="Decline Appointment"
+							btnContent="Create and Decline"
+							openModal={() => this.onModalWith(key)}
+							content="Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time."
 						/>
 					);
 				}

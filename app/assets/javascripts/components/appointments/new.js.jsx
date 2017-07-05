@@ -171,11 +171,48 @@ var ModalAddAppointment = React.createClass({
 									data-dismiss="modal"
 									className="btn btn-default success"
 								>
-									Submit Comment and Appointment Time
+									Create Appointment
 								</button>
 							</div>
 						</div>
 					</form>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalConfirmAppointment = React.createClass({
+	render: function() {
+		const {title, content, btnContent} = this.props;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button 
+								type="button" 
+								className="close"
+								data-dismiss="modal" 
+								aria-label="Close" 
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">{title}</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">{content}</p>
+						</div>
+						<div className="modal-footer">
+							<button 
+								type="button" 
+								className="btn btn-default success" 
+								onClick={this.props.openModal} 
+								data-dismiss="modal"
+							>{btnContent}</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		);
