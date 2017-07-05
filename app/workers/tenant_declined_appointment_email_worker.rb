@@ -1,4 +1,4 @@
-class TenantDeclineddAppointmentEmailWorker
+class TenantDeclinedAppointmentEmailWorker
   include Sidekiq::Worker
 
   def perform(tenant_id)
