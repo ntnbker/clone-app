@@ -94,7 +94,7 @@
           Hi #{@trady.name.capitalize}, an agent has sent you a maintenance request message. To view and respond to the message please click the button below.
 
         %div.text-center
-          =link_to "View Maintenance Request Message", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id, message:"Open Agent Message"), class: 'btn'
+          =link_to "View Maintenance Request Message", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id, message:"open_agent_message"), class: 'btn'
         %p.thank
           Thank you :)
 

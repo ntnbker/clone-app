@@ -223,7 +223,7 @@ body::-webkit-scrollbar-thumb {
       .message {
         list-style: none;
         max-height: 300px;
-        overflow-y: scroll;
+        overflow-y: auto;
         overflow-x: inherit;
         margin-bottom: 0px;
       }
@@ -1009,6 +1009,8 @@ body::-webkit-scrollbar-thumb {
       .table {
         width: 100%;
         font-size: 13px;
+        display: inline-block;
+        overflow: auto;
         th {
           color: #b3b3b3;
           font-size: 13px;

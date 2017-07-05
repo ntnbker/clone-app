@@ -863,10 +863,12 @@ var TradyMaintenanceRequest = React.createClass({
 		const href = window.location.href;
 		const self = this;
 		window.onload = function () {
-			if(!href.indexOf('email_quote_id')) {
+			if(href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
-			}else if(!href.indexOf('send_maintenance_request_invoice')) {
+			}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
+			}else if(href.indexOf('open_agent_message') >= 0) {
+				self.onModalWith('sendMessageAgent');
 			}
 		}
 	},

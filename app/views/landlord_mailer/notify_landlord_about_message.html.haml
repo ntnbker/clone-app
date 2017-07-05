@@ -95,7 +95,7 @@
           Hi #{@landlord.name}, there is a new message from your agent about the maintenance request. To view it and respond click on the button below.
 
         %div.text-center
-          =link_to "View Maintnenace Request Message", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id, message:"Open Message"), class: 'btn'
+          =link_to "View Maintnenace Request Message", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id, message:"open_message"), class: 'btn'
 
         %p.thank
           Thank you :)

@@ -565,6 +565,16 @@ var TenantMaintenanceRequest = React.createClass({
 		}
 	},
 
+	componentDidMount: function() {
+		const href = window.location.href;
+		const self = this;
+		window.onload = function () {
+			if(href.indexOf('open_agent_message') >= 0) {
+				self.onModalWith('sendAgentMessage');
+			}
+		}
+	},
+
 	render: function() {
 		const {appointments, quote_appointments, landlord_appointments} = this.state;
 		return (

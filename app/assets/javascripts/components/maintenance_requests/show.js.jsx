@@ -1996,12 +1996,41 @@ var MaintenanceRequest = React.createClass({
 		const href = window.location.href;
 		const self = this;
 		window.onload = function () {
-			if(!href.indexOf('email_quote_id')) {
+			if(href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
-			}else if(!href.indexOf('send_maintenance_request_invoice')) {
+			}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
 				self.autoScroll('invoices');
 			}
+
+			const json = self.getUrlVars(href);
+			switch(json.message) {
+				case 'open_landlord_message': 
+						self.onModalWith('sendMessageLandlord');
+					break;
+
+				case 'open_tenant_message': 
+					self.onModalWith('sendMessageTenant');
+					break;
+
+				case 'open_trady_message': 
+					self.onModalWith('sendMessageTrady');
+					break;
+
+				default:
+					break;
+			}
 		}
+	},
+
+	getUrlVars: function(url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
 	},
 
 	summary(e) {
