@@ -137,7 +137,7 @@ var ButtonAddAnotherItem = React.createClass({
             case 'contact': {
                 return (
                     <button type="button" className="button-add button-primary" onClick={this.props.addField}>
-                        { x <= 1 ? "Add Access Contact" : "Add Another Premise Access Contact"}
+                        Add Another Premise Access Contact
                     </button>
                 );
             }

@@ -585,9 +585,9 @@ var LandlordMaintenanceRequest = React.createClass({
 		const href = window.location.href;
 		const self = this;
 		window.onload = function () {
-	    if(!!href.indexOf('email_quote_id')) {
+			if(!href.indexOf('email_quote_id')) {
 				self.autoScroll('quotes');
-			}else if(!!href.indexOf('send_maintenance_request_invoice')) {
+			}else if(!href.indexOf('send_maintenance_request_invoice')) {
 				self.autoScroll('invoices');
 			}
 		}
