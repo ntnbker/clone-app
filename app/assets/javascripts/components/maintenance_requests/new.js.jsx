@@ -6,6 +6,7 @@ var MaintenanceRequestsNew = React.createClass({
 			images: [],
 			isAgent: true,
 			dataImages: [],
+			isAndroid: false,
 			validName: false,
 			validDate: false,
 			validEmail: false,
@@ -305,17 +306,24 @@ var MaintenanceRequestsNew = React.createClass({
 			var {images} = this.state;
 			var file = image.fileInfo;
 			image.isUpload = true;
-			images[key] = image;
-			this.setState({
-				images: images
-			});
 
+			// resize image
 			if(file.size > maxSize) {
 				var quality =  Math.ceil(maxSize/file.size * 100);
 				target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
 			}else {
-				target_img.src = image.url;
+				if(!!this.state.isAndroid) {
+					target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+				}else {
+					target_img.src = image.url;
+				}
 			}
+
+			image.url = target_img.src
+			images[key] = image;
+			this.setState({
+				images: images
+			});
 
 			var filename = file;
 			const options = {
@@ -453,6 +461,20 @@ var MaintenanceRequestsNew = React.createClass({
 		return new Blob([new Uint8Array(content)], {type: mimestring});
 	},
 
+	detectAndroid: function() {
+		var ua = navigator.userAgent.toLowerCase();
+		var isAndroid = ua.indexOf("android") > -1;
+		if(isAndroid) {
+		  this.setState({
+		  	isAndroid: true
+		  });
+		}
+	},
+
+	componentDidMount: function() {
+		this.detectAndroid();	
+	},
+
 	render: function(){
 		let {images} = this.state;
 		let $imagePreview = [];
@@ -588,6 +610,7 @@ var MaintenanceRequestsNew = React.createClass({
 										<div key={index} className="img">
 											<img  
 												src={img.url}
+												className=""
 												onLoad={(e, image, key) => this.loadImage(e, img, index)}
 											/>
 											<a className="remove" onClick={(key) => this.removeImage(index)}>Remove</a>

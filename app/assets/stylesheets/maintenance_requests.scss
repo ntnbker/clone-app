@@ -193,6 +193,13 @@ form#new_maintenance_request {
                 cursor: pointer;
             }
         }
+        .image-rotate {
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
     }
     /* For Desktop Nav */
     @media (min-width: 550px) {
