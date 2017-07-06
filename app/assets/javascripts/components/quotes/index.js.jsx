@@ -106,22 +106,12 @@ var ButtonRestore = React.createClass({
 });
 
 var ButtonCancle = React.createClass({
-	updateStatus: function() {
-		const params = {
-			status: "Cancel",
-			quote_id: this.props.quote.id,
-			maintenance_request_id: this.props.quote.maintenance_request_id,
-		};
-
-		this.props.updateStatusQuote(params);
-	},
-
 	render: function() {
 		return (
 			<button 
 				type="button"
 				className="btn btn-cancel" 
-				onClick={this.updateStatus}
+				onClick={(key, item) => this.props.viewQuote('viewConfirmQuote', this.props.quote)}
 			>
 				Cancel
 			</button>
@@ -132,7 +122,11 @@ var ButtonCancle = React.createClass({
 var ButtonView = React.createClass({
 	render: function() {
 		return (
-			<button type="button" className="btn btn-default" onClick={(key, item) => this.props.viewQuote('viewQuote', this.props.quote)}>
+			<button 
+				type="button" 
+				className="btn btn-default" 
+				onClick={(key, item) => this.props.viewQuote('viewQuote', this.props.quote)}
+			>
 				View
 			</button>
 		);
@@ -271,9 +265,9 @@ var ActionQuote = React.createClass({
 							/> 
 					}
 					{ quote.status == "Approved" && 
-							<ButtonCancle 
-								quote={quote} 
-								updateStatusQuote={self.updateStatusQuote} 
+							<ButtonCancle
+								quote={this.props.quote}
+								viewQuote={(key, item) => self.viewQuote(key, item)}
 							/>
 					}
 				</div>
@@ -688,6 +682,59 @@ var ModalViewQuoteMessage = React.createClass({
 							</div>
 						</div>
 					</form>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalConfirmQuote = React.createClass({
+	updateStatus: function() {
+		const {quote} = this.props;
+		const params = {
+			status: "Cancel",
+			quote_id: quote.id,
+			maintenance_request_id: quote.maintenance_request_id,
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function() {
+		const {title, content} = this.props;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button 
+								type="button" 
+								className="close"
+								data-dismiss="modal" 
+								aria-label="Close" 
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">{title}</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">{content}</p>
+						</div>
+						<div className="modal-footer">
+							<button 
+								type="button" 
+								className="btn btn-default success" 
+								onClick={this.updateStatus} 
+								data-dismiss="modal"
+							>Yep</button>
+							<button 
+								type="button" 
+								className="btn btn-primary cancel" 
+								onClick={this.props.close}
+							>No</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		);
