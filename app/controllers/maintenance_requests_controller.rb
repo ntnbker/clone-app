@@ -284,16 +284,16 @@ class MaintenanceRequestsController < ApplicationController
 
       MaintenanceRequest.last.reindex
       if current_user == nil
-        flash[:notice]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
+        flash[:notice]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
         redirect_to root_path
       elsif current_user.logged_in_as("AgencyAdmin")
-        flash[:success]= "Thank You for creating a Maintenance Request"
+        flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
         redirect_to agency_admin_maintenance_request_path(@maintenance_request)
       elsif current_user.logged_in_as("Agent")
-        flash[:success]= "Thank You for creating a Maintenance Request"
+        flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
         redirect_to agent_maintenance_request_path(@maintenance_request)
       elsif current_user.logged_in_as("Tenant") 
-        flash[:success]= "Thank You for creating a Maintenance Request"
+        flash[:success]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
         redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
 
@@ -301,7 +301,7 @@ class MaintenanceRequestsController < ApplicationController
       
     else
       
-      flash[:danger]= "Something went wrong"
+      flash[:danger]= "Something went wrong."
       render json: @maintenance_request.errors
 
     end 

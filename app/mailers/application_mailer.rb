@@ -1,12 +1,13 @@
 class ApplicationMailer < ActionMailer::Base
-  # default from: 'from@example.com'
+  default from: 'martin@maintenanceapp.com.au'
   # layout 'mailer'
   # default from: 'notify@mysite.com'
 
 
   def send_agency_admin_or_agent_maintenance_request_email(maintenance_request)
-     @maintenance_request = maintenance_request
-    
+    @maintenance_request = maintenance_request
+    @tenant = maintenance_request.tenants.first
+    @property = maintenance_request.property
     if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
@@ -18,7 +19,7 @@ class ApplicationMailer < ActionMailer::Base
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
     
-    mail from:"ron@email.com", to:email, subject:"Hi #{maintenance_request.agent_name} a maintenance request has been made"
+    mail(to:email, subject:"Maintenance request from #{@tenant.name.capitalize} - #{@property.property_address}")
   end
 
 
@@ -55,7 +56,7 @@ class ApplicationMailer < ActionMailer::Base
     
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
-    mail(from:"ron@email.com", to:tenant_email, subject: "Tenants Maintenance Request")
+    mail(to:tenant_email, subject: "Tenants Maintenance Request")
   end
 
 
@@ -65,7 +66,7 @@ class ApplicationMailer < ActionMailer::Base
     # @tenant_id = tenant_id
     @tenant = user.tenant
     @user = user
-    mail(from:"ron@email.com", to:user.email, subject: "New Maintenance Request Message")
+    mail(to:user.email, subject: "New Maintenance Request Message")
   end
 
   def message_notification_email(maintenance_request)
