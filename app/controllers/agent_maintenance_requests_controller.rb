@@ -5,8 +5,11 @@ class AgentMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("Agent")}
   before_action(only:[:show]) {belong_to_agent}
   def index
-    
-    @maintenance_requests = current_user.agent.maintenance_requests
+    if params[:sort_by_date] == "Oldest to Newest"
+      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC')
+    else
+      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at DESC')
+    end
     
 
     @page = params[:page]
