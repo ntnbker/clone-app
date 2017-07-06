@@ -383,7 +383,6 @@ form#new_maintenance_request {
             margin-left: 5px;
             margin-bottom: 15px;
             .btn-view {
-                margin-left: 15px;
                 width: 100px;
                 height: 30px;
                 border: none;
@@ -595,13 +594,6 @@ form#new_maintenance_request {
             width: calc(100% - 410px);
         }
     }
-    @media(max-width: 1024px) {
-        .main-column {
-            .view .btn-view {
-                margin-left: 0;
-            }
-        }
-    }
     @media (max-width: 768px) {
         .main-column {
             width: 100%;
@@ -714,13 +706,14 @@ form#new_maintenance_request {
 }
 
 .maintenance-request {
+    display: flex;
+    flex-direction: row;
     background-color: white;
     margin-bottom: 15px;
     border-radius: 5px;
     .image {
-        float: right;
         width: 250px;
-        padding-right: 10px;
+        padding-left: 15px;
         padding-top: 15px;
         padding-bottom: 15px;
         .slider {
@@ -739,24 +732,19 @@ form#new_maintenance_request {
     }
     .content {
         display: inline-block;
-        float: left;
-        width: 100%;
+        margin-left: 15px;
+        margin-right: 15px;
         .info {
-            padding-left: 15px;
             span {
                 color: #69605b;
             }
-        }
-        &.content-left {
-            width: calc(100% - 270px);
         }
     }
 }
 
 @media(max-width: 1024px) {
     .maintenance-request {
-        display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: center;
         .image {
             margin-left: 0;
@@ -765,19 +753,13 @@ form#new_maintenance_request {
         }
         .content {
             width: 80%;
-            &.content-left {
-                width: 80%;
-            }
-            .info {
-                padding-left: 0;
-            }
         }
     }
 }
 
 @media(max-width: 640px) {
     .maintenance-request {
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: center;
         .image {
             margin-left: 0;
@@ -786,17 +768,13 @@ form#new_maintenance_request {
         }
         .content {
             width: 80%;
-            &.content-left {
-                width: 80%;
-            }
-
         }
     }
 }
 
 @media(max-width: 480px) {
     .maintenance-request {
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: center;
         .image {
             width: 95%;
@@ -804,9 +782,6 @@ form#new_maintenance_request {
         }
         .content {
             width: 95%;
-            &.content-left {
-                width: 95%;
-            }
         }
     }
 }

@@ -1,6 +1,6 @@
 var Carousel = React.createClass({
 	getInitialState: function() {
-		const {gallery} = this.props;
+		const gallery = this.props.gallery.length > 0 ? this.props.gallery : ["/uploads/maintenance_request_image/images/no_image.png"];
 		return {
 			stx: 0,
 			stpos: 0,
@@ -252,7 +252,7 @@ var ItemMaintenanceRequest = React.createClass({
 					}
 				</div>
 				<div className="content">
-					{this.props.gallery.length > 0 && <Carousel gallery={this.props.gallery} />}
+					<Carousel gallery={this.props.gallery} />
 					<div className="description">
 						<p>{maintenance.maintenance_description}</p>
 					</div>

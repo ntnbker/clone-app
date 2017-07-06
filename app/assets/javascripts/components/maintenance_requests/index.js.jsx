@@ -730,7 +730,13 @@ var MaintenanceRequestItem = React.createClass({
     const maintenance_request = this.props.maintenance_request;
     return (
       <div className="row maintenance-request">
-        <div className={"content " + (maintenance_request.get_image_urls.length > 0 && "content-left")} >
+        <div className="image">
+          <ImgSlider
+            nameClass={"slider-custom-" + maintenance_request.id} 
+            images={maintenance_request.get_image_urls.length > 0 ? maintenance_request.get_image_urls : ["/uploads/maintenance_request_image/images/no_image.png"]}    
+          />
+        </div>
+        <div className="content">
           <div className="info">
             <div className="row">
               <h3 className="heading">
@@ -766,15 +772,6 @@ var MaintenanceRequestItem = React.createClass({
             <a className="btn-view" href={this.props.link + "/" + maintenance_request.id}>View</a>
           </div>
         </div>
-        {
-          maintenance_request.get_image_urls.length > 0 &&
-            <div className="image">
-              <ImgSlider 
-                nameClass={"slider-custom-" + maintenance_request.id} 
-                images={maintenance_request.get_image_urls} 
-              />
-            </div>
-        }
       </div>
     );
   }
