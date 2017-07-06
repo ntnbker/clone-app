@@ -10,10 +10,10 @@ class TradyMaintenanceRequestsController < ApplicationController
     
     trady_id = current_user.trady.id
 
-    if params[:sort_by_date] == "Newest to Oldest"
-      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at DESC')
-    else
+    if params[:sort_by_date] == "Oldest to Newest"
       @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at ASC')
+    else
+      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at DESC')
     end
 
     @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")
@@ -26,10 +26,10 @@ class TradyMaintenanceRequestsController < ApplicationController
     @job_complete = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Job Complete")
     @declined_quotes = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Declined Quotes")
 
-    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|
-      format.json {render json:maintenance_requests_json}
+      format.json {render json:@maintenance_requests_json}
       format.html
     end
   end
