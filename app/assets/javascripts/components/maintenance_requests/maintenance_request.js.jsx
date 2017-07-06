@@ -252,7 +252,6 @@ var ItemMaintenanceRequest = React.createClass({
 					}
 				</div>
 				<div className="content">
-					<Carousel gallery={this.props.gallery} />
 					<div className="description">
 						<p>{maintenance.maintenance_description}</p>
 					</div>
@@ -260,6 +259,7 @@ var ItemMaintenanceRequest = React.createClass({
 							<p className="header">Tenant Availability and Access Instructions: </p>
 							<p className="description">{maintenance.availability_and_access}</p>
 					</div>
+					<Carousel gallery={this.props.gallery} />
 				</div>
 			</div>
 		);
