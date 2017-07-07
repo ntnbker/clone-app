@@ -415,12 +415,19 @@ var TradyMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				let title = "";
+				let content = "";
 				if(!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
 					self.declineAppointment(appointmentUpdate);
-				}
-
-				if(!!isCancel) {
+				} else if(!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
 					self.cancelAppointment(appointmentUpdate);
+				} else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
 				}
 
 				if(params.appointment_type == 'Work Order Appointment') {
@@ -441,8 +448,8 @@ var TradyMaintenanceRequest = React.createClass({
 
 				self.setState({notification: {
 					bgClass: "bg-success",
-					title: params.appointment_type == 'Work Order Appointment' ? "Create Appoinment" : "Create Appoinment For Quote",
-					content: params.appointment_type == 'Work Order Appointment' ? "Create Appointment was successfully" : "Create Appointment For Quote was successfully",
+					title: title,
+					content: content,
 				}});
 				self.onModalWith('notification');
 			},

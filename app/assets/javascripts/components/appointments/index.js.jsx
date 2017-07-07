@@ -1,3 +1,18 @@
+const notifyAppointment = {
+	cancel: {
+		title: "Create and Cancel Appointment",
+		content: "You was cancel and create appointment."
+	},
+	decline: {
+		title: "Create and Decline Appointment",
+		content: "You was decline and create appointment."
+	},
+	normal: {
+		title: "Create Appointment",
+		content: "You was create appointment."
+	}
+}
+
 var InfoAppointment = React.createClass({
 	getInitialState: function() {
 		return {

@@ -330,10 +330,16 @@ var LandlordMaintenanceRequest = React.createClass({
 			data: fd,
 			success: function(res){
 				if(!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
 					self.declineAppointment(appointmentUpdate);
-				}
-				if(!!isCancel) {
+				}else if(!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
 					self.cancelAppointment(appointmentUpdate);
+				}else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
 				}
 				appointments.unshift(res.appointment_and_comments);
 				comments.push(res.appointment_and_comments.comments[0]);

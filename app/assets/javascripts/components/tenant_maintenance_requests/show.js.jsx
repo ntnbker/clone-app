@@ -206,15 +206,19 @@ var TenantMaintenanceRequest = React.createClass({
 				let title = '';
 				let	content = '';
 				if(!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
 					self.declineAppointment(appointmentUpdate);
-				}
-				if(!!isCancel) {
+				}else if(!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
 					self.cancelAppointment(appointmentUpdate);
+				}else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
 				}
 				switch(params.appointment_type) {
 					case 'Work Order Appointment':
-						title = "Create Appoinment";
-						content = "Create Appointment was successfully";
 						appointments.unshift(res.appointment_and_comments);
 						comments.push(res.appointment_and_comments.comments[0]);
 						self.setState({
@@ -224,8 +228,6 @@ var TenantMaintenanceRequest = React.createClass({
 						break;
 
 					case 'Quote Appointment':
-						title = "Create Appoinment For Quote";
-						content = "Create Appointment For Quote was successfully";
 						quote_appointments.unshift(res.appointment_and_comments);
 						quoteComments.push(res.appointment_and_comments.comments);
 						self.setState({
@@ -235,8 +237,6 @@ var TenantMaintenanceRequest = React.createClass({
 						break;
 
 					case 'Landlord Appointment':
-						title = "Create Landlord Appoinment";
-						content = "Create Landlord Appointment was successfully";
 						landlord_appointments.unshift(res.appointment_and_comments);
 						landlordComments.push(res.appointment_and_comments.comments);
 						self.setState({
