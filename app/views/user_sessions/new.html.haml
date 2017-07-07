@@ -1,6 +1,15 @@
 .container.well#login
   = bootstrap_form_tag url: '/menulogin' do |f| 
-    = f.select(:role_picked, [["Agent","Agent"],["Agency Admin","AgencyAdmin"],["Tenant","Tenant"],["Trady","Trady"],["Landlord","Landlord"]], {prompt:"Select Role", :label => "Sign In As"})
+    / = f.select(:role_picked, [["Agent","Agent"],["Agency Admin","AgencyAdmin"],["Tenant","Tenant"],["Trady","Trady"],["Landlord","Landlord"]], {prompt:"Select Role", :label => "Sign In As"})
+    
+    .form-group.text-center
+      = f.form_group :role_picked, label: { text: "Sign In As" } do 
+        = f.radio_button :role_picked, "AgencyAdmin", label: "Agency Administrator" 
+        = f.radio_button :role_picked, "Agent", label: "Agent" 
+        = f.radio_button :role_picked, "Tenant", label: "Tenant" 
+        = f.radio_button :role_picked, "Trady", label: "Trady" 
+        = f.radio_button :role_picked, "Landlord", label: "Landlord" 
+
     = f.email_field :email, placeholder: 'Enter email', autocapitalize: "off", autocorrect: "off", autoComplete: "off"
     = f.password_field :password,  placeholder: 'Enter password'
     .form-group.text-center
