@@ -193,6 +193,13 @@ form#new_maintenance_request {
                 cursor: pointer;
             }
         }
+        .image-rotate {
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
     }
     /* For Desktop Nav */
     @media (min-width: 550px) {
@@ -706,9 +713,9 @@ form#new_maintenance_request {
 }
 
 .maintenance-request {
-    background-color: white;
     display: flex;
     flex-direction: row;
+    background-color: white;
     margin-bottom: 15px;
     border-radius: 5px;
     .image {
@@ -742,6 +749,21 @@ form#new_maintenance_request {
     }
 }
 
+@media(max-width: 1024px) {
+    .maintenance-request {
+        flex-direction: column;
+        align-items: center;
+        .image {
+            margin-left: 0;
+            width: 80%;
+            padding-left: 0;
+        }
+        .content {
+            width: 80%;
+        }
+    }
+}
+
 @media(max-width: 640px) {
     .maintenance-request {
         flex-direction: column;
@@ -762,11 +784,11 @@ form#new_maintenance_request {
         flex-direction: column;
         align-items: center;
         .image {
-            width: 90%;
+            width: 95%;
             padding-left: 0;
         }
         .content {
-            width: 90%;
+            width: 95%;
         }
     }
 }

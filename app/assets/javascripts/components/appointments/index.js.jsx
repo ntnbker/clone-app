@@ -39,8 +39,8 @@ var InfoAppointment = React.createClass({
 	},
 
 	btnCancel: function() {
-		const {appointment} = this.props;
-		if(appointment.status == "Accepted") {
+		const {appointment, current_role} = this.props;
+		if(appointment.status == "Accepted" && !this.state.arrRole.includes(current_role.role)) {
 			return <BtnCancelAppointment clickCancel={this.props.clickCancel} />
 		}
 

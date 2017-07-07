@@ -8,10 +8,10 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only:[:show]) {belongs_to_agency_admin}
 
   def index
-    if params[:sort_by_date] == "Newest to Oldest"
-      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC')
-    else
+    if params[:sort_by_date] == "Oldest to Newest"
       @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at ASC')
+    else
+      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC')
     end
 
     @page = params[:page]
@@ -35,10 +35,10 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   
     
 
-    maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|
-      format.json {render json:maintenance_requests_json}
+      format.json {render json:@maintenance_requests_json}
       format.html
     end 
 

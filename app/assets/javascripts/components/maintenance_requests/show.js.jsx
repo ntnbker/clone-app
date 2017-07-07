@@ -1228,7 +1228,9 @@ var MaintenanceRequest = React.createClass({
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
+		if(div){
+			div.parentNode.removeChild(div);
+		}
 	},
 
 	onModalWith: function(modal) {
@@ -1241,6 +1243,7 @@ var MaintenanceRequest = React.createClass({
 	viewItem: function(key, item) {
 		switch(key) {
 			case 'viewQuote':
+			case 'viewConfirmQuote':
 			case 'viewQuoteMessage': {
 				this.setState({
 					quote: item
@@ -1544,6 +1547,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				self.isClose();
 				self.setState({
 					quotes: res
 				});
@@ -1977,6 +1981,17 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 				}
+
+				case 'viewConfirmQuote': 
+					return (
+						<ModalConfirmQuote 
+							close={this.isClose}
+							title="Cancel Quote"
+							quote={this.state.quote}
+							updateStatusQuote={this.updateStatusQuote}
+							content="Are you sure you want to cancel the job ?"
+						/>
+					);
 					
 				default:
 					return null;
@@ -2119,8 +2134,8 @@ var MaintenanceRequest = React.createClass({
 							quote_appointments.length > 0 &&
 								<AppointmentRequest 
 									title="Appointments For Quotes"
-									appointments={quote_appointments}
 									current_role={current_user_role}
+									appointments={quote_appointments}
 									viewItem={(key, item) => this.viewItem(key, item)}
 								/>
 						}
@@ -2128,8 +2143,8 @@ var MaintenanceRequest = React.createClass({
 							landlord_appointments.length > 0 &&
 								<AppointmentRequest 
 									title="Landlord Appointments"
-									appointments={landlord_appointments}
 									current_role={current_user_role}
+									appointments={landlord_appointments}
 									viewItem={(key, item) => this.viewItem(key, item)}
 								/>
 						}
@@ -2138,9 +2153,9 @@ var MaintenanceRequest = React.createClass({
 					{
 						work_order_appointments.length > 0 &&
 							<AppointmentRequestMobile 
-								appointments={work_order_appointments}
 								title="Work Order Appointments"
 								current_role={current_user_role}
+								appointments={work_order_appointments}
 								viewItem={(key, item) => this.viewItem(key, item)}
 							/>
 					}
@@ -2148,8 +2163,8 @@ var MaintenanceRequest = React.createClass({
 						quote_appointments.length > 0 &&
 							<AppointmentRequestMobile 
 								title="Appointments For Quotes"
-								appointments={quote_appointments}
 								current_role={current_user_role}
+								appointments={quote_appointments}
 								viewItem={(key, item) => this.viewItem(key, item)}
 							/>
 					}
