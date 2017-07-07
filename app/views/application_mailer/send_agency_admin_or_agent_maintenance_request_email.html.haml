@@ -95,7 +95,10 @@
           %p.content 
             Hi
             ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
-            a maintenance request has been made. Please click the button below to view it.
+          %p.content
+            the tenant, #{@tenant.name.capitalize} from #{@property.property_address} has just sent you a maintenance request. 
+          %p.content
+            Please click the button below to view and action this maintenance request. 
           %div.text-center
             =link_to "View Maintenance Request", agent_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
             
@@ -103,7 +106,10 @@
           %p.content 
             Hi
             ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
-            a maintenance request has been made. Please click the button below to view it.
+          %p.content
+            the tenant, #{@tenant.name.capitalize} from #{@property.property_address} has just sent you a maintenance request. 
+          %p.content
+            Please click the button below to view and action this maintenance request.
           %div.text-center
             =link_to "View Maintenance Request", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
             
