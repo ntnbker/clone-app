@@ -555,6 +555,7 @@ var ModalAddLandlord = React.createClass({
 
 
 	render: function() {
+		const {note} = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -573,6 +574,11 @@ var ModalAddLandlord = React.createClass({
 								<h4 className="modal-title text-center">Add Landlord</h4>
 							</div>
 							<div className="modal-body">
+									<div className="row">
+										<span className="note-landlord">
+											{note}
+										</span>
+									</div>
 									<div className="row">
 										<div>
 											<label>Name <strong>*</strong>:</label>
@@ -1806,6 +1812,17 @@ var MaintenanceRequest = React.createClass({
 							bgClass={this.state.notification.bgClass}
 							title={this.state.notification.title} 
 							content={this.state.notification.content}
+						/>
+					);
+
+				case 'addLandlordSendEmail':
+					return (
+						<ModalAddLandlord 
+							close={this.isClose}
+							addLandlord={this.addLandlord}
+							authToken={this.props.authenticity_token}
+							maintenance_request_id={this.state.maintenance_request.id}
+							note='Please add a landlord and then press "Forward To Landlord"'
 						/>
 					);
 

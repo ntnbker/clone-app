@@ -480,7 +480,7 @@ var MaintenanceRequestsNew = React.createClass({
 		let $imagePreview = [];
 		const {current_user_tenant, current_role} = this.props;
 		let valueEmail = '';
-		let valuePhone
+		let valueMobile = '';
 		if(current_role.role == "Tenant") {
 			valueEmail = current_user_tenant.email;
 			valueMobile = current_user_tenant.mobile;

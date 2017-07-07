@@ -145,7 +145,12 @@ var ModalAddAppointment = React.createClass({
 								<div className="new_appointment"> 
 									<CommentAppointment comments={comments} />
 									<div className="form-group">
-										<textarea ref={ref => this.comment = ref} placeholder="Comment" className="text-center"/>
+										<textarea 
+											required
+											placeholder="Comment" 
+											className="text-center"
+											ref={ref => this.comment = ref} 
+										/>
 									</div>
 									<div className="form-group date-time">
 										<div className="date">

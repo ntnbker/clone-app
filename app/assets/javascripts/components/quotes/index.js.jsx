@@ -17,7 +17,7 @@ var ButtonForwardLandlord = React.createClass({
 				isSend: true
 			});
 		}else {
-			this.props.onModalWith("addLandlord");
+			this.props.onModalWith("addLandlordSendEmail");
 		}
 	},
 
