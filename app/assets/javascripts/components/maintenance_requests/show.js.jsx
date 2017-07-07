@@ -1551,6 +1551,21 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quotes: res
 				});
+				if(params.status == 'Approved') {
+					self.setState({notification: {
+						title: "Accept Quote",
+						content: "Quote was accept!",
+						bgClass: "bg-success",
+					}});
+					self.onModalWith('notification');
+				}else if(params.status == 'Declined'){
+					self.setState({notification: {
+						title: "Decline Quote",
+						content: "Quote was decline!",
+						bgClass: "bg-success",
+					}});
+					self.onModalWith('notification');
+				}
 			},
 			error: function(err) {
 				
