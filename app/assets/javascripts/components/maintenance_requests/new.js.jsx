@@ -2,7 +2,7 @@ var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
 	getInitialState: function() {
 		this.getAgentEmail();
-			return { 
+		return { 
 			images: [],
 			isAgent: true,
 			dataImages: [],
@@ -165,6 +165,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	handleCheckSubmit: function(e) {
+		e.preventDefault();
 		if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
 			e.preventDefault();
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
@@ -231,7 +232,6 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		}
 		XHR.send(FD);
-		e.preventDefault();
   	return false;
 	},
 
@@ -478,14 +478,21 @@ var MaintenanceRequestsNew = React.createClass({
 	render: function(){
 		let {images} = this.state;
 		let $imagePreview = [];
+		const {current_user_tenant, current_role} = this.props;
+		let valueEmail = '';
+		let valuePhone
+		if(current_role.role == "Tenant") {
+			valueEmail = current_user_tenant.email;
+			valueMobile = current_user_tenant.mobile;
+		}
 		if (images.length > 0) {
 			for (i = 0; i < images.length; i ++) {
 				let imageObject = (<div className="imgFrame" key={i}><img src={images[i].url} /><div className="btnRemoveFrame" id={i} onClick={(e) =>this._handleRemoveFrame(e)}>X</div></div>);
 				$imagePreview.push(imageObject);
-				}
-			} else {
-				$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
 			}
+		} else {
+			$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+		}
 		return (
 			<div>
 				<form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
@@ -521,10 +528,11 @@ var MaintenanceRequestsNew = React.createClass({
 						<input
 							required
 							type="email"
-							autoCapitalize="off"
 							autoCorrect="off"
 							autoComplete="off"
+							autoCapitalize="off"
 							placeholder="E-mail"
+							defaultValue={valueEmail}
 							ref={(ref) => this.email = ref}
 							id={this.generateAtt("id", "email")}
 							name={this.generateAtt("name", "email")}
@@ -549,6 +557,7 @@ var MaintenanceRequestsNew = React.createClass({
 							minLength="10"
 							maxLength="11"
 							placeholder="Mobile"
+							defaultValue={valueMobile}
 							ref={(ref) => this.mobile = ref}
 						  id={this.generateAtt("id", "mobile")}
 							name={this.generateAtt("name", "mobile")}

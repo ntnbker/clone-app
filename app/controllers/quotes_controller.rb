@@ -89,6 +89,16 @@ class QuotesController < ApplicationController
     @trady_id = params[:trady_id]
     @quote_type = params[:quote_type]
     @system_plan = params[:system_plan]
+
+    if @maintenance_request.agency_admin == nil
+      @agency = @maintenance_request.agent.agency
+    else
+      @agency = @maintenance_request.agency_admin.agency
+    end
+
+    if  @maintenance_request.property.landlord != nil
+      @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
+    end 
   end
 
   def show_quote
