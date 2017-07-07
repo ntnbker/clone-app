@@ -244,7 +244,7 @@ var Header = React.createClass({
             }
           </MobileMenu>
 
-          <div className="container container-custom">
+          <div className="container">
             <div className={"column header-custom " + (e && "forhome")}>
                 <div className="logo">
                   <img src="/assets/logo.png" alt="logo" />
