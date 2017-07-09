@@ -1,7 +1,8 @@
 class AgentMailer < ActionMailer::Base
-
+  default from: 'martin@maintenanceapp.com.au'
   def send_agent_quote(maintenance_request, quote)
     @maintenance_request = maintenance_request
+    @property= @maintenance_request.property
     @quote = quote
     if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
@@ -14,13 +15,14 @@ class AgentMailer < ActionMailer::Base
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail from:"ron@email.com", to:email, subject:"Hi A quote has been submitted"
+    mail(to:email, subject:"Quote recieved from #{@quote.trady.name.capitalize} - @property.property_address")
     
   end
 
   def send_maintenance_request_invoice(maintenance_request)
-     @maintenance_request = maintenance_request
-    
+    @maintenance_request = maintenance_request
+    @trady = @maintenance_request.trady
+    @property = @maintenance_request
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       
@@ -32,12 +34,13 @@ class AgentMailer < ActionMailer::Base
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail from:"ron@email.com", to:@user.email, subject:"Maintenance Request Invoice"
+    mail(to:@user.email, subject:"Invoice recieved from #{@trady.name.capitalize} - @property.property_address")
   end
 
   def request_quote_email(maintenance_request)
     @maintenance_request = maintenance_request
-    
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email 
@@ -49,12 +52,14 @@ class AgentMailer < ActionMailer::Base
     # track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail from:"ron@email.com", to:email, subject:"Hi the landlord has requested a quote for a maintenance job"
+    mail(to:email, subject:"Quote requested by landlord #{@landlord.name.capitalize} - @property.property_address")
   end
 
   def quote_has_been_approved_email(maintenance_request)
     @maintenance_request = maintenance_request
-    
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
+    @trady = @maintenance_request.trady
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email 
@@ -64,12 +69,13 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail from:"ron@email.com", to:email, subject:"Quote has been approved for a maintenance job."
+    mail(to:email, subject:"Quote approved by landlord #{@landlord.name.capitalize} - @property.property_address.")
   end
 
   def notify_agent_about_landlord_message(maintenance_request)
     @maintenance_request = maintenance_request
-    
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email 
@@ -79,12 +85,13 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail from:"ron@email.com", to:email, subject:"A landlord has sent you a message."
+    mail(to:email, subject:"New message from landlord #{@landlord.name.capitalize} - @property.property_address.")
   end
 
   def notify_agent_about_tenant_message(maintenance_request)
     @maintenance_request = maintenance_request
-    
+    @tenant = @maintenance_request.tenants.first
+    @property = @maintenance_request.property
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email 
@@ -94,12 +101,13 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail from:"ron@email.com", to:email, subject:"A tenant has sent you a message."
+    mail(to:email, subject:"New message from tenant #{@tenant.name.capitalize} - @property.property_address.")
   end
 
   def notify_agent_about_trady_message(maintenance_request)
     @maintenance_request = maintenance_request
-    
+    @trady = @maintenance_request.trady
+    @property = @maintenance_request.property
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email 
@@ -109,12 +117,14 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail from:"ron@email.com", to:email, subject:"A trady has sent you a message."
+    mail(to:email, subject:"New message from trady #{@trady.name.capitalize} - @property.property_address.")
   end
 
   def notify_agent_about_trady_quote_message(maintenance_request, quote)
     @maintenance_request = maintenance_request
-    
+    # @trady = @maintenance_request.trady
+
+    @property = @maintenance_request.property
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email 
@@ -123,7 +133,8 @@ class AgentMailer < ActionMailer::Base
       email = @maintenance_request.agent.email
     end
     @quote = quote
-    mail from:"ron@email.com", to:email, subject:"A trady has sent you a quote message."
+    @trady = @quote.trady
+    mail(to:email, subject:"Quote comment from trady #{@quote.trady.name.capitalize} - @property.property_address.")
   end
 
 end 
