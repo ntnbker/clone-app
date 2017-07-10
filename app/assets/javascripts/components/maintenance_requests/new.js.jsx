@@ -481,7 +481,7 @@ var MaintenanceRequestsNew = React.createClass({
 		const {current_user_tenant, current_role} = this.props;
 		let valueEmail = '';
 		let valueMobile = '';
-		if(current_role.role == "Tenant") {
+		if(current_role && current_role.role == "Tenant") {
 			valueEmail = current_user_tenant.email;
 			valueMobile = current_user_tenant.mobile;
 		}

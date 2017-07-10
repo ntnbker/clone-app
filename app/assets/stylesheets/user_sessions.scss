@@ -7,14 +7,44 @@
     .form-group {
         width: 400px;
     	margin: 20px auto;
-    	label {
-    		display: inline-block;
-    		width: 100px;
-    	}
 
     	input[type="email"], input[type="password"] {
     		width: 100%;
     	}
+        .radio {
+            display: inline-block;
+            width: auto;
+            margin-right: 15px;
+            label {
+                display: flex;
+            }
+            input[type='radio'] {
+                -webkit-appearance:none;
+                display: inline-block;
+                width:20px;
+                height:20px;
+                border:1px solid darkgray;
+                border-radius:50%;
+                margin-right: 5px;
+                outline:none;
+            }
+
+            input[type='radio']:before {
+                content: '';
+                display: block;
+                width: 8px;
+                height: 8px;
+                text-align: center;
+                border-radius: 50%;
+                margin: 5px auto;    
+            }
+            input[type='radio']:checked {
+                background: green;
+            }
+            input[type='radio']:checked:before {
+                background: #fff;
+            }
+        }
     }
 
     input[type="submit"] {
