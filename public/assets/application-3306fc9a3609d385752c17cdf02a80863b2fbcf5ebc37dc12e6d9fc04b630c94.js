@@ -73644,6 +73644,10 @@ var ListMaintenanceRequest = React.createClass({
         title: "Maintenance Scheduled - Awaiting Invoice",
         value: "Maintenance Scheduled - Awaiting Invoice",
         count: this.props.maintenance_scheduled_count
+      }, {
+        title: "Maintenance Scheduled With Landlord",
+        value: "Maintenance Scheduled With Landlord",
+        count: this.props.maintenance_scheduled_count
       }],
       tradyFilter: [{
         title: "Quote Requests",
@@ -74994,7 +74998,7 @@ var MaintenanceRequestsNew = React.createClass({
 
 		var valueEmail = '';
 		var valueMobile = '';
-		if (current_role.role == "Tenant") {
+		if (current_role && current_role.role == "Tenant") {
 			valueEmail = current_user_tenant.email;
 			valueMobile = current_user_tenant.mobile;
 		}
@@ -81265,11 +81269,11 @@ var TenantMaintenanceRequest = React.createClass({
 
 				case 'sendAgentMessage':
 					{
-						return React.createElement(ModalSendMessageTenant, {
+						return React.createElement(ModalSendMessageAgent, {
 							close: this.isClose,
 							current_user: this.props.current_user,
-							sendMessageTenant: this.sendAgentMessage,
-							tenants_conversation: this.state.tenants_conversation,
+							sendMessageAgent: this.sendAgentMessage,
+							trady_agent_conversation: this.state.tenants_conversation,
 							maintenance_request_id: this.state.maintenance_request.id
 						});
 					}
