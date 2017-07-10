@@ -43,7 +43,7 @@ class UserSessionsController < ApplicationController
     else
 
       flash[:danger] = "Please use your correct email, password and role you have access to."
-      render :menu_bar_login_form_new
+      render :new
       
     end 
   end
