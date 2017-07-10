@@ -67995,8 +67995,23 @@ var Agency = React.createClass({
     );
   }
 });
+var notifyAppointment = {
+	cancel: {
+		title: "Create and Cancel Appointment",
+		content: "You was cancel and create appointment."
+	},
+	decline: {
+		title: "Create and Decline Appointment",
+		content: "You was decline and create appointment."
+	},
+	normal: {
+		title: "Create Appointment",
+		content: "You was create appointment."
+	}
+};
+
 var InfoAppointment = React.createClass({
-	displayName: 'InfoAppointment',
+	displayName: "InfoAppointment",
 
 	getInitialState: function () {
 		return {
@@ -68047,9 +68062,11 @@ var InfoAppointment = React.createClass({
 	},
 
 	btnCancel: function () {
-		var appointment = this.props.appointment;
+		var _props4 = this.props;
+		var appointment = _props4.appointment;
+		var current_role = _props4.current_role;
 
-		if (appointment.status == "Accepted") {
+		if (appointment.status == "Accepted" && !this.state.arrRole.includes(current_role.role)) {
 			return React.createElement(BtnCancelAppointment, { clickCancel: this.props.clickCancel });
 		}
 
@@ -68057,9 +68074,9 @@ var InfoAppointment = React.createClass({
 	},
 
 	render: function () {
-		var _props4 = this.props;
-		var appointment = _props4.appointment;
-		var current_role = _props4.current_role;
+		var _props5 = this.props;
+		var appointment = _props5.appointment;
+		var current_role = _props5.current_role;
 
 		var date = new Date(Date.parse(appointment.time)).toUTCString();
 		var arrDate = date.split(" ");
@@ -68069,57 +68086,57 @@ var InfoAppointment = React.createClass({
 		var m = arrHour[1];
 		var time = h > 12 ? h - 12 + ':' + m + ' PM' : h + ':' + m + ' AM';
 		return React.createElement(
-			'li',
-			{ className: 'li-appointment' },
+			"li",
+			{ className: "li-appointment" },
 			React.createElement(
-				'div',
-				{ className: 'status' },
+				"div",
+				{ className: "status" },
 				React.createElement(
-					'span',
+					"span",
 					null,
-					'Status: '
+					"Status: "
 				),
 				React.createElement(
-					'span',
+					"span",
 					{ className: "bt-status " + appointment.status },
 					appointment.status
 				)
 			),
 			React.createElement(
-				'div',
-				{ className: 'date-time' },
+				"div",
+				{ className: "date-time" },
 				React.createElement(
-					'p',
-					{ className: 'date' },
+					"p",
+					{ className: "date" },
 					React.createElement(
-						'span',
+						"span",
 						null,
-						'Date: '
+						"Date: "
 					),
 					React.createElement(
-						'span',
+						"span",
 						null,
 						moment(appointment.date).format('dddd LL')
 					)
 				),
 				React.createElement(
-					'p',
-					{ className: 'time' },
+					"p",
+					{ className: "time" },
 					React.createElement(
-						'span',
+						"span",
 						null,
-						'Time: '
+						"Time: "
 					),
 					React.createElement(
-						'span',
+						"span",
 						null,
 						time
 					)
 				)
 			),
 			React.createElement(
-				'div',
-				{ className: 'button-appointment btn-appointment-mobile' },
+				"div",
+				{ className: "button-appointment btn-appointment-mobile" },
 				this.btnView(),
 				this.btnAccept(),
 				this.btnDecline(),
@@ -68130,7 +68147,7 @@ var InfoAppointment = React.createClass({
 });
 
 var ListAppointment = React.createClass({
-	displayName: 'ListAppointment',
+	displayName: "ListAppointment",
 
 	render: function () {
 		var _this = this;
@@ -68138,8 +68155,8 @@ var ListAppointment = React.createClass({
 		var appointments = this.props.appointments;
 
 		return React.createElement(
-			'ul',
-			{ className: 'content-appointment' },
+			"ul",
+			{ className: "content-appointment" },
 			appointments.map(function (appointment, key) {
 				return React.createElement(InfoAppointment, {
 					key: key,
@@ -68164,7 +68181,7 @@ var ListAppointment = React.createClass({
 });
 
 var AppointmentRequest = React.createClass({
-	displayName: 'AppointmentRequest',
+	displayName: "AppointmentRequest",
 
 	getInitialState: function () {
 		return {
@@ -68179,23 +68196,23 @@ var AppointmentRequest = React.createClass({
 	render: function () {
 		var _this2 = this;
 
-		var _props5 = this.props;
-		var appointments = _props5.appointments;
-		var title = _props5.title;
+		var _props6 = this.props;
+		var appointments = _props6.appointments;
+		var title = _props6.title;
 
 		return React.createElement(
-			'div',
-			{ className: 'item' },
+			"div",
+			{ className: "item" },
 			React.createElement(
-				'div',
-				{ className: 'header action' },
+				"div",
+				{ className: "header action" },
 				React.createElement(
-					'a',
+					"a",
 					null,
 					title
 				),
-				React.createElement('i', {
-					'aria-hidden': 'true',
+				React.createElement("i", {
+					"aria-hidden": "true",
 					onClick: this.show,
 					className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
 				})
@@ -68221,7 +68238,7 @@ var AppointmentRequest = React.createClass({
 });
 
 var AppointmentRequestMobile = React.createClass({
-	displayName: 'AppointmentRequestMobile',
+	displayName: "AppointmentRequestMobile",
 
 	getInitialState: function () {
 		return {
@@ -68236,26 +68253,26 @@ var AppointmentRequestMobile = React.createClass({
 	render: function () {
 		var _this3 = this;
 
-		var _props6 = this.props;
-		var appointments = _props6.appointments;
-		var title = _props6.title;
+		var _props7 = this.props;
+		var appointments = _props7.appointments;
+		var title = _props7.title;
 
 		return React.createElement(
-			'div',
-			{ className: 'activity-mobile' },
+			"div",
+			{ className: "activity-mobile" },
 			React.createElement(
-				'div',
-				{ className: 'item' },
+				"div",
+				{ className: "item" },
 				React.createElement(
-					'div',
-					{ className: 'header action' },
+					"div",
+					{ className: "header action" },
 					React.createElement(
-						'a',
+						"a",
 						null,
 						title
 					),
-					React.createElement('i', {
-						'aria-hidden': 'true',
+					React.createElement("i", {
+						"aria-hidden": "true",
 						onClick: this.show,
 						className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
 					})
@@ -68491,9 +68508,14 @@ var ModalAddAppointment = React.createClass({
 								React.createElement(
 									"div",
 									{ className: "form-group" },
-									React.createElement("textarea", { ref: function (ref) {
+									React.createElement("textarea", {
+										required: true,
+										placeholder: "Comment",
+										className: "text-center",
+										ref: function (ref) {
 											return _this2.comment = ref;
-										}, placeholder: "Comment", className: "text-center" })
+										}
+									})
 								),
 								React.createElement(
 									"div",
@@ -68733,9 +68755,11 @@ var ModalAppointment = React.createClass({
 	btnCancel: function () {
 		var _this3 = this;
 
-		var appointment = this.props.appointment;
+		var _props3 = this.props;
+		var appointment = _props3.appointment;
+		var current_role = _props3.current_role;
 
-		if (appointment.status == "Accepted") {
+		if (appointment.status == "Accepted" && !this.state.arrRole.includes(current_role.role)) {
 			return React.createElement(BtnCancelAppointment, { clickCancel: function () {
 					return _this3.props.cancelAppointment(appointment);
 				} });
@@ -68745,10 +68769,10 @@ var ModalAppointment = React.createClass({
 	},
 
 	render: function () {
-		var _props3 = this.props;
-		var appointment = _props3.appointment;
-		var current_role = _props3.current_role;
-		var comments = _props3.comments;
+		var _props4 = this.props;
+		var appointment = _props4.appointment;
+		var current_role = _props4.current_role;
+		var comments = _props4.comments;
 
 		var title = "";
 		switch (appointment.appointment_type) {
@@ -71267,10 +71291,16 @@ var LandlordMaintenanceRequest = React.createClass({
 			data: fd,
 			success: function (res) {
 				if (!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
 					self.declineAppointment(appointmentUpdate);
-				}
-				if (!!isCancel) {
+				} else if (!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
 					self.cancelAppointment(appointmentUpdate);
+				} else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
 				}
 				appointments.unshift(res.appointment_and_comments);
 				comments.push(res.appointment_and_comments.comments[0]);
@@ -73540,13 +73570,18 @@ var ListMaintenanceRequest = React.createClass({
   displayName: "ListMaintenanceRequest",
 
   getInitialState: function () {
+    var maintenance_requests = this.props.maintenance_requests;
+
+    var page = 1;
+    var prePage = 3;
+    var dataShow = maintenance_requests.splice((page - 1) * prePage, prePage);
     return {
-      page: 1,
-      data: [],
-      prePage: 3,
-      dataShow: [],
-      sortByDate: "Newest to Oldest",
+      page: page,
       valueAction: "",
+      prePage: prePage,
+      dataShow: dataShow,
+      data: maintenance_requests,
+      sortByDate: "Newest to Oldest",
       filterDate: [{ value: "Oldest to Newest", name: "Oldest to Newest" }, { value: "Newest to Oldest", name: "Newest to Oldest" }],
       actionRequests: [{
         title: "Maintenance Request",
@@ -73687,7 +73722,7 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   componentWillMount: function () {
-    this.getMaintenanceRequests();
+    //this.getMaintenanceRequests();
   },
 
   setPage: function (page) {
@@ -74453,7 +74488,6 @@ var ItemMaintenanceRequest = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content" },
-				React.createElement(Carousel, { gallery: this.props.gallery }),
 				React.createElement(
 					"div",
 					{ className: "description" },
@@ -74476,7 +74510,8 @@ var ItemMaintenanceRequest = React.createClass({
 						{ className: "description" },
 						maintenance.availability_and_access
 					)
-				)
+				),
+				React.createElement(Carousel, { gallery: this.props.gallery })
 			)
 		);
 	}
@@ -74491,6 +74526,7 @@ var MaintenanceRequestsNew = React.createClass({
 			images: [],
 			isAgent: true,
 			dataImages: [],
+			isAndroid: false,
 			validName: false,
 			validDate: false,
 			validEmail: false,
@@ -74647,6 +74683,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	handleCheckSubmit: function (e) {
+		e.preventDefault();
 		if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
 			e.preventDefault();
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
@@ -74710,7 +74747,6 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		};
 		XHR.send(FD);
-		e.preventDefault();
 		return false;
 	},
 
@@ -74778,17 +74814,24 @@ var MaintenanceRequestsNew = React.createClass({
 
 			var file = image.fileInfo;
 			image.isUpload = true;
-			images[key] = image;
-			this.setState({
-				images: images
-			});
 
+			// resize image
 			if (file.size > maxSize) {
 				var quality = Math.ceil(maxSize / file.size * 100);
 				target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
 			} else {
-				target_img.src = image.url;
+				if (!!this.state.isAndroid) {
+					target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+				} else {
+					target_img.src = image.url;
+				}
 			}
+
+			image.url = target_img.src;
+			images[key] = image;
+			this.setState({
+				images: images
+			});
 
 			var filename = file;
 			var options = {
@@ -74925,12 +74968,36 @@ var MaintenanceRequestsNew = React.createClass({
 		return new Blob([new Uint8Array(content)], { type: mimestring });
 	},
 
+	detectAndroid: function () {
+		var ua = navigator.userAgent.toLowerCase();
+		var isAndroid = ua.indexOf("android") > -1;
+		if (isAndroid) {
+			this.setState({
+				isAndroid: true
+			});
+		}
+	},
+
+	componentDidMount: function () {
+		this.detectAndroid();
+	},
+
 	render: function () {
 		var _this2 = this;
 
 		var images = this.state.images;
 
 		var $imagePreview = [];
+		var _props = this.props;
+		var current_user_tenant = _props.current_user_tenant;
+		var current_role = _props.current_role;
+
+		var valueEmail = '';
+		var valueMobile = '';
+		if (current_role.role == "Tenant") {
+			valueEmail = current_user_tenant.email;
+			valueMobile = current_user_tenant.mobile;
+		}
 		if (images.length > 0) {
 			for (i = 0; i < images.length; i++) {
 				var imageObject = React.createElement(
@@ -74995,10 +75062,11 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement('input', {
 						required: true,
 						type: 'email',
-						autoCapitalize: 'off',
 						autoCorrect: 'off',
 						autoComplete: 'off',
+						autoCapitalize: 'off',
 						placeholder: 'E-mail',
+						defaultValue: valueEmail,
 						ref: function (ref) {
 							return _this2.email = ref;
 						},
@@ -75022,6 +75090,7 @@ var MaintenanceRequestsNew = React.createClass({
 						minLength: '10',
 						maxLength: '11',
 						placeholder: 'Mobile',
+						defaultValue: valueMobile,
 						ref: function (ref) {
 							return _this2.mobile = ref;
 						},
@@ -75097,6 +75166,7 @@ var MaintenanceRequestsNew = React.createClass({
 								{ key: index, className: 'img' },
 								React.createElement('img', {
 									src: img.url,
+									className: '',
 									onLoad: function (e, image, key) {
 										return _this2.loadImage(e, img, index);
 									}
@@ -76029,6 +76099,8 @@ var ModalAddLandlord = React.createClass({
 	render: function () {
 		var _this5 = this;
 
+		var note = this.props.note;
+
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -76068,6 +76140,15 @@ var ModalAddLandlord = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
+									"span",
+									{ className: "note-landlord" },
+									note
+								)
+							),
 							React.createElement(
 								"div",
 								{ className: "row" },
@@ -76984,7 +77065,9 @@ var MaintenanceRequest = React.createClass({
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
+		if (div) {
+			div.parentNode.removeChild(div);
+		}
 	},
 
 	onModalWith: function (modal) {
@@ -76997,6 +77080,7 @@ var MaintenanceRequest = React.createClass({
 	viewItem: function (key, item) {
 		switch (key) {
 			case 'viewQuote':
+			case 'viewConfirmQuote':
 			case 'viewQuoteMessage':
 				{
 					this.setState({
@@ -77309,9 +77393,25 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				self.isClose();
 				self.setState({
 					quotes: res
 				});
+				if (params.status == 'Approved') {
+					self.setState({ notification: {
+							title: "Accept Quote",
+							content: "Quote was accept!",
+							bgClass: "bg-success"
+						} });
+					self.onModalWith('notification');
+				} else if (params.status == 'Declined') {
+					self.setState({ notification: {
+							title: "Decline Quote",
+							content: "Quote was decline!",
+							bgClass: "bg-success"
+						} });
+					self.onModalWith('notification');
+				}
 			},
 			error: function (err) {}
 		});
@@ -77550,6 +77650,15 @@ var MaintenanceRequest = React.createClass({
 						content: this.state.notification.content
 					});
 
+				case 'addLandlordSendEmail':
+					return React.createElement(ModalAddLandlord, {
+						close: this.isClose,
+						addLandlord: this.addLandlord,
+						authToken: this.props.authenticity_token,
+						maintenance_request_id: this.state.maintenance_request.id,
+						note: "Please add a landlord and then press \"Forward To Landlord\""
+					});
+
 				case 'addLandlord':
 					return React.createElement(ModalAddLandlord, {
 						close: this.isClose,
@@ -77729,6 +77838,15 @@ var MaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'viewConfirmQuote':
+					return React.createElement(ModalConfirmQuote, {
+						close: this.isClose,
+						title: "Cancel Quote",
+						quote: this.state.quote,
+						updateStatusQuote: this.updateStatusQuote,
+						content: "Are you sure you want to cancel the job ?"
+					});
+
 				default:
 					return null;
 			}
@@ -77889,16 +78007,16 @@ var MaintenanceRequest = React.createClass({
 					}),
 					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: "Appointments For Quotes",
-						appointments: quote_appointments,
 						current_role: current_user_role,
+						appointments: quote_appointments,
 						viewItem: function (key, item) {
 							return _this9.viewItem(key, item);
 						}
 					}),
 					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: "Landlord Appointments",
-						appointments: landlord_appointments,
 						current_role: current_user_role,
+						appointments: landlord_appointments,
 						viewItem: function (key, item) {
 							return _this9.viewItem(key, item);
 						}
@@ -77906,17 +78024,17 @@ var MaintenanceRequest = React.createClass({
 					React.createElement(Activity, { logs: this.props.logs })
 				),
 				work_order_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
-					appointments: work_order_appointments,
 					title: "Work Order Appointments",
 					current_role: current_user_role,
+					appointments: work_order_appointments,
 					viewItem: function (key, item) {
 						return _this9.viewItem(key, item);
 					}
 				}),
 				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: "Appointments For Quotes",
-					appointments: quote_appointments,
 					current_role: current_user_role,
+					appointments: quote_appointments,
 					viewItem: function (key, item) {
 						return _this9.viewItem(key, item);
 					}
@@ -78707,7 +78825,7 @@ var ButtonForwardLandlord = React.createClass({
 				isSend: true
 			});
 		} else {
-			this.props.onModalWith("addLandlord");
+			this.props.onModalWith("addLandlordSendEmail");
 		}
 	},
 
@@ -78804,23 +78922,17 @@ var ButtonRestore = React.createClass({
 var ButtonCancle = React.createClass({
 	displayName: "ButtonCancle",
 
-	updateStatus: function () {
-		var params = {
-			status: "Cancel",
-			quote_id: this.props.quote.id,
-			maintenance_request_id: this.props.quote.maintenance_request_id
-		};
-
-		this.props.updateStatusQuote(params);
-	},
-
 	render: function () {
+		var _this = this;
+
 		return React.createElement(
 			"button",
 			{
 				type: "button",
 				className: "btn btn-cancel",
-				onClick: this.updateStatus
+				onClick: function (key, item) {
+					return _this.props.viewQuote('viewConfirmQuote', _this.props.quote);
+				}
 			},
 			"Cancel"
 		);
@@ -78831,13 +78943,17 @@ var ButtonView = React.createClass({
 	displayName: "ButtonView",
 
 	render: function () {
-		var _this = this;
+		var _this2 = this;
 
 		return React.createElement(
 			"button",
-			{ type: "button", className: "btn btn-default", onClick: function (key, item) {
-					return _this.props.viewQuote('viewQuote', _this.props.quote);
-				} },
+			{
+				type: "button",
+				className: "btn btn-default",
+				onClick: function (key, item) {
+					return _this2.props.viewQuote('viewQuote', _this2.props.quote);
+				}
+			},
 			"View"
 		);
 	}
@@ -78867,12 +78983,12 @@ var ButtonQuoteMessage = React.createClass({
 	displayName: "ButtonQuoteMessage",
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		return React.createElement(
 			"button",
 			{ type: "button", className: "btn btn-message", onClick: function (key, item) {
-					return _this2.props.viewQuoteMessage('viewQuoteMessage', _this2.props.quote);
+					return _this3.props.viewQuoteMessage('viewQuoteMessage', _this3.props.quote);
 				} },
 			"Message"
 		);
@@ -78972,8 +79088,10 @@ var ActionQuote = React.createClass({
 					}
 				}),
 				quote.status == "Approved" && React.createElement(ButtonCancle, {
-					quote: quote,
-					updateStatusQuote: self.updateStatusQuote
+					quote: this.props.quote,
+					viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}
 				})
 			);
 		}
@@ -79314,7 +79432,7 @@ var ModalViewQuote = React.createClass({
 	},
 
 	render: function () {
-		var _this3 = this;
+		var _this4 = this;
 
 		var self = this.props;
 		var quote = this.state.quote;
@@ -79436,7 +79554,7 @@ var ModalViewQuote = React.createClass({
 							React.createElement(
 								"div",
 								{ className: "show-quote", onTouchEnd: function (key, index) {
-										return _this3.switchSlider('prev', _this3.state.index);
+										return _this4.switchSlider('prev', _this4.state.index);
 									} },
 								React.createElement(
 									"div",
@@ -79520,14 +79638,14 @@ var ModalViewQuote = React.createClass({
 								React.createElement(
 									"button",
 									{ className: "btn-prev", onClick: function (key, index) {
-											return _this3.switchSlider('prev', _this3.state.index);
+											return _this4.switchSlider('prev', _this4.state.index);
 										} },
 									React.createElement("i", { className: "fa fa-angle-left" })
 								),
 								React.createElement(
 									"button",
 									{ className: "btn-next", onClick: function (key, index) {
-											return _this3.switchSlider('next', _this3.state.index);
+											return _this4.switchSlider('next', _this4.state.index);
 										} },
 									React.createElement("i", { className: "fa fa-angle-right" })
 								)
@@ -79583,7 +79701,7 @@ var ModalViewQuoteMessage = React.createClass({
 	},
 
 	render: function () {
-		var _this4 = this;
+		var _this5 = this;
 
 		var current_user = this.props.current_user;
 		var quote = this.props.quote;
@@ -79638,7 +79756,7 @@ var ModalViewQuoteMessage = React.createClass({
 									placeholder: "Message",
 									readOnly: !current_user,
 									ref: function (rel) {
-										return _this4.message = rel;
+										return _this5.message = rel;
 									},
 									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
 								})
@@ -79653,6 +79771,97 @@ var ModalViewQuoteMessage = React.createClass({
 								},
 								"Submit"
 							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalConfirmQuote = React.createClass({
+	displayName: "ModalConfirmQuote",
+
+	updateStatus: function () {
+		var quote = this.props.quote;
+
+		var params = {
+			status: "Cancel",
+			quote_id: quote.id,
+			maintenance_request_id: quote.maintenance_request_id
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function () {
+		var _props = this.props;
+		var title = _props.title;
+		var content = _props.content;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							content
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-default success",
+								onClick: this.updateStatus,
+								"data-dismiss": "modal"
+							},
+							"Yep"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-primary cancel",
+								onClick: this.props.close
+							},
+							"No"
 						)
 					)
 				)
@@ -79950,7 +80159,7 @@ var Footer = React.createClass({
             { className: "footer-other" },
             React.createElement(
                 "div",
-                { className: "container" },
+                { className: "footer-custom" },
                 React.createElement(
                     "div",
                     { className: "footer-social" },
@@ -80280,7 +80489,7 @@ var Header = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "container container-custom" },
+        { className: "container" },
         React.createElement(
           "div",
           { className: "column header-custom " + (e && "forhome") },
@@ -80793,15 +81002,19 @@ var TenantMaintenanceRequest = React.createClass({
 				var title = '';
 				var content = '';
 				if (!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
 					self.declineAppointment(appointmentUpdate);
-				}
-				if (!!isCancel) {
+				} else if (!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
 					self.cancelAppointment(appointmentUpdate);
+				} else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
 				}
 				switch (params.appointment_type) {
 					case 'Work Order Appointment':
-						title = "Create Appoinment";
-						content = "Create Appointment was successfully";
 						appointments.unshift(res.appointment_and_comments);
 						comments.push(res.appointment_and_comments.comments[0]);
 						self.setState({
@@ -80811,8 +81024,6 @@ var TenantMaintenanceRequest = React.createClass({
 						break;
 
 					case 'Quote Appointment':
-						title = "Create Appoinment For Quote";
-						content = "Create Appointment For Quote was successfully";
 						quote_appointments.unshift(res.appointment_and_comments);
 						quoteComments.push(res.appointment_and_comments.comments);
 						self.setState({
@@ -80822,8 +81033,6 @@ var TenantMaintenanceRequest = React.createClass({
 						break;
 
 					case 'Landlord Appointment':
-						title = "Create Landlord Appoinment";
-						content = "Create Landlord Appointment was successfully";
 						landlord_appointments.unshift(res.appointment_and_comments);
 						landlordComments.push(res.appointment_and_comments.comments);
 						self.setState({
@@ -83525,12 +83734,19 @@ var TradyMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function (res) {
+				var title = "";
+				var content = "";
 				if (!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
 					self.declineAppointment(appointmentUpdate);
-				}
-
-				if (!!isCancel) {
+				} else if (!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
 					self.cancelAppointment(appointmentUpdate);
+				} else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
 				}
 
 				if (params.appointment_type == 'Work Order Appointment') {
@@ -83551,8 +83767,8 @@ var TradyMaintenanceRequest = React.createClass({
 
 				self.setState({ notification: {
 						bgClass: "bg-success",
-						title: params.appointment_type == 'Work Order Appointment' ? "Create Appoinment" : "Create Appoinment For Quote",
-						content: params.appointment_type == 'Work Order Appointment' ? "Create Appointment was successfully" : "Create Appointment For Quote was successfully"
+						title: title,
+						content: content
 					} });
 				self.onModalWith('notification');
 			},

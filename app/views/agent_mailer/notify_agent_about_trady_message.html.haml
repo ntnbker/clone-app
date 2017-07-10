@@ -97,7 +97,7 @@
           %p.content 
             Hi
             ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
-            a trady has sent you a message. To see the message and responde, please click the button below.
+            a trady has just sent you a message. To view the message and respond, please click the button below.
           %div.text-center
             =link_to "View Maintenance Request Message", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_trady_message"), class: 'btn'
             
@@ -105,7 +105,7 @@
           %p.content 
             Hi
             ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
-            a trady has sent you a message. To see the message and responde, please click the button below.
+            a trady has just sent you a message. To view the message and respond, please click the button below.
           %div.text-center
             =link_to "View Maintenance Request Message", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_trady_message"), class: 'btn'
 

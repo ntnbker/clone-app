@@ -97,12 +97,12 @@
         -if @user.has_role("AgencyAdmin")
           Hi
           ="#{@user.agency_admin.first_name.capitalize}"
-          , a quote has been approved for a maintenance request. To see the maintenance request click the button below.
+          the quote from #{@trady.company_name.capitalize}, has just been approved for #{@property.property_address}. If you wish to view this maintenance request, click the button below.
           
         -elsif @user.has_role("Agent")
           Hi
           ="#{@user.agent.name.capitalize}"
-          , a quote has been approved for a maintenance request. To see the maintenance request click the button below.
+          the quote from #{@trady.company_name.capitalize}, has just been approved for #{@property.property_address}. If you wish to view this maintenance request, click the button below.
           
         %div.text-center
           -if @user.has_role("AgencyAdmin")

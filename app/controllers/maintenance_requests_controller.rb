@@ -11,13 +11,16 @@ class MaintenanceRequestsController < ApplicationController
   def new
     
     if current_user != nil 
+      @current_user = current_user
       @role = current_user.current_role
 
       if @role == "Tenant"
         
       else
+      
       end 
     else
+      @current_user == nil
       @role = nil
     end 
       
