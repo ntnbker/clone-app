@@ -4,7 +4,7 @@
     
     .form-group
       = f.form_group :role_picked, label: { text: "Sign In As" } do
-        = f.radio_button :role_picked, "Landlord", label: "Landlord", checked: true
+        = f.radio_button :role_picked, "Landlord", label: "Landlord"
         = f.radio_button :role_picked, "Trady", label: "Trady" 
         = f.radio_button :role_picked, "Tenant", label: "Tenant" 
         = f.radio_button :role_picked, "AgencyAdmin", label: "Agency Administrator" 
