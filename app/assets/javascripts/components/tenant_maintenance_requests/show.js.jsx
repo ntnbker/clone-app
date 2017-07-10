@@ -456,11 +456,11 @@ var TenantMaintenanceRequest = React.createClass({
 
 				case 'sendAgentMessage': {
 					return (
-						<ModalSendMessageTenant 
+						<ModalSendMessageAgent 
 							close={this.isClose}
-							current_user = {this.props.current_user}
-							sendMessageTenant = {this.sendAgentMessage}
-							tenants_conversation = {this.state.tenants_conversation}  
+							current_user={this.props.current_user}
+							sendMessageAgent={this.sendAgentMessage}
+							trady_agent_conversation={this.state.tenants_conversation}  
 							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);

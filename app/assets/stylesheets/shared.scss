@@ -1,14 +1,40 @@
 body {
   background: #F4F8FB;
+  min-height: 100vh;
 }
 .layout {
   margin: auto;
   background: #F4F8FB;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 .content-custom{
   max-width: 1366px;
   margin: 0 auto 30px;
 }
+
+input, textarea, select {
+  color: #7D7D7D;
+  &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #7D7D7D;
+  }
+  &::-moz-placeholder { /* Firefox 19+ */
+    color: #7D7D7D;
+  }
+  &:-ms-input-placeholder { /* IE 10+ */
+    color: #7D7D7D;
+  }
+  &:-moz-placeholder { /* Firefox 18- */
+    color: #7D7D7D;
+  }
+}
+select {
+  &:required:invalid {
+    color: #7D7D7D;
+  }
+}
+
 header {
   .header-expanded {
     background: #3d4b54;
@@ -424,6 +450,9 @@ header {
 }
 
 footer {
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
   .footer-expanded {
     background-color: #3e4b54;
     color: white;
