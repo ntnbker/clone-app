@@ -59,7 +59,7 @@ class MaintenanceRequest < ApplicationRecord
 
 
   after_create :create_action_status
-
+  before_save :create_workorder_number
 
   def mr_tenants_array
 
@@ -71,6 +71,10 @@ class MaintenanceRequest < ApplicationRecord
   def create_action_status
     
     action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:self.id)
+  end
+
+  def create_workorder_number
+    self.work_order_number = "W" + SecureRandom.hex(5)  
   end
 
 

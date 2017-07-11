@@ -85,6 +85,18 @@ class TenantMailer < ActionMailer::Base
     @tenant = tenant_object
     mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Declined")
   end
+
+  def tenant_quote_requested_notification_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    @tenant = @maintenance_request.tenants.first
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Quote has been requested for your maintenance request")
+  end
+
+  def tenant_quote_approved_notification_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    @tenant = @maintenance_request.tenants.first
+    mail(from:"ron@email.com",to:@tenant.email, subject:"A Quote has been approved for your maintenance request")
+  end
   
   
 

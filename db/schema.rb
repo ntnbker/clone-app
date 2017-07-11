@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170703053333) do
+ActiveRecord::Schema.define(version: 20170711073428) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20170703053333) do
     t.date     "due_date"
     t.boolean  "delivery_status"
     t.boolean  "print_status"
+    t.string   "invoice_number"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -285,6 +286,7 @@ ActiveRecord::Schema.define(version: 20170703053333) do
     t.integer  "agency_admin_id"
     t.integer  "trady_id"
     t.text     "availability_and_access"
+    t.string   "work_order_number"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -338,6 +340,7 @@ ActiveRecord::Schema.define(version: 20170703053333) do
     t.boolean  "tax"
     t.float    "gst_amount"
     t.boolean  "forwarded_to_landlord"
+    t.string   "quote_number"
   end
 
   create_table "roles", force: :cascade do |t|

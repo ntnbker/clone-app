@@ -11,7 +11,7 @@ class Invoice < ApplicationRecord
 
 
   has_many :invoice_payments
-  
+  before_save :create_invoice_number
   #attr_accessor :quote_id 
 
   def calculate_invoice_items_totals
@@ -79,6 +79,10 @@ class Invoice < ApplicationRecord
     ledger.save_grand_total
     # total = self.amount + self.ledger.grand_total
     # self.ledger.update_attribute(:grand_total, total)
+  end
+
+  def create_invoice_number
+    self.invoice_number = "I" + SecureRandom.hex(5)  
   end
 
   

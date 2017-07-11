@@ -154,7 +154,7 @@ class TradiesController < ApplicationController
       end
     end 
  
-      
+    TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id)
 
 
   end 

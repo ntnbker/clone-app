@@ -144,6 +144,7 @@ class QuotesController < ApplicationController
           #TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
       end
+      TenantQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
     elsif params[:status] == "Declined"
       quote = Quote.find_by(id: params[:quote_id])
       trady = quote.trady
