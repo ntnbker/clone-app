@@ -460,6 +460,11 @@ var ListMaintenanceRequest = React.createClass({
           title: "Maintenance Scheduled - Awaiting Invoice", 
           value: "Maintenance Scheduled - Awaiting Invoice", 
           count: this.props.maintenance_scheduled_count
+        },
+        {
+          title: "Maintenance Scheduled With Landlord", 
+          value: "Maintenance Scheduled With Landlord", 
+          count: this.props.maintenance_scheduled_count
         }
       ],
       tradyFilter: [

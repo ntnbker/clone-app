@@ -321,6 +321,11 @@ class MaintenanceRequestsController < ApplicationController
     end
   end
 
+  def update_status
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    
+  end
+
 
 
   private

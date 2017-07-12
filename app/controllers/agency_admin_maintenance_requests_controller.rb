@@ -17,7 +17,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @page = params[:page]
     @sort_by_date = params[:sort_by_date]
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
-    @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received Awaiting Approval")
+    @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
     @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
     @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
     
@@ -32,7 +32,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @tenant_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tenant To Confirm Appointment")
     @landlord_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Landlord To Confirm Appointment")
     @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")  
-  
+    @maintenance_scheduled_with_landlord_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled with landlord")  
     
 
     @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
