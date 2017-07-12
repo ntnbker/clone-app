@@ -280,10 +280,10 @@ class MaintenanceRequestsController < ApplicationController
       end 
       
       
-      
+      the_url = agency_admin_maintenance_request_url(@maintenance_request)
      
       EmailWorker.perform_async(@maintenance_request.id)
-      
+      AgencyAdminOrAgentNewMaintenanceRequestNotificationTextingWorker.perform_async(@maintenance_request.id,the_url)
 
       MaintenanceRequest.last.reindex
       if current_user == nil

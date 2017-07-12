@@ -6,6 +6,12 @@ class PagesController < ApplicationController
     @query = Query.new
     @main_users = MainUser.all
     @service = Service.all
+
+
+
+    # @link = "#{redirect_to root_path}".html_safe
+
+   
   end
 
   
