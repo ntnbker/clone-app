@@ -63,8 +63,18 @@ var Footer = React.createClass({
             </div>
         </div>
     },
+
+    componentDidMount: function() {
+        $(window).on('load resize', function() {
+            var footerHeight = $('#footer').height();
+            if(footerHeight > 0) {
+                $('#main').css('margin-bottom', footerHeight+10);
+            }
+        });   
+    },
+
     render: function() {
-        return <div>
+        return <div id="footer">
             { this.props.expanded
             ? this.footerForExpanded()
             : this.footer() }
