@@ -199,6 +199,9 @@ form#new_quote {
 			}
 		}
 	}
+	.quote-height {
+		min-height: 800px;
+	}
 	.info-quote {
 		font-size: 13px;
 		.bill-to {
@@ -328,6 +331,10 @@ form#new_quote {
 
 .border-none {
 	border: none;
+}
+
+.text-capitalize {
+	text-transform: capitalize;
 }
 
 @media (max-width: 768px) {

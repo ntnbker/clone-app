@@ -12,7 +12,7 @@ var ButtonForwardLandlord = React.createClass({
 				maintenance_request_id: this.props.quote.maintenance_request_id,
 			};
 
-			this.props.sendEmailLandlord(params);
+			this.props.sendEmailLandlord(params, this.props.quote);
 			this.setState({
 				isSend: true
 			});
@@ -505,7 +505,7 @@ var ModalViewQuote = React.createClass({
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
-					<div className="modal-content">
+					<div className="modal-content quote-height">
 						<div className="modal-header">
 							<div className="logo">
 								<img src="/assets/logo.png" />
