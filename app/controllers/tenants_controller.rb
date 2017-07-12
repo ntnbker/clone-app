@@ -1,11 +1,11 @@
-class TenantsController < ApplicationController
-  before_action :require_login
+# class TenantsController < ApplicationController
+#   before_action :require_login
 
-  def index
+#   def index
     
-  end
+#   end
   
-  def show
+#   def show
     
-  end
-end 
+#   end
+# end 

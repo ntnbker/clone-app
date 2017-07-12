@@ -1,21 +1,12 @@
 var ContentLandlordContact = React.createClass({
 	renderCallAgent: function() {
-		const maintenance_request = this.props.maintenance_request;
-		if(!!maintenance_request.agent) {
+		const agent = this.props.agent;
+		if(!!agent) {
 			return (
 				<li>
-					<a href={"tel:" + maintenance_request.agent.mobile_phone}>
+					<a href={"tel:" + agent.mobile_phone}>
 						<i className="fa fa-phone" aria-hidden="true" />
-						Call Agent: {maintenance_request.agent.mobile_phone}
-					</a>
-				</li>
-			);
-		}else if(!!maintenance_request.agency_admin) {
-			return (
-				<li>
-					<a href={"tel:" + maintenance_request.agency_admin.mobile_phone}>
-						<i className="fa fa-phone" aria-hidden="true" />
-						Call Agent: {maintenance_request.agency_admin.mobile_phone}
+						Call Agent: {agent.mobile_phone}
 					</a>
 				</li>
 			);
@@ -70,7 +61,14 @@ var LandlordContact = React.createClass({
 					/>
 				</div>
 				<div className="content">
-					{ this.state.show && <ContentLandlordContact onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
+					{ this.state.show && 
+							<ContentLandlordContact
+								agent={this.props.agent}
+								landlord={this.props.landlord}
+								maintenance_request={this.props.maintenance_request}
+								onModalWith={(modal) => this.props.onModalWith(modal)}
+							/> 
+					}
 				</div>
 			</div>
 		);
@@ -80,9 +78,9 @@ var LandlordContact = React.createClass({
 var LandlordContactMobile = React.createClass({
 	render: function() {
 		return (
-			<div className="actions-full contact-full">
+			<div className="actions-full contact-full" id="contacts-full">
 				<div className="item">
-					<div className="header contact">
+					<div className="header action">
 						<a>Contact:</a>
 						<i
 							aria-hidden="true" 
@@ -91,7 +89,12 @@ var LandlordContactMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						{ <ContentLandlordContact onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
+						<ContentLandlordContact
+							agent={this.props.agent}
+							landlord={this.props.landlord}
+							maintenance_request={this.props.maintenance_request}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/> 
 					</div>
 				</div>
 			</div>

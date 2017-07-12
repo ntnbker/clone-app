@@ -33,6 +33,51 @@ class MessagesController < ApplicationController
       end
     end
 
+    conversation_type = params[:message][:conversation_type]
+    role = params[:message][:role]
+    maintenance_request = MaintenanceRequest.find_by(id:params[:message][:maintenance_request_id])
+    if conversation_type == "Landlord"
+      if role == "AgencyAdmin" || role == "Agent"
+        LandlordMessageEmailWorker.perform_async(maintenance_request.id)
+        #email the landlord they have a new message
+      elsif role == "Landlord"
+        AgentLandlordMessageEmailWorker.perform_async(maintenance_request.id)
+        #email the agent
+      end 
+    elsif conversation_type == "Tenant"
+      if role == "AgencyAdmin" || role == "Agent"
+        #email the tenants
+        TenantMessageNotificationEmailWorker.perform_async(maintenance_request.id) 
+      elsif role == "Tenant"
+        AgentTenantMessageEmailWorker.perform_async(maintenance_request.id)
+      end 
+    elsif conversation_type == "Trady_Agent"
+      if role == "AgencyAdmin" || role == "Agent"
+        #email the trady 
+        TradyAgentMessageEmailWorker.perform_async(maintenance_request.id)
+      elsif role == "Trady"
+        AgentTradyMessageEmailWorker.perform_async(maintenance_request.id)
+        #email the agent  
+      end 
+    end 
+    # if conversation type is landlord
+    #   if role is agent or agency admin
+    #     email the landlord
+    #   elsif role is landlord
+    #     email the agent
+    # elsif conversation type is tenant
+    #   if role is agent or agency admin
+    #     email tenants
+    #   elsif role is tenant
+    #     email the agent
+    # elsif conversation type is trady_agent
+    #   if role is agent or agency admin
+    #     email trady
+    #   elsif  role is trady
+    #     email the agent
+
+        
+          
     # if @message.valid?
     #     # if Conversation.type_of_conversation(params[:message][:conversation_type],params[:message][:maintenance_request_id]).present?
     #     #   @conversation = Conversation.type_of_conversation(params[:message][:conversation_type],params[:message][:maintenance_request_id]).first
@@ -55,7 +100,7 @@ class MessagesController < ApplicationController
 
 
     #     #if the conversation Type is tenant then use this email worker
-    #     #TenantMessageNotificationEmailWorker.perform_async(params[:message][:maintenance_request_id]) 
+    # TenantMessageNotificationEmailWorker.perform_async(params[:message][:maintenance_request_id]) 
         
     # end 
     
@@ -90,13 +135,31 @@ class MessagesController < ApplicationController
         format.js{render json:@message.errors}
       end
     end
+
+    conversation_type = params[:message][:conversation_type]
+    role = params[:message][:role]
+    quote = Quote.find_by(id:params[:message][:quote_id])
+    maintenance_request = quote.maintenance_request
+    if conversation_type == "Quote"
+      if role == "AgencyAdmin" || role == "Agent"
+        #email the trady 
+        TradyAgentQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote.id)
+      elsif role == "Trady"
+        AgentTradyQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote.id)
+        #email the agent  
+      end 
+    end 
+
+
+
+
   end
 
 
   private 
 
   def message_params
-    params.require(:message).permit(:receiver_id,:id,:user_id,:body,:conversation_id,:maintenance_request_id,:conversation_type, :quote_id)
+    params.require(:message).permit(:receiver_id,:id,:role,:user_id,:body,:conversation_id,:maintenance_request_id,:conversation_type, :quote_id)
   end
 
 

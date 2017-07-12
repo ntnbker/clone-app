@@ -1,7 +1,7 @@
 const MenuAgency = [
   {
     url: "/agency_admin_maintenance_requests",
-    name: "Agency Admin Maintenance Requests",
+    name: "My Maintenance Requests",
   },
   {
     url: "/agents/new",
@@ -16,46 +16,42 @@ const MenuAgency = [
 const MenuAgent = [
   {
     url: "/agent_maintenance_requests",
-    name: "Agent Maintenance Request",
+    name: "My Maintenance Requests",
   },
 ];
 
 const MenuTrady = [
   {
     url: "/trady_maintenance_requests",
-    name: "Trady Maintenance Request",
+    name: "My Maintenance Requests",
   }
 ];
 
 const MenuTenant = [
   {
     url: "/tenant_maintenance_requests",
-    name: "Tenant Maintenance Request",
+    name: "My Maintenance Requests",
   }
 ];
 
 const MenuLandlord = [
   {
     url: "/landlord_maintenance_requests",
-    name: "Landlord Maintenance Request",
+    name: "My Maintenance Requests",
   }
 ];
 
 var MobileMenu = React.createClass({
   getInitialState: function() {
     return {
-      visible: false
+      visible: this.props.isShow
     };
   },
 
-  show: function() {
-    this.setState({ visible: true });
-    document.addEventListener("click", this.hide);
-  },
-
-  hide: function() {
-    document.removeEventListener("click", this.hide);
-    this.setState({ visible: false });
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      visible: nextProps.isShow
+    });
   },
 
   render: function() {
@@ -69,13 +65,20 @@ var Header = React.createClass({
     getInitialState: function() {
       return {
         isShow: false,
+        isShowBar: false,
         isClicked: false,
         isItems: !this.props.expanded,
       };
     },
 
     showBar: function() {
-      this.refs.Bar.show();
+      this.setState({ isShowBar: !this.state.isShowBar });
+    },
+
+    hideBar: function() {
+      if(this.state.isShowBar) {
+        this.setState({ isShowBar: false });
+      }
     },
 
     showItems: function() {
@@ -90,39 +93,76 @@ var Header = React.createClass({
             // Inside of the component.
         } else {
             // Outside of the component.
-            this.setState({ isItems: false});
+            if(this.state.isItems === true) {
+              this.setState({ isItems: false});
+            }
         }
       }
     },
 
-    showMenu: function(flag) {
+    showMenu: function() {
       let myDropdown = document.getElementById("menu-bar");
-      if(myDropdown) {
-        if(flag == 'hide' && !!this.state.isShow) {
-          myDropdown.classList.remove('show');
-        }else if(flag != 'hide'){
-          if(!!this.state.isShow) {
-            myDropdown.classList.remove('show');
-            this.setState({
-              isShow: false
-            });
-          }else {
-            myDropdown.classList.toggle("show");
-            this.setState({
-              isShow: true
-            });
-          }
-        }
+      if(myDropdown && !this.state.isShow) {
+        myDropdown.classList.toggle("show");
+        this.setState({
+          isShow: true
+        });
       }
+    },
+
+    closeMenu: function() {
+      let myDropdown = document.getElementById("menu-bar");
+      if(myDropdown && this.state.isShow) {
+        myDropdown.classList.remove('show');
+        this.setState({
+          isShow: false
+        });
+      } 
     },
 
     componentDidMount: function(e) {
-      $(document).bind('click', this.clickDocument);
-      $(document).bind('click', (flag) => this.showMenu('hide'));
+      const self = this;
+      var event = "click";
+      if(this.iOS()) {
+        event += " touchstart";
+      }
+
+      $(document).bind(event, function(e) {
+        self.clickDocument(e);
+        self.closeMenu();
+        if(e.target.id != "btn-menu-bar") {
+          self.hideBar();
+          var className = e.target.class;
+          if(className && className.indexOf('click')) {
+            e.target.click();
+          }
+        }
+      });  
     },
 
     componentWillUnmount: function() {
       $(document).unbind('click', this.clickDocument);
+    },
+
+    iOS: function() {
+      const iDevices = [
+        'iPad Simulator',
+        'iPhone Simulator',
+        'iPod Simulator',
+        'iPad',
+        'iPhone',
+        'iPod'
+      ];
+
+      if (!!navigator.platform) {
+        while (iDevices.length) {
+          if (navigator.platform === iDevices.pop()){ 
+            return true;
+          }
+        }
+      }
+
+      return false;
     },
 
     menuBar: function() {
@@ -142,7 +182,7 @@ var Header = React.createClass({
         dataMenu.map((item, key) => {
           return (
             <li key={key}>
-              <a href={item.url}>
+              <a href={item.url} className="click">
                 {item.name}
               </a>
             </li>
@@ -179,32 +219,32 @@ var Header = React.createClass({
 
       return (
         <nav className="header-expanded">
-          <MobileMenu ref="Bar">
+          <MobileMenu ref="Bar" id="bar" isShow={this.state.isShowBar}>
             {
               logged_in ?
                 <ul className="menu-mobile">
                     <li>
                       <img src="/assets/user1.png" />
                       <span>
-                        Hi, {current_user.name}
+                        Hi, {props.role}
                       </span>
                     </li>
                     { this.menuBar() }
                     <li>
-                      <a href={props.logout_path} data-method="delete" rel="nofollow"> 
+                      <a href={props.logout_path} className="click" data-method="delete" rel="nofollow"> 
                         Sign Out
                       </a>
                     </li>
                 </ul>
                 : 
                 <span className="mobile-menu-items">
-                  <a href={props.menu_login_path} > Login </a>
-                  <a href={props.new_agency_path} className="register"> Register </a>
+                  <a href={props.menu_login_path} className="click" > Login </a>
+                  <a href={props.new_agency_path} className="register click"> Register </a>
                 </span>
             }
           </MobileMenu>
 
-          <div className="container container-custom">
+          <div className="container">
             <div className={"column header-custom " + (e && "forhome")}>
                 <div className="logo">
                   <img src="/assets/logo.png" alt="logo" />
@@ -227,7 +267,7 @@ var Header = React.createClass({
                               <button type="button" className="btn-menu" onClick={this.showMenu}>
                                 <img src="/assets/user1.png" />
                                 <span>
-                                  Hi, {current_user.name}
+                                  Hi, {props.role}
                                   <i className="fa fa-angle-down"/>
                                 </span>
                               </button>
@@ -248,7 +288,7 @@ var Header = React.createClass({
                                 <li>
                                   <img src="/assets/user1.png" />
                                   <span>
-                                    Hi, {current_user.name}
+                                    Hi, {props.role}
                                   </span>
                                 </li>
                                 { this.menuBar() }
@@ -266,7 +306,7 @@ var Header = React.createClass({
                       <a href={props.new_agency_path} className="register"> Register </a>
                     </span>
                 }
-              <button className="menu-btn button" onClick={this.showBar}> ☰ </button>
+              <button className="menu-btn button" id="btn-menu-bar" onClick={this.showBar}> ☰ </button>
             </div>
           </div>
         </nav>

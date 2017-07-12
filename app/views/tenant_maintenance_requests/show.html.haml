@@ -1,4 +1,31 @@
-= react_component 'TenantMaintenanceRequest', {:landlord => @landlord, :quotes => @quotes, :property => @maintenance_request.property, :invoices => @maintenance_request.delivered_invoices, :gallery => @gallery, :authenticity_token => form_authenticity_token, :maintenance_request => @maintenance_request, :tenants_conversation => @tenants_conversation, :landlords_conversation => @landlords_conversation, :current_user => @current_user, :agency => @agency, tradies: @all_tradies}
+= react_component 'TenantMaintenanceRequest', {:landlord => @landlord, :quotes => @quotes, :property => @maintenance_request.property, :invoices => @maintenance_request.delivered_invoices, :gallery => @gallery, :authenticity_token => form_authenticity_token, :maintenance_request => @maintenance_request, :tenants_conversation => @tenants_conversation, :landlords_conversation => @landlords_conversation, :current_user => @current_user, :agency => @agency, tradies: @all_tradies, :appointments => @work_order_appointments, :quote_appointments => @quote_appointments, :landlord_appointments => @landlord_appointments, :tenant => @tenant, :current_role => @current_user.current_role, :current_user_tenant => @current_user.tenant}
 
 
 
+/ %div.container
+/   %div.well
+/     %h4.text-center 
+/       Set Appointment Time
+/     %div.appointment  
+/       = form_for @appointment, remote: true do |f|
+/         =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+/         =f.hidden_field :tenant_id, value: @current_user.tenant.id
+/         =f.hidden_field :trady_id, value:"Appointment.trady_id"
+/         =f.hidden_field :appointment_type, value:"Work Order Appointment"
+/         =f.hidden_field :status, value:"Active"
+/         =f.hidden_field :current_user_role, value:"#{current_user.current_role.role}"
+/         %div.form-group
+/           =f.fields_for :comments do |comments_form|
+/             =comments_form.text_area :body, placeholder: "Comment", class: "text-center", required: true
+/             =comments_form.hidden_field :tenant_id, value: @current_user.tenant.id
+/             =comments_form.hidden_field :trady_id, value:"Appointment.trady_id"
+           
+/         %div.form-group.date-time
+/           %div.date
+/             =f.label :date
+/             =f.date_field :date, required: true
+/           %div.time
+/             =f.label :time, required: true
+/             =f.time_select :time, {ampm: true}
+/         %div.form-group.text-center
+/           =f.button "Submit Appointment Time and Comment"

@@ -3,7 +3,7 @@ var Invoices = React.createClass({
 		const invoices = this.props.invoices;
 		const self = this;
 		return (
-			<div className="quotes invoices m-t-xl">
+			<div className="quotes invoices m-t-xl" id="invoices">
 				<p>
 					Invoice ({invoices.length})
 				</p>

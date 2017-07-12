@@ -9,7 +9,7 @@ class Quote < ApplicationRecord
 
   validates_presence_of :maintenance_request_id
   validates_presence_of :trady_id
-
+  before_save :create_quote_number
    def calculate_quote_items_totals
     items_amount = []
     sum = 0
@@ -51,6 +51,12 @@ class Quote < ApplicationRecord
         return invoice_total_amount
     end 
 
+  end
+
+  def create_quote_number
+  
+    self.quote_number = "Q" + SecureRandom.hex(5)  
+     
   end
 
 

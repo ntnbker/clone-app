@@ -43,7 +43,7 @@ var Footer = React.createClass({
     },
     footer() {
         return <div className="footer-other">
-            <div className="container">
+            <div className="footer-custom">
                 <div className="footer-social">
                     <div> <img src="/assets/ico-twitter.png" /> </div>
                     <div> <img src="/assets/ico-facebook.png" /> </div>

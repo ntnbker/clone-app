@@ -1,5 +1,7 @@
 class UploadedInvoicesController < ApplicationController
+  before_action :require_login, only:[:show,:index]
   
+  before_action(only:[:new,:create,:edit,:update,:show,:send_invoice]) {allow("Trady")}
   def new
     @file = UploadedInvoice.new
     @maintenance_request_id = params[:maintenance_request_id]

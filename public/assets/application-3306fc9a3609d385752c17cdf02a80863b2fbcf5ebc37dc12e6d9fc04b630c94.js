@@ -33784,6 +33784,21 @@ $( document ).ready(function() {
     // This resets the web page when we go back to the home page
   var $input = $('#refresh');
 
+  $(document).on('change keyup paste', 'input[type="email"]', function(e){
+    if (e.ctrlKey) {
+        if (e.keyCode == 65 || e.keyCode == 97) { // 'A' or 'a'
+          e.target.select();
+        } 
+    }else {
+      if(e.key != "Control") {
+        var value = $(this).val();
+        if(/^[A-Z]/.test(value)) {
+          $(this).val(value.toLowerCase());
+        }
+      }
+    }
+  });
+
   $input.val() == 'yes' ? location.reload(true) : $input.val('yes');
   // google.maps.event.addDomListener(window, 'turbolinks:load', initialize);
 });
@@ -33794,6 +33809,4653 @@ function getAddressOfGoogleMap() {
   var autocomplete = new google.maps.places.Autocomplete(input,options);
 }
 ;
+/*! jQuery UI - v1.11.4+CommonJS - 2015-08-28
+* http://jqueryui.com
+* Includes: widget.js
+* Copyright 2015 jQuery Foundation and other contributors; Licensed MIT */
+
+
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+
+		// AMD. Register as an anonymous module.
+		define([ "jquery" ], factory );
+
+	} else if ( typeof exports === "object" ) {
+
+		// Node/CommonJS
+		factory( require( "jquery" ) );
+
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
+/*!
+ * jQuery UI Widget 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/jQuery.widget/
+ */
+
+
+var widget_uuid = 0,
+	widget_slice = Array.prototype.slice;
+
+$.cleanData = (function( orig ) {
+	return function( elems ) {
+		var events, elem, i;
+		for ( i = 0; (elem = elems[i]) != null; i++ ) {
+			try {
+
+				// Only trigger remove when necessary to save time
+				events = $._data( elem, "events" );
+				if ( events && events.remove ) {
+					$( elem ).triggerHandler( "remove" );
+				}
+
+			// http://bugs.jquery.com/ticket/8235
+			} catch ( e ) {}
+		}
+		orig( elems );
+	};
+})( $.cleanData );
+
+$.widget = function( name, base, prototype ) {
+	var fullName, existingConstructor, constructor, basePrototype,
+		// proxiedPrototype allows the provided prototype to remain unmodified
+		// so that it can be used as a mixin for multiple widgets (#8876)
+		proxiedPrototype = {},
+		namespace = name.split( "." )[ 0 ];
+
+	name = name.split( "." )[ 1 ];
+	fullName = namespace + "-" + name;
+
+	if ( !prototype ) {
+		prototype = base;
+		base = $.Widget;
+	}
+
+	// create selector for plugin
+	$.expr[ ":" ][ fullName.toLowerCase() ] = function( elem ) {
+		return !!$.data( elem, fullName );
+	};
+
+	$[ namespace ] = $[ namespace ] || {};
+	existingConstructor = $[ namespace ][ name ];
+	constructor = $[ namespace ][ name ] = function( options, element ) {
+		// allow instantiation without "new" keyword
+		if ( !this._createWidget ) {
+			return new constructor( options, element );
+		}
+
+		// allow instantiation without initializing for simple inheritance
+		// must use "new" keyword (the code above always passes args)
+		if ( arguments.length ) {
+			this._createWidget( options, element );
+		}
+	};
+	// extend with the existing constructor to carry over any static properties
+	$.extend( constructor, existingConstructor, {
+		version: prototype.version,
+		// copy the object used to create the prototype in case we need to
+		// redefine the widget later
+		_proto: $.extend( {}, prototype ),
+		// track widgets that inherit from this widget in case this widget is
+		// redefined after a widget inherits from it
+		_childConstructors: []
+	});
+
+	basePrototype = new base();
+	// we need to make the options hash a property directly on the new instance
+	// otherwise we'll modify the options hash on the prototype that we're
+	// inheriting from
+	basePrototype.options = $.widget.extend( {}, basePrototype.options );
+	$.each( prototype, function( prop, value ) {
+		if ( !$.isFunction( value ) ) {
+			proxiedPrototype[ prop ] = value;
+			return;
+		}
+		proxiedPrototype[ prop ] = (function() {
+			var _super = function() {
+					return base.prototype[ prop ].apply( this, arguments );
+				},
+				_superApply = function( args ) {
+					return base.prototype[ prop ].apply( this, args );
+				};
+			return function() {
+				var __super = this._super,
+					__superApply = this._superApply,
+					returnValue;
+
+				this._super = _super;
+				this._superApply = _superApply;
+
+				returnValue = value.apply( this, arguments );
+
+				this._super = __super;
+				this._superApply = __superApply;
+
+				return returnValue;
+			};
+		})();
+	});
+	constructor.prototype = $.widget.extend( basePrototype, {
+		// TODO: remove support for widgetEventPrefix
+		// always use the name + a colon as the prefix, e.g., draggable:start
+		// don't prefix for widgets that aren't DOM-based
+		widgetEventPrefix: existingConstructor ? (basePrototype.widgetEventPrefix || name) : name
+	}, proxiedPrototype, {
+		constructor: constructor,
+		namespace: namespace,
+		widgetName: name,
+		widgetFullName: fullName
+	});
+
+	// If this widget is being redefined then we need to find all widgets that
+	// are inheriting from it and redefine all of them so that they inherit from
+	// the new version of this widget. We're essentially trying to replace one
+	// level in the prototype chain.
+	if ( existingConstructor ) {
+		$.each( existingConstructor._childConstructors, function( i, child ) {
+			var childPrototype = child.prototype;
+
+			// redefine the child widget using the same prototype that was
+			// originally used, but inherit from the new version of the base
+			$.widget( childPrototype.namespace + "." + childPrototype.widgetName, constructor, child._proto );
+		});
+		// remove the list of existing child constructors from the old constructor
+		// so the old child constructors can be garbage collected
+		delete existingConstructor._childConstructors;
+	} else {
+		base._childConstructors.push( constructor );
+	}
+
+	$.widget.bridge( name, constructor );
+
+	return constructor;
+};
+
+$.widget.extend = function( target ) {
+	var input = widget_slice.call( arguments, 1 ),
+		inputIndex = 0,
+		inputLength = input.length,
+		key,
+		value;
+	for ( ; inputIndex < inputLength; inputIndex++ ) {
+		for ( key in input[ inputIndex ] ) {
+			value = input[ inputIndex ][ key ];
+			if ( input[ inputIndex ].hasOwnProperty( key ) && value !== undefined ) {
+				// Clone objects
+				if ( $.isPlainObject( value ) ) {
+					target[ key ] = $.isPlainObject( target[ key ] ) ?
+						$.widget.extend( {}, target[ key ], value ) :
+						// Don't extend strings, arrays, etc. with objects
+						$.widget.extend( {}, value );
+				// Copy everything else by reference
+				} else {
+					target[ key ] = value;
+				}
+			}
+		}
+	}
+	return target;
+};
+
+$.widget.bridge = function( name, object ) {
+	var fullName = object.prototype.widgetFullName || name;
+	$.fn[ name ] = function( options ) {
+		var isMethodCall = typeof options === "string",
+			args = widget_slice.call( arguments, 1 ),
+			returnValue = this;
+
+		if ( isMethodCall ) {
+			this.each(function() {
+				var methodValue,
+					instance = $.data( this, fullName );
+				if ( options === "instance" ) {
+					returnValue = instance;
+					return false;
+				}
+				if ( !instance ) {
+					return $.error( "cannot call methods on " + name + " prior to initialization; " +
+						"attempted to call method '" + options + "'" );
+				}
+				if ( !$.isFunction( instance[options] ) || options.charAt( 0 ) === "_" ) {
+					return $.error( "no such method '" + options + "' for " + name + " widget instance" );
+				}
+				methodValue = instance[ options ].apply( instance, args );
+				if ( methodValue !== instance && methodValue !== undefined ) {
+					returnValue = methodValue && methodValue.jquery ?
+						returnValue.pushStack( methodValue.get() ) :
+						methodValue;
+					return false;
+				}
+			});
+		} else {
+
+			// Allow multiple hashes to be passed on init
+			if ( args.length ) {
+				options = $.widget.extend.apply( null, [ options ].concat(args) );
+			}
+
+			this.each(function() {
+				var instance = $.data( this, fullName );
+				if ( instance ) {
+					instance.option( options || {} );
+					if ( instance._init ) {
+						instance._init();
+					}
+				} else {
+					$.data( this, fullName, new object( options, this ) );
+				}
+			});
+		}
+
+		return returnValue;
+	};
+};
+
+$.Widget = function( /* options, element */ ) {};
+$.Widget._childConstructors = [];
+
+$.Widget.prototype = {
+	widgetName: "widget",
+	widgetEventPrefix: "",
+	defaultElement: "<div>",
+	options: {
+		disabled: false,
+
+		// callbacks
+		create: null
+	},
+	_createWidget: function( options, element ) {
+		element = $( element || this.defaultElement || this )[ 0 ];
+		this.element = $( element );
+		this.uuid = widget_uuid++;
+		this.eventNamespace = "." + this.widgetName + this.uuid;
+
+		this.bindings = $();
+		this.hoverable = $();
+		this.focusable = $();
+
+		if ( element !== this ) {
+			$.data( element, this.widgetFullName, this );
+			this._on( true, this.element, {
+				remove: function( event ) {
+					if ( event.target === element ) {
+						this.destroy();
+					}
+				}
+			});
+			this.document = $( element.style ?
+				// element within the document
+				element.ownerDocument :
+				// element is window or document
+				element.document || element );
+			this.window = $( this.document[0].defaultView || this.document[0].parentWindow );
+		}
+
+		this.options = $.widget.extend( {},
+			this.options,
+			this._getCreateOptions(),
+			options );
+
+		this._create();
+		this._trigger( "create", null, this._getCreateEventData() );
+		this._init();
+	},
+	_getCreateOptions: $.noop,
+	_getCreateEventData: $.noop,
+	_create: $.noop,
+	_init: $.noop,
+
+	destroy: function() {
+		this._destroy();
+		// we can probably remove the unbind calls in 2.0
+		// all event bindings should go through this._on()
+		this.element
+			.unbind( this.eventNamespace )
+			.removeData( this.widgetFullName )
+			// support: jquery <1.6.3
+			// http://bugs.jquery.com/ticket/9413
+			.removeData( $.camelCase( this.widgetFullName ) );
+		this.widget()
+			.unbind( this.eventNamespace )
+			.removeAttr( "aria-disabled" )
+			.removeClass(
+				this.widgetFullName + "-disabled " +
+				"ui-state-disabled" );
+
+		// clean up events and states
+		this.bindings.unbind( this.eventNamespace );
+		this.hoverable.removeClass( "ui-state-hover" );
+		this.focusable.removeClass( "ui-state-focus" );
+	},
+	_destroy: $.noop,
+
+	widget: function() {
+		return this.element;
+	},
+
+	option: function( key, value ) {
+		var options = key,
+			parts,
+			curOption,
+			i;
+
+		if ( arguments.length === 0 ) {
+			// don't return a reference to the internal hash
+			return $.widget.extend( {}, this.options );
+		}
+
+		if ( typeof key === "string" ) {
+			// handle nested keys, e.g., "foo.bar" => { foo: { bar: ___ } }
+			options = {};
+			parts = key.split( "." );
+			key = parts.shift();
+			if ( parts.length ) {
+				curOption = options[ key ] = $.widget.extend( {}, this.options[ key ] );
+				for ( i = 0; i < parts.length - 1; i++ ) {
+					curOption[ parts[ i ] ] = curOption[ parts[ i ] ] || {};
+					curOption = curOption[ parts[ i ] ];
+				}
+				key = parts.pop();
+				if ( arguments.length === 1 ) {
+					return curOption[ key ] === undefined ? null : curOption[ key ];
+				}
+				curOption[ key ] = value;
+			} else {
+				if ( arguments.length === 1 ) {
+					return this.options[ key ] === undefined ? null : this.options[ key ];
+				}
+				options[ key ] = value;
+			}
+		}
+
+		this._setOptions( options );
+
+		return this;
+	},
+	_setOptions: function( options ) {
+		var key;
+
+		for ( key in options ) {
+			this._setOption( key, options[ key ] );
+		}
+
+		return this;
+	},
+	_setOption: function( key, value ) {
+		this.options[ key ] = value;
+
+		if ( key === "disabled" ) {
+			this.widget()
+				.toggleClass( this.widgetFullName + "-disabled", !!value );
+
+			// If the widget is becoming disabled, then nothing is interactive
+			if ( value ) {
+				this.hoverable.removeClass( "ui-state-hover" );
+				this.focusable.removeClass( "ui-state-focus" );
+			}
+		}
+
+		return this;
+	},
+
+	enable: function() {
+		return this._setOptions({ disabled: false });
+	},
+	disable: function() {
+		return this._setOptions({ disabled: true });
+	},
+
+	_on: function( suppressDisabledCheck, element, handlers ) {
+		var delegateElement,
+			instance = this;
+
+		// no suppressDisabledCheck flag, shuffle arguments
+		if ( typeof suppressDisabledCheck !== "boolean" ) {
+			handlers = element;
+			element = suppressDisabledCheck;
+			suppressDisabledCheck = false;
+		}
+
+		// no element argument, shuffle and use this.element
+		if ( !handlers ) {
+			handlers = element;
+			element = this.element;
+			delegateElement = this.widget();
+		} else {
+			element = delegateElement = $( element );
+			this.bindings = this.bindings.add( element );
+		}
+
+		$.each( handlers, function( event, handler ) {
+			function handlerProxy() {
+				// allow widgets to customize the disabled handling
+				// - disabled as an array instead of boolean
+				// - disabled class as method for disabling individual parts
+				if ( !suppressDisabledCheck &&
+						( instance.options.disabled === true ||
+							$( this ).hasClass( "ui-state-disabled" ) ) ) {
+					return;
+				}
+				return ( typeof handler === "string" ? instance[ handler ] : handler )
+					.apply( instance, arguments );
+			}
+
+			// copy the guid so direct unbinding works
+			if ( typeof handler !== "string" ) {
+				handlerProxy.guid = handler.guid =
+					handler.guid || handlerProxy.guid || $.guid++;
+			}
+
+			var match = event.match( /^([\w:-]*)\s*(.*)$/ ),
+				eventName = match[1] + instance.eventNamespace,
+				selector = match[2];
+			if ( selector ) {
+				delegateElement.delegate( selector, eventName, handlerProxy );
+			} else {
+				element.bind( eventName, handlerProxy );
+			}
+		});
+	},
+
+	_off: function( element, eventName ) {
+		eventName = (eventName || "").split( " " ).join( this.eventNamespace + " " ) +
+			this.eventNamespace;
+		element.unbind( eventName ).undelegate( eventName );
+
+		// Clear the stack to avoid memory leaks (#10056)
+		this.bindings = $( this.bindings.not( element ).get() );
+		this.focusable = $( this.focusable.not( element ).get() );
+		this.hoverable = $( this.hoverable.not( element ).get() );
+	},
+
+	_delay: function( handler, delay ) {
+		function handlerProxy() {
+			return ( typeof handler === "string" ? instance[ handler ] : handler )
+				.apply( instance, arguments );
+		}
+		var instance = this;
+		return setTimeout( handlerProxy, delay || 0 );
+	},
+
+	_hoverable: function( element ) {
+		this.hoverable = this.hoverable.add( element );
+		this._on( element, {
+			mouseenter: function( event ) {
+				$( event.currentTarget ).addClass( "ui-state-hover" );
+			},
+			mouseleave: function( event ) {
+				$( event.currentTarget ).removeClass( "ui-state-hover" );
+			}
+		});
+	},
+
+	_focusable: function( element ) {
+		this.focusable = this.focusable.add( element );
+		this._on( element, {
+			focusin: function( event ) {
+				$( event.currentTarget ).addClass( "ui-state-focus" );
+			},
+			focusout: function( event ) {
+				$( event.currentTarget ).removeClass( "ui-state-focus" );
+			}
+		});
+	},
+
+	_trigger: function( type, event, data ) {
+		var prop, orig,
+			callback = this.options[ type ];
+
+		data = data || {};
+		event = $.Event( event );
+		event.type = ( type === this.widgetEventPrefix ?
+			type :
+			this.widgetEventPrefix + type ).toLowerCase();
+		// the original event may come from any element
+		// so we need to reset the target on the new event
+		event.target = this.element[ 0 ];
+
+		// copy original event properties over to the new event
+		orig = event.originalEvent;
+		if ( orig ) {
+			for ( prop in orig ) {
+				if ( !( prop in event ) ) {
+					event[ prop ] = orig[ prop ];
+				}
+			}
+		}
+
+		this.element.trigger( event, data );
+		return !( $.isFunction( callback ) &&
+			callback.apply( this.element[0], [ event ].concat( data ) ) === false ||
+			event.isDefaultPrevented() );
+	}
+};
+
+$.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
+	$.Widget.prototype[ "_" + method ] = function( element, options, callback ) {
+		if ( typeof options === "string" ) {
+			options = { effect: options };
+		}
+		var hasOptions,
+			effectName = !options ?
+				method :
+				options === true || typeof options === "number" ?
+					defaultEffect :
+					options.effect || defaultEffect;
+		options = options || {};
+		if ( typeof options === "number" ) {
+			options = { duration: options };
+		}
+		hasOptions = !$.isEmptyObject( options );
+		options.complete = callback;
+		if ( options.delay ) {
+			element.delay( options.delay );
+		}
+		if ( hasOptions && $.effects && $.effects.effect[ effectName ] ) {
+			element[ method ]( options );
+		} else if ( effectName !== method && element[ effectName ] ) {
+			element[ effectName ]( options.duration, options.easing, callback );
+		} else {
+			element.queue(function( next ) {
+				$( this )[ method ]();
+				if ( callback ) {
+					callback.call( element[ 0 ] );
+				}
+				next();
+			});
+		}
+	};
+});
+
+var widget = $.widget;
+
+
+
+}));
+/*
+ * jQuery Iframe Transport Plugin
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2011, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+/* global define, require, window, document */
+
+
+;(function (factory) {
+    'use strict';
+    if (typeof define === 'function' && define.amd) {
+        // Register as an anonymous AMD module:
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS:
+        factory(require('jquery'));
+    } else {
+        // Browser globals:
+        factory(window.jQuery);
+    }
+}(function ($) {
+    'use strict';
+
+    // Helper variable to create unique names for the transport iframes:
+    var counter = 0;
+
+    // The iframe transport accepts four additional options:
+    // options.fileInput: a jQuery collection of file input fields
+    // options.paramName: the parameter name for the file form data,
+    //  overrides the name property of the file input field(s),
+    //  can be a string or an array of strings.
+    // options.formData: an array of objects with name and value properties,
+    //  equivalent to the return data of .serializeArray(), e.g.:
+    //  [{name: 'a', value: 1}, {name: 'b', value: 2}]
+    // options.initialIframeSrc: the URL of the initial iframe src,
+    //  by default set to "javascript:false;"
+    $.ajaxTransport('iframe', function (options) {
+        if (options.async) {
+            // javascript:false as initial iframe src
+            // prevents warning popups on HTTPS in IE6:
+            /*jshint scripturl: true */
+            var initialIframeSrc = options.initialIframeSrc || 'javascript:false;',
+            /*jshint scripturl: false */
+                form,
+                iframe,
+                addParamChar;
+            return {
+                send: function (_, completeCallback) {
+                    form = $('<form style="display:none;"></form>');
+                    form.attr('accept-charset', options.formAcceptCharset);
+                    addParamChar = /\?/.test(options.url) ? '&' : '?';
+                    // XDomainRequest only supports GET and POST:
+                    if (options.type === 'DELETE') {
+                        options.url = options.url + addParamChar + '_method=DELETE';
+                        options.type = 'POST';
+                    } else if (options.type === 'PUT') {
+                        options.url = options.url + addParamChar + '_method=PUT';
+                        options.type = 'POST';
+                    } else if (options.type === 'PATCH') {
+                        options.url = options.url + addParamChar + '_method=PATCH';
+                        options.type = 'POST';
+                    }
+                    // IE versions below IE8 cannot set the name property of
+                    // elements that have already been added to the DOM,
+                    // so we set the name along with the iframe HTML markup:
+                    counter += 1;
+                    iframe = $(
+                        '<iframe src="' + initialIframeSrc +
+                            '" name="iframe-transport-' + counter + '"></iframe>'
+                    ).bind('load', function () {
+                        var fileInputClones,
+                            paramNames = $.isArray(options.paramName) ?
+                                    options.paramName : [options.paramName];
+                        iframe
+                            .unbind('load')
+                            .bind('load', function () {
+                                var response;
+                                // Wrap in a try/catch block to catch exceptions thrown
+                                // when trying to access cross-domain iframe contents:
+                                try {
+                                    response = iframe.contents();
+                                    // Google Chrome and Firefox do not throw an
+                                    // exception when calling iframe.contents() on
+                                    // cross-domain requests, so we unify the response:
+                                    if (!response.length || !response[0].firstChild) {
+                                        throw new Error();
+                                    }
+                                } catch (e) {
+                                    response = undefined;
+                                }
+                                // The complete callback returns the
+                                // iframe content document as response object:
+                                completeCallback(
+                                    200,
+                                    'success',
+                                    {'iframe': response}
+                                );
+                                // Fix for IE endless progress bar activity bug
+                                // (happens on form submits to iframe targets):
+                                $('<iframe src="' + initialIframeSrc + '"></iframe>')
+                                    .appendTo(form);
+                                window.setTimeout(function () {
+                                    // Removing the form in a setTimeout call
+                                    // allows Chrome's developer tools to display
+                                    // the response result
+                                    form.remove();
+                                }, 0);
+                            });
+                        form
+                            .prop('target', iframe.prop('name'))
+                            .prop('action', options.url)
+                            .prop('method', options.type);
+                        if (options.formData) {
+                            $.each(options.formData, function (index, field) {
+                                $('<input type="hidden"/>')
+                                    .prop('name', field.name)
+                                    .val(field.value)
+                                    .appendTo(form);
+                            });
+                        }
+                        if (options.fileInput && options.fileInput.length &&
+                                options.type === 'POST') {
+                            fileInputClones = options.fileInput.clone();
+                            // Insert a clone for each file input field:
+                            options.fileInput.after(function (index) {
+                                return fileInputClones[index];
+                            });
+                            if (options.paramName) {
+                                options.fileInput.each(function (index) {
+                                    $(this).prop(
+                                        'name',
+                                        paramNames[index] || options.paramName
+                                    );
+                                });
+                            }
+                            // Appending the file input fields to the hidden form
+                            // removes them from their original location:
+                            form
+                                .append(options.fileInput)
+                                .prop('enctype', 'multipart/form-data')
+                                // enctype must be set as encoding for IE:
+                                .prop('encoding', 'multipart/form-data');
+                            // Remove the HTML5 form attribute from the input(s):
+                            options.fileInput.removeAttr('form');
+                        }
+                        form.submit();
+                        // Insert the file input fields at their original location
+                        // by replacing the clones with the originals:
+                        if (fileInputClones && fileInputClones.length) {
+                            options.fileInput.each(function (index, input) {
+                                var clone = $(fileInputClones[index]);
+                                // Restore the original name and form properties:
+                                $(input)
+                                    .prop('name', clone.prop('name'))
+                                    .attr('form', clone.attr('form'));
+                                clone.replaceWith(input);
+                            });
+                        }
+                    });
+                    form.append(iframe).appendTo(document.body);
+                },
+                abort: function () {
+                    if (iframe) {
+                        // javascript:false as iframe src aborts the request
+                        // and prevents warning popups on HTTPS in IE6.
+                        // concat is used to avoid the "Script URL" JSLint error:
+                        iframe
+                            .unbind('load')
+                            .prop('src', initialIframeSrc);
+                    }
+                    if (form) {
+                        form.remove();
+                    }
+                }
+            };
+        }
+    });
+
+    // The iframe transport returns the iframe content document as response.
+    // The following adds converters from iframe to text, json, html, xml
+    // and script.
+    // Please note that the Content-Type for JSON responses has to be text/plain
+    // or text/html, if the browser doesn't include application/json in the
+    // Accept header, else IE will show a download dialog.
+    // The Content-Type for XML responses on the other hand has to be always
+    // application/xml or text/xml, so IE properly parses the XML response.
+    // See also
+    // https://github.com/blueimp/jQuery-File-Upload/wiki/Setup#content-type-negotiation
+    $.ajaxSetup({
+        converters: {
+            'iframe text': function (iframe) {
+                return iframe && $(iframe[0].body).text();
+            },
+            'iframe json': function (iframe) {
+                return iframe && $.parseJSON($(iframe[0].body).text());
+            },
+            'iframe html': function (iframe) {
+                return iframe && $(iframe[0].body).html();
+            },
+            'iframe xml': function (iframe) {
+                var xmlDoc = iframe && iframe[0];
+                return xmlDoc && $.isXMLDoc(xmlDoc) ? xmlDoc :
+                        $.parseXML((xmlDoc.XMLDocument && xmlDoc.XMLDocument.xml) ||
+                            $(xmlDoc.body).html());
+            },
+            'iframe script': function (iframe) {
+                return iframe && $.globalEval($(iframe[0].body).text());
+            }
+        }
+    });
+
+}));
+/*
+ * jQuery File Upload Plugin
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2010, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+/* jshint nomen:false */
+/* global define, require, window, document, location, Blob, FormData */
+
+
+;(function (factory) {
+    'use strict';
+    if (typeof define === 'function' && define.amd) {
+        // Register as an anonymous AMD module:
+        define([
+            'jquery',
+            'jquery.ui.widget'
+        ], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS:
+        factory(
+            require('jquery'),
+            require('./vendor/jquery.ui.widget')
+        );
+    } else {
+        // Browser globals:
+        factory(window.jQuery);
+    }
+}(function ($) {
+    'use strict';
+
+    // Detect file input support, based on
+    // http://viljamis.com/blog/2012/file-upload-support-on-mobile/
+    $.support.fileInput = !(new RegExp(
+        // Handle devices which give false positives for the feature detection:
+        '(Android (1\\.[0156]|2\\.[01]))' +
+            '|(Windows Phone (OS 7|8\\.0))|(XBLWP)|(ZuneWP)|(WPDesktop)' +
+            '|(w(eb)?OSBrowser)|(webOS)' +
+            '|(Kindle/(1\\.0|2\\.[05]|3\\.0))'
+    ).test(window.navigator.userAgent) ||
+        // Feature detection for all other devices:
+        $('<input type="file">').prop('disabled'));
+
+    // The FileReader API is not actually used, but works as feature detection,
+    // as some Safari versions (5?) support XHR file uploads via the FormData API,
+    // but not non-multipart XHR file uploads.
+    // window.XMLHttpRequestUpload is not available on IE10, so we check for
+    // window.ProgressEvent instead to detect XHR2 file upload capability:
+    $.support.xhrFileUpload = !!(window.ProgressEvent && window.FileReader);
+    $.support.xhrFormDataFileUpload = !!window.FormData;
+
+    // Detect support for Blob slicing (required for chunked uploads):
+    $.support.blobSlice = window.Blob && (Blob.prototype.slice ||
+        Blob.prototype.webkitSlice || Blob.prototype.mozSlice);
+
+    // Helper function to create drag handlers for dragover/dragenter/dragleave:
+    function getDragHandler(type) {
+        var isDragOver = type === 'dragover';
+        return function (e) {
+            e.dataTransfer = e.originalEvent && e.originalEvent.dataTransfer;
+            var dataTransfer = e.dataTransfer;
+            if (dataTransfer && $.inArray('Files', dataTransfer.types) !== -1 &&
+                    this._trigger(
+                        type,
+                        $.Event(type, {delegatedEvent: e})
+                    ) !== false) {
+                e.preventDefault();
+                if (isDragOver) {
+                    dataTransfer.dropEffect = 'copy';
+                }
+            }
+        };
+    }
+
+    // The fileupload widget listens for change events on file input fields defined
+    // via fileInput setting and paste or drop events of the given dropZone.
+    // In addition to the default jQuery Widget methods, the fileupload widget
+    // exposes the "add" and "send" methods, to add or directly send files using
+    // the fileupload API.
+    // By default, files added via file input selection, paste, drag & drop or
+    // "add" method are uploaded immediately, but it is possible to override
+    // the "add" callback option to queue file uploads.
+    $.widget('blueimp.fileupload', {
+
+        options: {
+            // The drop target element(s), by the default the complete document.
+            // Set to null to disable drag & drop support:
+            dropZone: $(document),
+            // The paste target element(s), by the default undefined.
+            // Set to a DOM node or jQuery object to enable file pasting:
+            pasteZone: undefined,
+            // The file input field(s), that are listened to for change events.
+            // If undefined, it is set to the file input fields inside
+            // of the widget element on plugin initialization.
+            // Set to null to disable the change listener.
+            fileInput: undefined,
+            // By default, the file input field is replaced with a clone after
+            // each input field change event. This is required for iframe transport
+            // queues and allows change events to be fired for the same file
+            // selection, but can be disabled by setting the following option to false:
+            replaceFileInput: true,
+            // The parameter name for the file form data (the request argument name).
+            // If undefined or empty, the name property of the file input field is
+            // used, or "files[]" if the file input name property is also empty,
+            // can be a string or an array of strings:
+            paramName: undefined,
+            // By default, each file of a selection is uploaded using an individual
+            // request for XHR type uploads. Set to false to upload file
+            // selections in one request each:
+            singleFileUploads: true,
+            // To limit the number of files uploaded with one XHR request,
+            // set the following option to an integer greater than 0:
+            limitMultiFileUploads: undefined,
+            // The following option limits the number of files uploaded with one
+            // XHR request to keep the request size under or equal to the defined
+            // limit in bytes:
+            limitMultiFileUploadSize: undefined,
+            // Multipart file uploads add a number of bytes to each uploaded file,
+            // therefore the following option adds an overhead for each file used
+            // in the limitMultiFileUploadSize configuration:
+            limitMultiFileUploadSizeOverhead: 512,
+            // Set the following option to true to issue all file upload requests
+            // in a sequential order:
+            sequentialUploads: false,
+            // To limit the number of concurrent uploads,
+            // set the following option to an integer greater than 0:
+            limitConcurrentUploads: undefined,
+            // Set the following option to true to force iframe transport uploads:
+            forceIframeTransport: false,
+            // Set the following option to the location of a redirect url on the
+            // origin server, for cross-domain iframe transport uploads:
+            redirect: undefined,
+            // The parameter name for the redirect url, sent as part of the form
+            // data and set to 'redirect' if this option is empty:
+            redirectParamName: undefined,
+            // Set the following option to the location of a postMessage window,
+            // to enable postMessage transport uploads:
+            postMessage: undefined,
+            // By default, XHR file uploads are sent as multipart/form-data.
+            // The iframe transport is always using multipart/form-data.
+            // Set to false to enable non-multipart XHR uploads:
+            multipart: true,
+            // To upload large files in smaller chunks, set the following option
+            // to a preferred maximum chunk size. If set to 0, null or undefined,
+            // or the browser does not support the required Blob API, files will
+            // be uploaded as a whole.
+            maxChunkSize: undefined,
+            // When a non-multipart upload or a chunked multipart upload has been
+            // aborted, this option can be used to resume the upload by setting
+            // it to the size of the already uploaded bytes. This option is most
+            // useful when modifying the options object inside of the "add" or
+            // "send" callbacks, as the options are cloned for each file upload.
+            uploadedBytes: undefined,
+            // By default, failed (abort or error) file uploads are removed from the
+            // global progress calculation. Set the following option to false to
+            // prevent recalculating the global progress data:
+            recalculateProgress: true,
+            // Interval in milliseconds to calculate and trigger progress events:
+            progressInterval: 100,
+            // Interval in milliseconds to calculate progress bitrate:
+            bitrateInterval: 500,
+            // By default, uploads are started automatically when adding files:
+            autoUpload: true,
+
+            // Error and info messages:
+            messages: {
+                uploadedBytes: 'Uploaded bytes exceed file size'
+            },
+
+            // Translation function, gets the message key to be translated
+            // and an object with context specific data as arguments:
+            i18n: function (message, context) {
+                message = this.messages[message] || message.toString();
+                if (context) {
+                    $.each(context, function (key, value) {
+                        message = message.replace('{' + key + '}', value);
+                    });
+                }
+                return message;
+            },
+
+            // Additional form data to be sent along with the file uploads can be set
+            // using this option, which accepts an array of objects with name and
+            // value properties, a function returning such an array, a FormData
+            // object (for XHR file uploads), or a simple object.
+            // The form of the first fileInput is given as parameter to the function:
+            formData: function (form) {
+                return form.serializeArray();
+            },
+
+            // The add callback is invoked as soon as files are added to the fileupload
+            // widget (via file input selection, drag & drop, paste or add API call).
+            // If the singleFileUploads option is enabled, this callback will be
+            // called once for each file in the selection for XHR file uploads, else
+            // once for each file selection.
+            //
+            // The upload starts when the submit method is invoked on the data parameter.
+            // The data object contains a files property holding the added files
+            // and allows you to override plugin options as well as define ajax settings.
+            //
+            // Listeners for this callback can also be bound the following way:
+            // .bind('fileuploadadd', func);
+            //
+            // data.submit() returns a Promise object and allows to attach additional
+            // handlers using jQuery's Deferred callbacks:
+            // data.submit().done(func).fail(func).always(func);
+            add: function (e, data) {
+                if (e.isDefaultPrevented()) {
+                    return false;
+                }
+                if (data.autoUpload || (data.autoUpload !== false &&
+                        $(this).fileupload('option', 'autoUpload'))) {
+                    data.process().done(function () {
+                        data.submit();
+                    });
+                }
+            },
+
+            // Other callbacks:
+
+            // Callback for the submit event of each file upload:
+            // submit: function (e, data) {}, // .bind('fileuploadsubmit', func);
+
+            // Callback for the start of each file upload request:
+            // send: function (e, data) {}, // .bind('fileuploadsend', func);
+
+            // Callback for successful uploads:
+            // done: function (e, data) {}, // .bind('fileuploaddone', func);
+
+            // Callback for failed (abort or error) uploads:
+            // fail: function (e, data) {}, // .bind('fileuploadfail', func);
+
+            // Callback for completed (success, abort or error) requests:
+            // always: function (e, data) {}, // .bind('fileuploadalways', func);
+
+            // Callback for upload progress events:
+            // progress: function (e, data) {}, // .bind('fileuploadprogress', func);
+
+            // Callback for global upload progress events:
+            // progressall: function (e, data) {}, // .bind('fileuploadprogressall', func);
+
+            // Callback for uploads start, equivalent to the global ajaxStart event:
+            // start: function (e) {}, // .bind('fileuploadstart', func);
+
+            // Callback for uploads stop, equivalent to the global ajaxStop event:
+            // stop: function (e) {}, // .bind('fileuploadstop', func);
+
+            // Callback for change events of the fileInput(s):
+            // change: function (e, data) {}, // .bind('fileuploadchange', func);
+
+            // Callback for paste events to the pasteZone(s):
+            // paste: function (e, data) {}, // .bind('fileuploadpaste', func);
+
+            // Callback for drop events of the dropZone(s):
+            // drop: function (e, data) {}, // .bind('fileuploaddrop', func);
+
+            // Callback for dragover events of the dropZone(s):
+            // dragover: function (e) {}, // .bind('fileuploaddragover', func);
+
+            // Callback for the start of each chunk upload request:
+            // chunksend: function (e, data) {}, // .bind('fileuploadchunksend', func);
+
+            // Callback for successful chunk uploads:
+            // chunkdone: function (e, data) {}, // .bind('fileuploadchunkdone', func);
+
+            // Callback for failed (abort or error) chunk uploads:
+            // chunkfail: function (e, data) {}, // .bind('fileuploadchunkfail', func);
+
+            // Callback for completed (success, abort or error) chunk upload requests:
+            // chunkalways: function (e, data) {}, // .bind('fileuploadchunkalways', func);
+
+            // The plugin options are used as settings object for the ajax calls.
+            // The following are jQuery ajax settings required for the file uploads:
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 0
+        },
+
+        // A list of options that require reinitializing event listeners and/or
+        // special initialization code:
+        _specialOptions: [
+            'fileInput',
+            'dropZone',
+            'pasteZone',
+            'multipart',
+            'forceIframeTransport'
+        ],
+
+        _blobSlice: $.support.blobSlice && function () {
+            var slice = this.slice || this.webkitSlice || this.mozSlice;
+            return slice.apply(this, arguments);
+        },
+
+        _BitrateTimer: function () {
+            this.timestamp = ((Date.now) ? Date.now() : (new Date()).getTime());
+            this.loaded = 0;
+            this.bitrate = 0;
+            this.getBitrate = function (now, loaded, interval) {
+                var timeDiff = now - this.timestamp;
+                if (!this.bitrate || !interval || timeDiff > interval) {
+                    this.bitrate = (loaded - this.loaded) * (1000 / timeDiff) * 8;
+                    this.loaded = loaded;
+                    this.timestamp = now;
+                }
+                return this.bitrate;
+            };
+        },
+
+        _isXHRUpload: function (options) {
+            return !options.forceIframeTransport &&
+                ((!options.multipart && $.support.xhrFileUpload) ||
+                $.support.xhrFormDataFileUpload);
+        },
+
+        _getFormData: function (options) {
+            var formData;
+            if ($.type(options.formData) === 'function') {
+                return options.formData(options.form);
+            }
+            if ($.isArray(options.formData)) {
+                return options.formData;
+            }
+            if ($.type(options.formData) === 'object') {
+                formData = [];
+                $.each(options.formData, function (name, value) {
+                    formData.push({name: name, value: value});
+                });
+                return formData;
+            }
+            return [];
+        },
+
+        _getTotal: function (files) {
+            var total = 0;
+            $.each(files, function (index, file) {
+                total += file.size || 1;
+            });
+            return total;
+        },
+
+        _initProgressObject: function (obj) {
+            var progress = {
+                loaded: 0,
+                total: 0,
+                bitrate: 0
+            };
+            if (obj._progress) {
+                $.extend(obj._progress, progress);
+            } else {
+                obj._progress = progress;
+            }
+        },
+
+        _initResponseObject: function (obj) {
+            var prop;
+            if (obj._response) {
+                for (prop in obj._response) {
+                    if (obj._response.hasOwnProperty(prop)) {
+                        delete obj._response[prop];
+                    }
+                }
+            } else {
+                obj._response = {};
+            }
+        },
+
+        _onProgress: function (e, data) {
+            if (e.lengthComputable) {
+                var now = ((Date.now) ? Date.now() : (new Date()).getTime()),
+                    loaded;
+                if (data._time && data.progressInterval &&
+                        (now - data._time < data.progressInterval) &&
+                        e.loaded !== e.total) {
+                    return;
+                }
+                data._time = now;
+                loaded = Math.floor(
+                    e.loaded / e.total * (data.chunkSize || data._progress.total)
+                ) + (data.uploadedBytes || 0);
+                // Add the difference from the previously loaded state
+                // to the global loaded counter:
+                this._progress.loaded += (loaded - data._progress.loaded);
+                this._progress.bitrate = this._bitrateTimer.getBitrate(
+                    now,
+                    this._progress.loaded,
+                    data.bitrateInterval
+                );
+                data._progress.loaded = data.loaded = loaded;
+                data._progress.bitrate = data.bitrate = data._bitrateTimer.getBitrate(
+                    now,
+                    loaded,
+                    data.bitrateInterval
+                );
+                // Trigger a custom progress event with a total data property set
+                // to the file size(s) of the current upload and a loaded data
+                // property calculated accordingly:
+                this._trigger(
+                    'progress',
+                    $.Event('progress', {delegatedEvent: e}),
+                    data
+                );
+                // Trigger a global progress event for all current file uploads,
+                // including ajax calls queued for sequential file uploads:
+                this._trigger(
+                    'progressall',
+                    $.Event('progressall', {delegatedEvent: e}),
+                    this._progress
+                );
+            }
+        },
+
+        _initProgressListener: function (options) {
+            var that = this,
+                xhr = options.xhr ? options.xhr() : $.ajaxSettings.xhr();
+            // Accesss to the native XHR object is required to add event listeners
+            // for the upload progress event:
+            if (xhr.upload) {
+                $(xhr.upload).bind('progress', function (e) {
+                    var oe = e.originalEvent;
+                    // Make sure the progress event properties get copied over:
+                    e.lengthComputable = oe.lengthComputable;
+                    e.loaded = oe.loaded;
+                    e.total = oe.total;
+                    that._onProgress(e, options);
+                });
+                options.xhr = function () {
+                    return xhr;
+                };
+            }
+        },
+
+        _isInstanceOf: function (type, obj) {
+            // Cross-frame instanceof check
+            return Object.prototype.toString.call(obj) === '[object ' + type + ']';
+        },
+
+        _initXHRData: function (options) {
+            var that = this,
+                formData,
+                file = options.files[0],
+                // Ignore non-multipart setting if not supported:
+                multipart = options.multipart || !$.support.xhrFileUpload,
+                paramName = $.type(options.paramName) === 'array' ?
+                    options.paramName[0] : options.paramName;
+            options.headers = $.extend({}, options.headers);
+            if (options.contentRange) {
+                options.headers['Content-Range'] = options.contentRange;
+            }
+            if (!multipart || options.blob || !this._isInstanceOf('File', file)) {
+                options.headers['Content-Disposition'] = 'attachment; filename="' +
+                    encodeURI(file.name) + '"';
+            }
+            if (!multipart) {
+                options.contentType = file.type || 'application/octet-stream';
+                options.data = options.blob || file;
+            } else if ($.support.xhrFormDataFileUpload) {
+                if (options.postMessage) {
+                    // window.postMessage does not allow sending FormData
+                    // objects, so we just add the File/Blob objects to
+                    // the formData array and let the postMessage window
+                    // create the FormData object out of this array:
+                    formData = this._getFormData(options);
+                    if (options.blob) {
+                        formData.push({
+                            name: paramName,
+                            value: options.blob
+                        });
+                    } else {
+                        $.each(options.files, function (index, file) {
+                            formData.push({
+                                name: ($.type(options.paramName) === 'array' &&
+                                    options.paramName[index]) || paramName,
+                                value: file
+                            });
+                        });
+                    }
+                } else {
+                    if (that._isInstanceOf('FormData', options.formData)) {
+                        formData = options.formData;
+                    } else {
+                        formData = new FormData();
+                        $.each(this._getFormData(options), function (index, field) {
+                            formData.append(field.name, field.value);
+                        });
+                    }
+                    if (options.blob) {
+                        formData.append(paramName, options.blob, file.name);
+                    } else {
+                        $.each(options.files, function (index, file) {
+                            // This check allows the tests to run with
+                            // dummy objects:
+                            if (that._isInstanceOf('File', file) ||
+                                    that._isInstanceOf('Blob', file)) {
+                                formData.append(
+                                    ($.type(options.paramName) === 'array' &&
+                                        options.paramName[index]) || paramName,
+                                    file,
+                                    file.uploadName || file.name
+                                );
+                            }
+                        });
+                    }
+                }
+                options.data = formData;
+            }
+            // Blob reference is not needed anymore, free memory:
+            options.blob = null;
+        },
+
+        _initIframeSettings: function (options) {
+            var targetHost = $('<a></a>').prop('href', options.url).prop('host');
+            // Setting the dataType to iframe enables the iframe transport:
+            options.dataType = 'iframe ' + (options.dataType || '');
+            // The iframe transport accepts a serialized array as form data:
+            options.formData = this._getFormData(options);
+            // Add redirect url to form data on cross-domain uploads:
+            if (options.redirect && targetHost && targetHost !== location.host) {
+                options.formData.push({
+                    name: options.redirectParamName || 'redirect',
+                    value: options.redirect
+                });
+            }
+        },
+
+        _initDataSettings: function (options) {
+            if (this._isXHRUpload(options)) {
+                if (!this._chunkedUpload(options, true)) {
+                    if (!options.data) {
+                        this._initXHRData(options);
+                    }
+                    this._initProgressListener(options);
+                }
+                if (options.postMessage) {
+                    // Setting the dataType to postmessage enables the
+                    // postMessage transport:
+                    options.dataType = 'postmessage ' + (options.dataType || '');
+                }
+            } else {
+                this._initIframeSettings(options);
+            }
+        },
+
+        _getParamName: function (options) {
+            var fileInput = $(options.fileInput),
+                paramName = options.paramName;
+            if (!paramName) {
+                paramName = [];
+                fileInput.each(function () {
+                    var input = $(this),
+                        name = input.prop('name') || 'files[]',
+                        i = (input.prop('files') || [1]).length;
+                    while (i) {
+                        paramName.push(name);
+                        i -= 1;
+                    }
+                });
+                if (!paramName.length) {
+                    paramName = [fileInput.prop('name') || 'files[]'];
+                }
+            } else if (!$.isArray(paramName)) {
+                paramName = [paramName];
+            }
+            return paramName;
+        },
+
+        _initFormSettings: function (options) {
+            // Retrieve missing options from the input field and the
+            // associated form, if available:
+            if (!options.form || !options.form.length) {
+                options.form = $(options.fileInput.prop('form'));
+                // If the given file input doesn't have an associated form,
+                // use the default widget file input's form:
+                if (!options.form.length) {
+                    options.form = $(this.options.fileInput.prop('form'));
+                }
+            }
+            options.paramName = this._getParamName(options);
+            if (!options.url) {
+                options.url = options.form.prop('action') || location.href;
+            }
+            // The HTTP request method must be "POST" or "PUT":
+            options.type = (options.type ||
+                ($.type(options.form.prop('method')) === 'string' &&
+                    options.form.prop('method')) || ''
+                ).toUpperCase();
+            if (options.type !== 'POST' && options.type !== 'PUT' &&
+                    options.type !== 'PATCH') {
+                options.type = 'POST';
+            }
+            if (!options.formAcceptCharset) {
+                options.formAcceptCharset = options.form.attr('accept-charset');
+            }
+        },
+
+        _getAJAXSettings: function (data) {
+            var options = $.extend({}, this.options, data);
+            this._initFormSettings(options);
+            this._initDataSettings(options);
+            return options;
+        },
+
+        // jQuery 1.6 doesn't provide .state(),
+        // while jQuery 1.8+ removed .isRejected() and .isResolved():
+        _getDeferredState: function (deferred) {
+            if (deferred.state) {
+                return deferred.state();
+            }
+            if (deferred.isResolved()) {
+                return 'resolved';
+            }
+            if (deferred.isRejected()) {
+                return 'rejected';
+            }
+            return 'pending';
+        },
+
+        // Maps jqXHR callbacks to the equivalent
+        // methods of the given Promise object:
+        _enhancePromise: function (promise) {
+            promise.success = promise.done;
+            promise.error = promise.fail;
+            promise.complete = promise.always;
+            return promise;
+        },
+
+        // Creates and returns a Promise object enhanced with
+        // the jqXHR methods abort, success, error and complete:
+        _getXHRPromise: function (resolveOrReject, context, args) {
+            var dfd = $.Deferred(),
+                promise = dfd.promise();
+            context = context || this.options.context || promise;
+            if (resolveOrReject === true) {
+                dfd.resolveWith(context, args);
+            } else if (resolveOrReject === false) {
+                dfd.rejectWith(context, args);
+            }
+            promise.abort = dfd.promise;
+            return this._enhancePromise(promise);
+        },
+
+        // Adds convenience methods to the data callback argument:
+        _addConvenienceMethods: function (e, data) {
+            var that = this,
+                getPromise = function (args) {
+                    return $.Deferred().resolveWith(that, args).promise();
+                };
+            data.process = function (resolveFunc, rejectFunc) {
+                if (resolveFunc || rejectFunc) {
+                    data._processQueue = this._processQueue =
+                        (this._processQueue || getPromise([this])).then(
+                            function () {
+                                if (data.errorThrown) {
+                                    return $.Deferred()
+                                        .rejectWith(that, [data]).promise();
+                                }
+                                return getPromise(arguments);
+                            }
+                        ).then(resolveFunc, rejectFunc);
+                }
+                return this._processQueue || getPromise([this]);
+            };
+            data.submit = function () {
+                if (this.state() !== 'pending') {
+                    data.jqXHR = this.jqXHR =
+                        (that._trigger(
+                            'submit',
+                            $.Event('submit', {delegatedEvent: e}),
+                            this
+                        ) !== false) && that._onSend(e, this);
+                }
+                return this.jqXHR || that._getXHRPromise();
+            };
+            data.abort = function () {
+                if (this.jqXHR) {
+                    return this.jqXHR.abort();
+                }
+                this.errorThrown = 'abort';
+                that._trigger('fail', null, this);
+                return that._getXHRPromise(false);
+            };
+            data.state = function () {
+                if (this.jqXHR) {
+                    return that._getDeferredState(this.jqXHR);
+                }
+                if (this._processQueue) {
+                    return that._getDeferredState(this._processQueue);
+                }
+            };
+            data.processing = function () {
+                return !this.jqXHR && this._processQueue && that
+                    ._getDeferredState(this._processQueue) === 'pending';
+            };
+            data.progress = function () {
+                return this._progress;
+            };
+            data.response = function () {
+                return this._response;
+            };
+        },
+
+        // Parses the Range header from the server response
+        // and returns the uploaded bytes:
+        _getUploadedBytes: function (jqXHR) {
+            var range = jqXHR.getResponseHeader('Range'),
+                parts = range && range.split('-'),
+                upperBytesPos = parts && parts.length > 1 &&
+                    parseInt(parts[1], 10);
+            return upperBytesPos && upperBytesPos + 1;
+        },
+
+        // Uploads a file in multiple, sequential requests
+        // by splitting the file up in multiple blob chunks.
+        // If the second parameter is true, only tests if the file
+        // should be uploaded in chunks, but does not invoke any
+        // upload requests:
+        _chunkedUpload: function (options, testOnly) {
+            options.uploadedBytes = options.uploadedBytes || 0;
+            var that = this,
+                file = options.files[0],
+                fs = file.size,
+                ub = options.uploadedBytes,
+                mcs = options.maxChunkSize || fs,
+                slice = this._blobSlice,
+                dfd = $.Deferred(),
+                promise = dfd.promise(),
+                jqXHR,
+                upload;
+            if (!(this._isXHRUpload(options) && slice && (ub || mcs < fs)) ||
+                    options.data) {
+                return false;
+            }
+            if (testOnly) {
+                return true;
+            }
+            if (ub >= fs) {
+                file.error = options.i18n('uploadedBytes');
+                return this._getXHRPromise(
+                    false,
+                    options.context,
+                    [null, 'error', file.error]
+                );
+            }
+            // The chunk upload method:
+            upload = function () {
+                // Clone the options object for each chunk upload:
+                var o = $.extend({}, options),
+                    currentLoaded = o._progress.loaded;
+                o.blob = slice.call(
+                    file,
+                    ub,
+                    ub + mcs,
+                    file.type
+                );
+                // Store the current chunk size, as the blob itself
+                // will be dereferenced after data processing:
+                o.chunkSize = o.blob.size;
+                // Expose the chunk bytes position range:
+                o.contentRange = 'bytes ' + ub + '-' +
+                    (ub + o.chunkSize - 1) + '/' + fs;
+                // Process the upload data (the blob and potential form data):
+                that._initXHRData(o);
+                // Add progress listeners for this chunk upload:
+                that._initProgressListener(o);
+                jqXHR = ((that._trigger('chunksend', null, o) !== false && $.ajax(o)) ||
+                        that._getXHRPromise(false, o.context))
+                    .done(function (result, textStatus, jqXHR) {
+                        ub = that._getUploadedBytes(jqXHR) ||
+                            (ub + o.chunkSize);
+                        // Create a progress event if no final progress event
+                        // with loaded equaling total has been triggered
+                        // for this chunk:
+                        if (currentLoaded + o.chunkSize - o._progress.loaded) {
+                            that._onProgress($.Event('progress', {
+                                lengthComputable: true,
+                                loaded: ub - o.uploadedBytes,
+                                total: ub - o.uploadedBytes
+                            }), o);
+                        }
+                        options.uploadedBytes = o.uploadedBytes = ub;
+                        o.result = result;
+                        o.textStatus = textStatus;
+                        o.jqXHR = jqXHR;
+                        that._trigger('chunkdone', null, o);
+                        that._trigger('chunkalways', null, o);
+                        if (ub < fs) {
+                            // File upload not yet complete,
+                            // continue with the next chunk:
+                            upload();
+                        } else {
+                            dfd.resolveWith(
+                                o.context,
+                                [result, textStatus, jqXHR]
+                            );
+                        }
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        o.jqXHR = jqXHR;
+                        o.textStatus = textStatus;
+                        o.errorThrown = errorThrown;
+                        that._trigger('chunkfail', null, o);
+                        that._trigger('chunkalways', null, o);
+                        dfd.rejectWith(
+                            o.context,
+                            [jqXHR, textStatus, errorThrown]
+                        );
+                    });
+            };
+            this._enhancePromise(promise);
+            promise.abort = function () {
+                return jqXHR.abort();
+            };
+            upload();
+            return promise;
+        },
+
+        _beforeSend: function (e, data) {
+            if (this._active === 0) {
+                // the start callback is triggered when an upload starts
+                // and no other uploads are currently running,
+                // equivalent to the global ajaxStart event:
+                this._trigger('start');
+                // Set timer for global bitrate progress calculation:
+                this._bitrateTimer = new this._BitrateTimer();
+                // Reset the global progress values:
+                this._progress.loaded = this._progress.total = 0;
+                this._progress.bitrate = 0;
+            }
+            // Make sure the container objects for the .response() and
+            // .progress() methods on the data object are available
+            // and reset to their initial state:
+            this._initResponseObject(data);
+            this._initProgressObject(data);
+            data._progress.loaded = data.loaded = data.uploadedBytes || 0;
+            data._progress.total = data.total = this._getTotal(data.files) || 1;
+            data._progress.bitrate = data.bitrate = 0;
+            this._active += 1;
+            // Initialize the global progress values:
+            this._progress.loaded += data.loaded;
+            this._progress.total += data.total;
+        },
+
+        _onDone: function (result, textStatus, jqXHR, options) {
+            var total = options._progress.total,
+                response = options._response;
+            if (options._progress.loaded < total) {
+                // Create a progress event if no final progress event
+                // with loaded equaling total has been triggered:
+                this._onProgress($.Event('progress', {
+                    lengthComputable: true,
+                    loaded: total,
+                    total: total
+                }), options);
+            }
+            response.result = options.result = result;
+            response.textStatus = options.textStatus = textStatus;
+            response.jqXHR = options.jqXHR = jqXHR;
+            this._trigger('done', null, options);
+        },
+
+        _onFail: function (jqXHR, textStatus, errorThrown, options) {
+            var response = options._response;
+            if (options.recalculateProgress) {
+                // Remove the failed (error or abort) file upload from
+                // the global progress calculation:
+                this._progress.loaded -= options._progress.loaded;
+                this._progress.total -= options._progress.total;
+            }
+            response.jqXHR = options.jqXHR = jqXHR;
+            response.textStatus = options.textStatus = textStatus;
+            response.errorThrown = options.errorThrown = errorThrown;
+            this._trigger('fail', null, options);
+        },
+
+        _onAlways: function (jqXHRorResult, textStatus, jqXHRorError, options) {
+            // jqXHRorResult, textStatus and jqXHRorError are added to the
+            // options object via done and fail callbacks
+            this._trigger('always', null, options);
+        },
+
+        _onSend: function (e, data) {
+            if (!data.submit) {
+                this._addConvenienceMethods(e, data);
+            }
+            var that = this,
+                jqXHR,
+                aborted,
+                slot,
+                pipe,
+                options = that._getAJAXSettings(data),
+                send = function () {
+                    that._sending += 1;
+                    // Set timer for bitrate progress calculation:
+                    options._bitrateTimer = new that._BitrateTimer();
+                    jqXHR = jqXHR || (
+                        ((aborted || that._trigger(
+                            'send',
+                            $.Event('send', {delegatedEvent: e}),
+                            options
+                        ) === false) &&
+                        that._getXHRPromise(false, options.context, aborted)) ||
+                        that._chunkedUpload(options) || $.ajax(options)
+                    ).done(function (result, textStatus, jqXHR) {
+                        that._onDone(result, textStatus, jqXHR, options);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        that._onFail(jqXHR, textStatus, errorThrown, options);
+                    }).always(function (jqXHRorResult, textStatus, jqXHRorError) {
+                        that._onAlways(
+                            jqXHRorResult,
+                            textStatus,
+                            jqXHRorError,
+                            options
+                        );
+                        that._sending -= 1;
+                        that._active -= 1;
+                        if (options.limitConcurrentUploads &&
+                                options.limitConcurrentUploads > that._sending) {
+                            // Start the next queued upload,
+                            // that has not been aborted:
+                            var nextSlot = that._slots.shift();
+                            while (nextSlot) {
+                                if (that._getDeferredState(nextSlot) === 'pending') {
+                                    nextSlot.resolve();
+                                    break;
+                                }
+                                nextSlot = that._slots.shift();
+                            }
+                        }
+                        if (that._active === 0) {
+                            // The stop callback is triggered when all uploads have
+                            // been completed, equivalent to the global ajaxStop event:
+                            that._trigger('stop');
+                        }
+                    });
+                    return jqXHR;
+                };
+            this._beforeSend(e, options);
+            if (this.options.sequentialUploads ||
+                    (this.options.limitConcurrentUploads &&
+                    this.options.limitConcurrentUploads <= this._sending)) {
+                if (this.options.limitConcurrentUploads > 1) {
+                    slot = $.Deferred();
+                    this._slots.push(slot);
+                    pipe = slot.then(send);
+                } else {
+                    this._sequence = this._sequence.then(send, send);
+                    pipe = this._sequence;
+                }
+                // Return the piped Promise object, enhanced with an abort method,
+                // which is delegated to the jqXHR object of the current upload,
+                // and jqXHR callbacks mapped to the equivalent Promise methods:
+                pipe.abort = function () {
+                    aborted = [undefined, 'abort', 'abort'];
+                    if (!jqXHR) {
+                        if (slot) {
+                            slot.rejectWith(options.context, aborted);
+                        }
+                        return send();
+                    }
+                    return jqXHR.abort();
+                };
+                return this._enhancePromise(pipe);
+            }
+            return send();
+        },
+
+        _onAdd: function (e, data) {
+            var that = this,
+                result = true,
+                options = $.extend({}, this.options, data),
+                files = data.files,
+                filesLength = files.length,
+                limit = options.limitMultiFileUploads,
+                limitSize = options.limitMultiFileUploadSize,
+                overhead = options.limitMultiFileUploadSizeOverhead,
+                batchSize = 0,
+                paramName = this._getParamName(options),
+                paramNameSet,
+                paramNameSlice,
+                fileSet,
+                i,
+                j = 0;
+            if (!filesLength) {
+                return false;
+            }
+            if (limitSize && files[0].size === undefined) {
+                limitSize = undefined;
+            }
+            if (!(options.singleFileUploads || limit || limitSize) ||
+                    !this._isXHRUpload(options)) {
+                fileSet = [files];
+                paramNameSet = [paramName];
+            } else if (!(options.singleFileUploads || limitSize) && limit) {
+                fileSet = [];
+                paramNameSet = [];
+                for (i = 0; i < filesLength; i += limit) {
+                    fileSet.push(files.slice(i, i + limit));
+                    paramNameSlice = paramName.slice(i, i + limit);
+                    if (!paramNameSlice.length) {
+                        paramNameSlice = paramName;
+                    }
+                    paramNameSet.push(paramNameSlice);
+                }
+            } else if (!options.singleFileUploads && limitSize) {
+                fileSet = [];
+                paramNameSet = [];
+                for (i = 0; i < filesLength; i = i + 1) {
+                    batchSize += files[i].size + overhead;
+                    if (i + 1 === filesLength ||
+                            ((batchSize + files[i + 1].size + overhead) > limitSize) ||
+                            (limit && i + 1 - j >= limit)) {
+                        fileSet.push(files.slice(j, i + 1));
+                        paramNameSlice = paramName.slice(j, i + 1);
+                        if (!paramNameSlice.length) {
+                            paramNameSlice = paramName;
+                        }
+                        paramNameSet.push(paramNameSlice);
+                        j = i + 1;
+                        batchSize = 0;
+                    }
+                }
+            } else {
+                paramNameSet = paramName;
+            }
+            data.originalFiles = files;
+            $.each(fileSet || files, function (index, element) {
+                var newData = $.extend({}, data);
+                newData.files = fileSet ? element : [element];
+                newData.paramName = paramNameSet[index];
+                that._initResponseObject(newData);
+                that._initProgressObject(newData);
+                that._addConvenienceMethods(e, newData);
+                result = that._trigger(
+                    'add',
+                    $.Event('add', {delegatedEvent: e}),
+                    newData
+                );
+                return result;
+            });
+            return result;
+        },
+
+        _replaceFileInput: function (data) {
+            var input = data.fileInput,
+                inputClone = input.clone(true),
+                restoreFocus = input.is(document.activeElement);
+            // Add a reference for the new cloned file input to the data argument:
+            data.fileInputClone = inputClone;
+            $('<form></form>').append(inputClone)[0].reset();
+            // Detaching allows to insert the fileInput on another form
+            // without loosing the file input value:
+            input.after(inputClone).detach();
+            // If the fileInput had focus before it was detached,
+            // restore focus to the inputClone.
+            if (restoreFocus) {
+                inputClone.focus();
+            }
+            // Avoid memory leaks with the detached file input:
+            $.cleanData(input.unbind('remove'));
+            // Replace the original file input element in the fileInput
+            // elements set with the clone, which has been copied including
+            // event handlers:
+            this.options.fileInput = this.options.fileInput.map(function (i, el) {
+                if (el === input[0]) {
+                    return inputClone[0];
+                }
+                return el;
+            });
+            // If the widget has been initialized on the file input itself,
+            // override this.element with the file input clone:
+            if (input[0] === this.element[0]) {
+                this.element = inputClone;
+            }
+        },
+
+        _handleFileTreeEntry: function (entry, path) {
+            var that = this,
+                dfd = $.Deferred(),
+                errorHandler = function (e) {
+                    if (e && !e.entry) {
+                        e.entry = entry;
+                    }
+                    // Since $.when returns immediately if one
+                    // Deferred is rejected, we use resolve instead.
+                    // This allows valid files and invalid items
+                    // to be returned together in one set:
+                    dfd.resolve([e]);
+                },
+                successHandler = function (entries) {
+                    that._handleFileTreeEntries(
+                        entries,
+                        path + entry.name + '/'
+                    ).done(function (files) {
+                        dfd.resolve(files);
+                    }).fail(errorHandler);
+                },
+                readEntries = function () {
+                    dirReader.readEntries(function (results) {
+                        if (!results.length) {
+                            successHandler(entries);
+                        } else {
+                            entries = entries.concat(results);
+                            readEntries();
+                        }
+                    }, errorHandler);
+                },
+                dirReader, entries = [];
+            path = path || '';
+            if (entry.isFile) {
+                if (entry._file) {
+                    // Workaround for Chrome bug #149735
+                    entry._file.relativePath = path;
+                    dfd.resolve(entry._file);
+                } else {
+                    entry.file(function (file) {
+                        file.relativePath = path;
+                        dfd.resolve(file);
+                    }, errorHandler);
+                }
+            } else if (entry.isDirectory) {
+                dirReader = entry.createReader();
+                readEntries();
+            } else {
+                // Return an empy list for file system items
+                // other than files or directories:
+                dfd.resolve([]);
+            }
+            return dfd.promise();
+        },
+
+        _handleFileTreeEntries: function (entries, path) {
+            var that = this;
+            return $.when.apply(
+                $,
+                $.map(entries, function (entry) {
+                    return that._handleFileTreeEntry(entry, path);
+                })
+            ).then(function () {
+                return Array.prototype.concat.apply(
+                    [],
+                    arguments
+                );
+            });
+        },
+
+        _getDroppedFiles: function (dataTransfer) {
+            dataTransfer = dataTransfer || {};
+            var items = dataTransfer.items;
+            if (items && items.length && (items[0].webkitGetAsEntry ||
+                    items[0].getAsEntry)) {
+                return this._handleFileTreeEntries(
+                    $.map(items, function (item) {
+                        var entry;
+                        if (item.webkitGetAsEntry) {
+                            entry = item.webkitGetAsEntry();
+                            if (entry) {
+                                // Workaround for Chrome bug #149735:
+                                entry._file = item.getAsFile();
+                            }
+                            return entry;
+                        }
+                        return item.getAsEntry();
+                    })
+                );
+            }
+            return $.Deferred().resolve(
+                $.makeArray(dataTransfer.files)
+            ).promise();
+        },
+
+        _getSingleFileInputFiles: function (fileInput) {
+            fileInput = $(fileInput);
+            var entries = fileInput.prop('webkitEntries') ||
+                    fileInput.prop('entries'),
+                files,
+                value;
+            if (entries && entries.length) {
+                return this._handleFileTreeEntries(entries);
+            }
+            files = $.makeArray(fileInput.prop('files'));
+            if (!files.length) {
+                value = fileInput.prop('value');
+                if (!value) {
+                    return $.Deferred().resolve([]).promise();
+                }
+                // If the files property is not available, the browser does not
+                // support the File API and we add a pseudo File object with
+                // the input value as name with path information removed:
+                files = [{name: value.replace(/^.*\\/, '')}];
+            } else if (files[0].name === undefined && files[0].fileName) {
+                // File normalization for Safari 4 and Firefox 3:
+                $.each(files, function (index, file) {
+                    file.name = file.fileName;
+                    file.size = file.fileSize;
+                });
+            }
+            return $.Deferred().resolve(files).promise();
+        },
+
+        _getFileInputFiles: function (fileInput) {
+            if (!(fileInput instanceof $) || fileInput.length === 1) {
+                return this._getSingleFileInputFiles(fileInput);
+            }
+            return $.when.apply(
+                $,
+                $.map(fileInput, this._getSingleFileInputFiles)
+            ).then(function () {
+                return Array.prototype.concat.apply(
+                    [],
+                    arguments
+                );
+            });
+        },
+
+        _onChange: function (e) {
+            var that = this,
+                data = {
+                    fileInput: $(e.target),
+                    form: $(e.target.form)
+                };
+            this._getFileInputFiles(data.fileInput).always(function (files) {
+                data.files = files;
+                if (that.options.replaceFileInput) {
+                    that._replaceFileInput(data);
+                }
+                if (that._trigger(
+                        'change',
+                        $.Event('change', {delegatedEvent: e}),
+                        data
+                    ) !== false) {
+                    that._onAdd(e, data);
+                }
+            });
+        },
+
+        _onPaste: function (e) {
+            var items = e.originalEvent && e.originalEvent.clipboardData &&
+                    e.originalEvent.clipboardData.items,
+                data = {files: []};
+            if (items && items.length) {
+                $.each(items, function (index, item) {
+                    var file = item.getAsFile && item.getAsFile();
+                    if (file) {
+                        data.files.push(file);
+                    }
+                });
+                if (this._trigger(
+                        'paste',
+                        $.Event('paste', {delegatedEvent: e}),
+                        data
+                    ) !== false) {
+                    this._onAdd(e, data);
+                }
+            }
+        },
+
+        _onDrop: function (e) {
+            e.dataTransfer = e.originalEvent && e.originalEvent.dataTransfer;
+            var that = this,
+                dataTransfer = e.dataTransfer,
+                data = {};
+            if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+                e.preventDefault();
+                this._getDroppedFiles(dataTransfer).always(function (files) {
+                    data.files = files;
+                    if (that._trigger(
+                            'drop',
+                            $.Event('drop', {delegatedEvent: e}),
+                            data
+                        ) !== false) {
+                        that._onAdd(e, data);
+                    }
+                });
+            }
+        },
+
+        _onDragOver: getDragHandler('dragover'),
+
+        _onDragEnter: getDragHandler('dragenter'),
+
+        _onDragLeave: getDragHandler('dragleave'),
+
+        _initEventHandlers: function () {
+            if (this._isXHRUpload(this.options)) {
+                this._on(this.options.dropZone, {
+                    dragover: this._onDragOver,
+                    drop: this._onDrop,
+                    // event.preventDefault() on dragenter is required for IE10+:
+                    dragenter: this._onDragEnter,
+                    // dragleave is not required, but added for completeness:
+                    dragleave: this._onDragLeave
+                });
+                this._on(this.options.pasteZone, {
+                    paste: this._onPaste
+                });
+            }
+            if ($.support.fileInput) {
+                this._on(this.options.fileInput, {
+                    change: this._onChange
+                });
+            }
+        },
+
+        _destroyEventHandlers: function () {
+            this._off(this.options.dropZone, 'dragenter dragleave dragover drop');
+            this._off(this.options.pasteZone, 'paste');
+            this._off(this.options.fileInput, 'change');
+        },
+
+        _setOption: function (key, value) {
+            var reinit = $.inArray(key, this._specialOptions) !== -1;
+            if (reinit) {
+                this._destroyEventHandlers();
+            }
+            this._super(key, value);
+            if (reinit) {
+                this._initSpecialOptions();
+                this._initEventHandlers();
+            }
+        },
+
+        _initSpecialOptions: function () {
+            var options = this.options;
+            if (options.fileInput === undefined) {
+                options.fileInput = this.element.is('input[type="file"]') ?
+                        this.element : this.element.find('input[type="file"]');
+            } else if (!(options.fileInput instanceof $)) {
+                options.fileInput = $(options.fileInput);
+            }
+            if (!(options.dropZone instanceof $)) {
+                options.dropZone = $(options.dropZone);
+            }
+            if (!(options.pasteZone instanceof $)) {
+                options.pasteZone = $(options.pasteZone);
+            }
+        },
+
+        _getRegExp: function (str) {
+            var parts = str.split('/'),
+                modifiers = parts.pop();
+            parts.shift();
+            return new RegExp(parts.join('/'), modifiers);
+        },
+
+        _isRegExpOption: function (key, value) {
+            return key !== 'url' && $.type(value) === 'string' &&
+                /^\/.*\/[igm]{0,3}$/.test(value);
+        },
+
+        _initDataAttributes: function () {
+            var that = this,
+                options = this.options,
+                data = this.element.data();
+            // Initialize options set via HTML5 data-attributes:
+            $.each(
+                this.element[0].attributes,
+                function (index, attr) {
+                    var key = attr.name.toLowerCase(),
+                        value;
+                    if (/^data-/.test(key)) {
+                        // Convert hyphen-ated key to camelCase:
+                        key = key.slice(5).replace(/-[a-z]/g, function (str) {
+                            return str.charAt(1).toUpperCase();
+                        });
+                        value = data[key];
+                        if (that._isRegExpOption(key, value)) {
+                            value = that._getRegExp(value);
+                        }
+                        options[key] = value;
+                    }
+                }
+            );
+        },
+
+        _create: function () {
+            this._initDataAttributes();
+            this._initSpecialOptions();
+            this._slots = [];
+            this._sequence = this._getXHRPromise(true);
+            this._sending = this._active = 0;
+            this._initProgressObject(this);
+            this._initEventHandlers();
+        },
+
+        // This method is exposed to the widget API and allows to query
+        // the number of active uploads:
+        active: function () {
+            return this._active;
+        },
+
+        // This method is exposed to the widget API and allows to query
+        // the widget upload progress.
+        // It returns an object with loaded, total and bitrate properties
+        // for the running uploads:
+        progress: function () {
+            return this._progress;
+        },
+
+        // This method is exposed to the widget API and allows adding files
+        // using the fileupload API. The data parameter accepts an object which
+        // must have a files property and can contain additional options:
+        // .fileupload('add', {files: filesList});
+        add: function (data) {
+            var that = this;
+            if (!data || this.options.disabled) {
+                return;
+            }
+            if (data.fileInput && !data.files) {
+                this._getFileInputFiles(data.fileInput).always(function (files) {
+                    data.files = files;
+                    that._onAdd(null, data);
+                });
+            } else {
+                data.files = $.makeArray(data.files);
+                this._onAdd(null, data);
+            }
+        },
+
+        // This method is exposed to the widget API and allows sending files
+        // using the fileupload API. The data parameter accepts an object which
+        // must have a files or fileInput property and can contain additional options:
+        // .fileupload('send', {files: filesList});
+        // The method returns a Promise object for the file upload call.
+        send: function (data) {
+            if (data && !this.options.disabled) {
+                if (data.fileInput && !data.files) {
+                    var that = this,
+                        dfd = $.Deferred(),
+                        promise = dfd.promise(),
+                        jqXHR,
+                        aborted;
+                    promise.abort = function () {
+                        aborted = true;
+                        if (jqXHR) {
+                            return jqXHR.abort();
+                        }
+                        dfd.reject(null, 'abort', 'abort');
+                        return promise;
+                    };
+                    this._getFileInputFiles(data.fileInput).always(
+                        function (files) {
+                            if (aborted) {
+                                return;
+                            }
+                            if (!files.length) {
+                                dfd.reject();
+                                return;
+                            }
+                            data.files = files;
+                            jqXHR = that._onSend(null, data);
+                            jqXHR.then(
+                                function (result, textStatus, jqXHR) {
+                                    dfd.resolve(result, textStatus, jqXHR);
+                                },
+                                function (jqXHR, textStatus, errorThrown) {
+                                    dfd.reject(jqXHR, textStatus, errorThrown);
+                                }
+                            );
+                        }
+                    );
+                    return this._enhancePromise(promise);
+                }
+                data.files = $.makeArray(data.files);
+                if (data.files.length) {
+                    return this._onSend(null, data);
+                }
+            }
+            return this._getXHRPromise(false, data && data.context);
+        }
+
+    });
+
+}));
+/*!
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under the MIT license
+ */
+
+
+if (typeof jQuery === 'undefined') {
+  throw new Error('Bootstrap\'s JavaScript requires jQuery')
+}
+
++function ($) {
+  'use strict';
+  var version = $.fn.jquery.split(' ')[0].split('.')
+  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 3)) {
+    throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 4')
+  }
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: transition.js v3.3.7
+ * http://getbootstrap.com/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
+    }
+
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
+    }
+
+    return false // explicit for ie8 (  ._.)
+  }
+
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
+
+  $(function () {
+    $.support.transition = transitionEnd()
+
+    if (!$.support.transition) return
+
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: alert.js v3.3.7
+ * http://getbootstrap.com/javascript/#alerts
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // ALERT CLASS DEFINITION
+  // ======================
+
+  var dismiss = '[data-dismiss="alert"]'
+  var Alert   = function (el) {
+    $(el).on('click', dismiss, this.close)
+  }
+
+  Alert.VERSION = '3.3.7'
+
+  Alert.TRANSITION_DURATION = 150
+
+  Alert.prototype.close = function (e) {
+    var $this    = $(this)
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = $(selector === '#' ? [] : selector)
+
+    if (e) e.preventDefault()
+
+    if (!$parent.length) {
+      $parent = $this.closest('.alert')
+    }
+
+    $parent.trigger(e = $.Event('close.bs.alert'))
+
+    if (e.isDefaultPrevented()) return
+
+    $parent.removeClass('in')
+
+    function removeElement() {
+      // detach from parent, fire event then clean up data
+      $parent.detach().trigger('closed.bs.alert').remove()
+    }
+
+    $.support.transition && $parent.hasClass('fade') ?
+      $parent
+        .one('bsTransitionEnd', removeElement)
+        .emulateTransitionEnd(Alert.TRANSITION_DURATION) :
+      removeElement()
+  }
+
+
+  // ALERT PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.alert')
+
+      if (!data) $this.data('bs.alert', (data = new Alert(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.alert
+
+  $.fn.alert             = Plugin
+  $.fn.alert.Constructor = Alert
+
+
+  // ALERT NO CONFLICT
+  // =================
+
+  $.fn.alert.noConflict = function () {
+    $.fn.alert = old
+    return this
+  }
+
+
+  // ALERT DATA-API
+  // ==============
+
+  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: button.js v3.3.7
+ * http://getbootstrap.com/javascript/#buttons
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // BUTTON PUBLIC CLASS DEFINITION
+  // ==============================
+
+  var Button = function (element, options) {
+    this.$element  = $(element)
+    this.options   = $.extend({}, Button.DEFAULTS, options)
+    this.isLoading = false
+  }
+
+  Button.VERSION  = '3.3.7'
+
+  Button.DEFAULTS = {
+    loadingText: 'loading...'
+  }
+
+  Button.prototype.setState = function (state) {
+    var d    = 'disabled'
+    var $el  = this.$element
+    var val  = $el.is('input') ? 'val' : 'html'
+    var data = $el.data()
+
+    state += 'Text'
+
+    if (data.resetText == null) $el.data('resetText', $el[val]())
+
+    // push to event loop to allow forms to submit
+    setTimeout($.proxy(function () {
+      $el[val](data[state] == null ? this.options[state] : data[state])
+
+      if (state == 'loadingText') {
+        this.isLoading = true
+        $el.addClass(d).attr(d, d).prop(d, true)
+      } else if (this.isLoading) {
+        this.isLoading = false
+        $el.removeClass(d).removeAttr(d).prop(d, false)
+      }
+    }, this), 0)
+  }
+
+  Button.prototype.toggle = function () {
+    var changed = true
+    var $parent = this.$element.closest('[data-toggle="buttons"]')
+
+    if ($parent.length) {
+      var $input = this.$element.find('input')
+      if ($input.prop('type') == 'radio') {
+        if ($input.prop('checked')) changed = false
+        $parent.find('.active').removeClass('active')
+        this.$element.addClass('active')
+      } else if ($input.prop('type') == 'checkbox') {
+        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = false
+        this.$element.toggleClass('active')
+      }
+      $input.prop('checked', this.$element.hasClass('active'))
+      if (changed) $input.trigger('change')
+    } else {
+      this.$element.attr('aria-pressed', !this.$element.hasClass('active'))
+      this.$element.toggleClass('active')
+    }
+  }
+
+
+  // BUTTON PLUGIN DEFINITION
+  // ========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.button')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.button', (data = new Button(this, options)))
+
+      if (option == 'toggle') data.toggle()
+      else if (option) data.setState(option)
+    })
+  }
+
+  var old = $.fn.button
+
+  $.fn.button             = Plugin
+  $.fn.button.Constructor = Button
+
+
+  // BUTTON NO CONFLICT
+  // ==================
+
+  $.fn.button.noConflict = function () {
+    $.fn.button = old
+    return this
+  }
+
+
+  // BUTTON DATA-API
+  // ===============
+
+  $(document)
+    .on('click.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      var $btn = $(e.target).closest('.btn')
+      Plugin.call($btn, 'toggle')
+      if (!($(e.target).is('input[type="radio"], input[type="checkbox"]'))) {
+        // Prevent double click on radios, and the double selections (so cancellation) on checkboxes
+        e.preventDefault()
+        // The target component still receive the focus
+        if ($btn.is('input,button')) $btn.trigger('focus')
+        else $btn.find('input:visible,button:visible').first().trigger('focus')
+      }
+    })
+    .on('focus.bs.button.data-api blur.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      $(e.target).closest('.btn').toggleClass('focus', /^focus(in)?$/.test(e.type))
+    })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: carousel.js v3.3.7
+ * http://getbootstrap.com/javascript/#carousel
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CAROUSEL CLASS DEFINITION
+  // =========================
+
+  var Carousel = function (element, options) {
+    this.$element    = $(element)
+    this.$indicators = this.$element.find('.carousel-indicators')
+    this.options     = options
+    this.paused      = null
+    this.sliding     = null
+    this.interval    = null
+    this.$active     = null
+    this.$items      = null
+
+    this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
+
+    this.options.pause == 'hover' && !('ontouchstart' in document.documentElement) && this.$element
+      .on('mouseenter.bs.carousel', $.proxy(this.pause, this))
+      .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
+  }
+
+  Carousel.VERSION  = '3.3.7'
+
+  Carousel.TRANSITION_DURATION = 600
+
+  Carousel.DEFAULTS = {
+    interval: 5000,
+    pause: 'hover',
+    wrap: true,
+    keyboard: true
+  }
+
+  Carousel.prototype.keydown = function (e) {
+    if (/input|textarea/i.test(e.target.tagName)) return
+    switch (e.which) {
+      case 37: this.prev(); break
+      case 39: this.next(); break
+      default: return
+    }
+
+    e.preventDefault()
+  }
+
+  Carousel.prototype.cycle = function (e) {
+    e || (this.paused = false)
+
+    this.interval && clearInterval(this.interval)
+
+    this.options.interval
+      && !this.paused
+      && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
+
+    return this
+  }
+
+  Carousel.prototype.getItemIndex = function (item) {
+    this.$items = item.parent().children('.item')
+    return this.$items.index(item || this.$active)
+  }
+
+  Carousel.prototype.getItemForDirection = function (direction, active) {
+    var activeIndex = this.getItemIndex(active)
+    var willWrap = (direction == 'prev' && activeIndex === 0)
+                || (direction == 'next' && activeIndex == (this.$items.length - 1))
+    if (willWrap && !this.options.wrap) return active
+    var delta = direction == 'prev' ? -1 : 1
+    var itemIndex = (activeIndex + delta) % this.$items.length
+    return this.$items.eq(itemIndex)
+  }
+
+  Carousel.prototype.to = function (pos) {
+    var that        = this
+    var activeIndex = this.getItemIndex(this.$active = this.$element.find('.item.active'))
+
+    if (pos > (this.$items.length - 1) || pos < 0) return
+
+    if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) }) // yes, "slid"
+    if (activeIndex == pos) return this.pause().cycle()
+
+    return this.slide(pos > activeIndex ? 'next' : 'prev', this.$items.eq(pos))
+  }
+
+  Carousel.prototype.pause = function (e) {
+    e || (this.paused = true)
+
+    if (this.$element.find('.next, .prev').length && $.support.transition) {
+      this.$element.trigger($.support.transition.end)
+      this.cycle(true)
+    }
+
+    this.interval = clearInterval(this.interval)
+
+    return this
+  }
+
+  Carousel.prototype.next = function () {
+    if (this.sliding) return
+    return this.slide('next')
+  }
+
+  Carousel.prototype.prev = function () {
+    if (this.sliding) return
+    return this.slide('prev')
+  }
+
+  Carousel.prototype.slide = function (type, next) {
+    var $active   = this.$element.find('.item.active')
+    var $next     = next || this.getItemForDirection(type, $active)
+    var isCycling = this.interval
+    var direction = type == 'next' ? 'left' : 'right'
+    var that      = this
+
+    if ($next.hasClass('active')) return (this.sliding = false)
+
+    var relatedTarget = $next[0]
+    var slideEvent = $.Event('slide.bs.carousel', {
+      relatedTarget: relatedTarget,
+      direction: direction
+    })
+    this.$element.trigger(slideEvent)
+    if (slideEvent.isDefaultPrevented()) return
+
+    this.sliding = true
+
+    isCycling && this.pause()
+
+    if (this.$indicators.length) {
+      this.$indicators.find('.active').removeClass('active')
+      var $nextIndicator = $(this.$indicators.children()[this.getItemIndex($next)])
+      $nextIndicator && $nextIndicator.addClass('active')
+    }
+
+    var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
+    if ($.support.transition && this.$element.hasClass('slide')) {
+      $next.addClass(type)
+      $next[0].offsetWidth // force reflow
+      $active.addClass(direction)
+      $next.addClass(direction)
+      $active
+        .one('bsTransitionEnd', function () {
+          $next.removeClass([type, direction].join(' ')).addClass('active')
+          $active.removeClass(['active', direction].join(' '))
+          that.sliding = false
+          setTimeout(function () {
+            that.$element.trigger(slidEvent)
+          }, 0)
+        })
+        .emulateTransitionEnd(Carousel.TRANSITION_DURATION)
+    } else {
+      $active.removeClass('active')
+      $next.addClass('active')
+      this.sliding = false
+      this.$element.trigger(slidEvent)
+    }
+
+    isCycling && this.cycle()
+
+    return this
+  }
+
+
+  // CAROUSEL PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.carousel')
+      var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
+      var action  = typeof option == 'string' ? option : options.slide
+
+      if (!data) $this.data('bs.carousel', (data = new Carousel(this, options)))
+      if (typeof option == 'number') data.to(option)
+      else if (action) data[action]()
+      else if (options.interval) data.pause().cycle()
+    })
+  }
+
+  var old = $.fn.carousel
+
+  $.fn.carousel             = Plugin
+  $.fn.carousel.Constructor = Carousel
+
+
+  // CAROUSEL NO CONFLICT
+  // ====================
+
+  $.fn.carousel.noConflict = function () {
+    $.fn.carousel = old
+    return this
+  }
+
+
+  // CAROUSEL DATA-API
+  // =================
+
+  var clickHandler = function (e) {
+    var href
+    var $this   = $(this)
+    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+    if (!$target.hasClass('carousel')) return
+    var options = $.extend({}, $target.data(), $this.data())
+    var slideIndex = $this.attr('data-slide-to')
+    if (slideIndex) options.interval = false
+
+    Plugin.call($target, options)
+
+    if (slideIndex) {
+      $target.data('bs.carousel').to(slideIndex)
+    }
+
+    e.preventDefault()
+  }
+
+  $(document)
+    .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
+    .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
+
+  $(window).on('load', function () {
+    $('[data-ride="carousel"]').each(function () {
+      var $carousel = $(this)
+      Plugin.call($carousel, $carousel.data())
+    })
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: collapse.js v3.3.7
+ * http://getbootstrap.com/javascript/#collapse
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+/* jshint latedef: false */
+
++function ($) {
+  'use strict';
+
+  // COLLAPSE PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Collapse = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Collapse.DEFAULTS, options)
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
+    this.transitioning = null
+
+    if (this.options.parent) {
+      this.$parent = this.getParent()
+    } else {
+      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
+    }
+
+    if (this.options.toggle) this.toggle()
+  }
+
+  Collapse.VERSION  = '3.3.7'
+
+  Collapse.TRANSITION_DURATION = 350
+
+  Collapse.DEFAULTS = {
+    toggle: true
+  }
+
+  Collapse.prototype.dimension = function () {
+    var hasWidth = this.$element.hasClass('width')
+    return hasWidth ? 'width' : 'height'
+  }
+
+  Collapse.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('in')) return
+
+    var activesData
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
+
+    if (actives && actives.length) {
+      activesData = actives.data('bs.collapse')
+      if (activesData && activesData.transitioning) return
+    }
+
+    var startEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    if (actives && actives.length) {
+      Plugin.call(actives, 'hide')
+      activesData || actives.data('bs.collapse', null)
+    }
+
+    var dimension = this.dimension()
+
+    this.$element
+      .removeClass('collapse')
+      .addClass('collapsing')[dimension](0)
+      .attr('aria-expanded', true)
+
+    this.$trigger
+      .removeClass('collapsed')
+      .attr('aria-expanded', true)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse in')[dimension]('')
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
+  }
+
+  Collapse.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('in')) return
+
+    var startEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    var dimension = this.dimension()
+
+    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
+
+    this.$element
+      .addClass('collapsing')
+      .removeClass('collapse in')
+      .attr('aria-expanded', false)
+
+    this.$trigger
+      .addClass('collapsed')
+      .attr('aria-expanded', false)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse')
+        .trigger('hidden.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      [dimension](0)
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
+  }
+
+  Collapse.prototype.toggle = function () {
+    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+  }
+
+  Collapse.prototype.getParent = function () {
+    return $(this.options.parent)
+      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
+      .each($.proxy(function (i, element) {
+        var $element = $(element)
+        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
+      }, this))
+      .end()
+  }
+
+  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
+    var isOpen = $element.hasClass('in')
+
+    $element.attr('aria-expanded', isOpen)
+    $trigger
+      .toggleClass('collapsed', !isOpen)
+      .attr('aria-expanded', isOpen)
+  }
+
+  function getTargetFromTrigger($trigger) {
+    var href
+    var target = $trigger.attr('data-target')
+      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+
+    return $(target)
+  }
+
+
+  // COLLAPSE PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.collapse')
+      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.collapse
+
+  $.fn.collapse             = Plugin
+  $.fn.collapse.Constructor = Collapse
+
+
+  // COLLAPSE NO CONFLICT
+  // ====================
+
+  $.fn.collapse.noConflict = function () {
+    $.fn.collapse = old
+    return this
+  }
+
+
+  // COLLAPSE DATA-API
+  // =================
+
+  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+    var $this   = $(this)
+
+    if (!$this.attr('data-target')) e.preventDefault()
+
+    var $target = getTargetFromTrigger($this)
+    var data    = $target.data('bs.collapse')
+    var option  = data ? 'toggle' : $this.data()
+
+    Plugin.call($target, option)
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: dropdown.js v3.3.7
+ * http://getbootstrap.com/javascript/#dropdowns
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // DROPDOWN CLASS DEFINITION
+  // =========================
+
+  var backdrop = '.dropdown-backdrop'
+  var toggle   = '[data-toggle="dropdown"]'
+  var Dropdown = function (element) {
+    $(element).on('click.bs.dropdown', this.toggle)
+  }
+
+  Dropdown.VERSION = '3.3.7'
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
+  function clearMenus(e) {
+    if (e && e.which === 3) return
+    $(backdrop).remove()
+    $(toggle).each(function () {
+      var $this         = $(this)
+      var $parent       = getParent($this)
+      var relatedTarget = { relatedTarget: this }
+
+      if (!$parent.hasClass('open')) return
+
+      if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
+
+      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this.attr('aria-expanded', 'false')
+      $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
+    })
+  }
+
+  Dropdown.prototype.toggle = function (e) {
+    var $this = $(this)
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    clearMenus()
+
+    if (!isActive) {
+      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
+        // if mobile we use a backdrop because click events don't delegate
+        $(document.createElement('div'))
+          .addClass('dropdown-backdrop')
+          .insertAfter($(this))
+          .on('click', clearMenus)
+      }
+
+      var relatedTarget = { relatedTarget: this }
+      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this
+        .trigger('focus')
+        .attr('aria-expanded', 'true')
+
+      $parent
+        .toggleClass('open')
+        .trigger($.Event('shown.bs.dropdown', relatedTarget))
+    }
+
+    return false
+  }
+
+  Dropdown.prototype.keydown = function (e) {
+    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
+
+    var $this = $(this)
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    if (!isActive && e.which != 27 || isActive && e.which == 27) {
+      if (e.which == 27) $parent.find(toggle).trigger('focus')
+      return $this.trigger('click')
+    }
+
+    var desc = ' li:not(.disabled):visible a'
+    var $items = $parent.find('.dropdown-menu' + desc)
+
+    if (!$items.length) return
+
+    var index = $items.index(e.target)
+
+    if (e.which == 38 && index > 0)                 index--         // up
+    if (e.which == 40 && index < $items.length - 1) index++         // down
+    if (!~index)                                    index = 0
+
+    $items.eq(index).trigger('focus')
+  }
+
+
+  // DROPDOWN PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.dropdown')
+
+      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.dropdown
+
+  $.fn.dropdown             = Plugin
+  $.fn.dropdown.Constructor = Dropdown
+
+
+  // DROPDOWN NO CONFLICT
+  // ====================
+
+  $.fn.dropdown.noConflict = function () {
+    $.fn.dropdown = old
+    return this
+  }
+
+
+  // APPLY TO STANDARD DROPDOWN ELEMENTS
+  // ===================================
+
+  $(document)
+    .on('click.bs.dropdown.data-api', clearMenus)
+    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', '.dropdown-menu', Dropdown.prototype.keydown)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: modal.js v3.3.7
+ * http://getbootstrap.com/javascript/#modals
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // MODAL CLASS DEFINITION
+  // ======================
+
+  var Modal = function (element, options) {
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
+
+    if (this.options.remote) {
+      this.$element
+        .find('.modal-content')
+        .load(this.options.remote, $.proxy(function () {
+          this.$element.trigger('loaded.bs.modal')
+        }, this))
+    }
+  }
+
+  Modal.VERSION  = '3.3.7'
+
+  Modal.TRANSITION_DURATION = 300
+  Modal.BACKDROP_TRANSITION_DURATION = 150
+
+  Modal.DEFAULTS = {
+    backdrop: true,
+    keyboard: true,
+    show: true
+  }
+
+  Modal.prototype.toggle = function (_relatedTarget) {
+    return this.isShown ? this.hide() : this.show(_relatedTarget)
+  }
+
+  Modal.prototype.show = function (_relatedTarget) {
+    var that = this
+    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+
+    this.$element.trigger(e)
+
+    if (this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = true
+
+    this.checkScrollbar()
+    this.setScrollbar()
+    this.$body.addClass('modal-open')
+
+    this.escape()
+    this.resize()
+
+    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
+    this.backdrop(function () {
+      var transition = $.support.transition && that.$element.hasClass('fade')
+
+      if (!that.$element.parent().length) {
+        that.$element.appendTo(that.$body) // don't move modals dom position
+      }
+
+      that.$element
+        .show()
+        .scrollTop(0)
+
+      that.adjustDialog()
+
+      if (transition) {
+        that.$element[0].offsetWidth // force reflow
+      }
+
+      that.$element.addClass('in')
+
+      that.enforceFocus()
+
+      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
+
+      transition ?
+        that.$dialog // wait for modal to slide in
+          .one('bsTransitionEnd', function () {
+            that.$element.trigger('focus').trigger(e)
+          })
+          .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+        that.$element.trigger('focus').trigger(e)
+    })
+  }
+
+  Modal.prototype.hide = function (e) {
+    if (e) e.preventDefault()
+
+    e = $.Event('hide.bs.modal')
+
+    this.$element.trigger(e)
+
+    if (!this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = false
+
+    this.escape()
+    this.resize()
+
+    $(document).off('focusin.bs.modal')
+
+    this.$element
+      .removeClass('in')
+      .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
+
+    $.support.transition && this.$element.hasClass('fade') ?
+      this.$element
+        .one('bsTransitionEnd', $.proxy(this.hideModal, this))
+        .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+      this.hideModal()
+  }
+
+  Modal.prototype.enforceFocus = function () {
+    $(document)
+      .off('focusin.bs.modal') // guard against infinite focus loop
+      .on('focusin.bs.modal', $.proxy(function (e) {
+        if (document !== e.target &&
+            this.$element[0] !== e.target &&
+            !this.$element.has(e.target).length) {
+          this.$element.trigger('focus')
+        }
+      }, this))
+  }
+
+  Modal.prototype.escape = function () {
+    if (this.isShown && this.options.keyboard) {
+      this.$element.on('keydown.dismiss.bs.modal', $.proxy(function (e) {
+        e.which == 27 && this.hide()
+      }, this))
+    } else if (!this.isShown) {
+      this.$element.off('keydown.dismiss.bs.modal')
+    }
+  }
+
+  Modal.prototype.resize = function () {
+    if (this.isShown) {
+      $(window).on('resize.bs.modal', $.proxy(this.handleUpdate, this))
+    } else {
+      $(window).off('resize.bs.modal')
+    }
+  }
+
+  Modal.prototype.hideModal = function () {
+    var that = this
+    this.$element.hide()
+    this.backdrop(function () {
+      that.$body.removeClass('modal-open')
+      that.resetAdjustments()
+      that.resetScrollbar()
+      that.$element.trigger('hidden.bs.modal')
+    })
+  }
+
+  Modal.prototype.removeBackdrop = function () {
+    this.$backdrop && this.$backdrop.remove()
+    this.$backdrop = null
+  }
+
+  Modal.prototype.backdrop = function (callback) {
+    var that = this
+    var animate = this.$element.hasClass('fade') ? 'fade' : ''
+
+    if (this.isShown && this.options.backdrop) {
+      var doAnimate = $.support.transition && animate
+
+      this.$backdrop = $(document.createElement('div'))
+        .addClass('modal-backdrop ' + animate)
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
+
+      if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
+
+      this.$backdrop.addClass('in')
+
+      if (!callback) return
+
+      doAnimate ?
+        this.$backdrop
+          .one('bsTransitionEnd', callback)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callback()
+
+    } else if (!this.isShown && this.$backdrop) {
+      this.$backdrop.removeClass('in')
+
+      var callbackRemove = function () {
+        that.removeBackdrop()
+        callback && callback()
+      }
+      $.support.transition && this.$element.hasClass('fade') ?
+        this.$backdrop
+          .one('bsTransitionEnd', callbackRemove)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callbackRemove()
+
+    } else if (callback) {
+      callback()
+    }
+  }
+
+  // these following methods are used to handle overflowing modals
+
+  Modal.prototype.handleUpdate = function () {
+    this.adjustDialog()
+  }
+
+  Modal.prototype.adjustDialog = function () {
+    var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
+
+    this.$element.css({
+      paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
+      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
+    })
+  }
+
+  Modal.prototype.resetAdjustments = function () {
+    this.$element.css({
+      paddingLeft: '',
+      paddingRight: ''
+    })
+  }
+
+  Modal.prototype.checkScrollbar = function () {
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
+    this.scrollbarWidth = this.measureScrollbar()
+  }
+
+  Modal.prototype.setScrollbar = function () {
+    var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
+    if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
+  }
+
+  Modal.prototype.resetScrollbar = function () {
+    this.$body.css('padding-right', this.originalBodyPad)
+  }
+
+  Modal.prototype.measureScrollbar = function () { // thx walsh
+    var scrollDiv = document.createElement('div')
+    scrollDiv.className = 'modal-scrollbar-measure'
+    this.$body.append(scrollDiv)
+    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
+    this.$body[0].removeChild(scrollDiv)
+    return scrollbarWidth
+  }
+
+
+  // MODAL PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option, _relatedTarget) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.modal')
+      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
+      if (typeof option == 'string') data[option](_relatedTarget)
+      else if (options.show) data.show(_relatedTarget)
+    })
+  }
+
+  var old = $.fn.modal
+
+  $.fn.modal             = Plugin
+  $.fn.modal.Constructor = Modal
+
+
+  // MODAL NO CONFLICT
+  // =================
+
+  $.fn.modal.noConflict = function () {
+    $.fn.modal = old
+    return this
+  }
+
+
+  // MODAL DATA-API
+  // ==============
+
+  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
+    var $this   = $(this)
+    var href    = $this.attr('href')
+    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
+    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+
+    if ($this.is('a')) e.preventDefault()
+
+    $target.one('show.bs.modal', function (showEvent) {
+      if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
+      $target.one('hidden.bs.modal', function () {
+        $this.is(':visible') && $this.trigger('focus')
+      })
+    })
+    Plugin.call($target, option, this)
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: tooltip.js v3.3.7
+ * http://getbootstrap.com/javascript/#tooltip
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TOOLTIP PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Tooltip = function (element, options) {
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
+    this.$element   = null
+    this.inState    = null
+
+    this.init('tooltip', element, options)
+  }
+
+  Tooltip.VERSION  = '3.3.7'
+
+  Tooltip.TRANSITION_DURATION = 150
+
+  Tooltip.DEFAULTS = {
+    animation: true,
+    placement: 'top',
+    selector: false,
+    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+    trigger: 'hover focus',
+    title: '',
+    delay: 0,
+    html: false,
+    container: false,
+    viewport: {
+      selector: 'body',
+      padding: 0
+    }
+  }
+
+  Tooltip.prototype.init = function (type, element, options) {
+    this.enabled   = true
+    this.type      = type
+    this.$element  = $(element)
+    this.options   = this.getOptions(options)
+    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
+    this.inState   = { click: false, hover: false, focus: false }
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
+
+    var triggers = this.options.trigger.split(' ')
+
+    for (var i = triggers.length; i--;) {
+      var trigger = triggers[i]
+
+      if (trigger == 'click') {
+        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+      } else if (trigger != 'manual') {
+        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
+        var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
+
+        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
+        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+      }
+    }
+
+    this.options.selector ?
+      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+      this.fixTitle()
+  }
+
+  Tooltip.prototype.getDefaults = function () {
+    return Tooltip.DEFAULTS
+  }
+
+  Tooltip.prototype.getOptions = function (options) {
+    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+
+    if (options.delay && typeof options.delay == 'number') {
+      options.delay = {
+        show: options.delay,
+        hide: options.delay
+      }
+    }
+
+    return options
+  }
+
+  Tooltip.prototype.getDelegateOptions = function () {
+    var options  = {}
+    var defaults = this.getDefaults()
+
+    this._options && $.each(this._options, function (key, value) {
+      if (defaults[key] != value) options[key] = value
+    })
+
+    return options
+  }
+
+  Tooltip.prototype.enter = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusin' ? 'focus' : 'hover'] = true
+    }
+
+    if (self.tip().hasClass('in') || self.hoverState == 'in') {
+      self.hoverState = 'in'
+      return
+    }
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'in'
+
+    if (!self.options.delay || !self.options.delay.show) return self.show()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'in') self.show()
+    }, self.options.delay.show)
+  }
+
+  Tooltip.prototype.isInStateTrue = function () {
+    for (var key in this.inState) {
+      if (this.inState[key]) return true
+    }
+
+    return false
+  }
+
+  Tooltip.prototype.leave = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
+    }
+
+    if (self.isInStateTrue()) return
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'out'
+
+    if (!self.options.delay || !self.options.delay.hide) return self.hide()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'out') self.hide()
+    }, self.options.delay.hide)
+  }
+
+  Tooltip.prototype.show = function () {
+    var e = $.Event('show.bs.' + this.type)
+
+    if (this.hasContent() && this.enabled) {
+      this.$element.trigger(e)
+
+      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
+      if (e.isDefaultPrevented() || !inDom) return
+      var that = this
+
+      var $tip = this.tip()
+
+      var tipId = this.getUID(this.type)
+
+      this.setContent()
+      $tip.attr('id', tipId)
+      this.$element.attr('aria-describedby', tipId)
+
+      if (this.options.animation) $tip.addClass('fade')
+
+      var placement = typeof this.options.placement == 'function' ?
+        this.options.placement.call(this, $tip[0], this.$element[0]) :
+        this.options.placement
+
+      var autoToken = /\s?auto?\s?/i
+      var autoPlace = autoToken.test(placement)
+      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
+
+      $tip
+        .detach()
+        .css({ top: 0, left: 0, display: 'block' })
+        .addClass(placement)
+        .data('bs.' + this.type, this)
+
+      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+      this.$element.trigger('inserted.bs.' + this.type)
+
+      var pos          = this.getPosition()
+      var actualWidth  = $tip[0].offsetWidth
+      var actualHeight = $tip[0].offsetHeight
+
+      if (autoPlace) {
+        var orgPlacement = placement
+        var viewportDim = this.getPosition(this.$viewport)
+
+        placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
+                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
+                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
+                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
+                    placement
+
+        $tip
+          .removeClass(orgPlacement)
+          .addClass(placement)
+      }
+
+      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
+
+      this.applyPlacement(calculatedOffset, placement)
+
+      var complete = function () {
+        var prevHoverState = that.hoverState
+        that.$element.trigger('shown.bs.' + that.type)
+        that.hoverState = null
+
+        if (prevHoverState == 'out') that.leave(that)
+      }
+
+      $.support.transition && this.$tip.hasClass('fade') ?
+        $tip
+          .one('bsTransitionEnd', complete)
+          .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+        complete()
+    }
+  }
+
+  Tooltip.prototype.applyPlacement = function (offset, placement) {
+    var $tip   = this.tip()
+    var width  = $tip[0].offsetWidth
+    var height = $tip[0].offsetHeight
+
+    // manually read margins because getBoundingClientRect includes difference
+    var marginTop = parseInt($tip.css('margin-top'), 10)
+    var marginLeft = parseInt($tip.css('margin-left'), 10)
+
+    // we must check for NaN for ie 8/9
+    if (isNaN(marginTop))  marginTop  = 0
+    if (isNaN(marginLeft)) marginLeft = 0
+
+    offset.top  += marginTop
+    offset.left += marginLeft
+
+    // $.fn.offset doesn't round pixel values
+    // so we use setOffset directly with our own function B-0
+    $.offset.setOffset($tip[0], $.extend({
+      using: function (props) {
+        $tip.css({
+          top: Math.round(props.top),
+          left: Math.round(props.left)
+        })
+      }
+    }, offset), 0)
+
+    $tip.addClass('in')
+
+    // check to see if placing tip in new offset caused the tip to resize itself
+    var actualWidth  = $tip[0].offsetWidth
+    var actualHeight = $tip[0].offsetHeight
+
+    if (placement == 'top' && actualHeight != height) {
+      offset.top = offset.top + height - actualHeight
+    }
+
+    var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
+
+    if (delta.left) offset.left += delta.left
+    else offset.top += delta.top
+
+    var isVertical          = /top|bottom/.test(placement)
+    var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
+    var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
+
+    $tip.offset(offset)
+    this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
+  }
+
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
+    this.arrow()
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
+  }
+
+  Tooltip.prototype.setContent = function () {
+    var $tip  = this.tip()
+    var title = this.getTitle()
+
+    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    $tip.removeClass('fade in top bottom left right')
+  }
+
+  Tooltip.prototype.hide = function (callback) {
+    var that = this
+    var $tip = $(this.$tip)
+    var e    = $.Event('hide.bs.' + this.type)
+
+    function complete() {
+      if (that.hoverState != 'in') $tip.detach()
+      if (that.$element) { // TODO: Check whether guarding this code with this `if` is really necessary.
+        that.$element
+          .removeAttr('aria-describedby')
+          .trigger('hidden.bs.' + that.type)
+      }
+      callback && callback()
+    }
+
+    this.$element.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    $tip.removeClass('in')
+
+    $.support.transition && $tip.hasClass('fade') ?
+      $tip
+        .one('bsTransitionEnd', complete)
+        .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+      complete()
+
+    this.hoverState = null
+
+    return this
+  }
+
+  Tooltip.prototype.fixTitle = function () {
+    var $e = this.$element
+    if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
+      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+    }
+  }
+
+  Tooltip.prototype.hasContent = function () {
+    return this.getTitle()
+  }
+
+  Tooltip.prototype.getPosition = function ($element) {
+    $element   = $element || this.$element
+
+    var el     = $element[0]
+    var isBody = el.tagName == 'BODY'
+
+    var elRect    = el.getBoundingClientRect()
+    if (elRect.width == null) {
+      // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
+      elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
+    }
+    var isSvg = window.SVGElement && el instanceof window.SVGElement
+    // Avoid using $.offset() on SVGs since it gives incorrect results in jQuery 3.
+    // See https://github.com/twbs/bootstrap/issues/20280
+    var elOffset  = isBody ? { top: 0, left: 0 } : (isSvg ? null : $element.offset())
+    var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
+    var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
+
+    return $.extend({}, elRect, scroll, outerDims, elOffset)
+  }
+
+  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
+    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
+        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
+
+  }
+
+  Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
+    var delta = { top: 0, left: 0 }
+    if (!this.$viewport) return delta
+
+    var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
+    var viewportDimensions = this.getPosition(this.$viewport)
+
+    if (/right|left/.test(placement)) {
+      var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
+      var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
+      if (topEdgeOffset < viewportDimensions.top) { // top overflow
+        delta.top = viewportDimensions.top - topEdgeOffset
+      } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
+        delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
+      }
+    } else {
+      var leftEdgeOffset  = pos.left - viewportPadding
+      var rightEdgeOffset = pos.left + viewportPadding + actualWidth
+      if (leftEdgeOffset < viewportDimensions.left) { // left overflow
+        delta.left = viewportDimensions.left - leftEdgeOffset
+      } else if (rightEdgeOffset > viewportDimensions.right) { // right overflow
+        delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
+      }
+    }
+
+    return delta
+  }
+
+  Tooltip.prototype.getTitle = function () {
+    var title
+    var $e = this.$element
+    var o  = this.options
+
+    title = $e.attr('data-original-title')
+      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+
+    return title
+  }
+
+  Tooltip.prototype.getUID = function (prefix) {
+    do prefix += ~~(Math.random() * 1000000)
+    while (document.getElementById(prefix))
+    return prefix
+  }
+
+  Tooltip.prototype.tip = function () {
+    if (!this.$tip) {
+      this.$tip = $(this.options.template)
+      if (this.$tip.length != 1) {
+        throw new Error(this.type + ' `template` option must consist of exactly 1 top-level element!')
+      }
+    }
+    return this.$tip
+  }
+
+  Tooltip.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
+  }
+
+  Tooltip.prototype.enable = function () {
+    this.enabled = true
+  }
+
+  Tooltip.prototype.disable = function () {
+    this.enabled = false
+  }
+
+  Tooltip.prototype.toggleEnabled = function () {
+    this.enabled = !this.enabled
+  }
+
+  Tooltip.prototype.toggle = function (e) {
+    var self = this
+    if (e) {
+      self = $(e.currentTarget).data('bs.' + this.type)
+      if (!self) {
+        self = new this.constructor(e.currentTarget, this.getDelegateOptions())
+        $(e.currentTarget).data('bs.' + this.type, self)
+      }
+    }
+
+    if (e) {
+      self.inState.click = !self.inState.click
+      if (self.isInStateTrue()) self.enter(self)
+      else self.leave(self)
+    } else {
+      self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+    }
+  }
+
+  Tooltip.prototype.destroy = function () {
+    var that = this
+    clearTimeout(this.timeout)
+    this.hide(function () {
+      that.$element.off('.' + that.type).removeData('bs.' + that.type)
+      if (that.$tip) {
+        that.$tip.detach()
+      }
+      that.$tip = null
+      that.$arrow = null
+      that.$viewport = null
+      that.$element = null
+    })
+  }
+
+
+  // TOOLTIP PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.tooltip')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tooltip
+
+  $.fn.tooltip             = Plugin
+  $.fn.tooltip.Constructor = Tooltip
+
+
+  // TOOLTIP NO CONFLICT
+  // ===================
+
+  $.fn.tooltip.noConflict = function () {
+    $.fn.tooltip = old
+    return this
+  }
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: popover.js v3.3.7
+ * http://getbootstrap.com/javascript/#popovers
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // POPOVER PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Popover = function (element, options) {
+    this.init('popover', element, options)
+  }
+
+  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
+
+  Popover.VERSION  = '3.3.7'
+
+  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
+    placement: 'right',
+    trigger: 'click',
+    content: '',
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+  })
+
+
+  // NOTE: POPOVER EXTENDS tooltip.js
+  // ================================
+
+  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
+
+  Popover.prototype.constructor = Popover
+
+  Popover.prototype.getDefaults = function () {
+    return Popover.DEFAULTS
+  }
+
+  Popover.prototype.setContent = function () {
+    var $tip    = this.tip()
+    var title   = this.getTitle()
+    var content = this.getContent()
+
+    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
+      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
+    ](content)
+
+    $tip.removeClass('fade top bottom left right in')
+
+    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
+    // this manually by checking the contents.
+    if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
+  }
+
+  Popover.prototype.hasContent = function () {
+    return this.getTitle() || this.getContent()
+  }
+
+  Popover.prototype.getContent = function () {
+    var $e = this.$element
+    var o  = this.options
+
+    return $e.attr('data-content')
+      || (typeof o.content == 'function' ?
+            o.content.call($e[0]) :
+            o.content)
+  }
+
+  Popover.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
+  }
+
+
+  // POPOVER PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.popover')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.popover
+
+  $.fn.popover             = Plugin
+  $.fn.popover.Constructor = Popover
+
+
+  // POPOVER NO CONFLICT
+  // ===================
+
+  $.fn.popover.noConflict = function () {
+    $.fn.popover = old
+    return this
+  }
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: scrollspy.js v3.3.7
+ * http://getbootstrap.com/javascript/#scrollspy
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // SCROLLSPY CLASS DEFINITION
+  // ==========================
+
+  function ScrollSpy(element, options) {
+    this.$body          = $(document.body)
+    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
+    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
+    this.selector       = (this.options.target || '') + ' .nav li > a'
+    this.offsets        = []
+    this.targets        = []
+    this.activeTarget   = null
+    this.scrollHeight   = 0
+
+    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
+    this.refresh()
+    this.process()
+  }
+
+  ScrollSpy.VERSION  = '3.3.7'
+
+  ScrollSpy.DEFAULTS = {
+    offset: 10
+  }
+
+  ScrollSpy.prototype.getScrollHeight = function () {
+    return this.$scrollElement[0].scrollHeight || Math.max(this.$body[0].scrollHeight, document.documentElement.scrollHeight)
+  }
+
+  ScrollSpy.prototype.refresh = function () {
+    var that          = this
+    var offsetMethod  = 'offset'
+    var offsetBase    = 0
+
+    this.offsets      = []
+    this.targets      = []
+    this.scrollHeight = this.getScrollHeight()
+
+    if (!$.isWindow(this.$scrollElement[0])) {
+      offsetMethod = 'position'
+      offsetBase   = this.$scrollElement.scrollTop()
+    }
+
+    this.$body
+      .find(this.selector)
+      .map(function () {
+        var $el   = $(this)
+        var href  = $el.data('target') || $el.attr('href')
+        var $href = /^#./.test(href) && $(href)
+
+        return ($href
+          && $href.length
+          && $href.is(':visible')
+          && [[$href[offsetMethod]().top + offsetBase, href]]) || null
+      })
+      .sort(function (a, b) { return a[0] - b[0] })
+      .each(function () {
+        that.offsets.push(this[0])
+        that.targets.push(this[1])
+      })
+  }
+
+  ScrollSpy.prototype.process = function () {
+    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
+    var scrollHeight = this.getScrollHeight()
+    var maxScroll    = this.options.offset + scrollHeight - this.$scrollElement.height()
+    var offsets      = this.offsets
+    var targets      = this.targets
+    var activeTarget = this.activeTarget
+    var i
+
+    if (this.scrollHeight != scrollHeight) {
+      this.refresh()
+    }
+
+    if (scrollTop >= maxScroll) {
+      return activeTarget != (i = targets[targets.length - 1]) && this.activate(i)
+    }
+
+    if (activeTarget && scrollTop < offsets[0]) {
+      this.activeTarget = null
+      return this.clear()
+    }
+
+    for (i = offsets.length; i--;) {
+      activeTarget != targets[i]
+        && scrollTop >= offsets[i]
+        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
+        && this.activate(targets[i])
+    }
+  }
+
+  ScrollSpy.prototype.activate = function (target) {
+    this.activeTarget = target
+
+    this.clear()
+
+    var selector = this.selector +
+      '[data-target="' + target + '"],' +
+      this.selector + '[href="' + target + '"]'
+
+    var active = $(selector)
+      .parents('li')
+      .addClass('active')
+
+    if (active.parent('.dropdown-menu').length) {
+      active = active
+        .closest('li.dropdown')
+        .addClass('active')
+    }
+
+    active.trigger('activate.bs.scrollspy')
+  }
+
+  ScrollSpy.prototype.clear = function () {
+    $(this.selector)
+      .parentsUntil(this.options.target, '.active')
+      .removeClass('active')
+  }
+
+
+  // SCROLLSPY PLUGIN DEFINITION
+  // ===========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.scrollspy')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.scrollspy
+
+  $.fn.scrollspy             = Plugin
+  $.fn.scrollspy.Constructor = ScrollSpy
+
+
+  // SCROLLSPY NO CONFLICT
+  // =====================
+
+  $.fn.scrollspy.noConflict = function () {
+    $.fn.scrollspy = old
+    return this
+  }
+
+
+  // SCROLLSPY DATA-API
+  // ==================
+
+  $(window).on('load.bs.scrollspy.data-api', function () {
+    $('[data-spy="scroll"]').each(function () {
+      var $spy = $(this)
+      Plugin.call($spy, $spy.data())
+    })
+  })
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: tab.js v3.3.7
+ * http://getbootstrap.com/javascript/#tabs
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TAB CLASS DEFINITION
+  // ====================
+
+  var Tab = function (element) {
+    // jscs:disable requireDollarBeforejQueryAssignment
+    this.element = $(element)
+    // jscs:enable requireDollarBeforejQueryAssignment
+  }
+
+  Tab.VERSION = '3.3.7'
+
+  Tab.TRANSITION_DURATION = 150
+
+  Tab.prototype.show = function () {
+    var $this    = this.element
+    var $ul      = $this.closest('ul:not(.dropdown-menu)')
+    var selector = $this.data('target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    if ($this.parent('li').hasClass('active')) return
+
+    var $previous = $ul.find('.active:last a')
+    var hideEvent = $.Event('hide.bs.tab', {
+      relatedTarget: $this[0]
+    })
+    var showEvent = $.Event('show.bs.tab', {
+      relatedTarget: $previous[0]
+    })
+
+    $previous.trigger(hideEvent)
+    $this.trigger(showEvent)
+
+    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
+
+    var $target = $(selector)
+
+    this.activate($this.closest('li'), $ul)
+    this.activate($target, $target.parent(), function () {
+      $previous.trigger({
+        type: 'hidden.bs.tab',
+        relatedTarget: $this[0]
+      })
+      $this.trigger({
+        type: 'shown.bs.tab',
+        relatedTarget: $previous[0]
+      })
+    })
+  }
+
+  Tab.prototype.activate = function (element, container, callback) {
+    var $active    = container.find('> .active')
+    var transition = callback
+      && $.support.transition
+      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
+
+    function next() {
+      $active
+        .removeClass('active')
+        .find('> .dropdown-menu > .active')
+          .removeClass('active')
+        .end()
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', false)
+
+      element
+        .addClass('active')
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', true)
+
+      if (transition) {
+        element[0].offsetWidth // reflow for transition
+        element.addClass('in')
+      } else {
+        element.removeClass('fade')
+      }
+
+      if (element.parent('.dropdown-menu').length) {
+        element
+          .closest('li.dropdown')
+            .addClass('active')
+          .end()
+          .find('[data-toggle="tab"]')
+            .attr('aria-expanded', true)
+      }
+
+      callback && callback()
+    }
+
+    $active.length && transition ?
+      $active
+        .one('bsTransitionEnd', next)
+        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
+      next()
+
+    $active.removeClass('in')
+  }
+
+
+  // TAB PLUGIN DEFINITION
+  // =====================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.tab')
+
+      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tab
+
+  $.fn.tab             = Plugin
+  $.fn.tab.Constructor = Tab
+
+
+  // TAB NO CONFLICT
+  // ===============
+
+  $.fn.tab.noConflict = function () {
+    $.fn.tab = old
+    return this
+  }
+
+
+  // TAB DATA-API
+  // ============
+
+  var clickHandler = function (e) {
+    e.preventDefault()
+    Plugin.call($(this), 'show')
+  }
+
+  $(document)
+    .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
+    .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
+
+}(jQuery);
+
+/* ========================================================================
+ * Bootstrap: affix.js v3.3.7
+ * http://getbootstrap.com/javascript/#affix
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // AFFIX CLASS DEFINITION
+  // ======================
+
+  var Affix = function (element, options) {
+    this.options = $.extend({}, Affix.DEFAULTS, options)
+
+    this.$target = $(this.options.target)
+      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
+      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
+
+    this.$element     = $(element)
+    this.affixed      = null
+    this.unpin        = null
+    this.pinnedOffset = null
+
+    this.checkPosition()
+  }
+
+  Affix.VERSION  = '3.3.7'
+
+  Affix.RESET    = 'affix affix-top affix-bottom'
+
+  Affix.DEFAULTS = {
+    offset: 0,
+    target: window
+  }
+
+  Affix.prototype.getState = function (scrollHeight, height, offsetTop, offsetBottom) {
+    var scrollTop    = this.$target.scrollTop()
+    var position     = this.$element.offset()
+    var targetHeight = this.$target.height()
+
+    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
+
+    if (this.affixed == 'bottom') {
+      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
+      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
+    }
+
+    var initializing   = this.affixed == null
+    var colliderTop    = initializing ? scrollTop : position.top
+    var colliderHeight = initializing ? targetHeight : height
+
+    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
+    if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
+
+    return false
+  }
+
+  Affix.prototype.getPinnedOffset = function () {
+    if (this.pinnedOffset) return this.pinnedOffset
+    this.$element.removeClass(Affix.RESET).addClass('affix')
+    var scrollTop = this.$target.scrollTop()
+    var position  = this.$element.offset()
+    return (this.pinnedOffset = position.top - scrollTop)
+  }
+
+  Affix.prototype.checkPositionWithEventLoop = function () {
+    setTimeout($.proxy(this.checkPosition, this), 1)
+  }
+
+  Affix.prototype.checkPosition = function () {
+    if (!this.$element.is(':visible')) return
+
+    var height       = this.$element.height()
+    var offset       = this.options.offset
+    var offsetTop    = offset.top
+    var offsetBottom = offset.bottom
+    var scrollHeight = Math.max($(document).height(), $(document.body).height())
+
+    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
+    if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
+    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
+
+    var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)
+
+    if (this.affixed != affix) {
+      if (this.unpin != null) this.$element.css('top', '')
+
+      var affixType = 'affix' + (affix ? '-' + affix : '')
+      var e         = $.Event(affixType + '.bs.affix')
+
+      this.$element.trigger(e)
+
+      if (e.isDefaultPrevented()) return
+
+      this.affixed = affix
+      this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null
+
+      this.$element
+        .removeClass(Affix.RESET)
+        .addClass(affixType)
+        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
+    }
+
+    if (affix == 'bottom') {
+      this.$element.offset({
+        top: scrollHeight - height - offsetBottom
+      })
+    }
+  }
+
+
+  // AFFIX PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.affix')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.affix
+
+  $.fn.affix             = Plugin
+  $.fn.affix.Constructor = Affix
+
+
+  // AFFIX NO CONFLICT
+  // =================
+
+  $.fn.affix.noConflict = function () {
+    $.fn.affix = old
+    return this
+  }
+
+
+  // AFFIX DATA-API
+  // ==============
+
+  $(window).on('load', function () {
+    $('[data-spy="affix"]').each(function () {
+      var $spy = $(this)
+      var data = $spy.data()
+
+      data.offset = data.offset || {}
+
+      if (data.offsetBottom != null) data.offset.bottom = data.offsetBottom
+      if (data.offsetTop    != null) data.offset.top    = data.offsetTop
+
+      Plugin.call($spy, data)
+    })
+  })
+
+}(jQuery);
 (function($) {
 
   var cocoon_element_counter = 0;
@@ -62973,268 +67635,1261 @@ module.exports = function(reqctx) {
 /******/ ]);
 });
 var BDM = React.createClass({
-    displayName: "BDM",
+  displayName: "BDM",
 
-    render: function () {
-        return React.createElement(
-            "div",
-            null,
-            React.createElement(
-                "p",
-                null,
-                " Bdm verification "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Bdm verification",
-                name: "user[agency_admin_attributes][agency_attributes][bdm_verification_status]",
-                id: "user_agency_admin_attributes_agency_attributes_bdm_verification_status", required: true })
-        );
-    }
+  render: function () {
+    return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "p",
+        null,
+        " Bdm verification "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Bdm verification",
+        id: "user_agency_admin_attributes_agency_attributes_bdm_verification_id",
+        name: "user[agency_admin_attributes][agency_attributes][bdm_verification_id]"
+      })
+    );
+  }
 });
 
 var AgencyAttributes = React.createClass({
-    displayName: "AgencyAttributes",
+  displayName: "AgencyAttributes",
 
-    getInitialState: function () {
-        return { showBDM: false,
-            same_Address: false,
-            address: '',
-            mailing: '' };
-    },
+  getInitialState: function () {
+    return {
+      showBDM: false,
+      same_Address: false,
+      address: '',
+      mailing: ''
+    };
+  },
 
-    generateAtt: function (name_id, type) {
-        if (name_id == "name") {
-            return "user[agency_admin_attributes][agency_attributes][" + type + "]";
-        } else if (name_id == "id") {
-            return "user_agency_admin_attributes_agency_attributes_" + type;
-        }
-    },
-
-    handleChange: function (event) {
-        this.setState({ address: event.target.value });
-        if (this.state.same_Address) {
-            this.setState({ mailing: event.target.value,
-                address: event.target.value });
-        }
-    },
-
-    render: function () {
-        return React.createElement(
-            "div",
-            { className: "fields" },
-            React.createElement(
-                "h4",
-                null,
-                " Agency Information "
-            ),
-            React.createElement(
-                "p",
-                null,
-                " Company Name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Company Name",
-                name: this.generateAtt("name", "company_name"),
-                id: this.generateAtt("id", "company_name"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Business name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Business name",
-                name: this.generateAtt("name", "business_name"),
-                id: this.generateAtt("id", "business_name"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Abn "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Abn",
-                name: this.generateAtt("name", "abn"),
-                id: this.generateAtt("id", "abn"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Address "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Address", onChange: this.handleChange,
-                name: this.generateAtt("name", "address"),
-                id: this.generateAtt("id", "address"), required: true }),
-            React.createElement(
-                "div",
-                { className: "field" },
-                React.createElement(
-                    "label",
-                    null,
-                    React.createElement("input", { type: "checkbox", value: "1", onChange: this.onSame,
-                        name: this.generateAtt("name", "mailing_same_address"),
-                        id: this.generateAtt("id", "mailing_same_address") }),
-                    "Mailing address same as billing address"
-                ),
-                React.createElement(
-                    "p",
-                    null,
-                    " Mailing address "
-                ),
-                React.createElement("input", { type: "text", placeholder: "Mailing address", value: this.state.mailing,
-                    name: this.generateAtt("name", "mailing_address"),
-                    id: this.generateAtt("id", "mailing_address"), required: true })
-            ),
-            React.createElement(
-                "p",
-                null,
-                " Phone "
-            ),
-            React.createElement("input", { type: "tel", placeholder: "Phone",
-                name: this.generateAtt("name", "phone"),
-                id: this.generateAtt("id", "phone") }),
-            React.createElement(
-                "p",
-                null,
-                " Mobile phone "
-            ),
-            React.createElement("input", { type: "tel", placeholder: "Mobile phone",
-                name: this.generateAtt("name", "mobile_phone"),
-                id: this.generateAtt("id", "mobile_phone") }),
-            React.createElement(
-                "div",
-                { className: "license-type" },
-                React.createElement(
-                    "p",
-                    null,
-                    " License Type "
-                ),
-                React.createElement(
-                    "label",
-                    { className: "one-half column" },
-                    React.createElement("input", { type: "radio", value: "Individual License",
-                        name: this.generateAtt("name", "license_type"),
-                        id: this.generateAtt("id", "license_type_individual_license"), required: true }),
-                    "Individual License"
-                ),
-                React.createElement(
-                    "label",
-                    { className: "one-half column" },
-                    React.createElement("input", { type: "radio", value: "Corporate License",
-                        name: this.generateAtt("name", "license_type"),
-                        id: this.generateAtt("id", "license_type_corporate_license"), required: true }),
-                    "Corporate License"
-                )
-            ),
-            React.createElement(
-                "p",
-                null,
-                " License number "
-            ),
-            React.createElement("input", { type: "text", placeholder: "License number",
-                name: this.generateAtt("name", "license_number"),
-                id: this.generateAtt("id", "license_number"), required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Corporation license number "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Corporation license number",
-                name: this.generateAtt("name", "corporation_license_number"),
-                id: this.generateAtt("id", "corporation_license_number"), required: true }),
-            React.createElement(
-                "div",
-                { className: "field" },
-                React.createElement(
-                    "label",
-                    null,
-                    React.createElement("input", { type: "checkbox", value: "1", onChange: this.onBDM,
-                        name: this.generateAtt("name", "bdm_verification_status"),
-                        id: this.generateAtt("id", "bdm_verification_status") }),
-                    "I Have BDM verfication status"
-                ),
-                this.state.showBDM ? React.createElement(BDM, null) : null
-            )
-        );
-    },
-    onBDM: function () {
-        this.setState({ showBDM: !this.state.showBDM });
-    },
-    onSame: function () {
-        this.setState({ same_Address: !this.state.same_Address,
-            mailing: this.state.address });
+  generateAtt: function (name_id, type) {
+    if (name_id == "name") {
+      return "user[agency_admin_attributes][agency_attributes][" + type + "]";
+    } else if (name_id == "id") {
+      return "user_agency_admin_attributes_agency_attributes_" + type;
     }
+  },
+
+  handleChange: function (event) {
+    this.setState({ address: event.target.value });
+    if (this.state.same_Address) {
+      this.setState({
+        mailing: event.target.value,
+        address: event.target.value
+      });
+    }
+  },
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "fields" },
+      React.createElement(
+        "h4",
+        null,
+        " Agency Information "
+      ),
+      React.createElement(
+        "p",
+        null,
+        " Company Name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Company Name",
+        id: this.generateAtt("id", "company_name"),
+        name: this.generateAtt("name", "company_name")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Business name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Business name",
+        id: this.generateAtt("id", "business_name"),
+        name: this.generateAtt("name", "business_name")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Abn "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Abn",
+        id: this.generateAtt("id", "abn"),
+        name: this.generateAtt("name", "abn")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Address "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Address",
+        onChange: this.handleChange,
+        id: this.generateAtt("id", "address"),
+        name: this.generateAtt("name", "address")
+      }),
+      React.createElement(
+        "div",
+        { className: "field" },
+        React.createElement(
+          "label",
+          null,
+          React.createElement("input", {
+            value: "1",
+            type: "checkbox",
+            onChange: this.onSame,
+            id: this.generateAtt("id", "mailing_same_address"),
+            name: this.generateAtt("name", "mailing_same_address")
+          }),
+          "Mailing address same as billing address"
+        ),
+        React.createElement(
+          "p",
+          null,
+          " Mailing address "
+        ),
+        React.createElement("input", {
+          required: true,
+          type: "text",
+          value: this.state.mailing,
+          placeholder: "Mailing address",
+          id: this.generateAtt("id", "mailing_address"),
+          name: this.generateAtt("name", "mailing_address")
+        })
+      ),
+      React.createElement(
+        "p",
+        null,
+        " Phone "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "tel",
+        placeholder: "Phone",
+        id: this.generateAtt("id", "phone"),
+        name: this.generateAtt("name", "phone")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Mobile phone "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "tel",
+        placeholder: "Mobile phone",
+        id: this.generateAtt("id", "mobile_phone"),
+        name: this.generateAtt("name", "mobile_phone")
+      }),
+      React.createElement(
+        "div",
+        { className: "license-type" },
+        React.createElement(
+          "p",
+          null,
+          " License Type "
+        ),
+        React.createElement(
+          "label",
+          { className: "one-half column" },
+          React.createElement("input", {
+            required: true,
+            type: "radio",
+            value: "Individual License",
+            name: this.generateAtt("name", "license_type"),
+            id: this.generateAtt("id", "license_type_individual_license")
+          }),
+          "Individual License"
+        ),
+        React.createElement(
+          "label",
+          { className: "one-half column" },
+          React.createElement("input", {
+            required: true,
+            type: "radio",
+            value: "Corporate License",
+            name: this.generateAtt("name", "license_type"),
+            id: this.generateAtt("id", "license_type_corporate_license")
+          }),
+          "Corporate License"
+        )
+      ),
+      React.createElement(
+        "p",
+        null,
+        " License number "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "License number",
+        id: this.generateAtt("id", "license_number"),
+        name: this.generateAtt("name", "license_number")
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Corporation license number "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Corporation license number",
+        id: this.generateAtt("id", "corporation_license_number"),
+        name: this.generateAtt("name", "corporation_license_number")
+      }),
+      React.createElement(
+        "div",
+        { className: "field" },
+        React.createElement(
+          "label",
+          null,
+          React.createElement("input", {
+            type: "checkbox",
+            value: "1",
+            onChange: this.onBDM,
+            id: this.generateAtt("id", "bdm_verification_status"),
+            name: this.generateAtt("name", "bdm_verification_status")
+          }),
+          "I Have BDM verfication status"
+        ),
+        this.state.showBDM && React.createElement(BDM, null)
+      )
+    );
+  },
+  onBDM: function () {
+    this.setState({ showBDM: !this.state.showBDM });
+  },
+  onSame: function () {
+    this.setState({
+      same_Address: !this.state.same_Address,
+      mailing: this.state.address
+    });
+  }
 });
 
 var Agency = React.createClass({
-    displayName: "Agency",
+  displayName: "Agency",
 
-    render: function () {
-        return React.createElement(
-            "form",
-            { role: "form", className: "agencies", id: "new_user", action: "/agencies", acceptCharset: "UTF-8", method: "post" },
-            React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
-            React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
-            React.createElement(
-                "p",
-                null,
-                " Email "
-            ),
-            React.createElement("input", { type: "email", placeholder: "Email",
-                name: "user[email]",
-                id: "user_email", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Password "
-            ),
-            React.createElement("input", { type: "password", placeholder: "Password",
-                name: "user[password]",
-                id: "user_password", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Password confirmation "
-            ),
-            React.createElement("input", { type: "password", placeholder: "Password",
-                name: "user[password_confirmation]",
-                id: "user_password_confirmation", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " First name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "First name",
-                name: "user[agency_admin_attributes][first_name]",
-                id: "user_agency_admin_attributes_first_name", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Last name "
-            ),
-            React.createElement("input", { type: "text", placeholder: "Last name",
-                name: "user[agency_admin_attributes][last_name]",
-                id: "user_agency_admin_attributes_last_name", required: true }),
-            React.createElement(
-                "p",
-                null,
-                " Mobile phone "
-            ),
-            React.createElement("input", { type: "tel", placeholder: "Mobile phone",
-                name: "user[agency_admin_attributes][mobile_phone]",
-                id: "user_agency_admin_attributes_mobile_phone" }),
-            React.createElement("hr", null),
-            React.createElement(AgencyAttributes, null),
-            React.createElement("input", { type: "submit", name: "commit", value: "Sign Up", className: "button-primary green", "data-disable-with": "Sign Up" }),
-            React.createElement(
-                "div",
-                { className: "have-account" },
-                React.createElement(
-                    "p",
-                    null,
-                    "Already have an Account?"
-                ),
-                React.createElement(
-                    "a",
-                    { href: "/login" },
-                    "Login"
-                )
-            )
-        );
-    }
+  render: function () {
+    return React.createElement(
+      "form",
+      { role: "form", className: "agencies", id: "new_user", action: "/agencies", acceptCharset: "UTF-8", method: "post" },
+      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+      React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+      React.createElement(
+        "p",
+        null,
+        " Email "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "email",
+        id: "user_email",
+        name: "user[email]",
+        placeholder: "Email",
+        autoCapitalize: "off",
+        autoCorrect: "off",
+        autoComplete: "off"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Password "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "password",
+        id: "user_password",
+        name: "user[password]",
+        placeholder: "Password"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Password confirmation "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "password",
+        placeholder: "Password",
+        id: "user_password_confirmation",
+        name: "user[password_confirmation]"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " First name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "First name",
+        id: "user_agency_admin_attributes_first_name",
+        name: "user[agency_admin_attributes][first_name]"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Last name "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "text",
+        placeholder: "Last name",
+        id: "user_agency_admin_attributes_last_name",
+        name: "user[agency_admin_attributes][last_name]"
+      }),
+      React.createElement(
+        "p",
+        null,
+        " Mobile phone "
+      ),
+      React.createElement("input", {
+        required: true,
+        type: "tel",
+        placeholder: "Mobile phone",
+        id: "user_agency_admin_attributes_mobile_phone",
+        name: "user[agency_admin_attributes][mobile_phone]"
+      }),
+      React.createElement("hr", null),
+      React.createElement(AgencyAttributes, null),
+      React.createElement("input", {
+        type: "submit",
+        name: "commit",
+        value: "Sign Up",
+        "data-disable-with": "Sign Up",
+        className: "button-primary green"
+      }),
+      React.createElement(
+        "div",
+        { className: "have-account" },
+        React.createElement(
+          "p",
+          null,
+          "Already have an Account?"
+        ),
+        React.createElement(
+          "a",
+          { href: "/login" },
+          "Login"
+        )
+      )
+    );
+  }
+});
+var notifyAppointment = {
+	cancel: {
+		title: "Create and Cancel Appointment",
+		content: "You was cancel and create appointment."
+	},
+	decline: {
+		title: "Create and Decline Appointment",
+		content: "You was decline and create appointment."
+	},
+	normal: {
+		title: "Create Appointment",
+		content: "You was create appointment."
+	}
+};
+
+var InfoAppointment = React.createClass({
+	displayName: "InfoAppointment",
+
+	getInitialState: function () {
+		return {
+			arrRole: ['AgencyAdmin', 'Agent']
+		};
+	},
+
+	btnView: function () {
+		var _props = this.props;
+		var appointment = _props.appointment;
+		var current_role = _props.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return React.createElement(BtnViewAppointment, { clickView: this.props.clickView });
+		} else if (appointment.status != 'Declined') {
+			return React.createElement(BtnViewAppointment, { clickView: this.props.clickView });
+		} else {
+			return null;
+		}
+	},
+
+	btnAccept: function () {
+		var _props2 = this.props;
+		var appointment = _props2.appointment;
+		var current_role = _props2.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnAcceptAppointment, { clickAccept: this.props.clickAccept });
+		} else {
+			return null;
+		}
+	},
+
+	btnDecline: function () {
+		var _props3 = this.props;
+		var appointment = _props3.appointment;
+		var current_role = _props3.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnDeclineAppointment, { clickDecline: this.props.clickDecline });
+		} else {
+			return null;
+		}
+	},
+
+	btnCancel: function () {
+		var _props4 = this.props;
+		var appointment = _props4.appointment;
+		var current_role = _props4.current_role;
+
+		if (appointment.status == "Accepted" && !this.state.arrRole.includes(current_role.role)) {
+			return React.createElement(BtnCancelAppointment, { clickCancel: this.props.clickCancel });
+		}
+
+		return null;
+	},
+
+	render: function () {
+		var _props5 = this.props;
+		var appointment = _props5.appointment;
+		var current_role = _props5.current_role;
+
+		var date = new Date(Date.parse(appointment.time)).toUTCString();
+		var arrDate = date.split(" ");
+		var hour = arrDate[4] ? arrDate[4] : "00:00";
+		var arrHour = hour.split(':');
+		var h = parseInt(arrHour[0]);
+		var m = arrHour[1];
+		var time = h > 12 ? h - 12 + ':' + m + ' PM' : h + ':' + m + ' AM';
+		return React.createElement(
+			"li",
+			{ className: "li-appointment" },
+			React.createElement(
+				"div",
+				{ className: "status" },
+				React.createElement(
+					"span",
+					null,
+					"Status: "
+				),
+				React.createElement(
+					"span",
+					{ className: "bt-status " + appointment.status },
+					appointment.status
+				)
+			),
+			React.createElement(
+				"div",
+				{ className: "date-time" },
+				React.createElement(
+					"p",
+					{ className: "date" },
+					React.createElement(
+						"span",
+						null,
+						"Date: "
+					),
+					React.createElement(
+						"span",
+						null,
+						moment(appointment.date).format('dddd LL')
+					)
+				),
+				React.createElement(
+					"p",
+					{ className: "time" },
+					React.createElement(
+						"span",
+						null,
+						"Time: "
+					),
+					React.createElement(
+						"span",
+						null,
+						time
+					)
+				)
+			),
+			React.createElement(
+				"div",
+				{ className: "button-appointment btn-appointment-mobile" },
+				this.btnView(),
+				this.btnAccept(),
+				this.btnDecline(),
+				this.btnCancel()
+			)
+		);
+	}
+});
+
+var ListAppointment = React.createClass({
+	displayName: "ListAppointment",
+
+	render: function () {
+		var _this = this;
+
+		var appointments = this.props.appointments;
+
+		return React.createElement(
+			"ul",
+			{ className: "content-appointment" },
+			appointments.map(function (appointment, key) {
+				return React.createElement(InfoAppointment, {
+					key: key,
+					appointment: appointment,
+					current_role: _this.props.current_role,
+					clickCancel: function () {
+						return _this.props.cancelAppointment(appointment);
+					},
+					clickAccept: function () {
+						_this.props.acceptAppointment(appointment);
+					},
+					clickDecline: function () {
+						_this.props.declineAppointment(appointment);
+					},
+					clickView: function () {
+						_this.props.viewItem('viewAppointment', appointment);
+					}
+				});
+			})
+		);
+	}
+});
+
+var AppointmentRequest = React.createClass({
+	displayName: "AppointmentRequest",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		var _props6 = this.props;
+		var appointments = _props6.appointments;
+		var title = _props6.title;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					null,
+					title
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.show,
+					className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+				})
+			),
+			this.state.show && this.props.appointments.length ? React.createElement(ListAppointment, {
+				appointments: appointments,
+				current_role: this.props.current_role,
+				viewItem: function (key, item) {
+					return _this2.props.viewItem(key, item);
+				},
+				cancelAppointment: function (value) {
+					return _this2.props.cancelAppointment(value);
+				},
+				acceptAppointment: function (value) {
+					return _this2.props.acceptAppointment(value);
+				},
+				declineAppointment: function (value) {
+					return _this2.props.declineAppointment(value);
+				}
+			}) : null
+		);
+	}
+});
+
+var AppointmentRequestMobile = React.createClass({
+	displayName: "AppointmentRequestMobile",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this3 = this;
+
+		var _props7 = this.props;
+		var appointments = _props7.appointments;
+		var title = _props7.title;
+
+		return React.createElement(
+			"div",
+			{ className: "activity-mobile" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						title
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						onClick: this.show,
+						className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+					})
+				),
+				appointments.length && !!this.state.show ? React.createElement(ListAppointment, {
+					appointments: appointments,
+					current_role: this.props.current_role,
+					viewItem: function (key, item) {
+						return _this3.props.viewItem(key, item);
+					},
+					cancelAppointment: function (value) {
+						return _this3.props.cancelAppointment(value);
+					},
+					acceptAppointment: function (value) {
+						return _this3.props.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.props.declineAppointment(value);
+					}
+				}) : null
+			)
+		);
+	}
+});
+var SelectTime = React.createClass({
+	displayName: "SelectTime",
+
+	getInitialState: function () {
+		return null;
+	},
+
+	makeHour: function () {
+		var date = [];
+		date.push(React.createElement(
+			"option",
+			{ key: "-1", value: "" },
+			"--"
+		));
+		var value = "";
+		for (var i = 0; i < 24; i++) {
+			if (i == 0) {
+				value = "12 AM";
+			} else if (i <= 11) {
+				value = i < 10 ? "0" + i : i;
+				value += " AM";
+			} else if (i == 12) {
+				value = i + " PM";
+			} else if (i >= 13) {
+				value = i - 12 < 10 ? "0" + (i - 12) : i - 12;
+				value += " PM";
+			}
+			date.push(React.createElement(
+				"option",
+				{ key: i, value: i },
+				value
+			));
+		}
+		return date;
+	},
+
+	makeMinute: function () {
+		var data = [0, 15, 30, 45];
+		var date = [];
+		date.push(React.createElement(
+			"option",
+			{ key: "-1", value: "" },
+			"--"
+		));
+		data.map(function (item, key) {
+			date.push(React.createElement(
+				"option",
+				{ key: key, value: item },
+				item == 0 ? item + "0" : item
+			));
+		});
+
+		return date;
+	},
+
+	render: function () {
+		var _this = this;
+
+		var errorTime = this.props.errorTime;
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"select",
+				{
+					required: true,
+					id: "hour",
+					name: "hour",
+					ref: function (ref) {
+						return _this.hour = ref;
+					},
+					onChange: this.props.onChange,
+					className: "select-hour"
+				},
+				this.makeHour()
+			),
+			React.createElement(
+				"select",
+				{
+					id: "minute",
+					name: "minute",
+					onChange: this.props.onChange,
+					ref: function (ref) {
+						return _this.minute = ref;
+					},
+					className: "select-hour"
+				},
+				this.makeMinute()
+			)
+		);
+	}
+});
+
+var CommentAppointment = React.createClass({
+	displayName: "CommentAppointment",
+
+	autoScroll: function () {
+		$('#message').animate({
+			scrollTop: $('#message').get(0).scrollHeight
+		}, 200);
+	},
+
+	componentDidMount: function () {
+		this.autoScroll();
+	},
+
+	componentDidUpdate: function () {
+		this.autoScroll();
+	},
+
+	render: function () {
+		var comments = this.props.comments ? this.props.comments : [];
+		return React.createElement(
+			"div",
+			{ className: "comments", id: "message" },
+			comments.map(function (comment, key) {
+				return React.createElement(
+					"div",
+					{ key: comment.id, className: "comment" },
+					React.createElement(
+						"p",
+						{ className: "content" },
+						comment.body
+					),
+					React.createElement(
+						"p",
+						{ className: "detail" },
+						React.createElement(
+							"span",
+							{ className: "date-time" },
+							moment(comment.created_at).format('lll')
+						)
+					)
+				);
+			})
+		);
+	}
+});
+
+var ModalAddAppointment = React.createClass({
+	displayName: "ModalAddAppointment",
+
+	submit: function (e) {
+		e.preventDefault();
+		var time = $('#hour').val() + ':' + $('#minute').val();
+		var params = {
+			time: time,
+			date: this.date.value,
+			body: this.comment.value,
+			appointment_type: this.props.type
+		};
+		this.props.addAppointment(params);
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		var appointment = this.props.appointment ? this.props.appointment : {};
+		var now = new Date();
+		var date = now.getMonth() + '/' + now.getDate() + '/' + now.getFullYear();
+		var time = now.getHours() + ':' + now.getMinutes();
+		var _props = this.props;
+		var title = _props.title;
+		var comments = _props.comments;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ onSubmit: this.submit },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								title
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body modal-appointment" },
+							React.createElement(
+								"div",
+								{ className: "new_appointment" },
+								React.createElement(CommentAppointment, { comments: comments }),
+								React.createElement(
+									"div",
+									{ className: "form-group" },
+									React.createElement("textarea", {
+										required: true,
+										placeholder: "Comment",
+										className: "text-center",
+										ref: function (ref) {
+											return _this2.comment = ref;
+										}
+									})
+								),
+								React.createElement(
+									"div",
+									{ className: "form-group date-time" },
+									React.createElement(
+										"div",
+										{ className: "date" },
+										React.createElement(
+											"label",
+											null,
+											"Date"
+										),
+										React.createElement("input", {
+											required: true,
+											id: "date",
+											type: "date",
+											defaultValue: date,
+											ref: function (ref) {
+												return _this2.date = ref;
+											}
+										})
+									),
+									React.createElement(
+										"div",
+										{ className: "time" },
+										React.createElement(
+											"label",
+											null,
+											"Time"
+										),
+										React.createElement(SelectTime, { onChange: this.checkValidate })
+									)
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									"data-dismiss": "modal",
+									className: "btn btn-default success"
+								},
+								"Create Appointment"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalConfirmAppointment = React.createClass({
+	displayName: "ModalConfirmAppointment",
+
+	render: function () {
+		var _props2 = this.props;
+		var title = _props2.title;
+		var content = _props2.content;
+		var btnContent = _props2.btnContent;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							content
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-default success",
+								onClick: this.props.openModal,
+								"data-dismiss": "modal"
+							},
+							btnContent
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var BtnAcceptAppointment = React.createClass({
+	displayName: "BtnAcceptAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				"data-dismiss": "modal",
+				className: "btn-success",
+				onClick: this.props.clickAccept
+			},
+			"Accept"
+		);
+	}
+});
+
+var BtnDeclineAppointment = React.createClass({
+	displayName: "BtnDeclineAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn-decline",
+				onClick: this.props.clickDecline
+			},
+			"Decline"
+		);
+	}
+});
+
+var BtnViewAppointment = React.createClass({
+	displayName: "BtnViewAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				"data-dismiss": "modal",
+				className: "btn-view-detail",
+				onClick: this.props.clickView
+			},
+			"View Deails"
+		);
+	}
+});
+
+var BtnCancelAppointment = React.createClass({
+	displayName: "BtnCancelAppointment",
+
+	render: function () {
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn-decline",
+				onClick: this.props.clickCancel
+			},
+			"Cancel"
+		);
+	}
+});
+
+var ModalAppointment = React.createClass({
+	displayName: "ModalAppointment",
+
+	getInitialState: function () {
+		return {
+			arrRole: ['AgencyAdmin', 'Agent']
+		};
+	},
+
+	btnAccept: function () {
+		var _this = this;
+
+		var _props = this.props;
+		var appointment = _props.appointment;
+		var current_role = _props.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnAcceptAppointment, { clickAccept: function () {
+					return _this.props.acceptAppointment(appointment);
+				} });
+		} else {
+			return null;
+		}
+	},
+
+	btnDecline: function () {
+		var _this2 = this;
+
+		var _props2 = this.props;
+		var appointment = _props2.appointment;
+		var current_role = _props2.current_role;
+
+		if (this.state.arrRole.includes(current_role.role)) {
+			return null;
+		} else if (appointment.status == "Active" && appointment.current_user_role != current_role.role) {
+			return React.createElement(BtnDeclineAppointment, { clickDecline: function () {
+					return _this2.props.declineAppointment(appointment);
+				} });
+		} else {
+			return null;
+		}
+	},
+
+	btnCancel: function () {
+		var _this3 = this;
+
+		var _props3 = this.props;
+		var appointment = _props3.appointment;
+		var current_role = _props3.current_role;
+
+		if (appointment.status == "Accepted" && !this.state.arrRole.includes(current_role.role)) {
+			return React.createElement(BtnCancelAppointment, { clickCancel: function () {
+					return _this3.props.cancelAppointment(appointment);
+				} });
+		}
+
+		return null;
+	},
+
+	render: function () {
+		var _props4 = this.props;
+		var appointment = _props4.appointment;
+		var current_role = _props4.current_role;
+		var comments = _props4.comments;
+
+		var title = "";
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				title = "Appointment Request";
+				break;
+
+			case 'Quote Appointment':
+				title = "Appointment Request For Quote";
+				break;
+
+			case 'Landlord Appointment':
+				title = 'Landlord Appointment';
+				break;
+
+			default:
+				break;
+		}
+
+		var date = new Date(Date.parse(appointment.time)).toUTCString();
+		var arrDate = date.split(" ");
+		var hour = arrDate[4] ? arrDate[4] : "00:00";
+		var arrHour = hour.split(':');
+		var h = parseInt(arrHour[0]);
+		var m = arrHour[1];
+		var time = h > 12 ? h - 12 + ':' + m + ' PM' : h + ':' + m + ' AM';
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body modal-appointment" },
+						React.createElement(CommentAppointment, { comments: comments }),
+						React.createElement(
+							"p",
+							{ className: "" },
+							React.createElement(
+								"span",
+								null,
+								"Status: "
+							),
+							React.createElement(
+								"span",
+								{ className: "bt-status " + appointment.status },
+								appointment.status
+							)
+						),
+						React.createElement(
+							"p",
+							{ className: "" },
+							React.createElement(
+								"span",
+								null,
+								"Date: "
+							),
+							React.createElement(
+								"span",
+								null,
+								moment(appointment.date).format('dddd LL')
+							)
+						),
+						React.createElement(
+							"p",
+							{ className: "" },
+							React.createElement(
+								"span",
+								null,
+								"Time: "
+							),
+							React.createElement(
+								"span",
+								null,
+								time
+							)
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer button-appointment-mobile" },
+						this.btnDecline(),
+						this.btnAccept(),
+						this.btnCancel()
+					)
+				)
+			)
+		);
+	}
 });
 var Invoices = React.createClass({
 	displayName: "Invoices",
@@ -63244,7 +68899,7 @@ var Invoices = React.createClass({
 		var self = this;
 		return React.createElement(
 			"div",
-			{ className: "quotes invoices m-t-xl" },
+			{ className: "quotes invoices m-t-xl", id: "invoices" },
 			React.createElement(
 				"p",
 				null,
@@ -63445,11 +69100,28 @@ var FieldList = React.createClass({
     },
 
     removeField: function (x) {
-        var tmpFields = this.state.Fields;
-        tmpFields.splice(x - 1, 1);
+        var self = this;
+        var Fields = this.state.Fields;
+
+        Fields.splice(x - 1, 1);
+        var tmpFields = [];
+        var SampleField = this.props.SampleField;
+        var params = this.props.params;
+        Fields.map(function (item, index) {
+            tmpFields.push(React.createElement(SampleField, {
+                x: index + 1,
+                params: params,
+                removeField: function (position) {
+                    return self.removeField(position);
+                },
+                validDate: function (flag) {
+                    return self.props.validDate(flag);
+                }
+            }));
+        });
         this.setState({
             Fields: tmpFields,
-            x: tmpFields.length
+            x: tmpFields.length + 1
         });
     },
 
@@ -63459,16 +69131,20 @@ var FieldList = React.createClass({
             { className: "fieldlist" },
             React.createElement(
                 "ul",
-                null,
-                this.state.Fields.map(function (Field, fieldIndex) {
+                { id: "fieldList" },
+                this.state.Fields.map(function (Field, index) {
                     return React.createElement(
                         "li",
-                        { key: fieldIndex },
+                        { key: index },
                         Field
                     );
                 })
             ),
-            React.createElement(ButtonAddAnotherItem, { flag: this.props.flag, x: this.state.x, addField: this.addField })
+            React.createElement(
+                "div",
+                { className: "text-center" },
+                React.createElement(ButtonAddAnotherItem, { flag: this.props.flag, x: this.state.x, addField: this.addField })
+            )
         );
     }
 });
@@ -63494,7 +69170,7 @@ var ButtonAddAnotherItem = React.createClass({
                     return React.createElement(
                         "button",
                         { type: "button", className: "button-add button-primary", onClick: this.props.addField },
-                        x <= 1 ? "Add Access Contact" : "Add Access Contact To The Section"
+                        "Add Another Premise Access Contact"
                     );
                 }
             default:
@@ -63625,62 +69301,53 @@ var AdditionalInvoice = React.createClass({
             React.createElement(
                 "fieldset",
                 null,
-                React.createElement(
-                    "p",
-                    null,
-                    " Item description "
-                ),
-                React.createElement("input", { type: "text",
-                    name: 'invoice[invoice_items_attributes][' + x + '][item_description]',
-                    defaultValue: quote ? quote.item_description : ''
+                React.createElement("input", {
+                    type: "text",
+                    placeholder: "Item description",
+                    defaultValue: quote ? quote.item_description : '',
+                    name: 'invoice[invoice_items_attributes][' + x + '][item_description]'
                 }),
                 React.createElement(
-                    "p",
-                    null,
-                    " Amount "
-                ),
-                React.createElement("input", { type: "text",
-                    name: 'invoice[invoice_items_attributes][' + x + '][amount]',
-                    defaultValue: quote ? quote.amount : ''
-                }),
-                React.createElement(
-                    "p",
-                    null,
-                    " Pricing type "
-                ),
-                React.createElement(
-                    "select",
-                    { value: this.state.pricing_type,
-                        onChange: this.onPricing,
-                        name: 'invoice[invoice_items_attributes][' + x + '][pricing_type]' },
-                    React.createElement(
-                        "option",
-                        { value: "Fixed Cost" },
-                        "Fixed Cost"
-                    ),
-                    React.createElement(
-                        "option",
-                        { value: "Hourly" },
-                        "Hourly"
-                    )
-                ),
-                this.state.hours_input ? React.createElement(
                     "div",
-                    null,
+                    { className: "amount" },
                     React.createElement(
-                        "p",
-                        null,
-                        " Number of Hours "
+                        "select",
+                        {
+                            onChange: this.onPricing,
+                            value: this.state.pricing_type,
+                            name: 'invoice[invoice_items_attributes][' + x + '][pricing_type]',
+                            className: "text-center " + (this.state.hours_input && 'hour select')
+                        },
+                        React.createElement(
+                            "option",
+                            { value: "Fixed Cost" },
+                            "Fixed Cost"
+                        ),
+                        React.createElement(
+                            "option",
+                            { value: "Hourly" },
+                            "Hourly"
+                        )
                     ),
-                    React.createElement("input", { type: "text",
+                    React.createElement("input", {
+                        type: "number",
+                        placeholder: "Amount",
+                        defaultValue: quote ? quote.amount : '',
+                        name: 'invoice[invoice_items_attributes][' + x + '][amount]',
+                        className: "text-center " + (!!this.state.hours_input && 'hour price')
+                    }),
+                    this.state.hours_input ? React.createElement("input", {
+                        type: "number",
+                        placeholder: "Of Hours",
+                        defaultValue: quote ? quote.hours : '',
                         name: 'invoice[invoice_items_attributes][' + x + '][hours]',
-                        defaultValue: quote ? quote.hours : ''
+                        className: "text-center " + (this.state.hours_input && 'hour')
+                    }) : React.createElement("input", { type: "hidden",
+                        name: 'invoice[invoice_items_attributes][' + x + '][hours]'
                     })
-                ) : React.createElement("input", { type: "hidden",
-                    name: 'invoice[invoice_items_attributes][' + x + '][hours]'
-                }),
+                ),
                 React.createElement("input", { type: "hidden", value: this.state.remove, name: 'invoice[invoice_items_attributes][' + x + '][_destroy]' }),
-                quote ? React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]' }) : null
+                quote && React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]' })
             ),
             React.createElement(
                 "button",
@@ -63804,37 +69471,62 @@ var InvoiceItemField = React.createClass({
             React.createElement(
                 "fieldset",
                 null,
-                React.createElement("input", { type: "text", placeholder: "Item description", defaultValue: invoice_item ? invoice_item.item_description : null,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]' }),
-                React.createElement("input", { type: "text", placeholder: "Amount", value: this.state.amount, onChange: this.onAmount,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]' }),
+                React.createElement("input", {
+                    type: "text",
+                    className: "text-center",
+                    placeholder: "Item description",
+                    defaultValue: invoice_item ? invoice_item.item_description : null,
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'
+                }),
                 React.createElement(
-                    "p",
-                    null,
-                    " Pricing type : "
-                ),
-                React.createElement(
-                    "select",
-                    { value: this.state.pricing_type,
-                        onChange: this.onPricing,
-                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'
-                    },
+                    "div",
+                    { className: "amount" },
                     React.createElement(
-                        "option",
-                        { value: "Fixed Cost" },
-                        "Fixed Cost"
+                        "select",
+                        {
+                            onChange: this.onPricing,
+                            value: this.state.pricing_type,
+                            className: "text-center " + (!!this.state.hours_input && 'hour price'),
+                            name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'
+                        },
+                        React.createElement(
+                            "option",
+                            { value: "Fixed Cost" },
+                            "Fixed Cost"
+                        ),
+                        React.createElement(
+                            "option",
+                            { value: "Hourly" },
+                            "Hourly"
+                        )
                     ),
-                    React.createElement(
-                        "option",
-                        { value: "Hourly" },
-                        "Hourly"
-                    )
+                    React.createElement("input", {
+                        type: "number",
+                        placeholder: "Amount",
+                        defaultValue: this.state.amount,
+                        onChange: this.onAmount,
+                        className: "text-center " + (!!this.state.hours_input && 'hour price'),
+                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'
+                    }),
+                    this.state.hours_input ? React.createElement("input", {
+                        type: "number",
+                        onChange: this.onHours,
+                        placeholder: "Number of Hours",
+                        defaultValue: this.state.numofhours,
+                        className: "text-center " + (this.state.hours_input && 'hour'),
+                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
+                    }) : React.createElement("input", {
+                        type: "hidden",
+                        value: 1,
+                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
+                    })
                 ),
-                this.state.hours_input ? React.createElement("input", { type: "text", placeholder: "Number of Hours", value: this.state.numofhours, onChange: this.onHours,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]' }) : React.createElement("input", { type: "hidden", value: 1,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]' }),
                 React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
-                invoice_item ? React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]' }) : null
+                invoice_item && React.createElement("input", {
+                    value: x,
+                    type: "hidden",
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'
+                })
             ),
             React.createElement(
                 "button",
@@ -64076,8 +69768,11 @@ var TradyCompanyInvoice = React.createClass({
             React.createElement("input", { type: "text", placeholder: "Mobile Number", defaultValue: this.props.mobile_number,
                 name: "trady_company[mobile_number]",
                 id: "trady_company_mobile_number", required: true }),
-            React.createElement("input", { type: "text", placeholder: "Email", defaultValue: this.props.email,
+            React.createElement("input", { type: "email", placeholder: "Email", defaultValue: this.props.email,
                 name: "trady_company[email]",
+                autoCapitalize: "off",
+                autoCorrect: "off",
+                autoComplete: "off",
                 id: "trady_company_email", required: true }),
             React.createElement("input", { type: "text", placeholder: "Bank Account Number", defaultValue: this.props.account_name,
                 name: "trady_company[bank_account_number]",
@@ -64107,10 +69802,11 @@ var DetailInvoice = React.createClass({
 	displayName: "DetailInvoice",
 
 	render: function () {
-		var invoice_items = this.props.invoice_items;
+		var invoice = this.props.invoice;
+
 		var subTotal = 0;
 		var gst = 0;
-		if (!!invoice_items) {
+		if (!!invoice) {
 			return React.createElement(
 				"table",
 				{ className: "table" },
@@ -64133,25 +69829,24 @@ var DetailInvoice = React.createClass({
 						React.createElement(
 							"th",
 							null,
-							"Rate"
-						),
-						React.createElement(
-							"th",
-							null,
 							"Hours"
 						),
 						React.createElement(
 							"th",
-							null,
-							"Total"
+							{ className: "text-right" },
+							"Rate"
+						),
+						React.createElement(
+							"th",
+							{ className: "text-right" },
+							"Amount"
 						)
 					)
 				),
 				React.createElement(
 					"tbody",
 					null,
-					invoice_items.map(function (item, key) {
-						gst += !!item.gst_amount ? item.gst_amount : 0;
+					invoice.invoice_items.map(function (item, key) {
 						if (item.pricing_type == "Fixed Cost") {
 							subTotal += item.amount;
 						} else {
@@ -64174,103 +69869,68 @@ var DetailInvoice = React.createClass({
 								"td",
 								null,
 								"$",
-								item.amount
+								item.amount.toFixed(2)
 							),
 							React.createElement(
 								"td",
-								null,
+								{ className: "text-right" },
 								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
 							),
 							React.createElement(
 								"td",
-								null,
+								{ className: "text-right" },
 								"$",
-								item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours
+								item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2)
 							)
 						);
 					}),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-b-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
+							{ className: "text-right border-none font-bold p-b-n" },
 							"Subtotal:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "border-none text-right p-b-n" },
 							"$",
-							subTotal
+							subTotal.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-t-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"GST:"
+							{ className: "text-right p-t-n" },
+							"GST 10%:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right p-t-n" },
 							"$",
-							gst
+							invoice.gst_amount.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"Total:"
+							{ className: "text-right font-bold border-none" },
+							"Amount Due (AUD):"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right font-bold border-none" },
 							"$",
-							subTotal + gst
+							(subTotal + invoice.gst_amount).toFixed(2)
 						)
-					)
-				)
-			);
-		} else {
-			React.createElement(
-				"table",
-				null,
-				React.createElement(
-					"tr",
-					null,
-					React.createElement(
-						"th",
-						null,
-						"Description"
-					),
-					React.createElement(
-						"th",
-						null,
-						"Pricing"
-					),
-					React.createElement(
-						"th",
-						null,
-						"Hours"
-					),
-					React.createElement(
-						"th",
-						null,
-						"Amount"
-					)
-				),
-				React.createElement(
-					"tr",
-					null,
-					React.createElement(
-						"td",
-						{ colSpan: "4", className: "text-center" },
-						"Data is empty."
 					)
 				)
 			);
@@ -64332,9 +69992,10 @@ var ModalViewInvoice = React.createClass({
 	printInvoice: function () {
 		$('.button-slider').toggle('hide');
 		var contents = $('#print-invoice').html();
-		var style = ".info-quote {border-bottom: 1px solid #3e4b54; clear: both; overflow: hidden;}" + ".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {width: 50%;overflow: hidden;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quot .table {width: 100%;}" + ".detail-quot .table tr td {padding-left: 0; padding: 3px 3px;}";
+		var style = ".info-quote {clear: both; overflow: hidden;}" + ".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {width: 50%;overflow: hidden;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}" + "#print-invoice { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important;display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:first-child {width: 60px;display: inline-block;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3;}" + ".font-bold { font-weight: bold;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}";
+
 		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
-		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
+		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
 		frame.open();
 		frame.write(htmlContent);
 		frame.write("</head><body>");
@@ -64355,20 +70016,100 @@ var ModalViewInvoice = React.createClass({
 
 		var self = this.props;
 		var invoice = this.state.invoice;
+
 		var total = 0;
 
 		return React.createElement(
 			"div",
-			{ className: "modal-custom fade" },
+			{ className: "modal-custom modal-quote fade" },
 			React.createElement(
 				"div",
 				{ className: "modal-dialog" },
 				React.createElement(
 					"div",
-					{ className: "modal-content" },
+					{ className: "modal-content", id: "print-invoice" },
 					React.createElement(
 						"div",
 						{ className: "modal-header" },
+						React.createElement(
+							"div",
+							{ className: "logo" },
+							React.createElement("img", { src: "/assets/logo.png" })
+						),
+						React.createElement(
+							"div",
+							{ className: "info-trady" },
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Business: "
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.company_name
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"ABN:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.abn
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Address:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.address
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Phone:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.mobile_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Email:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.email
+								)
+							)
+						),
 						React.createElement(
 							"button",
 							{
@@ -64383,16 +70124,11 @@ var ModalViewInvoice = React.createClass({
 								{ "aria-hidden": "true" },
 								"×"
 							)
-						),
-						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Invoice"
 						)
 					),
 					React.createElement(
 						"div",
-						{ className: "slider-quote", id: "print-invoice" },
+						{ className: "slider-quote" },
 						React.createElement(
 							"div",
 							{ className: "modal-body" },
@@ -64408,25 +70144,28 @@ var ModalViewInvoice = React.createClass({
 										"div",
 										{ className: "info-trady" },
 										React.createElement(
-											"p",
+											"div",
 											null,
-											invoice.trady.name
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!invoice.trady.trady_company && invoice.trady.trady_company.address
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!invoice.trady.trady_company && invoice.trady.trady_company.email
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											"Abn: ",
-											!!invoice.trady.trady_company && invoice.trady.trady_company.abn
+											React.createElement(
+												"p",
+												{ className: "color-grey bill-to" },
+												"Bill To"
+											),
+											React.createElement(
+												"p",
+												null,
+												self.landlord && self.landlord.name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.company_name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.address
+											)
 										)
 									),
 									React.createElement(
@@ -64435,12 +70174,47 @@ var ModalViewInvoice = React.createClass({
 										React.createElement(
 											"p",
 											null,
-											self.agency.company_name
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Invoice Number: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												invoice.id
+											)
 										),
 										React.createElement(
 											"p",
 											null,
-											self.agency.address
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Invoice Date: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												moment(invoice.created_at).format("LL")
+											)
+										),
+										React.createElement(
+											"p",
+											null,
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Payment Date: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												moment(invoice.due_date).format("LL")
+											)
 										)
 									)
 								),
@@ -64449,30 +70223,8 @@ var ModalViewInvoice = React.createClass({
 									{ className: "detail-quote" },
 									React.createElement(
 										"div",
-										{ className: "info-maintenance" },
-										React.createElement(
-											"p",
-											null,
-											"Invoice #",
-											invoice.id
-										),
-										React.createElement(
-											"p",
-											null,
-											"For: ",
-											self.property.property_address
-										),
-										React.createElement(
-											"p",
-											null,
-											"Created: ",
-											moment(invoice.created_at).format("DD-MM-YYYY")
-										)
-									),
-									React.createElement(
-										"div",
 										{ className: "detail-quote" },
-										!!invoice.invoice_items && React.createElement(DetailInvoice, { invoice_items: invoice.invoice_items })
+										!!invoice.invoice_items && React.createElement(DetailInvoice, { invoice: invoice })
 									)
 								)
 							),
@@ -64497,13 +70249,97 @@ var ModalViewInvoice = React.createClass({
 						)
 					),
 					React.createElement(
-						"p",
-						{ className: "due" },
-						"DUE: ",
+						"div",
+						{ className: "footer" },
 						React.createElement(
-							"span",
-							null,
-							moment(invoice.due_date).format('DD/MM/YYYY')
+							"div",
+							{ className: "bank" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("i", { className: "fa fa-bank" }),
+								React.createElement(
+									"p",
+									{ className: "font-bold" },
+									"Bank Deposit"
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									{ className: "font-bold" },
+									"BSB:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.bsb_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									{ className: "font-bold" },
+									"Account Number:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.bank_account_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									{ className: "font-bold" },
+									"Account Name:"
+								),
+								React.createElement(
+									"span",
+									null,
+									invoice.trady.trady_company.account_name
+								)
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "contact" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("i", { className: "fa fa-envelope-o" }),
+								React.createElement(
+									"p",
+									{ className: "font-bold" },
+									"Mail"
+								)
+							),
+							React.createElement(
+								"p",
+								{ className: "font-bold" },
+								"Make your cheque payable to:"
+							),
+							React.createElement(
+								"p",
+								null,
+								invoice.trady.trady_company.account_name
+							),
+							React.createElement(
+								"p",
+								{ className: "font-bold" },
+								"Detach this section and mail with your cheque to:"
+							),
+							React.createElement(
+								"p",
+								null,
+								invoice.trady.trady_company.address
+							)
 						)
 					),
 					React.createElement(
@@ -64777,6 +70613,19 @@ var ModalViewPDFInvoice = React.createClass({
 var ContentLandlordAction = React.createClass({
 	displayName: "ContentLandlordAction",
 
+	getInitialState: function () {
+		return {
+			isClick: false
+		};
+	},
+
+	requestQuote: function () {
+		this.props.requestQuote();
+		this.setState({
+			isClick: true
+		});
+	},
+
 	render: function () {
 		var _this = this;
 
@@ -64788,9 +70637,7 @@ var ContentLandlordAction = React.createClass({
 				{ className: "active" },
 				React.createElement(
 					"a",
-					{ onClick: function () {
-							return _this.props.onModalWith('requestQuote');
-						} },
+					{ onClick: !this.state.isClick && this.requestQuote },
 					React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
 					"Request quote"
 				)
@@ -64800,19 +70647,11 @@ var ContentLandlordAction = React.createClass({
 				null,
 				React.createElement(
 					"a",
-					{ href: "/landlord_appointments/new?maintenance_request_id=" + this.props.maintenance_request.id },
+					{ onClick: function () {
+							return _this.props.onModalWith('createAppointment');
+						} },
 					React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
-					"Fix Myself"
-				)
-			),
-			React.createElement(
-				"li",
-				null,
-				React.createElement(
-					"a",
-					{ href: "/job_completed?maintenance_request_id=" + this.props.maintenance_request.id },
-					React.createElement("i", { "aria-hidden": "true", className: "fa fa-user-plus" }),
-					"Job Completed"
+					"Create appointment to fix myself"
 				)
 			)
 		);
@@ -64855,9 +70694,14 @@ var LandlordAction = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content", id: "actions-content" },
-				this.state.show && React.createElement(ContentLandlordAction, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentLandlordAction, {
+					landlord: this.props.landlord,
+					requestQuote: this.props.requestQuote,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
 						return _this2.props.onModalWith(modal);
-					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+					}
+				})
 			)
 		);
 	}
@@ -64892,9 +70736,14 @@ var LandlordActionMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentLandlordAction, { onModalWith: function (modal) {
+					React.createElement(ContentLandlordAction, {
+						landlord: this.props.landlord,
+						requestQuote: this.props.requestQuote,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
 							return _this3.props.onModalWith(modal);
-						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+						}
+					})
 				)
 			)
 		);
@@ -64904,28 +70753,17 @@ var ContentLandlordContact = React.createClass({
 	displayName: "ContentLandlordContact",
 
 	renderCallAgent: function () {
-		if (!!this.props.maintenance_request.agent) {
+		var agent = this.props.agent;
+		if (!!agent) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					null,
+					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					this.props.maintenance_request.agent.mobile_phone
-				)
-			);
-		} else if (!!this.props.maintenance_request.agency_admin) {
-			return React.createElement(
-				"li",
-				null,
-				React.createElement(
-					"a",
-					null,
-					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-					"Call Agent: ",
-					this.props.maintenance_request.agency_admin.mobile_phone
+					agent.mobile_phone
 				)
 			);
 		}
@@ -64967,7 +70805,7 @@ var LandlordContact = React.createClass({
 
 	getInitialState: function () {
 		return {
-			show: false
+			show: true
 		};
 	},
 
@@ -64998,9 +70836,14 @@ var LandlordContact = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content" },
-				this.state.show && React.createElement(ContentLandlordContact, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentLandlordContact, {
+					agent: this.props.agent,
+					landlord: this.props.landlord,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
 						return _this2.props.onModalWith(modal);
-					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+					}
+				})
 			)
 		);
 	}
@@ -65014,13 +70857,13 @@ var LandlordContactMobile = React.createClass({
 
 		return React.createElement(
 			"div",
-			{ className: "actions-full contact-full" },
+			{ className: "actions-full contact-full", id: "contacts-full" },
 			React.createElement(
 				"div",
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -65035,16 +70878,21 @@ var LandlordContactMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentLandlordContact, { onModalWith: function (modal) {
+					React.createElement(ContentLandlordContact, {
+						agent: this.props.agent,
+						landlord: this.props.landlord,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
 							return _this3.props.onModalWith(modal);
-						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+						}
+					})
 				)
 			)
 		);
 	}
 });
 var LandlordSideBarMobile = React.createClass({
-	displayName: "LandlordSideBarMobile",
+	displayName: 'LandlordSideBarMobile',
 
 	getInitialState: function () {
 		return {
@@ -65054,98 +70902,140 @@ var LandlordSideBarMobile = React.createClass({
 	},
 
 	show: function (key) {
+		var height = $(window).height();
 		if (key == 'action') {
-			this.setState({ showAction: !this.state.showAction });
+			this.setState({ showAction: true });
+			this.setState({ showContact: false });
+			$('#actions-full').css({ 'height': 250, 'border-width': 1 });
 		} else {
-			this.setState({ showContact: !this.state.showContact });
+			this.setState({ showAction: false });
+			this.setState({ showContact: true });
+			$('#contacts-full').css({ 'height': 250, 'border-width': 1 });
 		}
+	},
+
+	close: function () {
+		if ($('#actions-full').length > 0) {
+			this.setState({ showAction: false });
+			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		}
+		if ($('#contacts-full').length > 0) {
+			this.setState({ showContact: false });
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
+	},
+
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
+		});
 	},
 
 	render: function () {
 		var _this = this;
 
 		return React.createElement(
-			"div",
+			'div',
 			null,
 			React.createElement(
-				"div",
-				{ className: "sidebar-mobile" },
+				'div',
+				{ className: 'sidebar-mobile' },
 				React.createElement(
-					"div",
-					{ className: "fixed" },
+					'div',
+					{ className: 'fixed' },
 					React.createElement(
-						"button",
-						{ className: "contact button-default", onClick: function (key) {
+						'button',
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: function (key) {
 								return _this.show('contact');
-							} },
-						"Contact"
+							}
+						},
+						'Contact'
 					),
 					React.createElement(
-						"button",
-						{ className: "actions button-default", onClick: function (key) {
+						'button',
+						{
+							className: "actions button-default " + (!!this.state.showAction && 'active'),
+							onClick: function (key) {
 								return _this.show('action');
-							} },
-						"Actions"
+							}
+						},
+						'Actions'
 					)
 				)
 			),
-			!!this.state.showAction && React.createElement(LandlordActionMobile, { close: function (key) {
-					return _this.show('action');
-				}, onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request }),
-			!!this.state.showContact && React.createElement(LandlordContactMobile, { close: function (key) {
-					return _this.show('contact');
-				}, onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				}, landlord: this.props.landlord, current_user: this.props.current_user, maintenance_request: this.props.maintenance_request })
+			React.createElement(
+				'div',
+				{ className: 'action-mobile' },
+				React.createElement(LandlordActionMobile, {
+					landlord: this.props.landlord,
+					close: this.close,
+					requestQuote: this.props.requestQuote,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				}),
+				React.createElement(LandlordContactMobile, {
+					agent: this.props.agent,
+					landlord: this.props.landlord,
+					close: this.close,
+					current_user: this.props.current_user,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					},
+					maintenance_request: this.props.maintenance_request
+				})
+			)
 		);
 	}
 });
 
 var ModalNotification = React.createClass({
-	displayName: "ModalNotification",
+	displayName: 'ModalNotification',
 
 	render: function () {
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content" },
+					'div',
+					{ className: 'modal-content' },
 					React.createElement(
-						"div",
+						'div',
 						{ className: 'modal-header ' + (this.props.bgClass && this.props.bgClass) },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"aria-label": "Close",
-								"data-dismiss": "modal",
+								type: 'button',
+								className: 'close',
+								'aria-label': 'Close',
+								'data-dismiss': 'modal',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
+							'h4',
+							{ className: 'modal-title text-center' },
 							this.props.title
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-body" },
+						'div',
+						{ className: 'modal-body' },
 						React.createElement(
-							"p",
-							{ className: "text-center" },
+							'p',
+							{ className: 'text-center' },
 							this.props.content
 						)
 					)
@@ -65156,19 +71046,40 @@ var ModalNotification = React.createClass({
 });
 
 var LandlordMaintenanceRequest = React.createClass({
-	displayName: "LandlordMaintenanceRequest",
+	displayName: 'LandlordMaintenanceRequest',
 
 	getInitialState: function () {
+		var _props = this.props;
+		var quotes = _props.quotes;
+		var tradies = _props.tradies;
+		var landlord = _props.landlord;
+		var appointments = _props.appointments;
+		var maintenance_request = _props.maintenance_request;
+		var tenants_conversation = _props.tenants_conversation;
+		var landlords_conversation = _props.landlords_conversation;
+
+		var comments = [];
+		appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			quote: null,
 			isModal: false,
-			quotes: this.props.quotes,
-			tradies: this.props.tradies,
-			landlord: this.props.landlord,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
+			quotes: quotes,
+			isCancel: false,
+			isDecline: false,
+			tradies: tradies,
+			appointment: null,
+			landlord: landlord,
+			comments: comments,
+			appointmentUpdate: null,
+			appointments: appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlords_conversation: landlords_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -65205,6 +71116,22 @@ var LandlordMaintenanceRequest = React.createClass({
 					break;
 				}
 
+			case 'createAppointment':
+				{
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewAppointment':
+				{
+					this.setState({
+						appointment: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
 			default:
 				{
 					break;
@@ -65214,6 +71141,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	sendMessageLandlord: function (params) {
 		var self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -65260,6 +71188,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	sendEmailLandlord: function (params) {
 		var self = this;
+		params.message.role = current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/request_quote',
@@ -65286,25 +71215,24 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
-	requestQuote: function (params) {
+	requestQuote: function () {
 		var self = this;
+		var params = {
+			maintenance_request_id: this.props.maintenance_request.id
+		};
 		$.ajax({
 			type: 'POST',
-			url: '/tradies',
+			url: '/request_quote',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
 			data: params,
 			success: function (res) {
-				if (params.trady.trady_request == "Work Order") {
-					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length - 1].id;
-					self.forceUpdate();
-				}
 				self.setState({
 					tradies: res,
 					notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						title: "Request Quote",
+						content: "the request quote has sent successfully",
 						bgClass: "bg-success"
 					}
 				});
@@ -65312,9 +71240,223 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			error: function (err) {
 				self.setState({ notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error",
+						title: "Request Quote",
+						content: "The request quote is error",
 						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	addAppointment: function (params) {
+		var self = this;
+		var _props2 = this.props;
+		var tenants = _props2.tenants;
+		var current_role = _props2.current_role;
+		var landlord = _props2.landlord;
+		var authenticity_token = _props2.authenticity_token;
+		var tenant = _props2.tenant;
+
+		var maintenance_request_id = this.state.maintenance_request.id;
+		var _state = this.state;
+		var appointments = _state.appointments;
+		var isDecline = _state.isDecline;
+		var appointmentUpdate = _state.appointmentUpdate;
+		var comments = _state.comments;
+		var isCancel = _state.isCancel;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', params.appointment_type);
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenant ? tenant.id : '');
+		fd.append('appointment[landlord_id]', landlord ? landlord.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenant ? tenant.id : '');
+		fd.append('appointment[comments_attributes][0][landlord_id]', landlord ? landlord.id : '');
+
+		$.ajax({
+			type: 'POST',
+			url: '/landlord_appointments',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function (res) {
+				if (!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
+					self.declineAppointment(appointmentUpdate);
+				} else if (!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
+					self.cancelAppointment(appointmentUpdate);
+				} else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
+				}
+				appointments.unshift(res.appointment_and_comments);
+				comments.push(res.appointment_and_comments.comments[0]);
+				self.setState({
+					comments: comments,
+					appointments: appointments
+				});
+
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Create Appoinment",
+						content: "Create Appointment was successfully"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Create Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateAppointment: function (appointment) {
+		var appointments = this.state.appointments;
+
+		var data = appointments.map(function (item, key) {
+			item.status = item.id == appointment.id ? appointment.status : item.status;
+			return item;
+		});
+		this.setState({
+			appointments: data
+		});
+	},
+
+	acceptAppointment: function (appointment) {
+		var self = this;
+		var _props3 = this.props;
+		var authenticity_token = _props3.authenticity_token;
+		var current_role = _props3.current_role;
+		var landlord = _props3.landlord;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : '',
+			maintenance_request_id: this.state.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/accept_landlord_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Accept Appoinment",
+						content: res.note
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Accept Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	decline: function (appointment) {
+		this.onModalWith('confirmDeclineAppointment');
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	declineAppointment: function (appointment) {
+		var self = this;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var current_role = _props4.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: current_role ? current_role.role : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/decline_landlord_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isDecline: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancel: function (appointment) {
+		this.onModalWith('confirmCancelAppointment');
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	cancelAppointment: function (appointment) {
+		var self = this;
+		var _props5 = this.props;
+		var authenticity_token = _props5.authenticity_token;
+		var current_role = _props5.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_landlord_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCancel: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Cancel Appoinment",
+						content: err.responseText
 					} });
 				self.onModalWith('notification');
 			}
@@ -65348,6 +71490,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					{
 						return React.createElement(ModalSendMessageLandlord, {
 							close: this.isClose,
+							title: 'Message Agent',
 							current_user: this.props.current_user,
 							authToken: this.props.authenticity_token,
 							sendMessageLandlord: this.sendMessageLandlord,
@@ -65375,14 +71518,58 @@ var LandlordMaintenanceRequest = React.createClass({
 						});
 					}
 
-				case 'requestQuote':
+				case 'viewAppointment':
 					{
-						return React.createElement(ModalRequestModal, {
+						return React.createElement(ModalAppointment, {
 							close: this.isClose,
-							keyTitle: "request-quote",
-							tradies: this.state.tradies,
-							requestQuote: this.requestQuote,
-							maintenance_request: this.state.maintenance_request
+							comments: this.state.comments,
+							appointment: this.state.appointment,
+							acceptAppointment: function (value) {
+								return _this2.acceptAppointment(value);
+							},
+							current_role: this.props.signed_in_landlord.user.current_role,
+							declineAppointment: function (value) {
+								return _this2.decline(value);
+							}
+						});
+					}
+
+				case 'confirmCancelAppointment':
+					{
+						return React.createElement(ModalConfirmAppointment, {
+							close: this.isClose,
+							title: 'Cancel Appointment',
+							btnContent: 'Create and Cancel',
+							openModal: function () {
+								return _this2.onModalWith('createAppointment');
+							},
+							content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+						});
+					}
+
+				case 'confirmDeclineAppointment':
+					{
+						return React.createElement(ModalConfirmAppointment, {
+							close: this.isClose,
+							title: 'Decline Appointment',
+							btnContent: 'Create and Decline',
+							openModal: function () {
+								return _this2.onModalWith('createAppointment');
+							},
+							content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+						});
+					}
+
+				case 'createAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							title: 'Create Appoinment',
+							type: 'Landlord Appointment',
+							comments: this.state.comments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
 						});
 					}
 
@@ -65392,25 +71579,78 @@ var LandlordMaintenanceRequest = React.createClass({
 		}
 	},
 
+	autoScroll: function (key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+	},
+
+	openAppointment: function (appointment_id) {
+		var appointment = '';
+		var appointments = this.state.appointments;
+
+		appointments.map(function (item, key) {
+			if (item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if (appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			var json = self.getUrlVars(href);
+			if (href.indexOf('email_quote_id') >= 0) {
+				self.autoScroll('quotes');
+			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
+				self.autoScroll('invoices');
+			} else if (href.indexOf('open_message') >= 0) {
+				self.onModalWith('sendMessageLandlord');
+			} else if (href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
+			}
+		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
+	},
+
 	render: function () {
 		var _this3 = this;
 
+		var appointments = this.state.appointments;
+
 		return React.createElement(
-			"div",
-			{ className: "summary-container-index", id: "summary-container-index" },
+			'div',
+			{ className: 'summary-container-index', id: 'summary-container-index' },
 			React.createElement(
-				"div",
-				{ className: "main-summary" },
+				'div',
+				{ className: 'main-summary' },
 				React.createElement(
-					"div",
-					{ className: "section" },
+					'div',
+					{ className: 'section' },
 					React.createElement(ItemMaintenanceRequest, {
 						gallery: this.props.gallery,
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
-					this.props.quotes.length > 0 ? React.createElement(Quotes, {
-						keyLandlord: "landlord",
+					this.props.quotes.length > 0 && React.createElement(Quotes, {
+						keyLandlord: 'landlord',
 						quotes: this.state.quotes,
 						landlord: this.state.landlord,
 						onModalWith: this.onModalWith,
@@ -65420,22 +71660,76 @@ var LandlordMaintenanceRequest = React.createClass({
 						viewQuote: function (key, item) {
 							return _this3.viewItem(key, item);
 						}
-					}) : null
+					})
 				),
 				React.createElement(
-					"div",
-					{ className: "sidebar" },
-					React.createElement(LandlordContact, { landlord: this.state.landlord, onModalWith: function (modal) {
+					'div',
+					{ className: 'sidebar' },
+					React.createElement(LandlordContact, {
+						agent: this.props.agent,
+						landlord: this.state.landlord,
+						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
-						}, current_user: this.props.current_user, maintenance_request: this.state.maintenance_request }),
-					React.createElement(LandlordAction, { landlord: this.state.landlord, onModalWith: function (modal) {
+						},
+						current_user: this.props.current_user,
+						maintenance_request: this.state.maintenance_request
+					}),
+					React.createElement(LandlordAction, {
+						landlord: this.state.landlord,
+						requestQuote: this.requestQuote,
+						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
-						}, maintenance_request: this.state.maintenance_request })
-				)
+						},
+						maintenance_request: this.state.maintenance_request
+					}),
+					appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Landlord Appointments',
+						appointments: appointments,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						current_role: this.props.signed_in_landlord.user.current_role
+					}),
+					React.createElement(ActivityMobile, { logs: this.props.logs })
+				),
+				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					appointments: appointments,
+					title: 'Landlord Appointments',
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					current_role: this.props.signed_in_landlord.user.current_role
+				}),
+				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
-			React.createElement(LandlordSideBarMobile, { onModalWith: function (modal) {
+			React.createElement(LandlordSideBarMobile, {
+				agent: this.props.agent,
+				landlord: this.state.landlord,
+				requestQuote: this.requestQuote,
+				current_user: this.props.current_user,
+				onModalWith: function (modal) {
 					return _this3.onModalWith(modal);
-				}, landlord: this.state.landlord, current_user: this.props.current_user, maintenance_request: this.state.maintenance_request }),
+				},
+				maintenance_request: this.state.maintenance_request
+			}),
 			this.renderModal()
 		);
 	}
@@ -65579,6 +71873,9 @@ var AccessContactField = React.createClass({
           type: "email",
           required: "required",
           placeholder: "E-mail",
+          autoCapitalize: "off",
+          autoCorrect: "off",
+          autoComplete: "off",
           id: this.generateAtt("id", x, "email"),
           name: this.generateAtt("name", x, "email"),
           onBlur: function (e) {
@@ -65623,11 +71920,15 @@ var AccessContactField = React.createClass({
           id: this.generateAtt("id", x, "_destroy") })
       ),
       React.createElement(
-        "button",
-        { type: "button", className: "button-remove button-primary red", onClick: function (position) {
-            _this.props.removeField(x);
-          } },
-        " Remove "
+        "div",
+        { className: "text-center" },
+        React.createElement(
+          "button",
+          { type: "button", className: "button-remove button-primary red", onClick: function (position) {
+              _this.props.removeField(x);
+            } },
+          " Remove "
+        )
       )
     );
   }
@@ -65656,6 +71957,54 @@ var AvailabilityField = React.createClass({
         i
       ));
     }
+    return date;
+  },
+
+  makeHour: function (byNum) {
+    var date = [];
+    date.push(React.createElement(
+      "option",
+      { key: "-1", value: "" },
+      "--"
+    ));
+    var value = "";
+    for (var i = 0; i < byNum; i++) {
+      if (i == 0) {
+        value = "12 AM";
+      } else if (i <= 11) {
+        value = i < 10 ? "0" + i : i;
+        value += " AM";
+      } else if (i == 12) {
+        value = i + " PM";
+      } else if (i >= 13) {
+        value = i - 12 < 10 ? "0" + (i - 12) : i - 12;
+        value += " PM";
+      }
+      date.push(React.createElement(
+        "option",
+        { key: i, value: i },
+        value
+      ));
+    }
+    return date;
+  },
+
+  makeMinute: function () {
+    var data = [0, 15, 30, 45];
+    var date = [];
+    date.push(React.createElement(
+      "option",
+      { key: "-1", value: "" },
+      "--"
+    ));
+    data.map(function (item, key) {
+      date.push(React.createElement(
+        "option",
+        { key: key, value: item },
+        item == 0 ? item + "0" : item
+      ));
+    });
+
     return date;
   },
 
@@ -65798,7 +72147,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeStartTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(24)
+            this.makeHour(24)
           ),
           React.createElement(
             "span",
@@ -65816,7 +72165,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeStartTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(60)
+            this.makeMinute()
           )
         ),
         React.createElement(
@@ -65855,7 +72204,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeFinishTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(24)
+            this.makeHour(24)
           ),
           React.createElement(
             "span",
@@ -65873,7 +72222,7 @@ var AvailabilityField = React.createClass({
                 return _this.onChangeFinishTime(e, $timepickerrorid);
               }
             },
-            this.makeDate(60)
+            this.makeMinute()
           )
         )
       ),
@@ -65933,7 +72282,7 @@ var ContentAction = React.createClass({
 			),
 			React.createElement(
 				'li',
-				{ className: 'active' },
+				{ className: '' },
 				React.createElement(
 					'a',
 					{ onClick: function () {
@@ -65951,7 +72300,7 @@ var ContentAction = React.createClass({
 					{ onClick: function () {
 							return _this.props.onModalWith('sendWorkOrder');
 						} },
-					React.createElement('i', { className: 'icon-send', 'aria-hidden': 'true' }),
+					React.createElement('i', { className: 'fa fa-send', 'aria-hidden': 'true' }),
 					'Send work order'
 				)
 			),
@@ -65967,7 +72316,7 @@ var ContentAction = React.createClass({
 					'Add Landlord'
 				)
 			),
-			React.createElement(
+			!!this.props.landlord && React.createElement(
 				'li',
 				null,
 				React.createElement(
@@ -66019,9 +72368,12 @@ var Action = React.createClass({
 			React.createElement(
 				'div',
 				{ className: 'content', id: 'actions-content' },
-				this.state.show && React.createElement(ContentAction, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentAction, {
+					landlord: this.props.landlord,
+					onModalWith: function (modal) {
 						return _this2.props.onModalWith(modal);
-					}, landlord: this.props.landlord })
+					}
+				})
 			)
 		);
 	}
@@ -66056,14 +72408,59 @@ var ActionMobile = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'content' },
-					React.createElement(ContentAction, { onModalWith: function (modal) {
+					React.createElement(ContentAction, {
+						landlord: this.props.landlord,
+						onModalWith: function (modal) {
 							return _this3.props.onModalWith(modal);
-						}, landlord: this.props.landlord })
+						}
+					})
 				)
 			)
 		);
 	}
 });
+var ContentActivity = React.createClass({
+	displayName: "ContentActivity",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			null,
+			React.createElement(
+				"ul",
+				null,
+				this.props.logs.map(function (item, index) {
+					return React.createElement(
+						"li",
+						{ key: index, className: "user" },
+						React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+						React.createElement(
+							"p",
+							{ className: "info" },
+							React.createElement(
+								"span",
+								{ className: "title" },
+								item.action,
+								React.createElement(
+									"strong",
+									null,
+									" ",
+									item.name
+								)
+							),
+							React.createElement(
+								"span",
+								{ className: "time" },
+								moment(item.created_at).format('lll')
+							)
+						)
+					);
+				})
+			)
+		);
+	}
+});
+
 var Activity = React.createClass({
 	displayName: "Activity",
 
@@ -66075,118 +72472,6 @@ var Activity = React.createClass({
 
 	showActivity: function () {
 		this.setState({ show: !this.state.show });
-	},
-
-	content: function () {
-		return React.createElement(
-			"div",
-			null,
-			React.createElement(
-				"ul",
-				null,
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				),
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				),
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				),
-				React.createElement(
-					"li",
-					{ className: "user" },
-					React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-					React.createElement(
-						"p",
-						{ className: "info" },
-						React.createElement(
-							"span",
-							{ className: "title" },
-							"Request by ",
-							React.createElement(
-								"strong",
-								null,
-								"Dereck Carlson"
-							)
-						),
-						React.createElement(
-							"span",
-							{ className: "time" },
-							"Sep 16, 2017 at 9am"
-						)
-					)
-				)
-			),
-			React.createElement(
-				"button",
-				{ className: "view-more button-default" },
-				"View more"
-			)
-		);
 	},
 
 	render: function () {
@@ -66205,8 +72490,8 @@ var Activity = React.createClass({
 			),
 			React.createElement(
 				"div",
-				{ className: "content text-center", id: "activity-content" },
-				this.state.show && this.content()
+				{ className: "content text-center activity-content", id: "activity-content" },
+				this.state.show && this.props.logs.length ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
 			)
 		);
 	}
@@ -66214,6 +72499,16 @@ var Activity = React.createClass({
 
 var ActivityMobile = React.createClass({
 	displayName: "ActivityMobile",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showActivity: function () {
+		this.setState({ show: !this.state.show });
+	},
 
 	render: function () {
 		return React.createElement(
@@ -66230,118 +72525,215 @@ var ActivityMobile = React.createClass({
 						null,
 						"Activity log:"
 					),
-					React.createElement("i", { className: "fa fa-angle-down", "aria-hidden": "true" })
+					React.createElement("i", { className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right", "aria-hidden": "true", onClick: this.showActivity })
 				),
 				React.createElement(
 					"div",
-					{ className: "content text-center" },
+					{ className: "content text-center activity-content" },
+					this.props.logs.length && !!this.state.show ? React.createElement(ContentActivity, { logs: this.props.logs }) : null
+				)
+			)
+		);
+	}
+});
+var Appointment = React.createClass({
+	displayName: "Appointment",
+
+	render: function () {
+		var _this = this;
+
+		var appointment = this.props.appointment;
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"div",
+				{ className: "date-time" },
+				React.createElement(
+					"p",
+					{ className: "date" },
 					React.createElement(
-						"ul",
+						"span",
 						null,
+						"Date: "
+					),
+					React.createElement(
+						"span",
+						null,
+						moment(appointment.created_at).format('dddd LL')
+					)
+				),
+				React.createElement(
+					"p",
+					{ className: "time" },
+					React.createElement(
+						"span",
+						null,
+						"Time: "
+					),
+					React.createElement(
+						"span",
+						null,
+						moment(appointment.created_at).format('LT')
+					)
+				)
+			),
+			React.createElement(
+				"div",
+				null,
+				React.createElement(
+					"button",
+					{ className: "btn-view", onClick: function (key, item) {
+							return _this.props.viewItem('viewAppointment', appointment);
+						} },
+					"View Details"
+				)
+			)
+		);
+	}
+});
+
+var ContentAppointment = React.createClass({
+	displayName: "ContentAppointment",
+
+	render: function () {
+		var _this2 = this;
+
+		var appointments = this.props.appointments;
+		return React.createElement(
+			"ul",
+			{ className: "content-appointment" },
+			appointments.map(function (appointment, key) {
+				return React.createElement(Appointment, {
+					key: key,
+					appointment: appointment,
+					viewItem: function (key, item) {
+						return _this2.props.viewItem(key, item);
+					}
+				});
+			})
+		);
+	}
+});
+
+var ModalViewAppointment = React.createClass({
+	displayName: "ModalViewAppointment",
+
+	render: function () {
+		var appointment = this.props.appointment;
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
 						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"aria-label": "Close",
+								"data-dismiss": "modal",
+								onClick: this.props.close
+							},
 							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
 							)
 						),
 						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
-							)
-						),
-						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
-							)
-						),
-						React.createElement(
-							"li",
-							{ className: "user" },
-							React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
-							React.createElement(
-								"p",
-								{ className: "info" },
-								React.createElement(
-									"span",
-									{ className: "title" },
-									"Request by ",
-									React.createElement(
-										"strong",
-										null,
-										"Dereck Carlson"
-									)
-								),
-								React.createElement(
-									"span",
-									{ className: "time" },
-									"Sep 16, 2017 at 9am"
-								)
-							)
+							"h4",
+							{ className: "modal-title text-center" },
+							"Appointment"
 						)
 					),
 					React.createElement(
 						"div",
-						{ className: "text-center" },
+						{ className: "modal-body" },
 						React.createElement(
-							"button",
-							{ className: "view-more button-default" },
-							"View more"
+							"div",
+							{ className: "modal-appointment" },
+							React.createElement(
+								"div",
+								{ className: "info" },
+								React.createElement(
+									"p",
+									{ className: "status" },
+									React.createElement(
+										"span",
+										null,
+										"Status:"
+									),
+									React.createElement(
+										"span",
+										null,
+										" ",
+										appointment.status
+									)
+								),
+								React.createElement(
+									"p",
+									{ className: "date" },
+									React.createElement(
+										"span",
+										null,
+										"Date:"
+									),
+									React.createElement(
+										"span",
+										null,
+										" ",
+										moment(appointment.created_at).format('dddd LL')
+									)
+								),
+								React.createElement(
+									"p",
+									{ className: "time" },
+									React.createElement(
+										"span",
+										null,
+										"Time:"
+									),
+									React.createElement(
+										"span",
+										null,
+										" ",
+										moment(appointment.created_at).format('LT')
+									)
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								"Comments"
+							),
+							React.createElement(
+								"div",
+								{ className: "comments" },
+								appointment.comments.map(function (comment, key) {
+									return React.createElement(
+										"div",
+										{ key: key, className: "comment" },
+										React.createElement(
+											"p",
+											{ className: "content" },
+											comment.body
+										),
+										React.createElement(
+											"p",
+											{ className: "date-time" },
+											moment(comment.created_at).format('LLL')
+										)
+									);
+								})
+							)
 						)
 					)
 				)
@@ -66354,17 +72746,41 @@ var ContentContact = React.createClass({
 
 	render: function () {
 		var selt = this;
-		var landlord = this.props.landlord;
+		var _props = this.props;
+		var landlord = _props.landlord;
+		var tenants = _props.tenants;
+		var assigned_trady = _props.assigned_trady;
+
+		var tenantMobile = [];
+		if (tenants) {
+			tenantMobile = tenants.map(function (tenant, key) {
+				return React.createElement(
+					"li",
+					{ key: tenant.id },
+					React.createElement(
+						"a",
+						{ href: "tel:" + tenant.mobile },
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Tenant ",
+						key + 1,
+						": ",
+						tenant.mobile
+					)
+				);
+			});
+		}
+
 		if (!!landlord) {
 			return React.createElement(
 				"ul",
 				null,
+				tenantMobile,
 				React.createElement(
 					"li",
 					null,
 					React.createElement(
 						"a",
-						null,
+						{ href: "tel:" + landlord.mobile },
 						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 						"Landlord: ",
 						landlord.mobile
@@ -66393,12 +72809,25 @@ var ContentContact = React.createClass({
 						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
 						"Message Tenants"
 					)
+				),
+				assigned_trady && React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('sendMessageTrady');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Message Trady"
+					)
 				)
 			);
 		} else {
 			return React.createElement(
 				"ul",
 				null,
+				tenantMobile,
 				React.createElement(
 					"li",
 					null,
@@ -66409,6 +72838,18 @@ var ContentContact = React.createClass({
 							} },
 						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
 						"Message Tenants"
+					)
+				),
+				assigned_trady && React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('sendMessageTrady');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Message Trady"
 					)
 				)
 			);
@@ -66421,7 +72862,7 @@ var Contact = React.createClass({
 
 	getInitialState: function () {
 		return {
-			show: false
+			show: true
 		};
 	},
 
@@ -66452,9 +72893,14 @@ var Contact = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content" },
-				this.state.show && React.createElement(ContentContact, { onModalWith: function (modal) {
+				this.state.show && React.createElement(ContentContact, {
+					tenants: this.props.tenants,
+					landlord: this.props.landlord,
+					assigned_trady: this.props.assigned_trady,
+					onModalWith: function (modal) {
 						return _this.props.onModalWith(modal);
-					}, landlord: this.props.landlord })
+					}
+				})
 			)
 		);
 	}
@@ -66468,13 +72914,13 @@ var ContactMobile = React.createClass({
 
 		return React.createElement(
 			"div",
-			{ className: "actions-full contact-full" },
+			{ className: "actions-full contact-full", id: "contacts-full" },
 			React.createElement(
 				"div",
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -66489,9 +72935,175 @@ var ContactMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentContact, { onModalWith: function (modal) {
+					React.createElement(ContentContact, {
+						tenants: this.props.tenants,
+						landlord: this.props.landlord,
+						assigned_trady: this.props.assigned_trady,
+						onModalWith: function (modal) {
 							return _this2.props.onModalWith(modal);
-						}, landlord: this.props.landlord })
+						}
+					})
+				)
+			)
+		);
+	}
+});
+var EditMaintenanceRequest = React.createClass({
+	displayName: 'EditMaintenanceRequest',
+
+	getInitialState: function () {
+		return {
+			errorTitle: false,
+			errorDescription: false
+		};
+	},
+
+	checkValidate: function (e, key) {
+		var value = e.target.value;
+		switch (key) {
+			case 'title':
+				{
+					if (value == "") {
+						this.setState({
+							errorTitle: true
+						});
+					} else {
+						this.setState({
+							errorTitle: false
+						});
+					}
+					break;
+				}
+
+			case 'description':
+				{
+					if (value == "") {
+						this.setState({
+							errorDescription: true
+						});
+					} else {
+						this.setState({
+							errorDescription: false
+						});
+					}
+					break;
+				}
+		}
+	},
+
+	submit: function (e) {
+		e.preventDefault();
+		var flag = false;
+
+		if (this.description.value == "") {
+			this.setState({
+				errorDescription: true
+			});
+			flag = true;
+		}
+
+		if (flag == true) {
+			return;
+		}
+
+		var params = {
+			maintenance_description: this.description.value
+		};
+		this.props.editMaintenanceRequest(params);
+	},
+
+	render: function () {
+		var _this = this;
+
+		var state = this.state;
+		var maintenance_request = this.props.maintenance_request;
+		return React.createElement(
+			'div',
+			{ className: 'modal-custom fade' },
+			React.createElement(
+				'div',
+				{ className: 'modal-dialog' },
+				React.createElement(
+					'div',
+					{ className: 'modal-content' },
+					React.createElement(
+						'form',
+						{ role: 'form', id: 'addForm', onSubmit: this.submit },
+						React.createElement(
+							'div',
+							{ className: 'modal-header' },
+							React.createElement(
+								'button',
+								{
+									type: 'button',
+									className: 'close',
+									'aria-label': 'Close',
+									'data-dismiss': 'modal',
+									onClick: this.props.close
+								},
+								React.createElement(
+									'span',
+									{ 'aria-hidden': 'true' },
+									'×'
+								)
+							),
+							React.createElement(
+								'h4',
+								{ className: 'modal-title text-center' },
+								'Edit Maintenance Request'
+							)
+						),
+						React.createElement(
+							'div',
+							{ className: 'modal-body edit-maintenance-request' },
+							React.createElement(
+								'div',
+								{ className: 'row m-t-lg' },
+								React.createElement(
+									'div',
+									null,
+									React.createElement(
+										'label',
+										null,
+										'Maintenance Request Description:'
+									),
+									React.createElement('textarea', {
+										placeholder: 'Enter Description',
+										ref: function (e) {
+											return _this.description = e;
+										},
+										onChange: function (e, key) {
+											return _this.checkValidate(e, 'description');
+										},
+										defaultValue: maintenance_request.maintenance_description,
+										className: "u-full-width " + (this.state.errorDescription && "has-error")
+									})
+								)
+							)
+						),
+						React.createElement(
+							'div',
+							{ className: 'modal-footer' },
+							React.createElement(
+								'button',
+								{
+									type: 'button',
+									onClick: this.props.close,
+									className: 'btn btn-primary cancel'
+								},
+								'Cancel'
+							),
+							React.createElement(
+								'button',
+								{
+									type: 'submit',
+									className: 'btn btn-default success',
+									disabled: !!state.errorTitle || !!state.errorDescription ? true : false
+								},
+								'Submit'
+							)
+						)
+					)
 				)
 			)
 		);
@@ -66570,9 +73182,29 @@ var DropDownContent = React.createClass({
   },
 
   componentWillReceiveProps: function (nextProps) {
+    if (nextProps.isHide === true || nextProps.isHide === false) {
+      this.setHeight(nextProps.isHide);
+    }
     this.setState({
       valueAction: nextProps.valueAction
     });
+  },
+
+  setHeight: function (flag) {
+    if (!flag) {
+      var dropdown = $('.show .content-action');
+      var heightScreen = $(window).height() - 90;
+      if (heightScreen < 450) {
+        dropdown.css({
+          "height": heightScreen,
+          "overflow-y": "scroll"
+        });
+      } else {
+        dropdown.css("height", 450);
+      }
+    } else {
+      $('.content-mobile .dropcontent').css('height', 0);
+    }
   },
 
   render: function () {
@@ -66581,7 +73213,7 @@ var DropDownContent = React.createClass({
     var state = this.state;
     return React.createElement(
       "ul",
-      { className: "dropcontent" },
+      { className: "dropcontent content-action" },
       content.map(function (item, index) {
         return React.createElement(
           "li",
@@ -66663,7 +73295,7 @@ var DropDownMobileList = React.createClass({
       this.setState({
         hidden: !this.state.hidden
       });
-    } else {
+    } else if (!this.state.hidden) {
       this.setState({
         hidden: true
       });
@@ -66700,14 +73332,15 @@ var DropDownMobileList = React.createClass({
           onClick: function (id) {
             return _this2.onDrop(props.id);
           },
-          className: 'btn-drop-mobile title ' + (!state.hidden && 'active')
+          className: 'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')
         },
         this.props.title
       ),
       React.createElement(
         "div",
-        { className: "content-mobile " + (!state.hidden && 'show') },
+        { className: "content-mobile action-mobile " + (!state.hidden && 'show') },
         React.createElement(DropDownContent, {
+          isHide: state.hidden,
           content: props.content,
           valueAction: state.valueAction,
           getAction: function (value) {
@@ -66778,10 +73411,10 @@ var ImgSlider = React.createClass({
 
   getInitialState: function () {
     return {
-      stlen: this.props.images ? this.props.images.length : 0,
+      stx: 0,
       stpos: 0,
       stwidth: 0,
-      stx: 0
+      stlen: this.props.images.length
     };
   },
 
@@ -66795,7 +73428,9 @@ var ImgSlider = React.createClass({
 
   sliderTopPrev: function () {
     var stpos = this.state.stpos - 1;
-    if (stpos < 0) stpos = this.state.stlen - 1;
+    if (stpos < 0) {
+      stpos = this.state.stlen - 1;
+    }
     this.setState({
       stpos: stpos
     });
@@ -66804,31 +73439,39 @@ var ImgSlider = React.createClass({
 
   sliderTopNext: function () {
     var stpos = this.state.stpos + 1;
-    if (stpos >= this.state.stlen) stpos = 0;
+    if (stpos >= this.state.stlen) {
+      stpos = 0;
+    }
     this.setState({
       stpos: stpos
     });
     this.sliderTopRun(stpos);
   },
 
+  setWidth: function () {
+    var slider = $('#slider');
+    if (slider.length > 0 && slider.width() > 0) {
+      this.setState({
+        stwidth: slider.width()
+      });
+    }
+  },
+
   componentWillReceiveProps: function (nextProps) {
     this.setState({
-      stlen: nextProps.images ? nextProps.images.length : 0
+      stlen: nextProps.images.length > 0 ? nextProps.images.length : 1
     });
   },
 
   componentDidMount: function () {
     var self = this;
+    if ($('#slider').length > 0) {
+      this.setWidth();
 
-    self.setState({
-      stwidth: $('#slider').width()
-    });
-
-    $('#slider').resize(function () {
-      self.setState({
-        stwidth: $('#slider').width()
+      $(window).on('load resize', function () {
+        self.setWidth();
       });
-    });
+    }
 
     $("." + self.props.nameClass).on("touchstart", function (event) {
       var xClick = event.originalEvent.touches[0].pageX;
@@ -66852,6 +73495,7 @@ var ImgSlider = React.createClass({
       width: this.state.stlen * this.state.stwidth
     };
     var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
+    var images = this.props.images;
     return React.createElement(
       "div",
       { id: "slider" },
@@ -66875,8 +73519,8 @@ var ImgSlider = React.createClass({
         React.createElement(
           "div",
           { className: "swiper-wrapper slider", style: styles },
-          this.state.stlen && this.props.images.map(function (image, i) {
-            return React.createElement("img", { key: i, className: "swiper-slide slide-image", src: image.url, style: { width: subWidth }, alt: "Uploading..." });
+          images.map(function (image, i) {
+            return React.createElement("img", { key: i, className: "swiper-slide slide-image", src: image, style: { width: subWidth }, alt: "Uploading..." });
           })
         )
       )
@@ -66926,21 +73570,34 @@ var ListMaintenanceRequest = React.createClass({
   displayName: "ListMaintenanceRequest",
 
   getInitialState: function () {
+    var maintenance_requests = this.props.maintenance_requests;
+
+    var page = 1;
+    var prePage = 3;
+    var dataShow = maintenance_requests.splice((page - 1) * prePage, prePage);
     return {
-      page: 1,
-      data: [],
-      prePage: 3,
-      dataShow: [],
-      sortByDate: "Oldest to Newest",
+      page: page,
       valueAction: "",
+      prePage: prePage,
+      dataShow: dataShow,
+      data: maintenance_requests,
+      sortByDate: "Newest to Oldest",
       filterDate: [{ value: "Oldest to Newest", name: "Oldest to Newest" }, { value: "Newest to Oldest", name: "Newest to Oldest" }],
       actionRequests: [{
         title: "Maintenance Request",
         value: "Initiate Maintenance Request",
         count: this.props.new_maintenance_requests_count
       }, {
+        title: "Awaiting Tradie`s Quote",
+        value: "Awaiting Quote",
+        count: this.props.awaiting_trady_quote_count
+      }, {
+        title: "Quote Requested",
+        value: "Quote Requested",
+        count: this.props.quote_requested_count
+      }, {
         title: "Quote Received",
-        value: "Quote Received Awaiting Approval",
+        value: "Quote Received",
         count: this.props.quotes_received_count
       }, {
         title: "New Invoice",
@@ -66960,17 +73617,9 @@ var ListMaintenanceRequest = React.createClass({
         value: "Awaiting Owner Instruction",
         count: this.props.awaiting_owner_instruction_count
       }, {
-        title: "Quote Requested",
-        value: "Quote Requested",
-        count: this.props.quote_requested_count
-      }, {
         title: "Awaiting Tradie Initiation",
         value: "Awaiting Tradie Initiation",
         count: this.props.awaiting_trady_initiation_count
-      }, {
-        title: "Awaiting Tradie`s Quote",
-        value: "Awaiting Quote",
-        count: this.props.awaiting_trady_quote_count
       }, {
         title: "Awaiting Quote Approval",
         value: "Quote Received Awaiting Approval",
@@ -66994,6 +73643,10 @@ var ListMaintenanceRequest = React.createClass({
       }, {
         title: "Maintenance Scheduled - Awaiting Invoice",
         value: "Maintenance Scheduled - Awaiting Invoice",
+        count: this.props.maintenance_scheduled_count
+      }, {
+        title: "Maintenance Scheduled With Landlord",
+        value: "Maintenance Scheduled With Landlord",
         count: this.props.maintenance_scheduled_count
       }],
       tradyFilter: [{
@@ -67073,7 +73726,7 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   componentWillMount: function () {
-    this.getMaintenanceRequests();
+    //this.getMaintenanceRequests();
   },
 
   setPage: function (page) {
@@ -67145,8 +73798,10 @@ var ListMaintenanceRequest = React.createClass({
 
     var self = this;
     var current_user_agent = this.props.current_user_agent;
-    var current_user_agency_admin = this.props.current_user_agency_admin;
     var current_user_trady = this.props.current_user_trady;
+    var current_user_tenant = this.props.current_user_tenant;
+    var current_user_landlord = this.props.current_user_landlord;
+    var current_user_agency_admin = this.props.current_user_agency_admin;
     return React.createElement(
       "div",
       { className: "maintenance-list" },
@@ -67160,12 +73815,16 @@ var ListMaintenanceRequest = React.createClass({
         { className: "maintenance-content" },
         React.createElement(
           "div",
-          { className: "main-column" },
+          { className: "main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord") },
           React.createElement(
             "div",
             null,
             this.state.dataShow.map(function (maintenance_request, key) {
-              return React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link });
+              return React.createElement(
+                "div",
+                null,
+                React.createElement(MaintenanceRequestItem, { key: key, maintenance_request: maintenance_request, link: self.props.link })
+              );
             }),
             this.state.data.length > this.state.prePage && React.createElement(Pagination, {
               page: this.state.page,
@@ -67253,13 +73912,13 @@ var MaintenanceRequestItem = React.createClass({
     var maintenance_request = this.props.maintenance_request;
     return React.createElement(
       "div",
-      { className: "row m-t-lg maintenance-request" },
+      { className: "row maintenance-request" },
       React.createElement(
         "div",
         { className: "image" },
         React.createElement(ImgSlider, {
           nameClass: "slider-custom-" + maintenance_request.id,
-          images: maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{ url: "/uploads/maintenance_request_image/images/no_image.png" }]
+          images: maintenance_request.get_image_urls.length > 0 ? maintenance_request.get_image_urls : ["/uploads/maintenance_request_image/images/no_image.png"]
         })
       ),
       React.createElement(
@@ -67277,7 +73936,7 @@ var MaintenanceRequestItem = React.createClass({
               React.createElement(
                 "a",
                 { href: this.props.link + "/" + maintenance_request.id },
-                maintenance_request.maintenance_heading
+                maintenance_request.maintenance_description.substring(0, 10) + "..."
               )
             ),
             maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu && React.createElement(
@@ -67305,16 +73964,20 @@ var MaintenanceRequestItem = React.createClass({
               maintenance_request.service_type
             )
           ),
-          React.createElement(
-            "div",
-            null,
-            React.createElement(P, { content: maintenance_request.maintenance_description })
-          ),
           maintenance_request.property && maintenance_request.property.property_address && React.createElement(
             "p",
             { className: "address" },
             React.createElement("i", { className: "fa fa-map-marker" }),
             maintenance_request.property.property_address
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "view" },
+          React.createElement(
+            "a",
+            { className: "btn-view", href: this.props.link + "/" + maintenance_request.id },
+            "View"
           )
         )
       )
@@ -67458,50 +74121,57 @@ var Pagination = React.createClass({
 
       return;
     });
+
     return React.createElement(
       "div",
       { className: "pagination" },
-      React.createElement("a", {
-        className: "previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled"),
-        onClick: this.state.page > 1 ? function (page) {
-          return _this4.switchPage(_this4.state.page - 1);
-        } : ""
-      }),
-      this.state.group > 1 && React.createElement(
-        "a",
-        { onClick: function (group) {
-            return _this4.switchGroup(_this4.state.group - 1);
-          } },
-        "..."
-      ),
-      paginations,
-      this.state.group < this.state.totalGroup && React.createElement(
-        "a",
-        { onClick: function (group) {
-            return _this4.switchGroup(_this4.state.group + 1);
-          } },
-        "..."
-      ),
-      React.createElement("a", {
-        key: "next",
-        className: "next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled"),
-        onClick: function (page) {
-          return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
-        }
-      })
+      React.createElement(
+        "div",
+        { className: "content" },
+        React.createElement("a", {
+          className: "previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled"),
+          onClick: this.state.page > 1 ? function (page) {
+            return _this4.switchPage(_this4.state.page - 1);
+          } : ""
+        }),
+        this.state.group > 1 && React.createElement(
+          "a",
+          { onClick: function (group) {
+              return _this4.switchGroup(_this4.state.group - 1);
+            } },
+          "..."
+        ),
+        paginations,
+        this.state.group < this.state.totalGroup && React.createElement(
+          "a",
+          { onClick: function (group) {
+              return _this4.switchGroup(_this4.state.group + 1);
+            } },
+          "..."
+        ),
+        React.createElement("a", {
+          key: "next",
+          className: "next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled"),
+          onClick: function (page) {
+            return _this4.switchPage(_this4.state.page < _this4.state.totalPage ? _this4.state.page + 1 : _this4.state.page);
+          }
+        })
+      )
     );
   }
 });
 var Carousel = React.createClass({
-	displayName: 'Carousel',
+	displayName: "Carousel",
 
 	getInitialState: function () {
+		var gallery = this.props.gallery.length > 0 ? this.props.gallery : ["/uploads/maintenance_request_image/images/no_image.png"];
 		return {
-			stlen: this.props.gallery ? this.props.gallery.length : 0,
-			indexSlider: 0,
+			stx: 0,
 			stpos: 0,
 			stwidth: 0,
-			stx: 0
+			indexSlider: 0,
+			gallery: gallery,
+			stlen: gallery.length
 		};
 	},
 
@@ -67513,44 +74183,55 @@ var Carousel = React.createClass({
 		});
 	},
 
-	sliderPrev: function (argument) {
+	sliderPrev: function () {
 		var stpos = this.state.stpos - 1;
-		if (stpos < 0) stpos = this.state.stlen - 1;
+		if (stpos < 0) {
+			stpos = this.state.stlen - 1;
+		}
 		this.sliderRun(stpos);
 	},
 
 	sliderNext: function () {
 		var stpos = this.state.stpos + 1;
-		if (stpos >= this.state.stlen) stpos = 0;
+		if (stpos >= this.state.stlen) {
+			stpos = 0;
+		}
 		this.sliderRun(stpos);
+	},
+
+	setWidth: function (width) {
+		if (width) {
+			this.setState({
+				stwidth: width
+			});
+		}
 	},
 
 	componentDidMount: function () {
 		var self = this;
-		this.setState({
-			stwidth: $('.slider-custom').width()
-		});
+		var sliderDetail = $('#slider-detail');
+		if (sliderDetail.length > 0) {
+			this.setWidth(sliderDetail.width());
 
-		$(window).resize(function () {
-			self.setState({
-				stwidth: $('.slider-custom').width()
+			$(window).resize(function () {
+				self.setWidth(sliderDetail.width());
 			});
-		});
 
-		$(".slider-custom").on("touchstart", function (event) {
-			var xClick = event.originalEvent.touches[0].pageX;
-			$(this).one("touchmove", function (event) {
-				var xMove = event.originalEvent.touches[0].pageX;
-				if (Math.ceil(xClick - xMove) > 5) {
-					self.sliderNext();
-				} else if (Math.ceil(xClick - xMove) < -5) {
-					self.sliderPrev();
-				}
+			sliderDetail.on("touchstart", function (event) {
+				var xClick = event.originalEvent.touches[0].pageX;
+				$(this).one("touchmove", function (event) {
+					var xMove = event.originalEvent.touches[0].pageX;
+					if (Math.ceil(xClick - xMove) > 5) {
+						self.sliderNext();
+					} else if (Math.ceil(xClick - xMove) < -5) {
+						self.sliderPrev();
+					}
+				});
+				sliderDetail.on("touchend", function () {
+					$(this).off("touchmove");
+				});
 			});
-			$(".slider-custom").on("touchend", function () {
-				$(this).off("touchmove");
-			});
-		});
+		}
 	},
 
 	render: function () {
@@ -67561,29 +74242,29 @@ var Carousel = React.createClass({
 		var temp = this;
 		var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
 		return React.createElement(
-			'div',
-			{ className: 'slider-custom' },
+			"div",
+			{ className: "slider-custom", id: "slider-detail" },
 			React.createElement(
-				'div',
-				{ className: 'swiper-container swiper-container-horizontal' },
+				"div",
+				{ className: "swiper-container swiper-container-horizontal" },
 				React.createElement(
-					'div',
-					{ className: 'swiper-wrapper slider', style: styles, id: 'mySlider' },
-					this.props.gallery.map(function (img, index) {
-						return React.createElement('img', {
+					"div",
+					{ className: "swiper-wrapper slider", style: styles, id: "mySlider" },
+					this.state.gallery.map(function (img, index) {
+						return React.createElement("img", {
 							key: index,
-							src: img.url,
+							src: img,
 							style: { width: subWidth },
-							className: 'swiper-slide slide-image'
+							className: "swiper-slide slide-image"
 						});
 					})
 				)
 			),
 			React.createElement(
-				'div',
-				{ className: 'swiper-pagination' },
-				this.props.gallery.length > 1 ? this.props.gallery.map(function (img, index) {
-					return React.createElement('span', {
+				"div",
+				{ className: "swiper-pagination" },
+				this.state.gallery.length > 1 ? this.state.gallery.map(function (img, index) {
+					return React.createElement("span", {
 						key: index,
 						className: "swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active"),
 						onClick: function (stops) {
@@ -67593,136 +74274,248 @@ var Carousel = React.createClass({
 				}) : null
 			),
 			this.props.gallery.length > 1 && React.createElement(
-				'div',
-				{ className: 'btn-slider btn-next', onClick: this.sliderNext },
-				React.createElement('i', { className: 'fa fa-angle-right' })
+				"div",
+				{ className: "btn-slider btn-next", onClick: this.sliderNext },
+				React.createElement("i", { className: "fa fa-angle-right" })
 			),
 			this.props.gallery.length > 1 && React.createElement(
-				'div',
-				{ className: 'btn-slider btn-prev', onClick: this.sliderPrev },
-				React.createElement('i', { className: 'fa fa-angle-left' })
+				"div",
+				{ className: "btn-slider btn-prev", onClick: this.sliderPrev },
+				React.createElement("i", { className: "fa fa-angle-left" })
+			)
+		);
+	}
+});
+
+var Assigns = React.createClass({
+	displayName: "Assigns",
+
+	render: function () {
+		var _this = this;
+
+		var assigns = this.props.assigns;
+		return React.createElement(
+			"ul",
+			null,
+			assigns.map(function (item, key) {
+				if (item.name || item.first_name) {
+					return React.createElement(
+						"li",
+						{ key: item.id },
+						React.createElement(
+							"a",
+							{ onClick: function (email) {
+									return _this.props.assignToUser(item.email);
+								} },
+							item.name ? item.name : item.first_name + " " + item.last_name
+						)
+					);
+				}
+			})
+		);
+	}
+});
+
+var ButtonHeaderMR = React.createClass({
+	displayName: "ButtonHeaderMR",
+
+	getInitialState: function () {
+		return {
+			isShow: false
+		};
+	},
+
+	show: function (key) {
+		this.setState({
+			isShow: true
+		});
+	},
+
+	close: function () {
+		this.setState({
+			isShow: false
+		});
+	},
+
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind('click', function (e) {
+			if (self.state.isShow) {
+				self.close();
+			}
+		});
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		var all_agents = this.props.all_agents;
+		var all_agency_admins = this.props.all_agency_admins;
+		return React.createElement(
+			"div",
+			{ className: "actions" },
+			React.createElement(
+				"button",
+				{ className: "button-primary update-status" },
+				"Update status"
+			),
+			React.createElement(
+				"button",
+				{ className: "button-primary edit-detail", onClick: function (key) {
+						return _this2.props.viewItem('editMaintenanceRequest');
+					} },
+				React.createElement("i", { className: "fa fa-pencil", "aria-hidden": "true" }),
+				React.createElement(
+					"span",
+					null,
+					"Edit Details"
+				)
+			),
+			React.createElement(
+				"div",
+				{ className: "assign" },
+				React.createElement(
+					"button",
+					{ className: "button-primary assign-to", id: "assign-to", onClick: function (key) {
+							return _this2.show(_this2.state.isShow ? "close" : "");
+						} },
+					React.createElement("i", { className: "icon-user", "aria-hidden": "true" }),
+					React.createElement(
+						"span",
+						null,
+						"Assign to"
+					),
+					React.createElement("i", { className: "fa fa-angle-down", "aria-hidden": "true" })
+				),
+				React.createElement(
+					"div",
+					{ className: "dropdown-assign", style: { display: this.state.isShow ? 'block' : 'none' } },
+					React.createElement(
+						"div",
+						null,
+						React.createElement(
+							"p",
+							null,
+							"Agency Administrators"
+						),
+						React.createElement(Assigns, { assigns: all_agency_admins, assignToUser: function (email) {
+								return _this2.props.assignToUser(email);
+							} })
+					),
+					React.createElement(
+						"div",
+						null,
+						React.createElement(
+							"p",
+							{ className: "agent" },
+							"Agents"
+						),
+						React.createElement(Assigns, { assigns: all_agents, assignToUser: function (email) {
+								return _this2.props.assignToUser(email);
+							} })
+					)
+				)
 			)
 		);
 	}
 });
 
 var ItemMaintenanceRequest = React.createClass({
-	displayName: 'ItemMaintenanceRequest',
+	displayName: "ItemMaintenanceRequest",
 
 	render: function () {
+		var _this3 = this;
+
 		var maintenance = this.props.maintenance_request;
+		var props = this.props;
 		return React.createElement(
-			'div',
-			{ className: 'post' },
+			"div",
+			{ className: "post" },
 			React.createElement(
-				'div',
-				{ className: 'info' },
+				"div",
+				{ className: "info" },
 				React.createElement(
-					'div',
-					{ className: 'info-title' },
+					"div",
+					{ className: "info-title" },
 					React.createElement(
-						'div',
-						{ className: 'title' },
+						"div",
+						{ className: "title" },
 						React.createElement(
-							'span',
+							"span",
 							null,
 							maintenance.maintenance_heading
 						),
 						React.createElement(
-							'button',
-							{ className: 'button-primary', type: '' },
-							'Active'
+							"button",
+							{ className: "button-primary", type: "" },
+							"Active"
 						)
 					),
 					React.createElement(
-						'div',
-						{ className: 'author' },
-						React.createElement('i', { className: 'fa fa-map-marker', 'aria-hidden': 'true' }),
+						"div",
+						{ className: "author" },
+						React.createElement("i", { className: "fa fa-map-marker", "aria-hidden": "true" }),
 						React.createElement(
-							'span',
-							{ className: 'address' },
+							"span",
+							{ className: "address" },
 							this.props.property.property_address,
-							'.'
+							"."
 						),
 						React.createElement(
-							'a',
-							{ className: 'time' },
+							"a",
+							{ className: "time" },
 							moment(maintenance.created_at).startOf('day').fromNow()
 						),
 						React.createElement(
-							'a',
+							"a",
 							null,
-							'|'
+							"|"
 						),
 						React.createElement(
-							'a',
-							{ className: 'name-author' },
+							"a",
+							{ className: "name-author" },
 							maintenance.service_type
 						)
 					)
 				),
-				React.createElement(
-					'div',
-					{ className: 'actions' },
-					React.createElement(
-						'button',
-						{ className: 'button-primary update-status' },
-						'Update status'
-					),
-					React.createElement(
-						'button',
-						{ className: 'button-primary edit-detail' },
-						React.createElement('i', { className: 'fa fa-pencil', 'aria-hidden': 'true' }),
-						React.createElement(
-							'span',
-							null,
-							'Edit Details'
-						)
-					),
-					React.createElement(
-						'button',
-						{ className: 'button-primary assign-to' },
-						React.createElement('i', { className: 'icon-user', 'aria-hidden': 'true' }),
-						React.createElement(
-							'span',
-							null,
-							'Assign to'
-						),
-						React.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
-					)
-				)
+				props.show_assign && React.createElement(ButtonHeaderMR, {
+					all_agents: props.all_agents,
+					all_agency_admins: props.all_agency_admins,
+					viewItem: function (key, item) {
+						return _this3.props.viewItem(key, item);
+					},
+					assignToUser: function (email) {
+						return _this3.props.assignToUser(email);
+					}
+				})
 			),
 			React.createElement(
-				'div',
-				{ className: 'content' },
-				this.props.gallery && React.createElement(Carousel, { gallery: this.props.gallery }),
+				"div",
+				{ className: "content" },
 				React.createElement(
-					'div',
-					{ className: 'description' },
+					"div",
+					{ className: "description" },
 					React.createElement(
-						'p',
+						"p",
 						null,
 						maintenance.maintenance_description
 					)
 				),
 				React.createElement(
-					'div',
-					{ className: 'date-time' },
+					"div",
+					{ className: "vailability" },
 					React.createElement(
-						'button',
-						null,
-						React.createElement(
-							'span',
-							{ className: 'vailability' },
-							'Availability: '
-						),
-						React.createElement(
-							'span',
-							{ className: 'time' },
-							maintenance.availability
-						)
+						"p",
+						{ className: "header" },
+						"Tenant Availability and Access Instructions: "
+					),
+					React.createElement(
+						"p",
+						{ className: "description" },
+						maintenance.availability_and_access
 					)
-				)
+				),
+				React.createElement(Carousel, { gallery: this.props.gallery })
 			)
 		);
 	}
@@ -67736,6 +74529,8 @@ var MaintenanceRequestsNew = React.createClass({
 		return {
 			images: [],
 			isAgent: true,
+			dataImages: [],
+			isAndroid: false,
 			validName: false,
 			validDate: false,
 			validEmail: false,
@@ -67810,21 +74605,28 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleRemoveFrame: function (e) {
-		var images = this.state.images;
+		var _state = this.state;
+		var images = _state.images;
+		var dataImages = _state.dataImages;
 
 		var index = e.target.id;
 		images.splice(index, 1);
-		this.setState({ images: images });
+		dataImages.splice(index, 1);
+		this.setState({
+			images: images,
+			dataImages: dataImages
+		});
 	},
 
 	_handleImageChange: function (e) {
 		var _this = this;
 
-		e.preventDefault();
+		var self = this;
 		var files = e.target.files;
 		var reader = new FileReader();
+		var fr = new FileReader();
 		var images = this.state.images;
-
+		var orientation;
 		readFile = function (index) {
 			if (index >= files.length) {
 				_this.setState({
@@ -67835,22 +74637,47 @@ var MaintenanceRequestsNew = React.createClass({
 			var file = files[index];
 			var fileAlreadyExists = false;
 			for (var i = 0; i < images.length; i++) {
-				if (images[i].fileInfo.name == file.name) {
+				if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
 					fileAlreadyExists = true;
 					break;
 				}
 			}
 			if (!fileAlreadyExists) {
-				reader.readAsDataURL(file);
-				reader.onload = function (e) {
-					images.push({ url: e.target.result, fileInfo: file });
-					readFile(index + 1);
+				var fr = new FileReader();
+				fr.readAsArrayBuffer(file);
+				fr.onload = function (e) {
+					orientation = self.getOrientation(e.target.result);
+					reader.readAsDataURL(file);
+					reader.onload = function (e) {
+						images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
+						readFile(index + 1);
+					};
 				};
 			} else {
 				readFile(index + 1);
 			}
 		};
 		readFile(0);
+	},
+
+	getOrientation: function (result) {
+		var view = new DataView(result);
+		if (view.getUint16(0, false) != 0xFFD8) return -2;
+		var length = view.byteLength,
+		    offset = 2;
+		while (offset < length) {
+			var marker = view.getUint16(offset, false);
+			offset += 2;
+			if (marker == 0xFFE1) {
+				if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+				var little = view.getUint16(offset += 6, false) == 0x4949;
+				offset += view.getUint32(offset + 4, little);
+				var tags = view.getUint16(offset, little);
+				offset += 2;
+				for (var i = 0; i < tags; i++) if (view.getUint16(offset + i * 12, little) == 0x0112) return view.getUint16(offset + i * 12 + 8, little);
+			} else if ((marker & 0xFF00) != 0xFF00) break;else offset += view.getUint16(offset, false);
+		}
+		return -1;
 	},
 
 	validDate: function (flag) {
@@ -67860,6 +74687,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	handleCheckSubmit: function (e) {
+		e.preventDefault();
 		if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
 			e.preventDefault();
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
@@ -67867,11 +74695,9 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 		var XHR = new XMLHttpRequest();
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
-		FD['delete']('maintenance_request[maintenance_request_image_attributes][images][]');
-		FD['delete']('commit');
-		this.state.images.map(function (image, index) {
+		this.state.dataImages.map(function (image, index) {
 			var idx = index + 1;
-			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
+			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
 		});
 		FD.append('commit', 'Submit Maintenance Request');
 		XHR.addEventListener('loadend', function (event) {
@@ -67904,14 +74730,14 @@ var MaintenanceRequestsNew = React.createClass({
 				document.getElementById("errorboxmobile").textContent = strErrMobile;
 				document.getElementById("errorboxmobile").classList.add("border_on_error");
 			}
-			if (validationObject['maintenance_heading'] != undefined) {
-				document.getElementById("errorboxheading").textContent = strErrHeading;
-				document.getElementById("errorboxheading").classList.add("border_on_error");
-			}
-			if (validationObject['maintenance_description'] != undefined) {
-				document.getElementById("errorboxdescription").textContent = strErrDescription;
-				document.getElementById("errorboxdescription").classList.add("border_on_error");
-			}
+			/*if(validationObject['maintenance_heading'] != undefined) {
+   	document.getElementById("errorboxheading").textContent = strErrHeading;
+   	document.getElementById("errorboxheading").classList.add("border_on_error");
+   }
+   if(validationObject['maintenance_description'] != undefined) {
+   	document.getElementById("errorboxdescription").textContent = strErrDescription;
+   	document.getElementById("errorboxdescription").classList.add("border_on_error");
+   }*/
 		});
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
@@ -67919,11 +74745,12 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.upload.addEventListener('loadstart', function (e) {
 			$("#spinner").css('display', 'flex');
 		});
-		XHR.upload.addEventListener('loadend', function (e) {
-			$("#spinner").css('display', 'none');
-		});
+		XHR.onreadystatechange = function () {
+			if (XHR.readyState == 4) {
+				$("#spinner").css('display', 'none');
+			}
+		};
 		XHR.send(FD);
-		e.preventDefault();
 		return false;
 	},
 
@@ -67959,12 +74786,222 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 	},
 
+	updateImage: function (image) {
+		var dataImages = this.state.dataImages;
+
+		dataImages.push(image);
+		this.setState({
+			dataImages: dataImages
+		});
+	},
+
+	removeImage: function (index) {
+		var _state2 = this.state;
+		var images = _state2.images;
+		var dataImages = _state2.dataImages;
+
+		images.splice(index, 1);
+		dataImages.splice(index, 1);
+		this.setState({
+			images: images,
+			dataImages: dataImages
+		});
+	},
+
+	loadImage: function (e, image, key) {
+		var img = e.target;
+		var maxSize = 500000; // byte
+		var self = this;
+		if (!image.isUpload) {
+			var target_img = {};
+			var images = this.state.images;
+
+			var file = image.fileInfo;
+			image.isUpload = true;
+
+			// resize image
+			if (file.size > maxSize) {
+				var quality = Math.ceil(maxSize / file.size * 100);
+				target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
+			} else {
+				if (!!this.state.isAndroid) {
+					target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+				} else {
+					target_img.src = image.url;
+				}
+			}
+
+			image.url = target_img.src;
+			images[key] = image;
+			this.setState({
+				images: images
+			});
+
+			var filename = file;
+			var options = {
+				extension: filename.name.match(/(\.\w+)?$/)[0],
+				_: Date.now()
+			};
+
+			// start upload file into S3
+			$.getJSON('/images/cache/presign', options, function (result) {
+				var fd = new FormData();
+				$.each(result.fields, function (key, value) {
+					fd.append(key, value);
+				});
+
+				fd.append('file', self.dataURItoBlob(target_img.src));
+				$.ajax({
+					type: 'POST',
+					url: result['url'],
+					enctype: 'multipart/form-data',
+					processData: false,
+					contentType: false,
+					data: fd,
+					xhr: function () {
+						var xhr = new window.XMLHttpRequest();
+						xhr.upload.addEventListener("progress", function (evt) {
+							if (evt.loaded > 0 && evt.total > 0) {
+								var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+								var progress = $('.progress');
+								if (progress.length == 0) {
+									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+								} else {
+									$('.progress .progress-bar').css('width', percentComplete + '%');
+								}
+								$('#title-upload').html('Uploading ' + percentComplete + '%');
+							}
+						}, false);
+						return xhr;
+					},
+					success: function () {
+						setTimeout(function () {
+							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+							$('.progress').remove();
+						}, 500);
+						var image = {
+							id: result.fields.key.match(/cache\/(.+)/)[1],
+							storage: 'cache',
+							metadata: {
+								size: file.size,
+								filename: file.name.match(/[^\/\\]*$/)[0],
+								mime_type: file.type
+							}
+						};
+						self.updateImage(image);
+					}
+				});
+			});
+		}
+	},
+
+	reduceQuality: function (source_img, type, quality, orientation) {
+		var mime_type = "image/jpeg";
+		if (typeof output_format !== "undefined" && output_format == "image/png") {
+			mime_type = "image/png";
+		}
+
+		var cvs = document.createElement('canvas'),
+		    width = source_img.naturalWidth,
+		    height = source_img.naturalHeight,
+		    ctx = cvs.getContext("2d");
+
+		// set proper canvas dimensions before transform & export
+		if ([5, 6, 7, 8].indexOf(orientation) > -1) {
+			cvs.width = height;
+			cvs.height = width;
+		} else {
+			cvs.width = width;
+			cvs.height = height;
+		}
+
+		// transform context before drawing image
+		switch (orientation) {
+			case 1:
+				ctx.transform(1, 0, 0, 1, 0, 0);
+			case 2:
+				ctx.transform(-1, 0, 0, 1, width, 0);
+				break;
+			case 3:
+				ctx.transform(-1, 0, 0, -1, width, height);
+				break;
+			case 4:
+				ctx.transform(1, 0, 0, -1, 0, height);
+				break;
+			case 5:
+				ctx.transform(0, 1, 1, 0, 0, 0);
+				break;
+			case 6:
+				ctx.transform(0, 1, -1, 0, height, 0);
+				break;
+			case 7:
+				ctx.transform(0, -1, -1, 0, height, width);
+				break;
+			case 8:
+				ctx.transform(0, -1, 1, 0, 0, width);
+				break;
+		}
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+		ctx.fillRect(0, 0, cvs.width, cvs.height);
+		ctx.strokeRect(0, 0, cvs.width, cvs.height);
+		ctx.lineWidth = 0;
+		ctx.rotate(0);
+		ctx.drawImage(source_img, 0, 0);
+		var newImageData = cvs.toDataURL(mime_type, quality / 100);
+		var result_image = new Image();
+		result_image.src = newImageData;
+		return result_image;
+	},
+
+	dataURItoBlob: function (dataURI) {
+		var byteString, mimestring;
+
+		if (dataURI.split(',')[0].indexOf('base64') !== -1) {
+			byteString = atob(dataURI.split(',')[1]);
+		} else {
+			byteString = decodeURI(dataURI.split(',')[1]);
+		}
+
+		mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+		var content = new Array();
+		for (var i = 0; i < byteString.length; i++) {
+			content[i] = byteString.charCodeAt(i);
+		}
+
+		return new Blob([new Uint8Array(content)], { type: mimestring });
+	},
+
+	detectAndroid: function () {
+		var ua = navigator.userAgent.toLowerCase();
+		var isAndroid = ua.indexOf("android") > -1;
+		if (isAndroid) {
+			this.setState({
+				isAndroid: true
+			});
+		}
+	},
+
+	componentDidMount: function () {
+		this.detectAndroid();
+	},
+
 	render: function () {
 		var _this2 = this;
 
 		var images = this.state.images;
 
 		var $imagePreview = [];
+		var _props = this.props;
+		var current_user_tenant = _props.current_user_tenant;
+		var current_role = _props.current_role;
+
+		var valueEmail = '';
+		var valueMobile = '';
+		if (current_role && current_role.role == "Tenant") {
+			valueEmail = current_user_tenant.email;
+			valueMobile = current_user_tenant.mobile;
+		}
 		if (images.length > 0) {
 			for (i = 0; i < images.length; i++) {
 				var imageObject = React.createElement(
@@ -67992,13 +75029,8 @@ var MaintenanceRequestsNew = React.createClass({
 			'div',
 			null,
 			React.createElement(
-				'h1',
-				{ className: 'text-center' },
-				'New Maintenance Request'
-			),
-			React.createElement(
 				'form',
-				{ role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
+				{ key: 'add', role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
 						return _this2.handleCheckSubmit(e);
 					} },
 				React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
@@ -68006,11 +75038,6 @@ var MaintenanceRequestsNew = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'field' },
-					React.createElement(
-						'p',
-						null,
-						' Name '
-					),
 					React.createElement('input', {
 						required: true,
 						type: 'text',
@@ -68036,15 +75063,14 @@ var MaintenanceRequestsNew = React.createClass({
 							}
 						} }),
 					React.createElement('p', { id: 'errorbox', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Email '
-					),
 					React.createElement('input', {
 						required: true,
 						type: 'email',
+						autoCorrect: 'off',
+						autoComplete: 'off',
+						autoCapitalize: 'off',
 						placeholder: 'E-mail',
+						defaultValue: valueEmail,
 						ref: function (ref) {
 							return _this2.email = ref;
 						},
@@ -68062,16 +75088,13 @@ var MaintenanceRequestsNew = React.createClass({
 							}
 						} }),
 					React.createElement('p', { id: 'errorboxemail', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Mobile '
-					),
 					React.createElement('input', {
 						required: true,
-						type: 'tel',
-						maxLength: '10',
+						type: 'text',
+						minLength: '10',
+						maxLength: '11',
 						placeholder: 'Mobile',
+						defaultValue: valueMobile,
 						ref: function (ref) {
 							return _this2.mobile = ref;
 						},
@@ -68091,86 +75114,76 @@ var MaintenanceRequestsNew = React.createClass({
 						} }),
 					React.createElement('p', { id: 'errorboxmobile', className: 'error' })
 				),
-				React.createElement('hr', null),
 				React.createElement(
 					'div',
-					{ id: 'access_contacts' },
+					{ id: 'access_contacts', className: 'm-b-lg' },
 					React.createElement(FieldList, { SampleField: AccessContactField, flag: 'contact' })
 				),
-				React.createElement('hr', null),
 				React.createElement(
 					'div',
 					{ className: 'field' },
-					React.createElement(
-						'p',
-						null,
-						' Maintenance heading '
-					),
-					React.createElement('input', {
-						required: true,
-						type: 'text',
-						ref: function (ref) {
-							return _this2.maintenance_heading = ref;
-						},
-						id: this.generateAtt("id", "maintenance_heading"),
-						name: this.generateAtt("name", "maintenance_heading"),
-						onBlur: function (e) {
-							if (!e.target.value.length) {
-								document.getElementById("errorboxheading").textContent = strErrHeading;
-								e.target.classList.add("border_on_error");
-								_this2.setState({ validHeading: true });
-							} else {
-								document.getElementById("errorboxheading").textContent = "";
-								e.target.classList.remove("border_on_error");
-								_this2.setState({ validHeading: false });
-							}
-						}
-					}),
-					React.createElement('p', { id: 'errorboxheading', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Maintenance description '
-					),
 					React.createElement('textarea', {
-						required: true,
+						placeholder: 'Maintenance Description',
 						ref: function (ref) {
 							return _this2.maintenance_description = ref;
 						},
 						id: this.generateAtt("id", "maintenance_description"),
-						name: this.generateAtt("name", "maintenance_description"),
-						onBlur: function (e) {
-							if (!e.target.value.length) {
-								document.getElementById("errorboxdescription").textContent = strErrDescription;
-								e.target.classList.add("border_on_error");
-								_this2.setState({ validDescription: true });
-							} else {
-								document.getElementById("errorboxdescription").textContent = "";
-								e.target.classList.remove("border_on_error");
-								_this2.setState({ validDescription: false });
-							}
-						}
+						name: this.generateAtt("name", "maintenance_description")
 					}),
 					React.createElement('p', { id: 'errorboxdescription', className: 'error' }),
-					React.createElement(
-						'p',
-						null,
-						' Images '
-					),
-					React.createElement('input', {
-						multiple: true,
-						type: 'file',
-						className: 'fileInput',
-						onChange: function (e) {
-							return _this2._handleImageChange(e);
+					React.createElement('textarea', {
+						type: 'text',
+						ref: function (ref) {
+							return _this2.maintenance_heading = ref;
 						},
-						id: 'maintenance_request_maintenance_request_image_attributes_images',
-						name: 'maintenance_request[maintenance_request_image_attributes][images][]'
+						id: this.generateAtt("id", "availability_and_access"),
+						name: this.generateAtt("name", "availability_and_access"),
+						placeholder: 'Appointment Availability and Access Instructions'
 					}),
+					React.createElement('p', { id: 'erroravailabilityandaccess', className: 'error' }),
 					React.createElement(
 						'div',
-						{ className: 'imgPreview' },
-						$imagePreview
+						{ className: 'browse-wrap' },
+						React.createElement(
+							'div',
+							{ className: 'title', id: 'title-upload' },
+							React.createElement('i', { className: 'fa fa-upload' }),
+							'Choose a image to upload'
+						),
+						React.createElement('input', {
+							multiple: true,
+							type: 'file',
+							id: 'input-file',
+							className: 'upload inputfile',
+							accept: 'image/jpeg, image/png',
+							onChange: function (e) {
+								return _this2._handleImageChange(e);
+							}
+						})
+					),
+					React.createElement(
+						'div',
+						{ id: 'img-render' },
+						images.map(function (img, index) {
+							return React.createElement(
+								'div',
+								{ key: index, className: 'img' },
+								React.createElement('img', {
+									src: img.url,
+									className: '',
+									onLoad: function (e, image, key) {
+										return _this2.loadImage(e, img, index);
+									}
+								}),
+								React.createElement(
+									'a',
+									{ className: 'remove', onClick: function (key) {
+											return _this2.removeImage(index);
+										} },
+									'Remove'
+								)
+							);
+						})
 					)
 				),
 				!this.props.current_user || this.props.current_user.tenant ? React.createElement(
@@ -68180,14 +75193,13 @@ var MaintenanceRequestsNew = React.createClass({
 					React.createElement(
 						'div',
 						null,
-						React.createElement(
-							'p',
-							null,
-							' Agent email '
-						),
 						React.createElement('input', {
 							required: true,
-							type: 'text',
+							type: 'email',
+							autoCapitalize: 'off',
+							autoCorrect: 'off',
+							autoComplete: 'off',
+							placeholder: 'Agent email',
 							onBlur: this.checkAgentEmail,
 							ref: function (ref) {
 								return _this2.agent_email = ref;
@@ -68199,14 +75211,10 @@ var MaintenanceRequestsNew = React.createClass({
 						!this.state.isAgent ? React.createElement(
 							'div',
 							null,
-							React.createElement(
-								'p',
-								null,
-								' Real estate office '
-							),
 							React.createElement('input', {
 								required: true,
 								type: 'text',
+								placeholder: 'Real estate office',
 								ref: function (ref) {
 									return _this2.real_estate_office = ref;
 								},
@@ -68225,14 +75233,10 @@ var MaintenanceRequestsNew = React.createClass({
 									}
 								} }),
 							React.createElement('p', { id: 'errRealEstateOffice', className: 'error' }),
-							React.createElement(
-								'p',
-								null,
-								' Agent name '
-							),
 							React.createElement('input', {
 								required: true,
 								type: 'text',
+								placeholder: 'Agent name',
 								ref: function (ref) {
 									return _this2.agent_name = ref;
 								},
@@ -68251,15 +75255,12 @@ var MaintenanceRequestsNew = React.createClass({
 									}
 								} }),
 							React.createElement('p', { id: 'errAgentName', className: 'error' }),
-							React.createElement(
-								'p',
-								null,
-								' Agent mobile '
-							),
 							React.createElement('input', {
 								required: true,
 								type: 'text',
-								maxLength: '10',
+								maxLength: '11',
+								minLength: '10',
+								placeholder: 'Agent mobile',
 								ref: function (ref) {
 									return _this2.agent_mobile = ref;
 								},
@@ -68282,24 +75283,22 @@ var MaintenanceRequestsNew = React.createClass({
 					),
 					React.createElement('hr', null)
 				) : React.createElement('hr', null),
-				React.createElement(
-					'div',
-					{ id: 'availabilities' },
-					React.createElement(FieldList, { SampleField: AvailabilityField, validDate: function (flag) {
-							return _this2.validDate(flag);
-						}, flag: 'date' })
-				),
-				React.createElement('hr', null),
 				React.createElement('p', { id: 'errCantSubmit', className: 'error' }),
 				React.createElement(
-					'button',
-					{ type: 'submit', className: 'button-primary green', name: 'commit' },
-					'Submit Maintenance Request'
+					'div',
+					{ className: 'text-center' },
+					React.createElement(
+						'button',
+						{ type: 'submit', className: 'button-primary green', name: 'commit' },
+						'Submit Maintenance Request'
+					)
 				)
 			)
 		);
 	}
 });
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var ModalConfirm = React.createClass({
 	displayName: "ModalConfirm",
 
@@ -68411,10 +75410,20 @@ var ModalAddAskLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -68553,9 +75562,18 @@ var ModalAddAskLandlord = React.createClass({
 										),
 										":"
 									),
-									React.createElement("input", { className: "u-full-width " + (this.state.errorMobile && "has-error"), id: "mobile", ref: function (e) {
+									React.createElement("input", {
+										type: "number",
+										minLength: "10",
+										maxLength: "11",
+										name: "landlord[mobile]",
+										placeholder: "Enter Mobile",
+										onChange: this.checkValidate,
+										id: "mobile", ref: function (e) {
 											return _this2.mobile = e;
-										}, name: "landlord[mobile]", type: "number", onChange: this.checkValidate, placeholder: "Enter Mobile" })
+										},
+										className: "u-full-width " + (this.state.errorMobile && "has-error")
+									})
 								)
 							),
 							React.createElement(
@@ -68575,9 +75593,19 @@ var ModalAddAskLandlord = React.createClass({
 										),
 										":"
 									),
-									React.createElement("input", { className: "u-full-width " + (this.state.errorEmail && "has-error"), id: "email", ref: function (e) {
+									React.createElement("input", {
+										type: "email",
+										name: "landlord[email]",
+										placeholder: "Enter Email",
+										onChange: this.checkValidate,
+										id: "email", ref: function (e) {
 											return _this2.email = e;
-										}, name: "landlord[email]", type: "text", onChange: this.checkValidate, placeholder: "Enter Email" })
+										},
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
+										className: "u-full-width " + (this.state.errorEmail && "has-error")
+									})
 								)
 							)
 						),
@@ -68638,10 +75666,20 @@ var ModalEditAskLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -68792,6 +75830,8 @@ var ModalEditAskLandlord = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										minLength: "10",
+										maxLength: "11",
 										ref: function (e) {
 											return _this3.mobile = e;
 										},
@@ -68822,6 +75862,9 @@ var ModalEditAskLandlord = React.createClass({
 									React.createElement("input", {
 										id: "email",
 										type: "text",
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										ref: function (e) {
 											return _this3.email = e;
 										},
@@ -68868,11 +75911,42 @@ var SideBarMobile = React.createClass({
 	},
 
 	show: function (key) {
+		var height = $(window).height();
 		if (key == 'action') {
-			this.setState({ showAction: !this.state.showAction });
+			this.setState({ showAction: true });
+			this.setState({ showContact: false });
+			if ($('#actions-full')) {
+				$('#actions-full').css({ 'height': 350, 'border-width': 1 });
+			}
 		} else {
-			this.setState({ showContact: !this.state.showContact });
+			this.setState({ showAction: false });
+			this.setState({ showContact: true });
+			if ($('#contacts-full')) {
+				$('#contacts-full').css({ 'height': 350, 'border-width': 1 });
+			}
 		}
+	},
+
+	close: function () {
+		if (!!this.state.showAction) {
+			this.setState({ showAction: false });
+		}
+		if (!!this.state.showContact) {
+			this.setState({ showContact: false });
+		}
+		if ($('#actions-full')) {
+			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		}
+		if ($('#contacts-full')) {
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
+	},
+
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
+		});
 	},
 
 	render: function () {
@@ -68889,30 +75963,47 @@ var SideBarMobile = React.createClass({
 					{ className: "fixed" },
 					React.createElement(
 						"button",
-						{ className: "contact button-default", onClick: function (key) {
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: function (key) {
 								return _this4.show('contact');
-							} },
+							}
+						},
 						"Contact"
 					),
 					React.createElement(
 						"button",
-						{ className: "actions button-default", onClick: function (key) {
+						{
+							className: "actions button-default " + (!!this.state.showAction && 'active'),
+							onClick: function (key) {
 								return _this4.show('action');
-							} },
+							}
+						},
 						"Actions"
 					)
 				)
 			),
-			!!this.state.showAction && React.createElement(ActionMobile, { close: function (key) {
-					return _this4.show('action');
-				}, onModalWith: function (modal) {
-					return _this4.props.onModalWith(modal);
-				}, landlord: this.props.landlord }),
-			!!this.state.showContact && React.createElement(ContactMobile, { close: function (key) {
-					return _this4.show('contact');
-				}, onModalWith: function (modal) {
-					return _this4.props.onModalWith(modal);
-				}, landlord: this.props.landlord, current_user: this.props.current_user })
+			React.createElement(
+				"div",
+				{ className: "action-mobile" },
+				React.createElement(ActionMobile, {
+					close: this.close,
+					landlord: this.props.landlord,
+					onModalWith: function (modal) {
+						return _this4.props.onModalWith(modal);
+					}
+				}),
+				React.createElement(ContactMobile, {
+					close: this.close,
+					tenants: this.props.tenants,
+					landlord: this.props.landlord,
+					current_user: this.props.current_user,
+					assigned_trady: this.props.assigned_trady,
+					onModalWith: function (modal) {
+						return _this4.props.onModalWith(modal);
+					}
+				})
+			)
 		);
 	}
 });
@@ -68944,10 +76035,20 @@ var ModalAddLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -69002,6 +76103,8 @@ var ModalAddLandlord = React.createClass({
 	render: function () {
 		var _this5 = this;
 
+		var note = this.props.note;
+
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -69041,6 +76144,15 @@ var ModalAddLandlord = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
+									"span",
+									{ className: "note-landlord" },
+									note
+								)
+							),
 							React.createElement(
 								"div",
 								{ className: "row" },
@@ -69091,6 +76203,8 @@ var ModalAddLandlord = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										minLength: "10",
+										maxLength: "11",
 										name: "landlord[mobile]",
 										placeholder: "Enter Mobile",
 										ref: function (e) {
@@ -69120,7 +76234,10 @@ var ModalAddLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "text",
+										type: "email",
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										name: "landlord[email]",
 										placeholder: "Enter Email",
 										ref: function (e) {
@@ -69184,10 +76301,20 @@ var ModalEditLandlord = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
+					var value = e.target.value;
+					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({ errorMobile: false });
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({ errorMobile: true });
+							}
+						}
 					}
 					break;
 				}
@@ -69331,6 +76458,8 @@ var ModalEditLandlord = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										minLength: "10",
+										maxLength: "11",
 										name: "landlord[mobile]",
 										placeholder: "Enter Mobile",
 										ref: function (e) {
@@ -69361,7 +76490,10 @@ var ModalEditLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "text",
+										type: "email",
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										name: "landlord[email]",
 										placeholder: "Enter Email",
 										ref: function (e) {
@@ -69406,6 +76538,7 @@ var ModalRequestModal = React.createClass({
 		return {
 			isAdd: false,
 			errorName: false,
+			isDisable: false,
 			errorEmail: false,
 			errorMobile: false,
 			errorCompany: false,
@@ -69426,9 +76559,15 @@ var ModalRequestModal = React.createClass({
 			case "company":
 				{
 					if (e.target.value == "") {
-						this.setState({ errorCompany: true });
+						this.setState({
+							isDisable: true,
+							errorCompany: true
+						});
 					} else {
-						this.setState({ errorCompany: false });
+						this.setState({
+							isDisable: false,
+							errorCompany: false
+						});
 					}
 					this.state.trady.company_name = e.target.value;
 					this.forceUpdate();
@@ -69438,9 +76577,15 @@ var ModalRequestModal = React.createClass({
 			case "name":
 				{
 					if (e.target.value == "") {
-						this.setState({ errorName: true });
+						this.setState({
+							isDisable: true,
+							errorName: true
+						});
 					} else {
-						this.setState({ errorName: false });
+						this.setState({
+							isDisable: false,
+							errorName: false
+						});
 					}
 					this.state.trady.name = e.target.value;
 					this.forceUpdate();
@@ -69449,12 +76594,31 @@ var ModalRequestModal = React.createClass({
 
 			case "mobile":
 				{
-					if (e.target.value == "") {
-						this.setState({ errorMobile: true });
+					var value = e.target.value;
+					if (value == "") {
+						this.setState({
+							isDisable: true,
+							errorMobile: true
+						});
 					} else {
-						this.setState({ errorMobile: false });
+						if (10 <= value.length && value.length <= 11) {
+							this.setState({
+								isDisable: false,
+								errorMobile: false
+							});
+						} else {
+							if (value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							} else if (value.length < 10) {
+								this.setState({
+									isDisable: true,
+									errorMobile: true
+								});
+							}
+						}
 					}
-					this.state.trady.mobile = e.target.value;
+					this.state.trady.mobile = value;
 					this.forceUpdate();
 					break;
 				}
@@ -69462,9 +76626,15 @@ var ModalRequestModal = React.createClass({
 			default:
 				{
 					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-						this.setState({ errorEmail: true });
+						this.setState({
+							isDisable: true,
+							errorEmail: true
+						});
 					} else {
-						this.setState({ errorEmail: false });
+						this.setState({
+							isDisable: false,
+							errorEmail: false
+						});
 					}
 					this.state.trady.email = e.target.value;
 					this.forceUpdate();
@@ -69477,6 +76647,21 @@ var ModalRequestModal = React.createClass({
 		this.selectTrady(this.state.maintenance_request.trady_id);
 	},
 
+	checkLength: function (e) {
+		var value = e.target.value;
+		if (value.length > 11) {
+			this.setState({
+				isDisable: true,
+				errorMobile: true
+			});
+		} else {
+			this.setState({
+				isDisable: false,
+				errorMobile: false
+			});
+		}
+	},
+
 	selectTrady: function (id) {
 		var self = this.props;
 		if (!!id) {
@@ -69485,7 +76670,12 @@ var ModalRequestModal = React.createClass({
 				if (item.id == id) {
 					this.setState({
 						trady: item,
-						isAdd: false
+						isAdd: false,
+						isDisable: false,
+						errorName: false,
+						errorEmail: false,
+						errorMobile: false,
+						errorCompany: false
 					});
 
 					return;
@@ -69495,6 +76685,11 @@ var ModalRequestModal = React.createClass({
 
 		this.setState({
 			isAdd: true,
+			isDisable: false,
+			errorName: false,
+			errorEmail: false,
+			errorMobile: false,
+			errorCompany: false,
 			trady: {
 				name: null,
 				email: null,
@@ -69509,22 +76704,34 @@ var ModalRequestModal = React.createClass({
 		var flag = false;
 
 		if (this.company.value == "") {
-			this.setState({ errorCompany: true });
+			this.setState({
+				isDisable: true,
+				errorCompany: true
+			});
 			flag = true;
 		}
 
 		if (this.name.value == "") {
-			this.setState({ errorName: true });
+			this.setState({
+				isDisable: true,
+				errorName: true
+			});
 			flag = true;
 		}
 
 		if (this.mobile.value == "") {
-			this.setState({ errorMobile: true });
+			this.setState({
+				isDisable: true,
+				errorMobile: true
+			});
 			flag = true;
 		}
 
 		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({ errorEmail: true });
+			this.setState({
+				isDisable: true,
+				errorEmail: true
+			});
 			flag = true;
 		}
 
@@ -69538,10 +76745,14 @@ var ModalRequestModal = React.createClass({
 					maintenance_request_id: this.props.maintenance_request.id,
 					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
 					skill_required: this.props.maintenance_request.service_type,
-					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order"
+					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
+					item: this.state.trady
 				}
 			};
 			this.props.requestQuote(params);
+			this.setState({
+				isDisable: true
+			});
 		}
 
 		return;
@@ -69551,6 +76762,10 @@ var ModalRequestModal = React.createClass({
 		var _this7 = this;
 
 		var self = this;
+		var state = this.state;
+		var style = {
+			background: this.state.isAdd ? 'none' : '#f2f2f2'
+		};
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -69648,12 +76863,13 @@ var ModalRequestModal = React.createClass({
 									React.createElement("input", {
 										type: "text",
 										id: "company",
+										style: style,
 										ref: function (e) {
 											return _this7.company = e;
 										},
+										readOnly: !this.state.isAdd,
 										onChange: this.checkValidate,
 										placeholder: "Enter Company Name",
-										readOnly: !this.state.isAdd,
 										value: !!this.state.trady.company_name ? this.state.trady.company_name : "",
 										className: "input-custom u-full-width " + (this.state.errorCompany && "has-error")
 									})
@@ -69679,12 +76895,13 @@ var ModalRequestModal = React.createClass({
 									React.createElement("input", {
 										id: "name",
 										type: "text",
+										style: style,
+										placeholder: "Enter Name",
 										ref: function (e) {
 											return _this7.name = e;
 										},
-										placeholder: "Enter Name",
-										onChange: this.checkValidate,
 										readOnly: !this.state.isAdd,
+										onChange: this.checkValidate,
 										value: !!this.state.trady.name ? this.state.trady.name : "",
 										className: "input-custom u-full-width " + (this.state.errorName && "has-error")
 									})
@@ -69709,13 +76926,17 @@ var ModalRequestModal = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "text",
+										type: "email",
+										style: style,
+										autoCapitalize: "off",
+										autoCorrect: "off",
+										autoComplete: "off",
 										placeholder: "Enter Email",
 										ref: function (e) {
 											return _this7.email = e;
 										},
-										onChange: this.checkValidate,
 										readOnly: !this.state.isAdd,
+										onChange: this.checkValidate,
 										value: !!this.state.trady.email ? this.state.trady.email : "",
 										className: "input-custom u-full-width " + (this.state.errorEmail && "has-error")
 									})
@@ -69741,12 +76962,16 @@ var ModalRequestModal = React.createClass({
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
+										style: style,
 										placeholder: "Enter Mobile",
 										ref: function (e) {
 											return _this7.mobile = e;
 										},
-										onChange: this.checkValidate,
 										readOnly: !this.state.isAdd,
+										onChange: this.checkValidate,
+										onKeyPress: function (e) {
+											return _this7.checkLength(e);
+										},
 										value: !!this.state.trady.mobile ? this.state.trady.mobile : "",
 										className: "input-custom u-full-width " + (this.state.errorMobile && "has-error")
 									})
@@ -69767,7 +76992,11 @@ var ModalRequestModal = React.createClass({
 							),
 							React.createElement(
 								"button",
-								{ type: "submit", className: "btn btn-default success" },
+								{
+									type: "submit",
+									className: "btn btn-default success",
+									disabled: !!state.isDisable ? true : false
+								},
 								"Submit"
 							)
 						)
@@ -69782,20 +77011,50 @@ var MaintenanceRequest = React.createClass({
 	displayName: "MaintenanceRequest",
 
 	getInitialState: function () {
+		var _props = this.props;
+		var work_order_appointments = _props.work_order_appointments;
+		var quote_appointments = _props.quote_appointments;
+		var landlord_appointments = _props.landlord_appointments;
+
+		var comments = [],
+		    quoteComments = [],
+		    landlordComments = [];
+		work_order_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
+		landlord_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				landlordComments.unshift(appointment.comments[0]);
+			}
+		});
+
 		return {
 			modal: "",
 			quote: null,
 			invoice: null,
 			isModal: false,
+			appointment: null,
+			comments: comments,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			tradies: this.props.tradies,
+			quoteComments: quoteComments,
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
+			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.invoice_pdf_files,
+			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
+			tradies_with_quote_requests: this.props.tradies_with_quote_requests,
 			notification: {
 				title: "",
 				content: "",
@@ -69810,7 +77069,9 @@ var MaintenanceRequest = React.createClass({
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
+		if (div) {
+			div.parentNode.removeChild(div);
+		}
 	},
 
 	onModalWith: function (modal) {
@@ -69823,6 +77084,7 @@ var MaintenanceRequest = React.createClass({
 	viewItem: function (key, item) {
 		switch (key) {
 			case 'viewQuote':
+			case 'viewConfirmQuote':
 			case 'viewQuoteMessage':
 				{
 					this.setState({
@@ -69849,6 +77111,21 @@ var MaintenanceRequest = React.createClass({
 						invoice_pdf_file: item
 					});
 
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewAppointment':
+				{
+					this.setState({
+						appointment: item
+					});
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'editMaintenanceRequest':
+				{
 					this.onModalWith(key);
 					break;
 				}
@@ -69990,6 +77267,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendMessageLandlord: function (params) {
 		var self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -70018,6 +77296,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendMessageTenant: function (params) {
 		var self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -70043,8 +77322,43 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageTrady: function (params) {
+		var _props2 = this.props;
+		var authenticity_token = _props2.authenticity_token;
+		var maintenance_request = _props2.maintenance_request;
+		var current_user_role = _props2.current_user_role;
+
+		var self = this;
+		params.message.maintenance_request_id = maintenance_request.id;
+		params.message.role = current_user_role.role;
+		$.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var trady_conversation = !!self.state.trady_conversation ? self.state.trady_conversation : [];
+				trady_conversation.push(res);
+				self.setState({
+					trady_conversation: trady_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Trady",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	sendMessageQuote: function (params) {
 		var self = this;
+		params.message.role = this.props.current_user_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/quote_messages',
@@ -70083,9 +77397,25 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				self.isClose();
 				self.setState({
 					quotes: res
 				});
+				if (params.status == 'Approved') {
+					self.setState({ notification: {
+							title: "Accept Quote",
+							content: "Quote was accept!",
+							bgClass: "bg-success"
+						} });
+					self.onModalWith('notification');
+				} else if (params.status == 'Declined') {
+					self.setState({ notification: {
+							title: "Decline Quote",
+							content: "Quote was decline!",
+							bgClass: "bg-success"
+						} });
+					self.onModalWith('notification');
+				}
 			},
 			error: function (err) {}
 		});
@@ -70121,6 +77451,58 @@ var MaintenanceRequest = React.createClass({
 
 	requestQuote: function (params) {
 		var self = this;
+		var tradies_with_quote_requests = this.state.tradies_with_quote_requests;
+		var flag = false;
+		tradies_with_quote_requests.map(function (item, index) {
+			if (params.trady.trady_id == item.id) {
+				flag = true;
+			}
+		});
+
+		if (!!flag) {
+			self.setState({
+				notification: {
+					title: "Request Quote",
+					content: "We have already send a request quote to the person. Please pick another person",
+					bgClass: "bg-error"
+				}
+			});
+			self.onModalWith('notification');
+		} else {
+			$.ajax({
+				type: 'POST',
+				url: '/tradies',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+				},
+				data: params,
+				success: function (res) {
+					tradies_with_quote_requests.push(params.trady.item);
+					self.setState({
+						tradies: res,
+						tradies_with_quote_requests: tradies_with_quote_requests,
+						notification: {
+							title: "Request Quote",
+							content: "the request quote has sent successfully",
+							bgClass: "bg-success"
+						}
+					});
+					self.onModalWith('notification');
+				},
+				error: function (err) {
+					self.setState({ notification: {
+							title: "Request Quote",
+							content: "The request quote is error",
+							bgClass: "bg-error"
+						} });
+					self.onModalWith('notification');
+				}
+			});
+		}
+	},
+
+	sendWorkOrder: function (params) {
+		var self = this;
 		$.ajax({
 			type: 'POST',
 			url: '/tradies',
@@ -70129,15 +77511,12 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
-				if (params.trady.trady_request == "Work Order") {
-					self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length - 1].id;
-					self.forceUpdate();
-				}
+				self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length - 1].id;
 				self.setState({
 					tradies: res,
 					notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "the request quote has sent successfully" : "the work order has sent successfully",
+						title: "Send Work Order",
+						content: "the work order has sent successfully",
 						bgClass: "bg-success"
 					}
 				});
@@ -70145,8 +77524,79 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function (err) {
 				self.setState({ notification: {
-						title: params.trady.trady_request == "Quote" ? "Request Quote" : "Send Work Order",
-						content: params.trady.trady_request == "Quote" ? "The request quote is error" : "The work order is error",
+						title: "Send Work Order",
+						content: "The work order is error",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	assignToUser: function (email) {
+		var self = this;
+		var params = {
+			maintenance_request_id: self.state.maintenance_request.id,
+			email: email
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/reassign_to',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					notification: {
+						title: "Assign Matenance Request",
+						content: "The Assign Matenance Request was successfully",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Assign Matenance Request",
+						content: "The Assign Matenance Request was error",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	editMaintenanceRequest: function (params) {
+		var self = this;
+		params.maintenance_request_id = this.state.maintenance_request.id;
+		var maintenance_request = this.state.maintenance_request;
+
+		$.ajax({
+			type: 'POST',
+			url: '/update_maintenance_request',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				maintenance_request.maintenance_heading = res.maintenance_heading;
+				maintenance_request.maintenance_description = res.maintenance_description;
+				self.setState({
+					maintenance_request: maintenance_request,
+					notification: {
+						title: "Edit Maintenance Request",
+						content: "The Maintenance Request was update",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Edit Maintenance Request",
+						content: "The Maintenance Request didnt update!",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -70204,6 +77654,15 @@ var MaintenanceRequest = React.createClass({
 						content: this.state.notification.content
 					});
 
+				case 'addLandlordSendEmail':
+					return React.createElement(ModalAddLandlord, {
+						close: this.isClose,
+						addLandlord: this.addLandlord,
+						authToken: this.props.authenticity_token,
+						maintenance_request_id: this.state.maintenance_request.id,
+						note: "Please add a landlord and then press \"Forward To Landlord\""
+					});
+
 				case 'addLandlord':
 					return React.createElement(ModalAddLandlord, {
 						close: this.isClose,
@@ -70223,15 +77682,10 @@ var MaintenanceRequest = React.createClass({
 								maintenance_request_id: this.state.maintenance_request.id
 							});
 						} else {
-							this.setState({ notification: {
-									title: "Edit Lanlord",
-									content: "Landlord is empty!",
-									bgClass: "bg-error"
-								} });
 							return React.createElement(ModalNotification, {
 								close: this.isClose,
-								title: this.state.notification.title,
-								content: this.state.notification.content
+								title: "Edit Lanlord",
+								content: "Landlord is empty!"
 							});
 						}
 					}
@@ -70257,6 +77711,16 @@ var MaintenanceRequest = React.createClass({
 							sendMessageTenant: this.sendMessageTenant,
 							tenants_conversation: this.state.tenants_conversation,
 							maintenance_request_id: this.state.maintenance_request.id
+						});
+					}
+
+				case 'sendMessageTrady':
+					{
+						return React.createElement(ModalSendMessageTrady, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							sendMessageTrady: this.sendMessageTrady,
+							trady_conversation: this.state.trady_conversation
 						});
 					}
 
@@ -70305,7 +77769,7 @@ var MaintenanceRequest = React.createClass({
 							close: this.isClose,
 							keyTitle: "sen-work-order",
 							tradies: this.state.tradies,
-							requestQuote: this.requestQuote,
+							requestQuote: this.sendWorkOrder,
 							maintenance_request: this.state.maintenance_request
 						});
 					}
@@ -70336,14 +77800,140 @@ var MaintenanceRequest = React.createClass({
 						break;
 					}
 
+				case 'editMaintenanceRequest':
+					{
+						return React.createElement(EditMaintenanceRequest, {
+							close: this.isClose,
+							maintenance_request: this.state.maintenance_request,
+							editMaintenanceRequest: this.editMaintenanceRequest
+						});
+					}
+
+				case 'viewAppointment':
+					{
+						var _state = this.state;
+						var comments = _state.comments;
+						var quoteComments = _state.quoteComments;
+						var landlordComments = _state.landlordComments;
+						var appointment = _state.appointment;
+
+						var commentShow = [];
+						switch (appointment.appointment_type) {
+							case 'Work Order Appointment':
+								commentShow = [].concat(_toConsumableArray(comments));
+								break;
+
+							case 'Quote Appointment':
+								commentShow = [].concat(_toConsumableArray(quoteComments));
+								break;
+
+							case 'Landlord Appointment':
+								commentShow = [].concat(_toConsumableArray(landlordComments));
+								break;
+
+							default:
+								break;
+						}
+						return React.createElement(ModalAppointment, {
+							close: this.isClose,
+							comments: commentShow,
+							appointment: appointment,
+							current_role: this.props.current_user_role
+						});
+					}
+
+				case 'viewConfirmQuote':
+					return React.createElement(ModalConfirmQuote, {
+						close: this.isClose,
+						title: "Cancel Quote",
+						quote: this.state.quote,
+						updateStatusQuote: this.updateStatusQuote,
+						content: "Are you sure you want to cancel the job ?"
+					});
+
 				default:
 					return null;
 			}
 		}
 	},
 
+	autoScroll: function (key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+	},
+
+	openQuoteMesssage: function (quote_id) {
+		var quotes = this.state.quotes;
+
+		var quote = '';
+		quotes.map(function (item, key) {
+			if (item.id == quote_id) {
+				quote = item;
+				return;
+			}
+		});
+
+		if (quote) {
+			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			if (href.indexOf('email_quote_id') >= 0) {
+				self.autoScroll('quotes');
+			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
+				self.autoScroll('invoices');
+			}
+
+			var json = self.getUrlVars(href);
+			switch (json.message) {
+				case 'open_landlord_message':
+					self.onModalWith('sendMessageLandlord');
+					break;
+
+				case 'open_tenant_message':
+					self.onModalWith('sendMessageTenant');
+					break;
+
+				case 'open_trady_message':
+					self.onModalWith('sendMessageTrady');
+					break;
+
+				case 'open_quote_message':
+					self.openQuoteMesssage(json.quote_message_id);
+					break;
+
+				default:
+					break;
+			}
+		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
+	},
+
 	summary: function (e) {
 		var _this9 = this;
+
+		var _props3 = this.props;
+		var work_order_appointments = _props3.work_order_appointments;
+		var landlord_appointments = _props3.landlord_appointments;
+		var quote_appointments = _props3.quote_appointments;
+		var current_user_role = _props3.current_user_role;
+		var tenants = _props3.tenants;
 
 		return React.createElement(
 			"div",
@@ -70357,7 +77947,16 @@ var MaintenanceRequest = React.createClass({
 					React.createElement(ItemMaintenanceRequest, {
 						gallery: this.props.gallery,
 						property: this.props.property,
-						maintenance_request: this.state.maintenance_request
+						all_agents: this.props.all_agents,
+						all_agency_admins: this.props.all_agency_admins,
+						viewItem: function (key, item) {
+							return _this9.viewItem(key, item);
+						},
+						assignToUser: function (email) {
+							return _this9.assignToUser(email);
+						},
+						maintenance_request: this.state.maintenance_request,
+						show_assign: this.props.current_user_show_quote_message
 					}),
 					this.props.quotes.length > 0 ? React.createElement(Quotes, {
 						quotes: this.state.quotes,
@@ -70371,29 +77970,101 @@ var MaintenanceRequest = React.createClass({
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
 					}) : null,
-					this.props.invoices.length > 0 && React.createElement(Invoices, { invoices: this.state.invoices, viewInvoice: function (key, item) {
+					this.props.invoices.length > 0 && React.createElement(Invoices, {
+						invoices: this.state.invoices,
+						viewInvoice: function (key, item) {
 							return _this9.viewItem(key, item);
-						} }),
-					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, { invoice_pdf_files: this.state.invoice_pdf_files, viewPDFInvoice: function (key, item) {
+						}
+					}),
+					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						invoice_pdf_files: this.state.invoice_pdf_files,
+						viewPDFInvoice: function (key, item) {
 							return _this9.viewItem(key, item);
-						} })
+						}
+					})
 				),
 				React.createElement(
 					"div",
 					{ className: "sidebar" },
-					React.createElement(Contact, { landlord: this.state.landlord, onModalWith: function (modal) {
+					React.createElement(Contact, {
+						tenants: tenants,
+						landlord: this.state.landlord,
+						current_user: this.props.current_user,
+						assigned_trady: this.props.assigned_trady,
+						onModalWith: function (modal) {
 							return _this9.onModalWith(modal);
-						}, current_user: this.props.current_user }),
-					React.createElement(Action, { landlord: this.state.landlord, onModalWith: function (modal) {
+						}
+					}),
+					React.createElement(Action, {
+						landlord: this.state.landlord,
+						onModalWith: function (modal) {
 							return _this9.onModalWith(modal);
-						} }),
-					React.createElement(Activity, null)
+						}
+					}),
+					work_order_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						appointments: work_order_appointments,
+						title: "Work Order Appointments",
+						current_role: current_user_role,
+						viewItem: function (key, item) {
+							return _this9.viewItem(key, item);
+						}
+					}),
+					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: "Appointments For Quotes",
+						current_role: current_user_role,
+						appointments: quote_appointments,
+						viewItem: function (key, item) {
+							return _this9.viewItem(key, item);
+						}
+					}),
+					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: "Landlord Appointments",
+						current_role: current_user_role,
+						appointments: landlord_appointments,
+						viewItem: function (key, item) {
+							return _this9.viewItem(key, item);
+						}
+					}),
+					React.createElement(Activity, { logs: this.props.logs })
 				),
-				React.createElement(ActivityMobile, null)
+				work_order_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: "Work Order Appointments",
+					current_role: current_user_role,
+					appointments: work_order_appointments,
+					viewItem: function (key, item) {
+						return _this9.viewItem(key, item);
+					}
+				}),
+				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: "Appointments For Quotes",
+					current_role: current_user_role,
+					appointments: quote_appointments,
+					viewItem: function (key, item) {
+						return _this9.viewItem(key, item);
+					}
+				}),
+				landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: "Landlord Appointments",
+					current_role: current_user_role,
+					appointments: landlord_appointments,
+					viewItem: function (key, item) {
+						return _this9.viewItem(key, item);
+					}
+				}),
+				React.createElement(ActivityMobile, { logs: this.props.logs })
 			),
-			React.createElement(SideBarMobile, { onModalWith: function (modal) {
+			React.createElement(SideBarMobile, {
+				tenants: tenants,
+				landlord: this.state.landlord,
+				current_user: this.props.current_user,
+				assigned_trady: this.props.assigned_trady,
+				onModalWith: function (modal) {
 					return _this9.onModalWith(modal);
-				}, landlord: this.state.landlord, current_user: this.props.current_user }),
+				},
+				viewItem: function (key, item) {
+					return _this9.viewItem(key, item);
+				}
+			}),
 			this.renderModal()
 		);
 	},
@@ -70410,11 +78081,11 @@ var strNone = "";
 var strErrSelectTimeL = "You should select later than start time!";
 var strErrSelectTimeB = "You should select before than finish time!";
 var strErrSelectDate = "You should select the date after today!";
-var strErrName = "This name has already taken by anther person";
-var strErrEmail = "This Email Address has already taken by anther person";
-var strErrMobile = "This Phone Number has already taken by anther person";
-var strErrHeading = "This Maintenance Heading has already taken by anther person";
-var strErrDescription = "This Maintenance Description has already taken by anther person";
+var strErrName = "This name has already taken by another person";
+var strErrEmail = "This Email Address has already taken by another person";
+var strErrMobile = "This Phone Number has already taken by another person";
+var strErrHeading = "This Maintenance Heading has already taken by another person";
+var strErrDescription = "This Maintenance Description has already taken by another person";
 var strInvalidEmail = "Invalid Email Address!";
 var strInvalidMobile = "Invalid Mobile Number!";
 var strRequireName = "Name is required";
@@ -70428,6 +78099,174 @@ var strShortHeading = "Heading must be more than 3 letters";
 var strShortDescription = "Description must be more than 10 letters";
 var strShortRealEstate = "RealEstateOffice must be more than 3 letters";
 var strCantSubmit = "Can't submit the from data! Check all the forms in the right format.";
+var TenantLandlordAppointment = React.createClass({
+	displayName: "TenantLandlordAppointment",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					{ onClick: this.show },
+					"Tenant & Landlord Appointments"
+				)
+			),
+			this.state.show && this.props.appointments.length ? React.createElement(ContentAppointment, {
+				appointments: this.props.appointments,
+				viewItem: function (key, item) {
+					return _this.props.viewItem(key, item);
+				}
+			}) : null
+		);
+	}
+});
+
+var TenantLandlordAppointmentMobile = React.createClass({
+	displayName: "TenantLandlordAppointmentMobile",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "activity-mobile" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Tenant & Landlord Appointments"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						onClick: this.show,
+						className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+					})
+				),
+				this.props.appointments.length && !!this.state.show ? React.createElement(ContentAppointment, {
+					appointments: this.props.appointments,
+					viewItem: function (key, item) {
+						return _this2.props.viewItem(key, item);
+					}
+				}) : null
+			)
+		);
+	}
+});
+var TenantTradieAppointment = React.createClass({
+	displayName: "TenantTradieAppointment",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					{ onClick: this.show },
+					"Tenant & Tradie Appointment"
+				)
+			),
+			this.state.show && this.props.appointments.length ? React.createElement(ContentAppointment, {
+				appointments: this.props.appointments,
+				viewItem: function (key, item) {
+					return _this.props.viewItem(key, item);
+				}
+			}) : null
+		);
+	}
+});
+
+var TenantTradieAppointmentMobile = React.createClass({
+	displayName: "TenantTradieAppointmentMobile",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	show: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "activity-mobile" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Tenant & Tradie Appointment"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						onClick: this.show,
+						className: "fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")
+					})
+				),
+				this.props.appointments.length && !!this.state.show ? React.createElement(ContentAppointment, {
+					appointments: this.props.appointments,
+					viewItem: function (key, item) {
+						return _this2.props.viewItem(key, item);
+					}
+				}) : null
+			)
+		);
+	}
+});
 var ContentMessage = React.createClass({
 	displayName: 'ContentMessage',
 
@@ -70547,7 +78386,7 @@ var ModalSendMessageLandlord = React.createClass({
 							React.createElement(
 								"h4",
 								{ className: "modal-title text-center" },
-								"Message Landlord"
+								this.props.title ? this.props.title : "Message Landlord"
 							)
 						),
 						React.createElement(
@@ -70695,6 +78534,222 @@ var ModalSendMessageTenant = React.createClass({
 		);
 	}
 });
+var ModalSendMessageTrady = React.createClass({
+	displayName: "ModalSendMessageTrady",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		if (!this.message.value) {
+			this.setState({ errorMessage: true });
+			return;
+		}
+
+		var params = {
+			message: {
+				body: this.message.value,
+				conversation_type: 'Trady_Agent'
+			}
+		};
+
+		this.props.sendMessageTrady(params);
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this = this;
+
+		var _props = this.props;
+		var trady_conversation = _props.trady_conversation;
+		var current_user = _props.current_user;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Trady"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, { current_user: current_user, messages: trady_conversation })
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this.message = rel;
+									},
+									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+								})
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+var ModalSendMessageAgent = React.createClass({
+	displayName: "ModalSendMessageAgent",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		if (!this.message.value) {
+			this.setState({ errorMessage: true });
+			return;
+		}
+
+		var params = {
+			message: {
+				body: this.message.value,
+				conversation_type: 'Trady_Agent'
+			}
+		};
+
+		this.props.sendMessageAgent(params);
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this = this;
+
+		var _props = this.props;
+		var trady_agent_conversation = _props.trady_agent_conversation;
+		var current_user = _props.current_user;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Agent"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, { current_user: current_user, messages: trady_agent_conversation })
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this.message = rel;
+									},
+									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+								})
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
 var ModalNotification = React.createClass({
 	displayName: "ModalNotification",
 
@@ -70756,6 +78811,12 @@ var ModalNotification = React.createClass({
 var ButtonForwardLandlord = React.createClass({
 	displayName: "ButtonForwardLandlord",
 
+	getInitialState: function () {
+		return {
+			isSend: this.props.quote.forwarded_to_landlord
+		};
+	},
+
 	sendEmail: function () {
 		if (!!this.props.landlord) {
 			var params = {
@@ -70764,20 +78825,27 @@ var ButtonForwardLandlord = React.createClass({
 			};
 
 			this.props.sendEmailLandlord(params);
+			this.setState({
+				isSend: true
+			});
 		} else {
-			this.props.onModalWith("addLandlord");
+			this.props.onModalWith("addLandlordSendEmail");
 		}
 	},
 
 	render: function () {
+		var style = {
+			opacity: this.state.isSend ? 0.5 : 1
+		};
 		return React.createElement(
 			"button",
 			{
 				type: "button",
-				className: "btn btn-default",
-				onClick: this.sendEmail
+				style: style,
+				onClick: !this.state.isSend && this.sendEmail,
+				className: "btn btn-default"
 			},
-			"Forward to LandLord"
+			!!this.state.isSend ? 'Send to Landlord' : 'Forward to LandLord'
 		);
 	}
 });
@@ -70858,23 +78926,17 @@ var ButtonRestore = React.createClass({
 var ButtonCancle = React.createClass({
 	displayName: "ButtonCancle",
 
-	updateStatus: function () {
-		var params = {
-			status: "Cancel",
-			quote_id: this.props.quote.id,
-			maintenance_request_id: this.props.quote.maintenance_request_id
-		};
-
-		this.props.updateStatusQuote(params);
-	},
-
 	render: function () {
+		var _this = this;
+
 		return React.createElement(
 			"button",
 			{
 				type: "button",
 				className: "btn btn-cancel",
-				onClick: this.updateStatus
+				onClick: function (key, item) {
+					return _this.props.viewQuote('viewConfirmQuote', _this.props.quote);
+				}
 			},
 			"Cancel"
 		);
@@ -70885,13 +78947,17 @@ var ButtonView = React.createClass({
 	displayName: "ButtonView",
 
 	render: function () {
-		var _this = this;
+		var _this2 = this;
 
 		return React.createElement(
 			"button",
-			{ type: "button", className: "btn btn-default", onClick: function (key, item) {
-					return _this.props.viewQuote('viewQuote', _this.props.quote);
-				} },
+			{
+				type: "button",
+				className: "btn btn-default",
+				onClick: function (key, item) {
+					return _this2.props.viewQuote('viewQuote', _this2.props.quote);
+				}
+			},
 			"View"
 		);
 	}
@@ -70921,12 +78987,12 @@ var ButtonQuoteMessage = React.createClass({
 	displayName: "ButtonQuoteMessage",
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		return React.createElement(
 			"button",
 			{ type: "button", className: "btn btn-message", onClick: function (key, item) {
-					return _this2.props.viewQuoteMessage('viewQuoteMessage', _this2.props.quote);
+					return _this3.props.viewQuoteMessage('viewQuoteMessage', _this3.props.quote);
 				} },
 			"Message"
 		);
@@ -70959,6 +79025,10 @@ var ActionQuote = React.createClass({
 					quote: quote,
 					updateStatusQuote: self.updateStatusQuote
 				}),
+				quote.status == "Active" && React.createElement(ButtonDecline, {
+					quote: quote,
+					updateStatusQuote: self.updateStatusQuote
+				}),
 				quote.status == "Active" && React.createElement(ButtonRequestAnotherQuote, {
 					quote: quote,
 					sendEmailLandlord: self.sendEmailLandlord
@@ -70974,7 +79044,7 @@ var ActionQuote = React.createClass({
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && quote.status != "Declined" && !!quote.conversation && React.createElement(ButtonQuoteMessage, {
+				!!self.current_user_show_quote_message && quote.status != "Declined" && React.createElement(ButtonQuoteMessage, {
 					quote: quote,
 					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
@@ -71022,8 +79092,10 @@ var ActionQuote = React.createClass({
 					}
 				}),
 				quote.status == "Approved" && React.createElement(ButtonCancle, {
-					quote: quote,
-					updateStatusQuote: self.updateStatusQuote
+					quote: this.props.quote,
+					viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}
 				})
 			);
 		}
@@ -71050,7 +79122,7 @@ var Quotes = React.createClass({
 		var self = this.props;
 		return React.createElement(
 			"div",
-			{ className: "quotes" },
+			{ className: "quotes", id: "quotes" },
 			React.createElement(
 				"p",
 				null,
@@ -71135,10 +79207,11 @@ var DetailQuote = React.createClass({
 	displayName: "DetailQuote",
 
 	render: function () {
-		var quote_items = this.props.quote_items;
+		var quote = this.props.quote;
+
 		var subTotal = 0;
 		var gst = 0;
-		if (!!quote_items) {
+		if (!!quote) {
 			return React.createElement(
 				"table",
 				{ className: "table" },
@@ -71161,25 +79234,24 @@ var DetailQuote = React.createClass({
 						React.createElement(
 							"th",
 							null,
-							"Rate"
-						),
-						React.createElement(
-							"th",
-							null,
 							"Hours"
 						),
 						React.createElement(
 							"th",
-							null,
-							"Total"
+							{ className: "text-right" },
+							"Rate"
+						),
+						React.createElement(
+							"th",
+							{ className: "text-right" },
+							"Amount"
 						)
 					)
 				),
 				React.createElement(
 					"tbody",
 					null,
-					quote_items.map(function (item, key) {
-						gst += !!item.gst_amount ? item.gst_amount : 0;
+					quote.quote_items.map(function (item, key) {
 						if (item.pricing_type == "Fixed Cost") {
 							subTotal += item.amount;
 						} else {
@@ -71201,65 +79273,68 @@ var DetailQuote = React.createClass({
 							React.createElement(
 								"td",
 								null,
-								"$",
-								item.amount
-							),
-							React.createElement(
-								"td",
-								null,
 								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
 							),
 							React.createElement(
 								"td",
-								null,
+								{ className: "text-right" },
 								"$",
-								item.pricing_type == "Fixed Cost" ? item.amount : item.amount * item.hours
+								item.amount.toFixed(2)
+							),
+							React.createElement(
+								"td",
+								{ className: "text-right" },
+								"$",
+								item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2)
 							)
 						);
 					}),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-b-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
+							{ className: "text-right border-none font-bold p-b-n" },
 							"Subtotal:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "border-none text-right p-b-n" },
 							"$",
-							subTotal
+							subTotal.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none p-t-n" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"GST:"
+							{ className: "text-right p-t-n" },
+							"GST 10%:"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right p-t-n" },
 							"$",
-							gst
+							quote.gst_amount.toFixed(2)
 						)
 					),
 					React.createElement(
 						"tr",
 						null,
+						React.createElement("td", { colSpan: "3", className: "border-none" }),
 						React.createElement(
 							"td",
-							{ colSpan: "4", className: "text-right" },
-							"Total:"
+							{ className: "text-right font-bold border-none" },
+							"Amount Due (AUD):"
 						),
 						React.createElement(
 							"td",
-							null,
+							{ className: "text-right font-bold border-none" },
 							"$",
-							subTotal + gst
+							(subTotal + quote.gst_amount).toFixed(2)
 						)
 					)
 				)
@@ -71361,7 +79436,7 @@ var ModalViewQuote = React.createClass({
 	},
 
 	render: function () {
-		var _this3 = this;
+		var _this4 = this;
 
 		var self = this.props;
 		var quote = this.state.quote;
@@ -71369,7 +79444,7 @@ var ModalViewQuote = React.createClass({
 
 		return React.createElement(
 			"div",
-			{ className: "modal-custom fade" },
+			{ className: "modal-custom modal-quote fade" },
 			React.createElement(
 				"div",
 				{ className: "modal-dialog" },
@@ -71379,6 +79454,85 @@ var ModalViewQuote = React.createClass({
 					React.createElement(
 						"div",
 						{ className: "modal-header" },
+						React.createElement(
+							"div",
+							{ className: "logo" },
+							React.createElement("img", { src: "/assets/logo.png" })
+						),
+						React.createElement(
+							"div",
+							{ className: "info-trady" },
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Business: "
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.company_name
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"ABN:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.abn
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Address:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.address
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Phone:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.mobile_number
+								)
+							),
+							React.createElement(
+								"p",
+								null,
+								React.createElement(
+									"span",
+									null,
+									"Email:"
+								),
+								React.createElement(
+									"span",
+									null,
+									quote.trady.trady_company.email
+								)
+							)
+						),
 						React.createElement(
 							"button",
 							{
@@ -71393,11 +79547,6 @@ var ModalViewQuote = React.createClass({
 								{ "aria-hidden": "true" },
 								"×"
 							)
-						),
-						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Quote"
 						)
 					),
 					React.createElement(
@@ -71409,7 +79558,7 @@ var ModalViewQuote = React.createClass({
 							React.createElement(
 								"div",
 								{ className: "show-quote", onTouchEnd: function (key, index) {
-										return _this3.switchSlider('prev', _this3.state.index);
+										return _this4.switchSlider('prev', _this4.state.index);
 									} },
 								React.createElement(
 									"div",
@@ -71418,25 +79567,28 @@ var ModalViewQuote = React.createClass({
 										"div",
 										{ className: "info-trady" },
 										React.createElement(
-											"p",
+											"div",
 											null,
-											quote.trady.name
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!quote.trady.trady_company && quote.trady.trady_company.address
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!quote.trady.trady_company && quote.trady.trady_company.email
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											"Abn: ",
-											!!quote.trady.trady_company && quote.trady.trady_company.abn
+											React.createElement(
+												"p",
+												{ className: "color-grey bill-to" },
+												"Bill To"
+											),
+											React.createElement(
+												"p",
+												null,
+												self.landlord && self.landlord.name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.company_name
+											),
+											React.createElement(
+												"p",
+												null,
+												self.agency && self.agency.address
+											)
 										)
 									),
 									React.createElement(
@@ -71445,12 +79597,32 @@ var ModalViewQuote = React.createClass({
 										React.createElement(
 											"p",
 											null,
-											self.agency ? self.agency.company_name : null
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Quote Number: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												quote.id
+											)
 										),
 										React.createElement(
 											"p",
 											null,
-											self.agency ? self.agency.address : null
+											React.createElement(
+												"span",
+												{ className: "font-bold" },
+												"Quote Date: "
+											),
+											React.createElement(
+												"span",
+												null,
+												" ",
+												moment(quote.created_at).format("LL")
+											)
 										)
 									)
 								),
@@ -71459,30 +79631,8 @@ var ModalViewQuote = React.createClass({
 									{ className: "detail-quote" },
 									React.createElement(
 										"div",
-										{ className: "info-maintenance" },
-										React.createElement(
-											"p",
-											null,
-											"Quote #",
-											quote.id
-										),
-										React.createElement(
-											"p",
-											null,
-											"For: ",
-											self.property.property_address
-										),
-										React.createElement(
-											"p",
-											null,
-											"Created: ",
-											moment(quote.created_at).format("DD-MM-YYYY")
-										)
-									),
-									React.createElement(
-										"div",
 										{ className: "detail-quote" },
-										!!quote.quote_items && React.createElement(DetailQuote, { quote_items: quote.quote_items })
+										!!quote.quote_items && React.createElement(DetailQuote, { quote: quote })
 									)
 								)
 							),
@@ -71492,14 +79642,14 @@ var ModalViewQuote = React.createClass({
 								React.createElement(
 									"button",
 									{ className: "btn-prev", onClick: function (key, index) {
-											return _this3.switchSlider('prev', _this3.state.index);
+											return _this4.switchSlider('prev', _this4.state.index);
 										} },
 									React.createElement("i", { className: "fa fa-angle-left" })
 								),
 								React.createElement(
 									"button",
 									{ className: "btn-next", onClick: function (key, index) {
-											return _this3.switchSlider('next', _this3.state.index);
+											return _this4.switchSlider('next', _this4.state.index);
 										} },
 									React.createElement("i", { className: "fa fa-angle-right" })
 								)
@@ -71555,7 +79705,7 @@ var ModalViewQuoteMessage = React.createClass({
 	},
 
 	render: function () {
-		var _this4 = this;
+		var _this5 = this;
 
 		var current_user = this.props.current_user;
 		var quote = this.props.quote;
@@ -71592,7 +79742,7 @@ var ModalViewQuoteMessage = React.createClass({
 							React.createElement(
 								"h4",
 								{ className: "modal-title text-center" },
-								"Message Trady"
+								"Message Quote"
 							)
 						),
 						React.createElement(
@@ -71610,7 +79760,7 @@ var ModalViewQuoteMessage = React.createClass({
 									placeholder: "Message",
 									readOnly: !current_user,
 									ref: function (rel) {
-										return _this4.message = rel;
+										return _this5.message = rel;
 									},
 									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
 								})
@@ -71625,6 +79775,97 @@ var ModalViewQuoteMessage = React.createClass({
 								},
 								"Submit"
 							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalConfirmQuote = React.createClass({
+	displayName: "ModalConfirmQuote",
+
+	updateStatus: function () {
+		var quote = this.props.quote;
+
+		var params = {
+			status: "Cancel",
+			quote_id: quote.id,
+			maintenance_request_id: quote.maintenance_request_id
+		};
+
+		this.props.updateStatusQuote(params);
+	},
+
+	render: function () {
+		var _props = this.props;
+		var title = _props.title;
+		var content = _props.content;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							content
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-default success",
+								onClick: this.updateStatus,
+								"data-dismiss": "modal"
+							},
+							"Yep"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-primary cancel",
+								onClick: this.props.close
+							},
+							"No"
 						)
 					)
 				)
@@ -71672,69 +79913,66 @@ var QuoteField = React.createClass({
                 'fieldset',
                 null,
                 React.createElement(
-                    'p',
-                    null,
-                    ' Item description '
-                ),
-                React.createElement('input', { type: 'text',
-                    required: true,
-                    id: 'quote_quote_items_attributes_' + x + '_item_description',
-                    name: 'quote[quote_items_attributes][' + x + '][item_description]',
-                    defaultValue: quote ? quote.item_description : ''
-                }),
-                React.createElement(
-                    'p',
-                    null,
-                    ' Amount '
-                ),
-                React.createElement('input', { type: 'text',
-                    required: true,
-                    id: 'quote_quote_items_attributes_' + x + '_amount',
-                    name: 'quote[quote_items_attributes][' + x + '][amount]',
-                    defaultValue: quote ? quote.amount : ''
-                }),
-                React.createElement(
-                    'p',
-                    null,
-                    ' Pricing type '
-                ),
-                React.createElement(
-                    'select',
-                    { value: this.state.pricing_type,
-                        onChange: this.onPricing,
-                        name: 'quote[quote_items_attributes][' + x + '][pricing_type]',
-                        id: 'quote_quote_items_attributes_' + x + '_pricing_type' },
-                    React.createElement(
-                        'option',
-                        { value: 'Fixed Cost' },
-                        'Fixed Cost'
-                    ),
-                    React.createElement(
-                        'option',
-                        { value: 'Hourly' },
-                        'Hourly'
-                    )
-                ),
-                this.state.hours_input ? React.createElement(
                     'div',
                     null,
-                    React.createElement(
-                        'p',
-                        null,
-                        ' Number of Hours '
-                    ),
-                    React.createElement('input', { type: 'text',
+                    React.createElement('input', {
                         required: true,
-                        id: 'quote_quote_items_attributes_' + x + '_hours',
-                        name: 'quote[quote_items_attributes][' + x + '][hours]',
-                        defaultValue: quote ? quote.hours : ''
+                        type: 'text',
+                        placeholder: 'Item description',
+                        className: 'text-center',
+                        defaultValue: quote ? quote.item_description : '',
+                        id: 'quote_quote_items_attributes_' + x + '_item_description',
+                        name: 'quote[quote_items_attributes][' + x + '][item_description]'
                     })
-                ) : React.createElement('input', { type: 'hidden',
-                    id: 'quote_quote_items_attributes_' + x + '_hours',
-                    name: 'quote[quote_items_attributes][' + x + '][hours]'
-                }),
-                React.createElement('input', { type: 'hidden', value: this.state.remove, name: 'quote[quote_items_attributes][' + x + '][_destroy]', id: 'quote_quote_items_attributes_' + x + '__destroy' }),
-                quote ? React.createElement('input', { type: 'hidden', value: x, name: 'quote[quote_items_attributes][' + x + '][id]', id: 'quote_iquote_items_attributes_' + x + '_id' }) : null
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'amount' },
+                    React.createElement(
+                        'select',
+                        {
+                            onChange: this.onPricing,
+                            value: this.state.pricing_type,
+                            className: "text-center " + (this.state.hours_input && 'hour select'),
+                            id: 'quote_quote_items_attributes_' + x + '_pricing_type',
+                            name: 'quote[quote_items_attributes][' + x + '][pricing_type]'
+                        },
+                        React.createElement(
+                            'option',
+                            { value: 'Fixed Cost' },
+                            'Fixed Cost'
+                        ),
+                        React.createElement(
+                            'option',
+                            { value: 'Hourly' },
+                            'Hourly'
+                        )
+                    ),
+                    React.createElement('input', {
+                        required: true,
+                        type: 'number',
+                        placeholder: 'Amount',
+                        defaultValue: quote ? quote.amount : '',
+                        className: "text-center " + (!!this.state.hours_input && 'hour price'),
+                        id: 'quote_quote_items_attributes_' + x + '_amount',
+                        name: 'quote[quote_items_attributes][' + x + '][amount]'
+                    }),
+                    this.state.hours_input ? React.createElement('input', {
+                        required: true,
+                        type: 'number',
+                        placeholder: 'Of Hours',
+                        defaultValue: quote ? quote.hours : '',
+                        className: "text-center " + (this.state.hours_input && 'hour'),
+                        id: 'quote_quote_items_attributes_' + x + '_hours',
+                        name: 'quote[quote_items_attributes][' + x + '][hours]'
+                    }) : React.createElement('input', {
+                        type: 'hidden',
+                        id: 'quote_quote_items_attributes_' + x + '_hours',
+                        name: 'quote[quote_items_attributes][' + x + '][hours]'
+                    }),
+                    React.createElement('input', { type: 'hidden', value: this.state.remove, name: 'quote[quote_items_attributes][' + x + '][_destroy]', id: 'quote_quote_items_attributes_' + x + '__destroy' }),
+                    quote && React.createElement('input', { type: 'hidden', value: x, name: 'quote[quote_items_attributes][' + x + '][id]', id: 'quote_iquote_items_attributes_' + x + '_id' })
+                )
             ),
             React.createElement(
                 'button',
@@ -71925,7 +80163,7 @@ var Footer = React.createClass({
             { className: "footer-other" },
             React.createElement(
                 "div",
-                { className: "container" },
+                { className: "footer-custom" },
                 React.createElement(
                     "div",
                     { className: "footer-social" },
@@ -72005,7 +80243,7 @@ var Footer = React.createClass({
 });
 var MenuAgency = [{
   url: "/agency_admin_maintenance_requests",
-  name: "Agency Admin Maintenance Requests"
+  name: "My Maintenance Requests"
 }, {
   url: "/agents/new",
   name: "Add Agent"
@@ -72016,22 +80254,22 @@ var MenuAgency = [{
 
 var MenuAgent = [{
   url: "/agent_maintenance_requests",
-  name: "Agent Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MenuTrady = [{
   url: "/trady_maintenance_requests",
-  name: "Trady Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MenuTenant = [{
   url: "/tenant_maintenance_requests",
-  name: "Tenant Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MenuLandlord = [{
   url: "/landlord_maintenance_requests",
-  name: "Landlord Maintenance Request"
+  name: "My Maintenance Requests"
 }];
 
 var MobileMenu = React.createClass({
@@ -72039,18 +80277,14 @@ var MobileMenu = React.createClass({
 
   getInitialState: function () {
     return {
-      visible: false
+      visible: this.props.isShow
     };
   },
 
-  show: function () {
-    this.setState({ visible: true });
-    document.addEventListener("click", this.hide);
-  },
-
-  hide: function () {
-    document.removeEventListener("click", this.hide);
-    this.setState({ visible: false });
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      visible: nextProps.isShow
+    });
   },
 
   render: function () {
@@ -72072,13 +80306,20 @@ var Header = React.createClass({
   getInitialState: function () {
     return {
       isShow: false,
+      isShowBar: false,
       isClicked: false,
       isItems: !this.props.expanded
     };
   },
 
   showBar: function () {
-    this.refs.Bar.show();
+    this.setState({ isShowBar: !this.state.isShowBar });
+  },
+
+  hideBar: function () {
+    if (this.state.isShowBar) {
+      this.setState({ isShowBar: false });
+    }
   },
 
   showItems: function () {
@@ -72093,43 +80334,69 @@ var Header = React.createClass({
         // Inside of the component.
       } else {
           // Outside of the component.
-          this.setState({ isItems: false });
+          if (this.state.isItems === true) {
+            this.setState({ isItems: false });
+          }
         }
     }
   },
 
-  showMenu: function (flag) {
+  showMenu: function () {
     var myDropdown = document.getElementById("menu-bar");
-    if (myDropdown) {
-      if (flag == 'hide' && !!this.state.isShow) {
-        myDropdown.classList.remove('show');
-      } else if (flag != 'hide') {
-        if (!!this.state.isShow) {
-          myDropdown.classList.remove('show');
-          this.setState({
-            isShow: false
-          });
-        } else {
-          myDropdown.classList.toggle("show");
-          this.setState({
-            isShow: true
-          });
-        }
-      }
+    if (myDropdown && !this.state.isShow) {
+      myDropdown.classList.toggle("show");
+      this.setState({
+        isShow: true
+      });
+    }
+  },
+
+  closeMenu: function () {
+    var myDropdown = document.getElementById("menu-bar");
+    if (myDropdown && this.state.isShow) {
+      myDropdown.classList.remove('show');
+      this.setState({
+        isShow: false
+      });
     }
   },
 
   componentDidMount: function (e) {
-    var _this = this;
+    var self = this;
+    var event = "click";
+    if (this.iOS()) {
+      event += " touchstart";
+    }
 
-    $(document).bind('click', this.clickDocument);
-    $(document).bind('click', function (flag) {
-      return _this.showMenu('hide');
+    $(document).bind(event, function (e) {
+      self.clickDocument(e);
+      self.closeMenu();
+      if (e.target.id != "btn-menu-bar") {
+        self.hideBar();
+        var className = e.target["class"];
+        if (className && className.indexOf('click')) {
+          e.target.click();
+        }
+      }
     });
   },
 
   componentWillUnmount: function () {
     $(document).unbind('click', this.clickDocument);
+  },
+
+  iOS: function () {
+    var iDevices = ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'];
+
+    if (!!navigator.platform) {
+      while (iDevices.length) {
+        if (navigator.platform === iDevices.pop()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   },
 
   menuBar: function () {
@@ -72142,7 +80409,7 @@ var Header = React.createClass({
         { key: key },
         React.createElement(
           "a",
-          { href: item.url },
+          { href: item.url, className: "click" },
           item.name
         )
       );
@@ -72184,7 +80451,7 @@ var Header = React.createClass({
       { className: "header-expanded" },
       React.createElement(
         MobileMenu,
-        { ref: "Bar" },
+        { ref: "Bar", id: "bar", isShow: this.state.isShowBar },
         logged_in ? React.createElement(
           "ul",
           { className: "menu-mobile" },
@@ -72196,7 +80463,7 @@ var Header = React.createClass({
               "span",
               null,
               "Hi, ",
-              current_user.name
+              props.role
             )
           ),
           this.menuBar(),
@@ -72205,7 +80472,7 @@ var Header = React.createClass({
             null,
             React.createElement(
               "a",
-              { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
+              { href: props.logout_path, className: "click", "data-method": "delete", rel: "nofollow" },
               "Sign Out"
             )
           )
@@ -72214,19 +80481,19 @@ var Header = React.createClass({
           { className: "mobile-menu-items" },
           React.createElement(
             "a",
-            { href: props.menu_login_path },
+            { href: props.menu_login_path, className: "click" },
             " Login "
           ),
           React.createElement(
             "a",
-            { href: props.new_agency_path, className: "register" },
+            { href: props.new_agency_path, className: "register click" },
             " Register "
           )
         )
       ),
       React.createElement(
         "div",
-        { className: "container container-custom" },
+        { className: "container" },
         React.createElement(
           "div",
           { className: "column header-custom " + (e && "forhome") },
@@ -72268,7 +80535,7 @@ var Header = React.createClass({
                     "span",
                     null,
                     "Hi, ",
-                    current_user.name,
+                    props.role,
                     React.createElement("i", { className: "fa fa-angle-down" })
                   )
                 ),
@@ -72306,7 +80573,7 @@ var Header = React.createClass({
                     "span",
                     null,
                     "Hi, ",
-                    current_user.name
+                    props.role
                   )
                 ),
                 this.menuBar(),
@@ -72334,12 +80601,12 @@ var Header = React.createClass({
               { href: props.new_agency_path, className: "register" },
               " Register "
             )
+          ),
+          React.createElement(
+            "button",
+            { className: "menu-btn button", id: "btn-menu-bar", onClick: this.showBar },
+            " ☰ "
           )
-        ),
-        React.createElement(
-          "button",
-          { className: "menu-btn button", onClick: this.showBar },
-          " ☰ "
         )
       )
     );
@@ -72354,7 +80621,7 @@ var Header = React.createClass({
   }
 });
 var Spinner = React.createClass({
-	displayName: "Spinner",
+	displayName: 'Spinner',
 
 	componentDidMount: function () {
 		/*$(document).ajaxStart(function() {
@@ -72363,19 +80630,25 @@ var Spinner = React.createClass({
   	$(document).ajaxStop(function() {
   	$("#spinner").css('display', 'none');
   });*/
+
+		$(document).bind('ajaxSend', function (e) {
+			$("#spinner").css('display', 'flex');
+		}).bind('ajaxComplete', function (e) {
+			$("#spinner").css('display', 'none');
+		});
 	},
 
 	render: function () {
 		return React.createElement(
-			"div",
-			{ id: "spinner", className: "spinner-content" },
-			React.createElement("div", { className: "spinner-bg" }),
+			'div',
+			{ id: 'spinner', className: 'spinner-content' },
+			React.createElement('div', { className: 'spinner-bg' }),
 			React.createElement(
-				"div",
-				{ className: "spinner" },
-				React.createElement("div", { className: "bounce1" }),
-				React.createElement("div", { className: "bounce2" }),
-				React.createElement("div", { className: "bounce3" })
+				'div',
+				{ className: 'spinner' },
+				React.createElement('div', { className: 'bounce1' }),
+				React.createElement('div', { className: 'bounce2' }),
+				React.createElement('div', { className: 'bounce3' })
 			)
 		);
 	}
@@ -72385,7 +80658,6 @@ var ContentTenantContact = React.createClass({
 
 	render: function () {
 		var selt = this;
-		var landlord = this.props.landlord;
 		return React.createElement(
 			"ul",
 			null,
@@ -72426,7 +80698,7 @@ var TenantContact = React.createClass({
 			{ className: "item" },
 			React.createElement(
 				"div",
-				{ className: "header contact" },
+				{ className: "header action" },
 				React.createElement(
 					"a",
 					null,
@@ -72457,13 +80729,13 @@ var TenantContactMobile = React.createClass({
 
 		return React.createElement(
 			"div",
-			{ className: "actions-full contact-full" },
+			{ className: "actions-full contact-full", id: "contacts-full" },
 			React.createElement(
 				"div",
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -72486,8 +80758,10 @@ var TenantContactMobile = React.createClass({
 		);
 	}
 });
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var TenantSideBarMobile = React.createClass({
-	displayName: "TenantSideBarMobile",
+	displayName: 'TenantSideBarMobile',
 
 	getInitialState: function () {
 		return {
@@ -72495,46 +80769,109 @@ var TenantSideBarMobile = React.createClass({
 		};
 	},
 
-	show: function (key) {
-		this.setState({ showContact: !this.state.showContact });
+	show: function () {
+		this.setState({ showContact: true });
+		if ($('#contacts-full').length > 0) {
+			$('#contacts-full').css({ 'height': 150, 'border-width': 1 });
+		}
+	},
+
+	close: function () {
+		this.setState({ showContact: false });
+		if ($('#contacts-full').length > 0) {
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
+	},
+
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
+		});
 	},
 
 	render: function () {
 		var _this = this;
 
 		return React.createElement(
-			"div",
+			'div',
 			null,
 			React.createElement(
-				"div",
-				{ className: "sidebar-mobile tenant-content" },
+				'div',
+				{ className: 'sidebar-mobile' },
 				React.createElement(
-					"div",
-					{ className: "fixed" },
+					'div',
+					{ className: 'fixed' },
 					React.createElement(
-						"button",
-						{ className: "contact button-default", onClick: this.show },
-						"Contact"
+						'button',
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: this.show
+						},
+						'Contact'
 					)
 				)
 			),
-			!!this.state.showContact && React.createElement(TenantContactMobile, { close: this.show, onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				} })
+			React.createElement(
+				'div',
+				{ className: 'action-mobile' },
+				React.createElement(TenantContactMobile, {
+					close: this.close,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				})
+			)
 		);
 	}
 });
 
 var TenantMaintenanceRequest = React.createClass({
-	displayName: "TenantMaintenanceRequest",
+	displayName: 'TenantMaintenanceRequest',
 
 	getInitialState: function () {
+		var _props = this.props;
+		var landlord = _props.landlord;
+		var appointments = _props.appointments;
+		var quote_appointments = _props.quote_appointments;
+		var maintenance_request = _props.maintenance_request;
+		var tenants_conversation = _props.tenants_conversation;
+		var landlord_appointments = _props.landlord_appointments;
+
+		var comments = [],
+		    quoteComments = [],
+		    landlordComments = [];
+		appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
+		landlord_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				landlordComments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			isModal: false,
-			landlord: this.props.landlord,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
+			isCancel: false,
+			isDecline: false,
+			appointment: null,
+			landlord: landlord,
+			comments: comments,
+			appointmentUpdate: null,
+			appointments: appointments,
+			quoteComments: quoteComments,
+			landlordComments: landlordComments,
+			quote_appointments: quote_appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlord_appointments: landlord_appointments,
 			notification: {
 				title: "",
 				content: "",
@@ -72559,8 +80896,36 @@ var TenantMaintenanceRequest = React.createClass({
 		});
 	},
 
+	viewItem: function (key, item) {
+		switch (key) {
+			case 'viewAppointment':
+				{
+					this.setState({
+						appointment: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'createAppointment':
+			case 'createAppointmentForQuote':
+			case 'createLandlordAppointment':
+				{
+					this.onModalWith(key);
+					break;
+				}
+
+			default:
+				{
+					break;
+				}
+		}
+	},
+
 	sendAgentMessage: function (params) {
 		var self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -72587,7 +80952,299 @@ var TenantMaintenanceRequest = React.createClass({
 		});
 	},
 
+	addAppointment: function (params) {
+		var self = this;
+		var _props2 = this.props;
+		var tenant = _props2.tenant;
+		var current_role = _props2.current_role;
+		var signed_in_trady = _props2.signed_in_trady;
+		var landlord = _props2.landlord;
+		var authenticity_token = _props2.authenticity_token;
+
+		var maintenance_request_id = this.state.maintenance_request.id;
+		var _state = this.state;
+		var appointments = _state.appointments;
+		var quote_appointments = _state.quote_appointments;
+		var landlord_appointments = _state.landlord_appointments;
+		var appointmentUpdate = _state.appointmentUpdate;
+		var isDecline = _state.isDecline;
+		var comments = _state.comments;
+		var quoteComments = _state.quoteComments;
+		var landlordComments = _state.landlordComments;
+		var isCancel = _state.isCancel;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', params.appointment_type);
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenant ? tenant.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenant > 0 ? tenant.id : '');
+
+		if (params.appointment_type == "Landlord Appointment") {
+			fd.append('appointment[landlord_id]', appointmentUpdate ? appointmentUpdate.landlord_id : '');
+			fd.append('appointment[comments_attributes][0][landlord_id]', appointmentUpdate ? appointmentUpdate.landlord_id : '');
+		} else {
+			fd.append('appointment[trady_id]', appointmentUpdate ? appointmentUpdate.trady_id : '');
+			fd.append('appointment[comments_attributes][0][trady_id]', appointmentUpdate ? appointmentUpdate.trady_id : '');
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: params.appointment_type == "Landlord Appointment" ? '/landlord_appointments' : '/appointments',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function (res) {
+				var title = '';
+				var content = '';
+				if (!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
+					self.declineAppointment(appointmentUpdate);
+				} else if (!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
+					self.cancelAppointment(appointmentUpdate);
+				} else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
+				}
+				switch (params.appointment_type) {
+					case 'Work Order Appointment':
+						appointments.unshift(res.appointment_and_comments);
+						comments.push(res.appointment_and_comments.comments[0]);
+						self.setState({
+							comments: comments,
+							appointments: appointments
+						});
+						break;
+
+					case 'Quote Appointment':
+						quote_appointments.unshift(res.appointment_and_comments);
+						quoteComments.push(res.appointment_and_comments.comments);
+						self.setState({
+							quoteComments: quoteComments,
+							quote_appointments: quote_appointments
+						});
+						break;
+
+					case 'Landlord Appointment':
+						landlord_appointments.unshift(res.appointment_and_comments);
+						landlordComments.push(res.appointment_and_comments.comments);
+						self.setState({
+							landlordComments: landlordComments,
+							landlord_appointments: landlord_appointments
+						});
+						break;
+
+					default:
+						break;
+				}
+
+				self.setState({ notification: {
+						title: title,
+						content: content,
+						bgClass: "bg-success"
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Error",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateAppointment: function (appointment) {
+		var _state2 = this.state;
+		var appointments = _state2.appointments;
+		var quote_appointments = _state2.quote_appointments;
+		var landlord_appointments = _state2.landlord_appointments;
+
+		var data = [];
+		switch (appointment.appointment_type) {
+			case 'Work Order Appointment':
+				data = appointments.map(function (item, key) {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					appointments: data
+				});
+				break;
+
+			case 'Quote Appointment':
+				data = quote_appointments.map(function (item, key) {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					quote_appointments: data
+				});
+				break;
+
+			case 'Landlord Appointment':
+				data = landlord_appointments.map(function (item, key) {
+					item.status = item.id == appointment.id ? appointment.status : item.status;
+					return item;
+				});
+				this.setState({
+					landlord_appointments: data
+				});
+				break;
+
+			default:
+				break;
+		}
+	},
+
+	acceptAppointment: function (appointment) {
+		var self = this;
+		var _props3 = this.props;
+		var authenticity_token = _props3.authenticity_token;
+		var tenant = _props3.tenant;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role : '',
+			maintenance_request_id: this.state.maintenance_request.id,
+			appointment_type: appointment.appointment_type == 'Work Order Appointment' ? 'work_order_appointment' : 'quote_appointment'
+		};
+
+		if (appointment.appointment_type == 'Work Order Appointment') {
+			params.appointment_type = "work_order_appointment";
+		} else if (appointment.appointment_type == 'Quote Appointment') {
+			params.appointment_type = 'quote_appointment';
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/accept_landlord_appointment' : '/accept_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Accept Appoinment",
+						content: res.note
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Accept Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	decline: function (appointment) {
+		this.onModalWith('confirmDeclineAppointment');
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	declineAppointment: function (appointment) {
+		var self = this;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var tenant = _props4.tenant;
+
+		var params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role.role : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/decline_landlord_appointment' : '/decline_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isDecline: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancel: function (appointment) {
+		var key = '';
+		this.onModalWith('confirmCancelAppointment');
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	cancelAppointment: function (appointment) {
+		var self = this;
+		var _props5 = this.props;
+		var authenticity_token = _props5.authenticity_token;
+		var tenant = _props5.tenant;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: tenant.user.current_role ? tenant.user.current_role.role : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: appointment.appointment_type == 'Landlord Appointment' ? '/cancel_landlord_appointment' : '/cancel_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCancel: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Cancel Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function () {
+		var _this2 = this;
+
 		if (this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
 			body.className += " modal-open";
@@ -72600,14 +81257,181 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 
 			switch (this.state.modal) {
+				case 'notification':
+					{
+						return React.createElement(ModalNotification, {
+							close: this.isClose,
+							bgClass: this.state.notification.bgClass,
+							title: this.state.notification.title,
+							content: this.state.notification.content
+						});
+					}
+
 				case 'sendAgentMessage':
 					{
-						return React.createElement(ModalSendMessageTenant, {
+						return React.createElement(ModalSendMessageAgent, {
 							close: this.isClose,
 							current_user: this.props.current_user,
-							sendMessageTenant: this.sendAgentMessage,
-							tenants_conversation: this.state.tenants_conversation,
+							sendMessageAgent: this.sendAgentMessage,
+							trady_agent_conversation: this.state.tenants_conversation,
 							maintenance_request_id: this.state.maintenance_request.id
+						});
+					}
+
+				case 'viewAppointment':
+					{
+						var _state3 = this.state;
+						var comments = _state3.comments;
+						var quoteComments = _state3.quoteComments;
+						var landlordComments = _state3.landlordComments;
+						var appointment = _state3.appointment;
+
+						var commentShow = [];
+						switch (appointment.appointment_type) {
+							case 'Work Order Appointment':
+								commentShow = [].concat(_toConsumableArray(comments));
+								break;
+
+							case 'Quote Appointment':
+								commentShow = [].concat(_toConsumableArray(quoteComments));
+								break;
+
+							case 'Landlord Appointment':
+								commentShow = [].concat(_toConsumableArray(landlordComments));
+								break;
+
+							default:
+								break;
+						}
+						return React.createElement(ModalAppointment, {
+							close: this.isClose,
+							comments: commentShow,
+							appointment: this.state.appointment,
+							cancelAppointment: function (value) {
+								return _this2.cancel(value);
+							},
+							current_role: this.props.tenant.user.current_role,
+							acceptAppointment: function (value) {
+								return _this2.acceptAppointment(value);
+							},
+							declineAppointment: function (value) {
+								return _this2.decline(value);
+							}
+						});
+					}
+
+				case 'confirmCancelAppointment':
+					{
+						var _ret = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								case 'Landlord Appointment':
+									key = 'createLandlordAppointment';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Cancel Appointment',
+									btnContent: 'Create and Cancel',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret === 'object') return _ret.v;
+					}
+
+				case 'confirmDeclineAppointment':
+					{
+						var _ret2 = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								case 'Landlord Appointment':
+									key = 'createLandlordAppointment';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Decline Appointment',
+									btnContent: 'Create and Decline',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret2 === 'object') return _ret2.v;
+					}
+
+				case 'createAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							title: 'Create Appointment',
+							type: 'Work Order Appointment',
+							comments: this.state.comments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'createAppointmentForQuote':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							type: 'Quote Appointment',
+							comments: this.state.quoteComments,
+							title: 'Create Appointment For Quote',
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'createLandlordAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							type: 'Landlord Appointment',
+							title: 'Create Landlord Appointment',
+							comments: this.state.landlordComments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
 						});
 					}
 
@@ -72617,18 +81441,67 @@ var TenantMaintenanceRequest = React.createClass({
 		}
 	},
 
+	openAppointment: function (appointment_id) {
+		var appointment = '';
+		var _state4 = this.state;
+		var appointments = _state4.appointments;
+		var quote_appointments = _state4.quote_appointments;
+		var landlord_appointments = _state4.landlord_appointments;
+
+		var data = [].concat(_toConsumableArray(appointments), _toConsumableArray(quote_appointments), _toConsumableArray(landlord_appointments));
+		data.map(function (item, key) {
+			if (item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if (appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			var json = self.getUrlVars(href);
+			if (href.indexOf('open_agent_message') >= 0) {
+				self.onModalWith('sendAgentMessage');
+			} else if (href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
+			}
+		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
+	},
+
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
+
+		var _state5 = this.state;
+		var appointments = _state5.appointments;
+		var quote_appointments = _state5.quote_appointments;
+		var landlord_appointments = _state5.landlord_appointments;
 
 		return React.createElement(
-			"div",
-			{ className: "summary-container-index", id: "summary-container-index" },
+			'div',
+			{ className: 'summary-container-index', id: 'summary-container-index' },
 			React.createElement(
-				"div",
-				{ className: "main-summary" },
+				'div',
+				{ className: 'main-summary' },
 				React.createElement(
-					"div",
-					{ className: "section" },
+					'div',
+					{ className: 'section' },
 					React.createElement(ItemMaintenanceRequest, {
 						gallery: this.props.gallery,
 						property: this.props.property,
@@ -72636,15 +81509,120 @@ var TenantMaintenanceRequest = React.createClass({
 					})
 				),
 				React.createElement(
-					"div",
-					{ className: "sidebar" },
-					React.createElement(TenantContact, { onModalWith: function (modal) {
-							return _this2.onModalWith(modal);
-						}, current_user: this.props.current_user })
-				)
+					'div',
+					{ className: 'sidebar' },
+					React.createElement(TenantContact, {
+						current_user: this.props.current_user,
+						onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						}
+					}),
+					appointments.length > 0 && React.createElement(AppointmentRequest, {
+						appointments: appointments,
+						title: 'Work Order Appointments',
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
+						current_role: this.props.tenant.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					}),
+					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Appointments For Quotes',
+						appointments: quote_appointments,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
+						current_role: this.props.tenant.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					}),
+					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Landlord Appointments',
+						appointments: landlord_appointments,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
+						current_role: this.props.tenant.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					})
+				),
+				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					appointments: appointments,
+					title: 'Work Order Appointments',
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
+					current_role: this.props.tenant.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				}),
+				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: 'Appointments For Quotes',
+					appointments: quote_appointments,
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
+					current_role: this.props.tenant.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					}
+				}),
+				landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: 'Landlord Appointments',
+					appointments: landlord_appointments,
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
+					current_role: this.props.tenant.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				})
 			),
 			React.createElement(TenantSideBarMobile, { onModalWith: function (modal) {
-					return _this2.onModalWith(modal);
+					return _this3.onModalWith(modal);
 				}, current_user: this.props.current_user }),
 			this.renderModal()
 		);
@@ -73345,7 +82323,7 @@ var AddTradycompany = React.createClass({
     if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
       flag = true;
       this.setState({
-        errorTradingName: true
+        errorABN: true
       });
     }
 
@@ -73359,7 +82337,7 @@ var AddTradycompany = React.createClass({
     if (!this.mailing_address.value) {
       flag = true;
       this.setState({
-        errorTradingName: true
+        errorMailingAdress: true
       });
     }
 
@@ -73421,11 +82399,11 @@ var AddTradycompany = React.createClass({
             mailing_address: _this.mailing_address.value,
             gst_registration: _this.state.gst_registration,
             bank_account_number: _this.bank_account_number.value,
-            trady_company_id: _this.props.id ? _this.props.id : null,
             maintenance_request_id: _this.props.maintenance_request_id,
             quote_id: _this.props.quote_id ? _this.props.quote_id : null,
             ledger_id: _this.props.ledger_id ? _this.props.ledger_id : null,
-            pdf_file_id: _this.props.pdf_file_id ? _this.props.pdf_file_id : null
+            pdf_file_id: _this.props.pdf_file_id ? _this.props.pdf_file_id : null,
+            trady_company_id: _this.props.trady_company_id ? _this.props.trady_company_id : null
           }
         };
 
@@ -73796,7 +82774,7 @@ var CreateOrUploadInvoice = React.createClass({
 				{ onClick: function (modal) {
 						return _this.props.onModalWith('viewConfirm');
 					} },
-				React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+				React.createElement("i", { className: "fa fa-send", "aria-hidden": "true" }),
 				"Create or Upload Invoice"
 			)
 		);
@@ -73817,8 +82795,52 @@ var MarkJobAsCompleted = React.createClass({
 				{ onClick: function (modal) {
 						return _this2.props.onModalWith('viewMarkJob');
 					} },
-				React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+				React.createElement("i", { className: "fa fa-send", "aria-hidden": "true" }),
 				"Mark Job As Completed"
+			)
+		);
+	}
+});
+
+var CreateAppointment = React.createClass({
+	displayName: "CreateAppointment",
+
+	render: function () {
+		var _this3 = this;
+
+		var props = this.props;
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ onClick: function (modal) {
+						return _this3.props.onModalWith('createAppointment');
+					} },
+				React.createElement("i", { className: "fa fa-plus", "aria-hidden": "true" }),
+				"Create Appointment"
+			)
+		);
+	}
+});
+
+var CreateAppointmentForQuote = React.createClass({
+	displayName: "CreateAppointmentForQuote",
+
+	render: function () {
+		var _this4 = this;
+
+		var props = this.props;
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ onClick: function (modal) {
+						return _this4.props.onModalWith('createAppointmentForQuote');
+					} },
+				React.createElement("i", { className: "fa fa-plus", "aria-hidden": "true" }),
+				"Create Appointment For Quote"
 			)
 		);
 	}
@@ -73828,10 +82850,11 @@ var ContentTradyAction = React.createClass({
 	displayName: "ContentTradyAction",
 
 	render: function () {
-		var _this3 = this;
+		var _this5 = this;
 
 		var maintenance_request = this.props.maintenance_request;
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+
 		var maintenance_trady_id = maintenance_request.trady_id;
 		var link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
 		if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
@@ -73840,18 +82863,27 @@ var ContentTradyAction = React.createClass({
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+						return _this5.props.onModalWith(modal);
 					} }),
-				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+				React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				React.createElement(CreateAppointment, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
 					} })
 			);
 		} else if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
 			return React.createElement(
 				"ul",
 				null,
-				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+				React.createElement(CreateAppointment, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
 					} })
 			);
 		} else {
@@ -73860,10 +82892,16 @@ var ContentTradyAction = React.createClass({
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				!!this.props.assigned_trady && React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+						return _this5.props.onModalWith(modal);
 					} }),
-				(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this3.props.onModalWith(modal);
+				!!this.props.assigned_trady && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				!!this.props.assigned_trady && React.createElement(CreateAppointment, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
+					} }),
+				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
+						return _this5.props.onModalWith(modal);
 					} })
 			);
 		}
@@ -73884,7 +82922,7 @@ var TradyAction = React.createClass({
 	},
 
 	render: function () {
-		var _this4 = this;
+		var _this6 = this;
 
 		return React.createElement(
 			"div",
@@ -73905,8 +82943,9 @@ var TradyAction = React.createClass({
 			),
 			React.createElement(
 				"div",
-				{ className: "content", id: "actions-content" },
+				{ className: "content" },
 				this.state.show && React.createElement(ContentTradyAction, {
+					trady: this.props.trady,
 					landlord: this.props.landlord,
 					invoices: this.props.invoices,
 					assigned_trady: this.props.assigned_trady,
@@ -73914,7 +82953,7 @@ var TradyAction = React.createClass({
 					invoice_pdf_files: this.props.invoice_pdf_files,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
-						return _this4.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					}
 				})
 			)
@@ -73926,7 +82965,7 @@ var TradyActionMobile = React.createClass({
 	displayName: "TradyActionMobile",
 
 	render: function () {
-		var _this5 = this;
+		var _this7 = this;
 
 		return React.createElement(
 			"div",
@@ -73952,14 +82991,15 @@ var TradyActionMobile = React.createClass({
 					"div",
 					{ className: "content" },
 					React.createElement(ContentTradyAction, {
-						landlord: this.props.landlord,
+						trady: this.props.trady,
 						landlord: this.props.landlord,
 						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
+						signed_in_trady: this.props.signed_in_trady,
 						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
-							return _this5.props.onModalWith(modal);
+							return _this7.props.onModalWith(modal);
 						}
 					})
 				)
@@ -73970,29 +83010,41 @@ var TradyActionMobile = React.createClass({
 var ContentTradyContact = React.createClass({
 	displayName: "ContentTradyContact",
 
-	renderCallAgent: function () {
-		if (!!this.props.maintenance_request.agent) {
+	renderTenant: function () {
+		var tenants = this.props.tenants.length > 0 ? this.props.tenants : [];
+		if (tenants.length > 0) {
+			return tenants.map(function (tenant, key) {
+				return React.createElement(
+					"li",
+					{ key: tenant.id },
+					React.createElement(
+						"a",
+						{ href: "tel:" + tenant.mobile },
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Call Tenant ",
+						key + 1,
+						": ",
+						tenant.mobile
+					)
+				);
+			});
+		}
+
+		return null;
+	},
+
+	renderAgent: function () {
+		var agent = this.props.agent;
+		if (!!agent) {
 			return React.createElement(
 				"li",
 				null,
 				React.createElement(
 					"a",
-					null,
+					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Call Agent: ",
-					this.props.maintenance_request.agent.mobile_phone
-				)
-			);
-		} else if (!!this.props.maintenance_request.agency_admin) {
-			return React.createElement(
-				"li",
-				null,
-				React.createElement(
-					"a",
-					null,
-					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-					"Call Agent: ",
-					this.props.maintenance_request.agency_admin.mobile_phone
+					agent.mobile_phone
 				)
 			);
 		}
@@ -74000,11 +83052,34 @@ var ContentTradyContact = React.createClass({
 		return null;
 	},
 
+	renderMessageAgent: function () {
+		var _this = this;
+
+		var assigned_trady = this.props.assigned_trady;
+
+		if (!!assigned_trady) {
+			return React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return _this.props.onModalWith('sendMessageAgent');
+						} },
+					React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+					"Message Agent"
+				)
+			);
+		}
+	},
+
 	render: function () {
 		return React.createElement(
 			"ul",
 			null,
-			this.renderCallAgent()
+			this.renderTenant(),
+			this.renderAgent(),
+			this.renderMessageAgent()
 		);
 	}
 });
@@ -74014,7 +83089,7 @@ var TradyContact = React.createClass({
 
 	getInitialState: function () {
 		return {
-			show: false
+			show: true
 		};
 	},
 
@@ -74023,7 +83098,7 @@ var TradyContact = React.createClass({
 	},
 
 	render: function () {
-		var _this = this;
+		var _this2 = this;
 
 		return React.createElement(
 			"div",
@@ -74045,9 +83120,16 @@ var TradyContact = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "content" },
-				this.state.show && React.createElement(ContentTradyContact, { onModalWith: function (modal) {
-						return _this.props.onModalWith(modal);
-					}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+				this.state.show && React.createElement(ContentTradyContact, {
+					agent: this.props.agent,
+					tenants: this.props.tenants,
+					landlord: this.props.landlord,
+					assigned_trady: this.props.assigned_trady,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this2.props.onModalWith(modal);
+					}
+				})
 			)
 		);
 	}
@@ -74057,17 +83139,17 @@ var TradyContactMobile = React.createClass({
 	displayName: "TradyContactMobile",
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		return React.createElement(
 			"div",
-			{ className: "actions-full contact-full" },
+			{ className: "actions-full contact-full", id: "contacts-full" },
 			React.createElement(
 				"div",
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header contact" },
+					{ className: "header action" },
 					React.createElement(
 						"a",
 						null,
@@ -74082,16 +83164,25 @@ var TradyContactMobile = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "content" },
-					React.createElement(ContentTradyContact, { onModalWith: function (modal) {
-							return _this2.props.onModalWith(modal);
-						}, landlord: this.props.landlord, maintenance_request: this.props.maintenance_request })
+					React.createElement(ContentTradyContact, {
+						agent: this.props.agent,
+						tenants: this.props.tenants,
+						landlord: this.props.landlord,
+						assigned_trady: this.props.assigned_trady,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
+							return _this3.props.onModalWith(modal);
+						}
+					})
 				)
 			)
 		);
 	}
 });
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 var TradySideBarMobile = React.createClass({
-	displayName: "TradySideBarMobile",
+	displayName: 'TradySideBarMobile',
 
 	getInitialState: function () {
 		return {
@@ -74102,148 +83193,199 @@ var TradySideBarMobile = React.createClass({
 
 	show: function (key) {
 		if (key == 'action') {
-			this.setState({ showAction: !this.state.showAction });
+			this.setState({ showAction: true });
+			this.setState({ showContact: false });
+			if ($('#actions-full').length > 0) {
+				$('#actions-full').css({ 'height': 350, 'border-width': 1 });
+			}
 		} else {
-			this.setState({ showContact: !this.state.showContact });
+			this.setState({ showAction: false });
+			this.setState({ showContact: true });
+			if ($('#contacts-full').length > 0) {
+				$('#contacts-full').css({ 'height': this.props.tenants.length * 50 + 200, 'border-width': 1 });
+			}
 		}
+	},
+
+	close: function () {
+		if (!!this.state.showAction) {
+			this.setState({ showAction: false });
+		}
+		if (!!this.state.showContact) {
+			this.setState({ showContact: false });
+		}
+		if ($('#actions-full').length > 0) {
+			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		}
+		if ($('#contacts-full').length > 0) {
+			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
+		}
+	},
+
+	componentDidMount: function () {
+		var self = this;
+		$(document).bind("click", function () {
+			self.close();
+		});
 	},
 
 	render: function () {
 		var _this = this;
 
 		return React.createElement(
-			"div",
+			'div',
 			null,
 			React.createElement(
-				"div",
-				{ className: "sidebar-mobile" },
+				'div',
+				{ className: 'sidebar-mobile' },
 				React.createElement(
-					"div",
-					{ className: "fixed" },
+					'div',
+					{ className: 'fixed' },
 					React.createElement(
-						"button",
-						{ className: "contact button-default", onClick: function (key) {
+						'button',
+						{
+							className: "contact button-default " + (!!this.state.showContact && 'active'),
+							onClick: function (key) {
 								return _this.show('contact');
-							} },
-						"Contact"
+							}
+						},
+						'Contact'
 					),
 					React.createElement(
-						"button",
-						{ className: "actions button-default", onClick: function (key) {
+						'button',
+						{
+							className: "actions button-default " + (!!this.state.showAction && 'active'),
+							onClick: function (key) {
 								return _this.show('action');
-							} },
-						"Actions"
+							}
+						},
+						'Actions'
 					)
 				)
 			),
-			!!this.state.showAction && React.createElement(TradyActionMobile, {
-				landlord: this.props.landlord,
-				invoices: this.props.invoices,
-				close: function (key) {
-					return _this.show('action');
-				},
-				assigned_trady: this.props.assigned_trady,
-				signed_in_trady: this.props.signed_in_trady,
-				invoice_pdf_files: this.props.invoice_pdf_files,
-				maintenance_request: this.props.maintenance_request,
-				onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				}
-			}),
-			!!this.state.showContact && React.createElement(TradyContactMobile, { close: function (key) {
-					return _this.show('contact');
-				}, onModalWith: function (modal) {
-					return _this.props.onModalWith(modal);
-				}, landlord: this.props.landlord, current_user: this.props.current_user, maintenance_request: this.props.maintenance_request })
+			React.createElement(
+				'div',
+				{ className: 'action-mobile' },
+				React.createElement(TradyActionMobile, {
+					close: this.close,
+					trady: this.props.trady,
+					landlord: this.props.landlord,
+					invoices: this.props.invoices,
+					assigned_trady: this.props.assigned_trady,
+					signed_in_trady: this.props.signed_in_trady,
+					invoice_pdf_files: this.props.invoice_pdf_files,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				}),
+				React.createElement(TradyContactMobile, {
+					close: this.close,
+					agent: this.props.agent,
+					tenants: this.props.tenants,
+					landlord: this.props.landlord,
+					current_user: this.props.current_user,
+					assigned_trady: this.props.assigned_trady,
+					maintenance_request: this.props.maintenance_request,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				})
+			)
 		);
 	}
 });
 
 var ModalConfirmAddInvoice = React.createClass({
-	displayName: "ModalConfirmAddInvoice",
+	displayName: 'ModalConfirmAddInvoice',
 
 	jobCompleted: function () {
+		var maintenance_request = this.props.maintenance_request;
+
+		var maintenance_trady_id = maintenance_request.trady_id;
+
 		var params = {
-			maintenance_request_id: this.props.maintenance_request.id
+			maintenance_request_id: maintenance_request.id
 		};
 
 		this.props.jobCompleted(params);
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
 	},
 
 	createInvoice: function () {
 		var maintenance_request = this.props.maintenance_request;
-		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+
 		var maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id + "&quote_id=";
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
 	},
 
 	render: function () {
 		var maintenance_request = this.props.maintenance_request;
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content" },
+					'div',
+					{ className: 'modal-content' },
 					React.createElement(
-						"div",
-						{ className: "modal-header" },
+						'div',
+						{ className: 'modal-header' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
+								type: 'button',
+								className: 'close',
+								'data-dismiss': 'modal',
+								'aria-label': 'Close',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Job Complete"
+							'h4',
+							{ className: 'modal-title text-center' },
+							'Job Complete'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-body" },
+						'div',
+						{ className: 'modal-body' },
 						React.createElement(
-							"p",
-							{ className: "text-center" },
-							"Has the job Been completed for \"",
+							'p',
+							{ className: 'text-center' },
+							'Has the job Been completed for "',
 							maintenance_request.maintenance_heading,
-							"\""
+							'"'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-footer" },
+						'div',
+						{ className: 'modal-footer' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								"data-dismiss": "modal",
+								'data-dismiss': 'modal',
 								onClick: this.jobCompleted,
-								className: "btn btn-default success"
+								className: 'btn btn-default success'
 							},
-							"Yes"
+							'Yes'
 						),
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
+								type: 'button',
 								onClick: this.createInvoice,
-								className: "btn btn-primary cancel"
+								className: 'btn btn-primary cancel'
 							},
-							"No"
+							'No'
 						)
 					)
 				)
@@ -74253,7 +83395,7 @@ var ModalConfirmAddInvoice = React.createClass({
 });
 
 var ModalMarkJobAsCompleted = React.createClass({
-	displayName: "ModalMarkJobAsCompleted",
+	displayName: 'ModalMarkJobAsCompleted',
 
 	jobCompleted: function () {
 		var params = {
@@ -74273,67 +83415,67 @@ var ModalMarkJobAsCompleted = React.createClass({
 
 	render: function () {
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content" },
+					'div',
+					{ className: 'modal-content' },
 					React.createElement(
-						"div",
-						{ className: "modal-header" },
+						'div',
+						{ className: 'modal-header' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
+								type: 'button',
+								className: 'close',
+								'data-dismiss': 'modal',
+								'aria-label': 'Close',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Mark Job As Complete"
+							'h4',
+							{ className: 'modal-title text-center' },
+							'Mark Job As Complete'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-body" },
+						'div',
+						{ className: 'modal-body' },
 						React.createElement(
-							"p",
-							{ className: "text-center" },
-							"There are no invoices for this maintenance request would you like to create an invoice and mark job as completed ?"
+							'p',
+							{ className: 'text-center' },
+							'There are no invoices for this maintenance request would you like to create an invoice and mark job as completed ?'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-footer" },
+						'div',
+						{ className: 'modal-footer' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								"data-dismiss": "modal",
-								onClick: this.jobCompleted,
-								className: "btn btn-default success"
+								'data-dismiss': 'modal',
+								onClick: this.createInvoice,
+								className: 'btn btn-default success'
 							},
-							"Yes"
+							'Yes'
 						),
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
+								type: 'button',
 								onClick: this.createInvoice,
-								className: "btn btn-primary cancel"
+								className: 'btn btn-primary cancel'
 							},
-							"No"
+							'No'
 						)
 					)
 				)
@@ -74343,48 +83485,48 @@ var ModalMarkJobAsCompleted = React.createClass({
 });
 
 var ModalNotification = React.createClass({
-	displayName: "ModalNotification",
+	displayName: 'ModalNotification',
 
 	render: function () {
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content" },
+					'div',
+					{ className: 'modal-content' },
 					React.createElement(
-						"div",
+						'div',
 						{ className: 'modal-header ' + (this.props.bgClass && this.props.bgClass) },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"aria-label": "Close",
-								"data-dismiss": "modal",
+								type: 'button',
+								className: 'close',
+								'aria-label': 'Close',
+								'data-dismiss': 'modal',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
+							'h4',
+							{ className: 'modal-title text-center' },
 							this.props.title
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-body" },
+						'div',
+						{ className: 'modal-body' },
 						React.createElement(
-							"p",
-							{ className: "text-center" },
+							'p',
+							{ className: 'text-center' },
 							this.props.content
 						)
 					)
@@ -74395,23 +83537,57 @@ var ModalNotification = React.createClass({
 });
 
 var TradyMaintenanceRequest = React.createClass({
-	displayName: "TradyMaintenanceRequest",
+	displayName: 'TradyMaintenanceRequest',
 
 	getInitialState: function () {
+		var _props = this.props;
+		var quotes = _props.quotes;
+		var tradies = _props.tradies;
+		var landlord = _props.landlord;
+		var invoices = _props.invoices;
+		var appointments = _props.appointments;
+		var invoice_pdf_files = _props.invoice_pdf_files;
+		var quote_appointments = _props.quote_appointments;
+		var maintenance_request = _props.maintenance_request;
+		var tenants_conversation = _props.tenants_conversation;
+		var landlords_conversation = _props.landlords_conversation;
+		var trady_agent_conversation = _props.trady_agent_conversation;
+
+		var comments = [],
+		    quoteComments = [];
+		appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				comments.unshift(appointment.comments[0]);
+			}
+		});
+		quote_appointments.map(function (appointment, key) {
+			if (appointment.comments.length > 0) {
+				quoteComments.unshift(appointment.comments[0]);
+			}
+		});
 		return {
 			modal: "",
 			quote: null,
 			invoice: null,
 			isModal: false,
+			quotes: quotes,
+			isCancel: false,
+			tradies: tradies,
+			isDecline: false,
+			appointment: null,
+			comments: comments,
+			landlord: landlord,
+			invoices: invoices,
 			invoice_pdf_file: null,
-			quotes: this.props.quotes,
-			tradies: this.props.tradies,
-			landlord: this.props.landlord,
-			invoices: this.props.invoices,
-			invoice_pdf_files: this.props.invoice_pdf_files,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
+			appointmentUpdate: null,
+			appointments: appointments,
+			quoteComments: quoteComments,
+			invoice_pdf_files: invoice_pdf_files,
+			quote_appointments: quote_appointments,
+			maintenance_request: maintenance_request,
+			tenants_conversation: tenants_conversation,
+			landlords_conversation: landlords_conversation,
+			trady_agent_conversation: trady_agent_conversation,
 			notification: {
 				title: "",
 				content: "",
@@ -74436,8 +83612,33 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	updateAppointment: function (appointment) {
+		var _state = this.state;
+		var appointments = _state.appointments;
+		var quote_appointments = _state.quote_appointments;
+
+		if (appointment.appointment_type == "Work Order Appointment") {
+			var data = appointments.map(function (item, key) {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				appointments: data
+			});
+		} else {
+			var data = quote_appointments.map(function (item, key) {
+				item.status = item.id == appointment.id ? appointment.status : item.status;
+				return item;
+			});
+			this.setState({
+				quote_appointments: data
+			});
+		}
+	},
+
 	sendMessageQuote: function (params) {
 		var self = this;
+		params.message.role = this.props.current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/quote_messages',
@@ -74494,6 +83695,98 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	addAppointment: function (params) {
+		var self = this;
+		var _props2 = this.props;
+		var tenants = _props2.tenants;
+		var current_role = _props2.current_role;
+		var signed_in_trady = _props2.signed_in_trady;
+		var landlord = _props2.landlord;
+		var authenticity_token = _props2.authenticity_token;
+
+		var maintenance_request_id = this.state.maintenance_request.id;
+		var _state2 = this.state;
+		var appointments = _state2.appointments;
+		var quote_appointments = _state2.quote_appointments;
+		var isDecline = _state2.isDecline;
+		var appointmentUpdate = _state2.appointmentUpdate;
+		var comments = _state2.comments;
+		var quoteComments = _state2.quoteComments;
+		var isCancel = _state2.isCancel;
+
+		var fd = new FormData();
+		fd.append('appointment[status]', 'Active');
+		fd.append('appointment[date]', params.date);
+		fd.append('appointment[time]', params.time);
+		fd.append('appointment[appointment_type]', params.appointment_type);
+		fd.append('appointment[maintenance_request_id]', maintenance_request_id);
+		fd.append('appointment[tenant_id]', tenants.length > 0 ? tenants[0].id : '');
+		fd.append('appointment[trady_id]', signed_in_trady ? signed_in_trady.id : '');
+		fd.append('appointment[current_user_role]', current_role ? current_role.role : '');
+		fd.append('appointment[comments_attributes][0][body]', params.body);
+		fd.append('appointment[comments_attributes][0][tenant_id]', tenants.length > 0 ? tenants[0].id : '');
+		fd.append('appointment[comments_attributes][0][trady_id]', signed_in_trady ? signed_in_trady.id : '');
+
+		$.ajax({
+			type: 'POST',
+			url: '/appointments',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: fd,
+			success: function (res) {
+				var title = "";
+				var content = "";
+				if (!!isDecline) {
+					title = notifyAppointment.decline.title;
+					content = notifyAppointment.decline.content;
+					self.declineAppointment(appointmentUpdate);
+				} else if (!!isCancel) {
+					title = notifyAppointment.cancel.title;
+					content = notifyAppointment.cancel.content;
+					self.cancelAppointment(appointmentUpdate);
+				} else {
+					title = notifyAppointment.normal.title;
+					content = notifyAppointment.normal.content;
+				}
+
+				if (params.appointment_type == 'Work Order Appointment') {
+					appointments.unshift(res.appointment_and_comments);
+					comments.push(res.appointment_and_comments.comments[0]);
+					self.setState({
+						comments: comments,
+						appointments: appointments
+					});
+				} else {
+					quote_appointments.unshift(res.appointment_and_comments);
+					quoteComments.push(res.appointment_and_comments.comments);
+					self.setState({
+						quoteComments: quoteComments,
+						quote_appointments: quote_appointments
+					});
+				}
+
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: title,
+						content: content
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: params.appointment_type == 'Work Order Appointment' ? "Create Appoinment" : "Create Appoinment For Quote",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	viewItem: function (key, item) {
 		switch (key) {
 			case 'viewQuote':
@@ -74528,13 +83821,20 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 
 			case 'viewConfirm':
+			case 'viewMarkJob':
+			case 'createAppointment':
+			case 'createAppointmentForQuote':
 				{
 					this.onModalWith(key);
 					break;
 				}
 
-			case 'viewMarkJob':
+			case 'viewAppointment':
 				{
+					this.setState({
+						appointment: item
+					});
+
 					this.onModalWith(key);
 					break;
 				}
@@ -74544,6 +83844,164 @@ var TradyMaintenanceRequest = React.createClass({
 					break;
 				}
 		}
+	},
+
+	acceptAppointment: function (appointment) {
+		var self = this;
+		var _props3 = this.props;
+		var authenticity_token = _props3.authenticity_token;
+		var current_role = _props3.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : '',
+			maintenance_request_id: this.state.maintenance_request.id,
+			appointment_type: appointment.appointment_type == 'Work Order Appointment' ? 'work_order_appointment' : 'quote_appointment'
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/accept_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({ notification: {
+						bgClass: "bg-success",
+						title: "Accept Appoinment",
+						content: res.note
+					} });
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Accept Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	decline: function (appointment) {
+		this.onModalWith('confirmDeclineAppointment');
+		this.setState({
+			isDecline: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	declineAppointment: function (appointment) {
+		var self = this;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var current_role = _props4.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			maintenance_request_id: this.state.maintenance_request.id,
+			current_user_role: current_role ? current_role.role : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/decline_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isDecline: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancel: function (appointment) {
+		this.onModalWith('confirmCancelAppointment');
+		this.setState({
+			isCancel: true,
+			appointmentUpdate: appointment
+		});
+	},
+
+	cancelAppointment: function (appointment) {
+		var self = this;
+		var _props5 = this.props;
+		var authenticity_token = _props5.authenticity_token;
+		var current_role = _props5.current_role;
+
+		var params = {
+			appointment_id: appointment.id,
+			current_user_role: current_role ? current_role.role : ''
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_appointment',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.updateAppointment(res.appointment);
+				self.setState({
+					isCancel: false
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Decline Appoinment",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	sendMessageAgent: function (params) {
+		var _props6 = this.props;
+		var authenticity_token = _props6.authenticity_token;
+		var maintenance_request = _props6.maintenance_request;
+		var current_role = _props6.current_role;
+
+		var self = this;
+		params.message.maintenance_request_id = maintenance_request.id;
+		params.message.role = current_role ? current_role.role : '', $.ajax({
+			type: 'POST',
+			url: '/messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				var trady_agent_conversation = !!self.state.trady_agent_conversation ? self.state.trady_agent_conversation : [];
+				trady_agent_conversation.push(res);
+				self.setState({
+					trady_agent_conversation: trady_agent_conversation
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Agent",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	renderModal: function () {
@@ -74574,7 +84032,8 @@ var TradyMaintenanceRequest = React.createClass({
 						return React.createElement(ModalViewQuote, {
 							close: this.isClose,
 							quote: this.state.quote,
-							keyLandlord: "trady",
+							keyLandlord: 'trady',
+							landlord: this.props.landlord,
 							quotes: this.state.quotes,
 							agency: this.props.agency,
 							property: this.props.property,
@@ -74596,12 +84055,91 @@ var TradyMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'confirmCancelAppointment':
+					{
+						var _ret = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Cancel Appointment',
+									btnContent: 'Create and Cancel',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret === 'object') return _ret.v;
+					}
+
+				case 'confirmDeclineAppointment':
+					{
+						var _ret2 = (function () {
+							var appointmentUpdate = _this2.state.appointmentUpdate;
+
+							var key = '';
+							switch (appointmentUpdate.appointment_type) {
+								case 'Work Order Appointment':
+									key = 'createAppointment';
+									break;
+
+								case 'Quote Appointment':
+									key = 'createAppointmentForQuote';
+									break;
+
+								default:
+									break;
+							}
+							return {
+								v: React.createElement(ModalConfirmAppointment, {
+									close: _this2.isClose,
+									title: 'Decline Appointment',
+									btnContent: 'Create and Decline',
+									openModal: function () {
+										return _this2.onModalWith(key);
+									},
+									content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+								})
+							};
+						})();
+
+						if (typeof _ret2 === 'object') return _ret2.v;
+					}
+
+				case 'sendMessageAgent':
+					{
+						return React.createElement(ModalSendMessageAgent, {
+							close: this.isClose,
+							current_user: this.props.current_user,
+							sendMessageAgent: this.sendMessageAgent,
+							trady_agent_conversation: this.state.trady_agent_conversation
+						});
+					}
+
 				case 'viewInvoice':
 					{
 						return React.createElement(ModalViewInvoice, {
 							close: this.isClose,
 							agency: this.props.agency,
 							invoice: this.state.invoice,
+							landlord: this.state.landlord,
 							invoices: this.state.invoices,
 							property: this.props.property
 						});
@@ -74633,10 +84171,72 @@ var TradyMaintenanceRequest = React.createClass({
 					{
 						return React.createElement(ModalMarkJobAsCompleted, {
 							close: this.isClose,
-							jobCompleted: this.jobCompleted,
 							signed_in_trady: this.props.signed_in_trady,
 							trady: this.props.current_user_show_quote_message,
 							maintenance_request: this.props.maintenance_request
+						});
+					}
+
+				case 'createAppointment':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							title: 'Create Appointment',
+							type: 'Work Order Appointment',
+							comments: this.state.comments,
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'createAppointmentForQuote':
+					{
+						return React.createElement(ModalAddAppointment, {
+							close: this.isClose,
+							type: 'Quote Appointment',
+							comments: this.state.quoteComments,
+							title: 'Create Appointment For Quote',
+							addAppointment: function (params) {
+								return _this2.addAppointment(params);
+							}
+						});
+					}
+
+				case 'viewAppointment':
+					{
+						var _state3 = this.state;
+						var comments = _state3.comments;
+						var quoteComments = _state3.quoteComments;
+						var appointment = _state3.appointment;
+
+						var commentShow = [];
+						switch (appointment.appointment_type) {
+							case 'Work Order Appointment':
+								commentShow = [].concat(_toConsumableArray(comments));
+								break;
+
+							case 'Quote Appointment':
+								commentShow = [].concat(_toConsumableArray(quoteComments));
+								break;
+
+							default:
+								break;
+						}
+						return React.createElement(ModalAppointment, {
+							close: this.isClose,
+							comments: commentShow,
+							appointment: this.state.appointment,
+							current_role: this.props.current_role,
+							cancelAppointment: function (value) {
+								return _this2.cancel(value);
+							},
+							declineAppointment: function (value) {
+								return _this2.decline(value);
+							},
+							acceptAppointment: function (value) {
+								return _this2.acceptAppointment(value);
+							}
 						});
 					}
 
@@ -74646,25 +84246,110 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
+	autoScroll: function (key) {
+		var offset = $('#' + key).offset();
+		$('body').animate({
+			scrollTop: offset.top
+		}, 500);
+	},
+
+	openQuoteMesssage: function (quote_id) {
+		var quotes = this.state.quotes;
+
+		var quote = '';
+		quotes.map(function (item, key) {
+			if (item.id == quote_id) {
+				quote = item;
+				return;
+			}
+		});
+
+		if (quote) {
+			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
+	openAppointment: function (appointment_id) {
+		var appointment = '';
+		var _state4 = this.state;
+		var appointments = _state4.appointments;
+		var quote_appointments = _state4.quote_appointments;
+
+		var data = [].concat(_toConsumableArray(appointments), _toConsumableArray(quote_appointments));
+		data.map(function (item, key) {
+			if (item.id == appointment_id) {
+				appointment = item;
+				return;
+			}
+		});
+
+		if (appointment) {
+			this.viewItem('viewAppointment', appointment);
+		}
+	},
+
+	componentDidMount: function () {
+		var href = window.location.href;
+		var self = this;
+		window.onload = function () {
+			var json = self.getUrlVars(href);
+			if (href.indexOf('email_quote_id') >= 0) {
+				self.autoScroll('quotes');
+			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
+				self.autoScroll('invoices');
+			} else if (href.indexOf('appointment_id') >= 0) {
+				self.openAppointment(json.appointment_id);
+			} else {
+				switch (json.message) {
+					case 'open_agent_message':
+						self.onModalWith('sendMessageAgent');
+						break;
+
+					case 'open_quote_message':
+						self.openQuoteMesssage(json.quote_message_id);
+						break;
+
+					default:
+						break;
+				}
+			}
+		};
+	},
+
+	getUrlVars: function (url) {
+		var hash;
+		var json = {};
+		var hashes = url.slice(url.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			json[hash[0]] = hash[1];
+		}
+		return json;
+	},
+
 	render: function () {
 		var _this3 = this;
 
+		var _state5 = this.state;
+		var appointments = _state5.appointments;
+		var quote_appointments = _state5.quote_appointments;
+
 		return React.createElement(
-			"div",
-			{ className: "summary-container-index", id: "summary-container-index" },
+			'div',
+			{ className: 'summary-container-index', id: 'summary-container-index' },
 			React.createElement(
-				"div",
-				{ className: "main-summary" },
+				'div',
+				{ className: 'main-summary' },
 				React.createElement(
-					"div",
-					{ className: "section" },
+					'div',
+					{ className: 'section' },
 					React.createElement(ItemMaintenanceRequest, {
 						gallery: this.props.gallery,
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
 					this.props.quotes.length > 0 && React.createElement(Quotes, {
-						keyLandlord: "trady",
+						keyLandlord: 'trady',
 						quotes: this.state.quotes,
 						landlord: this.state.landlord,
 						onModalWith: this.onModalWith,
@@ -74688,17 +84373,21 @@ var TradyMaintenanceRequest = React.createClass({
 					})
 				),
 				React.createElement(
-					"div",
-					{ className: "sidebar" },
+					'div',
+					{ className: 'sidebar' },
 					React.createElement(TradyContact, {
+						agent: this.props.agent,
+						tenants: this.props.tenants,
 						landlord: this.state.landlord,
 						current_user: this.props.current_user,
+						assigned_trady: this.props.assigned_trady,
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
 						},
 						maintenance_request: this.state.maintenance_request
 					}),
 					React.createElement(TradyAction, {
+						trady: this.props.trady,
 						landlord: this.state.landlord,
 						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
@@ -74708,10 +84397,81 @@ var TradyMaintenanceRequest = React.createClass({
 						},
 						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.state.maintenance_request
+					}),
+					appointments.length > 0 && React.createElement(AppointmentRequest, {
+						appointments: appointments,
+						title: 'Work Order Appointments',
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
+						current_role: this.props.trady.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
+					}),
+					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+						title: 'Appointments For Quotes',
+						appointments: quote_appointments,
+						cancelAppointment: function (value) {
+							return _this3.cancel(value);
+						},
+						current_role: this.props.trady.user.current_role,
+						viewItem: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						acceptAppointment: function (value) {
+							return _this3.acceptAppointment(value);
+						},
+						declineAppointment: function (value) {
+							return _this3.decline(value);
+						}
 					})
-				)
+				),
+				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					appointments: appointments,
+					title: 'Work Order Appointments',
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
+					current_role: this.props.trady.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				}),
+				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+					title: 'Appointments For Quotes',
+					appointments: quote_appointments,
+					cancelAppointment: function (value) {
+						return _this3.cancel(value);
+					},
+					current_role: this.props.trady.user.current_role,
+					viewItem: function (key, item) {
+						return _this3.viewItem(key, item);
+					},
+					acceptAppointment: function (value) {
+						return _this3.acceptAppointment(value);
+					},
+					declineAppointment: function (value) {
+						return _this3.decline(value);
+					}
+				})
 			),
 			React.createElement(TradySideBarMobile, {
+				trady: this.props.trady,
+				agent: this.props.agent,
+				tenants: this.props.tenants,
 				landlord: this.state.landlord,
 				invoices: this.props.invoices,
 				current_user: this.props.current_user,
@@ -75356,6 +85116,11 @@ var TradyMaintenanceRequest = React.createClass({
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
+
+
+
+
 
 
 

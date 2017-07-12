@@ -168,7 +168,7 @@ var AddTradycompany = React.createClass({
   	if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
   		flag = true;
   		this.setState({
-  			errorTradingName: true
+  			errorABN: true
   		});
   	}
 
@@ -182,7 +182,7 @@ var AddTradycompany = React.createClass({
   	if(!this.mailing_address.value) {
   		flag = true;
   		this.setState({
-  			errorTradingName: true
+  			errorMailingAdress: true
   		});
   	}
 
@@ -241,11 +241,11 @@ var AddTradycompany = React.createClass({
   				mailing_address: this.mailing_address.value,
   				gst_registration: this.state.gst_registration,
   				bank_account_number: this.bank_account_number.value,
-          trady_company_id: this.props.id ? this.props.id : null,
           maintenance_request_id: this.props.maintenance_request_id,
           quote_id: this.props.quote_id ? this.props.quote_id : null,
           ledger_id: this.props.ledger_id ? this.props.ledger_id : null,
           pdf_file_id: this.props.pdf_file_id ? this.props.pdf_file_id : null,
+          trady_company_id: this.props.trady_company_id ? this.props.trady_company_id : null,
   			}
   		}
 

@@ -44,7 +44,7 @@ var ModalSendMessageLandlord = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Message Landlord</h4>
+								<h4 className="modal-title text-center">{this.props.title ? this.props.title : "Message Landlord"}</h4>
 							</div>
 							<div className="modal-body">
 								{<ContentMessage current_user={current_user} messages={landlords_conversation} />}

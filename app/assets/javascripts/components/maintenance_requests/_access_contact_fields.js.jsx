@@ -103,6 +103,9 @@ var AccessContactField = React.createClass({
             type="email" 
             required="required"
             placeholder="E-mail"
+            autoCapitalize="off"
+            autoCorrect="off"
+            autoComplete="off"
 						id={this.generateAtt("id", x, "email")} 
             name={this.generateAtt("name", x, "email")}
 						onBlur={(e) => {
@@ -147,7 +150,9 @@ var AccessContactField = React.createClass({
                 name={this.generateAtt("name", x, "_destroy")}
                   id={this.generateAtt("id", x, "_destroy")} />
           </fieldset>
-          <button type="button" className="button-remove button-primary red" onClick={(position) => {this.props.removeField(x)}}> Remove </button>
+          <div className="text-center">
+            <button type="button" className="button-remove button-primary red" onClick={(position) => {this.props.removeField(x)}}> Remove </button>
+          </div>
       	</div>
       );
     }

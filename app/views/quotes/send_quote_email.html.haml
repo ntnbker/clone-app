@@ -11,4 +11,9 @@
     %p
       To Head Home click the button below.
     %button.button-primary.green
-      =link_to "Home", maintenance_requests_path
+      =link_to "Home", trady_maintenance_requests_path
+
+    %p 
+      If you would like to create a different variation of you quote please "Create Another Quote" below
+    %button.button-primary.green
+      =link_to "Create Another Quote", quote_options_path(trady_id:@trady.id, maintenance_request_id:@maintenance_request)

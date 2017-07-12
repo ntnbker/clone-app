@@ -144,7 +144,8 @@ body::-webkit-scrollbar-thumb {
         cursor: pointer;
         background: 0 0;
         border: 0;
-        margin-top: -2px;
+        margin-top: 2px;
+        margin-right: 5px;
         height: auto;
         span {
           border: 1px solid $color-white;
@@ -197,6 +198,13 @@ body::-webkit-scrollbar-thumb {
         margin-right: 0px;
         padding: 0 10px;
       }
+      .note-landlord {
+        color: #849aaa;
+        text-transform: none;
+        text-align: center;
+        margin-bottom: 15px;
+        display: block;
+      }
       label {
         font-weight: 400;
         float: left;
@@ -222,7 +230,7 @@ body::-webkit-scrollbar-thumb {
       .message {
         list-style: none;
         max-height: 300px;
-        overflow-y: scroll;
+        overflow-y: auto;
         overflow-x: inherit;
         margin-bottom: 0px;
       }
@@ -232,8 +240,8 @@ body::-webkit-scrollbar-thumb {
         margin-top: 20px;
         text-align: left;
         &:after {
-          bottom: 100%;
-          left: 6%;
+          bottom: 98%;
+          left: 12px;
           border: solid transparent;
           content: " ";
           height: 0;
@@ -253,19 +261,31 @@ body::-webkit-scrollbar-thumb {
           padding: 5px 20px;
           display: inline-block;
           margin-right: 5px;
-          margin-left: 10px;
         }
       }
       .current-message {
         text-align: right;
         &:after {
           border-bottom-color: $color-green;
-          left: 96%;
+          right: 12px;
+          left: inherit;
         }
         span {
           background-color: $color-green;
           color: $color-white;
         }
+      }
+    }
+    .edit-maintenance-request {
+      label {
+        width: 100%;
+        text-align: left;
+      }
+      input {
+        width: 100%;
+      }
+      textarea {
+        width: 100%;
       }
     }
     .modal-footer {
@@ -276,7 +296,7 @@ body::-webkit-scrollbar-thumb {
       button {
         border: none;
         color: $color-white;
-        text-transform: uppercase;
+        text-transform: capitalize;
       }
       .textarea-message {
         width: 100%;
@@ -308,11 +328,11 @@ body::-webkit-scrollbar-thumb {
     background-color: $color-white;
     margin-right: 25px;
     max-width: none;
-    width: calc(100% - 345px);
+    width: calc(100% - 365px);
     padding: 40px 30px 50px;
   }
   .sidebar {
-    width: 245px;
+    width: 270px;
     float: right;
   }
   .post {
@@ -333,7 +353,6 @@ body::-webkit-scrollbar-thumb {
           color: #7dc691;
           border-color: #7dc691;
           display: inline-block;
-          margin-left: 10px;
           font-size: 12px;
           font-weight: 500;
           width: 65px;
@@ -450,28 +469,25 @@ body::-webkit-scrollbar-thumb {
         }
       }
       .description {
-        margin-top: 30px;
         color: $color-grey-dark;
         font-size: 16px;
         font-weight: 300;
       }
-      .date-time {
+      .vailability {
         margin-top: 20px;
-        button {
-          background-color: $color-grey;
-          float: right;
-          color: $color-grey-dark;
-          height: 40px;
+        margin-bottom: 20px;
+        background-color: $color-grey;
+        border-radius: 5px;
+        color: $color-grey-dark;
+        padding: 15px 20px;
+        font-size: 14px;
+        .header {
+          margin-bottom: 10px;
+        }
+        .description {
           font-size: 12px;
-          padding: 0;
-          width: 277px;
-          border: none;
-          .vailability {
-            font-weight: 500;
-          }
-          .time {
-            font-weight: 700;
-          }
+          margin-top: 0px;
+          margin-bottom: 15px;
         }
       }
     }
@@ -645,6 +661,7 @@ body::-webkit-scrollbar-thumb {
     background-color: $color-grey;
     display: block;
   }
+
   .item, .actions-full {
     width: 100%;
     margin-bottom: 15px;
@@ -678,18 +695,66 @@ body::-webkit-scrollbar-thumb {
         background-color: $color-grey-dark;
       }
     }
+    .activity-content {
+      max-height: 280px;
+      overflow-y: auto;
+      &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 15px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      &::-webkit-scrollbar {
+        width: 5px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: rgba(0, 0, 0, 0.5);
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+    }
     .content {
       background-color: $color-white;
+      overflow-y: auto;
+      &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 15px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      &::-webkit-scrollbar {
+        width: 5px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: rgba(0, 0, 0, 0.5);
+        margin-right: 0px;
+        padding: 0 10px;
+      }
       ul {
         list-style: none;
         margin-bottom: 0;
       }
       li {
-        margin-left: 34px;
+        margin-left: 20px;
         height: 50px;
         margin-bottom: 0px;
         cursor: pointer;
         a {
+          display: inline-block;
+          width: 100%;
+          height: 100%;
           font-size: 13px;
           font-weight: 500;
           text-decoration: none;
@@ -748,24 +813,32 @@ body::-webkit-scrollbar-thumb {
         font-weight: 500;
       }
       .user {
-        margin-left: 20px;
+        margin-left: 10px;
         padding: 0;
-        text-align: left;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 5px;
         .img-user {
-          float: left;
           width: 36px;
           height: 36px;
           background-position: center;
           background-size: cover;
         }
         .info {
-          float: left;
-          margin-left: 10px;
+          margin-left: 5px;
+          flex: 1;
+          text-align: left;
           span {
             display: block;
             font-size: 12px;
             font-weight: 300;
             color: $color-gray-dark;
+            line-height: 1.2;
+            &:first-child {
+              margin-bottom: 3px;
+            }
             strong {
               font-weight: 500;
             }
@@ -780,28 +853,30 @@ body::-webkit-scrollbar-thumb {
   .sidebar-mobile {
     display: none;
     position: fixed;
-    bottom: 35px;
+    bottom: 0px;
     z-index: 100;
     overflow: hidden;
-    text-align: center;
-    left: calc((100% - 470px) / 2);
+    width: 100%;
     button {
       float: left;
-      height: 70px;
-      width: 225px;
+      height: 60px;
+      width: 180px;
       color: $color-white;
       font-weight: 400;
       font-size: 20px;
       padding: 0;
       border: none;
       &.contact {
-        background-color: $color-green;
+        background-color: #ff5a5f;
         box-shadow: 0.2px 0.2px 20px $color-grey-1;
       }
       &.actions {
         margin-left: 20px;
-        background-color: $color-grey-dark;
+        background-color: #ff5a5f;
         box-shadow: 0.2px 0.2px 20px $color-grey-1;
+      }
+      &.active {
+        background-color: $color-grey-dark;
       }
     }
   }
@@ -810,6 +885,30 @@ body::-webkit-scrollbar-thumb {
     overflow: hidden;
     width: 100%;
     padding-top: 20px;
+    .activity-content {
+      max-height: 280px;
+      overflow-y: auto !important;
+      &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 15px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      &::-webkit-scrollbar {
+        width: 5px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: rgba(0, 0, 0, 0.5);
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+    }
     .content {
       overflow: hidden;
       li {
@@ -824,25 +923,39 @@ body::-webkit-scrollbar-thumb {
       }
     }
   }
+  .action-mobile {
+    display: flex;
+    flex-direction: row;
+  }
   .actions-full {
     display: block;
-    background-color: $color-grey-dark;
-    width: 100%;
-    height: 100%;
+    background-color: $color-white;
+    border-color: $color-grey-dark;
+    border-style: solid;
+    border-width: 0;
+    width: 370px;
     position: fixed;
     bottom: 0;
     z-index: 200;
     margin: 0px;
+    transition: all 0.5s ease 0s;
+    border-radius: 0;
+    bottom: 55px;
     .item {
-      border-radius: none;
+      border-radius: 0;
       height: 100%;
       .content {
-        height: 100%;
+        height: 85%;
       }
     }
   }
-  .actions-full {
-    background-color: $color-green;
+  #actions-full {
+    height: 0;
+    transition: all 0.5s ease 0s;
+  }
+  #contacts-full {
+    height: 0;
+    transition: all 0.5s ease 0s;
   }
   form {
     margin-bottom: 0px;
@@ -866,7 +979,6 @@ body::-webkit-scrollbar-thumb {
   .show-quote {
     text-transform: initial;
     .info-quote {
-      border-bottom: 1px solid $color-gray;
       clear: both;
       overflow: hidden;
     }
@@ -902,9 +1014,16 @@ body::-webkit-scrollbar-thumb {
       margin-top: 15px;
       .table {
         width: 100%;
+        font-size: 13px;
+        overflow: auto;
+        th {
+          color: #b3b3b3;
+          font-size: 13px;
+          text-transform: uppercase;
+        }
         tr td {
           padding-left: 0;
-          padding: 3px 3px;
+          padding: 10px 3px;
         }
       }
     }
@@ -968,11 +1087,11 @@ body::-webkit-scrollbar-thumb {
         padding: 0px;
       }
       .btn-prev {
-        top: 40%;
+        top: 34%;
         left: 5px;
       }
       .btn-next {
-        top: 40%;
+        top: 34%;
         right: 5px;
       }
     }
@@ -990,6 +1109,59 @@ body::-webkit-scrollbar-thumb {
   }
   .invoices .content p span{
     margin-left: 5px;
+  }
+  .dropdown-assign {
+    position: absolute;
+    z-index: 100;
+    border: 1px solid #879FBB;
+    background-color: #fff;
+    margin-top: 45px;
+    width: 220px;
+    border-radius: 5px;
+    &:after {
+      bottom: 100%;
+      left: 6%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-bottom-color: #879FBB;
+      border-width: 10px;
+    }
+    ul {
+      list-style: none;
+      margin-bottom: 0px;
+      li {
+        width: 100%;
+        a {
+          width: 100%;
+          display: inline-block;
+          text-align: center;
+          margin-top: 5px;
+          cursor: pointer;
+          color: #000;
+          text-transform: capitalize;
+          &:hover, &:active {
+            color: #7DC691;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    p {
+      width: 100%;
+      margin-bottom: 0px;
+      height: 35px;
+      line-height: 35px;
+      font-size: 16px;
+      text-align: center;
+      border-bottom: 1px solid #879FBB;
+      &.agent {
+        border-top: 1px solid #879FBB;
+      }
+    }
   }
   @media (min-width: 320px) and (max-width: 480px) {
     .main-summary {
@@ -1011,7 +1183,7 @@ body::-webkit-scrollbar-thumb {
         }
       }
       .info .title{
-      	font-size: 16px;
+        font-size: 16px;
       }
       .info .actions {
         width: 345px;
@@ -1034,12 +1206,20 @@ body::-webkit-scrollbar-thumb {
     .sidebar {
       display: none;
     }
+    .actions-full{
+      bottom: 55px;
+      width: 320px;
+      left: calc((100% - 320px) / 2);
+    }
     .sidebar-mobile {
       display: block;
-      left: calc((100% - 220px) / 2);
+      .fixed {
+        display: flex;
+        justify-content: center;
+      }
       button {
         height: 50px;
-        width: 100px;
+        width: 150px;
         color: $color-white;
         font-weight: 400;
         font-size: 16px;
@@ -1137,13 +1317,18 @@ body::-webkit-scrollbar-thumb {
     .sidebar {
       display: none;
     }
+    .actions-full {
+      width: 355px;
+      bottom: 55px;
+      left: calc((100% - 355px) / 2);
+    }
     .sidebar-mobile {
-      display: block;
-      bottom: 20px;
-      left: calc((100% - 260px) / 2);
+      display: flex;
+      bottom: 0px;
+      justify-content: center;
       button {
         height: 50px;
-        width: 120px;
+        width: 170px;
         padding: 0 18px;
         border-radius: 5px;
         font-size: 16px;
@@ -1224,13 +1409,20 @@ body::-webkit-scrollbar-thumb {
     .sidebar {
       display: none;
     }
+    .actions-full {
+      width: 320px;
+      left: calc((100% - 320px) / 2);
+    }
     .sidebar-mobile {
       display: block;
-      left: calc((100% - 400px) / 2);
+      .fixed {
+        display: flex;
+        justify-content: center;
+      }
       button {
         font-size: 20px;
-        width: 180px;
-        height: 60px;
+        width: 150px;
+        height: 50px;
       }
     }
     .activity-mobile {
@@ -1298,8 +1490,17 @@ body::-webkit-scrollbar-thumb {
     .sidebar {
       display: none;
     }
+    .actions-full {
+      width: 375px;
+      bottom: 100px;
+      left: calc((100% - 375px) / 2);
+    }
     .sidebar-mobile {
       display: block;
+      .fixed {
+        display: flex;
+        justify-content: center;
+      }
       button {
         font-size: 20px;
       }
@@ -1318,7 +1519,7 @@ body::-webkit-scrollbar-thumb {
     .section {
       float: left;
       margin-right: 10px;
-      width: calc(100% - 290px);
+      width: calc(100% - 310px);
       padding: 40px 15px 50px;
     }
     .post {
@@ -1364,7 +1565,7 @@ body::-webkit-scrollbar-thumb {
     .section {
       float: left;
       margin-right: 20px;
-      width: calc(100% - 315px);
+      width: calc(100% - 340px);
       padding: 40px 25px 50px;
     }
     .post {
@@ -1409,12 +1610,12 @@ body::-webkit-scrollbar-thumb {
   }
   @media (min-width: 1366px) {
     .main-summary {
-      margin: auto 50px;
+      margin: auto 30px;
     }
     .section {
       float: left;
       margin-right: 25px;
-      width: calc(100% - 345px);
+      width: calc(100% - 365px);
       padding: 40px 30px 50px;
     }
     .post {

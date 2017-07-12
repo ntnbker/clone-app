@@ -1,5 +1,7 @@
 class QuotesController < ApplicationController
   before_action(only: [:show_quote]) { email_auto_login(params[:user_id]) }
+  before_action :require_login
+  before_action(only:[:new,:create,:edit,:update,:show,:show_quote]) {allow("Trady")}
   def new
     
     @quote = Quote.new
@@ -87,6 +89,16 @@ class QuotesController < ApplicationController
     @trady_id = params[:trady_id]
     @quote_type = params[:quote_type]
     @system_plan = params[:system_plan]
+
+    if @maintenance_request.agency_admin == nil
+      @agency = @maintenance_request.agent.agency
+    else
+      @agency = @maintenance_request.agency_admin.agency
+    end
+
+    if  @maintenance_request.property.landlord != nil
+      @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
+    end 
   end
 
   def show_quote
@@ -105,18 +117,25 @@ class QuotesController < ApplicationController
     elsif maintenance_request.agency_admin == nil  
       name = "#{maintenance_request.agent.name}" + " #{maintenance_request.agent.last_name}"
     end
-
+    
     if params[:status] == "Approved" 
       quotes.each do |quote|
         if quote.id == params[:quote_id].to_i && params[:status] == "Approved"
           
           trady = quote.trady 
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
+          
+          NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
           maintenance_request.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
 
           Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been approved", name: name)
+          if maintenance_request.property.landlord
+            NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
+          else
+            #do nothing 
+          end 
 
         else
           quote.update_attribute(:status, "Declined")
@@ -125,6 +144,7 @@ class QuotesController < ApplicationController
           #TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
       end
+      TenantQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
     elsif params[:status] == "Declined"
       quote = Quote.find_by(id: params[:quote_id])
       trady = quote.trady
@@ -145,7 +165,7 @@ class QuotesController < ApplicationController
       quote = Quote.find_by(id: params[:quote_id])
       quote.update_attribute(:status,"Cancelled")
       TradyJobCancelledEmailWorker.perform_async(quote.trady.id, maintenance_request.id)
-
+      maintenance_request.update_attribute(:trady_id, nil)
       Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been cancelled", name:name)
 
     end   
@@ -164,6 +184,7 @@ class QuotesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
+    @trady = @quote.trady
     trady = @quote.trady
 
     quote_request = QuoteRequest.where(:trady_id=>@quote.trady.id, :maintenance_request_id=>@maintenance_request.id).first
@@ -180,16 +201,16 @@ class QuotesController < ApplicationController
 
       Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been Sent", name:trady.name)
 
-      if @landlord == nil 
+      # if @landlord == nil 
         AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
         @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Action Required")
-      else
+      # else
 
-        #this stuff has to go into the new end point for when they forward the quote.
-        AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
-        LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
-        @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
-      end 
+      #   #this stuff has to go into the new end point for when they forward the quote.
+      #   AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
+      #   # LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
+      #   @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Awaiting Action")
+      # end 
     elsif @quote.delivery_status ==true
       redirect_to trady_maintenance_requests_path
     end 
@@ -206,6 +227,8 @@ class QuotesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     @landlord = @maintenance_request.property.landlord
     @quote = Quote.find_by(id:params[:quote_id])
+    @quote.update_attribute(:forwarded_to_landlord, true)
+
     if @maintenance_request.agent == nil  
       name = "#{@maintenance_request.agency_admin.first_name}" + " #{@maintenance_request.agency_admin.last_name}"
     elsif @maintenance_request.agency_admin == nil  
@@ -251,10 +274,11 @@ class QuotesController < ApplicationController
           trady = quote.trady 
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
-          #EMAIL AGENT QUOTE APPROVED
+          
           maintenance_request.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
           quote.update_attribute(:status, params[:status])
-
+          NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
+          NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been approved", name:landlord.name)
         else
           quote.update_attribute(:status, "Declined")

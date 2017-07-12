@@ -33,12 +33,13 @@ class MaintenanceRequest < ApplicationRecord
   has_many :trady_statuses
   has_many :quote_requests
   has_many :logs
-
-  validates_presence_of :name,:email, :mobile, :maintenance_heading, :maintenance_description
+  has_many :images, inverse_of: :maintenance_request
+  validates_presence_of :name,:email, :mobile, :maintenance_description
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
   validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
 
   accepts_nested_attributes_for :maintenance_request_image, allow_destroy: true
+  accepts_nested_attributes_for :images, allow_destroy: true
   accepts_nested_attributes_for :access_contacts, allow_destroy: true
   accepts_nested_attributes_for :availabilities, allow_destroy: true
   
@@ -58,7 +59,7 @@ class MaintenanceRequest < ApplicationRecord
 
 
   after_create :create_action_status
-
+  before_save :create_workorder_number
 
   def mr_tenants_array
 
@@ -72,15 +73,19 @@ class MaintenanceRequest < ApplicationRecord
     action_status = ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:self.id)
   end
 
+  def create_workorder_number
+    self.work_order_number = "W" + SecureRandom.hex(5)  
+  end
+
 
 
   def self.find_maintenance_requests(current_user, params)
-    current_user_role = current_user.role.roleable_type
+    # current_user_role = current_user.role.roleable_type
     
-    if current_user_role == "AgencyAdmin"
-      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
-    elsif current_user_role == "Agent"
-      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    if current_user.logged_in_as("AgencyAdmin")
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.get_role("AgencyAdmin").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    elsif current_user.logged_in_as("Agent")
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.get_role("Agent").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
     # elsif current_user_role == "Trady"
     #   maintenance_request_array = MaintenanceRequest.where({ trady_id: current_user.role.roleable_id})
     end 
@@ -91,12 +96,13 @@ class MaintenanceRequest < ApplicationRecord
 
 
   def self.find_maintenance_requests_total(current_user, params)
-    current_user_role = current_user.role.roleable_type
+    # current_user_role = current_user.role.roleable_type
     
-    if current_user_role == "AgencyAdmin"
-      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
-    elsif current_user_role == "Agent"
-      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.role.roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+    if current_user.logged_in_as("AgencyAdmin")
+      maintenance_request_array = MaintenanceRequest.where({ agency_admin_id: current_user.get_role("AgencyAdmin").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+      
+    elsif current_user.logged_in_as("Agent")
+      maintenance_request_array = MaintenanceRequest.where({ agent_id: current_user.get_role("Agent").roleable_id}).joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
     # elsif current_user == "Trady"
     #   maintenance_request_array =  MaintenanceRequest.where(trady_id: current_user.role.roleable_id)
     end 
@@ -119,6 +125,15 @@ class MaintenanceRequest < ApplicationRecord
 
   def trady_delivered_uploaded_invoices (maintenance_request_id, trady_id)
     self.uploaded_invoices.where(trady_id:trady_id,:delivery_status=> true, :maintenance_request_id => maintenance_request_id).order("created_at DESC")
+  end
+
+
+  def get_image_urls
+    image_array = []
+    self.images.each do |image|
+      image_array.push(image.image_url)
+    end 
+    return image_array
   end
 
 

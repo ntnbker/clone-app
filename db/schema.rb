@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170529054811) do
+ActiveRecord::Schema.define(version: 20170711073428) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,8 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "landlord_id"
+    t.string   "current_user_role"
+    t.string   "appointment_type"
   end
 
   create_table "availabilities", force: :cascade do |t|
@@ -160,6 +162,13 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.integer  "quote_id"
   end
 
+  create_table "current_roles", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "gods", force: :cascade do |t|
     t.string   "full_name"
     t.datetime "created_at", null: false
@@ -169,6 +178,13 @@ ActiveRecord::Schema.define(version: 20170529054811) do
 
   create_table "guests", force: :cascade do |t|
     t.integer "user_id"
+  end
+
+  create_table "images", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.text     "image_data"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "invoice_items", force: :cascade do |t|
@@ -203,6 +219,7 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.date     "due_date"
     t.boolean  "delivery_status"
     t.boolean  "print_status"
+    t.string   "invoice_number"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -242,6 +259,7 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.integer  "maintenance_request_id"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.text     "image_data"
   end
 
   create_table "maintenance_requests", force: :cascade do |t|
@@ -267,6 +285,8 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.integer  "agency_id"
     t.integer  "agency_admin_id"
     t.integer  "trady_id"
+    t.text     "availability_and_access"
+    t.string   "work_order_number"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -275,6 +295,7 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.datetime "updated_at",      null: false
     t.text     "body"
     t.integer  "conversation_id"
+    t.string   "role"
   end
 
   create_table "properties", force: :cascade do |t|
@@ -318,6 +339,8 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.boolean  "delivery_status"
     t.boolean  "tax"
     t.float    "gst_amount"
+    t.boolean  "forwarded_to_landlord"
+    t.string   "quote_number"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -336,6 +359,13 @@ ActiveRecord::Schema.define(version: 20170529054811) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "god_id"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string   "skill"
+    t.integer  "trady_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "super_ledgers", force: :cascade do |t|

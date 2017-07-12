@@ -12,7 +12,7 @@ class Ability
       @user = user || User.new # guest user (not logged in)
 
       
-      if @user.god?
+      if @user.has_role("God") && @user.logged_in_as("God")
         can :manage, :all
         can :read_show, Agent
         
@@ -23,7 +23,7 @@ class Ability
         can :read_show, MaintenanceRequest
       end
 
-      if @user.agent?
+      if @user.has_role("Agent") && @user.logged_in_as("Agent")
         can :read_show, Agent
         
         can :read, Service
@@ -34,23 +34,28 @@ class Ability
         can :ordered_maintenance_requests, :maintenance_request
         can :index, :agent_maintenance_request
         can :show, :agent_maintenance_request
+        can :update, :maintenance_request
       end
 
-      if @user.agency_admin?
-        can :read_show, Agent
+      if @user.has_role("AgencyAdmin") && @user.logged_in_as("AgencyAdmin")
+          can :show, :agency_admin_maintenance_requests
+          can :index, :agency_admin_maintenance_requests
+        # can :read_show, Agent
         
-        can :read, Service
+        # can :read, Service
         
-        can :create, MaintenanceRequest
-        can :new, MaintenanceRequest
-        can :read_show, MaintenanceRequest
+        # can :create, MaintenanceRequest
+        # can :new, MaintenanceRequest
+        # can :read_show, MaintenanceRequest
 
-        can :show, :maintenance_request
-        can :index, :maintenance_request
-        can :create, :maintenance_request
+        # can :show, :maintenance_request
+        # can :index, :maintenance_request
+        # can :create, :maintenance_request
+        # can :update, :maintenance_request
 
-        can :create, :agency_admin
-        can :new, :agency_admin
+        # can :create, :agency_admin
+        # can :new, :agency_admin
+        
         # can :new, AgencyAdmin
         # can :read_show, AgencyAdmin
 
@@ -64,11 +69,11 @@ class Ability
         can :ordered_maintenance_requests, :maintenance_request
       end
 
-      if @user.landlord?
+      if @user.has_role("Landlord") && @user.logged_in_as("Landlord")
         can :show, :maintenance_request
       end 
 
-      if @user.tenant?
+      if @user.has_role("Tenant") && @user.logged_in_as("Tenant")
         
         can :read_index, Tenant
         can :read_show, Tenant
@@ -81,12 +86,10 @@ class Ability
         can :edit, :appointment
       end 
 
-      if @user.trady?
-        
-        
-        can :index, :maintenance_request
-        can :show, :maintenance_request
-        can :ordered_maintenance_requests, :maintenance_request
+      if @user.has_role("Trady") && @user.logged_in_as("Trady")
+        can :index, :trady_maintenance_request
+        can :show, :trady_maintenance_request
+        # can :ordered_maintenance_requests, :maintenance_request
       end 
 
       if @user

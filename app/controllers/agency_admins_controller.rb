@@ -1,8 +1,9 @@
 class AgencyAdminsController < ApplicationController
   
   
-  before_action :require_login, only: [:show,:maintenance_request_index]
-  authorize_resource :class => false
+  before_action :require_login, only: [:new,:create]
+  before_action(only:[:new,:create]) {allow("AgencyAdmin")}
+  
   
   def new
     @agency_admin = AgencyAdmin.new
@@ -12,32 +13,53 @@ class AgencyAdminsController < ApplicationController
   def create
     @agency_admin = AgencyAdmin.new(agency_admin_params)
 
-    
-    if @agency_admin.valid?
-      
-      @user = User.create(email:params[:agency_admin][:email],password:SecureRandom.hex(5))
-      
-      @agency_admin.save
-      @agency_admin.update_attribute(:user_id, @user.id)
-      role = Role.create(user_id:@user.id)
+    existing_user = User.find_by(email:params[:agency_admin][:email])
+    if existing_user
+      existing_role = existing_user.get_role("AgencyAdmin").present?
+    end 
+    if existing_user && existing_role == false
+      role = Role.new(user_id:existing_user.id)
+      @agency_admin = AgencyAdmin.create(agency_admin_params)
       @agency_admin.roles << role
-
-      flash[:succes] = "You have added a new Agency Administrator to your team"
-      UserSetPasswordEmailWorker.perform_async(@user.id)
+      role.save
+      flash[:success] = "Thank you for adding another Agency Admin."
+      new_agency_admin_path
+    elsif existing_user && existing_role == true
+      @agency_admin = AgencyAdmin.new(agency_admin_params) 
+      flash[:danger] = "Sorry this person is already an Agency Administrator"
       redirect_to new_agency_admin_path
+    else 
+      if @agency_admin.valid?
+      
+        @user = User.create(email:params[:agency_admin][:email],password:SecureRandom.hex(5))
+        
+        @agency_admin.save
+        @agency_admin.update_attribute(:user_id, @user.id)
+        role = Role.create(user_id:@user.id)
+        @agency_admin.roles << role
+
+        flash[:succes] = "You have added a new Agency Administrator to your team"
+        UserSetPasswordEmailWorker.perform_async(@user.id)
+        redirect_to new_agency_admin_path
       
       
-    else
-      flash[:danger] = "Something went wrong"
-      render :new
-    end
+      else
+        @agency_admin = AgencyAdmin.new(agency_admin_params)
+        flash[:danger] = "Something went wrong"
+        render :new
+      end 
+    end 
+
+
+
+
   end
   
 
 
-  def show
-    @agency_admin = AgencyAdmin.find_by(id:current_user.id)
-  end
+  # def show
+  #   @agency_admin = AgencyAdmin.find_by(id:current_user.id)
+  # end
 
   # def maintenance_request_index
   #   @maintenance_requests = current_user.agency_admin.maintenance_requests

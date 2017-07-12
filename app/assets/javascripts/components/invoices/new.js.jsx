@@ -79,24 +79,44 @@ var FieldList = React.createClass({
     },
 
     removeField: function(x) {
-        var tmpFields = this.state.Fields;
-        tmpFields.splice(x-1, 1);
+        const self = this;
+        var {Fields} = this.state;
+        Fields.splice(x-1, 1);
+        var tmpFields = [];
+        var SampleField = this.props.SampleField;
+        var params = this.props.params;
+        Fields.map((item, index) => {
+            tmpFields.push(
+                <SampleField 
+                    x={index + 1} 
+                    params={params} 
+                    removeField={(position) => self.removeField(position)} 
+                    validDate={(flag) => self.props.validDate(flag)}
+                />
+            );
+        });
         this.setState({
             Fields: tmpFields,
-            x: tmpFields.length,
+            x: tmpFields.length + 1
         });
     },
 
     render: function(){    
         return <div className="fieldlist">
-            <ul>
-                {this.state.Fields.map((Field, fieldIndex) => 
-                    <li key={fieldIndex}>
-                        {Field}
-                    </li>
-                )}
+            <ul id="fieldList">
+                {
+                    this.state.Fields.map((Field, index) => {
+                        return (
+                            <li key={index}>
+                                {Field}
+                            </li>
+                        );
+                    })
+                }
             </ul>
-            <ButtonAddAnotherItem flag={this.props.flag} x={this.state.x} addField={this.addField}/>
+            <div className="text-center">
+                <ButtonAddAnotherItem flag={this.props.flag} x={this.state.x} addField={this.addField}/>
+            </div>
         </div>
     }
 });
@@ -117,7 +137,7 @@ var ButtonAddAnotherItem = React.createClass({
             case 'contact': {
                 return (
                     <button type="button" className="button-add button-primary" onClick={this.props.addField}>
-                        { x <= 1 ? "Add Access Contact" : "Add Access Contact To The Section"}
+                        Add Another Premise Access Contact
                     </button>
                 );
             }
@@ -214,42 +234,47 @@ var AdditionalInvoice = React.createClass({
         }
         return <div className="quotefield" style={{display: this.state.remove ? 'none' : 'block' }}>
             <fieldset>
-                <p> Item description </p>
-                <input type="text"
-                       name={'invoice[invoice_items_attributes][' + x + '][item_description]'}
-                       defaultValue={quote ? quote.item_description : ''}
-                    />
+                <input 
+                    type="text"
+                    placeholder="Item description"
+                    defaultValue={quote ? quote.item_description : ''}
+                    name={'invoice[invoice_items_attributes][' + x + '][item_description]'}
+                />
 
-                <p> Amount </p>
-                <input type="text"
-                       name={'invoice[invoice_items_attributes][' + x + '][amount]'}
-                       defaultValue={quote ? quote.amount : ''}
+                <div className="amount">
+                    <select 
+                        onChange={this.onPricing}
+                        value={this.state.pricing_type}
+                        name={'invoice[invoice_items_attributes][' + x + '][pricing_type]'}
+                        className={"text-center " + (this.state.hours_input && 'hour select')}
+                    >
+                        <option value="Fixed Cost">Fixed Cost</option>
+                        <option value="Hourly">Hourly</option>
+                    </select>
+                    <input 
+                        type="number"
+                        placeholder="Amount"
+                        defaultValue={quote ? quote.amount : ''}
+                        name={'invoice[invoice_items_attributes][' + x + '][amount]'}
+                        className={"text-center " +  (!!this.state.hours_input && 'hour price')}
                     />
-
-                <p> Pricing type </p>
-                <select value={this.state.pricing_type}
-                     onChange={this.onPricing}
-                         name={'invoice[invoice_items_attributes][' + x + '][pricing_type]'}>
-                    <option value="Fixed Cost">Fixed Cost</option>
-                    <option value="Hourly">Hourly</option>
-                </select>
-                {
-                    this.state.hours_input
-                    ? <div>
-                        <p> Number of Hours </p>
-                        <input type="text"
-                               name={'invoice[invoice_items_attributes][' + x + '][hours]'}
-                               defaultValue={quote ? quote.hours : ''}
+                    {   this.state.hours_input ? 
+                            <input 
+                                type="number"
+                                placeholder="Of Hours"
+                                defaultValue={quote ? quote.hours : ''}
+                                name={'invoice[invoice_items_attributes][' + x + '][hours]'}
+                                className={"text-center " + (this.state.hours_input && 'hour')}
                             />
-                     </div>
-                    : <input type="hidden"
-                             name={'invoice[invoice_items_attributes][' + x + '][hours]'}
-                        />
+                            : <input type="hidden"
+                                name={'invoice[invoice_items_attributes][' + x + '][hours]'}
+                            />
                 }
+                </div>               
                 <input type="hidden" value={this.state.remove} name={'invoice[invoice_items_attributes][' + x + '][_destroy]'}/>
-                {quote
-                ? <input type="hidden" value={x} name={'invoice[invoice_items_attributes][' + x + '][id]'}/>
-                : null }
+                {   quote && 
+                    <input type="hidden" value={x} name={'invoice[invoice_items_attributes][' + x + '][id]'}/>
+                }
             </fieldset>
             <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
         </div>
@@ -363,34 +388,58 @@ var InvoiceItemField = React.createClass({
         }
         return <div className="invoiceitemfield">
             <fieldset>
-                <input type="text" placeholder="Item description" defaultValue={invoice_item ? invoice_item.item_description : null}
-                    name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'} />
+                <input 
+                    type="text" 
+                    className="text-center"
+                    placeholder="Item description" 
+                    defaultValue={invoice_item ? invoice_item.item_description : null}
+                    name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'} 
+                />
 
-                <input type="text" placeholder="Amount" value={this.state.amount} onChange={this.onAmount}
-                    name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'} />
-
-                <p> Pricing type : </p>
-                <select value={this.state.pricing_type}
-                     onChange={this.onPricing}
-                         name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'}
-                >
-                    <option value="Fixed Cost">Fixed Cost</option>
-                    <option value="Hourly">Hourly</option>
-                </select>
-
-                {
-                    this.state.hours_input
-                    ? <input type="text" placeholder="Number of Hours" value={this.state.numofhours} onChange={this.onHours}
-                             name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} />
-                    : <input type="hidden" value={1}
-                             name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} />
-                }
+                <div className="amount">
+                    <select 
+                        onChange={this.onPricing}
+                        value={this.state.pricing_type}
+                        className={"text-center " +  (!!this.state.hours_input && 'hour price')}
+                        name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'}
+                    >
+                        <option value="Fixed Cost">Fixed Cost</option>
+                        <option value="Hourly">Hourly</option>
+                    </select>
+                    <input 
+                        type="number" 
+                        placeholder="Amount" 
+                        defaultValue={this.state.amount} 
+                        onChange={this.onAmount}
+                        className={"text-center " +  (!!this.state.hours_input && 'hour price')}
+                        name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'} 
+                    />
+                    {
+                        this.state.hours_input ? 
+                            <input 
+                                type="number" 
+                                onChange={this.onHours}
+                                placeholder="Number of Hours" 
+                                defaultValue={this.state.numofhours} 
+                                className={"text-center " + (this.state.hours_input && 'hour')}
+                                name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} 
+                            />
+                            : <input 
+                                type="hidden" 
+                                value={1}
+                                name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} 
+                            />
+                    }
+                </div>
                 
                 <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
                 {
-                    invoice_item
-                    ? <input type="hidden" value={x} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'}/>
-                    : null
+                    invoice_item &&
+                        <input 
+                            value={x} 
+                            type="hidden" 
+                            name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'}
+                        />
                 }
             </fieldset>
             <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> X </button>
@@ -583,8 +632,11 @@ var TradyCompanyInvoice = React.createClass({
                         name="trady_company[mobile_number]"
                         id="trady_company_mobile_number" required />
 
-                <input type="text" placeholder="Email" defaultValue={this.props.email}
+                <input type="email" placeholder="Email" defaultValue={this.props.email}
                         name="trady_company[email]"
+                        autoCapitalize="off"
+                        autoCorrect="off"
+                        autoComplete="off"
                         id="trady_company_email" required />
 
                 <input type="text" placeholder="Bank Account Number" defaultValue={this.props.account_name}

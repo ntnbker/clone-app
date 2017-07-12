@@ -2,9 +2,11 @@ var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
 	getInitialState: function() {
 		this.getAgentEmail();
-			return { 
+		return { 
 			images: [],
 			isAgent: true,
+			dataImages: [],
+			isAndroid: false,
 			validName: false,
 			validDate: false,
 			validEmail: false,
@@ -82,18 +84,23 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	_handleRemoveFrame: function(e) {
-		let {images} = this.state;
+		let {images, dataImages} = this.state;
 		var index = e.target.id;
 		images.splice(index, 1);
-		this.setState({images: images});
+		dataImages.splice(index, 1);
+		this.setState({
+			images: images,
+			dataImages: dataImages
+		});
 	},
 
 	_handleImageChange: function(e) {
-		e.preventDefault();
-		var files = e.target.files;
+		const self = this;
+		const files = e.target.files;
 		var reader = new FileReader();
+		var fr = new FileReader();
 		var images = this.state.images;
-				
+		var orientation;
 		readFile = (index) => {
 			if (index >= files.length) {
 				this.setState({
@@ -104,23 +111,51 @@ var MaintenanceRequestsNew = React.createClass({
 			var file = files[index];
 			var fileAlreadyExists = false;
 			for (var i = 0; i < images.length; i ++) {
-				if (images[i].fileInfo.name == file.name) {
+				if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
 					fileAlreadyExists = true;
 					break;
 				}
 			}
 			if (!fileAlreadyExists) {
-				reader.readAsDataURL(file);
-				reader.onload = function(e) {
-					images.push({url: e.target.result, fileInfo: file});
-					readFile(index + 1);
+				var fr = new FileReader();
+				fr.readAsArrayBuffer(file);
+				fr.onload = function(e) {
+					orientation = self.getOrientation(e.target.result);
+					reader.readAsDataURL(file);
+					reader.onload = function(e) {
+						images.push({url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation});
+						readFile(index + 1);
+					}
 				}
 			}
 			else {
 				readFile(index + 1);
 			}
 		}
-		readFile(0);
+		readFile(0);	
+	},
+
+	getOrientation: function(result) {
+    var view = new DataView(result);
+    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    var length = view.byteLength, offset = 2;
+    while (offset < length) {
+      var marker = view.getUint16(offset, false);
+      offset += 2;
+      if (marker == 0xFFE1) {
+        if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+        var little = view.getUint16(offset += 6, false) == 0x4949;
+        offset += view.getUint32(offset + 4, little);
+        var tags = view.getUint16(offset, little);
+        offset += 2;
+        for (var i = 0; i < tags; i++)
+          if (view.getUint16(offset + (i * 12), little) == 0x0112)
+            return view.getUint16(offset + (i * 12) + 8, little);
+      }
+      else if ((marker & 0xFF00) != 0xFF00) break;
+      else offset += view.getUint16(offset, false);
+    }
+    return -1;  
 	},
 
 	validDate: function(flag) {
@@ -130,6 +165,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	handleCheckSubmit: function(e) {
+		e.preventDefault();
 		if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
 			e.preventDefault();
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
@@ -137,11 +173,9 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 		var XHR = new XMLHttpRequest();
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
-		FD.delete('maintenance_request[maintenance_request_image_attributes][images][]');
-		FD.delete('commit');
-		this.state.images.map((image, index) => {
+		this.state.dataImages.map((image, index) => {
 			var idx = index + 1;
-			FD.append('maintenance_request[maintenance_request_image_attributes][images][]', image.fileInfo, image.fileInfo.name);
+			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
 		});
 		FD.append('commit', 'Submit Maintenance Request');
 		XHR.addEventListener('loadend', function(event) {
@@ -177,14 +211,14 @@ var MaintenanceRequestsNew = React.createClass({
 				document.getElementById("errorboxmobile").textContent = strErrMobile;
 				document.getElementById("errorboxmobile").classList.add("border_on_error");
 			}
-			if(validationObject['maintenance_heading'] != undefined) {
+			/*if(validationObject['maintenance_heading'] != undefined) {
 				document.getElementById("errorboxheading").textContent = strErrHeading;
 				document.getElementById("errorboxheading").classList.add("border_on_error");
 			}
 			if(validationObject['maintenance_description'] != undefined) {
 				document.getElementById("errorboxdescription").textContent = strErrDescription;
 				document.getElementById("errorboxdescription").classList.add("border_on_error");
-			}
+			}*/
 		});
 		XHR.open('POST', '/maintenance_requests');
 		XHR.setRequestHeader('Accept', 'text/html');
@@ -192,18 +226,19 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.upload.addEventListener('loadstart', function(e) {
 			$("#spinner").css('display', 'flex');
 		});
-		XHR.upload.addEventListener('loadend', function(e) {
+		XHR.onreadystatechange = function() {
+			if (XHR.readyState==4) {
 				$("#spinner").css('display', 'none');
-		});
+			}
+		}
 		XHR.send(FD);
-		e.preventDefault();
   	return false;
 	},
 
 	getFormData: function (object) {
-	const formData = new FormData();
-	Object.keys(object).forEach(key => formData.append(key, object[key]));
-	return formData;
+		const formData = new FormData();
+		Object.keys(object).forEach(key => formData.append(key, object[key]));
+		return formData;
 	},
 
 	validateEmail: function(inputText, e, agentFlag){
@@ -244,25 +279,226 @@ var MaintenanceRequestsNew = React.createClass({
 		}
 	},
 
+	updateImage: function(image) {
+		let {dataImages} = this.state;
+		dataImages.push(image);
+		this.setState({
+			dataImages: dataImages
+		});
+	},
+
+	removeImage: function(index) {
+		let {images, dataImages} = this.state;
+		images.splice(index, 1);
+		dataImages.splice(index, 1);
+		this.setState({
+			images: images,
+			dataImages: dataImages
+		});
+	},
+
+	loadImage: function(e, image, key) {
+		const img = e.target;
+		const maxSize = 500000; // byte
+		const self = this;
+		if(!image.isUpload) {
+			var target_img = {};
+			var {images} = this.state;
+			var file = image.fileInfo;
+			image.isUpload = true;
+
+			// resize image
+			if(file.size > maxSize) {
+				var quality =  Math.ceil(maxSize/file.size * 100);
+				target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
+			}else {
+				if(!!this.state.isAndroid) {
+					target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+				}else {
+					target_img.src = image.url;
+				}
+			}
+
+			image.url = target_img.src
+			images[key] = image;
+			this.setState({
+				images: images
+			});
+
+			var filename = file;
+			const options = {
+				extension: filename.name.match(/(\.\w+)?$/)[0],
+				_: Date.now(),
+			}
+
+			// start upload file into S3
+			$.getJSON('/images/cache/presign', options, function(result) {
+				var fd = new FormData();
+				$.each(result.fields, function(key, value) {
+					fd.append(key, value);
+				});
+
+				fd.append('file', self.dataURItoBlob(target_img.src));
+				$.ajax({
+					type: 'POST',
+					url: result['url'],
+					enctype: 'multipart/form-data',
+					processData: false,
+					contentType: false,
+					data: fd,
+					xhr: function () {
+						var xhr = new window.XMLHttpRequest();
+						xhr.upload.addEventListener("progress", function (evt) {
+							if(evt.loaded > 0 && evt.total > 0) {
+								var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+								var progress = $('.progress');
+								if(progress.length == 0) {
+									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
+								}else {
+									$('.progress .progress-bar').css('width', percentComplete + '%');
+								}
+								$('#title-upload').html('Uploading ' + percentComplete + '%');
+							}
+						}, false);
+						return xhr;
+					},
+					success: function() {
+						setTimeout(function() {
+							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+							$('.progress').remove();
+						}, 500);
+						var image = {
+							id: result.fields.key.match(/cache\/(.+)/)[1],
+							storage: 'cache',
+							metadata: {
+								size:  file.size,
+								filename:  file.name.match(/[^\/\\]*$/)[0],
+								mime_type: file.type
+							}
+						};
+						self.updateImage(image);
+					}
+				});
+			});
+		}
+	},
+
+	reduceQuality: function(source_img, type, quality, orientation) {
+		var mime_type = "image/jpeg";
+		if(typeof output_format !== "undefined" && output_format=="image/png"){
+			mime_type = "image/png";
+		}
+
+		var cvs = document.createElement('canvas'),
+				width = source_img.naturalWidth,
+				height = source_img.naturalHeight,
+				ctx = cvs.getContext("2d");
+
+		// set proper canvas dimensions before transform & export
+		if ([5,6,7,8].indexOf(orientation) > -1) {
+			cvs.width = height;
+			cvs.height = width;
+		} else {
+			cvs.width = width;
+			cvs.height = height;
+		}
+
+		// transform context before drawing image
+		switch (orientation) {
+			case 1:
+				ctx.transform(1, 0, 0, 1, 0, 0);
+			case 2: 
+				ctx.transform(-1, 0, 0, 1, width, 0); 
+				break;
+			case 3: 
+				ctx.transform(-1, 0, 0, -1, width, height );
+				break;
+			case 4: 
+				ctx.transform(1, 0, 0, -1, 0, height ); 
+				break;
+			case 5: 
+				ctx.transform(0, 1, 1, 0, 0, 0); 
+				break;
+			case 6: 
+				ctx.transform(0, 1, -1, 0, height , 0);
+				break;
+			case 7: 
+				ctx.transform(0, -1, -1, 0, height , width); 
+				break;
+			case 8: 
+				ctx.transform(0, -1, 1, 0, 0, width);
+				break;
+		}
+		ctx.clearRect(0, 0, cvs.width, cvs.height);
+		ctx.fillRect(0, 0, cvs.width, cvs.height);
+		ctx.strokeRect(0, 0, cvs.width, cvs.height);
+		ctx.lineWidth = 0;
+    ctx.rotate(0);
+		ctx.drawImage(source_img, 0, 0);
+		var newImageData = cvs.toDataURL(mime_type, quality/100);
+		var result_image = new Image();
+		result_image.src = newImageData;
+		return result_image;
+	},
+
+	dataURItoBlob: function(dataURI) {
+		var byteString, 
+				mimestring;
+
+		if(dataURI.split(',')[0].indexOf('base64') !== -1 ) {
+			byteString = atob(dataURI.split(',')[1])
+		} else {
+			byteString = decodeURI(dataURI.split(',')[1])
+		}
+
+		mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+		var content = new Array();
+		for (var i = 0; i < byteString.length; i++) {
+			content[i] = byteString.charCodeAt(i)
+		}
+
+		return new Blob([new Uint8Array(content)], {type: mimestring});
+	},
+
+	detectAndroid: function() {
+		var ua = navigator.userAgent.toLowerCase();
+		var isAndroid = ua.indexOf("android") > -1;
+		if(isAndroid) {
+		  this.setState({
+		  	isAndroid: true
+		  });
+		}
+	},
+
+	componentDidMount: function() {
+		this.detectAndroid();	
+	},
+
 	render: function(){
 		let {images} = this.state;
 		let $imagePreview = [];
+		const {current_user_tenant, current_role} = this.props;
+		let valueEmail = '';
+		let valueMobile = '';
+		if(current_role && current_role.role == "Tenant") {
+			valueEmail = current_user_tenant.email;
+			valueMobile = current_user_tenant.mobile;
+		}
 		if (images.length > 0) {
 			for (i = 0; i < images.length; i ++) {
 				let imageObject = (<div className="imgFrame" key={i}><img src={images[i].url} /><div className="btnRemoveFrame" id={i} onClick={(e) =>this._handleRemoveFrame(e)}>X</div></div>);
 				$imagePreview.push(imageObject);
-				}
-			} else {
-				$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
 			}
+		} else {
+			$imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+		}
 		return (
 			<div>
-				<h1 className="text-center">New Maintenance Request</h1>
-				<form role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
+				<form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
 					<input name="utf8" type="hidden" value="✓" /> 
 					<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 					<div className="field">
-						<p> Name </p>
 			  		<input 
 			  			required
 			  			type="text"
@@ -289,14 +525,17 @@ var MaintenanceRequestsNew = React.createClass({
 							}}/>
 						<p id="errorbox" className="error"></p>
 						
-						<p> Email </p>
 						<input
 							required
-							type="email" 
+							type="email"
+							autoCorrect="off"
+							autoComplete="off"
+							autoCapitalize="off"
 							placeholder="E-mail"
+							defaultValue={valueEmail}
 							ref={(ref) => this.email = ref}
-				   	id={this.generateAtt("id", "email")}
-						  name={this.generateAtt("name", "email")}
+							id={this.generateAtt("id", "email")}
+							name={this.generateAtt("name", "email")}
 							onBlur={(e) => {
 								if (!e.target.value.length) {
 									document.getElementById("errorboxemail").textContent = strRequireEmail;
@@ -312,13 +551,14 @@ var MaintenanceRequestsNew = React.createClass({
 							}}/>
 						<p id="errorboxemail" className="error"></p>
 						
-						<p> Mobile </p>
-					<input 
-						required 
-						type="tel" 
-						maxLength="10"
-						placeholder="Mobile"
-						ref={(ref) => this.mobile = ref}
+						<input 
+							required 
+							type="text" 
+							minLength="10"
+							maxLength="11"
+							placeholder="Mobile"
+							defaultValue={valueMobile}
+							ref={(ref) => this.mobile = ref}
 						  id={this.generateAtt("id", "mobile")}
 							name={this.generateAtt("name", "mobile")}
 						  onBlur={(e) => {
@@ -337,70 +577,57 @@ var MaintenanceRequestsNew = React.createClass({
 						<p id="errorboxmobile" className="error"></p>
 					</div>
 
-					<hr/>
-					<div id="access_contacts">
+					<div id="access_contacts" className="m-b-lg">
 						<FieldList SampleField={AccessContactField} flag="contact"/>
 					</div>
 
-					<hr/>
-
 					<div className="field">
-						<p> Maintenance heading </p>
-						<input
-							required
-							type="text"
-							ref={(ref) => this.maintenance_heading = ref}
-							id={this.generateAtt("id", "maintenance_heading")}
-						  name={this.generateAtt("name", "maintenance_heading")}
-							onBlur={(e) => {
-								if (!e.target.value.length) {
-									document.getElementById("errorboxheading").textContent = strErrHeading;
-									e.target.classList.add("border_on_error");
-									this.setState({validHeading: true});
-								}
-								else {
-									document.getElementById("errorboxheading").textContent = "";
-									e.target.classList.remove("border_on_error");
-									this.setState({validHeading: false});
-								}
-							}} 
-					 	/>
-						<p id="errorboxheading" className="error"></p>
-
-						<p> Maintenance description </p>
-						<textarea 
-							required
+						<textarea
+							placeholder="Maintenance Description"
 							ref={(ref) => this.maintenance_description = ref}
 							id={this.generateAtt("id", "maintenance_description")} 
-						  name={this.generateAtt("name", "maintenance_description")}
-							onBlur={(e) => {
-								if (!e.target.value.length) {
-									document.getElementById("errorboxdescription").textContent = strErrDescription;
-									e.target.classList.add("border_on_error");
-									this.setState({validDescription: true});
-								}
-								else {
-									document.getElementById("errorboxdescription").textContent = "";
-									e.target.classList.remove("border_on_error");
-									this.setState({validDescription: false});
-								}
-							}} 
-						>
-						</textarea>
+							name={this.generateAtt("name", "maintenance_description")}
+						/>
 						<p id="errorboxdescription" className="error"></p>
 
-						<p> Images </p>
-						<input 
-							multiple 
-							type="file" 
-							className="fileInput" 
-							onChange={(e)=>this._handleImageChange(e)} 
-							id="maintenance_request_maintenance_request_image_attributes_images" 
-							name="maintenance_request[maintenance_request_image_attributes][images][]" 
+						<textarea
+							type="text"
+							ref={(ref) => this.maintenance_heading = ref}
+							id={this.generateAtt("id", "availability_and_access")}
+							name={this.generateAtt("name", "availability_and_access")}
+							placeholder="Appointment Availability and Access Instructions"
 						/>
-								
-						<div className="imgPreview">{$imagePreview}</div>
-
+						<p id="erroravailabilityandaccess" className="error"></p>
+						<div className="browse-wrap">
+							<div className="title" id="title-upload">
+								<i className="fa fa-upload" />
+								Choose a image to upload
+							</div>
+							<input 
+								multiple
+								type="file"
+								id="input-file"
+								className="upload inputfile" 
+								accept="image/jpeg, image/png"
+								onChange={(e)=>this._handleImageChange(e)}
+							/>
+						</div>
+						<div id="img-render">
+							{
+								images.map((img, index) => {
+									return (
+										<div key={index} className="img">
+											<img  
+												src={img.url}
+												className=""
+												onLoad={(e, image, key) => this.loadImage(e, img, index)}
+											/>
+											<a className="remove" onClick={(key) => this.removeImage(index)}>Remove</a>
+										</div>
+									);
+								})
+							}
+						</div>
 					</div>
 
 					{ (!this.props.current_user || this.props.current_user.tenant) ?
@@ -408,26 +635,29 @@ var MaintenanceRequestsNew = React.createClass({
 							<hr/>
 
 							<div>
-								<p> Agent email </p>
-								<input 
+								<input
 									required
-									type="text"
-								 	onBlur={this.checkAgentEmail}
+									type="email"
+									autoCapitalize="off"
+									autoCorrect="off"
+									autoComplete="off"
+									placeholder="Agent email"
+									onBlur={this.checkAgentEmail}
 									ref={(ref) => this.agent_email = ref}
-								id={this.generateAtt("id", "agent_email")} 
-							   	name={this.generateAtt("name", "agent_email")}
-							 	/>
+									id={this.generateAtt("id", "agent_email")} 
+									name={this.generateAtt("name", "agent_email")}
+								/>
 								<p id="errAgentEamil" className="error"></p>
 								{	!this.state.isAgent ?
-										<div>
-										<p> Real estate office </p>
+									<div>
 										<input
 											required 
 											type="text"
+											placeholder="Real estate office"
 											ref={(ref) => this.real_estate_office = ref}
-										id={this.generateAtt("id", "real_estate_office")} 
-									   	name={this.generateAtt("name", "real_estate_office")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "real_estate_office")} 
+											name={this.generateAtt("name", "real_estate_office")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 														e.target.classList.add("border_on_error");
 														document.getElementById("errRealEstateOffice").textContent = strRequireText;
@@ -443,14 +673,14 @@ var MaintenanceRequestsNew = React.createClass({
 												}}/>
 										<p id="errRealEstateOffice" className="error"></p>
 
-				 						<p> Agent name </p>
-										<input 
+										<input
 											required
 											type="text"
+											placeholder="Agent name"
 											ref={(ref) => this.agent_name = ref}
-										id={this.generateAtt("id", "agent_name")} 
-									   	name={this.generateAtt("name", "agent_name")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "agent_name")} 
+											name={this.generateAtt("name", "agent_name")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 													e.target.classList.add("border_on_error");
 													document.getElementById("errAgentName").textContent = strRequireName;
@@ -466,15 +696,16 @@ var MaintenanceRequestsNew = React.createClass({
 											}}/>
 										<p id="errAgentName" className="error"></p>
 
-				 						<p> Agent mobile </p>
 										<input 
 											required
 											type="text"
-											maxLength="10"
+											maxLength="11"
+											minLength="10"
+											placeholder="Agent mobile"
 											ref={(ref) => this.agent_mobile = ref}
-										id={this.generateAtt("id", "agent_mobile")} 
-									   	name={this.generateAtt("name", "agent_mobile")}
-										 	onBlur={(e) => {
+											id={this.generateAtt("id", "agent_mobile")} 
+											name={this.generateAtt("name", "agent_mobile")}
+											onBlur={(e) => {
 												if (!e.target.value.length) {
 													e.target.classList.add("border_on_error");
 													document.getElementById("errAgentMobile").textContent = strRequireMobile;
@@ -499,16 +730,12 @@ var MaintenanceRequestsNew = React.createClass({
 						:
 						<hr/>
 					}
-
-					<div id="availabilities">
-						<FieldList SampleField={AvailabilityField} validDate={(flag) => this.validDate(flag)} flag="date"/>
-					</div>
-					
-					<hr/>
 					<p id="errCantSubmit" className="error"></p>
-					<button type="submit" className="button-primary green" name="commit">
-						Submit Maintenance Request
-					</button>
+					<div className="text-center">
+						<button type="submit" className="button-primary green" name="commit">
+							Submit Maintenance Request
+						</button>
+					</div>
 				</form>
 			</div>
 		);

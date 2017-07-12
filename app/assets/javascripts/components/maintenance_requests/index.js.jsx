@@ -51,9 +51,29 @@ var DropDownContent = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
+    if(nextProps.isHide === true || nextProps.isHide === false) {
+      this.setHeight(nextProps.isHide);
+    }
     this.setState({
       valueAction: nextProps.valueAction
     });
+  },
+
+  setHeight: function(flag) {
+    if(!flag) {
+      var dropdown = $('.show .content-action');
+      var heightScreen = $(window).height() - 90;
+      if(heightScreen < 450) {
+        dropdown.css({
+          "height": heightScreen,
+          "overflow-y": "scroll"
+        });
+      }else {
+        dropdown.css("height", 450);
+      }
+    }else {
+      $('.content-mobile .dropcontent').css('height', 0);
+    }
   },
 
   render: function() {
@@ -61,7 +81,7 @@ var DropDownContent = React.createClass({
     const props = this.props;
     const state = this.state;
     return (
-      <ul className="dropcontent">
+      <ul className="dropcontent content-action">
       {
         content.map((item, index) => {
           return (
@@ -117,11 +137,26 @@ var DropDownMobileList = React.createClass({
     return {hidden: true, valueAction: this.props.valueAction}
   },
 
-  onDrop: function() {
-    this.setState({
-        hidden: !this.state.hidden
-      });
-  },
+  onDrop: function(id) { 
+    if(id != "over") { 
+      this.setState({ 
+        hidden: !this.state.hidden 
+      }); 
+    }else if(!this.state.hidden){ 
+      this.setState({ 
+        hidden: true 
+      }); 
+    } 
+  }, 
+ 
+  componentDidMount: function() { 
+    const self = this; 
+    $(document).bind('click', function(e) { 
+      if (!e.target.matches('#' + self.props.id)) { 
+        self.onDrop('over'); 
+      } 
+    }); 
+  }, 
 
   componentWillReceiveProps: function(nextProps) {
     this.setState({
@@ -136,21 +171,14 @@ var DropDownMobileList = React.createClass({
       <div className="drop-mobile-list">
         <button 
           id={props.id} 
-          onClick={this.onDrop}
-          className={'btn-drop-mobile title ' + (!state.hidden && 'active')} 
+          onClick={(id) => this.onDrop(props.id)}
+          className={'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')} 
         >
           {this.props.title}
         </button>
         <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
-          <div className="header-action">
-            <a>{this.props.title}</a>
-            <i 
-              aria-hidden="true" 
-              className="fa fa-close" 
-              onClick={this.onDrop}
-            />
-          </div>
-          <DropDownContent 
+          <DropDownContent
+            isHide={state.hidden}
             content={props.content}
             valueAction={state.valueAction}
             getAction={(value) => props.getAction(value)} 
@@ -207,11 +235,11 @@ var ImgSlider = React.createClass({
       stx: 0,
       stpos: 0,
       stwidth: 0,
-      stlen: this.props.images.length > 0 ? this.props.images.length : 1,
+      stlen: this.props.images.length,
     };
   },
 
-  sliderTopRun(stpos) {
+  sliderTopRun: function(stpos) {
       var stx = stpos * -this.state.stwidth;
 
       this.setState({
@@ -219,18 +247,22 @@ var ImgSlider = React.createClass({
       });
   },
 
-  sliderTopPrev() {
+  sliderTopPrev: function() {
       var stpos = this.state.stpos - 1;
-      if(stpos < 0) stpos = this.state.stlen - 1;
+      if(stpos < 0) {
+        stpos = this.state.stlen - 1;
+      }
       this.setState({
           stpos: stpos
       });
       this.sliderTopRun(stpos);
   },
 
-  sliderTopNext() {
+  sliderTopNext: function() {
       var stpos = this.state.stpos + 1;
-      if(stpos >= this.state.stlen) stpos = 0;
+      if(stpos >= this.state.stlen) {
+        stpos = 0;
+      }
       this.setState({
           stpos: stpos
       }); 
@@ -238,9 +270,12 @@ var ImgSlider = React.createClass({
   },
 
   setWidth: function() {
-    this.setState({
-      stwidth: $('#slider').width()
-    });
+    const slider = $('#slider');
+    if(slider.length > 0 && slider.width() > 0) {
+      this.setState({
+        stwidth: slider.width()
+      });
+    }
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -251,11 +286,10 @@ var ImgSlider = React.createClass({
 
   componentDidMount: function() {
     const self = this;
-    
-    if($('#slider')) {
+    if($('#slider').length > 0) {
       this.setWidth();
 
-      $(window).resize(function() {
+      $(window).on('load resize', function() {
         self.setWidth();
       });
     }
@@ -283,7 +317,7 @@ var ImgSlider = React.createClass({
       width: this.state.stlen * this.state.stwidth,
     };
     var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
-    const images = this.props.images.length > 0 ? this.props.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}];
+    const images = this.props.images;
     return <div id="slider">
       { this.state.stlen > 1 && 
           <div>
@@ -297,10 +331,10 @@ var ImgSlider = React.createClass({
       }
       <div className={"swiper-container swiper-container-horizontal " + this.props.nameClass}>
         <div className="swiper-wrapper slider" style={styles}>
-        { images.length > 0 &&
-            images.map((image, i) => {
-              return <img key={i} className="swiper-slide slide-image" src={image.url} style={{width: subWidth}} alt="Uploading..." />
-            })
+        {
+          images.map((image, i) => {
+            return <img key={i} className="swiper-slide slide-image" src={image} style={{width: subWidth}} alt="Uploading..." />
+          })
         }
         </div>
       </div>
@@ -334,13 +368,17 @@ var DropforSort = React.createClass({
 
 var ListMaintenanceRequest = React.createClass({
   getInitialState: function() {
+    const {maintenance_requests} = this.props;
+    const page = 1;
+    const prePage = 3;
+    const dataShow = maintenance_requests.splice((page-1) * prePage, prePage);
     return {
-      page: 1,
-      data: [],
-      prePage: 3,
-      dataShow: [],
-      sortByDate: "Oldest to Newest",
+      page: page,
       valueAction: "",
+      prePage: prePage,
+      dataShow: dataShow,
+      data: maintenance_requests,
+      sortByDate: "Newest to Oldest",
       filterDate: [
         {value: "Oldest to Newest", name: "Oldest to Newest"},
         {value: "Newest to Oldest", name: "Newest to Oldest"},
@@ -352,8 +390,18 @@ var ListMaintenanceRequest = React.createClass({
           count: this.props.new_maintenance_requests_count,
         },
         {
+          title: "Awaiting Tradie`s Quote", 
+          value: "Awaiting Quote", 
+          count: this.props.awaiting_trady_quote_count
+        },
+        { 
+          title: "Quote Requested", 
+          value: "Quote Requested", 
+          count: this.props.quote_requested_count
+        },
+        {
           title: "Quote Received", 
-          value: "Quote Received Awaiting Approval", 
+          value: "Quote Received", 
           count: this.props.quotes_received_count,
         },
         { 
@@ -378,20 +426,10 @@ var ListMaintenanceRequest = React.createClass({
           value: "Awaiting Owner Instruction", 
           count: this.props.awaiting_owner_instruction_count
         },
-        { 
-          title: "Quote Requested", 
-          value: "Quote Requested", 
-          count: this.props.quote_requested_count
-        },
         {
           title: "Awaiting Tradie Initiation",
           value: "Awaiting Tradie Initiation", 
           count: this.props.awaiting_trady_initiation_count
-        },
-        {
-          title: "Awaiting Tradie`s Quote", 
-          value: "Awaiting Quote", 
-          count: this.props.awaiting_trady_quote_count
         },
         {
           title: "Awaiting Quote Approval", 
@@ -421,6 +459,11 @@ var ListMaintenanceRequest = React.createClass({
         {
           title: "Maintenance Scheduled - Awaiting Invoice", 
           value: "Maintenance Scheduled - Awaiting Invoice", 
+          count: this.props.maintenance_scheduled_count
+        },
+        {
+          title: "Maintenance Scheduled With Landlord", 
+          value: "Maintenance Scheduled With Landlord", 
           count: this.props.maintenance_scheduled_count
         }
       ],
@@ -508,7 +551,7 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   componentWillMount: function() {
-    this.getMaintenanceRequests();
+    //this.getMaintenanceRequests();
   },
 
   setPage: function(page){
@@ -578,8 +621,10 @@ var ListMaintenanceRequest = React.createClass({
   render: function() {
     const self = this;
     const current_user_agent = this.props.current_user_agent;
-    const current_user_agency_admin = this.props.current_user_agency_admin;
     const current_user_trady = this.props.current_user_trady;
+    const current_user_tenant = this.props.current_user_tenant;
+    const current_user_landlord = this.props.current_user_landlord;
+    const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
       <div className="maintenance-list">
         { 
@@ -590,11 +635,15 @@ var ListMaintenanceRequest = React.createClass({
           />
         }
         <div className="maintenance-content">
-          <div className="main-column">
+          <div className={"main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord")}>
             <div>
               {
-                this.state.dataShow.map(function(maintenance_request, key) {
-                return <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                this.state.dataShow.map((maintenance_request, key) => {
+                  return (
+                    <div>
+                      <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
+                    </div>
+                  );
                 })
               }
               { this.state.data.length > this.state.prePage && 
@@ -685,21 +734,19 @@ var MaintenanceRequestItem = React.createClass({
   render: function() {
     const maintenance_request = this.props.maintenance_request;
     return (
-      <div className="row m-t-lg maintenance-request">
+      <div className="row maintenance-request">
         <div className="image">
-          {
-            <ImgSlider 
-              nameClass={"slider-custom-" + maintenance_request.id} 
-              images={maintenance_request.maintenance_request_image ? maintenance_request.maintenance_request_image.images : [{url: "/uploads/maintenance_request_image/images/no_image.png"}]} 
-            />
-          }
+          <ImgSlider
+            nameClass={"slider-custom-" + maintenance_request.id} 
+            images={maintenance_request.get_image_urls.length > 0 ? maintenance_request.get_image_urls : ["/uploads/maintenance_request_image/images/no_image.png"]}    
+          />
         </div>
         <div className="content">
           <div className="info">
             <div className="row">
               <h3 className="heading">
                 <a href={this.props.link + "/" + maintenance_request.id}>
-                {maintenance_request.maintenance_heading}
+                {maintenance_request.maintenance_description.substring(0,10) + "..."}
                 </a>
               </h3>
               {
@@ -717,9 +764,6 @@ var MaintenanceRequestItem = React.createClass({
                 {maintenance_request.service_type}
               </p>
             </div>
-            <div>
-              { <P content={maintenance_request.maintenance_description} /> }
-            </div>
             {
               maintenance_request.property && maintenance_request.property.property_address &&
                 <p className="address">
@@ -728,6 +772,9 @@ var MaintenanceRequestItem = React.createClass({
                 </p>
             }
             
+          </div>
+          <div className="view">
+            <a className="btn-view" href={this.props.link + "/" + maintenance_request.id}>View</a>
           </div>
         </div>
       </div>
@@ -852,32 +899,35 @@ var Pagination = React.createClass({
       
       return
     });
+
     return (
       <div className="pagination">
-        <a 
-          className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")} 
-          onClick={this.state.page > 1 ? (page) => this.switchPage(this.state.page-1) : ""}
-        >
-        </a> 
-        {
-          this.state.group > 1 &&
-            <a onClick={(group) => this.switchGroup(this.state.group - 1)}>
-              ...
-            </a>
-        }
-        { paginations }
-        {
-          this.state.group < this.state.totalGroup &&
-            <a onClick={(group) => this.switchGroup(this.state.group + 1)}>
-              ...
-            </a>
-        }
-        <a 
-          key="next" 
-          className={"next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled")} 
-          onClick={(page) => this.switchPage(this.state.page < this.state.totalPage ? this.state.page+1 : this.state.page)}
-        >
-        </a>
+        <div className="content">
+          <a 
+            className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")} 
+            onClick={this.state.page > 1 ? (page) => this.switchPage(this.state.page-1) : ""}
+          >
+          </a> 
+          {
+            this.state.group > 1 &&
+              <a onClick={(group) => this.switchGroup(this.state.group - 1)}>
+                ...
+              </a>
+          }
+          { paginations }
+          {
+            this.state.group < this.state.totalGroup &&
+              <a onClick={(group) => this.switchGroup(this.state.group + 1)}>
+                ...
+              </a>
+          }
+          <a 
+            key="next" 
+            className={"next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled")} 
+            onClick={(page) => this.switchPage(this.state.page < this.state.totalPage ? this.state.page+1 : this.state.page)}
+          >
+          </a>
+        </div>
       </div>
     );
   }

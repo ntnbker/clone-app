@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
-
+  mount ImageUploader::UploadEndpoint => "/images"
   
   ###################################################
   ##########SETUP RESOURCES/ROUTES###################
@@ -15,9 +15,9 @@ Rails.application.routes.draw do
     resources :user_sessions, only:[:create]
     resources :users, only:[:create,:update]
     get 'sign_up' => 'users#new', :as =>:sign_up
-    get 'login' => 'user_sessions#new', :as => :login
-    get 'menu-login' => 'user_sessions#menu_bar_login_form_new', :as => :menu_login
-    post 'menulogin' => 'user_sessions#menu_bar_login_form_create'
+    # get 'login' => 'user_sessions#new', :as => :login
+    get 'login' => 'user_sessions#new', :as => :menu_login
+    post 'menulogin' => 'user_sessions#create'
     delete 'logout' => 'user_sessions#destroy', :as => :logout
     resources :password_resets, only:[:new, :create, :edit,:update]
     resources :passwords, only:[:edit, :update]
@@ -52,8 +52,8 @@ Rails.application.routes.draw do
   ##########MR RESOURCES/ROUTES######################
   ###################################################
     get 'ordered_maintenance_requests' => "maintenance_requests#ordered_maintenance_requests"
-    resources :maintenance_requests, only:[:index,:new,:create,:destroy,:update, :show]
-  
+    resources :maintenance_requests, only:[:index,:new,:create,:destroy, :show]
+    post "update_maintenance_request" => "maintenance_requests#update"
   ###################################################
   ##########MESSAGING RESOURCES/ROUTES###############
   ###################################################
@@ -149,13 +149,16 @@ Rails.application.routes.draw do
   ###################################################################
     resources :appointments, only:[:new,:create,:show, :edit, :update]
     post "accept_appointment" =>"appointments#accept_appointment", :as =>:accept_appointment
-
+    post "decline_appointment" => "appointments#decline_appointment"
+    post "cancel_appointment" => "appointments#cancel_appointment"
   ###################################################################
   ##########LANDLORD AND TENANT APPOINTMENTS RESOURCES/ROUTES########
   ###################################################################
     resources :landlord_appointments, only:[:new,:create,:show, :edit]
     put "update_landlord_appointment" =>"landlord_appointments#update"
     post "accept_landlord_appointment" =>"landlord_appointments#accept_appointment", :as =>:accept_landlord_appointment
+    post "decline_landlord_appointment" => "landlord_appointments#decline_appointment", :as =>:decline_landlord_appointment
+    post "cancel_landlord_appointment" => "landlord_appointments#cancel_appointment", :as =>:cancel_landlord_appointment
   ###################################################
   ##########COMMENTS RESOURCES/ROUTES################
   ###################################################
@@ -183,8 +186,12 @@ Rails.application.routes.draw do
   ################################################### 
     resources :agent_emails, only:[:index]
   ###################################################
-  ##########AGENT EMAILS RESOURCES/ROUTES############
+  ##########PRINT STATUS RESOURCES/ROUTES############
   ###################################################
     post "update_print_status"=> "print_statuses#update" 
+  ###################################################
+  ##########REASSIGN AGENTS RESOURCES/ROUTES############
+  ###################################################
+    post "reassign_to"=> "reassign_maintenance_requests#reassign" 
     
  end

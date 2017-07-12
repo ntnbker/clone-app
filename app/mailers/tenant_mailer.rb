@@ -64,6 +64,39 @@ class TenantMailer < ActionMailer::Base
     track extra: {maintenance_request_id:@maintenance_request.id}
     mail(from:"ron@email.com",to:@tenant.email, subject:"Hi your appointment time was accepted")
   end
+
+  def trady_cancelled_appointment_email(tenant_object)
+    
+    @tenant = tenant_object
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Cancelled")
+  end
+
+  def trady_declined_appointment_email(tenant_object)
+    @tenant = tenant_object
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Declined")
+  end
+
+  def landlord_cancelled_appointment(tenant_object)
+    @tenant = tenant_object
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Cancelled")
+  end
+
+  def landlord_declined_appointment(tenant_object)
+    @tenant = tenant_object
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Declined")
+  end
+
+  def tenant_quote_requested_notification_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    @tenant = @maintenance_request.tenants.first
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Quote has been requested for your maintenance request")
+  end
+
+  def tenant_quote_approved_notification_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    @tenant = @maintenance_request.tenants.first
+    mail(from:"ron@email.com",to:@tenant.email, subject:"A Quote has been approved for your maintenance request")
+  end
   
   
 

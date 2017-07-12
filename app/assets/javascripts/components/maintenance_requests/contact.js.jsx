@@ -1,10 +1,25 @@
 var ContentContact = React.createClass({
 	render: function() {
 		const selt = this;
-		const landlord = this.props.landlord;
+		const {landlord, tenants, assigned_trady} = this.props;
+		var tenantMobile = [];
+		if(tenants) {
+			tenantMobile = tenants.map((tenant, key) => {
+				return (
+					<li key={tenant.id}>
+						<a href={"tel:" + tenant.mobile}>
+							<i className="fa fa-phone" aria-hidden="true" />
+							Tenant {key + 1}: {tenant.mobile}
+						</a>
+					</li>
+				);
+			});
+		}
+
 		if(!!landlord) {
 			return (
 				<ul>
+					{tenantMobile}
 					<li>
 						<a href={"tel:" + landlord.mobile}>
 							<i className="fa fa-phone" aria-hidden="true" />
@@ -23,17 +38,36 @@ var ContentContact = React.createClass({
 							Message Tenants
 						</a>
 					</li>
+					{
+						assigned_trady && 
+						<li>
+							<a onClick={() => selt.props.onModalWith('sendMessageTrady')}>
+								<i className="fa fa-commenting" aria-hidden="true" />
+								Message Trady
+							</a>
+						</li>
+					}
 				</ul>
 			);
 		}else {
 			return (
 				<ul>
+					{tenantMobile}
 					<li>
 						<a onClick={() => selt.props.onModalWith('sendMessageTenant')}>
 							<i className="fa fa-commenting" aria-hidden="true" />
 							Message Tenants
 						</a>
 					</li>
+					{
+						assigned_trady && 
+						<li>
+							<a onClick={() => selt.props.onModalWith('sendMessageTrady')}>
+								<i className="fa fa-commenting" aria-hidden="true" />
+								Message Trady
+							</a>
+						</li>
+					}
 				</ul>
 			);
 		}
@@ -63,7 +97,14 @@ var Contact = React.createClass({
 					/>
 				</div>
 				<div className="content">
-					{ this.state.show && <ContentContact onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} /> }
+					{ this.state.show && 
+							<ContentContact 
+								tenants={this.props.tenants} 
+								landlord={this.props.landlord} 
+								assigned_trady={this.props.assigned_trady}
+								onModalWith={(modal) => this.props.onModalWith(modal)} 
+							/> 
+					}
 				</div>
 			</div>
 		);
@@ -73,9 +114,9 @@ var Contact = React.createClass({
 var ContactMobile = React.createClass({
 	render: function() {
 		return (
-			<div className="actions-full contact-full">
+			<div className="actions-full contact-full" id="contacts-full">
 				<div className="item">
-					<div className="header contact">
+					<div className="header action">
 						<a>Contact:</a>
 						<i
 							aria-hidden="true" 
@@ -84,7 +125,12 @@ var ContactMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						{ <ContentContact onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} /> }
+						<ContentContact 
+							tenants={this.props.tenants} 
+							landlord={this.props.landlord}
+							assigned_trady={this.props.assigned_trady}
+							onModalWith={(modal) => this.props.onModalWith(modal)} 
+						/>
 					</div>
 				</div>
 			</div>

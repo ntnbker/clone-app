@@ -1,10 +1,10 @@
-!!! 5
-%html(lang="en-US")
+/ !!! 5
+/ %html(lang="en-US")
   
-  %body
-    %p 
-      Hi, #{@maintenance_request.name} thank you for sending us a maintenance request
-      =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@maintenance_request.tenants.first.user_id)
+/   %body
+/     %p 
+/       Hi, #{@maintenance_request.name} thank you for sending us a maintenance request
+/       =link_to "#{@maintenance_request.maintenance_heading}", maintenance_request_url(@maintenance_request,user_id:@maintenance_request.tenants.first.user_id)
 
 
      

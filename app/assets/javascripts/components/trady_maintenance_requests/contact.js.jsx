@@ -1,21 +1,32 @@
 var ContentTradyContact = React.createClass({
-	renderCallAgent: function() {
-		const maintenance_request = this.props.maintenance_request;
-		if(!!maintenance_request.agent) {
+	renderTenant: function() {
+		const tenants = this.props.tenants.length > 0 ? this.props.tenants : [];
+		if(tenants.length > 0) {
 			return (
-				<li>
-					<a href={"tel:" + maintenance_request.agent.mobile_phone}>
-						<i className="fa fa-phone" aria-hidden="true" />
-						Call Agent: {maintenance_request.agent.mobile_phone}
-					</a>
-				</li>
+				tenants.map((tenant, key) => {
+					return (
+						<li key={tenant.id}>
+							<a href={"tel:" + tenant.mobile}>
+								<i className="fa fa-phone" aria-hidden="true" />
+								Call Tenant {key + 1}: {tenant.mobile}
+							</a>
+						</li>
+					);
+				})
 			);
-		}else if(!!maintenance_request.agency_admin) {
+		}
+
+		return null;
+	},
+
+	renderAgent: function() {
+		const agent = this.props.agent;
+		if(!!agent) {
 			return (
 				<li>
-					<a href={"tel:" + maintenance_request.agency_admin.mobile_phone}>
+					<a href={"tel:" + agent.mobile_phone}>
 						<i className="fa fa-phone" aria-hidden="true" />
-						Call Agent: {maintenance_request.agency_admin.mobile_phone}
+						Call Agent: {agent.mobile_phone}
 					</a>
 				</li>
 			);
@@ -24,10 +35,26 @@ var ContentTradyContact = React.createClass({
 		return null;
 	},
 
+	renderMessageAgent: function() {
+		const {assigned_trady} = this.props;
+		if(!!assigned_trady) {
+			return (
+				<li>
+					<a onClick={() => this.props.onModalWith('sendMessageAgent')}>
+						<i className="fa fa-commenting" aria-hidden="true" />
+						Message Agent
+					</a>
+				</li>
+			);
+		}
+	},
+
 	render: function() {
 		return (
 			<ul>
-				{this.renderCallAgent()}
+				{this.renderTenant()}
+				{this.renderAgent()}
+				{this.renderMessageAgent()}
 			</ul>
 		);
 	}
@@ -56,7 +83,16 @@ var TradyContact = React.createClass({
 					/>
 				</div>
 				<div className="content">
-					{ this.state.show && <ContentTradyContact onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
+					{ this.state.show && 
+							<ContentTradyContact 
+								agent={this.props.agent}
+								tenants={this.props.tenants}
+								landlord={this.props.landlord}
+								assigned_trady={this.props.assigned_trady}
+								maintenance_request={this.props.maintenance_request}
+								onModalWith={(modal) => this.props.onModalWith(modal)} 
+							/> 
+					}
 				</div>
 			</div>
 		);
@@ -66,9 +102,9 @@ var TradyContact = React.createClass({
 var TradyContactMobile = React.createClass({
 	render: function() {
 		return (
-			<div className="actions-full contact-full">
+			<div className="actions-full contact-full" id="contacts-full">
 				<div className="item">
-					<div className="header contact">
+					<div className="header action">
 						<a>Contact:</a>
 						<i
 							aria-hidden="true" 
@@ -77,7 +113,16 @@ var TradyContactMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						{ <ContentTradyContact onModalWith={(modal) => this.props.onModalWith(modal)} landlord={this.props.landlord} maintenance_request={this.props.maintenance_request} /> }
+						{ 
+							<ContentTradyContact
+								agent={this.props.agent}
+								tenants={this.props.tenants}
+								landlord={this.props.landlord}
+								assigned_trady={this.props.assigned_trady}
+								maintenance_request={this.props.maintenance_request} 
+								onModalWith={(modal) => this.props.onModalWith(modal)} 
+							/> 
+						}
 					</div>
 				</div>
 			</div>

@@ -16,7 +16,7 @@ var CreateOrUploadInvoice = React.createClass({
 		return (
 			<li>
 				<a onClick={(modal) => this.props.onModalWith('viewConfirm')}>
-					<i className="icon-send" aria-hidden="true" />
+					<i className="fa fa-send" aria-hidden="true" />
 					Create or Upload Invoice
 				</a>
 			</li>
@@ -29,8 +29,36 @@ var MarkJobAsCompleted = React.createClass({
 		return (
 			<li>
 				<a onClick={(modal) => this.props.onModalWith('viewMarkJob')}>
-					<i className="icon-send" aria-hidden="true" />
+					<i className="fa fa-send" aria-hidden="true" />
 					Mark Job As Completed
+				</a>
+			</li>
+		);
+	}
+});
+
+var CreateAppointment = React.createClass({
+	render: function() {
+		const props = this.props;
+		return (
+			<li>
+				<a onClick={(modal) => this.props.onModalWith('createAppointment')}>
+					<i className="fa fa-plus" aria-hidden="true" />
+					Create Appointment
+				</a>
+			</li>
+		);
+	}
+});
+
+var CreateAppointmentForQuote = React.createClass({
+	render: function() {
+		const props = this.props;
+		return (
+			<li>
+				<a onClick={(modal) => this.props.onModalWith('createAppointmentForQuote')}>
+					<i className="fa fa-plus" aria-hidden="true" />
+					Create Appointment For Quote
 				</a>
 			</li>
 		);
@@ -41,39 +69,40 @@ var ContentTradyAction = React.createClass({
 	render: function() {
 		const maintenance_request = this.props.maintenance_request;
 		const trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
+
 		const maintenance_trady_id = maintenance_request.trady_id;
 		const link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
 		if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return (
 				<ul>
-					{ <CreactOrUploadQuote link={link} /> }
-					{ <CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />}
-					{
-						(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) &&
-							<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
-					}
+					<CreactOrUploadQuote link={link} />
+					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
 			return (
 				<ul>
-					{
-						(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) &&
-							<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
-					}
+					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
-			)
+			);
 		}else {
 			return(
 				<ul>
-					{ <CreactOrUploadQuote link={link} /> }
+					<CreactOrUploadQuote link={link} />
 					{ !!this.props.assigned_trady &&
 							<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					{
-						(this.props.invoices.length == 0 || this.props.invoice_pdf_files.length == 0) &&
-							<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{ !!this.props.assigned_trady &&
+						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
+					{ !!this.props.assigned_trady &&
+							<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					}
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}
@@ -102,9 +131,10 @@ var TradyAction = React.createClass({
 						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} 
 					/>
 				</div>
-				<div className="content" id="actions-content">
+				<div className="content">
 					{ this.state.show &&
-						 	<ContentTradyAction 
+						 	<ContentTradyAction
+						 		trady={this.props.trady}
 						  	landlord={this.props.landlord} 
 						  	invoices={this.props.invoices}
 						 		assigned_trady={this.props.assigned_trady}
@@ -134,11 +164,12 @@ var TradyActionMobile = React.createClass({
 						/>
 					</div>
 					<div className="content">
-						<ContentTradyAction 
-							landlord={this.props.landlord} 
+						<ContentTradyAction
+							trady={this.props.trady}
 							landlord={this.props.landlord} 
 							invoices={this.props.invoices}
 					 		assigned_trady={this.props.assigned_trady}
+							signed_in_trady={this.props.signed_in_trady} 
 							invoice_pdf_files={this.props.invoice_pdf_files}
 					 		maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}

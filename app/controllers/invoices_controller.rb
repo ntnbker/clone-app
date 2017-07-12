@@ -1,9 +1,9 @@
 class InvoicesController < ApplicationController
-
+  before_action :require_login, only:[:new,:create,:edit,:update,:show,:new_additional_invoice, :create_additional_invoice,:send_invoice,:invoice_sent_success]
+  before_action(only:[:new,:create,:edit,:update,:show,:new_additional_invoice, :create_additional_invoice,:send_invoice,:invoice_sent_success]) {allow("Trady")}
   
 
   def new
-
     #this quote instance variable is for front end to add the values into the form using JS
     @quote = Quote.find_by(id:params[:quote_id])
     
@@ -15,27 +15,15 @@ class InvoicesController < ApplicationController
 
     @maintenance_request_id= params[:maintenance_request_id]
     @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
-
     @trady = Trady.find_by(id:params[:trady_id])
-    
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
-    
     @invoice_type = params[:invoice_type]
-
-
-
-
-    # @invoice = Invoice.new
-
     @ledger = Ledger.new
     @ledger.invoices.build
+    
     @ledger.invoices.each do |invoice|
       invoice.invoice_items.build
-
     end 
-   
-    
-    
   end
 
   def create
@@ -169,11 +157,8 @@ class InvoicesController < ApplicationController
   end
 
   def invoice_sent_success
-    
     @maintenance_request_id = params[:maintenance_request_id]
-
     @trady_id = params[:trady_id]
-    #this is an empty controller that just shows the template witha success mark and button to the home page. 
   end
 
 
