@@ -30,10 +30,10 @@
     %div.quote
       %div.info-agency
         %p.color-grey.bill-to Bill To
-        %p
+        %p.text-capitalize
           = @landlord ? "#{@landlord.name}" : nil
         %p
-          = @agency ? "#{@agency.company_name}" : nil
+          = @agency ? "C/-" + "#{@agency.company_name}" : nil
         %p
           = @agency ? "#{@agency.address}" : nil
 

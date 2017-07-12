@@ -9,7 +9,7 @@ const notifyAppointment = {
 	},
 	normal: {
 		title: "Create Appointment",
-		content: "You was create appointment."
+		content: "Thank you for creating an appointment."
 	}
 }
 

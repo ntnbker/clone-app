@@ -4,6 +4,9 @@ var SelectTime = React.createClass({
 	},
 
 	makeHour: function() {
+		var now = new Date();
+		hours = parseInt(now.getHours());
+		minutes = parseInt(now.getMinutes());
     var date=[];
     date.push(<option key="-1" value="">--</option>);
     var value = "";
@@ -20,7 +23,7 @@ var SelectTime = React.createClass({
         value += " PM";
       }
       date.push(
-        <option key={i} value={i}>
+        <option key={i} value={i} disabled={i < hours ? true : false}>
           { value }
         </option>
       );
@@ -31,9 +34,11 @@ var SelectTime = React.createClass({
   makeMinute: function() {
     const data = [0, 15, 30, 45];
     var date=[];
+    var now = new Date();
+		minutes = parseInt(now.getMinutes());
     date.push(<option key="-1" value="">--</option>);
     data.map((item, key) => {
-      date.push(<option key={key} value={item}>{item == 0 ? item + "0" : item}</option>);
+      date.push(<option key={key} value={item} disabled={item < minutes ? true : false}>{item == 0 ? item + "0" : item}</option>);
     });
     
     return date;
@@ -116,6 +121,14 @@ var ModalAddAppointment = React.createClass({
 			appointment_type: this.props.type,
 		};
 		this.props.addAppointment(params);
+	},
+
+	componentDidMount: function() {
+		var now = new Date();
+		month = (parseInt(now.getMonth()) + 1);
+		month = month.toString().length == 1 ? '0' + month : month;
+		date = now.getFullYear() + '-' + month + '-' + now.getDate();
+		document.getElementById('date').setAttribute("min", date);
 	},
 
 	render: function() {

@@ -1560,14 +1560,14 @@ var MaintenanceRequest = React.createClass({
 				if(params.status == 'Approved') {
 					self.setState({notification: {
 						title: "Accept Quote",
-						content: "Quote was accept!",
+						content: "You have accepted the quote.",
 						bgClass: "bg-success",
 					}});
 					self.onModalWith('notification');
 				}else if(params.status == 'Declined'){
 					self.setState({notification: {
 						title: "Decline Quote",
-						content: "Quote was decline!",
+						content: "You have declined the quote.",
 						bgClass: "bg-success",
 					}});
 					self.onModalWith('notification');
@@ -1579,7 +1579,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendEmailLandlord: function(params) {
+	sendEmailLandlord: function(params, quote) {
 		const self = this;
 		$.ajax({
 			type: 'POST',
@@ -1589,6 +1589,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				quote.forwarded_to_landlord = true;
 				self.setState({notification: {
 					title: "Forward Landlord",
 					content: "The email about quote information was sent for Landlord.",

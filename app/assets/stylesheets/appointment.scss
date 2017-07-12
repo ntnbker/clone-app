@@ -74,6 +74,15 @@
 	.edit_appointment {
 		margin-top: 0px;
 	}
+
+	@media (max-width: 480px) {
+		.date-time {
+			flex-direction: column !important;
+			.date {
+				width: 200px;
+			}
+		}
+	}
 }
 
 .appointments {
