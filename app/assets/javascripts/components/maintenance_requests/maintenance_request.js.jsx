@@ -150,10 +150,8 @@ var Assigns = React.createClass({
 });
 
 var DropDownStatus = React.createClass({
-	updateStatusMR: function(status) {
-		this.props.updateStatusMR({
-			maintenance_request_status: status.value,
-		});
+	viewItem: function(status) {
+		this.props.viewItem('confirmUpdateStatus', status);
 	},
 
 	render: function() {
@@ -162,7 +160,7 @@ var DropDownStatus = React.createClass({
 				{
 					this.props.data.map((item, key) => {
 						return (
-							<li key={key} onClick={(status) => this.updateStatusMR(item)}>
+							<li key={key} onClick={(status) => this.viewItem(item)}>
 								{item.title}
 							</li>
 						);					
@@ -310,11 +308,11 @@ var ButtonHeaderMR = React.createClass({
 					<div className="dropdown-status" style={{display: this.state.isShowStatus ? 'block' : 'none'}}>
 						<div>
 							<p>Action Request</p>
-							<DropDownStatus updateStatusMR={this.props.updateStatusMR} data={this.state.actionRequests}/>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={this.state.actionRequests}/>
 						</div>
 						<div>
 							<p className="awaiting">Awaiting Action</p>
-							<DropDownStatus updateStatusMR={this.props.updateStatusMR} data={this.state.awaitingAction}/>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={this.state.awaitingAction}/>
 						</div>
 					</div>
 				</div>
@@ -351,13 +349,14 @@ var ButtonHeaderMR = React.createClass({
 var ItemMaintenanceRequest = React.createClass({
 	render: function() {
 		const maintenance = this.props.maintenance_request;
+		const {status} = this.props;
 		const props = this.props;
 		return (
 			<div className="post">
 				<div className="info">
 					<div className="info-title">
 						<div className="title">
-							<button className="button-primary" type="">{maintenance.action_status}</button>
+							<button className="button-primary" type="">{status.agent_status}</button>
 						</div>
 						<div className="author">
 							<i className="fa fa-map-marker" aria-hidden="true" />
@@ -378,7 +377,6 @@ var ItemMaintenanceRequest = React.createClass({
 								all_agency_admins={props.all_agency_admins}
 								viewItem={(key, item) => this.props.viewItem(key, item)}
 								assignToUser={(email) => this.props.assignToUser(email)}
-								updateStatusMR={this.props.updateStatusMR}
 							/>
 					}
 				</div>
@@ -391,6 +389,48 @@ var ItemMaintenanceRequest = React.createClass({
 							<p className="description">{maintenance.availability_and_access}</p>
 					</div>
 					<Carousel gallery={this.props.gallery} />
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalConfirmUpdateStatus = React.createClass({
+	render: function() {
+		const {content, title} = this.props;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button 
+								type="button" 
+								className="close"
+								data-dismiss="modal" 
+								aria-label="Close" 
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">{title}</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">{content}</p>
+						</div>
+						<div className="modal-footer">
+							<button 
+								type="button" 
+								className="btn btn-default success" 
+								onClick={this.props.updateStatusMR} 
+								data-dismiss="modal"
+							>Yep</button>
+							<button 
+								type="button" 
+								className="btn btn-primary cancel" 
+								onClick={this.props.close}
+							>No</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		);

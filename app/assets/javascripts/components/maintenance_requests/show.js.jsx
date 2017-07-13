@@ -1206,6 +1206,7 @@ var MaintenanceRequest = React.createClass({
 			invoice: null,
 			isModal: false,
 			appointment: null,
+			statusItem: null,
 			comments: comments,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
@@ -1281,6 +1282,14 @@ var MaintenanceRequest = React.createClass({
 			case 'viewAppointment': {
 				this.setState({
 					appointment: item
+				});
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'confirmUpdateStatus': {
+				this.setState({
+					statusItem: item
 				});
 				this.onModalWith(key);
 				break;
@@ -1763,11 +1772,15 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	updateStatusMR: function(params) {
+	updateStatusMR: function() {
 		const self = this;
-		let {maintenance_request, status} = this.state;
-		params.action_category = status.action_category;
-		params.maintenance_request_id = maintenance_request.id;
+		const {maintenance_request, status, statusItem} = this.state;
+		const params = {
+			action_category: status.action_category,
+			maintenance_request_status: statusItem.value,
+			maintenance_request_id: maintenance_request.id,
+		};
+		
 		$.ajax({
 			type: 'POST',
 			url: '/update_maintenance_request_status',
@@ -1777,10 +1790,10 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.setState({
-					maintenance_request: maintenance_request,
+					status: res,
 					notification: {
 						title: "Update Status",
-						content: "The Status of Maintenance Request was update",
+						content: "Thank you for updating the MR status",
 						bgClass: "bg-success",
 					},
 				});
@@ -2058,6 +2071,17 @@ var MaintenanceRequest = React.createClass({
 							quote={this.state.quote}
 							updateStatusQuote={this.updateStatusQuote}
 							content="Are you sure you want to cancel the job ?"
+						/>
+					);
+
+				case 'confirmUpdateStatus': 
+					return (
+						<ModalConfirmUpdateStatus 
+							close={this.isClose}
+							title="Update Status"
+							quote={this.state.quote}
+							updateStatusMR={this.updateStatusMR}
+							content="Are you sure you want to update the Maintenance request status ?"
 						/>
 					);
 					
