@@ -447,9 +447,9 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 
 				self.setState({notification: {
-					bgClass: "bg-success",
 					title: title,
 					content: content,
+					bgClass: "bg-success",
 				}});
 				self.onModalWith('notification');
 			},
