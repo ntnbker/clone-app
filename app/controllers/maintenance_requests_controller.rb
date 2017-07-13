@@ -322,8 +322,10 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def update_status
+
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    action_status = maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category])
+    maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category])
+    action_status = maintenance_request.action_status
     respond_to do |format|
       format.json {render json:action_status}
     end 
