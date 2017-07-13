@@ -1209,6 +1209,7 @@ var MaintenanceRequest = React.createClass({
 			comments: comments,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
+			status: this.props.status,
 			tradies: this.props.tradies,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
@@ -1761,6 +1762,40 @@ var MaintenanceRequest = React.createClass({
 			}
 		});
 	},
+
+	updateStatusMR: function(params) {
+		const self = this;
+		let {maintenance_request, status} = this.state;
+		params.action_category = status.action_category;
+		params.maintenance_request_id = maintenance_request.id;
+		$.ajax({
+			type: 'POST',
+			url: '/update_maintenance_request_status',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					maintenance_request: maintenance_request,
+					notification: {
+						title: "Update Status",
+						content: "The Status of Maintenance Request was update",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Update Status",
+					content: "The Status of Maintenance Request didnt update!" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
 	
 	renderModal: function() {
 		if(this.state.isModal) {
@@ -2107,9 +2142,11 @@ var MaintenanceRequest = React.createClass({
 				<div className="main-summary">
 					<div className="section">
 						<ItemMaintenanceRequest
+							status={this.state.status}
 							gallery={this.props.gallery} 
 							property={this.props.property}
 							all_agents={this.props.all_agents}
+							updateStatusMR={this.updateStatusMR}
 							all_agency_admins={this.props.all_agency_admins}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							assignToUser={(email) => this.assignToUser(email)}

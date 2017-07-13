@@ -149,30 +149,151 @@ var Assigns = React.createClass({
 	}
 });
 
+var DropDownStatus = React.createClass({
+	updateStatusMR: function(status) {
+		this.props.updateStatusMR({
+			maintenance_request_status: status.value,
+		});
+	},
+
+	render: function() {
+		return (
+			<ul>
+				{
+					this.props.data.map((item, key) => {
+						return (
+							<li key={key} onClick={(status) => this.updateStatusMR(item)}>
+								{item.title}
+							</li>
+						);					
+					})
+				}
+			</ul>
+		);
+	}
+});
+
 var ButtonHeaderMR = React.createClass({
 	getInitialState: function() {
+		const actionRequests = [
+      {
+        title: "Maintenance Request", 
+        value: "Initiate Maintenance Request",  
+      },
+      {
+        title: "Awaiting Tradie`s Quote", 
+        value: "Awaiting Quote", 
+      },
+      { 
+        title: "Quote Requested", 
+        value: "Quote Requested", 
+      },
+      {
+        title: "Quote Received", 
+        value: "Quote Received", 
+      },
+      { 
+        title: "New Invoice", 
+        value: "New Invoice", 
+      },
+      { 
+        title: "Pending Payment", 
+        value: "Pending Payment", 
+      }
+    ];
+
+    const awaitingAction = [
+      {
+        title: "Awaiting Owner Initiation", 
+        value: "Awaiting Owner Initiation", 
+      },
+      {
+        title: "Awaiting Owner Instruction", 
+        value: "Awaiting Owner Instruction", 
+      },
+      {
+        title: "Awaiting Tradie Initiation",
+        value: "Awaiting Tradie Initiation", 
+      },
+      {
+        title: "Awaiting Quote Approval", 
+        value: "Quote Received Awaiting Approval", 
+      },
+      {
+        title: "Quote Approved Tradie To Organise Appointment", 
+        value: "Quote Approved Tradie To Organise Appointment", 
+      },
+      {
+        title: "Tradie To Confirm Appointment", 
+        value: "Tradie To Confirm Appointment", 
+      },
+      {
+        title: "Tenant To Confirm Appointment", 
+        value: "Tenant To Confirm Appointment", 
+      },
+      {
+        title: "Landlord To Confirm Appointment", 
+        value: "Landlord To Confirm Appointment", 
+      },
+      {
+        title: "Maintenance Scheduled - Awaiting Invoice", 
+        value: "Maintenance Scheduled - Awaiting Invoice", 
+      },
+      {
+        title: "Maintenance Scheduled With Landlord", 
+        value: "Maintenance Scheduled With Landlord", 
+      }
+    ];
+
 		return {
-			isShow: false
+			isShow: false,
+			isShowStatus: false,
+			actionRequests: actionRequests,
+			awaitingAction: awaitingAction,
 		};
 	},
 
 	show: function(key) {
-		this.setState({
-			isShow: true
-		});
+		switch(key) {
+			case 'assign':
+				this.setState({
+					isShow: true
+				});
+				break;
+
+				case 'status': 
+					this.setState({
+						isShowStatus: true
+					});
+					break;
+		}
+		
 	},
 
-	close: function() {
-		this.setState({
-			isShow: false
-		});
+	close: function(key) {
+		switch(key) {
+			case 'assign':
+				this.setState({
+					isShow: false
+				});
+				break;
+
+				case 'status': 
+					this.setState({
+						isShowStatus: false
+					});
+					break;
+		}
 	},
 
 	componentDidMount: function() {
 		const self = this;
 		$(document).bind('click', function(e) {
 			if(self.state.isShow) {
-				self.close();
+				self.close('assign');
+			}
+			if(self.state.isShowStatus) {
+				self.close('status');
 			}
 		});
 	},
@@ -182,9 +303,21 @@ var ButtonHeaderMR = React.createClass({
 		const all_agency_admins = this.props.all_agency_admins;
 		return (
 			<div className="actions">
-				<button className="button-primary update-status">
-					Update status
-				</button>
+				<div id="update-status">
+					<button className="button-primary update-status" onClick={(key) => this.show('status')}>
+						Update status
+					</button>
+					<div className="dropdown-status" style={{display: this.state.isShowStatus ? 'block' : 'none'}}>
+						<div>
+							<p>Action Request</p>
+							<DropDownStatus updateStatusMR={this.props.updateStatusMR} data={this.state.actionRequests}/>
+						</div>
+						<div>
+							<p className="awaiting">Awaiting Action</p>
+							<DropDownStatus updateStatusMR={this.props.updateStatusMR} data={this.state.awaitingAction}/>
+						</div>
+					</div>
+				</div>
 				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('editMaintenanceRequest')}>
 					<i className="fa fa-pencil" aria-hidden="true" />
 					<span>
@@ -192,7 +325,7 @@ var ButtonHeaderMR = React.createClass({
 					</span>
 				</button>
 				<div className="assign">
-					<button className="button-primary assign-to" id="assign-to" onClick={(key) => this.show(this.state.isShow ? "close" : "")}>
+					<button className="button-primary assign-to" id="assign-to" onClick={(key) => this.show('assign')}>
 						<i className="icon-user" aria-hidden="true" />
 						<span>
 							Assign to
@@ -224,10 +357,7 @@ var ItemMaintenanceRequest = React.createClass({
 				<div className="info">
 					<div className="info-title">
 						<div className="title">
-							<span>
-								{maintenance.maintenance_heading}
-							</span>
-							<button className="button-primary" type="">Active</button>
+							<button className="button-primary" type="">{maintenance.action_status}</button>
 						</div>
 						<div className="author">
 							<i className="fa fa-map-marker" aria-hidden="true" />
@@ -248,6 +378,7 @@ var ItemMaintenanceRequest = React.createClass({
 								all_agency_admins={props.all_agency_admins}
 								viewItem={(key, item) => this.props.viewItem(key, item)}
 								assignToUser={(email) => this.props.assignToUser(email)}
+								updateStatusMR={this.props.updateStatusMR}
 							/>
 					}
 				</div>
