@@ -348,7 +348,7 @@ form#new_quote {
 	}
 
 	.modal-quote .modal-dialog {
-		width: 90% !important;
+		width: 95% !important;
 	}
 }
 
@@ -361,5 +361,44 @@ form#new_quote {
 	}
 	.quote-items {
 		margin: 0 10px;
+	}
+}
+
+@media (max-width: 480px) {
+	.summary-container-index .show-quote .info-agency p{
+		flex-direction: column;
+		justify-content: flex-start;
+		display: flex;
+		span:first-child {
+			text-align: left;
+		}
+	}
+	.show-quote .detail-quote {
+		overflow: auto !important;
+		&::-webkit-scrollbar-track {
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+			border-radius: 15px;
+			background-color: #F5F5F5;
+			margin-right: 0px;
+			padding: 0 10px;
+		}
+		&::-webkit-scrollbar {
+			width: 5px;
+			background-color: #F5F5F5;
+			margin-right: 0px;
+			padding: 0 10px;
+			height: 5px;
+			display:none;
+		}
+		&::-webkit-scrollbar-thumb {
+			border-radius: 15px;
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+			background-color: rgba(0, 0, 0, 0.5);
+			margin-right: 0px;
+			padding: 0 10px;
+		}
+		.table {
+			width: 450px !important;
+		}
 	}
 }

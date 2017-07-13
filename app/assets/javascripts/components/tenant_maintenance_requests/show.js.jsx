@@ -140,7 +140,10 @@ var TenantMaintenanceRequest = React.createClass({
 
 	sendAgentMessage: function(params) {
 		const self = this;
-		params.message.role = this.props.current_role.role;
+		const {maintenance_request} = this.state;
+		params.message.role = 'Tenant';
+		params.message.conversation_type = 'Tenant';
+		params.message.maintenance_request_id = maintenance_request.id;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',

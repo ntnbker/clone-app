@@ -1205,8 +1205,9 @@ var MaintenanceRequest = React.createClass({
 			quote: null,
 			invoice: null,
 			isModal: false,
-			appointment: null,
 			statusItem: null,
+			assignEmail: null,
+			appointment: null,
 			comments: comments,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
@@ -1282,6 +1283,14 @@ var MaintenanceRequest = React.createClass({
 			case 'viewAppointment': {
 				this.setState({
 					appointment: item
+				});
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'confirmAssign': {
+				this.setState({
+					assignEmail: item
 				});
 				this.onModalWith(key);
 				break;
@@ -1599,12 +1608,15 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				quote.forwarded_to_landlord = true;
-				self.setState({notification: {
-					title: "Forward Landlord",
-					content: "The email about quote information was sent for Landlord.",
-					bgClass: "bg-success",
-				}});
+				quote.forwarded_to_landlord = res.forwarded_to_landlord;
+				self.setState({
+					quote: quote,
+					notification: {
+						title: "Forward Landlord",
+						content: "The email about quote information was sent for Landlord.",
+						bgClass: "bg-success",
+					}
+				});
 				self.onModalWith('notification');
 			},
 			error: function(err) {
@@ -1702,11 +1714,12 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	assignToUser: function(email) {
+	assignToUser: function() {
 		const self = this;
+		const {maintenance_request, assignEmail} = this.state;
 		var params = {
-			maintenance_request_id:  self.state.maintenance_request.id,
-			email: email
+			email: assignEmail,
+			maintenance_request_id: maintenance_request.id,
 		};
 
 		$.ajax({
@@ -1720,7 +1733,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					notification: {
 						title: "Assign Matenance Request",
-						content: "The Assign Matenance Request was successfully",
+						content: "Thank you for reassigning this Mantenance Request.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1793,7 +1806,7 @@ var MaintenanceRequest = React.createClass({
 					status: res,
 					notification: {
 						title: "Update Status",
-						content: "Thank you for updating the MR status",
+						content: "Thank you for updating the Mantenance Request status",
 						bgClass: "bg-success",
 					},
 				});
@@ -2080,8 +2093,19 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose}
 							title="Update Status"
 							quote={this.state.quote}
-							updateStatusMR={this.updateStatusMR}
+							click={this.updateStatusMR}
 							content="Are you sure you want to update the Maintenance request status ?"
+						/>
+					);
+
+				case 'confirmAssign': 
+					return (
+						<ModalConfirmUpdateStatus 
+							title="Assign Matenance Request"
+							close={this.isClose}
+							quote={this.state.quote}
+							click={this.assignToUser}
+							content="Are you sure you want to Reassign this Maintenance request ?"
 						/>
 					);
 					

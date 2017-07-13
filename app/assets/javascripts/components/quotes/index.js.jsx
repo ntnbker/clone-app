@@ -554,13 +554,13 @@ var ModalViewQuote = React.createClass({
 						</div>
 						<div className="slider-quote">
 							<div className="modal-body">
-								<div className="show-quote" onTouchEnd={(key, index) => this.switchSlider('prev', this.state.index)}>
+								<div className="show-quote" >
 									<div className="info-quote">
 										<div className="info-trady">
 											<div>
 												<p className="color-grey bill-to">Bill To</p>
 												<p>{self.landlord && self.landlord.name}</p>
-												<p>{self.agency && self.agency.company_name}</p>
+												<p>{self.agency && 'C/-' + self.agency.company_name}</p>
 												<p>{self.agency && self.agency.address}</p>
 											</div>
 										</div>

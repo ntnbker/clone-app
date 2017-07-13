@@ -135,7 +135,7 @@ var Assigns = React.createClass({
 						if(item.name || item.first_name){
 							return (
 								<li key={item.id}>
-									<a onClick={(email) => this.props.assignToUser(item.email)}>
+									<a onClick={(key, data) => this.props.viewItem('confirmAssign', item.email)}>
 										{ item.name ? item.name : item.first_name + " " + item.last_name }
 									</a>
 								</li>
@@ -333,11 +333,11 @@ var ButtonHeaderMR = React.createClass({
 					<div className="dropdown-assign" style={{display: this.state.isShow ? 'block' : 'none'}}>
 						<div>
 							<p>Agency Administrators</p>
-							<Assigns assigns={all_agency_admins} assignToUser={(email) => this.props.assignToUser(email)} />
+							<Assigns assigns={all_agency_admins} viewItem={(key, item) => this.props.viewItem(key, item)} />
 						</div>
 						<div>
 							<p className="agent">Agents</p>
-							<Assigns assigns={all_agents} assignToUser={(email) => this.props.assignToUser(email)} />
+							<Assigns assigns={all_agents} viewItem={(key, item) => this.props.viewItem(key, item)} />
 						</div>
 					</div>
 				</div>
@@ -356,7 +356,7 @@ var ItemMaintenanceRequest = React.createClass({
 				<div className="info">
 					<div className="info-title">
 						<div className="title">
-							<button className="button-primary" type="">{status.agent_status}</button>
+							<button className="button-primary" type="">{status && status.agent_status}</button>
 						</div>
 						<div className="author">
 							<i className="fa fa-map-marker" aria-hidden="true" />
@@ -376,7 +376,6 @@ var ItemMaintenanceRequest = React.createClass({
 								all_agents={props.all_agents}
 								all_agency_admins={props.all_agency_admins}
 								viewItem={(key, item) => this.props.viewItem(key, item)}
-								assignToUser={(email) => this.props.assignToUser(email)}
 							/>
 					}
 				</div>
@@ -420,9 +419,9 @@ var ModalConfirmUpdateStatus = React.createClass({
 						<div className="modal-footer">
 							<button 
 								type="button" 
-								className="btn btn-default success" 
-								onClick={this.props.updateStatusMR} 
 								data-dismiss="modal"
+								onClick={this.props.click} 
+								className="btn btn-default success" 
 							>Yep</button>
 							<button 
 								type="button" 
