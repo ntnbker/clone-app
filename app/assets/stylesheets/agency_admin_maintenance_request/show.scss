@@ -868,12 +868,10 @@ body::-webkit-scrollbar-thumb {
       border: none;
       &.contact {
         background-color: #ff5a5f;
-        box-shadow: 0.2px 0.2px 20px $color-grey-1;
       }
       &.actions {
         margin-left: 20px;
         background-color: #ff5a5f;
-        box-shadow: 0.2px 0.2px 20px $color-grey-1;
       }
       &.active {
         background-color: $color-grey-dark;
