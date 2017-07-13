@@ -329,6 +329,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				let title = '';
+				let content = '';
+				
 				if(!!isDecline) {
 					title = notifyAppointment.decline.title;
 					content = notifyAppointment.decline.content;
@@ -349,9 +352,9 @@ var LandlordMaintenanceRequest = React.createClass({
 				});
 
 				self.setState({notification: {
+					title: title,
+					content: content,
 					bgClass: "bg-success",
-					title: "Create Appoinment",
-					content: "Create Appointment was successfully",
 				}});
 				self.onModalWith('notification');
 			},
