@@ -65,14 +65,14 @@ Rails.application.configure do
   :address        => ENV['MAILGUN_SMTP_SERVER'],
   :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
   :password       => ENV['MAILGUN_SMTP_PASSWORD'],
-  :domain         => 'maintenance-app-staging.herokuapp.com',
+  :domain         => 'maintenanceapp.com.au',
   :authentication => :plain,
 }
 ActionMailer::Base.delivery_method = :smtp
 
-config.action_mailer.default_url_options = { :host => 'https://maintenance-app-staging.herokuapp.com/' }
-config.action_mailer.asset_host = 'https://maintenance-app-staging.herokuapp.com/'
-config.action_controller.asset_host = 'https://maintenance-app-staging.herokuapp.com/'
+config.action_mailer.default_url_options = { :host => 'https://maintenanceapp.com.au' }
+config.action_mailer.asset_host = 'https://maintenanceapp.com.au'
+config.action_controller.asset_host = 'https://maintenanceapp.com.au'
 
 
 
