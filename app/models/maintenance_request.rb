@@ -74,7 +74,7 @@ class MaintenanceRequest < ApplicationRecord
   end
 
   def create_workorder_number
-    self.work_order_number = "W" + SecureRandom.hex(5)  
+    work_order_number = "W" + SecureRandom.hex(5)  
   end
 
 
