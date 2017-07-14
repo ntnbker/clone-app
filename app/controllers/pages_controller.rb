@@ -6,12 +6,6 @@ class PagesController < ApplicationController
     @query = Query.new
     @main_users = MainUser.all
     @service = Service.all
-
-
-
-    # @link = "#{redirect_to root_path}".html_safe
-
-   
   end
 
   
@@ -29,7 +23,7 @@ class PagesController < ApplicationController
           redirect_to new_maintenance_request_path
         else
           flash[:notice] = "As an Agent please login"
-          redirect_to menu_login_path
+          redirect_to menu_login_path(query_id:@query.id)
         end 
 
       elsif params[:form_fields][:user_role] == "Tenant"

@@ -8,6 +8,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  rescue_from ActionController::InvalidAuthenticityToken do |exception|
+    respond_to do |format|
+      
+      format.html { redirect_to root_path, :alert => "Sorry something went wrong. Please try again." }
+    end
+  end
+
+
+
+
   def customer_input_session
     
    @customer_input ||= Query.find(session[:customer_input]) unless session[:customer_input] == nil

@@ -13,12 +13,6 @@ class MaintenanceRequestsController < ApplicationController
     if current_user != nil 
       @current_user = current_user
       @role = current_user.current_role
-
-      if @role == "Tenant"
-        
-      else
-      
-      end 
     else
       @current_user == nil
       @role = nil
@@ -30,7 +24,7 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
 
-
+    
     
   end
 
