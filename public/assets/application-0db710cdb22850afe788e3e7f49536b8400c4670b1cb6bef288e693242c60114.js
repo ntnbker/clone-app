@@ -68006,7 +68006,7 @@ var notifyAppointment = {
 	},
 	normal: {
 		title: "Create Appointment",
-		content: "You was create appointment."
+		content: "Thank you for creating an appointment."
 	}
 };
 
@@ -68305,6 +68305,9 @@ var SelectTime = React.createClass({
 	},
 
 	makeHour: function () {
+		var now = new Date();
+		hours = parseInt(now.getHours());
+		minutes = parseInt(now.getMinutes());
 		var date = [];
 		date.push(React.createElement(
 			"option",
@@ -68326,7 +68329,7 @@ var SelectTime = React.createClass({
 			}
 			date.push(React.createElement(
 				"option",
-				{ key: i, value: i },
+				{ key: i, value: i, disabled: i < hours ? true : false },
 				value
 			));
 		}
@@ -68336,6 +68339,8 @@ var SelectTime = React.createClass({
 	makeMinute: function () {
 		var data = [0, 15, 30, 45];
 		var date = [];
+		var now = new Date();
+		minutes = parseInt(now.getMinutes());
 		date.push(React.createElement(
 			"option",
 			{ key: "-1", value: "" },
@@ -68344,7 +68349,7 @@ var SelectTime = React.createClass({
 		data.map(function (item, key) {
 			date.push(React.createElement(
 				"option",
-				{ key: key, value: item },
+				{ key: key, value: item, disabled: item < minutes ? true : false },
 				item == 0 ? item + "0" : item
 			));
 		});
@@ -68449,6 +68454,14 @@ var ModalAddAppointment = React.createClass({
 			appointment_type: this.props.type
 		};
 		this.props.addAppointment(params);
+	},
+
+	componentDidMount: function () {
+		var now = new Date();
+		month = parseInt(now.getMonth()) + 1;
+		month = month.toString().length == 1 ? '0' + month : month;
+		date = now.getFullYear() + '-' + month + '-' + now.getDate();
+		document.getElementById('date').setAttribute("min", date);
 	},
 
 	render: function () {
@@ -71290,6 +71303,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function (res) {
+				var title = '';
+				var content = '';
+
 				if (!!isDecline) {
 					title = notifyAppointment.decline.title;
 					content = notifyAppointment.decline.content;
@@ -71310,9 +71326,9 @@ var LandlordMaintenanceRequest = React.createClass({
 				});
 
 				self.setState({ notification: {
-						bgClass: "bg-success",
-						title: "Create Appoinment",
-						content: "Create Appointment was successfully"
+						title: title,
+						content: content,
+						bgClass: "bg-success"
 					} });
 				self.onModalWith('notification');
 			},
@@ -74304,8 +74320,8 @@ var Assigns = React.createClass({
 						{ key: item.id },
 						React.createElement(
 							"a",
-							{ onClick: function (email) {
-									return _this.props.assignToUser(item.email);
+							{ onClick: function (key, data) {
+									return _this.props.viewItem('confirmAssign', item.email);
 								} },
 							item.name ? item.name : item.first_name + " " + item.last_name
 						)
@@ -74316,38 +74332,142 @@ var Assigns = React.createClass({
 	}
 });
 
+var DropDownStatus = React.createClass({
+	displayName: "DropDownStatus",
+
+	viewItem: function (status) {
+		this.props.viewItem('confirmUpdateStatus', status);
+	},
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"ul",
+			null,
+			this.props.data.map(function (item, key) {
+				return React.createElement(
+					"li",
+					{ key: key, onClick: function (status) {
+							return _this2.viewItem(item);
+						} },
+					item.title
+				);
+			})
+		);
+	}
+});
+
 var ButtonHeaderMR = React.createClass({
 	displayName: "ButtonHeaderMR",
 
 	getInitialState: function () {
+		var actionRequests = [{
+			title: "Maintenance Request",
+			value: "Initiate Maintenance Request"
+		}, {
+			title: "Awaiting Tradie`s Quote",
+			value: "Awaiting Quote"
+		}, {
+			title: "Quote Requested",
+			value: "Quote Requested"
+		}, {
+			title: "Quote Received",
+			value: "Quote Received"
+		}, {
+			title: "New Invoice",
+			value: "New Invoice"
+		}, {
+			title: "Pending Payment",
+			value: "Pending Payment"
+		}];
+
+		var awaitingAction = [{
+			title: "Awaiting Owner Initiation",
+			value: "Awaiting Owner Initiation"
+		}, {
+			title: "Awaiting Owner Instruction",
+			value: "Awaiting Owner Instruction"
+		}, {
+			title: "Awaiting Tradie Initiation",
+			value: "Awaiting Tradie Initiation"
+		}, {
+			title: "Awaiting Quote Approval",
+			value: "Quote Received Awaiting Approval"
+		}, {
+			title: "Quote Approved Tradie To Organise Appointment",
+			value: "Quote Approved Tradie To Organise Appointment"
+		}, {
+			title: "Tradie To Confirm Appointment",
+			value: "Tradie To Confirm Appointment"
+		}, {
+			title: "Tenant To Confirm Appointment",
+			value: "Tenant To Confirm Appointment"
+		}, {
+			title: "Landlord To Confirm Appointment",
+			value: "Landlord To Confirm Appointment"
+		}, {
+			title: "Maintenance Scheduled - Awaiting Invoice",
+			value: "Maintenance Scheduled - Awaiting Invoice"
+		}, {
+			title: "Maintenance Scheduled With Landlord",
+			value: "Maintenance Scheduled With Landlord"
+		}];
+
 		return {
-			isShow: false
+			isShow: false,
+			isShowStatus: false,
+			actionRequests: actionRequests,
+			awaitingAction: awaitingAction
 		};
 	},
 
 	show: function (key) {
-		this.setState({
-			isShow: true
-		});
+		switch (key) {
+			case 'assign':
+				this.setState({
+					isShow: true
+				});
+				break;
+
+			case 'status':
+				this.setState({
+					isShowStatus: true
+				});
+				break;
+		}
 	},
 
-	close: function () {
-		this.setState({
-			isShow: false
-		});
+	close: function (key) {
+		switch (key) {
+			case 'assign':
+				this.setState({
+					isShow: false
+				});
+				break;
+
+			case 'status':
+				this.setState({
+					isShowStatus: false
+				});
+				break;
+		}
 	},
 
 	componentDidMount: function () {
 		var self = this;
 		$(document).bind('click', function (e) {
 			if (self.state.isShow) {
-				self.close();
+				self.close('assign');
+			}
+			if (self.state.isShowStatus) {
+				self.close('status');
 			}
 		});
 	},
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		var all_agents = this.props.all_agents;
 		var all_agency_admins = this.props.all_agency_admins;
@@ -74355,14 +74475,48 @@ var ButtonHeaderMR = React.createClass({
 			"div",
 			{ className: "actions" },
 			React.createElement(
-				"button",
-				{ className: "button-primary update-status" },
-				"Update status"
+				"div",
+				{ id: "update-status" },
+				React.createElement(
+					"button",
+					{ className: "button-primary update-status", onClick: function (key) {
+							return _this3.show('status');
+						} },
+					"Update status"
+				),
+				React.createElement(
+					"div",
+					{ className: "dropdown-status", style: { display: this.state.isShowStatus ? 'block' : 'none' } },
+					React.createElement(
+						"div",
+						null,
+						React.createElement(
+							"p",
+							null,
+							"Action Request"
+						),
+						React.createElement(DropDownStatus, { viewItem: function (key, item) {
+								return _this3.props.viewItem(key, item);
+							}, data: this.state.actionRequests })
+					),
+					React.createElement(
+						"div",
+						null,
+						React.createElement(
+							"p",
+							{ className: "awaiting" },
+							"Awaiting Action"
+						),
+						React.createElement(DropDownStatus, { viewItem: function (key, item) {
+								return _this3.props.viewItem(key, item);
+							}, data: this.state.awaitingAction })
+					)
+				)
 			),
 			React.createElement(
 				"button",
 				{ className: "button-primary edit-detail", onClick: function (key) {
-						return _this2.props.viewItem('editMaintenanceRequest');
+						return _this3.props.viewItem('editMaintenanceRequest');
 					} },
 				React.createElement("i", { className: "fa fa-pencil", "aria-hidden": "true" }),
 				React.createElement(
@@ -74377,7 +74531,7 @@ var ButtonHeaderMR = React.createClass({
 				React.createElement(
 					"button",
 					{ className: "button-primary assign-to", id: "assign-to", onClick: function (key) {
-							return _this2.show(_this2.state.isShow ? "close" : "");
+							return _this3.show('assign');
 						} },
 					React.createElement("i", { className: "icon-user", "aria-hidden": "true" }),
 					React.createElement(
@@ -74398,8 +74552,8 @@ var ButtonHeaderMR = React.createClass({
 							null,
 							"Agency Administrators"
 						),
-						React.createElement(Assigns, { assigns: all_agency_admins, assignToUser: function (email) {
-								return _this2.props.assignToUser(email);
+						React.createElement(Assigns, { assigns: all_agency_admins, viewItem: function (key, item) {
+								return _this3.props.viewItem(key, item);
 							} })
 					),
 					React.createElement(
@@ -74410,8 +74564,8 @@ var ButtonHeaderMR = React.createClass({
 							{ className: "agent" },
 							"Agents"
 						),
-						React.createElement(Assigns, { assigns: all_agents, assignToUser: function (email) {
-								return _this2.props.assignToUser(email);
+						React.createElement(Assigns, { assigns: all_agents, viewItem: function (key, item) {
+								return _this3.props.viewItem(key, item);
 							} })
 					)
 				)
@@ -74424,9 +74578,11 @@ var ItemMaintenanceRequest = React.createClass({
 	displayName: "ItemMaintenanceRequest",
 
 	render: function () {
-		var _this3 = this;
+		var _this4 = this;
 
 		var maintenance = this.props.maintenance_request;
+		var status = this.props.status;
+
 		var props = this.props;
 		return React.createElement(
 			"div",
@@ -74441,14 +74597,9 @@ var ItemMaintenanceRequest = React.createClass({
 						"div",
 						{ className: "title" },
 						React.createElement(
-							"span",
-							null,
-							maintenance.maintenance_heading
-						),
-						React.createElement(
 							"button",
 							{ className: "button-primary", type: "" },
-							"Active"
+							status && status.agent_status
 						)
 					),
 					React.createElement(
@@ -74482,10 +74633,7 @@ var ItemMaintenanceRequest = React.createClass({
 					all_agents: props.all_agents,
 					all_agency_admins: props.all_agency_admins,
 					viewItem: function (key, item) {
-						return _this3.props.viewItem(key, item);
-					},
-					assignToUser: function (email) {
-						return _this3.props.assignToUser(email);
+						return _this4.props.viewItem(key, item);
 					}
 				})
 			),
@@ -74516,6 +74664,85 @@ var ItemMaintenanceRequest = React.createClass({
 					)
 				),
 				React.createElement(Carousel, { gallery: this.props.gallery })
+			)
+		);
+	}
+});
+
+var ModalConfirmUpdateStatus = React.createClass({
+	displayName: "ModalConfirmUpdateStatus",
+
+	render: function () {
+		var _props = this.props;
+		var content = _props.content;
+		var title = _props.title;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							content
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								"data-dismiss": "modal",
+								onClick: this.props.click,
+								className: "btn btn-default success"
+							},
+							"Yep"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-primary cancel",
+								onClick: this.props.close
+							},
+							"No"
+						)
+					)
+				)
 			)
 		);
 	}
@@ -77040,10 +77267,13 @@ var MaintenanceRequest = React.createClass({
 			quote: null,
 			invoice: null,
 			isModal: false,
+			statusItem: null,
+			assignEmail: null,
 			appointment: null,
 			comments: comments,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
+			status: this.props.status,
 			tradies: this.props.tradies,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
@@ -77119,6 +77349,24 @@ var MaintenanceRequest = React.createClass({
 				{
 					this.setState({
 						appointment: item
+					});
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'confirmAssign':
+				{
+					this.setState({
+						assignEmail: item
+					});
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'confirmUpdateStatus':
+				{
+					this.setState({
+						statusItem: item
 					});
 					this.onModalWith(key);
 					break;
@@ -77404,14 +77652,14 @@ var MaintenanceRequest = React.createClass({
 				if (params.status == 'Approved') {
 					self.setState({ notification: {
 							title: "Accept Quote",
-							content: "Quote was accept!",
+							content: "You have accepted the quote.",
 							bgClass: "bg-success"
 						} });
 					self.onModalWith('notification');
 				} else if (params.status == 'Declined') {
 					self.setState({ notification: {
 							title: "Decline Quote",
-							content: "Quote was decline!",
+							content: "You have declined the quote.",
 							bgClass: "bg-success"
 						} });
 					self.onModalWith('notification');
@@ -77421,7 +77669,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendEmailLandlord: function (params) {
+	sendEmailLandlord: function (params, quote) {
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -77431,11 +77679,15 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
-				self.setState({ notification: {
+				quote.forwarded_to_landlord = res.forwarded_to_landlord;
+				self.setState({
+					quote: quote,
+					notification: {
 						title: "Forward Landlord",
 						content: "The email about quote information was sent for Landlord.",
 						bgClass: "bg-success"
-					} });
+					}
+				});
 				self.onModalWith('notification');
 			},
 			error: function (err) {
@@ -77533,11 +77785,15 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	assignToUser: function (email) {
+	assignToUser: function () {
 		var self = this;
+		var _state = this.state;
+		var maintenance_request = _state.maintenance_request;
+		var assignEmail = _state.assignEmail;
+
 		var params = {
-			maintenance_request_id: self.state.maintenance_request.id,
-			email: email
+			email: assignEmail,
+			maintenance_request_id: maintenance_request.id
 		};
 
 		$.ajax({
@@ -77551,7 +77807,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					notification: {
 						title: "Assign Matenance Request",
-						content: "The Assign Matenance Request was successfully",
+						content: "Thank you for reassigning this Mantenance Request.",
 						bgClass: "bg-success"
 					}
 				});
@@ -77597,6 +77853,48 @@ var MaintenanceRequest = React.createClass({
 				self.setState({ notification: {
 						title: "Edit Maintenance Request",
 						content: "The Maintenance Request didnt update!",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	updateStatusMR: function () {
+		var self = this;
+		var _state2 = this.state;
+		var maintenance_request = _state2.maintenance_request;
+		var status = _state2.status;
+		var statusItem = _state2.statusItem;
+
+		var params = {
+			action_category: status.action_category,
+			maintenance_request_status: statusItem.value,
+			maintenance_request_id: maintenance_request.id
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/update_maintenance_request_status',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					status: res,
+					notification: {
+						title: "Update Status",
+						content: "Thank you for updating the Mantenance Request status",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Update Status",
+						content: "The Status of Maintenance Request didnt update!",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -77811,11 +78109,11 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state = this.state;
-						var comments = _state.comments;
-						var quoteComments = _state.quoteComments;
-						var landlordComments = _state.landlordComments;
-						var appointment = _state.appointment;
+						var _state3 = this.state;
+						var comments = _state3.comments;
+						var quoteComments = _state3.quoteComments;
+						var landlordComments = _state3.landlordComments;
+						var appointment = _state3.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -77849,6 +78147,24 @@ var MaintenanceRequest = React.createClass({
 						quote: this.state.quote,
 						updateStatusQuote: this.updateStatusQuote,
 						content: "Are you sure you want to cancel the job ?"
+					});
+
+				case 'confirmUpdateStatus':
+					return React.createElement(ModalConfirmUpdateStatus, {
+						close: this.isClose,
+						title: "Update Status",
+						quote: this.state.quote,
+						click: this.updateStatusMR,
+						content: "Are you sure you want to update the Maintenance request status ?"
+					});
+
+				case 'confirmAssign':
+					return React.createElement(ModalConfirmUpdateStatus, {
+						title: "Assign Matenance Request",
+						close: this.isClose,
+						quote: this.state.quote,
+						click: this.assignToUser,
+						content: "Are you sure you want to Reassign this Maintenance request ?"
 					});
 
 				default:
@@ -77945,9 +78261,11 @@ var MaintenanceRequest = React.createClass({
 					"div",
 					{ className: "section" },
 					React.createElement(ItemMaintenanceRequest, {
+						status: this.state.status,
 						gallery: this.props.gallery,
 						property: this.props.property,
 						all_agents: this.props.all_agents,
+						updateStatusMR: this.updateStatusMR,
 						all_agency_admins: this.props.all_agency_admins,
 						viewItem: function (key, item) {
 							return _this9.viewItem(key, item);
@@ -78824,7 +79142,7 @@ var ButtonForwardLandlord = React.createClass({
 				maintenance_request_id: this.props.quote.maintenance_request_id
 			};
 
-			this.props.sendEmailLandlord(params);
+			this.props.sendEmailLandlord(params, this.props.quote);
 			this.setState({
 				isSend: true
 			});
@@ -79450,7 +79768,7 @@ var ModalViewQuote = React.createClass({
 				{ className: "modal-dialog" },
 				React.createElement(
 					"div",
-					{ className: "modal-content" },
+					{ className: "modal-content quote-height" },
 					React.createElement(
 						"div",
 						{ className: "modal-header" },
@@ -79557,9 +79875,7 @@ var ModalViewQuote = React.createClass({
 							{ className: "modal-body" },
 							React.createElement(
 								"div",
-								{ className: "show-quote", onTouchEnd: function (key, index) {
-										return _this4.switchSlider('prev', _this4.state.index);
-									} },
+								{ className: "show-quote" },
 								React.createElement(
 									"div",
 									{ className: "info-quote" },
@@ -79582,7 +79898,7 @@ var ModalViewQuote = React.createClass({
 											React.createElement(
 												"p",
 												null,
-												self.agency && self.agency.company_name
+												self.agency && 'C/-' + self.agency.company_name
 											),
 											React.createElement(
 												"p",
@@ -80233,10 +80549,20 @@ var Footer = React.createClass({
             )
         );
     },
+
+    componentDidMount: function () {
+        $(window).on('load resize', function () {
+            var footerHeight = $('#footer').height();
+            if (footerHeight > 0) {
+                $('#main').css('margin-bottom', footerHeight + 10);
+            }
+        });
+    },
+
     render: function () {
         return React.createElement(
             "div",
-            null,
+            { id: "footer" },
             this.props.expanded ? this.footerForExpanded() : this.footer()
         );
     }
@@ -80925,7 +81251,11 @@ var TenantMaintenanceRequest = React.createClass({
 
 	sendAgentMessage: function (params) {
 		var self = this;
-		params.message.role = this.props.current_role.role;
+		var maintenance_request = this.state.maintenance_request;
+
+		params.message.role = 'Tenant';
+		params.message.conversation_type = 'Tenant';
+		params.message.maintenance_request_id = maintenance_request.id;
 		$.ajax({
 			type: 'POST',
 			url: '/messages',
@@ -83770,9 +84100,9 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 
 				self.setState({ notification: {
-						bgClass: "bg-success",
 						title: title,
-						content: content
+						content: content,
+						bgClass: "bg-success"
 					} });
 				self.onModalWith('notification');
 			},
