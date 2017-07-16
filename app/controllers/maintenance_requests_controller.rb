@@ -24,8 +24,6 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
 
-    
-    
   end
 
   def create

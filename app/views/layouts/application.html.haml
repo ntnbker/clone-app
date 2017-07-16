@@ -24,6 +24,7 @@
 
     =yield :head
   %body
+    = render 'shared/messages'
     = render 'shared/spinner'
     %div.layout
       %header
@@ -31,7 +32,7 @@
           = render 'shared/nav', {:expanded => true}
         - else
           = render 'shared/nav'
-        = render 'shared/messages'
+        
       %section.content.clearfix.content-custom#main
         = yield
 

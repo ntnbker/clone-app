@@ -24,8 +24,8 @@ class AgencyAdminsController < ApplicationController
       @agency_admin.save
       @agency_admin.roles << role
       role.save
-      flash[:success] = "Thank you for adding another Agency Admin."
-      new_agency_admin_path
+      flash[:notice] = "Thank you for adding another Agency Admin."
+      redirect_to new_agency_admin_path
     elsif existing_user && existing_role == true
       @agency_admin = AgencyAdmin.new(agency_admin_params) 
       flash[:danger] = "Sorry this person is already an Agency Administrator"
@@ -57,7 +57,9 @@ class AgencyAdminsController < ApplicationController
 
   end
   
-end
+
+
+  
 
   private
 
