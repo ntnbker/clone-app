@@ -21,6 +21,12 @@ var ButtonForwardLandlord = React.createClass({
 		}
 	},
 
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			isSend: nextProps.quote.forwarded_to_landlord
+		});
+	},
+
 	render: function() {
 		const style = {
 			opacity: this.state.isSend ? 0.5 : 1
@@ -162,8 +168,20 @@ var ButtonQuoteMessage = React.createClass({
 });
 
 var ActionQuote = React.createClass({
+	getInitialState() {
+		return {
+			quote: this.props.quote
+		};	
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			quote: nextProps.quote
+		});
+	},
+
 	render: function(){
-		const {quote} = this.props;
+		const {quote} = this.state;
 		const self = this.props;
 		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return (
