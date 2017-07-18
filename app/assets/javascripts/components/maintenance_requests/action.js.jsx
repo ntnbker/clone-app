@@ -5,7 +5,7 @@ var ContentAction = React.createClass({
 				<li>
 					<a onClick={() => this.props.onModalWith(!!this.props.landlord ? 'confirm' : 'addAskLandlord')}>
 						<i className="fa fa-user" />
-						Ask Landlord
+						Ask Landlord for instructions
 					</a>
 				</li>
 				<li className="">

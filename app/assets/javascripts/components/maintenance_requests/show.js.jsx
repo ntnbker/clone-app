@@ -14,10 +14,10 @@
 							>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title text-center">Confirm Landlord</h4>
+							<h4 className="modal-title text-center">Confirm Landlord Details</h4>
 						</div>
 						<div className="modal-body">
-							<p className="text-center">Is {this.props.landlord.name} the correct landlord for {this.props.property.property_address}</p>
+							<p className="text-center">{ 'Our records show that "' + this.props.landlord.name + '" is the landlord for "' + this.props.property.property_address + '". Please confirm if this is correct.'}</p>
 						</div>
 						<div className="modal-footer">
 							<button 
@@ -140,17 +140,16 @@ var ModalAddAskLandlord = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Forward Maintenance request</h4>
+								<h4 className="modal-title text-center">Ask lanlord for instructions</h4>
 							</div>
 							<div className="modal-body">
 									<div className="row">
 										<div>
-											<label>Name <strong>*</strong>:</label>
 											<input 
 												id="name" 
 												type="text" 
 												name="landlord[name]" 
-												placeholder="Enter Name"
+												placeholder="Landlord Name"
 												ref={e => this.name = e}
 												onChange={this.checkValidate} 
 												className={"u-full-width " + (this.state.errorName && "has-error")} 
@@ -159,13 +158,12 @@ var ModalAddAskLandlord = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<label>Mobile <strong>*</strong>:</label>
 											<input 
 												type="number" 
 												minLength="10"
 												maxLength="11"
 												name="landlord[mobile]" 
-												placeholder="Enter Mobile"
+												placeholder="Landlord Mobile"
 												onChange={this.checkValidate} 
 												id="mobile" ref={e => this.mobile = e}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")} 
@@ -174,16 +172,15 @@ var ModalAddAskLandlord = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<label>Email <strong>*</strong>:</label>
 											<input 
 												type="email" 
-												name="landlord[email]" 
-												placeholder="Enter Email"
-												onChange={this.checkValidate} 
-												id="email" ref={e => this.email = e}
-												autoCapitalize="off"
 												autoCorrect="off"
 												autoComplete="off"
+												autoCapitalize="off"
+												name="landlord[email]" 
+												placeholder="Landlord Email"
+												onChange={this.checkValidate} 
+												id="email" ref={e => this.email = e}
 												className={"u-full-width " + (this.state.errorEmail && "has-error")} 
 											/>
 										</div>
@@ -316,16 +313,16 @@ var ModalEditAskLandlord = React.createClass({
 							</div>
 							<div className="modal-body">
 									<div className="row">
-										<a className="btn-edit" onClick={this.isEdit}>Edit</a>
+										<a className="btn-edit" onClick={this.isEdit}>Edit Landlord Details</a>
 									</div>
 									<div className="row m-t-lg">
 										<div className="form-input">
-											<label>Name <strong>*</strong>:</label>
 											<input 
 												type="text" 
+												placeholder="Landlord Nane"
 												onChange={this.checkValidate} 
 												readOnly={!this.state.isEdit} 
-												id="name" ref={e => this.name = e} 
+												id="name" ref={e => this.name = e}
 												defaultValue={this.props.landlord.name} 
 												className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")}
 											/>
@@ -333,13 +330,13 @@ var ModalEditAskLandlord = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div className="form-input">
-											<label>Mobile <strong>*</strong>:</label>
 											<input 
 												id="mobile" 
 												type="number" 
 												minLength="10"
 												maxLength="11"
 												ref={e => this.mobile = e} 
+												placeholder="Landlord Mobile"
 												onChange={this.checkValidate} 
 												readOnly={!this.state.isEdit}
 												defaultValue={this.props.landlord.mobile} 
@@ -349,7 +346,6 @@ var ModalEditAskLandlord = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div className="form-input">
-											<label>Email <strong>*</strong>:</label>
 											<input 
 												id="email"
 												type="text"
@@ -357,6 +353,7 @@ var ModalEditAskLandlord = React.createClass({
 												autoCorrect="off"
 												autoComplete="off"
 												ref={e => this.email = e}
+												placeholder="Landlord Email"
 												onChange={this.checkValidate}
 												readOnly={!this.state.isEdit}
 												defaultValue={this.props.landlord.email} 
@@ -1062,10 +1059,9 @@ var ModalRequestModal = React.createClass({
 							</div>
 							<div className="modal-body">
 									<div className="row">
-										<label className="label-custom">Select Trady:</label>
 										<select 
 											id="trady" 
-											className="form-control"
+											className="form-control input-custom"
 											ref={e => this.trady_id = e}
 											onChange={() => this.selectTrady(this.trady_id.value)} 
 										>
@@ -1087,7 +1083,6 @@ var ModalRequestModal = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<label className="label-custom">Company Name<strong>*</strong>:</label>
 											<input
 												type="text" 
 												id="company" 
@@ -1103,7 +1098,6 @@ var ModalRequestModal = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<label className="label-custom">Name <strong>*</strong>:</label>
 											<input
 												id="name" 
 												type="text" 
@@ -1119,7 +1113,6 @@ var ModalRequestModal = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<label className="label-custom">Email <strong>*</strong>:</label>
 											<input
 												id="email" 
 												type="email" 
@@ -1138,7 +1131,6 @@ var ModalRequestModal = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<label className="label-custom">Mobile <strong>*</strong>:</label>
 											<input 
 												id="mobile" 
 												type="number"
@@ -1329,9 +1321,9 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: "Forward Maintenance request",
-						content: "Your Landlord has been created successfully!",
 						bgClass: "bg-success",
+						title: "Ask lanlord for instructions",
+						content: "Thank you, the maintenance requet has been emailed to the landlord. We will notify you with the landlord's instruction when he/she responds.",
 					}
 				});
 				self.isClose();
@@ -1339,7 +1331,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Forward Maintenance request",
+					title: "Ask lanlord for instructions",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});
@@ -1361,7 +1353,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: "Forward Maintenance request",
+						title: "Ask lanlord for instructions",
 						content: "Your Landlord has been updated successfully!",
 						bgClass: "bg-success",
 					},
@@ -1371,7 +1363,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Forward Maintenance request",
+					title: "Ask lanlord for instructions",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});
@@ -1655,9 +1647,9 @@ var MaintenanceRequest = React.createClass({
 		if(!!flag) {
 			self.setState({
 				notification: {
-					title: "Request Quote",
-					content: "We have already send a request quote to the person. Please pick another person",
 					bgClass: "bg-error",
+					title: "Duplicate Quote Request",
+					content: "You have already requested a quote from this tradie for this maintenance request. Please select another tradie if you would like another quote.",
 				},
 			});
 			self.onModalWith('notification');
@@ -1676,7 +1668,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Request Quote",
-							content: "the request quote has sent successfully",
+							content: 'Thank you, a quote request has been emailed to "Trady Company". We will notofy once the quote has been received.',
 							bgClass: "bg-success",
 						},
 					});
@@ -1696,6 +1688,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendWorkOrder: function(params) {
 		const self = this;
+		delete params.item;
 		$.ajax({
 			type: 'POST',
 			url: '/tradies',
@@ -1709,7 +1702,7 @@ var MaintenanceRequest = React.createClass({
 					tradies: res,
 					notification: {
 						title: "Send Work Order",
-						content: "the work order has sent successfully",
+						content: 'Thank you, a work order has been emailed to "Trady Company". You will receive an invoice form "Trady Company" once the job has been completed',
 						bgClass: "bg-success",
 					},
 				});
