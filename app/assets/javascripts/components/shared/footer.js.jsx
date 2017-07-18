@@ -41,6 +41,7 @@ var Footer = React.createClass({
             </div>
         </div>
     },
+
     footer() {
         return <div className="footer-other">
             <div className="footer-custom">
@@ -65,12 +66,12 @@ var Footer = React.createClass({
     },
 
     componentDidMount: function() {
-        $(window).on('load resize', function() {
+        $(document).ready(function () {
             var footerHeight = $('#footer').height();
             if(footerHeight > 0) {
-                $('#main').css('margin-bottom', footerHeight+10);
+                $('#main').css('margin-bottom', footerHeight);
             }
-        });   
+        });
     },
 
     render: function() {

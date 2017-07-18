@@ -38,7 +38,7 @@ var SelectTime = React.createClass({
 		minutes = parseInt(now.getMinutes());
     date.push(<option key="-1" value="">--</option>);
     data.map((item, key) => {
-      date.push(<option key={key} value={item} disabled={item < minutes ? true : false}>{item == 0 ? item + "0" : item}</option>);
+      date.push(<option key={key} value={item}>{item == 0 ? item + "0" : item}</option>);
     });
     
     return date;
