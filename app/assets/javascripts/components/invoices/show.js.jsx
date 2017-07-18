@@ -210,31 +210,26 @@ var ModalViewInvoice = React.createClass({
 							</div>
 							<div className="info-trady">
 								<p>
-									<span>Business: </span>
 									<span>
 										{invoice.trady.company_name}
 									</span>
 								</p>
 								<p>
-									<span>ABN:</span>
 									<span>
 										{invoice.trady.trady_company.abn}
 									</span>
 								</p>
 								<p>
-									<span>Address:</span>
 									<span>
 										{invoice.trady.trady_company.address}
 									</span>
 								</p>
 								<p>
-									<span>Phone:</span>
 									<span>
 										{invoice.trady.trady_company.mobile_number}
 									</span>
 								</p>
 								<p>
-									<span>Email:</span>
 									<span>
 										{invoice.trady.trady_company.email}
 									</span>

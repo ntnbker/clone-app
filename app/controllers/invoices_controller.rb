@@ -59,12 +59,20 @@ class InvoicesController < ApplicationController
     @ledger = Ledger.find_by(id:params[:id])
     @invoice_type = params[:invoice_type]
     @system_plan = params[:system_plan]
-    #@invoice = Invoice.find_by(id:params[:id])
+    @invoice = Invoice.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
+    if  @maintenance_request.property.landlord != nil
+      @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
+    end 
     # @ledger = @maintenance_request.ledger
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_id = params[:trady_id] 
     @quote_id = params[:quote_id]
+    if @maintenance_request.agency_admin == nil
+      @agency = @maintenance_request.agent.agency
+    else
+      @agency = @maintenance_request.agency_admin.agency
+    end
   end
 
   def edit

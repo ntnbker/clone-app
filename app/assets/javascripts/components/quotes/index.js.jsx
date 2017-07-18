@@ -162,20 +162,9 @@ var ButtonQuoteMessage = React.createClass({
 });
 
 var ActionQuote = React.createClass({
-	getInitialState: function() {
-		return {
-			quote: this.props.quote
-		};
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		this.setState({
-			quote: nextProps.quote.id == this.state.quote.id ? nextProps.quote : this.state.quote
-		});
-	},
-
 	render: function(){
-		const quote = this.state.quote;
+		debugger
+		const {quote} = this.props;
 		const self = this.props;
 		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return (
@@ -284,13 +273,14 @@ var Quotes = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
+		debugger
 		this.setState({
 			quotes: nextProps.quotes
 		});
 	},
 
 	render: function() {
-		const quotes = this.state.quotes;
+		const {quotes} = this.state;
 		const self = this.props;
 		return (
 			<div className="quotes" id="quotes">
@@ -512,31 +502,26 @@ var ModalViewQuote = React.createClass({
 							</div>
 							<div className="info-trady">
 								<p>
-									<span>Business: </span>
 									<span>
 										{quote.trady.company_name}
 									</span>
 								</p>
 								<p>
-									<span>ABN:</span>
 									<span>
 										{quote.trady.trady_company.abn}
 									</span>
 								</p>
 								<p>
-									<span>Address:</span>
 									<span>
 										{quote.trady.trady_company.address}
 									</span>
 								</p>
 								<p>
-									<span>Phone:</span>
 									<span>
 										{quote.trady.trady_company.mobile_number}
 									</span>
 								</p>
 								<p>
-									<span>Email:</span>
 									<span>
 										{quote.trady.trady_company.email}
 									</span>

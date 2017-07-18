@@ -1,108 +1,106 @@
 =react_component('StepProgress', {:step => 3})
+%div.container.invoice-form.well
+  %div.send-email-quote
+    %div.header-quote
+      %div.logo
+        = link_to "#" do
+          %img{:src => asset_path("assets/logo.png"), :class => 'img'}
+      %div.info-quote
+        %p
+          %span
+            = "#{@trady.trady_company.company_name}"
+        %p
+          %span
+            = "#{@trady.trady_company.abn}"
+        %p
+          %span
+            = "#{@trady.trady_company.address}"
+        %p
+          %span
+            = "#{@trady.trady_company.mobile_number}"
+        %p
+          %span
+            = "#{@trady.trady_company.email}"
 
-%div.container.invoice-form 
-  %div.info-invoice
-    %div.invoice-left
-      %h6
-        %span.title
-          ="Name:"
-        %span
-          ="#{@trady.name.capitalize}"
-      %h6
-        %span.title
-          ="Company Name:"
-        %span
-          ="#{@trady.trady_company.company_name.capitalize}"
-      %h6
-        %span.title
-          ="Company Trading Name:"
-        %span
-          ="#{@trady.trady_company.trading_name.capitalize}"
-      %h6
-        %span.title ABN:
-        %span
-          ="#{@trady.trady_company.trading_name.capitalize}"
-      %h6
-        %span.title Address:
-        %span
-          ="#{@trady.trady_company.address}"
-    %div.invoice-right
-      %h6
-        %span.title Mailing Address
-        %span
-          ="#{@trady.trady_company.mailing_address}"
-      %h6
-        %span.title Email:
-        %span
-          ="#{@trady.trady_company.email}"
-      %h6
-        %span.title Mobile:
-        %span
-        ="#{@trady.trady_company.mobile_number}"
-      %h6
-        %span.title Bank Account Name:
-        %span
-        ="#{@trady.trady_company.trading_name.capitalize}"
+    %hr
+    %div.quote
+      %div.info-agency
+        %p.color-grey.bill-to Bill To
+        %p.text-capitalize
+          = @landlord ? "#{@landlord.name}" : nil
+        %p
+          = @agency ? "C/-" + "#{@agency.company_name}" : nil
+        %p
+          = @agency ? "#{@agency.address}" : nil
 
-  %hr
-  
-  -@ledger.invoices.each_with_index do |invoice, index| 
-  
-    %h5.text-center
-      ="Invoice # #{index+1}"
+      %div.date-quote
+        %p
+          %span.font-bold Invoice Number:
+          %span
+            = "#{@invoice.id}"
+        %p
+          %span.font-bold Invoice Date:
+          %span
+            = "#{@invoice.created_at.strftime('%B %d, %Y')}"
+        %p
+          %span.font-bold Payment Date:
+          %span
+            = "#{@invoice.due_date.strftime('%B %d, %Y')}"
 
-    %table{:style=>"width:100%"}
-      %tr
-        %th Description
-        %th Pricing
-        %th Rate
-        %th Hours
-        %th Total
-      -invoice.invoice_items.each do |f|
+    %div.quote-items        
+      %table
         %tr
-          %td
-            ="#{f.item_description.capitalize}"
-          %td 
-            ="#{f.pricing_type}"
-          %td 
-            ="$ #{f.amount.to_f}"
-          %td
-            -if f.pricing_type == 'Fixed Cost'
-              ="N/A"
-            -elsif f.pricing_type == 'Hourly'
-              = "#{f.hours}"
-          %td
-            -if f.pricing_type == 'Fixed Cost'
-              = "$ #{f.amount}"
-            -elsif f.pricing_type == 'Hourly'
-              ="$#{f.amount * f.hours}"
-      -if invoice.tax == true
+          %th Description
+          %th Pricing
+          %th Hours
+          %th.text-right Rate
+          %th.text-right Amount
+        -@invoice.invoice_items.each do |f|
+          %tr
+            %td
+              ="#{f.item_description.capitalize}"
+            %td 
+              ="#{f.pricing_type}"
+            %td
+              -if f.pricing_type == 'Fixed Cost'
+                ="N/A"
+              -elsif f.pricing_type == 'Hourly'
+                = "#{f.hours}"
+            %td.text-right
+              ="$ #{f.amount.to_f}"
+            %td.text-right
+              -if f.pricing_type == 'Fixed Cost'
+                = "$ #{f.amount}"
+              -elsif f.pricing_type == 'Hourly'
+                ="$#{f.amount * f.hours}"
+        -if @invoice.tax == true
+          %tr
+            %td.border-none.p-b-n{:colspan => 3}
+            %td.border-none.text-right.font-bold.p-b-n Subtotal:
+            %td.border-none.text-right.p-b-n.font-bold
+              ="$ #{@invoice.amount.round(3)}"
+          %tr
+            %td.p-t-n{:colspan => 3}
+            %td.text-right.p-t-n GST 10%:
+            %td.text-right.p-t-n
+              = "$ #{ (@invoice.gst_amount).round(2)}"
+        -else
+          %tr
+            %td.border-none.p-b-n{:colspan => 3}
+            %td.border-none.text-right.font-bold.p-b-n Subtotal:
+            %td.border-none.text-right.p-b-n
+              = "$ #{@invoice.amount.round(2)}"
+          %tr
+            %td.p-t-n{:colspan => 3}
+            %td.text-right.p-t-n GST 10%:
+            %td.text-right.p-t-n
+              = "$ 0.00"
         %tr
-          %td{:colspan => 4} Before Tax
-          %td
-            = "$ #{ (invoice.amount - invoice.gst_amount).round(2)}"
-        %tr
-          %td{:colspan => 4} GST
-          %td
-            = "$ #{ (invoice.gst_amount).round(2)}"
-      -elsif invoice.tax == false
-        %tr
-          %td{:colspan => 4} GST
-          %td
-            = "$ 0.00"
-      %tr
-        %td{:colspan => 4} Invoice Total
-        %td
-          = "$ #{invoice.amount.round(3)}"
-          
-    %h6
-      %b
-        ="Invoice Due: #{invoice.due_on}"
+          %td.border-none{:colspan => 3}
+          %td.border-none.text-right.font-bold Amount Due (AUD):
+          %td.border-none.text-right.font-bold
+            = "$ #{@invoice.amount.round(2)}"
 
-  %hr
-  %div.grand-total
-    %h5
-      ="Grand Total : $ #{@ledger.grand_total.round(3)}"
   %div.qf-button
     %button.button.button-primary.left
       =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan)

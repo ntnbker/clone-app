@@ -1630,6 +1630,18 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	updateQuotes: function(quote) {
+		const {quotes} = this.state;
+		let data = quotes.map((item, key) => {
+			item.forwarded_to_landlord = quote.id == item.id ? quote.forwarded_to_landlord : item.forwarded_to_landlord;
+			return item
+		});
+
+		this.setState({
+			quotes: data
+		});
+	},
+ 
 	requestQuote: function(params) {
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
