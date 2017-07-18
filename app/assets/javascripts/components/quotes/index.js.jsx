@@ -168,6 +168,7 @@ var ButtonQuoteMessage = React.createClass({
 });
 
 var ActionQuote = React.createClass({
+<<<<<<<
 	getInitialState() {
 		return {
 			quote: this.props.quote
@@ -180,8 +181,15 @@ var ActionQuote = React.createClass({
 		});
 	},
 
+=======
+
+>>>>>>>
 	render: function(){
+<<<<<<<
 		const {quote} = this.state;
+=======
+		const {quote} = this.props;
+>>>>>>>
 		const self = this.props;
 		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return (
