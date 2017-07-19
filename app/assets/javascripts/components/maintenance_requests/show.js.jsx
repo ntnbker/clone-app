@@ -140,7 +140,7 @@ var ModalAddAskLandlord = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Ask lanlord for instructions</h4>
+								<h4 className="modal-title text-center">Ask landlord for instructions</h4>
 							</div>
 							<div className="modal-body">
 									<div className="row">
@@ -1322,8 +1322,8 @@ var MaintenanceRequest = React.createClass({
 					landlord: res,
 					notification: {
 						bgClass: "bg-success",
-						title: "Ask lanlord for instructions",
-						content: "Thank you, the maintenance requet has been emailed to the landlord. We will notify you with the landlord's instruction when he/she responds.",
+						title: "Ask landlord for instructions",
+						content: "Thank you, the maintenance request has been emailed to the landlord. We will notify you with the landlord's instructions when he/she responds.",
 					}
 				});
 				self.isClose();
@@ -1331,7 +1331,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Ask lanlord for instructions",
+					title: "Ask landlord for instructions",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});
@@ -1353,7 +1353,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: "Ask lanlord for instructions",
+						title: "Ask landlord for instructions",
 						content: "Your Landlord has been updated successfully!",
 						bgClass: "bg-success",
 					},
@@ -1363,7 +1363,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Ask lanlord for instructions",
+					title: "Ask landlord for instructions",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});

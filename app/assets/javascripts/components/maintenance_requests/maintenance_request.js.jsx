@@ -355,9 +355,12 @@ var ItemMaintenanceRequest = React.createClass({
 			<div className="post">
 				<div className="info">
 					<div className="info-title">
-						<div className="title">
-							<button className="button-primary" type="">{status && status.agent_status}</button>
-						</div>
+						{
+							props.show_assign &&
+								<div className="title">
+									<button className="button-primary" type="">{status && status.agent_status}</button>
+								</div>
+						}
 						<div className="author">
 							<i className="fa fa-map-marker" aria-hidden="true" />
 							<span className="address">
