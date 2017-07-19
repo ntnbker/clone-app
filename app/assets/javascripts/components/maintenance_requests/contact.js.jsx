@@ -9,7 +9,7 @@ var ContentContact = React.createClass({
 					<li key={tenant.id}>
 						<a href={"tel:" + tenant.mobile}>
 							<i className="fa fa-phone" aria-hidden="true" />
-							Tenant {key + 1}: {tenant.mobile}
+							Tenant - {tenant.name}: {tenant.mobile}
 						</a>
 					</li>
 				);
@@ -23,7 +23,7 @@ var ContentContact = React.createClass({
 					<li>
 						<a href={"tel:" + landlord.mobile}>
 							<i className="fa fa-phone" aria-hidden="true" />
-							Landlord: {landlord.mobile}
+							Landlord - {landlord.name}: {landlord.mobile}
 						</a>
 					</li>
 					<li>

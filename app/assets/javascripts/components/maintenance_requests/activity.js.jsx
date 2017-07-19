@@ -7,7 +7,9 @@ var ContentActivity = React.createClass({
 					this.props.logs.map((item, index) => {
 						return (
 							<li key={index} className="user">
-								<img className="img-user" src="/assets/user1.png" />
+								<span className="icon-user">
+									<i className="fa fa-user" />
+								</span>
 								<p className="info">
 									<span className="title">
 										{ item.action } 

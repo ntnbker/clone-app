@@ -829,6 +829,12 @@ body::-webkit-scrollbar-thumb {
           background-position: center;
           background-size: cover;
         }
+        .icon-user {
+          i {
+            font-size: 30px;
+            color: #849aaa;
+          }
+        }
         .info {
           margin-left: 5px;
           flex: 1;

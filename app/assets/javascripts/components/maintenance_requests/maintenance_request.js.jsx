@@ -351,6 +351,9 @@ var ItemMaintenanceRequest = React.createClass({
 		const maintenance = this.props.maintenance_request;
 		const {status} = this.props;
 		const props = this.props;
+		const d = new Date();
+    	const n = d.getTimezoneOffset();
+		let created_at = moment(maintenance.created_at).utcOffset(n).startOf('day').fromNow();
 		return (
 			<div className="post">
 				<div className="info">
@@ -367,7 +370,7 @@ var ItemMaintenanceRequest = React.createClass({
 								{this.props.property.property_address}.
 							</span>
 							<a className="time">
-								{moment(maintenance.created_at).startOf('day').fromNow()}
+								{created_at}
 							</a>
 							<a>|</a>
 							<a className="name-author">{maintenance.service_type}</a>

@@ -264,6 +264,11 @@ header {
                 background: transparent;
               }
             }
+            .icon-user {
+              i {
+                font-size: 24px;
+              }
+            }
           } 
         }
       }
@@ -388,6 +393,12 @@ header {
           }
           &:hover {
             background: transparent;
+          }
+        }
+        .icon-user {
+          i {
+            font-size: 30px;
+            color: #fff;
           }
         }
       }

@@ -224,7 +224,9 @@ var Header = React.createClass({
               logged_in ?
                 <ul className="menu-mobile">
                     <li>
-                      <img src="/assets/user1.png" />
+                      <span className="icon-user">
+                        <i className="fa fa-user" />
+                      </span>
                       <span>
                         Hi, {props.role}
                       </span>
@@ -281,7 +283,9 @@ var Header = React.createClass({
                             this.state.isItems &&
                               <ul className="desktop-menu-items"> 
                                 <li>
-                                  <img src="/assets/user1.png" />
+                                  <span className="icon-user">
+                                    <i className="fa fa-user" />
+                                  </span>
                                   <span>
                                     Hi, {props.role}
                                   </span>
