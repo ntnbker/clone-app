@@ -68349,7 +68349,7 @@ var SelectTime = React.createClass({
 		data.map(function (item, key) {
 			date.push(React.createElement(
 				"option",
-				{ key: key, value: item, disabled: item < minutes ? true : false },
+				{ key: key, value: item },
 				item == 0 ? item + "0" : item
 			));
 		});
@@ -70058,22 +70058,12 @@ var ModalViewInvoice = React.createClass({
 								React.createElement(
 									"span",
 									null,
-									"Business: "
-								),
-								React.createElement(
-									"span",
-									null,
 									invoice.trady.company_name
 								)
 							),
 							React.createElement(
 								"p",
 								null,
-								React.createElement(
-									"span",
-									null,
-									"ABN:"
-								),
 								React.createElement(
 									"span",
 									null,
@@ -70086,11 +70076,6 @@ var ModalViewInvoice = React.createClass({
 								React.createElement(
 									"span",
 									null,
-									"Address:"
-								),
-								React.createElement(
-									"span",
-									null,
 									invoice.trady.trady_company.address
 								)
 							),
@@ -70100,22 +70085,12 @@ var ModalViewInvoice = React.createClass({
 								React.createElement(
 									"span",
 									null,
-									"Phone:"
-								),
-								React.createElement(
-									"span",
-									null,
 									invoice.trady.trady_company.mobile_number
 								)
 							),
 							React.createElement(
 								"p",
 								null,
-								React.createElement(
-									"span",
-									null,
-									"Email:"
-								),
 								React.createElement(
 									"span",
 									null,
@@ -70775,7 +70750,9 @@ var ContentLandlordContact = React.createClass({
 					"a",
 					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-					"Call Agent: ",
+					"Agent - ",
+					agent.first_name,
+					": ",
 					agent.mobile_phone
 				)
 			);
@@ -72293,7 +72270,7 @@ var ContentAction = React.createClass({
 							return _this.props.onModalWith(!!_this.props.landlord ? 'confirm' : 'addAskLandlord');
 						} },
 					React.createElement('i', { className: 'fa fa-user' }),
-					'Ask Landlord'
+					'Ask Landlord for instructions'
 				)
 			),
 			React.createElement(
@@ -72449,7 +72426,11 @@ var ContentActivity = React.createClass({
 					return React.createElement(
 						"li",
 						{ key: index, className: "user" },
-						React.createElement("img", { className: "img-user", src: "/assets/user1.png" }),
+						React.createElement(
+							"span",
+							{ className: "icon-user" },
+							React.createElement("i", { className: "fa fa-user" })
+						),
 						React.createElement(
 							"p",
 							{ className: "info" },
@@ -72777,8 +72758,8 @@ var ContentContact = React.createClass({
 						"a",
 						{ href: "tel:" + tenant.mobile },
 						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-						"Tenant ",
-						key + 1,
+						"Tenant - ",
+						tenant.name,
 						": ",
 						tenant.mobile
 					)
@@ -72798,7 +72779,9 @@ var ContentContact = React.createClass({
 						"a",
 						{ href: "tel:" + landlord.mobile },
 						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-						"Landlord: ",
+						"Landlord - ",
+						landlord.name,
+						": ",
 						landlord.mobile
 					)
 				),
@@ -74584,6 +74567,9 @@ var ItemMaintenanceRequest = React.createClass({
 		var status = this.props.status;
 
 		var props = this.props;
+		var d = new Date();
+		var n = d.getTimezoneOffset();
+		var created_at = moment(maintenance.created_at).utcOffset(n).startOf('day').fromNow();
 		return React.createElement(
 			"div",
 			{ className: "post" },
@@ -74593,7 +74579,7 @@ var ItemMaintenanceRequest = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "info-title" },
-					React.createElement(
+					props.show_assign && React.createElement(
 						"div",
 						{ className: "title" },
 						React.createElement(
@@ -74615,7 +74601,7 @@ var ItemMaintenanceRequest = React.createClass({
 						React.createElement(
 							"a",
 							{ className: "time" },
-							moment(maintenance.created_at).startOf('day').fromNow()
+							created_at
 						),
 						React.createElement(
 							"a",
@@ -75562,7 +75548,7 @@ var ModalConfirm = React.createClass({
 						React.createElement(
 							"h4",
 							{ className: "modal-title text-center" },
-							"Confirm Landlord"
+							"Confirm Landlord Details"
 						)
 					),
 					React.createElement(
@@ -75571,10 +75557,7 @@ var ModalConfirm = React.createClass({
 						React.createElement(
 							"p",
 							{ className: "text-center" },
-							"Is ",
-							this.props.landlord.name,
-							" the correct landlord for ",
-							this.props.property.property_address
+							'Our records show that "' + this.props.landlord.name + '" is the landlord for "' + this.props.property.property_address + '". Please confirm if this is correct.'
 						)
 					),
 					React.createElement(
@@ -75736,7 +75719,7 @@ var ModalAddAskLandlord = React.createClass({
 							React.createElement(
 								"h4",
 								{ className: "modal-title text-center" },
-								"Forward Maintenance request"
+								"Ask landlord for instructions"
 							)
 						),
 						React.createElement(
@@ -75748,22 +75731,11 @@ var ModalAddAskLandlord = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement(
-										"label",
-										null,
-										"Name ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										id: "name",
 										type: "text",
 										name: "landlord[name]",
-										placeholder: "Enter Name",
+										placeholder: "Landlord Name",
 										ref: function (e) {
 											return _this2.name = e;
 										},
@@ -75778,23 +75750,12 @@ var ModalAddAskLandlord = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement(
-										"label",
-										null,
-										"Mobile ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										type: "number",
 										minLength: "10",
 										maxLength: "11",
 										name: "landlord[mobile]",
-										placeholder: "Enter Mobile",
+										placeholder: "Landlord Mobile",
 										onChange: this.checkValidate,
 										id: "mobile", ref: function (e) {
 											return _this2.mobile = e;
@@ -75809,28 +75770,17 @@ var ModalAddAskLandlord = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement(
-										"label",
-										null,
-										"Email ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										type: "email",
+										autoCorrect: "off",
+										autoComplete: "off",
+										autoCapitalize: "off",
 										name: "landlord[email]",
-										placeholder: "Enter Email",
+										placeholder: "Landlord Email",
 										onChange: this.checkValidate,
 										id: "email", ref: function (e) {
 											return _this2.email = e;
 										},
-										autoCapitalize: "off",
-										autoCorrect: "off",
-										autoComplete: "off",
 										className: "u-full-width " + (this.state.errorEmail && "has-error")
 									})
 								)
@@ -76005,7 +75955,7 @@ var ModalEditAskLandlord = React.createClass({
 								React.createElement(
 									"a",
 									{ className: "btn-edit", onClick: this.isEdit },
-									"Edit"
+									"Edit Landlord Details"
 								)
 							),
 							React.createElement(
@@ -76014,19 +75964,9 @@ var ModalEditAskLandlord = React.createClass({
 								React.createElement(
 									"div",
 									{ className: "form-input" },
-									React.createElement(
-										"label",
-										null,
-										"Name ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										type: "text",
+										placeholder: "Landlord Nane",
 										onChange: this.checkValidate,
 										readOnly: !this.state.isEdit,
 										id: "name", ref: function (e) {
@@ -76043,17 +75983,6 @@ var ModalEditAskLandlord = React.createClass({
 								React.createElement(
 									"div",
 									{ className: "form-input" },
-									React.createElement(
-										"label",
-										null,
-										"Mobile ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
@@ -76062,6 +75991,7 @@ var ModalEditAskLandlord = React.createClass({
 										ref: function (e) {
 											return _this3.mobile = e;
 										},
+										placeholder: "Landlord Mobile",
 										onChange: this.checkValidate,
 										readOnly: !this.state.isEdit,
 										defaultValue: this.props.landlord.mobile,
@@ -76075,17 +76005,6 @@ var ModalEditAskLandlord = React.createClass({
 								React.createElement(
 									"div",
 									{ className: "form-input" },
-									React.createElement(
-										"label",
-										null,
-										"Email ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										id: "email",
 										type: "text",
@@ -76095,6 +76014,7 @@ var ModalEditAskLandlord = React.createClass({
 										ref: function (e) {
 											return _this3.email = e;
 										},
+										placeholder: "Landlord Email",
 										onChange: this.checkValidate,
 										readOnly: !this.state.isEdit,
 										defaultValue: this.props.landlord.email,
@@ -77036,15 +76956,10 @@ var ModalRequestModal = React.createClass({
 								"div",
 								{ className: "row" },
 								React.createElement(
-									"label",
-									{ className: "label-custom" },
-									"Select Trady:"
-								),
-								React.createElement(
 									"select",
 									{
 										id: "trady",
-										className: "form-control",
+										className: "form-control input-custom",
 										ref: function (e) {
 											return _this7.trady_id = e;
 										},
@@ -77076,17 +76991,6 @@ var ModalRequestModal = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement(
-										"label",
-										{ className: "label-custom" },
-										"Company Name",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										type: "text",
 										id: "company",
@@ -77108,17 +77012,6 @@ var ModalRequestModal = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement(
-										"label",
-										{ className: "label-custom" },
-										"Name ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										id: "name",
 										type: "text",
@@ -77140,17 +77033,6 @@ var ModalRequestModal = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement(
-										"label",
-										{ className: "label-custom" },
-										"Email ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										id: "email",
 										type: "email",
@@ -77175,17 +77057,6 @@ var ModalRequestModal = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement(
-										"label",
-										{ className: "label-custom" },
-										"Mobile ",
-										React.createElement(
-											"strong",
-											null,
-											"*"
-										),
-										":"
-									),
 									React.createElement("input", {
 										id: "mobile",
 										type: "number",
@@ -77398,9 +77269,9 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: "Forward Maintenance request",
-						content: "Your Landlord has been created successfully!",
-						bgClass: "bg-success"
+						bgClass: "bg-success",
+						title: "Ask landlord for instructions",
+						content: "Thank you, the maintenance request has been emailed to the landlord. We will notify you with the landlord's instructions when he/she responds."
 					}
 				});
 				self.isClose();
@@ -77408,7 +77279,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function (err) {
 				self.setState({ notification: {
-						title: "Forward Maintenance request",
+						title: "Ask landlord for instructions",
 						content: err.responseText,
 						bgClass: "bg-error"
 					} });
@@ -77430,7 +77301,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: "Forward Maintenance request",
+						title: "Ask landlord for instructions",
 						content: "Your Landlord has been updated successfully!",
 						bgClass: "bg-success"
 					}
@@ -77440,7 +77311,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			error: function (err) {
 				self.setState({ notification: {
-						title: "Forward Maintenance request",
+						title: "Ask landlord for instructions",
 						content: err.responseText,
 						bgClass: "bg-error"
 					} });
@@ -77701,6 +77572,19 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	updateQuotes: function (quote) {
+		var quotes = this.state.quotes;
+
+		var data = quotes.map(function (item, key) {
+			item.forwarded_to_landlord = quote.id == item.id ? quote.forwarded_to_landlord : item.forwarded_to_landlord;
+			return item;
+		});
+
+		this.setState({
+			quotes: data
+		});
+	},
+
 	requestQuote: function (params) {
 		var self = this;
 		var tradies_with_quote_requests = this.state.tradies_with_quote_requests;
@@ -77714,9 +77598,9 @@ var MaintenanceRequest = React.createClass({
 		if (!!flag) {
 			self.setState({
 				notification: {
-					title: "Request Quote",
-					content: "We have already send a request quote to the person. Please pick another person",
-					bgClass: "bg-error"
+					bgClass: "bg-error",
+					title: "Duplicate Quote Request",
+					content: "You have already requested a quote from this tradie for this maintenance request. Please select another tradie if you would like another quote."
 				}
 			});
 			self.onModalWith('notification');
@@ -77735,7 +77619,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Request Quote",
-							content: "the request quote has sent successfully",
+							content: 'Thank you, a quote request has been emailed to "Trady Company". We will notofy once the quote has been received.',
 							bgClass: "bg-success"
 						}
 					});
@@ -77755,6 +77639,7 @@ var MaintenanceRequest = React.createClass({
 
 	sendWorkOrder: function (params) {
 		var self = this;
+		delete params.item;
 		$.ajax({
 			type: 'POST',
 			url: '/tradies',
@@ -77768,7 +77653,7 @@ var MaintenanceRequest = React.createClass({
 					tradies: res,
 					notification: {
 						title: "Send Work Order",
-						content: "the work order has sent successfully",
+						content: 'Thank you, a work order has been emailed to "Trady Company". You will receive an invoice form "Trady Company" once the job has been completed',
 						bgClass: "bg-success"
 					}
 				});
@@ -79151,6 +79036,12 @@ var ButtonForwardLandlord = React.createClass({
 		}
 	},
 
+	componentWillReceiveProps: function (nextProps) {
+		this.setState({
+			isSend: nextProps.quote.forwarded_to_landlord
+		});
+	},
+
 	render: function () {
 		var style = {
 			opacity: this.state.isSend ? 0.5 : 1
@@ -79328,12 +79219,12 @@ var ActionQuote = React.createClass({
 
 	componentWillReceiveProps: function (nextProps) {
 		this.setState({
-			quote: nextProps.quote.id == this.state.quote.id ? nextProps.quote : this.state.quote
+			quote: nextProps.quote
 		});
 	},
-
 	render: function () {
 		var quote = this.state.quote;
+
 		var self = this.props;
 		if (!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return React.createElement(
@@ -79437,6 +79328,7 @@ var Quotes = React.createClass({
 
 	render: function () {
 		var quotes = this.state.quotes;
+
 		var self = this.props;
 		return React.createElement(
 			"div",
@@ -79786,22 +79678,12 @@ var ModalViewQuote = React.createClass({
 								React.createElement(
 									"span",
 									null,
-									"Business: "
-								),
-								React.createElement(
-									"span",
-									null,
 									quote.trady.company_name
 								)
 							),
 							React.createElement(
 								"p",
 								null,
-								React.createElement(
-									"span",
-									null,
-									"ABN:"
-								),
 								React.createElement(
 									"span",
 									null,
@@ -79814,11 +79696,6 @@ var ModalViewQuote = React.createClass({
 								React.createElement(
 									"span",
 									null,
-									"Address:"
-								),
-								React.createElement(
-									"span",
-									null,
 									quote.trady.trady_company.address
 								)
 							),
@@ -79828,22 +79705,12 @@ var ModalViewQuote = React.createClass({
 								React.createElement(
 									"span",
 									null,
-									"Phone:"
-								),
-								React.createElement(
-									"span",
-									null,
 									quote.trady.trady_company.mobile_number
 								)
 							),
 							React.createElement(
 								"p",
 								null,
-								React.createElement(
-									"span",
-									null,
-									"Email:"
-								),
 								React.createElement(
 									"span",
 									null,
@@ -80473,6 +80340,7 @@ var Footer = React.createClass({
             )
         );
     },
+
     footer: function () {
         return React.createElement(
             "div",
@@ -80551,10 +80419,10 @@ var Footer = React.createClass({
     },
 
     componentDidMount: function () {
-        $(window).on('load resize', function () {
+        $(document).ready(function () {
             var footerHeight = $('#footer').height();
             if (footerHeight > 0) {
-                $('#main').css('margin-bottom', footerHeight + 10);
+                $('#main').css('margin-bottom', footerHeight);
             }
         });
     },
@@ -80784,7 +80652,11 @@ var Header = React.createClass({
           React.createElement(
             "li",
             null,
-            React.createElement("img", { src: "/assets/user1.png" }),
+            React.createElement(
+              "span",
+              { className: "icon-user" },
+              React.createElement("i", { className: "fa fa-user" })
+            ),
             React.createElement(
               "span",
               null,
@@ -80839,24 +80711,17 @@ var Header = React.createClass({
             !expanded ? React.createElement(
               "div",
               { className: "header-right" },
-              this.search(),
-              React.createElement(
-                "div",
-                { className: "question" },
-                React.createElement("i", { className: "fa fa-question" })
-              ),
-              React.createElement(
-                "div",
-                { className: "notification" },
-                React.createElement("i", { className: "fa fa-bell" })
-              ),
               React.createElement(
                 "div",
                 { className: "menu-bar dropdown-custom" },
                 React.createElement(
                   "button",
                   { type: "button", className: "btn-menu", onClick: this.showMenu },
-                  React.createElement("img", { src: "/assets/user1.png" }),
+                  React.createElement(
+                    "span",
+                    { className: "icon-user" },
+                    React.createElement("i", { className: "fa fa-user" })
+                  ),
                   React.createElement(
                     "span",
                     null,
@@ -80894,7 +80759,11 @@ var Header = React.createClass({
                 React.createElement(
                   "li",
                   null,
-                  React.createElement("img", { src: "/assets/user1.png" }),
+                  React.createElement(
+                    "span",
+                    { className: "icon-user" },
+                    React.createElement("i", { className: "fa fa-user" })
+                  ),
                   React.createElement(
                     "span",
                     null,
@@ -83351,8 +83220,8 @@ var ContentTradyContact = React.createClass({
 						"a",
 						{ href: "tel:" + tenant.mobile },
 						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-						"Call Tenant ",
-						key + 1,
+						"Tenant - ",
+						tenant.name,
 						": ",
 						tenant.mobile
 					)
@@ -83373,7 +83242,9 @@ var ContentTradyContact = React.createClass({
 					"a",
 					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
-					"Call Agent: ",
+					"Agent - ",
+					agent.first_name,
+					": ",
 					agent.mobile_phone
 				)
 			);
