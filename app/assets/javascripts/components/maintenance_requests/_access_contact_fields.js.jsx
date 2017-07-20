@@ -64,16 +64,15 @@ var AccessContactField = React.createClass({
       return (
         <div className="accesscontactfield" style={{display: this.state.remove ? 'none' : 'block' }}>
           <fieldset>
-            <p> Relation </p>
+            <p> Contenant </p>
         	  <select 
               name={this.generateAtt("name", x, "relation")}
   	  			  id={this.generateAtt("id", x, "relation")}
               onChange={(e) => {this.changeRelation(e, x)}}
             >
   		  	    <option value="Tenant">Tenant</option>
-  		  	    <option value="Husband">Husband</option>
-  		  	    <option value="Son">Son</option>
-  		  	    <option value="Wife">Wife</option>
+  		  	    <option value="family">Family(Non-tenant)</option>
+  		  	    <option value="friend">Friend(Non-tenant)</option>
   		  	  </select>
 
   		  	  <p> Name </p>

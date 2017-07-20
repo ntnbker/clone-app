@@ -309,7 +309,7 @@ var ModalEditAskLandlord = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Forward Maintenance request</h4>
+								<h4 className="modal-title text-center">Ask landlord for instructions</h4>
 							</div>
 							<div className="modal-body">
 									<div className="row">
