@@ -68298,21 +68298,27 @@ var AppointmentRequestMobile = React.createClass({
 	}
 });
 var SelectTime = React.createClass({
-	displayName: "SelectTime",
+	displayName: 'SelectTime',
 
 	getInitialState: function () {
-		return null;
+		return {
+			date: this.props.date
+		};
 	},
 
 	makeHour: function () {
 		var now = new Date();
 		hours = parseInt(now.getHours());
 		minutes = parseInt(now.getMinutes());
+		month = parseInt(now.getMonth()) + 1;
+		month = month.toString().length == 1 ? '0' + month : month;
+		var currentDate = new Date(now.getFullYear() + '-' + month + '-' + now.getDate());
+		var stateDate = new Date(this.state.date);
 		var date = [];
 		date.push(React.createElement(
-			"option",
-			{ key: "-1", value: "" },
-			"--"
+			'option',
+			{ key: '-1', value: '' },
+			'--'
 		));
 		var value = "";
 		for (var i = 0; i < 24; i++) {
@@ -68328,8 +68334,8 @@ var SelectTime = React.createClass({
 				value += " PM";
 			}
 			date.push(React.createElement(
-				"option",
-				{ key: i, value: i, disabled: i < hours ? true : false },
+				'option',
+				{ key: i, value: i, disabled: currentDate.valueOf() == stateDate.valueOf() ? i < hours ? true : false : false },
 				value
 			));
 		}
@@ -68342,13 +68348,13 @@ var SelectTime = React.createClass({
 		var now = new Date();
 		minutes = parseInt(now.getMinutes());
 		date.push(React.createElement(
-			"option",
-			{ key: "-1", value: "" },
-			"--"
+			'option',
+			{ key: '-1', value: '' },
+			'--'
 		));
 		data.map(function (item, key) {
 			date.push(React.createElement(
-				"option",
+				'option',
 				{ key: key, value: item },
 				item == 0 ? item + "0" : item
 			));
@@ -68357,19 +68363,25 @@ var SelectTime = React.createClass({
 		return date;
 	},
 
+	componentWillReceiveProps: function (nextProps) {
+		this.setState({
+			date: nextProps.date
+		});
+	},
+
 	render: function () {
 		var _this = this;
 
 		var errorTime = this.props.errorTime;
 		return React.createElement(
-			"div",
+			'div',
 			null,
 			React.createElement(
-				"select",
+				'select',
 				{
 					required: true,
-					id: "hour",
-					name: "hour",
+					id: 'hour',
+					name: 'hour',
 					ref: function (ref) {
 						return _this.hour = ref;
 					},
@@ -68379,10 +68391,10 @@ var SelectTime = React.createClass({
 				this.makeHour()
 			),
 			React.createElement(
-				"select",
+				'select',
 				{
-					id: "minute",
-					name: "minute",
+					id: 'minute',
+					name: 'minute',
 					onChange: this.props.onChange,
 					ref: function (ref) {
 						return _this.minute = ref;
@@ -68396,7 +68408,7 @@ var SelectTime = React.createClass({
 });
 
 var CommentAppointment = React.createClass({
-	displayName: "CommentAppointment",
+	displayName: 'CommentAppointment',
 
 	autoScroll: function () {
 		$('#message').animate({
@@ -68415,23 +68427,23 @@ var CommentAppointment = React.createClass({
 	render: function () {
 		var comments = this.props.comments ? this.props.comments : [];
 		return React.createElement(
-			"div",
-			{ className: "comments", id: "message" },
+			'div',
+			{ className: 'comments', id: 'message' },
 			comments.map(function (comment, key) {
 				return React.createElement(
-					"div",
-					{ key: comment.id, className: "comment" },
+					'div',
+					{ key: comment.id, className: 'comment' },
 					React.createElement(
-						"p",
-						{ className: "content" },
+						'p',
+						{ className: 'content' },
 						comment.body
 					),
 					React.createElement(
-						"p",
-						{ className: "detail" },
+						'p',
+						{ className: 'detail' },
 						React.createElement(
-							"span",
-							{ className: "date-time" },
+							'span',
+							{ className: 'date-time' },
 							moment(comment.created_at).format('lll')
 						)
 					)
@@ -68442,7 +68454,13 @@ var CommentAppointment = React.createClass({
 });
 
 var ModalAddAppointment = React.createClass({
-	displayName: "ModalAddAppointment",
+	displayName: 'ModalAddAppointment',
+
+	getInitialState: function () {
+		return {
+			date: null
+		};
+	},
 
 	submit: function (e) {
 		e.preventDefault();
@@ -68454,6 +68472,12 @@ var ModalAddAppointment = React.createClass({
 			appointment_type: this.props.type
 		};
 		this.props.addAppointment(params);
+	},
+
+	changeDate: function (e) {
+		this.setState({
+			date: e.target.value
+		});
 	},
 
 	componentDidMount: function () {
@@ -68476,105 +68500,106 @@ var ModalAddAppointment = React.createClass({
 		var comments = _props.comments;
 
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"form",
+					'form',
 					{ onSubmit: this.submit },
 					React.createElement(
-						"div",
-						{ className: "modal-content" },
+						'div',
+						{ className: 'modal-content' },
 						React.createElement(
-							"div",
-							{ className: "modal-header" },
+							'div',
+							{ className: 'modal-header' },
 							React.createElement(
-								"button",
+								'button',
 								{
-									type: "button",
-									className: "close",
-									"data-dismiss": "modal",
-									"aria-label": "Close",
+									type: 'button',
+									className: 'close',
+									'data-dismiss': 'modal',
+									'aria-label': 'Close',
 									onClick: this.props.close
 								},
 								React.createElement(
-									"span",
-									{ "aria-hidden": "true" },
-									"×"
+									'span',
+									{ 'aria-hidden': 'true' },
+									'×'
 								)
 							),
 							React.createElement(
-								"h4",
-								{ className: "modal-title text-center" },
+								'h4',
+								{ className: 'modal-title text-center' },
 								title
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "modal-body modal-appointment" },
+							'div',
+							{ className: 'modal-body modal-appointment' },
 							React.createElement(
-								"div",
-								{ className: "new_appointment" },
+								'div',
+								{ className: 'new_appointment' },
 								React.createElement(CommentAppointment, { comments: comments }),
 								React.createElement(
-									"div",
-									{ className: "form-group" },
-									React.createElement("textarea", {
+									'div',
+									{ className: 'form-group' },
+									React.createElement('textarea', {
 										required: true,
-										placeholder: "Comment",
-										className: "text-center",
+										placeholder: 'Comment',
+										className: 'text-center',
 										ref: function (ref) {
 											return _this2.comment = ref;
 										}
 									})
 								),
 								React.createElement(
-									"div",
-									{ className: "form-group date-time" },
+									'div',
+									{ className: 'form-group date-time' },
 									React.createElement(
-										"div",
-										{ className: "date" },
+										'div',
+										{ className: 'date' },
 										React.createElement(
-											"label",
+											'label',
 											null,
-											"Date"
+											'Date'
 										),
-										React.createElement("input", {
+										React.createElement('input', {
 											required: true,
-											id: "date",
-											type: "date",
+											id: 'date',
+											type: 'date',
 											defaultValue: date,
 											ref: function (ref) {
 												return _this2.date = ref;
-											}
+											},
+											onChange: this.changeDate
 										})
 									),
 									React.createElement(
-										"div",
-										{ className: "time" },
+										'div',
+										{ className: 'time' },
 										React.createElement(
-											"label",
+											'label',
 											null,
-											"Time"
+											'Time'
 										),
-										React.createElement(SelectTime, { onChange: this.checkValidate })
+										React.createElement(SelectTime, { date: this.state.date, onChange: this.checkValidate })
 									)
 								)
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "modal-footer" },
+							'div',
+							{ className: 'modal-footer' },
 							React.createElement(
-								"button",
+								'button',
 								{
-									type: "submit",
-									"data-dismiss": "modal",
-									className: "btn btn-default success"
+									type: 'submit',
+									'data-dismiss': 'modal',
+									className: 'btn btn-default success'
 								},
-								"Create Appointment"
+								'Create Appointment'
 							)
 						)
 					)
@@ -68585,7 +68610,7 @@ var ModalAddAppointment = React.createClass({
 });
 
 var ModalConfirmAppointment = React.createClass({
-	displayName: "ModalConfirmAppointment",
+	displayName: 'ModalConfirmAppointment',
 
 	render: function () {
 		var _props2 = this.props;
@@ -68594,59 +68619,69 @@ var ModalConfirmAppointment = React.createClass({
 		var btnContent = _props2.btnContent;
 
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content" },
+					'div',
+					{ className: 'modal-content' },
 					React.createElement(
-						"div",
-						{ className: "modal-header" },
+						'div',
+						{ className: 'modal-header' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
+								type: 'button',
+								className: 'close',
+								'data-dismiss': 'modal',
+								'aria-label': 'Close',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
+							'h4',
+							{ className: 'modal-title text-center' },
 							title
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-body" },
+						'div',
+						{ className: 'modal-body' },
 						React.createElement(
-							"p",
-							{ className: "text-center" },
+							'p',
+							{ className: 'text-center' },
 							content
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-footer" },
+						'div',
+						{ className: 'modal-footer' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "btn btn-default success",
+								type: 'button',
+								className: 'btn btn-default success',
 								onClick: this.props.openModal,
-								"data-dismiss": "modal"
+								'data-dismiss': 'modal'
 							},
 							btnContent
+						),
+						React.createElement(
+							'button',
+							{
+								type: 'button',
+								className: 'btn btn-default cancel',
+								onClick: this.props.close,
+								'data-dismiss': 'modal'
+							},
+							'Close'
 						)
 					)
 				)
@@ -71536,7 +71571,11 @@ var LandlordMaintenanceRequest = React.createClass({
 							openModal: function () {
 								return _this2.onModalWith('createAppointment');
 							},
-							content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+							content: ["Are you sure you want to cancel appointment. To cancel the appointment you ", React.createElement(
+								'strong',
+								{ className: 'text-capitalize' },
+								'must'
+							), " submit a new appointment time."]
 						});
 					}
 
@@ -71549,7 +71588,11 @@ var LandlordMaintenanceRequest = React.createClass({
 							openModal: function () {
 								return _this2.onModalWith('createAppointment');
 							},
-							content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+							content: ["Are you sure you want to declie appointment. To decline the appointment you ", React.createElement(
+								'strong',
+								{ className: 'text-capitalize' },
+								'must'
+							), " submit a new appointment time."]
 						});
 					}
 
@@ -71802,7 +71845,7 @@ var AccessContactField = React.createClass({
         React.createElement(
           "p",
           null,
-          " Relation "
+          " Contenant "
         ),
         React.createElement(
           "select",
@@ -71820,18 +71863,13 @@ var AccessContactField = React.createClass({
           ),
           React.createElement(
             "option",
-            { value: "Husband" },
-            "Husband"
+            { value: "family" },
+            "Family(Non-tenant)"
           ),
           React.createElement(
             "option",
-            { value: "Son" },
-            "Son"
-          ),
-          React.createElement(
-            "option",
-            { value: "Wife" },
-            "Wife"
+            { value: "friend" },
+            "Friend(Non-tenant)"
           )
         ),
         React.createElement(
@@ -72306,7 +72344,7 @@ var ContentAction = React.createClass({
 							return _this.props.onModalWith('addLandlord');
 						} },
 					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-user-plus' }),
-					'Add Landlord'
+					'Change Landlord'
 				)
 			),
 			!!this.props.landlord && React.createElement(
@@ -72318,7 +72356,7 @@ var ContentAction = React.createClass({
 							return _this.props.onModalWith('editLandlord');
 						} },
 					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-pencil' }),
-					'Edit Landlord'
+					'Edit landlord details'
 				)
 			)
 		);
@@ -72952,6 +72990,7 @@ var EditMaintenanceRequest = React.createClass({
 
 	getInitialState: function () {
 		return {
+			trady_id: false,
 			errorTitle: false,
 			errorDescription: false
 		};
@@ -73006,6 +73045,7 @@ var EditMaintenanceRequest = React.createClass({
 		}
 
 		var params = {
+			trady_id: this.trady_id.value,
 			maintenance_description: this.description.value
 		};
 		this.props.editMaintenanceRequest(params);
@@ -73015,7 +73055,10 @@ var EditMaintenanceRequest = React.createClass({
 		var _this = this;
 
 		var state = this.state;
-		var maintenance_request = this.props.maintenance_request;
+		var _props = this.props;
+		var maintenance_request = _props.maintenance_request;
+		var tradies = _props.tradies;
+
 		return React.createElement(
 			'div',
 			{ className: 'modal-custom fade' },
@@ -73059,25 +73102,57 @@ var EditMaintenanceRequest = React.createClass({
 								'div',
 								{ className: 'row m-t-lg' },
 								React.createElement(
-									'div',
+									'label',
 									null,
-									React.createElement(
-										'label',
-										null,
-										'Maintenance Request Description:'
-									),
-									React.createElement('textarea', {
-										placeholder: 'Enter Description',
+									'Service Type:'
+								),
+								React.createElement(
+									'select',
+									{
+										required: true,
+										id: 'trady',
 										ref: function (e) {
-											return _this.description = e;
+											return _this.trady_id = e;
 										},
-										onChange: function (e, key) {
-											return _this.checkValidate(e, 'description');
-										},
-										defaultValue: maintenance_request.maintenance_description,
-										className: "u-full-width " + (this.state.errorDescription && "has-error")
+										className: 'form-control input-custom'
+									},
+									React.createElement(
+										'option',
+										{ value: '', selected: !maintenance_request.trady_id && "selected" },
+										'Service Type'
+									),
+									tradies.map(function (trady, index) {
+										return React.createElement(
+											'option',
+											{
+												key: index + 1,
+												value: trady.id,
+												selected: maintenance_request.trady_id == trady.id && "selected"
+											},
+											trady.name
+										);
 									})
 								)
+							),
+							React.createElement(
+								'div',
+								{ className: 'row' },
+								React.createElement(
+									'label',
+									null,
+									'Maintenance Request Description:'
+								),
+								React.createElement('textarea', {
+									placeholder: 'Enter Description',
+									ref: function (e) {
+										return _this.description = e;
+									},
+									onChange: function (e, key) {
+										return _this.checkValidate(e, 'description');
+									},
+									defaultValue: maintenance_request.maintenance_description,
+									className: "u-full-width " + (this.state.errorDescription && "has-error")
+								})
 							)
 						),
 						React.createElement(
@@ -74569,7 +74644,8 @@ var ItemMaintenanceRequest = React.createClass({
 		var props = this.props;
 		var d = new Date();
 		var n = d.getTimezoneOffset();
-		var created_at = moment(maintenance.created_at).utcOffset(n).startOf('day').fromNow();
+		var date = new Date(maintenance.created_at);
+		var created_at = moment(date).utcOffset(+n).startOf('hour').fromNow();
 		return React.createElement(
 			"div",
 			{ className: "post" },
@@ -74629,6 +74705,11 @@ var ItemMaintenanceRequest = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "description" },
+					React.createElement(
+						"p",
+						{ className: "m-b-n" },
+						"Job Description:"
+					),
 					React.createElement(
 						"p",
 						null,
@@ -75943,7 +76024,7 @@ var ModalEditAskLandlord = React.createClass({
 							React.createElement(
 								"h4",
 								{ className: "modal-title text-center" },
-								"Forward Maintenance request"
+								"Ask landlord for instructions"
 							)
 						),
 						React.createElement(
@@ -76684,8 +76765,9 @@ var ModalRequestModal = React.createClass({
 	getInitialState: function () {
 		return {
 			isAdd: false,
-			errorName: false,
+			isTrady: null,
 			isDisable: false,
+			errorName: false,
 			errorEmail: false,
 			errorMobile: false,
 			errorCompany: false,
@@ -76905,11 +76987,19 @@ var ModalRequestModal = React.createClass({
 		return;
 	},
 
+	changeRadio: function (e) {
+		this.setState({
+			isTrady: e.target.value
+		});
+	},
+
 	render: function () {
 		var _this7 = this;
 
 		var self = this;
 		var state = this.state;
+		var isTrady = this.state.isTrady;
+
 		var style = {
 			background: this.state.isAdd ? 'none' : '#f2f2f2'
 		};
@@ -76956,6 +77046,30 @@ var ModalRequestModal = React.createClass({
 								"div",
 								{ className: "row" },
 								React.createElement(
+									"div",
+									{ className: "radio" },
+									React.createElement(
+										"label",
+										null,
+										React.createElement("input", { type: "radio", value: "true", onChange: this.changeRadio, checked: isTrady === 'true' && "checked" }),
+										"Select trady"
+									)
+								),
+								React.createElement(
+									"div",
+									{ className: "radio" },
+									React.createElement(
+										"label",
+										null,
+										React.createElement("input", { type: "radio", value: "false", onChange: this.changeRadio, checked: isTrady === 'false' && "checked" }),
+										"Add trady"
+									)
+								)
+							),
+							isTrady === 'true' && React.createElement(
+								"div",
+								{ className: "row" },
+								React.createElement(
 									"select",
 									{
 										id: "trady",
@@ -76985,94 +77099,98 @@ var ModalRequestModal = React.createClass({
 									})
 								)
 							),
-							React.createElement(
+							(isTrady === 'true' || isTrady === 'false') && React.createElement(
 								"div",
-								{ className: "row m-t-lg" },
+								null,
 								React.createElement(
 									"div",
-									null,
-									React.createElement("input", {
-										type: "text",
-										id: "company",
-										style: style,
-										ref: function (e) {
-											return _this7.company = e;
-										},
-										readOnly: !this.state.isAdd,
-										onChange: this.checkValidate,
-										placeholder: "Enter Company Name",
-										value: !!this.state.trady.company_name ? this.state.trady.company_name : "",
-										className: "input-custom u-full-width " + (this.state.errorCompany && "has-error")
-									})
-								)
-							),
-							React.createElement(
-								"div",
-								{ className: "row m-t-lg" },
+									{ className: "row m-t-lg" },
+									React.createElement(
+										"div",
+										null,
+										React.createElement("input", {
+											type: "text",
+											id: "company",
+											style: style,
+											ref: function (e) {
+												return _this7.company = e;
+											},
+											readOnly: !this.state.isAdd,
+											onChange: this.checkValidate,
+											placeholder: "Enter Company Name",
+											value: !!this.state.trady.company_name ? this.state.trady.company_name : "",
+											className: "input-custom u-full-width " + (this.state.errorCompany && "has-error")
+										})
+									)
+								),
 								React.createElement(
 									"div",
-									null,
-									React.createElement("input", {
-										id: "name",
-										type: "text",
-										style: style,
-										placeholder: "Enter Name",
-										ref: function (e) {
-											return _this7.name = e;
-										},
-										readOnly: !this.state.isAdd,
-										onChange: this.checkValidate,
-										value: !!this.state.trady.name ? this.state.trady.name : "",
-										className: "input-custom u-full-width " + (this.state.errorName && "has-error")
-									})
-								)
-							),
-							React.createElement(
-								"div",
-								{ className: "row m-t-lg" },
+									{ className: "row m-t-lg" },
+									React.createElement(
+										"div",
+										null,
+										React.createElement("input", {
+											id: "name",
+											type: "text",
+											style: style,
+											placeholder: "Enter Name",
+											ref: function (e) {
+												return _this7.name = e;
+											},
+											readOnly: !this.state.isAdd,
+											onChange: this.checkValidate,
+											value: !!this.state.trady.name ? this.state.trady.name : "",
+											className: "input-custom u-full-width " + (this.state.errorName && "has-error")
+										})
+									)
+								),
 								React.createElement(
 									"div",
-									null,
-									React.createElement("input", {
-										id: "email",
-										type: "email",
-										style: style,
-										autoCapitalize: "off",
-										autoCorrect: "off",
-										autoComplete: "off",
-										placeholder: "Enter Email",
-										ref: function (e) {
-											return _this7.email = e;
-										},
-										readOnly: !this.state.isAdd,
-										onChange: this.checkValidate,
-										value: !!this.state.trady.email ? this.state.trady.email : "",
-										className: "input-custom u-full-width " + (this.state.errorEmail && "has-error")
-									})
-								)
-							),
-							React.createElement(
-								"div",
-								{ className: "row m-t-lg" },
+									{ className: "row m-t-lg" },
+									React.createElement(
+										"div",
+										null,
+										React.createElement("input", {
+											id: "email",
+											type: "email",
+											style: style,
+											autoCapitalize: "off",
+											autoCorrect: "off",
+											autoComplete: "off",
+											placeholder: "Enter Email",
+											ref: function (e) {
+												return _this7.email = e;
+											},
+											readOnly: !this.state.isAdd,
+											onChange: this.checkValidate,
+											value: !!this.state.trady.email ? this.state.trady.email : "",
+											className: "input-custom u-full-width " + (this.state.errorEmail && "has-error")
+										})
+									)
+								),
 								React.createElement(
 									"div",
-									null,
-									React.createElement("input", {
-										id: "mobile",
-										type: "number",
-										style: style,
-										placeholder: "Enter Mobile",
-										ref: function (e) {
-											return _this7.mobile = e;
-										},
-										readOnly: !this.state.isAdd,
-										onChange: this.checkValidate,
-										onKeyPress: function (e) {
-											return _this7.checkLength(e);
-										},
-										value: !!this.state.trady.mobile ? this.state.trady.mobile : "",
-										className: "input-custom u-full-width " + (this.state.errorMobile && "has-error")
-									})
+									{ className: "row m-t-lg" },
+									React.createElement(
+										"div",
+										null,
+										React.createElement("input", {
+											id: "mobile",
+											type: "number",
+											style: style,
+											placeholder: "Enter Mobile",
+											ref: function (e) {
+												return _this7.mobile = e;
+											},
+											readOnly: !this.state.isAdd,
+											onChange: this.checkValidate,
+											onKeyPress: function (e) {
+												return _this7.checkLength(e);
+											},
+											value: !!this.state.trady.mobile ? this.state.trady.mobile : "",
+											className: "input-custom u-full-width " + (this.state.errorMobile && "has-error")
+										})
+									)
 								)
 							)
 						),
@@ -77088,7 +77206,7 @@ var ModalRequestModal = React.createClass({
 								},
 								"Cancel"
 							),
-							React.createElement(
+							(isTrady === 'true' || isTrady === 'false') && React.createElement(
 								"button",
 								{
 									type: "submit",
@@ -77302,7 +77420,7 @@ var MaintenanceRequest = React.createClass({
 					landlord: res,
 					notification: {
 						title: "Ask landlord for instructions",
-						content: "Your Landlord has been updated successfully!",
+						content: "Thank you, the maintenance request has been emailed to the landlord. We will notify you with the landlord's instructions when he/she responds.",
 						bgClass: "bg-success"
 					}
 				});
@@ -77987,6 +78105,7 @@ var MaintenanceRequest = React.createClass({
 					{
 						return React.createElement(EditMaintenanceRequest, {
 							close: this.isClose,
+							tradies: this.state.tradies,
 							maintenance_request: this.state.maintenance_request,
 							editMaintenanceRequest: this.editMaintenanceRequest
 						});
@@ -81549,7 +81668,11 @@ var TenantMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+									content: ["Are you sure you want to cancel appointment. To cancel the appointment you ", React.createElement(
+										'strong',
+										{ className: 'text-capitalize' },
+										'must'
+									), " submit a new appointment time."]
 								})
 							};
 						})();
@@ -81587,7 +81710,11 @@ var TenantMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+									content: ["Are you sure you want to declie appointment. To decline the appointment you ", React.createElement(
+										'strong',
+										{ className: 'text-capitalize' },
+										'must'
+									), " submit a new appointment time."]
 								})
 							};
 						})();
@@ -84282,7 +84409,11 @@ var TradyMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: 'Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time.'
+									content: ["Are you sure you want to cancel appointment. To cancel the appointment you ", React.createElement(
+										'strong',
+										{ className: 'text-capitalize' },
+										'must'
+									), " submit a new appointment time."]
 								})
 							};
 						})();
@@ -84316,7 +84447,11 @@ var TradyMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: 'Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time.'
+									content: ["Are you sure you want to declie appointment. To decline the appointment you ", React.createElement(
+										'strong',
+										{ className: 'text-capitalize' },
+										'must'
+									), " submit a new appointment time."]
 								})
 							};
 						})();
