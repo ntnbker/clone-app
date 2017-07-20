@@ -737,7 +737,7 @@ var TradyMaintenanceRequest = React.createClass({
 							title="Cancel Appointment"
 							btnContent="Create and Cancel"
 							openModal={() => this.onModalWith(key)}
-							content="Are you sure you want to cancel appointment. To cancel the appointment you must submit a new appointment time."
+							content={["Are you sure you want to cancel appointment. To cancel the appointment you ", <strong className="text-capitalize">must</strong>, " submit a new appointment time."]}
 						/>
 					);
 				}
@@ -763,7 +763,7 @@ var TradyMaintenanceRequest = React.createClass({
 							title="Decline Appointment"
 							btnContent="Create and Decline"
 							openModal={() => this.onModalWith(key)}
-							content="Are you sure you want to declie appointment. To decline the appointment you must submit a new appointment time."
+							content={["Are you sure you want to declie appointment. To decline the appointment you ", <strong className="text-capitalize">must</strong> ," submit a new appointment time."]}
 						/>
 					);
 				}

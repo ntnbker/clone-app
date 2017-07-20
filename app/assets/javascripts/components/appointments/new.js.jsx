@@ -1,12 +1,18 @@
 var SelectTime = React.createClass({
 	getInitialState: function() {
-			return null;
+			return {
+				date: this.props.date
+			};
 	},
 
 	makeHour: function() {
 		var now = new Date();
 		hours = parseInt(now.getHours());
 		minutes = parseInt(now.getMinutes());
+		month = parseInt(now.getMonth()) + 1;
+		month = month.toString().length == 1 ? '0' + month : month;
+		var currentDate = new Date(now.getFullYear() + '-' + month + '-' + now.getDate());
+		var stateDate = new Date(this.state.date);
     var date=[];
     date.push(<option key="-1" value="">--</option>);
     var value = "";
@@ -23,7 +29,7 @@ var SelectTime = React.createClass({
         value += " PM";
       }
       date.push(
-        <option key={i} value={i} disabled={i < hours ? true : false}>
+        <option key={i} value={i} disabled={currentDate.valueOf() == stateDate.valueOf() ? i < hours ? true : false : false}>
           { value }
         </option>
       );
@@ -42,6 +48,12 @@ var SelectTime = React.createClass({
     });
     
     return date;
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+  	this.setState({
+  		date: nextProps.date
+  	});
   },
 
 	render: function() {
@@ -111,6 +123,12 @@ var CommentAppointment = React.createClass({
 });
 
 var ModalAddAppointment = React.createClass({
+	getInitialState: function() {
+		return {
+			date: null,
+		};	
+	},
+
 	submit: function(e) {
 		e.preventDefault();
 		const time = $('#hour').val() + ':' + $('#minute').val();
@@ -121,6 +139,12 @@ var ModalAddAppointment = React.createClass({
 			appointment_type: this.props.type,
 		};
 		this.props.addAppointment(params);
+	},
+
+	changeDate: function(e){
+		this.setState({
+			date: e.target.value
+		});
 	},
 
 	componentDidMount: function() {
@@ -174,11 +198,12 @@ var ModalAddAppointment = React.createClass({
 												type="date"
 												defaultValue={date}
 												ref={ref => this.date = ref}
+												onChange={this.changeDate}
 											/>
 										</div>
 										<div className="time">
 											<label>Time</label>
-											<SelectTime onChange={this.checkValidate} />
+											<SelectTime date={this.state.date} onChange={this.checkValidate} />
 										</div>
 									</div>
 								</div>
@@ -229,6 +254,12 @@ var ModalConfirmAppointment = React.createClass({
 								onClick={this.props.openModal} 
 								data-dismiss="modal"
 							>{btnContent}</button>
+							<button 
+								type="button" 
+								className="btn btn-default cancel" 
+								onClick={this.props.close} 
+								data-dismiss="modal"
+							>Close</button>
 						</div>
 					</div>
 				</div>

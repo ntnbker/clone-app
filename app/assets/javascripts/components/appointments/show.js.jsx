@@ -120,7 +120,7 @@ var ModalAppointment = React.createClass({
 		var arrHour = hour.split(':');
 		var h =  parseInt(arrHour[0]);
 		var m = arrHour[1];
-    var time = (h > 12) ? (h-12 + ':' + m +' PM') : (h + ':' + m +' AM');
+		var time = (h > 12) ? (h-12 + ':' + m +' PM') : (h + ':' + m +' AM');
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">

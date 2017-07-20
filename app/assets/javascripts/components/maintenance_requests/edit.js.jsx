@@ -57,7 +57,6 @@ var EditMaintenanceRequest = React.createClass({
 			trady_id: this.trady_id.value,
 			maintenance_description: this.description.value,
 		};
-		debugger
 		this.props.editMaintenanceRequest(params);
 	},
 	

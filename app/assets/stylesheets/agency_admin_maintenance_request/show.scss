@@ -1807,3 +1807,8 @@ body::-webkit-scrollbar-thumb {
 .m-b-n {
   margin-bottom: 0;
 }
+@media (max-width: 400px) {
+  .modal-custom .modal-footer .cancel {
+    margin-top: 10px;
+  }
+}

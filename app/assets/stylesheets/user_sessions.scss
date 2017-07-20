@@ -11,40 +11,6 @@
     	input[type="email"], input[type="password"] {
     		width: 100%;
     	}
-        .radio {
-            display: inline-block;
-            width: auto;
-            margin-right: 15px;
-            label {
-                display: flex;
-            }
-            input[type='radio'] {
-                -webkit-appearance:none;
-                display: inline-block;
-                width:20px;
-                height:20px;
-                border:1px solid darkgray;
-                border-radius:50%;
-                margin-right: 5px;
-                outline:none;
-            }
-
-            input[type='radio']:before {
-                content: '';
-                display: block;
-                width: 8px;
-                height: 8px;
-                text-align: center;
-                border-radius: 50%;
-                margin: 5px auto;    
-            }
-            input[type='radio']:checked {
-                background: #7dc691;
-            }
-            input[type='radio']:checked:before {
-                background: #fff;
-            }
-        }
     }
 
     input[type="submit"] {
@@ -63,4 +29,41 @@
             width: 300px;
         }
     }
+}
+.radio {
+  display: inline-block;
+  width: auto;
+  margin-right: 15px;
+  label {
+    display: flex;
+    width: auto !important;
+    line-height: normal !important;
+    align-items: center;
+  }
+  input[type='radio'] {
+    -webkit-appearance:none;
+    display: inline-block;
+    width:20px !important;
+    height:20px !important;
+    border:1px solid darkgray;
+    border-radius:50%;
+    margin-right: 5px;
+    outline:none;
+  }
+
+  input[type='radio']:before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    text-align: center;
+    border-radius: 50%;
+    margin: 5px auto;    
+  }
+  input[type='radio']:checked {
+    background: #7dc691;
+  }
+  input[type='radio']:checked:before {
+    background: #fff;
+  }
 }

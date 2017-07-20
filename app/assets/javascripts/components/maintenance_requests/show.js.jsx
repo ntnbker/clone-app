@@ -817,8 +817,9 @@ var ModalRequestModal = React.createClass({
 	getInitialState: function() {
 		return {
 			isAdd: false,
-			errorName: false,
+			isTrady: null,
 			isDisable: false,
+			errorName: false,
 			errorEmail: false,
 			errorMobile: false,
 			errorCompany: false,
@@ -1034,9 +1035,16 @@ var ModalRequestModal = React.createClass({
 		return
 	},
 
+	changeRadio: function(e) {
+		this.setState({
+			isTrady: e.target.value
+		});
+	},
+
 	render: function() {
 		const self = this;
 		const state = this.state;
+		const {isTrady} = this.state;
 		const style = {
 			background: this.state.isAdd ? 'none' : '#f2f2f2'
 		};
@@ -1058,93 +1066,115 @@ var ModalRequestModal = React.createClass({
 								<h4 className="modal-title text-center">{ this.props.keyTitle == "request-quote" ? "Request Quote" : "Send Work Order" }</h4>
 							</div>
 							<div className="modal-body">
-									<div className="row">
-										<select 
-											id="trady" 
-											className="form-control input-custom"
-											ref={e => this.trady_id = e}
-											onChange={() => this.selectTrady(this.trady_id.value)} 
-										>
-											<option value="" selected={!self.props.maintenance_request.trady_id && "selected"}>Select or Add New Tradie</option>
-											{
-												this.props.tradies.map(function(trady, index) {
-													return (
-														<option 
-															key={index+1} 
-															value={trady.id} 
-															selected={self.props.maintenance_request.trady_id == trady.id && "selected"}
-														>
-															{trady.name}
-														</option>
-													);
-												})
-											}
-										</select>
+								<div className="row">
+									<div className="radio">
+										<label>
+											<input type="radio" value="true" onChange={this.changeRadio} checked={isTrady === 'true' && "checked"}/>
+											Select trady
+										</label>
 									</div>
-									<div className="row m-t-lg">
-										<div>
-											<input
-												type="text" 
-												id="company" 
-												style={style}
-												ref={e => this.company = e}
-												readOnly={!this.state.isAdd}
-												onChange={this.checkValidate} 
-												placeholder="Enter Company Name"
-												value={!!this.state.trady.company_name ? this.state.trady.company_name : ""}
-												className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")} 
-											/>
+									<div className="radio">
+										<label>
+											<input type="radio" value="false" onChange={this.changeRadio} checked={isTrady === 'false' && "checked"}/>
+											Add trady
+										</label>
+									</div>
+								</div>
+								{
+									isTrady === 'true' &&
+										<div className="row">
+											<select 
+												id="trady" 
+												className="form-control input-custom"
+												ref={e => this.trady_id = e}
+												onChange={() => this.selectTrady(this.trady_id.value)} 
+											>
+												<option value="" selected={!self.props.maintenance_request.trady_id && "selected"}>Select or Add New Tradie</option>
+												{
+													this.props.tradies.map(function(trady, index) {
+														return (
+															<option 
+																key={index+1} 
+																value={trady.id} 
+																selected={self.props.maintenance_request.trady_id == trady.id && "selected"}
+															>
+																{trady.name}
+															</option>
+														);
+													})
+												}
+											</select>
 										</div>
-									</div>
-									<div className="row m-t-lg">
+								}
+								{
+									(isTrady === 'true' || isTrady === 'false') &&
 										<div>
-											<input
-												id="name" 
-												type="text" 
-												style={style}
-												placeholder="Enter Name"
-												ref={e => this.name = e}
-												readOnly={!this.state.isAdd}
-												onChange={this.checkValidate}
-												value={!!this.state.trady.name ? this.state.trady.name : ""}
-												className={"input-custom u-full-width " + (this.state.errorName && "has-error")} 
-											/>
+											<div className="row m-t-lg">
+												<div>
+													<input
+														type="text" 
+														id="company" 
+														style={style}
+														ref={e => this.company = e}
+														readOnly={!this.state.isAdd}
+														onChange={this.checkValidate} 
+														placeholder="Enter Company Name"
+														value={!!this.state.trady.company_name ? this.state.trady.company_name : ""}
+														className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")} 
+													/>
+												</div>
+											</div>
+											<div className="row m-t-lg">
+												<div>
+													<input
+														id="name" 
+														type="text" 
+														style={style}
+														placeholder="Enter Name"
+														ref={e => this.name = e}
+														readOnly={!this.state.isAdd}
+														onChange={this.checkValidate}
+														value={!!this.state.trady.name ? this.state.trady.name : ""}
+														className={"input-custom u-full-width " + (this.state.errorName && "has-error")} 
+													/>
+												</div>
+											</div>
+											<div className="row m-t-lg">
+												<div>
+													<input
+														id="email" 
+														type="email" 
+														style={style}
+														autoCapitalize="off"
+														autoCorrect="off"
+														autoComplete="off"
+														placeholder="Enter Email"
+														ref={e => this.email = e} 
+														readOnly={!this.state.isAdd}
+														onChange={this.checkValidate}
+														value={!!this.state.trady.email ? this.state.trady.email : ""} 
+														className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")} 
+													/>
+												</div>
+											</div>
+											<div className="row m-t-lg">
+												<div>
+													<input 
+														id="mobile" 
+														type="number"
+														style={style}
+														placeholder="Enter Mobile"
+														ref={e => this.mobile = e} 
+														readOnly={!this.state.isAdd}
+														onChange={this.checkValidate}
+														onKeyPress={(e) => this.checkLength(e)}
+														value={!!this.state.trady.mobile ? this.state.trady.mobile : ""} 
+														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")} 
+													/>
+												</div>
+											</div>
 										</div>
-									</div>
-									<div className="row m-t-lg">
-										<div>
-											<input
-												id="email" 
-												type="email" 
-												style={style}
-												autoCapitalize="off"
-												autoCorrect="off"
-												autoComplete="off"
-												placeholder="Enter Email"
-												ref={e => this.email = e} 
-												readOnly={!this.state.isAdd}
-												onChange={this.checkValidate}
-												value={!!this.state.trady.email ? this.state.trady.email : ""} 
-												className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")} 
-											/>
-										</div>
-									</div>
-									<div className="row m-t-lg">
-										<div>
-											<input 
-												id="mobile" 
-												type="number"
-												style={style}
-												placeholder="Enter Mobile"
-												ref={e => this.mobile = e} 
-												readOnly={!this.state.isAdd}
-												onChange={this.checkValidate}
-												onKeyPress={(e) => this.checkLength(e)}
-												value={!!this.state.trady.mobile ? this.state.trady.mobile : ""} 
-												className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")} 
-											/>
-										</div>
-									</div>
+								}
 							</div>
 							<div className="modal-footer">
 								<button 
@@ -1154,13 +1184,16 @@ var ModalRequestModal = React.createClass({
 								>
 									Cancel
 								</button>
-								<button 
-									type="submit" 
-									className="btn btn-default success"
-									disabled={(!!state.isDisable) ? true : false}
-								>
-									Submit
-								</button>
+								{
+									(isTrady === 'true' || isTrady === 'false') &&
+										<button 
+											type="submit" 
+											className="btn btn-default success"
+											disabled={(!!state.isDisable) ? true : false}
+										>
+											Submit
+										</button>
+								}
 							</div>
 						</form>
 					</div>
