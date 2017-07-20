@@ -387,6 +387,7 @@ var ItemMaintenanceRequest = React.createClass({
 				</div>
 				<div className="content">
 					<div className="description">
+						<p className="m-b-n">Job Description:</p>
 						<p>{maintenance.maintenance_description}</p>
 					</div>
 					<div className="vailability">

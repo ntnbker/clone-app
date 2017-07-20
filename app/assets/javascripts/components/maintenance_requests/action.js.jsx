@@ -23,7 +23,7 @@ var ContentAction = React.createClass({
 				<li>
 					<a onClick={() => this.props.onModalWith('addLandlord')}>
 						<i aria-hidden="true" className="fa fa-user-plus" />
-						Add Landlord
+						Change Landlord
 					</a>
 				</li>
 				{
@@ -31,7 +31,7 @@ var ContentAction = React.createClass({
 						<li>
 							<a onClick={() => this.props.onModalWith('editLandlord')}>
 								<i aria-hidden="true" className="fa fa-pencil" />
-								Edit Landlord
+								Edit landlord details
 							</a>
 						</li>
 				}

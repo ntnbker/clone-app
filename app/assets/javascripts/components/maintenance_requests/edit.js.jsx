@@ -1,6 +1,7 @@
 var EditMaintenanceRequest = React.createClass({
 	getInitialState: function() {
 		return {
+			trady_id: false,
 			errorTitle: false,
 			errorDescription: false,
 		};	
@@ -53,14 +54,16 @@ var EditMaintenanceRequest = React.createClass({
 		}
 
 		var params = {
-			maintenance_description: this.description.value
+			trady_id: this.trady_id.value,
+			maintenance_description: this.description.value,
 		};
+		debugger
 		this.props.editMaintenanceRequest(params);
 	},
 	
 	render: function() {
 		const state = this.state;
-		const maintenance_request = this.props.maintenance_request;
+		const {maintenance_request, tradies} = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -79,18 +82,40 @@ var EditMaintenanceRequest = React.createClass({
 								<h4 className="modal-title text-center">Edit Maintenance Request</h4>
 							</div>
 							<div className="modal-body edit-maintenance-request">
-									<div className="row m-t-lg">
-										<div>
-											<label>Maintenance Request Description:</label>
-											<textarea 
-												placeholder="Enter Description"
-												ref={e => this.description = e}
-												onChange={(e, key) => this.checkValidate(e, 'description')} 
-												defaultValue={maintenance_request.maintenance_description}
-												className={"u-full-width " + (this.state.errorDescription && "has-error")} 
-											/>
-										</div>
-									</div>
+								<div className="row m-t-lg">
+									<label>Service Type:</label>
+									<select 
+										required
+										id="trady"
+										ref={e => this.trady_id = e}
+										className="form-control input-custom"
+									>
+										<option value="" selected={!maintenance_request.trady_id && "selected"}>Service Type</option>
+										{
+											tradies.map(function(trady, index) {
+												return (
+													<option 
+														key={index+1} 
+														value={trady.id} 
+														selected={maintenance_request.trady_id == trady.id && "selected"}
+													>
+														{trady.name}
+													</option>
+												);
+											})
+										}
+									</select>
+								</div>
+								<div className="row">
+									<label>Maintenance Request Description:</label>
+									<textarea 
+										placeholder="Enter Description"
+										ref={e => this.description = e}
+										onChange={(e, key) => this.checkValidate(e, 'description')} 
+										defaultValue={maintenance_request.maintenance_description}
+										className={"u-full-width " + (this.state.errorDescription && "has-error")} 
+									/>
+								</div>
 							</div>
 							<div className="modal-footer">
 								<button 

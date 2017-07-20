@@ -1354,7 +1354,7 @@ var MaintenanceRequest = React.createClass({
 					landlord: res,
 					notification: {
 						title: "Ask landlord for instructions",
-						content: "Your Landlord has been updated successfully!",
+						content: "Thank you, the maintenance request has been emailed to the landlord. We will notify you with the landlord's instructions when he/she responds.",
 						bgClass: "bg-success",
 					},
 				});
@@ -2046,6 +2046,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<EditMaintenanceRequest
 							close={this.isClose}
+							tradies={this.state.tradies}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
 						/>

@@ -280,9 +280,14 @@ body::-webkit-scrollbar-thumb {
       }
     }
     .edit-maintenance-request {
+      select {
+        float: left;
+        width: 100% !important;
+      }
       label {
         width: 100%;
         text-align: left;
+        text-transform: initial;
       }
       input {
         width: 100%;
@@ -1798,4 +1803,7 @@ body::-webkit-scrollbar-thumb {
   .text-left {
     text-align: left;
   }
+}
+.m-b-n {
+  margin-bottom: 0;
 }
