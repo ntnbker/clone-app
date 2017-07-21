@@ -93,7 +93,11 @@
       .main
         %p.content
           Hi #{@tenant.name.capitalize}, 
-          An appointment has been confirmed with #{@trady.name.capitalize}, the tradie. Please allow access to the premise on the date of the appointment.  
+          #{@trady.trady_company.company_name.capitalize} has confirmed the appointment time on the #{@appointment.date.strftime("%A %B %d")} at #{@appointment.time.strftime("%I:%M %p")}.
+
+          Please ensure access to the property is provided to avoid incurring a callout fee.
+
+          To view the details of the maintenance request or to make changes to the appointment, please click on the button below.  
 
         %p.thank
           Thank you :)
