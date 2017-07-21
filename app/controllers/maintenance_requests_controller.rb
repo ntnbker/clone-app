@@ -305,9 +305,9 @@ class MaintenanceRequestsController < ApplicationController
   def update
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-    maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description])
+    maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
     respond_to do |format|
-      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description]}}
+      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service]}}
       format.html {render body: nil}
 
     end
