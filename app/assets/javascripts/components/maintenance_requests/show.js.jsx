@@ -1037,14 +1037,15 @@ var ModalRequestModal = React.createClass({
 
 	changeRadio: function(e) {
 		this.setState({
-			isTrady: e.target.value
+			isTrady: e.target.value,
+			isAdd: e.target.value === 'false' ? true : false,
 		});
 	},
 
 	render: function() {
 		const self = this;
 		const state = this.state;
-		const {isTrady} = this.state;
+		const {isTrady, isDisable, trady, isAdd} = this.state;
 		const style = {
 			background: this.state.isAdd ? 'none' : '#f2f2f2'
 		};
@@ -1107,7 +1108,7 @@ var ModalRequestModal = React.createClass({
 										</div>
 								}
 								{
-									(isTrady === 'true' || isTrady === 'false') &&
+									(isTrady === 'false' || (!isAdd && trady.name != "" && isTrady === "true")) &&
 										<div>
 											<div className="row m-t-lg">
 												<div>
@@ -1185,7 +1186,7 @@ var ModalRequestModal = React.createClass({
 									Cancel
 								</button>
 								{
-									(isTrady === 'true' || isTrady === 'false') &&
+									(isTrady === 'true' || isTrady === 'false' || !!isDisable) &&
 										<button 
 											type="submit" 
 											className="btn btn-default success"
@@ -1800,6 +1801,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				maintenance_request.service_type = res.service_type;
 				maintenance_request.maintenance_heading = res.maintenance_heading;
 				maintenance_request.maintenance_description = res.maintenance_description
 				self.setState({
@@ -2079,7 +2081,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<EditMaintenanceRequest
 							close={this.isClose}
-							tradies={this.state.tradies}
+							services={this.props.services}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
 						/>

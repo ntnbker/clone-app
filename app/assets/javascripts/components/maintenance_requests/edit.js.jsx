@@ -1,7 +1,6 @@
 var EditMaintenanceRequest = React.createClass({
 	getInitialState: function() {
 		return {
-			trady_id: false,
 			errorTitle: false,
 			errorDescription: false,
 		};	
@@ -54,7 +53,7 @@ var EditMaintenanceRequest = React.createClass({
 		}
 
 		var params = {
-			trady_id: this.trady_id.value,
+			service: this.serviceType.value,
 			maintenance_description: this.description.value,
 		};
 		this.props.editMaintenanceRequest(params);
@@ -62,7 +61,7 @@ var EditMaintenanceRequest = React.createClass({
 	
 	render: function() {
 		const state = this.state;
-		const {maintenance_request, tradies} = this.props;
+		const {maintenance_request, services} = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -86,19 +85,19 @@ var EditMaintenanceRequest = React.createClass({
 									<select 
 										required
 										id="trady"
-										ref={e => this.trady_id = e}
+										ref={e => this.serviceType = e}
 										className="form-control input-custom"
 									>
-										<option value="" selected={!maintenance_request.trady_id && "selected"}>Service Type</option>
+										<option value="" selected={!maintenance_request.service_type && "selected"}>Service Type</option>
 										{
-											tradies.map(function(trady, index) {
+											services.map(function(service, index) {
 												return (
 													<option 
 														key={index+1} 
-														value={trady.id} 
-														selected={maintenance_request.trady_id == trady.id && "selected"}
+														value={service.service} 
+														selected={maintenance_request.service_type == service.service && "selected"}
 													>
-														{trady.name}
+														{service.service}
 													</option>
 												);
 											})

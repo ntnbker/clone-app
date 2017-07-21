@@ -1344,6 +1344,9 @@ body::-webkit-scrollbar-thumb {
         width: 100%;
       }
     }
+    .modal-custom .modal-body .input-custom {
+      width: 100%;
+    }
 
     .invoices .content p {
       justify-content: flex-start;
