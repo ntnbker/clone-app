@@ -91,9 +91,18 @@
             MaintenanceApp
       .main
         %p.content
+         
           Hi #{@tenant.name.capitalize},
-          A quote has been requested from a trady for your maintenance request. 
-        
+
+          -if @maintenance_request.agency_admin
+            #{@agency_admin.first_name.capitalize} from #{@agency.company_name.capitalize} has requested a quote from #{@trady.company_name.capitalize}.
+          -elsif @maintenance_request.agent
+            #{@agent.name.capitalize} from #{@agency.company_name.capitalize} has requested a quote from #{@trady.company_name.capitalize}.
+          They may contact you if they require an inspection to quote on the issue in the maintenance request.
+
+          We have included the tradie's contact details below in case you wish to contact them.
+
+          Phone:#{@trady.mobile}
         %p.thank
           Thank you :)
 

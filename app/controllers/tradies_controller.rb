@@ -65,7 +65,8 @@ class TradiesController < ApplicationController
           #do nothing
         else
           QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
-        end 
+        end
+        TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id,@trady.id) 
       elsif params[:trady][:trady_request] == "Work Order"
         Log.create(maintenance_request_id:mr.id, action:"Work Order Requested", name:name)
         TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
@@ -96,6 +97,7 @@ class TradiesController < ApplicationController
         TradyEmailWorker.perform_async(@user.trady.id,mr.id)
         Log.create(maintenance_request_id:mr.id, action:"Quote Requested", name:name)
         quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
+        TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id,@user.trady.id)
         if quote_request
           #do nothing
         else
@@ -131,6 +133,7 @@ class TradiesController < ApplicationController
           TradyEmailWorker.perform_async(@user.trady.id,mr.id)
           TradyStatus.create(maintenance_request_id:mr.id,status:"Quote Requested")
           quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
+          TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id,@trady.id)
           if quote_request
             #do nothing
           else
@@ -154,7 +157,7 @@ class TradiesController < ApplicationController
       end
     end 
  
-    TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id)
+    #TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id)
 
 
   end 

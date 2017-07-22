@@ -4,11 +4,12 @@ class TenantMailer < ActionMailer::Base
 
     @appointment = appointment
     @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
     @tenant = tenant
     @trady = trady
     track user: tenant.user
     track extra: {maintenance_request_id:@maintenance_request.id}
-    mail from:"ron@email.com", to:tenant.email, subject:"Hi #{tenant.full_name} an appointment time has been made"
+    mail to:tenant.email, subject:"Appointment request by tradie, #{@trady.trady_company.company_name.capitalize} - #{@property.property_address}"
   end
 
   def appointment_accepted_email(maintenance_request_object,appointment_object, trady_object, tenant_object)
@@ -39,11 +40,12 @@ class TenantMailer < ActionMailer::Base
 
     @appointment = appointment
     @maintenance_request = maintenance_request
+    @property = maintenance_request.property
     @tenant = tenant
     @landlord = landlord
     track user: tenant.user
     track extra: {maintenance_request_id:@maintenance_request.id}
-    mail from:"ron@email.com", to:tenant.email, subject:"Hi #{tenant.full_name} an appointment time has been made"
+    mail to:tenant.email, subject:" Appointment request by Landlord, #{@landlord.name.capitalize} - #{@property.property_address}"
   end
 
   def alternative_landlord_appointment_picked_email(maintenance_request_object,appointment_object, landlord_object, tenant_object)
@@ -80,26 +82,45 @@ class TenantMailer < ActionMailer::Base
     mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Declined")
   end
 
-  def landlord_cancelled_appointment(tenant_object)
+  def landlord_cancelled_appointment(tenant_object,maintenance_request_object)
     @tenant = tenant_object
-    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Cancelled")
+    @maintenance_request = maintenance_request_object
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
+    mail(to:@tenant.email, subject:"Cancelled appointment by landlord, #{@landlord.name.capitalize}- #{@property.property_address}")
   end
 
-  def landlord_declined_appointment(tenant_object)
+  def landlord_declined_appointment(tenant_object,maintenance_request_object)
     @tenant = tenant_object
-    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Declined")
+    @maintenance_request = maintenance_request_object
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
+    mail(to:@tenant.email, subject:"Appointment declined by landlord, #{@landlord.name.capitalize}- #{@property.property_address}")
   end
 
-  def tenant_quote_requested_notification_email(maintenance_request)
+  def tenant_quote_requested_notification_email(maintenance_request,trady)
     @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
     @tenant = @maintenance_request.tenants.first
-    mail(from:"ron@email.com",to:@tenant.email, subject:"Quote has been requested for your maintenance request")
+    @trady = trady
+    if @maintenance_request.agent
+      @agent = @maintenance_request.agent
+      @agency = @agent.agency
+    elsif @maintenance_request.agency_admin
+      @agency_admin = @maintenance_request.agency_admin
+      @agency = @agency_admin.agency
+    end
+        
+    mail(to:@tenant.email, subject:"Quote requested by #{@agency.company_name.capitalize} - #{@property.property_address}")
   end
 
   def tenant_quote_approved_notification_email(maintenance_request)
     @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
+    @trady = @maintenance_request.trady
     @tenant = @maintenance_request.tenants.first
-    mail(from:"ron@email.com",to:@tenant.email, subject:"A Quote has been approved for your maintenance request")
+    mail(from:"ron@email.com",to:@tenant.email, subject:"Quote Approved by landlord, #{@landlord.name.capitalize} - #{@property.property_address}")
   end
   
   

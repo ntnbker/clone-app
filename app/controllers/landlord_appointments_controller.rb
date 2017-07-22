@@ -166,11 +166,12 @@ class LandlordAppointmentsController < ApplicationController
     appointment.update_attribute(:status,"Declined")
     tenant = appointment.tenant
     landlord = appointment.landlord
+    maintenance_request = appointment.maintenance_request
     
     if params[:current_user_role] == "Landlord"
       #Email the tenant that a new appointment will be suggested to them. 
       
-        LandlordDeclinedAppointmentEmailWorker.perform_async(tenant.id)
+      LandlordDeclinedAppointmentEmailWorker.perform_async(tenant.id,maintenance_request.id)
     elsif params[:current_user_role] == "Tenant"
       #email the landlord that a new appointment will be suggested to them. 
         TenantDeclinedLandlordAppointmentEmailWorker.perform_async(landlord.id)
@@ -184,13 +185,14 @@ class LandlordAppointmentsController < ApplicationController
   def cancel_appointment
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Cancelled")
+    maintenance_request = appointment.maintenance_request
     tenant = appointment.tenant
     landlord = appointment.landlord
     
     if params[:current_user_role] == "Landlord"
       #Email the tenant that a new appointment will be suggested to them. 
       
-        LandlordCancelledAppointmentEmailWorker.perform_async(tenant.id)
+        LandlordCancelledAppointmentEmailWorker.perform_async(tenant.id,maintenance_request.id)
     elsif params[:current_user_role] == "Tenant"
       #email the landlord that a new appointment will be suggested to them. 
         TenantCancelledLandlordAppointmentEmailWorker.perform_async(landlord.id)
