@@ -93,6 +93,12 @@
         %p.content
           Hi #{@landlord.name.capitalize}, a quote has been submitted by a tradie for the maintenance request. To take a look at the quote please click the buttom below. 
 
+          Hi #{@landlord.name.capitalize},
+
+          #{@trady.name.capitalize} from #{@trady.company_name.capitalize} has just sent you a quote for the job at #{@property.property_address}. 
+
+          To view and approve or decline this quote, please click on the button below.
+
         %div.text-center
           =link_to "View Quote", landlord_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@landlord.user.id,:anchor=>"quote_area"), class: 'btn'
 

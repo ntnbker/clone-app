@@ -4,8 +4,17 @@ class LandlordMailer < ActionMailer::Base
     track user: landlord.user
     track extra: {maintenance_request_id:maintenance_request.id}
     @maintenance_request = maintenance_request
+    @property =@maintenance_request.property
     @landlord = landlord
-    mail from:"ron@email.com", to:landlord.email, subject:"Hi #{landlord.name} a maintenance request has been made"
+    if @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+      @agent = @maintenance_request.agent
+    elsif @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+      @agent = @maintenance_request.agency_admin
+    end 
+
+    mail from:"ron@email.com", to:landlord.email, subject:"Landlord instructions required - #{@property.property_address}"
   end
 
   def send_landlord_quote(maintenance_request,landlord, quote)
@@ -14,7 +23,8 @@ class LandlordMailer < ActionMailer::Base
     @maintenance_request = maintenance_request
     @landlord = landlord
     @quote = quote
-    mail from:"ron@email.com", to:landlord.email, subject:"Hi #{landlord.name} a quote has been send for a maintenance request job"
+    @trady = @quote.trady
+    mail to:landlord.email, subject:"Quote received - PropertyAddress"
     
   end
 
@@ -41,14 +51,21 @@ class LandlordMailer < ActionMailer::Base
     mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment confirmed by tenant #{@tenant.name.capitalize}- #{@property.property_address}")
   end
 
-  def tenant_cancelled_landlord_appointment_email(landlord_object)
+  def tenant_cancelled_landlord_appointment_email(landlord_object,tenant_object,maintenance_request_object)
     @landlord = landlord_object
-    mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment Cancelled")
+    @tenant = tenant_object
+    @maintenance_request = maintenance_request_object
+    @property = @maintenance_request.property
+    mail(to:@landlord.email, subject:"Cancelled appointment by tenant - #{@property.property_address}")
   end
 
-  def tenant_declined_landlord_appointment_email(landlord_object)
+  def tenant_declined_landlord_appointment_email(landlord_object,tenant_object,maintenance_request_object,appointment_object)
     @landlord = landlord_object
-    mail(from:"ron@email.com",to:@landlord.email, subject:"Appointment Time Declined")
+    @tenant = tenant_object
+    @maintenance_request = maintenance_request_object
+    @property = @maintenance_request.property
+    @appointment = appointment_object
+    mail(to:@landlord.email, subject:"Appointment declined by tenant #{@tenant.name.capitalize} - #{@property.property_address}")
   end
 
 
@@ -63,7 +80,7 @@ class LandlordMailer < ActionMailer::Base
       @agency = @maintenance_request.agency_admin.agency
       @agent = @maintenance_request.agency_admin
     end 
-    mail(from:"ron@email.com",to:@landlord.email, subject:"Work order sent by AgencyName - PropertyAddress")
+    mail(to:@landlord.email, subject:"Work order sent by #{@agency.company_name.capitalize} - #{@property.property_address}")
   end
 
   def notify_landlord_about_message(maintenance_request_object)

@@ -92,9 +92,14 @@
 
       .main
         %p.content
-          Hi #{@landlord.name.capitalize}, a quote for a maintenance request has been approved.
-        %p.content
-          To view the details please click on the button below.
+
+          Hi #{@landlord.name.capitalize},
+
+
+          -if @maintenance_request.agent
+            Your agent, #{@agent.name.capitalize} has just sent a work order to #{@trady.company_name.capitalize} for #{@property.property_address}. To view the maintenance request, please click on the button below.
+          -elsif @maintenance_request.agency_admin
+            Your agent, #{@agent.first_name.capitalize} has just sent a work order to #{@trady.company_name.capitalize} for #{@property.property_address}. To view the maintenance request, please click on the button below.
         %div.text-center
           =link_to "View Maintenance Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id,:anchor=>"quote_area"), class: 'btn'
 

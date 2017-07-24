@@ -91,7 +91,12 @@
             MaintenanceApp
       .main
         %p.content
-          Hi #{@landlord.name.capitalize}, the appointment with the tenant to fix the maintenance request issue has been cancelled and will be rescheduled. You will recieve an email with a new suggested appointment time for the maintenance request. Sorry for any inconveniance this may have caused.
+          
+          Hi #{@landlord.name.capitalize},
+
+          Unfortunately the appointment to fix the issue raised in the maintenance request was cancelled by the tenant, #{@tenant.name.capitalize}.
+
+          We will notify you shortly when the tenant suggests a new appointment.
         
         %p.thank
           Thank you :)
