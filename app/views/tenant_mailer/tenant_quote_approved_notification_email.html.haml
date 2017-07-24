@@ -91,8 +91,16 @@
             MaintenanceApp
       .main
         %p.content
+          
           Hi #{@tenant.name.capitalize},
-          A quote has been approved from a trady for your maintenance request. You will receive an email so you can confirm an appointment with them.
+
+          The landlord has just approved the quote from #{@trady.trady_company.company_name.capitalize}.
+
+          They should be in contact with you shortly to arrange a time to fix the issue in the maintenance request.
+
+          We have included the tradie's contact details below. If you do not hear from them shortly, feel free to contact them.
+
+          Phone:#{@trady.mobile}
         
         %p.thank
           Thank you :)
