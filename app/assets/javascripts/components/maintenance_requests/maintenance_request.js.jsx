@@ -243,8 +243,20 @@ var ButtonHeaderMR = React.createClass({
       }
     ];
 
+    const standBy = [
+    	{
+    		title: "Defer",
+    		value: "Defer",
+    	},
+    	{
+    		title: "Archive",
+    		value: "Archive",
+    	}
+    ];
+
 		return {
 			isShow: false,
+			standBy: standBy,
 			isShowStatus: false,
 			actionRequests: actionRequests,
 			awaitingAction: awaitingAction,
@@ -299,6 +311,7 @@ var ButtonHeaderMR = React.createClass({
 	render: function() {
 		const all_agents = this.props.all_agents;
 		const all_agency_admins = this.props.all_agency_admins;
+		const {standBy, actionRequests, awaitingAction} = this.state;
 		return (
 			<div className="actions">
 				<div id="update-status">
@@ -308,11 +321,15 @@ var ButtonHeaderMR = React.createClass({
 					<div className="dropdown-status" style={{display: this.state.isShowStatus ? 'block' : 'none'}}>
 						<div>
 							<p>Action Request</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={this.state.actionRequests}/>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequests}/>
 						</div>
 						<div>
 							<p className="awaiting">Awaiting Action</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={this.state.awaitingAction}/>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
+						</div>
+						<div>
+							<p className="awaiting">Stand By</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
 						</div>
 					</div>
 				</div>
