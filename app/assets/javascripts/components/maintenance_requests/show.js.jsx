@@ -550,7 +550,6 @@ var ModalAddLandlord = React.createClass({
 		return
 	},
 
-
 	render: function() {
 		const {note} = this.props;
 		return (
@@ -726,7 +725,6 @@ var ModalEditLandlord = React.createClass({
 		}
 	},
 
-
 	render: function() {
 		return (
 			<div className="modal-custom fade">
@@ -825,6 +823,7 @@ var ModalRequestModal = React.createClass({
 			errorCompany: false,
 			maintenance_request: this.props.maintenance_request,
 			trady: {
+				id: null,
 				name: null,
 				email: null,
 				mobile: null,
@@ -921,7 +920,7 @@ var ModalRequestModal = React.createClass({
 	},
 
 	componentWillMount: function() {
-		this.selectTrady(this.state.maintenance_request.trady_id);
+		//this.selectTrady(this.state.maintenance_request.trady_id);
 	},
 
 	checkLength: function(e) {
@@ -968,6 +967,7 @@ var ModalRequestModal = React.createClass({
 			errorMobile: false,
 			errorCompany: false,
 			trady: {
+				id: null,
 				name: null,
 				email: null,
 				mobile: null,
@@ -1086,20 +1086,20 @@ var ModalRequestModal = React.createClass({
 										<div className="row">
 											<select 
 												id="trady" 
-												className="form-control input-custom"
 												ref={e => this.trady_id = e}
+												className="form-control input-custom"
 												onChange={() => this.selectTrady(this.trady_id.value)} 
 											>
-												<option value="" selected={!self.props.maintenance_request.trady_id && "selected"}>Select or Add New Tradie</option>
+												<option value="" selected={!trady.id && "selected"}>Select Tradie</option>
 												{
-													this.props.tradies.map(function(trady, index) {
+													this.props.tradies.map(function(item, index) {
 														return (
 															<option 
 																key={index+1} 
-																value={trady.id} 
-																selected={self.props.maintenance_request.trady_id == trady.id && "selected"}
+																value={item.id} 
+																selected={trady.id == item.id && "selected"}
 															>
-																{trady.name}
+																{item.name}
 															</option>
 														);
 													})
@@ -1108,7 +1108,7 @@ var ModalRequestModal = React.createClass({
 										</div>
 								}
 								{
-									(isTrady === 'false' || (!isAdd && trady.name != "" && isTrady === "true")) &&
+									(isTrady === 'false' || (!isAdd && trady.id != null && isTrady === "true")) &&
 										<div>
 											<div className="row m-t-lg">
 												<div>
