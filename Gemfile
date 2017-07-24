@@ -42,6 +42,7 @@ gem 'font-awesome-rails'
 gem "aws-sdk", "~> 2.1"
 gem "shrine"
 gem "roda"
+gem "chardinjs-rails"
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
 gem 'twilio-ruby', '~> 4.11.1'
