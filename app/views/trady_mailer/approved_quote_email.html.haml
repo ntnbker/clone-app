@@ -93,6 +93,22 @@
         %p.content
           Hi #{@trady.name.capitalize}, your quote offer has been accepted. To Setup an appointment with the tenant please click the button below. 
 
+
+          Hi #{@trady.name.capitalize},
+
+          Your quote has been approved.
+
+          Please see the work order below:
+
+          WORK ORDER - #{@maintenance_request.work_order_number}
+
+          Property Address:
+          #{@property.property_address}
+
+          Job Description:
+          #{@maintenance_request.maintenance_description}
+
+          To view the maintenance request and create an apppointment with the tenant(s) to carry out the work, please click on the link below.
         %div.text-center
           =link_to "Create Appointment", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id), class: 'btn'
         %p.thank

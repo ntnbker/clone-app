@@ -71,15 +71,21 @@ class TenantMailer < ActionMailer::Base
     mail(to:@tenant.email, subject:"Appointment confirmed by Landlord, #{@landlord.name.capitalize} - #{@property.property_address}")
   end
 
-  def trady_cancelled_appointment_email(tenant_object)
-    
+  def trady_cancelled_appointment_email(tenant_object,trady_object,maintenance_request_object)
+    @maintenance_request = maintenance_request_object
+    @property = @maintenance_request.property
     @tenant = tenant_object
-    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Cancelled")
+    @trady = trady_object
+    mail(to:@tenant.email, subject:"Cancelled appointment by #{@trady.trady_company.company_name.capitalize} - #{@property.property_address}")
   end
 
-  def trady_declined_appointment_email(tenant_object)
+  def trady_declined_appointment_email(tenant_object, trady_object, maintenance_request_object,appointment_object)
+    @maintenance_request = maintenance_request_object
+    @property = @maintenance_request.property
     @tenant = tenant_object
-    mail(from:"ron@email.com",to:@tenant.email, subject:"Appointment Declined")
+    @trady = trady_object
+    @appointment = appointment_object
+    mail(to:@tenant.email, subject:"Appointment declined by #{@trady.trady_company.company_name.capitalize} - #{@property.property_address}")
   end
 
   def landlord_cancelled_appointment(tenant_object,maintenance_request_object)

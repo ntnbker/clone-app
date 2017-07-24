@@ -91,7 +91,17 @@
             MaintenanceApp
       .main
         %p.content
-          Hi #{@trady.name.capitalize}, an agent has sent you a message about a quote you submitted. To view and respond to the message please click the button below.
+          
+
+          Hi #{@trady.name.capitalize},
+
+          -if @maintenance_request.agent
+            #{@agent.name.capitalize} from #{@agency.company_name.capitalize} has just sent you question(s) about the quote for #{@property.property_address}.
+          -elsif @maintenance_request.agency_admin
+            #{@agent.first_name.capitalize} from #{@agency.company_name.capitalize} has just sent you question(s) about the quote for #{@property.property_address}.
+
+
+          To view the question(s) and respond, please click on the button below.
 
         %div.text-center
           =link_to "View Quote Message", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id,message:"open_quote_message",quote_message_id:@quote.id), class: 'btn'
