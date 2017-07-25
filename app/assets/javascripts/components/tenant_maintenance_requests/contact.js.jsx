@@ -27,7 +27,7 @@ var TenantContact = React.createClass({
 
 	render: function() {
 		return (
-			<div className="item">
+			<div className="item" data-intro="This is Contact" data-position="left">
 				<div className="header action">
 					<a>Contact:</a>
 					<i

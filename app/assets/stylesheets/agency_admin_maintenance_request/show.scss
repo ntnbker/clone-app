@@ -868,7 +868,7 @@ body::-webkit-scrollbar-thumb {
     display: none;
     position: fixed;
     bottom: 0px;
-    z-index: 100;
+    z-index: 1;
     overflow: hidden;
     width: 100%;
     button {

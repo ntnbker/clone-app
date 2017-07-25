@@ -30,6 +30,7 @@
 //= require date_calendar
 //= require popup
 //= require ajax_requests
+//= require chardinjs
 //= require react
 //= require react_ujs
 //= require components

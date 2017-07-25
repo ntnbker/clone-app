@@ -21,6 +21,7 @@ var TenantSideBarMobile = React.createClass({
 
 	componentDidMount: function() {
 		const self = this;
+		$('body').chardinJs('start')
 		$(document).bind("click", function() {
 			self.close();
 		})
@@ -28,7 +29,7 @@ var TenantSideBarMobile = React.createClass({
 
 	render: function() {
 		return (
-			<div>
+			<div data-intro="Contact and Action" data-position="top">
 				<div className="sidebar-mobile">
 					<div className="fixed">       
 						<button 

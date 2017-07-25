@@ -5,7 +5,7 @@ var DetailInvoice = React.createClass({
 		let gst = 0;
 		if(!!invoice) {
 			return (
-				<table  className="table">
+				<table className="table">
 				<thead>
 					<tr>
 						<th>
@@ -130,15 +130,16 @@ var ModalViewInvoice = React.createClass({
 	printInvoice: function() {
 		$('.button-slider').toggle('hide');	
 		var contents = $('#print-invoice').html();
-		var style = ".info-quote {clear: both; overflow: hidden;}" +
-								".info-trady {width: 50%; float: left; margin-bottom: 15px; overflow: hidden;}" +
+		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" +
+								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
 								".info-trady p {margin-bottom: 0px;}" +
-								".info-agency {width: 50%;overflow: hidden;}" +
+								".info-agency {flex: 1;}" +
 								".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" +
 								".detail-quote .info-maintenance {margin-top: 10px;}" +
 								".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" +
 								".detail-quote {margin-top: 15px;}" +
 								".detail-quote .table {width: 100%;}" +
+								".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" +
 								".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}"+
 								"#print-invoice { color: #404040;}" +
 								".modal-dialog { width: 700px !important;}" +
@@ -146,7 +147,6 @@ var ModalViewInvoice = React.createClass({
 								".modal-header .logo img { width: 80px;}" +
 								".modal-header .info-trady {margin-left: 15px;}" +
 								".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
-								".modal-header .info-trady p span:first-child {width: 60px;display: inline-block;}" + 
 								".modal-header .info-trady p span:last-child {padding-left: 5px;}" +
 								".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" +
 								".modal-header .close span {color: #ccc !important;}" +
@@ -169,21 +169,21 @@ var ModalViewInvoice = React.createClass({
 								".print {display: none;}" +
 								".close {display: none;}";
 
-    var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
-    var htmlContent = "<html>" +
-						          "<head>" +
-						          "<title> Invoice </title>" +
-						          '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
-						          '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' +
-						          '<style type="text/css" media="print,screen">' +
-						          style +
-						          "</style>";
-   	frame.open();
-    frame.write(htmlContent);
-    frame.write("</head><body>");
-    frame.write(contents);
-    frame.write("</body></html>");
-    frame.close();
+		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
+		var htmlContent = "<html>" +
+											"<head>" +
+											"<title> Invoice </title>" +
+											'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
+											'<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' +
+											'<style type="text/css" media="print,screen">' +
+											style +
+											"</style>";
+		frame.open();
+		frame.write(htmlContent);
+		frame.write("</head><body>");
+		frame.write(contents);
+		frame.write("</body></html>");
+		frame.close();
     
     // print just the modal div
     setTimeout(function() {
@@ -191,8 +191,6 @@ var ModalViewInvoice = React.createClass({
       $('#printframe')[0].contentWindow.close();
     	$('.button-slider').toggle('show');
     }, 1000);
-
-    
 	},
 
 	render: function() {
@@ -278,14 +276,6 @@ var ModalViewInvoice = React.createClass({
 										</div>
 									</div>
 								</div>
-								<div className="button-slider">
-									<button className="btn-prev" onClick={(key, index) => this.switchSlider('prev', this.state.index)}>
-										<i className="fa fa-angle-left" />
-									</button>
-									<button className="btn-next" onClick={(key, index) => this.switchSlider('next', this.state.index)}>
-										<i className="fa fa-angle-right" />
-									</button>
-								</div>
 							</div>
 						</div>
 						<div className="footer">
@@ -334,7 +324,7 @@ var ModalViewInvoice = React.createClass({
 					</div>
 				</div>
 				<div id="modal-print">
-				    <iframe id="printframe" />  
+					<iframe id="printframe" />  
 				</div>
 			</div>
 		);
