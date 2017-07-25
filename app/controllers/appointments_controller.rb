@@ -164,14 +164,14 @@ class AppointmentsController < ApplicationController
   def decline_appointment
     appointment = Appointment.find_by(id:params[:appointment_id])
     appointment.update_attribute(:status,"Declined")
-
+    maintenance_request = appointment.maintenance_request
     tenant = appointment.tenant
     trady = appointment.trady
     
     if params[:current_user_role] == "Trady"
       #Email the tenant that a new appointment will be suggested to them. 
       
-        TradyDeclinedAppointmentEmailWorker.perform_async(tenant.id)
+        TradyDeclinedAppointmentEmailWorker.perform_async(tenant.id,trady.id,maintenance_request.id,appointment.id)
     elsif params[:current_user_role] == "Tenant"
       #email the trady that a new appointment will be suggested to them. 
         TenantDeclinedAppointmentEmailWorker.perform_async(trady.id)
@@ -186,14 +186,14 @@ class AppointmentsController < ApplicationController
     appointment.update_attribute(:status,"Cancelled")
     tenant = appointment.tenant
     trady = appointment.trady
-    
+    maintenance_request = appointment.maintenance_request
     if params[:current_user_role] == "Trady"
       #Email the tenant that a new appointment will be suggested to them. 
       
-        TradyCancelledAppointmentEmailWorker.perform_async(tenant.id)
+        TradyCancelledAppointmentEmailWorker.perform_async(tenant.id,trady.id,maintenance_request.id)
     elsif params[:current_user_role] == "Tenant"
       #email the trady that a new appointment will be suggested to them. 
-        TenantCancelledAppointmentEmailWorker.perform_async(trady.id)
+        TenantCancelledAppointmentEmailWorker.perform_async(trady.id,maintenance_request.id)
     end 
         
     respond_to do |format|

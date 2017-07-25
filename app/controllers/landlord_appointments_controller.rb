@@ -174,7 +174,7 @@ class LandlordAppointmentsController < ApplicationController
       LandlordDeclinedAppointmentEmailWorker.perform_async(tenant.id,maintenance_request.id)
     elsif params[:current_user_role] == "Tenant"
       #email the landlord that a new appointment will be suggested to them. 
-        TenantDeclinedLandlordAppointmentEmailWorker.perform_async(landlord.id)
+        TenantDeclinedLandlordAppointmentEmailWorker.perform_async(landlord.id,tenant.id,maintenance_request.id,appointment.id)
     end 
 
     respond_to do |format|
@@ -195,7 +195,7 @@ class LandlordAppointmentsController < ApplicationController
         LandlordCancelledAppointmentEmailWorker.perform_async(tenant.id,maintenance_request.id)
     elsif params[:current_user_role] == "Tenant"
       #email the landlord that a new appointment will be suggested to them. 
-        TenantCancelledLandlordAppointmentEmailWorker.perform_async(landlord.id)
+        TenantCancelledLandlordAppointmentEmailWorker.perform_async(landlord.id,tenant.id,maintenance_request.id)
     end 
 
 

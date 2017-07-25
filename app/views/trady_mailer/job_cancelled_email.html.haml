@@ -102,7 +102,10 @@
       .main
         %p.content
           Hi #{@trady.name.capitalize},
-          Sorry to inform you that the job below has been cancelled
+          
+          Unfortunately the job at #{@property.property_address} has just been cancelled by #{@agency.company_name}.
+
+          We look forward to sending you another job in the near future.
         %p.content
           =@maintenance_request.maintenance_description
         

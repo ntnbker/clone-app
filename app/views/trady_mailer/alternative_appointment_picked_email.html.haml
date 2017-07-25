@@ -91,8 +91,12 @@
             MaintenanceApp
       .main
         %p.content
-          Hi #{@trady.name.capitalize}, another appointment time with the tenant has been requested. To accept the appointment or suggest another appointment time please click the button below.
+          
+          Hi #{@trady.name.capitalize},
 
+          The tenant, #{@tenant.name.capitalize} has suggested a new appointment for the job at #{@property.property_address}.
+
+          To view, confirm or request another time to attend this job, please click on the link below.
         %div.text-center
           =link_to "View Appointment", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id, appointment_id:@appointment.id), class: 'btn'
         %p.thank

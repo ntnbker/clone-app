@@ -92,11 +92,14 @@
 
       .main
         %p.content
-          Hi  
-          ="#{@trady.name.capitalize}" 
+          Hi #{@trady.name.capitalize},
           
-          , we would love a quote for a maintenance work order we recieved. Please click the link below to view the information so you may submit a quote for the job.
-          
+          -if @maintenance_request.agent
+            #{@agent.name.capitalize} from #{@agency.company_name.capitalize} has requested a quote for a new job.
+          -elsif @maintenance_request.agency_admin
+            #{@agent.first_name.capitalize} from #{@agency.company_name.capitalize} has requested a quote for a new job.
+
+          To view the job details, create a quote or make an apppointment with the tenant(s), please click on the link below.
         
         %div.text-center
           =link_to "View Maintenance Request", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id), class: 'btn'

@@ -93,12 +93,15 @@
       .main
         -if @maintenance_request.agent 
           %p.content 
-            Hi
-            ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
-          %p.content
-            the tenant, #{@tenant.name.capitalize} from #{@property.property_address} has just sent you a maintenance request. 
-          %p.content
-            Please click the button below to view and action this maintenance request. 
+            
+            -if @maintenance_request.agent
+              Hi #{@agent.name.capitalize},
+            -elsif @maintenance_request.agency_admin
+              Hi #{@agent.first_name.capitalize},
+            
+            The tenant, #{@tenant.name.capitalize} from #{@property.property_address} has just sent you a maintenance request.
+
+            To view and action this maintenance request, please click the button below.
           %div.text-center
             =link_to "View Maintenance Request", agent_maintenance_request_url(@maintenance_request,user_id:@user.id), class: 'btn'
             

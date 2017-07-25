@@ -92,7 +92,16 @@
             MaintenanceApp
       .main
         %p.content
-          Hi #{@landlord.name}, we received a maintenance request and would love your input on what you would like us to do. To view and act on the maintenance request click on the button below
+          
+
+          Hi #{@landlord.name},
+
+          -if @maintenance_request.agent
+            Your agent, #{@agent.name.capitalize} would like your instructions regarding a new maintenance request for #{@property.property_address}. 
+          -elsif @maintenance_request.agency_admin
+            Your agent, #{@agent.first_name.capitalize} would like your instructions regarding a new maintenance request for #{@property.property_address}. 
+
+          To view the maintenance request and confirm your instructions, please click on the button below.
 
         %div.text-center
           =link_to "View Maintnenace Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id), class: 'btn'

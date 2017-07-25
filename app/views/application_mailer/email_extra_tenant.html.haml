@@ -94,9 +94,13 @@
 
       .main
         %p.content
-          Hi
-          =@tenant_name.capitalize
-          ,Thank you for submiting a maintenance request. To following along with the progress click the button below.
+          Hi #{@tenant_name.capitalize},
+          
+          Thank you for submitting your maintenance request through maintenanceapp. 
+
+          Your request has been emailed to the agent and we will be updating you with its progress.
+
+          To view the maintenance request submitted, please click the button below.
         
         %div.text-center
           =link_to "View Maintenance Request", tenant_maintenance_request_url(@maintenance_request, user_id:@user.id), class: 'btn'

@@ -92,9 +92,12 @@
 
       .main
         %p.content
+         
           Hi #{@landlord.name.capitalize},
-          A different appointment time with #{@tenant.name.capitalize} has been requested. To confirm or suggest another appointment time and date with the tenant click the button below.
-        
+
+          Unfortunately the tenant, #{@tenant.name.capitalize} is unavailable at the time you suggested. TenantName have suggested a new appointment. 
+
+          To view and confirm or decline this apppointment, please click on the link below.
         %div.text-center
           =link_to "View Appointment", landlord_maintenance_request_url(id:@maintenance_request.id, user_id:@landlord.user.id, appointment_id:@appointment.id), class: 'btn'
 

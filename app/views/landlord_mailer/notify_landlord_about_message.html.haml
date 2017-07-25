@@ -92,7 +92,12 @@
             MaintenanceApp
       .main
         %p.content
-          Hi #{@landlord.name}, there is a new message from your agent about the maintenance request. To view it and respond click on the button below.
+          
+          Hi #{@landlord.name},
+          -if @maintenance_request.agent
+            Your agent, #{@agent.name.capitalize} has just sent you a message about the maintenance request for #{@property.property_address}. To view the message, please click on the button below.
+          -elsif @maintenance_request.agency_admin
+            Your agent, #{@agent.first_name.capitalize} has just sent you a message about the maintenance request for #{@property.property_address}. To view the message, please click on the button below.
 
         %div.text-center
           =link_to "View Maintnenace Request Message", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id, message:"open_message"), class: 'btn'
