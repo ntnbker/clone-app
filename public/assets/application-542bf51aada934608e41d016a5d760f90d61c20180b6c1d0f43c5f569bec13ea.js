@@ -72990,7 +72990,6 @@ var EditMaintenanceRequest = React.createClass({
 
 	getInitialState: function () {
 		return {
-			trady_id: false,
 			errorTitle: false,
 			errorDescription: false
 		};
@@ -73045,7 +73044,7 @@ var EditMaintenanceRequest = React.createClass({
 		}
 
 		var params = {
-			trady_id: this.trady_id.value,
+			service: this.serviceType.value,
 			maintenance_description: this.description.value
 		};
 		this.props.editMaintenanceRequest(params);
@@ -73057,7 +73056,7 @@ var EditMaintenanceRequest = React.createClass({
 		var state = this.state;
 		var _props = this.props;
 		var maintenance_request = _props.maintenance_request;
-		var tradies = _props.tradies;
+		var services = _props.services;
 
 		return React.createElement(
 			'div',
@@ -73112,24 +73111,24 @@ var EditMaintenanceRequest = React.createClass({
 										required: true,
 										id: 'trady',
 										ref: function (e) {
-											return _this.trady_id = e;
+											return _this.serviceType = e;
 										},
 										className: 'form-control input-custom'
 									},
 									React.createElement(
 										'option',
-										{ value: '', selected: !maintenance_request.trady_id && "selected" },
+										{ value: '', selected: !maintenance_request.service_type && "selected" },
 										'Service Type'
 									),
-									tradies.map(function (trady, index) {
+									services.map(function (service, index) {
 										return React.createElement(
 											'option',
 											{
 												key: index + 1,
-												value: trady.id,
-												selected: maintenance_request.trady_id == trady.id && "selected"
+												value: service.service,
+												selected: maintenance_request.service_type == service.service && "selected"
 											},
-											trady.name
+											service.service
 										);
 									})
 								)
@@ -74472,8 +74471,17 @@ var ButtonHeaderMR = React.createClass({
 			value: "Maintenance Scheduled With Landlord"
 		}];
 
+		var standBy = [{
+			title: "Defer",
+			value: "Defer"
+		}, {
+			title: "Archive",
+			value: "Archive"
+		}];
+
 		return {
 			isShow: false,
+			standBy: standBy,
 			isShowStatus: false,
 			actionRequests: actionRequests,
 			awaitingAction: awaitingAction
@@ -74529,6 +74537,11 @@ var ButtonHeaderMR = React.createClass({
 
 		var all_agents = this.props.all_agents;
 		var all_agency_admins = this.props.all_agency_admins;
+		var _state = this.state;
+		var standBy = _state.standBy;
+		var actionRequests = _state.actionRequests;
+		var awaitingAction = _state.awaitingAction;
+
 		return React.createElement(
 			"div",
 			{ className: "actions" },
@@ -74555,7 +74568,7 @@ var ButtonHeaderMR = React.createClass({
 						),
 						React.createElement(DropDownStatus, { viewItem: function (key, item) {
 								return _this3.props.viewItem(key, item);
-							}, data: this.state.actionRequests })
+							}, data: actionRequests })
 					),
 					React.createElement(
 						"div",
@@ -74567,7 +74580,19 @@ var ButtonHeaderMR = React.createClass({
 						),
 						React.createElement(DropDownStatus, { viewItem: function (key, item) {
 								return _this3.props.viewItem(key, item);
-							}, data: this.state.awaitingAction })
+							}, data: awaitingAction })
+					),
+					React.createElement(
+						"div",
+						null,
+						React.createElement(
+							"p",
+							{ className: "awaiting" },
+							"Stand By"
+						),
+						React.createElement(DropDownStatus, { viewItem: function (key, item) {
+								return _this3.props.viewItem(key, item);
+							}, data: standBy })
 					)
 				)
 			),
@@ -76773,6 +76798,7 @@ var ModalRequestModal = React.createClass({
 			errorCompany: false,
 			maintenance_request: this.props.maintenance_request,
 			trady: {
+				id: null,
 				name: null,
 				email: null,
 				mobile: null,
@@ -76873,7 +76899,7 @@ var ModalRequestModal = React.createClass({
 	},
 
 	componentWillMount: function () {
-		this.selectTrady(this.state.maintenance_request.trady_id);
+		//this.selectTrady(this.state.maintenance_request.trady_id);
 	},
 
 	checkLength: function (e) {
@@ -76920,6 +76946,7 @@ var ModalRequestModal = React.createClass({
 			errorMobile: false,
 			errorCompany: false,
 			trady: {
+				id: null,
 				name: null,
 				email: null,
 				mobile: null,
@@ -76989,7 +77016,8 @@ var ModalRequestModal = React.createClass({
 
 	changeRadio: function (e) {
 		this.setState({
-			isTrady: e.target.value
+			isTrady: e.target.value,
+			isAdd: e.target.value === 'false' ? true : false
 		});
 	},
 
@@ -76998,7 +77026,11 @@ var ModalRequestModal = React.createClass({
 
 		var self = this;
 		var state = this.state;
-		var isTrady = this.state.isTrady;
+		var _state = this.state;
+		var isTrady = _state.isTrady;
+		var isDisable = _state.isDisable;
+		var trady = _state.trady;
+		var isAdd = _state.isAdd;
 
 		var style = {
 			background: this.state.isAdd ? 'none' : '#f2f2f2'
@@ -77073,33 +77105,33 @@ var ModalRequestModal = React.createClass({
 									"select",
 									{
 										id: "trady",
-										className: "form-control input-custom",
 										ref: function (e) {
 											return _this7.trady_id = e;
 										},
+										className: "form-control input-custom",
 										onChange: function () {
 											return _this7.selectTrady(_this7.trady_id.value);
 										}
 									},
 									React.createElement(
 										"option",
-										{ value: "", selected: !self.props.maintenance_request.trady_id && "selected" },
-										"Select or Add New Tradie"
+										{ value: "", selected: !trady.id && "selected" },
+										"Select Tradie"
 									),
-									this.props.tradies.map(function (trady, index) {
+									this.props.tradies.map(function (item, index) {
 										return React.createElement(
 											"option",
 											{
 												key: index + 1,
-												value: trady.id,
-												selected: self.props.maintenance_request.trady_id == trady.id && "selected"
+												value: item.id,
+												selected: trady.id == item.id && "selected"
 											},
-											trady.name
+											item.name
 										);
 									})
 								)
 							),
-							(isTrady === 'true' || isTrady === 'false') && React.createElement(
+							(isTrady === 'false' || !isAdd && trady.id != null && isTrady === "true") && React.createElement(
 								"div",
 								null,
 								React.createElement(
@@ -77206,7 +77238,7 @@ var ModalRequestModal = React.createClass({
 								},
 								"Cancel"
 							),
-							(isTrady === 'true' || isTrady === 'false') && React.createElement(
+							(isTrady === 'true' || isTrady === 'false' || !!isDisable) && React.createElement(
 								"button",
 								{
 									type: "submit",
@@ -77790,9 +77822,9 @@ var MaintenanceRequest = React.createClass({
 
 	assignToUser: function () {
 		var self = this;
-		var _state = this.state;
-		var maintenance_request = _state.maintenance_request;
-		var assignEmail = _state.assignEmail;
+		var _state2 = this.state;
+		var maintenance_request = _state2.maintenance_request;
+		var assignEmail = _state2.assignEmail;
 
 		var params = {
 			email: assignEmail,
@@ -77840,6 +77872,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				maintenance_request.service_type = res.service_type;
 				maintenance_request.maintenance_heading = res.maintenance_heading;
 				maintenance_request.maintenance_description = res.maintenance_description;
 				self.setState({
@@ -77865,10 +77898,10 @@ var MaintenanceRequest = React.createClass({
 
 	updateStatusMR: function () {
 		var self = this;
-		var _state2 = this.state;
-		var maintenance_request = _state2.maintenance_request;
-		var status = _state2.status;
-		var statusItem = _state2.statusItem;
+		var _state3 = this.state;
+		var maintenance_request = _state3.maintenance_request;
+		var status = _state3.status;
+		var statusItem = _state3.statusItem;
 
 		var params = {
 			action_category: status.action_category,
@@ -78105,7 +78138,7 @@ var MaintenanceRequest = React.createClass({
 					{
 						return React.createElement(EditMaintenanceRequest, {
 							close: this.isClose,
-							tradies: this.state.tradies,
+							services: this.props.services,
 							maintenance_request: this.state.maintenance_request,
 							editMaintenanceRequest: this.editMaintenanceRequest
 						});
@@ -78113,11 +78146,11 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state3 = this.state;
-						var comments = _state3.comments;
-						var quoteComments = _state3.quoteComments;
-						var landlordComments = _state3.landlordComments;
-						var appointment = _state3.appointment;
+						var _state4 = this.state;
+						var comments = _state4.comments;
+						var quoteComments = _state4.quoteComments;
+						var landlordComments = _state4.landlordComments;
+						var appointment = _state4.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
