@@ -47,7 +47,7 @@ var TradySideBarMobile = React.createClass({
 	render: function() {
 		return (
 			<div>
-				<div className="sidebar-mobile">
+				<div className="sidebar-mobile" data-intro="Contact and Action" data-position="top">
 					<div className="fixed">       
 						<button 
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
@@ -926,6 +926,7 @@ var TradyMaintenanceRequest = React.createClass({
 	componentDidMount: function() {
 		const href = window.location.href;
 		const self = this;
+		$('body').chardinJs('start')
 		window.onload = function () {
 			const json = self.getUrlVars(href);
 			if(href.indexOf('email_quote_id') >= 0) {

@@ -51,7 +51,7 @@ var LandlordContact = React.createClass({
 
 	render: function() {
 		return (
-			<div className="item">
+			<div className="item" data-intro="This is Contact" data-position="left">
 				<div className="header contact">
 					<a>Contact:</a>
 					<i
