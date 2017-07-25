@@ -95,7 +95,7 @@ class LandlordMailer < ActionMailer::Base
       @agent = @maintenance_request.agency_admin
     end 
 
-    mail(from:"ron@email.com",to:@landlord.email, subject:"Message received from #{@agent.company_name.capitalize} - #{@property.property_address}
+    mail(from:"ron@email.com",to:@landlord.email, subject:"Message received from #{@agency.company_name.capitalize} - #{@property.property_address}
 ")
   end
   
