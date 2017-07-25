@@ -167,6 +167,16 @@ var ButtonQuoteMessage = React.createClass({
 	}
 });
 
+var ButtonPrint = React.createClass({
+	render: function() {
+		return (
+			<button className="btn btn-default btn-print" onClick={this.props.printQuote}>
+				Print
+			</button>
+		);
+	}
+});
+
 var ActionQuote = React.createClass({
 	getInitialState() {
 		return {
@@ -209,6 +219,12 @@ var ActionQuote = React.createClass({
 								viewQuote={(key, item) => self.viewQuote(key, item)} 
 							/> 
 					}
+					{
+						!!this.props.isModal && 
+							<ButtonPrint
+								printQuote={this.props.printQuote}
+							/>
+					}
 				</div>
 			);
 		}else if(self.keyLandlord == "trady") {
@@ -225,6 +241,12 @@ var ActionQuote = React.createClass({
 								viewQuote={(key, item) => self.viewQuote(key, item)} 
 								quote={self.quote}
 							/> 
+					}
+					{
+						!!this.props.isModal && 
+							<ButtonPrint
+								printQuote={this.props.printQuote}
+							/>
 					}
 				</div>
 			);
@@ -273,6 +295,12 @@ var ActionQuote = React.createClass({
 							<ButtonCancle
 								quote={this.props.quote}
 								viewQuote={(key, item) => self.viewQuote(key, item)}
+							/>
+					}
+					{
+						!!this.props.isModal && 
+							<ButtonPrint
+								printQuote={this.props.printQuote}
 							/>
 					}
 				</div>
@@ -502,6 +530,77 @@ var ModalViewQuote = React.createClass({
 		}
 	},
 
+	printQuote: function() {
+		var contents = $('#print-quote').html();
+		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" +
+								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
+								".info-trady p {margin-bottom: 0px;}" +
+								".info-agency {flex: 1;}" +
+								".slider-quote { border-top: 1px solid #e5e5e5 !important;}" +
+								".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" +
+								".detail-quote .info-maintenance {margin-top: 10px;}" +
+								".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" +
+								".detail-quote {margin-top: 15px;}" +
+								".detail-quote .table {width: 100%;}" +
+								".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" +
+								".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" +
+								"#print-quote { color: #404040;}" +
+								".modal-dialog { width: 700px !important;}" +
+								".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: flex;}" +
+								".modal-header .logo img { width: 80px;}" +
+								".modal-header .info-trady {margin-left: 15px;}" +
+								".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
+								".modal-header .info-trady p span:last-child {padding-left: 5px;}" +
+								".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" +
+								".modal-header .close span {color: #ccc !important;}" +
+								".info-quote { font-size: 13px; clear: both; overflow: hidde}" +
+								".info-quote .bill-to { font-size: 16px;}" +
+								".info-quote .info-agency p { text-align: left !important;}" +
+								".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" +
+								".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" +
+								".footer i { font-size: 36px;}" +
+								".footer p { margin-bottom: 5px;}" +
+								".footer .bank { margin-left: 5%; width: 45%; float: left;}" +
+								".footer .bank span:first-child { width: 110px; display: inline-block;}" +
+								".footer .contact { margin-left: 5%; width: 45%; float: left;}" +
+								".border-none { border: none !important;}" +
+								".color-grey { color: #b3b3b3 !important;}" +
+								".font-bold { font-weight: bold !important;}" +
+								".m-t-md { margin-top: 10px;}" +
+								".p-t-n { padding-top: 0 !important;}" +
+								".p-b-n { padding-bottom: 0 !important;}" +
+								".print {display: none;}" +
+								".close {display: none;}" +
+								"@media print {"+
+									".detail-quote .table {width: 100%;}" +
+									".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" +
+									".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" +
+								"}";
+
+		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
+		var htmlContent = "<html>" +
+											"<head>" +
+											"<title> Quote </title>" +
+											'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
+											'<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' +
+											'<style type="text/css">' +
+											style +
+											"</style>";
+		frame.open();
+		frame.write(htmlContent);
+		frame.write("</head><body>");
+		frame.write(contents);
+		frame.write("</body></html>");
+		frame.close();
+		
+		// print just the modal div
+		setTimeout(function() {
+			$('#printframe')[0].contentWindow.print();
+			$('#printframe')[0].contentWindow.close();
+			$('.button-slider').toggle('show');
+		}, 1000);
+	},
+
 	render: function() {
 		const self = this.props;
 		const quote = this.state.quote;
@@ -510,7 +609,7 @@ var ModalViewQuote = React.createClass({
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
-					<div className="modal-content quote-height">
+					<div className="modal-content quote-height" id="print-quote">
 						<div className="modal-header">
 							<div className="logo">
 								<img src="/assets/logo.png" />
@@ -549,7 +648,7 @@ var ModalViewQuote = React.createClass({
 								aria-label="Close" 
 								onClick={this.props.close}
 							>
-								<span aria-hidden="true">&times;</span>
+								<span className="close" aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div className="slider-quote">
@@ -576,26 +675,19 @@ var ModalViewQuote = React.createClass({
 										</div>
 									</div>
 									<div className="detail-quote">
-										<div className="detail-quote">
-											{!!quote.quote_items && <DetailQuote quote={quote} />}
-										</div>
+										{!!quote.quote_items && <DetailQuote quote={quote} />}
 									</div>
 								</div>
-								<div className="button-slider">
-									<button className="btn-prev" onClick={(key, index) => this.switchSlider('prev', this.state.index)}>
-										<i className="fa fa-angle-left" />
-									</button>
-									<button className="btn-next" onClick={(key, index) => this.switchSlider('next', this.state.index)}>
-										<i className="fa fa-angle-right" />
-									</button>
-								</div>
 							</div>
-							<div className="modal-footer-quote">
+							<div className="modal-footer-quote print">
 								{ !!self.current_user && 
 									<ActionQuote 
 										quote={quote} 
+										isModal="true"
+										className="print"
 										landlord={self.landlord} 
 										quotes={this.state.quotes} 
+										printQuote={this.printQuote}
 										onModalWith={self.onModalWith} 
 										keyLandlord={this.props.keyLandlord} 
 										updateStatusQuote={self.updateStatusQuote} 
@@ -604,8 +696,10 @@ var ModalViewQuote = React.createClass({
 								}
 							</div>
 						</div>
-						
 					</div>
+				</div>
+				<div id="modal-print">
+					<iframe id="printframe" />  
 				</div>
 			</div>
 		);

@@ -53,7 +53,7 @@ var Action = React.createClass({
 
 	render: function() {
 		return (
-			<div className="item">
+			<div className="item" data-intro="This is Action" data-position="left">
 				<div className="header action">
 					<a>Actions:</a>
 					<i 

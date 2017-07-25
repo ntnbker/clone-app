@@ -428,7 +428,7 @@ var SideBarMobile = React.createClass({
 		return (
 			<div>
 				<div className="sidebar-mobile">
-					<div className="fixed">       
+					<div className="fixed" data-intro="Contact and Action" data-position="top">       
 						<button 
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
@@ -2182,6 +2182,7 @@ var MaintenanceRequest = React.createClass({
 	componentDidMount: function() {
 		const href = window.location.href;
 		const self = this;
+		$('body').chardinJs('start')
 		window.onload = function () {
 			if(href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');
