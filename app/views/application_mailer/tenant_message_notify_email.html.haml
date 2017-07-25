@@ -1,3 +1,4 @@
+
 !!! 5
 %html(lang="en-US")
   %head
@@ -95,7 +96,12 @@
       .main
         %p.content
           Hi #{@tenant.name.capitalize},
-          an agent has sent you a message regarding the maintenance request you have made. Click the button below to check the message and respond.
+          
+          -if @maintenance_request.agent
+            Your agent, #{@agent.name.capitalize}, has just sent you a message about the maintenance request at #{@property.property_address}. To view the message, please click on the button below.
+          -elsif @maintenance_request.agency_admin
+            Your agent, #{@agent.first_name.capitalize}, has just sent you a message about the maintenance request at #{@property.property_address}. To view the message, please click on the button below.
+
       
         %div.text-center
           =link_to "View Maintenance Request Message", tenant_maintenance_request_url(@maintenance_request, user_id:@user.id, message:"open_agent_message"), class: 'btn'

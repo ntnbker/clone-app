@@ -11,9 +11,11 @@ class ApplicationMailer < ActionMailer::Base
     if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+      @agent = maintenance_request.agent
     elsif @maintenance_request.agency_admin 
       @user = @maintenance_request.agency_admin.user
       email = @maintenance_request.agency_admin.email
+      @agent = maintenance_request.agency_admin
     end
 
     track user: @user
@@ -50,13 +52,14 @@ class ApplicationMailer < ActionMailer::Base
   def email_extra_tenant(maintenance_request, tenant_email, user_id, tenant_name)
     @user = User.find_by(id:user_id)
     @maintenance_request = maintenance_request
+    @property = maintenance_request.property
     @tenant_name = tenant_name
     
     
     
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
-    mail(to:tenant_email, subject: "Tenants Maintenance Request")
+    mail(to:tenant_email, subject: " Receipt for maintenance request - #{@property.property_address}")
   end
 
 
@@ -64,9 +67,17 @@ class ApplicationMailer < ActionMailer::Base
     @maintenance_request = maintenance_request
     # @tenant_name = tenant_name
     # @tenant_id = tenant_id
+    @property = maintenance_request.property
+    if @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+      @agent = @maintenance_request.agent
+    elsif @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+      @agent = @maintenance_request.agency_admin
+    end
     @tenant = user.tenant
     @user = user
-    mail(to:user.email, subject: "New Maintenance Request Message")
+    mail(to:user.email, subject: "Message received from #{@agency.company_name.capitalize} - #{@property.property_address}")
   end
 
   def message_notification_email(maintenance_request)
