@@ -193,6 +193,11 @@ Rails.application.routes.draw do
   ###################################################
   ##########REASSIGN AGENTS RESOURCES/ROUTES############
   ###################################################
-    post "reassign_to"=> "reassign_maintenance_requests#reassign" 
+    post "reassign_to"=> "reassign_maintenance_requests#reassign"
+
+  ###################################################
+  ##########REASSIGN AGENTS RESOURCES/ROUTES############
+  ###################################################
+    post "update_instruction"=> "instructions#update" 
     
  end
