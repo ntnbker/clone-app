@@ -25,6 +25,7 @@ class TenantMaintenanceRequestsController < ApplicationController
 
   def show
     @current_user = current_user
+    @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
@@ -81,7 +82,7 @@ class TenantMaintenanceRequestsController < ApplicationController
     @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord,  :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, logs:@logs, quote_appointments:@quote_appointments, work_order_appointments:@work_order_appointments,landlord_appointments:@landlord_appointments, tenant:@tenant,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,  :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, logs:@logs, quote_appointments:@quote_appointments, work_order_appointments:@work_order_appointments,landlord_appointments:@landlord_appointments, tenant:@tenant,time_and_access:@maintenance_request.availability_and_access}}
       format.html{render :show}
     end 
 

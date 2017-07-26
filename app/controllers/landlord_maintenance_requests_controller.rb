@@ -25,6 +25,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
   def show
     @current_user = current_user
+    @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @non_json_quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
@@ -100,7 +101,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :quotes=> @quotes, :landlord=> @landlord,:signed_in_landlord=>@signed_in_landlord ,:tenant=>@tenants.first, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, landlord_appointments:@landlord_appointments,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,:signed_in_landlord=>@signed_in_landlord ,:tenant=>@tenants.first, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:agency=>@agency,:property=>@maintenance_request.property,:agent=>@agent,:quote=>@quotes,logs:@logs, landlord_appointments:@landlord_appointments,time_and_access:@maintenance_request.availability_and_access}}
       format.html{render :show}
     end 
 
