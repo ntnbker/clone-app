@@ -1,5 +1,5 @@
 class TradyMailer < ActionMailer::Base
-  default from: 'from@example.com'
+  default from: 'info@maintenanceapp.com.au'
   def request_quote_email(trady_object, maintenance_request_object)
     @trady = trady_object
     @maintenance_request = maintenance_request_object
@@ -100,12 +100,12 @@ class TradyMailer < ActionMailer::Base
     @maintenance_request = maintenance_request_object
     @tenant = @maintenance_request.tenants.first
     @property = @maintenance_request.property
-    mail(from:"ron@email.com",to:@trady.email, subject:"Cancelled appointment by tenant - #{@property.property_address}")
+    mail(to:@trady.email, subject:"Cancelled appointment by tenant - #{@property.property_address}")
   end
 
   def tenant_declined_appointment_email(trady_object)
     @trady = trady_object
-    mail(from:"ron@email.com",to:@trady.email, subject:"Appointment Declined")
+    mail(to:@trady.email, subject:"Appointment Declined")
   end
 
   def notify_picked_trady_about_message(maintenance_request)
@@ -119,7 +119,7 @@ class TradyMailer < ActionMailer::Base
       @agency = @maintenance_request.agency_admin.agency
       @agent = @maintenance_request.agency_admin
     end  
-    mail(from:"ron@email.com",to:@trady.email, subject:"Message received from #{@agency.company_name.capitalize} - #{@property.property_address}")
+    mail(to:@trady.email, subject:"Message received from #{@agency.company_name.capitalize} - #{@property.property_address}")
   end
 
   def notify_trady_about_quote_message(maintenance_request,quote)
@@ -134,7 +134,7 @@ class TradyMailer < ActionMailer::Base
       @agency = @maintenance_request.agency_admin.agency
       @agent = @maintenance_request.agency_admin
     end 
-    mail(from:"ron@email.com",to:@trady.email, subject:"Question about quote from #{@agency.company_name.capitalize} - #{@property.property_address}")
+    mail(to:@trady.email, subject:"Question about quote from #{@agency.company_name.capitalize} - #{@property.property_address}")
   end
   
 end 

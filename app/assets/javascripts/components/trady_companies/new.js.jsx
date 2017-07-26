@@ -470,13 +470,12 @@ var AddTradycompany = React.createClass({
   	        />
           </div>
         </div>
-        { this.renderButtonBack() }
-        <button type="submit" name="commit" value="Next" className="button-primary green option-button">
-        	Next
-        </button>
-        
-        
-
+        <div className="text-center">
+          { this.renderButtonBack() }
+          <button type="submit" name="commit" value="Next" className="button-primary green option-button">
+            Next
+          </button>
+        </div>
       </form>
       { this.state.openModal ? 
       		<ModalNotification 

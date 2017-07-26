@@ -7,6 +7,19 @@
 	border: 1px solid #edf1f4;
 	/*box-shadow: 0 1px 10px #888888;*/
     margin: 30px auto;
+    color: #aab8c3;
+    p{
+    	margin-bottom: 0;
+    	font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .send-email {
+    	margin-top: 20px;
+    }
+
+    button {
+    	font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
 
 	button.button-primary.option-button {
 		margin: 0;

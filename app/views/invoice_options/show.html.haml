@@ -9,7 +9,7 @@
       %b Upload Invoice
       to upload a PDF of your invoice.
 
-      %div
+      %div.text-center.m-t-lg
         -if current_user.trady.nil? || current_user.trady.trady_company.nil?
           %button.button-primary.green.option-button
             =link_to "Upload Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id ) 
@@ -24,11 +24,12 @@
       Easily make invoices using our platform by clicking the 
       %b Create Invoice
       button below.
-    -if current_user.trady.nil? || current_user.trady.trady_company.nil?
-      %button.button-primary.green.option-button
-        =link_to "Create Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id ) 
-    -else
-      %button.button-primary.green.option-button
-        =link_to "Create Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id) 
-    %button.button-primary
-      =link_to "Back To Maintenance Request", maintenance_request_path(@maintenance_request_id)
+    %div.text-center.m-t-lg
+      -if current_user.trady.nil? || current_user.trady.trady_company.nil?
+        %button.button-primary.green.option-button
+          =link_to "Create Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id ) 
+      -else
+        %button.button-primary.green.option-button
+          =link_to "Create Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id) 
+      %button.button-primary
+        =link_to "Back To Maintenance Request", maintenance_request_path(@maintenance_request_id)

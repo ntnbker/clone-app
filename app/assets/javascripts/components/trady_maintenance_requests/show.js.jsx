@@ -439,18 +439,20 @@ var TradyMaintenanceRequest = React.createClass({
 					});
 				}else {
 					quote_appointments.unshift(res.appointment_and_comments);
-					quoteComments.push(res.appointment_and_comments.comments);
+					quoteComments.push(res.appointment_and_comments.comments[0]);
 					self.setState({
 						quoteComments: quoteComments,
 						quote_appointments: quote_appointments
 					});			
 				}
 
-				self.setState({notification: {
-					title: title,
-					content: content,
-					bgClass: "bg-success",
-				}});
+				self.setState({
+					notification: {
+						title: title,
+						content: content,
+						bgClass: "bg-success",
+					}
+				});
 				self.onModalWith('notification');
 			},
 			error: function(err) {
@@ -763,7 +765,7 @@ var TradyMaintenanceRequest = React.createClass({
 							title="Decline Appointment"
 							btnContent="Create and Decline"
 							openModal={() => this.onModalWith(key)}
-							content={["Are you sure you want to declie appointment. To decline the appointment you ", <strong className="text-capitalize">must</strong> ," submit a new appointment time."]}
+							content={["Are you sure you want to decline appointment. To decline the appointment you ", <strong className="text-capitalize">must</strong> ," submit a new appointment time."]}
 						/>
 					);
 				}

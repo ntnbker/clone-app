@@ -59,7 +59,7 @@ class MaintenanceRequest < ApplicationRecord
 
 
   after_create :create_action_status
-  before_save :create_workorder_number
+  after_create :create_workorder_number
 
   def mr_tenants_array
 
@@ -74,7 +74,8 @@ class MaintenanceRequest < ApplicationRecord
   end
 
   def create_workorder_number
-    work_order_number = "W" + SecureRandom.hex(5)  
+    work_number = "W" + SecureRandom.hex(5)
+    self.update_attribute(:work_order_number, work_number)  
   end
 
 

@@ -1,5 +1,5 @@
 class AgentMailer < ActionMailer::Base
-  default from: 'martin@maintenanceapp.com.au'
+  default from: 'info@maintenanceapp.com.au'
   def send_agent_quote(maintenance_request, quote)
     @maintenance_request = maintenance_request
     @property= @maintenance_request.property
@@ -15,7 +15,7 @@ class AgentMailer < ActionMailer::Base
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail(to:email, subject:"Quote recieved from #{@quote.trady.name.capitalize} - @property.property_address")
+    mail(to:email, subject:"Quote recieved from #{@quote.trady.name.capitalize} - #{@property.property_address}")
     
   end
 
@@ -34,7 +34,7 @@ class AgentMailer < ActionMailer::Base
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail(to:@user.email, subject:"Invoice recieved from #{@trady.name.capitalize} - @property.property_address")
+    mail(to:@user.email, subject:"Invoice recieved from #{@trady.name.capitalize} - #{@property.property_address}")
   end
 
   def request_quote_email(maintenance_request)
@@ -52,7 +52,7 @@ class AgentMailer < ActionMailer::Base
     # track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail(to:email, subject:"Quote requested by landlord #{@landlord.name.capitalize} - @property.property_address")
+    mail(to:email, subject:"Quote requested by landlord #{@landlord.name.capitalize} - #{@property.property_address}")
   end
 
   def quote_has_been_approved_email(maintenance_request)
@@ -69,7 +69,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"Quote approved by landlord #{@landlord.name.capitalize} - @property.property_address.")
+    mail(to:email, subject:"Quote approved by landlord #{@landlord.name.capitalize} - #{@property.property_address}.")
   end
 
   def notify_agent_about_landlord_message(maintenance_request)
@@ -85,7 +85,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"New message from landlord #{@landlord.name.capitalize} - @property.property_address.")
+    mail(to:email, subject:"New message from landlord #{@landlord.name.capitalize} - #{@property.property_address}.")
   end
 
   def notify_agent_about_tenant_message(maintenance_request)
@@ -101,7 +101,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"New message from tenant #{@tenant.name.capitalize} - @property.property_address.")
+    mail(to:email, subject:"New message from tenant #{@tenant.name.capitalize} - #{@property.property_address}.")
   end
 
   def notify_agent_about_trady_message(maintenance_request)
@@ -117,7 +117,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"New message from trady #{@trady.name.capitalize} - @property.property_address.")
+    mail(to:email, subject:"New message from trady #{@trady.name.capitalize} - #{@property.property_address}.")
   end
 
   def notify_agent_about_trady_quote_message(maintenance_request, quote)
@@ -134,7 +134,7 @@ class AgentMailer < ActionMailer::Base
     end
     @quote = quote
     @trady = @quote.trady
-    mail(to:email, subject:"Quote comment from trady #{@quote.trady.name.capitalize} - @property.property_address.")
+    mail(to:email, subject:"Quote comment from trady #{@quote.trady.name.capitalize} - #{@property.property_address}.")
   end
 
 end 
