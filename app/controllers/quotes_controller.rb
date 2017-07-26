@@ -235,9 +235,9 @@ class QuotesController < ApplicationController
     end
 
 
-    LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id )
+    LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id)
     @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
-
+    
     Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been forwarded to landlord", name:name)
     respond_to do |format|
       format.json {render json: @quote}

@@ -14,7 +14,7 @@ class TenantMailer < ActionMailer::Base
 
   def appointment_accepted_email(maintenance_request_object,appointment_object, trady_object, tenant_object)
     @maintenance_request = maintenance_request_object
-    @property = @maintenance_request
+    @property = @maintenance_request.property
     @appointment = appointment_object
     @trady = trady_object
     @tenant = tenant_object
@@ -126,7 +126,7 @@ class TenantMailer < ActionMailer::Base
     @landlord = @property.landlord
     @trady = @maintenance_request.trady
     @tenant = @maintenance_request.tenants.first
-    mail(from:"ron@email.com",to:@tenant.email, subject:"Quote Approved by landlord, #{@landlord.name.capitalize} - #{@property.property_address}")
+    mail(to:@tenant.email, subject:"Quote Approved by landlord, #{@landlord.name.capitalize} - #{@property.property_address}")
   end
   
   

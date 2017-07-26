@@ -103,10 +103,10 @@
           Property Address:
           #{@property.property_address}
 
-          To view the job details and create an apppointment with the tenant(s) to carry out the work, please click on the link below.
+          To view the job details and create an appointment with the tenant(s) to carry out the work, please click on the link below.
 
         %div.text-center
-          =link_to "View Appointment", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id), class: 'btn'
+          =link_to "View Job Details", trady_maintenance_request_url(id:@maintenance_request.id, user_id:@trady.user.id), class: 'btn'
         %p.thank
           Thank you :)
 
