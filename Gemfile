@@ -40,7 +40,7 @@ gem 'redis'
 gem 'sidekiq'
 gem 'font-awesome-rails'
 gem "aws-sdk", "~> 2.1"
-gem "chardinjs-rails"
+
 gem "shrine"
 gem "roda"
 gem "chardinjs-rails"
