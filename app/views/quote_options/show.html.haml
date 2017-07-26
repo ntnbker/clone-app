@@ -1,20 +1,18 @@
-
-
-
-
 %div.container.invoice-form
-  %h1 Quotes
+  %h1.text-center Quotes
 
-  %p.optiondescription
-  Easily make quotes using our platform by clicking the 
-  %b Create Quotes
-  button below.
-  -if @trady.trady_company.nil?
-    %button.button-primary.green.option-button
-      =link_to "Create Quote(New company)", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
-  -else 
-    %button.button-primary.green.option-button
-      =link_to "Create Quote(Edit Company)", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
+  %p.optiondescription.text-center
+    Easily make quotes using our platform by clicking the 
+    %b Create Quotes
+    button below.
+
+  %p.text-center.m-t-lg
+    -if @trady.trady_company.nil?
+      %button.button-primary.green.option-button
+        =link_to "Create Quote", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
+    -else 
+      %button.button-primary.green.option-button
+        =link_to "Create Quote", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
 
 
   / %h4 Please Choose One

@@ -320,16 +320,16 @@ var ButtonHeaderMR = React.createClass({
 					</button>
 					<div className="dropdown-status" style={{display: this.state.isShowStatus ? 'block' : 'none'}}>
 						<div>
-							<p>Action Request</p>
+							<p>Stand By</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
+						</div>
+						<div>
+							<p className="awaiting">Action Request</p>
 							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequests}/>
 						</div>
 						<div>
 							<p className="awaiting">Awaiting Action</p>
 							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
-						</div>
-						<div>
-							<p className="awaiting">Stand By</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
 						</div>
 					</div>
 				</div>

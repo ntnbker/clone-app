@@ -666,7 +666,7 @@ var ModalViewQuote = React.createClass({
 										<div className="info-agency">
 											<p>
 												<span className="font-bold">Quote Number: </span>
-												<span> {quote.id}</span>
+												<span> {quote.quote_number}</span>
 											</p>
 											<p>
 												<span className="font-bold">Quote Date: </span>

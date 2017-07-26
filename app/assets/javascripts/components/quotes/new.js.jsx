@@ -86,13 +86,16 @@ var QuoteField = React.createClass({
                 </div>
                 
             </fieldset>
-            <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+            <div className="text-center">
+                <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+            </div>
         </div>
     }
 });
 
 var QuoteFields = React.createClass({
     render: function() {
+        const {trady_company} = this.props;
         return <form role="form" id="new_quote" action={this.props.id ? '/quotes/'+this.props.id : '/quotes'} acceptCharset="UTF-8" method="post">   
             <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
             
@@ -107,13 +110,13 @@ var QuoteFields = React.createClass({
 
             <label className="quote_tax">
                 <input type="hidden" value="0" name="quote[tax]" />
-                <input type="checkbox" value="1" defaultChecked={this.props.tax ? this.props.tax : false} name="quote[tax]" id="quote_tax" />
-                Add GST
+                <input type="checkbox" value="1" defaultChecked={trady_company.gst_registration ? trady_company.gst_registration : false} name="quote[tax]" id="quote_tax" />
+                Amount Inclides GST
             </label>
 
             <hr />
 
-            <div className="qf-button">
+            <div className="text-center">
                 <a className="button m-r-lg" href={this.props.backlink}> Back </a>
                 <input type="submit" name="commit" value="Next" className="button-primary green" data-disable-with="Next" />
             </div>
