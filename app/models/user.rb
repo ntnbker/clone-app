@@ -10,6 +10,7 @@ class User < ApplicationRecord
     
     has_many :roles
     has_one :current_role
+    has_one :instruction
     #here we setup the relationship that a user can have with each type of user
     #ie a user can only have one agent row in a table aka being one agent
     
@@ -34,6 +35,7 @@ class User < ApplicationRecord
   ##CALLBACKS
   before_save :create_tokens
   after_create :create_current_role, unless: :current_role_exists?
+  after_create :create_instruction
   def create_tokens
     self.set_password_token = SecureRandom.hex(10)
     self.id_token = SecureRandom.hex(10)
@@ -52,6 +54,9 @@ class User < ApplicationRecord
     end 
   end
 
+  def create_instruction
+    Instruction.create(user_id:self.id, read_instruction: false)
+  end
 
  
   #HERE WE ADD MESSAGING SYSTEM ASSOCIATIONS
