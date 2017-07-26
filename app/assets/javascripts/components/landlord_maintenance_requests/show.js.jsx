@@ -238,7 +238,8 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	sendEmailLandlord: function(params) {
 		const self = this;
-		params.message.role = current_role.role;
+		const {current_role} = this.props;
+		params.role = current_role.role;
 		$.ajax({
 			type: 'POST',
 			url: '/request_quote',
@@ -582,7 +583,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							title="Decline Appointment"
 							btnContent="Create and Decline"
 							openModal={() => this.onModalWith('createAppointment')}
-							content={["Are you sure you want to declie appointment. To decline the appointment you ", <strong className="text-capitalize">must</strong> ," submit a new appointment time."]}
+							content={["Are you sure you want to decline appointment. To decline the appointment you ", <strong className="text-capitalize">must</strong> ," submit a new appointment time."]}
 						/>
 					);
 				}

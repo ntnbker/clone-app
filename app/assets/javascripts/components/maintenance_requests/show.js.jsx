@@ -1039,6 +1039,12 @@ var ModalRequestModal = React.createClass({
 		this.setState({
 			isTrady: e.target.value,
 			isAdd: e.target.value === 'false' ? true : false,
+			trady: {
+				id: null,
+				name: null,
+				email: null,
+				mobile: null,
+			}
 		});
 	},
 
@@ -1702,7 +1708,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Request Quote",
-							content: 'Thank you, a quote request has been emailed to "Trady Company". We will notofy once the quote has been received.',
+							content: 'Thank you, a quote request has been emailed to "' + params.trady.company_name +'". We will notofy once the quote has been received.',
 							bgClass: "bg-success",
 						},
 					});

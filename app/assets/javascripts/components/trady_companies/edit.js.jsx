@@ -421,10 +421,12 @@ var EditTradyCompany = React.createClass({
   	        />
           </div>
         </div>
-        { this.renderButtonBack() }
-				<button type="submit" className="button-primary green option-button">
-					Next
-				</button>
+        <div className="text-center">
+          { this.renderButtonBack() }
+          <button type="submit" className="button-primary green option-button">
+            Next
+          </button>
+        </div>
 			</form>
 		);
 	}

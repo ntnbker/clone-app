@@ -276,7 +276,9 @@ var AdditionalInvoice = React.createClass({
                     <input type="hidden" value={x} name={'invoice[invoice_items_attributes][' + x + '][id]'}/>
                 }
             </fieldset>
-            <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+            <div className="text-center">
+                <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+            </div>
         </div>
     }
 });
@@ -562,7 +564,7 @@ var InvoiceFields = React.createClass({
             
             <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
-            <div className="qf-button" style={{marginBottom: '50px'}}>
+            <div className="qf-button text-center" style={{marginBottom: '50px'}}>
                 <a className="button button-primary left" href={this.props.backlink}> Back </a>
                 <input type="submit" name="commit" value="Next" className="button button-primary green" data-disable-with="Next" />
             </div>

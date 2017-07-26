@@ -20,18 +20,19 @@ var ContentAction = React.createClass({
 						Send work order
 					</a>
 				</li>
-				<li>
-					<a onClick={() => this.props.onModalWith('addLandlord')}>
-						<i aria-hidden="true" className="fa fa-user-plus" />
-						Change Landlord
-					</a>
-				</li>
 				{
-					!!this.props.landlord &&
+					!!this.props.landlord ?
 						<li>
 							<a onClick={() => this.props.onModalWith('editLandlord')}>
 								<i aria-hidden="true" className="fa fa-pencil" />
-								Edit landlord details
+								Change Landlord
+							</a>
+						</li>
+						:
+						<li>
+							<a onClick={() => this.props.onModalWith('addLandlord')}>
+								<i aria-hidden="true" className="fa fa-user-plus" />
+								Add Landlord
 							</a>
 						</li>
 				}

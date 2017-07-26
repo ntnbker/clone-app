@@ -254,7 +254,9 @@ var AvailabilityField = React.createClass({
             id={this.generateAtt("id", x, "_destroy")} 
             name={this.generateAtt("name", x, "_destroy")}
           />
-          <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> Remove </button>
+          <div className="text-center">
+            <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> Remove </button>
+          </div>
         </div>
       );
     },
