@@ -93,7 +93,7 @@ class UploadedInvoicesController < ApplicationController
   private
 
   def file_params
-    params.require(:uploaded_invoice).permit(:maintenance_request_id, :trady_id, :pdf)
+    params.require(:uploaded_invoice).permit(:maintenance_request_id, :trady_id,:pdf,{invoices: []})
   end
 
 end 

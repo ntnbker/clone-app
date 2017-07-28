@@ -95,13 +95,13 @@ class Ability
       if @user
         
         # can :new, MaintenanceRequest
-        can :new, AgencyAdmin
-        can :create, AgencyAdmin
-        can [:new,:create], :agency_admins
-        can :new, :agency
-        can :create, :agency
-        can :new, :maintenance_request
-        can :create, :maintenance_request
+        # can :new, AgencyAdmin
+        # can :create, AgencyAdmin
+        # can [:new,:create], :agency_admins
+        # can :new, :agency
+        # can :create, :agency
+        # can :new, :maintenance_request
+        # can :create, :maintenance_request
       end 
     
   end

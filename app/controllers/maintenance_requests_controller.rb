@@ -338,21 +338,22 @@ class MaintenanceRequestsController < ApplicationController
 
   def check_for_role
     @customer_input = Query.find_by(id:session[:customer_input])
-    
-    if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
-      if @customer_input.user_role == "Tenant"
-        flash[:notice] = "Sorry you are signed in as an agent. To submit a maintenance request as a tenant please log out and try again."
-        redirect_to root_path
-      end 
-    elsif current_user.current_role.role == "Landlord" 
-      if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
-        flash[:notice] = "Sorry you are signed in as a Landlord. To submit a maintenance request as a tenant please log out and try again."
-        redirect_to root_path
-      end 
-    elsif current_user.current_role.role == "Trady"
-      if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
-        flash[:notice] = "Sorry you are signed in as a Trady. To submit a maintenance request as a tenant please log out and try again."
-        redirect_to root_path
+    if current_user
+      if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
+        if @customer_input.user_role == "Tenant"
+          flash[:notice] = "Sorry you are signed in as an agent. To submit a maintenance request as a tenant please log out and try again."
+          redirect_to root_path
+        end 
+      elsif current_user.current_role.role == "Landlord" 
+        if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+          flash[:notice] = "Sorry you are signed in as a Landlord. To submit a maintenance request as a tenant please log out and try again."
+          redirect_to root_path
+        end 
+      elsif current_user.current_role.role == "Trady"
+        if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+          flash[:notice] = "Sorry you are signed in as a Trady. To submit a maintenance request as a tenant please log out and try again."
+          redirect_to root_path
+        end 
       end 
     end 
   end
