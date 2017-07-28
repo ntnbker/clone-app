@@ -1256,6 +1256,7 @@ var MaintenanceRequest = React.createClass({
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
+			instruction: this.props.instruction ? this.props.instruction : {},
 			tradies_with_quote_requests: this.props.tradies_with_quote_requests,
 			notification: {
 				title: "",
@@ -2160,7 +2161,10 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewModalInstruction':
 					return (
-						<ModalInstruction />
+						<ModalInstruction
+							authenticity_token={this.props.authenticity_token}
+							updateInsruction={this.updateInsruction}
+						/>
 					);
 					
 				default:
@@ -2193,13 +2197,29 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	componentDidMount: function() {
-		const {instruction} = this.props;
-		if(!instruction) {
+		const self = this;
+		const {instruction} = this.state;
+		if(!instruction.read_instruction) {
 			$('body').chardinJs('start');
 			this.onModalWith('viewModalInstruction');
+			$(document).click(function(e) {
+				if(e.target.className != 'show-instruction') {
+					$('body').chardinJs('stop');
+					self.isClose();	
+				}
+			});
 		}else {
 			this.viewModalMessage();
 		}
+	},
+
+	updateInsruction: function(data) {
+		this.setState({
+			instruction: data
+		});
+		this.isClose();
+		$('body').chardinJs('stop');
+		this.viewModalMessage();
 	},
 
 	viewModalMessage: function() {

@@ -45,7 +45,7 @@ var LandlordAction = React.createClass({
 
 	render: function() {
 		return (
-			<div className="item" data-intro="This is Action" data-position="left">
+			<div className="item">
 				<div className="header action">
 					<a>Actions:</a>
 					<i 

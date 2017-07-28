@@ -354,7 +354,6 @@ var MaintenanceRequestsNew = React.createClass({
 								var progress = $('.progress');
 								if(progress.length == 0) {
 									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
-									debugger
 								}else {
 									$('.progress .progress-bar').css('width', percentComplete + '%');
 								}

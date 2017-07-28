@@ -33,6 +33,7 @@ var TenantSideBarMobile = React.createClass({
 				<div className="sidebar-mobile">
 					<div className="fixed">       
 						<button 
+							data-intro="Select the 'Contact' button on the button left to call or message" data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={this.show}
 						>

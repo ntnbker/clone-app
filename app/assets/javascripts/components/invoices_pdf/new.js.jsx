@@ -17,12 +17,11 @@ var AddInvoicePDF = React.createClass({
 		}
 
 		// start upload file into S3
-		$.getJSON('/images/cache/presign', options, function(result) {
+		$.getJSON('/upload_invoice_pdf/cache/presign', options, function(result) {
 			var fd = new FormData();
 			$.each(result.fields, function(key, value) {
 				fd.append(key, value);
 			});
-
 			fd.append('file', file);
 			$.ajax({
 				type: 'POST',
@@ -48,6 +47,7 @@ var AddInvoicePDF = React.createClass({
 					return xhr;
 				},
 				success: function(res) {
+					debugger
 					setTimeout(function() {
 						$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
 						$('.progress').remove();
