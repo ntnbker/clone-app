@@ -29,7 +29,7 @@ var TenantSideBarMobile = React.createClass({
 
 	render: function() {
 		return (
-			<div data-intro="Contact and Action" data-position="top">
+			<div>
 				<div className="sidebar-mobile">
 					<div className="fixed">       
 						<button 
@@ -91,6 +91,7 @@ var TenantMaintenanceRequest = React.createClass({
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
 			landlord_appointments: landlord_appointments,
+			instruction: this.props.instruction ? this.props.instruction : {},
 			notification: {
 				title: "",
 				content: "",
@@ -598,6 +599,14 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					);
 				}
+
+				case 'viewModalInstruction':
+					return (
+						<ModalInstruction
+							authenticity_token={this.props.authenticity_token}
+							updateInsruction={this.updateInsruction}
+						/>
+					);
 					
 				default:
 					return null;
@@ -622,6 +631,26 @@ var TenantMaintenanceRequest = React.createClass({
 	},
 
 	componentDidMount: function() {
+		const self = this;
+		const {instruction} = this.state;
+		if(!instruction.read_instruction) {
+			$('body').chardinJs('start');
+			this.onModalWith('viewModalInstruction');
+			$(document).click(function(e) {
+				var showInstruction = $('.show-instruction');
+				if(showInstruction.length > 0) {
+					if(e.target.className != 'show-instruction') {
+						$('body').chardinJs('stop');
+						self.isClose();	
+					}
+				}
+			});
+		}else {
+			this.viewModalMessage();
+		}
+	},
+
+	viewModalMessage: function() {
 		const href = window.location.href;
 		const self = this;
 		window.onload = function () {
@@ -632,6 +661,15 @@ var TenantMaintenanceRequest = React.createClass({
 				self.openAppointment(json.appointment_id);
 			}
 		}
+	},
+
+	updateInsruction: function(data) {
+		this.setState({
+			instruction: data
+		});
+		this.isClose();
+		$('body').chardinJs('stop');
+		this.viewModalMessage();
 	},
 
 	getUrlVars: function(url) {
