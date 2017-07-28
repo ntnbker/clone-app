@@ -428,14 +428,16 @@ var SideBarMobile = React.createClass({
 		return (
 			<div>
 				<div className="sidebar-mobile">
-					<div className="fixed" data-intro="Contact and Action" data-position="top">       
+					<div className="fixed">       
 						<button 
+							id="contact" data-intro="Select the 'Contact' button on the button left to call or message" data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
 							Contact
 						</button>
 						<button 
+							data-intro="Select 'Actions' button on the button right to choose an option" data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
@@ -2155,6 +2157,11 @@ var MaintenanceRequest = React.createClass({
 							content="Are you sure you want to Reassign this Maintenance request ?"
 						/>
 					);
+
+				case 'viewModalInstruction':
+					return (
+						<ModalInstruction />
+					);
 					
 				default:
 					return null;
@@ -2186,9 +2193,18 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	componentDidMount: function() {
+		const {instruction} = this.props;
+		if(!instruction) {
+			$('body').chardinJs('start');
+			this.onModalWith('viewModalInstruction');
+		}else {
+			this.viewModalMessage();
+		}
+	},
+
+	viewModalMessage: function() {
 		const href = window.location.href;
 		const self = this;
-		$('body').chardinJs('start')
 		window.onload = function () {
 			if(href.indexOf('email_quote_id') >= 0) {
 				self.autoScroll('quotes');

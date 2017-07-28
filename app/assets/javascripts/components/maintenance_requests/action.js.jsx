@@ -81,7 +81,7 @@ var ActionMobile = React.createClass({
 		return (
 			<div className="actions-full" id="actions-full">
 				<div className="item">
-					<div className="header action">
+					<div className="header action" id="action" >
 						<a>Actions:</a>
 						<i 
 							aria-hidden="true" 

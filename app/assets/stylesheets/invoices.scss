@@ -6,20 +6,20 @@
 	border-radius: 4px;
 	border: 1px solid #edf1f4;
 	/*box-shadow: 0 1px 10px #888888;*/
-    margin: 30px auto;
-    color: #aab8c3;
-    p{
-    	margin-bottom: 0;
-    	font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
+	margin: 30px auto;
+	color: #aab8c3;
+	p{
+		margin-bottom: 0;
+		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
 
-    .send-email {
-    	margin-top: 20px;
-    }
+	.send-email {
+		margin-top: 20px;
+	}
 
-    button {
-    	font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
+	button {
+		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
 
 	button.button-primary.option-button {
 		margin: 0;
@@ -157,7 +157,7 @@
 			label {
 				display: block;
 				font-weight: normal;
-			    margin-top: 10px;
+				margin-top: 10px;
 				margin-bottom: 0;
 
 				input[type="radio"], input[type="checkbox"] {
@@ -194,7 +194,7 @@
 	}
 
 	.invoiceitemfield {
-    	border: 1px dashed #E1E1E1;
+		border: 1px dashed #E1E1E1;
 		padding: 10px;
 		position: relative;
 		margin-top: 20px;
@@ -208,14 +208,14 @@
 		}
 
 		.button-remove {
-		    position: absolute;
-		    top: -32px;
-		    right: 5px;
-		    padding: 0;
-		    height: 23px;
-		    width: 23px;
-		    border-radius: 23px;
-		    line-height: 20px;
+			position: absolute;
+			top: -32px;
+			right: 5px;
+			padding: 0;
+			height: 23px;
+			width: 23px;
+			border-radius: 23px;
+			line-height: 20px;
 		}
 	}
 
@@ -228,11 +228,11 @@
 				position: relative;
 				margin-bottom: 25px;
 				.invoice-index {
-				    position: absolute;
-				    background: white;
-				    font-size: 20px;
-				    top: -15px;
-				    left: 10px;
+					position: absolute;
+					background: white;
+					font-size: 20px;
+					top: -15px;
+					left: 10px;
 				}
 			}
 		}
@@ -241,7 +241,7 @@
 			&.button-add {	
 				margin-top: 5px;
 				font-size: 13px;
-	    		height: 24px;
+				height: 24px;
 			}
 		}
 	}
@@ -271,10 +271,10 @@
 			border-radius: 100px;
 			width: 100px;
 			height: 100px;
-		    color: #00c5a2;
+			color: #00c5a2;
 			i {
-			    line-height: 100px;
-			    font-size: 50px;
+				line-height: 100px;
+				font-size: 50px;
 			}
 		}
 		h5 {
@@ -334,88 +334,88 @@
 	h4 {
 		color: #3d4b54;
 	}
-    margin: 20px auto;
-    text-align: center;
-    padding-bottom: 50px;
+	margin: 20px auto;
+	text-align: center;
+	padding-bottom: 50px;
 
-    .circle {
-	    display: inline-block;
-	    background: #296781;
-	    width: 40px;
-	    height: 40px;
-	    border-radius: 40px;
-	    border: none;
-	    vertical-align:top;
-	    position: relative;
-	    z-index: 2;
+	.circle {
+		display: inline-block;
+		background: #296781;
+		width: 40px;
+		height: 40px;
+		border-radius: 40px;
+		border: none;
+		vertical-align:top;
+		position: relative;
+		z-index: 2;
 
-	    .label {
-		    display: inline-block;
-		    width: 40px;
-		    height: 40px;
-		    line-height: 40px;
-		    border-radius: 40px;
-		    margin-top: 0px;
-		    color: white;
-		    font-size: 17px;
+		.label {
+			display: inline-block;
+			width: 40px;
+			height: 40px;
+			line-height: 40px;
+			border-radius: 40px;
+			margin-top: 0px;
+			color: white;
+			font-size: 17px;
 		}
 
 		.title {
-		    color: #b5b5ba;
-		    font-size: 13px;
-		    line-height: 18px;
-		    margin-left: -30px;
-		    display: block;
-		    width: 100px;
-		    margin-top: 5px;
+			color: #b5b5ba;
+			font-size: 13px;
+			line-height: 18px;
+			margin-left: -30px;
+			display: block;
+			width: 100px;
+			margin-top: 5px;
 		}
 
 		&.active {
 			background: white;
 			.label {
-			    color: #FFF;
-			    background: linear-gradient(to bottom, #4ee7cd 0%,#00cdab 50%,#4ee7cd 100%);
-			    box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
+				color: #FFF;
+				background: linear-gradient(to bottom, #4ee7cd 0%,#00cdab 50%,#4ee7cd 100%);
+				box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
 			}
 			.title {
-			    color: #0c95be;
+				color: #0c95be;
 			}
 		}
 
 		&.done {
 			background: #296781;
 			.label {
-			    color: #FFF;
+				color: #FFF;
 				background: linear-gradient(to bottom, #4ee7cd 0%,#00cdab 50%,#4ee7cd 100%);
-			    box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
+				box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
 				width: 24px;
 				height: 25px;
 				line-height: 25px;
 				margin: 8px;
 			}
 			.title {
-			    color: #444;
+				color: #444;
 			}
 		}
 	}
 
 	.bar {
-	    display: inline-block;
-	    background: #296781;
-	    position: relative;
-	    width: 80px;
-	    height: 7px;
-	    margin: 0 -9px 17px -9px;
-	    border: 5px solid #296781;
-	    border-left: none;
-	    border-right: none;
-	    border-radius: 0;
-	    top:12px;
-	    vertical-align:top;
-	    z-index:0;
+		display: inline-block;
+		background: #296781;
+		position: relative;
+		width: 80px;
+		height: 7px;
+		margin: 0 -9px 17px -9px;
+		border: 5px solid #296781;
+		border-left: none;
+		border-right: none;
+		border-radius: 0;
+		top:12px;
+		vertical-align:top;
+		z-index:0;
 
-	    &.active, &.done {
-		    background: linear-gradient(to bottom, #4ee7cd 0%,#00cdab 50%,#4ee7cd 100%);
+		&.active, &.done {
+			background: linear-gradient(to bottom, #4ee7cd 0%,#00cdab 50%,#4ee7cd 100%);
 		}
 	}
 
@@ -468,4 +468,106 @@
 }
 .text-center {
 	text-align: center;
+}
+.new_uploaded_invoice {
+	.browse-wrap {
+		top: 0;
+		left: 0;
+		margin: 10px 0px;
+		cursor: pointer;
+		overflow: hidden;
+		padding: 20px 30px;
+		background-color: #f6f7f8;
+		border: solid 1px #d2d2d7;
+		position: relative;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 350px;
+		margin: 0 auto;
+	}	
+	.title {
+    color:#3b5998;
+    font-size:14px;
+    font-weight:bold;
+    font-family:tahoma, arial, sans-serif;
+    cursor: pointer;
+    i {
+        display: inline-block;
+        margin-right: 5px;
+    }
+  }
+  .upload {
+    right:0;
+    margin:0;
+    bottom:0;
+    padding:0;
+    opacity:0;
+    height:300px;
+    outline:none;
+    cursor:inherit;
+    cursor: pointer;
+    position:absolute;
+    font-size:1000px !important;
+  }
+  .progress {
+        //border: 1px solid #2FA342;
+        background: #DCE0E3;
+        border-radius: 10px;
+        margin: 0;
+        padding: 0;
+        height: 7px;
+        overflow: hidden;
+        position: relative;
+        .progress-bar {
+            background-color: #6BB438;
+            color: #fff;
+            font-size: 12px;
+            z-index: 150;
+            position: relative;
+            overflow: hidden;
+            transition: all 1s linear 0s;
+            height: 100%;
+            &:after {
+                //content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                background-image: -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #56aa1c), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, #56aa1c), color-stop(.75, #56aa1c), color-stop(.75, transparent), to(transparent));
+                background-image: -webkit-linear-gradient(-45deg, #56aa1c 25%, transparent 25%, transparent 50%, #56aa1c 50%, #56aa1c 75%, transparent 75%, transparent);
+                background-image: -o-linear-gradient(-45deg, #56aa1c 25%, transparent 25%, transparent 50%, #56aa1c 50%, #56aa1c 75%, transparent 75%, transparent);
+                z-index: 1;
+                background-size: 20px 20px;
+                -webkit-animation: move 2s linear infinite;
+                -webkit-border-top-right-radius: 8px;
+                -webkit-border-bottom-right-radius: 8px;
+                -moz-border-radius-topright: 8px;
+                -moz-border-radius-bottomright: 8px;
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+                -webkit-border-top-left-radius: 20px;
+                -webkit-border-bottom-left-radius: 20px;
+                -moz-border-radius-topleft: 20px;
+                -moz-border-radius-bottomleft: 20px;
+                border-top-left-radius: 20px;
+                border-bottom-left-radius: 20px;
+                overflow: hidden;
+            }
+        }
+    }
+
+  .file-pdf {
+  	text-align: center;
+  	i {
+  		font-size: 80px;
+  		display: block;
+  	}
+  	span {
+  		cursor: pointer;
+  		text-decoration: blink;
+  	}
+  }
 }

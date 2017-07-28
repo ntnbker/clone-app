@@ -13,8 +13,6 @@ class UploadedInvoicesController < ApplicationController
   end
 
   def create
-    
-    binding.pry
     @file = UploadedInvoice.new(file_params)
     maintenance_request_id = params[:uploaded_invoice][:maintenance_request_id]
     trady_id = params[:uploaded_invoice][:trady_id]
@@ -95,7 +93,7 @@ class UploadedInvoicesController < ApplicationController
   private
 
   def file_params
-    params.require(:uploaded_invoice).permit(:maintenance_request_id, :trady_id,{invoices: []})
+    params.require(:uploaded_invoice).permit(:maintenance_request_id, :trady_id, :pdf)
   end
 
 end 

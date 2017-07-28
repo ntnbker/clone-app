@@ -1,7 +1,7 @@
 var AddInvoicePDF = React.createClass({
 	getInitialState: function() {
 		return {
-			files: []
+			file: {}
 		};	
 	},
 
@@ -47,11 +47,11 @@ var AddInvoicePDF = React.createClass({
 					}, false);
 					return xhr;
 				},
-				success: function() {
+				success: function(res) {
 					setTimeout(function() {
 						$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
 						$('.progress').remove();
-					}, 500);
+					}, 0);
 					var filePDF = {
 						id: result.fields.key.match(/cache\/(.+)/)[1],
 						storage: 'cache',
@@ -68,18 +68,15 @@ var AddInvoicePDF = React.createClass({
 	},
 
 	updateFile: function(filePDF) {
-		const {files} = this.state;
-		files.push(filePDF);
 		this.setState({
-			files: files
+			file: filePDF
 		});
 	},
 
 	removeFile: function(index) {
-		let {files} = this.state;
-		files.splice(index, 1);
+		$('#input-file').val('');
 		this.setState({
-			files: files
+			file: {}
 		});
 	},
 
@@ -87,10 +84,7 @@ var AddInvoicePDF = React.createClass({
 		e.preventDefault();
 		var XHR = new XMLHttpRequest();
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
-		this.state.files.map((file, index) => {
-			var idx = index + 1;
-			FD.append('uploaded_invoice[invoices][' + idx + ']', JSON.stringify(file));
-		});
+		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
 
 		XHR.open('POST', '/uploaded_invoices');
 		XHR.setRequestHeader('Accept', 'text/html');
@@ -111,18 +105,32 @@ var AddInvoicePDF = React.createClass({
 		const {maintenance_request_id, trady_id, quote_id} = this.props;
 		return (
 			<div className="container invoice-form">
-				<h5>
+				<h5 className="text-center">
 					Please Attach Your Invoice(s)!!
 				</h5>
 				<div>
 					<form className="new_uploaded_invoice" role="form" id="new_uploaded_invoice" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) => this.handelSubmit(e)}>
-						<input 
-							type="file" 
-							multiple="multiple" 
-							accept="application/pdf"
-							id="uploaded_invoice_invoices"
-							onChange={(e)=>this._handleChangeFile(e)}
-						/>
+						{
+							this.state.file.id ?
+								<div className="file-pdf">
+									<i className="fa fa-file" />
+									<span>Remove</span>
+								</div>
+								:
+								<div className="browse-wrap">
+									<div className="title" id="title-upload">
+										<i className="fa fa-upload" />
+										Choose a image to upload
+									</div>
+									<input 
+										type="file"
+										id="input-file"
+										className="upload inputfile" 
+										accept="application/pdf"
+										onChange={(e)=>this._handleChangeFile(e)}
+									/>
+								</div>
+						}
 						<input 
 							type="hidden" 
 							defaultValue={maintenance_request_id}
@@ -153,18 +161,20 @@ var AddInvoicePDF = React.createClass({
 							name="uploaded_invoice[system_plan]" 
 							id="uploaded_invoice_system_plan"
 						/>
-						<button
-							type="submit"
-							className="button-primary green" 
-						>
-							Attach PDF
-						</button>
-						<a 
-							className="button-primary green option-button" 
-							href="/trady_companies/1/edit?invoice_type=pdf_file&amp;maintenance_request_id=1&amp;system_plan=Invoice&amp;trady_company_id=1&amp;trady_id=1"
-						>
-							Back
-						</a>
+						<div className="text-center">
+							<a 
+								className="btn btn-default btn-back m-r-lg" 
+								href="/trady_companies/1/edit?invoice_type=pdf_file&amp;maintenance_request_id=1&amp;system_plan=Invoice&amp;trady_company_id=1&amp;trady_id=1"
+							>
+								Back
+							</a>
+							<button
+								type="submit"
+								className="button-primary green" 
+							>
+								Attach PDF
+							</button>
+						</div>
 					</form>
 				</div>
 			</div>

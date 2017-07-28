@@ -4,14 +4,11 @@
 /     Please Attach Your Invoice(s)!!
 /   %div
 /     =form_for @file do |f|
-      
-/       = f.file_field :invoices, multiple: true
+/       = f.hidden_field :pdf, value: @file.cached_pdf_data
 /       =f.hidden_field :maintenance_request_id, value:@maintenance_request_id
 /       =f.hidden_field :trady_id, value:@trady_id
 /       =f.hidden_field :quote_id, value:@quote_id
 /       =f.hidden_field :invoice_type, value:"pdf_file"
 /       =f.hidden_field :system_plan, value:"Invoice"
+/       =f.file_field :pdf
 /       =f.submit "Attach PDF", class: 'button-primary green'
-
-/     %button.button-primary.green.option-button
-/       =link_to "Back", edit_trady_company_path(id:@trady_company,pdf_file_id:@file.id,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice")
