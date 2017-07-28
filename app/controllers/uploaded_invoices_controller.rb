@@ -14,6 +14,7 @@ class UploadedInvoicesController < ApplicationController
 
   def create
     
+    binding.pry
     @file = UploadedInvoice.new(file_params)
     maintenance_request_id = params[:uploaded_invoice][:maintenance_request_id]
     trady_id = params[:uploaded_invoice][:trady_id]

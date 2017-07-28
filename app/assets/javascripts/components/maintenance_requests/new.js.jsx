@@ -232,7 +232,7 @@ var MaintenanceRequestsNew = React.createClass({
 			}
 		}
 		XHR.send(FD);
-  	return false;
+		return false;
 	},
 
 	getFormData: function (object) {
