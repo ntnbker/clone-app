@@ -38,7 +38,7 @@ var ModalInstruction = React.createClass({
 								<label>
 									<input type="checkbox" onChange={this.updateInstruction} className="show-instruction"/>
 									<span className="show-instruction">
-										Don't show this again
+										Got it thank you.
 									</span>
 								</label>
 							</div>

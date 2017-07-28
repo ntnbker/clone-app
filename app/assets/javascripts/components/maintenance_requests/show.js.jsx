@@ -430,14 +430,14 @@ var SideBarMobile = React.createClass({
 				<div className="sidebar-mobile">
 					<div className="fixed">       
 						<button 
-							id="contact" data-intro="Select the 'Contact' button on the button left to call or message" data-position="top"
+							id="contact" data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
 							Contact
 						</button>
 						<button 
-							data-intro="Select 'Actions' button on the button right to choose an option" data-position="top"
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
