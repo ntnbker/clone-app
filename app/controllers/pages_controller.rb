@@ -6,6 +6,18 @@ class PagesController < ApplicationController
     @query = Query.new
     @main_users = MainUser.all
     @service = Service.all
+    if current_user
+      if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
+        @role = "Agent"
+      elsif current_user.current_role.role == "Tenant"
+        @role = "Tenant"
+      elsif current_user.current_role.role == "Landlord"
+        @role = "Tenant"
+      elsif current_user.current_role.role == "Trady"
+        @role = "Tenant"
+      end
+    end  
+        
   end
 
   

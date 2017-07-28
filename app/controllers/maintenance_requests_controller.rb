@@ -6,6 +6,7 @@ class MaintenanceRequestsController < ApplicationController
   before_action :set_user, only:[:new,:create]
   
   before_action :customer_input_session, only:[:create,:new]
+  before_action :check_for_role, only:[:new]
   #authorize_resource :class => false
 
   def new
@@ -333,6 +334,27 @@ class MaintenanceRequestsController < ApplicationController
 
   def set_user
     @user = User.new
+  end
+
+  def check_for_role
+    @customer_input = Query.find_by(id:session[:customer_input])
+    
+    if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
+      if @customer_input.user_role == "Tenant"
+        flash[:notice] = "Sorry you are signed in as an agent. To submit a maintenance request as a tenant please log out and try again."
+        redirect_to root_path
+      end 
+    elsif current_user.current_role.role == "Landlord" 
+      if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+        flash[:notice] = "Sorry you are signed in as a Landlord. To submit a maintenance request as a tenant please log out and try again."
+        redirect_to root_path
+      end 
+    elsif current_user.current_role.role == "Trady"
+      if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+        flash[:notice] = "Sorry you are signed in as a Trady. To submit a maintenance request as a tenant please log out and try again."
+        redirect_to root_path
+      end 
+    end 
   end
 
   # def email_auto_login(id)
