@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170726055523) do
+ActiveRecord::Schema.define(version: 20170728025357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -446,6 +446,7 @@ ActiveRecord::Schema.define(version: 20170726055523) do
     t.integer  "trady_id"
     t.boolean  "delivery_status"
     t.text     "invoice_data"
+    t.text     "pdf_data"
   end
 
   create_table "uploaded_quotes", force: :cascade do |t|
