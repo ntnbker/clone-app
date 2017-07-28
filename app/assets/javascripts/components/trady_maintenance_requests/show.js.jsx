@@ -47,7 +47,7 @@ var TradySideBarMobile = React.createClass({
 	render: function() {
 		return (
 			<div>
-				<div className="sidebar-mobile" data-intro="Contact and Action" data-position="top">
+				<div className="sidebar-mobile">
 					<div className="fixed">       
 						<button 
 							data-intro="Select 'Contact' to call or message." data-position="top"
@@ -283,6 +283,7 @@ var TradyMaintenanceRequest = React.createClass({
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
 			trady_agent_conversation: trady_agent_conversation,
+			instruction: this.props.instruction ? this.props.instruction : {},
 			notification: {
 				title: "",
 				content: "",
@@ -297,7 +298,10 @@ var TradyMaintenanceRequest = React.createClass({
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
+		if(div){
+
+			div.parentNode.removeChild(div);
+		}
 	},
 
 	onModalWith: function(modal) {
@@ -882,6 +886,14 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					);
 				}
+
+				case 'viewModalInstruction':
+					return (
+						<ModalInstruction
+							authenticity_token={this.props.authenticity_token}
+							updateInsruction={this.updateInsruction}
+						/>
+					);
 					
 				default:
 					return null;
@@ -928,6 +940,27 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	componentDidMount: function() {
+		const self = this;
+		const {instruction} = this.state;
+		if(!instruction.read_instruction) {
+			$('body').chardinJs('start');
+			this.onModalWith('viewModalInstruction');
+			
+			$(document).click(function(e) {
+				var showInstruction = $('.show-instruction');
+				if(showInstruction.length > 0) {
+					if(e.target.className != 'show-instruction') {
+						$('body').chardinJs('stop');
+						self.isClose();	
+					}
+				}
+			});	
+		}else {
+			this.viewModalMessage();
+		}
+	},
+
+	viewModalMessage: function() {
 		const href = window.location.href;
 		const self = this;
 		$('body').chardinJs('start')
@@ -955,6 +988,15 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 			}
 		}
+	},
+
+	updateInsruction: function(data) {
+		this.setState({
+			instruction: data
+		});
+		this.isClose();
+		$('body').chardinJs('stop');
+		this.viewModalMessage();
 	},
 
 	getUrlVars: function(url) {

@@ -102,7 +102,7 @@ var AddInvoicePDF = React.createClass({
 	},
 
 	render: function() {
-		const {maintenance_request_id, trady_id, quote_id} = this.props;
+		const {maintenance_request_id, trady_id, quote_id, trady_company, trady_company_id} = this.props;
 		return (
 			<div className="container invoice-form">
 				<h5 className="text-center">
@@ -164,7 +164,7 @@ var AddInvoicePDF = React.createClass({
 						<div className="text-center">
 							<a 
 								className="btn btn-default btn-back m-r-lg" 
-								href="/trady_companies/1/edit?invoice_type=pdf_file&amp;maintenance_request_id=1&amp;system_plan=Invoice&amp;trady_company_id=1&amp;trady_id=1"
+								href={"/trady_companies/" + trady_company_id + "/edit?invoice_type=pdf_file&maintenance_request_id=" + maintenance_request_id +"&system_plan=Invoice&trady_company_id=" + trady_company_id +"&trady_id=" + trady_id}
 							>
 								Back
 							</a>

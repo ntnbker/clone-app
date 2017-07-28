@@ -2203,9 +2203,12 @@ var MaintenanceRequest = React.createClass({
 			$('body').chardinJs('start');
 			this.onModalWith('viewModalInstruction');
 			$(document).click(function(e) {
-				if(e.target.className != 'show-instruction') {
-					$('body').chardinJs('stop');
-					self.isClose();	
+				var showInstruction = $('.show-instruction');
+				if(showInstruction.length > 0) {
+					if(e.target.className != 'show-instruction') {
+						$('body').chardinJs('stop');
+						self.isClose();	
+					}
 				}
 			});
 		}else {
