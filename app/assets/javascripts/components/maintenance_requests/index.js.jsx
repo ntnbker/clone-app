@@ -746,7 +746,7 @@ var MaintenanceRequestItem = React.createClass({
             <div className="row">
               <h3 className="heading">
                 <a href={this.props.link + "/" + maintenance_request.id}>
-                {maintenance_request.maintenance_description.substring(0,10) + "..."}
+                {maintenance_request.maintenance_description.length > 40 ? maintenance_request.maintenance_description.substring(0,40) + "..." : maintenance_request.maintenance_description}
                 </a>
               </h3>
               {

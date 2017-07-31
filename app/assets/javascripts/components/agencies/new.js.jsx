@@ -23,7 +23,7 @@ var AgencyAttributes = React.createClass({
       };
     },
 
-    generateAtt(name_id, type) {
+    generateAtt: function(name_id, type) {
       if (name_id == "name") {
           return "user[agency_admin_attributes][agency_attributes][" + type + "]";
       }
@@ -40,6 +40,23 @@ var AgencyAttributes = React.createClass({
           address: event.target.value
         });
       }
+    },
+
+    onBDM: function() {
+      this.setState({showBDM: !this.state.showBDM});
+    },
+
+    onSame: function() {
+      this.setState({
+        same_Address: !this.state.same_Address,
+        mailing: ''
+      });
+    },
+
+    onChangeMailing: function(e) {
+      this.setState({
+        mailing: e.target.value
+      });
     },
 
     render: function(){
@@ -98,10 +115,11 @@ var AgencyAttributes = React.createClass({
           <input
             required
             type="text"
-            value={this.state.mailing}
             placeholder="Mailing address"
             id={this.generateAtt("id", "mailing_address")}
             name={this.generateAtt("name", "mailing_address")}
+            onChange={this.onChangeMailing}
+            value={!!this.state.same_Address ? this.state.address : this.state.mailing}
           />
         </div>
 
@@ -182,15 +200,6 @@ var AgencyAttributes = React.createClass({
             }
         </div>
       </div>
-    },
-    onBDM: function() {
-      this.setState({showBDM: !this.state.showBDM});
-    },
-    onSame: function() {
-      this.setState({
-        same_Address: !this.state.same_Address,
-        mailing: this.state.address
-      });
     }
 });
 

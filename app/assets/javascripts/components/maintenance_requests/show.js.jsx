@@ -1711,7 +1711,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Request Quote",
-							content: 'Thank you, a quote request has been emailed to "' + params.trady.company_name +'". We will notofy once the quote has been received.',
+							content: 'Thank you, a quote has been emailed to "' + params.trady.company_name +'". We will notify you once the quote been received.',
 							bgClass: "bg-success",
 						},
 					});
