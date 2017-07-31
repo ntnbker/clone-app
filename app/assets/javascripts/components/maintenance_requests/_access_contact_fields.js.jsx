@@ -64,7 +64,7 @@ var AccessContactField = React.createClass({
       return (
         <div className="accesscontactfield" style={{display: this.state.remove ? 'none' : 'block' }}>
           <fieldset>
-            <p> Contenant </p>
+            <p> Another Access Contact </p>
         	  <select 
               name={this.generateAtt("name", x, "relation")}
   	  			  id={this.generateAtt("id", x, "relation")}

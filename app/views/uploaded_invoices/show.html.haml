@@ -2,7 +2,7 @@
   / -@pdf.invoices.each do |pdf|
   %div#Iframe-Master-CC-and-Rs.set-margin.set-padding.set-border.set-box-shadow.center-block-horiz
     %div.responsive-wrapper.responsive-wrapper-wxh-572x612
-      %iframe{:src=> @pdf.pdf_url,:style=>"border: 0" ,:width=>"100%", :frameborder=>"0"}
+      %embed{:src=> @pdf.pdf_url,:style=>"border: 0" ,:width=>"100%", :frameborder=>"0", :height => '400'}
       
   %div
 

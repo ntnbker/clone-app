@@ -49,7 +49,7 @@ var ModalViewPDFInvoice = React.createClass({
 
 	render: function() {
 		const self = this.props;
-		const invoice = this.state.invoice;
+		const {invoice} = this.state;
 		let total = 0;
 
 		return (
@@ -85,19 +85,11 @@ var ModalViewPDFInvoice = React.createClass({
 									</div>
 									<div className="detail-quote">
 										<div className="detail-quote">
-										{ !!invoice.invoices[0] &&
-											<embed src={invoice.invoices[0].url} className="scroll-custom" width='100%' height='400px'/>
+										{ !!this.props.pdf_url &&
+											<embed src={this.props.pdf_url} className="scroll-custom" width='100%' height='400px'/>
 										}
 										</div>
 									</div>
-								</div>
-								<div className="button-slider">
-									<button className="btn-prev" onClick={(key, index) => this.switchSlider('prev', this.state.index)}>
-										<i className="fa fa-angle-left" />
-									</button>
-									<button className="btn-next" onClick={(key, index) => this.switchSlider('next', this.state.index)}>
-										<i className="fa fa-angle-right" />
-									</button>
 								</div>
 							</div>
 						</div>
