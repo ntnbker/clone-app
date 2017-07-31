@@ -124,7 +124,7 @@ class MaintenanceRequest < ApplicationRecord
     self.uploaded_invoices.where(delivery_status: true).order("created_at DESC")
   end
 
-  def trady_delivered_uploaded_invoices (maintenance_request_id, trady_id)
+  def trady_delivered_uploaded_invoices(maintenance_request_id, trady_id)
     self.uploaded_invoices.where(trady_id:trady_id,:delivery_status=> true, :maintenance_request_id => maintenance_request_id).order("created_at DESC")
   end
 
@@ -135,6 +135,16 @@ class MaintenanceRequest < ApplicationRecord
       image_array.push(image.image_url)
     end 
     return image_array
+  end
+
+
+  def get_pdf_url(maintenance_request_id, trady_id)
+    pdf_invoices = self.trady_delivered_uploaded_invoices(maintenance_request_id, trady_id)
+    array = []
+    pdf_invoices.each do |invoice|
+      array.push(invoice.pdf_url)
+    end 
+    return array
   end
 
 
