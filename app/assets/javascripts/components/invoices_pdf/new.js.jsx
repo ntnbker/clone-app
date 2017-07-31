@@ -47,7 +47,6 @@ var AddInvoicePDF = React.createClass({
 					return xhr;
 				},
 				success: function(res) {
-					debugger
 					setTimeout(function() {
 						$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
 						$('.progress').remove();
@@ -114,7 +113,7 @@ var AddInvoicePDF = React.createClass({
 							this.state.file.id ?
 								<div className="file-pdf">
 									<i className="fa fa-file" />
-									<span>Remove</span>
+									<span onClick={this.removeFile}>Remove</span>
 								</div>
 								:
 								<div className="browse-wrap">
