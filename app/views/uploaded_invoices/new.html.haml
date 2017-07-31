@@ -13,7 +13,5 @@
 /       =f.hidden_field :system_plan, value:"Invoice"
 /       =f.file_field :pdf
 /       =f.submit "Attach PDF", class: 'button-primary green'
-
-
-    / %button.button-primary.green.option-button
-    /   =link_to "Back", edit_trady_company_path(id:@trady_company,pdf_file_id:@file.id,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice")
+/       %button.button-primary.green.option-button
+/         =link_to "Back", edit_trady_company_path(id:@trady_company,pdf_file_id:@file.id,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice")
