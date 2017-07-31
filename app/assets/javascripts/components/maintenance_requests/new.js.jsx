@@ -4,8 +4,11 @@ var MaintenanceRequestsNew = React.createClass({
 		this.getAgentEmail();
 		return { 
 			images: [],
+			progress: 0,
+			totalFile: 0,
 			isAgent: true,
 			dataImages: [],
+			totalProgress: 0,
 			isAndroid: false,
 			validName: false,
 			validDate: false,
@@ -124,6 +127,9 @@ var MaintenanceRequestsNew = React.createClass({
 					reader.readAsDataURL(file);
 					reader.onload = function(e) {
 						images.push({url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation});
+						self.setState({
+							totalFile: index + 1
+						});
 						readFile(index + 1);
 					}
 				}
@@ -330,7 +336,6 @@ var MaintenanceRequestsNew = React.createClass({
 				extension: filename.name.match(/(\.\w+)?$/)[0],
 				_: Date.now(),
 			}
-
 			// start upload file into S3
 			$.getJSON('/images/cache/presign', options, function(result) {
 				var fd = new FormData();
@@ -350,7 +355,14 @@ var MaintenanceRequestsNew = React.createClass({
 						var xhr = new window.XMLHttpRequest();
 						xhr.upload.addEventListener("progress", function (evt) {
 							if(evt.loaded > 0 && evt.total > 0) {
-								var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+								var progressValue = self.state.progress + evt.loaded;
+								var totalProgress = self.state.totalProgress/(self.state.totalFile + 1) + evt.total * self.state.totalFile;
+								self.setState({
+									progress: progressValue,
+									totalProgress: totalProgress,
+									totalFile: self.state.totalFile - 1,
+								});
+								var percentComplete = Math.ceil(progressValue / totalProgress * 100);
 								var progress = $('.progress');
 								if(progress.length == 0) {
 									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
@@ -363,10 +375,17 @@ var MaintenanceRequestsNew = React.createClass({
 						return xhr;
 					},
 					success: function() {
-						setTimeout(function() {
-							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
-							$('.progress').remove();
-						}, 500);
+						if(self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+							self.setState({
+								progress: 0,
+								totalFile: 0,
+								totalProgress: 0,
+							});
+							setTimeout(function() {
+								$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+								$('.progress').remove();
+							}, 500);
+						}
 						var image = {
 							id: result.fields.key.match(/cache\/(.+)/)[1],
 							storage: 'cache',
