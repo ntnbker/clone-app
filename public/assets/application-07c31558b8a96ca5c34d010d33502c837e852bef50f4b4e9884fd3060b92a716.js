@@ -67689,6 +67689,23 @@ var AgencyAttributes = React.createClass({
     }
   },
 
+  onBDM: function () {
+    this.setState({ showBDM: !this.state.showBDM });
+  },
+
+  onSame: function () {
+    this.setState({
+      same_Address: !this.state.same_Address,
+      mailing: ''
+    });
+  },
+
+  onChangeMailing: function (e) {
+    this.setState({
+      mailing: e.target.value
+    });
+  },
+
   render: function () {
     return React.createElement(
       "div",
@@ -67770,10 +67787,11 @@ var AgencyAttributes = React.createClass({
         React.createElement("input", {
           required: true,
           type: "text",
-          value: this.state.mailing,
           placeholder: "Mailing address",
           id: this.generateAtt("id", "mailing_address"),
-          name: this.generateAtt("name", "mailing_address")
+          name: this.generateAtt("name", "mailing_address"),
+          onChange: this.onChangeMailing,
+          value: !!this.state.same_Address ? this.state.address : this.state.mailing
         })
       ),
       React.createElement(
@@ -67875,15 +67893,6 @@ var AgencyAttributes = React.createClass({
         this.state.showBDM && React.createElement(BDM, null)
       )
     );
-  },
-  onBDM: function () {
-    this.setState({ showBDM: !this.state.showBDM });
-  },
-  onSame: function () {
-    this.setState({
-      same_Address: !this.state.same_Address,
-      mailing: this.state.address
-    });
   }
 });
 
@@ -70556,7 +70565,6 @@ var AddInvoicePDF = React.createClass({
 					return xhr;
 				},
 				success: function (res) {
-					debugger;
 					setTimeout(function () {
 						$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
 						$('.progress').remove();
@@ -70642,7 +70650,7 @@ var AddInvoicePDF = React.createClass({
 						React.createElement('i', { className: 'fa fa-file' }),
 						React.createElement(
 							'span',
-							null,
+							{ onClick: this.removeFile },
 							'Remove'
 						)
 					) : React.createElement(
@@ -70775,6 +70783,7 @@ var ModalViewPDFInvoice = React.createClass({
 
 		var self = this.props;
 		var invoice = this.state.invoice;
+
 		var total = 0;
 
 		return React.createElement(
@@ -70870,26 +70879,8 @@ var ModalViewPDFInvoice = React.createClass({
 									React.createElement(
 										"div",
 										{ className: "detail-quote" },
-										!!invoice.invoices[0] && React.createElement("embed", { src: invoice.invoices[0].url, className: "scroll-custom", width: "100%", height: "400px" })
+										!!this.props.pdf_url && React.createElement("embed", { src: this.props.pdf_url, className: "scroll-custom", width: "100%", height: "400px" })
 									)
-								)
-							),
-							React.createElement(
-								"div",
-								{ className: "button-slider" },
-								React.createElement(
-									"button",
-									{ className: "btn-prev", onClick: function (key, index) {
-											return _this.switchSlider('prev', _this.state.index);
-										} },
-									React.createElement("i", { className: "fa fa-angle-left" })
-								),
-								React.createElement(
-									"button",
-									{ className: "btn-next", onClick: function (key, index) {
-											return _this.switchSlider('next', _this.state.index);
-										} },
-									React.createElement("i", { className: "fa fa-angle-right" })
 								)
 							)
 						)
@@ -72153,7 +72144,7 @@ var AccessContactField = React.createClass({
         React.createElement(
           "p",
           null,
-          " Contenant "
+          " Another Access Contact "
         ),
         React.createElement(
           "select",
@@ -72653,9 +72644,9 @@ var ContentAction = React.createClass({
 				React.createElement(
 					'a',
 					{ onClick: function () {
-							return _this.props.onModalWith('editLandlord');
+							return _this.props.onModalWith('addLandlord');
 						} },
-					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-pencil' }),
+					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-user-plus' }),
 					'Change Landlord'
 				)
 			) : React.createElement(
@@ -72668,6 +72659,18 @@ var ContentAction = React.createClass({
 						} },
 					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-user-plus' }),
 					'Add Landlord'
+				)
+			),
+			!!this.props.landlord && React.createElement(
+				'li',
+				null,
+				React.createElement(
+					'a',
+					{ onClick: function () {
+							return _this.props.onModalWith('editLandlord');
+						} },
+					React.createElement('i', { 'aria-hidden': 'true', className: 'fa fa-pencil' }),
+					'Edit landlord details'
 				)
 			)
 		);
@@ -74320,7 +74323,7 @@ var MaintenanceRequestItem = React.createClass({
               React.createElement(
                 "a",
                 { href: this.props.link + "/" + maintenance_request.id },
-                maintenance_request.maintenance_description.substring(0, 10) + "..."
+                maintenance_request.maintenance_description.length > 40 ? maintenance_request.maintenance_description.substring(0, 40) + "..." : maintenance_request.maintenance_description
               )
             ),
             maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu && React.createElement(
@@ -75158,8 +75161,11 @@ var MaintenanceRequestsNew = React.createClass({
 		this.getAgentEmail();
 		return {
 			images: [],
+			progress: 0,
+			totalFile: 0,
 			isAgent: true,
 			dataImages: [],
+			totalProgress: 0,
 			isAndroid: false,
 			validName: false,
 			validDate: false,
@@ -75280,6 +75286,9 @@ var MaintenanceRequestsNew = React.createClass({
 					reader.readAsDataURL(file);
 					reader.onload = function (e) {
 						images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
+						self.setState({
+							totalFile: index + 1
+						});
 						readFile(index + 1);
 					};
 				};
@@ -75472,7 +75481,6 @@ var MaintenanceRequestsNew = React.createClass({
 				extension: filename.name.match(/(\.\w+)?$/)[0],
 				_: Date.now()
 			};
-
 			// start upload file into S3
 			$.getJSON('/images/cache/presign', options, function (result) {
 				var fd = new FormData();
@@ -75492,7 +75500,14 @@ var MaintenanceRequestsNew = React.createClass({
 						var xhr = new window.XMLHttpRequest();
 						xhr.upload.addEventListener("progress", function (evt) {
 							if (evt.loaded > 0 && evt.total > 0) {
-								var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+								var progressValue = self.state.progress + evt.loaded;
+								var totalProgress = self.state.totalProgress / (self.state.totalFile + 1) + evt.total * self.state.totalFile;
+								self.setState({
+									progress: progressValue,
+									totalProgress: totalProgress,
+									totalFile: self.state.totalFile - 1
+								});
+								var percentComplete = Math.ceil(progressValue / totalProgress * 100);
 								var progress = $('.progress');
 								if (progress.length == 0) {
 									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
@@ -75505,10 +75520,17 @@ var MaintenanceRequestsNew = React.createClass({
 						return xhr;
 					},
 					success: function () {
-						setTimeout(function () {
-							$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
-							$('.progress').remove();
-						}, 500);
+						if (self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+							self.setState({
+								progress: 0,
+								totalFile: 0,
+								totalProgress: 0
+							});
+							setTimeout(function () {
+								$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+								$('.progress').remove();
+							}, 500);
+						}
 						var image = {
 							id: result.fields.key.match(/cache\/(.+)/)[1],
 							storage: 'cache',
@@ -78089,7 +78111,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Request Quote",
-							content: 'Thank you, a quote request has been emailed to "' + params.trady.company_name + '". We will notofy once the quote has been received.',
+							content: 'Thank you, a quote has been emailed to "' + params.trady.company_name + '". We will notify you once the quote been received.',
 							bgClass: "bg-success"
 						}
 					});
@@ -78446,6 +78468,7 @@ var MaintenanceRequest = React.createClass({
 						return React.createElement(ModalViewPDFInvoice, {
 							close: this.isClose,
 							agency: this.props.agency,
+							pdf_url: this.props.pdf_urls[0],
 							invoice_pdf_file: this.state.invoice_pdf_file,
 							invoice_pdf_files: this.state.invoice_pdf_files,
 							property: this.props.property
