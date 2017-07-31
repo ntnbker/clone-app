@@ -22,6 +22,7 @@ class UploadedInvoicesController < ApplicationController
     
     if @file.save
       flash[:success] = "Thank you for uploading your invoice(s)"
+      binding.pry
       redirect_to uploaded_invoice_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, invoice_type:invoice_type, system_plan:system_plan)
     else
       flash[:danger] = "Something went wrong."
