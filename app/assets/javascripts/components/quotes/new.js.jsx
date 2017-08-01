@@ -111,7 +111,7 @@ var QuoteFields = React.createClass({
             <label className="quote_tax">
                 <input type="hidden" value="0" name="quote[tax]" />
                 <input type="checkbox" value="1" defaultChecked={trady_company.gst_registration ? trady_company.gst_registration : false} name="quote[tax]" id="quote_tax" />
-                Amount Inclides GST
+                Check box when price includes GST.
             </label>
 
             <hr />
