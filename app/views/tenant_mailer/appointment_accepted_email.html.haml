@@ -87,17 +87,18 @@
     .container-email
       .header
         = link_to "#", :class => "logo" do
-          %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
       .main
         %p.content
-          Hi #{@tenant.name.capitalize}, 
-          #{@trady.trady_company.company_name.capitalize} has confirmed the appointment time on #{@appointment.date.strftime("%A %B %d")} at #{@appointment.time.strftime("%I:%M %p")}.
-
-          Please ensure access to the property is provided to avoid incurring a callout fee.
-
-          To view the details of the maintenance request or to make changes to the appointment, please click on the button below.  
+          Hi #{@tenant.name.capitalize},
+          %br 
+            #{@trady.trady_company.company_name.capitalize} has confirmed the appointment time on #{@appointment.date.strftime("%A %B %d")} at #{@appointment.time.strftime("%I:%M %p")}.
+          %br
+            Please ensure access to the property is provided to avoid incurring a callout fee.
+          %br
+            To view the details of the maintenance request or to make changes to the appointment, please click on the button below.  
 
         %p.thank
           Thank you :)
@@ -110,12 +111,12 @@
           Copyright &copy; 2016 - MaintenanceApp.
         .share
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-twitter.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-facebook.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-instagram.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-google.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
 
     

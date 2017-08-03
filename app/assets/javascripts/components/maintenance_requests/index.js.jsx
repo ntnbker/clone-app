@@ -389,11 +389,6 @@ var ListMaintenanceRequest = React.createClass({
           value: "Initiate Maintenance Request",  
           count: this.props.new_maintenance_requests_count,
         },
-        {
-          title: "Awaiting Tradie`s Quote", 
-          value: "Awaiting Quote", 
-          count: this.props.awaiting_trady_quote_count
-        },
         { 
           title: "Quote Requested", 
           value: "Quote Requested", 
@@ -430,6 +425,11 @@ var ListMaintenanceRequest = React.createClass({
           title: "Awaiting Tradie Initiation",
           value: "Awaiting Tradie Initiation", 
           count: this.props.awaiting_trady_initiation_count
+        },
+        {
+          title: "Awaiting Tradie`s Quote", 
+          value: "Awaiting Quote", 
+          count: this.props.awaiting_trady_quote_count
         },
         {
           title: "Awaiting Quote Approval", 

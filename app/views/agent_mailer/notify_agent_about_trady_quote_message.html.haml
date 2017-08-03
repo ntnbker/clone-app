@@ -88,7 +88,7 @@
     .container-email
       .header
         = link_to "#", :class => "logo" do
-          %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
 
@@ -97,7 +97,8 @@
           %p.content 
             Hi
             ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
-            #{@trady.company_name.capitalize} has just sent you a comment about their quote. To view the message and respond, please click the button below.
+            %br
+              #{@trady.company_name.capitalize} has just sent you a comment about their quote. To view the message and respond, please click the button below.
           %div.text-center
             =link_to "View Quote Message", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_quote_message", quote_message_id:@quote.id), class: 'btn'
             
@@ -105,7 +106,8 @@
           %p.content 
             Hi
             ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
-            #{@trady.company_name.capitalize} has just sent you a comment about their quote. To view the message and respond, please click the button below.
+            %br  
+              #{@trady.company_name.capitalize} has just sent you a comment about their quote. To view the message and respond, please click the button below.
           %div.text-center
             =link_to "View Quote Message", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_quote_message",quote_message_id:@quote.id), class: 'btn'
 
@@ -120,10 +122,10 @@
           Copyright &copy; 2016 - MaintenanceApp.
         .share
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-twitter.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-facebook.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-instagram.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-google.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'

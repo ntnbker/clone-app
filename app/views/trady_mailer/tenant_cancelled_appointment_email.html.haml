@@ -86,16 +86,16 @@
     .container-email
       .header
         = link_to "#", :class => "logo" do
-          %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
       .main
         %p.content
           Hi #{@trady.name.capitalize},
-
-          Unfortunately the appointment for the job at #{@property.property_address} was just cancelled by the tenant, #{@tenant.name.capitalize}.
-
-          We will notify you shortly when the tenant suggests a new appointment.
+          %br
+            Unfortunately the appointment for the job at #{@property.property_address} was just cancelled by the tenant, #{@tenant.name.capitalize}.
+          %br
+            We will notify you shortly when the tenant suggests a new appointment.
         
         %p.thank
           Thank you :)
@@ -108,12 +108,12 @@
           Copyright &copy; 2016 - MaintenanceApp.
         .share
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-twitter.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-facebook.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-instagram.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-google.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
 
     

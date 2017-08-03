@@ -2082,7 +2082,6 @@ var MaintenanceRequest = React.createClass({
 								close={this.isClose}
 								agency={this.props.agency}
 								pdf_url={this.props.pdf_urls[0]}
-							 	invoice_pdf_file={this.state.invoice_pdf_file}
 							 	invoice_pdf_files={this.state.invoice_pdf_files}
 								property={this.props.property}
 							/>

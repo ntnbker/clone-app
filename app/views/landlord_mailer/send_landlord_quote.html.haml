@@ -86,17 +86,17 @@
     .container-email
       .header
         = link_to "#", :class => "logo" do
-          %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
       .main
         %p.content
           
           Hi #{@landlord.name.capitalize},
-
-          #{@trady.name.capitalize} from #{@trady.company_name.capitalize} has just sent you a quote for the job at #{@property.property_address}. 
-
-          To view and approve or decline this quote, please click on the button below.
+          %br
+            #{@trady.name.capitalize} from #{@trady.company_name.capitalize} has just sent you a quote for the job at #{@property.property_address}. 
+          %br
+            To view and approve or decline this quote, please click on the button below.
 
         %div.text-center
           =link_to "View Quote", landlord_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@landlord.user.id,:anchor=>"quote_area"), class: 'btn'
@@ -112,12 +112,12 @@
           Copyright &copy; 2016 - MaintenanceApp.
         .share
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-twitter.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-facebook.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-instagram.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-google.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
 
     

@@ -71,8 +71,6 @@ class UserSessionsController < ApplicationController
     if current_user
       flash[:notice] = "You are already logged in"
       redirect_to root_path
-    elsif current_user != nil 
-      redirect_to menu_login_path
     end 
   end
 
