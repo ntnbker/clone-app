@@ -20,11 +20,11 @@ class UploadedInvoicesController < ApplicationController
     invoice_type = params[:uploaded_invoice][:invoice_type]
     system_plan = params[:uploaded_invoice][:system_plan]
     
-    if @file.valid?
+    if @file.save
       flash[:success] = "Thank you for uploading your invoice(s)"
       
       
-      @file.save
+      
       redirect_to uploaded_invoice_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, invoice_type:invoice_type, system_plan:system_plan)
     else
       flash[:danger] = "Something went wrong."
