@@ -51,7 +51,6 @@ var ModalViewPDFInvoice = React.createClass({
 		const self = this.props;
 		const {invoice} = this.state;
 		let total = 0;
-
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -85,8 +84,8 @@ var ModalViewPDFInvoice = React.createClass({
 									</div>
 									<div className="detail-quote">
 										<div className="detail-quote">
-										{ !!this.props.pdf_url &&
-											<embed src={this.props.pdf_url} type="application/pdf" className="scroll-custom" width='100%' height='400px'/>
+										{ !!invoice.url &&
+											<embed src={invoice.url} type="application/pdf" className="scroll-custom" width='100%' height='400px'/>
 										}
 										</div>
 									</div>
