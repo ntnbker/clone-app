@@ -153,7 +153,7 @@ class InvoicesController < ApplicationController
     trady = Trady.find_by(id:params[:trady_id])
     # maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", maintenance_request_status:"Completed", trady_status:"Awaiting Payment")
 
-    Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice created", name:trady.name)
+    Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice created by - Tradie: ", name:trady.name.capitalize)
 
     maintenance_request.invoices.each do |invoice|
       invoice.update_attribute(:delivery_status, true)

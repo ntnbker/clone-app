@@ -293,7 +293,7 @@ class MaintenanceRequestsController < ApplicationController
         redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
 
-      Log.create(maintenance_request_id:@maintenance_request.id, action:"Request Created")
+      Log.create(maintenance_request_id:@maintenance_request.id, action:"Maintenance request created.")
       
     else
       

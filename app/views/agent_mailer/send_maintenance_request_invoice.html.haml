@@ -88,23 +88,23 @@
     .container-email
       .header
         = link_to "#", :class => "logo" do
-          %img{:src => asset_path("http://localhost:3000/assets/logo.png"), :class => 'img'}
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
           %span
             MaintenanceApp
       .main
         -if @maintenance_request.agent 
           %p.content 
-            Hi
-            ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
-            , #{@maintenance_request.trady.company_name.capitalize} has just sent you an invoice for the job at #{@maintenance_request.property.property_address}. To view and/or print this invoice, please click the button below.
+            Hi #{@maintenance_request.agent.name.capitalize},
+            %br
+              #{@maintenance_request.trady.company_name.capitalize} has just sent you an invoice for the job at #{@maintenance_request.property.property_address}. To view and/or print this invoice, please click the button below.
           %div.text-center
             =link_to "View Invoice", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,:anchor=>"invoice_area"), class: 'btn'
             
         -elsif @maintenance_request.agency_admin
           %p.content 
-            Hi
-            ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
-            , #{@maintenance_request.trady.company_name.capitalize} has just sent you an invoice for the job at #{@maintenance_request.property.property_address}. To view and/or print this invoice, please click the button below.
+            Hi #{@maintenance_request.agency_admin.first_name.capitalize},
+            %br
+              #{@maintenance_request.trady.company_name.capitalize} has just sent you an invoice for the job at #{@maintenance_request.property.property_address}. To view and/or print this invoice, please click the button below.
           %div.text-center
             =link_to "View Invoice", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,:anchor=>"invoice_area"), class: 'btn'
 
@@ -121,11 +121,11 @@
           Copyright &copy; 2016 - MaintenanceApp.
         .share
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-twitter.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-facebook.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-instagram.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
           = link_to "#", :class => 'link-share' do
-            = image_tag "http://localhost:3000/assets/ico-google.png", :class => 'img'
+            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
     

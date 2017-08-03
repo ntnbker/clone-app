@@ -113,9 +113,9 @@ class QuotesController < ApplicationController
     quotes = maintenance_request.quotes.where(:delivery_status=>true)
 
     if maintenance_request.agent == nil  
-      name = "#{maintenance_request.agency_admin.first_name}" + " #{maintenance_request.agency_admin.last_name}"
+      name = "#{maintenance_request.agency_admin.first_name.capitalize}" + " #{maintenance_request.agency_admin.last_name.capitalize}"
     elsif maintenance_request.agency_admin == nil  
-      name = "#{maintenance_request.agent.name}" + " #{maintenance_request.agent.last_name}"
+      name = "#{maintenance_request.agent.name.capitalize}" + " #{maintenance_request.agent.last_name.capitalize}"
     end
     
     if params[:status] == "Approved" 
@@ -130,7 +130,7 @@ class QuotesController < ApplicationController
           quote.update_attribute(:status, params[:status])
           maintenance_request.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
 
-          Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been approved", name: name)
+          Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been approved by: ", name: name)
           if maintenance_request.property.landlord
             NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           else
@@ -150,7 +150,7 @@ class QuotesController < ApplicationController
       trady = quote.trady
       quote.update_attribute(:status,"Declined")
 
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been declined", name: name)
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been declined by: ", name: name)
 
       #TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
       #email the person who got declined
@@ -166,7 +166,7 @@ class QuotesController < ApplicationController
       quote.update_attribute(:status,"Cancelled")
       TradyJobCancelledEmailWorker.perform_async(quote.trady.id, maintenance_request.id)
       maintenance_request.update_attribute(:trady_id, nil)
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been cancelled", name:name)
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been cancelled by: ", name:name)
 
     end   
 
@@ -198,7 +198,7 @@ class QuotesController < ApplicationController
       flash[:success] = "Your Quote has been sent Thank you"
       @quote.update_attribute(:delivery_status, true)
 
-      Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been Sent", name:trady.name)
+      Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been sent by: ", name:trady.name.capitalize)
 
       # if @landlord == nil 
         AgentQuoteEmailWorker.perform_async(@maintenance_request.id, @quote.id )
@@ -229,16 +229,16 @@ class QuotesController < ApplicationController
     @quote.update_attribute(:forwarded_to_landlord, true)
 
     if @maintenance_request.agent == nil  
-      name = "#{@maintenance_request.agency_admin.first_name}" + " #{@maintenance_request.agency_admin.last_name}"
+      name = "#{@maintenance_request.agency_admin.first_name.capitalize}" + " #{@maintenance_request.agency_admin.last_name.capitalize}"
     elsif @maintenance_request.agency_admin == nil  
-      name = "#{@maintenance_request.agent.name}" + " #{@maintenance_request.agent.last_name}"
+      name = "#{@maintenance_request.agent.name.capitalize}" + " #{@maintenance_request.agent.last_name.capitalize}"
     end
 
 
     LandlordQuoteEmailWorker.perform_async(@maintenance_request.id, @landlord.id, @quote.id)
     @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
     
-    Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been forwarded to landlord", name:name)
+    Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been forwarded to landlord by: ", name:name)
     respond_to do |format|
       format.json {render json: @quote}
     end 
@@ -255,7 +255,7 @@ class QuotesController < ApplicationController
     LandlordRequestsQuoteEmailWorker.perform_async(maintenance_request.id)
 
     landlord = maintenance_request.property.landlord
-    Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord Requests Quote", name:landlord.name)
+    Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord Requests Quote - Landlord: ", name:landlord.name.capitalize)
 
     maintenance_request.action_status.update_columns(agent_status:"Quote Requested", action_category:"Action Required")
     
@@ -280,11 +280,11 @@ class QuotesController < ApplicationController
           quote.update_attribute(:status, params[:status])
           NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
-          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been approved", name:landlord.name)
+          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been approved by - Landlord: ", name:landlord.name.capitalize)
         else
           quote.update_attribute(:status, "Declined")
           trady = quote.trady
-          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been declined", name:landlord.name)
+          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been declined by - Landlord: ", name:landlord.name.capitalize)
 
           #EMAIL AGENT QUOTE DECLINED
           # TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)

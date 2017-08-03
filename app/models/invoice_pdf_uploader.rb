@@ -1,6 +1,6 @@
 class InvoicePdfUploader < Shrine
   # plugins and uploading logic
-  Shrine.plugin :determine_mime_type
+  #Shrine.plugin :determine_mime_type
 
 
   # plugin :add_metadata
@@ -38,4 +38,19 @@ class InvoicePdfUploader < Shrine
   # add_metadata :Content-Type do |io|
   #   PDF::Reader.new(io.path).page_count
   # end
+
+
+
+
+
+plugin :direct_upload, presign_options: ->(request) do
+  # filename = request.params["filename"]
+  # content_type = Rack::Mime.mime_type(File.extname(filename))
+
+  {
+    # content_length_range: 0..(10*1024*1024),                     # limit filesize to 10MB
+    content_disposition: "inline", # download with original filename
+    content_type:        "application/pdf"                           # set correct content type
+  }
+end
 end
