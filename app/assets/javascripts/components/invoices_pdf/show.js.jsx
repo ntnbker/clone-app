@@ -4,7 +4,7 @@ var ModalViewPDFInvoice = React.createClass({
 			index: null,
 			invoice: this.props.invoice_pdf_file,
 			invoices: this.props.invoice_pdf_files,
-		};	
+		};
 	},
 
 	switchSlider: function(key, index) {
@@ -57,11 +57,11 @@ var ModalViewPDFInvoice = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -86,7 +86,7 @@ var ModalViewPDFInvoice = React.createClass({
 									<div className="detail-quote">
 										<div className="detail-quote">
 										{ !!this.props.pdf_url &&
-											<embed src={this.props.pdf_url} className="scroll-custom" width='100%' height='400px'/>
+											<embed src={this.props.pdf_url} type="application/pdf" className="scroll-custom" width='100%' height='400px'/>
 										}
 										</div>
 									</div>

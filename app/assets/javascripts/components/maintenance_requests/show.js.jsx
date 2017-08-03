@@ -62,19 +62,23 @@ var ModalAddAskLandlord = React.createClass({
 			}
 
 			case "mobile": {
-				let value = e.target.value
+				let value = e.target.value;
 				if(value == "") {
 					this.setState({errorMobile: true});
 				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({errorMobile: false});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({errorMobile: true});
+					if(!isNaN(value)) {
+						if( 10 <= value.length && value.length <= 11) {
+							this.setState({errorMobile: false});
+						}else {
+							if(value.length > 11) {
+								value = value.substring(0, 11);
+								e.target.value = value;
+							}else if(value.length < 10) {
+								this.setState({errorMobile: true});
+							}
 						}
+					}else {
+						e.target.value = value.substring(0, value.length - 1);
 					}
 				}
 				break;
