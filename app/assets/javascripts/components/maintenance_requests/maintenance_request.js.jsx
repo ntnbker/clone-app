@@ -48,7 +48,7 @@ var Carousel = React.createClass({
 		var sliderDetail = $('#slider-detail')
 		if(sliderDetail.length > 0) {
 			this.setWidth(sliderDetail.width())
-			
+
 			$( window ).resize(function() {
 				self.setWidth(sliderDetail.width());
 			});
@@ -86,8 +86,8 @@ var Carousel = React.createClass({
 						this.state.gallery.map(function(img, index) {
 							return (
 								<img
-									key={index} 
-									src={img} 
+									key={index}
+									src={img}
 									style={{width: subWidth}}
 									className="swiper-slide slide-image"
 								/>
@@ -101,17 +101,17 @@ var Carousel = React.createClass({
 					this.state.gallery.length > 1 ?
 						this.state.gallery.map(function(img, index) {
 							return (
-								<span 
-									key={index} 
+								<span
+									key={index}
 									className={"swiper-pagination-bullet " + (temp.state.stpos == index && "swiper-pagination-bullet-active")}
 									onClick={(stops) => temp.sliderRun(index)}
 								>
-									
+
 								</span>
 							);
 						})
 						: null
-				}					
+				}
 				</div>
 				{
 					this.props.gallery.length > 1 && <div className="btn-slider btn-next" onClick={this.sliderNext}><i className="fa fa-angle-right"></i></div>
@@ -119,7 +119,7 @@ var Carousel = React.createClass({
 				{
 					this.props.gallery.length > 1 && <div className="btn-slider btn-prev" onClick={this.sliderPrev}><i className="fa fa-angle-left"></i></div>
 				}
-		
+
 			</div>
 		);
 	}
@@ -141,7 +141,7 @@ var Assigns = React.createClass({
 								</li>
 							);
 						}
-						
+
 					})
 				}
 			</ul>
@@ -163,7 +163,7 @@ var DropDownStatus = React.createClass({
 							<li key={key} onClick={(status) => this.viewItem(item)}>
 								{item.title}
 							</li>
-						);					
+						);
 					})
 				}
 			</ul>
@@ -175,71 +175,71 @@ var ButtonHeaderMR = React.createClass({
 	getInitialState: function() {
 		const actionRequests = [
       {
-        title: "Maintenance Request", 
-        value: "Initiate Maintenance Request",  
+        title: "Maintenance Request",
+        value: "Initiate Maintenance Request",
       },
       {
-        title: "Awaiting Tradie`s Quote", 
-        value: "Awaiting Quote", 
-      },
-      { 
-        title: "Quote Requested", 
-        value: "Quote Requested", 
+        title: "Awaiting Tradie`s Quote",
+        value: "Awaiting Quote",
       },
       {
-        title: "Quote Received", 
-        value: "Quote Received", 
+        title: "Quote Requested",
+        value: "Quote Requested",
       },
-      { 
-        title: "New Invoice", 
-        value: "New Invoice", 
+      {
+        title: "Quote Received",
+        value: "Quote Received",
       },
-      { 
-        title: "Pending Payment", 
-        value: "Pending Payment", 
+      {
+        title: "New Invoice",
+        value: "New Invoice",
+      },
+      {
+        title: "Pending Payment",
+        value: "Pending Payment",
       }
     ];
 
     const awaitingAction = [
       {
-        title: "Awaiting Owner Initiation", 
-        value: "Awaiting Owner Initiation", 
+        title: "Awaiting Owner Initiation",
+        value: "Awaiting Owner Initiation",
       },
       {
-        title: "Awaiting Owner Instruction", 
-        value: "Awaiting Owner Instruction", 
+        title: "Awaiting Owner Instruction",
+        value: "Awaiting Owner Instruction",
       },
       {
         title: "Awaiting Tradie Initiation",
-        value: "Awaiting Tradie Initiation", 
+        value: "Awaiting Tradie Initiation",
       },
       {
-        title: "Awaiting Quote Approval", 
-        value: "Quote Received Awaiting Approval", 
+        title: "Awaiting Quote Approval",
+        value: "Quote Received Awaiting Approval",
       },
       {
-        title: "Quote Approved Tradie To Organise Appointment", 
-        value: "Quote Approved Tradie To Organise Appointment", 
+        title: "Quote Approved Tradie To Organise Appointment",
+        value: "Quote Approved Tradie To Organise Appointment",
       },
       {
-        title: "Tradie To Confirm Appointment", 
-        value: "Tradie To Confirm Appointment", 
+        title: "Tradie To Confirm Appointment",
+        value: "Tradie To Confirm Appointment",
       },
       {
-        title: "Tenant To Confirm Appointment", 
-        value: "Tenant To Confirm Appointment", 
+        title: "Tenant To Confirm Appointment",
+        value: "Tenant To Confirm Appointment",
       },
       {
-        title: "Landlord To Confirm Appointment", 
-        value: "Landlord To Confirm Appointment", 
+        title: "Landlord To Confirm Appointment",
+        value: "Landlord To Confirm Appointment",
       },
       {
-        title: "Maintenance Scheduled - Awaiting Invoice", 
-        value: "Maintenance Scheduled - Awaiting Invoice", 
+        title: "Maintenance Scheduled - Awaiting Invoice",
+        value: "Maintenance Scheduled - Awaiting Invoice",
       },
       {
-        title: "Maintenance Scheduled With Landlord", 
-        value: "Maintenance Scheduled With Landlord", 
+        title: "Maintenance Scheduled With Landlord",
+        value: "Maintenance Scheduled With Landlord",
       }
     ];
 
@@ -271,13 +271,13 @@ var ButtonHeaderMR = React.createClass({
 				});
 				break;
 
-				case 'status': 
+				case 'status':
 					this.setState({
 						isShowStatus: true
 					});
 					break;
 		}
-		
+
 	},
 
 	close: function(key) {
@@ -288,7 +288,7 @@ var ButtonHeaderMR = React.createClass({
 				});
 				break;
 
-				case 'status': 
+				case 'status':
 					this.setState({
 						isShowStatus: false
 					});
@@ -369,8 +369,8 @@ var ItemMaintenanceRequest = React.createClass({
 		const {status} = this.props;
 		const props = this.props;
 		const d = new Date();
-    	const n = d.getTimezoneOffset();
-    	const date = new Date(maintenance.created_at);
+  	const n = d.getTimezoneOffset();
+  	const date = new Date(maintenance.created_at);
 		let created_at = moment(date).utcOffset(+n).startOf('hour').fromNow();
 		return (
 			<div className="post">
@@ -427,11 +427,11 @@ var ModalConfirmUpdateStatus = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -442,15 +442,15 @@ var ModalConfirmUpdateStatus = React.createClass({
 							<p className="text-center">{content}</p>
 						</div>
 						<div className="modal-footer">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								data-dismiss="modal"
-								onClick={this.props.click} 
-								className="btn btn-default success" 
+								onClick={this.props.click}
+								className="btn btn-default success"
 							>Yep</button>
-							<button 
-								type="button" 
-								className="btn btn-primary cancel" 
+							<button
+								type="button"
+								className="btn btn-primary cancel"
 								onClick={this.props.close}
 							>No</button>
 						</div>

@@ -1,6 +1,6 @@
 var TradySideBarMobile = React.createClass({
 	getInitialState: function() {
-		return {      
+		return {
 			showAction: false,
 			showContact: false
 		};
@@ -39,7 +39,7 @@ var TradySideBarMobile = React.createClass({
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).bind("click", function() {
+		$(document).click(function() {
 			self.close();
 		})
 	},
@@ -48,8 +48,8 @@ var TradySideBarMobile = React.createClass({
 		return (
 			<div>
 				<div className="sidebar-mobile">
-					<div className="fixed">       
-						<button 
+					<div className="fixed">
+						<button
 							data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
@@ -68,28 +68,28 @@ var TradySideBarMobile = React.createClass({
 				<div className="action-mobile">
 					{
 						<TradyActionMobile
-							close={this.close} 
+							close={this.close}
 							trady={this.props.trady}
-							landlord={this.props.landlord} 
+							landlord={this.props.landlord}
 							invoices={this.props.invoices}
-							assigned_trady={this.props.assigned_trady} 
-							signed_in_trady={this.props.signed_in_trady} 
+							assigned_trady={this.props.assigned_trady}
+							signed_in_trady={this.props.signed_in_trady}
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.props.maintenance_request}
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
-						/> 
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/>
 					}
-					{ 
-						<TradyContactMobile 
-							close={this.close} 
+					{
+						<TradyContactMobile
+							close={this.close}
 							agent={this.props.agent}
 							tenants={this.props.tenants}
-							landlord={this.props.landlord} 
+							landlord={this.props.landlord}
 							current_user={this.props.current_user}
 							assigned_trady={this.props.assigned_trady}
-							maintenance_request={this.props.maintenance_request} 
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
-						/> 
+							maintenance_request={this.props.maintenance_request}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/>
 					}
 				</div>
 			</div>
@@ -124,11 +124,11 @@ var ModalConfirmAddInvoice = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -141,15 +141,15 @@ var ModalConfirmAddInvoice = React.createClass({
 							</p>
 						</div>
 						<div className="modal-footer">
-							<button 
+							<button
 								data-dismiss="modal"
 							 	onClick={this.jobCompleted}
-								className="btn btn-default success" 
+								className="btn btn-default success"
 							>Yes</button>
-							<button 
-								type="button" 
+							<button
+								type="button"
 								onClick={this.createInvoice}
-								className="btn btn-primary cancel" 
+								className="btn btn-primary cancel"
 							>No</button>
 						</div>
 					</div>
@@ -182,11 +182,11 @@ var ModalMarkJobAsCompleted = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -199,15 +199,15 @@ var ModalMarkJobAsCompleted = React.createClass({
 							</p>
 						</div>
 						<div className="modal-footer">
-							<button 
+							<button
 								data-dismiss="modal"
 							 	onClick={this.createInvoice}
-								className="btn btn-default success" 
+								className="btn btn-default success"
 							>Yes</button>
-							<button 
-								type="button" 
+							<button
+								type="button"
 								onClick={this.createInvoice}
-								className="btn btn-primary cancel" 
+								className="btn btn-primary cancel"
 							>No</button>
 						</div>
 					</div>
@@ -224,11 +224,11 @@ var ModalNotification = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className={'modal-header ' + (this.props.bgClass && this.props.bgClass)}>
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								aria-label="Close" 
-								data-dismiss="modal" 
+								aria-label="Close"
+								data-dismiss="modal"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -307,7 +307,7 @@ var TradyMaintenanceRequest = React.createClass({
 	onModalWith: function(modal) {
 		this.setState({
 			modal: modal,
-			isModal: true, 
+			isModal: true,
 		});
 	},
 
@@ -449,7 +449,7 @@ var TradyMaintenanceRequest = React.createClass({
 					self.setState({
 						quoteComments: quoteComments,
 						quote_appointments: quote_appointments
-					});			
+					});
 				}
 
 				self.setState({
@@ -470,7 +470,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.onModalWith('notification');
 			}
 		});
-		
+
 	},
 
 	viewItem: function(key, item) {
@@ -524,7 +524,7 @@ var TradyMaintenanceRequest = React.createClass({
 				break;
 			}
 		}
-		
+
 	},
 
 	acceptAppointment: function(appointment) {
@@ -688,27 +688,27 @@ var TradyMaintenanceRequest = React.createClass({
 			switch(this.state.modal) {
 				case 'notification':
 					return (
-						<ModalNotification 
-							close={this.isClose} 
+						<ModalNotification
+							close={this.isClose}
 							bgClass={this.state.notification.bgClass}
-							title={this.state.notification.title} 
+							title={this.state.notification.title}
 							content={this.state.notification.content}
 						/>
 					);
 
 				case 'viewQuote': {
 					return (
-						<ModalViewQuote 
+						<ModalViewQuote
 							close={this.isClose}
 							quote={this.state.quote}
-							keyLandlord="trady" 
+							keyLandlord="trady"
 							landlord={this.props.landlord}
 							quotes={this.state.quotes}
 							agency={this.props.agency}
 							property={this.props.property}
-							onModalWith={this.onModalWith} 
-							current_user={this.props.current_user} 
-							viewQuote={(quote) => this.viewQuote(quote)} 
+							onModalWith={this.onModalWith}
+							current_user={this.props.current_user}
+							viewQuote={(quote) => this.viewQuote(quote)}
 						/>
 					);
 				}
@@ -719,7 +719,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote}
 							current_user={this.props.current_user}
-							sendMessageQuote={this.sendMessageQuote} 
+							sendMessageQuote={this.sendMessageQuote}
 						/>
 					)
 				}
@@ -728,15 +728,15 @@ var TradyMaintenanceRequest = React.createClass({
 					const {appointmentUpdate} = this.state;
 					let key = '';
 					switch(appointmentUpdate.appointment_type) {
-						case 'Work Order Appointment': 
+						case 'Work Order Appointment':
 							key = 'createAppointment';
 							break;
 
-						case 'Quote Appointment': 
+						case 'Quote Appointment':
 							key = 'createAppointmentForQuote';
 							break;
 
-						default: 
+						default:
 							break;
 					}
 					return (
@@ -754,15 +754,15 @@ var TradyMaintenanceRequest = React.createClass({
 					const {appointmentUpdate} = this.state;
 					let key = '';
 					switch(appointmentUpdate.appointment_type) {
-						case 'Work Order Appointment': 
+						case 'Work Order Appointment':
 							key = 'createAppointment';
 							break;
 
-						case 'Quote Appointment': 
+						case 'Quote Appointment':
 							key = 'createAppointmentForQuote';
 							break;
 
-						default: 
+						default:
 							break;
 					}
 					return (
@@ -778,9 +778,9 @@ var TradyMaintenanceRequest = React.createClass({
 
 				case 'sendMessageAgent': {
 					return (
-						<ModalSendMessageAgent 
-							close={this.isClose} 
-							current_user={this.props.current_user} 
+						<ModalSendMessageAgent
+							close={this.isClose}
+							current_user={this.props.current_user}
 							sendMessageAgent={this.sendMessageAgent}
 							trady_agent_conversation={this.state.trady_agent_conversation}
 						/>
@@ -792,7 +792,7 @@ var TradyMaintenanceRequest = React.createClass({
 							<ModalViewInvoice
 								close={this.isClose}
 								agency={this.props.agency}
-							 	invoice={this.state.invoice} 
+							 	invoice={this.state.invoice}
 					 			landlord={this.state.landlord}
 							 	invoices={this.state.invoices}
 								property={this.props.property}
@@ -805,7 +805,7 @@ var TradyMaintenanceRequest = React.createClass({
 							<ModalViewPDFInvoice
 								close={this.isClose}
 								agency={this.props.agency}
-							 	invoice_pdf_file={this.state.invoice_pdf_file} 
+							 	invoice_pdf_file={this.state.invoice_pdf_file}
 							 	invoice_pdf_files={this.state.invoice_pdf_files}
 								property={this.props.property}
 							/>
@@ -814,7 +814,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 				case 'viewConfirm': {
 					return (
-						<ModalConfirmAddInvoice 
+						<ModalConfirmAddInvoice
 							close={this.isClose}
 							jobCompleted={this.jobCompleted}
 							signed_in_trady={this.props.signed_in_trady}
@@ -863,15 +863,15 @@ var TradyMaintenanceRequest = React.createClass({
 					const {comments, quoteComments, appointment} = this.state;
 					let commentShow = [];
 					switch(appointment.appointment_type) {
-						case 'Work Order Appointment': 
+						case 'Work Order Appointment':
 							commentShow = [...comments];
 							break;
 
-						case 'Quote Appointment': 
+						case 'Quote Appointment':
 							commentShow = [...quoteComments];
 							break;
 
-						default: 
+						default:
 							break;
 					}
 					return (
@@ -894,7 +894,7 @@ var TradyMaintenanceRequest = React.createClass({
 							updateInsruction={this.updateInsruction}
 						/>
 					);
-					
+
 				default:
 					return null;
 			}
@@ -945,16 +945,17 @@ var TradyMaintenanceRequest = React.createClass({
 		if(!instruction.read_instruction) {
 			$('body').chardinJs('start');
 			this.onModalWith('viewModalInstruction');
-			
+
 			$(document).click(function(e) {
 				var showInstruction = $('.show-instruction');
 				if(showInstruction.length > 0) {
 					if(e.target.className != 'show-instruction') {
 						$('body').chardinJs('stop');
-						self.isClose();	
+						self.isClose();
+						self.viewModalMessage();
 					}
 				}
-			});	
+			});
 		}else {
 			this.viewModalMessage();
 		}
@@ -963,29 +964,27 @@ var TradyMaintenanceRequest = React.createClass({
 	viewModalMessage: function() {
 		const href = window.location.href;
 		const self = this;
-		$('body').chardinJs('start')
-		window.onload = function () {
-			const json = self.getUrlVars(href);
-			if(href.indexOf('email_quote_id') >= 0) {
-				self.autoScroll('quotes');
-			}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
-				self.autoScroll('invoices');
 
-			}else if(href.indexOf('appointment_id') >= 0) {
-				self.openAppointment(json.appointment_id);
-			}else {
-				switch(json.message) {
-					case 'open_agent_message': 
-							self.onModalWith('sendMessageAgent');
-						break;
+		const json = self.getUrlVars(href);
+		if(href.indexOf('email_quote_id') >= 0) {
+			self.autoScroll('quotes');
+		}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
+			self.autoScroll('invoices');
 
-					case 'open_quote_message':
-						self.openQuoteMesssage(json.quote_message_id);
-						break;
+		}else if(href.indexOf('appointment_id') >= 0) {
+			self.openAppointment(json.appointment_id);
+		}else {
+			switch(json.message) {
+				case 'open_agent_message':
+						self.onModalWith('sendMessageAgent');
+					break;
 
-					default:
-						break;
-				}
+				case 'open_quote_message':
+					self.openQuoteMesssage(json.quote_message_id);
+					break;
+
+				default:
+					break;
 			}
 		}
 	},
@@ -1016,58 +1015,58 @@ var TradyMaintenanceRequest = React.createClass({
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
 					<div className="section">
-						<ItemMaintenanceRequest 
-							gallery={this.props.gallery} 
-							property={this.props.property} 
+						<ItemMaintenanceRequest
+							gallery={this.props.gallery}
+							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
 						{ this.props.quotes.length > 0 &&
-								<Quotes 
+								<Quotes
 									keyLandlord="trady"
-									quotes={this.state.quotes} 
-									landlord={this.state.landlord} 
-									onModalWith={this.onModalWith} 
-									current_user={this.props.current_user} 
-									viewQuote={(key, item) => this.viewItem(key, item)} 
+									quotes={this.state.quotes}
+									landlord={this.state.landlord}
+									onModalWith={this.onModalWith}
+									current_user={this.props.current_user}
+									viewQuote={(key, item) => this.viewItem(key, item)}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}
 						{	this.props.invoices.length > 0 &&
-						 		<Invoices 
-							 		invoices={this.state.invoices} 
-							 		viewInvoice={(key, item) => this.viewItem(key, item)} 
+						 		<Invoices
+							 		invoices={this.state.invoices}
+							 		viewInvoice={(key, item) => this.viewItem(key, item)}
 						 		/>
 					 	}
 						{	this.props.invoice_pdf_files.length > 0 &&
-							<PDFInvoices 
-								invoice_pdf_files={this.state.invoice_pdf_files} 
-								viewPDFInvoice={(key, item) => this.viewItem(key, item)} 
+							<PDFInvoices
+								invoice_pdf_files={this.state.invoice_pdf_files}
+								viewPDFInvoice={(key, item) => this.viewItem(key, item)}
 							/>
 						}
 					</div>
 					<div className="sidebar">
-						<TradyContact 
+						<TradyContact
 							agent={this.props.agent}
 							tenants={this.props.tenants}
-							landlord={this.state.landlord} 
+							landlord={this.state.landlord}
 							current_user={this.props.current_user}
 							assigned_trady={this.props.assigned_trady}
-							onModalWith={(modal) => this.onModalWith(modal)} 
-							maintenance_request={this.state.maintenance_request} 
+							onModalWith={(modal) => this.onModalWith(modal)}
+							maintenance_request={this.state.maintenance_request}
 						/>
 						<TradyAction
 							trady={this.props.trady}
-							landlord={this.state.landlord} 
+							landlord={this.state.landlord}
 							invoices={this.props.invoices}
 							assigned_trady={this.props.assigned_trady}
-							signed_in_trady={this.props.signed_in_trady} 
+							signed_in_trady={this.props.signed_in_trady}
 							onModalWith={(modal) => this.onModalWith(modal)}
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.state.maintenance_request}
 						/>
 						{
 							appointments.length > 0 &&
-								<AppointmentRequest 
+								<AppointmentRequest
 									appointments={appointments}
 									title="Work Order Appointments"
 									cancelAppointment={(value) => this.cancel(value)}
@@ -1079,7 +1078,7 @@ var TradyMaintenanceRequest = React.createClass({
 						}
 						{
 							quote_appointments.length > 0 &&
-								<AppointmentRequest 
+								<AppointmentRequest
 									title="Appointments For Quotes"
 									appointments={quote_appointments}
 									cancelAppointment={(value) => this.cancel(value)}
@@ -1092,7 +1091,7 @@ var TradyMaintenanceRequest = React.createClass({
 					</div>
 					{
 						appointments.length > 0 &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								appointments={appointments}
 								title="Work Order Appointments"
 								cancelAppointment={(value) => this.cancel(value)}
@@ -1104,7 +1103,7 @@ var TradyMaintenanceRequest = React.createClass({
 					}
 					{
 						quote_appointments.length > 0 &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								title="Appointments For Quotes"
 								appointments={quote_appointments}
 								cancelAppointment={(value) => this.cancel(value)}
@@ -1115,18 +1114,18 @@ var TradyMaintenanceRequest = React.createClass({
 							/>
 					}
 				</div>
-				<TradySideBarMobile 
+				<TradySideBarMobile
 					trady={this.props.trady}
 					agent={this.props.agent}
 					tenants={this.props.tenants}
-					landlord={this.state.landlord} 
+					landlord={this.state.landlord}
 					invoices={this.props.invoices}
-					current_user={this.props.current_user} 
+					current_user={this.props.current_user}
 					assigned_trady={this.props.assigned_trady}
-					signed_in_trady={this.props.signed_in_trady} 
+					signed_in_trady={this.props.signed_in_trady}
 					invoice_pdf_files={this.props.invoice_pdf_files}
-					onModalWith={(modal) => this.onModalWith(modal)} 
-					viewModal={(key, item) => this.viewItem(key, item)} 
+					onModalWith={(modal) => this.onModalWith(modal)}
+					viewModal={(key, item) => this.viewItem(key, item)}
 					maintenance_request={this.state.maintenance_request}
 				/>
 				{ this.renderModal() }

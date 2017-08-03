@@ -5,11 +5,11 @@
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -20,15 +20,15 @@
 							<p className="text-center">{ 'Our records show that "' + this.props.landlord.name + '" is the landlord for "' + this.props.property.property_address + '". Please confirm if this is correct.'}</p>
 						</div>
 						<div className="modal-footer">
-							<button 
-								type="button" 
-								className="btn btn-default success" 
-								onClick={() => this.props.onModalWith('editAskLandlord')} 
+							<button
+								type="button"
+								className="btn btn-default success"
+								onClick={() => this.props.onModalWith('editAskLandlord')}
 								data-dismiss="modal"
 							>Yes</button>
-							<button 
-								type="button" 
-								className="btn btn-primary cancel" 
+							<button
+								type="button"
+								className="btn btn-primary cancel"
 								onClick={() => this.props.onModalWith('addAskLandlord')}
 							>No</button>
 						</div>
@@ -111,7 +111,7 @@ var ModalAddAskLandlord = React.createClass({
 		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
 			this.setState({errorEmail: true});
 			flag = true;
-		} 
+		}
 
 		if(!flag) {
 			var params = {
@@ -135,11 +135,11 @@ var ModalAddAskLandlord = React.createClass({
 					<div className="modal-content">
 						<form role="form" id="addForm" onSubmit={this.submit}>
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									aria-label="Close" 
-									data-dismiss="modal" 
+									aria-label="Close"
+									data-dismiss="modal"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -149,52 +149,52 @@ var ModalAddAskLandlord = React.createClass({
 							<div className="modal-body">
 									<div className="row">
 										<div>
-											<input 
-												id="name" 
-												type="text" 
-												name="landlord[name]" 
+											<input
+												id="name"
+												type="text"
+												name="landlord[name]"
 												placeholder="Landlord Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate} 
-												className={"u-full-width " + (this.state.errorName && "has-error")} 
+												onChange={this.checkValidate}
+												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<input 
-												type="number" 
+											<input
+												type="number"
 												minLength="10"
 												maxLength="11"
-												name="landlord[mobile]" 
+												name="landlord[mobile]"
 												placeholder="Landlord Mobile"
-												onChange={this.checkValidate} 
+												onChange={this.checkValidate}
 												id="mobile" ref={e => this.mobile = e}
-												className={"u-full-width " + (this.state.errorMobile && "has-error")} 
+												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div>
-											<input 
-												type="email" 
+											<input
+												type="email"
 												autoCorrect="off"
 												autoComplete="off"
 												autoCapitalize="off"
-												name="landlord[email]" 
+												name="landlord[email]"
 												placeholder="Landlord Email"
-												onChange={this.checkValidate} 
+												onChange={this.checkValidate}
 												id="email" ref={e => this.email = e}
-												className={"u-full-width " + (this.state.errorEmail && "has-error")} 
+												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
 									</div>
 							</div>
 							<div className="modal-footer">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									onClick={this.props.close}
-									className="btn btn-primary cancel" 
+									className="btn btn-primary cancel"
 								>Cancel</button>
 								<button type="submit" className="btn btn-default success">Submit</button>
 							</div>
@@ -279,7 +279,7 @@ var ModalEditAskLandlord = React.createClass({
 			this.setState({errorEmail: true});
 			flag = true;
 		}
-		
+
 		if(!flag) {
 			var params = {
 				authenticity_token: this.props.authToken,
@@ -291,7 +291,7 @@ var ModalEditAskLandlord = React.createClass({
 					maintenance_request_id: this.props.maintenance_request_id,
 				}
 			}
-			this.props.editAskLandlord(params); 
+			this.props.editAskLandlord(params);
 		}
 
 		return
@@ -304,11 +304,11 @@ var ModalEditAskLandlord = React.createClass({
 					<div className="modal-content">
 						<form id="editForm" onSubmit={this.submit}>
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									aria-label="Close" 
-									data-dismiss="modal" 
+									aria-label="Close"
+									data-dismiss="modal"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -321,36 +321,36 @@ var ModalEditAskLandlord = React.createClass({
 									</div>
 									<div className="row m-t-lg">
 										<div className="form-input">
-											<input 
-												type="text" 
+											<input
+												type="text"
 												placeholder="Landlord Nane"
-												onChange={this.checkValidate} 
-												readOnly={!this.state.isEdit} 
+												onChange={this.checkValidate}
+												readOnly={!this.state.isEdit}
 												id="name" ref={e => this.name = e}
-												defaultValue={this.props.landlord.name} 
+												defaultValue={this.props.landlord.name}
 												className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div className="form-input">
-											<input 
-												id="mobile" 
-												type="number" 
+											<input
+												id="mobile"
+												type="number"
 												minLength="10"
 												maxLength="11"
-												ref={e => this.mobile = e} 
+												ref={e => this.mobile = e}
 												placeholder="Landlord Mobile"
-												onChange={this.checkValidate} 
+												onChange={this.checkValidate}
 												readOnly={!this.state.isEdit}
-												defaultValue={this.props.landlord.mobile} 
+												defaultValue={this.props.landlord.mobile}
 												className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div className="form-input">
-											<input 
+											<input
 												id="email"
 												type="text"
 												autoCapitalize="off"
@@ -360,16 +360,16 @@ var ModalEditAskLandlord = React.createClass({
 												placeholder="Landlord Email"
 												onChange={this.checkValidate}
 												readOnly={!this.state.isEdit}
-												defaultValue={this.props.landlord.email} 
+												defaultValue={this.props.landlord.email}
 												className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")}
 											/>
 										</div>
 									</div>
 							</div>
 							<div className="modal-footer">
-								<button 
+								<button
 									onClick={this.props.close}
-									className="btn btn-primary cancel" 
+									className="btn btn-primary cancel"
 								>Cancel</button>
 								<button type="submit" className="btn btn-default success">Submit</button>
 							</div>
@@ -383,7 +383,7 @@ var ModalEditAskLandlord = React.createClass({
 
 var SideBarMobile = React.createClass({
 	getInitialState: function() {
-		return {      
+		return {
 			showAction: false,
 			showContact: false
 		};
@@ -423,7 +423,7 @@ var SideBarMobile = React.createClass({
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).bind("click", function() {
+		$(document).click(function() {
 			self.close();
 		})
 	},
@@ -432,15 +432,15 @@ var SideBarMobile = React.createClass({
 		return (
 			<div>
 				<div className="sidebar-mobile">
-					<div className="fixed">       
-						<button 
+					<div className="fixed">
+						<button
 							id="contact" data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
 							Contact
 						</button>
-						<button 
+						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
@@ -450,19 +450,19 @@ var SideBarMobile = React.createClass({
 					</div>
 				</div>
 				<div className="action-mobile">
-					<ActionMobile 
+					<ActionMobile
 						close={this.close}
 						landlord={this.props.landlord}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
-					/> 
-					<ContactMobile 
+					/>
+					<ContactMobile
 						close={this.close}
 						tenants={this.props.tenants}
 						landlord={this.props.landlord}
 						current_user={this.props.current_user}
 						assigned_trady={this.props.assigned_trady}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
-					/> 
+					/>
 				</div>
 			</div>
 		);
@@ -506,7 +506,7 @@ var ModalAddLandlord = React.createClass({
 							this.setState({errorMobile: true});
 						}
 					}
-				}      
+				}
 				break;
 			}
 
@@ -538,7 +538,7 @@ var ModalAddLandlord = React.createClass({
 		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
 			this.setState({errorEmail: true});
 			flag = true;
-		} 
+		}
 
 		if(!flag) {
 			var params = {
@@ -564,11 +564,11 @@ var ModalAddLandlord = React.createClass({
 					<div className="modal-content">
 						<form role="form" id="addForm" onSubmit={this.submit}>
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									aria-label="Close" 
-									data-dismiss="modal" 
+									aria-label="Close"
+									data-dismiss="modal"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -584,56 +584,56 @@ var ModalAddLandlord = React.createClass({
 									<div className="row">
 										<div>
 											<label>Name <strong>*</strong>:</label>
-											<input 
-												id="name" 
-												type="text" 
-												name="landlord[name]" 
+											<input
+												id="name"
+												type="text"
+												name="landlord[name]"
 												placeholder="Enter Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate} 
-												className={"u-full-width " + (this.state.errorName && "has-error")} 
+												onChange={this.checkValidate}
+												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Mobile <strong>*</strong>:</label>
-											<input 
-												id="mobile" 
+											<input
+												id="mobile"
 												type="number"
 												minLength="10"
 												maxLength="11"
-												name="landlord[mobile]" 
+												name="landlord[mobile]"
 												placeholder="Enter Mobile"
-												ref={e => this.mobile = e} 
-												onChange={this.checkValidate} 
-												className={"u-full-width " + (this.state.errorMobile && "has-error")} 
+												ref={e => this.mobile = e}
+												onChange={this.checkValidate}
+												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Email <strong>*</strong>:</label>
-											<input 
-												id="email" 
+											<input
+												id="email"
 												type="email"
 												autoCapitalize="off"
 												autoCorrect="off"
 												autoComplete="off"
-												name="landlord[email]" 
+												name="landlord[email]"
 												placeholder="Enter Email"
-												ref={e => this.email = e} 
-												onChange={this.checkValidate} 
-												className={"u-full-width " + (this.state.errorEmail && "has-error")} 
+												ref={e => this.email = e}
+												onChange={this.checkValidate}
+												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
 									</div>
 							</div>
 							<div className="modal-footer">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									onClick={this.props.close}
-									className="btn btn-primary cancel" 
+									className="btn btn-primary cancel"
 								>Cancel</button>
 								<button type="submit" className="btn btn-default success">Submit</button>
 							</div>
@@ -714,7 +714,7 @@ var ModalEditLandlord = React.createClass({
 		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
 			this.setState({errorEmail: true});
 			flag = true;
-		} 
+		}
 
 		if(!flag) {
 			var params = {
@@ -738,11 +738,11 @@ var ModalEditLandlord = React.createClass({
 					<div className="modal-content">
 						<form role="form" id="addForm" onSubmit={this.submit}>
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									aria-label="Close" 
-									data-dismiss="modal" 
+									aria-label="Close"
+									data-dismiss="modal"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -753,59 +753,59 @@ var ModalEditLandlord = React.createClass({
 									<div className="row">
 										<div>
 											<label>Name <strong>*</strong>:</label>
-											<input 
-												id="name" 
-												type="text" 
-												name="landlord[name]" 
+											<input
+												id="name"
+												type="text"
+												name="landlord[name]"
 												placeholder="Enter Name"
 												ref={e => this.name = e}
 												onChange={this.checkValidate}
-												defaultValue={this.props.landlord.name} 
-												className={"u-full-width " + (this.state.errorName && "has-error")} 
+												defaultValue={this.props.landlord.name}
+												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Mobile <strong>*</strong>:</label>
-											<input 
+											<input
 												id="mobile"
 												type="number"
 												minLength="10"
 												maxLength="11"
-												name="landlord[mobile]" 
+												name="landlord[mobile]"
 												placeholder="Enter Mobile"
-												ref={e => this.mobile = e} 
-												onChange={this.checkValidate} 
-												defaultValue={this.props.landlord.mobile} 
-												className={"u-full-width " + (this.state.errorMobile && "has-error")} 
+												ref={e => this.mobile = e}
+												onChange={this.checkValidate}
+												defaultValue={this.props.landlord.mobile}
+												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Email <strong>*</strong>:</label>
-											<input 
-												id="email" 
+											<input
+												id="email"
 												type="email"
 												autoCapitalize="off"
 												autoCorrect="off"
 												autoComplete="off"
-												name="landlord[email]" 
+												name="landlord[email]"
 												placeholder="Enter Email"
-												ref={e => this.email = e} 
-												onChange={this.checkValidate} 
-												defaultValue={this.props.landlord.email} 
-												className={"u-full-width " + (this.state.errorEmail && "has-error")} 
+												ref={e => this.email = e}
+												onChange={this.checkValidate}
+												defaultValue={this.props.landlord.email}
+												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
 									</div>
 							</div>
 							<div className="modal-footer">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									onClick={this.props.close}
-									className="btn btn-primary cancel" 
+									className="btn btn-primary cancel"
 								>Cancel</button>
 								<button type="submit" className="btn btn-default success">Submit</button>
 							</div>
@@ -835,7 +835,7 @@ var ModalRequestModal = React.createClass({
 				mobile: null,
 				company_name: null,
 			},
-		};	
+		};
 	},
 
 	checkValidate: function(e) {
@@ -901,7 +901,7 @@ var ModalRequestModal = React.createClass({
 						}
 					}
 				}
-				this.state.trady.mobile = value;		
+				this.state.trady.mobile = value;
 				this.forceUpdate();
 				break;
 			}
@@ -1016,7 +1016,7 @@ var ModalRequestModal = React.createClass({
 				errorEmail: true
 			});
 			flag = true;
-		} 
+		}
 
 		if(!flag) {
 			var params = {
@@ -1067,11 +1067,11 @@ var ModalRequestModal = React.createClass({
 					<div className="modal-content">
 						<form role="form" id="addForm" onSubmit={this.submit}>
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									aria-label="Close" 
-									data-dismiss="modal" 
+									aria-label="Close"
+									data-dismiss="modal"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -1096,19 +1096,19 @@ var ModalRequestModal = React.createClass({
 								{
 									isTrady === 'true' &&
 										<div className="row">
-											<select 
-												id="trady" 
+											<select
+												id="trady"
 												ref={e => this.trady_id = e}
 												className="form-control input-custom"
-												onChange={() => this.selectTrady(this.trady_id.value)} 
+												onChange={() => this.selectTrady(this.trady_id.value)}
 											>
 												<option value="" selected={!trady.id && "selected"}>Select Tradie</option>
 												{
 													this.props.tradies.map(function(item, index) {
 														return (
-															<option 
-																key={index+1} 
-																value={item.id} 
+															<option
+																key={index+1}
+																value={item.id}
 																selected={trady.id == item.id && "selected"}
 															>
 																{item.name}
@@ -1125,64 +1125,64 @@ var ModalRequestModal = React.createClass({
 											<div className="row m-t-lg">
 												<div>
 													<input
-														type="text" 
-														id="company" 
+														type="text"
+														id="company"
 														style={style}
 														ref={e => this.company = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate} 
+														onChange={this.checkValidate}
 														placeholder="Enter Company Name"
 														value={!!this.state.trady.company_name ? this.state.trady.company_name : ""}
-														className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")} 
+														className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")}
 													/>
 												</div>
 											</div>
 											<div className="row m-t-lg">
 												<div>
 													<input
-														id="name" 
-														type="text" 
+														id="name"
+														type="text"
 														style={style}
 														placeholder="Enter Name"
 														ref={e => this.name = e}
 														readOnly={!this.state.isAdd}
 														onChange={this.checkValidate}
 														value={!!this.state.trady.name ? this.state.trady.name : ""}
-														className={"input-custom u-full-width " + (this.state.errorName && "has-error")} 
+														className={"input-custom u-full-width " + (this.state.errorName && "has-error")}
 													/>
 												</div>
 											</div>
 											<div className="row m-t-lg">
 												<div>
 													<input
-														id="email" 
-														type="email" 
+														id="email"
+														type="email"
 														style={style}
 														autoCapitalize="off"
 														autoCorrect="off"
 														autoComplete="off"
 														placeholder="Enter Email"
-														ref={e => this.email = e} 
+														ref={e => this.email = e}
 														readOnly={!this.state.isAdd}
 														onChange={this.checkValidate}
-														value={!!this.state.trady.email ? this.state.trady.email : ""} 
-														className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")} 
+														value={!!this.state.trady.email ? this.state.trady.email : ""}
+														className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")}
 													/>
 												</div>
 											</div>
 											<div className="row m-t-lg">
 												<div>
-													<input 
-														id="mobile" 
+													<input
+														id="mobile"
 														type="number"
 														style={style}
 														placeholder="Enter Mobile"
-														ref={e => this.mobile = e} 
+														ref={e => this.mobile = e}
 														readOnly={!this.state.isAdd}
 														onChange={this.checkValidate}
 														onKeyPress={(e) => this.checkLength(e)}
-														value={!!this.state.trady.mobile ? this.state.trady.mobile : ""} 
-														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")} 
+														value={!!this.state.trady.mobile ? this.state.trady.mobile : ""}
+														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")}
 													/>
 												</div>
 											</div>
@@ -1190,17 +1190,17 @@ var ModalRequestModal = React.createClass({
 								}
 							</div>
 							<div className="modal-footer">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									onClick={this.props.close}
-									className="btn btn-primary cancel" 
+									className="btn btn-primary cancel"
 								>
 									Cancel
 								</button>
 								{
 									(isTrady === 'true' || isTrady === 'false' || !!isDisable) &&
-										<button 
-											type="submit" 
+										<button
+											type="submit"
 											className="btn btn-default success"
 											disabled={(!!state.isDisable) ? true : false}
 										>
@@ -1284,7 +1284,7 @@ var MaintenanceRequest = React.createClass({
 	onModalWith: function(modal) {
 		this.setState({
 			modal: modal,
-			isModal: true, 
+			isModal: true,
 		});
 	},
 
@@ -1352,7 +1352,7 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 		}
-		
+
 	},
 
 	addAskLandlord: function(params){
@@ -1384,7 +1384,7 @@ var MaintenanceRequest = React.createClass({
 				}});
 				self.onModalWith('notification');
 			}
-		});  
+		});
 	},
 
 	editAskLandlord: function(params) {
@@ -1416,7 +1416,7 @@ var MaintenanceRequest = React.createClass({
 				}});
 				self.onModalWith('notification');
 			}
-		}); 
+		});
 	},
 
 	addLandlord: function(params) {
@@ -1632,7 +1632,7 @@ var MaintenanceRequest = React.createClass({
 				}
 			},
 			error: function(err) {
-				
+
 			}
 		});
 	},
@@ -1680,7 +1680,7 @@ var MaintenanceRequest = React.createClass({
 			quotes: data
 		});
 	},
- 
+
 	requestQuote: function(params) {
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
@@ -1690,7 +1690,7 @@ var MaintenanceRequest = React.createClass({
 				flag = true;
 			}
 		});
-		
+
 		if(!!flag) {
 			self.setState({
 				notification: {
@@ -1729,7 +1729,7 @@ var MaintenanceRequest = React.createClass({
 					}});
 					self.onModalWith('notification');
 				}
-			});	
+			});
 		}
 	},
 
@@ -1846,7 +1846,7 @@ var MaintenanceRequest = React.createClass({
 			maintenance_request_status: statusItem.value,
 			maintenance_request_id: maintenance_request.id,
 		};
-		
+
 		$.ajax({
 			type: 'POST',
 			url: '/update_maintenance_request_status',
@@ -1875,7 +1875,7 @@ var MaintenanceRequest = React.createClass({
 			}
 		});
 	},
-	
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -1891,8 +1891,8 @@ var MaintenanceRequest = React.createClass({
 			switch(this.state.modal) {
 				case 'confirm':
 					return (
-						<ModalConfirm 
-							close={this.isClose} 
+						<ModalConfirm
+							close={this.isClose}
 							landlord={this.state.landlord}
 							property={this.props.property}
 							onModalWith={(modal) => this.onModalWith(modal)}
@@ -1909,7 +1909,7 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
-				case 'editAskLandlord': 
+				case 'editAskLandlord':
 					return (
 						<ModalEditAskLandlord
 							close={this.isClose}
@@ -1922,17 +1922,17 @@ var MaintenanceRequest = React.createClass({
 
 				case 'notification':
 					return (
-						<ModalNotification 
-							close={this.isClose} 
+						<ModalNotification
+							close={this.isClose}
 							bgClass={this.state.notification.bgClass}
-							title={this.state.notification.title} 
+							title={this.state.notification.title}
 							content={this.state.notification.content}
 						/>
 					);
 
 				case 'addLandlordSendEmail':
 					return (
-						<ModalAddLandlord 
+						<ModalAddLandlord
 							close={this.isClose}
 							addLandlord={this.addLandlord}
 							authToken={this.props.authenticity_token}
@@ -1943,7 +1943,7 @@ var MaintenanceRequest = React.createClass({
 
 				case 'addLandlord':
 					return (
-						<ModalAddLandlord 
+						<ModalAddLandlord
 							close={this.isClose}
 							addLandlord={this.addLandlord}
 							authToken={this.props.authenticity_token}
@@ -1954,7 +1954,7 @@ var MaintenanceRequest = React.createClass({
 				case 'editLandlord':{
 					if(!!this.state.landlord) {
 						return (
-							<ModalEditLandlord 
+							<ModalEditLandlord
 								close={this.isClose}
 								landlord={this.state.landlord}
 								editLandlord={this.editLandlord}
@@ -1964,8 +1964,8 @@ var MaintenanceRequest = React.createClass({
 						);
 					}else {
 						return (
-							<ModalNotification 
-								close={this.isClose} 
+							<ModalNotification
+								close={this.isClose}
 								title="Edit Lanlord"
 								content="Landlord is empty!"
 							/>
@@ -1975,12 +1975,12 @@ var MaintenanceRequest = React.createClass({
 
 				case 'sendMessageLandlord': {
 					return (
-						<ModalSendMessageLandlord 
-							close={this.isClose} 
-							current_user={this.props.current_user} 
+						<ModalSendMessageLandlord
+							close={this.isClose}
+							current_user={this.props.current_user}
 							authToken={this.props.authenticity_token}
 							sendMessageLandlord={this.sendMessageLandlord}
-							landlords_conversation={this.state.landlords_conversation} 
+							landlords_conversation={this.state.landlords_conversation}
 							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);
@@ -1988,22 +1988,22 @@ var MaintenanceRequest = React.createClass({
 
 				case 'sendMessageTenant': {
 					return (
-						<ModalSendMessageTenant 
-							close={this.isClose} 
-							current_user={this.props.current_user} 
+						<ModalSendMessageTenant
+							close={this.isClose}
+							current_user={this.props.current_user}
 							authToken={this.props.authenticity_token}
 							sendMessageTenant={this.sendMessageTenant}
 							tenants_conversation={this.state.tenants_conversation}
-							maintenance_request_id={this.state.maintenance_request.id} 
+							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);
 				}
 
 				case 'sendMessageTrady': {
 					return (
-						<ModalSendMessageTrady 
-							close={this.isClose} 
-							current_user={this.props.current_user} 
+						<ModalSendMessageTrady
+							close={this.isClose}
+							current_user={this.props.current_user}
 							sendMessageTrady={this.sendMessageTrady}
 							trady_conversation={this.state.trady_conversation}
 						/>
@@ -2012,17 +2012,17 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewQuote': {
 					return (
-						<ModalViewQuote 
+						<ModalViewQuote
 							close={this.isClose}
-							quote={this.state.quote} 
+							quote={this.state.quote}
 							quotes={this.state.quotes}
 							agency={this.props.agency}
 							property={this.props.property}
 							landlord={this.state.landlord}
-							onModalWith={this.onModalWith} 
-							viewQuote={(quote) => this.viewQuote(quote)} 
-							updateStatusQuote={this.updateStatusQuote} 
-							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user} 
+							onModalWith={this.onModalWith}
+							viewQuote={(quote) => this.viewQuote(quote)}
+							updateStatusQuote={this.updateStatusQuote}
+							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
 						/>
 					);
 				}
@@ -2033,7 +2033,7 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote}
 							current_user={this.props.current_user}
-							sendMessageQuote={this.sendMessageQuote} 
+							sendMessageQuote={this.sendMessageQuote}
 						/>
 					)
 				}
@@ -2041,7 +2041,7 @@ var MaintenanceRequest = React.createClass({
 				case 'requestQuote': {
 					return (
 						<ModalRequestModal
-							close={this.isClose} 
+							close={this.isClose}
 							keyTitle="request-quote"
 							tradies={this.state.tradies}
 							requestQuote={this.requestQuote}
@@ -2053,7 +2053,7 @@ var MaintenanceRequest = React.createClass({
 				case 'sendWorkOrder': {
 					return (
 						<ModalRequestModal
-							close={this.isClose} 
+							close={this.isClose}
 							keyTitle="sen-work-order"
 							tradies={this.state.tradies}
 							requestQuote={this.sendWorkOrder}
@@ -2067,13 +2067,13 @@ var MaintenanceRequest = React.createClass({
 							<ModalViewInvoice
 								close={this.isClose}
 								agency={this.props.agency}
-							 	invoice={this.state.invoice} 
+							 	invoice={this.state.invoice}
 							 	invoices={this.state.invoices}
 								property={this.props.property}
 							/>
 					);
-					
-					break;	
+
+					break;
 				}
 
 				case 'viewPdfInvoice': {
@@ -2082,13 +2082,13 @@ var MaintenanceRequest = React.createClass({
 								close={this.isClose}
 								agency={this.props.agency}
 								pdf_url={this.props.pdf_urls[0]}
-							 	invoice_pdf_file={this.state.invoice_pdf_file} 
+							 	invoice_pdf_file={this.state.invoice_pdf_file}
 							 	invoice_pdf_files={this.state.invoice_pdf_files}
 								property={this.props.property}
 							/>
 					);
-					
-					break;	
+
+					break;
 				}
 
 				case 'editMaintenanceRequest': {
@@ -2106,19 +2106,19 @@ var MaintenanceRequest = React.createClass({
 					const {comments, quoteComments, landlordComments, appointment} = this.state;
 					let commentShow = [];
 					switch(appointment.appointment_type) {
-						case 'Work Order Appointment': 
+						case 'Work Order Appointment':
 							commentShow = [...comments];
 							break;
 
-						case 'Quote Appointment': 
+						case 'Quote Appointment':
 							commentShow = [...quoteComments];
 							break;
 
-						case 'Landlord Appointment': 
+						case 'Landlord Appointment':
 							commentShow = [...landlordComments];
 							break;
 
-						default: 
+						default:
 							break;
 					}
 					return (
@@ -2131,9 +2131,9 @@ var MaintenanceRequest = React.createClass({
 					);
 				}
 
-				case 'viewConfirmQuote': 
+				case 'viewConfirmQuote':
 					return (
-						<ModalConfirmQuote 
+						<ModalConfirmQuote
 							close={this.isClose}
 							title="Cancel Quote"
 							quote={this.state.quote}
@@ -2142,9 +2142,9 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
-				case 'confirmUpdateStatus': 
+				case 'confirmUpdateStatus':
 					return (
-						<ModalConfirmUpdateStatus 
+						<ModalConfirmUpdateStatus
 							close={this.isClose}
 							title="Update Status"
 							quote={this.state.quote}
@@ -2153,9 +2153,9 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
-				case 'confirmAssign': 
+				case 'confirmAssign':
 					return (
-						<ModalConfirmUpdateStatus 
+						<ModalConfirmUpdateStatus
 							title="Assign Matenance Request"
 							close={this.isClose}
 							quote={this.state.quote}
@@ -2171,7 +2171,7 @@ var MaintenanceRequest = React.createClass({
 							updateInsruction={this.updateInsruction}
 						/>
 					);
-					
+
 				default:
 					return null;
 			}
@@ -2183,7 +2183,7 @@ var MaintenanceRequest = React.createClass({
 		$('body').animate({
 			scrollTop: offset.top
 		}, 500);
-		
+
 	},
 
 	openQuoteMesssage: function(quote_id) {
@@ -2212,7 +2212,8 @@ var MaintenanceRequest = React.createClass({
 				if(showInstruction.length > 0) {
 					if(e.target.className != 'show-instruction') {
 						$('body').chardinJs('stop');
-						self.isClose();	
+						self.isClose();
+						self.viewModalMessage();
 					}
 				}
 			});
@@ -2233,34 +2234,33 @@ var MaintenanceRequest = React.createClass({
 	viewModalMessage: function() {
 		const href = window.location.href;
 		const self = this;
-		window.onload = function () {
-			if(href.indexOf('email_quote_id') >= 0) {
-				self.autoScroll('quotes');
-			}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
-				self.autoScroll('invoices');
-			}
 
-			const json = self.getUrlVars(href);
-			switch(json.message) {
-				case 'open_landlord_message': 
-						self.onModalWith('sendMessageLandlord');
-					break;
+		if(href.indexOf('email_quote_id') >= 0) {
+			self.autoScroll('quotes');
+		}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
+			self.autoScroll('invoices');
+		}
 
-				case 'open_tenant_message': 
-					self.onModalWith('sendMessageTenant');
-					break;
+		const json = self.getUrlVars(href);
+		switch(json.message) {
+			case 'open_landlord_message':
+					self.onModalWith('sendMessageLandlord');
+				break;
 
-				case 'open_trady_message': 
-					self.onModalWith('sendMessageTrady');
-					break;
+			case 'open_tenant_message':
+				self.onModalWith('sendMessageTenant');
+				break;
 
-				case 'open_quote_message':
-					self.openQuoteMesssage(json.quote_message_id);
-					break;
+			case 'open_trady_message':
+				self.onModalWith('sendMessageTrady');
+				break;
 
-				default:
-					break;
-			}
+			case 'open_quote_message':
+				self.openQuoteMesssage(json.quote_message_id);
+				break;
+
+			default:
+				break;
 		}
 	},
 
@@ -2277,13 +2277,13 @@ var MaintenanceRequest = React.createClass({
 
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants} = this.props;
-		return ( 
+		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
 					<div className="section">
 						<ItemMaintenanceRequest
 							status={this.state.status}
-							gallery={this.props.gallery} 
+							gallery={this.props.gallery}
 							property={this.props.property}
 							all_agents={this.props.all_agents}
 							updateStatusMR={this.updateStatusMR}
@@ -2293,47 +2293,46 @@ var MaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
 						/>
-						{	this.props.quotes.length > 0 ?
-						 		<Quotes 
-							 		quotes={this.state.quotes} 
-							 		onModalWith={this.onModalWith} 
-							 		landlord={this.state.landlord} 
-							 		current_user={this.props.current_user} 
-							 		updateStatusQuote={this.updateStatusQuote} 
-							 		sendEmailLandlord={this.sendEmailLandlord} 
-							 		viewQuote={(key, item) => this.viewItem(key, item)} 
+						{	this.props.quotes.length > 0 &&
+						 		<Quotes
+							 		quotes={this.state.quotes}
+							 		onModalWith={this.onModalWith}
+							 		landlord={this.state.landlord}
+							 		current_user={this.props.current_user}
+							 		updateStatusQuote={this.updateStatusQuote}
+							 		sendEmailLandlord={this.sendEmailLandlord}
+							 		viewQuote={(key, item) => this.viewItem(key, item)}
 							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
 						 		/>
-						 		: null
 					 	}
-						{	this.props.invoices.length > 0 && 
-								<Invoices 
-									invoices={this.state.invoices} 
-									viewInvoice={(key, item) => this.viewItem(key, item)} 
+						{	this.props.invoices.length > 0 &&
+								<Invoices
+									invoices={this.state.invoices}
+									viewInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{	this.props.invoice_pdf_files.length > 0 && 
-								<PDFInvoices 
-									invoice_pdf_files={this.state.invoice_pdf_files} 
-									viewPDFInvoice={(key, item) => this.viewItem(key, item)} 
+						{	(this.props.invoice_pdf_files && this.props.invoice_pdf_files.length > 0) &&
+								<PDFInvoices
+									invoice_pdf_files={this.state.invoice_pdf_files}
+									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
 					</div>
 					<div className="sidebar">
-						<Contact 
+						<Contact
 							tenants={tenants}
 							landlord={this.state.landlord}
-							current_user={this.props.current_user} 
+							current_user={this.props.current_user}
 							assigned_trady={this.props.assigned_trady}
-							onModalWith={(modal) => this.onModalWith(modal)} 
+							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
-						<Action 
-							landlord={this.state.landlord} 
-							onModalWith={(modal) => this.onModalWith(modal)} 
+						<Action
+							landlord={this.state.landlord}
+							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						{
 							work_order_appointments.length > 0 &&
-								<AppointmentRequest 
+								<AppointmentRequest
 									appointments={work_order_appointments}
 									title="Work Order Appointments"
 									current_role={current_user_role}
@@ -2342,7 +2341,7 @@ var MaintenanceRequest = React.createClass({
 						}
 						{
 							quote_appointments.length > 0 &&
-								<AppointmentRequest 
+								<AppointmentRequest
 									title="Appointments For Quotes"
 									current_role={current_user_role}
 									appointments={quote_appointments}
@@ -2351,7 +2350,7 @@ var MaintenanceRequest = React.createClass({
 						}
 						{
 							landlord_appointments.length > 0 &&
-								<AppointmentRequest 
+								<AppointmentRequest
 									title="Landlord Appointments"
 									current_role={current_user_role}
 									appointments={landlord_appointments}
@@ -2362,7 +2361,7 @@ var MaintenanceRequest = React.createClass({
 					</div>
 					{
 						work_order_appointments.length > 0 &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								title="Work Order Appointments"
 								current_role={current_user_role}
 								appointments={work_order_appointments}
@@ -2371,16 +2370,16 @@ var MaintenanceRequest = React.createClass({
 					}
 					{
 						quote_appointments.length > 0 &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								title="Appointments For Quotes"
 								current_role={current_user_role}
 								appointments={quote_appointments}
 								viewItem={(key, item) => this.viewItem(key, item)}
 							/>
 					}
-					{ 
+					{
 						landlord_appointments.length > 0 &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								title="Landlord Appointments"
 								current_role={current_user_role}
 								appointments={landlord_appointments}
@@ -2391,10 +2390,10 @@ var MaintenanceRequest = React.createClass({
 				</div>
 				<SideBarMobile
 					tenants={tenants}
-					landlord={this.state.landlord} 
-					current_user={this.props.current_user} 
+					landlord={this.state.landlord}
+					current_user={this.props.current_user}
 					assigned_trady={this.props.assigned_trady}
-					onModalWith={(modal) => this.onModalWith(modal)} 
+					onModalWith={(modal) => this.onModalWith(modal)}
 					viewItem={(key, item) => this.viewItem(key, item)}
 				/>
 				{ this.renderModal() }

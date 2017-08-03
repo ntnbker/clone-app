@@ -2,7 +2,7 @@ var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
 	getInitialState: function() {
 		this.getAgentEmail();
-		return { 
+		return {
 			images: [],
 			progress: 0,
 			totalFile: 0,
@@ -55,7 +55,7 @@ var MaintenanceRequestsNew = React.createClass({
 				isAgent: flag
 			});
 		}
-		
+
 		if (!e.target.value.length) {
 			document.getElementById("errAgentEamil").textContent = strRequireEmail;
 			e.target.classList.add("border_on_error");
@@ -138,7 +138,7 @@ var MaintenanceRequestsNew = React.createClass({
 				readFile(index + 1);
 			}
 		}
-		readFile(0);	
+		readFile(0);
 	},
 
 	getOrientation: function(result) {
@@ -161,7 +161,7 @@ var MaintenanceRequestsNew = React.createClass({
       else if ((marker & 0xFF00) != 0xFF00) break;
       else offset += view.getUint16(offset, false);
     }
-    return -1;  
+    return -1;
 	},
 
 	validDate: function(flag) {
@@ -187,13 +187,13 @@ var MaintenanceRequestsNew = React.createClass({
 		XHR.addEventListener('loadend', function(event) {
 			var validationObject;
 			var jsonObject = event.currentTarget.response;
-			IsJsonString = (str) => { 
+			IsJsonString = (str) => {
 				try {
 					JSON.parse(str);
 				} catch (e) {
 					return false;
 				}
-				return true; 
+				return true;
 			}
 			setErrorMessage = (id, strErrorMessage, validateObject) => {
 				if(validateObject != undefined) {
@@ -424,27 +424,25 @@ var MaintenanceRequestsNew = React.createClass({
 
 		// transform context before drawing image
 		switch (orientation) {
-			case 1:
-				ctx.transform(1, 0, 0, 1, 0, 0);
-			case 2: 
-				ctx.transform(-1, 0, 0, 1, width, 0); 
+			case 2:
+				ctx.transform(-1, 0, 0, 1, width, 0);
 				break;
-			case 3: 
+			case 3:
 				ctx.transform(-1, 0, 0, -1, width, height );
 				break;
-			case 4: 
-				ctx.transform(1, 0, 0, -1, 0, height ); 
+			case 4:
+				ctx.transform(1, 0, 0, -1, 0, height );
 				break;
-			case 5: 
-				ctx.transform(0, 1, 1, 0, 0, 0); 
+			case 5:
+				ctx.transform(0, 1, 1, 0, 0, 0);
 				break;
-			case 6: 
+			case 6:
 				ctx.transform(0, 1, -1, 0, height , 0);
 				break;
-			case 7: 
-				ctx.transform(0, -1, -1, 0, height , width); 
+			case 7:
+				ctx.transform(0, -1, -1, 0, height , width);
 				break;
-			case 8: 
+			case 8:
 				ctx.transform(0, -1, 1, 0, 0, width);
 				break;
 		}
@@ -452,7 +450,6 @@ var MaintenanceRequestsNew = React.createClass({
 		ctx.fillRect(0, 0, cvs.width, cvs.height);
 		ctx.strokeRect(0, 0, cvs.width, cvs.height);
 		ctx.lineWidth = 0;
-    ctx.rotate(0);
 		ctx.drawImage(source_img, 0, 0);
 		var newImageData = cvs.toDataURL(mime_type, quality/100);
 		var result_image = new Image();
@@ -461,7 +458,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	dataURItoBlob: function(dataURI) {
-		var byteString, 
+		var byteString,
 				mimestring;
 
 		if(dataURI.split(',')[0].indexOf('base64') !== -1 ) {
@@ -491,7 +488,7 @@ var MaintenanceRequestsNew = React.createClass({
 	},
 
 	componentDidMount: function() {
-		this.detectAndroid();	
+		this.detectAndroid();
 	},
 
 	render: function(){
@@ -515,15 +512,15 @@ var MaintenanceRequestsNew = React.createClass({
 		return (
 			<div>
 				<form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
-					<input name="utf8" type="hidden" value="✓" /> 
+					<input name="utf8" type="hidden" value="✓" />
 					<input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 					<div className="field">
-			  		<input 
+			  		<input
 			  			required
 			  			type="text"
 			  			placeholder="Full name"
 			  			ref={(ref) => this.name = ref}
-			  	  	id={this.generateAtt("id", "name")} 
+			  	  	id={this.generateAtt("id", "name")}
 	  	  		 	name={this.generateAtt("name", "name")}
 					   	onBlur={(e) => {
 							if (!e.target.value.length) {
@@ -543,7 +540,7 @@ var MaintenanceRequestsNew = React.createClass({
 								}
 							}}/>
 						<p id="errorbox" className="error"></p>
-						
+
 						<input
 							required
 							type="email"
@@ -569,10 +566,10 @@ var MaintenanceRequestsNew = React.createClass({
 								}
 							}}/>
 						<p id="errorboxemail" className="error"></p>
-						
-						<input 
-							required 
-							type="text" 
+
+						<input
+							required
+							type="text"
 							minLength="10"
 							maxLength="11"
 							placeholder="Mobile"
@@ -592,7 +589,7 @@ var MaintenanceRequestsNew = React.createClass({
 							if(e.target.value.length >= 8){
 									this.validatePhoneNumber(e.target.value, e, false);
 								}
-							}}/>																														
+							}}/>
 						<p id="errorboxmobile" className="error"></p>
 					</div>
 
@@ -604,7 +601,7 @@ var MaintenanceRequestsNew = React.createClass({
 						<textarea
 							placeholder="Maintenance Description"
 							ref={(ref) => this.maintenance_description = ref}
-							id={this.generateAtt("id", "maintenance_description")} 
+							id={this.generateAtt("id", "maintenance_description")}
 							name={this.generateAtt("name", "maintenance_description")}
 						/>
 						<p id="errorboxdescription" className="error"></p>
@@ -622,11 +619,11 @@ var MaintenanceRequestsNew = React.createClass({
 								<i className="fa fa-upload" />
 								Choose a image to upload
 							</div>
-							<input 
+							<input
 								multiple
 								type="file"
 								id="input-file"
-								className="upload inputfile" 
+								className="upload inputfile"
 								accept="image/jpeg, image/png"
 								onChange={(e)=>this._handleImageChange(e)}
 							/>
@@ -636,7 +633,7 @@ var MaintenanceRequestsNew = React.createClass({
 								images.map((img, index) => {
 									return (
 										<div key={index} className="img">
-											<img  
+											<img
 												src={img.url}
 												className=""
 												onLoad={(e, image, key) => this.loadImage(e, img, index)}
@@ -663,18 +660,18 @@ var MaintenanceRequestsNew = React.createClass({
 									placeholder="Agent email"
 									onBlur={this.checkAgentEmail}
 									ref={(ref) => this.agent_email = ref}
-									id={this.generateAtt("id", "agent_email")} 
+									id={this.generateAtt("id", "agent_email")}
 									name={this.generateAtt("name", "agent_email")}
 								/>
 								<p id="errAgentEamil" className="error"></p>
 								{	!this.state.isAgent ?
 									<div>
 										<input
-											required 
+											required
 											type="text"
 											placeholder="Real estate office"
 											ref={(ref) => this.real_estate_office = ref}
-											id={this.generateAtt("id", "real_estate_office")} 
+											id={this.generateAtt("id", "real_estate_office")}
 											name={this.generateAtt("name", "real_estate_office")}
 											onBlur={(e) => {
 												if (!e.target.value.length) {
@@ -697,7 +694,7 @@ var MaintenanceRequestsNew = React.createClass({
 											type="text"
 											placeholder="Agent name"
 											ref={(ref) => this.agent_name = ref}
-											id={this.generateAtt("id", "agent_name")} 
+											id={this.generateAtt("id", "agent_name")}
 											name={this.generateAtt("name", "agent_name")}
 											onBlur={(e) => {
 												if (!e.target.value.length) {
@@ -715,14 +712,14 @@ var MaintenanceRequestsNew = React.createClass({
 											}}/>
 										<p id="errAgentName" className="error"></p>
 
-										<input 
+										<input
 											required
 											type="text"
 											maxLength="11"
 											minLength="10"
 											placeholder="Agent mobile"
 											ref={(ref) => this.agent_mobile = ref}
-											id={this.generateAtt("id", "agent_mobile")} 
+											id={this.generateAtt("id", "agent_mobile")}
 											name={this.generateAtt("name", "agent_mobile")}
 											onBlur={(e) => {
 												if (!e.target.value.length) {
@@ -742,7 +739,7 @@ var MaintenanceRequestsNew = React.createClass({
 										:
 										null
 								}
-								
+
 							</div>
 							<hr/>
 						</div>
@@ -758,5 +755,5 @@ var MaintenanceRequestsNew = React.createClass({
 				</form>
 			</div>
 		);
-	}	
+	}
 });

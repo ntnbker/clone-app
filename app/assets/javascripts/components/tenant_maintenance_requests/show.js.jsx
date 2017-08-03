@@ -1,6 +1,6 @@
 var TenantSideBarMobile = React.createClass({
 	getInitialState: function() {
-		return {      
+		return {
 			showContact: false
 		};
 	},
@@ -22,7 +22,7 @@ var TenantSideBarMobile = React.createClass({
 	componentDidMount: function() {
 		const self = this;
 		$('body').chardinJs('start')
-		$(document).bind("click", function() {
+		$(document).click(function() {
 			self.close();
 		})
 	},
@@ -31,8 +31,8 @@ var TenantSideBarMobile = React.createClass({
 		return (
 			<div>
 				<div className="sidebar-mobile">
-					<div className="fixed">       
-						<button 
+					<div className="fixed">
+						<button
 							data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={this.show}
@@ -42,11 +42,11 @@ var TenantSideBarMobile = React.createClass({
 					</div>
 				</div>
 				<div className="action-mobile">
-					{ 
-						<TenantContactMobile 
-							close={this.close} 
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
-						/> 
+					{
+						<TenantContactMobile
+							close={this.close}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/>
 					}
 				</div>
 			</div>
@@ -112,7 +112,7 @@ var TenantMaintenanceRequest = React.createClass({
 	onModalWith: function(modal) {
 		this.setState({
 			modal: modal,
-			isModal: true, 
+			isModal: true,
 		});
 	},
 
@@ -138,7 +138,7 @@ var TenantMaintenanceRequest = React.createClass({
 				break;
 			}
 		}
-		
+
 	},
 
 	sendAgentMessage: function(params) {
@@ -252,7 +252,7 @@ var TenantMaintenanceRequest = React.createClass({
 						break;
 
 					default:
-						break;	
+						break;
 				}
 
 				self.setState({notification: {
@@ -271,7 +271,7 @@ var TenantMaintenanceRequest = React.createClass({
 				self.onModalWith('notification');
 			}
 		});
-		
+
 	},
 
 	updateAppointment: function(appointment) {
@@ -288,7 +288,7 @@ var TenantMaintenanceRequest = React.createClass({
 				});
 				break;
 
-			case 'Quote Appointment': 
+			case 'Quote Appointment':
 				data = quote_appointments.map((item, key) => {
 					item.status = item.id == appointment.id ? appointment.status : item.status;
 					return item;
@@ -298,7 +298,7 @@ var TenantMaintenanceRequest = React.createClass({
 				});
 				break;
 
-			case 'Landlord Appointment': 
+			case 'Landlord Appointment':
 				data = landlord_appointments.map((item, key) => {
 					item.status = item.id == appointment.id ? appointment.status : item.status;
 					return item;
@@ -308,7 +308,7 @@ var TenantMaintenanceRequest = React.createClass({
 				});
 				break;
 
-			default: 
+			default:
 				break;
 		}
 	},
@@ -322,13 +322,13 @@ var TenantMaintenanceRequest = React.createClass({
 			maintenance_request_id: this.state.maintenance_request.id,
 			appointment_type: appointment.appointment_type == 'Work Order Appointment' ? 'work_order_appointment' : 'quote_appointment',
 		};
-		
+
 		if(appointment.appointment_type == 'Work Order Appointment'){
 			params.appointment_type = "work_order_appointment";
 		}else if(appointment.appointment_type == 'Quote Appointment') {
 			params.appointment_type = 'quote_appointment'
 		}
-		
+
 		$.ajax({
 			type: 'POST',
 			url: appointment.appointment_type == 'Landlord Appointment' ? '/accept_landlord_appointment' : '/accept_appointment',
@@ -435,7 +435,7 @@ var TenantMaintenanceRequest = React.createClass({
 			}
 		});
 	},
-	
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -451,10 +451,10 @@ var TenantMaintenanceRequest = React.createClass({
 			switch(this.state.modal) {
 				case 'notification': {
 					return (
-						<ModalNotification 
-							close={this.isClose} 
+						<ModalNotification
+							close={this.isClose}
 							bgClass={this.state.notification.bgClass}
-							title={this.state.notification.title} 
+							title={this.state.notification.title}
 							content={this.state.notification.content}
 						/>
 					);
@@ -462,11 +462,11 @@ var TenantMaintenanceRequest = React.createClass({
 
 				case 'sendAgentMessage': {
 					return (
-						<ModalSendMessageAgent 
+						<ModalSendMessageAgent
 							close={this.isClose}
 							current_user={this.props.current_user}
 							sendMessageAgent={this.sendAgentMessage}
-							trady_agent_conversation={this.state.tenants_conversation}  
+							trady_agent_conversation={this.state.tenants_conversation}
 							maintenance_request_id={this.state.maintenance_request.id}
 						/>
 					);
@@ -476,19 +476,19 @@ var TenantMaintenanceRequest = React.createClass({
 					const {comments, quoteComments, landlordComments, appointment} = this.state;
 					let commentShow = [];
 					switch(appointment.appointment_type) {
-						case 'Work Order Appointment': 
+						case 'Work Order Appointment':
 							commentShow = [...comments];
 							break;
 
-						case 'Quote Appointment': 
+						case 'Quote Appointment':
 							commentShow = [...quoteComments];
 							break;
 
-						case 'Landlord Appointment': 
+						case 'Landlord Appointment':
 							commentShow = [...landlordComments];
 							break;
 
-						default: 
+						default:
 							break;
 					}
 					return (
@@ -508,19 +508,19 @@ var TenantMaintenanceRequest = React.createClass({
 					const {appointmentUpdate} = this.state;
 					let key = '';
 					switch(appointmentUpdate.appointment_type) {
-						case 'Work Order Appointment': 
+						case 'Work Order Appointment':
 							key = 'createAppointment';
 							break;
 
-						case 'Quote Appointment': 
+						case 'Quote Appointment':
 							key = 'createAppointmentForQuote';
 							break;
 
-						case 'Landlord Appointment': 
+						case 'Landlord Appointment':
 							key = 'createLandlordAppointment';
 							break;
 
-						default: 
+						default:
 							break;
 					}
 					return (
@@ -538,19 +538,19 @@ var TenantMaintenanceRequest = React.createClass({
 					const {appointmentUpdate} = this.state;
 					let key = '';
 					switch(appointmentUpdate.appointment_type) {
-						case 'Work Order Appointment': 
+						case 'Work Order Appointment':
 							key = 'createAppointment';
 							break;
 
-						case 'Quote Appointment': 
+						case 'Quote Appointment':
 							key = 'createAppointmentForQuote';
 							break;
 
-						case 'Landlord Appointment': 
+						case 'Landlord Appointment':
 							key = 'createLandlordAppointment';
 							break;
 
-						default: 
+						default:
 							break;
 					}
 					return (
@@ -607,7 +607,7 @@ var TenantMaintenanceRequest = React.createClass({
 							updateInsruction={this.updateInsruction}
 						/>
 					);
-					
+
 				default:
 					return null;
 			}
@@ -641,7 +641,8 @@ var TenantMaintenanceRequest = React.createClass({
 				if(showInstruction.length > 0) {
 					if(e.target.className != 'show-instruction') {
 						$('body').chardinJs('stop');
-						self.isClose();	
+						self.isClose();
+						self.viewModalMessage();
 					}
 				}
 			});
@@ -653,13 +654,12 @@ var TenantMaintenanceRequest = React.createClass({
 	viewModalMessage: function() {
 		const href = window.location.href;
 		const self = this;
-		window.onload = function () {
-			const json = self.getUrlVars(href);
-			if(href.indexOf('open_agent_message') >= 0) {
-				self.onModalWith('sendAgentMessage');
-			}else if(href.indexOf('appointment_id') >= 0) {
-				self.openAppointment(json.appointment_id);
-			}
+
+		const json = self.getUrlVars(href);
+		if(href.indexOf('open_agent_message') >= 0) {
+			self.onModalWith('sendAgentMessage');
+		}else if(href.indexOf('appointment_id') >= 0) {
+			self.openAppointment(json.appointment_id);
 		}
 	},
 
@@ -689,20 +689,20 @@ var TenantMaintenanceRequest = React.createClass({
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
 					<div className="section">
-						<ItemMaintenanceRequest 
-							gallery={this.props.gallery} 
-							property={this.props.property} 
+						<ItemMaintenanceRequest
+							gallery={this.props.gallery}
+							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					</div>
 					<div className="sidebar">
-						<TenantContact 
-							current_user={this.props.current_user} 
-							onModalWith={(modal) => this.onModalWith(modal)} 
+						<TenantContact
+							current_user={this.props.current_user}
+							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						{
-							(appointments.length > 0) && 
-								<AppointmentRequest 
+							(appointments.length > 0) &&
+								<AppointmentRequest
 									appointments={appointments}
 									title="Work Order Appointments"
 									cancelAppointment={(value) => this.cancel(value)}
@@ -714,7 +714,7 @@ var TenantMaintenanceRequest = React.createClass({
 						}
 						{
 							(quote_appointments.length > 0) &&
-								<AppointmentRequest 
+								<AppointmentRequest
 									title="Appointments For Quotes"
 									appointments={quote_appointments}
 									cancelAppointment={(value) => this.cancel(value)}
@@ -726,7 +726,7 @@ var TenantMaintenanceRequest = React.createClass({
 						}
 						{
 							(landlord_appointments.length > 0) &&
-								<AppointmentRequest 
+								<AppointmentRequest
 									title="Landlord Appointments"
 									appointments={landlord_appointments}
 									cancelAppointment={(value) => this.cancel(value)}
@@ -736,11 +736,11 @@ var TenantMaintenanceRequest = React.createClass({
 									declineAppointment={(value) => this.decline(value)}
 								/>
 						}
-						
+
 					</div>
 					{
 						(appointments.length > 0) &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								appointments={appointments}
 								title="Work Order Appointments"
 								cancelAppointment={(value) => this.cancel(value)}
@@ -752,7 +752,7 @@ var TenantMaintenanceRequest = React.createClass({
 					}
 					{
 						(quote_appointments.length > 0) &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								title="Appointments For Quotes"
 								appointments={quote_appointments}
 								cancelAppointment={(value) => this.cancel(value)}
@@ -764,7 +764,7 @@ var TenantMaintenanceRequest = React.createClass({
 					}
 					{
 						(landlord_appointments.length > 0) &&
-							<AppointmentRequestMobile 
+							<AppointmentRequestMobile
 								title="Landlord Appointments"
 								appointments={landlord_appointments}
 								cancelAppointment={(value) => this.cancel(value)}
