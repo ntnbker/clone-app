@@ -293,8 +293,13 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	isClose: function() {
-		this.setState({isModal: false});
-		this.setState({modal: ""});
+		if(this.state.isModal == true) {
+			this.setState({
+				isModal: false,
+				modal: ""
+			});
+		}
+		
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -942,17 +947,19 @@ var TradyMaintenanceRequest = React.createClass({
 	componentDidMount: function() {
 		const self = this;
 		const {instruction} = this.state;
+		const body = $('body');
 		if(!instruction.read_instruction) {
-			$('body').chardinJs('start');
+			body.chardinJs('toggle'); 
+
 			this.onModalWith('viewModalInstruction');
 
-			$(document).click(function(e) {
+			$(window).click(function(e) {
 				var showInstruction = $('.show-instruction');
 				if(showInstruction.length > 0) {
 					if(e.target.className != 'show-instruction') {
-						$('body').chardinJs('stop');
 						self.isClose();
 						self.viewModalMessage();
+						body.chardinJs('stop'); 
 					}
 				}
 			});

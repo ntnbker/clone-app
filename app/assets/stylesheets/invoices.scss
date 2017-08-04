@@ -457,7 +457,9 @@
 }
 
 .responsive-wrapper-wxh-572x612 {
-  padding-bottom: 107%;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 .set-margin {
   margin: 30px;

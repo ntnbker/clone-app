@@ -177,7 +177,7 @@ var MaintenanceRequestsNew = React.createClass({
 			document.getElementById("errCantSubmit").textContent = strCantSubmit;
 			return;
 		}
-		var XHR = new XMLHttpRequest();
+
 		var FD = new FormData(document.getElementById('new_maintenance_request'));
 		this.state.dataImages.map((image, index) => {
 			var idx = index + 1;
@@ -226,18 +226,25 @@ var MaintenanceRequestsNew = React.createClass({
 				document.getElementById("errorboxdescription").classList.add("border_on_error");
 			}*/
 		});
-		XHR.open('POST', '/maintenance_requests');
-		XHR.setRequestHeader('Accept', 'text/html');
-		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
-		XHR.upload.addEventListener('loadstart', function(e) {
-			$("#spinner").css('display', 'flex');
-		});
-		XHR.onreadystatechange = function() {
-			if (XHR.readyState==4) {
-				$("#spinner").css('display', 'none');
+
+		var props = this.props;
+		$.ajax({
+			type: 'POST',
+			url: '/maintenance_requests',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: FD,
+			success: function(res){
+
+			},
+			error: function(err) {
+
 			}
-		}
-		XHR.send(FD);
+		});
 		return false;
 	},
 

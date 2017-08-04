@@ -85,7 +85,7 @@ var ModalViewPDFInvoice = React.createClass({
 									<div className="detail-quote">
 										<div className="detail-quote">
 										{ !!invoice.url &&
-											<embed src={invoice.url} type="application/pdf" className="scroll-custom" width='100%' height='400px'/>
+											<embed src={invoice.url} type="application/pdf" frameBorder="0" className="scroll-custom" width='100%' height='400'/>
 										}
 										</div>
 									</div>

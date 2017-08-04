@@ -81,22 +81,28 @@ var AddInvoicePDF = React.createClass({
 
 	handelSubmit: function(e) {
 		e.preventDefault();
-		var XHR = new XMLHttpRequest();
+
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
 		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
 
-		XHR.open('POST', '/uploaded_invoices');
-		XHR.setRequestHeader('Accept', 'text/html');
-		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
-		XHR.upload.addEventListener('loadstart', function(e) {
-			$("#spinner").css('display', 'flex');
-		});
-		XHR.onreadystatechange = function() {
-			if (XHR.readyState==4) {
-				$("#spinner").css('display', 'none');
+		var props = this.props;
+		$.ajax({
+			type: 'POST',
+			url: '/uploaded_invoices',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: FD,
+			success: function(res){
+
+			},
+			error: function(err) {
+
 			}
-		}
-		XHR.send(FD);
+		});
 		return false;
 	},
 
