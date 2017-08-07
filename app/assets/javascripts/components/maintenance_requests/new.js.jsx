@@ -184,48 +184,6 @@ var MaintenanceRequestsNew = React.createClass({
 			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
 		});
 		FD.append('commit', 'Submit Maintenance Request');
-		XHR.addEventListener('loadend', function(event) {
-			var validationObject;
-			var jsonObject = event.currentTarget.response;
-			IsJsonString = (str) => {
-				try {
-					JSON.parse(str);
-				} catch (e) {
-					return false;
-				}
-				return true;
-			}
-			setErrorMessage = (id, strErrorMessage, validateObject) => {
-				if(validateObject != undefined) {
-					document.getElementById(id).textContent = strErrorMessage;
-					document.getElementById(id).classList.add("border_on_error");
-				}
-			}
-			if(IsJsonString(jsonObject) == true)
-				validationObject = JSON.parse(jsonObject);
-			else
-				window.location.href = event.currentTarget.responseURL;
-			if(validationObject['name'] != undefined) {
-				document.getElementById("errorbox").textContent = strErrName;
-				document.getElementById("errorbox").classList.add("border_on_error");
-			}
-			if(validationObject['email'] != undefined) {
-				document.getElementById("errorboxemail").textContent = strErrEmail;
-				document.getElementById("errorboxemail").classList.add("border_on_error");
-			}
-			if(validationObject['mobile'] != undefined) {
-				document.getElementById("errorboxmobile").textContent = strErrMobile;
-				document.getElementById("errorboxmobile").classList.add("border_on_error");
-			}
-			/*if(validationObject['maintenance_heading'] != undefined) {
-				document.getElementById("errorboxheading").textContent = strErrHeading;
-				document.getElementById("errorboxheading").classList.add("border_on_error");
-			}
-			if(validationObject['maintenance_description'] != undefined) {
-				document.getElementById("errorboxdescription").textContent = strErrDescription;
-				document.getElementById("errorboxdescription").classList.add("border_on_error");
-			}*/
-		});
 
 		var props = this.props;
 		$.ajax({
