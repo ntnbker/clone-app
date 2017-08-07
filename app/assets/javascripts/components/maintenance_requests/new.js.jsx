@@ -572,13 +572,11 @@ var MaintenanceRequestsNew = React.createClass({
                 if (!e.target.value.length) {
                   document.getElementById("errorboxdescription").textContent = strErrDescription;
                   e.target.classList.add("border_on_error");
-                }
-                else if(e.target.value.length < 4){
-                  document.getElementById("errorboxdescription").textContent = strErrDescription;
-                  e.target.classList.add("border_on_error");
-                }
-                else if(e.target.value.length >= 4){
-                  this.validateEmail(e.target.value, e, false);
+                  this.setState({validDescription: false});
+                }else{
+                  document.getElementById("errorboxdescription").textContent = strNone;
+                  e.target.classList.remove("border_on_error");
+                  this.setState({validDescription: false});
                 }
               }}/>
             <p id="errorboxdescription" className="error"></p>
