@@ -476,6 +476,7 @@ var MaintenanceRequestsNew = React.createClass({
     }
     return (
       <div>
+        <h5 className="text-center color-grey">Enter Tenant Details</h5>
         <form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
           <input name="utf8" type="hidden" value="✓" />
           <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
