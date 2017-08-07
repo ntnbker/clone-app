@@ -247,7 +247,7 @@ var ModalNotification = React.createClass({
 
 var TradyMaintenanceRequest = React.createClass({
 	getInitialState: function() {
-		const {quotes, tradies, landlord, invoices, appointments, invoice_pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
+		const {quotes, tradies, landlord, invoices, appointments, pdf_urls, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
 		const comments = [],
 					quoteComments = [];
 		appointments.map((appointment, key) => {
@@ -277,7 +277,7 @@ var TradyMaintenanceRequest = React.createClass({
 			appointmentUpdate: null,
 			appointments: appointments,
 			quoteComments: quoteComments,
-			invoice_pdf_files: invoice_pdf_files,
+			invoice_pdf_files: pdf_urls,
 			quote_appointments: quote_appointments,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
@@ -810,9 +810,9 @@ var TradyMaintenanceRequest = React.createClass({
 							<ModalViewPDFInvoice
 								close={this.isClose}
 								agency={this.props.agency}
-							 	invoice_pdf_file={this.state.invoice_pdf_file}
-							 	invoice_pdf_files={this.state.invoice_pdf_files}
 								property={this.props.property}
+								trady={this.props.assigned_trady}
+							 	invoice_pdf_file={this.state.invoice_pdf_file}
 							/>
 					);
 				}
@@ -1017,7 +1017,7 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
-		const {appointments, quote_appointments} = this.state;
+		const {appointments, quote_appointments, invoices, invoice_pdf_files} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -1038,15 +1038,16 @@ var TradyMaintenanceRequest = React.createClass({
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}
-						{	this.props.invoices.length > 0 &&
+						{	invoices.length > 0 &&
 						 		<Invoices
-							 		invoices={this.state.invoices}
+							 		invoices={invoices}
 							 		viewInvoice={(key, item) => this.viewItem(key, item)}
 						 		/>
 					 	}
-						{	this.props.invoice_pdf_files.length > 0 &&
+						{	invoice_pdf_files.length > 0 &&
 							<PDFInvoices
-								invoice_pdf_files={this.state.invoice_pdf_files}
+								trady={this.props.assigned_trady}
+								invoice_pdf_files={invoice_pdf_files}
 								viewPDFInvoice={(key, item) => this.viewItem(key, item)}
 							/>
 						}

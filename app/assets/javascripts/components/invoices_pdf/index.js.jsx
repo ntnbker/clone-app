@@ -1,6 +1,7 @@
 var PDFInvoices = React.createClass({
 	render: function() {
-		const invoice_pdf_files = this.props.invoice_pdf_files;
+		const {invoice_pdf_files} = this.props;
+		const {trady} = this.props;
 		const self = this;
 		return (
 			<div className="quotes invoices m-t-xl">
@@ -16,11 +17,11 @@ var PDFInvoices = React.createClass({
 									<img src="/assets/user1.png" />
 									<div className="info">
 										<div className="name">
-											<span>{invoice.trady.name}</span>
+											<span>{trady.name}</span>
 										</div>
 										<p className="description">
-											{invoice.trady && invoice.trady.company_name}<br />
-											{(invoice.trady && invoice.trady.trady_company) ? invoice.trady.trady_company.trading_name : ""}
+											{trady.company_name}<br />
+											{trady.trady_company ? trady.trady_company.trading_name : ""}
 										</p>
 									</div>
 								</div>

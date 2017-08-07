@@ -2,54 +2,15 @@ var ModalViewPDFInvoice = React.createClass({
 	getInitialState: function() {
 		return {
 			index: null,
-			invoice: this.props.invoice_pdf_file,
-			invoices: this.props.invoice_pdf_files,
+			invoice: this.props.invoice_pdf_file
 		};
 	},
 
-	switchSlider: function(key, index) {
-		let position = 0;
-		let invoice = "";
-		if(key == "prev") {
-			position = index - 1 < 0 ? this.state.invoices.length - 1 : index-1;
-		}else {
-			position = index + 1 > this.state.invoices.length - 1 ? 0 : index+1;
-		}
-
-		invoice = this.state.invoices[position];
-		this.setState({
-			index: position,
-			invoice: invoice
-		});
-	},
-
-	componentWillMount: function() {
-		this.filterQuote(this.state.invoices);
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		this.filterQuote(nextProps.invoice_pdf_files);
-		this.setState({
-			invoices: nextProps.invoice_pdf_files
-		});
-	},
-
-	filterQuote: function(invoices) {
-		for(var i = 0; i < invoices.length; i++) {
-			var item = invoices[i];
-			if(item.id == this.state.invoice.id) {
-				this.setState({
-					index: i+1,
-					invoice: item
-				});
-				break;
-			}
-		}
-	},
 
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
+		const {trady} = this.props;
 		let total = 0;
 		return (
 			<div className="modal-custom fade">
@@ -72,10 +33,10 @@ var ModalViewPDFInvoice = React.createClass({
 								<div className="show-quote" onTouchEnd={(key, index) => this.switchSlider('prev', this.state.index)}>
 									<div className="info-quote">
 										<div className="info-trady">
-											<p>{invoice.trady.name}</p>
-											<p className="">{!!invoice.trady.trady_company && invoice.trady.trady_company.address}</p>
-											<p className="">{!!invoice.trady.trady_company && invoice.trady.trady_company.email}</p>
-											<p className="">Abn: {!!invoice.trady.trady_company && invoice.trady.trady_company.abn}</p>
+											<p>{trady.name}</p>
+											<p className="">{!!trady.trady_company && trady.trady_company.address}</p>
+											<p className="">{!!trady.trady_company && trady.trady_company.email}</p>
+											<p className="">Abn: {!!trady.trady_company && trady.trady_company.abn}</p>
 										</div>
 										<div className="info-agency">
 											<p>{self.agency.company_name}</p>
@@ -84,8 +45,8 @@ var ModalViewPDFInvoice = React.createClass({
 									</div>
 									<div className="detail-quote">
 										<div className="detail-quote">
-										{ !!invoice.url &&
-											<embed src={invoice.url} type="application/pdf" frameBorder="0" className="scroll-custom" width='100%' height='400'/>
+										{ !!invoice &&
+											<embed src={invoice} type="application/pdf" frameBorder="0" className="scroll-custom" width='100%' height='400'/>
 										}
 										</div>
 									</div>

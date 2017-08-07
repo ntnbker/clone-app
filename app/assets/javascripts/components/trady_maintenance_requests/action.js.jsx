@@ -135,13 +135,12 @@ var TradyAction = React.createClass({
 					{ this.state.show &&
 						 	<ContentTradyAction
 						 		trady={this.props.trady}
-						  	landlord={this.props.landlord} 
-						  	invoices={this.props.invoices}
+					  		landlord={this.props.landlord} 
+					  		invoices={this.props.invoices}
 						 		assigned_trady={this.props.assigned_trady}
 						 		signed_in_trady={this.props.signed_in_trady} 
-								invoice_pdf_files={this.props.invoice_pdf_files}
 						 		maintenance_request={this.props.maintenance_request}
-						  	onModalWith={(modal) => this.props.onModalWith(modal)} 
+					  		onModalWith={(modal) => this.props.onModalWith(modal)} 
 						  /> 
 					}
 				</div>
@@ -170,7 +169,6 @@ var TradyActionMobile = React.createClass({
 							invoices={this.props.invoices}
 					 		assigned_trady={this.props.assigned_trady}
 							signed_in_trady={this.props.signed_in_trady} 
-							invoice_pdf_files={this.props.invoice_pdf_files}
 					 		maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>

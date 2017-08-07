@@ -1255,7 +1255,7 @@ var MaintenanceRequest = React.createClass({
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
-			invoice_pdf_files: this.props.invoice_pdf_files,
+			invoice_pdf_files: this.props.pdf_urls,
 			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -2083,13 +2083,13 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewPdfInvoice': {
 					return (
-							<ModalViewPDFInvoice
-								close={this.isClose}
-								agency={this.props.agency}
-								invoice_pdf_file={this.state.invoice_pdf_file}
-							 	invoice_pdf_files={this.state.invoice_pdf_files}
-								property={this.props.property}
-							/>
+						<ModalViewPDFInvoice
+							close={this.isClose}
+							agency={this.props.agency}
+							property={this.props.property}
+							trady={this.props.assigned_trady}
+							invoice_pdf_file={this.state.invoice_pdf_file}
+						/>
 					);
 
 					break;
@@ -2316,8 +2316,9 @@ var MaintenanceRequest = React.createClass({
 									viewInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{	(this.props.invoice_pdf_files && this.props.invoice_pdf_files.length > 0) &&
+						{	(this.state.invoice_pdf_files && this.state.invoice_pdf_files.length > 0) &&
 								<PDFInvoices
+									trady={this.props.assigned_trady}
 									invoice_pdf_files={this.state.invoice_pdf_files}
 									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
 								/>

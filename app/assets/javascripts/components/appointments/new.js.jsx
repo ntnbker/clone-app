@@ -149,10 +149,12 @@ var ModalAddAppointment = React.createClass({
 
 	componentDidMount: function() {
 		var now = new Date();
+		dt = parseInt(now.getDate());
+		dt = dt.toString().length == 1 ? '0' + dt : dt;
 		month = (parseInt(now.getMonth()) + 1);
 		month = month.toString().length == 1 ? '0' + month : month;
-		date = now.getFullYear() + '-' + month + '-' + now.getDate();
-		document.getElementById('date').setAttribute("min", date);
+		date = now.getFullYear() + '-' + month + '-' + dt;
+		document.getElementById('date-appointment').setAttribute("min", date);
 	},
 
 	render: function() {
@@ -194,7 +196,7 @@ var ModalAddAppointment = React.createClass({
 											<label>Date</label>
 											<input 
 												required
-												id="date"
+												id="date-appointment"
 												type="date"
 												defaultValue={date}
 												ref={ref => this.date = ref}
