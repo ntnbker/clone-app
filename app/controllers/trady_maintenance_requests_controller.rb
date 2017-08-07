@@ -61,7 +61,8 @@ class TradyMaintenanceRequestsController < ApplicationController
       
     end
     
-    @invoice_pdf_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id,@signed_in_trady.id).as_json(:include => {:trady => {:include => :trady_company}})
+    #@invoice_pdf_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id,@signed_in_trady.id).as_json(:include => {:trady => {:include => :trady_company}})
+    @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id).as_json
     @quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
     #@quote = @quotes.where(:status=>"Approved").first if !nil
     
@@ -143,7 +144,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery,:instruction=>@instruction ,:quotes=> @quotes, :landlord=> @landlord,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :invoice_pdf_files=>@invoice_pdf_files, :invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery,:instruction=>@instruction ,:quotes=> @quotes, :landlord=> @landlord,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :pdf_urls=>@invoice_pdf_urls, :invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments,time_and_access:@maintenance_request.availability_and_access}}
       format.html{render :show}
     end 
   end
