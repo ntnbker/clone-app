@@ -138,7 +138,7 @@ class LandlordsController < ApplicationController
         maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
 
         log =  Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord - Landlord:", name:@landlord.name.capitalize)
-        format.json {render :json=>{landlord: @landlord,log:log :notice=>"Landlord successfully created" }}
+        format.json {render :json=>{landlord: @landlord,log:log, :notice=>"Landlord successfully created" }}
       else
         format.json{render :json=>{errors:@landlord.errors, :notice=>"Oops something went wrong" }}
       end
