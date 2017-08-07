@@ -557,7 +557,7 @@ var ModalAddLandlord = React.createClass({
 	},
 
 	render: function() {
-		const {note} = this.props;
+		const {note, landlord} = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -573,7 +573,7 @@ var ModalAddLandlord = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Add Landlord</h4>
+								<h4 className="modal-title text-center">{landlord? 'Change Landlord' : 'Add Landlord'}</h4>
 							</div>
 							<div className="modal-body">
 									<div className="row">
@@ -1247,6 +1247,7 @@ var MaintenanceRequest = React.createClass({
 			assignEmail: null,
 			appointment: null,
 			comments: comments,
+			logs: this.props.logs,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			status: this.props.status,
@@ -1361,6 +1362,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	addAskLandlord: function(params){
+		const {logs} = this.state;
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -1371,7 +1373,8 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.setState({
-					landlord: res,
+					logs: logs.push(res.log),
+					landlord: res.landlord,
 					notification: {
 						bgClass: "bg-success",
 						title: "Ask landlord for instructions",
@@ -1393,6 +1396,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	editAskLandlord: function(params) {
+		const {logs} = this.state;
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -1403,7 +1407,8 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.setState({
-					landlord: res,
+					logs: logs.push(res.log),
+					landlord: res.landlord,
 					notification: {
 						title: "Ask landlord for instructions",
 						content: "Thank you, the maintenance request has been emailed to the landlord. We will notify you with the landlord's instructions when he/she responds.",
@@ -1425,6 +1430,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	addLandlord: function(params) {
+		const {landlord} = this.state;
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -1437,8 +1443,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: "Add Lanlord",
-						content: "Your Landlord has been added successfully!",
+						title: landlord ? "Change Landlord" : "Add Lanlord",
+						content: landlord ? 'Your have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
 						bgClass: "bg-success",
 					},
 				});
@@ -1950,6 +1956,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalAddLandlord
 							close={this.isClose}
+							landlord={this.state.landlord}
 							addLandlord={this.addLandlord}
 							authToken={this.props.authenticity_token}
 							maintenance_request_id={this.state.maintenance_request.id}
