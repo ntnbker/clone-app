@@ -428,7 +428,7 @@ var DetailQuote = React.createClass({
 							Subtotal:
 						</td>
 						<td className="border-none text-right p-b-n">
-							${subTotal.toFixed(2)}
+							${(subTotal - quote.gst_amount).toFixed(2)}
 						</td>
 					</tr>
 					<tr>

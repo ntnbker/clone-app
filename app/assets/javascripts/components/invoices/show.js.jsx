@@ -50,7 +50,7 @@ var DetailInvoice = React.createClass({
 							Subtotal:
 						</td>
 						<td className="border-none text-right p-b-n">
-							${subTotal.toFixed(2)}
+							${(subTotal - invoice.gst_amount).toFixed(2)}
 						</td>
 					</tr>
 					<tr>
