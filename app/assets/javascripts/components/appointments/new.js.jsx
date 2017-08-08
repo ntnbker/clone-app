@@ -9,33 +9,43 @@ var SelectTime = React.createClass({
 		var now = new Date();
 		hours = parseInt(now.getHours());
 		minutes = parseInt(now.getMinutes());
+		dt = parseInt(now.getDate());
+		dt = dt.toString().length == 1 ? '0' + dt : dt;
 		month = parseInt(now.getMonth()) + 1;
 		month = month.toString().length == 1 ? '0' + month : month;
-		var currentDate = new Date(now.getFullYear() + '-' + month + '-' + now.getDate());
+		var currentDate = new Date(now.getFullYear() + '-' + month + '-' + dt);
 		var stateDate = new Date(this.state.date);
     var date=[];
     date.push(<option key="-1" value="">--</option>);
     var value = "";
     for (var i=0; i<24; i++) {
-      if(i == 0) {
-        value = "12 AM";
-      } else if(i <= 11) {
-        value = i < 10 ? "0" + i : i;
-        value += " AM";
-      } else if(i == 12) {
-        value = i + " PM";
-      } else if(i >= 13) {
-        value = (i - 12) < 10 ? "0" + (i - 12) : (i - 12);
-        value += " PM";
-      }
-      date.push(
-        <option key={i} value={i} disabled={currentDate.valueOf() == stateDate.valueOf() ? i < hours ? true : false : false}>
-          { value }
-        </option>
-      );
-    }
-    return date;
-  },
+	      if(i == 0) {
+	        value = "12 AM";
+	      } else if(i <= 11) {
+	        value = i < 10 ? "0" + i : i;
+	        value += " AM";
+	      } else if(i == 12) {
+	        value = i + " PM";
+	      } else if(i >= 13) {
+	        value = (i - 12) < 10 ? "0" + (i - 12) : (i - 12);
+	        value += " PM";
+	      }
+	      if(stateDate.valueOf() > currentDate.valueOf()) {
+	      	date.push(
+		        <option key={i} value={i}>
+							{ value }
+		 				</option>
+					);
+	      }else if(stateDate.valueOf() == currentDate.valueOf() && i < hours){
+	      	date.push(
+		        <option key={i} value={i}>
+							{ value }
+		 				</option>
+					);
+	      }
+	    }
+	    return date;
+  	},
 
   makeMinute: function() {
     const data = [0, 15, 30, 45];
@@ -71,6 +81,7 @@ var SelectTime = React.createClass({
 					{this.makeHour()}
 				</select>
 				<select
+					required
 					id="minute"
 					name="minute"
 					onChange={this.props.onChange}
