@@ -4,7 +4,7 @@ var CreactOrUploadQuote = React.createClass({
 			<li className="active">
 				<a href={this.props.link}>
 					<i className="fa fa-file-text" aria-hidden="true" />
-					Create or Upload Quote
+					Create Quote
 				</a>
 			</li>
 		);
@@ -75,11 +75,15 @@ var ContentTradyAction = React.createClass({
 		if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return (
 				<ul>
-					<CreactOrUploadQuote link={link} />
+					{ !this.props.assigned_trady &&
+						<CreactOrUploadQuote link={link} />
+					}
 					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
-					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{ !this.props.assigned_trady &&
+						<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					}
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
@@ -92,7 +96,9 @@ var ContentTradyAction = React.createClass({
 		}else {
 			return(
 				<ul>
-					<CreactOrUploadQuote link={link} />
+					{ !this.props.assigned_trady &&
+						<CreactOrUploadQuote link={link} />
+					}
 					{ !!this.props.assigned_trady &&
 							<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
@@ -102,7 +108,9 @@ var ContentTradyAction = React.createClass({
 					{ !!this.props.assigned_trady &&
 							<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{ !this.props.assigned_trady &&
+						<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					}
 				</ul>
 			);
 		}
