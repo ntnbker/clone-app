@@ -1,6 +1,5 @@
 %div.container.well
-  Testing 123
-  %p
+  %p.text-center
     Please enter quote details
   =react_component('QuoteFields', {:authenticity_token => form_authenticity_token,
                                    :id => @quote.id,
@@ -10,6 +9,7 @@
                                    :status => "Active",
                                    :delivery_status => "false",
                                    :quote_items => @quote.quote_items,
+                                   :trady_company => @trady_company,
                                    :tax => @quote.tax,
                                    :quote_type=> @quote_type,
                                    :system_plan=>@system_plan,
