@@ -1027,7 +1027,7 @@ var TradyMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{ this.props.quotes.length > 0 &&
+						{ (this.props.quotes && this.props.quotes.length > 0) &&
 								<Quotes
 									keyLandlord="trady"
 									quotes={this.state.quotes}
@@ -1038,13 +1038,13 @@ var TradyMaintenanceRequest = React.createClass({
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}
-						{	invoices.length > 0 &&
+						{	(invoices && invoices.length > 0) &&
 						 		<Invoices
 							 		invoices={invoices}
 							 		viewInvoice={(key, item) => this.viewItem(key, item)}
 						 		/>
 					 	}
-						{	invoice_pdf_files.length > 0 &&
+						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
 							<PDFInvoices
 								trady={this.props.assigned_trady}
 								invoice_pdf_files={invoice_pdf_files}
@@ -1073,7 +1073,7 @@ var TradyMaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 						/>
 						{
-							appointments.length > 0 &&
+							(appointments && appointments.length > 0) &&
 								<AppointmentRequest
 									appointments={appointments}
 									title="Work Order Appointments"
@@ -1085,7 +1085,7 @@ var TradyMaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							quote_appointments.length > 0 &&
+							(quote_appointments && quote_appointments.length > 0) &&
 								<AppointmentRequest
 									title="Appointments For Quotes"
 									appointments={quote_appointments}
@@ -1098,7 +1098,7 @@ var TradyMaintenanceRequest = React.createClass({
 						}
 					</div>
 					{
-						appointments.length > 0 &&
+						(appointments && appointments.length > 0) &&
 							<AppointmentRequestMobile
 								appointments={appointments}
 								title="Work Order Appointments"
@@ -1110,7 +1110,7 @@ var TradyMaintenanceRequest = React.createClass({
 							/>
 					}
 					{
-						quote_appointments.length > 0 &&
+						(quote_appointments && quote_appointments.length > 0) &&
 							<AppointmentRequestMobile
 								title="Appointments For Quotes"
 								appointments={quote_appointments}
