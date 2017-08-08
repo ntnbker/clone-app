@@ -4,6 +4,7 @@ class TenantMaintenanceRequestsController < ApplicationController
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Tenant")}
   before_action(only:[:show]) {belongs_to_tenant}
+  
   def index
     if params[:sort_by_date] == "Oldest to Newest"
       @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC')
@@ -96,7 +97,7 @@ class TenantMaintenanceRequestsController < ApplicationController
     if email_params
       user = User.find_by(id:id)
       if user 
-        if current_user
+        if current_user 
           if current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
             answer = true
           else

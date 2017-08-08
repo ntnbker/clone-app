@@ -70,7 +70,6 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @assigned_trady = @maintenance_request.trady
     if @assigned_trady
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id).as_json
-
     end 
     @status = @maintenance_request.action_status
     @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})

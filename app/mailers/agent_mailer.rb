@@ -22,7 +22,7 @@ class AgentMailer < ActionMailer::Base
   def send_maintenance_request_invoice(maintenance_request)
     @maintenance_request = maintenance_request
     @trady = @maintenance_request.trady
-    @property = @maintenance_request
+    @property = @maintenance_request.property
     if @maintenance_request.agent == nil
       @user = @maintenance_request.agency_admin.user
       

@@ -57,7 +57,9 @@ class UserSessionsController < ApplicationController
 
   def destroy
     current_user.current_role.update_attribute(:role,nil)
+    
     logout
+    
     redirect_to root_path
     flash[:message] = "You Have Now Logged Out"
   end
@@ -76,10 +78,13 @@ class UserSessionsController < ApplicationController
 
   def is_logged_out
     
-    if current_user == nil
+    if current_user == nil 
+
+      logout    
       flash[:notice] = "You are already logged out"
       redirect_to root_path
     end 
+
   end
 
   def user_params
