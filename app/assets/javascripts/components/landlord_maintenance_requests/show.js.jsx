@@ -713,7 +713,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{ this.props.quotes.length > 0 &&
+						{ (this.props.quotes && this.props.quotes.length > 0) &&
 								<Quotes
 									keyLandlord="landlord"
 									quotes={this.state.quotes}
@@ -741,7 +741,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 						/>
 						{
-							appointments.length > 0 &&
+							(appointments && appointments.length > 0) &&
 								<AppointmentRequest
 									title="Landlord Appointments"
 									appointments={appointments}
@@ -755,7 +755,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						<ActivityMobile logs={this.props.logs} />
 					</div>
 					{
-						appointments.length > 0 &&
+						(appointments && appointments.length > 0) &&
 							<AppointmentRequestMobile
 								appointments={appointments}
 								title="Landlord Appointments"

@@ -707,7 +707,7 @@ var TenantMaintenanceRequest = React.createClass({
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						{
-							(appointments.length > 0) &&
+							(appointments && appointments.length > 0) &&
 								<AppointmentRequest
 									appointments={appointments}
 									title="Work Order Appointments"
@@ -719,7 +719,7 @@ var TenantMaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							(quote_appointments.length > 0) &&
+							(quote_appointments && quote_appointments.length > 0) &&
 								<AppointmentRequest
 									title="Appointments For Quotes"
 									appointments={quote_appointments}
@@ -731,7 +731,7 @@ var TenantMaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							(landlord_appointments.length > 0) &&
+							(landlord_appointments && landlord_appointments.length > 0) &&
 								<AppointmentRequest
 									title="Landlord Appointments"
 									appointments={landlord_appointments}
@@ -745,7 +745,7 @@ var TenantMaintenanceRequest = React.createClass({
 
 					</div>
 					{
-						(appointments.length > 0) &&
+						(appointments && appointments.length > 0) &&
 							<AppointmentRequestMobile
 								appointments={appointments}
 								title="Work Order Appointments"
@@ -757,7 +757,7 @@ var TenantMaintenanceRequest = React.createClass({
 							/>
 					}
 					{
-						(quote_appointments.length > 0) &&
+						(quote_appointments && quote_appointments.length > 0) &&
 							<AppointmentRequestMobile
 								title="Appointments For Quotes"
 								appointments={quote_appointments}
@@ -769,7 +769,7 @@ var TenantMaintenanceRequest = React.createClass({
 							/>
 					}
 					{
-						(landlord_appointments.length > 0) &&
+						(landlord_appointments && landlord_appointments.length > 0) &&
 							<AppointmentRequestMobile
 								title="Landlord Appointments"
 								appointments={landlord_appointments}

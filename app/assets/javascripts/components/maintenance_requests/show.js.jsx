@@ -2288,7 +2288,8 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	summary(e) {
-		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants} = this.props;
+		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
+		const {invoice_pdf_files} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -2305,7 +2306,7 @@ var MaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
 						/>
-						{	this.props.quotes.length > 0 &&
+						{	(quotes && quotes.length > 0) &&
 						 		<Quotes
 							 		quotes={this.state.quotes}
 							 		onModalWith={this.onModalWith}
@@ -2317,16 +2318,16 @@ var MaintenanceRequest = React.createClass({
 							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
 						 		/>
 					 	}
-						{	this.props.invoices.length > 0 &&
+						{	(invoices && invoices.length > 0) &&
 								<Invoices
 									invoices={this.state.invoices}
 									viewInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{	(this.state.invoice_pdf_files && this.state.invoice_pdf_files.length > 0) &&
+						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
 								<PDFInvoices
 									trady={this.props.assigned_trady}
-									invoice_pdf_files={this.state.invoice_pdf_files}
+									invoice_pdf_files={invoice_pdf_files}
 									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
@@ -2344,7 +2345,7 @@ var MaintenanceRequest = React.createClass({
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						{
-							work_order_appointments.length > 0 &&
+							(work_order_appointments && work_order_appointments.length > 0) &&
 								<AppointmentRequest
 									appointments={work_order_appointments}
 									title="Work Order Appointments"
@@ -2353,7 +2354,7 @@ var MaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							quote_appointments.length > 0 &&
+							(quote_appointments && quote_appointments.length > 0) &&
 								<AppointmentRequest
 									title="Appointments For Quotes"
 									current_role={current_user_role}
@@ -2362,7 +2363,7 @@ var MaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							landlord_appointments.length > 0 &&
+							(landlord_appointments && landlord_appointments.length > 0) &&
 								<AppointmentRequest
 									title="Landlord Appointments"
 									current_role={current_user_role}
@@ -2373,7 +2374,7 @@ var MaintenanceRequest = React.createClass({
 						<Activity logs={this.props.logs} />
 					</div>
 					{
-						work_order_appointments.length > 0 &&
+						(work_order_appointments && work_order_appointments.length > 0) &&
 							<AppointmentRequestMobile
 								title="Work Order Appointments"
 								current_role={current_user_role}
@@ -2382,7 +2383,7 @@ var MaintenanceRequest = React.createClass({
 							/>
 					}
 					{
-						quote_appointments.length > 0 &&
+						(quote_appointments && quote_appointments.length > 0) &&
 							<AppointmentRequestMobile
 								title="Appointments For Quotes"
 								current_role={current_user_role}
@@ -2391,7 +2392,7 @@ var MaintenanceRequest = React.createClass({
 							/>
 					}
 					{
-						landlord_appointments.length > 0 &&
+						(landlord_appointments && landlord_appointments.length > 0) &&
 							<AppointmentRequestMobile
 								title="Landlord Appointments"
 								current_role={current_user_role}
