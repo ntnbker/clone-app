@@ -258,6 +258,13 @@ var Header = React.createClass({
                       {
                         !expanded ?
                           <div className="header-right">
+                            { this.search() }   
+                            <div className="question">    
+                              <i className="fa fa-question" />    
+                            </div>    
+                            <div className="notification">    
+                              <i className="fa fa-bell" />    
+                            </div>
                             <div className="menu-bar dropdown-custom">
                               <button type="button" className="btn-menu" onClick={this.showMenu}>
                                 <span className="icon-user">
