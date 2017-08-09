@@ -68321,9 +68321,11 @@ var SelectTime = React.createClass({
 		var now = new Date();
 		hours = parseInt(now.getHours());
 		minutes = parseInt(now.getMinutes());
+		dt = parseInt(now.getDate());
+		dt = dt.toString().length == 1 ? '0' + dt : dt;
 		month = parseInt(now.getMonth()) + 1;
 		month = month.toString().length == 1 ? '0' + month : month;
-		var currentDate = new Date(now.getFullYear() + '-' + month + '-' + now.getDate());
+		var currentDate = new Date(now.getFullYear() + '-' + month + '-' + dt);
 		var stateDate = new Date(this.state.date);
 		var date = [];
 		date.push(React.createElement(
@@ -68344,11 +68346,19 @@ var SelectTime = React.createClass({
 				value = i - 12 < 10 ? "0" + (i - 12) : i - 12;
 				value += " PM";
 			}
-			date.push(React.createElement(
-				'option',
-				{ key: i, value: i, disabled: currentDate.valueOf() == stateDate.valueOf() ? i < hours ? true : false : false },
-				value
-			));
+			if (stateDate.valueOf() > currentDate.valueOf()) {
+				date.push(React.createElement(
+					'option',
+					{ key: i, value: i },
+					value
+				));
+			} else if (stateDate.valueOf() == currentDate.valueOf() && i < hours) {
+				date.push(React.createElement(
+					'option',
+					{ key: i, value: i },
+					value
+				));
+			}
 		}
 		return date;
 	},
@@ -68404,6 +68414,7 @@ var SelectTime = React.createClass({
 			React.createElement(
 				'select',
 				{
+					required: true,
 					id: 'minute',
 					name: 'minute',
 					onChange: this.props.onChange,
@@ -68493,10 +68504,12 @@ var ModalAddAppointment = React.createClass({
 
 	componentDidMount: function () {
 		var now = new Date();
+		dt = parseInt(now.getDate());
+		dt = dt.toString().length == 1 ? '0' + dt : dt;
 		month = parseInt(now.getMonth()) + 1;
 		month = month.toString().length == 1 ? '0' + month : month;
-		date = now.getFullYear() + '-' + month + '-' + now.getDate();
-		document.getElementById('date').setAttribute("min", date);
+		date = now.getFullYear() + '-' + month + '-' + dt;
+		document.getElementById('date-appointment').setAttribute("min", date);
 	},
 
 	render: function () {
@@ -68578,7 +68591,7 @@ var ModalAddAppointment = React.createClass({
 										),
 										React.createElement('input', {
 											required: true,
-											id: 'date',
+											id: 'date-appointment',
 											type: 'date',
 											defaultValue: date,
 											ref: function (ref) {
@@ -70024,7 +70037,7 @@ var DetailInvoice = React.createClass({
 							"td",
 							{ className: "border-none text-right p-b-n" },
 							"$",
-							subTotal.toFixed(2)
+							(subTotal - invoice.gst_amount).toFixed(2)
 						)
 					),
 					React.createElement(
@@ -70056,7 +70069,7 @@ var DetailInvoice = React.createClass({
 							"td",
 							{ className: "text-right font-bold border-none" },
 							"$",
-							(subTotal + invoice.gst_amount).toFixed(2)
+							subTotal.toFixed(2)
 						)
 					)
 				)
@@ -70450,6 +70463,8 @@ var PDFInvoices = React.createClass({
 
 	render: function () {
 		var invoice_pdf_files = this.props.invoice_pdf_files;
+		var trady = this.props.trady;
+
 		var self = this;
 		return React.createElement(
 			"div",
@@ -70481,15 +70496,15 @@ var PDFInvoices = React.createClass({
 									React.createElement(
 										"span",
 										null,
-										invoice.trady.name
+										trady.name
 									)
 								),
 								React.createElement(
 									"p",
 									{ className: "description" },
-									invoice.trady && invoice.trady.company_name,
+									trady.company_name,
 									React.createElement("br", null),
-									invoice.trady && invoice.trady.trady_company ? invoice.trady.trady_company.trading_name : ""
+									trady.trady_company ? trady.trady_company.trading_name : ""
 								)
 							)
 						),
@@ -70599,22 +70614,24 @@ var AddInvoicePDF = React.createClass({
 
 	handelSubmit: function (e) {
 		e.preventDefault();
-		var XHR = new XMLHttpRequest();
+
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
 		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
 
-		XHR.open('POST', '/uploaded_invoices');
-		XHR.setRequestHeader('Accept', 'text/html');
-		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
-		XHR.upload.addEventListener('loadstart', function (e) {
-			$("#spinner").css('display', 'flex');
+		var props = this.props;
+		$.ajax({
+			type: 'POST',
+			url: '/uploaded_invoices',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: FD,
+			success: function (res) {},
+			error: function (err) {}
 		});
-		XHR.onreadystatechange = function () {
-			if (XHR.readyState == 4) {
-				$("#spinner").css('display', 'none');
-			}
-		};
-		XHR.send(FD);
 		return false;
 	},
 
@@ -70733,49 +70750,8 @@ var ModalViewPDFInvoice = React.createClass({
 	getInitialState: function () {
 		return {
 			index: null,
-			invoice: this.props.invoice_pdf_file,
-			invoices: this.props.invoice_pdf_files
+			invoice: this.props.invoice_pdf_file
 		};
-	},
-
-	switchSlider: function (key, index) {
-		var position = 0;
-		var invoice = "";
-		if (key == "prev") {
-			position = index - 1 < 0 ? this.state.invoices.length - 1 : index - 1;
-		} else {
-			position = index + 1 > this.state.invoices.length - 1 ? 0 : index + 1;
-		}
-
-		invoice = this.state.invoices[position];
-		this.setState({
-			index: position,
-			invoice: invoice
-		});
-	},
-
-	componentWillMount: function () {
-		this.filterQuote(this.state.invoices);
-	},
-
-	componentWillReceiveProps: function (nextProps) {
-		this.filterQuote(nextProps.invoice_pdf_files);
-		this.setState({
-			invoices: nextProps.invoice_pdf_files
-		});
-	},
-
-	filterQuote: function (invoices) {
-		for (var i = 0; i < invoices.length; i++) {
-			var item = invoices[i];
-			if (item.id == this.state.invoice.id) {
-				this.setState({
-					index: i + 1,
-					invoice: item
-				});
-				break;
-			}
-		}
 	},
 
 	render: function () {
@@ -70783,9 +70759,9 @@ var ModalViewPDFInvoice = React.createClass({
 
 		var self = this.props;
 		var invoice = this.state.invoice;
+		var trady = this.props.trady;
 
 		var total = 0;
-
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -70839,23 +70815,23 @@ var ModalViewPDFInvoice = React.createClass({
 										React.createElement(
 											"p",
 											null,
-											invoice.trady.name
+											trady.name
 										),
 										React.createElement(
 											"p",
 											{ className: "" },
-											!!invoice.trady.trady_company && invoice.trady.trady_company.address
+											!!trady.trady_company && trady.trady_company.address
 										),
 										React.createElement(
 											"p",
 											{ className: "" },
-											!!invoice.trady.trady_company && invoice.trady.trady_company.email
+											!!trady.trady_company && trady.trady_company.email
 										),
 										React.createElement(
 											"p",
 											{ className: "" },
 											"Abn: ",
-											!!invoice.trady.trady_company && invoice.trady.trady_company.abn
+											!!trady.trady_company && trady.trady_company.abn
 										)
 									),
 									React.createElement(
@@ -70879,7 +70855,7 @@ var ModalViewPDFInvoice = React.createClass({
 									React.createElement(
 										"div",
 										{ className: "detail-quote" },
-										!!this.props.pdf_url && React.createElement("embed", { src: this.props.pdf_url, className: "scroll-custom", width: "100%", height: "400px" })
+										!!invoice && React.createElement("embed", { src: invoice, type: "application/pdf", frameBorder: "0", className: "scroll-custom", width: "100%", height: "400" })
 									)
 								)
 							)
@@ -71209,7 +71185,7 @@ var LandlordSideBarMobile = React.createClass({
 
 	componentDidMount: function () {
 		var self = this;
-		$(document).bind("click", function () {
+		$(document).click(function () {
 			self.close();
 		});
 	},
@@ -71374,8 +71350,12 @@ var LandlordMaintenanceRequest = React.createClass({
 	},
 
 	isClose: function () {
-		this.setState({ isModal: false });
-		this.setState({ modal: "" });
+		if (this.state.isModal == true) {
+			this.setState({
+				modal: "",
+				isModal: false
+			});
+		}
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -71910,15 +71890,17 @@ var LandlordMaintenanceRequest = React.createClass({
 		var self = this;
 		var instruction = this.state.instruction;
 
+		var body = $('body');
 		if (!instruction.read_instruction) {
-			$('body').chardinJs('start');
+			body.chardinJs('start');
 			this.onModalWith('viewModalInstruction');
 			$(document).click(function (e) {
 				var showInstruction = $('.show-instruction');
 				if (showInstruction.length > 0) {
 					if (e.target.className != 'show-instruction') {
-						$('body').chardinJs('stop');
+						body.chardinJs('stop');
 						self.isClose();
+						self.viewModalMessage();
 					}
 				}
 			});
@@ -71930,19 +71912,17 @@ var LandlordMaintenanceRequest = React.createClass({
 	viewModalMessage: function () {
 		var href = window.location.href;
 		var self = this;
-		$('body').chardinJs('start');
-		window.onload = function () {
-			var json = self.getUrlVars(href);
-			if (href.indexOf('email_quote_id') >= 0) {
-				self.autoScroll('quotes');
-			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
-				self.autoScroll('invoices');
-			} else if (href.indexOf('open_message') >= 0) {
-				self.onModalWith('sendMessageLandlord');
-			} else if (href.indexOf('appointment_id') >= 0) {
-				self.openAppointment(json.appointment_id);
-			}
-		};
+
+		var json = self.getUrlVars(href);
+		if (href.indexOf('email_quote_id') >= 0) {
+			self.autoScroll('quotes');
+		} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
+			self.autoScroll('invoices');
+		} else if (href.indexOf('open_message') >= 0) {
+			self.onModalWith('sendMessageLandlord');
+		} else if (href.indexOf('appointment_id') >= 0) {
+			self.openAppointment(json.appointment_id);
+		}
 	},
 
 	updateInsruction: function (data) {
@@ -71984,7 +71964,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
-					this.props.quotes.length > 0 && React.createElement(Quotes, {
+					this.props.quotes && this.props.quotes.length > 0 && React.createElement(Quotes, {
 						keyLandlord: 'landlord',
 						quotes: this.state.quotes,
 						landlord: this.state.landlord,
@@ -72017,7 +71997,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						},
 						maintenance_request: this.state.maintenance_request
 					}),
-					appointments.length > 0 && React.createElement(AppointmentRequest, {
+					appointments && appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Landlord Appointments',
 						appointments: appointments,
 						cancelAppointment: function (value) {
@@ -72036,7 +72016,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					}),
 					React.createElement(ActivityMobile, { logs: this.props.logs })
 				),
-				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				appointments && appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					appointments: appointments,
 					title: 'Landlord Appointments',
 					cancelAppointment: function (value) {
@@ -73975,10 +73955,6 @@ var ListMaintenanceRequest = React.createClass({
         value: "Initiate Maintenance Request",
         count: this.props.new_maintenance_requests_count
       }, {
-        title: "Awaiting Tradie`s Quote",
-        value: "Awaiting Quote",
-        count: this.props.awaiting_trady_quote_count
-      }, {
         title: "Quote Requested",
         value: "Quote Requested",
         count: this.props.quote_requested_count
@@ -74007,6 +73983,10 @@ var ListMaintenanceRequest = React.createClass({
         title: "Awaiting Tradie Initiation",
         value: "Awaiting Tradie Initiation",
         count: this.props.awaiting_trady_initiation_count
+      }, {
+        title: "Awaiting Tradie`s Quote",
+        value: "Awaiting Quote",
+        count: this.props.awaiting_trady_quote_count
       }, {
         title: "Awaiting Quote Approval",
         value: "Quote Received Awaiting Approval",
@@ -74551,7 +74531,7 @@ var Carousel = React.createClass({
 	displayName: "Carousel",
 
 	getInitialState: function () {
-		var gallery = this.props.gallery.length > 0 ? this.props.gallery : ["/uploads/maintenance_request_image/images/no_image.png"];
+		var gallery = this.props.gallery.length > 0 ? this.props.gallery : [];
 		return {
 			stx: 0,
 			stpos: 0,
@@ -75155,799 +75135,775 @@ var ModalConfirmUpdateStatus = React.createClass({
 });
 var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
-	displayName: 'MaintenanceRequestsNew',
+  displayName: 'MaintenanceRequestsNew',
 
-	getInitialState: function () {
-		this.getAgentEmail();
-		return {
-			images: [],
-			progress: 0,
-			totalFile: 0,
-			isAgent: true,
-			dataImages: [],
-			totalProgress: 0,
-			isAndroid: false,
-			validName: false,
-			validDate: false,
-			validEmail: false,
-			validMobile: false,
-			agent_emails: null,
-			validHeading: false,
-			selectedRadio: "Agent",
-			validDescription: false
-		};
-	},
+  getInitialState: function () {
+    this.getAgentEmail();
+    return {
+      images: [],
+      progress: 0,
+      totalFile: 0,
+      isAgent: true,
+      dataImages: [],
+      totalProgress: 0,
+      isAndroid: false,
+      validName: false,
+      validDate: false,
+      validEmail: false,
+      validMobile: false,
+      agent_emails: null,
+      validHeading: false,
+      selectedRadio: "Agent",
+      validDescription: false
+    };
+  },
 
-	getAgentEmail: function () {
-		var self = this;
-		$.ajax({
-			type: 'GET',
-			url: '/agent_emails',
-			success: function (res) {
-				self.setState({
-					agent_emails: res
-				});
-			},
-			error: function (err) {
-				self.setState({
-					agent_emails: []
-				});
-			}
-		});
-	},
+  getAgentEmail: function () {
+    var self = this;
+    $.ajax({
+      type: 'GET',
+      url: '/agent_emails',
+      success: function (res) {
+        self.setState({
+          agent_emails: res
+        });
+      },
+      error: function (err) {
+        self.setState({
+          agent_emails: []
+        });
+      }
+    });
+  },
 
-	checkAgentEmail: function (e) {
-		if (this.state.selectedRadio == "Agent") {
-			var email = e.target.value;
-			var flag = false;
-			for (var i = 0; i < this.state.agent_emails.length; i++) {
-				var item = this.state.agent_emails[i];
-				if (!!email && email == item.email) {
-					flag = true;
-					break;
-				}
-			}
+  checkAgentEmail: function (e) {
+    if (this.state.selectedRadio == "Agent") {
+      var email = e.target.value;
+      var flag = false;
+      for (var i = 0; i < this.state.agent_emails.length; i++) {
+        var item = this.state.agent_emails[i];
+        if (!!email && email == item.email) {
+          flag = true;
+          break;
+        }
+      }
 
-			this.setState({
-				isAgent: flag
-			});
-		}
+      this.setState({
+        isAgent: flag
+      });
+    }
 
-		if (!e.target.value.length) {
-			document.getElementById("errAgentEamil").textContent = strRequireEmail;
-			e.target.classList.add("border_on_error");
-		} else if (e.target.value.length < 4) {
-			document.getElementById("errAgentEamil").textContent = strShortEmail;
-			e.target.classList.add("border_on_error");
-		} else if (e.target.value.length >= 4) {
-			this.validateEmail(e.target.value, e, true);
-		}
-	},
+    if (!e.target.value.length) {
+      document.getElementById("errAgentEamil").textContent = strRequireEmail;
+      e.target.classList.add("border_on_error");
+    } else if (e.target.value.length < 4) {
+      document.getElementById("errAgentEamil").textContent = strShortEmail;
+      e.target.classList.add("border_on_error");
+    } else if (e.target.value.length >= 4) {
+      this.validateEmail(e.target.value, e, true);
+    }
+  },
 
-	handleRadioChange: function (e) {
-		var value = e.currentTarget.value;
-		this.setState({
-			selectedRadio: value,
-			isAgent: value == "Owner" ? false : true
-		});
-	},
+  handleRadioChange: function (e) {
+    var value = e.currentTarget.value;
+    this.setState({
+      selectedRadio: value,
+      isAgent: value == "Owner" ? false : true
+    });
+  },
 
-	generateAtt: function (name_id, type) {
-		if (name_id == "name") {
-			return "maintenance_request[" + type + "]";
-		} else if (name_id == "id") {
-			return "maintenance_request_" + type;
-		}
-	},
+  generateAtt: function (name_id, type) {
+    if (name_id == "name") {
+      return "maintenance_request[" + type + "]";
+    } else if (name_id == "id") {
+      return "maintenance_request_" + type;
+    }
+  },
 
-	_handleRemoveFrame: function (e) {
-		var _state = this.state;
-		var images = _state.images;
-		var dataImages = _state.dataImages;
+  _handleRemoveFrame: function (e) {
+    var _state = this.state;
+    var images = _state.images;
+    var dataImages = _state.dataImages;
 
-		var index = e.target.id;
-		images.splice(index, 1);
-		dataImages.splice(index, 1);
-		this.setState({
-			images: images,
-			dataImages: dataImages
-		});
-	},
+    var index = e.target.id;
+    images.splice(index, 1);
+    dataImages.splice(index, 1);
+    this.setState({
+      images: images,
+      dataImages: dataImages
+    });
+  },
 
-	_handleImageChange: function (e) {
-		var _this = this;
+  _handleImageChange: function (e) {
+    var _this = this;
 
-		var self = this;
-		var files = e.target.files;
-		var reader = new FileReader();
-		var fr = new FileReader();
-		var images = this.state.images;
-		var orientation;
-		readFile = function (index) {
-			if (index >= files.length) {
-				_this.setState({
-					images: images
-				});
-				return;
-			}
-			var file = files[index];
-			var fileAlreadyExists = false;
-			for (var i = 0; i < images.length; i++) {
-				if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
-					fileAlreadyExists = true;
-					break;
-				}
-			}
-			if (!fileAlreadyExists) {
-				var fr = new FileReader();
-				fr.readAsArrayBuffer(file);
-				fr.onload = function (e) {
-					orientation = self.getOrientation(e.target.result);
-					reader.readAsDataURL(file);
-					reader.onload = function (e) {
-						images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
-						self.setState({
-							totalFile: index + 1
-						});
-						readFile(index + 1);
-					};
-				};
-			} else {
-				readFile(index + 1);
-			}
-		};
-		readFile(0);
-	},
+    var self = this;
+    var files = e.target.files;
+    var reader = new FileReader();
+    var fr = new FileReader();
+    var images = this.state.images;
+    var orientation;
+    readFile = function (index) {
+      if (index >= files.length) {
+        _this.setState({
+          images: images
+        });
+        return;
+      }
+      var file = files[index];
+      var fileAlreadyExists = false;
+      for (var i = 0; i < images.length; i++) {
+        if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
+          fileAlreadyExists = true;
+          break;
+        }
+      }
+      if (!fileAlreadyExists) {
+        var fr = new FileReader();
+        fr.readAsArrayBuffer(file);
+        fr.onload = function (e) {
+          orientation = self.getOrientation(e.target.result);
+          reader.readAsDataURL(file);
+          reader.onload = function (e) {
+            images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
+            self.setState({
+              totalFile: index + 1
+            });
+            readFile(index + 1);
+          };
+        };
+      } else {
+        readFile(index + 1);
+      }
+    };
+    readFile(0);
+  },
 
-	getOrientation: function (result) {
-		var view = new DataView(result);
-		if (view.getUint16(0, false) != 0xFFD8) return -2;
-		var length = view.byteLength,
-		    offset = 2;
-		while (offset < length) {
-			var marker = view.getUint16(offset, false);
-			offset += 2;
-			if (marker == 0xFFE1) {
-				if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
-				var little = view.getUint16(offset += 6, false) == 0x4949;
-				offset += view.getUint32(offset + 4, little);
-				var tags = view.getUint16(offset, little);
-				offset += 2;
-				for (var i = 0; i < tags; i++) if (view.getUint16(offset + i * 12, little) == 0x0112) return view.getUint16(offset + i * 12 + 8, little);
-			} else if ((marker & 0xFF00) != 0xFF00) break;else offset += view.getUint16(offset, false);
-		}
-		return -1;
-	},
+  getOrientation: function (result) {
+    var view = new DataView(result);
+    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    var length = view.byteLength,
+        offset = 2;
+    while (offset < length) {
+      var marker = view.getUint16(offset, false);
+      offset += 2;
+      if (marker == 0xFFE1) {
+        if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+        var little = view.getUint16(offset += 6, false) == 0x4949;
+        offset += view.getUint32(offset + 4, little);
+        var tags = view.getUint16(offset, little);
+        offset += 2;
+        for (var i = 0; i < tags; i++) if (view.getUint16(offset + i * 12, little) == 0x0112) return view.getUint16(offset + i * 12 + 8, little);
+      } else if ((marker & 0xFF00) != 0xFF00) break;else offset += view.getUint16(offset, false);
+    }
+    return -1;
+  },
 
-	validDate: function (flag) {
-		this.setState({
-			validDate: flag
-		});
-	},
+  validDate: function (flag) {
+    this.setState({
+      validDate: flag
+    });
+  },
 
-	handleCheckSubmit: function (e) {
-		e.preventDefault();
-		if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
-			e.preventDefault();
-			document.getElementById("errCantSubmit").textContent = strCantSubmit;
-			return;
-		}
-		var XHR = new XMLHttpRequest();
-		var FD = new FormData(document.getElementById('new_maintenance_request'));
-		this.state.dataImages.map(function (image, index) {
-			var idx = index + 1;
-			FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
-		});
-		FD.append('commit', 'Submit Maintenance Request');
-		XHR.addEventListener('loadend', function (event) {
-			var validationObject;
-			var jsonObject = event.currentTarget.response;
-			IsJsonString = function (str) {
-				try {
-					JSON.parse(str);
-				} catch (e) {
-					return false;
-				}
-				return true;
-			};
-			setErrorMessage = function (id, strErrorMessage, validateObject) {
-				if (validateObject != undefined) {
-					document.getElementById(id).textContent = strErrorMessage;
-					document.getElementById(id).classList.add("border_on_error");
-				}
-			};
-			if (IsJsonString(jsonObject) == true) validationObject = JSON.parse(jsonObject);else window.location.href = event.currentTarget.responseURL;
-			if (validationObject['name'] != undefined) {
-				document.getElementById("errorbox").textContent = strErrName;
-				document.getElementById("errorbox").classList.add("border_on_error");
-			}
-			if (validationObject['email'] != undefined) {
-				document.getElementById("errorboxemail").textContent = strErrEmail;
-				document.getElementById("errorboxemail").classList.add("border_on_error");
-			}
-			if (validationObject['mobile'] != undefined) {
-				document.getElementById("errorboxmobile").textContent = strErrMobile;
-				document.getElementById("errorboxmobile").classList.add("border_on_error");
-			}
-			/*if(validationObject['maintenance_heading'] != undefined) {
-   	document.getElementById("errorboxheading").textContent = strErrHeading;
-   	document.getElementById("errorboxheading").classList.add("border_on_error");
-   }
-   if(validationObject['maintenance_description'] != undefined) {
-   	document.getElementById("errorboxdescription").textContent = strErrDescription;
-   	document.getElementById("errorboxdescription").classList.add("border_on_error");
-   }*/
-		});
-		XHR.open('POST', '/maintenance_requests');
-		XHR.setRequestHeader('Accept', 'text/html');
-		XHR.setRequestHeader('X-CSRF-Token', this.props.authenticity_token);
-		XHR.upload.addEventListener('loadstart', function (e) {
-			$("#spinner").css('display', 'flex');
-		});
-		XHR.onreadystatechange = function () {
-			if (XHR.readyState == 4) {
-				$("#spinner").css('display', 'none');
-			}
-		};
-		XHR.send(FD);
-		return false;
-	},
+  handleCheckSubmit: function (e) {
+    e.preventDefault();
+    if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
+      e.preventDefault();
+      document.getElementById("errCantSubmit").textContent = strCantSubmit;
+      return;
+    }
 
-	getFormData: function (object) {
-		var formData = new FormData();
-		Object.keys(object).forEach(function (key) {
-			return formData.append(key, object[key]);
-		});
-		return formData;
-	},
+    var FD = new FormData(document.getElementById('new_maintenance_request'));
+    this.state.dataImages.map(function (image, index) {
+      var idx = index + 1;
+      FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
+    });
+    FD.append('commit', 'Submit Maintenance Request');
 
-	validateEmail: function (inputText, e, agentFlag) {
-		if (EMAIL_REGEXP.test(inputText)) {
-			if (agentFlag == false) document.getElementById("errorboxemail").textContent = strNone;else document.getElementById("errAgentEamil").textContent = strNone;
-			e.target.classList.remove("border_on_error");
-			this.setState({ validEmail: false });
-		} else {
-			if (agentFlag == false) document.getElementById("errorboxemail").textContent = strInvalidEmail;else document.getElementById("errAgentEamil").textContent = strInvalidEmail;
-			e.target.classList.add("border_on_error");
-			this.setState({ validEmail: true });
-		}
-	},
+    var props = this.props;
+    $.ajax({
+      type: 'POST',
+      url: '/maintenance_requests',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {},
+      error: function (err) {}
+    });
+    return false;
+  },
 
-	validatePhoneNumber: function (inputText, e, agentFlag) {
-		if (NUMBER_REGEXP.test(inputText)) {
-			if (agentFlag == false) document.getElementById("errorboxmobile").textContent = strNone;else document.getElementById("errAgentMobile").textContent = strNone;
-			e.target.classList.remove("border_on_error");
-			this.setState({ validMobile: false });
-		} else {
-			if (agentFlag == false) document.getElementById("errorboxmobile").textContent = strInvalidMobile;else document.getElementById("errAgentMobile").textContent = strInvalidMobile;
-			e.target.classList.add("border_on_error");
-			this.setState({ validMobile: true });
-		}
-	},
+  getFormData: function (object) {
+    var formData = new FormData();
+    Object.keys(object).forEach(function (key) {
+      return formData.append(key, object[key]);
+    });
+    return formData;
+  },
 
-	updateImage: function (image) {
-		var dataImages = this.state.dataImages;
+  validateEmail: function (inputText, e, agentFlag) {
+    if (EMAIL_REGEXP.test(inputText)) {
+      if (agentFlag == false) document.getElementById("errorboxemail").textContent = strNone;else document.getElementById("errAgentEamil").textContent = strNone;
+      e.target.classList.remove("border_on_error");
+      this.setState({ validEmail: false });
+    } else {
+      if (agentFlag == false) document.getElementById("errorboxemail").textContent = strInvalidEmail;else document.getElementById("errAgentEamil").textContent = strInvalidEmail;
+      e.target.classList.add("border_on_error");
+      this.setState({ validEmail: true });
+    }
+  },
 
-		dataImages.push(image);
-		this.setState({
-			dataImages: dataImages
-		});
-	},
+  validatePhoneNumber: function (inputText, e, agentFlag) {
+    if (NUMBER_REGEXP.test(inputText)) {
+      if (agentFlag == false) document.getElementById("errorboxmobile").textContent = strNone;else document.getElementById("errAgentMobile").textContent = strNone;
+      e.target.classList.remove("border_on_error");
+      this.setState({ validMobile: false });
+    } else {
+      if (agentFlag == false) document.getElementById("errorboxmobile").textContent = strInvalidMobile;else document.getElementById("errAgentMobile").textContent = strInvalidMobile;
+      e.target.classList.add("border_on_error");
+      this.setState({ validMobile: true });
+    }
+  },
 
-	removeImage: function (index) {
-		var _state2 = this.state;
-		var images = _state2.images;
-		var dataImages = _state2.dataImages;
+  updateImage: function (image) {
+    var dataImages = this.state.dataImages;
 
-		images.splice(index, 1);
-		dataImages.splice(index, 1);
-		this.setState({
-			images: images,
-			dataImages: dataImages
-		});
-	},
+    dataImages.push(image);
+    this.setState({
+      dataImages: dataImages
+    });
+  },
 
-	loadImage: function (e, image, key) {
-		var img = e.target;
-		var maxSize = 500000; // byte
-		var self = this;
-		if (!image.isUpload) {
-			var target_img = {};
-			var images = this.state.images;
+  removeImage: function (index) {
+    var _state2 = this.state;
+    var images = _state2.images;
+    var dataImages = _state2.dataImages;
 
-			var file = image.fileInfo;
-			image.isUpload = true;
+    images.splice(index, 1);
+    dataImages.splice(index, 1);
+    this.setState({
+      images: images,
+      dataImages: dataImages
+    });
+  },
 
-			// resize image
-			if (file.size > maxSize) {
-				var quality = Math.ceil(maxSize / file.size * 100);
-				target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
-			} else {
-				if (!!this.state.isAndroid) {
-					target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
-				} else {
-					target_img.src = image.url;
-				}
-			}
+  loadImage: function (e, image, key) {
+    var img = e.target;
+    var maxSize = 500000; // byte
+    var self = this;
+    if (!image.isUpload) {
+      var target_img = {};
+      var images = this.state.images;
 
-			image.url = target_img.src;
-			images[key] = image;
-			this.setState({
-				images: images
-			});
+      var file = image.fileInfo;
+      image.isUpload = true;
 
-			var filename = file;
-			var options = {
-				extension: filename.name.match(/(\.\w+)?$/)[0],
-				_: Date.now()
-			};
-			// start upload file into S3
-			$.getJSON('/images/cache/presign', options, function (result) {
-				var fd = new FormData();
-				$.each(result.fields, function (key, value) {
-					fd.append(key, value);
-				});
+      // resize image
+      if (file.size > maxSize) {
+        var quality = Math.ceil(maxSize / file.size * 100);
+        target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
+      } else {
+        if (!!this.state.isAndroid) {
+          target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+        } else {
+          target_img.src = image.url;
+        }
+      }
 
-				fd.append('file', self.dataURItoBlob(target_img.src));
-				$.ajax({
-					type: 'POST',
-					url: result['url'],
-					enctype: 'multipart/form-data',
-					processData: false,
-					contentType: false,
-					data: fd,
-					xhr: function () {
-						var xhr = new window.XMLHttpRequest();
-						xhr.upload.addEventListener("progress", function (evt) {
-							if (evt.loaded > 0 && evt.total > 0) {
-								var progressValue = self.state.progress + evt.loaded;
-								var totalProgress = self.state.totalProgress / (self.state.totalFile + 1) + evt.total * self.state.totalFile;
-								self.setState({
-									progress: progressValue,
-									totalProgress: totalProgress,
-									totalFile: self.state.totalFile - 1
-								});
-								var percentComplete = Math.ceil(progressValue / totalProgress * 100);
-								var progress = $('.progress');
-								if (progress.length == 0) {
-									$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
-								} else {
-									$('.progress .progress-bar').css('width', percentComplete + '%');
-								}
-								$('#title-upload').html('Uploading ' + percentComplete + '%');
-							}
-						}, false);
-						return xhr;
-					},
-					success: function () {
-						if (self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
-							self.setState({
-								progress: 0,
-								totalFile: 0,
-								totalProgress: 0
-							});
-							setTimeout(function () {
-								$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
-								$('.progress').remove();
-							}, 500);
-						}
-						var image = {
-							id: result.fields.key.match(/cache\/(.+)/)[1],
-							storage: 'cache',
-							metadata: {
-								size: file.size,
-								filename: file.name.match(/[^\/\\]*$/)[0],
-								mime_type: file.type
-							}
-						};
-						self.updateImage(image);
-					}
-				});
-			});
-		}
-	},
+      image.url = target_img.src;
+      images[key] = image;
+      this.setState({
+        images: images
+      });
 
-	reduceQuality: function (source_img, type, quality, orientation) {
-		var mime_type = "image/jpeg";
-		if (typeof output_format !== "undefined" && output_format == "image/png") {
-			mime_type = "image/png";
-		}
+      var filename = file;
+      var options = {
+        extension: filename.name.match(/(\.\w+)?$/)[0],
+        _: Date.now()
+      };
+      // start upload file into S3
+      $.getJSON('/images/cache/presign', options, function (result) {
+        var fd = new FormData();
+        $.each(result.fields, function (key, value) {
+          fd.append(key, value);
+        });
 
-		var cvs = document.createElement('canvas'),
-		    width = source_img.naturalWidth,
-		    height = source_img.naturalHeight,
-		    ctx = cvs.getContext("2d");
+        fd.append('file', self.dataURItoBlob(target_img.src));
+        $.ajax({
+          type: 'POST',
+          url: result['url'],
+          enctype: 'multipart/form-data',
+          processData: false,
+          contentType: false,
+          data: fd,
+          xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+              if (evt.loaded > 0 && evt.total > 0) {
+                var progressValue = self.state.progress + evt.loaded;
+                var totalProgress = self.state.totalProgress / (self.state.totalFile + 1) + evt.total * self.state.totalFile;
+                self.setState({
+                  progress: progressValue,
+                  totalProgress: totalProgress,
+                  totalFile: self.state.totalFile - 1
+                });
+                var percentComplete = Math.ceil(progressValue / totalProgress * 100);
+                var progress = $('.progress');
+                if (progress.length == 0) {
+                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+                } else {
+                  $('.progress .progress-bar').css('width', percentComplete + '%');
+                }
+                $('#title-upload').html('Uploading ' + percentComplete + '%');
+              }
+            }, false);
+            return xhr;
+          },
+          success: function () {
+            if (self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+              self.setState({
+                progress: 0,
+                totalFile: 0,
+                totalProgress: 0
+              });
+              setTimeout(function () {
+                $('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+                $('.progress').remove();
+              }, 500);
+            }
+            var image = {
+              id: result.fields.key.match(/cache\/(.+)/)[1],
+              storage: 'cache',
+              metadata: {
+                size: file.size,
+                filename: file.name.match(/[^\/\\]*$/)[0],
+                mime_type: file.type
+              }
+            };
+            self.updateImage(image);
+          }
+        });
+      });
+    }
+  },
 
-		// set proper canvas dimensions before transform & export
-		if ([5, 6, 7, 8].indexOf(orientation) > -1) {
-			cvs.width = height;
-			cvs.height = width;
-		} else {
-			cvs.width = width;
-			cvs.height = height;
-		}
+  reduceQuality: function (source_img, type, quality, orientation) {
+    var mime_type = "image/jpeg";
+    if (typeof output_format !== "undefined" && output_format == "image/png") {
+      mime_type = "image/png";
+    }
 
-		// transform context before drawing image
-		switch (orientation) {
-			case 1:
-				ctx.transform(1, 0, 0, 1, 0, 0);
-			case 2:
-				ctx.transform(-1, 0, 0, 1, width, 0);
-				break;
-			case 3:
-				ctx.transform(-1, 0, 0, -1, width, height);
-				break;
-			case 4:
-				ctx.transform(1, 0, 0, -1, 0, height);
-				break;
-			case 5:
-				ctx.transform(0, 1, 1, 0, 0, 0);
-				break;
-			case 6:
-				ctx.transform(0, 1, -1, 0, height, 0);
-				break;
-			case 7:
-				ctx.transform(0, -1, -1, 0, height, width);
-				break;
-			case 8:
-				ctx.transform(0, -1, 1, 0, 0, width);
-				break;
-		}
-		ctx.clearRect(0, 0, cvs.width, cvs.height);
-		ctx.fillRect(0, 0, cvs.width, cvs.height);
-		ctx.strokeRect(0, 0, cvs.width, cvs.height);
-		ctx.lineWidth = 0;
-		ctx.rotate(0);
-		ctx.drawImage(source_img, 0, 0);
-		var newImageData = cvs.toDataURL(mime_type, quality / 100);
-		var result_image = new Image();
-		result_image.src = newImageData;
-		return result_image;
-	},
+    var cvs = document.createElement('canvas'),
+        width = source_img.naturalWidth,
+        height = source_img.naturalHeight,
+        ctx = cvs.getContext("2d");
 
-	dataURItoBlob: function (dataURI) {
-		var byteString, mimestring;
+    // set proper canvas dimensions before transform & export
+    if ([5, 6, 7, 8].indexOf(orientation) > -1) {
+      cvs.width = height;
+      cvs.height = width;
+    } else {
+      cvs.width = width;
+      cvs.height = height;
+    }
 
-		if (dataURI.split(',')[0].indexOf('base64') !== -1) {
-			byteString = atob(dataURI.split(',')[1]);
-		} else {
-			byteString = decodeURI(dataURI.split(',')[1]);
-		}
+    // transform context before drawing image
+    switch (orientation) {
+      case 2:
+        ctx.transform(-1, 0, 0, 1, width, 0);
+        break;
+      case 3:
+        ctx.transform(-1, 0, 0, -1, width, height);
+        break;
+      case 4:
+        ctx.transform(1, 0, 0, -1, 0, height);
+        break;
+      case 5:
+        ctx.transform(0, 1, 1, 0, 0, 0);
+        break;
+      case 6:
+        ctx.transform(0, 1, -1, 0, height, 0);
+        break;
+      case 7:
+        ctx.transform(0, -1, -1, 0, height, width);
+        break;
+      case 8:
+        ctx.transform(0, -1, 1, 0, 0, width);
+        break;
+    }
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    ctx.strokeRect(0, 0, cvs.width, cvs.height);
+    ctx.lineWidth = 0;
+    ctx.drawImage(source_img, 0, 0);
+    var newImageData = cvs.toDataURL(mime_type, quality / 100);
+    var result_image = new Image();
+    result_image.src = newImageData;
+    return result_image;
+  },
 
-		mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  dataURItoBlob: function (dataURI) {
+    var byteString, mimestring;
 
-		var content = new Array();
-		for (var i = 0; i < byteString.length; i++) {
-			content[i] = byteString.charCodeAt(i);
-		}
+    if (dataURI.split(',')[0].indexOf('base64') !== -1) {
+      byteString = atob(dataURI.split(',')[1]);
+    } else {
+      byteString = decodeURI(dataURI.split(',')[1]);
+    }
 
-		return new Blob([new Uint8Array(content)], { type: mimestring });
-	},
+    mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
-	detectAndroid: function () {
-		var ua = navigator.userAgent.toLowerCase();
-		var isAndroid = ua.indexOf("android") > -1;
-		if (isAndroid) {
-			this.setState({
-				isAndroid: true
-			});
-		}
-	},
+    var content = new Array();
+    for (var i = 0; i < byteString.length; i++) {
+      content[i] = byteString.charCodeAt(i);
+    }
 
-	componentDidMount: function () {
-		this.detectAndroid();
-	},
+    return new Blob([new Uint8Array(content)], { type: mimestring });
+  },
 
-	render: function () {
-		var _this2 = this;
+  detectAndroid: function () {
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1;
+    if (isAndroid) {
+      this.setState({
+        isAndroid: true
+      });
+    }
+  },
 
-		var images = this.state.images;
+  componentDidMount: function () {
+    this.detectAndroid();
+  },
 
-		var $imagePreview = [];
-		var _props = this.props;
-		var current_user_tenant = _props.current_user_tenant;
-		var current_role = _props.current_role;
+  render: function () {
+    var _this2 = this;
 
-		var valueEmail = '';
-		var valueMobile = '';
-		if (current_role && current_role.role == "Tenant") {
-			valueEmail = current_user_tenant.email;
-			valueMobile = current_user_tenant.mobile;
-		}
-		if (images.length > 0) {
-			for (i = 0; i < images.length; i++) {
-				var imageObject = React.createElement(
-					'div',
-					{ className: 'imgFrame', key: i },
-					React.createElement('img', { src: images[i].url }),
-					React.createElement(
-						'div',
-						{ className: 'btnRemoveFrame', id: i, onClick: function (e) {
-								return _this2._handleRemoveFrame(e);
-							} },
-						'X'
-					)
-				);
-				$imagePreview.push(imageObject);
-			}
-		} else {
-			$imagePreview = React.createElement(
-				'div',
-				{ className: 'previewText' },
-				'Please select an Image for Preview'
-			);
-		}
-		return React.createElement(
-			'div',
-			null,
-			React.createElement(
-				'form',
-				{ key: 'add', role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
-						return _this2.handleCheckSubmit(e);
-					} },
-				React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
-				React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
-				React.createElement(
-					'div',
-					{ className: 'field' },
-					React.createElement('input', {
-						required: true,
-						type: 'text',
-						placeholder: 'Full name',
-						ref: function (ref) {
-							return _this2.name = ref;
-						},
-						id: this.generateAtt("id", "name"),
-						name: this.generateAtt("name", "name"),
-						onBlur: function (e) {
-							if (!e.target.value.length) {
-								document.getElementById("errorbox").textContent = strRequireName;
-								e.target.classList.add("border_on_error");
-								_this2.setState({ validName: true });
-							} else if (e.target.value.length < 4) {
-								document.getElementById("errorbox").textContent = strShortName;
-								e.target.classList.add("border_on_error");
-								_this2.setState({ validName: true });
-							} else if (e.target.value.length >= 4) {
-								document.getElementById("errorbox").textContent = strNone;
-								e.target.classList.remove("border_on_error");
-								_this2.setState({ validName: false });
-							}
-						} }),
-					React.createElement('p', { id: 'errorbox', className: 'error' }),
-					React.createElement('input', {
-						required: true,
-						type: 'email',
-						autoCorrect: 'off',
-						autoComplete: 'off',
-						autoCapitalize: 'off',
-						placeholder: 'E-mail',
-						defaultValue: valueEmail,
-						ref: function (ref) {
-							return _this2.email = ref;
-						},
-						id: this.generateAtt("id", "email"),
-						name: this.generateAtt("name", "email"),
-						onBlur: function (e) {
-							if (!e.target.value.length) {
-								document.getElementById("errorboxemail").textContent = strRequireEmail;
-								e.target.classList.add("border_on_error");
-							} else if (e.target.value.length < 4) {
-								document.getElementById("errorboxemail").textContent = strShortEmail;
-								e.target.classList.add("border_on_error");
-							} else if (e.target.value.length >= 4) {
-								_this2.validateEmail(e.target.value, e, false);
-							}
-						} }),
-					React.createElement('p', { id: 'errorboxemail', className: 'error' }),
-					React.createElement('input', {
-						required: true,
-						type: 'text',
-						minLength: '10',
-						maxLength: '11',
-						placeholder: 'Mobile',
-						defaultValue: valueMobile,
-						ref: function (ref) {
-							return _this2.mobile = ref;
-						},
-						id: this.generateAtt("id", "mobile"),
-						name: this.generateAtt("name", "mobile"),
-						onBlur: function (e) {
-							if (!e.target.value.length) {
-								document.getElementById("errorboxmobile").textContent = strRequireMobile;
-								e.target.classList.add("border_on_error");
-							} else if (e.target.value.length < 8) {
-								document.getElementById("errorboxmobile").textContent = strShortMobile;
-								e.target.classList.add("border_on_error");
-							}
-							if (e.target.value.length >= 8) {
-								_this2.validatePhoneNumber(e.target.value, e, false);
-							}
-						} }),
-					React.createElement('p', { id: 'errorboxmobile', className: 'error' })
-				),
-				React.createElement(
-					'div',
-					{ id: 'access_contacts', className: 'm-b-lg' },
-					React.createElement(FieldList, { SampleField: AccessContactField, flag: 'contact' })
-				),
-				React.createElement(
-					'div',
-					{ className: 'field' },
-					React.createElement('textarea', {
-						placeholder: 'Maintenance Description',
-						ref: function (ref) {
-							return _this2.maintenance_description = ref;
-						},
-						id: this.generateAtt("id", "maintenance_description"),
-						name: this.generateAtt("name", "maintenance_description")
-					}),
-					React.createElement('p', { id: 'errorboxdescription', className: 'error' }),
-					React.createElement('textarea', {
-						type: 'text',
-						ref: function (ref) {
-							return _this2.maintenance_heading = ref;
-						},
-						id: this.generateAtt("id", "availability_and_access"),
-						name: this.generateAtt("name", "availability_and_access"),
-						placeholder: 'Appointment Availability and Access Instructions'
-					}),
-					React.createElement('p', { id: 'erroravailabilityandaccess', className: 'error' }),
-					React.createElement(
-						'div',
-						{ className: 'browse-wrap' },
-						React.createElement(
-							'div',
-							{ className: 'title', id: 'title-upload' },
-							React.createElement('i', { className: 'fa fa-upload' }),
-							'Choose a image to upload'
-						),
-						React.createElement('input', {
-							multiple: true,
-							type: 'file',
-							id: 'input-file',
-							className: 'upload inputfile',
-							accept: 'image/jpeg, image/png',
-							onChange: function (e) {
-								return _this2._handleImageChange(e);
-							}
-						})
-					),
-					React.createElement(
-						'div',
-						{ id: 'img-render' },
-						images.map(function (img, index) {
-							return React.createElement(
-								'div',
-								{ key: index, className: 'img' },
-								React.createElement('img', {
-									src: img.url,
-									className: '',
-									onLoad: function (e, image, key) {
-										return _this2.loadImage(e, img, index);
-									}
-								}),
-								React.createElement(
-									'a',
-									{ className: 'remove', onClick: function (key) {
-											return _this2.removeImage(index);
-										} },
-									'Remove'
-								)
-							);
-						})
-					)
-				),
-				!this.props.current_user || this.props.current_user.tenant ? React.createElement(
-					'div',
-					{ className: 'field' },
-					React.createElement('hr', null),
-					React.createElement(
-						'div',
-						null,
-						React.createElement('input', {
-							required: true,
-							type: 'email',
-							autoCapitalize: 'off',
-							autoCorrect: 'off',
-							autoComplete: 'off',
-							placeholder: 'Agent email',
-							onBlur: this.checkAgentEmail,
-							ref: function (ref) {
-								return _this2.agent_email = ref;
-							},
-							id: this.generateAtt("id", "agent_email"),
-							name: this.generateAtt("name", "agent_email")
-						}),
-						React.createElement('p', { id: 'errAgentEamil', className: 'error' }),
-						!this.state.isAgent ? React.createElement(
-							'div',
-							null,
-							React.createElement('input', {
-								required: true,
-								type: 'text',
-								placeholder: 'Real estate office',
-								ref: function (ref) {
-									return _this2.real_estate_office = ref;
-								},
-								id: this.generateAtt("id", "real_estate_office"),
-								name: this.generateAtt("name", "real_estate_office"),
-								onBlur: function (e) {
-									if (!e.target.value.length) {
-										e.target.classList.add("border_on_error");
-										document.getElementById("errRealEstateOffice").textContent = strRequireText;
-									} else if (e.target.value.length < 4) {
-										e.target.classList.add("border_on_error");
-										document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
-									} else if (e.target.value.length >= 4) {
-										e.target.classList.remove("border_on_error");
-										document.getElementById("errRealEstateOffice").textContent = strNone;
-									}
-								} }),
-							React.createElement('p', { id: 'errRealEstateOffice', className: 'error' }),
-							React.createElement('input', {
-								required: true,
-								type: 'text',
-								placeholder: 'Agent name',
-								ref: function (ref) {
-									return _this2.agent_name = ref;
-								},
-								id: this.generateAtt("id", "agent_name"),
-								name: this.generateAtt("name", "agent_name"),
-								onBlur: function (e) {
-									if (!e.target.value.length) {
-										e.target.classList.add("border_on_error");
-										document.getElementById("errAgentName").textContent = strRequireName;
-									} else if (e.target.value.length < 4) {
-										e.target.classList.add("border_on_error");
-										document.getElementById("errAgentName").textContent = strShortName;
-									} else if (e.target.value.length >= 4) {
-										e.target.classList.remove("border_on_error");
-										document.getElementById("errAgentName").textContent = strNone;
-									}
-								} }),
-							React.createElement('p', { id: 'errAgentName', className: 'error' }),
-							React.createElement('input', {
-								required: true,
-								type: 'text',
-								maxLength: '11',
-								minLength: '10',
-								placeholder: 'Agent mobile',
-								ref: function (ref) {
-									return _this2.agent_mobile = ref;
-								},
-								id: this.generateAtt("id", "agent_mobile"),
-								name: this.generateAtt("name", "agent_mobile"),
-								onBlur: function (e) {
-									if (!e.target.value.length) {
-										e.target.classList.add("border_on_error");
-										document.getElementById("errAgentMobile").textContent = strRequireMobile;
-									} else if (e.target.value.length < 8) {
-										e.target.classList.add("border_on_error");
-										document.getElementById("errAgentMobile").textContent = strShortMobile;
-									}
-									if (e.target.value.length >= 8) {
-										_this2.validatePhoneNumber(e.target.value, e, true);
-									}
-								} }),
-							React.createElement('p', { id: 'errAgentMobile', className: 'error' })
-						) : null
-					),
-					React.createElement('hr', null)
-				) : React.createElement('hr', null),
-				React.createElement('p', { id: 'errCantSubmit', className: 'error' }),
-				React.createElement(
-					'div',
-					{ className: 'text-center' },
-					React.createElement(
-						'button',
-						{ type: 'submit', className: 'button-primary green', name: 'commit' },
-						'Submit Maintenance Request'
-					)
-				)
-			)
-		);
-	}
+    var images = this.state.images;
+
+    var $imagePreview = [];
+    var _props = this.props;
+    var current_user_tenant = _props.current_user_tenant;
+    var current_role = _props.current_role;
+
+    var valueEmail = '';
+    var valueMobile = '';
+    if (current_role && current_role.role == "Tenant") {
+      valueEmail = current_user_tenant.email;
+      valueMobile = current_user_tenant.mobile;
+    }
+    if (images.length > 0) {
+      for (i = 0; i < images.length; i++) {
+        var imageObject = React.createElement(
+          'div',
+          { className: 'imgFrame', key: i },
+          React.createElement('img', { src: images[i].url }),
+          React.createElement(
+            'div',
+            { className: 'btnRemoveFrame', id: i, onClick: function (e) {
+                return _this2._handleRemoveFrame(e);
+              } },
+            'X'
+          )
+        );
+        $imagePreview.push(imageObject);
+      }
+    } else {
+      $imagePreview = React.createElement(
+        'div',
+        { className: 'previewText' },
+        'Please select an Image for Preview'
+      );
+    }
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'h5',
+        { className: 'text-center color-grey' },
+        'Enter Tenant Details'
+      ),
+      React.createElement(
+        'form',
+        { key: 'add', role: 'form', id: 'new_maintenance_request', encType: 'multipart/form-data', acceptCharset: 'UTF-8', onSubmit: function (e) {
+            return _this2.handleCheckSubmit(e);
+          } },
+        React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
+        React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
+        React.createElement(
+          'div',
+          { className: 'field' },
+          React.createElement('input', {
+            required: true,
+            type: 'text',
+            placeholder: 'Full name',
+            ref: function (ref) {
+              return _this2.name = ref;
+            },
+            id: this.generateAtt("id", "name"),
+            name: this.generateAtt("name", "name"),
+            onBlur: function (e) {
+              if (!e.target.value.length) {
+                document.getElementById("errorbox").textContent = strRequireName;
+                e.target.classList.add("border_on_error");
+                _this2.setState({ validName: true });
+              } else if (e.target.value.length < 4) {
+                document.getElementById("errorbox").textContent = strShortName;
+                e.target.classList.add("border_on_error");
+                _this2.setState({ validName: true });
+              } else if (e.target.value.length >= 4) {
+                document.getElementById("errorbox").textContent = strNone;
+                e.target.classList.remove("border_on_error");
+                _this2.setState({ validName: false });
+              }
+            } }),
+          React.createElement('p', { id: 'errorbox', className: 'error' }),
+          React.createElement('input', {
+            required: true,
+            type: 'email',
+            autoCorrect: 'off',
+            autoComplete: 'off',
+            autoCapitalize: 'off',
+            placeholder: 'E-mail',
+            defaultValue: valueEmail,
+            ref: function (ref) {
+              return _this2.email = ref;
+            },
+            id: this.generateAtt("id", "email"),
+            name: this.generateAtt("name", "email"),
+            onBlur: function (e) {
+              if (!e.target.value.length) {
+                document.getElementById("errorboxemail").textContent = strRequireEmail;
+                e.target.classList.add("border_on_error");
+              } else if (e.target.value.length < 4) {
+                document.getElementById("errorboxemail").textContent = strShortEmail;
+                e.target.classList.add("border_on_error");
+              } else if (e.target.value.length >= 4) {
+                _this2.validateEmail(e.target.value, e, false);
+              }
+            } }),
+          React.createElement('p', { id: 'errorboxemail', className: 'error' }),
+          React.createElement('input', {
+            required: true,
+            type: 'text',
+            minLength: '10',
+            maxLength: '11',
+            placeholder: 'Mobile',
+            defaultValue: valueMobile,
+            ref: function (ref) {
+              return _this2.mobile = ref;
+            },
+            id: this.generateAtt("id", "mobile"),
+            name: this.generateAtt("name", "mobile"),
+            onBlur: function (e) {
+              if (!e.target.value.length) {
+                document.getElementById("errorboxmobile").textContent = strRequireMobile;
+                e.target.classList.add("border_on_error");
+              } else if (e.target.value.length < 8) {
+                document.getElementById("errorboxmobile").textContent = strShortMobile;
+                e.target.classList.add("border_on_error");
+              }
+              if (e.target.value.length >= 8) {
+                _this2.validatePhoneNumber(e.target.value, e, false);
+              }
+            } }),
+          React.createElement('p', { id: 'errorboxmobile', className: 'error' })
+        ),
+        React.createElement(
+          'div',
+          { id: 'access_contacts', className: 'm-b-lg' },
+          React.createElement(FieldList, { SampleField: AccessContactField, flag: 'contact' })
+        ),
+        React.createElement(
+          'div',
+          { className: 'field' },
+          React.createElement('textarea', {
+            placeholder: 'Maintenance Description',
+            ref: function (ref) {
+              return _this2.maintenance_description = ref;
+            },
+            id: this.generateAtt("id", "maintenance_description"),
+            name: this.generateAtt("name", "maintenance_description"),
+            onBlur: function (e) {
+              if (!e.target.value.length) {
+                document.getElementById("errorboxdescription").textContent = strErrDescription;
+                e.target.classList.add("border_on_error");
+                _this2.setState({ validDescription: false });
+              } else {
+                document.getElementById("errorboxdescription").textContent = strNone;
+                e.target.classList.remove("border_on_error");
+                _this2.setState({ validDescription: false });
+              }
+            } }),
+          React.createElement('p', { id: 'errorboxdescription', className: 'error' }),
+          React.createElement('textarea', {
+            type: 'text',
+            ref: function (ref) {
+              return _this2.maintenance_heading = ref;
+            },
+            id: this.generateAtt("id", "availability_and_access"),
+            name: this.generateAtt("name", "availability_and_access"),
+            placeholder: 'Appointment Availability and Access Instructions'
+          }),
+          React.createElement('p', { id: 'erroravailabilityandaccess', className: 'error' }),
+          React.createElement(
+            'div',
+            { className: 'browse-wrap' },
+            React.createElement(
+              'div',
+              { className: 'title', id: 'title-upload' },
+              React.createElement('i', { className: 'fa fa-upload' }),
+              'Choose a image to upload'
+            ),
+            React.createElement('input', {
+              multiple: true,
+              type: 'file',
+              id: 'input-file',
+              className: 'upload inputfile',
+              accept: 'image/jpeg, image/png',
+              onChange: function (e) {
+                return _this2._handleImageChange(e);
+              }
+            })
+          ),
+          React.createElement(
+            'div',
+            { id: 'img-render' },
+            images.map(function (img, index) {
+              return React.createElement(
+                'div',
+                { key: index, className: 'img' },
+                React.createElement('img', {
+                  src: img.url,
+                  className: '',
+                  onLoad: function (e, image, key) {
+                    return _this2.loadImage(e, img, index);
+                  }
+                }),
+                React.createElement(
+                  'a',
+                  { className: 'remove', onClick: function (key) {
+                      return _this2.removeImage(index);
+                    } },
+                  'Remove'
+                )
+              );
+            })
+          )
+        ),
+        !this.props.current_user || this.props.current_user.tenant ? React.createElement(
+          'div',
+          { className: 'field' },
+          React.createElement('hr', null),
+          React.createElement(
+            'div',
+            null,
+            React.createElement('input', {
+              required: true,
+              type: 'email',
+              autoCapitalize: 'off',
+              autoCorrect: 'off',
+              autoComplete: 'off',
+              placeholder: 'Agent email',
+              onBlur: this.checkAgentEmail,
+              ref: function (ref) {
+                return _this2.agent_email = ref;
+              },
+              id: this.generateAtt("id", "agent_email"),
+              name: this.generateAtt("name", "agent_email")
+            }),
+            React.createElement('p', { id: 'errAgentEamil', className: 'error' }),
+            !this.state.isAgent ? React.createElement(
+              'div',
+              null,
+              React.createElement('input', {
+                required: true,
+                type: 'text',
+                placeholder: 'Real estate office',
+                ref: function (ref) {
+                  return _this2.real_estate_office = ref;
+                },
+                id: this.generateAtt("id", "real_estate_office"),
+                name: this.generateAtt("name", "real_estate_office"),
+                onBlur: function (e) {
+                  if (!e.target.value.length) {
+                    e.target.classList.add("border_on_error");
+                    document.getElementById("errRealEstateOffice").textContent = strRequireText;
+                  } else if (e.target.value.length < 4) {
+                    e.target.classList.add("border_on_error");
+                    document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
+                  } else if (e.target.value.length >= 4) {
+                    e.target.classList.remove("border_on_error");
+                    document.getElementById("errRealEstateOffice").textContent = strNone;
+                  }
+                } }),
+              React.createElement('p', { id: 'errRealEstateOffice', className: 'error' }),
+              React.createElement('input', {
+                required: true,
+                type: 'text',
+                placeholder: 'Agent name',
+                ref: function (ref) {
+                  return _this2.agent_name = ref;
+                },
+                id: this.generateAtt("id", "agent_name"),
+                name: this.generateAtt("name", "agent_name"),
+                onBlur: function (e) {
+                  if (!e.target.value.length) {
+                    e.target.classList.add("border_on_error");
+                    document.getElementById("errAgentName").textContent = strRequireName;
+                  } else if (e.target.value.length < 4) {
+                    e.target.classList.add("border_on_error");
+                    document.getElementById("errAgentName").textContent = strShortName;
+                  } else if (e.target.value.length >= 4) {
+                    e.target.classList.remove("border_on_error");
+                    document.getElementById("errAgentName").textContent = strNone;
+                  }
+                } }),
+              React.createElement('p', { id: 'errAgentName', className: 'error' }),
+              React.createElement('input', {
+                required: true,
+                type: 'text',
+                maxLength: '11',
+                minLength: '10',
+                placeholder: 'Agent mobile',
+                ref: function (ref) {
+                  return _this2.agent_mobile = ref;
+                },
+                id: this.generateAtt("id", "agent_mobile"),
+                name: this.generateAtt("name", "agent_mobile"),
+                onBlur: function (e) {
+                  if (!e.target.value.length) {
+                    e.target.classList.add("border_on_error");
+                    document.getElementById("errAgentMobile").textContent = strRequireMobile;
+                  } else if (e.target.value.length < 8) {
+                    e.target.classList.add("border_on_error");
+                    document.getElementById("errAgentMobile").textContent = strShortMobile;
+                  }
+                  if (e.target.value.length >= 8) {
+                    _this2.validatePhoneNumber(e.target.value, e, true);
+                  }
+                } }),
+              React.createElement('p', { id: 'errAgentMobile', className: 'error' })
+            ) : null
+          ),
+          React.createElement('hr', null)
+        ) : React.createElement('hr', null),
+        React.createElement('p', { id: 'errCantSubmit', className: 'error' }),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green', name: 'commit' },
+            'Submit Maintenance Request'
+          )
+        )
+      )
+    );
+  }
 });
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
@@ -76063,15 +76019,19 @@ var ModalAddAskLandlord = React.createClass({
 					if (value == "") {
 						this.setState({ errorMobile: true });
 					} else {
-						if (10 <= value.length && value.length <= 11) {
-							this.setState({ errorMobile: false });
-						} else {
-							if (value.length > 11) {
-								value = value.substring(0, 11);
-								e.target.value = value;
-							} else if (value.length < 10) {
-								this.setState({ errorMobile: true });
+						if (!isNaN(value)) {
+							if (10 <= value.length && value.length <= 11) {
+								this.setState({ errorMobile: false });
+							} else {
+								if (value.length > 11) {
+									value = value.substring(0, 11);
+									e.target.value = value;
+								} else if (value.length < 10) {
+									this.setState({ errorMobile: true });
+								}
 							}
+						} else {
+							e.target.value = value.substring(0, value.length - 1);
 						}
 					}
 					break;
@@ -76530,7 +76490,7 @@ var SideBarMobile = React.createClass({
 
 	componentDidMount: function () {
 		var self = this;
-		$(document).bind("click", function () {
+		$(document).click(function () {
 			self.close();
 		});
 	},
@@ -76691,7 +76651,9 @@ var ModalAddLandlord = React.createClass({
 	render: function () {
 		var _this5 = this;
 
-		var note = this.props.note;
+		var _props = this.props;
+		var note = _props.note;
+		var landlord = _props.landlord;
 
 		return React.createElement(
 			"div",
@@ -76726,7 +76688,7 @@ var ModalAddLandlord = React.createClass({
 							React.createElement(
 								"h4",
 								{ className: "modal-title text-center" },
-								"Add Landlord"
+								landlord ? 'Change Landlord' : 'Add Landlord'
 							)
 						),
 						React.createElement(
@@ -77600,10 +77562,10 @@ var MaintenanceRequest = React.createClass({
 	displayName: "MaintenanceRequest",
 
 	getInitialState: function () {
-		var _props = this.props;
-		var work_order_appointments = _props.work_order_appointments;
-		var quote_appointments = _props.quote_appointments;
-		var landlord_appointments = _props.landlord_appointments;
+		var _props2 = this.props;
+		var work_order_appointments = _props2.work_order_appointments;
+		var quote_appointments = _props2.quote_appointments;
+		var landlord_appointments = _props2.landlord_appointments;
 
 		var comments = [],
 		    quoteComments = [],
@@ -77633,6 +77595,7 @@ var MaintenanceRequest = React.createClass({
 			assignEmail: null,
 			appointment: null,
 			comments: comments,
+			logs: this.props.logs,
 			invoice_pdf_file: null,
 			quotes: this.props.quotes,
 			status: this.props.status,
@@ -77641,7 +77604,7 @@ var MaintenanceRequest = React.createClass({
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
-			invoice_pdf_files: this.props.invoice_pdf_files,
+			invoice_pdf_files: this.props.pdf_urls,
 			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -77657,8 +77620,13 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	isClose: function () {
-		this.setState({ isModal: false });
-		this.setState({ modal: "" });
+		if (this.state.isModal == true) {
+			this.setState({
+				isModal: false,
+				modal: ""
+			});
+		}
+
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -77749,6 +77717,8 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	addAskLandlord: function (params) {
+		var logs = this.state.logs;
+
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -77759,7 +77729,8 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function (res) {
 				self.setState({
-					landlord: res,
+					logs: logs.push(res.log),
+					landlord: res.landlord,
 					notification: {
 						bgClass: "bg-success",
 						title: "Ask landlord for instructions",
@@ -77781,6 +77752,8 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	editAskLandlord: function (params) {
+		var logs = this.state.logs;
+
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -77791,7 +77764,8 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function (res) {
 				self.setState({
-					landlord: res,
+					logs: logs.push(res.log),
+					landlord: res.landlord,
 					notification: {
 						title: "Ask landlord for instructions",
 						content: "Thank you, the maintenance request has been emailed to the landlord. We will notify you with the landlord's instructions when he/she responds.",
@@ -77813,6 +77787,8 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	addLandlord: function (params) {
+		var landlord = this.state.landlord;
+
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -77825,8 +77801,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: "Add Lanlord",
-						content: "Your Landlord has been added successfully!",
+						title: landlord ? "Change Landlord" : "Add Lanlord",
+						content: landlord ? 'Your have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
 						bgClass: "bg-success"
 					}
 				});
@@ -77934,10 +77910,10 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	sendMessageTrady: function (params) {
-		var _props2 = this.props;
-		var authenticity_token = _props2.authenticity_token;
-		var maintenance_request = _props2.maintenance_request;
-		var current_user_role = _props2.current_user_role;
+		var _props3 = this.props;
+		var authenticity_token = _props3.authenticity_token;
+		var maintenance_request = _props3.maintenance_request;
+		var current_user_role = _props3.current_user_role;
 
 		var self = this;
 		params.message.maintenance_request_id = maintenance_request.id;
@@ -78342,6 +78318,7 @@ var MaintenanceRequest = React.createClass({
 				case 'addLandlord':
 					return React.createElement(ModalAddLandlord, {
 						close: this.isClose,
+						landlord: this.state.landlord,
 						addLandlord: this.addLandlord,
 						authToken: this.props.authenticity_token,
 						maintenance_request_id: this.state.maintenance_request.id
@@ -78468,10 +78445,9 @@ var MaintenanceRequest = React.createClass({
 						return React.createElement(ModalViewPDFInvoice, {
 							close: this.isClose,
 							agency: this.props.agency,
-							pdf_url: this.props.pdf_urls[0],
-							invoice_pdf_file: this.state.invoice_pdf_file,
-							invoice_pdf_files: this.state.invoice_pdf_files,
-							property: this.props.property
+							property: this.props.property,
+							trady: this.props.assigned_trady,
+							invoice_pdf_file: this.state.invoice_pdf_file
 						});
 
 						break;
@@ -78586,15 +78562,17 @@ var MaintenanceRequest = React.createClass({
 		var self = this;
 		var instruction = this.state.instruction;
 
+		var body = $('body');
 		if (!instruction.read_instruction) {
-			$('body').chardinJs('start');
+			body.chardinJs('start');
 			this.onModalWith('viewModalInstruction');
 			$(document).click(function (e) {
 				var showInstruction = $('.show-instruction');
 				if (showInstruction.length > 0) {
 					if (e.target.className != 'show-instruction') {
-						$('body').chardinJs('stop');
+						body.chardinJs('stop');
 						self.isClose();
+						self.viewModalMessage();
 					}
 				}
 			});
@@ -78615,35 +78593,34 @@ var MaintenanceRequest = React.createClass({
 	viewModalMessage: function () {
 		var href = window.location.href;
 		var self = this;
-		window.onload = function () {
-			if (href.indexOf('email_quote_id') >= 0) {
-				self.autoScroll('quotes');
-			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
-				self.autoScroll('invoices');
-			}
 
-			var json = self.getUrlVars(href);
-			switch (json.message) {
-				case 'open_landlord_message':
-					self.onModalWith('sendMessageLandlord');
-					break;
+		if (href.indexOf('email_quote_id') >= 0) {
+			self.autoScroll('quotes');
+		} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
+			self.autoScroll('invoices');
+		}
 
-				case 'open_tenant_message':
-					self.onModalWith('sendMessageTenant');
-					break;
+		var json = self.getUrlVars(href);
+		switch (json.message) {
+			case 'open_landlord_message':
+				self.onModalWith('sendMessageLandlord');
+				break;
 
-				case 'open_trady_message':
-					self.onModalWith('sendMessageTrady');
-					break;
+			case 'open_tenant_message':
+				self.onModalWith('sendMessageTenant');
+				break;
 
-				case 'open_quote_message':
-					self.openQuoteMesssage(json.quote_message_id);
-					break;
+			case 'open_trady_message':
+				self.onModalWith('sendMessageTrady');
+				break;
 
-				default:
-					break;
-			}
-		};
+			case 'open_quote_message':
+				self.openQuoteMesssage(json.quote_message_id);
+				break;
+
+			default:
+				break;
+		}
 	},
 
 	getUrlVars: function (url) {
@@ -78660,12 +78637,15 @@ var MaintenanceRequest = React.createClass({
 	summary: function (e) {
 		var _this9 = this;
 
-		var _props3 = this.props;
-		var work_order_appointments = _props3.work_order_appointments;
-		var landlord_appointments = _props3.landlord_appointments;
-		var quote_appointments = _props3.quote_appointments;
-		var current_user_role = _props3.current_user_role;
-		var tenants = _props3.tenants;
+		var _props4 = this.props;
+		var work_order_appointments = _props4.work_order_appointments;
+		var landlord_appointments = _props4.landlord_appointments;
+		var quote_appointments = _props4.quote_appointments;
+		var current_user_role = _props4.current_user_role;
+		var tenants = _props4.tenants;
+		var quotes = _props4.quotes;
+		var invoices = _props4.invoices;
+		var invoice_pdf_files = this.state.invoice_pdf_files;
 
 		return React.createElement(
 			"div",
@@ -78692,7 +78672,7 @@ var MaintenanceRequest = React.createClass({
 						maintenance_request: this.state.maintenance_request,
 						show_assign: this.props.current_user_show_quote_message
 					}),
-					this.props.quotes.length > 0 ? React.createElement(Quotes, {
+					quotes && quotes.length > 0 && React.createElement(Quotes, {
 						quotes: this.state.quotes,
 						onModalWith: this.onModalWith,
 						landlord: this.state.landlord,
@@ -78703,15 +78683,16 @@ var MaintenanceRequest = React.createClass({
 							return _this9.viewItem(key, item);
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
-					}) : null,
-					this.props.invoices.length > 0 && React.createElement(Invoices, {
+					}),
+					invoices && invoices.length > 0 && React.createElement(Invoices, {
 						invoices: this.state.invoices,
 						viewInvoice: function (key, item) {
 							return _this9.viewItem(key, item);
 						}
 					}),
-					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
-						invoice_pdf_files: this.state.invoice_pdf_files,
+					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						trady: this.props.assigned_trady,
+						invoice_pdf_files: invoice_pdf_files,
 						viewPDFInvoice: function (key, item) {
 							return _this9.viewItem(key, item);
 						}
@@ -78735,7 +78716,7 @@ var MaintenanceRequest = React.createClass({
 							return _this9.onModalWith(modal);
 						}
 					}),
-					work_order_appointments.length > 0 && React.createElement(AppointmentRequest, {
+					work_order_appointments && work_order_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						appointments: work_order_appointments,
 						title: "Work Order Appointments",
 						current_role: current_user_role,
@@ -78743,7 +78724,7 @@ var MaintenanceRequest = React.createClass({
 							return _this9.viewItem(key, item);
 						}
 					}),
-					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+					quote_appointments && quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: "Appointments For Quotes",
 						current_role: current_user_role,
 						appointments: quote_appointments,
@@ -78751,7 +78732,7 @@ var MaintenanceRequest = React.createClass({
 							return _this9.viewItem(key, item);
 						}
 					}),
-					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
+					landlord_appointments && landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: "Landlord Appointments",
 						current_role: current_user_role,
 						appointments: landlord_appointments,
@@ -78761,7 +78742,7 @@ var MaintenanceRequest = React.createClass({
 					}),
 					React.createElement(Activity, { logs: this.props.logs })
 				),
-				work_order_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				work_order_appointments && work_order_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: "Work Order Appointments",
 					current_role: current_user_role,
 					appointments: work_order_appointments,
@@ -78769,7 +78750,7 @@ var MaintenanceRequest = React.createClass({
 						return _this9.viewItem(key, item);
 					}
 				}),
-				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				quote_appointments && quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: "Appointments For Quotes",
 					current_role: current_user_role,
 					appointments: quote_appointments,
@@ -78777,7 +78758,7 @@ var MaintenanceRequest = React.createClass({
 						return _this9.viewItem(key, item);
 					}
 				}),
-				landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				landlord_appointments && landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: "Landlord Appointments",
 					current_role: current_user_role,
 					appointments: landlord_appointments,
@@ -78819,7 +78800,7 @@ var strErrName = "This name has already taken by another person";
 var strErrEmail = "This Email Address has already taken by another person";
 var strErrMobile = "This Phone Number has already taken by another person";
 var strErrHeading = "This Maintenance Heading has already taken by another person";
-var strErrDescription = "This Maintenance Description has already taken by another person";
+var strErrDescription = "Please add a description.";
 var strInvalidEmail = "Invalid Email Address!";
 var strInvalidMobile = "Invalid Mobile Number!";
 var strRequireName = "Name is required";
@@ -80064,7 +80045,7 @@ var DetailQuote = React.createClass({
 							"td",
 							{ className: "border-none text-right p-b-n" },
 							"$",
-							subTotal.toFixed(2)
+							(subTotal - quote.gst_amount).toFixed(2)
 						)
 					),
 					React.createElement(
@@ -80096,7 +80077,7 @@ var DetailQuote = React.createClass({
 							"td",
 							{ className: "text-right font-bold border-none" },
 							"$",
-							(subTotal + quote.gst_amount).toFixed(2)
+							subTotal.toFixed(2)
 						)
 					)
 				)
@@ -80750,7 +80731,7 @@ var QuoteFields = React.createClass({
                 { className: 'quote_tax' },
                 React.createElement('input', { type: 'hidden', value: '0', name: 'quote[tax]' }),
                 React.createElement('input', { type: 'checkbox', value: '1', defaultChecked: trady_company.gst_registration ? trady_company.gst_registration : false, name: 'quote[tax]', id: 'quote_tax' }),
-                'Amount Inclides GST'
+                'Check box when price includes GST.'
             ),
             React.createElement('hr', null),
             React.createElement(
@@ -81173,29 +81154,25 @@ var Header = React.createClass({
     });
   },
 
-  search: function () {
-    return React.createElement(
-      "div",
-      { className: "search" },
-      React.createElement(
-        "form",
-        { action: "/search", className: "form-search", acceptCharset: "UTF-8", method: "get" },
-        React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
-        React.createElement("input", {
-          id: "query",
-          name: "query",
-          type: "search",
-          className: "input-search",
-          placeholder: "Search..."
-        }),
-        React.createElement(
-          "button",
-          { name: "button", type: "submit", className: "btn-search" },
-          React.createElement("i", { className: "fa fa-search" })
-        )
-      )
-    );
-  },
+  // search: function() {
+  //   return (
+  //     <div className="search">
+  //       <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
+  //         <input name="utf8" type="hidden" value="✓" />
+  //         <input
+  //           id="query"
+  //           name="query"
+  //           type="search"
+  //           className="input-search"
+  //           placeholder="Search..."
+  //         />
+  //         <button name="button" type="submit" className="btn-search">
+  //           <i className="fa fa-search"></i>
+  //         </button>
+  //       </form>
+  //     </div>
+  //   );
+  // },
 
   header: function (e) {
     var props = this.props;
@@ -81544,7 +81521,7 @@ var TenantSideBarMobile = React.createClass({
 	componentDidMount: function () {
 		var self = this;
 		$('body').chardinJs('start');
-		$(document).bind("click", function () {
+		$(document).click(function () {
 			self.close();
 		});
 	},
@@ -81642,8 +81619,13 @@ var TenantMaintenanceRequest = React.createClass({
 	},
 
 	isClose: function () {
-		this.setState({ isModal: false });
-		this.setState({ modal: "" });
+		if (this.state.isModal == true) {
+			this.setState({
+				isModal: false,
+				modal: ""
+			});
+		}
+
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -82244,15 +82226,17 @@ var TenantMaintenanceRequest = React.createClass({
 		var self = this;
 		var instruction = this.state.instruction;
 
+		var body = $('body');
 		if (!instruction.read_instruction) {
-			$('body').chardinJs('start');
+			body.chardinJs('start');
 			this.onModalWith('viewModalInstruction');
 			$(document).click(function (e) {
 				var showInstruction = $('.show-instruction');
 				if (showInstruction.length > 0) {
 					if (e.target.className != 'show-instruction') {
-						$('body').chardinJs('stop');
+						body.chardinJs('stop');
 						self.isClose();
+						self.viewModalMessage();
 					}
 				}
 			});
@@ -82264,14 +82248,13 @@ var TenantMaintenanceRequest = React.createClass({
 	viewModalMessage: function () {
 		var href = window.location.href;
 		var self = this;
-		window.onload = function () {
-			var json = self.getUrlVars(href);
-			if (href.indexOf('open_agent_message') >= 0) {
-				self.onModalWith('sendAgentMessage');
-			} else if (href.indexOf('appointment_id') >= 0) {
-				self.openAppointment(json.appointment_id);
-			}
-		};
+
+		var json = self.getUrlVars(href);
+		if (href.indexOf('open_agent_message') >= 0) {
+			self.onModalWith('sendAgentMessage');
+		} else if (href.indexOf('appointment_id') >= 0) {
+			self.openAppointment(json.appointment_id);
+		}
 	},
 
 	updateInsruction: function (data) {
@@ -82326,7 +82309,7 @@ var TenantMaintenanceRequest = React.createClass({
 							return _this3.onModalWith(modal);
 						}
 					}),
-					appointments.length > 0 && React.createElement(AppointmentRequest, {
+					appointments && appointments.length > 0 && React.createElement(AppointmentRequest, {
 						appointments: appointments,
 						title: 'Work Order Appointments',
 						cancelAppointment: function (value) {
@@ -82343,7 +82326,7 @@ var TenantMaintenanceRequest = React.createClass({
 							return _this3.decline(value);
 						}
 					}),
-					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+					quote_appointments && quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Appointments For Quotes',
 						appointments: quote_appointments,
 						cancelAppointment: function (value) {
@@ -82360,7 +82343,7 @@ var TenantMaintenanceRequest = React.createClass({
 							return _this3.decline(value);
 						}
 					}),
-					landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
+					landlord_appointments && landlord_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Landlord Appointments',
 						appointments: landlord_appointments,
 						cancelAppointment: function (value) {
@@ -82378,7 +82361,7 @@ var TenantMaintenanceRequest = React.createClass({
 						}
 					})
 				),
-				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				appointments && appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					appointments: appointments,
 					title: 'Work Order Appointments',
 					cancelAppointment: function (value) {
@@ -82395,7 +82378,7 @@ var TenantMaintenanceRequest = React.createClass({
 						return _this3.decline(value);
 					}
 				}),
-				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				quote_appointments && quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: 'Appointments For Quotes',
 					appointments: quote_appointments,
 					cancelAppointment: function (value) {
@@ -82412,7 +82395,7 @@ var TenantMaintenanceRequest = React.createClass({
 						return _this3.acceptAppointment(value);
 					}
 				}),
-				landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				landlord_appointments && landlord_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: 'Landlord Appointments',
 					appointments: landlord_appointments,
 					cancelAppointment: function (value) {
@@ -83571,7 +83554,7 @@ var CreactOrUploadQuote = React.createClass({
 				"a",
 				{ href: this.props.link },
 				React.createElement("i", { className: "fa fa-file-text", "aria-hidden": "true" }),
-				"Create or Upload Quote"
+				"Create Quote"
 			)
 		);
 	}
@@ -83767,7 +83750,6 @@ var TradyAction = React.createClass({
 					invoices: this.props.invoices,
 					assigned_trady: this.props.assigned_trady,
 					signed_in_trady: this.props.signed_in_trady,
-					invoice_pdf_files: this.props.invoice_pdf_files,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
 						return _this6.props.onModalWith(modal);
@@ -83813,7 +83795,6 @@ var TradyActionMobile = React.createClass({
 						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
 						signed_in_trady: this.props.signed_in_trady,
-						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
 							return _this7.props.onModalWith(modal);
@@ -84043,7 +84024,7 @@ var TradySideBarMobile = React.createClass({
 
 	componentDidMount: function () {
 		var self = this;
-		$(document).bind("click", function () {
+		$(document).click(function () {
 			self.close();
 		});
 	},
@@ -84367,7 +84348,7 @@ var TradyMaintenanceRequest = React.createClass({
 		var landlord = _props.landlord;
 		var invoices = _props.invoices;
 		var appointments = _props.appointments;
-		var invoice_pdf_files = _props.invoice_pdf_files;
+		var pdf_urls = _props.pdf_urls;
 		var quote_appointments = _props.quote_appointments;
 		var maintenance_request = _props.maintenance_request;
 		var tenants_conversation = _props.tenants_conversation;
@@ -84403,7 +84384,7 @@ var TradyMaintenanceRequest = React.createClass({
 			appointmentUpdate: null,
 			appointments: appointments,
 			quoteComments: quoteComments,
-			invoice_pdf_files: invoice_pdf_files,
+			invoice_pdf_files: pdf_urls,
 			quote_appointments: quote_appointments,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
@@ -84419,8 +84400,13 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	isClose: function () {
-		this.setState({ isModal: false });
-		this.setState({ modal: "" });
+		if (this.state.isModal == true) {
+			this.setState({
+				isModal: false,
+				modal: ""
+			});
+		}
+
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -84985,9 +84971,9 @@ var TradyMaintenanceRequest = React.createClass({
 						return React.createElement(ModalViewPDFInvoice, {
 							close: this.isClose,
 							agency: this.props.agency,
-							invoice_pdf_file: this.state.invoice_pdf_file,
-							invoice_pdf_files: this.state.invoice_pdf_files,
-							property: this.props.property
+							property: this.props.property,
+							trady: this.props.assigned_trady,
+							invoice_pdf_file: this.state.invoice_pdf_file
 						});
 					}
 
@@ -85133,16 +85119,19 @@ var TradyMaintenanceRequest = React.createClass({
 		var self = this;
 		var instruction = this.state.instruction;
 
+		var body = $('body');
 		if (!instruction.read_instruction) {
-			$('body').chardinJs('start');
+			body.chardinJs('toggle');
+
 			this.onModalWith('viewModalInstruction');
 
-			$(document).click(function (e) {
+			$(window).click(function (e) {
 				var showInstruction = $('.show-instruction');
 				if (showInstruction.length > 0) {
 					if (e.target.className != 'show-instruction') {
-						$('body').chardinJs('stop');
 						self.isClose();
+						self.viewModalMessage();
+						body.chardinJs('stop');
 					}
 				}
 			});
@@ -85154,30 +85143,28 @@ var TradyMaintenanceRequest = React.createClass({
 	viewModalMessage: function () {
 		var href = window.location.href;
 		var self = this;
-		$('body').chardinJs('start');
-		window.onload = function () {
-			var json = self.getUrlVars(href);
-			if (href.indexOf('email_quote_id') >= 0) {
-				self.autoScroll('quotes');
-			} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
-				self.autoScroll('invoices');
-			} else if (href.indexOf('appointment_id') >= 0) {
-				self.openAppointment(json.appointment_id);
-			} else {
-				switch (json.message) {
-					case 'open_agent_message':
-						self.onModalWith('sendMessageAgent');
-						break;
 
-					case 'open_quote_message':
-						self.openQuoteMesssage(json.quote_message_id);
-						break;
+		var json = self.getUrlVars(href);
+		if (href.indexOf('email_quote_id') >= 0) {
+			self.autoScroll('quotes');
+		} else if (href.indexOf('send_maintenance_request_invoice') >= 0) {
+			self.autoScroll('invoices');
+		} else if (href.indexOf('appointment_id') >= 0) {
+			self.openAppointment(json.appointment_id);
+		} else {
+			switch (json.message) {
+				case 'open_agent_message':
+					self.onModalWith('sendMessageAgent');
+					break;
 
-					default:
-						break;
-				}
+				case 'open_quote_message':
+					self.openQuoteMesssage(json.quote_message_id);
+					break;
+
+				default:
+					break;
 			}
-		};
+		}
 	},
 
 	updateInsruction: function (data) {
@@ -85206,6 +85193,8 @@ var TradyMaintenanceRequest = React.createClass({
 		var _state5 = this.state;
 		var appointments = _state5.appointments;
 		var quote_appointments = _state5.quote_appointments;
+		var invoices = _state5.invoices;
+		var invoice_pdf_files = _state5.invoice_pdf_files;
 
 		return React.createElement(
 			'div',
@@ -85221,7 +85210,7 @@ var TradyMaintenanceRequest = React.createClass({
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
-					this.props.quotes.length > 0 && React.createElement(Quotes, {
+					this.props.quotes && this.props.quotes.length > 0 && React.createElement(Quotes, {
 						keyLandlord: 'trady',
 						quotes: this.state.quotes,
 						landlord: this.state.landlord,
@@ -85232,14 +85221,15 @@ var TradyMaintenanceRequest = React.createClass({
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
 					}),
-					this.props.invoices.length > 0 && React.createElement(Invoices, {
-						invoices: this.state.invoices,
+					invoices && invoices.length > 0 && React.createElement(Invoices, {
+						invoices: invoices,
 						viewInvoice: function (key, item) {
 							return _this3.viewItem(key, item);
 						}
 					}),
-					this.props.invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
-						invoice_pdf_files: this.state.invoice_pdf_files,
+					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						trady: this.props.assigned_trady,
+						invoice_pdf_files: invoice_pdf_files,
 						viewPDFInvoice: function (key, item) {
 							return _this3.viewItem(key, item);
 						}
@@ -85271,7 +85261,7 @@ var TradyMaintenanceRequest = React.createClass({
 						invoice_pdf_files: this.props.invoice_pdf_files,
 						maintenance_request: this.state.maintenance_request
 					}),
-					appointments.length > 0 && React.createElement(AppointmentRequest, {
+					appointments && appointments.length > 0 && React.createElement(AppointmentRequest, {
 						appointments: appointments,
 						title: 'Work Order Appointments',
 						cancelAppointment: function (value) {
@@ -85288,7 +85278,7 @@ var TradyMaintenanceRequest = React.createClass({
 							return _this3.decline(value);
 						}
 					}),
-					quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
+					quote_appointments && quote_appointments.length > 0 && React.createElement(AppointmentRequest, {
 						title: 'Appointments For Quotes',
 						appointments: quote_appointments,
 						cancelAppointment: function (value) {
@@ -85306,7 +85296,7 @@ var TradyMaintenanceRequest = React.createClass({
 						}
 					})
 				),
-				appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				appointments && appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					appointments: appointments,
 					title: 'Work Order Appointments',
 					cancelAppointment: function (value) {
@@ -85323,7 +85313,7 @@ var TradyMaintenanceRequest = React.createClass({
 						return _this3.decline(value);
 					}
 				}),
-				quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
+				quote_appointments && quote_appointments.length > 0 && React.createElement(AppointmentRequestMobile, {
 					title: 'Appointments For Quotes',
 					appointments: quote_appointments,
 					cancelAppointment: function (value) {
