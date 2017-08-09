@@ -526,6 +526,15 @@ body::-webkit-scrollbar-thumb {
           width: 48px;
           height: 48px;
         }
+        .icon-user {
+          float: left;
+          display: block;
+          margin: 20px 0px 0 20px;
+          i {
+            font-size: 40px;
+            color: #849aaa;
+          }
+        }
       }
       .info {
         margin-left: 10px;

@@ -73,7 +73,7 @@
           %td.border-none.p-b-n{:colspan => 3}
           %td.border-none.text-right.font-bold.p-b-n Subtotal:
           %td.border-none.text-right.p-b-n
-            = "$#{@quote.amount}"
+            = "$#{(@quote.amount - @quote.gst_amount).round(2)}"
         %tr
           %td.p-t-n{:colspan => 3}
           %td.text-right.p-t-n GST 10%:
