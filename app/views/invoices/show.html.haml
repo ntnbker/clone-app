@@ -78,7 +78,7 @@
             %td.border-none.p-b-n{:colspan => 3}
             %td.border-none.text-right.font-bold.p-b-n Subtotal:
             %td.border-none.text-right.p-b-n.font-bold
-              ="$ #{@invoice.amount.round(3)}"
+              ="$ #{(@invoice.amount - @invoice.gst_amount).round(2)}"
           %tr
             %td.p-t-n{:colspan => 3}
             %td.text-right.p-t-n GST 10%:

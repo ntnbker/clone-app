@@ -369,9 +369,9 @@ var ItemMaintenanceRequest = React.createClass({
 		const {status} = this.props;
 		const props = this.props;
 		const d = new Date();
-  	const n = d.getTimezoneOffset();
-  	const date = new Date(maintenance.created_at);
-		let created_at = moment(date).utcOffset(+n).startOf('hour').fromNow();
+		const n = d.getTimezoneOffset();
+		const date = new Date(maintenance.created_at);
+		let created_at = moment(date + (-n/60)).fromNow();
 		return (
 			<div className="post">
 				<div className="info">
