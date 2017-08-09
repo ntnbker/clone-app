@@ -6,9 +6,9 @@ class AgentMaintenanceRequestsController < ApplicationController
   before_action(only:[:show]) {belong_to_agent}
   def index
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at ASC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at ASC')
     else
-      @maintenance_requests = current_user.agent.maintenance_requests.order('created_at DESC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at DESC')
     end
     
 

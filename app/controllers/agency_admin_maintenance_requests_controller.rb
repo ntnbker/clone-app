@@ -9,9 +9,9 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
 
   def index
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at ASC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at ASC')
     else
-      @maintenance_requests = current_user.agency_admin.maintenance_requests.order('created_at DESC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at DESC')
     end
 
     @page = params[:page]
