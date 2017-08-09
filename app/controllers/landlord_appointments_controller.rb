@@ -107,7 +107,7 @@ class LandlordAppointmentsController < ApplicationController
     if params[:current_user_role] == "Landlord"
       #Email the tenant that a new appointment will be suggested to them. 
       
-      LandlordDeclinedAppointmentEmailWorker.perform_async(tenant.id,maintenance_request.id)
+      LandlordDeclinedAppointmentEmailWorker.perform_async(tenant.id,maintenance_request.id,appointment.id)
     elsif params[:current_user_role] == "Tenant"
       #email the landlord that a new appointment will be suggested to them. 
         TenantDeclinedLandlordAppointmentEmailWorker.perform_async(landlord.id,tenant.id,maintenance_request.id,appointment.id)
