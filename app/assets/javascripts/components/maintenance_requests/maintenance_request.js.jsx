@@ -447,7 +447,7 @@ var ModalConfirmUpdateStatus = React.createClass({
 								data-dismiss="modal"
 								onClick={this.props.click}
 								className="btn btn-default success"
-							>Yep</button>
+							>Yes</button>
 							<button
 								type="button"
 								className="btn btn-primary cancel"
