@@ -1,5 +1,5 @@
 class TenantMailer < ActionMailer::Base
-  default from: 'info@maintenanceapp.com.au'
+  default from: 'info@mg.maintenanceapp.com.au'
   def send_tenant_initial_appointment_request(maintenance_request,appointment, tenant, trady)
 
     @appointment = appointment
