@@ -188,12 +188,13 @@ class QuotesController < ApplicationController
     trady = @quote.trady
 
     quote_request = QuoteRequest.where(:trady_id=>@quote.trady.id, :maintenance_request_id=>@maintenance_request.id).first
-    
-    if quote_request.quote_id.blank?
-      quote_request.update_attribute(:quote_id, @quote.id)
-    else  
+    if quote_request
+      if quote_request.quote_id.blank?
+        quote_request.update_attribute(:quote_id, @quote.id)
+      else  
 
-    end
+      end
+    end 
 
     if @quote.delivery_status == false
       flash[:success] = "Your Quote has been sent Thank you"
