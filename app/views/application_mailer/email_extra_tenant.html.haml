@@ -1,7 +1,7 @@
 !!! 5
 %html(lang="en-US")
   %head
-    
+    %link{:href => "https://fonts.googleapis.com/css?family=Raleway:400,600,700&amp;subset=latin-ext", :rel => "stylesheet"}
     %style{:type => "text/css"}
       :sass
         body
@@ -86,9 +86,10 @@
   %body
     .container-email
       .header
-        
-        %span
-          MaintenanceApp
+        = link_to "#", :class => "logo" do
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
+          %span
+            MaintenanceApp
 
       .main
         %p.content
@@ -115,4 +116,11 @@
           %br
             %unsubscribe_url
         .share
-         
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
