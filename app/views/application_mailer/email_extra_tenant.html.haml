@@ -87,7 +87,7 @@
     .container-email
       .header
         = link_to "#", :class => "logo" do
-          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img', :alt=>"Logo Image"}
           %span
             MaintenanceApp
 
@@ -98,12 +98,7 @@
             Thank you for submitting your maintenance request through maintenanceapp. 
           %br
             Your request has been emailed to the agent and we will be updating you with its progress.
-          %br
-            To view the maintenance request submitted, please click the button below.
-        
-        %div.text-center
-          =link_to "View Maintenance Request", tenant_maintenance_request_url(@maintenance_request, user_id:@user.id), class: 'btn'
-
+       
         %p.thank
           Thank you
 
@@ -116,11 +111,4 @@
           %br
             %unsubscribe_url
         .share
-          = link_to "#", :class => 'link-share' do
-            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
-          = link_to "#", :class => 'link-share' do
-            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
-          = link_to "#", :class => 'link-share' do
-            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
-          = link_to "#", :class => 'link-share' do
-            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
+          
