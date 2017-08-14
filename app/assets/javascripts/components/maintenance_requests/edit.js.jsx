@@ -136,3 +136,45 @@ var EditMaintenanceRequest = React.createClass({
 		);
 	}
 });
+
+var ModalEditDescription = React.createClass({
+	render: function() {
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<form role="form" id="addForm" onSubmit={this.submit}>
+							<div className="modal-header">
+								<button 
+									type="button" 
+									className="close"
+									aria-label="Close" 
+									data-dismiss="modal" 
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Edit Description</h4>
+							</div>
+							<div className="modal-body edit-maintenance-request">
+							</div>
+							<div className="modal-footer">
+								<button 
+									type="button" 
+									onClick={this.props.close}
+									className="btn btn-primary cancel" 
+								>Cancel</button>
+								<button 
+									type="submit" 
+									className="btn btn-default success" 
+								>
+									Submit
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});

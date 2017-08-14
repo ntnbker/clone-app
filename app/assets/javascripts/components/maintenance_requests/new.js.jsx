@@ -197,7 +197,7 @@ var MaintenanceRequestsNew = React.createClass({
       contentType: false,
       data: FD,
       success: function(res){
-
+        
       },
       error: function(err) {
 
@@ -322,11 +322,13 @@ var MaintenanceRequestsNew = React.createClass({
               if(evt.loaded > 0 && evt.total > 0) {
                 var progressValue = self.state.progress + evt.loaded;
                 var totalProgress = self.state.totalProgress/(self.state.totalFile + 1) + evt.total * self.state.totalFile;
-                self.setState({
-                  progress: progressValue,
-                  totalProgress: totalProgress,
-                  totalFile: self.state.totalFile - 1,
-                });
+                if(evt.loaded == evt.total) {
+                  self.setState({
+                    progress: progressValue,
+                    totalProgress: totalProgress / self.state.totalFile,
+                    totalFile: self.state.totalFile - 1,
+                  });
+                }
                 var percentComplete = Math.ceil(progressValue / totalProgress * 100);
                 var progress = $('.progress');
                 if(progress.length == 0) {
