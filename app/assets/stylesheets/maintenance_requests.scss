@@ -803,18 +803,18 @@ form#new_maintenance_request {
     margin-bottom: 15px;
     border-radius: 4px;
     button {
-        line-height: 38px;
-        border: none;
-        width: 100%;
-        display: block;
-        text-align: left;
-        margin-left: 15px;
-        padding: 0;
-        color: #fff;
-        span {
-            padding-left: 20px;
-            display: inline-block;
-        }
+      line-height: 38px;
+      border: none;
+      width: 100%;
+      display: block;
+      text-align: left;
+      margin-left: 15px;
+      padding: 0;
+      color: #fff;
+      span {
+          padding-left: 20px;
+          display: inline-block;
+      }
     }
     .dropdown-menu {
         width: 200px;
@@ -845,13 +845,36 @@ form#new_maintenance_request {
         display: block;
     }
 }
+.archived {
+  line-height: 38px;
+  margin-left: 30px;
+  .count {
+    border: 1px solid #fff;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    line-height: 25px;
+    margin: auto 0;
+    margin-left: 10px;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+  }
+  a {
+    color: #fff;
+    padding-left: 10px;
+    text-decoration: inherit;
+    cursor: pointer;
+  }
+}
 .dropzone {
     border: 2px dashed #0087F7;
     padding: 10px 10px;
     .dz-preview {
-        margin: 0px;
-        margin-left: 10px;
-        margin-bottom: 10px;
+      margin: 0px;
+      margin-left: 10px;
+      margin-bottom: 10px;
     }
 }
 .m-b-lg {
@@ -862,4 +885,18 @@ form#new_maintenance_request {
         padding: 0;
         width: 100%;
     }
+}
+.dropdown-MR {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 480px) {
+  .archived {
+    margin-left: 0;
+  }
+  .dropdown-MR {
+    flex-direction: column;
+    align-items: center;
+  }
 }
