@@ -5,9 +5,10 @@ class ImagesController < ApplicationController
 
     image =  Image.create(image_params)
     gallery = maintenance_request.get_image_urls
-    response_to do |format|
+    respond_to do |format|
       format.json {render :json=>{:all_images=>gallery}}
     end 
+
   end
 
   private

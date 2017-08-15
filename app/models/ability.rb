@@ -84,6 +84,8 @@ class Ability
         can :show, :maintenance_request
         can :ordered_maintenance_requests, :maintenance_request
         can :edit, :appointment
+
+        can :update, :images
       end 
 
       if @user.has_role("Trady") && @user.logged_in_as("Trady")
