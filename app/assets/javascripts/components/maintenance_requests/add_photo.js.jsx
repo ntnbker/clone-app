@@ -6,6 +6,7 @@ var ModalAddPhoto = React.createClass({
       totalFile: 0,
       dataImages: [],
       totalProgress: 0,
+      gallery: this.props.gallery
 		};		
 	},
 
@@ -309,7 +310,7 @@ var ModalAddPhoto = React.createClass({
       contentType: false,
       data: FD,
       success: function(res){
-      	props.notifyAddPhoto(res.all_gallery);
+      	props.notifyAddPhoto(res.all_images.length > 0 ? res.all_images : []);
       },
       error: function(err) {
 
@@ -318,9 +319,14 @@ var ModalAddPhoto = React.createClass({
     return false;
 	},
 
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({
+      gallery: nextProps.gallery
+    });
+  },
+
 	render: function() {
-		const {gallery} = this.props;
-		const {images} = this.state;
+		const {images, gallery} = this.state;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
