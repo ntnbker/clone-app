@@ -2215,7 +2215,6 @@ var MaintenanceRequest = React.createClass({
 	componentDidMount: function() {
 		const self = this;
 		const {instruction} = this.state;
-		const body = $('body');
 		if(!instruction.read_instruction) {
 			body.chardinJs('start');
 			this.onModalWith('viewModalInstruction');

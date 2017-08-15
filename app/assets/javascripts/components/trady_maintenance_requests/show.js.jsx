@@ -276,6 +276,7 @@ var TradyMaintenanceRequest = React.createClass({
 			invoice_pdf_file: null,
 			appointmentUpdate: null,
 			appointments: appointments,
+			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			invoice_pdf_files: pdf_urls,
 			quote_appointments: quote_appointments,
@@ -900,6 +901,24 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'addPhoto':
+					return (
+						<ModalAddPhoto
+							close={this.isClose}
+							gallery={this.state.gallery}
+							notifyAddPhoto={this.notifyAddPhoto}
+							authenticity_token={this.props.authenticity_token}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					);
+
+				case 'editDescription':
+					return (
+						<ModalEditDescription
+							close={this.isClose}
+						/>
+					);
+
 				default:
 					return null;
 			}
@@ -1016,6 +1035,18 @@ var TradyMaintenanceRequest = React.createClass({
 		return json;
 	},
 
+	notifyAddPhoto: function(gallery) {
+		this.setState({
+			gallery: gallery,
+			notification: {
+				bgClass: "bg-success",
+				title: "Add Photo",
+				content: "Uploaded image of maintenance request",
+			}
+		});
+		this.onModalWith('notification');
+	},
+
 	render: function() {
 		const {appointments, quote_appointments, invoices, invoice_pdf_files} = this.state;
 		return (
@@ -1023,7 +1054,7 @@ var TradyMaintenanceRequest = React.createClass({
 				<div className="main-summary">
 					<div className="section">
 						<ItemMaintenanceRequest
-							gallery={this.props.gallery}
+							gallery={this.state.gallery}
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
@@ -1072,6 +1103,10 @@ var TradyMaintenanceRequest = React.createClass({
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.state.maintenance_request}
 						/>
+						<TradyDetail
+							current_user={this.props.current_user}
+							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
 						{
 							(appointments && appointments.length > 0) &&
 								<AppointmentRequest
@@ -1097,6 +1132,10 @@ var TradyMaintenanceRequest = React.createClass({
 								/>
 						}
 					</div>
+					<TradyDetailMobile
+						current_user={this.props.current_user}
+						onModalWith={(modal) => this.onModalWith(modal)}
+					/>
 					{
 						(appointments && appointments.length > 0) &&
 							<AppointmentRequestMobile

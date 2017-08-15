@@ -73,7 +73,8 @@ var Carousel = React.createClass({
 
 	componentWillReceiveProps: function(nextProps) {
 		this.setState({
-			gallery: nextProps.gallery
+			gallery: nextProps.gallery,
+			stlen: nextProps.gallery.length > 0 ? nextProps.gallery.length : 0
 		});
 	},
 
