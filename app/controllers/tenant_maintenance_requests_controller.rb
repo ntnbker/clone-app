@@ -75,7 +75,7 @@ class TenantMaintenanceRequestsController < ApplicationController
     @appointment.comments.build
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-
+    @added_image =  Image.new
     
 
     @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})

@@ -29,3 +29,10 @@
 /             =f.time_select :time, {ampm: true}
 /         %div.form-group.text-center
 /           =f.button "Submit Appointment Time and Comment"
+
+
+= form_for @added_image, url:"/update_images" do |f| 
+  = f.hidden_field :image, value: @added_image.cached_image_data 
+  = f.hidden_field :maintenance_request_id, value: @maintenance_request.id
+  = f.file_field :image 
+  =f.submit
