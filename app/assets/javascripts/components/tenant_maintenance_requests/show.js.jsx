@@ -638,8 +638,9 @@ var TenantMaintenanceRequest = React.createClass({
 						<ModalAddPhoto
 							close={this.isClose}
 							gallery={this.state.gallery}
-							maintenance_request={this.state.maintenance_request}
 							notifyAddPhoto={this.notifyAddPhoto}
+							authenticity_token={this.props.authenticity_token}
+							maintenance_request={this.state.maintenance_request}
 						/>
 					);
 

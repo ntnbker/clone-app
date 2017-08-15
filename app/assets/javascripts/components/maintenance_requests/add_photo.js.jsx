@@ -293,7 +293,7 @@ var ModalAddPhoto = React.createClass({
     var FD = new FormData();
     this.state.dataImages.map((image, index) => {
       var idx = index + 1;
-      FD.append('image', JSON.stringify(image));
+      FD.append('image['+ idx + ']', JSON.stringify(image));
     });
     FD.append('maintenance_request_id', this.props.maintenance_request.id);
 
