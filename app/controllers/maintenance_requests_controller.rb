@@ -294,7 +294,7 @@ class MaintenanceRequestsController < ApplicationController
       end
 
       Log.create(maintenance_request_id:@maintenance_request.id, action:"Maintenance request created.")
-      
+      binding.pry
     else
       
       flash[:danger]= "Something went wrong."
