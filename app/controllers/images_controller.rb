@@ -25,6 +25,6 @@ class ImagesController < ApplicationController
   private
 
   def image_params
-    params.require(:maintenance_request).permit(images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
+    params.require(:picture).permit(:image, :maintenance_request_id)
   end
 end 
