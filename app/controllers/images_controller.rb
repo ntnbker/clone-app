@@ -2,14 +2,11 @@ class ImagesController < ApplicationController
 
   def update
 
-    # maintenance_request = MaintenanceRequest.find_by(id:params[:picture][:maintenance_request_id])
-
-    @image =  Image.new(image_params)
-    binding.pry
+    maintenance_request = MaintenanceRequest.find_by(id:params[:picture][:maintenance_request_id])
+    image =  Image.new(image_params)
 
     if image.save
-      binding.pry
-      gallery = "maintenance_request.get_image_urls"
+      gallery = maintenance_request.get_image_urls
       respond_to do |format|
         format.json {render :json=>{:all_images=>gallery}}
       end 

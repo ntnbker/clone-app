@@ -294,9 +294,10 @@ var ModalAddPhoto = React.createClass({
     var FD = new FormData();
     this.state.dataImages.map((image, index) => {
       var idx = index + 1;
-      FD.append('maintenance_request[images_attributes]['+ idx + '][image]', JSON.stringify(image));
-      FD.append('maintenance_request[images_attributes][maintenance_request_id]', this.props.maintenance_request.id);
+      FD.append('picture[image]', JSON.stringify(image));
     });
+
+    FD.append('picture[maintenance_request_id]', this.props.maintenance_request.id);
 
     var props = this.props;
     $.ajax({
@@ -367,19 +368,22 @@ var ModalAddPhoto = React.createClass({
 		                  );
 		                })
 		              }
-									<div className="browse-wrap img">
-										<div className="title" id="title-upload">
-											<i className="fa fa-cloud-upload" />
-										</div>
-										<input 
-											multiple
-			                type="file"
-			                id="input-file"
-			                className="upload inputfile"
-			                accept="image/jpeg, image/png"
-											onChange={(e)=>this._handleImageChange(e)}
-										/>
-									</div>
+                  {
+                    images.length == 0 &&
+                    <div className="browse-wrap img">
+                      <div className="title" id="title-upload">
+                        <i className="fa fa-cloud-upload" />
+                      </div>
+                      <input 
+                        multiple
+                        type="file"
+                        id="input-file"
+                        className="upload inputfile"
+                        accept="image/jpeg, image/png"
+                        onChange={(e)=>this._handleImageChange(e)}
+                      />
+                    </div>
+                  }
 								</div>
 								<div className="progress">
 									<div className="title">
