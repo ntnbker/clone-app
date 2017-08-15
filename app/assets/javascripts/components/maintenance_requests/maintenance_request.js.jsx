@@ -71,6 +71,12 @@ var Carousel = React.createClass({
 		}
 	},
 
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			gallery: nextProps.gallery
+		});
+	},
+
 	render: function() {
 		var styles = {
 			left: this.state.stx,
@@ -114,10 +120,10 @@ var Carousel = React.createClass({
 				}
 				</div>
 				{
-					this.props.gallery.length > 1 && <div className="btn-slider btn-next" onClick={this.sliderNext}><i className="fa fa-angle-right"></i></div>
+					this.state.gallery.length > 1 && <div className="btn-slider btn-next" onClick={this.sliderNext}><i className="fa fa-angle-right"></i></div>
 				}
 				{
-					this.props.gallery.length > 1 && <div className="btn-slider btn-prev" onClick={this.sliderPrev}><i className="fa fa-angle-left"></i></div>
+					this.state.gallery.length > 1 && <div className="btn-slider btn-prev" onClick={this.sliderPrev}><i className="fa fa-angle-left"></i></div>
 				}
 
 			</div>

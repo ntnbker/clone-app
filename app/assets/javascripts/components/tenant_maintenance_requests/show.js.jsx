@@ -21,11 +21,15 @@ var TenantSideBarMobile = React.createClass({
 
 	close: function() {
 		if($('#actions-full').length > 0) {
-			this.setState({showDetail: false});
+			if(!!this.showDetail) {
+				this.setState({showDetail: false});
+			}
 			$('#actions-full').css({'height': 0, 'border-width': 0});
 		}
 		if($('#contacts-full').length > 0) {
-			this.setState({showContact: false});
+			if(this.state.showContact) {
+				this.setState({showContact: false});
+			}
 			$('#contacts-full').css({'height': 0, 'border-width': 0});
 		}
 	},
@@ -131,7 +135,9 @@ var TenantMaintenanceRequest = React.createClass({
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
+		if(div) {
+			div.parentNode.removeChild(div);
+		}
 	},
 
 	onModalWith: function(modal) {
