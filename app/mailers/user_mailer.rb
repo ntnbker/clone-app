@@ -1,4 +1,6 @@
+require 'digest/sha2'
 class UserMailer < ActionMailer::Base
+  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@mg.maintenanceapp.com.au"
    default from: 'info@mg.maintenanceapp.com.au'
 
   def reset_password_email(user)
