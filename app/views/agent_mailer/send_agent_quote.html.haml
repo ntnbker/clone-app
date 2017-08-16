@@ -92,8 +92,8 @@
             MaintenanceApp
 
       .main
-        %p.content
-          -if @maintenance_request.agent 
+        
+        -if @maintenance_request.agent 
           %p.content 
             Hi #{@maintenance_request.agent.name.capitalize},
             %br
