@@ -1105,6 +1105,7 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 						<TradyDetail
 							current_user={this.props.current_user}
+							assigned_trady={this.props.assigned_trady}
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						{
@@ -1135,6 +1136,7 @@ var TradyMaintenanceRequest = React.createClass({
 					<TradyDetailMobile
 						current_user={this.props.current_user}
 						onModalWith={(modal) => this.onModalWith(modal)}
+						assigned_trady={this.props.assigned_trady}
 					/>
 					{
 						(appointments && appointments.length > 0) &&

@@ -1,21 +1,24 @@
 var ContentTradyDetail = React.createClass({
 	render: function() {
-		const selt = this;
 		return (
-			<ul>
-				<li>
-					<a onClick={() => selt.props.onModalWith('addPhoto')}>
-						<i className="fa fa-commenting" aria-hidden="true" />
-						Add Photo
-					</a>
-				</li>
-				<li>
-					<a onClick={() => selt.props.onModalWith('editDescription')}>
-						<i className="fa fa-commenting" aria-hidden="true" />
-						Edit Description
-					</a>
-				</li>
-			</ul>
+			<div>
+				{ this.props.assigned_trady &&
+						<ul>
+							<li>
+								<a onClick={() => selt.props.onModalWith('addPhoto')}>
+									<i className="fa fa-commenting" aria-hidden="true" />
+									Add Photo
+								</a>
+							</li>
+							<li>
+								<a onClick={() => selt.props.onModalWith('editDescription')}>
+									<i className="fa fa-commenting" aria-hidden="true" />
+									Edit Description
+								</a>
+							</li>
+						</ul>
+				}
+			</div>
 		);
 	}
 });
@@ -43,7 +46,12 @@ var TradyDetail = React.createClass({
 					/>
 				</div>
 				<div className="content">
-					{ this.state.show && <ContentTradyDetail onModalWith={(modal) => this.props.onModalWith(modal)} /> }
+					{ this.state.show && 
+							<ContentTradyDetail 
+								assigned_trady={this.props.assigned_trady}
+								onModalWith={(modal) => this.props.onModalWith(modal)}
+							/>
+					}
 				</div>
 			</div>
 		);
@@ -65,7 +73,8 @@ var TradyDetailMobile = React.createClass({
 					</div>
 					<div className="content">
 						<ContentTradyDetail 
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
+							assigned_trady={this.props.assigned_trady}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
 					</div>
 				</div>
