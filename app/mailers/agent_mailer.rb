@@ -71,7 +71,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"Quote approved by landlord #{@landlord.name.capitalize} - #{@property.property_address}.")
+    mail(to:email, subject:"Quote approved for - #{@property.property_address}.")
   end
 
   def notify_agent_about_landlord_message(maintenance_request)
