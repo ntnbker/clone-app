@@ -1111,7 +1111,7 @@ var ModalRequestModal = React.createClass({
 																value={item.id}
 																selected={trady.id == item.id && "selected"}
 															>
-																{item.name}
+																{item.company_name}
 															</option>
 														);
 													})
@@ -2196,6 +2196,14 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'confirmAddPhoto':
+					return (
+						<ModalConfirmAddPhoto
+							close={this.isClose}
+							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
+					);
+
 				default:
 					return null;
 			}
@@ -2302,15 +2310,9 @@ var MaintenanceRequest = React.createClass({
 
 	notifyAddPhoto: function(gallery) {
 		this.setState({
-			gallery: gallery,
-			notification: {
-				bgClass: "bg-success",
-				title: "Add Photo",
-				content: "Uploaded image of maintenance request",
-			}
+			gallery: gallery
 		});
-		this.onModalWith('notification');
-		this.onModalWith('editMaintenanceRequest');
+		this.onModalWith('confirmAddPhoto');
 	},
 
 	summary(e) {

@@ -657,6 +657,14 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'confirmAddPhoto':
+					return (
+						<ModalConfirmAddPhoto
+							close={this.isClose}
+							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
+					);
+
 				default:
 					return null;
 			}
@@ -736,14 +744,9 @@ var TenantMaintenanceRequest = React.createClass({
 
 	notifyAddPhoto: function(gallery) {
 		this.setState({
-			gallery: gallery,
-			notification: {
-				bgClass: "bg-success",
-				title: "Add Photo",
-				content: "Uploaded image of maintenance request",
-			}
+			gallery: gallery
 		});
-		this.onModalWith('notification');
+		this.onModalWith('confirmAddPhoto');
 	},
 
 	render: function() {

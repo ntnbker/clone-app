@@ -9,12 +9,6 @@ var ContentTenantDetail = React.createClass({
 						Add Photo
 					</a>
 				</li>
-				<li>
-					<a onClick={() => selt.props.onModalWith('editDescription')}>
-						<i className="fa fa-commenting" aria-hidden="true" />
-						Edit Description
-					</a>
-				</li>
 			</ul>
 		);
 	}

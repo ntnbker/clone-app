@@ -3,20 +3,14 @@ var ContentTradyDetail = React.createClass({
 		return (
 			<div>
 				{ this.props.assigned_trady &&
-						<ul>
-							<li>
-								<a onClick={() => selt.props.onModalWith('addPhoto')}>
-									<i className="fa fa-commenting" aria-hidden="true" />
-									Add Photo
-								</a>
-							</li>
-							<li>
-								<a onClick={() => selt.props.onModalWith('editDescription')}>
-									<i className="fa fa-commenting" aria-hidden="true" />
-									Edit Description
-								</a>
-							</li>
-						</ul>
+					<ul>
+						<li>
+							<a onClick={() => selt.props.onModalWith('addPhoto')}>
+								<i className="fa fa-commenting" aria-hidden="true" />
+								Add Photo
+							</a>
+						</li>
+					</ul>
 				}
 			</div>
 		);

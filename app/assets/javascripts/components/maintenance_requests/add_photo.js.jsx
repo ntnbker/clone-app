@@ -158,12 +158,12 @@ var ModalAddPhoto = React.createClass({
               	}
                 var percentComplete = Math.ceil(progressValue / totalProgress * 100);
                 var progress = $('.progress');
-                if(progress.length > 0) {
-                	$('.progress').css('display', 'block');
-                	$('.browse-wrap').css('display', 'none');
-                	$('.progress .title').html('Uploading ' + percentComplete + '%');
+                if(progress.length == 0) {
+                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
+                }else {
                   $('.progress .progress-bar').css('width', percentComplete + '%');
                 }
+                $('#title-upload').html('Uploading ' + percentComplete + '%');
               }
             }, false);
             return xhr;
@@ -176,8 +176,7 @@ var ModalAddPhoto = React.createClass({
                 totalProgress: 0,
               });
               setTimeout(function() {
-                $('.progress').css('display', 'none')
-              	$('.browse-wrap').css('display', 'block');
+                $('.progress').remove();
               }, 500);
             }
             var image = {
@@ -327,7 +326,7 @@ var ModalAddPhoto = React.createClass({
   },
 
 	render: function() {
-		const {images, gallery} = this.state;
+		const {images, gallery, dataImages} = this.state;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -368,29 +367,24 @@ var ModalAddPhoto = React.createClass({
 		                  );
 		                })
 		              }
-                  {
-                    images.length == 0 &&
-                    <div className="browse-wrap img">
-                      <div className="title" id="title-upload">
-                        <i className="fa fa-cloud-upload" />
-                      </div>
-                      <input 
-                        multiple
-                        type="file"
-                        id="input-file"
-                        className="upload inputfile"
-                        accept="image/jpeg, image/png"
-                        onChange={(e)=>this._handleImageChange(e)}
-                      />
+								</div>
+                {
+                  dataImages.length == 0 &&
+                  <div className="browse-wrap">
+                    <div className="title" id="title-upload">
+                      <i className="fa fa-upload" />
+                      Choose image to upload
                     </div>
-                  }
-								</div>
-								<div className="progress">
-									<div className="title">
-
-									</div>
-									<div className="progress-bar"></div>
-								</div>
+                    <input
+                      multiple
+                      type="file"
+                      id="input-file"
+                      className="upload inputfile"
+                      accept="image/jpeg, image/png"
+                      onChange={(e)=>this._handleImageChange(e)}
+                    />
+                  </div>
+                }
 							</div>
 							<div className="modal-footer">
 								<button 
@@ -411,4 +405,46 @@ var ModalAddPhoto = React.createClass({
 			</div>
 		);
 	}
+});
+
+var ModalConfirmAddPhoto = React.createClass({
+  render: function() {
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button 
+                type="button" 
+                className="close"
+                data-dismiss="modal" 
+                aria-label="Close" 
+                onClick={this.props.close}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 className="modal-title text-center">Add Photo</h4>
+            </div>
+            <div className="modal-body">
+              <p className="text-center">Thank you for uploading an image. Do you want to add another image?</p>
+            </div>
+            <div className="modal-footer">
+              <button 
+                type="button" 
+                className="btn btn-default success" 
+                onClick={() => this.props.onModalWith('addPhoto')} 
+                data-dismiss="modal"
+              >Yes</button>
+              <button 
+                type="button" 
+                className="btn btn-default cancel" 
+                onClick={this.props.close} 
+                data-dismiss="modal"
+              >No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 });
