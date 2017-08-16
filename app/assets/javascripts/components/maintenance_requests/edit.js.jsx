@@ -80,6 +80,15 @@ var EditMaintenanceRequest = React.createClass({
 								<h4 className="modal-title text-center">Edit Maintenance Request</h4>
 							</div>
 							<div className="modal-body edit-maintenance-request">
+								<div className="row">
+									<button 
+										type="button" 
+										className="btn-edit"
+										onClick={() => this.props.onModalWith('addPhoto')}
+									>
+										Add Photo
+									</button>
+								</div>
 								<div className="row m-t-lg">
 									<label>Service Type:</label>
 									<select 
