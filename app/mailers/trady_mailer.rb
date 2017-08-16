@@ -1,5 +1,5 @@
 class TradyMailer < ActionMailer::Base
-  default from: 'info@maintenanceapp.com.au'
+  default from: 'info@mg.maintenanceapp.com.au'
   def request_quote_email(trady_object, maintenance_request_object)
     @trady = trady_object
     @maintenance_request = maintenance_request_object

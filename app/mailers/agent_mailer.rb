@@ -1,5 +1,5 @@
 class AgentMailer < ActionMailer::Base
-  default from: 'info@maintenanceapp.com.au'
+  default from: 'info@mg.maintenanceapp.com.au'
   def send_agent_quote(maintenance_request, quote)
     @maintenance_request = maintenance_request
     @property= @maintenance_request.property

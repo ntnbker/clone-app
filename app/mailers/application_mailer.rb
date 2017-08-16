@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'info@maintenanceapp.com.au'
+  default from: 'info@mg.maintenanceapp.com.au'
   # layout 'mailer'
   # default from: 'notify@mysite.com'
 
