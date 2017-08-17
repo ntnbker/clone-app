@@ -65,7 +65,7 @@ Rails.application.configure do
   :address        => ENV['SENDGRID_SMTP_SERVER'],
   :user_name      => ENV['SENDGRID_USERNAME'],
   :password       => ENV['SENDGRID_PASSWORD'],
-  :domain         => 'heroku.com',
+  :domain         => 'fast-scrubland-62955.herokuapp.com',
   :authentication => :plain,
   :enable_starttls_auto => true
 }
