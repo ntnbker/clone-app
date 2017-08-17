@@ -61,10 +61,10 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   ActionMailer::Base.smtp_settings = {
-  :port           => ENV['MAILGUN_SMTP_PORT'],
-  :address        => ENV['MAILGUN_SMTP_SERVER'],
-  :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
-  :password       => ENV['MAILGUN_SMTP_PASSWORD'],
+  :port           => ENV['SENDGRID_SMTP_PORT'],
+  :address        => ENV['SENDGRID_SMTP_SERVER'],
+  :user_name      => ENV['SENDGRID_LOGIN'],
+  :password       => ENV['SENDGRID_PASSWORD'],
   :domain         => 'maintenanceapp.com.au',
   :authentication => :plain,
 }
