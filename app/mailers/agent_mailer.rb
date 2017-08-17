@@ -1,7 +1,7 @@
 require 'digest/sha2'
 class AgentMailer < ActionMailer::Base
-  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sg.maintenanceapp.com.au"
-  default from: 'info@sg.maintenanceapp.com.au'
+  # default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sg.maintenanceapp.com.au"
+  default from: 'info@email.com'
   def send_agent_quote(maintenance_request, quote)
     @maintenance_request = maintenance_request
     @property= @maintenance_request.property

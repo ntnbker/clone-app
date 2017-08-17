@@ -43,6 +43,7 @@ gem "aws-sdk", "~> 2.1"
 gem 'chardinjs-rails'
 gem "shrine"
 gem "roda"
+
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
 gem 'twilio-ruby', '~> 4.11.1'

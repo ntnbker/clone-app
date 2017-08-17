@@ -75,7 +75,7 @@ config.action_mailer.default_url_options = { :host => 'https://fast-scrubland-62
 config.action_mailer.asset_host = 'https://fast-scrubland-62955.herokuapp.com'
 config.action_controller.asset_host = 'https://fast-scrubland-62955.herokuapp.com'
 
-
+config.action_mailer.raise_delivery_errors = true
 
 
 
