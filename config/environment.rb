@@ -15,4 +15,5 @@ ActionMailer::Base.smtp_settings = {
   :password       => ENV['SENDGRID_PASSWORD'],
   :domain         => 'fast-scrubland-62955.herokuapp.com',
   :authentication => :plain,
+  :enable_starttls_auto => true
 }
