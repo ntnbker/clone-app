@@ -1,7 +1,7 @@
 require 'digest/sha2'
 class LandlordMailer < ActionMailer::Base
-  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sg.maintenanceapp.com.au"
-  default from: 'info@sg.maintenanceapp.com.au'
+  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sm.maintenanceapp.com.au"
+  default from: 'info@sm.maintenanceapp.com.au'
   def send_landlord_maintenance_request(maintenance_request,landlord)
     track user: landlord.user
     track extra: {maintenance_request_id:maintenance_request.id}
