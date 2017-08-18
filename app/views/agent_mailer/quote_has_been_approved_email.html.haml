@@ -98,7 +98,7 @@
             %br
               The quote from #{@trady.company_name.capitalize}, has just been approved for #{@property.property_address}. If you wish to view this maintenance request, click the button below.
           %div.text-center
-            =link_to "View Maintenance Request", agency_admin_maintenance_request_url(id:@maintenance_request.id,user_id:@user.id), class: 'btn'
+            =link_to "View Maintenance Request", agent_maintenance_request_url(id:@maintenance_request.id,user_id:@user.id), class: 'btn'
             
         -elsif @maintenance_request.agency_admin
           %p.content 
@@ -106,7 +106,8 @@
             %br
               The quote from #{@trady.company_name.capitalize}, has just been approved for #{@property.property_address}. If you wish to view this maintenance request, click the button below.
           %div.text-center
-            =link_to "View Maintenance Request", agent_maintenance_request_url(id:@maintenance_request.id,user_id:@user.id), class: 'btn'
+            =link_to "View Maintenance Request", agency_admin_maintenance_request_url(id:@maintenance_request.id,user_id:@user.id), class: 'btn'
+            
 
         %p.thank
           Thanks so much!
