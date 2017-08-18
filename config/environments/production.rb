@@ -65,17 +65,17 @@ Rails.application.configure do
   :address        => ENV['SENDGRID_SMTP_SERVER'],
   :user_name      => ENV['SENDGRID_USERNAME'],
   :password       => ENV['SENDGRID_PASSWORD'],
-  :domain         => 'fast-scrubland-62955.herokuapp.com',
+  :domain         => 'maintenanceapp.com.au',
   :authentication => :plain,
   :enable_starttls_auto => true
 }
 ActionMailer::Base.delivery_method = :smtp
 
-config.action_mailer.default_url_options = { :host => 'https://fast-scrubland-62955.herokuapp.com' }
-config.action_mailer.asset_host = 'https://fast-scrubland-62955.herokuapp.com'
-config.action_controller.asset_host = 'https://fast-scrubland-62955.herokuapp.com'
+config.action_mailer.default_url_options = { :host => 'https://maintenanceapp.com.au' }
+config.action_mailer.asset_host = 'https://maintenanceapp.com.au'
+config.action_controller.asset_host = 'https://maintenanceapp.com.au'
 
-config.action_mailer.raise_delivery_errors = true
+config.action_mailer.raise_delivery_errors = false
 
 
 
