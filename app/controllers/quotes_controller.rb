@@ -307,7 +307,7 @@ class QuotesController < ApplicationController
   private
   
   def quote_params
-    params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type])
+    params.require(:quote).permit(:id,:trady_quote_reference ,:trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type])
   end
 
   def email_auto_login(id)
