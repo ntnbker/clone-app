@@ -258,7 +258,7 @@ var ModalViewInvoice = React.createClass({
 										<div className="info-agency">
 											<p>
 												<span className="font-bold">Invoice Number: </span>
-												<span> {invoice.id}</span>
+												<span> {invoice.invoice_number}</span>
 											</p>
 											<p>
 												<span className="font-bold">Invoice Date: </span>
