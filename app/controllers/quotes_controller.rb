@@ -85,19 +85,19 @@ class QuotesController < ApplicationController
     #this controller is to show the quote before sending in the quote email 
     @quote = Quote.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
+    @property = @maintenance_request.property
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_id = params[:trady_id]
     @quote_type = params[:quote_type]
     @system_plan = params[:system_plan]
-
     if @maintenance_request.agency_admin == nil
       @agency = @maintenance_request.agent.agency
     else
       @agency = @maintenance_request.agency_admin.agency
     end
 
-    if  @maintenance_request.property.landlord != nil
-      @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
+    if  @property.landlord != nil
+      @landlord = Landlord.find_by(id:@property.landlord.id)
     end 
   end
 

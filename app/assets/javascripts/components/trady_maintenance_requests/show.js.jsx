@@ -1055,6 +1055,12 @@ var TradyMaintenanceRequest = React.createClass({
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
+					{
+						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
+							<div className="section show-waring">
+								We are sorry to inform you that the job has been awarded to another company. Thank you for your quote, we will contact you for other future jobs.
+							</div>			
+					}
 					<div className="section">
 						<ItemMaintenanceRequest
 							gallery={this.state.gallery}
@@ -1087,25 +1093,33 @@ var TradyMaintenanceRequest = React.createClass({
 						}
 					</div>
 					<div className="sidebar">
-						<TradyContact
-							agent={this.props.agent}
-							tenants={this.props.tenants}
-							landlord={this.state.landlord}
-							current_user={this.props.current_user}
-							assigned_trady={this.props.assigned_trady}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							maintenance_request={this.state.maintenance_request}
-						/>
-						<TradyAction
-							trady={this.props.trady}
-							landlord={this.state.landlord}
-							invoices={this.props.invoices}
-							assigned_trady={this.props.assigned_trady}
-							signed_in_trady={this.props.signed_in_trady}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							invoice_pdf_files={this.props.invoice_pdf_files}
-							maintenance_request={this.state.maintenance_request}
-						/>
+					{
+						!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ?
+							null
+							:
+							<div>
+								<TradyContact
+									agent={this.props.agent}
+									tenants={this.props.tenants}
+									landlord={this.state.landlord}
+									current_user={this.props.current_user}
+									assigned_trady={this.props.assigned_trady}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									maintenance_request={this.state.maintenance_request}
+								/>
+								<TradyAction
+									trady={this.props.trady}
+									landlord={this.state.landlord}
+									invoices={this.props.invoices}
+									assigned_trady={this.props.assigned_trady}
+									signed_in_trady={this.props.signed_in_trady}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									invoice_pdf_files={this.props.invoice_pdf_files}
+									maintenance_request={this.state.maintenance_request}
+								/>
+							</div>
+					}
+						
 						{
 							(appointments && appointments.length > 0) &&
 								<AppointmentRequest

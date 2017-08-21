@@ -34,9 +34,9 @@
 
       %div.date-quote
         %p
-          %span.font-bold Quote Number:
+          %span.font-bold Quote Reference:
           %span
-            = "#{@quote.quote_number}"
+            = @quote.trady_quote_reference != "" ? "#{@quote.trady_quote_reference}" : "#{@property.property_address}"
         %p
           %span.font-bold Quote Date:
           %span

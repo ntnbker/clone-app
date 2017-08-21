@@ -637,8 +637,8 @@ var ModalViewQuote = React.createClass({
 										</div>
 										<div className="info-agency">
 											<p>
-												<span className="font-bold">Quote Number: </span>
-												<span> {quote.quote_number ? quote.quote_number : property.property_address}</span>
+												<span className="font-bold">Quote Reference: </span>
+												<span> {quote.trady_quote_reference != "" ? quote.trady_quote_reference : property.property_address}</span>
 											</p>
 											<p>
 												<span className="font-bold">Quote Date: </span>

@@ -97,7 +97,7 @@ var QuoteFields = React.createClass({
             <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} flag="quote"/>
 
             <div className="text-center">
-                <input type="number" className="m-t-lg text-center" defaultValue={quote && quote.trady_quote_reference} name="quote[trady_quote_reference]" placeholder="Quote Reference Number"/>
+                <input type="text" className="m-t-lg text-center" defaultValue={quote && quote.trady_quote_reference} name="quote[trady_quote_reference]" placeholder="Quote Reference Number"/>
             </div>
 
             <label className="quote_tax">

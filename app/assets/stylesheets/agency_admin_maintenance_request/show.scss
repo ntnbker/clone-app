@@ -330,6 +330,14 @@ body::-webkit-scrollbar-thumb {
   .main-summary {
     margin: auto 120px;
     overflow: hidden;
+    .show-waring {
+      color: #a94442;
+      background-color: #f2dede;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      border-radius: 5px; 
+    }
   }
   .section {
     float: left;
