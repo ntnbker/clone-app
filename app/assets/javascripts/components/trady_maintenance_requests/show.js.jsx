@@ -11,7 +11,7 @@ var TradySideBarMobile = React.createClass({
 			this.setState({showAction: true});
 			this.setState({showContact: false});
 			if($('#actions-full').length > 0) {
-				$('#actions-full').css({'height': 350, 'border-width': 1});
+				$('#actions-full').css({'height': 400, 'border-width': 1});
 			}
 		}else {
 			this.setState({showAction: false});
@@ -1106,11 +1106,6 @@ var TradyMaintenanceRequest = React.createClass({
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.state.maintenance_request}
 						/>
-						<TradyDetail
-							current_user={this.props.current_user}
-							assigned_trady={this.props.assigned_trady}
-							onModalWith={(modal) => this.onModalWith(modal)}
-						/>
 						{
 							(appointments && appointments.length > 0) &&
 								<AppointmentRequest
@@ -1136,11 +1131,6 @@ var TradyMaintenanceRequest = React.createClass({
 								/>
 						}
 					</div>
-					<TradyDetailMobile
-						current_user={this.props.current_user}
-						onModalWith={(modal) => this.onModalWith(modal)}
-						assigned_trady={this.props.assigned_trady}
-					/>
 					{
 						(appointments && appointments.length > 0) &&
 							<AppointmentRequestMobile

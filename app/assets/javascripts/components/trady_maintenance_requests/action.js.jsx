@@ -65,6 +65,19 @@ var CreateAppointmentForQuote = React.createClass({
 	}
 });
 
+var AddPhoto = React.createClass({
+	render: function() {
+		return (
+			<li>
+				<a onClick={() => this.props.onModalWith('addPhoto')}>
+					<i className="fa fa-plus" aria-hidden="true" />
+					Add Photo
+				</a>
+			</li>
+		);
+	}
+})
+
 var ContentTradyAction = React.createClass({
 	render: function() {
 		const maintenance_request = this.props.maintenance_request;
@@ -80,6 +93,7 @@ var ContentTradyAction = React.createClass({
 					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
@@ -87,6 +101,7 @@ var ContentTradyAction = React.createClass({
 				<ul>
 					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else {
@@ -101,9 +116,12 @@ var ContentTradyAction = React.createClass({
 						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
 					{ !!this.props.assigned_trady &&
-							<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+						<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
 					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{ !!this.props.assigned_trady &&
+						<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
+					}
 				</ul>
 			);
 		}
