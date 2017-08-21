@@ -1,7 +1,9 @@
 require 'digest/sha2'
 class AgentMailer < ActionMailer::Base
-  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@mg.maintenanceapp.com.au"
-  default from: 'info@mg.maintenanceapp.com.au'
+
+  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sm.maintenanceapp.com.au"
+  default from: 'info@sm.maintenanceapp.com.au'
+
   def send_agent_quote(maintenance_request, quote)
     @maintenance_request = maintenance_request
     @property= @maintenance_request.property
@@ -71,7 +73,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"Quote approved by landlord #{@landlord.name.capitalize} - #{@property.property_address}.")
+    mail(to:email, subject:"Quote approved for - #{@property.property_address}.")
   end
 
   def notify_agent_about_landlord_message(maintenance_request)
