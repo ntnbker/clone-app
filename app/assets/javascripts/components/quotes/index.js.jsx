@@ -378,6 +378,56 @@ var Quotes = React.createClass({
 	}
 });
 
+var QuotesInInvoice = React.createClass({
+	render: function() {
+		const {quotes, trady} = this.props;
+		const self = this.props;
+		return (
+			<div className="quotes m-t-lg m-b-lg" id="quotes">
+				<p>
+					Quotes ({quotes.length})
+				</p>
+				<div className="list-quote">
+				{
+					quotes.map(function(quote, index) {
+						return (
+							<div className="item-quote row" key={index}>
+								<div className="user seven columns">
+									<span className="icon-user">
+										<i className="fa fa-user" />
+									</span>
+									<div className="info">
+										<div className="name">
+											<span>{quote.trady.name}</span>
+											<button className={'button-default ' + quote.status}>
+												<span>{quote.status}</span>
+											</button>
+										</div>
+										<p className="description">
+											{quote.trady && quote.trady.name} <br />
+											{(quote.trady && quote.trady.trady_company) && quote.trady.trady_company.trading_name}
+										</p>
+									</div>
+								</div>
+								<div className="actions five columns">
+									<p className="price">Amount: {quote.amount}AUD</p>
+								</div>
+								<div className="actions-quote">
+									<ButtonView 
+										quote={quote}
+										viewQuote={(key, item) => self.viewQuote(key, item)} 
+									/>
+								</div>
+							</div>
+						);
+					})
+				}
+				</div>
+			</div>
+		);
+	}
+});
+
 var DetailQuote = React.createClass({
 	render: function() {
 		const {quote} = this.props;

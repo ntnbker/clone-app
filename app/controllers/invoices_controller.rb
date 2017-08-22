@@ -15,9 +15,10 @@ class InvoicesController < ApplicationController
 
     @maintenance_request_id= params[:maintenance_request_id]
     @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
+    @property = @maintenance_request.property
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
-    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id)
+    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:params[:trady_id],:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
     @invoice_type = params[:invoice_type]
     @ledger = Ledger.new
     @ledger.invoices.build
@@ -79,6 +80,9 @@ class InvoicesController < ApplicationController
   def edit
     @ledger = Ledger.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
+    @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
+    @property = @maintenance_request.property
+    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:params[:trady_id],:delivery_status=>true, :maintenance_request_id=>@maintenance_request_id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
     @trady = Trady.find_by(id:params[:trady_id])
     @quote = Quote.find_by(id:params[:quote_id])
     @invoice_type = params[:invoice_type]
