@@ -254,7 +254,7 @@ var AdditionalInvoice = React.createClass({
                     <input 
                         type="number"
                         placeholder="Amount"
-                        defaultValue={quote ? quote.amount : ''}
+                        defaultValue={quote.amount > 0 && quote.amount}
                         name={'invoice[invoice_items_attributes][' + x + '][amount]'}
                         className={"text-center " +  (!!this.state.hours_input && 'hour price')}
                     />
@@ -262,14 +262,14 @@ var AdditionalInvoice = React.createClass({
                             <input 
                                 type="number"
                                 placeholder="Of Hours"
-                                defaultValue={quote ? quote.hours : ''}
+                                defaultValue={quote.hours > 0 ? quote.hours : ''}
                                 name={'invoice[invoice_items_attributes][' + x + '][hours]'}
                                 className={"text-center " + (this.state.hours_input && 'hour')}
                             />
                             : <input type="hidden"
                                 name={'invoice[invoice_items_attributes][' + x + '][hours]'}
                             />
-                }
+                    }
                 </div>               
                 <input type="hidden" value={this.state.remove} name={'invoice[invoice_items_attributes][' + x + '][_destroy]'}/>
                 {   quote && 
@@ -347,7 +347,7 @@ var InvoiceItemField = React.createClass({
         var pricing_type = event.target.value;
         this.setState({pricing_type: pricing_type});
         if (pricing_type == "Hourly") {
-            this.setState({hours_input: true});
+            this.setState({hours_input: true, numofhours: 0});
         } else {
             this.setState({hours_input: false,
                            numofhours: 1,
@@ -371,7 +371,7 @@ var InvoiceItemField = React.createClass({
         if (hours > 0)
             this.setState({numofhours: hours});
         else
-            this.setState({numofhours: 1});
+            this.setState({numofhours: 0});
 
         const totalamount = this.state.amount * hours;
         this.updatePrice(totalamount);
@@ -410,8 +410,9 @@ var InvoiceItemField = React.createClass({
                     </select>
                     <input 
                         type="number" 
+                        required
                         placeholder="Amount" 
-                        defaultValue={this.state.amount} 
+                        defaultValue={this.state.amount > 0 && this.state.amount} 
                         onChange={this.onAmount}
                         className={"text-center " +  (!!this.state.hours_input && 'hour price')}
                         name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'} 
@@ -420,9 +421,10 @@ var InvoiceItemField = React.createClass({
                         this.state.hours_input ? 
                             <input 
                                 type="number" 
+                                required
                                 onChange={this.onHours}
                                 placeholder="Number of Hours" 
-                                defaultValue={this.state.numofhours} 
+                                defaultValue={this.state.numofhours > 0 && this.state.numofhours} 
                                 className={"text-center " + (this.state.hours_input && 'hour')}
                                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} 
                             />
@@ -503,6 +505,15 @@ var InvoiceField = React.createClass({
             <fieldset>
                 <div>
                     <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
+                    <div className="text-center m-t-lg">
+                        <input 
+                        type="text" 
+                        className="text-center" 
+                        placeholder="Invoice Reference Number"
+                        defaultValue={invoice && invoice.trady_invoice_reference} 
+                        name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
+                        />
+                    </div>
                     <label>     
                         <input type="checkbox" value={this.state.tax} checked={this.state.tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
                         Total Includes GST        

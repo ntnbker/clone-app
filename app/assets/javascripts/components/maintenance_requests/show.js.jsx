@@ -1373,8 +1373,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				logs.push(res.log)
 				self.setState({
-					logs: logs.push(res.log),
+					logs: logs,
 					landlord: res.landlord,
 					notification: {
 						bgClass: "bg-success",
@@ -1407,8 +1408,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				logs.push(res.log);
 				self.setState({
-					logs: logs.push(res.log),
+					logs: logs,
 					landlord: res.landlord,
 					notification: {
 						title: "Ask landlord for instructions",
