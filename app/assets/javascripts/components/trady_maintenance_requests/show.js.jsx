@@ -1170,20 +1170,25 @@ var TradyMaintenanceRequest = React.createClass({
 							/>
 					}
 				</div>
-				<TradySideBarMobile
-					trady={this.props.trady}
-					agent={this.props.agent}
-					tenants={this.props.tenants}
-					landlord={this.state.landlord}
-					invoices={this.props.invoices}
-					current_user={this.props.current_user}
-					assigned_trady={this.props.assigned_trady}
-					signed_in_trady={this.props.signed_in_trady}
-					invoice_pdf_files={this.props.invoice_pdf_files}
-					onModalWith={(modal) => this.onModalWith(modal)}
-					viewModal={(key, item) => this.viewItem(key, item)}
-					maintenance_request={this.state.maintenance_request}
-				/>
+				{
+					!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ?
+						null
+						:
+						<TradySideBarMobile
+							trady={this.props.trady}
+							agent={this.props.agent}
+							tenants={this.props.tenants}
+							landlord={this.state.landlord}
+							invoices={this.props.invoices}
+							current_user={this.props.current_user}
+							assigned_trady={this.props.assigned_trady}
+							signed_in_trady={this.props.signed_in_trady}
+							invoice_pdf_files={this.props.invoice_pdf_files}
+							onModalWith={(modal) => this.onModalWith(modal)}
+							viewModal={(key, item) => this.viewItem(key, item)}
+							maintenance_request={this.state.maintenance_request}
+						/>
+				}
 				{ this.renderModal() }
 			</div>
 		);
