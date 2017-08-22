@@ -170,6 +170,12 @@ class InvoicesController < ApplicationController
   end
 
 
+  def mark_as_paid
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    invoice = Invoice.find_by(id:params[:invoice_id])
+  end
+
+
 
 
 
@@ -179,11 +185,11 @@ class InvoicesController < ApplicationController
     end
 
     def invoice_params
-    params.require(:invoice).permit(:id, :trady_id,:quote_id ,:trady_invoice_reference ,:maintenance_request_id,:tax,:payment_installment_amount,:prepaid_or_postpaid, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours])
+    params.require(:invoice).permit(:id, :trady_id,:quote_id ,:maintenance_request_id,:tax,:payment_installment_amount,:prepaid_or_postpaid, invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours])
     end
 
     def ledger_params
-    params.require(:ledger).permit( :id, :trady_company_id,  :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date,:_destroy ,invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
+    params.require(:ledger).permit( :id, :trady_company_id,  :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:trady_invoice_reference ,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date,:_destroy ,invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 
