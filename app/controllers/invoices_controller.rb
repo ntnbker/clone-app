@@ -17,6 +17,7 @@ class InvoicesController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
+    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id)
     @invoice_type = params[:invoice_type]
     @ledger = Ledger.new
     @ledger.invoices.build
@@ -172,7 +173,14 @@ class InvoicesController < ApplicationController
 
   def mark_as_paid
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+
     invoice = Invoice.find_by(id:params[:invoice_id])
+    invoice.update_attribute(:paid, true)
+
+    # if maintenance_request.agent
+    #   agent = maintenance_request.agent 
+    #   name = maintenance_request.agent.name
+    # Log.create(maintenance_request_id:maintenance_request.id, action:"Marked as paid by: ", name:trady.name.capitalize)
   end
 
 
