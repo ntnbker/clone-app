@@ -69053,7 +69053,11 @@ var Invoices = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "user seven columns" },
-							React.createElement("img", { src: "/assets/user1.png" }),
+							React.createElement(
+								"span",
+								{ className: "icon-user" },
+								React.createElement("i", { className: "fa fa-user" })
+							),
 							React.createElement(
 								"div",
 								{ className: "info" },
@@ -69840,7 +69844,11 @@ var InvoiceFields = React.createClass({
                     { className: "button button-primary left", href: this.props.backlink },
                     " Back "
                 ),
-                React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button button-primary green", "data-disable-with": "Next" })
+                React.createElement(
+                    "button",
+                    { type: "submit", name: "commit", value: "Next", className: "button button-primary green" },
+                    "Next"
+                )
             )
         );
     }
@@ -70298,7 +70306,7 @@ var ModalViewInvoice = React.createClass({
 												"span",
 												null,
 												" ",
-												invoice.id
+												invoice.invoice_number
 											)
 										),
 										React.createElement(
@@ -70486,7 +70494,11 @@ var PDFInvoices = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "user seven columns" },
-							React.createElement("img", { src: "/assets/user1.png" }),
+							React.createElement(
+								"span",
+								{ className: "icon-user" },
+								React.createElement("i", { className: "fa fa-user" })
+							),
 							React.createElement(
 								"div",
 								{ className: "info" },
@@ -70677,7 +70689,7 @@ var AddInvoicePDF = React.createClass({
 							'div',
 							{ className: 'title', id: 'title-upload' },
 							React.createElement('i', { className: 'fa fa-upload' }),
-							'Choose a image to upload'
+							'Choose image to upload'
 						),
 						React.createElement('input', {
 							type: 'file',
@@ -72865,6 +72877,533 @@ var ActivityMobile = React.createClass({
 		);
 	}
 });
+var ModalAddPhoto = React.createClass({
+  displayName: 'ModalAddPhoto',
+
+  getInitialState: function () {
+    return {
+      images: [],
+      progress: 0,
+      totalFile: 0,
+      dataImages: [],
+      totalProgress: 0,
+      gallery: this.props.gallery
+    };
+  },
+
+  _handleImageChange: function (e) {
+    var _this = this;
+
+    var self = this;
+    var files = e.target.files;
+    var reader = new FileReader();
+    var fr = new FileReader();
+    var images = this.state.images;
+    var orientation;
+    readFile = function (index) {
+      if (index >= files.length) {
+        _this.setState({
+          images: images
+        });
+        return;
+      }
+      var file = files[index];
+      var fileAlreadyExists = false;
+      for (var i = 0; i < images.length; i++) {
+        if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
+          fileAlreadyExists = true;
+          break;
+        }
+      }
+      if (!fileAlreadyExists) {
+        var fr = new FileReader();
+        fr.readAsArrayBuffer(file);
+        fr.onload = function (e) {
+          orientation = self.getOrientation(e.target.result);
+          reader.readAsDataURL(file);
+          reader.onload = function (e) {
+            images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
+            self.setState({
+              totalFile: index + 1
+            });
+            readFile(index + 1);
+          };
+        };
+      } else {
+        readFile(index + 1);
+      }
+    };
+    readFile(0);
+  },
+
+  getOrientation: function (result) {
+    var view = new DataView(result);
+    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    var length = view.byteLength,
+        offset = 2;
+    while (offset < length) {
+      var marker = view.getUint16(offset, false);
+      offset += 2;
+      if (marker == 0xFFE1) {
+        if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+        var little = view.getUint16(offset += 6, false) == 0x4949;
+        offset += view.getUint32(offset + 4, little);
+        var tags = view.getUint16(offset, little);
+        offset += 2;
+        for (var i = 0; i < tags; i++) if (view.getUint16(offset + i * 12, little) == 0x0112) return view.getUint16(offset + i * 12 + 8, little);
+      } else if ((marker & 0xFF00) != 0xFF00) break;else offset += view.getUint16(offset, false);
+    }
+    return -1;
+  },
+
+  updateImage: function (image) {
+    var dataImages = this.state.dataImages;
+
+    dataImages.push(image);
+    this.setState({
+      dataImages: dataImages
+    });
+  },
+
+  removeImage: function (index) {
+    var _state = this.state;
+    var images = _state.images;
+    var dataImages = _state.dataImages;
+
+    images.splice(index, 1);
+    dataImages.splice(index, 1);
+    this.setState({
+      images: images,
+      dataImages: dataImages
+    });
+  },
+
+  loadImage: function (e, image, key) {
+    var img = e.target;
+    var maxSize = 500000; // byte
+    var self = this;
+    if (!image.isUpload) {
+      var target_img = {};
+      var images = this.state.images;
+
+      var file = image.fileInfo;
+      image.isUpload = true;
+
+      // resize image
+      if (file.size > maxSize) {
+        var quality = Math.ceil(maxSize / file.size * 100);
+        target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
+      } else {
+        if (!!this.state.isAndroid) {
+          target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+        } else {
+          target_img.src = image.url;
+        }
+      }
+
+      image.url = target_img.src;
+      images[key] = image;
+      this.setState({
+        images: images
+      });
+
+      var filename = file;
+      var options = {
+        extension: filename.name.match(/(\.\w+)?$/)[0],
+        _: Date.now()
+      };
+      // start upload file into S3
+      $.getJSON('/images/cache/presign', options, function (result) {
+        var fd = new FormData();
+        $.each(result.fields, function (key, value) {
+          fd.append(key, value);
+        });
+
+        fd.append('file', self.dataURItoBlob(target_img.src));
+        $.ajax({
+          type: 'POST',
+          url: result['url'],
+          enctype: 'multipart/form-data',
+          processData: false,
+          contentType: false,
+          data: fd,
+          xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+              if (evt.loaded > 0 && evt.total > 0) {
+                var progressValue = self.state.progress + evt.loaded;
+                var totalProgress = self.state.totalProgress / self.state.totalFile + evt.total * self.state.totalFile;
+                if (evt.loaded == evt.total) {
+                  self.setState({
+                    progress: progressValue,
+                    totalProgress: totalProgress / self.state.totalFile,
+                    totalFile: self.state.totalFile - 1
+                  });
+                }
+                var percentComplete = Math.ceil(progressValue / totalProgress * 100);
+                var progress = $('.progress');
+                if (progress.length == 0) {
+                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+                } else {
+                  $('.progress .progress-bar').css('width', percentComplete + '%');
+                }
+                $('#title-upload').html('Uploading ' + percentComplete + '%');
+              }
+            }, false);
+            return xhr;
+          },
+          success: function () {
+            if (self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+              self.setState({
+                progress: 0,
+                totalFile: 0,
+                totalProgress: 0
+              });
+              setTimeout(function () {
+                $('.progress').remove();
+              }, 500);
+            }
+            var image = {
+              id: result.fields.key.match(/cache\/(.+)/)[1],
+              storage: 'cache',
+              metadata: {
+                size: file.size,
+                filename: file.name.match(/[^\/\\]*$/)[0],
+                mime_type: file.type
+              }
+            };
+            self.updateImage(image);
+          }
+        });
+      });
+    }
+  },
+
+  reduceQuality: function (source_img, type, quality, orientation) {
+    var mime_type = "image/jpeg";
+    if (typeof output_format !== "undefined" && output_format == "image/png") {
+      mime_type = "image/png";
+    }
+
+    var cvs = document.createElement('canvas'),
+        width = source_img.naturalWidth,
+        height = source_img.naturalHeight,
+        ctx = cvs.getContext("2d");
+
+    // set proper canvas dimensions before transform & export
+    if ([5, 6, 7, 8].indexOf(orientation) > -1) {
+      cvs.width = height;
+      cvs.height = width;
+    } else {
+      cvs.width = width;
+      cvs.height = height;
+    }
+
+    // transform context before drawing image
+    switch (orientation) {
+      case 2:
+        ctx.transform(-1, 0, 0, 1, width, 0);
+        break;
+      case 3:
+        ctx.transform(-1, 0, 0, -1, width, height);
+        break;
+      case 4:
+        ctx.transform(1, 0, 0, -1, 0, height);
+        break;
+      case 5:
+        ctx.transform(0, 1, 1, 0, 0, 0);
+        break;
+      case 6:
+        ctx.transform(0, 1, -1, 0, height, 0);
+        break;
+      case 7:
+        ctx.transform(0, -1, -1, 0, height, width);
+        break;
+      case 8:
+        ctx.transform(0, -1, 1, 0, 0, width);
+        break;
+    }
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    ctx.strokeRect(0, 0, cvs.width, cvs.height);
+    ctx.lineWidth = 0;
+    ctx.drawImage(source_img, 0, 0);
+    var newImageData = cvs.toDataURL(mime_type, quality / 100);
+    var result_image = new Image();
+    result_image.src = newImageData;
+    return result_image;
+  },
+
+  dataURItoBlob: function (dataURI) {
+    var byteString, mimestring;
+
+    if (dataURI.split(',')[0].indexOf('base64') !== -1) {
+      byteString = atob(dataURI.split(',')[1]);
+    } else {
+      byteString = decodeURI(dataURI.split(',')[1]);
+    }
+
+    mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    var content = new Array();
+    for (var i = 0; i < byteString.length; i++) {
+      content[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([new Uint8Array(content)], { type: mimestring });
+  },
+
+  detectAndroid: function () {
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1;
+    if (isAndroid) {
+      this.setState({
+        isAndroid: true
+      });
+    }
+  },
+
+  componentDidMount: function () {
+    this.detectAndroid();
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    if (this.state.dataImages.length == 0) {
+      return;
+    }
+
+    var FD = new FormData();
+    this.state.dataImages.map(function (image, index) {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[maintenance_request_id]', this.props.maintenance_request.id);
+
+    var props = this.props;
+    $.ajax({
+      type: 'POST',
+      url: '/update_images',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        props.notifyAddPhoto(res.all_images.length > 0 ? res.all_images : []);
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      gallery: nextProps.gallery
+    });
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    var _state2 = this.state;
+    var images = _state2.images;
+    var gallery = _state2.gallery;
+    var dataImages = _state2.dataImages;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'form',
+            { role: 'form', id: 'addForm', onSubmit: this.submit },
+            React.createElement(
+              'div',
+              { className: 'modal-header' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  className: 'close',
+                  'aria-label': 'Close',
+                  'data-dismiss': 'modal',
+                  onClick: this.props.close
+                },
+                React.createElement(
+                  'span',
+                  { 'aria-hidden': 'true' },
+                  '×'
+                )
+              ),
+              React.createElement(
+                'h4',
+                { className: 'modal-title text-center' },
+                'Add Photo'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-body add-photo' },
+              React.createElement(
+                'div',
+                { className: 'list-img' },
+                gallery.map(function (item, key) {
+                  return React.createElement('img', { key: key, src: item, className: 'img' });
+                }),
+                images.map(function (img, index) {
+                  return React.createElement(
+                    'div',
+                    { key: index, className: 'img' },
+                    React.createElement('img', {
+                      src: img.url,
+                      className: 'img',
+                      onLoad: function (e, image, key) {
+                        return _this2.loadImage(e, img, index);
+                      }
+                    }),
+                    React.createElement('i', { className: 'fa fa-close', onClick: function (key) {
+                        return _this2.removeImage(index);
+                      } })
+                  );
+                })
+              ),
+              dataImages.length == 0 && React.createElement(
+                'div',
+                { className: 'browse-wrap' },
+                React.createElement(
+                  'div',
+                  { className: 'title', id: 'title-upload' },
+                  React.createElement('i', { className: 'fa fa-upload' }),
+                  'Choose image to upload'
+                ),
+                React.createElement('input', {
+                  multiple: true,
+                  type: 'file',
+                  id: 'input-file',
+                  className: 'upload inputfile',
+                  accept: 'image/jpeg, image/png',
+                  onChange: function (e) {
+                    return _this2._handleImageChange(e);
+                  }
+                })
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-footer' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  onClick: this.props.close,
+                  className: 'btn btn-primary cancel'
+                },
+                'Cancel'
+              ),
+              React.createElement(
+                'button',
+                {
+                  type: 'submit',
+                  className: 'btn btn-default success'
+                },
+                'Submit'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var ModalConfirmAddPhoto = React.createClass({
+  displayName: 'ModalConfirmAddPhoto',
+
+  render: function () {
+    var _this3 = this;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'close',
+                'data-dismiss': 'modal',
+                'aria-label': 'Close',
+                onClick: this.props.close
+              },
+              React.createElement(
+                'span',
+                { 'aria-hidden': 'true' },
+                '×'
+              )
+            ),
+            React.createElement(
+              'h4',
+              { className: 'modal-title text-center' },
+              'Add Photo'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'p',
+              { className: 'text-center' },
+              'Thank you for uploading an image. Do you want to add another image?'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-footer' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-default success',
+                onClick: function () {
+                  return _this3.props.onModalWith('addPhoto');
+                },
+                'data-dismiss': 'modal'
+              },
+              'Yes'
+            ),
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-default cancel',
+                onClick: this.props.close,
+                'data-dismiss': 'modal'
+              },
+              'No'
+            )
+          )
+        )
+      )
+    );
+  }
+});
 var Appointment = React.createClass({
 	displayName: "Appointment",
 
@@ -73393,6 +73932,21 @@ var EditMaintenanceRequest = React.createClass({
 							{ className: 'modal-body edit-maintenance-request' },
 							React.createElement(
 								'div',
+								{ className: 'row' },
+								React.createElement(
+									'button',
+									{
+										type: 'button',
+										className: 'btn-edit',
+										onClick: function () {
+											return _this.props.onModalWith('addPhoto');
+										}
+									},
+									'Add Photo'
+								)
+							),
+							React.createElement(
+								'div',
 								{ className: 'row m-t-lg' },
 								React.createElement(
 									'label',
@@ -73466,6 +74020,75 @@ var EditMaintenanceRequest = React.createClass({
 									type: 'submit',
 									className: 'btn btn-default success',
 									disabled: !!state.errorTitle || !!state.errorDescription ? true : false
+								},
+								'Submit'
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalEditDescription = React.createClass({
+	displayName: 'ModalEditDescription',
+
+	render: function () {
+		return React.createElement(
+			'div',
+			{ className: 'modal-custom fade' },
+			React.createElement(
+				'div',
+				{ className: 'modal-dialog' },
+				React.createElement(
+					'div',
+					{ className: 'modal-content' },
+					React.createElement(
+						'form',
+						{ role: 'form', id: 'addForm', onSubmit: this.submit },
+						React.createElement(
+							'div',
+							{ className: 'modal-header' },
+							React.createElement(
+								'button',
+								{
+									type: 'button',
+									className: 'close',
+									'aria-label': 'Close',
+									'data-dismiss': 'modal',
+									onClick: this.props.close
+								},
+								React.createElement(
+									'span',
+									{ 'aria-hidden': 'true' },
+									'×'
+								)
+							),
+							React.createElement(
+								'h4',
+								{ className: 'modal-title text-center' },
+								'Edit Description'
+							)
+						),
+						React.createElement('div', { className: 'modal-body edit-maintenance-request' }),
+						React.createElement(
+							'div',
+							{ className: 'modal-footer' },
+							React.createElement(
+								'button',
+								{
+									type: 'button',
+									onClick: this.props.close,
+									className: 'btn btn-primary cancel'
+								},
+								'Cancel'
+							),
+							React.createElement(
+								'button',
+								{
+									type: 'submit',
+									className: 'btn btn-default success'
 								},
 								'Submit'
 							)
@@ -74014,7 +74637,11 @@ var ListMaintenanceRequest = React.createClass({
       }, {
         title: "Maintenance Scheduled With Landlord",
         value: "Maintenance Scheduled With Landlord",
-        count: this.props.maintenance_scheduled_count
+        count: this.props.maintenance_scheduled_with_landlord_count
+      }, {
+        title: "Deferred",
+        value: "Defer",
+        count: this.props.deferred_count
       }],
       tradyFilter: [{
         title: "Quote Requests",
@@ -74172,11 +74799,31 @@ var ListMaintenanceRequest = React.createClass({
     return React.createElement(
       "div",
       { className: "maintenance-list" },
-      React.createElement(DropforSortDate, {
-        selectFilter: this.selectFilter,
-        filterDate: this.state.filterDate,
-        valueSelect: this.state.sortByDate
-      }),
+      React.createElement(
+        "div",
+        { className: "dropdown-MR" },
+        React.createElement(DropforSortDate, {
+          selectFilter: this.selectFilter,
+          filterDate: this.state.filterDate,
+          valueSelect: this.state.sortByDate
+        }),
+        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(
+          "div",
+          { className: "dropdown-custom archived" },
+          React.createElement(
+            "span",
+            { className: "count" },
+            this.props.archived_count
+          ),
+          React.createElement(
+            "a",
+            { onClick: function (value) {
+                return _this3.getAction('Archive');
+              } },
+            "Archived"
+          )
+        )
+      ),
       React.createElement(
         "div",
         { className: "maintenance-content" },
@@ -74601,6 +75248,13 @@ var Carousel = React.createClass({
 		}
 	},
 
+	componentWillReceiveProps: function (nextProps) {
+		this.setState({
+			gallery: nextProps.gallery,
+			stlen: nextProps.gallery.length > 0 ? nextProps.gallery.length : 0
+		});
+	},
+
 	render: function () {
 		var styles = {
 			left: this.state.stx,
@@ -74640,12 +75294,12 @@ var Carousel = React.createClass({
 					});
 				}) : null
 			),
-			this.props.gallery.length > 1 && React.createElement(
+			this.state.gallery.length > 1 && React.createElement(
 				"div",
 				{ className: "btn-slider btn-next", onClick: this.sliderNext },
 				React.createElement("i", { className: "fa fa-angle-right" })
 			),
-			this.props.gallery.length > 1 && React.createElement(
+			this.state.gallery.length > 1 && React.createElement(
 				"div",
 				{ className: "btn-slider btn-prev", onClick: this.sliderPrev },
 				React.createElement("i", { className: "fa fa-angle-left" })
@@ -74964,7 +75618,7 @@ var ItemMaintenanceRequest = React.createClass({
 		var d = new Date();
 		var n = d.getTimezoneOffset();
 		var date = new Date(maintenance.created_at);
-		var created_at = moment(date).utcOffset(+n).startOf('hour').fromNow();
+		var created_at = moment(date + -n / 60).fromNow();
 		return React.createElement(
 			"div",
 			{ className: "post" },
@@ -75116,7 +75770,7 @@ var ModalConfirmUpdateStatus = React.createClass({
 								onClick: this.props.click,
 								className: "btn btn-default success"
 							},
-							"Yep"
+							"Yes"
 						),
 						React.createElement(
 							"button",
@@ -75446,11 +76100,13 @@ var MaintenanceRequestsNew = React.createClass({
               if (evt.loaded > 0 && evt.total > 0) {
                 var progressValue = self.state.progress + evt.loaded;
                 var totalProgress = self.state.totalProgress / (self.state.totalFile + 1) + evt.total * self.state.totalFile;
-                self.setState({
-                  progress: progressValue,
-                  totalProgress: totalProgress,
-                  totalFile: self.state.totalFile - 1
-                });
+                if (evt.loaded == evt.total) {
+                  self.setState({
+                    progress: progressValue,
+                    totalProgress: totalProgress / self.state.totalFile,
+                    totalFile: self.state.totalFile - 1
+                  });
+                }
                 var percentComplete = Math.ceil(progressValue / totalProgress * 100);
                 var progress = $('.progress');
                 if (progress.length == 0) {
@@ -75756,7 +76412,7 @@ var MaintenanceRequestsNew = React.createClass({
               'div',
               { className: 'title', id: 'title-upload' },
               React.createElement('i', { className: 'fa fa-upload' }),
-              'Choose a image to upload'
+              'Choose image to upload'
             ),
             React.createElement('input', {
               multiple: true,
@@ -77429,7 +78085,7 @@ var ModalRequestModal = React.createClass({
 												value: item.id,
 												selected: trady.id == item.id && "selected"
 											},
-											item.name
+											item.company_name
 										);
 									})
 								)
@@ -77600,6 +78256,7 @@ var MaintenanceRequest = React.createClass({
 			quotes: this.props.quotes,
 			status: this.props.status,
 			tradies: this.props.tradies,
+			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
@@ -78387,10 +79044,10 @@ var MaintenanceRequest = React.createClass({
 							property: this.props.property,
 							landlord: this.state.landlord,
 							onModalWith: this.onModalWith,
+							updateStatusQuote: this.updateStatusQuote,
 							viewQuote: function (quote) {
 								return _this8.viewQuote(quote);
 							},
-							updateStatusQuote: this.updateStatusQuote,
 							sendEmailLandlord: this.sendEmailLandlord, current_user: this.props.current_user
 						});
 					}
@@ -78458,6 +79115,9 @@ var MaintenanceRequest = React.createClass({
 						return React.createElement(EditMaintenanceRequest, {
 							close: this.isClose,
 							services: this.props.services,
+							onModalWith: function (modal) {
+								return _this8.onModalWith(modal);
+							},
 							maintenance_request: this.state.maintenance_request,
 							editMaintenanceRequest: this.editMaintenanceRequest
 						});
@@ -78516,10 +79176,10 @@ var MaintenanceRequest = React.createClass({
 
 				case 'confirmAssign':
 					return React.createElement(ModalConfirmUpdateStatus, {
-						title: "Assign Matenance Request",
 						close: this.isClose,
 						quote: this.state.quote,
 						click: this.assignToUser,
+						title: "Assign Matenance Request",
 						content: "Are you sure you want to Reassign this Maintenance request ?"
 					});
 
@@ -78527,6 +79187,23 @@ var MaintenanceRequest = React.createClass({
 					return React.createElement(ModalInstruction, {
 						authenticity_token: this.props.authenticity_token,
 						updateInsruction: this.updateInsruction
+					});
+
+				case 'addPhoto':
+					return React.createElement(ModalAddPhoto, {
+						close: this.isClose,
+						gallery: this.state.gallery,
+						notifyAddPhoto: this.notifyAddPhoto,
+						authenticity_token: this.props.authenticity_token,
+						maintenance_request: this.state.maintenance_request
+					});
+
+				case 'confirmAddPhoto':
+					return React.createElement(ModalConfirmAddPhoto, {
+						close: this.isClose,
+						onModalWith: function (modal) {
+							return _this8.onModalWith(modal);
+						}
 					});
 
 				default:
@@ -78634,6 +79311,13 @@ var MaintenanceRequest = React.createClass({
 		return json;
 	},
 
+	notifyAddPhoto: function (gallery) {
+		this.setState({
+			gallery: gallery
+		});
+		this.onModalWith('confirmAddPhoto');
+	},
+
 	summary: function (e) {
 		var _this9 = this;
 
@@ -78658,7 +79342,7 @@ var MaintenanceRequest = React.createClass({
 					{ className: "section" },
 					React.createElement(ItemMaintenanceRequest, {
 						status: this.state.status,
-						gallery: this.props.gallery,
+						gallery: this.state.gallery,
 						property: this.props.property,
 						all_agents: this.props.all_agents,
 						updateStatusMR: this.updateStatusMR,
@@ -79865,7 +80549,7 @@ var Quotes = React.createClass({
 		var self = this.props;
 		return React.createElement(
 			"div",
-			{ className: "quotes", id: "quotes" },
+			{ className: "quotes m-t-lg", id: "quotes" },
 			React.createElement(
 				"p",
 				null,
@@ -79883,7 +80567,11 @@ var Quotes = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "user seven columns" },
-							React.createElement("img", { src: "/assets/user1.png" }),
+							React.createElement(
+								"span",
+								{ className: "icon-user" },
+								React.createElement("i", { className: "fa fa-user" })
+							),
 							React.createElement(
 								"div",
 								{ className: "info" },
@@ -79976,11 +80664,6 @@ var DetailQuote = React.createClass({
 						),
 						React.createElement(
 							"th",
-							null,
-							"Hours"
-						),
-						React.createElement(
-							"th",
 							{ className: "text-right" },
 							"Rate"
 						),
@@ -80015,71 +80698,16 @@ var DetailQuote = React.createClass({
 							),
 							React.createElement(
 								"td",
-								null,
-								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
+								{ className: "text-right" },
+								item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2)
 							),
 							React.createElement(
 								"td",
 								{ className: "text-right" },
-								"$",
-								item.amount.toFixed(2)
-							),
-							React.createElement(
-								"td",
-								{ className: "text-right" },
-								"$",
-								item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2)
+								item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2)
 							)
 						);
-					}),
-					React.createElement(
-						"tr",
-						null,
-						React.createElement("td", { colSpan: "3", className: "border-none p-b-n" }),
-						React.createElement(
-							"td",
-							{ className: "text-right border-none font-bold p-b-n" },
-							"Subtotal:"
-						),
-						React.createElement(
-							"td",
-							{ className: "border-none text-right p-b-n" },
-							"$",
-							(subTotal - quote.gst_amount).toFixed(2)
-						)
-					),
-					React.createElement(
-						"tr",
-						null,
-						React.createElement("td", { colSpan: "3", className: "border-none p-t-n" }),
-						React.createElement(
-							"td",
-							{ className: "text-right p-t-n" },
-							"GST 10%:"
-						),
-						React.createElement(
-							"td",
-							{ className: "text-right p-t-n" },
-							"$",
-							quote.gst_amount.toFixed(2)
-						)
-					),
-					React.createElement(
-						"tr",
-						null,
-						React.createElement("td", { colSpan: "3", className: "border-none" }),
-						React.createElement(
-							"td",
-							{ className: "text-right font-bold border-none" },
-							"Amount Due (AUD):"
-						),
-						React.createElement(
-							"td",
-							{ className: "text-right font-bold border-none" },
-							"$",
-							subTotal.toFixed(2)
-						)
-					)
+					})
 				)
 			);
 		} else {
@@ -80202,6 +80830,8 @@ var ModalViewQuote = React.createClass({
 	render: function () {
 		var self = this.props;
 		var quote = this.state.quote;
+		var property = this.props.property;
+
 		var total = 0;
 
 		return React.createElement(
@@ -80335,13 +80965,13 @@ var ModalViewQuote = React.createClass({
 											React.createElement(
 												"span",
 												{ className: "font-bold" },
-												"Quote Number: "
+												"Quote Reference: "
 											),
 											React.createElement(
 												"span",
 												null,
 												" ",
-												quote.quote_number
+												quote.trady_quote_reference != "" ? quote.trady_quote_reference : property.property_address
 											)
 										),
 										React.createElement(
@@ -80577,7 +81207,7 @@ var ModalConfirmQuote = React.createClass({
 								onClick: this.updateStatus,
 								"data-dismiss": "modal"
 							},
-							"Yep"
+							"Yes"
 						),
 						React.createElement(
 							"button",
@@ -80654,7 +81284,7 @@ var QuoteField = React.createClass({
                         {
                             onChange: this.onPricing,
                             value: this.state.pricing_type,
-                            className: "text-center " + (this.state.hours_input && 'hour select'),
+                            className: 'text-center select',
                             id: 'quote_quote_items_attributes_' + x + '_pricing_type',
                             name: 'quote[quote_items_attributes][' + x + '][pricing_type]'
                         },
@@ -80674,19 +81304,11 @@ var QuoteField = React.createClass({
                         type: 'number',
                         placeholder: 'Amount',
                         defaultValue: quote ? quote.amount : '',
-                        className: "text-center " + (!!this.state.hours_input && 'hour price'),
+                        className: 'text-center price',
                         id: 'quote_quote_items_attributes_' + x + '_amount',
                         name: 'quote[quote_items_attributes][' + x + '][amount]'
                     }),
-                    this.state.hours_input ? React.createElement('input', {
-                        required: true,
-                        type: 'number',
-                        placeholder: 'Of Hours',
-                        defaultValue: quote ? quote.hours : '',
-                        className: "text-center " + (this.state.hours_input && 'hour'),
-                        id: 'quote_quote_items_attributes_' + x + '_hours',
-                        name: 'quote[quote_items_attributes][' + x + '][hours]'
-                    }) : React.createElement('input', {
+                    React.createElement('input', {
                         type: 'hidden',
                         id: 'quote_quote_items_attributes_' + x + '_hours',
                         name: 'quote[quote_items_attributes][' + x + '][hours]'
@@ -80712,7 +81334,9 @@ var QuoteFields = React.createClass({
     displayName: 'QuoteFields',
 
     render: function () {
-        var trady_company = this.props.trady_company;
+        var _props = this.props;
+        var trady_company = _props.trady_company;
+        var quote = _props.quote;
 
         return React.createElement(
             'form',
@@ -80726,6 +81350,11 @@ var QuoteFields = React.createClass({
             React.createElement('input', { type: 'hidden', value: this.props.quote_type, name: 'quote[quote_type]', id: 'quote_type' }),
             React.createElement('input', { type: 'hidden', value: this.props.system_plan, name: 'quote[system_plan]', id: 'system_plan' }),
             React.createElement(FieldList, { existingContent: this.props.quote_items, SampleField: QuoteField, flag: 'quote' }),
+            React.createElement(
+                'div',
+                { className: 'text-center' },
+                React.createElement('input', { type: 'text', className: 'm-t-lg text-center', defaultValue: quote && quote.trady_quote_reference, name: 'quote[trady_quote_reference]', placeholder: 'Quote Reference Number' })
+            ),
             React.createElement(
                 'label',
                 { className: 'quote_tax' },
@@ -81493,6 +82122,113 @@ var TenantContactMobile = React.createClass({
 		);
 	}
 });
+var ContentTenantDetail = React.createClass({
+	displayName: "ContentTenantDetail",
+
+	render: function () {
+		var selt = this;
+		return React.createElement(
+			"ul",
+			null,
+			React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return selt.props.onModalWith('addPhoto');
+						} },
+					React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+					"Add Photo"
+				)
+			)
+		);
+	}
+});
+
+var TenantDetail = React.createClass({
+	displayName: "TenantDetail",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showContact: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item", "data-intro": "This is edit details", "data-position": "left" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					null,
+					"Action:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showContact,
+					className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content" },
+				this.state.show && React.createElement(ContentTenantDetail, { onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					} })
+			)
+		);
+	}
+});
+
+var TenantDetailMobile = React.createClass({
+	displayName: "TenantDetailMobile",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "actions-full", id: "actions-full" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Edit Details:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentTenantDetail, {
+						onModalWith: function (modal) {
+							return _this2.props.onModalWith(modal);
+						}
+					})
+				)
+			)
+		);
+	}
+});
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
 var TenantSideBarMobile = React.createClass({
@@ -81500,27 +82236,41 @@ var TenantSideBarMobile = React.createClass({
 
 	getInitialState: function () {
 		return {
+			showDetail: false,
 			showContact: false
 		};
 	},
 
-	show: function () {
-		this.setState({ showContact: true });
-		if ($('#contacts-full').length > 0) {
+	show: function (key) {
+		var height = $(window).height();
+		if (key == 'detail') {
+			this.setState({ showContact: false });
+			this.setState({ showDetail: true });
+			$('#actions-full').css({ 'height': 200, 'border-width': 1 });
+		} else {
+			this.setState({ showContact: true });
+			this.setState({ showDetail: false });
 			$('#contacts-full').css({ 'height': 150, 'border-width': 1 });
 		}
 	},
 
 	close: function () {
-		this.setState({ showContact: false });
+		if ($('#actions-full').length > 0) {
+			if (!!this.showDetail) {
+				this.setState({ showDetail: false });
+			}
+			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
+		}
 		if ($('#contacts-full').length > 0) {
+			if (this.state.showContact) {
+				this.setState({ showContact: false });
+			}
 			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
 		}
 	},
 
 	componentDidMount: function () {
 		var self = this;
-		$('body').chardinJs('start');
 		$(document).click(function () {
 			self.close();
 		});
@@ -81543,9 +82293,22 @@ var TenantSideBarMobile = React.createClass({
 						{
 							'data-intro': 'Select \'Contact\' to call or message.', 'data-position': 'top',
 							className: "contact button-default " + (!!this.state.showContact && 'active'),
-							onClick: this.show
+							onClick: function (key) {
+								return _this.show('contact');
+							}
 						},
 						'Contact'
+					),
+					React.createElement(
+						'button',
+						{
+							'data-intro': 'Edit maintenance request.', 'data-position': 'top',
+							className: "actions button-default " + (!!this.state.showDetail && 'active'),
+							onClick: function (key) {
+								return _this.show('detail');
+							}
+						},
+						'Edit Details'
 					)
 				)
 			),
@@ -81558,7 +82321,13 @@ var TenantSideBarMobile = React.createClass({
 						return _this.props.onModalWith(modal);
 					}
 				})
-			)
+			),
+			React.createElement(TenantDetailMobile, {
+				close: this.close,
+				onModalWith: function (modal) {
+					return _this.props.onModalWith(modal);
+				}
+			})
 		);
 	}
 });
@@ -81603,6 +82372,7 @@ var TenantMaintenanceRequest = React.createClass({
 			comments: comments,
 			appointmentUpdate: null,
 			appointments: appointments,
+			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlordComments: landlordComments,
 			quote_appointments: quote_appointments,
@@ -81629,7 +82399,9 @@ var TenantMaintenanceRequest = React.createClass({
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
+		if (div) {
+			div.parentNode.removeChild(div);
+		}
 	},
 
 	onModalWith: function (modal) {
@@ -82196,6 +82968,28 @@ var TenantMaintenanceRequest = React.createClass({
 						updateInsruction: this.updateInsruction
 					});
 
+				case 'addPhoto':
+					return React.createElement(ModalAddPhoto, {
+						close: this.isClose,
+						gallery: this.state.gallery,
+						notifyAddPhoto: this.notifyAddPhoto,
+						authenticity_token: this.props.authenticity_token,
+						maintenance_request: this.state.maintenance_request
+					});
+
+				case 'editDescription':
+					return React.createElement(ModalEditDescription, {
+						close: this.isClose
+					});
+
+				case 'confirmAddPhoto':
+					return React.createElement(ModalConfirmAddPhoto, {
+						close: this.isClose,
+						onModalWith: function (modal) {
+							return _this2.onModalWith(modal);
+						}
+					});
+
 				default:
 					return null;
 			}
@@ -82277,6 +83071,13 @@ var TenantMaintenanceRequest = React.createClass({
 		return json;
 	},
 
+	notifyAddPhoto: function (gallery) {
+		this.setState({
+			gallery: gallery
+		});
+		this.onModalWith('confirmAddPhoto');
+	},
+
 	render: function () {
 		var _this3 = this;
 
@@ -82295,7 +83096,7 @@ var TenantMaintenanceRequest = React.createClass({
 					'div',
 					{ className: 'section' },
 					React.createElement(ItemMaintenanceRequest, {
-						gallery: this.props.gallery,
+						gallery: this.state.gallery,
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					})
@@ -82304,6 +83105,12 @@ var TenantMaintenanceRequest = React.createClass({
 					'div',
 					{ className: 'sidebar' },
 					React.createElement(TenantContact, {
+						current_user: this.props.current_user,
+						onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						}
+					}),
+					React.createElement(TenantDetail, {
 						current_user: this.props.current_user,
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
@@ -82413,9 +83220,12 @@ var TenantMaintenanceRequest = React.createClass({
 					}
 				})
 			),
-			React.createElement(TenantSideBarMobile, { onModalWith: function (modal) {
+			React.createElement(TenantSideBarMobile, {
+				current_user: this.props.current_user,
+				onModalWith: function (modal) {
 					return _this3.onModalWith(modal);
-				}, current_user: this.props.current_user }),
+				}
+			}),
 			this.renderModal()
 		);
 	}
@@ -83646,11 +84456,32 @@ var CreateAppointmentForQuote = React.createClass({
 	}
 });
 
+var AddPhoto = React.createClass({
+	displayName: "AddPhoto",
+
+	render: function () {
+		var _this5 = this;
+
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ onClick: function () {
+						return _this5.props.onModalWith('addPhoto');
+					} },
+				React.createElement("i", { className: "fa fa-plus", "aria-hidden": "true" }),
+				"Add Photo"
+			)
+		);
+	}
+});
+
 var ContentTradyAction = React.createClass({
 	displayName: "ContentTradyAction",
 
 	render: function () {
-		var _this5 = this;
+		var _this6 = this;
 
 		var maintenance_request = this.props.maintenance_request;
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
@@ -83663,16 +84494,19 @@ var ContentTradyAction = React.createClass({
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					} }),
 				React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointment, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
+					} }),
+				React.createElement(AddPhoto, { onModalWith: function (modal) {
+						return _this6.props.onModalWith(modal);
 					} })
 			);
 		} else if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
@@ -83680,10 +84514,13 @@ var ContentTradyAction = React.createClass({
 				"ul",
 				null,
 				React.createElement(CreateAppointment, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
+					} }),
+				React.createElement(AddPhoto, { onModalWith: function (modal) {
+						return _this6.props.onModalWith(modal);
 					} })
 			);
 		} else {
@@ -83692,16 +84529,19 @@ var ContentTradyAction = React.createClass({
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				!!this.props.assigned_trady && React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					} }),
 				!!this.props.assigned_trady && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					} }),
 				!!this.props.assigned_trady && React.createElement(CreateAppointment, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
-						return _this5.props.onModalWith(modal);
+						return _this6.props.onModalWith(modal);
+					} }),
+				!!this.props.assigned_trady && React.createElement(AddPhoto, { onModalWith: function (modal) {
+						return _this6.props.onModalWith(modal);
 					} })
 			);
 		}
@@ -83722,7 +84562,7 @@ var TradyAction = React.createClass({
 	},
 
 	render: function () {
-		var _this6 = this;
+		var _this7 = this;
 
 		return React.createElement(
 			"div",
@@ -83752,7 +84592,7 @@ var TradyAction = React.createClass({
 					signed_in_trady: this.props.signed_in_trady,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					}
 				})
 			)
@@ -83764,7 +84604,7 @@ var TradyActionMobile = React.createClass({
 	displayName: "TradyActionMobile",
 
 	render: function () {
-		var _this7 = this;
+		var _this8 = this;
 
 		return React.createElement(
 			"div",
@@ -83797,7 +84637,7 @@ var TradyActionMobile = React.createClass({
 						signed_in_trady: this.props.signed_in_trady,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
-							return _this7.props.onModalWith(modal);
+							return _this8.props.onModalWith(modal);
 						}
 					})
 				)
@@ -83979,6 +84819,120 @@ var TradyContactMobile = React.createClass({
 		);
 	}
 });
+var ContentTradyDetail = React.createClass({
+	displayName: "ContentTradyDetail",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			null,
+			this.props.assigned_trady && React.createElement(
+				"ul",
+				null,
+				React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ onClick: function () {
+								return selt.props.onModalWith('addPhoto');
+							} },
+						React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+						"Add Photo"
+					)
+				)
+			)
+		);
+	}
+});
+
+var TradyDetail = React.createClass({
+	displayName: "TradyDetail",
+
+	getInitialState: function () {
+		return {
+			show: true
+		};
+	},
+
+	showContact: function () {
+		this.setState({ show: !this.state.show });
+	},
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"div",
+			{ className: "item", "data-intro": "This is edit details", "data-position": "left" },
+			React.createElement(
+				"div",
+				{ className: "header action" },
+				React.createElement(
+					"a",
+					null,
+					"Maitenance Request Detail:"
+				),
+				React.createElement("i", {
+					"aria-hidden": "true",
+					onClick: this.showContact,
+					className: this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"
+				})
+			),
+			React.createElement(
+				"div",
+				{ className: "content" },
+				this.state.show && React.createElement(ContentTradyDetail, {
+					assigned_trady: this.props.assigned_trady,
+					onModalWith: function (modal) {
+						return _this.props.onModalWith(modal);
+					}
+				})
+			)
+		);
+	}
+});
+
+var TradyDetailMobile = React.createClass({
+	displayName: "TradyDetailMobile",
+
+	render: function () {
+		var _this2 = this;
+
+		return React.createElement(
+			"div",
+			{ className: "activity-mobile" },
+			React.createElement(
+				"div",
+				{ className: "item" },
+				React.createElement(
+					"div",
+					{ className: "header action" },
+					React.createElement(
+						"a",
+						null,
+						"Maintenance Request Details:"
+					),
+					React.createElement("i", {
+						"aria-hidden": "true",
+						className: "fa fa-close",
+						onClick: this.props.close
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content" },
+					React.createElement(ContentTradyDetail, {
+						assigned_trady: this.props.assigned_trady,
+						onModalWith: function (modal) {
+							return _this2.props.onModalWith(modal);
+						}
+					})
+				)
+			)
+		);
+	}
+});
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
 var TradySideBarMobile = React.createClass({
@@ -83996,7 +84950,7 @@ var TradySideBarMobile = React.createClass({
 			this.setState({ showAction: true });
 			this.setState({ showContact: false });
 			if ($('#actions-full').length > 0) {
-				$('#actions-full').css({ 'height': 350, 'border-width': 1 });
+				$('#actions-full').css({ 'height': 400, 'border-width': 1 });
 			}
 		} else {
 			this.setState({ showAction: false });
@@ -84383,6 +85337,7 @@ var TradyMaintenanceRequest = React.createClass({
 			invoice_pdf_file: null,
 			appointmentUpdate: null,
 			appointments: appointments,
+			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			invoice_pdf_files: pdf_urls,
 			quote_appointments: quote_appointments,
@@ -85067,6 +86022,28 @@ var TradyMaintenanceRequest = React.createClass({
 						updateInsruction: this.updateInsruction
 					});
 
+				case 'addPhoto':
+					return React.createElement(ModalAddPhoto, {
+						close: this.isClose,
+						gallery: this.state.gallery,
+						notifyAddPhoto: this.notifyAddPhoto,
+						authenticity_token: this.props.authenticity_token,
+						maintenance_request: this.state.maintenance_request
+					});
+
+				case 'editDescription':
+					return React.createElement(ModalEditDescription, {
+						close: this.isClose
+					});
+
+				case 'confirmAddPhoto':
+					return React.createElement(ModalConfirmAddPhoto, {
+						close: this.isClose,
+						onModalWith: function (modal) {
+							return _this2.onModalWith(modal);
+						}
+					});
+
 				default:
 					return null;
 			}
@@ -85187,6 +86164,13 @@ var TradyMaintenanceRequest = React.createClass({
 		return json;
 	},
 
+	notifyAddPhoto: function (gallery) {
+		this.setState({
+			gallery: gallery
+		});
+		this.onModalWith('confirmAddPhoto');
+	},
+
 	render: function () {
 		var _this3 = this;
 
@@ -85202,11 +86186,16 @@ var TradyMaintenanceRequest = React.createClass({
 			React.createElement(
 				'div',
 				{ className: 'main-summary' },
+				!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id && React.createElement(
+					'div',
+					{ className: 'section show-waring' },
+					'We are sorry to inform you that the job has been awarded to another company. Thank you for your quote, we will contact you for other future jobs.'
+				),
 				React.createElement(
 					'div',
 					{ className: 'section' },
 					React.createElement(ItemMaintenanceRequest, {
-						gallery: this.props.gallery,
+						gallery: this.state.gallery,
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
@@ -85238,29 +86227,33 @@ var TradyMaintenanceRequest = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'sidebar' },
-					React.createElement(TradyContact, {
-						agent: this.props.agent,
-						tenants: this.props.tenants,
-						landlord: this.state.landlord,
-						current_user: this.props.current_user,
-						assigned_trady: this.props.assigned_trady,
-						onModalWith: function (modal) {
-							return _this3.onModalWith(modal);
-						},
-						maintenance_request: this.state.maintenance_request
-					}),
-					React.createElement(TradyAction, {
-						trady: this.props.trady,
-						landlord: this.state.landlord,
-						invoices: this.props.invoices,
-						assigned_trady: this.props.assigned_trady,
-						signed_in_trady: this.props.signed_in_trady,
-						onModalWith: function (modal) {
-							return _this3.onModalWith(modal);
-						},
-						invoice_pdf_files: this.props.invoice_pdf_files,
-						maintenance_request: this.state.maintenance_request
-					}),
+					!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ? null : React.createElement(
+						'div',
+						null,
+						React.createElement(TradyContact, {
+							agent: this.props.agent,
+							tenants: this.props.tenants,
+							landlord: this.state.landlord,
+							current_user: this.props.current_user,
+							assigned_trady: this.props.assigned_trady,
+							onModalWith: function (modal) {
+								return _this3.onModalWith(modal);
+							},
+							maintenance_request: this.state.maintenance_request
+						}),
+						React.createElement(TradyAction, {
+							trady: this.props.trady,
+							landlord: this.state.landlord,
+							invoices: this.props.invoices,
+							assigned_trady: this.props.assigned_trady,
+							signed_in_trady: this.props.signed_in_trady,
+							onModalWith: function (modal) {
+								return _this3.onModalWith(modal);
+							},
+							invoice_pdf_files: this.props.invoice_pdf_files,
+							maintenance_request: this.state.maintenance_request
+						})
+					),
 					appointments && appointments.length > 0 && React.createElement(AppointmentRequest, {
 						appointments: appointments,
 						title: 'Work Order Appointments',
@@ -85331,7 +86324,7 @@ var TradyMaintenanceRequest = React.createClass({
 					}
 				})
 			),
-			React.createElement(TradySideBarMobile, {
+			!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ? null : React.createElement(TradySideBarMobile, {
 				trady: this.props.trady,
 				agent: this.props.agent,
 				tenants: this.props.tenants,
