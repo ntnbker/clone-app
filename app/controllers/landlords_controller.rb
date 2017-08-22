@@ -110,7 +110,7 @@ class LandlordsController < ApplicationController
           property.update_attribute(:landlord_id, @user.landlord.id)
 
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
-          UserSetPasswordEmailWorker.perform_async(@user.id)
+          UserSetPasswordEmailWorker.perform_in(5.minutes, @user.id)
           maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
 
           log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord - Landlord ", name:@landlord.name.capitalize)
