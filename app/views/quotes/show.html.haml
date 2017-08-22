@@ -34,9 +34,9 @@
 
       %div.date-quote
         %p
-          %span.font-bold Quote Number:
+          %span.font-bold Quote Reference:
           %span
-            = "#{@quote.id}"
+            = @quote.trady_quote_reference != "" ? "#{@quote.trady_quote_reference}" : "#{@property.property_address}"
         %p
           %span.font-bold Quote Date:
           %span
@@ -47,7 +47,6 @@
         %tr
           %th Description
           %th Pricing
-          %th Hours
           %th.text-right Rate
           %th.text-right Amount
         -@quote.quote_items.each do |f|
@@ -57,33 +56,13 @@
               ="#{f.item_description.capitalize}"
             %td 
               =f.pricing_type
-            %td
-              -if f.pricing_type == 'Fixed Cost'
-                N/A
-              -elsif f.pricing_type == 'Hourly'
-                = f.hours
+
             %td.text-right
-              ="$#{f.amount.round(2)}"
+              -if f.pricing_type == 'Hourly'
+                ="$#{f.amount.round(2)}" 
             %td.text-right
               -if f.pricing_type == 'Fixed Cost'
                 = "$#{f.amount.round(2)}"
-              -elsif f.pricing_type == 'Hourly'
-                ="$#{(f.amount * f.hours).round(2)}"
-        %tr
-          %td.border-none.p-b-n{:colspan => 3}
-          %td.border-none.text-right.font-bold.p-b-n Subtotal:
-          %td.border-none.text-right.p-b-n
-            = "$#{@quote.amount}"
-        %tr
-          %td.p-t-n{:colspan => 3}
-          %td.text-right.p-t-n GST 10%:
-          %td.text-right.p-t-n
-            = "$#{@quote.gst_amount.round(2)}"
-        %tr
-          %td.border-none{:colspan => 3}
-          %td.border-none.text-right.font-bold Amount Due (AUD):
-          %td.border-none.text-right.font-bold
-            = "$#{@quote.amount.round(2)}" 
 
       %div.button-quote
         %button{:type=>"button", :class=>"button button-primary"} 

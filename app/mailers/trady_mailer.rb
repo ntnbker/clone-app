@@ -1,7 +1,9 @@
 require 'digest/sha2'
 class TradyMailer < ActionMailer::Base
+
   default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sm.maintenanceapp.com.au"
   default from: 'info@sm.maintenanceapp.com.au'
+
   def request_quote_email(trady_object, maintenance_request_object)
     @trady = trady_object
     @maintenance_request = maintenance_request_object

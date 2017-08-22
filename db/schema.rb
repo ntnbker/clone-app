@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803072625) do
+ActiveRecord::Schema.define(version: 20170821052006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -218,8 +218,8 @@ ActiveRecord::Schema.define(version: 20170803072625) do
     t.integer  "trady_id"
     t.integer  "maintenance_request_id"
     t.float    "amount"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
     t.boolean  "tax"
     t.integer  "ledger_id"
     t.float    "gst_amount"
@@ -227,6 +227,7 @@ ActiveRecord::Schema.define(version: 20170803072625) do
     t.boolean  "delivery_status"
     t.boolean  "print_status"
     t.string   "invoice_number"
+    t.text     "trady_invoice_reference"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -348,6 +349,7 @@ ActiveRecord::Schema.define(version: 20170803072625) do
     t.float    "gst_amount"
     t.boolean  "forwarded_to_landlord"
     t.string   "quote_number"
+    t.text     "trady_quote_reference"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -458,6 +460,13 @@ ActiveRecord::Schema.define(version: 20170803072625) do
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
     t.string   "status"
+  end
+
+  create_table "urls", force: :cascade do |t|
+    t.text     "short_url"
+    t.text     "original_url"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "user_conversations", force: :cascade do |t|

@@ -1111,7 +1111,7 @@ var ModalRequestModal = React.createClass({
 																value={item.id}
 																selected={trady.id == item.id && "selected"}
 															>
-																{item.name}
+																{item.company_name}
 															</option>
 														);
 													})
@@ -1252,6 +1252,7 @@ var MaintenanceRequest = React.createClass({
 			quotes: this.props.quotes,
 			status: this.props.status,
 			tradies: this.props.tradies,
+			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
 			invoices: this.props.invoices,
@@ -2032,8 +2033,8 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
-							viewQuote={(quote) => this.viewQuote(quote)}
 							updateStatusQuote={this.updateStatusQuote}
+							viewQuote={(quote) => this.viewQuote(quote)}
 							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
 						/>
 					);
@@ -2076,13 +2077,13 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewInvoice': {
 					return (
-							<ModalViewInvoice
-								close={this.isClose}
-								agency={this.props.agency}
-							 	invoice={this.state.invoice}
-							 	invoices={this.state.invoices}
-								property={this.props.property}
-							/>
+						<ModalViewInvoice
+							close={this.isClose}
+							agency={this.props.agency}
+						 	invoice={this.state.invoice}
+						 	invoices={this.state.invoices}
+							property={this.props.property}
+						/>
 					);
 
 					break;
@@ -2107,6 +2108,7 @@ var MaintenanceRequest = React.createClass({
 						<EditMaintenanceRequest
 							close={this.isClose}
 							services={this.props.services}
+							onModalWith={(modal) => this.onModalWith(modal)}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
 						/>
@@ -2167,10 +2169,10 @@ var MaintenanceRequest = React.createClass({
 				case 'confirmAssign':
 					return (
 						<ModalConfirmUpdateStatus
-							title="Assign Matenance Request"
 							close={this.isClose}
 							quote={this.state.quote}
 							click={this.assignToUser}
+							title="Assign Matenance Request"
 							content="Are you sure you want to Reassign this Maintenance request ?"
 						/>
 					);
@@ -2180,6 +2182,25 @@ var MaintenanceRequest = React.createClass({
 						<ModalInstruction
 							authenticity_token={this.props.authenticity_token}
 							updateInsruction={this.updateInsruction}
+						/>
+					);
+
+				case 'addPhoto':
+					return (
+						<ModalAddPhoto
+							close={this.isClose}
+							gallery={this.state.gallery}
+							notifyAddPhoto={this.notifyAddPhoto}
+							authenticity_token={this.props.authenticity_token}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					);
+
+				case 'confirmAddPhoto':
+					return (
+						<ModalConfirmAddPhoto
+							close={this.isClose}
+							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 					);
 
@@ -2287,6 +2308,13 @@ var MaintenanceRequest = React.createClass({
 		return json;
 	},
 
+	notifyAddPhoto: function(gallery) {
+		this.setState({
+			gallery: gallery
+		});
+		this.onModalWith('confirmAddPhoto');
+	},
+
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
 		const {invoice_pdf_files} = this.state;
@@ -2296,7 +2324,7 @@ var MaintenanceRequest = React.createClass({
 					<div className="section">
 						<ItemMaintenanceRequest
 							status={this.state.status}
-							gallery={this.props.gallery}
+							gallery={this.state.gallery}
 							property={this.props.property}
 							all_agents={this.props.all_agents}
 							updateStatusMR={this.updateStatusMR}

@@ -470,11 +470,6 @@ var ListMaintenanceRequest = React.createClass({
           title: "Deferred", 
           value: "Defer", 
           count: this.props.deferred_count
-        },
-        {
-          title: "Archived", 
-          value: "Archive", 
-          count: this.props.archived_count
         }
       ],
       tradyFilter: [
@@ -637,13 +632,26 @@ var ListMaintenanceRequest = React.createClass({
     const current_user_agency_admin = this.props.current_user_agency_admin;
     return (
       <div className="maintenance-list">
-        { 
-          <DropforSortDate 
-            selectFilter={this.selectFilter} 
-            filterDate={this.state.filterDate} 
-            valueSelect={this.state.sortByDate} 
-          />
-        }
+        <div className="dropdown-MR">
+          { 
+            <DropforSortDate 
+              selectFilter={this.selectFilter} 
+              filterDate={this.state.filterDate} 
+              valueSelect={this.state.sortByDate} 
+            />
+          }
+          {
+            (!!current_user_agent || !!current_user_agency_admin) &&
+              <div className="dropdown-custom archived">
+                <span className="count">
+                  {this.props.archived_count}
+                </span>
+                <a onClick={(value) => this.getAction('Archive')}>
+                  Archived
+                </a>
+              </div>
+          }
+        </div>
         <div className="maintenance-content">
           <div className={"main-column " + ((!!current_user_landlord || !!current_user_tenant) && "main-landlord")}>
             <div>

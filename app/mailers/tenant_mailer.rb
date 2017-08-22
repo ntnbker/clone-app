@@ -1,7 +1,9 @@
 require 'digest/sha2'
 class TenantMailer < ActionMailer::Base
+
   default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sm.maintenanceapp.com.au"
   default from: 'info@sm.maintenanceapp.com.au'
+
   def send_tenant_initial_appointment_request(maintenance_request,appointment, tenant, trady)
 
     @appointment = appointment

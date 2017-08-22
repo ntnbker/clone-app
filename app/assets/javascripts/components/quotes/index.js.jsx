@@ -326,7 +326,7 @@ var Quotes = React.createClass({
 		const {quotes} = this.state;
 		const self = this.props;
 		return (
-			<div className="quotes" id="quotes">
+			<div className="quotes m-t-lg" id="quotes">
 				<p>
 					Quotes ({quotes.length})
 				</p>
@@ -336,7 +336,9 @@ var Quotes = React.createClass({
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
-									<img src="/assets/user1.png" />
+									<span className="icon-user">
+										<i className="fa fa-user" />
+									</span>
 									<div className="info">
 										<div className="name">
 											<span>{quote.trady.name}</span>
@@ -392,9 +394,6 @@ var DetailQuote = React.createClass({
 						<th>
 							Pricing
 						</th>
-						<th>
-							Hours
-						</th>
 						<th className="text-right">
 							Rate
 						</th>
@@ -415,40 +414,12 @@ var DetailQuote = React.createClass({
 								<tr key={key}>
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
-									<td>{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
-									<td className="text-right">${item.amount.toFixed(2)}</td>
-									<td className="text-right">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
+									<td className="text-right">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
+									<td className="text-right">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
 								</tr>
 							);
 						})
 					}
-					<tr>
-						<td colSpan="3" className="border-none p-b-n"></td>
-						<td className="text-right border-none font-bold p-b-n">
-							Subtotal:
-						</td>
-						<td className="border-none text-right p-b-n">
-							${(subTotal - quote.gst_amount).toFixed(2)}
-						</td>
-					</tr>
-					<tr>
-						<td colSpan="3" className="border-none p-t-n"></td>
-						<td className="text-right p-t-n">
-							GST 10%:
-						</td>
-						<td className="text-right p-t-n">
-							${(quote.gst_amount).toFixed(2)}
-						</td>
-					</tr>
-					<tr>
-						<td colSpan="3" className="border-none"></td>
-						<td className="text-right font-bold border-none">
-							Amount Due (AUD):
-						</td>
-						<td className="text-right font-bold border-none">
-							${subTotal.toFixed(2)}
-						</td>
-					</tr>
 					</tbody>
 				</table>
 			);
@@ -604,6 +575,7 @@ var ModalViewQuote = React.createClass({
 	render: function() {
 		const self = this.props;
 		const quote = this.state.quote;
+		const {property} = this.props;
 		let total = 0;
 		
 		return (
@@ -665,8 +637,8 @@ var ModalViewQuote = React.createClass({
 										</div>
 										<div className="info-agency">
 											<p>
-												<span className="font-bold">Quote Number: </span>
-												<span> {quote.quote_number}</span>
+												<span className="font-bold">Quote Reference: </span>
+												<span> {quote.trady_quote_reference != "" ? quote.trady_quote_reference : property.property_address}</span>
 											</p>
 											<p>
 												<span className="font-bold">Quote Date: </span>

@@ -125,7 +125,7 @@ var AddInvoicePDF = React.createClass({
 								<div className="browse-wrap">
 									<div className="title" id="title-upload">
 										<i className="fa fa-upload" />
-										Choose a image to upload
+										Choose image to upload
 									</div>
 									<input 
 										type="file"

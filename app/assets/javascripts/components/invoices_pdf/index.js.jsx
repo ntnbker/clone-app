@@ -14,7 +14,9 @@ var PDFInvoices = React.createClass({
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
-									<img src="/assets/user1.png" />
+									<span className="icon-user">
+										<i className="fa fa-user" />
+									</span>
 									<div className="info">
 										<div className="name">
 											<span>{trady.name}</span>

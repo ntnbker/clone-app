@@ -1,7 +1,9 @@
 require 'digest/sha2'
 class ApplicationMailer < ActionMailer::Base
+
   default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sm.maintenanceapp.com.au"
   default from: 'info@sm.maintenanceapp.com.au'
+
   # layout 'mailer'
   # default from: 'notify@mysite.com'
 

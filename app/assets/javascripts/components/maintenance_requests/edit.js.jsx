@@ -80,6 +80,15 @@ var EditMaintenanceRequest = React.createClass({
 								<h4 className="modal-title text-center">Edit Maintenance Request</h4>
 							</div>
 							<div className="modal-body edit-maintenance-request">
+								<div className="row">
+									<button 
+										type="button" 
+										className="btn-edit"
+										onClick={() => this.props.onModalWith('addPhoto')}
+									>
+										Add Photo
+									</button>
+								</div>
 								<div className="row m-t-lg">
 									<label>Service Type:</label>
 									<select 
@@ -125,6 +134,48 @@ var EditMaintenanceRequest = React.createClass({
 									type="submit" 
 									className="btn btn-default success" 
 									disabled={!!state.errorTitle || !!state.errorDescription ? true : false}
+								>
+									Submit
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalEditDescription = React.createClass({
+	render: function() {
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<form role="form" id="addForm" onSubmit={this.submit}>
+							<div className="modal-header">
+								<button 
+									type="button" 
+									className="close"
+									aria-label="Close" 
+									data-dismiss="modal" 
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Edit Description</h4>
+							</div>
+							<div className="modal-body edit-maintenance-request">
+							</div>
+							<div className="modal-footer">
+								<button 
+									type="button" 
+									onClick={this.props.close}
+									className="btn btn-primary cancel" 
+								>Cancel</button>
+								<button 
+									type="submit" 
+									className="btn btn-default success" 
 								>
 									Submit
 								</button>

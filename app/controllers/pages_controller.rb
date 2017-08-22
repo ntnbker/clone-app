@@ -16,8 +16,10 @@ class PagesController < ApplicationController
       elsif current_user.current_role.role == "Trady"
         @role = "Tenant"
       end
-    end  
-        
+    end 
+
+
+    
   end
 
   

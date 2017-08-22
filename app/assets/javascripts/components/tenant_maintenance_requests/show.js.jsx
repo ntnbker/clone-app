@@ -1,27 +1,41 @@
 var TenantSideBarMobile = React.createClass({
 	getInitialState: function() {
 		return {
-			showContact: false
+			showDetail: false,
+			showContact: false,
 		};
 	},
 
-	show: function() {
-		this.setState({showContact: true});
-		if($('#contacts-full').length > 0) {
+	show: function(key) {
+		const height = $( window ).height();
+		if(key == 'detail') {
+			this.setState({showContact: false});
+			this.setState({showDetail: true});
+			$('#actions-full').css({'height': 200, 'border-width': 1});
+		}else{
+			this.setState({showContact: true});
+			this.setState({showDetail: false});
 			$('#contacts-full').css({'height': 150, 'border-width': 1});
 		}
 	},
 
 	close: function() {
-		this.setState({showContact: false});
+		if($('#actions-full').length > 0) {
+			if(!!this.showDetail) {
+				this.setState({showDetail: false});
+			}
+			$('#actions-full').css({'height': 0, 'border-width': 0});
+		}
 		if($('#contacts-full').length > 0) {
+			if(this.state.showContact) {
+				this.setState({showContact: false});
+			}
 			$('#contacts-full').css({'height': 0, 'border-width': 0});
 		}
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		$('body').chardinJs('start')
 		$(document).click(function() {
 			self.close();
 		})
@@ -35,20 +49,29 @@ var TenantSideBarMobile = React.createClass({
 						<button
 							data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
-							onClick={this.show}
+							onClick={(key) => this.show('contact')}
 						>
 							Contact
+						</button>
+						<button
+							data-intro="Edit maintenance request." data-position="top"
+							className={"actions button-default " + (!!this.state.showDetail && 'active')}
+							onClick={(key) => this.show('detail')}
+						>
+							Edit Details
 						</button>
 					</div>
 				</div>
 				<div className="action-mobile">
-					{
-						<TenantContactMobile
-							close={this.close}
-							onModalWith={(modal) => this.props.onModalWith(modal)}
-						/>
-					}
+					<TenantContactMobile
+						close={this.close}
+						onModalWith={(modal) => this.props.onModalWith(modal)}
+					/>
 				</div>
+				<TenantDetailMobile
+						close={this.close}
+						onModalWith={(modal) => this.props.onModalWith(modal)}
+					/>
 			</div>
 		);
 	}
@@ -85,6 +108,7 @@ var TenantMaintenanceRequest = React.createClass({
 			comments: comments,
 			appointmentUpdate: null,
 			appointments: appointments,
+			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlordComments: landlordComments,
 			quote_appointments: quote_appointments,
@@ -111,7 +135,9 @@ var TenantMaintenanceRequest = React.createClass({
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
-		div.parentNode.removeChild(div);
+		if(div) {
+			div.parentNode.removeChild(div);
+		}
 	},
 
 	onModalWith: function(modal) {
@@ -613,6 +639,32 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'addPhoto':
+					return (
+						<ModalAddPhoto
+							close={this.isClose}
+							gallery={this.state.gallery}
+							notifyAddPhoto={this.notifyAddPhoto}
+							authenticity_token={this.props.authenticity_token}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					);
+
+				case 'editDescription':
+					return (
+						<ModalEditDescription
+							close={this.isClose}
+						/>
+					);
+
+				case 'confirmAddPhoto':
+					return (
+						<ModalConfirmAddPhoto
+							close={this.isClose}
+							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
+					);
+
 				default:
 					return null;
 			}
@@ -689,6 +741,14 @@ var TenantMaintenanceRequest = React.createClass({
 		return json;
 	},
 
+
+	notifyAddPhoto: function(gallery) {
+		this.setState({
+			gallery: gallery
+		});
+		this.onModalWith('confirmAddPhoto');
+	},
+
 	render: function() {
 		const {appointments, quote_appointments, landlord_appointments} = this.state;
 		return (
@@ -696,13 +756,17 @@ var TenantMaintenanceRequest = React.createClass({
 				<div className="main-summary">
 					<div className="section">
 						<ItemMaintenanceRequest
-							gallery={this.props.gallery}
+							gallery={this.state.gallery}
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					</div>
 					<div className="sidebar">
 						<TenantContact
+							current_user={this.props.current_user}
+							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
+						<TenantDetail
 							current_user={this.props.current_user}
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
@@ -781,7 +845,10 @@ var TenantMaintenanceRequest = React.createClass({
 							/>
 					}
 				</div>
-				<TenantSideBarMobile onModalWith={(modal) => this.onModalWith(modal)} current_user={this.props.current_user} />
+				<TenantSideBarMobile 
+					current_user={this.props.current_user} 
+					onModalWith={(modal) => this.onModalWith(modal)} 
+				/>
 				{ this.renderModal() }
 			</div>
 		);

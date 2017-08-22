@@ -199,6 +199,11 @@ Rails.application.routes.draw do
   ###################################################
   ##########REASSIGN AGENTS RESOURCES/ROUTES############
   ###################################################
-    post "update_instruction"=> "instructions#update" 
+    post "update_instruction"=> "instructions#update"
+
+  ###################################################
+  ##########REASSIGN AGENTS RESOURCES/ROUTES#########
+  ################################################### 
+    post "update_images"=> "images#update"
     
  end
