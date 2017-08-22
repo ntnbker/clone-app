@@ -501,7 +501,6 @@ var InvoiceField = React.createClass({
         return <div className="invoicefield">
             <input type="hidden" value={(invoice && invoice.maintenance_request_id) ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id} name={'ledger[invoices_attributes][' + x + '][maintenance_request_id]'}/>
             <input type="hidden" value={(invoice && invoice.trady_id) ? invoice.trady_id : invoiceInfo.trady_id} name={'ledger[invoices_attributes][' + x + '][trady_id]'}/>
-
             <fieldset>
                 <div>
                     <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
@@ -553,7 +552,90 @@ var InvoiceField = React.createClass({
 });
 
 var InvoiceFields = React.createClass({
+    getInitialState: function() {
+        return {
+            modal: "",
+            isModal: false,
+            quote: '',
+            quotes: this.props.quotes,
+        }    
+    },
+
+    isClose: function() {
+        if(this.state.isModal == true) {
+            this.setState({
+                isModal: false,
+                modal: ""
+            });
+        }
+
+        var body = document.getElementsByTagName('body')[0];
+        body.classList.remove("modal-open");
+        var div = document.getElementsByClassName('modal-backdrop in')[0];
+        if(div){
+            div.parentNode.removeChild(div);
+        }
+    },
+
+    onModalWith: function(modal) {
+        this.setState({
+            modal: modal,
+            isModal: true,
+        });
+    },
+
+    viewItem: function(key, item) {
+        switch(key) {
+            case 'viewQuote': {
+                this.setState({
+                    quote: item
+                });
+
+                this.onModalWith(key);
+                break;
+            }
+
+            default: {
+                break;
+            }
+        }
+
+    },
+
+    renderModal: function() {
+        if(this.state.isModal) {
+            var body = document.getElementsByTagName('body')[0];
+            body.className += " modal-open";
+            var div = document.getElementsByClassName('modal-backdrop in');
+
+            if(div.length === 0) {
+                div = document.createElement('div')
+                div.className  = "modal-backdrop in";
+                body.appendChild(div);
+            }
+
+            switch(this.state.modal) {
+                case 'viewQuote': {
+                    return (
+                        <ModalViewQuote
+                            close={this.isClose}
+                            quote={this.state.quote}
+                            agency=""
+                            quotes={this.state.quotes}
+                            property={this.props.property}
+                            landlord=""
+                        />
+                    );
+                }
+
+                default:
+                    return null;
+            }
+        }
+    },
+
     render: function(){
+        const {quotes, trady} = this.props;
         const ledger = this.props.ledger || null;
         const id = (ledger && ledger.id) || '';
         const invoiceInfo = {
@@ -572,13 +654,21 @@ var InvoiceFields = React.createClass({
             <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
             <input type="hidden" value={id} name="ledger[ledger_id]" />
             <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
-            
+            {
+                (quotes && quotes.length > 0) &&
+                    <QuotesInInvoice
+                        quotes={quotes}
+                        trady={trady}
+                        viewQuote={(key, item) => this.viewItem(key, item)}
+                    />
+            }
             <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
             <div className="qf-button text-center" style={{marginBottom: '50px'}}>
                 <a className="button button-primary left" href={this.props.backlink}> Back </a>
                 <button type="submit" name="commit" value="Next" className="button button-primary green">Next</button>
             </div>
+            { this.renderModal() }
         </form>
     }
 });
