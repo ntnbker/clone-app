@@ -79,9 +79,12 @@ class InvoicesController < ApplicationController
   def edit
     @ledger = Ledger.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
+
     @trady = Trady.find_by(id:params[:trady_id])
     @quote = Quote.find_by(id:params[:quote_id])
     @invoice_type = params[:invoice_type]
+    @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
+    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id)
     if @quote
       @quote_items = @quote.quote_items
     else
@@ -176,7 +179,7 @@ class InvoicesController < ApplicationController
 
     invoice = Invoice.find_by(id:params[:invoice_id])
     invoice.update_attribute(:paid, true)
-
+    #THIS IS WHERE WE FIGURE OUT IF THE MAINTENACE REQUEST HAS BEEN CLOSE COMPLETELY OR NOT.
     # if maintenance_request.agent
     #   agent = maintenance_request.agent 
     #   name = maintenance_request.agent.name
