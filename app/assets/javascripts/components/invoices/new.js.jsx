@@ -506,7 +506,13 @@ var InvoiceField = React.createClass({
                 <div>
                     <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
                     <div className="text-center m-t-lg">
-                        <input type="text" className="text-center" defaultValue={invoice && invoice.trady_invoice_reference} name="ledger[trady_invoice_reference]" placeholder="Invoice Reference Number"/>
+                        <input 
+                        type="text" 
+                        className="text-center" 
+                        placeholder="Invoice Reference Number"
+                        defaultValue={invoice && invoice.trady_invoice_reference} 
+                        name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
+                        />
                     </div>
                     <label>     
                         <input type="checkbox" value={this.state.tax} checked={this.state.tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
