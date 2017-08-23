@@ -1,6 +1,6 @@
 var Invoices = React.createClass({
 	render: function() {
-		const invoices = this.props.invoices;
+		const {invoices, current_role} = this.props;
 		const self = this;
 		return (
 			<div className="quotes invoices m-t-xl" id="invoices">
@@ -19,6 +19,12 @@ var Invoices = React.createClass({
 									<div className="info">
 										<div className="name">
 											<span>{invoice.trady.name}</span>
+											{
+												invoice.paid == false &&
+													<button className={'button-default Declined'}>
+														<span>Outstanding Payment</span>
+													</button>
+											}
 										</div>
 										<p className="description">
 											{invoice.trady && invoice.trady.company_name}<br />
@@ -36,16 +42,11 @@ var Invoices = React.createClass({
 								</div>
 								<div className="actions-quote">
 									{
-										invoice.paid == false ?
+										(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false) &&
 											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
-												Outstanding Payment
-											</button>
-											:
-											<button type="button" className="btn btn-mark-as-paid">
-												Paid
+												Mark As Paid
 											</button>
 									}
-									
 									<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
 										View Invoice
 									</button>

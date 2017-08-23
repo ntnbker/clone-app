@@ -568,9 +568,8 @@ body::-webkit-scrollbar-thumb {
         font-weight: 500;
         font-size: 11px;
         text-align: center;
-        width: 80px;
         background-color: $color-white;
-        padding: 0;
+        padding: 0 10px;
         &.Approved {
           border-color: $color-green;
           color: $color-green;
