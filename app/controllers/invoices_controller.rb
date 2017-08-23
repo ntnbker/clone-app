@@ -195,11 +195,13 @@ class InvoicesController < ApplicationController
 
     invoice = Invoice.find_by(id:params[:invoice_id])
     invoice.update_attribute(:paid, true)
+
     #THIS IS WHERE WE FIGURE OUT IF THE MAINTENACE REQUEST HAS BEEN CLOSE COMPLETELY OR NOT.
-    # if maintenance_request.agent
-    #   agent = maintenance_request.agent 
-    #   name = maintenance_request.agent.name
-    # Log.create(maintenance_request_id:maintenance_request.id, action:"Marked as paid by: ", name:trady.name.capitalize)
+    log = Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice marked as paid.")
+    respond_to do |format|
+      format.json {render :json=>{invoice:invoice, log:log}}
+    end 
+    
   end
 
 
