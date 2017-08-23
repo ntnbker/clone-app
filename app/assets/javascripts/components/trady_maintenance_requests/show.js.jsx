@@ -1118,6 +1118,7 @@ var TradyMaintenanceRequest = React.createClass({
 						{	(invoices && invoices.length > 0) &&
 						 		<Invoices
 							 		invoices={invoices}
+							 		current_role={this.props.current_role}
 							 		markAsPaid={(item) => this.markAsPaid(item)}
 							 		viewInvoice={(key, item) => this.viewItem(key, item)}
 						 		/>
