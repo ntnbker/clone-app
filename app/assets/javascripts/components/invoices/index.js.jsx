@@ -33,11 +33,22 @@ var Invoices = React.createClass({
 									<p>
 										DUE: <span>{ moment(invoice.due_date).format('LL')}</span>
 									</p>
-									<p>
-										<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
-											View Invoice
-										</button>
-									</p>
+								</div>
+								<div className="actions-quote">
+									{
+										invoice.paid == false ?
+											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
+												Outstanding Payment
+											</button>
+											:
+											<button type="button" className="btn btn-mark-as-paid">
+												Paid
+											</button>
+									}
+									
+									<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
+										View Invoice
+									</button>
 								</div>
 							</div>
 						);

@@ -644,6 +644,19 @@ body::-webkit-scrollbar-thumb {
           margin-left: 0px;
           border: 1px solid $color-black;
         }
+        .btn-mark-as-paid {
+          margin-right: 0px !important;
+          background-color: #8ADEFF;
+          height: 35px;
+          width: auto;
+          padding: 0 20px;
+          line-height: 35px;
+          font-weight: 400;
+          font-size: 14px;
+          color: $color-white;
+          margin-left: 0px;
+          border: 1px solid #8ADEFF;
+        }
       }
     }
     .actions {
@@ -678,6 +691,19 @@ body::-webkit-scrollbar-thumb {
         background-color: $color-gray;
         border-color: $color-gray;
         color: $color-white;
+      }
+      .btn-mark-as-paid {
+        background-color: #8ADEFF;
+        height: 35px;
+        width: auto;
+        padding: 0 20px;
+        line-height: 35px;
+        font-weight: 400;
+        font-size: 14px;
+        color: $color-white;
+        margin-left: 0px;
+        border: none;
+        margin-right: 10px;
       }
     }
   }

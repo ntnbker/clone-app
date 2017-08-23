@@ -1890,6 +1890,43 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	markAsPaid: function(invoice) {
+		const self = this;
+		const {maintenance_request} = this.state;
+		const params = {
+			invoice_id: invoice.id,
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/mark_as_paid',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				invoice.paid = true;
+				self.setState({
+					notification: {
+						title: "Mark As Paid",
+						content: "You was paid",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Mark As Paid",
+					content: "You didn't pid" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -2351,6 +2388,7 @@ var MaintenanceRequest = React.createClass({
 						{	(invoices && invoices.length > 0) &&
 								<Invoices
 									invoices={this.state.invoices}
+									markAsPaid={(item) => this.markAsPaid(item)}
 									viewInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
