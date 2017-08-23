@@ -141,5 +141,21 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Quote comment from trady #{@quote.trady.name.capitalize} - #{@property.property_address}.")
   end
 
+  def agent_submitted_maintenance_request_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    # @trady = @maintenance_request.trady
+    @tenant = maintenance_request.tenants.first
+    @property = @maintenance_request.property
+    if @maintenance_request.agent == nil
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    elsif @maintenance_request.agency_admin == nil
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    end
+    
+    mail(to:email, subject:"Your maintenance request submitted on behalf of #{@tenant.name.capitalize} - #{@property.property_address}.")
+  end
+
 end 
 

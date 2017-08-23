@@ -15,6 +15,12 @@ class InvoicesController < ApplicationController
 
     @maintenance_request_id= params[:maintenance_request_id]
     @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
+    if @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+    elsif @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+    end 
+        
     @property = @maintenance_request.property
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
@@ -25,6 +31,10 @@ class InvoicesController < ApplicationController
     
     @ledger.invoices.each do |invoice|
       invoice.invoice_items.build
+    end 
+
+    respond_to do |format|
+      format.json {render :json=>{agency:@agency}}
     end 
   end
 
