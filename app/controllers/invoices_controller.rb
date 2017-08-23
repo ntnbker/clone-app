@@ -35,6 +35,7 @@ class InvoicesController < ApplicationController
 
     respond_to do |format|
       format.json {render :json=>{agency:@agency}}
+      format.html {render :new}
     end 
   end
 
