@@ -1850,6 +1850,7 @@ var MaintenanceRequest = React.createClass({
 				maintenance_request.maintenance_heading = res.maintenance_heading;
 				maintenance_request.maintenance_description = res.maintenance_description
 				self.setState({
+					tradies: res.all_tradies,
 					maintenance_request: maintenance_request,
 					notification: {
 						title: "Edit Maintenance Request",
