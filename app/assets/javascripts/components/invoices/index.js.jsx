@@ -20,9 +20,13 @@ var Invoices = React.createClass({
 										<div className="name">
 											<span>{invoice.trady.name}</span>
 											{
-												invoice.paid == false &&
+												invoice.paid == false ?
 													<button className={'button-default Declined'}>
 														<span>Outstanding Payment</span>
+													</button>
+													:
+													<button className={'button-default Approved'}>
+														<span>Paid</span>
 													</button>
 											}
 										</div>
