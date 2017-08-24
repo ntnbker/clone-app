@@ -204,6 +204,11 @@ class InvoicesController < ApplicationController
     
   end
 
+  def payment_reminder
+    #send an email 
+    
+  end
+
 
 
 
