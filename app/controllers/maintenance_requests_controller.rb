@@ -309,11 +309,27 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def update
-    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-    maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
+    @maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
+    
+    if @maintenance_request.agency_admin 
+      if @maintenance_request.agency_admin.agency.tradies 
+        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
+      else 
+        @all_tradies= []
+      end 
+    elsif @maintenance_request.agent
+      if @maintenance_request.agent.agency.tradies 
+        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type)  
+      else 
+        @all_tradies= []
+      end 
+    end 
+
+
     respond_to do |format|
-      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service]}}
+      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
       format.html {render body: nil}
 
     end
