@@ -51,6 +51,12 @@ var Invoices = React.createClass({
 												Mark As Paid
 											</button>
 									}
+									{
+										(current_role.role == 'Trady' && invoice.paid == false) &&
+											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder(invoice)}>
+												Remind Agent of Payment
+											</button>
+									}
 									<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
 										View Invoice
 									</button>

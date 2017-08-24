@@ -679,7 +679,7 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
-	markAsPaid: function(invoice) {
+	paymentReminder: function(invoice) {
 		const self = this;
 		const {maintenance_request} = this.state;
 		const params = {
@@ -689,7 +689,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 		$.ajax({
 			type: 'POST',
-			url: '/mark_as_paid',
+			url: '/payment_reminder',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
@@ -698,8 +698,8 @@ var TradyMaintenanceRequest = React.createClass({
 				invoice.paid = true;
 				self.setState({
 					notification: {
-						title: "Mark As Paid",
-						content: "You was paid",
+						title: "Remind Agent of Payment",
+						content: "A payment reminder has been sent to the agent. Thank you.",
 						bgClass: "bg-success",
 					},
 				});
@@ -707,8 +707,8 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Mark As Paid",
-					content: "You didn't pid" ,
+					title: "Remind Agent of Payment",
+					content: "Remind Agent of Payment" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1119,8 +1119,8 @@ var TradyMaintenanceRequest = React.createClass({
 						 		<Invoices
 							 		invoices={invoices}
 							 		current_role={this.props.current_role}
-							 		markAsPaid={(item) => this.markAsPaid(item)}
 							 		viewInvoice={(key, item) => this.viewItem(key, item)}
+							 		paymentReminder={(item) => this.paymentReminder(item)}
 						 		/>
 					 	}
 						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
