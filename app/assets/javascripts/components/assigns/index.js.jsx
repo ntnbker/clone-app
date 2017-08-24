@@ -18,7 +18,7 @@ var AssignTrady = React.createClass({
 								</div>
 								<p className="description">
 									{trady.company_name}<br />
-									{trady.trady_company ? trady.trady_company.trading_name : null}
+									{trady.trady_company && trady.trady_company.trading_name}
 								</p>
 							</div>
 						</div>
@@ -60,22 +60,22 @@ var ModalViewTrady = React.createClass({
 								</p>
 								<p>
 									<span>
-										{trady.trady_company.abn}
+										{trady.trady_company && trady.trady_company.abn}
 									</span>
 								</p>
 								<p>
 									<span>
-										{trady.trady_company.address}
+										{trady.trady_company && trady.trady_company.address}
 									</span>
 								</p>
 								<p>
 									<span>
-										{trady.trady_company.mobile_number}
+										{trady.trady_company && trady.trady_company.mobile_number}
 									</span>
 								</p>
 								<p>
 									<span>
-										{trady.trady_company.email}
+										{trady.trady_company && trady.trady_company.email}
 									</span>
 								</p>
 							</div>
@@ -97,15 +97,15 @@ var ModalViewTrady = React.createClass({
 								</div>
 								<p>
 									<span className="font-bold">BSB:</span>
-									<span>{trady.trady_company.bsb_number}</span>
+									<span>{trady.trady_company && trady.trady_company.bsb_number}</span>
 								</p>
 								<p>
 									<span className="font-bold">Account Number:</span>
-									<span>{trady.trady_company.bank_account_number}</span>
+									<span>{trady.trady_company && trady.trady_company.bank_account_number}</span>
 								</p>
 								<p>
 									<span className="font-bold">Account Name:</span>
-									<span>{trady.trady_company.account_name}</span>
+									<span>{trady.trady_company && trady.trady_company.account_name}</span>
 								</p>
 							</div>
 							<div className="contact">
@@ -117,13 +117,13 @@ var ModalViewTrady = React.createClass({
 									Make your cheque payable to:
 								</p>
 								<p>
-									{trady.trady_company.account_name}
+									{trady.trady_company && trady.trady_company.account_name}
 								</p>
 								<p className="font-bold">
 									Detach this section and mail with your cheque to:
 								</p>
 								<p>
-									{trady.trady_company.address}
+									{trady.trady_company && trady.trady_company.address}
 								</p>
 							</div>
 						</div>

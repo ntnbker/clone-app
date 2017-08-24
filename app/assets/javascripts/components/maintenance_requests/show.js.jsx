@@ -1774,7 +1774,7 @@ var MaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				logs.push(res.log);
-				self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
+				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
 				self.setState({
 					logs: logs,
 					trady: res.hired_trady,
