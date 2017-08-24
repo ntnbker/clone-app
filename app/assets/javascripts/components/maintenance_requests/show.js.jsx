@@ -1255,6 +1255,7 @@ var MaintenanceRequest = React.createClass({
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
+			trady: this.props.hired_trady,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.pdf_urls,
@@ -1350,7 +1351,16 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest': {
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewTrady': {
+				this.setState({
+					trady: item
+				});
 				this.onModalWith(key);
 				break;
 			}
@@ -1696,6 +1706,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	requestQuote: function(params) {
+		const {logs} = this.state;
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
 		let flag = false;
@@ -1723,9 +1734,12 @@ var MaintenanceRequest = React.createClass({
 				},
 				data: params,
 				success: function(res){
+					logs.push(res.log);
 					tradies_with_quote_requests.push(params.trady.item);
 					self.setState({
-						tradies: res,
+						logs: logs,
+						trady: res.hired_trady,
+						tradies: res.all_tradies,
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Request Quote",
@@ -1748,6 +1762,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	sendWorkOrder: function(params) {
+		const {logs} = this.state;
 		const self = this;
 		delete params.item;
 		$.ajax({
@@ -1758,9 +1773,12 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				logs.push(res.log);
 				self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
 				self.setState({
-					tradies: res,
+					logs: logs,
+					trady: res.hired_trady,
+					tradies: res.all_tradies,
 					notification: {
 						title: "Send Work Order",
 						content: 'Thank you, a work order has been emailed to "Trady Company". You will receive an invoice form "Trady Company" once the job has been completed',
@@ -1920,6 +1938,44 @@ var MaintenanceRequest = React.createClass({
 				self.setState({notification: {
 					title: "Mark As Paid",
 					content: "You didn't pid" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancelWorkOrder: function() {
+		const self = this;
+		const {maintenance_request, logs} = this.state;
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_work_order',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				logs.push(res.log);
+				self.setState({
+					logs: logs,
+					trady: null,
+					notification: {
+						title: "Cancel Work Order",
+						content: "You have now cancelled the work order. Please choose another tradie to complete this maintenance request",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Cancel Work Order",
+					content: "Cancel Work Order is error" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -2243,6 +2299,22 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'viewTrady':
+					return (
+						<ModalViewTrady
+							close={this.isClose}
+							trady={this.state.trady}
+						/>
+					);
+
+				case 'confirmCancelTrady':
+					return (
+						<ModalConfirmCancelTrady
+							close={this.isClose}
+							cancelWorkOrder={this.cancelWorkOrder}
+						/>
+					);
+
 				default:
 					return null;
 			}
@@ -2373,6 +2445,15 @@ var MaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
 						/>
+						{
+							this.state.trady && 
+								<AssignTrady
+									trady={this.state.trady}
+									current_role={this.props.current_user_role}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									viewTrady={(key, item) => this.viewItem(key, item)}
+								/>
+						}
 						{	(quotes && quotes.length > 0) &&
 						 		<Quotes
 							 		quotes={this.state.quotes}
