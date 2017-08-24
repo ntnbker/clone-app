@@ -157,7 +157,7 @@ class TenantMailer < ActionMailer::Base
       @person = @maintenance_request.agency_admin.first_name.capitalize
     end     
         
-    mail(to:@tenant.email, subject:"A maintenance request was submitted by #{@person} - #{@property.property_address}")
+    mail(to:@tenant.email, subject:"A maintenance request was submitted by your agent - #{@person} - #{@property.property_address}")
   end
   
   

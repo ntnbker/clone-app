@@ -206,5 +206,9 @@ Rails.application.routes.draw do
   ##########REASSIGN AGENTS RESOURCES/ROUTES#########
   ################################################### 
     post "update_images"=> "images#update"
+  ###################################################
+  ##########WORK ORDER RESOURCES/ROUTES#########
+  ################################################### 
+    post "cancel_work_order"=> "work_orders#cancel_work_order"
     
  end
