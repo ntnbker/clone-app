@@ -13,7 +13,7 @@ class ReassignMaintenanceRequestsController < ApplicationController
       
       maintenance_request.update_columns(agent_id: user.agent.id, agency_admin_id: nil)
     end 
-
+    NotifyAgentOfReassignedMaintenanceRequestEmailWorker.perform_async(maintenance_request.id, user.id)
     Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request has been reassigned.")
     if current_user.current_role("AgencyAdmin")
       flash[:success] = "You have reassigned that maintenance request." 

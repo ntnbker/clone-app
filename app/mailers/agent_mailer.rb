@@ -157,5 +157,26 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Your maintenance request submitted on behalf of #{@tenant.name.capitalize} - #{@property.property_address}.")
   end
 
+  def maintenance_request_reassigned_email(maintenance_request,user)
+    @maintenance_request = maintenance_request
+    @property = maintenance_request.property
+    @tenant = maintenance_request.tenants.first
+    @user = user
+    if user.has_role("AgencyAdmin") && user.has_role("Agent")
+      
+      maintenance_request.update_attribute(:agency_admin_id, user.agency_admin.id)
+    elsif user.has_role("AgencyAdmin")
+      
+      maintenance_request.update_columns(agency_admin_id: user.agency_admin.id, agent_id: nil)
+    elsif user.has_role("Agent")
+      
+      maintenance_request.update_columns(agent_id: user.agent.id, agency_admin_id: nil)
+    end 
+
+
+
+    mail(to:user.email, subject:"A maintenance request has been reassiged to you for - #{@property.property_address}.")
+  end
+
 end 
 
