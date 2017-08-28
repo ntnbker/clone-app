@@ -15,8 +15,6 @@ class SearchMaintenanceRequestsController < ApplicationController
       @maintenance_requests = []
     end 
 
-    @
-
     respond_to do |format|
       format.json {render :json=> {maintenance_requests:@maintenance_requests}}
     end 

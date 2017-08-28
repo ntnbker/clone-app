@@ -191,25 +191,24 @@ var Header = React.createClass({
       );
     },
 
-    // search: function() {
-    //   return (
-    //     <div className="search">
-    //       <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
-    //         <input name="utf8" type="hidden" value="✓" />
-    //         <input 
-    //           id="query" 
-    //           name="query" 
-    //           type="search" 
-    //           className="input-search"
-    //           placeholder="Search..."
-    //         />
-    //         <button name="button" type="submit" className="btn-search">
-    //           <i className="fa fa-search"></i>
-    //         </button>
-    //       </form>
-    //     </div>
-    //   );
-    // },
+    search: function() {
+      return (
+        <div className="search">
+          <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
+            <input 
+              id="query" 
+              name="query" 
+              type="search" 
+              className="input-search"
+              placeholder="Search..."
+            />
+            <button type="button" type="submit" className="btn-search">
+              <i className="fa fa-search"></i>
+            </button>
+          </form>
+        </div>
+      );
+    },
 
     header: function(e) {
       const props = this.props;
@@ -258,7 +257,13 @@ var Header = React.createClass({
                       {
                         !expanded ?
                           <div className="header-right">
-                            
+                            { this.search() }                        
+                            <div className="question">        
+                              <i className="fa fa-question" />        
+                            </div>        
+                            <div className="notification">        
+                              <i className="fa fa-bell" />        
+                            </div>
                             <div className="menu-bar dropdown-custom">
                               <button type="button" className="btn-menu" onClick={this.showMenu}>
                                 <span className="icon-user">

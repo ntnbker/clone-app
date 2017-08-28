@@ -695,7 +695,6 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				invoice.paid = true;
 				self.setState({
 					notification: {
 						title: "Remind Agent of Payment",
