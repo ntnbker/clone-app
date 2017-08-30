@@ -117,7 +117,7 @@ var Header = React.createClass({
         this.setState({
           isShow: false
         });
-      } 
+      }
     },
 
     componentDidMount: function(e) {
@@ -137,7 +137,7 @@ var Header = React.createClass({
             e.target.click();
           }
         }
-      });  
+      });
     },
 
     componentWillUnmount: function() {
@@ -156,7 +156,7 @@ var Header = React.createClass({
 
       if (!!navigator.platform) {
         while (iDevices.length) {
-          if (navigator.platform === iDevices.pop()){ 
+          if (navigator.platform === iDevices.pop()){
             return true;
           }
         }
@@ -169,16 +169,16 @@ var Header = React.createClass({
       var dataMenu = [];
       if(!!this.props.user_agency_admin)
         dataMenu = [...MenuAgency];
-      else if(!!this.props.user_agent) 
+      else if(!!this.props.user_agent)
         dataMenu = [...MenuAgent];
-      else if(!!this.props.user_trady) 
+      else if(!!this.props.user_trady)
         dataMenu = [...MenuTrady];
       else if(!!this.props.user_tenant)
         dataMenu = [...MenuTenant];
       else if(!!this.props.user_landlord)
         dataMenu = [...MenuLandlord];
 
-      return(       
+      return(
         dataMenu.map((item, key) => {
           return (
             <li key={key}>
@@ -192,13 +192,16 @@ var Header = React.createClass({
     },
 
     search: function() {
+      const { role } = this.props;
+      if (['AgencyAdmin', 'Agent'].indexOf(role) === -1) return null;
+
       return (
         <div className="search">
           <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
-            <input 
-              id="query" 
-              name="query" 
-              type="search" 
+            <input
+              id="query"
+              name="query"
+              type="search"
               className="input-search"
               placeholder="Search..."
             />
@@ -232,12 +235,12 @@ var Header = React.createClass({
                     </li>
                     { this.menuBar() }
                     <li>
-                      <a href={props.logout_path} className="click" data-method="delete" rel="nofollow"> 
+                      <a href={props.logout_path} className="click" data-method="delete" rel="nofollow">
                         Sign Out
                       </a>
                     </li>
                 </ul>
-                : 
+                :
                 <span className="mobile-menu-items">
                   <a href={props.menu_login_path} className="click" > Login </a>
                   <a href={props.new_agency_path} className="register click"> Register </a>
@@ -252,17 +255,17 @@ var Header = React.createClass({
                   <a href={props.root_path}> MaintenanceApp </a>
                 </div>
                 {
-                  logged_in? 
+                  logged_in?
                     <div>
                       {
                         !expanded ?
                           <div className="header-right">
-                            { this.search() }                        
-                            <div className="question">        
-                              <i className="fa fa-question" />        
-                            </div>        
-                            <div className="notification">        
-                              <i className="fa fa-bell" />        
+                            { this.search() }
+                            <div className="question">
+                              <i className="fa fa-question" />
+                            </div>
+                            <div className="notification">
+                              <i className="fa fa-bell" />
                             </div>
                             <div className="menu-bar dropdown-custom">
                               <button type="button" className="btn-menu" onClick={this.showMenu}>
@@ -287,7 +290,7 @@ var Header = React.createClass({
                             <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
                             {
                             this.state.isItems &&
-                              <ul className="desktop-menu-items"> 
+                              <ul className="desktop-menu-items">
                                 <li>
                                   <span className="icon-user">
                                     <i className="fa fa-user" />
@@ -305,7 +308,7 @@ var Header = React.createClass({
                           </div>
                       }
                     </div>
-                    : 
+                    :
                     <span className="desktop-menu-items">
                       <a href={props.menu_login_path} > Login </a>
                       <a href={props.new_agency_path} className="register"> Register </a>
@@ -321,13 +324,13 @@ var Header = React.createClass({
     render: function() {
       return (
         <div>
-          { this.props.expanded ? 
+          { this.props.expanded ?
               this.header(true)
               :
               this.header()
           }
         </div>
       );
-      
+
     }
 });
