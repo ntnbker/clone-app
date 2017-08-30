@@ -192,7 +192,7 @@ var Header = React.createClass({
     },
 
     search: function() {
-      const { role } = this.props;
+      const { role, searchText = '' } = this.props;
       if (['AgencyAdmin', 'Agent'].indexOf(role) === -1) return null;
 
       return (
@@ -204,6 +204,7 @@ var Header = React.createClass({
               type="search"
               className="input-search"
               placeholder="Search..."
+              defaultValue={searchText}
             />
             <button type="button" type="submit" className="btn-search">
               <i className="fa fa-search"></i>

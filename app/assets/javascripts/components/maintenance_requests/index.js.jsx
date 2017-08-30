@@ -949,3 +949,55 @@ var Pagination = React.createClass({
     );
   }
 });
+
+
+var SearchResultMaintenanceRequest = React.createClass({
+  getInitialState: function() {
+    const { maintenance_requests, query = '' } = this.props;
+    const page = 1;
+    const prePage = 3;
+    const dataShow = [...maintenance_requests].splice(0, prePage);
+
+    return {
+      page: page,
+      query: query,
+      prePage: prePage,
+      dataShow: dataShow,
+      data: maintenance_requests,
+    };
+  },
+
+  setPage: function(page){
+    const { prePage, data = [] } = this.state;
+    const dataShow = [...data].splice((page - 1) * prePage, prePage);
+    this.setState({ page, dataShow });
+  },
+
+  render: function() {
+    const isPagination = this.state.data.length > this.state.prePage;
+
+    return (
+      <div className="maintenance-list">
+        <div className="maintenance-content">
+          <div className={"main-column"} style={{ width: '100%' }}>
+            {
+              this.state.dataShow.map((maintenance_request, key) => {
+                return (
+                  <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={this.props.link}/>
+                );
+              })
+            }
+            { isPagination &&
+              <Pagination
+                page={this.state.page}
+                setPage={this.setPage}
+                total={this.state.data.length}
+                prePage={this.state.prePage}
+              />
+            }
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
