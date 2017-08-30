@@ -471,6 +471,11 @@ var ListMaintenanceRequest = React.createClass({
           title: "Deferred",
           value: "Defer",
           count: this.props.deferred_count
+        },
+        {
+          title: "Jobs Completed and Closed",
+          value: "Jobs Completed",
+          count: this.props.jobs_completed
         }
       ],
       tradyFilter: [
