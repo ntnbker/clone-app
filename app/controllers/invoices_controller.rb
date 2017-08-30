@@ -197,6 +197,7 @@ class InvoicesController < ApplicationController
     invoice.update_attribute(:paid, true)
 
     #THIS IS WHERE WE FIGURE OUT IF THE MAINTENACE REQUEST HAS BEEN CLOSE COMPLETELY OR NOT.
+    #if the invoices.where(paid) >= 1 and uplaodedPDF.paid >= 1 then do nothing else update action status for Both agent and trady
     log = Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice marked as paid.")
     respond_to do |format|
       format.json {render :json=>{invoice:invoice, log:log}}
