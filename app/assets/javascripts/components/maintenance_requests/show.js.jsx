@@ -2429,7 +2429,7 @@ var MaintenanceRequest = React.createClass({
 
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
-		const {invoice_pdf_files} = this.state;
+		const {invoice_pdf_files, trady} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -2447,7 +2447,7 @@ var MaintenanceRequest = React.createClass({
 							show_assign={this.props.current_user_show_quote_message}
 						/>
 						{
-							this.state.trady && 
+							this.state.trady &&
 								<AssignTrady
 									trady={this.state.trady}
 									current_role={this.props.current_user_role}
@@ -2488,12 +2488,13 @@ var MaintenanceRequest = React.createClass({
 							tenants={tenants}
 							landlord={this.state.landlord}
 							current_user={this.props.current_user}
-							assigned_trady={this.props.assigned_trady}
+							assigned_trady={trady || this.props.assigned_trady}
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						<Action
 							landlord={this.state.landlord}
 							onModalWith={(modal) => this.onModalWith(modal)}
+							assigned_trady={trady || this.props.assigned_trady}
 						/>
 						{
 							(work_order_appointments && work_order_appointments.length > 0) &&
@@ -2557,8 +2558,8 @@ var MaintenanceRequest = React.createClass({
 					tenants={tenants}
 					landlord={this.state.landlord}
 					current_user={this.props.current_user}
-					assigned_trady={this.props.assigned_trady}
 					onModalWith={(modal) => this.onModalWith(modal)}
+					assigned_trady={trady || this.props.assigned_trady}
 					viewItem={(key, item) => this.viewItem(key, item)}
 				/>
 				{ this.renderModal() }
