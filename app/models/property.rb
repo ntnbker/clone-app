@@ -1,4 +1,5 @@
 class Property < ApplicationRecord
+  searchkick word_start: [:property_address]
   # include Elasticsearch::Model
   # include Elasticsearch::Model::Callbacks
   has_many :tenants

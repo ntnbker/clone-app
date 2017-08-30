@@ -15,7 +15,7 @@ class AgentsController < ApplicationController
     end 
     if existing_user && existing_role == false
       role = Role.new(user_id:existing_user.id)
-      @agent = Agent.create(agency_admin_params)
+      @agent = Agent.create(agent_params)
       @agent.roles << role
       role.save
       flash[:success] = "Thank you for adding another Agent to your team."
@@ -36,7 +36,7 @@ class AgentsController < ApplicationController
         UserSetPasswordEmailWorker.perform_async(@user.id)
         redirect_to new_agent_path
       else
-        @agency_admin = AgencyAdmin.new(agency_admin_params)
+        @agent = Agent.new(agent_params)
         flash[:danger] = "Something went wrong"
         render :new
       end 

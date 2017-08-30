@@ -205,7 +205,12 @@ class InvoicesController < ApplicationController
   end
 
   def payment_reminder
-    #send an email 
+    #send an email
+    
+
+    #maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]) 
+
+    AgentInvoiceReminderEmailWorker.perform_async(params[:maintenance_request_id])
     
   end
 

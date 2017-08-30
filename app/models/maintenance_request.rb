@@ -1,7 +1,8 @@
 # require 'elasticsearch/model'
 
 class MaintenanceRequest < ApplicationRecord
-  searchkick
+  searchkick word_start: [:maintenance_description]
+  
 
   # include Elasticsearch::Model
   # include Elasticsearch::Model::Callbacks
@@ -165,6 +166,14 @@ class MaintenanceRequest < ApplicationRecord
   #   landlord: property.landlord(&:name)
   # )
   # end
+
+  scope :search_import, -> { includes(:property) }
+
+ def search_data
+    attributes.merge(
+      property_address: property(&:property_address)
+    )
+  end
 
 
 

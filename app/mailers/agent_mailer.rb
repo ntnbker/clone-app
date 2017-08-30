@@ -178,5 +178,21 @@ class AgentMailer < ActionMailer::Base
     mail(to:user.email, subject:"A maintenance request has been reassiged to you for - #{@property.property_address}.")
   end
 
+  def remind_agent_of_invoice_payment(maintenance_request)
+    @maintenance_request = maintenance_request
+    @trady = @maintenance_request.trady
+    if @maintenance_request.agent
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+
+      
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end 
+
+    mail(to:email, subject:"Invoice Payment Reminder")
+  end
+
 end 
 
