@@ -273,28 +273,9 @@ var ButtonHeaderMR = React.createClass({
 	show: function(key) {
 		switch(key) {
 			case 'assign':
-				if(!this.state.isShow) {
-					this.setState({
-						isShow: true
-					});
-				}else {
-					this.setState({
-						isShow: false
-					});
-				}
-				break;
-
+				return this.setState({ isShow: !this.state.isShow, isShowStatus: false });
 			case 'status':
-				if(!this.state.isShowStatus) {
-					this.setState({
-						isShowStatus: true
-					});
-				}else {
-					this.setState({
-						isShowStatus: false
-					});
-				}
-				break;
+				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false });
 		}
 	},
 
@@ -314,8 +295,8 @@ var ButtonHeaderMR = React.createClass({
 		}
 	},
 
-	componentDidMount: function() {	
-		
+	componentDidMount: function() {
+
 	},
 
 	render: function() {
