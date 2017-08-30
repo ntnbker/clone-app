@@ -98,6 +98,10 @@ var TradySideBarMobile = React.createClass({
 });
 
 var ModalConfirmAddInvoice = React.createClass({
+	componentWillMount: function() {
+		this.createInvoice();
+	},
+
 	jobCompleted: function() {
 		const {maintenance_request} = this.props;
 		const maintenance_trady_id = maintenance_request.trady_id;
@@ -107,18 +111,20 @@ var ModalConfirmAddInvoice = React.createClass({
 		};
 
 		this.props.jobCompleted(params);
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
 	},
 
 	createInvoice: function() {
 		const {maintenance_request} = this.props;
 		const maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
 	},
 
 	render: function() {
 		const maintenance_request = this.props.maintenance_request;
+		return null;
+
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -300,7 +306,7 @@ var TradyMaintenanceRequest = React.createClass({
 				modal: ""
 			});
 		}
-		
+
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -1012,7 +1018,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const {instruction} = this.state;
 		const body = $('body');
 		if(!instruction.read_instruction) {
-			body.chardinJs('toggle'); 
+			body.chardinJs('toggle');
 
 			this.onModalWith('viewModalInstruction');
 
@@ -1022,7 +1028,7 @@ var TradyMaintenanceRequest = React.createClass({
 					if(e.target.className != 'show-instruction') {
 						self.isClose();
 						self.viewModalMessage();
-						body.chardinJs('stop'); 
+						body.chardinJs('stop');
 					}
 				}
 			});
@@ -1095,7 +1101,7 @@ var TradyMaintenanceRequest = React.createClass({
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
 							<div className="section show-waring">
 								We are sorry to inform you that the job has been awarded to another company. Thank you for your quote, we will contact you for other future jobs.
-							</div>			
+							</div>
 					}
 					<div className="section">
 						<ItemMaintenanceRequest
@@ -1157,7 +1163,7 @@ var TradyMaintenanceRequest = React.createClass({
 								/>
 							</div>
 					}
-						
+
 						{
 							(appointments && appointments.length > 0) &&
 								<AppointmentRequest
