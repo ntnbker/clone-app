@@ -200,10 +200,17 @@ class InvoicesController < ApplicationController
     elsif params[:invoice_type] == "uploaded_invoice"
       pdf_invoice.update_attribute(:paid, true)
     end 
-      
+    
+
+
 
     #THIS IS WHERE WE FIGURE OUT IF THE MAINTENACE REQUEST HAS BEEN CLOSE COMPLETELY OR NOT.
-    #if the invoices.where(paid) >= 1 and uplaodedPDF.paid >= 1 then do nothing else update action status for Both agent and trady
+    if the maintenance_request.invoices.where(paid:false).count >= 1 && maintenance_request.uploaded_invoices.where(paid:false).count >= 1 
+      #do nothing
+    else 
+      maintenance_request.action_status.update_columns(agent_status:"Jobs Completed", trady_status:"Job Complete")
+    end 
+
     log = Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice marked as paid.")
     respond_to do |format|
       format.json {render :json=>{invoice:invoice,pdf_invoice:pdf_invoice,  log:log}}
@@ -214,7 +221,7 @@ class InvoicesController < ApplicationController
   def payment_reminder
     #send an email
     
-
+    log = Log.create(maintenance_request_id:params[:maintenance_request_id], action:"Tradie sent payment reminder.")
     #maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]) 
 
     AgentInvoiceReminderEmailWorker.perform_async(params[:maintenance_request_id])
