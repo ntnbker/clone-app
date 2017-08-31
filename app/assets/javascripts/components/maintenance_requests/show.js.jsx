@@ -1914,6 +1914,7 @@ var MaintenanceRequest = React.createClass({
 		const {maintenance_request} = this.state;
 		const params = {
 			invoice_id: invoice.id,
+			invoice_type: 'system_invoice',
 			maintenance_request_id: maintenance_request.id,
 		};
 
