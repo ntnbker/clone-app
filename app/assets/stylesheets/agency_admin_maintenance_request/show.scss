@@ -300,7 +300,7 @@ body::-webkit-scrollbar-thumb {
       padding: 15px;
       text-align: center;
       border-top: none;
-      overflow: hidden; 
+      overflow: hidden;
       button {
         border: none;
         color: $color-white;
@@ -336,7 +336,7 @@ body::-webkit-scrollbar-thumb {
       padding-top: 15px;
       padding-bottom: 15px;
       margin-bottom: 25px;
-      border-radius: 5px; 
+      border-radius: 5px;
     }
   }
   .section {
@@ -691,19 +691,20 @@ body::-webkit-scrollbar-thumb {
         border-color: $color-gray;
         color: $color-white;
       }
-      .btn-mark-as-paid {
-        background-color: #8ADEFF;
-        height: 35px;
-        width: auto;
-        padding: 0 20px;
-        line-height: 35px;
-        font-weight: 400;
-        font-size: 14px;
-        color: $color-white;
-        margin-left: 0px;
-        border: none;
-        margin-right: 10px;
-      }
+    }
+
+    .btn-mark-as-paid {
+      background-color: #8ADEFF;
+      height: 35px;
+      width: auto;
+      padding: 0 20px;
+      line-height: 35px;
+      font-weight: 400;
+      font-size: 14px;
+      color: $color-white;
+      margin-left: 0px;
+      border: none;
+      margin-right: 10px;
     }
   }
   .sidebar, .activity-mobile {
@@ -1132,7 +1133,7 @@ body::-webkit-scrollbar-thumb {
   }
   .slider-quote {
     position: relative;
-    .button-slider { 
+    .button-slider {
       button {
         line-height: 30px;
         width: 30px;
@@ -1425,8 +1426,8 @@ body::-webkit-scrollbar-thumb {
       .author {
         font-size: 14px;
         a {
-          font-size: 13px;	
-        }	
+          font-size: 13px;
+        }
       }
       .info .title {
         font-size: 18px;

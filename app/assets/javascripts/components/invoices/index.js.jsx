@@ -2,11 +2,21 @@ var Invoices = React.createClass({
 	render: function() {
 		const {invoices, current_role} = this.props;
 		const self = this;
+		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
+
 		return (
 			<div className="quotes invoices m-t-xl" id="invoices">
 				<p>
 					Invoice ({invoices.length})
 				</p>
+				{
+					(current_role.role == 'Trady' && notPaid) &&
+					<p>
+						<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
+							Remind Agent of Payment
+						</button>
+					</p>
+				}
 				<div className="list-quote">
 				{
 					invoices.map(function(invoice, index) {
@@ -51,12 +61,6 @@ var Invoices = React.createClass({
 												Mark As Paid
 											</button>
 									}
-									{
-										(current_role.role == 'Trady' && invoice.paid == false) &&
-											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder(invoice)}>
-												Remind Agent of Payment
-											</button>
-									}
 									<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
 										View Invoice
 									</button>
@@ -64,7 +68,7 @@ var Invoices = React.createClass({
 							</div>
 						);
 					})
-				}      
+				}
 				</div>
 			</div>
 		);

@@ -3,12 +3,21 @@ var PDFInvoices = React.createClass({
 		const {invoice_pdf_files, current_role} = this.props;
 		const self = this;
 		const role = current_role.role;
+		const notPaid = invoice_pdf_files.filter((i) => !i.paid).length !== 0;
 
 		return (
 			<div className="quotes invoices m-t-xl">
 				<p>
 					PDF Invoice ({invoice_pdf_files.length})
 				</p>
+				{
+					(role == 'Trady' && notPaid) &&
+					<p>
+						<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
+							Remind Agent of Payment
+						</button>
+					</p>
+				}
 				<div className="list-quote">
 				{
 					invoice_pdf_files.map(function(invoice, index) {
