@@ -19,33 +19,35 @@ var SelectTime = React.createClass({
     date.push(<option key="-1" value="">--</option>);
     var value = "";
     for (var i=0; i<24; i++) {
-	      if(i == 0) {
-	        value = "12 AM";
-	      } else if(i <= 11) {
-	        value = i < 10 ? "0" + i : i;
-	        value += " AM";
-	      } else if(i == 12) {
-	        value = i + " PM";
-	      } else if(i >= 13) {
-	        value = (i - 12) < 10 ? "0" + (i - 12) : (i - 12);
-	        value += " PM";
-	      }
-	      if(stateDate.valueOf() > currentDate.valueOf()) {
-	      	date.push(
-		        <option key={i} value={i}>
-							{ value }
-		 				</option>
-					);
-	      }else if(stateDate.valueOf() == currentDate.valueOf() && i < hours){
-	      	date.push(
-		        <option key={i} value={i}>
-							{ value }
-		 				</option>
-					);
-	      }
-	    }
-	    return date;
-  	},
+      if(i == 0) {
+        value = "12 AM";
+      } else if(i <= 11) {
+        value = i < 10 ? "0" + i : i;
+        value += " AM";
+      } else if(i == 12) {
+        value = i + " PM";
+      } else if(i >= 13) {
+        value = (i - 12) < 10 ? "0" + (i - 12) : (i - 12);
+        value += " PM";
+      }
+
+      if(stateDate.valueOf() == currentDate.valueOf() && i < hours){
+      	date.push(
+	        <option key={i} value={i}>
+						{ value }
+	 				</option>
+				);
+      } else {
+      	date.push(
+    			<option key={i} value={i}>
+	        	{ value }
+	 				</option>
+				);
+      }
+    }
+
+    return date;
+	},
 
   makeMinute: function() {
     const data = [0, 15, 30, 45];
@@ -56,7 +58,7 @@ var SelectTime = React.createClass({
     data.map((item, key) => {
       date.push(<option key={key} value={item}>{item == 0 ? item + "0" : item}</option>);
     });
-    
+
     return date;
   },
 
@@ -109,13 +111,13 @@ var CommentAppointment = React.createClass({
 	componentDidUpdate: function() {
 		this.autoScroll();
 	},
-	
+
 	render: function() {
 		const comments = this.props.comments ? this.props.comments : [];
 		return (
 			<div className="comments" id="message">
 				{
-					comments.map((comment, key) => 
+					comments.map((comment, key) =>
 						<div key={comment.id} className="comment">
 							<p className="content">
 								{comment.body}
@@ -136,8 +138,8 @@ var CommentAppointment = React.createClass({
 var ModalAddAppointment = React.createClass({
 	getInitialState: function() {
 		return {
-			date: null,
-		};	
+			date: new Date(),
+		};
 	},
 
 	submit: function(e) {
@@ -159,32 +161,27 @@ var ModalAddAppointment = React.createClass({
 	},
 
 	componentDidMount: function() {
-		var now = new Date();
-		dt = parseInt(now.getDate());
-		dt = dt.toString().length == 1 ? '0' + dt : dt;
-		month = (parseInt(now.getMonth()) + 1);
-		month = month.toString().length == 1 ? '0' + month : month;
-		date = now.getFullYear() + '-' + month + '-' + dt;
-		document.getElementById('date-appointment').setAttribute("min", date);
+		$('#date-appointment').datepicker({ dateFormat: "yy-mm-dd", minDate: new Date() });
 	},
 
 	render: function() {
 		var appointment = this.props.appointment ? this.props.appointment : {};
 		const now = new Date();
-		const date = now.getMonth() + '/' + now.getDate() + '/' + now.getFullYear();
+		const date = new Date().toISOString().substring(0, 10);
 		const time = now.getHours() + ':' + now.getMinutes();
 		const {title, comments} = this.props;
+
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
 					<form onSubmit={this.submit}>
 						<div className="modal-content">
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									data-dismiss="modal" 
-									aria-label="Close" 
+									data-dismiss="modal"
+									aria-label="Close"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -192,24 +189,25 @@ var ModalAddAppointment = React.createClass({
 								<h4 className="modal-title text-center">{title}</h4>
 							</div>
 							<div className="modal-body modal-appointment">
-								<div className="new_appointment"> 
+								<div className="new_appointment">
 									<CommentAppointment comments={comments} />
 									<div className="form-group">
-										<textarea 
+										<textarea
 											required
-											placeholder="Comment" 
+											placeholder="Comment"
 											className="text-center"
-											ref={ref => this.comment = ref} 
+											ref={ref => this.comment = ref}
 										/>
 									</div>
 									<div className="form-group date-time">
 										<div className="date">
 											<label>Date</label>
-											<input 
+											<input
 												required
 												id="date-appointment"
 												type="date"
 												defaultValue={date}
+												className="datepicker"
 												ref={ref => this.date = ref}
 												onChange={this.changeDate}
 											/>
@@ -246,11 +244,11 @@ var ModalConfirmAppointment = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -261,16 +259,16 @@ var ModalConfirmAppointment = React.createClass({
 							<p className="text-center">{content}</p>
 						</div>
 						<div className="modal-footer">
-							<button 
-								type="button" 
-								className="btn btn-default success" 
-								onClick={this.props.openModal} 
+							<button
+								type="button"
+								className="btn btn-default success"
+								onClick={this.props.openModal}
 								data-dismiss="modal"
 							>{btnContent}</button>
-							<button 
-								type="button" 
-								className="btn btn-default cancel" 
-								onClick={this.props.close} 
+							<button
+								type="button"
+								className="btn btn-default cancel"
+								onClick={this.props.close}
 								data-dismiss="modal"
 							>Close</button>
 						</div>
