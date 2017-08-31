@@ -32,11 +32,37 @@ $color-blue-light: #7646FF;
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
-	button.button-primary.option-button {
+  .button-type {
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-block;
+    box-sizing: border-box;
+    text-decoration: none;
+    white-space: nowrap;
+    text-align: center;
+    letter-spacing: .1rem;
+    line-height: 2.5;
+    padding: 0 30px;
+    background-color: #33C3F0;
+    border-color: #33C3F0;
+
+    &.green {
+      background-color: #7dc691;
+      border-color: #7dc691;
+    }
+
+    &:hover {
+      background-color: #1EAEDB;
+      border-color: #1EAEDB;
+    }
+  }
+
+	.button-primary.option-button {
 		margin: 0;
 		height: 38px;
 		padding: 0px 10px;
 	}
+
 	.quotes {
     p {
       color: $color-grey-dark;
@@ -175,7 +201,7 @@ $color-blue-light: #7646FF;
           border: 1px solid $color-black;
         }
       }
-      
+
     }
     .actions {
       button {
@@ -328,7 +354,7 @@ $color-blue-light: #7646FF;
   }
   .slider-quote {
     position: relative;
-    .button-slider { 
+    .button-slider {
       button {
         line-height: 30px;
         width: 30px;
@@ -556,9 +582,9 @@ $color-blue-light: #7646FF;
 				}
 			}
 		}
-		
+
 		button {
-			&.button-add {	
+			&.button-add {
 				margin-top: 5px;
 				font-size: 13px;
 				height: 24px;
@@ -755,7 +781,7 @@ $color-blue-light: #7646FF;
 
 #Iframe-Master-CC-and-Rs {
   max-width: 100%;
-  max-height: 100%; 
+  max-height: 100%;
   overflow: hidden;
 }
 
@@ -763,14 +789,14 @@ $color-blue-light: #7646FF;
   position: relative;
   height: 0;
 }
- 
+
 .responsive-wrapper iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  
+
   margin: 0;
   padding: 0;
   border: none;
@@ -808,7 +834,7 @@ $color-blue-light: #7646FF;
 		align-items: center;
 		width: 90px;
 		margin: 0 auto;
-	}	
+	}
 	.title {
     color:#3b5998;
     font-size:14px;
