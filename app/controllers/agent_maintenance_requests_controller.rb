@@ -64,7 +64,7 @@ class AgentMaintenanceRequestsController < ApplicationController
     @email_invoice_id = params[:invoice_quote_id]
     @open_message = params[:message]
     @open_quote_message = params[:quote_message_id]
-    #@invoice_pdf_files = @maintenance_request.delivered_uploaded_invoices.as_json(:include => {:trady => {:include => :trady_company}})
+    @pdf_files = @maintenance_request.delivered_uploaded_invoices.as_json(:include => {:trady => {:include => :trady_company}},methods: :pdf_url)
     @invoices = @maintenance_request.delivered_invoices.as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
     @logs = @maintenance_request.logs
 
@@ -125,7 +125,7 @@ class AgentMaintenanceRequestsController < ApplicationController
 
     respond_to do |format|
 
-      format.json { render :json=>{hired_trady: @hired_trady,:gallery=>@gallery,:status=>@status ,:instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,:services=>@services,:assigned_trady=>@assigned_trady, :all_tradies=> @all_tradies,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :invoice_pdf_files=>@invoice_pdf_files,:pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins, work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{hired_trady: @hired_trady,:gallery=>@gallery,:status=>@status ,:instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,:services=>@services,:assigned_trady=>@assigned_trady, :all_tradies=> @all_tradies,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency,:property=>@maintenance_request.property, :agent=>@current_user.agent, :invoices=> @invoices, :pdf_files=>@pdf_files,:pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins, work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants,time_and_access:@maintenance_request.availability_and_access}}
       format.html{render :show}
     end 
 
