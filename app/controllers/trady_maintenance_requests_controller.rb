@@ -71,8 +71,8 @@ class TradyMaintenanceRequestsController < ApplicationController
     
    
     @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices.as_json(:include => {:trady => {:include => :trady_company}},methods: :pdf_url)
-
+    
+    @pdf_files = UploadedInvoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}},methods: :pdf_url)
     
 
     # if @quote
