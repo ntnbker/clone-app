@@ -253,7 +253,7 @@ var ModalNotification = React.createClass({
 
 var TradyMaintenanceRequest = React.createClass({
 	getInitialState: function() {
-		const {quotes, tradies, landlord, invoices, appointments, pdf_urls, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
+		const {quotes, tradies, landlord, invoices, appointments, pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
 		const comments = [],
 					quoteComments = [];
 		appointments.map((appointment, key) => {
@@ -284,7 +284,7 @@ var TradyMaintenanceRequest = React.createClass({
 			appointments: appointments,
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
-			invoice_pdf_files: pdf_urls,
+			invoice_pdf_files: pdf_files,
 			quote_appointments: quote_appointments,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
@@ -1132,6 +1132,8 @@ var TradyMaintenanceRequest = React.createClass({
 							<PDFInvoices
 								trady={this.props.assigned_trady}
 								invoice_pdf_files={invoice_pdf_files}
+						 		current_role={this.props.current_role}
+						 		paymentReminder={(item) => this.paymentReminder(item)}
 								viewPDFInvoice={(key, item) => this.viewItem(key, item)}
 							/>
 						}

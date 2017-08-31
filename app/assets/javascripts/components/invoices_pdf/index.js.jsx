@@ -1,8 +1,9 @@
 var PDFInvoices = React.createClass({
 	render: function() {
-		const {invoice_pdf_files} = this.props;
-		const {trady} = this.props;
+		const {invoice_pdf_files, current_role} = this.props;
 		const self = this;
+		const role = current_role.role;
+
 		return (
 			<div className="quotes invoices m-t-xl">
 				<p>
@@ -11,6 +12,7 @@ var PDFInvoices = React.createClass({
 				<div className="list-quote">
 				{
 					invoice_pdf_files.map(function(invoice, index) {
+						const { trady = {}, paid = false } = invoice;
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
@@ -20,6 +22,8 @@ var PDFInvoices = React.createClass({
 									<div className="info">
 										<div className="name">
 											<span>{trady.name}</span>
+											{!!paid && <button className="button-default Approved"><span>Paid</span></button>}
+											{!paid && <button className="button-default Declined"><span>Outstanding Payment</span></button>}
 										</div>
 										<p className="description">
 											{trady.company_name}<br />
@@ -28,16 +32,25 @@ var PDFInvoices = React.createClass({
 									</div>
 								</div>
 								<div className="actions five columns content">
-									<p>
-										<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice)}>
-											View
-										</button>
+									<p style={{ marginRight: 15 }}>
+										{
+											(['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid) &&
+												<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
+													Mark As Paid
+												</button>
+										}
+										<button
+											style={{ marginLeft: 10 }}
+											type="button" className="btn btn-default btn-view"
+											onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice.pdf_url)}>
+												View
+											</button>
 									</p>
 								</div>
 							</div>
 						);
 					})
-				}      
+				}
 				</div>
 			</div>
 		);

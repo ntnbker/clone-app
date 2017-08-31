@@ -1258,7 +1258,7 @@ var MaintenanceRequest = React.createClass({
 			trady: this.props.hired_trady,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
-			invoice_pdf_files: this.props.pdf_urls,
+			invoice_pdf_files: this.props.pdf_files,
 			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -1909,7 +1909,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	markAsPaid: function(invoice) {
+	markAsPaid: function(invoice, uploaded = false) {
 		const self = this;
 		const {maintenance_request} = this.state;
 		const params = {
@@ -1917,6 +1917,12 @@ var MaintenanceRequest = React.createClass({
 			invoice_type: 'system_invoice',
 			maintenance_request_id: maintenance_request.id,
 		};
+
+		if (uploaded) {
+			delete params.invoice_id;
+			params.uploaded_invoice_id = invoice.id;
+			params.invoice_type = 'uploaded_invoice';
+		}
 
 		$.ajax({
 			type: 'POST',
@@ -2480,7 +2486,9 @@ var MaintenanceRequest = React.createClass({
 								<PDFInvoices
 									trady={this.props.assigned_trady}
 									invoice_pdf_files={invoice_pdf_files}
+									current_role={this.props.current_user_role}
 									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
+									markAsPaid={(item) => this.markAsPaid(item, true)}
 								/>
 						}
 					</div>
