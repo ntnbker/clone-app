@@ -2176,7 +2176,7 @@ var MaintenanceRequest = React.createClass({
 							keyTitle="request-quote"
 							tradies={this.state.tradies}
 							requestQuote={this.requestQuote}
-							assigned_trady={this.props.assigned_trady}
+							assigned_trady={this.state.trady}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					);
