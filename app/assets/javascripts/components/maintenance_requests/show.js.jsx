@@ -1721,8 +1721,10 @@ var MaintenanceRequest = React.createClass({
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
 		let flag = false;
+		const hasAssiged = !!this.props.assigned_trady;
+
 		tradies_with_quote_requests.map((item, index) => {
-			if(params.trady.trady_id == item.id) {
+			if(params.trady.trady_id == item.id && !hasAssiged) {
 				flag = true;
 			}
 		});
