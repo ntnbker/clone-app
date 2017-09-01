@@ -1060,7 +1060,7 @@ var ModalRequestModal = React.createClass({
 		return (
 			<div className="radio">
 				<label>
-					<input type="radio" value="false" onChange={this.changeRadio} checked={isTrady === 'false' && "checked"}/>
+					<input type="radio" value="false" onChange={this.changeRadio} checked={this.state.isTrady === 'false' && "checked"}/>
 					Add trady
 				</label>
 			</div>
@@ -1721,8 +1721,10 @@ var MaintenanceRequest = React.createClass({
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
 		let flag = false;
+		const hasAssiged = !!this.props.assigned_trady;
+
 		tradies_with_quote_requests.map((item, index) => {
-			if(params.trady.trady_id == item.id) {
+			if(params.trady.trady_id == item.id && !hasAssiged) {
 				flag = true;
 			}
 		});
