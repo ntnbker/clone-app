@@ -94,8 +94,8 @@
       .main
         -if @maintenance_request.agent 
           %p.content 
-            Hi
-            ="@maintenance_request.agent ? #{@maintenance_request.agent.name.capitalize} : '' , "
+            Hi #{@maintenance_request.agent.name.capitalize},
+            
             %br
               #{@trady.company_name.capitalize} would like to remind you of an outstanding invoice. To view this invoice, please click the button below.
           %div.text-center
@@ -103,8 +103,7 @@
             
         -elsif @maintenance_request.agency_admin
           %p.content 
-            Hi
-            ="#{@maintenance_request.agency_admin.first_name.capitalize}, "
+            Hi #{@maintenance_request.agency_admin.first_name.capitalize},
             %br  
               #{@trady.company_name.capitalize} would like to remind you of an outstanding invoice. To view this invoice, please click the button below.
           %div.text-center
