@@ -124,7 +124,7 @@ class QuotesController < ApplicationController
           
           trady = quote.trady 
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
-          
+          hired_trady = trady
           NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
@@ -171,7 +171,7 @@ class QuotesController < ApplicationController
     end   
 
     respond_to do |format|
-      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})}}
+      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})}, hired_trady:hired_trady}
       
     end
 
