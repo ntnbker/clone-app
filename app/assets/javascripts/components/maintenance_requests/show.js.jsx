@@ -1060,7 +1060,7 @@ var ModalRequestModal = React.createClass({
 		return (
 			<div className="radio">
 				<label>
-					<input type="radio" value="false" onChange={this.changeRadio} checked={isTrady === 'false' && "checked"}/>
+					<input type="radio" value="false" onChange={this.changeRadio} checked={this.state.isTrady === 'false' && "checked"}/>
 					Add trady
 				</label>
 			</div>
