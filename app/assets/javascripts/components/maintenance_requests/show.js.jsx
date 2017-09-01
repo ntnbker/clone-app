@@ -1054,13 +1054,29 @@ var ModalRequestModal = React.createClass({
 		});
 	},
 
+	renderAddTrady() {
+		if (!!this.props.assigned_trady) return null;
+
+		return (
+			<div className="radio">
+				<label>
+					<input type="radio" value="false" onChange={this.changeRadio} checked={isTrady === 'false' && "checked"}/>
+					Add trady
+				</label>
+			</div>
+		);
+	},
+
 	render: function() {
 		const self = this;
 		const state = this.state;
+		const assignedTrady = this.props.assigned_trady;
 		const {isTrady, isDisable, trady, isAdd} = this.state;
-		const style = {
-			background: this.state.isAdd ? 'none' : '#f2f2f2'
-		};
+
+		const style = { background: isAdd ? 'none' : '#f2f2f2' };
+		const isAssigned = !!assignedTrady;
+		const tradies = isAssigned ? [assignedTrady] : tradies;
+
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -1086,30 +1102,25 @@ var ModalRequestModal = React.createClass({
 											Select trady
 										</label>
 									</div>
-									<div className="radio">
-										<label>
-											<input type="radio" value="false" onChange={this.changeRadio} checked={isTrady === 'false' && "checked"}/>
-											Add trady
-										</label>
-									</div>
+									{this.renderAddTrady()}
 								</div>
 								{
 									isTrady === 'true' &&
 										<div className="row">
 											<select
 												id="trady"
+												value={trady.id || ""}
 												ref={e => this.trady_id = e}
 												className="form-control input-custom"
 												onChange={() => this.selectTrady(this.trady_id.value)}
 											>
-												<option value="" selected={!trady.id && "selected"}>Select Tradie</option>
+												<option value="">Select Tradie</option>
 												{
-													this.props.tradies.map(function(item, index) {
+													tradies.map(function(item, index) {
 														return (
 															<option
 																key={index+1}
 																value={item.id}
-																selected={trady.id == item.id && "selected"}
 															>
 																{item.company_name}
 															</option>
@@ -2161,6 +2172,7 @@ var MaintenanceRequest = React.createClass({
 							keyTitle="request-quote"
 							tradies={this.state.tradies}
 							requestQuote={this.requestQuote}
+							assigned_trady={this.props.assigned_trady}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					);
