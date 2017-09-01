@@ -1075,7 +1075,9 @@ var ModalRequestModal = React.createClass({
 
 		const style = { background: isAdd ? 'none' : '#f2f2f2' };
 		const isAssigned = !!assignedTrady;
-		const tradies = isAssigned ? [assignedTrady] : tradies;
+
+		const tradies = isAssigned ? [assignedTrady] : this.props.tradies;
+
 
 		return (
 			<div className="modal-custom fade">
