@@ -2230,6 +2230,7 @@ var MaintenanceRequest = React.createClass({
 							onModalWith={(modal) => this.onModalWith(modal)}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
+							trady={this.state.trady || this.props.assigned_trady}
 						/>
 					);
 				}
