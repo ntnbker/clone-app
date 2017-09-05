@@ -98,6 +98,10 @@ var TradySideBarMobile = React.createClass({
 });
 
 var ModalConfirmAddInvoice = React.createClass({
+	componentWillMount: function() {
+		this.createInvoice();
+	},
+
 	jobCompleted: function() {
 		const {maintenance_request} = this.props;
 		const maintenance_trady_id = maintenance_request.trady_id;
@@ -107,18 +111,20 @@ var ModalConfirmAddInvoice = React.createClass({
 		};
 
 		this.props.jobCompleted(params);
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
 	},
 
 	createInvoice: function() {
 		const {maintenance_request} = this.props;
 		const maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id + "&quote_id=";
+		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
 	},
 
 	render: function() {
 		const maintenance_request = this.props.maintenance_request;
+		return null;
+
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -247,7 +253,7 @@ var ModalNotification = React.createClass({
 
 var TradyMaintenanceRequest = React.createClass({
 	getInitialState: function() {
-		const {quotes, tradies, landlord, invoices, appointments, pdf_urls, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
+		const {quotes, tradies, landlord, invoices, appointments, pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
 		const comments = [],
 					quoteComments = [];
 		appointments.map((appointment, key) => {
@@ -278,7 +284,7 @@ var TradyMaintenanceRequest = React.createClass({
 			appointments: appointments,
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
-			invoice_pdf_files: pdf_urls,
+			invoice_pdf_files: pdf_files,
 			quote_appointments: quote_appointments,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
@@ -300,7 +306,7 @@ var TradyMaintenanceRequest = React.createClass({
 				modal: ""
 			});
 		}
-		
+
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -679,6 +685,42 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	paymentReminder: function(invoice) {
+		const self = this;
+		const {maintenance_request} = this.state;
+		const params = {
+			invoice_id: invoice.id,
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/payment_reminder',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Remind Agent of Payment",
+						content: "A payment reminder has been sent to the agent. Thank you.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Remind Agent of Payment",
+					content: "Remind Agent of Payment" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -976,7 +1018,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const {instruction} = this.state;
 		const body = $('body');
 		if(!instruction.read_instruction) {
-			body.chardinJs('toggle'); 
+			body.chardinJs('toggle');
 
 			this.onModalWith('viewModalInstruction');
 
@@ -986,7 +1028,7 @@ var TradyMaintenanceRequest = React.createClass({
 					if(e.target.className != 'show-instruction') {
 						self.isClose();
 						self.viewModalMessage();
-						body.chardinJs('stop'); 
+						body.chardinJs('stop');
 					}
 				}
 			});
@@ -1059,7 +1101,7 @@ var TradyMaintenanceRequest = React.createClass({
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
 							<div className="section show-waring">
 								We are sorry to inform you that the job has been awarded to another company. Thank you for your quote, we will contact you for other future jobs.
-							</div>			
+							</div>
 					}
 					<div className="section">
 						<ItemMaintenanceRequest
@@ -1081,13 +1123,17 @@ var TradyMaintenanceRequest = React.createClass({
 						{	(invoices && invoices.length > 0) &&
 						 		<Invoices
 							 		invoices={invoices}
+							 		current_role={this.props.current_role}
 							 		viewInvoice={(key, item) => this.viewItem(key, item)}
+							 		paymentReminder={(item) => this.paymentReminder(item)}
 						 		/>
 					 	}
 						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
 							<PDFInvoices
 								trady={this.props.assigned_trady}
 								invoice_pdf_files={invoice_pdf_files}
+						 		current_role={this.props.current_role}
+						 		paymentReminder={(item) => this.paymentReminder(item)}
 								viewPDFInvoice={(key, item) => this.viewItem(key, item)}
 							/>
 						}
@@ -1119,7 +1165,7 @@ var TradyMaintenanceRequest = React.createClass({
 								/>
 							</div>
 					}
-						
+
 						{
 							(appointments && appointments.length > 0) &&
 								<AppointmentRequest

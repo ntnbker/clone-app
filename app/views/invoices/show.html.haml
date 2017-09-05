@@ -101,10 +101,10 @@
           %td.border-none.text-right.font-bold
             = "$ #{@invoice.amount.round(2)}"
 
-  %div.qf-button
-    %button.button.button-primary.left
+  %div.qf-button.text-center
+    %button.button.button-primary
       =link_to "Back", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan)
-    %button.button.button-primary.green.right
+    %button.button.button-primary.green
       =link_to "Send Invoice", send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id ), method: :post
 
 

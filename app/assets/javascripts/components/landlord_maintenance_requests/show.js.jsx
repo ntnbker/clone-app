@@ -227,7 +227,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		const self = this;
 		$.ajax({
 			type: 'POST',
-			url: '/quote_status',
+			url: '/picks_quote',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},

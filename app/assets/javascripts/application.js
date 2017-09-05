@@ -18,6 +18,7 @@
 //= require jquery_nested_form
 //= require jquery-ui
 //= require gmaps.js
+//= require prototypes
 
 //= require jquery-fileupload/vendor/jquery.ui.widget
 //= require jquery-fileupload/jquery.iframe-transport

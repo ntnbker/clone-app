@@ -275,20 +275,28 @@ class MaintenanceRequestsController < ApplicationController
       
       the_url = agency_admin_maintenance_request_url(@maintenance_request)
      
+
       EmailWorker.perform_in(5.minutes, @maintenance_request.id)
+
       #AgencyAdminOrAgentNewMaintenanceRequestNotificationTextingWorker.perform_async(@maintenance_request.id,the_url)
 
       MaintenanceRequest.last.reindex
       if current_user == nil
-        flash[:notice]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
+        EmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        flash[:success]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
         redirect_to root_path
       elsif current_user.logged_in_as("AgencyAdmin")
+        AgentSubmittedMaintenanceRequestEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        NotifyTenantMaintenanceRequestSubmittedEmailWorker.perform_in(5.minutes,@maintenance_request.id)
         flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
         redirect_to agency_admin_maintenance_request_path(@maintenance_request)
       elsif current_user.logged_in_as("Agent")
+        AgentSubmittedMaintenanceRequestEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        NotifyTenantMaintenanceRequestSubmittedEmailWorker.perform_in(5.minutes,@maintenance_request.id)
         flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
         redirect_to agent_maintenance_request_path(@maintenance_request)
       elsif current_user.logged_in_as("Tenant") 
+        EmailWorker.perform_in(5.minutes,@maintenance_request.id)
         flash[:success]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
         redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
@@ -303,11 +311,27 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def update
-    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-    maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
+    @maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
+    
+    if @maintenance_request.agency_admin 
+      if @maintenance_request.agency_admin.agency.tradies 
+        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
+      else 
+        @all_tradies= []
+      end 
+    elsif @maintenance_request.agent
+      if @maintenance_request.agent.agency.tradies 
+        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type)  
+      else 
+        @all_tradies= []
+      end 
+    end 
+
+
     respond_to do |format|
-      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service]}}
+      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
       format.html {render body: nil}
 
     end

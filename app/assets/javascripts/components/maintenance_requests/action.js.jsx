@@ -1,9 +1,12 @@
 var ContentAction = React.createClass({
 	render: function() {
+		const hasLandlord = !!this.props.landlord;
+		const isNotAssigned = !this.props.assigned_trady;
+
 		return (
 			<ul>
 				<li>
-					<a onClick={() => this.props.onModalWith(!!this.props.landlord ? 'confirm' : 'addAskLandlord')}>
+					<a onClick={() => this.props.onModalWith(hasLandlord ? 'confirm' : 'addAskLandlord')}>
 						<i className="fa fa-user" />
 						Ask Landlord for instructions
 					</a>
@@ -14,14 +17,17 @@ var ContentAction = React.createClass({
 						Request quote
 					</a>
 				</li>
-				<li>
-					<a onClick={() => this.props.onModalWith('sendWorkOrder')}>
-						<i className="fa fa-send" aria-hidden="true" />
-						Send work order
-					</a>
-				</li>
 				{
-					!!this.props.landlord ?
+					isNotAssigned &&
+					<li>
+						<a onClick={() => this.props.onModalWith('sendWorkOrder')}>
+							<i className="fa fa-send" aria-hidden="true" />
+							Send work order
+						</a>
+					</li>
+				}
+				{
+					hasLandlord ?
 						<li>
 							<a onClick={() => this.props.onModalWith('addLandlord')}>
 								<i aria-hidden="true" className="fa fa-user-plus" />
@@ -37,7 +43,7 @@ var ContentAction = React.createClass({
 						</li>
 				}
 				{
-					!!this.props.landlord &&
+					hasLandlord &&
 						<li>
 							<a onClick={() => this.props.onModalWith('editLandlord')}>
 								<i aria-hidden="true" className="fa fa-pencil" />
@@ -54,7 +60,7 @@ var Action = React.createClass({
 	getInitialState: function() {
 		return {
 			show: true
-		};  
+		};
 	},
 
 	showAction: function(e) {
@@ -66,18 +72,19 @@ var Action = React.createClass({
 			<div className="item" data-intro="Select 'Action' to action the maintenance request." data-position="left">
 				<div className="header action">
 					<a>Actions:</a>
-					<i 
-						aria-hidden="true" 
-						onClick={this.showAction} 
-						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} 
+					<i
+						aria-hidden="true"
+						onClick={this.showAction}
+						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")}
 					/>
 				</div>
 				<div className="content" id="actions-content">
-					{ this.state.show && 
-							<ContentAction 
-								landlord={this.props.landlord} 
-								onModalWith={(modal) => this.props.onModalWith(modal)}  
-							/> 
+					{ this.state.show &&
+							<ContentAction
+								landlord={this.props.landlord}
+								assigned_trady={this.props.assigned_trady}
+								onModalWith={(modal) => this.props.onModalWith(modal)}
+							/>
 					}
 				</div>
 			</div>
@@ -92,16 +99,17 @@ var ActionMobile = React.createClass({
 				<div className="item">
 					<div className="header action" id="action" >
 						<a>Actions:</a>
-						<i 
-							aria-hidden="true" 
-							className="fa fa-close" 
+						<i
+							aria-hidden="true"
+							className="fa fa-close"
 							onClick={this.props.close}
 						/>
 					</div>
 					<div className="content">
-						<ContentAction 
-							landlord={this.props.landlord} 
-							onModalWith={(modal) => this.props.onModalWith(modal)} 
+						<ContentAction
+							landlord={this.props.landlord}
+							assigned_trady={this.props.assigned_trady}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
 					</div>
 				</div>

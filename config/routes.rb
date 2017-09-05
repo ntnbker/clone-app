@@ -74,7 +74,8 @@ Rails.application.routes.draw do
     post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
     get "invoice_sent_success" => "invoices#invoice_sent_success", :as=> :invoice_sent_success
     put 'update_invoice' => "invoices#update"
-
+    post "mark_as_paid" => "invoices#mark_as_paid"
+    post "payment_reminder" => "invoices#payment_reminder"
     get "new_additional_invoice" => "invoices#new_additional_invoice", :as=> :new_additional_invoice
     post"submit_additional_invoice" => "invoices#create_additional_invoice" 
   ###################################################
@@ -205,5 +206,9 @@ Rails.application.routes.draw do
   ##########REASSIGN AGENTS RESOURCES/ROUTES#########
   ################################################### 
     post "update_images"=> "images#update"
+  ###################################################
+  ##########WORK ORDER RESOURCES/ROUTES#########
+  ################################################### 
+    post "cancel_work_order"=> "work_orders#cancel_work_order"
     
  end

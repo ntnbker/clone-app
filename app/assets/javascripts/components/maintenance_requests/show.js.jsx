@@ -1054,13 +1054,31 @@ var ModalRequestModal = React.createClass({
 		});
 	},
 
+	renderAddTrady() {
+		if (!!this.props.assigned_trady) return null;
+
+		return (
+			<div className="radio">
+				<label>
+					<input type="radio" value="false" onChange={this.changeRadio} checked={this.state.isTrady === 'false' && "checked"}/>
+					Add trady
+				</label>
+			</div>
+		);
+	},
+
 	render: function() {
 		const self = this;
 		const state = this.state;
+		const assignedTrady = this.props.assigned_trady;
 		const {isTrady, isDisable, trady, isAdd} = this.state;
-		const style = {
-			background: this.state.isAdd ? 'none' : '#f2f2f2'
-		};
+
+		const style = { background: isAdd ? 'none' : '#f2f2f2' };
+		const isAssigned = !!assignedTrady;
+
+		const tradies = isAssigned ? [assignedTrady] : this.props.tradies;
+
+
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -1086,30 +1104,25 @@ var ModalRequestModal = React.createClass({
 											Select trady
 										</label>
 									</div>
-									<div className="radio">
-										<label>
-											<input type="radio" value="false" onChange={this.changeRadio} checked={isTrady === 'false' && "checked"}/>
-											Add trady
-										</label>
-									</div>
+									{this.renderAddTrady()}
 								</div>
 								{
 									isTrady === 'true' &&
 										<div className="row">
 											<select
 												id="trady"
+												value={trady.id || ""}
 												ref={e => this.trady_id = e}
 												className="form-control input-custom"
 												onChange={() => this.selectTrady(this.trady_id.value)}
 											>
-												<option value="" selected={!trady.id && "selected"}>Select Tradie</option>
+												<option value="">Select Tradie</option>
 												{
-													this.props.tradies.map(function(item, index) {
+													tradies.map(function(item, index) {
 														return (
 															<option
 																key={index+1}
 																value={item.id}
-																selected={trady.id == item.id && "selected"}
 															>
 																{item.company_name}
 															</option>
@@ -1255,9 +1268,10 @@ var MaintenanceRequest = React.createClass({
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
+			trady: this.props.hired_trady,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
-			invoice_pdf_files: this.props.pdf_urls,
+			invoice_pdf_files: this.props.pdf_files,
 			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -1350,7 +1364,16 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest': {
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewTrady': {
+				this.setState({
+					trady: item
+				});
 				this.onModalWith(key);
 				break;
 			}
@@ -1373,8 +1396,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				logs.push(res.log)
 				self.setState({
-					logs: logs.push(res.log),
+					logs: logs,
 					landlord: res.landlord,
 					notification: {
 						bgClass: "bg-success",
@@ -1407,8 +1431,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				logs.push(res.log);
 				self.setState({
-					logs: logs.push(res.log),
+					logs: logs,
 					landlord: res.landlord,
 					notification: {
 						title: "Ask landlord for instructions",
@@ -1694,11 +1719,14 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	requestQuote: function(params) {
+		const {logs} = this.state;
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
 		let flag = false;
+		const hasAssiged = !!this.props.assigned_trady;
+
 		tradies_with_quote_requests.map((item, index) => {
-			if(params.trady.trady_id == item.id) {
+			if(params.trady.trady_id == item.id && !hasAssiged) {
 				flag = true;
 			}
 		});
@@ -1721,9 +1749,12 @@ var MaintenanceRequest = React.createClass({
 				},
 				data: params,
 				success: function(res){
+					logs.push(res.log);
 					tradies_with_quote_requests.push(params.trady.item);
 					self.setState({
-						tradies: res,
+						logs: logs,
+						trady: res.hired_trady,
+						tradies: res.all_tradies,
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Request Quote",
@@ -1746,6 +1777,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	sendWorkOrder: function(params) {
+		const {logs} = this.state;
 		const self = this;
 		delete params.item;
 		$.ajax({
@@ -1756,9 +1788,12 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
+				logs.push(res.log);
+				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
 				self.setState({
-					tradies: res,
+					logs: logs,
+					trady: res.hired_trady,
+					tradies: res.all_tradies,
 					notification: {
 						title: "Send Work Order",
 						content: 'Thank you, a work order has been emailed to "Trady Company". You will receive an invoice form "Trady Company" once the job has been completed',
@@ -1830,6 +1865,7 @@ var MaintenanceRequest = React.createClass({
 				maintenance_request.maintenance_heading = res.maintenance_heading;
 				maintenance_request.maintenance_description = res.maintenance_description
 				self.setState({
+					tradies: res.all_tradies,
 					maintenance_request: maintenance_request,
 					notification: {
 						title: "Edit Maintenance Request",
@@ -1881,6 +1917,88 @@ var MaintenanceRequest = React.createClass({
 				self.setState({notification: {
 					title: "Update Status",
 					content: "The Status of Maintenance Request didnt update!" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	markAsPaid: function(invoice, uploaded = false) {
+		const self = this;
+		const {maintenance_request} = this.state;
+		const params = {
+			invoice_id: invoice.id,
+			invoice_type: 'system_invoice',
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		if (uploaded) {
+			delete params.invoice_id;
+			params.uploaded_invoice_id = invoice.id;
+			params.invoice_type = 'uploaded_invoice';
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: '/mark_as_paid',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				invoice.paid = true;
+				self.setState({
+					notification: {
+						title: "Mark As Paid",
+						content: "You was paid",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Mark As Paid",
+					content: "You didn't pid" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancelWorkOrder: function() {
+		const self = this;
+		const {maintenance_request, logs} = this.state;
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_work_order',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				logs.push(res.log);
+				self.setState({
+					logs: logs,
+					trady: null,
+					notification: {
+						title: "Cancel Work Order",
+						content: "You have now cancelled the work order. Please choose another tradie to complete this maintenance request",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Cancel Work Order",
+					content: "Cancel Work Order is error" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -2058,6 +2176,7 @@ var MaintenanceRequest = React.createClass({
 							keyTitle="request-quote"
 							tradies={this.state.tradies}
 							requestQuote={this.requestQuote}
+							assigned_trady={this.state.trady}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					);
@@ -2111,6 +2230,7 @@ var MaintenanceRequest = React.createClass({
 							onModalWith={(modal) => this.onModalWith(modal)}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
+							trady={this.state.trady || this.props.assigned_trady}
 						/>
 					);
 				}
@@ -2201,6 +2321,22 @@ var MaintenanceRequest = React.createClass({
 						<ModalConfirmAddPhoto
 							close={this.isClose}
 							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
+					);
+
+				case 'viewTrady':
+					return (
+						<ModalViewTrady
+							close={this.isClose}
+							trady={this.state.trady}
+						/>
+					);
+
+				case 'confirmCancelTrady':
+					return (
+						<ModalConfirmCancelTrady
+							close={this.isClose}
+							cancelWorkOrder={this.cancelWorkOrder}
 						/>
 					);
 
@@ -2317,7 +2453,7 @@ var MaintenanceRequest = React.createClass({
 
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
-		const {invoice_pdf_files} = this.state;
+		const {invoice_pdf_files, trady} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -2334,6 +2470,15 @@ var MaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
 						/>
+						{
+							this.state.trady &&
+								<AssignTrady
+									trady={this.state.trady}
+									current_role={this.props.current_user_role}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									viewTrady={(key, item) => this.viewItem(key, item)}
+								/>
+						}
 						{	(quotes && quotes.length > 0) &&
 						 		<Quotes
 							 		quotes={this.state.quotes}
@@ -2349,6 +2494,8 @@ var MaintenanceRequest = React.createClass({
 						{	(invoices && invoices.length > 0) &&
 								<Invoices
 									invoices={this.state.invoices}
+									current_role={this.props.current_user_role}
+									markAsPaid={(item) => this.markAsPaid(item)}
 									viewInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
@@ -2356,7 +2503,9 @@ var MaintenanceRequest = React.createClass({
 								<PDFInvoices
 									trady={this.props.assigned_trady}
 									invoice_pdf_files={invoice_pdf_files}
+									current_role={this.props.current_user_role}
 									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
+									markAsPaid={(item) => this.markAsPaid(item, true)}
 								/>
 						}
 					</div>
@@ -2365,12 +2514,13 @@ var MaintenanceRequest = React.createClass({
 							tenants={tenants}
 							landlord={this.state.landlord}
 							current_user={this.props.current_user}
-							assigned_trady={this.props.assigned_trady}
+							assigned_trady={trady || this.props.assigned_trady}
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						<Action
 							landlord={this.state.landlord}
 							onModalWith={(modal) => this.onModalWith(modal)}
+							assigned_trady={trady || this.props.assigned_trady}
 						/>
 						{
 							(work_order_appointments && work_order_appointments.length > 0) &&
@@ -2434,8 +2584,8 @@ var MaintenanceRequest = React.createClass({
 					tenants={tenants}
 					landlord={this.state.landlord}
 					current_user={this.props.current_user}
-					assigned_trady={this.props.assigned_trady}
 					onModalWith={(modal) => this.onModalWith(modal)}
+					assigned_trady={trady || this.props.assigned_trady}
 					viewItem={(key, item) => this.viewItem(key, item)}
 				/>
 				{ this.renderModal() }

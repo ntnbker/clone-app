@@ -168,13 +168,40 @@ class QuotesController < ApplicationController
       maintenance_request.update_attribute(:trady_id, nil)
       Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been cancelled by: ", name:name)
 
-    end   
+    end  
 
-    respond_to do |format|
-      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})}}
+    if maintenance_request.trady
+      hired_trady = maintenance_request.trady
+    end  
+
+    # respond_to do |format|
+    #   format.json {render :json=> quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})}, :notice=>hired_trady}
       
-    end
-
+    # end
+    if current_user.logged_in_as("AgencyAdmin")
+      if params[:status] = "Approved"
+        flash[:success] = "Thank you for accepting the quote."
+      elsif params[:status] = "Declined"
+        flash[:success] = "You have declined the quote"
+      elsif params[:status] = "Restore"
+        flash[:success] = "You have restored the quote"
+      elsif params[:status] = "Cancelled"
+        flash[:success] = "You have cancelled the quote"
+      end 
+      redirect_to agency_admin_maintenance_request_path(maintenance_request)
+    elsif current_user.logged_in_as("Agent")
+      if params[:status] = "Approved"
+        flash[:success] = "Thank you for accepting the quote."
+      elsif params[:status] = "Declined"
+        flash[:success] = "You have declined the quote"
+      elsif params[:status] = "Restore"
+        flash[:success] = "You have restored the quote"
+      elsif params[:status] = "Cancelled"
+        flash[:success] = "You have cancelled the quote"
+      end 
+      redirect_to agent_maintenance_request_path(maintenance_request)
+    end 
+      
     
     
   end

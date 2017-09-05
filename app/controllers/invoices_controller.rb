@@ -15,14 +15,27 @@ class InvoicesController < ApplicationController
 
     @maintenance_request_id= params[:maintenance_request_id]
     @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
+    if @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+    elsif @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+    end 
+        
+    @property = @maintenance_request.property
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_company = TradyCompany.find_by(id:@trady.trady_company.id)
+    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:params[:trady_id],:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
     @invoice_type = params[:invoice_type]
     @ledger = Ledger.new
     @ledger.invoices.build
     
     @ledger.invoices.each do |invoice|
       invoice.invoice_items.build
+    end 
+
+    respond_to do |format|
+      format.json {render :json=>{agency:@agency}}
+      format.html {render :new}
     end 
   end
 
@@ -78,9 +91,16 @@ class InvoicesController < ApplicationController
   def edit
     @ledger = Ledger.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
+
+    @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)
+    @property = @maintenance_request.property
+    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:params[:trady_id],:delivery_status=>true, :maintenance_request_id=>@maintenance_request_id).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
+
     @trady = Trady.find_by(id:params[:trady_id])
     @quote = Quote.find_by(id:params[:quote_id])
     @invoice_type = params[:invoice_type]
+    @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
+    @quotes = @maintenance_request.quotes.where(status:"Approved",trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id)
     if @quote
       @quote_items = @quote.quote_items
     else
@@ -170,6 +190,45 @@ class InvoicesController < ApplicationController
   end
 
 
+  def mark_as_paid
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+
+    invoice = Invoice.find_by(id:params[:invoice_id])
+    pdf_invoice = UploadedInvoice.find_by(id:params[:uploaded_invoice_id])
+    if params[:invoice_type] == "system_invoice" 
+      invoice.update_attribute(:paid, true)
+    elsif params[:invoice_type] == "uploaded_invoice"
+      pdf_invoice.update_attribute(:paid, true)
+    end 
+    
+
+
+
+    #THIS IS WHERE WE FIGURE OUT IF THE MAINTENACE REQUEST HAS BEEN CLOSE COMPLETELY OR NOT.
+    if the maintenance_request.invoices.where(paid:false).count >= 1 && maintenance_request.uploaded_invoices.where(paid:false).count >= 1 
+      #do nothing
+    else 
+      maintenance_request.action_status.update_columns(agent_status:"Jobs Completed", trady_status:"Job Complete")
+    end 
+
+    log = Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice marked as paid.")
+    respond_to do |format|
+      format.json {render :json=>{invoice:invoice,pdf_invoice:pdf_invoice,  log:log}}
+    end 
+    
+  end
+
+  def payment_reminder
+    #send an email
+    
+    log = Log.create(maintenance_request_id:params[:maintenance_request_id], action:"Tradie sent payment reminder.")
+    #maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]) 
+
+    AgentInvoiceReminderEmailWorker.perform_async(params[:maintenance_request_id])
+    
+  end
+
+
 
 
 
@@ -183,7 +242,7 @@ class InvoicesController < ApplicationController
     end
 
     def ledger_params
-    params.require(:ledger).permit( :id, :trady_company_id,  :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date,:_destroy ,invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
+    params.require(:ledger).permit( :id, :trady_company_id,  :grand_total, :trady_id,:quote_id ,:maintenance_request_id, invoices_attributes:[ :id,:trady_id,:trady_invoice_reference ,:quote_id ,:maintenance_request_id,:amount,:tax,:due_date,:_destroy ,invoice_items_attributes:[:id,:amount,:item_description, :_destroy, :pricing_type, :hours]])
     end
 
 end 

@@ -141,5 +141,58 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Quote comment from trady #{@quote.trady.name.capitalize} - #{@property.property_address}.")
   end
 
+  def agent_submitted_maintenance_request_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    # @trady = @maintenance_request.trady
+    @tenant = maintenance_request.tenants.first
+    @property = @maintenance_request.property
+    if @maintenance_request.agent == nil
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    elsif @maintenance_request.agency_admin == nil
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    end
+    
+    mail(to:email, subject:"Your maintenance request submitted on behalf of #{@tenant.name.capitalize} - #{@property.property_address}.")
+  end
+
+  def maintenance_request_reassigned_email(maintenance_request,user)
+    @maintenance_request = maintenance_request
+    @property = maintenance_request.property
+    @tenant = maintenance_request.tenants.first
+    @user = user
+    if user.has_role("AgencyAdmin") && user.has_role("Agent")
+      
+      maintenance_request.update_attribute(:agency_admin_id, user.agency_admin.id)
+    elsif user.has_role("AgencyAdmin")
+      
+      maintenance_request.update_columns(agency_admin_id: user.agency_admin.id, agent_id: nil)
+    elsif user.has_role("Agent")
+      
+      maintenance_request.update_columns(agent_id: user.agent.id, agency_admin_id: nil)
+    end 
+
+
+
+    mail(to:user.email, subject:"A maintenance request has been reassiged to you for - #{@property.property_address}.")
+  end
+
+  def remind_agent_of_invoice_payment(maintenance_request)
+    @maintenance_request = maintenance_request
+    @trady = @maintenance_request.trady
+    if @maintenance_request.agent
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+
+      
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end 
+
+    mail(to:email, subject:"Invoice Payment Reminder")
+  end
+
 end 
 

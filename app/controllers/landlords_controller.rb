@@ -84,7 +84,7 @@ class LandlordsController < ApplicationController
 
       LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
       maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
-      log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord - Landlord: ", name:@landlord.name.capitalize)
+      log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to - Landlord: ", name:@landlord.name.capitalize)
       respond_to do |format|
         format.json {render :json=> {landlord:user.landlord,log:log, notice:"Maintenance Request Successfully Sent"} }
       end
@@ -94,7 +94,7 @@ class LandlordsController < ApplicationController
       property.update_attribute(:landlord_id, user.landlord.id)
       LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],user.landlord.id)
       maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
-      log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord - Landlord: ", name:user.landlord.name.capitalize)
+      log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to - Landlord: ", name:user.landlord.name.capitalize)
       respond_to do |format|
         format.json {render :json=>{landlord: user.landlord,log:log, notice:"Maintenance Request Successfully Sent" }}
       end
@@ -113,7 +113,7 @@ class LandlordsController < ApplicationController
           UserSetPasswordEmailWorker.perform_in(5.minutes, @user.id)
           maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
 
-          log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord - Landlord ", name:@landlord.name.capitalize)
+          log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to - Landlord ", name:@landlord.name.capitalize)
         respond_to do |format|
           format.json {render :json=>{landlord:@user.landlord,log:log, notice:"Maintenance Request Successfully Sent" }}
         end
@@ -137,7 +137,7 @@ class LandlordsController < ApplicationController
         LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
         maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
 
-        log =  Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to landlord - Landlord:", name:@landlord.name.capitalize)
+        log =  Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to - Landlord:", name:@landlord.name.capitalize)
         format.json {render :json=>{landlord: @landlord,log:log, :notice=>"Landlord successfully created" }}
       else
         format.json{render :json=>{errors:@landlord.errors, :notice=>"Oops something went wrong" }}

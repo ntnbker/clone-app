@@ -254,7 +254,7 @@ var AdditionalInvoice = React.createClass({
                     <input 
                         type="number"
                         placeholder="Amount"
-                        defaultValue={quote ? quote.amount : ''}
+                        defaultValue={quote.amount > 0 && quote.amount}
                         name={'invoice[invoice_items_attributes][' + x + '][amount]'}
                         className={"text-center " +  (!!this.state.hours_input && 'hour price')}
                     />
@@ -262,14 +262,14 @@ var AdditionalInvoice = React.createClass({
                             <input 
                                 type="number"
                                 placeholder="Of Hours"
-                                defaultValue={quote ? quote.hours : ''}
+                                defaultValue={quote.hours > 0 ? quote.hours : ''}
                                 name={'invoice[invoice_items_attributes][' + x + '][hours]'}
                                 className={"text-center " + (this.state.hours_input && 'hour')}
                             />
                             : <input type="hidden"
                                 name={'invoice[invoice_items_attributes][' + x + '][hours]'}
                             />
-                }
+                    }
                 </div>               
                 <input type="hidden" value={this.state.remove} name={'invoice[invoice_items_attributes][' + x + '][_destroy]'}/>
                 {   quote && 
@@ -347,7 +347,7 @@ var InvoiceItemField = React.createClass({
         var pricing_type = event.target.value;
         this.setState({pricing_type: pricing_type});
         if (pricing_type == "Hourly") {
-            this.setState({hours_input: true});
+            this.setState({hours_input: true, numofhours: 0});
         } else {
             this.setState({hours_input: false,
                            numofhours: 1,
@@ -371,7 +371,7 @@ var InvoiceItemField = React.createClass({
         if (hours > 0)
             this.setState({numofhours: hours});
         else
-            this.setState({numofhours: 1});
+            this.setState({numofhours: 0});
 
         const totalamount = this.state.amount * hours;
         this.updatePrice(totalamount);
@@ -410,8 +410,9 @@ var InvoiceItemField = React.createClass({
                     </select>
                     <input 
                         type="number" 
+                        required
                         placeholder="Amount" 
-                        defaultValue={this.state.amount} 
+                        defaultValue={this.state.amount > 0 && this.state.amount} 
                         onChange={this.onAmount}
                         className={"text-center " +  (!!this.state.hours_input && 'hour price')}
                         name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'} 
@@ -420,9 +421,10 @@ var InvoiceItemField = React.createClass({
                         this.state.hours_input ? 
                             <input 
                                 type="number" 
+                                required
                                 onChange={this.onHours}
                                 placeholder="Number of Hours" 
-                                defaultValue={this.state.numofhours} 
+                                defaultValue={this.state.numofhours > 0 && this.state.numofhours} 
                                 className={"text-center " + (this.state.hours_input && 'hour')}
                                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} 
                             />
@@ -499,10 +501,18 @@ var InvoiceField = React.createClass({
         return <div className="invoicefield">
             <input type="hidden" value={(invoice && invoice.maintenance_request_id) ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id} name={'ledger[invoices_attributes][' + x + '][maintenance_request_id]'}/>
             <input type="hidden" value={(invoice && invoice.trady_id) ? invoice.trady_id : invoiceInfo.trady_id} name={'ledger[invoices_attributes][' + x + '][trady_id]'}/>
-
             <fieldset>
                 <div>
                     <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
+                    <div className="text-center m-t-lg">
+                        <input 
+                        type="text" 
+                        className="text-center" 
+                        placeholder="Invoice Reference Number"
+                        defaultValue={invoice && invoice.trady_invoice_reference} 
+                        name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
+                        />
+                    </div>
                     <label>     
                         <input type="checkbox" value={this.state.tax} checked={this.state.tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
                         Total Includes GST        
@@ -542,7 +552,90 @@ var InvoiceField = React.createClass({
 });
 
 var InvoiceFields = React.createClass({
+    getInitialState: function() {
+        return {
+            modal: "",
+            isModal: false,
+            quote: '',
+            quotes: this.props.quotes,
+        }    
+    },
+
+    isClose: function() {
+        if(this.state.isModal == true) {
+            this.setState({
+                isModal: false,
+                modal: ""
+            });
+        }
+
+        var body = document.getElementsByTagName('body')[0];
+        body.classList.remove("modal-open");
+        var div = document.getElementsByClassName('modal-backdrop in')[0];
+        if(div){
+            div.parentNode.removeChild(div);
+        }
+    },
+
+    onModalWith: function(modal) {
+        this.setState({
+            modal: modal,
+            isModal: true,
+        });
+    },
+
+    viewItem: function(key, item) {
+        switch(key) {
+            case 'viewQuote': {
+                this.setState({
+                    quote: item
+                });
+
+                this.onModalWith(key);
+                break;
+            }
+
+            default: {
+                break;
+            }
+        }
+
+    },
+
+    renderModal: function() {
+        if(this.state.isModal) {
+            var body = document.getElementsByTagName('body')[0];
+            body.className += " modal-open";
+            var div = document.getElementsByClassName('modal-backdrop in');
+
+            if(div.length === 0) {
+                div = document.createElement('div')
+                div.className  = "modal-backdrop in";
+                body.appendChild(div);
+            }
+
+            switch(this.state.modal) {
+                case 'viewQuote': {
+                    return (
+                        <ModalViewQuote
+                            close={this.isClose}
+                            quote={this.state.quote}
+                            agency=""
+                            quotes={this.state.quotes}
+                            property={this.props.property}
+                            landlord=""
+                        />
+                    );
+                }
+
+                default:
+                    return null;
+            }
+        }
+    },
+
     render: function(){
+        const {quotes, trady} = this.props;
         const ledger = this.props.ledger || null;
         const id = (ledger && ledger.id) || '';
         const invoiceInfo = {
@@ -561,13 +654,21 @@ var InvoiceFields = React.createClass({
             <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
             <input type="hidden" value={id} name="ledger[ledger_id]" />
             <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
-            
+            {
+                (quotes && quotes.length > 0) &&
+                    <QuotesInInvoice
+                        quotes={quotes}
+                        trady={trady}
+                        viewQuote={(key, item) => this.viewItem(key, item)}
+                    />
+            }
             <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
 
             <div className="qf-button text-center" style={{marginBottom: '50px'}}>
                 <a className="button button-primary left" href={this.props.backlink}> Back </a>
                 <button type="submit" name="commit" value="Next" className="button button-primary green">Next</button>
             </div>
+            { this.renderModal() }
         </form>
     }
 });

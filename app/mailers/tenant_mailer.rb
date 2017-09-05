@@ -142,6 +142,23 @@ class TenantMailer < ActionMailer::Base
         
     mail(to:@tenant.email, subject:"Quote Approved by Agent, #{@person} - #{@property.property_address}")
   end
+
+  def tenant_maintenace_request_submitted_by_agent(maintenance_request)
+    @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    
+    @tenant = @maintenance_request.tenants.first
+
+    @user = @tenant.user
+    if @maintenance_request.agent
+      @person = @maintenance_request.agent.name.capitalize
+
+    elsif @maintenance_request.agency_admin
+      @person = @maintenance_request.agency_admin.first_name.capitalize
+    end     
+        
+    mail(to:@tenant.email, subject:"A maintenance request was submitted by your agent - #{@person} - #{@property.property_address}")
+  end
   
   
 

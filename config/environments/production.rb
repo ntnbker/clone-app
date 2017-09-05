@@ -73,7 +73,7 @@ ActionMailer::Base.delivery_method = :smtp
 
 config.action_mailer.default_url_options = { :host => 'https://maintenanceapp.com.au' }
 config.action_mailer.asset_host = 'https://maintenanceapp.com.au'
-config.action_controller.asset_host = 'https://maintenanceapp.com.au'
+# config.action_controller.asset_host = 'https://maintenanceapp.com.au'
 
 config.action_mailer.raise_delivery_errors = false
 

@@ -3,11 +3,11 @@ var DropContent = React.createClass({
                 var content = this.props.content;
                 return <ul className="dropcontent drop-content">
                 {
-                this.props.content.map((item, index) => 
+                this.props.content.map((item, index) =>
                 <li key={index}>
-                <a href={item.href}> 
+                <a href={item.href}>
                 {item.title}
-          </a> 
+          </a>
           <span>
                 {item.count}
           </span>
@@ -86,10 +86,10 @@ var DropDownContent = React.createClass({
         content.map((item, index) => {
           return (
             <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
-              <a onClick={(value) => props.getAction(item.value)}> 
+              <a onClick={(value) => props.getAction(item.value)}>
                 <span>{item.count}</span>
                 <b className="name">{item.title}</b>
-              </a> 
+              </a>
             </li>
           );
         })
@@ -121,10 +121,10 @@ var DropDownList = React.createClass({
           {this.props.title}
         </div>
         <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
-            <DropDownContent 
+            <DropDownContent
               content={this.props.content}
               valueAction={this.state.valueAction}
-              getAction={(value) => this.props.getAction(value)} 
+              getAction={(value) => this.props.getAction(value)}
             />
         </div>
       </div>
@@ -137,26 +137,26 @@ var DropDownMobileList = React.createClass({
     return {hidden: true, valueAction: this.props.valueAction}
   },
 
-  onDrop: function(id) { 
-    if(id != "over") { 
-      this.setState({ 
-        hidden: !this.state.hidden 
-      }); 
-    }else if(!this.state.hidden){ 
-      this.setState({ 
-        hidden: true 
-      }); 
-    } 
-  }, 
- 
-  componentDidMount: function() { 
-    const self = this; 
-    $(document).bind('click', function(e) { 
-      if (!e.target.matches('#' + self.props.id)) { 
-        self.onDrop('over'); 
-      } 
-    }); 
-  }, 
+  onDrop: function(id) {
+    if(id != "over") {
+      this.setState({
+        hidden: !this.state.hidden
+      });
+    }else if(!this.state.hidden){
+      this.setState({
+        hidden: true
+      });
+    }
+  },
+
+  componentDidMount: function() {
+    const self = this;
+    $(document).bind('click', function(e) {
+      if (!e.target.matches('#' + self.props.id)) {
+        self.onDrop('over');
+      }
+    });
+  },
 
   componentWillReceiveProps: function(nextProps) {
     this.setState({
@@ -169,10 +169,10 @@ var DropDownMobileList = React.createClass({
     const state = this.state;
     return (
       <div className="drop-mobile-list">
-        <button 
-          id={props.id} 
+        <button
+          id={props.id}
           onClick={(id) => this.onDrop(props.id)}
-          className={'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')} 
+          className={'btn-drop-mobile title ' + props.id + ' ' + (!state.hidden && 'active')}
         >
           {this.props.title}
         </button>
@@ -181,7 +181,7 @@ var DropDownMobileList = React.createClass({
             isHide={state.hidden}
             content={props.content}
             valueAction={state.valueAction}
-            getAction={(value) => props.getAction(value)} 
+            getAction={(value) => props.getAction(value)}
           />
         </div>
       </div>
@@ -199,7 +199,7 @@ var P = React.createClass({
   readMore: function() {
       this.setState({
           expanded: !this.state.expanded
-      });       
+      });
   },
 
   getMoreTextP: function() {
@@ -209,9 +209,9 @@ var P = React.createClass({
     } else {
     	var content = this.props.content.substr(0,maxLength-3) + "...";
 		  return <p style={{display: "inline"}}> {content} </p>;
-    } 
+    }
   },
-  
+
   render: function() {
     var expandedDiv = this.getMoreTextP();
     var expanded = this.state.expanded;
@@ -265,7 +265,7 @@ var ImgSlider = React.createClass({
       }
       this.setState({
           stpos: stpos
-      }); 
+      });
       this.sliderTopRun(stpos);
   },
 
@@ -293,7 +293,7 @@ var ImgSlider = React.createClass({
         self.setWidth();
       });
     }
-    
+
     $("." + self.props.nameClass).on("touchstart", function(event){
       var xClick = event.originalEvent.touches[0].pageX;
       $(this).one("touchmove", function(event){
@@ -319,7 +319,7 @@ var ImgSlider = React.createClass({
     var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
     const images = this.props.images;
     return <div id="slider">
-      { this.state.stlen > 1 && 
+      { this.state.stlen > 1 &&
           <div>
             <button className="button btn prev" onClick={this.sliderTopPrev}>
               <i className="fa fa-angle-left"></i>
@@ -371,7 +371,8 @@ var ListMaintenanceRequest = React.createClass({
     const {maintenance_requests} = this.props;
     const page = 1;
     const prePage = 3;
-    const dataShow = maintenance_requests.splice((page-1) * prePage, prePage);
+    const dataShow = [...maintenance_requests].splice(0, prePage);
+
     return {
       page: page,
       valueAction: "",
@@ -385,91 +386,96 @@ var ListMaintenanceRequest = React.createClass({
       ],
       actionRequests: [
         {
-          title: "Maintenance Request", 
-          value: "Initiate Maintenance Request",  
+          title: "Maintenance Request",
+          value: "Initiate Maintenance Request",
           count: this.props.new_maintenance_requests_count,
         },
-        { 
-          title: "Quote Requested", 
-          value: "Quote Requested", 
+        {
+          title: "Quote Requested",
+          value: "Quote Requested",
           count: this.props.quote_requested_count
         },
         {
-          title: "Quote Received", 
-          value: "Quote Received", 
+          title: "Quote Received",
+          value: "Quote Received",
           count: this.props.quotes_received_count,
         },
-        { 
-          title: "New Invoice", 
-          value: "New Invoice", 
+        {
+          title: "New Invoice",
+          value: "New Invoice",
           count: this.props.new_invoice_count,
         },
-        { 
-          title: "Pending Payment", 
-          value: "Pending Payment", 
+        {
+          title: "Pending Payment",
+          value: "Pending Payment",
           count: this.props.pending_payment_count,
         }
       ],
       awaitingAction: [
         {
-          title: "Awaiting Owner Initiation", 
-          value: "Awaiting Owner Initiation", 
+          title: "Awaiting Owner Initiation",
+          value: "Awaiting Owner Initiation",
           count: this.props.awaiting_owner_initiation_count
         },
         {
-          title: "Awaiting Owner Instruction", 
-          value: "Awaiting Owner Instruction", 
+          title: "Awaiting Owner Instruction",
+          value: "Awaiting Owner Instruction",
           count: this.props.awaiting_owner_instruction_count
         },
         {
           title: "Awaiting Tradie Initiation",
-          value: "Awaiting Tradie Initiation", 
+          value: "Awaiting Tradie Initiation",
           count: this.props.awaiting_trady_initiation_count
         },
         {
-          title: "Awaiting Tradie`s Quote", 
-          value: "Awaiting Quote", 
+          title: "Awaiting Tradie`s Quote",
+          value: "Awaiting Quote",
           count: this.props.awaiting_trady_quote_count
         },
         {
-          title: "Awaiting Quote Approval", 
-          value: "Quote Received Awaiting Approval", 
+          title: "Awaiting Quote Approval",
+          value: "Quote Received Awaiting Approval",
           count: this.props.awaiting_quote_approval_count
         },
         {
-          title: "Quote Approved Tradie To Organise Appointment", 
-          value: "Quote Approved Tradie To Organise Appointment", 
+          title: "Quote Approved Tradie To Organise Appointment",
+          value: "Quote Approved Tradie To Organise Appointment",
           count: this.props.trady_organise_appointment_count
         },
         {
-          title: "Tradie To Confirm Appointment", 
-          value: "Tradie To Confirm Appointment", 
+          title: "Tradie To Confirm Appointment",
+          value: "Tradie To Confirm Appointment",
           count: this.props.trady_confirm_appointment_count
         },
         {
-          title: "Tenant To Confirm Appointment", 
-          value: "Tenant To Confirm Appointment", 
+          title: "Tenant To Confirm Appointment",
+          value: "Tenant To Confirm Appointment",
           count: this.props.tenant_confirm_appointment_count
         },
         {
-          title: "Landlord To Confirm Appointment", 
-          value: "Landlord To Confirm Appointment", 
+          title: "Landlord To Confirm Appointment",
+          value: "Landlord To Confirm Appointment",
           count: this.props.landlord_confirm_appointment_count
         },
         {
-          title: "Maintenance Scheduled - Awaiting Invoice", 
-          value: "Maintenance Scheduled - Awaiting Invoice", 
+          title: "Maintenance Scheduled - Awaiting Invoice",
+          value: "Maintenance Scheduled - Awaiting Invoice",
           count: this.props.maintenance_scheduled_count
         },
         {
-          title: "Maintenance Scheduled With Landlord", 
-          value: "Maintenance Scheduled With Landlord", 
+          title: "Maintenance Scheduled With Landlord",
+          value: "Maintenance Scheduled With Landlord",
           count: this.props.maintenance_scheduled_with_landlord_count
         },
         {
-          title: "Deferred", 
-          value: "Defer", 
+          title: "Deferred",
+          value: "Defer",
           count: this.props.deferred_count
+        },
+        {
+          title: "Jobs Completed and Closed",
+          value: "Jobs Completed",
+          count: this.props.jobs_completed
         }
       ],
       tradyFilter: [
@@ -528,7 +534,7 @@ var ListMaintenanceRequest = React.createClass({
     var params = {
       sort_by_date: sortByDate ? sortByDate : this.state.sortByDate,
     }
-    
+
     this.getData(this.props.link, page, params);
   },
 
@@ -539,10 +545,9 @@ var ListMaintenanceRequest = React.createClass({
       url: link,
       data: params,
       success: function(res){
-        const data = [...res];
-        var dataShow = res.splice((page-1) * self.state.prePage, self.state.prePage);
+        const dataShow = [...res].splice((page-1) * self.state.prePage, self.state.prePage);
         self.setState({
-          data: data,
+          data: [...res],
           dataShow: dataShow,
         });
       },
@@ -630,14 +635,15 @@ var ListMaintenanceRequest = React.createClass({
     const current_user_tenant = this.props.current_user_tenant;
     const current_user_landlord = this.props.current_user_landlord;
     const current_user_agency_admin = this.props.current_user_agency_admin;
+
     return (
       <div className="maintenance-list">
         <div className="dropdown-MR">
-          { 
-            <DropforSortDate 
-              selectFilter={this.selectFilter} 
-              filterDate={this.state.filterDate} 
-              valueSelect={this.state.sortByDate} 
+          {
+            <DropforSortDate
+              selectFilter={this.selectFilter}
+              filterDate={this.state.filterDate}
+              valueSelect={this.state.sortByDate}
             />
           }
           {
@@ -658,50 +664,48 @@ var ListMaintenanceRequest = React.createClass({
               {
                 this.state.dataShow.map((maintenance_request, key) => {
                   return (
-                    <div>
-                      <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
-                    </div>
+                    <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={self.props.link}/>
                   );
                 })
               }
-              { this.state.data.length > this.state.prePage && 
-                <Pagination 
-                  page={this.state.page} 
-                  setPage={this.setPage} 
-                  total={this.state.data.length} 
-                  prePage={this.state.prePage} 
-                /> 
+              { this.state.data.length > this.state.prePage &&
+                <Pagination
+                  page={this.state.page}
+                  setPage={this.setPage}
+                  total={this.state.data.length}
+                  prePage={this.state.prePage}
+                />
               }
             </div>
           </div>
           <div className="side-column">
-            { 
+            {
               (!!current_user_agent || !!current_user_agency_admin) &&
-                <DropDownList 
-                  class="action" 
-                  title="Action Required" 
-                  content={this.state.actionRequests} 
+                <DropDownList
+                  class="action"
+                  title="Action Required"
+                  content={this.state.actionRequests}
                   valueAction={this.state.valueAction}
                   getAction={(value) => this.getAction(value)}
                 />
             }
             {
               (!!current_user_agent || !!current_user_agency_admin) &&
-                <DropDownList 
-                  class="awaiting" 
-                  title="Awaiting Action" 
-                  content={this.state.awaitingAction} 
+                <DropDownList
+                  class="awaiting"
+                  title="Awaiting Action"
+                  content={this.state.awaitingAction}
                   valueAction={this.state.valueAction}
-                  getAction={(value) => this.getAction(value)} 
+                  getAction={(value) => this.getAction(value)}
                 />
             }
             {
-              (!!current_user_trady) && 
+              (!!current_user_trady) &&
                 <DropDownList
-                  class="trady" 
+                  class="trady"
                   id="trady-filter"
-                  title="Trady Filter" 
-                  content={this.state.tradyFilter} 
+                  title="Trady Filter"
+                  content={this.state.tradyFilter}
                   valueAction={this.state.valueAction}
                   getAction={(value) => this.getAction(value)}
                 />
@@ -711,32 +715,32 @@ var ListMaintenanceRequest = React.createClass({
         <div className="action-mobile">
           {
             (!!current_user_agent || !!current_user_agency_admin) &&
-              <DropDownMobileList 
-                class="action" 
+              <DropDownMobileList
+                class="action"
                 id="action-required"
-                title="Action Required" 
-                content={this.state.actionRequests} 
+                title="Action Required"
+                content={this.state.actionRequests}
                 valueAction={this.state.valueAction}
                 getAction={(value) => this.getAction(value)}
               />
           }
           {
             (!!current_user_agent || !!current_user_agency_admin) &&
-              <DropDownMobileList 
-                class="awaiting" 
+              <DropDownMobileList
+                class="awaiting"
                 id="awaiting-action"
-                title="Awaiting Action" 
+                title="Awaiting Action"
                 content={this.state.awaitingAction}
                 valueAction={this.state.valueAction}
-                getAction={(value) => this.getAction(value)} 
+                getAction={(value) => this.getAction(value)}
               />
           }
           {
             (!!current_user_trady) &&
-              <DropDownMobileList 
-                class="trady" 
+              <DropDownMobileList
+                class="trady"
                 id="trady-filter"
-                title="Trady Filter" 
+                title="Trady Filter"
                 content={this.state.tradyFilter}
                 valueAction={this.state.valueAction}
                 getAction={(value) => this.getAction(value)}
@@ -755,8 +759,8 @@ var MaintenanceRequestItem = React.createClass({
       <div className="row maintenance-request">
         <div className="image">
           <ImgSlider
-            nameClass={"slider-custom-" + maintenance_request.id} 
-            images={maintenance_request.get_image_urls.length > 0 ? maintenance_request.get_image_urls : ["/uploads/maintenance_request_image/images/no_image.png"]}    
+            nameClass={"slider-custom-" + maintenance_request.id}
+            images={maintenance_request.get_image_urls.length > 0 ? maintenance_request.get_image_urls : ["/uploads/maintenance_request_image/images/no_image.png"]}
           />
         </div>
         <div className="content">
@@ -771,7 +775,7 @@ var MaintenanceRequestItem = React.createClass({
                 maintenance_request.action_status && maintenance_request.action_status.maintenance_request_statu &&
                 <p className="status">{maintenance_request.action_status.maintenance_request_status}</p>
               }
-              
+
             </div>
             <div className="row">
               <p className="created_at">
@@ -789,7 +793,7 @@ var MaintenanceRequestItem = React.createClass({
                   {maintenance_request.property.property_address}
                 </p>
             }
-            
+
           </div>
           <div className="view">
             <a className="btn-view" href={this.props.link + "/" + maintenance_request.id}>View</a>
@@ -818,7 +822,7 @@ var DropforSortDate = React.createClass({
           }
       }
     }
-  }, 
+  },
 
   render: function() {
     const self = this;
@@ -832,9 +836,9 @@ var DropforSortDate = React.createClass({
         {
           self.props.filterDate.map((item, key) => {
             return (
-              <li 
-                key={key} 
-                onClick={(value) => self.handleChange(item.value)} 
+              <li
+                key={key}
+                onClick={(value) => self.handleChange(item.value)}
                 className={self.props.valueSelect == item.value && "active"}
               >
                 {item.name}
@@ -863,7 +867,7 @@ var Pagination = React.createClass({
     let totalPage = Math.ceil(total / this.props.prePage);
     let totalGroup = Math.ceil(totalPage / this.state.numbGroup);
     this.setState({
-      totalPage: totalPage, 
+      totalPage: totalPage,
       totalGroup: totalGroup,
     });
   },
@@ -910,22 +914,22 @@ var Pagination = React.createClass({
     const paginations = [...Array(this.state.numbGroup).keys()].map((key) => {
       var i = (self.state.group - 1) * self.state.numbGroup + key + 1;
       if(i <= self.state.totalPage) {
-        if(i == self.state.page) 
+        if(i == self.state.page)
           return <em key="current" className="current">{i}</em>
         return <a key={key} onClick={(page) => self.switchPage(i)}>{i}</a>
       }
-      
+
       return
     });
 
     return (
       <div className="pagination">
         <div className="content">
-          <a 
-            className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")} 
+          <a
+            className={"previous_page fa fa-angle-left " + (this.state.page == 1 && "disabled")}
             onClick={this.state.page > 1 ? (page) => this.switchPage(this.state.page-1) : ""}
           >
-          </a> 
+          </a>
           {
             this.state.group > 1 &&
               <a onClick={(group) => this.switchGroup(this.state.group - 1)}>
@@ -939,12 +943,64 @@ var Pagination = React.createClass({
                 ...
               </a>
           }
-          <a 
-            key="next" 
-            className={"next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled")} 
+          <a
+            key="next"
+            className={"next_page fa fa-angle-right " + (this.state.page == this.state.totalPage && "disabled")}
             onClick={(page) => this.switchPage(this.state.page < this.state.totalPage ? this.state.page+1 : this.state.page)}
           >
           </a>
+        </div>
+      </div>
+    );
+  }
+});
+
+
+var SearchResultMaintenanceRequest = React.createClass({
+  getInitialState: function() {
+    const { maintenance_requests, query = '' } = this.props;
+    const page = 1;
+    const prePage = 3;
+    const dataShow = [...maintenance_requests].splice(0, prePage);
+
+    return {
+      page: page,
+      query: query,
+      prePage: prePage,
+      dataShow: dataShow,
+      data: maintenance_requests,
+    };
+  },
+
+  setPage: function(page){
+    const { prePage, data = [] } = this.state;
+    const dataShow = [...data].splice((page - 1) * prePage, prePage);
+    this.setState({ page, dataShow });
+  },
+
+  render: function() {
+    const isPagination = this.state.data.length > this.state.prePage;
+
+    return (
+      <div className="maintenance-list">
+        <div className="maintenance-content">
+          <div className={"main-column"} style={{ width: '100%' }}>
+            {
+              this.state.dataShow.map((maintenance_request, key) => {
+                return (
+                  <MaintenanceRequestItem key={key} maintenance_request={maintenance_request} link={this.props.link}/>
+                );
+              })
+            }
+            { isPagination &&
+              <Pagination
+                page={this.state.page}
+                setPage={this.setPage}
+                total={this.state.data.length}
+                prePage={this.state.prePage}
+              />
+            }
+          </div>
         </div>
       </div>
     );
