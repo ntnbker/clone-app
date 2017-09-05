@@ -45,12 +45,12 @@ class AgentMailer < ActionMailer::Base
     @maintenance_request = maintenance_request
     @property = @maintenance_request.property
     @landlord = @property.landlord
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
     end
 
     # track user: @user
@@ -64,12 +64,12 @@ class AgentMailer < ActionMailer::Base
     @property = @maintenance_request.property
     @landlord = @property.landlord
     @trady = @maintenance_request.trady
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
     end
 
     # track user: @user
@@ -80,12 +80,12 @@ class AgentMailer < ActionMailer::Base
     @maintenance_request = maintenance_request
     @property = @maintenance_request.property
     @landlord = @property.landlord
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
     end
 
     # track user: @user
@@ -96,12 +96,12 @@ class AgentMailer < ActionMailer::Base
     @maintenance_request = maintenance_request
     @tenant = @maintenance_request.tenants.first
     @property = @maintenance_request.property
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
     end
 
     # track user: @user
@@ -112,12 +112,12 @@ class AgentMailer < ActionMailer::Base
     @maintenance_request = maintenance_request
     @trady = @maintenance_request.trady
     @property = @maintenance_request.property
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
     end
 
     # track user: @user
@@ -129,12 +129,12 @@ class AgentMailer < ActionMailer::Base
     # @trady = @maintenance_request.trady
 
     @property = @maintenance_request.property
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
     end
     @quote = quote
     @trady = @quote.trady
@@ -146,12 +146,12 @@ class AgentMailer < ActionMailer::Base
     # @trady = @maintenance_request.trady
     @tenant = maintenance_request.tenants.first
     @property = @maintenance_request.property
-    if @maintenance_request.agent == nil
-      @user = @maintenance_request.agency_admin.user
-      email = @maintenance_request.agency_admin.email 
-    elsif @maintenance_request.agency_admin == nil
+    if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
       email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
     end
     
     mail(to:email, subject:"Your maintenance request submitted on behalf of #{@tenant.name.capitalize} - #{@property.property_address}.")
