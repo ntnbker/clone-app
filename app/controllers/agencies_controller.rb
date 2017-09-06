@@ -1,5 +1,11 @@
 class AgenciesController < ApplicationController
-  authorize_resource :class => false
+  # authorize_resource :class => false
+   # before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  
+  before_action :require_login, only:[:edit,:update]
+
+  before_action(only:[:show,:index]) {allow("AgencyAdmin")}
+  before_action(only:[:show]) {belongs_to_agency_admin}
   
   def new
     @user = User.new
@@ -52,6 +58,18 @@ class AgenciesController < ApplicationController
 
 
   end
+
+  def edit
+
+    @agency = Agency.find_by(id:params[:id])
+
+  end
+
+  def update
+    
+  end
+
+
   
   private
   

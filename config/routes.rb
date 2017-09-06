@@ -33,8 +33,8 @@ Rails.application.routes.draw do
     resources :agents, only:[:show,:update, :new, :create]
     resources :agent_maintenance_requests, only:[:index,:show]
     resources :agency_admins, only:[:new, :create, :show]
-    resources :agencies, only:[:new, :create]
-
+    resources :agencies, only:[:new, :create, :edit, :update]
+    get "agency_settings" => 'agencies#settings', :as => "agency_settings"
     resources :agency_admin_maintenance_requests, only:[:index, :show] 
   ###################################################
   ##########LANDLORD ROLE RESOURCES/ROUTES###########
