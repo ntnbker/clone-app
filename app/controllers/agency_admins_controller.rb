@@ -2,7 +2,7 @@ class AgencyAdminsController < ApplicationController
   
   
   before_action :require_login, only: [:new,:create]
-  before_action(only:[:new,:create]) {allow("AgencyAdmin")}
+  before_action(only:[:new,:create, :edit, :update]) {allow("AgencyAdmin")}
   
   
   def new
@@ -51,9 +51,22 @@ class AgencyAdminsController < ApplicationController
         render :new
       end 
     end 
+  end
 
+  def edit
+    @agency_admin = AgencyAdmin.find_by(id:params[:id])
+  end
 
+  def update
+    @agency_admin = AgencyAdmin.find_by(id:params[:id])
 
+    if @agency_admin.update(agency_admin_params)
+      flash[:success] = "You have successfully updated your profile information"
+      redirect_to edit_agency_admin_path(@agency_admin)
+    else
+      flash[:danger] = "Sorry something went wrong. Please fix the errors"
+      render :edit
+    end
 
   end
   

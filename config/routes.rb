@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     delete 'logout' => 'user_sessions#destroy', :as => :logout
     resources :password_resets, only:[:new, :create, :edit,:update]
     resources :passwords, only:[:edit, :update]
+    get "change_password"=> "passwords#change_password",:as=> :change_password
+    patch "update_password"=>"passwords#update_password"
     resources :gods, only:[:show]
     resources :gods do 
       resources :services, only:[:new,:create, :update]
@@ -32,7 +34,7 @@ Rails.application.routes.draw do
   ###################################################
     resources :agents, only:[:show,:update, :new, :create]
     resources :agent_maintenance_requests, only:[:index,:show]
-    resources :agency_admins, only:[:new, :create, :show]
+    resources :agency_admins, only:[:new, :create, :show, :edit, :update]
     resources :agencies, only:[:new, :create, :edit, :update]
     get "agency_settings" => 'agencies#settings', :as => "agency_settings"
     resources :agency_admin_maintenance_requests, only:[:index, :show] 
