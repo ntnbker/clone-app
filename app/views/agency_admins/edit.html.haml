@@ -1,0 +1,22 @@
+this is where we edit AA
+This is where we edit 
+.container.well
+  = bootstrap_form_for @agency_admin do |f|
+    =f.text_field :first_name
+    =f.text_field :last_name
+    =f.telephone_field :mobile_phone
+    =f.text_field :license_number
+    =f.submit
+
+
+
+
+%div
+  =link_to "password", change_password_path
+  =link_to "Add Agent", new_agent_path
+  
+  
+
+
+
+
