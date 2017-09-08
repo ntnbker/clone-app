@@ -32,31 +32,6 @@ $color-blue-light: #7646FF;
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
-  .button-type {
-    cursor: pointer;
-    border-radius: 4px;
-    display: inline-block;
-    box-sizing: border-box;
-    text-decoration: none;
-    white-space: nowrap;
-    text-align: center;
-    letter-spacing: .1rem;
-    line-height: 2.5;
-    padding: 0 30px;
-    background-color: #33C3F0;
-    border-color: #33C3F0;
-
-    &.green {
-      background-color: #7dc691;
-      border-color: #7dc691;
-    }
-
-    &:hover {
-      background-color: #1EAEDB;
-      border-color: #1EAEDB;
-    }
-  }
-
 	.button-primary.option-button {
 		margin: 0;
 		height: 38px;
