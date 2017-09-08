@@ -1,0 +1,24 @@
+.container.well
+  %h5 
+    Edit Company Details
+  = bootstrap_form_for @trady_company, url:"/update_trady_company_information" do |f|
+    =f.hidden_field :id, value:@trady_company.id
+    =f.text_field :company_name
+    =f.text_field :trading_name
+    =f.text_field :abn
+    =f.text_field :address
+    =f.text_field :mailing_address
+    =f.telephone_field :mobile_number
+    = f.form_group :gst_registration, label: { text: "GST Registration" } do 
+      = f.radio_button :gst_registration, true, label: "True", inline: true 
+      = f.radio_button :gst_registration, false, label: "False", inline: true 
+    =f.text_field :account_name
+    =f.text_field :bsb_number
+    =f.text_field :bank_account_number
+    =f.submit
+
+
+.div
+  =link_to "Password", change_password_path
+  =link_to "Trady Account Settings", edit_trady_path(current_user.trady.id)
+

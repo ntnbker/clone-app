@@ -168,7 +168,24 @@ class TradiesController < ApplicationController
     #TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id)
 
 
+  end
+
+
+  def edit
+    @trady = Trady.find_by(id:params[:id])
   end 
+
+  def update
+    @trady = Trady.find_by(id:params[:id])
+
+    if @trady.update(trady_params)
+      flash[:success] = "You have successfully updated your profile information."
+      redirect_to edit_trady_path(@trady)
+    else
+      flash[:danger] = "Oops it looks something went wrong. Please add all information below."
+      render :edit
+    end 
+  end
 
       
  

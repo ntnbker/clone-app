@@ -28,8 +28,8 @@ class TradyCompaniesController < ApplicationController
     @invoice_type = params[:trady_company][:invoice_type]
     @quote_type = params[:trady_company][:quote_type]
 
-     
-    @trady_company.perform_bank_validation(system_plan)        
+
+    @trady_company.perform_bank_validation(system_plan)
 
 
     if @existing_company
@@ -60,7 +60,7 @@ class TradyCompaniesController < ApplicationController
       else
         @trady_id = params[:trady_company][:trady_id]
         flash[:danger] = "Please fill in below"
-        
+
         respond_to do |format|
           format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
           format.html
@@ -97,11 +97,11 @@ class TradyCompaniesController < ApplicationController
           flash[:success] = "You have added your company thank you"
         else
           flash[:danger] = "Please fill in below!!"
-          
+
           respond_to do |format|
-            
+
             format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
-          
+
         end
         end
     end
@@ -142,7 +142,7 @@ class TradyCompaniesController < ApplicationController
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
     @quote_pdf_files = UploadedQuote.find_by(id:params[:trady_company][:pdf_file_id])
     @trady_company.perform_bank_validation(system_plan)
-    
+
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
 
@@ -196,6 +196,22 @@ class TradyCompaniesController < ApplicationController
 
 
 
+  def change_trady_company_information
+    @trady_company = TradyCompany.find_by(id:params[:id])
+  end
+
+  def update_trady_company_information
+    binding.pry
+    @trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
+
+    if @trady_company.update(trady_company_params)
+      flash[:success] = "You have succesfully updated the company details."
+      redirect_to change_trady_company_information_path(id:@trady_company)
+    else
+      flash[:danger] = "Oops something went wrong. Please add all information below."
+      render :change_trady_company_information
+    end
+  end
 
   private
 

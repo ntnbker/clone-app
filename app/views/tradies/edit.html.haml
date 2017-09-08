@@ -1,0 +1,10 @@
+.container.well
+  = bootstrap_form_for @trady do |f|
+    =f.text_field :name
+    =f.text_field :company_name
+    =f.telephone_field :mobile
+    =f.submit
+
+.div
+  =link_to "Password", change_password_path
+  =link_to "Edit Tradie Company Details", change_trady_company_information_path(id:@trady.trady_company)
