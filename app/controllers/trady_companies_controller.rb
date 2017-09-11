@@ -1,7 +1,7 @@
 class TradyCompaniesController < ApplicationController
   before_action(only: [:new]) { email_auto_login(params[:user_id]) }
   before_action :require_login, only:[:new,:create,:edit,:update]
-  before_action(only:[:show,:index]) {allow("Trady")}
+  before_action(only:[:show,:index,:edit]) {allow("Trady")}
 
 
   def new
@@ -100,7 +100,7 @@ class TradyCompaniesController < ApplicationController
     @trady_company = TradyCompany.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
-    @trady_id = params[:trady_id]
+    @trady_id = current_user.trady.id
     @quote_id = params[:quote_id]
     @invoice_type= params[:invoice_type]
     @quote_type = params[:quote_type]
