@@ -3,6 +3,8 @@
   =link_to "Agency Admin Account Settings", edit_agency_admin_path(current_user.agency_admin.agency.id)
 -elsif logged_in? && current_user.logged_in_as("Trady")
   =link_to "Trady Account Settings", edit_trady_path(current_user.trady.id)
+-elsif logged_in? && current_user.logged_in_as("Agent")
+  =link_to "Agent Account Settings", edit_agent_path(current_user.agent.id)
   
 - searchText = params[:query]
 - if logged_in?

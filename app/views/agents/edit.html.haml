@@ -1,0 +1,21 @@
+
+.container.well
+  = bootstrap_form_for @agent do |f|
+    =f.text_field :name
+    =f.text_field :last_name
+    =f.telephone_field :mobile_phone
+    =f.text_field :license_number
+    =f.submit
+
+
+
+
+%div
+  =link_to "Reset Password", change_password_path
+  =link_to "Add Agent Profile Picture"
+  
+  
+
+
+
+
