@@ -71433,7 +71433,11 @@ var ModalViewPDFInvoice = React.createClass({
 									React.createElement(
 										"div",
 										{ className: "detail-quote" },
-										!!invoice && React.createElement("embed", { src: invoice, type: "application/pdf", frameBorder: "0", className: "scroll-custom", width: "100%", height: "400" })
+										!!invoice && React.createElement(
+											"object",
+											{ width: "100%", height: "400", type: "application/pdf", data: invoice },
+											React.createElement("iframe", { width: "100%", height: "400", src: "http://docs.google.com/gview?url=" + invoice.replace(/.pdf\?.*/, '') + ".pdf&embedded=true", className: "scroll-custom", width: "100%", height: "400" })
+										)
 									)
 								)
 							)
@@ -76948,7 +76952,9 @@ var MaintenanceRequestsNew = React.createClass({
             autoComplete: 'off',
             autoCapitalize: 'off',
             placeholder: 'E-mail',
+            pattern: '.{4,}',
             defaultValue: valueEmail,
+            title: strShortEmail,
             ref: function (ref) {
               return _this2.email = ref;
             },
@@ -76969,9 +76975,11 @@ var MaintenanceRequestsNew = React.createClass({
           React.createElement('input', {
             required: true,
             type: 'text',
-            minLength: '10',
+            minLength: '8',
             maxLength: '11',
+            pattern: '.{8,}',
             placeholder: 'Mobile',
+            title: strShortMobile,
             defaultValue: valueMobile,
             ref: function (ref) {
               return _this2.mobile = ref;
@@ -77102,6 +77110,8 @@ var MaintenanceRequestsNew = React.createClass({
               React.createElement('input', {
                 required: true,
                 type: 'text',
+                pattern: '.{4,}',
+                title: strShortRealEstate,
                 placeholder: 'Real estate office',
                 ref: function (ref) {
                   return _this2.real_estate_office = ref;
@@ -77124,7 +77134,9 @@ var MaintenanceRequestsNew = React.createClass({
               React.createElement('input', {
                 required: true,
                 type: 'text',
+                pattern: '.{4,}',
                 placeholder: 'Agent name',
+                title: strShortName,
                 ref: function (ref) {
                   return _this2.agent_name = ref;
                 },
@@ -77148,6 +77160,8 @@ var MaintenanceRequestsNew = React.createClass({
                 type: 'text',
                 maxLength: '11',
                 minLength: '10',
+                pattern: '.{8,}',
+                title: strShortMobile,
                 placeholder: 'Agent mobile',
                 ref: function (ref) {
                   return _this2.agent_mobile = ref;
