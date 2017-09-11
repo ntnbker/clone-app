@@ -3,7 +3,7 @@
   %div#Iframe-Master-CC-and-Rs.set-margin.set-padding.set-border.set-box-shadow.center-block-horiz
     %div.responsive-wrapper.responsive-wrapper-wxh-572x612{style: "height: 500px"}
       %object{data: @pdf.pdf_url, style: "border: 0", width: "100%", frameborder: "0", height: "500"}
-        %iframe{src: "http://docs.google.com/gview?url=#{@pdf.pdf_url.try(:gsub, /.pdf\?.*/, '')}.pdf&embedded=true", style: "border: 0", width: "100%", frameborder: "0", height: "500"}
+        %iframe{src: "https://docs.google.com/gview?url=#{@pdf.pdf_url.try(:gsub, /.pdf\?.*/, '')}.pdf&embedded=true", style: "border: 0", width: "100%", frameborder: "0", height: "500"}
   %div.text-center.m-b-lg
     %div.button-type.button-primary
       =link_to "Back", edit_uploaded_invoice_path(@pdf,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan)
