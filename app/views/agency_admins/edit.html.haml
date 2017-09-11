@@ -1,5 +1,3 @@
-this is where we edit AA
-This is where we edit 
 .container.well
   = bootstrap_form_for @agency_admin do |f|
     =f.text_field :first_name
@@ -12,9 +10,11 @@ This is where we edit
 
 
 %div
-  =link_to "password", change_password_path
+  =link_to "Reset Password", change_password_path
   =link_to "Add Agent", new_agent_path
+  =link_to "Add Agency Admin", new_agency_admin_path
   
+  =link_to "Add Agency Admin Profile Picture"  
   
 
 

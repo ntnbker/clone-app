@@ -43,6 +43,23 @@ class AgentsController < ApplicationController
     end 
   end
 
+  def edit
+    @agent = Agent.find_by(id:params[:id])
+  end
+
+  def update
+    @agent = Agent.find_by(id:params[:id])
+
+    if @agent.update(agent_params)
+      flash[:success] = "You have successfully update your profile information."
+      redirect_to edit_agent_path(@agent)
+    else
+      flash[:danger] = "Oops something went wrong. Please add all information below."
+      render :edit
+    end   
+        
+  end
+
 
   private
 
