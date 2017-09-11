@@ -6,7 +6,6 @@ var ModalViewPDFInvoice = React.createClass({
 		};
 	},
 
-
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
@@ -45,9 +44,10 @@ var ModalViewPDFInvoice = React.createClass({
 									</div>
 									<div className="detail-quote">
 										<div className="detail-quote">
-										{ !!invoice &&
-											<embed src={invoice} type="application/pdf" frameBorder="0" className="scroll-custom" width='100%' height='400'/>
-										}
+											{!!invoice &&
+												<object width="100%" height="400" type="application/pdf" data={invoice}>
+													<iframe width="100%" height="400" src={`http://docs.google.com/gview?url=${invoice.replace(/.pdf\?.*/, '')}.pdf&embedded=true`} className="scroll-custom" width='100%' height='400' />
+												</object>}
 										</div>
 									</div>
 								</div>
