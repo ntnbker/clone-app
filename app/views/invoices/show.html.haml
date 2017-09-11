@@ -78,18 +78,18 @@
               %td.border-none.p-b-n{:colspan => 3}
               %td.border-none.text-right.font-bold.p-b-n Subtotal:
               %td.border-none.text-right.p-b-n.font-bold
-                ="$ #{(@invoice.amount - @invoice.gst_amount).round(2)}"
+                ="$ #{(invoice.amount - invoice.gst_amount).round(2)}"
             %tr
               %td.p-t-n{:colspan => 3}
               %td.text-right.p-t-n GST 10%:
               %td.text-right.p-t-n
-                = "$ #{ (@invoice.gst_amount).round(2)}"
+                = "$ #{ (invoice.gst_amount).round(2)}"
           -else
             %tr
               %td.border-none.p-b-n{:colspan => 3}
               %td.border-none.text-right.font-bold.p-b-n Subtotal:
               %td.border-none.text-right.p-b-n
-                = "$ #{@invoice.amount.round(2)}"
+                = "$ #{invoice.amount.round(2)}"
             %tr
               %td.p-t-n{:colspan => 3}
               %td.text-right.p-t-n GST 10%:
@@ -99,7 +99,7 @@
             %td.border-none{:colspan => 3}
             %td.border-none.text-right.font-bold Amount Due (AUD):
             %td.border-none.text-right.font-bold
-              = "$ #{@invoice.amount.round(2)}"
+              = "$ #{invoice.amount.round(2)}"
 
   %div.qf-button.text-center
     %button.button.button-primary
