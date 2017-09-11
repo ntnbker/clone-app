@@ -516,7 +516,9 @@ var MaintenanceRequestsNew = React.createClass({
               autoComplete="off"
               autoCapitalize="off"
               placeholder="E-mail"
+              pattern=".{4,}"
               defaultValue={valueEmail}
+              title={strShortEmail}
               ref={(ref) => this.email = ref}
               id={this.generateAtt("id", "email")}
               name={this.generateAtt("name", "email")}
@@ -538,9 +540,11 @@ var MaintenanceRequestsNew = React.createClass({
             <input
               required
               type="text"
-              minLength="10"
+              minLength="8"
               maxLength="11"
+              pattern=".{8,}"
               placeholder="Mobile"
+              title={strShortMobile}
               defaultValue={valueMobile}
               ref={(ref) => this.mobile = ref}
               id={this.generateAtt("id", "mobile")}
@@ -647,6 +651,8 @@ var MaintenanceRequestsNew = React.createClass({
                     <input
                       required
                       type="text"
+                      pattern=".{4,}"
+                      title={strShortRealEstate}
                       placeholder="Real estate office"
                       ref={(ref) => this.real_estate_office = ref}
                       id={this.generateAtt("id", "real_estate_office")}
@@ -670,7 +676,9 @@ var MaintenanceRequestsNew = React.createClass({
                     <input
                       required
                       type="text"
+                      pattern=".{4,}"
                       placeholder="Agent name"
+                      title={strShortName}
                       ref={(ref) => this.agent_name = ref}
                       id={this.generateAtt("id", "agent_name")}
                       name={this.generateAtt("name", "agent_name")}
@@ -695,6 +703,8 @@ var MaintenanceRequestsNew = React.createClass({
                       type="text"
                       maxLength="11"
                       minLength="10"
+                      pattern=".{8,}"
+                      title={strShortMobile}
                       placeholder="Agent mobile"
                       ref={(ref) => this.agent_mobile = ref}
                       id={this.generateAtt("id", "agent_mobile")}
