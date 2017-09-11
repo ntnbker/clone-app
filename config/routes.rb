@@ -67,7 +67,8 @@ Rails.application.routes.draw do
   ###################################################
   ##########INVOICE RESOURCES/ROUTES#################
   ###################################################
-    resources :invoices, only:[:new, :create, :edit, :show]
+    resources :invoices, only:[:new, :create, :edit]
+    get "invoices"=> "invoices#show", :as => :invoice
     get "invoice_email" => "invoices#send_invoice_email", :as => :invoice_email
     get "confirm_company_invoice" =>"invoices#edit_trady_company_invoice"
     put "update_company_invoice" =>"invoices#update_trady_company_invoice"

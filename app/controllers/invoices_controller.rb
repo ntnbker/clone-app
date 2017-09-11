@@ -58,7 +58,7 @@ class InvoicesController < ApplicationController
 
 
 
-      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
+      redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
     else
       flash[:danger] = "Please Fill in a Minumum of one item"
       @trady_id = params[:ledger][:trady_id]
@@ -73,6 +73,7 @@ class InvoicesController < ApplicationController
     @invoice_type = params[:invoice_type]
     @system_plan = params[:system_plan]
     @invoice = Invoice.find_by(id:params[:id])
+    #@invoices = @ledger.invoices
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
     if  @maintenance_request.property.landlord != nil
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
@@ -127,7 +128,7 @@ class InvoicesController < ApplicationController
       #must be after invoices method because all invoices calculated first then add them up for grandtotal
       @ledger.save_grand_total
       flash[:success] = "Your Invoice has been updated"
-      redirect_to invoice_path(@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type)
+      redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type)
     else
       flash[:danger] = "Sorry Something went wrong "
       render :edit
