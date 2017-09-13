@@ -51,14 +51,14 @@ var TenantSideBarMobile = React.createClass({
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
-							Contact
+							CONTACT MENU
 						</button>
 						<button
 							data-intro="Edit maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showDetail && 'active')}
 							onClick={(key) => this.show('detail')}
 						>
-							Edit Details
+							EDIT MENU
 						</button>
 					</div>
 				</div>

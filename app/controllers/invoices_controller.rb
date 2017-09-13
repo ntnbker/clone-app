@@ -206,11 +206,9 @@ class InvoicesController < ApplicationController
 
 
     #THIS IS WHERE WE FIGURE OUT IF THE MAINTENACE REQUEST HAS BEEN CLOSE COMPLETELY OR NOT.
-    if the maintenance_request.invoices.where(paid:false).count >= 1 && maintenance_request.uploaded_invoices.where(paid:false).count >= 1 
-      #do nothing
-    else 
+    unless maintenance_request.invoices.where(paid:false).count >= 1 && maintenance_request.uploaded_invoices.where(paid:false).count >= 1
       maintenance_request.action_status.update_columns(agent_status:"Jobs Completed", trady_status:"Job Complete")
-    end 
+    end
 
     log = Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice marked as paid.")
     respond_to do |format|
