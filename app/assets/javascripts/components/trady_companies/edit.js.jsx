@@ -1,6 +1,6 @@
 var EditTradyCompany = React.createClass({
 	getInitialState: function() {
-		return { 
+		return {
     	errorABN: false,
     	openModal: false,
       errorPhone: false,
@@ -14,7 +14,7 @@ var EditTradyCompany = React.createClass({
     	errorAccountName: false,
     	errorMailingAdress: false,
       address: this.props.address,
-      mailing_address: this.props.mailing_address, 
+      mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
       notification: {
       	title: "",
@@ -37,7 +37,7 @@ var EditTradyCompany = React.createClass({
   	if(!this.state.same_Address) {
   		this.setState({
 	     	mailing_address: this.state.address
-	    	
+
 	   	});
   	}
 
@@ -60,7 +60,7 @@ var EditTradyCompany = React.createClass({
   				return this.setState({
   					errorEmail: false
   				});
-  			else 
+  			else
   				return this.setState({
   					errorEmail: true
   				});
@@ -105,13 +105,17 @@ var EditTradyCompany = React.createClass({
   					errorABN: true
   				});
   		}
-  		default: 
+  		default:
   			break;
   	}
   },
 
   edit: function(e) {
+    e.preventDefault();
+
   	var flag = false;
+    let isInvoice = this.props.system_plan === "Invoice";
+
   	if(!this.company_name.value) {
   		flag = true;
   		this.setState({
@@ -119,18 +123,41 @@ var EditTradyCompany = React.createClass({
   		});
   	}
 
-  	if(!this.trading_name.value) {
-  		flag = true;
-  		this.setState({
-  			errorTradingName: true
-  		});
-  	}
+    if (isInvoice) {
+      if(!this.trading_name.value) {
+        flag = true;
+        this.setState({
+          errorTradingName: true
+        });
+      }
 
-  	if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
-  		flag = true;
-  		this.setState({
-  			errorTradingName: true
-  		});
+      if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
+        flag = true;
+        this.setState({
+          errorTradingName: true
+        });
+      }
+
+      if(!this.account_name.value) {
+        flag = true;
+        this.setState({
+          errorAccountName: true
+        });
+      }
+
+      if(!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
+        flag = true;
+        this.setState({
+          errorBsbNumber: true
+        });
+      }
+
+      if(!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
+        flag = true;
+        this.setState({
+          errorBankNumber: true
+        });
+      }
   	}
 
   	if(!this.address.value) {
@@ -161,31 +188,9 @@ var EditTradyCompany = React.createClass({
   		});
   	}
 
-  	if(!this.account_name.value) {
-  		flag = true;
-  		this.setState({
-  			errorAccountName: true
-  		});
-  	}
-
-  	if(!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
-  		flag = true;
-  		this.setState({
-  			errorBsbNumber: true
-  		});
-  	}
-
-  	if(!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
-  		flag = true;
-  		this.setState({
-  			errorBankNumber: true
-  		});
-  	}
-
   	if(!flag) {
   		var params = {
   			trady_company: {
-  				abn: this.abn.value,
   				email: this.email.value,
   				address: this.address.value,
   				trady_id: this.props.trady_id,
@@ -194,20 +199,24 @@ var EditTradyCompany = React.createClass({
   				trady_company_id: this.props.id,
   				work_flow: this.props.work_flow,
   				quote_type: this.props.quote_type,
-  				bsb_number: this.bsb_number.value,
           pdf_file_id: this.props.pdf_file_id,
           system_plan: this.props.system_plan,
           company_name: this.company_name.value,
           trading_name: this.trading_name.value,
-          account_name: this.account_name.value,
           invoice_type: this.props.invoice_type,
           mobile_number: this.mobile_number.value,
           mailing_address: this.mailing_address.value,
-          gst_registration: this.state.gst_registration,
-          bank_account_number: this.bank_account_number.value,
           maintenance_request_id: this.props.maintenance_request_id,
   			}
-  		}
+      }
+
+      if (isInvoice) {
+        params.trady_company.abn = this.abn.value;
+        params.trady_company.bsb_number = this.bsb_number.value;
+        params.trady_company.account_name = this.account_name.value;
+        params.trady_company.gst_registration = this.state.gst_registration;
+        params.trady_company.bank_account_number = this.bank_account_number.value;
+      }
 
   		const self = this;
 			$.ajax({
@@ -218,15 +227,13 @@ var EditTradyCompany = React.createClass({
 				},
 				data: params,
 				success: function(res){
-					
+
 				},
 				error: function(err) {
-				
+
 				}
 			});
   	}
-  		
-		e.preventDefault();
   	return;
   },
 
@@ -247,17 +254,19 @@ var EditTradyCompany = React.createClass({
   },
 
 	render: function() {
+    let isInvoice = this.props.system_plan === "Invoice";
+
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
 				<div className="form-group">
 					<label className="control-label col-sm-2 required">Company name</label>
 					<div className="col-sm-10">
-						<input 
+						<input
 							required
-							type="text" 
-							id="company_name" 
+							type="text"
+							id="company_name"
 							placeholder="Company Name"
-							defaultValue={this.props.company_name} 
+							defaultValue={this.props.company_name}
               ref={(ref) => this.company_name = ref}
 							className={"form-control " + (this.state.errorCompanyName ? "has-error" : "")}
 						/>
@@ -266,79 +275,83 @@ var EditTradyCompany = React.createClass({
 				<div className="form-group">
 					<label className="control-label col-sm-2 required">Trading name</label>
 					<div className="col-sm-10">
-						<input 
+						<input
 							required
-							type="text" 
-							id="trading_name" 
-							className="form-control" 
-							placeholder="Trading Name" 
-  		        defaultValue={this.props.trading_name} 
+							type="text"
+							id="trading_name"
+							className="form-control"
+							placeholder="Trading Name"
+  		        defaultValue={this.props.trading_name}
   		        ref={(ref) => this.trading_name = ref}
   		        className={"form-control " + (!!this.state.errorTradingName && "has-error")}
 						/>
 					</div>
 				</div>
-				<div className="form-group">
-					<label className="control-label col-sm-2 required">Abn</label>
-					<div className="col-sm-10">
-						<input 
-							required
-							id="abn"
-							type="text"  
-							placeholder="Abn" 
-			        defaultValue={this.props.abn} 
-			        ref={(ref) => this.abn = ref}
-			        className={"form-control " + (!!this.state.errorABN && "has-error")}
-						/>
-					</div>
-				</div>
-				<div className="form-group">
-					<div className="col-sm-10 col-sm-offset-2">
-						<input 
-		          type="checkbox" 
-		          id="gst_registration" 
-		          onChange={() => {
-		          	this.setState({
-		          		gst_registration: !this.state.gst_registration
-		          	});
-		          }}
-		          checked={!!this.state.gst_registration ? "checked" : false}
-	          />
-	          GST  Registration
-					</div>
-				</div>
+        { isInvoice &&
+  				<div className="form-group">
+  					<label className="control-label col-sm-2 required">Abn</label>
+  					<div className="col-sm-10">
+  						<input
+  							required
+  							id="abn"
+  							type="text"
+  							placeholder="Abn"
+  			        defaultValue={this.props.abn}
+  			        ref={(ref) => this.abn = ref}
+  			        className={"form-control " + (!!this.state.errorABN && "has-error")}
+  						/>
+  					</div>
+  				</div>
+        }
+        { isInvoice &&
+  				<div className="form-group">
+  					<div className="col-sm-10 col-sm-offset-2">
+  						<input
+  		          type="checkbox"
+  		          id="gst_registration"
+  		          onChange={() => {
+  		          	this.setState({
+  		          		gst_registration: !this.state.gst_registration
+  		          	});
+  		          }}
+  		          checked={!!this.state.gst_registration ? "checked" : false}
+  	          />
+  	          GST  Registration
+  					</div>
+  				</div>
+        }
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Address</label>
           <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="address" 
-  		        placeholder="Address" 
-  		        defaultValue={this.state.address} 
-  		        onChange={this.handleChange} 
+  	        <input
+  		        required
+  		        type="text"
+  		        id="address"
+  		        placeholder="Address"
+  		        defaultValue={this.state.address}
+  		        onChange={this.handleChange}
   		        ref={(ref) => this.address = ref}
   		        className={"form-control " + (!!this.state.errorAddress && "has-error")}
   	        />
           </div>
         </div>
 				<div className="form-group">
-          <input 
-          	type="checkbox" 
-            onChange={this.onSame} 
-            id="mailing_address_same" 
+          <input
+          	type="checkbox"
+            onChange={this.onSame}
+            id="mailing_address_same"
           />
           Mailing Address same as Above
         </div>
         <div className="form-group">
           <label className="control-label col-sm-2 required">Mailing address</label>
           <div className="col-sm-10">
-          	<input 
-		          required 
-		          type="text" 
-		          id="mailing_address" 
-		          placeholder="Mailing Address" 
-		          value={this.state.mailing_address} 
+          	<input
+		          required
+		          type="text"
+		          id="mailing_address"
+		          placeholder="Mailing Address"
+		          value={this.state.mailing_address}
 		          onChange={this.changeMailingAddress}
 		          ref={(ref) => this.mailing_address = ref}
 		          className={"form-control " + (!!this.state.errorMailingAdress && "has-error")}
@@ -348,11 +361,11 @@ var EditTradyCompany = React.createClass({
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Mobile number</label>
           <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="mobile_number" 
-  		        placeholder="Mobile Number" 
+  	        <input
+  		        required
+  		        type="text"
+  		        id="mobile_number"
+  		        placeholder="Mobile Number"
   		        onChange={this.checkValidate}
   		        defaultValue={this.props.mobile_number}
   		        ref={(ref) => this.mobile_number = ref}
@@ -363,11 +376,11 @@ var EditTradyCompany = React.createClass({
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Company Email</label>
           <div className="col-sm-10">
-  	        <input 
-  	          required 
-  	          id="email" 
-  		        type="text" 
-  		        placeholder="Email" 
+  	        <input
+  	          required
+  	          id="email"
+  		        type="text"
+  		        placeholder="Email"
   		        onChange={this.checkValidate}
   		        defaultValue={this.props.email}
   	          ref={(ref) => this.email = ref}
@@ -375,52 +388,53 @@ var EditTradyCompany = React.createClass({
   	        />
           </div>
         </div>
-
-        <div className="form-group">
-          <label className="control-label col-sm-2 required">Account name</label>
-          <div className="col-sm-10">
-  	        <input 
-  			      required 
-  			      type="text" 
-  			      id="account_name" 
-  			      placeholder="Account Name" 
-  			      defaultValue={this.props.account_name}
-  			      ref={(ref) => this.account_name = ref}
-  			      className={"form-control " + (!!this.state.errorAccountName ? "has-error" : "")}
-  	        />
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label className="control-label col-sm-2 required">Bsb number</label>
-          <div className="col-sm-10">
-  	        <input 
-  			      required 
-  			      type="text" 
-  			      id="bsb_number" 
-  			      placeholder="BSB Number" 
-  			      onChange={this.checkValidate}
-  			      defaultValue={this.props.bsb_number}
-  			      ref={(ref) => this.bsb_number = ref}
-  			      className={"form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")}
-  	        />
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label className="control-label col-sm-2 required">Bank account number</label>
-          <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="bank_account_number" 
-  		        placeholder="Bank Account Number" 
-  		        defaultValue={this.props.bank_account_number}
-  		        ref={(ref) => this.bank_account_number = ref}
-  		        className={"form-control " + (!!this.state.errorBankNumber ? "has-error" : "")}
-  	        />
-          </div>
-        </div>
+        { isInvoice &&
+          [
+            <div className="form-group" key="Account-name">
+              <label className="control-label col-sm-2 required">Account name</label>
+              <div className="col-sm-10">
+      	        <input
+      			      required
+      			      type="text"
+      			      id="account_name"
+      			      placeholder="Account Name"
+      			      defaultValue={this.props.account_name}
+      			      ref={(ref) => this.account_name = ref}
+      			      className={"form-control " + (!!this.state.errorAccountName ? "has-error" : "")}
+      	        />
+              </div>
+            </div>,
+            <div className="form-group" key="Bsb-number">
+              <label className="control-label col-sm-2 required">Bsb number</label>
+              <div className="col-sm-10">
+      	        <input
+      			      required
+      			      type="text"
+      			      id="bsb_number"
+      			      placeholder="BSB Number"
+      			      onChange={this.checkValidate}
+      			      defaultValue={this.props.bsb_number}
+      			      ref={(ref) => this.bsb_number = ref}
+      			      className={"form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")}
+      	        />
+              </div>
+            </div>,
+            <div className="form-group" key="Bank-Account-number">
+              <label className="control-label col-sm-2 required">Bank account number</label>
+              <div className="col-sm-10">
+      	        <input
+      		        required
+      		        type="text"
+      		        id="bank_account_number"
+      		        placeholder="Bank Account Number"
+      		        defaultValue={this.props.bank_account_number}
+      		        ref={(ref) => this.bank_account_number = ref}
+      		        className={"form-control " + (!!this.state.errorBankNumber ? "has-error" : "")}
+      	        />
+              </div>
+            </div>
+          ]
+        }
         <div className="text-center">
           { this.renderButtonBack() }
           <button type="submit" className="button-primary green option-button">
