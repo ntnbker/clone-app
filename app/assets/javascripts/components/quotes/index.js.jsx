@@ -406,6 +406,13 @@ var QuotesInInvoice = React.createClass({
 									<p className="price">Amount: {quote.amount}AUD</p>
 								</div>
 								<div className="actions-quote">
+									<button
+										type="button"
+										className="btn btn-decline"
+										onClick={() => self.onConvertToInvoice(quote)}
+									>
+										Convert Into Invoice
+									</button>
 									<ButtonView
 										quote={quote}
 										viewQuote={(key, item) => self.viewQuote(key, item)}
