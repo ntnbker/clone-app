@@ -53,8 +53,8 @@ var FieldList = React.createClass({
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
-                Fields.push(<SampleField content={one} {...extraProps} />);
                 x = index+1;
+                Fields.push(<SampleField x={x} content={one} {...extraProps} />);
             });
 
             return { Fields : Fields,
@@ -68,35 +68,6 @@ var FieldList = React.createClass({
 
             }
             return { Fields : [], x : x}
-        }
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        if (nextProps.force) {
-            const existingContent = nextProps.existingContent;
-            var SampleField = nextProps.SampleField;
-            var Fields = [];
-            var params = nextProps.params;
-            const extraProps = { params, removeField: (position) => this.removeField(position) };
-
-            var x = 0;
-
-            if (existingContent ? existingContent.length > 0 : false) {
-                existingContent.map((one, index) => {
-                    x = index + 1;
-                    Fields.push(<SampleField content={one} {...extraProps} />);
-                });
-
-                this.setState({ Fields : Fields, x: x });
-            } else {
-                if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
-                    x = 1;
-                    this.setState({ Fields : [ <SampleField x={x} {...extraProps} /> ],
-                         x: x });
-                } else {
-                    this.setState({ Fields : [], x: x });
-                }
-            }
         }
     },
 
@@ -132,6 +103,7 @@ var FieldList = React.createClass({
     },
 
     render: function(){
+
         return <div className="fieldlist">
             <ul id="fieldList">
                 {
@@ -181,69 +153,79 @@ var FieldListForInvoice = React.createClass({
     getInitialState : function(){
         const existingContent = this.props.existingContent;
         var SampleField = this.props.SampleField;
-        var Fields = [];
+        var Fields = {};
         var params = this.props.params;
-        var x = 1;
+        var x = 0;
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
-                Fields.push(<SampleField content={one} params={params}/>);
-                x = index+1;
+                x = index + 1;
+                Fields[x] = <SampleField key={index} content={one} params={params} removeField={() => this.removeField(x)} />;
             });
 
-            return { Fields : Fields,
-                     x : x }
-        } else {
-            return { Fields : [ <SampleField params={params} x={x} removeField={(position) => this.removeField(position)}/> ],
-                     x : x }
+            return { Fields : Fields, x: x }
         }
+
+        if (this.props.noQuotes) {
+            Fields['1'] = <SampleField key={1} params={params} removeField={() => this.removeField(1)} />;
+            return { Fields, x: 1 };
+        }
+
+        return { Fields : {}, x: 0 };
     },
 
     setContent(quote) {
-        let { Fields = [], x = 0 } = this.state;
-        let id = x + 1
+        let { Fields = {}, x = 0 } = this.state;
+        let id = x + 1;
         const { SampleField, params } = this.props;
-        const item = { ...quote, invoice_items: quote.quote_items, id, trady_invoice_reference: quote.trady_quote_reference };
-        if (Fields.length === 1 && !Fields[0].props.content) {
-            id = 1;
-            Fields = [<SampleField force x={id} content={item} params={params} removeField={(position) => this.removeField(position)}/>];
-        } else {
-            Fields.push(<SampleField x={id} content={item} params={params} removeField={(position) => this.removeField(position)}/>);
-        }
+        const invoice_items = [...quote.quote_items].map((item) => ({...item, id: null, invoice_id: null }));
 
+        const item = { ...quote, invoice_items, id, trady_invoice_reference: quote.trady_quote_reference, isCoppy: true };
+
+        if (Object.keys(Fields).length === 1 && !Object.values(Fields)[0].props.content) {
+            id = 1;
+            Fields = {[id]: <SampleField key={Date.now()} x={id} content={item} params={params} removeField={() => this.removeField(id, quote)} />};
+        } else {
+            Fields[id] = <SampleField key={Date.now()} x={id} content={item} params={params} removeField={() => this.removeField(id, quote)} />;
+        }
 
         this.setState({ Fields, x: id });
     },
 
     addField: function() {
-        var SampleField = this.props.SampleField;
-        var tmpFields = this.state.Fields.slice();
-        var params = this.props.params;
-        tmpFields.push(<SampleField x={++this.state.x} params={params} removeField={(position) => this.removeField(position)}/>);
-        this.setState({Fields: tmpFields});
+        let { Fields = {}, x = 0 } = this.state;
+        let id = x + 1;
+        const { SampleField, params } = this.props;
+        Fields[id] = <SampleField key={Date.now()} x={id} params={params} removeField={() => this.removeField(id)}/>;
+
+        this.setState({ Fields, x: id });
     },
 
-    removeField: function(x) {
-        const Fields = [...this.state.Fields]
-        Fields.splice(x - 1, 1);
+    removeField: function(x, quote = {}) {
+        const Fields = {...this.state.Fields};
 
-        this.setState({
-            Fields,
-            x: Fields.length,
-        });
+        delete Fields[x];
+
+        if (quote.id) {
+            this.props.removeQuote(quote);
+        }
+
+        this.setState({ Fields });
     },
 
     render: function(){
+        const { Fields = {} } = this.state;
+
         return <div className="fieldlist" style={{ paddingBottom: '30px' }}>
             <ul>
-                {this.state.Fields.map((Field, fieldIndex) =>
-                    <li key={fieldIndex}>
+                {Object.values(Fields).map((Field, fieldIndex) =>
+                    <li key={Field.key}>
                         <h5 className="invoice-index"> Invoice #{fieldIndex+ 1}</h5>
                         {Field}
                     </li>
                 )}
             </ul>
-            <button type="button" className="button-add button-primary" style={{position: 'absolute', bottom: 0, right: 0 }} onClick={this.addField}> Add New Invoice </button>
+            <button type="button" className="button-add button-primary" style={{position: 'absolute', bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
         </div>
     }
 });
@@ -426,11 +408,21 @@ var InvoiceItemField = React.createClass({
     render: function() {
         var invoice_item = this.props.content;
         var x= this.props.x;
+        var FieldId = null;
         var invoice_id = this.props.params.x;
         if (invoice_item) {
-            x = invoice_item.id;
-            invoice_id = invoice_item.invoice_id;
+            x = invoice_item.id || x;
+            invoice_id = invoice_item.invoice_id || invoice_id;
+
+            if (invoice_item.id) {
+                FieldId = <input
+                                value={x}
+                                type="hidden"
+                                name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'}
+                            />
+            }
         }
+
         return <div className="invoiceitemfield">
             <fieldset>
                 <input
@@ -481,14 +473,7 @@ var InvoiceItemField = React.createClass({
                 </div>
 
                 <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
-                {
-                    invoice_item &&
-                        <input
-                            value={x}
-                            type="hidden"
-                            name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'}
-                        />
-                }
+                {FieldId}
             </fieldset>
             <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> X </button>
         </div>
@@ -509,23 +494,6 @@ var InvoiceField = React.createClass({
             tax: tax,
             tax_total: tax ? tax_total : 0,
             remove : false,
-        }
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        if (nextProps.force) {
-            const invoice = nextProps.content;
-            var invoice_total = (invoice && invoice.amount) ? invoice.amount : 0;
-            var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
-            var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
-            const tax = (invoice && invoice.tax) ? invoice.tax : false;
-
-            this.setState({
-                invoice_total: invoice_total,
-                items_total : tax ? items_total : invoice_total,
-                tax: tax,
-                tax_total: tax ? tax_total : 0,
-            });
         }
     },
 
@@ -556,16 +524,17 @@ var InvoiceField = React.createClass({
         var invoice_items = (invoice && invoice.invoice_items) || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
-        if (invoice) {
-            x = invoice.id;
-        }
+
+        const hasInvoice = invoice && !invoice.isCoppy;
+
+        if (hasInvoice) x = invoice.id;
 
         return <div className="invoicefield">
             <input type="hidden" value={(invoice && invoice.maintenance_request_id) ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id} name={'ledger[invoices_attributes][' + x + '][maintenance_request_id]'}/>
             <input type="hidden" value={(invoice && invoice.trady_id) ? invoice.trady_id : invoiceInfo.trady_id} name={'ledger[invoices_attributes][' + x + '][trady_id]'}/>
             <fieldset>
                 <div>
-                    <FieldList force={this.props.force} existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
+                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
                     <div className="text-center m-t-lg">
                         <input
                         type="text"
@@ -601,11 +570,7 @@ var InvoiceField = React.createClass({
                 </div>
 
                 <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
-                {
-                    invoice
-                    ? <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>
-                    : null
-                }
+                {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}
             </fieldset>
 
             <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> Remove Invoice </button>
@@ -708,6 +673,8 @@ var InvoiceFields = React.createClass({
         };
         const invoices = (ledger && ledger.invoices) ? ledger.invoices : null;
 
+        const hasQuotes = (quotes && quotes.length > 0);
+
         return <form role="form" id="new_invoice" action={id ? '/update_invoice' : '/invoices'} acceptCharset="UTF-8" method="post">
             <input type="hidden" value={this.props.authenticity_token} name="authenticity_token"/>
             <input type="hidden" value={this.props._method} name="_method" />
@@ -718,16 +685,24 @@ var InvoiceFields = React.createClass({
             <input type="hidden" value={id} name="ledger[ledger_id]" />
             <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
             {
-                (quotes && quotes.length > 0) &&
+                hasQuotes &&
                     <QuotesInInvoice
                         quotes={quotes}
                         trady={trady}
+                        ref={(ref) => (this.quotesInInvoice = ref)}
                         viewQuote={(key, item) => this.viewItem(key, item)}
                         onConvertToInvoice={(item) => this.fieldListForInvoice.setContent(item)}
                     />
             }
 
-            <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo} ref={(ref) => (this.fieldListForInvoice = ref)}/>
+            <FieldListForInvoice
+                params={invoiceInfo}
+                noQuotes={!hasQuotes}
+                existingContent={invoices}
+                SampleField={InvoiceField}
+                ref={(ref) => (this.fieldListForInvoice = ref)}
+                removeQuote={(quote) => this.quotesInInvoice.removeConvert(quote.id)}
+            />
 
             <div className="qf-button text-center" style={{marginBottom: '50px'}}>
                 <a className="button button-primary left" href={this.props.backlink}> Back </a>

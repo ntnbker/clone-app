@@ -372,9 +372,25 @@ var Quotes = React.createClass({
 });
 
 var QuotesInInvoice = React.createClass({
+	getInitialState() {
+		return {
+			convert: {}
+		};
+	},
+
+	setConvert(id) {
+		this.setState((pre) => ({ convert: { ...pre.convert, [id]: true }}));
+	},
+
+	removeConvert(id) {
+		this.setState((pre) => ({ convert: { ...pre.convert, [id]: false }}));
+	},
+
 	render: function() {
-		const {quotes, trady} = this.props;
-		const self = this.props;
+		const { convert = {} } = this.state;
+		const { quotes, trady } = this.props;
+		const self = this;
+
 		return (
 			<div className="quotes m-t-lg m-b-lg" id="quotes">
 				<p>
@@ -409,7 +425,11 @@ var QuotesInInvoice = React.createClass({
 									<button
 										type="button"
 										className="btn btn-decline"
-										onClick={() => self.onConvertToInvoice(quote)}
+										disabled={!!convert[quote.id]}
+										onClick={() => {
+											self.setConvert(quote.id);
+											self.props.onConvertToInvoice(quote);
+										}}
 									>
 										Convert Into Invoice
 									</button>
