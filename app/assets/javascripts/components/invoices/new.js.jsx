@@ -49,10 +49,11 @@ var FieldList = React.createClass({
         var Fields = [];
         var params = this.props.params;
         var x = 0;
+        const extraProps = { params, removeField: (position) => this.removeField(position) };
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
-                Fields.push(<SampleField content={one} params={params}/>);
+                Fields.push(<SampleField content={one} {...extraProps} />);
                 x = index+1;
             });
 
@@ -61,12 +62,41 @@ var FieldList = React.createClass({
         } else {
             if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
                 x = 1;
-                return { Fields : [ <SampleField params={params} x={x} removeField={(position) => this.removeField(position)} /> ], 
+                return { Fields : [ <SampleField x={x} {...extraProps} /> ],
                      x : x }
             }else {
 
             }
             return { Fields : [], x : x}
+        }
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.force) {
+            const existingContent = nextProps.existingContent;
+            var SampleField = nextProps.SampleField;
+            var Fields = [];
+            var params = nextProps.params;
+            const extraProps = { params, removeField: (position) => this.removeField(position) };
+
+            var x = 0;
+
+            if (existingContent ? existingContent.length > 0 : false) {
+                existingContent.map((one, index) => {
+                    x = index + 1;
+                    Fields.push(<SampleField content={one} {...extraProps} />);
+                });
+
+                this.setState({ Fields : Fields, x: x });
+            } else {
+                if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
+                    x = 1;
+                    this.setState({ Fields : [ <SampleField x={x} {...extraProps} /> ],
+                         x: x });
+                } else {
+                    this.setState({ Fields : [], x: x });
+                }
+            }
         }
     },
 
@@ -87,10 +117,10 @@ var FieldList = React.createClass({
         var params = this.props.params;
         Fields.map((item, index) => {
             tmpFields.push(
-                <SampleField 
-                    x={index + 1} 
-                    params={params} 
-                    removeField={(position) => self.removeField(position)} 
+                <SampleField
+                    x={index + 1}
+                    params={params}
+                    removeField={(position) => self.removeField(position)}
                     validDate={(flag) => self.props.validDate(flag)}
                 />
             );
@@ -101,7 +131,7 @@ var FieldList = React.createClass({
         });
     },
 
-    render: function(){    
+    render: function(){
         return <div className="fieldlist">
             <ul id="fieldList">
                 {
@@ -131,7 +161,7 @@ var ButtonAddAnotherItem = React.createClass({
                     <button type="button" className="button-add button-primary" onClick={this.props.addField}>
                         { x <= 1 ? "Add Suggeted Appointment Times" : "Add Suggeted Appointment Times To The Section"}
                     </button>
-                );       
+                );
             }
 
             case 'contact': {
@@ -169,6 +199,22 @@ var FieldListForInvoice = React.createClass({
         }
     },
 
+    setContent(quote) {
+        let { Fields = [], x = 0 } = this.state;
+        let id = x + 1
+        const { SampleField, params } = this.props;
+        const item = { ...quote, invoice_items: quote.quote_items, id, trady_invoice_reference: quote.trady_quote_reference };
+        if (Fields.length === 1 && !Fields[0].props.content) {
+            id = 1;
+            Fields = [<SampleField force x={id} content={item} params={params} removeField={(position) => this.removeField(position)}/>];
+        } else {
+            Fields.push(<SampleField x={id} content={item} params={params} removeField={(position) => this.removeField(position)}/>);
+        }
+
+
+        this.setState({ Fields, x: id });
+    },
+
     addField: function() {
         var SampleField = this.props.SampleField;
         var tmpFields = this.state.Fields.slice();
@@ -178,18 +224,19 @@ var FieldListForInvoice = React.createClass({
     },
 
     removeField: function(x) {
-        var tmpFields = this.state.Fields;
-        tmpFields.splice(x-1, 1);
+        const Fields = [...this.state.Fields]
+        Fields.splice(x - 1, 1);
+
         this.setState({
-            Fields: tmpFields,
-            x: tmpFields.length,
+            Fields,
+            x: Fields.length,
         });
     },
 
-    render: function(){    
+    render: function(){
         return <div className="fieldlist" style={{ paddingBottom: '30px' }}>
             <ul>
-                {this.state.Fields.map((Field, fieldIndex) => 
+                {this.state.Fields.map((Field, fieldIndex) =>
                     <li key={fieldIndex}>
                         <h5 className="invoice-index"> Invoice #{fieldIndex+ 1}</h5>
                         {Field}
@@ -234,7 +281,7 @@ var AdditionalInvoice = React.createClass({
         }
         return <div className="quotefield" style={{display: this.state.remove ? 'none' : 'block' }}>
             <fieldset>
-                <input 
+                <input
                     type="text"
                     placeholder="Item description"
                     defaultValue={quote ? quote.item_description : ''}
@@ -242,7 +289,7 @@ var AdditionalInvoice = React.createClass({
                 />
 
                 <div className="amount">
-                    <select 
+                    <select
                         onChange={this.onPricing}
                         value={this.state.pricing_type}
                         name={'invoice[invoice_items_attributes][' + x + '][pricing_type]'}
@@ -251,15 +298,15 @@ var AdditionalInvoice = React.createClass({
                         <option value="Fixed Cost">Fixed Cost</option>
                         <option value="Hourly">Hourly</option>
                     </select>
-                    <input 
+                    <input
                         type="number"
                         placeholder="Amount"
                         defaultValue={quote.amount > 0 && quote.amount}
                         name={'invoice[invoice_items_attributes][' + x + '][amount]'}
                         className={"text-center " +  (!!this.state.hours_input && 'hour price')}
                     />
-                    {   this.state.hours_input ? 
-                            <input 
+                    {   this.state.hours_input ?
+                            <input
                                 type="number"
                                 placeholder="Of Hours"
                                 defaultValue={quote.hours > 0 ? quote.hours : ''}
@@ -270,9 +317,9 @@ var AdditionalInvoice = React.createClass({
                                 name={'invoice[invoice_items_attributes][' + x + '][hours]'}
                             />
                     }
-                </div>               
+                </div>
                 <input type="hidden" value={this.state.remove} name={'invoice[invoice_items_attributes][' + x + '][_destroy]'}/>
-                {   quote && 
+                {   quote &&
                     <input type="hidden" value={x} name={'invoice[invoice_items_attributes][' + x + '][id]'}/>
                 }
             </fieldset>
@@ -285,7 +332,7 @@ var AdditionalInvoice = React.createClass({
 
 var AdditionalInvoiceField = React.createClass({
     render: function() {
-        return <form role="form" id="new_quote" action="/submit_additional_invoice" acceptCharset="UTF-8" method="post">   
+        return <form role="form" id="new_quote" action="/submit_additional_invoice" acceptCharset="UTF-8" method="post">
             <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
 
             <input name="utf8" type="hidden" value="✓"/>
@@ -327,11 +374,6 @@ var InvoiceItemField = React.createClass({
             totalamount: amount * numofhours
         }
     },
-    componentWillReceiveProps() {
-        this.setState({
-            remove: this.props.params.remove 
-        });
-    },
     removeField() {
         this.setState({remove: true,
                        amount: 0,
@@ -346,6 +388,7 @@ var InvoiceItemField = React.createClass({
     onPricing(event) {
         var pricing_type = event.target.value;
         this.setState({pricing_type: pricing_type});
+
         if (pricing_type == "Hourly") {
             this.setState({hours_input: true, numofhours: 0});
         } else {
@@ -390,16 +433,17 @@ var InvoiceItemField = React.createClass({
         }
         return <div className="invoiceitemfield">
             <fieldset>
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     className="text-center"
-                    placeholder="Item description" 
+                    placeholder="Item description"
+                    ref={(ref) => (this.description = ref)}
                     defaultValue={invoice_item ? invoice_item.item_description : null}
-                    name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'} 
+                    name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'}
                 />
 
                 <div className="amount">
-                    <select 
+                    <select
                         onChange={this.onPricing}
                         value={this.state.pricing_type}
                         className={"text-center " +  (!!this.state.hours_input && 'hour price')}
@@ -408,40 +452,40 @@ var InvoiceItemField = React.createClass({
                         <option value="Fixed Cost">Fixed Cost</option>
                         <option value="Hourly">Hourly</option>
                     </select>
-                    <input 
-                        type="number" 
+                    <input
+                        type="number"
                         required
-                        placeholder="Amount" 
-                        defaultValue={this.state.amount > 0 && this.state.amount} 
+                        placeholder="Amount"
                         onChange={this.onAmount}
+                        value={this.state.amount || ''}
                         className={"text-center " +  (!!this.state.hours_input && 'hour price')}
-                        name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'} 
+                        name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'}
                     />
                     {
-                        this.state.hours_input ? 
-                            <input 
-                                type="number" 
+                        this.state.hours_input ?
+                            <input
+                                type="number"
                                 required
                                 onChange={this.onHours}
-                                placeholder="Number of Hours" 
-                                defaultValue={this.state.numofhours > 0 && this.state.numofhours} 
+                                placeholder="Number of Hours"
+                                defaultValue={this.state.numofhours > 0 && this.state.numofhours}
                                 className={"text-center " + (this.state.hours_input && 'hour')}
-                                name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} 
+                                name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
                             />
-                            : <input 
-                                type="hidden" 
+                            : <input
+                                type="hidden"
                                 value={1}
-                                name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'} 
+                                name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
                             />
                     }
                 </div>
-                
+
                 <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
                 {
                     invoice_item &&
-                        <input 
-                            value={x} 
-                            type="hidden" 
+                        <input
+                            value={x}
+                            type="hidden"
                             name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'}
                         />
                 }
@@ -458,13 +502,30 @@ var InvoiceField = React.createClass({
         var invoice_total = (invoice && invoice.amount) ? invoice.amount : 0;
         var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
         var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
-        const tax = (invoice && invoice.tax) ? invoice.tax : false;   
+        const tax = (invoice && invoice.tax) ? invoice.tax : false;
         return {
             invoice_total: invoice_total,
             items_total : tax ? items_total : invoice_total,
             tax: tax,
             tax_total: tax ? tax_total : 0,
             remove : false,
+        }
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.force) {
+            const invoice = nextProps.content;
+            var invoice_total = (invoice && invoice.amount) ? invoice.amount : 0;
+            var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
+            var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
+            const tax = (invoice && invoice.tax) ? invoice.tax : false;
+
+            this.setState({
+                invoice_total: invoice_total,
+                items_total : tax ? items_total : invoice_total,
+                tax: tax,
+                tax_total: tax ? tax_total : 0,
+            });
         }
     },
 
@@ -498,24 +559,25 @@ var InvoiceField = React.createClass({
         if (invoice) {
             x = invoice.id;
         }
+
         return <div className="invoicefield">
             <input type="hidden" value={(invoice && invoice.maintenance_request_id) ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id} name={'ledger[invoices_attributes][' + x + '][maintenance_request_id]'}/>
             <input type="hidden" value={(invoice && invoice.trady_id) ? invoice.trady_id : invoiceInfo.trady_id} name={'ledger[invoices_attributes][' + x + '][trady_id]'}/>
             <fieldset>
                 <div>
-                    <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
+                    <FieldList force={this.props.force} existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:this.state.remove}} flag="invoice"/>
                     <div className="text-center m-t-lg">
-                        <input 
-                        type="text" 
-                        className="text-center" 
+                        <input
+                        type="text"
+                        className="text-center"
                         placeholder="Invoice Reference Number"
-                        defaultValue={invoice && invoice.trady_invoice_reference} 
+                        defaultValue={invoice && invoice.trady_invoice_reference}
                         name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
                         />
                     </div>
-                    <label>     
+                    <label>
                         <input type="checkbox" value={this.state.tax} checked={this.state.tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
-                        Total Includes GST        
+                        Total Includes GST
                    </label>
                 </div>
                 <hr />
@@ -558,7 +620,7 @@ var InvoiceFields = React.createClass({
             isModal: false,
             quote: '',
             quotes: this.props.quotes,
-        }    
+        }
     },
 
     isClose: function() {
@@ -645,6 +707,7 @@ var InvoiceFields = React.createClass({
             due_date: ''
         };
         const invoices = (ledger && ledger.invoices) ? ledger.invoices : null;
+
         return <form role="form" id="new_invoice" action={id ? '/update_invoice' : '/invoices'} acceptCharset="UTF-8" method="post">
             <input type="hidden" value={this.props.authenticity_token} name="authenticity_token"/>
             <input type="hidden" value={this.props._method} name="_method" />
@@ -660,9 +723,11 @@ var InvoiceFields = React.createClass({
                         quotes={quotes}
                         trady={trady}
                         viewQuote={(key, item) => this.viewItem(key, item)}
+                        onConvertToInvoice={(item) => this.fieldListForInvoice.setContent(item)}
                     />
             }
-            <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo}/>
+
+            <FieldListForInvoice existingContent={invoices} SampleField={InvoiceField} params={invoiceInfo} ref={(ref) => (this.fieldListForInvoice = ref)}/>
 
             <div className="qf-button text-center" style={{marginBottom: '50px'}}>
                 <a className="button button-primary left" href={this.props.backlink}> Back </a>

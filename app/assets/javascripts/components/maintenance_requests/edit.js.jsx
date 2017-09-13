@@ -70,7 +70,7 @@ var EditMaintenanceRequest = React.createClass({
 					id="trady"
 					ref={e => this.serviceType = e}
 					className="form-control input-custom"
-					value={maintenance_request.service_type || ""}
+					defaultValue={maintenance_request.service_type}
 				>
 					<option value="">Service Type</option>
 					{
