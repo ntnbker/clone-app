@@ -305,6 +305,10 @@ $color-blue-light: #7646FF;
       background-color: $color-red;
       border-color: $color-red;
       color: $color-white;
+
+      &:disabled {
+        background-color: $color-gray;
+      }
     }
     .btn-cancel {
       background-color: $color-gray;
