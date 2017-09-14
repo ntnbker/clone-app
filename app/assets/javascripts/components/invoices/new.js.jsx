@@ -264,6 +264,7 @@ var AdditionalInvoice = React.createClass({
         return <div className="quotefield" style={{display: this.state.remove ? 'none' : 'block' }}>
             <fieldset>
                 <input
+                    required
                     type="text"
                     placeholder="Item description"
                     defaultValue={quote ? quote.item_description : ''}
@@ -426,6 +427,7 @@ var InvoiceItemField = React.createClass({
         return <div className="invoiceitemfield">
             <fieldset>
                 <input
+                    required
                     type="text"
                     className="text-center"
                     placeholder="Item description"
