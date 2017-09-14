@@ -435,7 +435,7 @@ var QuotesInInvoice = React.createClass({
 									</button>
 									<ButtonView
 										quote={quote}
-										viewQuote={(key, item) => self.viewQuote(key, item)}
+										viewQuote={(key, item) => self.props.viewQuote(key, item)}
 									/>
 								</div>
 							</div>
