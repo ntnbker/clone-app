@@ -46,60 +46,47 @@ var FieldList = React.createClass({
     getInitialState : function(){
         const existingContent = this.props.existingContent;
         var SampleField = this.props.SampleField;
-        var Fields = [];
+        var Fields = {};
         var params = this.props.params;
         var x = 0;
         const extraProps = { params, removeField: (position) => this.removeField(position) };
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
-                x = index+1;
-                Fields.push(<SampleField x={x} content={one} {...extraProps} />);
+                x = index + 1;
+                Fields[x] = <SampleField x={x} content={one} {...extraProps} />;
             });
 
-            return { Fields : Fields,
-                     x : x }
+            return { Fields, x }
         } else {
             if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
                 x = 1;
-                return { Fields : [ <SampleField x={x} {...extraProps} /> ],
-                     x : x }
-            }else {
-
+                return { Fields: { "1": <SampleField x={x} {...extraProps} /> , x }}
             }
-            return { Fields : [], x : x}
+            return { Fields: {}, x }
         }
     },
 
     addField: function() {
         var SampleField = this.props.SampleField;
-        var tmpFields = this.state.Fields.slice();
+        var tmpFields = this.state.Fields || {};
         var params = this.props.params;
-        tmpFields.push(<SampleField x={++this.state.x} params={params} removeField={(position) => this.removeField(position)} validDate={(flag) => this.props.validDate(flag)}/>);
+        const x = ++this.state.x;
+        tmpFields[x] = <SampleField x={x} params={params} removeField={(position) => this.removeField(position)} validDate={(flag) => this.props.validDate(flag)}/>;
         this.setState({Fields: tmpFields});
     },
 
-    removeField: function(x) {
+    removeField: function(x, item) {
         const self = this;
-        var {Fields} = this.state;
-        Fields.splice(x-1, 1);
-        var tmpFields = [];
-        var SampleField = this.props.SampleField;
-        var params = this.props.params;
-        Fields.map((item, index) => {
-            tmpFields.push(
-                <SampleField
-                    x={index + 1}
-                    params={params}
-                    removeField={(position) => self.removeField(position)}
-                    validDate={(flag) => self.props.validDate(flag)}
-                />
-            );
-        });
-        this.setState({
-            Fields: tmpFields,
-            x: tmpFields.length + 1
-        });
+        const { Fields = {}} = this.state;
+        const field = Fields[x];
+
+        if (field) field.params = { ...field.params, remove: true };
+        Fields[x] = field;
+
+        const tmpFields = { ...Fields };
+
+        this.setState({ Fields: tmpFields });
     },
 
     render: function(){
@@ -107,9 +94,9 @@ var FieldList = React.createClass({
         return <div className="fieldlist">
             <ul id="fieldList">
                 {
-                    this.state.Fields.map((Field, index) => {
+                    Object.values(this.state.Fields).map((Field, index) => {
                         return (
-                            <li key={index}>
+                            <li key={Field.key || Field.props.x}>
                                 {Field}
                             </li>
                         );
@@ -160,14 +147,14 @@ var FieldListForInvoice = React.createClass({
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map((one, index) => {
                 x = index + 1;
-                Fields[x] = <SampleField key={index} content={one} params={params} removeField={() => this.removeField(x)} />;
+                Fields[x] = <SampleField x={x} key={index} content={one} params={params} removeField={() => this.removeField(x)} />;
             });
 
             return { Fields : Fields, x: x }
         }
 
         if (this.props.noQuotes) {
-            Fields['1'] = <SampleField key={1} params={params} removeField={() => this.removeField(1)} />;
+            Fields['1'] = <SampleField x={1} key={1} params={params} removeField={() => this.removeField(1)} />;
             return { Fields, x: 1 };
         }
 
@@ -179,7 +166,6 @@ var FieldListForInvoice = React.createClass({
         let id = x + 1;
         const { SampleField, params } = this.props;
         const invoice_items = [...quote.quote_items].map((item) => ({...item, id: null, invoice_id: null }));
-
         const item = { ...quote, invoice_items, id, trady_invoice_reference: quote.trady_quote_reference, isCoppy: true };
 
         if (Object.keys(Fields).length === 1 && !Object.values(Fields)[0].props.content) {
@@ -202,28 +188,28 @@ var FieldListForInvoice = React.createClass({
     },
 
     removeField: function(x, quote = {}) {
-        const Fields = {...this.state.Fields};
-
-        delete Fields[x];
-
-        if (quote.id) {
-            this.props.removeQuote(quote);
-        }
-
-        this.setState({ Fields });
+        const { removed = {} } = this.state;
+        removed[x] = true;
+        if (quote.id) this.props.removeQuote(quote);
+        this.setState({ removed });
     },
 
     render: function(){
-        const { Fields = {} } = this.state;
+        const { Fields = {}, removed = {} } = this.state;
+        let indexInvoice = 0;
 
         return <div className="fieldlist" style={{ paddingBottom: '30px' }}>
             <ul>
-                {Object.values(Fields).map((Field, fieldIndex) =>
-                    <li key={Field.key}>
-                        <h5 className="invoice-index"> Invoice #{fieldIndex+ 1}</h5>
-                        {Field}
-                    </li>
-                )}
+                {Object.values(Fields).map((Field, fieldIndex) => {
+                    if (!removed[Field.props.x]) indexInvoice += 1;
+
+                    return (
+                        <li key={Field.key}>
+                            <h5 className="invoice-index"> Invoice #{indexInvoice}</h5>
+                            {Field}
+                        </li>
+                    )
+                })}
             </ul>
             <button type="button" className="button-add button-primary" style={{position: 'absolute', bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
         </div>
@@ -240,6 +226,11 @@ var AdditionalInvoice = React.createClass({
             pricing_type: pricing_type,
             hours_input: hours_input
         }
+    },
+    componentWillReceiveProps() {
+        this.setState({
+            remove: this.props.params.remove
+        });
     },
 
     removeField() {
@@ -357,11 +348,21 @@ var InvoiceItemField = React.createClass({
             totalamount: amount * numofhours
         }
     },
-    removeField() {
+
+    componentWillReceiveProps() {
+        this.setState({
+            remove: this.props.params.remove
+        });
+    },
+
+    removeField(x) {
+        const { totalamount = 0 } = this.state;
+        this.props.params.updatePrice(-totalamount);
+        this.props.removeField(x, this.props.content);
+
         this.setState({remove: true,
                        amount: 0,
                        totalamount: 0});
-        this.updatePrice(0);
     },
 
     updatePrice(amount) {
@@ -424,6 +425,13 @@ var InvoiceItemField = React.createClass({
             }
         }
 
+        if (this.state.remove) {
+            return <div>
+                <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
+                {FieldId}
+            </div>
+        }
+
         return <div className="invoiceitemfield">
             <fieldset>
                 <input
@@ -477,7 +485,7 @@ var InvoiceItemField = React.createClass({
                 <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
                 {FieldId}
             </fieldset>
-            <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> X </button>
+            <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> X </button>
         </div>
     }
 });
@@ -499,8 +507,15 @@ var InvoiceField = React.createClass({
         }
     },
 
-    removeField() {
+    componentWillReceiveProps() {
+        this.setState({
+            remove: this.props.params.remove
+        });
+    },
+
+    removeField(x) {
         this.setState({remove: true});
+        this.props.removeField(x);
     },
 
     calcInvoiceTotal(price) {
@@ -526,10 +541,18 @@ var InvoiceField = React.createClass({
         var invoice_items = (invoice && invoice.invoice_items) || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
-
         const hasInvoice = invoice && !invoice.isCoppy;
 
         if (hasInvoice) x = invoice.id;
+        if (this.state.remove && hasInvoice) {
+            return (
+                <div>
+                    <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>
+                    <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
+                </div>
+            )
+        }
+
 
         return <div className="invoicefield">
             <input type="hidden" value={(invoice && invoice.maintenance_request_id) ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id} name={'ledger[invoices_attributes][' + x + '][maintenance_request_id]'}/>
@@ -575,7 +598,7 @@ var InvoiceField = React.createClass({
                 {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}
             </fieldset>
 
-            <button type="button" className="button-remove button-primary red" onClick={(position) => this.props.removeField(x)}> Remove Invoice </button>
+            <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
         </div>
     }
 });
@@ -688,13 +711,13 @@ var InvoiceFields = React.createClass({
             <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
             {
                 hasQuotes &&
-                    <QuotesInInvoice
-                        quotes={quotes}
-                        trady={trady}
-                        ref={(ref) => (this.quotesInInvoice = ref)}
-                        viewQuote={(key, item) => this.viewItem(key, item)}
-                        onConvertToInvoice={(item) => this.fieldListForInvoice.setContent(item)}
-                    />
+                <QuotesInInvoice
+                    quotes={quotes}
+                    trady={trady}
+                    ref={(ref) => (this.quotesInInvoice = ref)}
+                    viewQuote={(key, item) => this.viewItem(key, item)}
+                    onConvertToInvoice={(item) => this.fieldListForInvoice.setContent(item)}
+                />
             }
 
             <FieldListForInvoice
