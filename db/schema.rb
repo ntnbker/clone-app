@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170831054343) do
+ActiveRecord::Schema.define(version: 20170918040425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -229,6 +229,7 @@ ActiveRecord::Schema.define(version: 20170831054343) do
     t.string   "invoice_number"
     t.text     "trady_invoice_reference"
     t.boolean  "paid",                    default: false
+    t.integer  "quote_id"
   end
 
   create_table "landlords", force: :cascade do |t|

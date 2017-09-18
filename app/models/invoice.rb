@@ -1,34 +1,35 @@
 class Invoice < ApplicationRecord
   belongs_to :maintenance_request, inverse_of: :invoices
-  
+
+  belongs_to :quote
   belongs_to :trady
   belongs_to :ledger, inverse_of: :invoices
   has_many :invoice_items, inverse_of: :invoice
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
-  
+
 
 
 
 
   has_many :invoice_payments
   before_save :create_invoice_number
-  #attr_accessor :quote_id 
+  #attr_accessor :quote_id
 
   def calculate_invoice_items_totals
     items_amount = []
     sum = 0
     self.invoice_items.each do |item|
-      
-      if item.hours == nil 
+
+      if item.hours == nil
         items_amount.push(item.amount)
       else
-        i = item.amount * item.hours 
+        i = item.amount * item.hours
         item.update_attribute(:total_per_hour, i)
         items_amount.push(i)
-      end 
+      end
 
 
-    end 
+    end
 
     items_amount.each { |a| sum+=a }
     return sum
@@ -48,11 +49,11 @@ class Invoice < ApplicationRecord
 
   def calculate_tax
     invoices_amount = []
-    
+
     if self.tax == nil || self.tax == false
         invoice_total_amount = self.amount
         #invoice_total_amount = self.amount/1.10
-        #tax_amount = invoice_total_amount * 0.10 
+        #tax_amount = invoice_total_amount * 0.10
         # invoices_amount.push(invoice_total_amount)
         self.update_attribute(:amount, invoice_total_amount)
         self.update_attribute(:gst_amount, 0.00)
@@ -60,12 +61,12 @@ class Invoice < ApplicationRecord
       return invoice_total_amount
       else
         invoice_total_amount = self.amount/1.10
-        tax_amount = invoice_total_amount * 0.10 
+        tax_amount = invoice_total_amount * 0.10
         self.update_attribute(:gst_amount, tax_amount.round(3))
         # total = self.amount
         # invoices_amount.push(total.round(3))
         return invoice_total_amount
-    end 
+    end
 
   end
 
@@ -82,14 +83,14 @@ class Invoice < ApplicationRecord
   end
 
   def create_invoice_number
-    self.invoice_number = "I" + SecureRandom.hex(5)  
+    self.invoice_number = "I" + SecureRandom.hex(5)
   end
 
-  
-  
+
+
   # def calculate_total(items_hash={})
   #   array = []
-   
+
   #   items_hash.each do |key, value|
 
   #     if value[:hours] == ""
@@ -110,20 +111,20 @@ class Invoice < ApplicationRecord
   #       total = sum
   #     elsif tax == true
 
-  #       total = sum * 1.10  
-  #     end 
+  #       total = sum * 1.10
+  #     end
 
   #   return total
   # end
 
 
   def check_payment(money_paid)
-    if money_paid.to_f < amount 
+    if money_paid.to_f < amount
       self.update_attribute(:payment_status, "Partial Payment Completed")
     elsif money_paid == amount
       self.update_attribute(:payment_status, "Full Payment Complete")
-    end 
+    end
   end
 
 
-end 
+end

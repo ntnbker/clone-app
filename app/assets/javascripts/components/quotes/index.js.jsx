@@ -373,8 +373,9 @@ var Quotes = React.createClass({
 
 var QuotesInInvoice = React.createClass({
 	getInitialState() {
+		const { converts = [] } = this.props;
 		return {
-			convert: {}
+			convert: converts.reduce((obj, id) => ({ ...obj, [id]: true }), {}),
 		};
 	},
 
