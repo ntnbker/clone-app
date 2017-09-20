@@ -1369,7 +1369,9 @@ body::-webkit-scrollbar-thumb {
       }
       button {
         height: 82px;
-        width: 100%;
+        width: auto;
+        width: initial;
+        padding: 0 10px;
         color: $color-white;
         font-weight: 400;
         font-size: 16px;
@@ -1484,6 +1486,8 @@ body::-webkit-scrollbar-thumb {
       @include justify-content(center);
       button {
         height: 50px;
+        width: auto;
+        width: initial;
         padding: 0 18px;
         border-radius: 5px;
         font-size: 16px;
@@ -1576,6 +1580,7 @@ body::-webkit-scrollbar-thumb {
       }
       button {
         height: 50px;
+        width: auto;
         width: initial;
         font-size: 20px;
         padding-left: 0.5em;
@@ -1658,7 +1663,9 @@ body::-webkit-scrollbar-thumb {
         @include flexbox;
         @include justify-content(center);
       }
+
       button {
+        width: auto;
         width: initial;
         font-size: 20px;
         padding-left: 0.5em;
