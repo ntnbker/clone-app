@@ -1,5 +1,3 @@
-@import './_mixins';
-
 .new_agent, .new_agency_admin {
 	@include flexbox;
 	flex-wrap: wrap;

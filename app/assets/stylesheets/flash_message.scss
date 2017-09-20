@@ -1,31 +1,34 @@
-@import './_mixins';
-
 .content-message {
-    padding: 0 10px;
-    @include flexbox;
-    justify-content: space-between;
-    align-items: center;
-    height: 50px;
-	.close {
-		text-align: right;
-		color: #000;
-		opacity: .3;
-		&:hover, &:active {
-			opacity: .5;
-		}
-	}
+  padding: 0 10px;
+
+  @include flexbox;
+
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+
+  .close {
+    text-align: right;
+    color: #000;
+    opacity: .3;
+
+    &:hover, &:active {
+      opacity: .5;
+    }
+  }
 }
+
 .alert-message {
-	background: #D6EAF9;
-	color: #31708f;
+  background: #D6EAF9;
+  color: #31708f;
 }
 
 .alert-danger {
-	background-color: #F2DEDE;
-	color: #a94442;
+  background-color: #F2DEDE;
+  color: #a94442;
 }
 
 .alert-success {
-	color: #3c763d;
-	background-color: #dff0d8;
+  color: #3c763d;
+  background-color: #dff0d8;
 }
