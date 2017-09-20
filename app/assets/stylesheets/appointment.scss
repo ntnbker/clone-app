@@ -1,3 +1,5 @@
+@import './_mixins';
+
 .appointment, .modal-appointment {
 	width: 400px;
 	margin: auto;
@@ -17,7 +19,7 @@
 		font-size: 16px;
 	}
 	.detail {
-		display: flex;
+		@include flexbox;
 		flex-direction: row;
 		justify-content: flex-end;
 		font-size: 12px;
@@ -54,7 +56,7 @@
 			}
 		}
 		.date-time {
-			display: flex;
+			@include flexbox;
 			flex-direction: row;
 			justify-content: space-between;
 			font-size: 14px;
@@ -96,7 +98,7 @@
 		font-size: 16px;
 	}
 	.date-time {
-		display: flex;
+		@include flexbox;
 		justify-content: space-between;
 		font-size: 16px;
 	}
@@ -241,7 +243,7 @@
 	}
 }
 .button-appointment, .button-appointment-mobile {
-	display: flex;
+	@include flexbox;
 	flex-direction: column;
 	align-items: center;
 	button {
@@ -377,7 +379,7 @@
 	width: auto;
 	margin-top: 0px;
 	.date {
-		display: flex;
+		@include flexbox;
 		flex-direction: column;
 		align-items: flex-start;
 		flex: 1;
@@ -387,7 +389,7 @@
 		}
 	}
 	.time {
-		display: flex;
+		@include flexbox;
 		flex-direction: column;
 		align-items: flex-start;
 		flex: 1;

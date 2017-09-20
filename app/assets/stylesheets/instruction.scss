@@ -1,7 +1,8 @@
+@import './_mixins';
 .modal-instruction{
 	z-index: 9999998 !important;
 	.modal-dialog {
-		display: flex;
+		@include flexbox;
 		height: calc(100% - 60px);
 		align-items: center;
 		@media (min-width: 1025px) {

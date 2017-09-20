@@ -1,6 +1,7 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+@import './_mixins';
 form#new_maintenance_request {
     width: 100%;
     margin: 20px auto;
@@ -150,7 +151,7 @@ form#new_maintenance_request {
         border: solid 1px #d2d2d7;
         position: relative;
         text-align: center;
-        display: flex;
+        @include flexbox;
         flex-direction: column;
         align-items: center;
     }
@@ -292,7 +293,7 @@ form#new_maintenance_request {
         height: 40px;
         cursor: pointer;
         padding-left: 10px;
-        display: flex;
+        @include flexbox;
         align-items: center;
         a {
             display: inline-block;
@@ -500,11 +501,11 @@ form#new_maintenance_request {
                 position: fixed; 
                 bottom: 55px; 
                 z-index: 100; 
-                display: flex;  
+                @include flexbox;  
                 left: 0; 
                 flex-direction: row; 
                 justify-content: center; 
-                display: flex; 
+                @include flexbox; 
                 &.show {
                     .dropcontent {
                         border: 1px solid #ddd;
@@ -535,7 +536,7 @@ form#new_maintenance_request {
                 .header-action {
                     background-color: #7dc691;
                     height: 50px;
-                    display: flex;
+                    @include flexbox;
                     justify-content: space-between;
                     align-items: center;
                     a {
@@ -565,11 +566,11 @@ form#new_maintenance_request {
                     li {
                         margin-bottom: 0;
                         height: 40px;
-                        display: flex;
+                        @include flexbox;
                         flex-direction: row;
                         align-items: center;
                         a{
-                            display: flex;
+                            @include flexbox;
                             justify-content: flex-start;
                             align-items: center;
                             &:hover, &:active {
@@ -612,7 +613,7 @@ form#new_maintenance_request {
             display: none;
         }
         .action-mobile {
-            display: flex;
+            @include flexbox;
         }
         .dropdown-custom {
             margin: 0 auto 20px;
@@ -685,7 +686,7 @@ form#new_maintenance_request {
         left: 0;
         height: 300px;
         transition: all .6s;
-        display: flex;
+        @include flexbox;
         align-items: center;
         background-color: #ccc;
     }
@@ -715,7 +716,7 @@ form#new_maintenance_request {
 }
 
 .maintenance-request {
-    display: flex;
+    @include flexbox;
     flex-direction: row;
     background-color: white;
     margin-bottom: 15px;
@@ -887,13 +888,13 @@ form#new_maintenance_request {
     }
 }
 .dropdown-MR {
-  display: flex;
+  @include flexbox;
   flex-direction: row;
 }
 
 .add-photo {
   .list-img {
-    display: flex;
+    @include flexbox;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -928,7 +929,7 @@ form#new_maintenance_request {
     border: solid 1px #d2d2d7;
     position: relative;
     text-align: center;
-    display: flex;
+    @include flexbox;
     flex-direction: column;
     align-items: center;
   }

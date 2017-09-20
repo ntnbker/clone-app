@@ -1,6 +1,8 @@
+@import './_mixins';
+
 .content-message {
     padding: 0 10px;
-    display: flex;
+    @include flexbox;
     justify-content: space-between;
     align-items: center;
     height: 50px;

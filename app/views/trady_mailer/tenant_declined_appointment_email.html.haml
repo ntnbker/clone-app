@@ -4,6 +4,7 @@
     %link{:href => "https://fonts.googleapis.com/css?family=Raleway:400,600,700&amp;subset=latin-ext", :rel => "stylesheet"}
     %style{:type => "text/css"}
       :sass
+        @import ../../assets/stylesheets/_mixins
         body
           margin: 0
           padding: 0
@@ -16,7 +17,7 @@
             background-color: #3d4b54
             .logo
               height: 60px
-              display: flex
+              @include flexbox
               padding-top: 20px
               padding-bottom: 20px
               align-items: center
@@ -61,7 +62,7 @@
           .footer
             background-color: #F4F8FB
             height: 80px
-            display: flex
+            @include flexbox
             flex-direction: column-reverse
             justify-content: center
             align-items: center
@@ -92,10 +93,10 @@
         %p.content
           Hi #{@trady.name.capitalize},
           %br
-            The appointment with the tenant to fix the maintenance request issue has been declined. 
+            The appointment with the tenant to fix the maintenance request issue has been declined.
           %br
             You will recieve an email with a new suggested appointment time for the maintenance request.
-        
+
         %p.thank
           Thank you :)
 
@@ -117,4 +118,3 @@
           = link_to "#", :class => 'link-share' do
             = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
 
-    

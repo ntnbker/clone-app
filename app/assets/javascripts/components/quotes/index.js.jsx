@@ -574,7 +574,7 @@ var ModalViewQuote = React.createClass({
 
 	printQuote: function() {
 		var contents = $('#print-quote').html();
-		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" +
+		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
 								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
 								".info-trady p {margin-bottom: 0px;}" +
 								".info-agency {flex: 1;}" +
@@ -588,7 +588,7 @@ var ModalViewQuote = React.createClass({
 								".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" +
 								"#print-quote { color: #404040;}" +
 								".modal-dialog { width: 700px !important;}" +
-								".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: flex;}" +
+								".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
 								".modal-header .logo img { width: 80px;}" +
 								".modal-header .info-trady {margin-left: 15px;}" +
 								".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +

@@ -1,3 +1,5 @@
+@import './_mixins';
+
 $color-white: #FFFFFF;
 $color-grey: #f4f8fb;
 $color-grey-1: #aab8c3;
@@ -353,7 +355,7 @@ $color-blue-light: #7646FF;
     }
   }
 	.info-invoice {
-		display: flex;
+		@include flexbox;
 		justify-content: space-between;
 		flex-direction: row;
 
@@ -622,7 +624,7 @@ $color-blue-light: #7646FF;
 	}
 
 	.amount {
-		display: flex;
+		@include flexbox;
 		margin-top: 10px;
 		select {
 			width: 49%;
@@ -808,7 +810,7 @@ $color-blue-light: #7646FF;
 		border: solid 1px #d2d2d7;
 		position: relative;
 		text-align: center;
-		display: flex;
+		@include flexbox;
 		flex-direction: column;
 		align-items: center;
 		width: 90px;
