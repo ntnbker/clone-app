@@ -30,9 +30,9 @@ form#new_quote {
 			list-style: none;
 			margin: 0;
 		}
-		
+
 		button {
-			&.button-add {	
+			&.button-add {
 				font-size: 13px;
 	    		height: 24px;
 			}
@@ -40,7 +40,7 @@ form#new_quote {
 	}
 
 	button {
-		&.button-add {	
+		&.button-add {
 			font-size: 13px;
     		height: 24px;
 		}
@@ -134,7 +134,7 @@ form#new_quote {
 
 .quote {
 	@include flexbox;
-	flex-direction: row;
+	@include flex-direction(row);
 	.info-quote {
 		flex: 1;
 		margin: 0 30px;
@@ -220,8 +220,8 @@ form#new_quote {
 	}
 	.footer {
 		@include flexbox;
-		flex-direction: row;
-		justify-content: space-between;
+		@include flex-direction(row);
+		@include justify-content(space-between);
 		font-size: 12px;
 		border-top: 1px solid #ccc;
 		padding-top: 15px;
@@ -274,7 +274,7 @@ form#new_quote {
 	}
 	.header-quote {
 		@include flexbox;
-		align-items: center;
+		@include align-items(center);
 		.logo {
 			margin-left: 15px;
 			img {
@@ -290,7 +290,7 @@ form#new_quote {
 		margin-right: 15px;
 		margin-bottom: 30px;
 		@include flexbox;
-		justify-content: flex-start;
+		@include justify-content(flex-start);
 		.info-agency {
 			flex: 1;
 		}
@@ -336,7 +336,7 @@ form#new_quote {
 }
 
 @media (max-width: 768px) {
-	.quote { 
+	.quote {
 		.info-quote {
 			margin: 0 15px;
 		}
@@ -351,8 +351,8 @@ form#new_quote {
 }
 
 @media (max-width: 640px) {
-	.quote { 
-		flex-direction: column;
+	.quote {
+		@include flex-direction(column);
 		.info-quote {
 			margin: 0 10px;
 		}
@@ -364,8 +364,8 @@ form#new_quote {
 
 @media (max-width: 480px) {
 	.summary-container-index .show-quote .info-agency p{
-		flex-direction: column;
-		justify-content: flex-start;
+		@include flex-direction(column);
+		@include justify-content(flex-start);
 		@include flexbox;
 		span:first-child {
 			text-align: left;

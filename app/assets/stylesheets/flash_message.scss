@@ -1,11 +1,9 @@
 .content-message {
-  padding: 0 10px;
-
-  @include flexbox;
-
-  justify-content: space-between;
-  align-items: center;
   height: 50px;
+  padding: 0 10px;
+  @include flexbox;
+  @include align-items(center);
+  @include justify-content(space-between);
 
   .close {
     text-align: right;

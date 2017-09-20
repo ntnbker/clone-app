@@ -58,8 +58,8 @@ header {
 
     .header-custom {
       @include flexbox;
-      flex-direction: row;
-      justify-content: space-between;
+      @include flex-direction(row);
+      @include justify-content(space-between);
       max-width: 960px;
 
       .search {
@@ -67,7 +67,7 @@ header {
           height: 100%;
           margin-bottom: 0px;
           @include flexbox;
-          align-items: center;
+          @include align-items(center);
           position: relative;
         }
 
@@ -128,7 +128,7 @@ header {
         height: auto;
         background: none;
         border: none;
-        align-items: center;
+        @include align-items(center);
         margin-bottom: 0;
         position: relative;
         width: auto;
@@ -137,7 +137,7 @@ header {
           font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
           font-size: 16px;
           @include flexbox;
-          align-items: center;
+          @include align-items(center);
           height: 100%;
           img {
             width: 35px;
@@ -190,15 +190,15 @@ header {
       }
       .header-right {
         @include flexbox;
-        justify-content: flex-end;
-        flex-direction: row;
+        @include justify-content(flex-end);
+        @include flex-direction(row);
         height: 100%;
       }
       .question {
         height: 100%;
         margin: 0 10px 0 30px;
         display: none;
-        align-items: center;
+        @include align-items(center);
         i {
           color: #fff;
           font-size: 18px;
@@ -208,7 +208,7 @@ header {
         height: 100%;
         margin: 0 30px 0 10px;
         display: none;
-        align-items: center;
+        @include align-items(center);
         i {
           color: #fff;
           font-size: 16px;
@@ -263,9 +263,9 @@ header {
               height: 40px;
               border-top: none;
               @include flexbox;
-              align-items: center;
-              flex-direction: row;
-              justify-content: flex-start;
+              @include align-items(center);
+              @include flex-direction(row);
+              @include justify-content(flex-start);
               img {
                 width: 35px;
                 height: 35px;
@@ -308,6 +308,7 @@ header {
       display: inline-block;
       padding-top: 10px;
       height: 60px;
+      @include flex(1);
 
       img {
         vertical-align: middle;
@@ -454,7 +455,7 @@ header {
   header .header-expanded {
     .forhome {
       @include flexbox;
-      justify-content: center;
+      @include justify-content(center);
     }
     .header-custom .header-right {
       margin-right: 70px;
@@ -470,8 +471,8 @@ header {
   header {
     .header-expanded {
       .header-custom {
-        flex-direction: column;
-        align-items: center;
+        @include flex-direction(column);
+        @include align-items(center);
         .header-right {
           margin-right: 0;
         }

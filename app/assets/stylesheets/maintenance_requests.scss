@@ -152,8 +152,8 @@ form#new_maintenance_request {
         position: relative;
         text-align: center;
         @include flexbox;
-        flex-direction: column;
-        align-items: center;
+        @include flex-direction(column);
+        @include align-items(center);
     }
     .title {
         color:#3b5998;
@@ -294,7 +294,7 @@ form#new_maintenance_request {
         cursor: pointer;
         padding-left: 10px;
         @include flexbox;
-        align-items: center;
+        @include align-items(center);
         a {
             display: inline-block;
             width: 100%;
@@ -469,8 +469,8 @@ form#new_maintenance_request {
         display: none;
         position: fixed;
         bottom: 0px;
-        justify-content: center;
-        flex-direction: row;
+        @include justify-content(center);
+        @include flex-direction(row);
         width: 100%;
         z-index: 100;
         left: 0;
@@ -498,14 +498,14 @@ form#new_maintenance_request {
                 }
             }
             .action-mobile {
-                position: fixed; 
-                bottom: 55px; 
-                z-index: 100; 
-                @include flexbox;  
-                left: 0; 
-                flex-direction: row; 
-                justify-content: center; 
-                @include flexbox; 
+                position: fixed;
+                bottom: 55px;
+                z-index: 100;
+                @include flexbox;
+                left: 0;
+                @include flex-direction(row);
+                @include justify-content(center);
+                @include flexbox;
                 &.show {
                     .dropcontent {
                         border: 1px solid #ddd;
@@ -537,8 +537,8 @@ form#new_maintenance_request {
                     background-color: #7dc691;
                     height: 50px;
                     @include flexbox;
-                    justify-content: space-between;
-                    align-items: center;
+                    @include justify-content(space-between);
+                    @include align-items(center);
                     a {
                         color: #fff;
                         font-weight: bold;
@@ -554,25 +554,25 @@ form#new_maintenance_request {
             }
             .content-mobile {
                 .dropcontent {
-                    padding: 0; 
-                    width: 370px; 
-                    background-color: #fff; 
-                    overflow: hidden; 
-                    height: 0px;  
-                    margin-bottom: 0px; 
-                    transition: all 0.5s ease 0s; 
-                    -moz-transition: all 0.5s ease 0s; 
+                    padding: 0;
+                    width: 370px;
+                    background-color: #fff;
+                    overflow: hidden;
+                    height: 0px;
+                    margin-bottom: 0px;
+                    transition: all 0.5s ease 0s;
+                    -moz-transition: all 0.5s ease 0s;
                     -webkit-transition: all 0.5s ease 0s;
                     li {
                         margin-bottom: 0;
                         height: 40px;
                         @include flexbox;
-                        flex-direction: row;
-                        align-items: center;
+                        @include flex-direction(row);
+                        @include align-items(center);
                         a{
                             @include flexbox;
-                            justify-content: flex-start;
-                            align-items: center;
+                            @include justify-content(flex-start);
+                            @include align-items(center);
                             &:hover, &:active {
                                 text-decoration: underline;
                             }
@@ -587,7 +587,7 @@ form#new_maintenance_request {
                             line-height: 25px;
                         }
                         b {
-                            
+
                         }
                     }
                 }
@@ -687,7 +687,7 @@ form#new_maintenance_request {
         height: 300px;
         transition: all .6s;
         @include flexbox;
-        align-items: center;
+        @include align-items(center);
         background-color: #ccc;
     }
     span {
@@ -717,7 +717,7 @@ form#new_maintenance_request {
 
 .maintenance-request {
     @include flexbox;
-    flex-direction: row;
+    @include flex-direction(row);
     background-color: white;
     margin-bottom: 15px;
     border-radius: 5px;
@@ -754,8 +754,8 @@ form#new_maintenance_request {
 
 @media(max-width: 1024px) {
     .maintenance-request {
-        flex-direction: column;
-        align-items: center;
+        @include flex-direction(column);
+        @include align-items(center);
         .image {
             margin-left: 0;
             width: 80%;
@@ -769,8 +769,8 @@ form#new_maintenance_request {
 
 @media(max-width: 640px) {
     .maintenance-request {
-        flex-direction: column;
-        align-items: center;
+        @include flex-direction(column);
+        @include align-items(center);
         .image {
             margin-left: 0;
             width: 80%;
@@ -784,8 +784,8 @@ form#new_maintenance_request {
 
 @media(max-width: 480px) {
     .maintenance-request {
-        flex-direction: column;
-        align-items: center;
+        @include flex-direction(column);
+        @include align-items(center);
         .image {
             width: 95%;
             padding-left: 0;
@@ -889,16 +889,16 @@ form#new_maintenance_request {
 }
 .dropdown-MR {
   @include flexbox;
-  flex-direction: row;
+  @include flex-direction(row);
 }
 
 .add-photo {
   .list-img {
     @include flexbox;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex-wrap(wrap);
   }
   .img {
     text-align: center;
@@ -930,8 +930,8 @@ form#new_maintenance_request {
     position: relative;
     text-align: center;
     @include flexbox;
-    flex-direction: column;
-    align-items: center;
+    @include flex-direction(column);
+    @include align-items(center);
   }
   .title {
     color:#3b5998;
@@ -1024,7 +1024,7 @@ form#new_maintenance_request {
     margin-left: 0;
   }
   .dropdown-MR {
-    flex-direction: column;
-    align-items: center;
+    @include flex-direction(column);
+    @include align-items(center);
   }
 }

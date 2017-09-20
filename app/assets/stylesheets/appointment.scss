@@ -18,8 +18,8 @@
 	}
 	.detail {
 		@include flexbox;
-		flex-direction: row;
-		justify-content: flex-end;
+		@include flex-direction(row);
+		@include justify-content(flex-end);
 		font-size: 12px;
 		line-height: 20px;
 		.status {
@@ -55,8 +55,8 @@
 		}
 		.date-time {
 			@include flexbox;
-			flex-direction: row;
-			justify-content: space-between;
+			@include flex-direction(row);
+			@include justify-content(space-between);
 			font-size: 14px;
 			.date {
 				input {
@@ -77,7 +77,7 @@
 
 	@media (max-width: 480px) {
 		.date-time {
-			flex-direction: column !important;
+			@include flex-direction(column);
 			.date {
 				width: 200px;
 			}
@@ -97,7 +97,7 @@
 	}
 	.date-time {
 		@include flexbox;
-		justify-content: space-between;
+		@include justify-content(space-between);
 		font-size: 16px;
 	}
 	.appointment-comments {
@@ -242,8 +242,8 @@
 }
 .button-appointment, .button-appointment-mobile {
 	@include flexbox;
-	flex-direction: column;
-	align-items: center;
+	@include flex-direction(column);
+	@include align-items(center);
 	button {
 		padding: 0;
 		margin: 0;
@@ -283,8 +283,8 @@
 	}
 }
 .button-appointment-mobile {
-	flex-direction: row;
-	justify-content: space-around;
+	@include flex-direction(row);
+	@include justify-content(space-around);
 	.btn-decline {
 		margin-bottom: 0;
 	}
@@ -378,8 +378,8 @@
 	margin-top: 0px;
 	.date {
 		@include flexbox;
-		flex-direction: column;
-		align-items: flex-start;
+		@include flex-direction(column);
+		@include align-items(flex-start);
 		flex: 1;
 		label {
 			text-align: left;
@@ -388,8 +388,8 @@
 	}
 	.time {
 		@include flexbox;
-		flex-direction: column;
-		align-items: flex-start;
+		@include flex-direction(column);
+		@include align-items(flex-start);
 		flex: 1;
 		label {
 			text-align: left;
@@ -406,8 +406,8 @@
 
 @media (min-width: 480px) and (max-width: 1024px) {
 	.btn-appointment-mobile {
-		justify-content: space-around;
-		flex-direction: row;
+		@include flex-direction(row);
+		@include justify-content(space-around);
 		.btn-decline {
 			margin-bottom: 5px;
 		}

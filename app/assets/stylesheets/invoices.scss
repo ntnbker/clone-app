@@ -354,8 +354,8 @@ $color-blue-light: #7646FF;
   }
 	.info-invoice {
 		@include flexbox;
-		justify-content: space-between;
-		flex-direction: row;
+		@include justify-content(space-between);
+		@include flex-direction(row);
 
 		.title {
 			font-weight: bold;
@@ -650,7 +650,7 @@ $color-blue-light: #7646FF;
 
 	@media (max-width: 640px) {
 		.info-invoice {
-			flex-direction: column;
+			@include flex-direction(column);
 		}
 	}
 }
@@ -809,8 +809,8 @@ $color-blue-light: #7646FF;
 		position: relative;
 		text-align: center;
 		@include flexbox;
-		flex-direction: column;
-		align-items: center;
+		@include flex-direction(column);
+		@include align-items(center);
 		width: 90px;
 		margin: 0 auto;
 	}
