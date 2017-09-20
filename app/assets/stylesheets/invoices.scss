@@ -19,6 +19,9 @@ $color-blue-light: #7646FF;
 	/*box-shadow: 0 1px 10px #888888;*/
 	margin: 30px auto;
 	color: #aab8c3;
+  @include flexbox;
+  @include flex-direction(column);
+
 	p{
 		margin-bottom: 0;
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;

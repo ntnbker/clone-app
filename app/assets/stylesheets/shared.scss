@@ -190,8 +190,10 @@ header {
       }
       .header-right {
         @include flexbox;
+        @include align-items(center);
         @include justify-content(flex-end);
-        @include flex-direction(row);
+        -ms-flex-align: center;
+
         height: 100%;
       }
       .question {
@@ -199,6 +201,8 @@ header {
         margin: 0 10px 0 30px;
         display: none;
         @include align-items(center);
+        -ms-flex-align: center;
+
         i {
           color: #fff;
           font-size: 18px;
@@ -209,6 +213,8 @@ header {
         margin: 0 30px 0 10px;
         display: none;
         @include align-items(center);
+        -ms-flex-align: center;
+
         i {
           color: #fff;
           font-size: 16px;

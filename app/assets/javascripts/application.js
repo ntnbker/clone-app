@@ -36,4 +36,5 @@
 //= require react
 //= require react_ujs
 //= require components
+//= require trigger
 //= require_tree .

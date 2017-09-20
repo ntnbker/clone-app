@@ -1168,6 +1168,8 @@ body::-webkit-scrollbar-thumb {
   .invoices .content p{
     @include flexbox;
     @include justify-content(flex-end);
+    -ms-flex-pack: end;
+
     margin-right: 20px;
   }
   .invoices .content p span{
