@@ -12,7 +12,9 @@ class Tenant < ApplicationRecord
   
 
 
-
+def capitalize_name
+  self.name.split.map(&:capitalize).join(' ')
+end
 
 
 
