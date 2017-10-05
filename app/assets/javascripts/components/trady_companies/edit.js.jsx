@@ -75,26 +75,6 @@ var EditTradyCompany = React.createClass({
   					errorPhone: true
   				});
   		}
-  		case "bsb_number": {
-  			if(NUMBER_REGEXP.test(target.value))
-  				return this.setState({
-  					errorBsbNumber: false
-  				});
-  			else
-  				return this.setState({
-  					errorBsbNumber: true
-  				});
-  		}
-  		case "bank_account_number": {
-  			if(NUMBER_REGEXP.test(target.value))
-  				return this.setState({
-  					errorBankNumber: false
-  				});
-  			else
-  				return this.setState({
-  					errorBankNumber: true
-  				});
-  		}
   		case "abn": {
 				if(NUMBER_REGEXP.test(target.value))
   				return this.setState({
@@ -388,53 +368,6 @@ var EditTradyCompany = React.createClass({
   	        />
           </div>
         </div>
-        { isInvoice &&
-          [
-            <div className="form-group" key="Account-name">
-              <label className="control-label col-sm-2 required">Account name</label>
-              <div className="col-sm-10">
-      	        <input
-      			      required
-      			      type="text"
-      			      id="account_name"
-      			      placeholder="Account Name"
-      			      defaultValue={this.props.account_name}
-      			      ref={(ref) => this.account_name = ref}
-      			      className={"form-control " + (!!this.state.errorAccountName ? "has-error" : "")}
-      	        />
-              </div>
-            </div>,
-            <div className="form-group" key="Bsb-number">
-              <label className="control-label col-sm-2 required">Bsb number</label>
-              <div className="col-sm-10">
-      	        <input
-      			      required
-      			      type="text"
-      			      id="bsb_number"
-      			      placeholder="BSB Number"
-      			      onChange={this.checkValidate}
-      			      defaultValue={this.props.bsb_number}
-      			      ref={(ref) => this.bsb_number = ref}
-      			      className={"form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")}
-      	        />
-              </div>
-            </div>,
-            <div className="form-group" key="Bank-Account-number">
-              <label className="control-label col-sm-2 required">Bank account number</label>
-              <div className="col-sm-10">
-      	        <input
-      		        required
-      		        type="text"
-      		        id="bank_account_number"
-      		        placeholder="Bank Account Number"
-      		        defaultValue={this.props.bank_account_number}
-      		        ref={(ref) => this.bank_account_number = ref}
-      		        className={"form-control " + (!!this.state.errorBankNumber ? "has-error" : "")}
-      	        />
-              </div>
-            </div>
-          ]
-        }
         <div className="text-center">
           { this.renderButtonBack() }
           <button type="submit" className="button-primary green option-button">
