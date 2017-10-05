@@ -438,14 +438,14 @@ var SideBarMobile = React.createClass({
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
-							Contact
+							CONTACT MENU
 						</button>
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
-							Actions
+							ACTIONS MENU
 						</button>
 					</div>
 				</div>
@@ -1469,8 +1469,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: landlord ? "Change Landlord" : "Add Lanlord",
-						content: landlord ? 'Your have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
+						title: landlord ? "Change Landlord" : "Add Landlord",
+						content: landlord ? 'You have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
 						bgClass: "bg-success",
 					},
 				});

@@ -1,16 +1,18 @@
 var ModalAddPhoto = React.createClass({
-	getInitialState: function() {
-		return {
-			images: [],
-      progress: 0,
+  getInitialState: function () {
+    return {
+      images: [],
       totalFile: 0,
       dataImages: [],
       totalProgress: 0,
-      gallery: this.props.gallery
-		};		
-	},
+      gallery: this.props.gallery,
+      totalSize: 0,
+      uploading: false,
+      uploadComplete: false
+    };
+  },
 
-	_handleImageChange: function(e) {
+  _handleImageChange: function (e) {
     const self = this;
     const files = e.target.files;
     var reader = new FileReader();
@@ -26,7 +28,7 @@ var ModalAddPhoto = React.createClass({
       }
       var file = files[index];
       var fileAlreadyExists = false;
-      for (var i = 0; i < images.length; i ++) {
+      for (var i = 0; i < images.length; i++) {
         if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
           fileAlreadyExists = true;
           break;
@@ -35,13 +37,14 @@ var ModalAddPhoto = React.createClass({
       if (!fileAlreadyExists) {
         var fr = new FileReader();
         fr.readAsArrayBuffer(file);
-        fr.onload = function(e) {
+        fr.onload = function (e) {
           orientation = self.getOrientation(e.target.result);
           reader.readAsDataURL(file);
-          reader.onload = function(e) {
-            images.push({url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation});
+          reader.onload = function (e) {
+            images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
             self.setState({
-              totalFile: index + 1
+              totalFile: index + 1,
+              totalSize: self.state.totalSize + file.size
             });
             readFile(index + 1);
           }
@@ -54,7 +57,7 @@ var ModalAddPhoto = React.createClass({
     readFile(0);
   },
 
-  getOrientation: function(result) {
+  getOrientation: function (result) {
     var view = new DataView(result);
     if (view.getUint16(0, false) != 0xFFD8) return -2;
     var length = view.byteLength, offset = 2;
@@ -77,42 +80,48 @@ var ModalAddPhoto = React.createClass({
     return -1;
   },
 
-  updateImage: function(image) {
-    let {dataImages} = this.state;
+  updateImage: function (image) {
+    let { dataImages } = this.state;
     dataImages.push(image);
     this.setState({
       dataImages: dataImages
     });
   },
 
-  removeImage: function(index) {
-    let {images, dataImages} = this.state;
+  removeImage: function (index) {
+    let { images, dataImages } = this.state;
     images.splice(index, 1);
     dataImages.splice(index, 1);
     this.setState({
       images: images,
       dataImages: dataImages
     });
+    if (!dataImages.length) {
+      this.setState({ uploadComplete: false });
+    }
   },
 
-  loadImage: function(e, image, key) {
+  loadImage: function (e, image, key) {
     const img = e.target;
     const maxSize = 500000; // byte
     const self = this;
-    if(!image.isUpload) {
+    const { data = {} } = self.state;
+    data[key] = 0;
+    self.setState({})
+    if (!image.isUpload) {
       var target_img = {};
-      var {images} = this.state;
+      var { images } = this.state;
       var file = image.fileInfo;
       image.isUpload = true;
 
       // resize image
-      if(file.size > maxSize) {
-        var quality =  Math.ceil(maxSize/file.size * 100);
+      if (file.size > maxSize) {
+        var quality = Math.ceil(maxSize / file.size * 100);
         target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
-      }else {
-        if(!!this.state.isAndroid) {
+      } else {
+        if (!!this.state.isAndroid) {
           target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
-        }else {
+        } else {
           target_img.src = image.url;
         }
       }
@@ -129,9 +138,9 @@ var ModalAddPhoto = React.createClass({
         _: Date.now(),
       }
       // start upload file into S3
-      $.getJSON('/images/cache/presign', options, function(result) {
+      $.getJSON('/images/cache/presign', options, function (result) {
         var fd = new FormData();
-        $.each(result.fields, function(key, value) {
+        $.each(result.fields, function (key, value) {
           fd.append(key, value);
         });
 
@@ -142,40 +151,44 @@ var ModalAddPhoto = React.createClass({
           enctype: 'multipart/form-data',
           processData: false,
           contentType: false,
+          cache: false,
           data: fd,
           xhr: function () {
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener("progress", function (evt) {
-              if(evt.loaded > 0 && evt.total > 0) {              	
-                var progressValue = self.state.progress + evt.loaded;    
-                var totalProgress = self.state.totalProgress/self.state.totalFile + evt.total * self.state.totalFile;            
-                if(evt.loaded == evt.total) {
-              		self.setState({
-              			progress: progressValue,
-              			totalProgress: totalProgress / self.state.totalFile,
-              			totalFile: self.state.totalFile - 1,
-              		});
-              	}
-                var percentComplete = Math.ceil(progressValue / totalProgress * 100);
+              if (evt.loaded > 0 && evt.total > 0) {
+                var progressValue = file.size >= evt.loaded ? evt.loaded - data[key] : file.size - data[key];
+                data[key] = evt.loaded;
+                var totalProgress = self.state.totalProgress + progressValue;
+
+                self.setState({ totalProgress: totalProgress })
+
+                if (evt.loaded == evt.total) {
+                  self.setState({
+                    totalFile: self.state.totalFile - 1
+                  });
+                }
+
+                var percentComplete = Math.ceil(totalProgress / self.state.totalSize * 100);
                 var progress = $('.progress');
-                if(progress.length == 0) {
-                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
-                }else {
+                if (progress.length == 0) {
+                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+                } else {
                   $('.progress .progress-bar').css('width', percentComplete + '%');
                 }
-                $('#title-upload').html('Uploading ' + percentComplete + '%');
+                $('#title-upload').html("Uploading " + percentComplete + "%");
               }
             }, false);
             return xhr;
           },
-          success: function() {
-            if(self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+          success: function () {
+            if (self.state.totalFile == 0) {
               self.setState({
-                progress: 0,
                 totalFile: 0,
                 totalProgress: 0,
+                uploadComplete: true
               });
-              setTimeout(function() {
+              setTimeout(function () {
                 $('.progress').remove();
               }, 500);
             }
@@ -183,8 +196,8 @@ var ModalAddPhoto = React.createClass({
               id: result.fields.key.match(/cache\/(.+)/)[1],
               storage: 'cache',
               metadata: {
-                size:  file.size,
-                filename:  file.name.match(/[^\/\\]*$/)[0],
+                size: file.size,
+                filename: file.name.match(/[^\/\\]*$/)[0],
                 mime_type: file.type
               }
             };
@@ -195,19 +208,19 @@ var ModalAddPhoto = React.createClass({
     }
   },
 
-  reduceQuality: function(source_img, type, quality, orientation) {
+  reduceQuality: function (source_img, type, quality, orientation) {
     var mime_type = "image/jpeg";
-    if(typeof output_format !== "undefined" && output_format=="image/png"){
+    if (typeof output_format !== "undefined" && output_format == "image/png") {
       mime_type = "image/png";
     }
 
     var cvs = document.createElement('canvas'),
-        width = source_img.naturalWidth,
-        height = source_img.naturalHeight,
-        ctx = cvs.getContext("2d");
+      width = source_img.naturalWidth,
+      height = source_img.naturalHeight,
+      ctx = cvs.getContext("2d");
 
     // set proper canvas dimensions before transform & export
-    if ([5,6,7,8].indexOf(orientation) > -1) {
+    if ([5, 6, 7, 8].indexOf(orientation) > -1) {
       cvs.width = height;
       cvs.height = width;
     } else {
@@ -221,19 +234,19 @@ var ModalAddPhoto = React.createClass({
         ctx.transform(-1, 0, 0, 1, width, 0);
         break;
       case 3:
-        ctx.transform(-1, 0, 0, -1, width, height );
+        ctx.transform(-1, 0, 0, -1, width, height);
         break;
       case 4:
-        ctx.transform(1, 0, 0, -1, 0, height );
+        ctx.transform(1, 0, 0, -1, 0, height);
         break;
       case 5:
         ctx.transform(0, 1, 1, 0, 0, 0);
         break;
       case 6:
-        ctx.transform(0, 1, -1, 0, height , 0);
+        ctx.transform(0, 1, -1, 0, height, 0);
         break;
       case 7:
-        ctx.transform(0, -1, -1, 0, height , width);
+        ctx.transform(0, -1, -1, 0, height, width);
         break;
       case 8:
         ctx.transform(0, -1, 1, 0, 0, width);
@@ -244,17 +257,17 @@ var ModalAddPhoto = React.createClass({
     ctx.strokeRect(0, 0, cvs.width, cvs.height);
     ctx.lineWidth = 0;
     ctx.drawImage(source_img, 0, 0);
-    var newImageData = cvs.toDataURL(mime_type, quality/100);
+    var newImageData = cvs.toDataURL(mime_type, quality / 100);
     var result_image = new Image();
     result_image.src = newImageData;
     return result_image;
   },
 
-  dataURItoBlob: function(dataURI) {
+  dataURItoBlob: function (dataURI) {
     var byteString,
-        mimestring;
+      mimestring;
 
-    if(dataURI.split(',')[0].indexOf('base64') !== -1 ) {
+    if (dataURI.split(',')[0].indexOf('base64') !== -1) {
       byteString = atob(dataURI.split(',')[1])
     } else {
       byteString = decodeURI(dataURI.split(',')[1])
@@ -267,26 +280,26 @@ var ModalAddPhoto = React.createClass({
       content[i] = byteString.charCodeAt(i)
     }
 
-    return new Blob([new Uint8Array(content)], {type: mimestring});
+    return new Blob([new Uint8Array(content)], { type: mimestring });
   },
 
-  detectAndroid: function() {
+  detectAndroid: function () {
     var ua = navigator.userAgent.toLowerCase();
     var isAndroid = ua.indexOf("android") > -1;
-    if(isAndroid) {
+    if (isAndroid) {
       this.setState({
         isAndroid: true
       });
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount: function () {
     this.detectAndroid();
   },
 
-	submit: function(e) {
-		e.preventDefault();
-    if(this.state.dataImages.length == 0) {
+  submit: function (e) {
+    e.preventDefault();
+    if (this.state.dataImages.length == 0) {
       return;
     }
 
@@ -302,123 +315,122 @@ var ModalAddPhoto = React.createClass({
     $.ajax({
       type: 'POST',
       url: '/update_images',
-      beforeSend: function(xhr) {
+      beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
       },
       enctype: 'multipart/form-data',
       processData: false,
       contentType: false,
       data: FD,
-      success: function(res){
-      	props.notifyAddPhoto(res.all_images.length > 0 ? res.all_images : []);
+      success: function (res) {
+        props.notifyAddPhoto(res.all_images.length > 0 ? res.all_images : []);
       },
-      error: function(err) {
+      error: function (err) {
 
       }
     });
     return false;
-	},
+  },
 
-  componentWillReceiveProps: function(nextProps) {
+  componentWillReceiveProps: function (nextProps) {
     this.setState({
       gallery: nextProps.gallery
     });
   },
 
-	render: function() {
-		const {images, gallery, dataImages} = this.state;
-		return (
-			<div className="modal-custom fade">
-				<div className="modal-dialog">
-					<div className="modal-content">
-						<form role="form" id="addForm" onSubmit={this.submit}>
-							<div className="modal-header">
-								<button 
-									type="button" 
-									className="close"
-									aria-label="Close" 
-									data-dismiss="modal" 
-									onClick={this.props.close}
-								>
-									<span aria-hidden="true">&times;</span>
+  render: function () {
+    const { images, gallery, dataImages } = this.state;
+
+    const uploadButton = !this.state.uploadComplete ? <div className="browse-wrap">
+      <div className="title" id="title-upload">
+        <i className="fa fa-upload" />
+        Choose image to upload
+    </div>
+      <input
+        multiple
+        type="file"
+        id="input-file"
+        className="upload inputfile"
+        accept="image/jpeg, image/png"
+        onChange={(e) => this._handleImageChange(e)}
+      />
+    </div> : '';
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <form role="form" id="addForm" onSubmit={this.submit}>
+              <div className="modal-header">
+                <button
+                  type="button"
+                  className="close"
+                  aria-label="Close"
+                  data-dismiss="modal"
+                  onClick={this.props.close}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 className="modal-title text-center">Add Photo</h4>
+              </div>
+              <div className="modal-body add-photo">
+                <div className="list-img">
+                  {
+                    gallery.map((item, key) => {
+                      return (
+                        <img key={key} src={item} className="img" />
+                      );
+                    })
+                  }
+                  {
+                    images.map((img, index) => {
+                      return (
+                        <div key={index} className="img">
+                          <img
+                            src={img.url}
+                            className="img"
+                            onLoad={(e, image, key) => this.loadImage(e, img, index)}
+                          />
+                          <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
+                        </div>
+                      );
+                    })
+                  }
+                </div>
+                {uploadButton}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  onClick={this.props.close}
+                  className="btn btn-primary cancel"
+                >Cancel</button>
+                <button
+                  type="submit"
+                  className="btn btn-default success"
+                >
+                  Submit
 								</button>
-								<h4 className="modal-title text-center">Add Photo</h4>
-							</div>
-							<div className="modal-body add-photo">
-								<div className="list-img">
-									{
-										gallery.map((item, key) => {
-											return (
-												<img key={key} src={item} className="img" />
-											);
-										})
-									}
-									{
-		                images.map((img, index) => {
-		                  return (
-		                    <div key={index} className="img">
-		                      <img
-		                        src={img.url}
-		                        className="img"
-		                        onLoad={(e, image, key) => this.loadImage(e, img, index)}
-		                      />
-		                      <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
-		                    </div>
-		                  );
-		                })
-		              }
-								</div>
-                {
-                  dataImages.length == 0 &&
-                  <div className="browse-wrap">
-                    <div className="title" id="title-upload">
-                      <i className="fa fa-upload" />
-                      Choose image to upload
-                    </div>
-                    <input
-                      multiple
-                      type="file"
-                      id="input-file"
-                      className="upload inputfile"
-                      accept="image/jpeg, image/png"
-                      onChange={(e)=>this._handleImageChange(e)}
-                    />
-                  </div>
-                }
-							</div>
-							<div className="modal-footer">
-								<button 
-									type="button" 
-									onClick={this.props.close}
-									className="btn btn-primary cancel" 
-								>Cancel</button>
-								<button 
-									type="submit" 
-									className="btn btn-default success"
-								>
-									Submit
-								</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		);
-	}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
 });
 
 var ModalConfirmAddPhoto = React.createClass({
-  render: function() {
+  render: function () {
     return (
       <div className="modal-custom fade">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="close"
-                data-dismiss="modal" 
-                aria-label="Close" 
+                data-dismiss="modal"
+                aria-label="Close"
                 onClick={this.props.close}
               >
                 <span aria-hidden="true">&times;</span>
@@ -429,16 +441,16 @@ var ModalConfirmAddPhoto = React.createClass({
               <p className="text-center">Thank you for uploading an image. Do you want to add another image?</p>
             </div>
             <div className="modal-footer">
-              <button 
-                type="button" 
-                className="btn btn-default success" 
-                onClick={() => this.props.onModalWith('addPhoto')} 
+              <button
+                type="button"
+                className="btn btn-default success"
+                onClick={() => this.props.onModalWith('addPhoto')}
                 data-dismiss="modal"
               >Yes</button>
-              <button 
-                type="button" 
-                className="btn btn-default cancel" 
-                onClick={this.props.close} 
+              <button
+                type="button"
+                className="btn btn-default cancel"
+                onClick={this.props.close}
                 data-dismiss="modal"
               >No</button>
             </div>

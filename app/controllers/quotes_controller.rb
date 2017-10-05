@@ -138,8 +138,10 @@ class QuotesController < ApplicationController
           end 
 
         else
-          quote.update_attribute(:status, "Declined")
-          trady = quote.trady
+          unless quote.status == "Approved"
+            quote.update_attribute(:status, "Declined")
+            trady = quote.trady
+          end 
           
           #TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 

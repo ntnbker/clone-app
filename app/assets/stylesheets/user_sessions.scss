@@ -35,10 +35,10 @@
   width: auto;
   margin-right: 15px;
   label {
-    display: flex;
+    @include flexbox;
     width: auto !important;
     line-height: normal !important;
-    align-items: center;
+    @include align-items(center);
   }
   input[type='radio'] {
     -webkit-appearance:none;

@@ -33837,6 +33837,37 @@ if (!Array.prototype.includes) {
   };
 }
 ;
+function install(target, methods) {
+  Object.keys(methods).forEach(function(key) {
+    if (target.hasOwnProperty(key)) return;
+    Object.defineProperty(target, key, {
+      value: methods[key],
+      writable: true,
+      configurable: true,
+    });
+  });
+};
+
+install(Array.prototype, {
+  includes: function(search) {
+    if (this.length === 0) return false;
+    var array = arguments.length > 1 ? [].slice.call(this, arguments[1]) : this;
+    var is = Number.isNaN(search) ? Number.isNaN : function(item) { return item === search; };
+    return [].findIndex.call(array, is) !== -1;
+  },
+});
+
+// https://bugs.chromium.org/p/v8/issues/detail?id=5059
+// [][Symbol.unscopables].includes = true;
+
+install(Object, {
+  values: function(object) {
+    return Object.keys(object).map(function(key) { return object[key] });
+  },
+  entries: function(object) {
+    return Object.keys(object).map(function(key) { return [key, object[key]] });
+  },
+});
 /*! jQuery UI - v1.11.4+CommonJS - 2015-08-28
 * http://jqueryui.com
 * Includes: widget.js
@@ -69341,7 +69372,7 @@ var ModalInstruction = React.createClass({
 		var props = this.props;
 		var authenticity_token = this.props.authenticity_token;
 
-		e.target.value;
+		// e.target.value
 		this.setState({
 			isCheck: this.state.isCheck
 		});
@@ -69376,14 +69407,9 @@ var ModalInstruction = React.createClass({
 							'div',
 							{ className: 'instruction' },
 							React.createElement(
-								'label',
-								null,
-								React.createElement('input', { type: 'checkbox', onChange: this.updateInstruction, className: 'show-instruction' }),
-								React.createElement(
-									'span',
-									{ className: 'show-instruction' },
-									'Got it thank you.'
-								)
+								'button',
+								{ className: 'show-instruction', onClick: this.updateInstruction },
+								'TAP/CLICK HERE TO CONTINUE'
 							)
 						)
 					)
@@ -69528,6 +69554,12 @@ var Invoices = React.createClass({
 		);
 	}
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var StepProgress = React.createClass({
     displayName: "StepProgress",
 
@@ -69608,27 +69640,26 @@ var FieldList = React.createClass({
 
         var existingContent = this.props.existingContent;
         var SampleField = this.props.SampleField;
-        var Fields = [];
+        var Fields = {};
         var params = this.props.params;
         var x = 0;
+        var extraProps = { params: params, removeField: function (position) {
+                return _this.removeField(position);
+            } };
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map(function (one, index) {
-                Fields.push(React.createElement(SampleField, { content: one, params: params }));
                 x = index + 1;
+                Fields[x] = React.createElement(SampleField, _extends({ x: x, content: one }, extraProps));
             });
 
-            return { Fields: Fields,
-                x: x };
+            return { Fields: Fields, x: x };
         } else {
             if (!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
                 x = 1;
-                return { Fields: [React.createElement(SampleField, { params: params, x: x, removeField: function (position) {
-                            return _this.removeField(position);
-                        } })],
-                    x: x };
-            } else {}
-            return { Fields: [], x: x };
+                return { Fields: { "1": React.createElement(SampleField, _extends({ x: x }, extraProps)) }, x: x };
+            }
+            return { Fields: {}, x: x };
         }
     },
 
@@ -69636,40 +69667,30 @@ var FieldList = React.createClass({
         var _this2 = this;
 
         var SampleField = this.props.SampleField;
-        var tmpFields = this.state.Fields.slice();
+        var tmpFields = this.state.Fields || {};
         var params = this.props.params;
-        tmpFields.push(React.createElement(SampleField, { x: ++this.state.x, params: params, removeField: function (position) {
+        var x = ++this.state.x;
+        tmpFields[x] = React.createElement(SampleField, { x: x, params: params, removeField: function (position) {
                 return _this2.removeField(position);
             }, validDate: function (flag) {
                 return _this2.props.validDate(flag);
-            } }));
+            } });
         this.setState({ Fields: tmpFields });
     },
 
-    removeField: function (x) {
+    removeField: function (x, item) {
         var self = this;
-        var Fields = this.state.Fields;
+        var _state$Fields = this.state.Fields;
+        var Fields = _state$Fields === undefined ? {} : _state$Fields;
 
-        Fields.splice(x - 1, 1);
-        var tmpFields = [];
-        var SampleField = this.props.SampleField;
-        var params = this.props.params;
-        Fields.map(function (item, index) {
-            tmpFields.push(React.createElement(SampleField, {
-                x: index + 1,
-                params: params,
-                removeField: function (position) {
-                    return self.removeField(position);
-                },
-                validDate: function (flag) {
-                    return self.props.validDate(flag);
-                }
-            }));
-        });
-        this.setState({
-            Fields: tmpFields,
-            x: tmpFields.length + 1
-        });
+        var field = Fields[x];
+
+        if (field) field.params = _extends({}, field.params, { remove: true });
+        Fields[x] = field;
+
+        var tmpFields = _extends({}, Fields);
+
+        this.setState({ Fields: tmpFields });
     },
 
     render: function () {
@@ -69679,10 +69700,10 @@ var FieldList = React.createClass({
             React.createElement(
                 "ul",
                 { id: "fieldList" },
-                this.state.Fields.map(function (Field, index) {
+                Object.values(this.state.Fields).map(function (Field, index) {
                     return React.createElement(
                         "li",
-                        { key: index },
+                        { key: Field.key || Field.props.x },
                         Field
                     );
                 })
@@ -69738,63 +69759,124 @@ var FieldListForInvoice = React.createClass({
 
         var existingContent = this.props.existingContent;
         var SampleField = this.props.SampleField;
-        var Fields = [];
+        var Fields = {};
         var params = this.props.params;
-        var x = 1;
+        var x = 0;
 
         if (existingContent ? existingContent.length > 0 : false) {
             existingContent.map(function (one, index) {
-                Fields.push(React.createElement(SampleField, { content: one, params: params }));
                 x = index + 1;
+                Fields[x] = React.createElement(SampleField, { x: x, key: x, content: one, params: params, removeField: function () {
+                        return _this3.removeField(x, { id: one.quote_id });
+                    } });
             });
 
-            return { Fields: Fields,
-                x: x };
-        } else {
-            return { Fields: [React.createElement(SampleField, { params: params, x: x, removeField: function (position) {
-                        return _this3.removeField(position);
-                    } })],
-                x: x };
+            return { Fields: Fields, x: x };
         }
+
+        if (this.props.noQuotes) {
+            Fields['1'] = React.createElement(SampleField, { x: 1, key: 1, params: params, removeField: function () {
+                    return _this3.removeField(1);
+                } });
+            return { Fields: Fields, x: 1 };
+        }
+
+        return { Fields: {}, x: 0 };
+    },
+
+    setContent: function (quote) {
+        var _this4 = this;
+
+        var _state = this.state;
+        var _state$Fields2 = _state.Fields;
+        var Fields = _state$Fields2 === undefined ? {} : _state$Fields2;
+        var _state$x = _state.x;
+        var x = _state$x === undefined ? 0 : _state$x;
+
+        var id = x + 1;
+        var _props = this.props;
+        var SampleField = _props.SampleField;
+        var params = _props.params;
+
+        var invoice_items = [].concat(_toConsumableArray(quote.quote_items)).map(function (item) {
+            return _extends({}, item, { id: null, invoice_id: null });
+        });
+        var item = _extends({}, quote, { invoice_items: invoice_items, id: id, trady_invoice_reference: quote.trady_quote_reference, isCoppy: true, quote_id: quote.id });
+
+        if (Object.keys(Fields).length === 1 && !Object.values(Fields)[0].props.content) {
+            id = 1;
+            Fields = _defineProperty({}, id, React.createElement(SampleField, { key: Date.now(), x: id, content: item, params: params, removeField: function () {
+                    return _this4.removeField(id, quote);
+                } }));
+        } else {
+            Fields[id] = React.createElement(SampleField, { key: Date.now(), x: id, content: item, params: params, removeField: function () {
+                    return _this4.removeField(id, quote);
+                } });
+        }
+
+        this.setState({ Fields: Fields, x: id });
     },
 
     addField: function () {
-        var _this4 = this;
+        var _this5 = this;
 
-        var SampleField = this.props.SampleField;
-        var tmpFields = this.state.Fields.slice();
-        var params = this.props.params;
-        tmpFields.push(React.createElement(SampleField, { x: ++this.state.x, params: params, removeField: function (position) {
-                return _this4.removeField(position);
-            } }));
-        this.setState({ Fields: tmpFields });
+        var _state2 = this.state;
+        var _state2$Fields = _state2.Fields;
+        var Fields = _state2$Fields === undefined ? {} : _state2$Fields;
+        var _state2$x = _state2.x;
+        var x = _state2$x === undefined ? 0 : _state2$x;
+
+        var id = x + 1;
+        var _props2 = this.props;
+        var SampleField = _props2.SampleField;
+        var params = _props2.params;
+
+        Fields[id] = React.createElement(SampleField, { key: Date.now(), x: id, params: params, removeField: function () {
+                return _this5.removeField(id);
+            } });
+
+        this.setState({ Fields: Fields, x: id });
     },
 
     removeField: function (x) {
-        var tmpFields = this.state.Fields;
-        tmpFields.splice(x - 1, 1);
-        this.setState({
-            Fields: tmpFields,
-            x: tmpFields.length
-        });
+        var quote = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+        var _state$removed = this.state.removed;
+        var removed = _state$removed === undefined ? {} : _state$removed;
+
+        removed[x] = true;
+        if (quote.id) this.props.removeQuote(quote);
+        this.setState({ removed: removed });
     },
 
     render: function () {
+        var _this6 = this;
+
+        var _state3 = this.state;
+        var _state3$Fields = _state3.Fields;
+        var Fields = _state3$Fields === undefined ? {} : _state3$Fields;
+        var _state3$removed = _state3.removed;
+        var removed = _state3$removed === undefined ? {} : _state3$removed;
+
+        var indexInvoice = 0;
+
         return React.createElement(
             "div",
             { className: "fieldlist", style: { paddingBottom: '30px' } },
             React.createElement(
                 "ul",
                 null,
-                this.state.Fields.map(function (Field, fieldIndex) {
+                Object.values(Fields).map(function (Field, fieldIndex) {
+                    var style = {};
+                    if (!removed[Field.props.x]) indexInvoice += 1;else style.display = 'none';
+
                     return React.createElement(
                         "li",
-                        { key: fieldIndex },
+                        { key: Field.key, style: style },
                         React.createElement(
                             "h5",
                             { className: "invoice-index" },
                             " Invoice #",
-                            fieldIndex + 1
+                            indexInvoice
                         ),
                         Field
                     );
@@ -69802,7 +69884,9 @@ var FieldListForInvoice = React.createClass({
             ),
             React.createElement(
                 "button",
-                { type: "button", className: "button-add button-primary", style: { position: 'absolute', bottom: 0, right: 0 }, onClick: this.addField },
+                { type: "button", className: "button-add button-primary", style: { position: 'absolute', bottom: 0, right: 0 }, onClick: function () {
+                        return _this6.addField();
+                    } },
                 " Add New Invoice "
             )
         );
@@ -69821,6 +69905,11 @@ var AdditionalInvoice = React.createClass({
             pricing_type: pricing_type,
             hours_input: hours_input
         };
+    },
+    componentWillReceiveProps: function () {
+        this.setState({
+            remove: this.props.params.remove
+        });
     },
 
     removeField: function () {
@@ -69849,6 +69938,7 @@ var AdditionalInvoice = React.createClass({
                 "fieldset",
                 null,
                 React.createElement("input", {
+                    required: true,
                     type: "text",
                     placeholder: "Item description",
                     defaultValue: quote ? quote.item_description : '',
@@ -69956,16 +70046,23 @@ var InvoiceItemField = React.createClass({
             totalamount: amount * numofhours
         };
     },
+
     componentWillReceiveProps: function () {
         this.setState({
             remove: this.props.params.remove
         });
     },
-    removeField: function () {
+
+    removeField: function (x) {
+        var _state$totalamount = this.state.totalamount;
+        var totalamount = _state$totalamount === undefined ? 0 : _state$totalamount;
+
+        this.props.params.updatePrice(-totalamount);
+        this.props.removeField(x, this.props.content);
+
         this.setState({ remove: true,
             amount: 0,
             totalamount: 0 });
-        this.updatePrice(0);
     },
 
     updatePrice: function (amount) {
@@ -69975,6 +70072,7 @@ var InvoiceItemField = React.createClass({
     onPricing: function (event) {
         var pricing_type = event.target.value;
         this.setState({ pricing_type: pricing_type });
+
         if (pricing_type == "Hourly") {
             this.setState({ hours_input: true, numofhours: 0 });
         } else {
@@ -70007,15 +70105,34 @@ var InvoiceItemField = React.createClass({
     },
 
     render: function () {
-        var _this5 = this;
+        var _this7 = this;
 
         var invoice_item = this.props.content;
         var x = this.props.x;
+        var FieldId = null;
         var invoice_id = this.props.params.x;
         if (invoice_item) {
-            x = invoice_item.id;
-            invoice_id = invoice_item.invoice_id;
+            x = invoice_item.id || x;
+            invoice_id = invoice_item.invoice_id || invoice_id;
+
+            if (invoice_item.id) {
+                FieldId = React.createElement("input", {
+                    value: x,
+                    type: "hidden",
+                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'
+                });
+            }
         }
+
+        if (this.state.remove) {
+            return React.createElement(
+                "div",
+                null,
+                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
+                FieldId
+            );
+        }
+
         return React.createElement(
             "div",
             { className: "invoiceitemfield" },
@@ -70023,9 +70140,13 @@ var InvoiceItemField = React.createClass({
                 "fieldset",
                 null,
                 React.createElement("input", {
+                    required: true,
                     type: "text",
                     className: "text-center",
                     placeholder: "Item description",
+                    ref: function (ref) {
+                        return _this7.description = ref;
+                    },
                     defaultValue: invoice_item ? invoice_item.item_description : null,
                     name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'
                 }),
@@ -70055,8 +70176,8 @@ var InvoiceItemField = React.createClass({
                         type: "number",
                         required: true,
                         placeholder: "Amount",
-                        defaultValue: this.state.amount > 0 && this.state.amount,
                         onChange: this.onAmount,
+                        value: this.state.amount || '',
                         className: "text-center " + (!!this.state.hours_input && 'hour price'),
                         name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'
                     }),
@@ -70075,16 +70196,12 @@ var InvoiceItemField = React.createClass({
                     })
                 ),
                 React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
-                invoice_item && React.createElement("input", {
-                    value: x,
-                    type: "hidden",
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'
-                })
+                FieldId
             ),
             React.createElement(
                 "button",
-                { type: "button", className: "button-remove button-primary red", onClick: function (position) {
-                        return _this5.props.removeField(x);
+                { type: "button", className: "button-remove button-primary red", onClick: function () {
+                        return _this7.removeField(_this7.props.x);
                     } },
                 " X "
             )
@@ -70110,8 +70227,15 @@ var InvoiceField = React.createClass({
         };
     },
 
-    removeField: function () {
+    componentWillReceiveProps: function () {
+        this.setState({
+            remove: this.props.params.remove
+        });
+    },
+
+    removeField: function (x) {
         this.setState({ remove: true });
+        this.props.removeField(x);
     },
 
     calcInvoiceTotal: function (price) {
@@ -70133,20 +70257,32 @@ var InvoiceField = React.createClass({
         });
     },
     render: function () {
-        var _this6 = this;
+        var _this8 = this;
 
         var invoice = this.props.content;
         var invoice_items = invoice && invoice.invoice_items || null;
         var x = this.props.x;
         var invoiceInfo = this.props.params;
-        if (invoice) {
-            x = invoice.id;
+        var hasInvoice = invoice && !invoice.isCoppy;
+
+        if (hasInvoice) x = invoice.id;
+        if (this.state.remove) {
+            if (!hasInvoice) return null;
+
+            return React.createElement(
+                "div",
+                null,
+                React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' }),
+                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' })
+            );
         }
+
         return React.createElement(
             "div",
             { className: "invoicefield" },
             React.createElement("input", { type: "hidden", value: invoice && invoice.maintenance_request_id ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id, name: 'ledger[invoices_attributes][' + x + '][maintenance_request_id]' }),
             React.createElement("input", { type: "hidden", value: invoice && invoice.trady_id ? invoice.trady_id : invoiceInfo.trady_id, name: 'ledger[invoices_attributes][' + x + '][trady_id]' }),
+            React.createElement("input", { type: "hidden", value: invoice && invoice.quote_id ? invoice.quote_id : invoiceInfo.quote_id, name: 'ledger[invoices_attributes][' + x + '][quote_id]' }),
             React.createElement(
                 "fieldset",
                 null,
@@ -70218,12 +70354,12 @@ var InvoiceField = React.createClass({
                     )
                 ),
                 React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
-                invoice ? React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' }) : null
+                hasInvoice && React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' })
             ),
             React.createElement(
                 "button",
-                { type: "button", className: "button-remove button-primary red", onClick: function (position) {
-                        return _this6.props.removeField(x);
+                { type: "button", className: "button-remove button-primary red", onClick: function () {
+                        return _this8.removeField(_this8.props.x);
                     } },
                 " Remove Invoice "
             )
@@ -70317,11 +70453,11 @@ var InvoiceFields = React.createClass({
     },
 
     render: function () {
-        var _this7 = this;
+        var _this9 = this;
 
-        var _props = this.props;
-        var quotes = _props.quotes;
-        var trady = _props.trady;
+        var _props3 = this.props;
+        var quotes = _props3.quotes;
+        var trady = _props3.trady;
 
         var ledger = this.props.ledger || null;
         var id = ledger && ledger.id || '';
@@ -70332,6 +70468,14 @@ var InvoiceFields = React.createClass({
             due_date: ''
         };
         var invoices = ledger && ledger.invoices ? ledger.invoices : null;
+        var converts = [];
+        var hasQuotes = quotes && quotes.length > 0;
+        (invoices || []).filter(function (e) {
+            return !!e.quote_id;
+        }).forEach(function (e) {
+            return converts.push(e.quote_id);
+        });
+
         return React.createElement(
             "form",
             { role: "form", id: "new_invoice", action: id ? '/update_invoice' : '/invoices', acceptCharset: "UTF-8", method: "post" },
@@ -70343,14 +70487,32 @@ var InvoiceFields = React.createClass({
             React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "ledger[quote_id]" }),
             React.createElement("input", { type: "hidden", value: id, name: "ledger[ledger_id]" }),
             React.createElement("input", { type: "hidden", value: this.props.invoice_type, name: "ledger[invoice_type]" }),
-            quotes && quotes.length > 0 && React.createElement(QuotesInInvoice, {
+            hasQuotes && React.createElement(QuotesInInvoice, {
                 quotes: quotes,
                 trady: trady,
+                converts: converts,
+                ref: function (ref) {
+                    return _this9.quotesInInvoice = ref;
+                },
                 viewQuote: function (key, item) {
-                    return _this7.viewItem(key, item);
+                    return _this9.viewItem(key, item);
+                },
+                onConvertToInvoice: function (item) {
+                    return _this9.fieldListForInvoice.setContent(item);
                 }
             }),
-            React.createElement(FieldListForInvoice, { existingContent: invoices, SampleField: InvoiceField, params: invoiceInfo }),
+            React.createElement(FieldListForInvoice, {
+                params: invoiceInfo,
+                noQuotes: !hasQuotes,
+                existingContent: invoices,
+                SampleField: InvoiceField,
+                ref: function (ref) {
+                    return _this9.fieldListForInvoice = ref;
+                },
+                removeQuote: function (quote) {
+                    return _this9.quotesInInvoice.removeConvert(quote.id);
+                }
+            }),
             React.createElement(
                 "div",
                 { className: "qf-button text-center", style: { marginBottom: '50px' } },
@@ -70656,7 +70818,7 @@ var ModalViewInvoice = React.createClass({
 	printInvoice: function () {
 		$('.button-slider').toggle('hide');
 		var contents = $('#print-invoice').html();
-		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" + ".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {flex: 1;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}" + "#print-invoice { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important;display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3;}" + ".font-bold { font-weight: bold;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}";
+		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" + ".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {flex: 1;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}" + "#print-invoice { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3;}" + ".font-bold { font-weight: bold;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}";
 
 		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
 		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
@@ -71143,13 +71305,36 @@ var AddInvoicePDF = React.createClass({
 				data: fd,
 				xhr: function () {
 					var xhr = new window.XMLHttpRequest();
+					xhr.upload.addEventListener("loadstart", function (evt) {
+						if ($('.progress').length == 0) {
+							$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + 0 + '%"></div></div>').insertAfter("#input-file");
+						}
+
+						if (/Edge/i.test(navigator.userAgent)) {
+							var percentComplete;
+							var loop;
+
+							(function () {
+								percentComplete = 0;
+								loop = 0;
+
+								var inn = setInterval(function () {
+									percentComplete += Math.ceil(51200 * ++loop / file.size * 100);
+									if (percentComplete >= 100) {
+										clearInterval(inn);
+									} else {
+										$('#title-upload').html('Uploading ' + percentComplete + '%');
+										$('.progress .progress-bar').css('width', percentComplete + '%');
+									}
+								}, 500);
+							})();
+						}
+					});
 					xhr.upload.addEventListener("progress", function (evt) {
 						if (evt.loaded > 0 && evt.total > 0) {
 							var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
 							var progress = $('.progress');
-							if (progress.length == 0) {
-								$('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
-							} else {
+							if (progress.length !== 0) {
 								$('.progress .progress-bar').css('width', percentComplete + '%');
 							}
 							$('#title-upload').html('Uploading ' + percentComplete + '%');
@@ -71793,7 +71978,7 @@ var LandlordSideBarMobile = React.createClass({
 								return _this.show('contact');
 							}
 						},
-						'Contact'
+						'CONTACT MENU'
 					),
 					React.createElement(
 						'button',
@@ -71804,7 +71989,7 @@ var LandlordSideBarMobile = React.createClass({
 								return _this.show('action');
 							}
 						},
-						'Actions'
+						'ACTIONS MENU'
 					)
 				)
 			),
@@ -73458,11 +73643,13 @@ var ModalAddPhoto = React.createClass({
   getInitialState: function () {
     return {
       images: [],
-      progress: 0,
       totalFile: 0,
       dataImages: [],
       totalProgress: 0,
-      gallery: this.props.gallery
+      gallery: this.props.gallery,
+      totalSize: 0,
+      uploading: false,
+      uploadComplete: false
     };
   },
 
@@ -73499,7 +73686,8 @@ var ModalAddPhoto = React.createClass({
           reader.onload = function (e) {
             images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
             self.setState({
-              totalFile: index + 1
+              totalFile: index + 1,
+              totalSize: self.state.totalSize + file.size
             });
             readFile(index + 1);
           };
@@ -73551,12 +73739,20 @@ var ModalAddPhoto = React.createClass({
       images: images,
       dataImages: dataImages
     });
+    if (!dataImages.length) {
+      this.setState({ uploadComplete: false });
+    }
   },
 
   loadImage: function (e, image, key) {
     var img = e.target;
     var maxSize = 500000; // byte
     var self = this;
+    var _self$state$data = self.state.data;
+    var data = _self$state$data === undefined ? {} : _self$state$data;
+
+    data[key] = 0;
+    self.setState({});
     if (!image.isUpload) {
       var target_img = {};
       var images = this.state.images;
@@ -73601,38 +73797,42 @@ var ModalAddPhoto = React.createClass({
           enctype: 'multipart/form-data',
           processData: false,
           contentType: false,
+          cache: false,
           data: fd,
           xhr: function () {
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener("progress", function (evt) {
               if (evt.loaded > 0 && evt.total > 0) {
-                var progressValue = self.state.progress + evt.loaded;
-                var totalProgress = self.state.totalProgress / self.state.totalFile + evt.total * self.state.totalFile;
+                var progressValue = file.size >= evt.loaded ? evt.loaded - data[key] : file.size - data[key];
+                data[key] = evt.loaded;
+                var totalProgress = self.state.totalProgress + progressValue;
+
+                self.setState({ totalProgress: totalProgress });
+
                 if (evt.loaded == evt.total) {
                   self.setState({
-                    progress: progressValue,
-                    totalProgress: totalProgress / self.state.totalFile,
                     totalFile: self.state.totalFile - 1
                   });
                 }
-                var percentComplete = Math.ceil(progressValue / totalProgress * 100);
+
+                var percentComplete = Math.ceil(totalProgress / self.state.totalSize * 100);
                 var progress = $('.progress');
                 if (progress.length == 0) {
                   $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
                 } else {
                   $('.progress .progress-bar').css('width', percentComplete + '%');
                 }
-                $('#title-upload').html('Uploading ' + percentComplete + '%');
+                $('#title-upload').html("Uploading " + percentComplete + "%");
               }
             }, false);
             return xhr;
           },
           success: function () {
-            if (self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+            if (self.state.totalFile == 0) {
               self.setState({
-                progress: 0,
                 totalFile: 0,
-                totalProgress: 0
+                totalProgress: 0,
+                uploadComplete: true
               });
               setTimeout(function () {
                 $('.progress').remove();
@@ -73789,6 +73989,26 @@ var ModalAddPhoto = React.createClass({
     var gallery = _state2.gallery;
     var dataImages = _state2.dataImages;
 
+    var uploadButton = !this.state.uploadComplete ? React.createElement(
+      'div',
+      { className: 'browse-wrap' },
+      React.createElement(
+        'div',
+        { className: 'title', id: 'title-upload' },
+        React.createElement('i', { className: 'fa fa-upload' }),
+        'Choose image to upload'
+      ),
+      React.createElement('input', {
+        multiple: true,
+        type: 'file',
+        id: 'input-file',
+        className: 'upload inputfile',
+        accept: 'image/jpeg, image/png',
+        onChange: function (e) {
+          return _this2._handleImageChange(e);
+        }
+      })
+    ) : '';
     return React.createElement(
       'div',
       { className: 'modal-custom fade' },
@@ -73851,26 +74071,7 @@ var ModalAddPhoto = React.createClass({
                   );
                 })
               ),
-              dataImages.length == 0 && React.createElement(
-                'div',
-                { className: 'browse-wrap' },
-                React.createElement(
-                  'div',
-                  { className: 'title', id: 'title-upload' },
-                  React.createElement('i', { className: 'fa fa-upload' }),
-                  'Choose image to upload'
-                ),
-                React.createElement('input', {
-                  multiple: true,
-                  type: 'file',
-                  id: 'input-file',
-                  className: 'upload inputfile',
-                  accept: 'image/jpeg, image/png',
-                  onChange: function (e) {
-                    return _this2._handleImageChange(e);
-                  }
-                })
-              )
+              uploadButton
             ),
             React.createElement(
               'div',
@@ -74480,7 +74681,7 @@ var EditMaintenanceRequest = React.createClass({
 						return _this.serviceType = e;
 					},
 					className: 'form-control input-custom',
-					value: maintenance_request.service_type || ""
+					defaultValue: maintenance_request.service_type
 				},
 				React.createElement(
 					'option',
@@ -76423,7 +76624,7 @@ var MaintenanceRequestsNew = React.createClass({
     this.getAgentEmail();
     return {
       images: [],
-      progress: 0,
+      fileDisabled: false,
       totalFile: 0,
       isAgent: true,
       dataImages: [],
@@ -76436,7 +76637,8 @@ var MaintenanceRequestsNew = React.createClass({
       agent_emails: null,
       validHeading: false,
       selectedRadio: "Agent",
-      validDescription: false
+      validDescription: false,
+      totalSize: 0
     };
   },
 
@@ -76525,6 +76727,7 @@ var MaintenanceRequestsNew = React.createClass({
     var fr = new FileReader();
     var images = this.state.images;
     var orientation;
+    self.setState({ fileDisabled: true });
     readFile = function (index) {
       if (index >= files.length) {
         _this.setState({
@@ -76549,7 +76752,8 @@ var MaintenanceRequestsNew = React.createClass({
           reader.onload = function (e) {
             images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
             self.setState({
-              totalFile: index + 1
+              totalFile: index + 1,
+              totalSize: self.state.totalSize + file.size
             });
             readFile(index + 1);
           };
@@ -76677,6 +76881,10 @@ var MaintenanceRequestsNew = React.createClass({
     var img = e.target;
     var maxSize = 500000; // byte
     var self = this;
+    var _self$state$data = self.state.data;
+    var data = _self$state$data === undefined ? {} : _self$state$data;
+
+    data[key] = 0;
     if (!image.isUpload) {
       var target_img = {};
       var images = this.state.images;
@@ -76726,16 +76934,19 @@ var MaintenanceRequestsNew = React.createClass({
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener("progress", function (evt) {
               if (evt.loaded > 0 && evt.total > 0) {
-                var progressValue = self.state.progress + evt.loaded;
-                var totalProgress = self.state.totalProgress / (self.state.totalFile + 1) + evt.total * self.state.totalFile;
+                var progressValue = file.size >= evt.loaded ? evt.loaded - data[key] : file.size - data[key];
+                data[key] = evt.loaded;
+                var totalProgress = self.state.totalProgress + progressValue;
+
+                self.setState({ totalProgress: totalProgress });
+
                 if (evt.loaded == evt.total) {
                   self.setState({
-                    progress: progressValue,
-                    totalProgress: totalProgress / self.state.totalFile,
                     totalFile: self.state.totalFile - 1
                   });
                 }
-                var percentComplete = Math.ceil(progressValue / totalProgress * 100);
+
+                var percentComplete = Math.ceil(totalProgress / self.state.totalSize * 100);
                 var progress = $('.progress');
                 if (progress.length == 0) {
                   $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
@@ -76748,11 +76959,10 @@ var MaintenanceRequestsNew = React.createClass({
             return xhr;
           },
           success: function () {
-            if (self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+            if (self.state.totalFile == 0) {
               self.setState({
-                progress: 0,
                 totalFile: 0,
-                totalProgress: 0
+                fileDisabled: false
               });
               setTimeout(function () {
                 $('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
@@ -77054,7 +77264,8 @@ var MaintenanceRequestsNew = React.createClass({
               accept: 'image/jpeg, image/png',
               onChange: function (e) {
                 return _this2._handleImageChange(e);
-              }
+              },
+              disabled: this.state.fileDisabled
             })
           ),
           React.createElement(
@@ -77810,7 +78021,7 @@ var SideBarMobile = React.createClass({
 								return _this4.show('contact');
 							}
 						},
-						"Contact"
+						"CONTACT MENU"
 					),
 					React.createElement(
 						"button",
@@ -77821,7 +78032,7 @@ var SideBarMobile = React.createClass({
 								return _this4.show('action');
 							}
 						},
-						"Actions"
+						"ACTIONS MENU"
 					)
 				)
 			),
@@ -81003,6 +81214,10 @@ var ModalNotification = React.createClass({
 //     return <ul>{this.props.quotes.map(function(quote) {<li>{quote.amount}</li>})}</ul>;
 //   }
 // });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var ButtonForwardLandlord = React.createClass({
 	displayName: "ButtonForwardLandlord",
 
@@ -81420,12 +81635,38 @@ var Quotes = React.createClass({
 var QuotesInInvoice = React.createClass({
 	displayName: "QuotesInInvoice",
 
+	getInitialState: function () {
+		var _props$converts = this.props.converts;
+		var converts = _props$converts === undefined ? [] : _props$converts;
+
+		return {
+			convert: converts.reduce(function (obj, id) {
+				return _extends({}, obj, _defineProperty({}, id, true));
+			}, {})
+		};
+	},
+
+	setConvert: function (id) {
+		this.setState(function (pre) {
+			return { convert: _extends({}, pre.convert, _defineProperty({}, id, true)) };
+		});
+	},
+
+	removeConvert: function (id) {
+		this.setState(function (pre) {
+			return { convert: _extends({}, pre.convert, _defineProperty({}, id, false)) };
+		});
+	},
+
 	render: function () {
+		var _state$convert = this.state.convert;
+		var convert = _state$convert === undefined ? {} : _state$convert;
 		var _props = this.props;
 		var quotes = _props.quotes;
 		var trady = _props.trady;
 
-		var self = this.props;
+		var self = this;
+
 		return React.createElement(
 			"div",
 			{ className: "quotes m-t-lg m-b-lg", id: "quotes" },
@@ -81496,10 +81737,23 @@ var QuotesInInvoice = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "actions-quote" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "btn btn-decline",
+									disabled: !!convert[quote.id],
+									onClick: function () {
+										self.setConvert(quote.id);
+										self.props.onConvertToInvoice(quote);
+									}
+								},
+								"Convert Into Invoice"
+							),
 							React.createElement(ButtonView, {
 								quote: quote,
 								viewQuote: function (key, item) {
-									return self.viewQuote(key, item);
+									return self.props.viewQuote(key, item);
 								}
 							})
 						)
@@ -81684,7 +81938,7 @@ var ModalViewQuote = React.createClass({
 
 	printQuote: function () {
 		var contents = $('#print-quote').html();
-		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" + ".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {flex: 1;}" + ".slider-quote { border-top: 1px solid #e5e5e5 !important;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "#print-quote { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3 !important;}" + ".font-bold { font-weight: bold !important;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}" + "@media print {" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "}";
+		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" + ".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {flex: 1;}" + ".slider-quote { border-top: 1px solid #e5e5e5 !important;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "#print-quote { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3 !important;}" + ".font-bold { font-weight: bold !important;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}" + "@media print {" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "}";
 
 		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
 		var htmlContent = "<html>" + "<head>" + "<title> Quote </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' + '<style type="text/css">' + style + "</style>";
@@ -83195,7 +83449,7 @@ var TenantSideBarMobile = React.createClass({
 								return _this.show('contact');
 							}
 						},
-						'Contact'
+						'CONTACT MENU'
 					),
 					React.createElement(
 						'button',
@@ -83206,7 +83460,7 @@ var TenantSideBarMobile = React.createClass({
 								return _this.show('detail');
 							}
 						},
-						'Edit Details'
+						'EDIT MENU'
 					)
 				)
 			),
@@ -84235,7 +84489,11 @@ var EditTradyCompany = React.createClass({
   edit: function (e) {
     var _this = this;
 
+    e.preventDefault();
+
     var flag = false;
+    var isInvoice = this.props.system_plan === "Invoice";
+
     if (!this.company_name.value) {
       flag = true;
       this.setState({
@@ -84243,18 +84501,41 @@ var EditTradyCompany = React.createClass({
       });
     }
 
-    if (!this.trading_name.value) {
-      flag = true;
-      this.setState({
-        errorTradingName: true
-      });
-    }
+    if (isInvoice) {
+      if (!this.trading_name.value) {
+        flag = true;
+        this.setState({
+          errorTradingName: true
+        });
+      }
 
-    if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
-      flag = true;
-      this.setState({
-        errorTradingName: true
-      });
+      if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
+        flag = true;
+        this.setState({
+          errorTradingName: true
+        });
+      }
+
+      if (!this.account_name.value) {
+        flag = true;
+        this.setState({
+          errorAccountName: true
+        });
+      }
+
+      if (!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
+        flag = true;
+        this.setState({
+          errorBsbNumber: true
+        });
+      }
+
+      if (!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
+        flag = true;
+        this.setState({
+          errorBankNumber: true
+        });
+      }
     }
 
     if (!this.address.value) {
@@ -84285,34 +84566,12 @@ var EditTradyCompany = React.createClass({
       });
     }
 
-    if (!this.account_name.value) {
-      flag = true;
-      this.setState({
-        errorAccountName: true
-      });
-    }
-
-    if (!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
-      flag = true;
-      this.setState({
-        errorBsbNumber: true
-      });
-    }
-
-    if (!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
-      flag = true;
-      this.setState({
-        errorBankNumber: true
-      });
-    }
-
     if (!flag) {
       var params;
 
       (function () {
         params = {
           trady_company: {
-            abn: _this.abn.value,
             email: _this.email.value,
             address: _this.address.value,
             trady_id: _this.props.trady_id,
@@ -84321,20 +84580,24 @@ var EditTradyCompany = React.createClass({
             trady_company_id: _this.props.id,
             work_flow: _this.props.work_flow,
             quote_type: _this.props.quote_type,
-            bsb_number: _this.bsb_number.value,
             pdf_file_id: _this.props.pdf_file_id,
             system_plan: _this.props.system_plan,
             company_name: _this.company_name.value,
             trading_name: _this.trading_name.value,
-            account_name: _this.account_name.value,
             invoice_type: _this.props.invoice_type,
             mobile_number: _this.mobile_number.value,
             mailing_address: _this.mailing_address.value,
-            gst_registration: _this.state.gst_registration,
-            bank_account_number: _this.bank_account_number.value,
             maintenance_request_id: _this.props.maintenance_request_id
           }
         };
+
+        if (isInvoice) {
+          params.trady_company.abn = _this.abn.value;
+          params.trady_company.bsb_number = _this.bsb_number.value;
+          params.trady_company.account_name = _this.account_name.value;
+          params.trady_company.gst_registration = _this.state.gst_registration;
+          params.trady_company.bank_account_number = _this.bank_account_number.value;
+        }
 
         var self = _this;
         $.ajax({
@@ -84349,8 +84612,6 @@ var EditTradyCompany = React.createClass({
         });
       })();
     }
-
-    e.preventDefault();
     return;
   },
 
@@ -84372,6 +84633,8 @@ var EditTradyCompany = React.createClass({
 
   render: function () {
     var _this2 = this;
+
+    var isInvoice = this.props.system_plan === "Invoice";
 
     return React.createElement(
       "form",
@@ -84425,7 +84688,7 @@ var EditTradyCompany = React.createClass({
           })
         )
       ),
-      React.createElement(
+      isInvoice && React.createElement(
         "div",
         { className: "form-group" },
         React.createElement(
@@ -84449,7 +84712,7 @@ var EditTradyCompany = React.createClass({
           })
         )
       ),
-      React.createElement(
+      isInvoice && React.createElement(
         "div",
         { className: "form-group" },
         React.createElement(
@@ -84578,9 +84841,9 @@ var EditTradyCompany = React.createClass({
           })
         )
       ),
-      React.createElement(
+      isInvoice && [React.createElement(
         "div",
-        { className: "form-group" },
+        { className: "form-group", key: "Account-name" },
         React.createElement(
           "label",
           { className: "control-label col-sm-2 required" },
@@ -84601,10 +84864,9 @@ var EditTradyCompany = React.createClass({
             className: "form-control " + (!!this.state.errorAccountName ? "has-error" : "")
           })
         )
-      ),
-      React.createElement(
+      ), React.createElement(
         "div",
-        { className: "form-group" },
+        { className: "form-group", key: "Bsb-number" },
         React.createElement(
           "label",
           { className: "control-label col-sm-2 required" },
@@ -84626,10 +84888,9 @@ var EditTradyCompany = React.createClass({
             className: "form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")
           })
         )
-      ),
-      React.createElement(
+      ), React.createElement(
         "div",
-        { className: "form-group" },
+        { className: "form-group", key: "Bank-Account-number" },
         React.createElement(
           "label",
           { className: "control-label col-sm-2 required" },
@@ -84650,7 +84911,7 @@ var EditTradyCompany = React.createClass({
             className: "form-control " + (!!this.state.errorBankNumber ? "has-error" : "")
           })
         )
-      ),
+      )],
       React.createElement(
         "div",
         { className: "text-center" },
@@ -85900,7 +86161,7 @@ var TradySideBarMobile = React.createClass({
 								return _this.show('contact');
 							}
 						},
-						'Contact'
+						'CONTACT MENU'
 					),
 					React.createElement(
 						'button',
@@ -85911,7 +86172,7 @@ var TradySideBarMobile = React.createClass({
 								return _this.show('action');
 							}
 						},
-						'Actions'
+						'ACTIONS MENU'
 					)
 				)
 			),
@@ -85965,7 +86226,7 @@ var ModalConfirmAddInvoice = React.createClass({
 		};
 
 		this.props.jobCompleted(params);
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
+		window.location.replace("/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id);
 	},
 
 	createInvoice: function () {
@@ -85973,7 +86234,7 @@ var ModalConfirmAddInvoice = React.createClass({
 
 		var maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
+		window.location.replace("/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id);
 	},
 
 	render: function () {
@@ -87293,6 +87554,15 @@ var TradyMaintenanceRequest = React.createClass({
 		);
 	}
 });
+$(function() {
+  $('button').on('click', function(e) {
+    var $a = $(this).find('a');
+    if ($a && $a.attr('href') !== '') {
+      window.location.replace($a.attr('href'));
+      return;
+    }
+  })
+});
 (function() {
   (function() {
     (function() {
@@ -87919,6 +88189,8 @@ var TradyMaintenanceRequest = React.createClass({
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
+
 
 
 

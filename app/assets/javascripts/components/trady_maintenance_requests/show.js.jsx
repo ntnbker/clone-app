@@ -54,14 +54,14 @@ var TradySideBarMobile = React.createClass({
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
-							Contact
+							CONTACT MENU
 						</button>
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
-							Actions
+							ACTIONS MENU
 						</button>
 					</div>
 				</div>
@@ -111,14 +111,14 @@ var ModalConfirmAddInvoice = React.createClass({
 		};
 
 		this.props.jobCompleted(params);
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
+		window.location.replace("/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id);
 	},
 
 	createInvoice: function() {
 		const {maintenance_request} = this.props;
 		const maintenance_trady_id = maintenance_request.trady_id;
 		this.props.close();
-		window.location = window.location.origin + "/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id;
+		window.location.replace("/invoice_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + maintenance_trady_id);
 	},
 
 	render: function() {

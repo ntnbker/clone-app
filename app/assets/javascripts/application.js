@@ -19,6 +19,7 @@
 //= require jquery-ui
 //= require gmaps.js
 //= require prototypes
+//= require es7
 
 //= require jquery-fileupload/vendor/jquery.ui.widget
 //= require jquery-fileupload/jquery.iframe-transport
@@ -35,4 +36,5 @@
 //= require react
 //= require react_ujs
 //= require components
+//= require trigger
 //= require_tree .

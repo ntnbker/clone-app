@@ -57,17 +57,17 @@ header {
     background: #3d4b54;
 
     .header-custom {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
+      @include flexbox;
+      @include flex-direction(row);
+      @include justify-content(space-between);
       max-width: 960px;
 
       .search {
         .form-search {
           height: 100%;
           margin-bottom: 0px;
-          display: flex;
-          align-items: center;
+          @include flexbox;
+          @include align-items(center);
           position: relative;
         }
 
@@ -102,6 +102,7 @@ header {
         }
 
         .btn-search {
+          top: 0;
           width: 35px;
           height: 35px;
           background-color: #fff;
@@ -111,7 +112,6 @@ header {
           border-radius: 0;
           background: transparent;
           position: absolute;
-          top: 17px;
           left: 5px;
 
           i {
@@ -128,7 +128,7 @@ header {
         height: auto;
         background: none;
         border: none;
-        align-items: center;
+        @include align-items(center);
         margin-bottom: 0;
         position: relative;
         width: auto;
@@ -136,8 +136,8 @@ header {
           margin-left: 0px;
           font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
           font-size: 16px;
-          display: flex;
-          align-items: center;
+          @include flexbox;
+          @include align-items(center);
           height: 100%;
           img {
             width: 35px;
@@ -189,16 +189,20 @@ header {
         }
       }
       .header-right {
-        display: flex;
-        justify-content: flex-end;
-        flex-direction: row;
+        @include flexbox;
+        @include align-items(center);
+        @include justify-content(flex-end);
+        -ms-flex-align: center;
+
         height: 100%;
       }
       .question {
         height: 100%;
         margin: 0 10px 0 30px;
         display: none;
-        align-items: center;
+        @include align-items(center);
+        -ms-flex-align: center;
+
         i {
           color: #fff;
           font-size: 18px;
@@ -208,7 +212,9 @@ header {
         height: 100%;
         margin: 0 30px 0 10px;
         display: none;
-        align-items: center;
+        @include align-items(center);
+        -ms-flex-align: center;
+
         i {
           color: #fff;
           font-size: 16px;
@@ -262,10 +268,10 @@ header {
             &:first-child {
               height: 40px;
               border-top: none;
-              display: flex;
-              align-items: center;
-              flex-direction: row;
-              justify-content: flex-start;
+              @include flexbox;
+              @include align-items(center);
+              @include flex-direction(row);
+              @include justify-content(flex-start);
               img {
                 width: 35px;
                 height: 35px;
@@ -308,6 +314,7 @@ header {
       display: inline-block;
       padding-top: 10px;
       height: 60px;
+      @include flex(1);
 
       img {
         vertical-align: middle;
@@ -424,16 +431,16 @@ header {
         display: block;
       }
       .header-custom .menu-bar {
-        display: flex;
+        @include flexbox;
       }
       .menu-btn {
         display: none;
       }
       .header-custom .notification {
-        display: flex;
+        @include flexbox;
       }
       .header-custom .question {
-        display: flex;
+        @include flexbox;
       }
       .forhome .log_in .menu-button {
         display: inline-block;
@@ -453,8 +460,8 @@ header {
 @media(max-width: 768px) {
   header .header-expanded {
     .forhome {
-      display: flex;
-      justify-content: center;
+      @include flexbox;
+      @include justify-content(center);
     }
     .header-custom .header-right {
       margin-right: 70px;
@@ -470,8 +477,8 @@ header {
   header {
     .header-expanded {
       .header-custom {
-        flex-direction: column;
-        align-items: center;
+        @include flex-direction(column);
+        @include align-items(center);
         .header-right {
           margin-right: 0;
         }
@@ -553,6 +560,8 @@ footer {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
       }
     }
 

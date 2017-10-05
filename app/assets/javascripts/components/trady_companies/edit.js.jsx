@@ -91,7 +91,11 @@ var EditTradyCompany = React.createClass({
   },
 
   edit: function(e) {
+    e.preventDefault();
+
   	var flag = false;
+    let isInvoice = this.props.system_plan === "Invoice";
+
   	if(!this.company_name.value) {
   		flag = true;
   		this.setState({
@@ -99,18 +103,41 @@ var EditTradyCompany = React.createClass({
   		});
   	}
 
-  	if(!this.trading_name.value) {
-  		flag = true;
-  		this.setState({
-  			errorTradingName: true
-  		});
-  	}
+    if (isInvoice) {
+      if(!this.trading_name.value) {
+        flag = true;
+        this.setState({
+          errorTradingName: true
+        });
+      }
 
-  	if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
-  		flag = true;
-  		this.setState({
-  			errorTradingName: true
-  		});
+      if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
+        flag = true;
+        this.setState({
+          errorTradingName: true
+        });
+      }
+
+      if(!this.account_name.value) {
+        flag = true;
+        this.setState({
+          errorAccountName: true
+        });
+      }
+
+      if(!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
+        flag = true;
+        this.setState({
+          errorBsbNumber: true
+        });
+      }
+
+      if(!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
+        flag = true;
+        this.setState({
+          errorBankNumber: true
+        });
+      }
   	}
 
   	if(!this.address.value) {
@@ -144,7 +171,6 @@ var EditTradyCompany = React.createClass({
   	if(!flag) {
   		var params = {
   			trady_company: {
-  				abn: this.abn.value,
   				email: this.email.value,
   				address: this.address.value,
   				trady_id: this.props.trady_id,
@@ -160,10 +186,17 @@ var EditTradyCompany = React.createClass({
           invoice_type: this.props.invoice_type,
           mobile_number: this.mobile_number.value,
           mailing_address: this.mailing_address.value,
-          gst_registration: this.state.gst_registration,
           maintenance_request_id: this.props.maintenance_request_id,
   			}
-  		}
+      }
+
+      if (isInvoice) {
+        params.trady_company.abn = this.abn.value;
+        params.trady_company.bsb_number = this.bsb_number.value;
+        params.trady_company.account_name = this.account_name.value;
+        params.trady_company.gst_registration = this.state.gst_registration;
+        params.trady_company.bank_account_number = this.bank_account_number.value;
+      }
 
   		const self = this;
 			$.ajax({
@@ -181,8 +214,6 @@ var EditTradyCompany = React.createClass({
 				}
 			});
   	}
-
-		e.preventDefault();
   	return;
   },
 
@@ -203,6 +234,8 @@ var EditTradyCompany = React.createClass({
   },
 
 	render: function() {
+    let isInvoice = this.props.system_plan === "Invoice";
+
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
 				<div className="form-group">
@@ -234,35 +267,39 @@ var EditTradyCompany = React.createClass({
 						/>
 					</div>
 				</div>
-				<div className="form-group">
-					<label className="control-label col-sm-2 required">Abn</label>
-					<div className="col-sm-10">
-						<input
-							required
-							id="abn"
-							type="text"
-							placeholder="Abn"
-			        defaultValue={this.props.abn}
-			        ref={(ref) => this.abn = ref}
-			        className={"form-control " + (!!this.state.errorABN && "has-error")}
-						/>
-					</div>
-				</div>
-				<div className="form-group">
-					<div className="col-sm-10 col-sm-offset-2">
-						<input
-		          type="checkbox"
-		          id="gst_registration"
-		          onChange={() => {
-		          	this.setState({
-		          		gst_registration: !this.state.gst_registration
-		          	});
-		          }}
-		          checked={!!this.state.gst_registration ? "checked" : false}
-	          />
-	          GST  Registration
-					</div>
-				</div>
+        { isInvoice &&
+  				<div className="form-group">
+  					<label className="control-label col-sm-2 required">Abn</label>
+  					<div className="col-sm-10">
+  						<input
+  							required
+  							id="abn"
+  							type="text"
+  							placeholder="Abn"
+  			        defaultValue={this.props.abn}
+  			        ref={(ref) => this.abn = ref}
+  			        className={"form-control " + (!!this.state.errorABN && "has-error")}
+  						/>
+  					</div>
+  				</div>
+        }
+        { isInvoice &&
+  				<div className="form-group">
+  					<div className="col-sm-10 col-sm-offset-2">
+  						<input
+  		          type="checkbox"
+  		          id="gst_registration"
+  		          onChange={() => {
+  		          	this.setState({
+  		          		gst_registration: !this.state.gst_registration
+  		          	});
+  		          }}
+  		          checked={!!this.state.gst_registration ? "checked" : false}
+  	          />
+  	          GST  Registration
+  					</div>
+  				</div>
+        }
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Address</label>
           <div className="col-sm-10">
@@ -331,7 +368,6 @@ var EditTradyCompany = React.createClass({
   	        />
           </div>
         </div>
-
         <div className="text-center">
           { this.renderButtonBack() }
           <button type="submit" className="button-primary green option-button">

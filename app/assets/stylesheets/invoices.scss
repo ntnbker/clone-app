@@ -19,6 +19,9 @@ $color-blue-light: #7646FF;
 	/*box-shadow: 0 1px 10px #888888;*/
 	margin: 30px auto;
 	color: #aab8c3;
+  @include flexbox;
+  @include flex-direction(column);
+
 	p{
 		margin-bottom: 0;
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -305,6 +308,10 @@ $color-blue-light: #7646FF;
       background-color: $color-red;
       border-color: $color-red;
       color: $color-white;
+
+      &:disabled {
+        background-color: $color-gray;
+      }
     }
     .btn-cancel {
       background-color: $color-gray;
@@ -349,9 +356,9 @@ $color-blue-light: #7646FF;
     }
   }
 	.info-invoice {
-		display: flex;
-		justify-content: space-between;
-		flex-direction: row;
+		@include flexbox;
+		@include justify-content(space-between);
+		@include flex-direction(row);
 
 		.title {
 			font-weight: bold;
@@ -618,7 +625,7 @@ $color-blue-light: #7646FF;
 	}
 
 	.amount {
-		display: flex;
+		@include flexbox;
 		margin-top: 10px;
 		select {
 			width: 49%;
@@ -646,7 +653,7 @@ $color-blue-light: #7646FF;
 
 	@media (max-width: 640px) {
 		.info-invoice {
-			flex-direction: column;
+			@include flex-direction(column);
 		}
 	}
 }
@@ -804,9 +811,9 @@ $color-blue-light: #7646FF;
 		border: solid 1px #d2d2d7;
 		position: relative;
 		text-align: center;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
+		@include flexbox;
+		@include flex-direction(column);
+		@include align-items(center);
 		width: 90px;
 		margin: 0 auto;
 	}

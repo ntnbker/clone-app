@@ -47,14 +47,14 @@ var LandlordSideBarMobile = React.createClass({
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
-							Contact
+							CONTACT MENU
 						</button>
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
-							Actions
+							ACTIONS MENU
 						</button>
 					</div>
 				</div>

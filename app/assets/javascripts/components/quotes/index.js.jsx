@@ -372,9 +372,26 @@ var Quotes = React.createClass({
 });
 
 var QuotesInInvoice = React.createClass({
+	getInitialState() {
+		const { converts = [] } = this.props;
+		return {
+			convert: converts.reduce((obj, id) => ({ ...obj, [id]: true }), {}),
+		};
+	},
+
+	setConvert(id) {
+		this.setState((pre) => ({ convert: { ...pre.convert, [id]: true }}));
+	},
+
+	removeConvert(id) {
+		this.setState((pre) => ({ convert: { ...pre.convert, [id]: false }}));
+	},
+
 	render: function() {
-		const {quotes, trady} = this.props;
-		const self = this.props;
+		const { convert = {} } = this.state;
+		const { quotes, trady } = this.props;
+		const self = this;
+
 		return (
 			<div className="quotes m-t-lg m-b-lg" id="quotes">
 				<p>
@@ -406,9 +423,20 @@ var QuotesInInvoice = React.createClass({
 									<p className="price">Amount: {quote.amount}AUD</p>
 								</div>
 								<div className="actions-quote">
+									<button
+										type="button"
+										className="btn btn-decline"
+										disabled={!!convert[quote.id]}
+										onClick={() => {
+											self.setConvert(quote.id);
+											self.props.onConvertToInvoice(quote);
+										}}
+									>
+										Convert Into Invoice
+									</button>
 									<ButtonView
 										quote={quote}
-										viewQuote={(key, item) => self.viewQuote(key, item)}
+										viewQuote={(key, item) => self.props.viewQuote(key, item)}
 									/>
 								</div>
 							</div>
@@ -546,7 +574,7 @@ var ModalViewQuote = React.createClass({
 
 	printQuote: function() {
 		var contents = $('#print-quote').html();
-		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" +
+		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
 								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
 								".info-trady p {margin-bottom: 0px;}" +
 								".info-agency {flex: 1;}" +
@@ -560,7 +588,7 @@ var ModalViewQuote = React.createClass({
 								".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" +
 								"#print-quote { color: #404040;}" +
 								".modal-dialog { width: 700px !important;}" +
-								".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: flex;}" +
+								".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
 								".modal-header .logo img { width: 80px;}" +
 								".modal-header .info-trady {margin-left: 15px;}" +
 								".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +

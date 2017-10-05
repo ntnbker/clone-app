@@ -276,7 +276,7 @@ class MaintenanceRequestsController < ApplicationController
       the_url = agency_admin_maintenance_request_url(@maintenance_request)
      
 
-      EmailWorker.perform_in(5.minutes, @maintenance_request.id)
+      #EmailWorker.perform_in(5.minutes, @maintenance_request.id)
 
       #AgencyAdminOrAgentNewMaintenanceRequestNotificationTextingWorker.perform_async(@maintenance_request.id,the_url)
 

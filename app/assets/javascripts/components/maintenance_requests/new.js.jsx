@@ -1,10 +1,10 @@
 var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     this.getAgentEmail();
     return {
       images: [],
-      progress: 0,
+      fileDisabled: false,
       totalFile: 0,
       isAgent: true,
       dataImages: [],
@@ -18,20 +18,21 @@ var MaintenanceRequestsNew = React.createClass({
       validHeading: false,
       selectedRadio: "Agent",
       validDescription: false,
+      totalSize: 0
     };
   },
 
-  getAgentEmail: function() {
+  getAgentEmail: function () {
     const self = this;
     $.ajax({
       type: 'GET',
       url: '/agent_emails',
-      success: function(res){
+      success: function (res) {
         self.setState({
           agent_emails: res
         });
       },
-      error: function(err) {
+      error: function (err) {
         self.setState({
           agent_emails: []
         });
@@ -39,14 +40,14 @@ var MaintenanceRequestsNew = React.createClass({
     });
   },
 
-  checkAgentEmail: function(e) {
-    if(this.state.selectedRadio == "Agent") {
+  checkAgentEmail: function (e) {
+    if (this.state.selectedRadio == "Agent") {
       const email = e.target.value;
       var flag = false;
-      for(var i = 0; i < this.state.agent_emails.length; i++) {
+      for (var i = 0; i < this.state.agent_emails.length; i++) {
         const item = this.state.agent_emails[i];
-        if(!!email && email == item.email) {
-          flag= true;
+        if (!!email && email == item.email) {
+          flag = true;
           break;
         }
       }
@@ -60,24 +61,24 @@ var MaintenanceRequestsNew = React.createClass({
       document.getElementById("errAgentEamil").textContent = strRequireEmail;
       e.target.classList.add("border_on_error");
     }
-    else if(e.target.value.length < 4){
+    else if (e.target.value.length < 4) {
       document.getElementById("errAgentEamil").textContent = strShortEmail;
       e.target.classList.add("border_on_error");
     }
-    else if(e.target.value.length >= 4){
+    else if (e.target.value.length >= 4) {
       this.validateEmail(e.target.value, e, true);
     }
   },
 
-  handleRadioChange: function(e) {
+  handleRadioChange: function (e) {
     const value = e.currentTarget.value;
     this.setState({
       selectedRadio: value,
-      isAgent: value == "Owner" ? false :true
+      isAgent: value == "Owner" ? false : true
     });
   },
 
-  generateAtt: function(name_id, type) {
+  generateAtt: function (name_id, type) {
     if (name_id == "name") {
       return "maintenance_request[" + type + "]";
     }
@@ -86,8 +87,8 @@ var MaintenanceRequestsNew = React.createClass({
     }
   },
 
-  _handleRemoveFrame: function(e) {
-    let {images, dataImages} = this.state;
+  _handleRemoveFrame: function (e) {
+    let { images, dataImages } = this.state;
     var index = e.target.id;
     images.splice(index, 1);
     dataImages.splice(index, 1);
@@ -97,13 +98,14 @@ var MaintenanceRequestsNew = React.createClass({
     });
   },
 
-  _handleImageChange: function(e) {
+  _handleImageChange: function (e) {
     const self = this;
     const files = e.target.files;
     var reader = new FileReader();
     var fr = new FileReader();
     var images = this.state.images;
     var orientation;
+    self.setState({ fileDisabled: true });
     readFile = (index) => {
       if (index >= files.length) {
         this.setState({
@@ -113,7 +115,7 @@ var MaintenanceRequestsNew = React.createClass({
       }
       var file = files[index];
       var fileAlreadyExists = false;
-      for (var i = 0; i < images.length; i ++) {
+      for (var i = 0; i < images.length; i++) {
         if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
           fileAlreadyExists = true;
           break;
@@ -122,13 +124,14 @@ var MaintenanceRequestsNew = React.createClass({
       if (!fileAlreadyExists) {
         var fr = new FileReader();
         fr.readAsArrayBuffer(file);
-        fr.onload = function(e) {
+        fr.onload = function (e) {
           orientation = self.getOrientation(e.target.result);
           reader.readAsDataURL(file);
-          reader.onload = function(e) {
-            images.push({url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation});
+          reader.onload = function (e) {
+            images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
             self.setState({
-              totalFile: index + 1
+              totalFile: index + 1,
+              totalSize: self.state.totalSize + file.size
             });
             readFile(index + 1);
           }
@@ -141,7 +144,7 @@ var MaintenanceRequestsNew = React.createClass({
     readFile(0);
   },
 
-  getOrientation: function(result) {
+  getOrientation: function (result) {
     var view = new DataView(result);
     if (view.getUint16(0, false) != 0xFFD8) return -2;
     var length = view.byteLength, offset = 2;
@@ -164,15 +167,15 @@ var MaintenanceRequestsNew = React.createClass({
     return -1;
   },
 
-  validDate: function(flag) {
+  validDate: function (flag) {
     this.setState({
       validDate: flag
     });
   },
 
-  handleCheckSubmit: function(e) {
+  handleCheckSubmit: function (e) {
     e.preventDefault();
-    if(!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
+    if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
       e.preventDefault();
       document.getElementById("errCantSubmit").textContent = strCantSubmit;
       return;
@@ -189,17 +192,17 @@ var MaintenanceRequestsNew = React.createClass({
     $.ajax({
       type: 'POST',
       url: '/maintenance_requests',
-      beforeSend: function(xhr) {
+      beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
       },
       enctype: 'multipart/form-data',
       processData: false,
       contentType: false,
       data: FD,
-      success: function(res){
-        
+      success: function (res) {
+
       },
-      error: function(err) {
+      error: function (err) {
 
       }
     });
@@ -212,54 +215,54 @@ var MaintenanceRequestsNew = React.createClass({
     return formData;
   },
 
-  validateEmail: function(inputText, e, agentFlag){
-    if(EMAIL_REGEXP.test(inputText)){
-      if(agentFlag == false)
+  validateEmail: function (inputText, e, agentFlag) {
+    if (EMAIL_REGEXP.test(inputText)) {
+      if (agentFlag == false)
         document.getElementById("errorboxemail").textContent = strNone;
       else
         document.getElementById("errAgentEamil").textContent = strNone;
       e.target.classList.remove("border_on_error");
-      this.setState({validEmail: false});
+      this.setState({ validEmail: false });
     }
-    else{
-      if(agentFlag == false)
+    else {
+      if (agentFlag == false)
         document.getElementById("errorboxemail").textContent = strInvalidEmail;
       else
         document.getElementById("errAgentEamil").textContent = strInvalidEmail;
       e.target.classList.add("border_on_error");
-      this.setState({validEmail: true});
+      this.setState({ validEmail: true });
     }
   },
 
-  validatePhoneNumber:function(inputText, e, agentFlag){
-    if(NUMBER_REGEXP.test(inputText)){
-      if(agentFlag == false)
+  validatePhoneNumber: function (inputText, e, agentFlag) {
+    if (NUMBER_REGEXP.test(inputText)) {
+      if (agentFlag == false)
         document.getElementById("errorboxmobile").textContent = strNone;
       else
         document.getElementById("errAgentMobile").textContent = strNone;
       e.target.classList.remove("border_on_error");
-      this.setState({validMobile: false});
+      this.setState({ validMobile: false });
     }
-    else{
-      if(agentFlag == false)
+    else {
+      if (agentFlag == false)
         document.getElementById("errorboxmobile").textContent = strInvalidMobile;
       else
         document.getElementById("errAgentMobile").textContent = strInvalidMobile;
       e.target.classList.add("border_on_error");
-      this.setState({validMobile: true});
+      this.setState({ validMobile: true });
     }
   },
 
-  updateImage: function(image) {
-    let {dataImages} = this.state;
+  updateImage: function (image) {
+    let { dataImages } = this.state;
     dataImages.push(image);
     this.setState({
       dataImages: dataImages
     });
   },
 
-  removeImage: function(index) {
-    let {images, dataImages} = this.state;
+  removeImage: function (index) {
+    let { images, dataImages } = this.state;
     images.splice(index, 1);
     dataImages.splice(index, 1);
     this.setState({
@@ -268,24 +271,26 @@ var MaintenanceRequestsNew = React.createClass({
     });
   },
 
-  loadImage: function(e, image, key) {
+  loadImage: function (e, image, key) {
     const img = e.target;
     const maxSize = 500000; // byte
     const self = this;
-    if(!image.isUpload) {
+    const { data = {} } = self.state;
+    data[key] = 0;
+    if (!image.isUpload) {
       var target_img = {};
-      var {images} = this.state;
+      var { images } = this.state;
       var file = image.fileInfo;
       image.isUpload = true;
 
       // resize image
-      if(file.size > maxSize) {
-        var quality =  Math.ceil(maxSize/file.size * 100);
+      if (file.size > maxSize) {
+        var quality = Math.ceil(maxSize / file.size * 100);
         target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
-      }else {
-        if(!!this.state.isAndroid) {
+      } else {
+        if (!!this.state.isAndroid) {
           target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
-        }else {
+        } else {
           target_img.src = image.url;
         }
       }
@@ -302,9 +307,9 @@ var MaintenanceRequestsNew = React.createClass({
         _: Date.now(),
       }
       // start upload file into S3
-      $.getJSON('/images/cache/presign', options, function(result) {
+      $.getJSON('/images/cache/presign', options, function (result) {
         var fd = new FormData();
-        $.each(result.fields, function(key, value) {
+        $.each(result.fields, function (key, value) {
           fd.append(key, value);
         });
 
@@ -319,21 +324,24 @@ var MaintenanceRequestsNew = React.createClass({
           xhr: function () {
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener("progress", function (evt) {
-              if(evt.loaded > 0 && evt.total > 0) {
-                var progressValue = self.state.progress + evt.loaded;
-                var totalProgress = self.state.totalProgress/(self.state.totalFile + 1) + evt.total * self.state.totalFile;
-                if(evt.loaded == evt.total) {
+              if (evt.loaded > 0 && evt.total > 0) {
+                var progressValue = file.size >= evt.loaded ? evt.loaded - data[key] : file.size - data[key];
+                data[key] = evt.loaded;
+                var totalProgress = self.state.totalProgress + progressValue;
+
+                self.setState({ totalProgress: totalProgress })
+
+                if (evt.loaded == evt.total) {
                   self.setState({
-                    progress: progressValue,
-                    totalProgress: totalProgress / self.state.totalFile,
-                    totalFile: self.state.totalFile - 1,
+                    totalFile: self.state.totalFile - 1
                   });
                 }
-                var percentComplete = Math.ceil(progressValue / totalProgress * 100);
+
+                var percentComplete = Math.ceil(totalProgress / self.state.totalSize * 100);
                 var progress = $('.progress');
-                if(progress.length == 0) {
-                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' +  percentComplete + '%"></div></div>').insertAfter("#input-file");
-                }else {
+                if (progress.length == 0) {
+                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+                } else {
                   $('.progress .progress-bar').css('width', percentComplete + '%');
                 }
                 $('#title-upload').html('Uploading ' + percentComplete + '%');
@@ -341,14 +349,13 @@ var MaintenanceRequestsNew = React.createClass({
             }, false);
             return xhr;
           },
-          success: function() {
-            if(self.state.totalFile == 0 && self.state.progress == self.state.totalProgress) {
+          success: function () {
+            if (self.state.totalFile == 0) {
               self.setState({
-                progress: 0,
                 totalFile: 0,
-                totalProgress: 0,
+                fileDisabled: false
               });
-              setTimeout(function() {
+              setTimeout(function () {
                 $('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
                 $('.progress').remove();
               }, 500);
@@ -357,8 +364,8 @@ var MaintenanceRequestsNew = React.createClass({
               id: result.fields.key.match(/cache\/(.+)/)[1],
               storage: 'cache',
               metadata: {
-                size:  file.size,
-                filename:  file.name.match(/[^\/\\]*$/)[0],
+                size: file.size,
+                filename: file.name.match(/[^\/\\]*$/)[0],
                 mime_type: file.type
               }
             };
@@ -369,19 +376,19 @@ var MaintenanceRequestsNew = React.createClass({
     }
   },
 
-  reduceQuality: function(source_img, type, quality, orientation) {
+  reduceQuality: function (source_img, type, quality, orientation) {
     var mime_type = "image/jpeg";
-    if(typeof output_format !== "undefined" && output_format=="image/png"){
+    if (typeof output_format !== "undefined" && output_format == "image/png") {
       mime_type = "image/png";
     }
 
     var cvs = document.createElement('canvas'),
-        width = source_img.naturalWidth,
-        height = source_img.naturalHeight,
-        ctx = cvs.getContext("2d");
+      width = source_img.naturalWidth,
+      height = source_img.naturalHeight,
+      ctx = cvs.getContext("2d");
 
     // set proper canvas dimensions before transform & export
-    if ([5,6,7,8].indexOf(orientation) > -1) {
+    if ([5, 6, 7, 8].indexOf(orientation) > -1) {
       cvs.width = height;
       cvs.height = width;
     } else {
@@ -395,19 +402,19 @@ var MaintenanceRequestsNew = React.createClass({
         ctx.transform(-1, 0, 0, 1, width, 0);
         break;
       case 3:
-        ctx.transform(-1, 0, 0, -1, width, height );
+        ctx.transform(-1, 0, 0, -1, width, height);
         break;
       case 4:
-        ctx.transform(1, 0, 0, -1, 0, height );
+        ctx.transform(1, 0, 0, -1, 0, height);
         break;
       case 5:
         ctx.transform(0, 1, 1, 0, 0, 0);
         break;
       case 6:
-        ctx.transform(0, 1, -1, 0, height , 0);
+        ctx.transform(0, 1, -1, 0, height, 0);
         break;
       case 7:
-        ctx.transform(0, -1, -1, 0, height , width);
+        ctx.transform(0, -1, -1, 0, height, width);
         break;
       case 8:
         ctx.transform(0, -1, 1, 0, 0, width);
@@ -418,17 +425,17 @@ var MaintenanceRequestsNew = React.createClass({
     ctx.strokeRect(0, 0, cvs.width, cvs.height);
     ctx.lineWidth = 0;
     ctx.drawImage(source_img, 0, 0);
-    var newImageData = cvs.toDataURL(mime_type, quality/100);
+    var newImageData = cvs.toDataURL(mime_type, quality / 100);
     var result_image = new Image();
     result_image.src = newImageData;
     return result_image;
   },
 
-  dataURItoBlob: function(dataURI) {
+  dataURItoBlob: function (dataURI) {
     var byteString,
-        mimestring;
+      mimestring;
 
-    if(dataURI.split(',')[0].indexOf('base64') !== -1 ) {
+    if (dataURI.split(',')[0].indexOf('base64') !== -1) {
       byteString = atob(dataURI.split(',')[1])
     } else {
       byteString = decodeURI(dataURI.split(',')[1])
@@ -441,36 +448,36 @@ var MaintenanceRequestsNew = React.createClass({
       content[i] = byteString.charCodeAt(i)
     }
 
-    return new Blob([new Uint8Array(content)], {type: mimestring});
+    return new Blob([new Uint8Array(content)], { type: mimestring });
   },
 
-  detectAndroid: function() {
+  detectAndroid: function () {
     var ua = navigator.userAgent.toLowerCase();
     var isAndroid = ua.indexOf("android") > -1;
-    if(isAndroid) {
+    if (isAndroid) {
       this.setState({
         isAndroid: true
       });
     }
   },
 
-  componentDidMount: function() {
+  componentDidMount: function () {
     this.detectAndroid();
   },
 
-  render: function(){
-    let {images} = this.state;
+  render: function () {
+    let { images } = this.state;
     let $imagePreview = [];
-    const {current_user_tenant, current_role} = this.props;
+    const { current_user_tenant, current_role } = this.props;
     let valueEmail = '';
     let valueMobile = '';
-    if(current_role && current_role.role == "Tenant") {
+    if (current_role && current_role.role == "Tenant") {
       valueEmail = current_user_tenant.email;
       valueMobile = current_user_tenant.mobile;
     }
     if (images.length > 0) {
-      for (i = 0; i < images.length; i ++) {
-        let imageObject = (<div className="imgFrame" key={i}><img src={images[i].url} /><div className="btnRemoveFrame" id={i} onClick={(e) =>this._handleRemoveFrame(e)}>X</div></div>);
+      for (i = 0; i < images.length; i++) {
+        let imageObject = (<div className="imgFrame" key={i}><img src={images[i].url} /><div className="btnRemoveFrame" id={i} onClick={(e) => this._handleRemoveFrame(e)}>X</div></div>);
         $imagePreview.push(imageObject);
       }
     } else {
@@ -479,7 +486,7 @@ var MaintenanceRequestsNew = React.createClass({
     return (
       <div>
         <h5 className="text-center color-grey">Enter Tenant Details</h5>
-        <form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) =>this.handleCheckSubmit(e)} >
+        <form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) => this.handleCheckSubmit(e)} >
           <input name="utf8" type="hidden" value="✓" />
           <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
           <div className="field">
@@ -491,22 +498,22 @@ var MaintenanceRequestsNew = React.createClass({
               id={this.generateAtt("id", "name")}
               name={this.generateAtt("name", "name")}
               onBlur={(e) => {
-              if (!e.target.value.length) {
+                if (!e.target.value.length) {
                   document.getElementById("errorbox").textContent = strRequireName;
                   e.target.classList.add("border_on_error");
-                  this.setState({validName: true});
-              }
-              else if(e.target.value.length < 4){
+                  this.setState({ validName: true });
+                }
+                else if (e.target.value.length < 4) {
                   document.getElementById("errorbox").textContent = strShortName;
                   e.target.classList.add("border_on_error");
-                  this.setState({validName: true});
+                  this.setState({ validName: true });
                 }
-              else if(e.target.value.length >= 4){
+                else if (e.target.value.length >= 4) {
                   document.getElementById("errorbox").textContent = strNone;
                   e.target.classList.remove("border_on_error");
-                  this.setState({validName: false});
+                  this.setState({ validName: false });
                 }
-              }}/>
+              }} />
             <p id="errorbox" className="error"></p>
 
             <input
@@ -527,14 +534,14 @@ var MaintenanceRequestsNew = React.createClass({
                   document.getElementById("errorboxemail").textContent = strRequireEmail;
                   e.target.classList.add("border_on_error");
                 }
-                else if(e.target.value.length < 4){
+                else if (e.target.value.length < 4) {
                   document.getElementById("errorboxemail").textContent = strShortEmail;
                   e.target.classList.add("border_on_error");
                 }
-                else if(e.target.value.length >= 4){
+                else if (e.target.value.length >= 4) {
                   this.validateEmail(e.target.value, e, false);
                 }
-              }}/>
+              }} />
             <p id="errorboxemail" className="error"></p>
 
             <input
@@ -550,23 +557,23 @@ var MaintenanceRequestsNew = React.createClass({
               id={this.generateAtt("id", "mobile")}
               name={this.generateAtt("name", "mobile")}
               onBlur={(e) => {
-              if (!e.target.value.length) {
+                if (!e.target.value.length) {
                   document.getElementById("errorboxmobile").textContent = strRequireMobile;
                   e.target.classList.add("border_on_error");
                 }
-              else if(e.target.value.length < 8){
+                else if (e.target.value.length < 8) {
                   document.getElementById("errorboxmobile").textContent = strShortMobile;
                   e.target.classList.add("border_on_error");
                 }
-              if(e.target.value.length >= 8){
+                if (e.target.value.length >= 8) {
                   this.validatePhoneNumber(e.target.value, e, false);
                 }
-              }}/>
+              }} />
             <p id="errorboxmobile" className="error"></p>
           </div>
 
           <div id="access_contacts" className="m-b-lg">
-            <FieldList SampleField={AccessContactField} flag="contact"/>
+            <FieldList SampleField={AccessContactField} flag="contact" />
           </div>
 
           <div className="field">
@@ -579,13 +586,13 @@ var MaintenanceRequestsNew = React.createClass({
                 if (!e.target.value.length) {
                   document.getElementById("errorboxdescription").textContent = strErrDescription;
                   e.target.classList.add("border_on_error");
-                  this.setState({validDescription: false});
-                }else{
+                  this.setState({ validDescription: false });
+                } else {
                   document.getElementById("errorboxdescription").textContent = strNone;
                   e.target.classList.remove("border_on_error");
-                  this.setState({validDescription: false});
+                  this.setState({ validDescription: false });
                 }
-              }}/>
+              }} />
             <p id="errorboxdescription" className="error"></p>
 
             <textarea
@@ -607,7 +614,8 @@ var MaintenanceRequestsNew = React.createClass({
                 id="input-file"
                 className="upload inputfile"
                 accept="image/jpeg, image/png"
-                onChange={(e)=>this._handleImageChange(e)}
+                onChange={(e) => this._handleImageChange(e)}
+                disabled={this.state.fileDisabled}
               />
             </div>
             <div id="img-render">
@@ -628,9 +636,9 @@ var MaintenanceRequestsNew = React.createClass({
             </div>
           </div>
 
-          { (!this.props.current_user || this.props.current_user.tenant) ?
+          {(!this.props.current_user || this.props.current_user.tenant) ?
             <div className="field">
-              <hr/>
+              <hr />
 
               <div>
                 <input
@@ -646,7 +654,7 @@ var MaintenanceRequestsNew = React.createClass({
                   name={this.generateAtt("name", "agent_email")}
                 />
                 <p id="errAgentEamil" className="error"></p>
-                { !this.state.isAgent ?
+                {!this.state.isAgent ?
                   <div>
                     <input
                       required
@@ -659,18 +667,18 @@ var MaintenanceRequestsNew = React.createClass({
                       name={this.generateAtt("name", "real_estate_office")}
                       onBlur={(e) => {
                         if (!e.target.value.length) {
-                            e.target.classList.add("border_on_error");
-                            document.getElementById("errRealEstateOffice").textContent = strRequireText;
-                          }
-                        else if(e.target.value.length < 4){
-                            e.target.classList.add("border_on_error");
-                            document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
-                          }
-                        else if(e.target.value.length >= 4){
-                            e.target.classList.remove("border_on_error");
-                            document.getElementById("errRealEstateOffice").textContent = strNone;
-                          }
-                        }}/>
+                          e.target.classList.add("border_on_error");
+                          document.getElementById("errRealEstateOffice").textContent = strRequireText;
+                        }
+                        else if (e.target.value.length < 4) {
+                          e.target.classList.add("border_on_error");
+                          document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
+                        }
+                        else if (e.target.value.length >= 4) {
+                          e.target.classList.remove("border_on_error");
+                          document.getElementById("errRealEstateOffice").textContent = strNone;
+                        }
+                      }} />
                     <p id="errRealEstateOffice" className="error"></p>
 
                     <input
@@ -687,15 +695,15 @@ var MaintenanceRequestsNew = React.createClass({
                           e.target.classList.add("border_on_error");
                           document.getElementById("errAgentName").textContent = strRequireName;
                         }
-                        else if(e.target.value.length < 4){
+                        else if (e.target.value.length < 4) {
                           e.target.classList.add("border_on_error");
                           document.getElementById("errAgentName").textContent = strShortName;
                         }
-                        else if(e.target.value.length >= 4){
+                        else if (e.target.value.length >= 4) {
                           e.target.classList.remove("border_on_error");
                           document.getElementById("errAgentName").textContent = strNone;
                         }
-                      }}/>
+                      }} />
                     <p id="errAgentName" className="error"></p>
 
                     <input
@@ -714,25 +722,25 @@ var MaintenanceRequestsNew = React.createClass({
                           e.target.classList.add("border_on_error");
                           document.getElementById("errAgentMobile").textContent = strRequireMobile;
                         }
-                        else if(e.target.value.length < 8){
+                        else if (e.target.value.length < 8) {
                           e.target.classList.add("border_on_error");
                           document.getElementById("errAgentMobile").textContent = strShortMobile;
                         }
-                        if(e.target.value.length >= 8){
+                        if (e.target.value.length >= 8) {
                           this.validatePhoneNumber(e.target.value, e, true);
                         }
-                      }}/>
+                      }} />
                     <p id="errAgentMobile" className="error"></p>
-                    </div>
-                    :
-                    null
+                  </div>
+                  :
+                  null
                 }
 
               </div>
-              <hr/>
+              <hr />
             </div>
             :
-            <hr/>
+            <hr />
           }
           <p id="errCantSubmit" className="error"></p>
           <div className="text-center">
