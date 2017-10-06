@@ -1,0 +1,129 @@
+!!! 5
+%html(lang="en-US")
+  %head
+    %link{:href => "https://fonts.googleapis.com/css?family=Raleway:400,600,700&amp;subset=latin-ext", :rel => "stylesheet"}
+    %style{:type => "text/css"}
+      :sass
+        body
+          margin: 0
+          padding: 0
+        .text-center
+          text-align: center
+        .container-email
+          width: 550px
+          margin: auto
+          .header
+            background-color: #3d4b54
+            .logo
+              height: 60px
+              display: flex
+              padding-top: 20px
+              padding-bottom: 20px
+              align-items: center
+              justify-content: center
+              text-decoration: none
+              span
+                color: #fff
+                font-size: 24px
+                text-decoration: none
+                font-weight: 600
+                padding-left: 5px
+                font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif
+          .main
+            width: 85%
+            margin: auto
+            margin-top: 30%
+            margin-bottom: 30%
+            color: #849aaa
+            font-weight: 600
+            font-size: 16px
+            font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif
+            .content
+              margin-top: 70px
+            .team
+              margin-bottom: 70px
+            .btn
+              display: inline-block
+              width: 230px
+              height: 40px
+              background-color: #7dc691
+              color: #fff
+              text-decoration: none
+              font-size: 16px
+              border: none
+              line-height: 40px
+              text-transform: capitalize
+              border-radius: 5px
+              margin-top: 20px
+              margin-bottom: 20px
+              &:hover, &:active
+                background-color: #7dc691
+          .footer
+            background-color: #F4F8FB
+            height: 80px
+            display: flex
+            flex-direction: column-reverse
+            justify-content: center
+            align-items: center
+            .contact
+              margin-left: 10px
+              color: #849aaa
+              font-weight: 600
+              font-size: 16px
+              font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif
+            .share
+              margin-right: 10px
+              .link-share
+                text-decoration: none
+                margin-left: 10px
+                display: inline-block
+        @media (max-width: 480px)
+          .container-email
+            width: 350px
+
+  %body
+    .container-email
+      .header
+        = link_to "#", :class => "logo" do
+          %img{:src => asset_path("https://maintenanceapp.com.au/assets/logo.png"), :class => 'img'}
+          %span
+            MaintenanceApp
+      .main
+        %p.content
+         
+          Hi #{@tenant.name.capitalize},
+
+          -if @maintenance_request.agency_admin
+            %br
+              #{@agency_admin.first_name.capitalize} from #{@agency.company_name.capitalize} has requested a quote from #{@trady.company_name.capitalize}.
+          -elsif @maintenance_request.agent
+            %br
+              #{@agent.name.capitalize} from #{@agency.company_name.capitalize} has requested a quote from #{@trady.company_name.capitalize}.
+          %br
+            They may contact you if they require an inspection to quote on the issue in the maintenance request.
+          %br
+            We have included the tradie's contact details below in case you wish to contact them.
+          %br
+            Phone:#{@trady.mobile}
+        %p.thank
+          Thank you :)
+
+        %p.team
+          The MaintenanceApp Team
+
+      .footer
+        .contact
+          Copyright &copy; 2016 - MaintenanceApp.
+          %br
+            %unsubscribe_url
+        .share
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-twitter.png", :class => 'img'
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-facebook.png", :class => 'img'
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-instagram.png", :class => 'img'
+          = link_to "#", :class => 'link-share' do
+            = image_tag "https://maintenanceapp.com.au/assets/ico-google.png", :class => 'img'
+
+    

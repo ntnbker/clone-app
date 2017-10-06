@@ -2,12 +2,24 @@
 
 .pages
   .header
-    = form_tag('/route_user_type', method: :post) do
+    = form_tag('/route_user_type', method: :post, class: "form-address") do
       = fields_for :form_fields  do |h|
-        = h.select :user_role, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }), prompt: 'i`m a..', hide_label: true
-        = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), prompt: 'i need a..', hide_label: true
-        = h.text_field :address, id:'pac-input', :placeholder => 'for my place at..', required: true, disable:true, hide_label: true
-        = h.submit "Send", class: 'button-primary green'
+        .select
+          / = h.select :user_role, options_for_select(@main_users.map{|j|[j.main_user_type, j.main_user_type] }), {:include_blank => "I`m a.."}, {required: true},:selected=>(@role)
+          -if current_user == nil
+            = h.select :user_role, options_for_select({ "Agent" => "Agent", "Tenant" => "Tenant" }), {:include_blank => "I`m a.."}, {required: true}
+          -elsif current_user.current_role.role == "Tenant" 
+            = h.select :user_role, options_for_select({"Tenant" => "Tenant" }, @role ), {:include_blank => "I`m a.."}, {required: true}
+          -elsif current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
+            = h.select :user_role, options_for_select({ "Agent" => "Agent", "Tenant" => "Tenant" }, @role ), {:include_blank => "I`m a.."}, {required: true}
+          -elsif current_user.current_role.role == "Landlord" || current_user.current_role.role == "Trady"
+            = h.select :user_role, options_for_select({"Tenant" => "Tenant" }), {:include_blank => "I`m a.."}, {required: true}
+          / = h.select :user_role, options_for_select({ "Agent" => "Agent", "Tenant" => "Tenant" }, @role ), {:include_blank => "I`m a.."}, {required: true}
+          = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), {:include_blank => "I need a.."}, {required: true}
+        .input-address
+          = h.text_area :address, id:'pac-input', :placeholder => 'For my place at..', disable:true, required: true, hide_label: true, :onKeyup => "getAddressOfGoogleMap()"
+        .btn-submit
+          = h.button "Send", class: 'button-primary green'
   
     %input{:type=>"hidden", :id=>"refresh", :value=>"no"}
   
@@ -34,23 +46,12 @@
             %p Enjoy an easy stress free process to maintenance completion
       .line
       .row
-        %h3.title The Maintenance App for..
+        %h3.title Making lives easier for
         .row.app-for
           .row
-            .three.columns
+            .four.columns
               %img{:src => "/assets/m_LJ.png"}/
-            .three.columns
-              %img{:src => "/assets/m_Ray.png"}/
-            .three.columns
-              %img{:src => "/assets/m_First.png"}/
-            .three.columns
-              %img{:src => "/assets/m_Mc.png"}/
-          .row
-            .three.columns
-              %img{:src => "/assets/m_Be.png"}/
-            .three.columns
-              %img{:src => "/assets/m_St.png"}/
-            .three.columns
-              %img{:src => "/assets/m_Ce.png"}/
-            .three.columns
-              %img{:src => "/assets/m_La.png"}/
+            .four.columns
+              %img{:src => "/assets/m_One.png"}/
+            .four.columns
+              %img{:src => "/assets/m_Raine.png"}/

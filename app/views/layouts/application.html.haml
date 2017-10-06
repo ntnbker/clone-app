@@ -1,19 +1,23 @@
 !!! 5
 %html(lang="en-US")
   %head
-    %title REALESTATE
+    %title MaintenanceApp | Property Management Software
     %meta(charset="UTF-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %meta(name="turbolinks-cache-control" content="no-cache")
-    = include_gon(:init => true)
-    
+
+    %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.min.js"}
     %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"}
-    
+    %link{:href => "https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&subset=latin-ext,vietnamese", :rel => "stylesheet"}
+    %link{:href => "https://cdnjs.cloudflare.com/ajax/libs/chardin.js/0.1.3/chardinjs.css", :rel => "stylesheet"}
+    %link{:href => "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css.map", :rel => "stylesheet"}
+    %link{:href => "https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.css", :rel => "stylesheet"}
     %script{:type=>"text/javascript", :src=>"https://maps.googleapis.com/maps/api/js?key=AIzaSyCRbOTNRo0sO0yxBpHdhn0NpB_p_Axmye8&libraries=places"}
-    
-    %script{:type=>"text/javascript", :src=>"http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"}
-    
-    
+
+    %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/js/swiper.min.js"}
+    %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"}
+    %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.4.1/moment-timezone-with-data-2010-2020.min.js"}
+    %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/chardin.js/0.1.3/chardinjs.min.js"}
 
     = csrf_meta_tags
 
@@ -22,19 +26,23 @@
 
     =yield :head
   %body
-    %header
-      - if content_for? :expanded
-        = render 'shared/nav', {:expanded => true}
-      - else
-        = render 'shared/nav'
-    %section.content.clearfix
-      = render 'shared/messages'
-      = yield
-      
+    = render 'shared/messages'
+    = render 'shared/spinner'
+    %div.layout
+      %header
+        - if content_for? :expanded
+          = render 'shared/nav', {:expanded => true}
+        - else
+          = render 'shared/nav'
 
-    
-    %footer
-      - if content_for? :expanded
-        = render 'shared/footer', {:expanded => true}
-      - else
-        = render 'shared/footer'
+      %section.content.clearfix.content-custom#main
+
+        = yield
+
+
+
+      %footer
+        - if content_for? :expanded
+          = render 'shared/footer', {:expanded => true}
+        - else
+          = render 'shared/footer'

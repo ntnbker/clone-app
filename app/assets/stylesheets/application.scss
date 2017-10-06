@@ -1,29 +1,28 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
+/** Lib CSS / SCSS in gem or vendor**/
 
- *= require skeleton
- *= require normalize
- *= require jquery-ui
- *= require popup
-*/
+@import 'skeleton';
+@import 'normalize';
+@import 'jquery-ui/core';
+@import 'jquery-ui/datepicker';
+@import 'jquery-ui/theme';
+@import 'popup';
+@import 'font-awesome';
+@import 'chardinjs';
+@import 'mixins';
 
-@import "pages.scss";
-@import "maintenance_requests.scss";
-@import "agencies.scss";
-@import "shared.scss";
+@import 'pages';
+@import 'maintenance_requests';
+@import 'agencies';
+@import 'shared';
 
-@import "trady_companies.scss";
-@import "quotes.scss";
-@import "invoices.scss";
-@import "user_sessions.scss";
-@import "font-awesome";
+@import 'trady_companies';
+@import 'quotes';
+@import 'invoices';
+@import 'user_sessions';
+@import 'agency_admin_maintenance_request/show';
+@import 'password_resets';
+@import 'spinner';
+@import 'agent';
+@import 'appointment';
+@import 'instruction';
+@import 'flash_message';

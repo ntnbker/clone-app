@@ -4,7 +4,7 @@ form#new_quote {
 	margin: 20px auto;
 
 	p {
-	    margin: 20px 0 5px;
+		margin: 20px 0 5px;
 	}
 
 	.quotefield {
@@ -30,9 +30,9 @@ form#new_quote {
 			list-style: none;
 			margin: 0;
 		}
-		
+
 		button {
-			&.button-add {	
+			&.button-add {
 				font-size: 13px;
 	    		height: 24px;
 			}
@@ -40,7 +40,7 @@ form#new_quote {
 	}
 
 	button {
-		&.button-add {	
+		&.button-add {
 			font-size: 13px;
     		height: 24px;
 		}
@@ -72,6 +72,27 @@ form#new_quote {
 	input[type="text"] {
 		width: 100%;
 	}
+	.amount {
+		@include flexbox;
+		margin-top: 10px;
+		select {
+			width: 49%;
+			margin-right: 1%;
+		}
+		input[type="number"] {
+			width: 49%;
+			margin-left: 1%;
+		}
+		.hour {
+			width: 32% !important;
+			&.select {
+				margin-right: 2%;
+			}
+			&.price {
+				margin-right: 2%;
+			}
+		}
+	}
 
 	/* For Desktop */
 	@media (min-width: 550px) {
@@ -82,7 +103,7 @@ form#new_quote {
 .send-quote {
 	display: table;
 	margin: 30px auto;
-
+	text-align: center;
 	div {
 		text-align: right;
 		font-size: 18px;
@@ -107,6 +128,275 @@ form#new_quote {
 		a {
 			text-decoration: none;
 			color: white;
+		}
+	}
+}
+
+.quote {
+	@include flexbox;
+	@include flex-direction(row);
+	.info-quote {
+		flex: 1;
+		margin: 0 30px;
+
+		.title {
+			font-weight: bold;
+		}
+	}
+}
+
+.quote-items {
+	margin: 0 30px;
+	table {
+		width: 100%;
+	}
+
+	.button-quote {
+		margin-top: 30px;
+		text-align: center;
+	}
+}
+
+.modal-quote {
+	color: #404040;
+	position: relative;
+	.modal-dialog {
+		width: 700px !important;
+	}
+	.modal-header {
+		background-color: #fff !important;
+		@include flexbox;
+
+		.logo {
+			img {
+				width: 80px;
+			}
+		}
+		.info-trady {
+			margin-left: 15px;
+			p {
+				margin-bottom: 0px;
+				font-size: 12px;
+				text-transform: inherit;
+				span {
+					&:last-child {
+						padding-left: 5px;
+					}
+				}
+			}
+		}
+		.close {
+			border: 1px solid #ccc !important;
+			border-radius: 50% !important;
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			span {
+				color: #ccc !important;
+			}
+		}
+	}
+	.quote-height {
+		min-height: 800px;
+	}
+	.info-quote {
+		font-size: 13px;
+		.bill-to {
+			font-size: 16px;
+		}
+		.info-agency {
+			p {
+				text-align: left !important;
+				span {
+					&:first-child {
+						width: 120px;
+					    display: inline-block;
+					    text-align: right;
+					    text-transform: capitalize;
+					}
+				}
+			}
+		}
+	}
+	.footer {
+		@include flexbox;
+		@include flex-direction(row);
+		@include justify-content(space-between);
+		font-size: 12px;
+		border-top: 1px solid #ccc;
+		padding-top: 15px;
+		i{
+			font-size: 36px;
+		}
+		p {
+			margin-bottom: 5px;
+		}
+		.bank {
+			margin-left: 25px;
+			flex: 1;
+			span {
+				&:first-child {
+					width: 110px;
+					display: inline-block;
+				};
+			}
+		}
+		.contact {
+			margin-left: 15px;
+			flex: 1;
+		}
+	}
+	.border-none {
+		border: none !important;
+	}
+	.color-grey {
+		color: #b3b3b3;
+	}
+	.font-bold {
+		font-weight: bold;
+	}
+	.m-t-md {
+		margin-top: 10px;
+	}
+	.p-t-n {
+		padding-top: 0 !important;
+	}
+	.p-b-n {
+		padding-bottom: 0 !important;
+	}
+}
+
+.send-email-quote {
+	color: #404040;
+	font-size: 14px;
+	p {
+		margin-bottom: 0;
+	}
+	.header-quote {
+		@include flexbox;
+		@include align-items(center);
+		.logo {
+			margin-left: 15px;
+			img {
+				width: 80px;
+			}
+		}
+		.info-quote {
+			margin-left: 15px;
+		}
+	}
+	.quote {
+		margin-left: 15px;
+		margin-right: 15px;
+		margin-bottom: 30px;
+		@include flexbox;
+		@include justify-content(flex-start);
+		.info-agency {
+			flex: 1;
+		}
+		.date-quote {
+			flex: 1;
+		}
+	}
+	.quote-items {
+		table {
+			td {
+				padding: 5px 3px;
+			}
+		}
+		.p-b-n {
+			padding-bottom: 0px;
+		}
+		.p-t-n {
+			padding-top: 0px;
+		}
+	}
+	.color-grey {
+		color: #b3b3b3;
+	}
+	.bill-to {
+		font-size: 20px;
+	}
+}
+
+.font-bold {
+	font-weight: bold;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.border-none {
+	border: none;
+}
+
+.text-capitalize {
+	text-transform: capitalize;
+}
+
+@media (max-width: 768px) {
+	.quote {
+		.info-quote {
+			margin: 0 15px;
+		}
+	}
+	.quote-items {
+		margin: 0 15px;
+	}
+
+	.modal-quote .modal-dialog {
+		width: 95% !important;
+	}
+}
+
+@media (max-width: 640px) {
+	.quote {
+		@include flex-direction(column);
+		.info-quote {
+			margin: 0 10px;
+		}
+	}
+	.quote-items {
+		margin: 0 10px;
+	}
+}
+
+@media (max-width: 480px) {
+	.summary-container-index .show-quote .info-agency p{
+		@include flex-direction(column);
+		@include justify-content(flex-start);
+		@include flexbox;
+		span:first-child {
+			text-align: left;
+		}
+	}
+	.show-quote .detail-quote {
+		overflow: auto !important;
+		&::-webkit-scrollbar-track {
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+			border-radius: 15px;
+			background-color: #F5F5F5;
+			margin-right: 0px;
+			padding: 0 10px;
+		}
+		&::-webkit-scrollbar {
+			width: 5px;
+			background-color: #F5F5F5;
+			margin-right: 0px;
+			padding: 0 10px;
+			height: 5px;
+			display:none;
+		}
+		&::-webkit-scrollbar-thumb {
+			border-radius: 15px;
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+			background-color: rgba(0, 0, 0, 0.5);
+			margin-right: 0px;
+			padding: 0 10px;
+		}
+		.table {
+			width: 450px !important;
 		}
 	}
 }

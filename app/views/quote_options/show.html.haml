@@ -1,0 +1,52 @@
+%div.container.invoice-form
+  %h1.text-center Quotes
+
+  %p.optiondescription.text-center
+    Easily make quotes using our platform by clicking the
+    %b Create Quotes
+    button below.
+
+  %p.text-center.m-t-lg
+    -if @trady.trady_company.nil?
+      %div.button-type.button-primary.green.option-button
+        =link_to "Create Quote", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
+    -else
+      %div.text-center
+        %div.button-type.button-primary.green.option-button
+          =link_to "Create Quote", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"system_quote", system_plan:"Quote")
+
+
+  / %h4 Please Choose One
+  / %div
+  /   %h5.optionheader Option 1
+  /   %p.optiondescription
+  /     If you use your own app to make quotes such as Xero.
+  /     Please Click
+  /     %b Upload Invoice
+  /     to upload a PDF of your invoice.
+
+  /     -if @trady.trady_company.nil?
+  /       %button.button-primary.green.option-button
+  /         =link_to "Upload Quote(New Company)", new_trady_company_path(maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"pdf_file", system_plan:"Quote")
+
+  /     -else
+  /       %button.button-primary.green.option-button
+  /         =link_to "Upload Quote(Edit Company)", edit_trady_company_path(@trady.trady_company,maintenance_request_id:@maintenance_request.id,trady_id:@trady_id, quote_type:"pdf_file", system_plan:"Quote")
+
+  / %button.button-primary.green.option-button
+  /   =link_to "Upload Quote",
+  / , confirm_company_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:"pdf_file" )
+  / %hr
+  / %div
+  /   %h5.optionheader Option 2
+
+
+
+
+
+
+
+
+
+  / %button.button-primary
+  /   =link_to "Back To Maintenance Request", trady_maintenance_request_path(@maintenance_request.id)

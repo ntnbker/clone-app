@@ -1,0 +1,76 @@
+var Invoices = React.createClass({
+	render: function() {
+		const {invoices, current_role} = this.props;
+		const self = this;
+		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
+
+		return (
+			<div className="quotes invoices m-t-xl" id="invoices">
+				<p>
+					Invoice ({invoices.length})
+				</p>
+				{
+					(current_role.role == 'Trady' && notPaid) &&
+					<p>
+						<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
+							Remind Agent of Payment
+						</button>
+					</p>
+				}
+				<div className="list-quote">
+				{
+					invoices.map(function(invoice, index) {
+						return (
+							<div className="item-quote row" key={index}>
+								<div className="user seven columns">
+									<span className="icon-user">
+										<i className="fa fa-user" />
+									</span>
+									<div className="info">
+										<div className="name">
+											<span>{invoice.trady.name}</span>
+											{
+												invoice.paid == false ?
+													<button className={'button-default Declined'}>
+														<span>Outstanding Payment</span>
+													</button>
+													:
+													<button className={'button-default Approved'}>
+														<span>Paid</span>
+													</button>
+											}
+										</div>
+										<p className="description">
+											{invoice.trady && invoice.trady.company_name}<br />
+											{(invoice.trady && invoice.trady.trady_company) ? invoice.trady.trady_company.trading_name : null}
+										</p>
+									</div>
+								</div>
+								<div className="actions five columns content">
+									<p>
+										Total: <span>${invoice.amount}</span>
+									</p>
+									<p>
+										DUE: <span>{ moment(invoice.due_date).format('LL')}</span>
+									</p>
+								</div>
+								<div className="actions-quote">
+									{
+										(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false) &&
+											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
+												Mark As Paid
+											</button>
+									}
+									<button type="button" className="btn btn-default btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
+										View Invoice
+									</button>
+								</div>
+							</div>
+						);
+					})
+				}
+				</div>
+			</div>
+		);
+	}
+});

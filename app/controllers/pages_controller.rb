@@ -6,6 +6,20 @@ class PagesController < ApplicationController
     @query = Query.new
     @main_users = MainUser.all
     @service = Service.all
+    if current_user
+      if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
+        @role = "Agent"
+      elsif current_user.current_role.role == "Tenant"
+        @role = "Tenant"
+      elsif current_user.current_role.role == "Landlord"
+        @role = "Tenant"
+      elsif current_user.current_role.role == "Trady"
+        @role = "Tenant"
+      end
+    end 
+
+
+    
   end
 
   
@@ -19,10 +33,11 @@ class PagesController < ApplicationController
       @query.save
       session[:customer_input] = @query.id
       if params[:form_fields][:user_role] == "Agent" 
-        if logged_in? && current_user.agent? || logged_in? && current_user.agency_admin?
+        if logged_in? && current_user.logged_in_as("Agent") || logged_in? && current_user.logged_in_as("AgencyAdmin")
           redirect_to new_maintenance_request_path
         else
-          redirect_to login_path
+          flash[:notice] = "As an Agent please login"
+          redirect_to menu_login_path(query_id:@query.id)
         end 
 
       elsif params[:form_fields][:user_role] == "Tenant"

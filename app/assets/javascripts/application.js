@@ -18,6 +18,13 @@
 //= require jquery_nested_form
 //= require jquery-ui
 //= require gmaps.js
+//= require prototypes
+//= require es7
+
+//= require jquery-fileupload/vendor/jquery.ui.widget
+//= require jquery-fileupload/jquery.iframe-transport
+//= require jquery-fileupload/jquery.fileupload
+//= require bootstrap
 
 //= require cocoon
 //= require moment
@@ -25,9 +32,9 @@
 //= require date_calendar
 //= require popup
 //= require ajax_requests
+//= require chardinjs
 //= require react
 //= require react_ujs
 //= require components
+//= require trigger
 //= require_tree .
-
-

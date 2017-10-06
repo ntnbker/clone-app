@@ -1,185 +1,112 @@
 class MaintenanceRequestsController < ApplicationController 
   
-  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
-  before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
+  # before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  # before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
+  before_action :require_login, only:[:update]
   before_action :set_user, only:[:new,:create]
-  before_action :require_login, only:[:show,:index, :ordered_maintenance_requests]
+  
   before_action :customer_input_session, only:[:create,:new]
-  authorize_resource :class => false
+  before_action :check_for_role, only:[:new]
+  #authorize_resource :class => false
 
   def new
+    
+    if current_user != nil 
+      @current_user = current_user
+      @role = current_user.current_role
+    else
+      @current_user == nil
+      @role = nil
+    end 
+      
     @maintenance_request = MaintenanceRequest.new
     @maintenance_request.access_contacts.build
     @maintenance_request.availabilities.build
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
+
   end
 
   def create
     
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
-    
-    
 
-    if current_user == nil || current_user.tenant?
-      @maintenance_request.perform_realestate_validations = true
+    if current_user == nil || current_user.logged_in_as("Tenant")
+      @maintenance_request.perform_realestate_validations = false
+      ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
       the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email]) 
       the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email]) 
+
         if the_agency_admin
           @agency_admin = the_agency_admin
           @maintenance_request.agency_admin_id = @agency_admin.id
+          @agency = @agency_admin.agency
         end
         if the_agent
           @agent = the_agent
+          @agency_admin = @agent.agency.agency_admins.first
           @maintenance_request.agent_id = @agent.id
+          @agency = @agent.agency
         end
+        if the_agency_admin == nil && the_agent == nil
+          @agent = nil
+          @agency_admin = nil
+          @maintenance_request.agent_id = nil
+          @agency = nil
+        end 
 
-    elsif current_user.agency_admin?
+    elsif current_user.logged_in_as("AgencyAdmin")
       @agency_admin = current_user.agency_admin
+      @agency = @agency_admin.agency
       @maintenance_request.agency_admin_id = @agency_admin.id
       @maintenance_request.perform_realestate_validations = false
-    elsif current_user.agent?
+    elsif current_user.logged_in_as("Agent")
       @agent = current_user.agent
+      @agency = @agent.agency
+      @agency_admin = @agent.agency.agency_admins.first
       @maintenance_request.agent_id = @agent.id
       @maintenance_request.perform_realestate_validations = false
     end 
 
-
-    # if current_user.agency_admin?
-    #   @agency_admin = current_user.agency_admin
-    #   @maintenance_request.agency_admin_id = @agency_admin.id
-    #   @maintenance_request.perform_realestate_validations = false
-    # elsif current_user.agent?
-    #   @agent = current_user.agent
-    #   @maintenance_request.agent_id = @agent.id
-    #   @maintenance_request.perform_realestate_validations = false
-    # elsif current_user == nil || current_user.tenant?
-    #   @maintenance_request.perform_realestate_validations = true
-    # end 
     
     
     if @maintenance_request.valid?
-      
-      
-      #This user already exists
+
       @user = User.find_by(email: params[:maintenance_request][:email])
-      if @user 
-        #@maintenance_request.perform_uniqueness_validation_of_email = false
-        #user = User.find_by(email:params[:maintenance_request][:email]).id
-        @tenant = Tenant.find_by(user_id:@user.id)
-        
-        #look up property
+      if @user
+        existing_role = @user.get_role("Tenant").present?
+      end
+      #look up property 
+      @property = Property.find_by(property_address:@customer_input.address)
+      #CREATE PROPERTY
+      if !@property
+        @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id, agency_id:@agency.id)
+        @maintenance_request.property_id = @property.id
+      else
         @property = Property.find_by(property_address:@customer_input.address)
-        #CREATE PROPERTY
-        if !@property
-          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id)
-          @maintenance_request.property_id = @property.id
-          
+        @maintenance_request.property_id = @property.id
+      end 
 
-          if @tenant.property_id.nil?
-            @tenant.update_attribute(:property_id, @property.id)
-          else
-            @tenant.property_id = @tenant.property_id
-          end 
-        
-        else
-          #@property = Property.find_by(property_address:@customer_input.address)
-          @maintenance_request.property_id = @property.id
-          if @tenant.property_id.nil?
-            @tenant.update_attribute(:property_id, @property.id)
-          else
-            @tenant.property_id = @tenant.property_id
-          end 
-        end 
 
+      ############################    
+      if @user && existing_role == false
+        role = Role.new(user_id:@user.id)
+        @tenant = Tenant.create(user_id:@user.id,name:params[:maintenance_request][:name],email:params[:maintenance_request][:email],mobile:params[:maintenance_request][:mobile])
+        @tenant.roles << role
+        role.save
         
+        @maintenance_request.perform_uniqueness_validation_of_email = false
+        @tenant.update_attribute(:property_id, @property.id)
         @maintenance_request.service_type = @customer_input.tradie
-        
-        
-
         @maintenance_request.save 
-
-
-        #CREATE EXTRA TENANT FROM ACCESS CONTACTS LIST IF THEY ARE "TENANT"
-       
-        access_contact_params = params[:maintenance_request][:access_contacts_attributes]
-       
-       
-        if access_contact_params
-          
-          access_contact_params.each_value do |hash|
-            #this hash below pushes a PW key/value into the access_contacts_params has
-            #so the hash can just be used to create a user and a tenant right away
-            #must refactor!!
-            hash[:password] = SecureRandom.hex(5)
-            if hash.has_value?("Tenant")
-              hash.each do |key, value|
-                if key == "email"
-                  contact = User.find_by(email:value )
-
-                   if contact
-                    TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
-                    contact.tenant.update_attribute(:property_id,@property.id)
-                   else 
-
-                      user = User.create(hash)
-                      
-                      @contact_tenant = Tenant.new(hash)
-                      @contact_tenant.user_id = user.id
-                      @contact_tenant.property_id = @property.id
-                      role = Role.create(user_id:user.id)
-                      @contact_tenant.save
-                      @contact_tenant.roles << role
-                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
-                   end
-                end 
-              end 
-            end 
-            
-          end 
-        end 
-
-
-
-
-
         @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
 
-
-
-      
         
-        #EmailWorker.perform_async(@maintenance_request.id)
-         
-        else #This user does not exist
-        #CREATE USER
-        @maintenance_request.perform_uniqueness_validation_of_email = true
-        @user = User.create(email:params[:maintenance_request][:email], password:SecureRandom.hex(5))
-        role = Role.create(user_id:@user.id)
-        @tenant = Tenant.create(user_id:@user.id, name:params[:maintenance_request][:name],email:params[:maintenance_request][:email], mobile:params[:maintenance_request][:mobile] )
-        @tenant.roles << role
-        
-        @maintenance_request.service_type = @customer_input.tradie
-        
-        #CREATE PROPERTY
-        @property = Property.find_by(property_address:@customer_input.address)
-        if !@property
-          @property = Property.create(property_address:@customer_input.address, agency_admin_id:@agency_admin.id)
-          @maintenance_request.property_id = @property.id
-          @tenant.update_attribute(:property_id, @property.id)
-        else
-          @property = Property.find_by(property_address:@customer_input.address)
-          @maintenance_request.property_id = @property.id
-          @tenant.update_attribute(:property_id, @property.id)
-        end 
-
-        
-        @maintenance_request.save
-        
-        #CREATE TENANTS
+        #CREATE EXTRA TENANT FROM ACCESS CONTACTS LIST IF THEY ARE "TENANT"
         access_contact_params = params[:maintenance_request][:access_contacts_attributes]
         if access_contact_params
+          
           access_contact_params.each_value do |hash|
             #this hash below pushes a PW key/value into the access_contacts_params has
             #so the hash can just be used to create a user and a tenant right away
@@ -189,22 +116,34 @@ class MaintenanceRequestsController < ApplicationController
               hash.each do |key, value|
                 if key == "email"
                   contact = User.find_by(email:value )
-
-                   if contact
+                  #
+                  contact = User.find_by(email:value)
+                  if contact
+                    existing_role = contact.get_role("Tenant").present?
+                  end 
+                  
+                  if contact && existing_role == false
+                    @contact_tenant = Tenant.new(hash)
+                    @contact_tenant.user_id = contact.id
+                    @contact_tenant.property_id = @property.id
+                    role = Role.create(user_id:contact.id)
+                    @contact_tenant.save
+                    @contact_tenant.roles << role
+                    TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
+                  elsif contact && existing_role == true
                     TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
                     contact.tenant.update_attribute(:property_id,@property.id)
-                   else 
+                  else 
                     user = User.create(hash)
-                    
                     @contact_tenant = Tenant.new(hash)
                     @contact_tenant.user_id = user.id
                     @contact_tenant.property_id = @property.id
                     role = Role.create(user_id:user.id)
                     @contact_tenant.save
                     @contact_tenant.roles << role
+                    UserSetPasswordEmailWorker.perform_async(user.id)
                     TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
-
-                  end
+                  end 
                 end 
               end 
             end 
@@ -212,237 +151,287 @@ class MaintenanceRequestsController < ApplicationController
           end 
         end 
 
+      elsif @user && existing_role == true
+      ###################################     
+        @maintenance_request.perform_uniqueness_validation_of_email = false
+          @tenant = Tenant.find_by(user_id:@user.id)
+          @tenant.update_attribute(:property_id, @property.id)
+          @maintenance_request.service_type = @customer_input.tradie
+          @maintenance_request.save 
+          @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
 
-        @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
+          #CREATE EXTRA TENANT FROM ACCESS CONTACTS LIST IF THEY ARE "TENANT"
+         
+          access_contact_params = params[:maintenance_request][:access_contacts_attributes]
+         
+         
+          if access_contact_params
+            
+            access_contact_params.each_value do |hash|
+              #this hash below pushes a PW key/value into the access_contacts_params has
+              #so the hash can just be used to create a user and a tenant right away
+              #must refactor!!
+              hash[:password] = SecureRandom.hex(5)
+              if hash.has_value?("Tenant")
+                hash.each do |key, value|
+                  if key == "email"
+                    #
+                    contact = User.find_by(email:value)
+                    if contact
+                      existing_role = contact.get_role("Tenant").present?
+                    end 
+                    
+                    if contact && existing_role == false
+                      @contact_tenant = Tenant.new(hash)
+                      @contact_tenant.user_id = contact.id
+                      @contact_tenant.property_id = @property.id
+                      role = Role.create(user_id:contact.id)
+                      @contact_tenant.save
+                      @contact_tenant.roles << role
+                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
+                    elsif contact && existing_role == true
+                      TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
+                      contact.tenant.update_attribute(:property_id,@property.id)
+                    else 
+                      user = User.create(hash)
+                      @contact_tenant = Tenant.new(hash)
+                      @contact_tenant.user_id = user.id
+                      @contact_tenant.property_id = @property.id
+                      role = Role.create(user_id:user.id)
+                      @contact_tenant.save
+                      @contact_tenant.roles << role
+                      UserSetPasswordEmailWorker.perform_async(user.id)
+                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
+                    end 
+                  end 
+                end 
+              end 
+              
+            end 
+          end 
 
-
-
+      #########################
+      else #This user does not exist
+          #CREATE USER
+          @maintenance_request.perform_uniqueness_validation_of_email = true
+          @user = User.create(email:params[:maintenance_request][:email], password:SecureRandom.hex(5))
+          role = Role.create(user_id:@user.id)
+          @tenant = Tenant.create(property_id:@property.id,user_id:@user.id, name:params[:maintenance_request][:name],email:params[:maintenance_request][:email], mobile:params[:maintenance_request][:mobile] )
+          @tenant.roles << role
+          @maintenance_request.tenant_id = @tenant.id
+          @maintenance_request.service_type = @customer_input.tradie
+          @maintenance_request.save
+          @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
+          UserSetPasswordEmailWorker.perform_async(@user.id)
+          
+          #CREATE TENANTS
+          access_contact_params = params[:maintenance_request][:access_contacts_attributes]
+          if access_contact_params
+            access_contact_params.each_value do |hash|
+              #this hash below pushes a PW key/value into the access_contacts_params has
+              #so the hash can just be used to create a user and a tenant right away
+              #must refactor!!
+              hash[:password] = SecureRandom.hex(5)
+              if hash.has_value?("Tenant")
+                hash.each do |key, value|
+                  if key == "email"
+                    #
+                    contact = User.find_by(email:value)
+                    if contact
+                      existing_role = contact.get_role("Tenant").present?
+                    end 
+                    
+                    if contact && existing_role == false
+                      @contact_tenant = Tenant.new(hash)
+                      @contact_tenant.user_id = contact.id
+                      @contact_tenant.property_id = @property.id
+                      role = Role.create(user_id:contact.id)
+                      @contact_tenant.save
+                      @contact_tenant.roles << role
+                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
+                    elsif contact && existing_role == true
+                      
+                      TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
+                      contact.tenant.update_attribute(:property_id,@property.id)
+                    else 
+                      user = User.create(hash)
+                      @contact_tenant = Tenant.new(hash)
+                      @contact_tenant.user_id = user.id
+                      @contact_tenant.property_id = @property.id
+                      role = Role.create(user_id:user.id)
+                      @contact_tenant.save
+                      @contact_tenant.roles << role
+                      UserSetPasswordEmailWorker.perform_async(user.id)
+                      TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
+                    end 
+                  end 
+                end 
+              end 
+              
+            end 
+          end 
       end 
       
       
-
+      the_url = agency_admin_maintenance_request_url(@maintenance_request)
      
-      EmailWorker.perform_async(@maintenance_request.id)
-      
+
+      #EmailWorker.perform_in(5.minutes, @maintenance_request.id)
+
+      #AgencyAdminOrAgentNewMaintenanceRequestNotificationTextingWorker.perform_async(@maintenance_request.id,the_url)
 
       MaintenanceRequest.last.reindex
       if current_user == nil
-        flash[:danger]= "Thank You for creating a maintenance request, please log in to see your maintenance request"
+        EmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        flash[:success]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
         redirect_to root_path
-      elsif current_user.agency_admin? || current_user.agent? || current_user.landlord? || current_user.tenant? 
-        flash[:success]= "Thank You for creating a Maintenance Request"
-        redirect_to maintenance_request_path(@maintenance_request)
+      elsif current_user.logged_in_as("AgencyAdmin")
+        AgentSubmittedMaintenanceRequestEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        NotifyTenantMaintenanceRequestSubmittedEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
+        redirect_to agency_admin_maintenance_request_path(@maintenance_request)
+      elsif current_user.logged_in_as("Agent")
+        AgentSubmittedMaintenanceRequestEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        NotifyTenantMaintenanceRequestSubmittedEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
+        redirect_to agent_maintenance_request_path(@maintenance_request)
+      elsif current_user.logged_in_as("Tenant") 
+        EmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        flash[:success]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
+        redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
-      
+
+      Log.create(maintenance_request_id:@maintenance_request.id, action:"Maintenance request created.")
     else
       
-      flash[:danger]= "Something went wrong"
-      render :new
-      
+      flash[:danger]= "Something went wrong."
+      render json: @maintenance_request.errors
+
     end 
   end
 
-  def show
-    @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @quote = @quotes.where(:status=>"Approved").first if !nil
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices
+  def update
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-    if @quote
-      @quote_id = @quote.id
-    else
-      @quote_id = ''
-    end 
-
-    @message = Message.new
-    @landlord = Landlord.new
-    @tradie = Trady.new
-     
-    if @maintenance_request.maintenance_request_image != nil
-      @gallery = @maintenance_request.maintenance_request_image.images
-    end 
+    @maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
     
-    if @maintenance_request.trady != nil
-      @trady_id = @maintenance_request.trady.id
-      if @maintenance_request.trady.trady_company != nil
-        @trady_company_id = @maintenance_request.trady.trady_company.id
+    if @maintenance_request.agency_admin 
+      if @maintenance_request.agency_admin.agency.tradies 
+        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
+      else 
+        @all_tradies= []
       end 
-    end 
-   
-    if !@maintenance_request.invoices.empty? 
-      @invoice = @maintenance_request.invoices.first
-    end 
-
-    if @maintenance_request.agency_admin != nil
-      if @maintenance_request.agency_admin.agency.tradies !=nil
-        @all_tradies = @maintenance_request.agency_admin.agency.tradies.where(:skill=>@maintenance_request.service_type) 
+    elsif @maintenance_request.agent
+      if @maintenance_request.agent.agency.tradies 
+        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type)  
       else 
         @all_tradies= []
       end 
     end 
 
-    if @maintenance_request.agent != nil
-      if @maintenance_request.agent.agency.tradies !=nil 
-        @all_tradies = @maintenance_request.agent.agency.tradies.where(:skill=>@maintenance_request.service_type) 
-      else 
-        @all_tradies= []
-      end
-    end 
-    
 
+    respond_to do |format|
+      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
+      format.html {render body: nil}
 
-
-    if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
-      @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
-    end 
-
-    if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
-      @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
-    end 
-    
-  end
-
-
-  def index
-
-    if params[:sort_by_date] == "Newest to Oldest"
-      sort = "DESC"
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      end
-    else
-      sort = "ASC"
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      end 
     end
-
-    @page = params[:page]
-    @sort_by_date = params[:sort_by_date]
-    @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
-    @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
-    @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
-    @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
-    
-    @awaiting_owner_initiation_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Initiation")
-    @awaiting_owner_instruction_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Instruction")
-    @quote_requested_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Requested")
-    @awaiting_trady_initiation_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Tradie Initiation")
-    @awaiting_trady_quote_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Quote")
-    @awaiting_quote_approval_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received Awaiting Approval")
-    @trady_organise_appointment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Approved Tradie To Organise Appointment")
-    @trady_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tradie To Confirm Appointment")
-    @tenant_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Tenant To Confirm Appointment")
-    @landlord_confirm_appointment_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Landlord To Confirm Appointment")
-    @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")
   end
 
+  def update_status
 
-  def ordered_maintenance_requests
-    
-    if params[:sort_by_date] == "Oldest to Newest"
-      sort = "ASC"
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 3)
-      end 
-    elsif params[:sort_by_date] == "Newest to Oldest"
-      sort = "DESC"
-
-      @maintenance_requests = if current_user.agency_admin?
-        current_user.agency_admin.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.agent?
-        current_user.agent.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.tenant?
-        current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      elsif current_user.trady?
-        current_user.trady.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 3)
-      end
-
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category])
+    action_status = maintenance_request.action_status
+    respond_to do |format|
+      format.json {render json:action_status}
     end 
-
   end
+
 
 
   private
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:image,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], maintenance_request_image_attributes:[:id, :maintenance_request_id,{images: []},:_destroy])
+    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
   end
 
   def set_user
     @user = User.new
   end
 
-  def email_auto_login(id)
-
-    if current_user == nil
-      user = User.find_by(id:id)
-      auto_login(user)
+  def check_for_role
+    @customer_input = Query.find_by(id:session[:customer_input])
+    if current_user
+      if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
+        if @customer_input.user_role == "Tenant"
+          flash[:notice] = "Sorry you are signed in as an agent. To submit a maintenance request as a tenant please log out and try again."
+          redirect_to root_path
+        end 
+      elsif current_user.current_role.role == "Landlord" 
+        if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+          flash[:notice] = "Sorry you are signed in as a Landlord. To submit a maintenance request as a tenant please log out and try again."
+          redirect_to root_path
+        end 
+      elsif current_user.current_role.role == "Trady"
+        if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+          flash[:notice] = "Sorry you are signed in as a Trady. To submit a maintenance request as a tenant please log out and try again."
+          redirect_to root_path
+        end 
+      end 
     end 
   end
 
+  # def email_auto_login(id)
+
+  #   if current_user == nil
+  #     user = User.find_by(id:id)
+  #     auto_login(user)
+  #   end 
+  # end
+
   def maintenance_request_stakeholders(maintenance_request_id)
-    mr = MaintenanceRequest.find_by(id:maintenance_request_id)
-    mr_tenants = mr.tenants
-    mr_agent = mr.agent.user.id if mr.agent != nil
-    mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
-    mr_landlord = mr.property.landlord.user.id if mr.property.landlord_id != nil 
-    mr_trady = mr.trady.user.id if mr.trady !=nil
+    # mr = MaintenanceRequest.find_by(id:maintenance_request_id)
+    # mr_tenants = mr.tenants
+    # #mr_agent = mr.agent.user.id if mr.agent != nil
+    # mr_agency_admin = mr.agency_admin.user.id if mr.agency_admin != nil
+    # mr_landlord = mr.property.landlord.user.id if mr.property.landlord_id != nil 
+    # mr_trady = mr.trady.user.id if mr.trady !=nil
     
-    mr_user_affiliates_array = []
+    # mr_user_affiliates_array = []
     
-    if mr_agent != nil
-      mr_user_affiliates_array.push(mr_agent)
-    end 
+    # if mr_agent != nil
+    #   mr_user_affiliates_array.push(mr_agent)
+    # end 
 
-    if mr_agency_admin != nil
-      mr_user_affiliates_array.push(mr_agency_admin)
-    end
+    # if mr_agency_admin != nil
+    #   mr_user_affiliates_array.push(mr_agency_admin)
+    # end
 
-    if mr_landlord !=nil 
-      mr_user_affiliates_array.push(mr_landlord)
-    end
+    # if mr_landlord !=nil 
+    #   mr_user_affiliates_array.push(mr_landlord)
+    # end
 
-    if mr_trady !=nil 
-      mr_user_affiliates_array.push(mr_trady)
-    end 
-
-
-    
-    mr_tenants.each do |tenant|
-      mr_user_affiliates_array.push(tenant.user.id)
-    end 
+    # if mr_trady !=nil 
+    #   mr_user_affiliates_array.push(mr_trady)
+    # end 
 
 
     
+    # mr_tenants.each do |tenant|
+    #   mr_user_affiliates_array.push(tenant.user.id)
+    # end 
+
+
     
     
-    if mr_user_affiliates_array.include?(current_user.id)
-        #do nothing
     
-    else
-      flash[:danger] = "Sorry you are not allowed to see that!!!"
-      redirect_to root_path
-    end
+    # if mr_user_affiliates_array.include?(current_user.id)
+    #     #do nothing
+    
+    # else
+    #   flash[:danger] = "Sorry you are not allowed to see that!!!"
+    #   redirect_to root_path
+    # end
   end
 
 

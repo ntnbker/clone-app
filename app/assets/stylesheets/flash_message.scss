@@ -1,0 +1,32 @@
+.content-message {
+  height: 50px;
+  padding: 0 10px;
+  @include flexbox;
+  @include align-items(center);
+  @include justify-content(space-between);
+
+  .close {
+    text-align: right;
+    color: #000;
+    opacity: .3;
+
+    &:hover, &:active {
+      opacity: .5;
+    }
+  }
+}
+
+.alert-message {
+  background: #D6EAF9;
+  color: #31708f;
+}
+
+.alert-danger {
+  background-color: #F2DEDE;
+  color: #a94442;
+}
+
+.alert-success {
+  color: #3c763d;
+  background-color: #dff0d8;
+}

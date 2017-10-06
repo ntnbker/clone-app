@@ -1,0 +1,62 @@
+.modal-instruction{
+	z-index: 9999998 !important;
+	.modal-dialog {
+		@include flexbox;
+		height: calc(100% - 60px);
+		@include align-items(center);
+		@media (min-width: 1025px) {
+			@include align-items(flex-start);
+		}
+		.modal-content {
+			background: none !important;
+			border: none !important;
+			box-shadow: none;
+			color: #fff;
+			.instruction {
+				label {
+					text-transform: initial !important;
+					font-weight: normal;
+				}
+				input {
+					width: auto !important;
+				}
+			}
+			input[type="checkbox"] {
+				position: absolute;
+				opacity: 0;
+				z-index: -1;
+				width:20px !important;
+				height:20px !important;
+				border-radius: 0 !important;
+			}
+			input[type="checkbox"]+span {
+				font: 14px sans-serif;
+				color: #fff;
+			}
+			input[type="checkbox"]+span:before {
+				font: 16pt FontAwesome;
+				content: '\00f096';
+				display: inline-block;
+				padding: 2px 0 0 3px;
+				margin-right: 0.5em;
+				border-radius: 0 !important;
+			}
+			input[type="checkbox"]:checked+span:before {
+				content: '\00f046';
+			}
+			input[type="checkbox"]:focus+span:before {
+				outline: 1px dotted #fff;
+			}
+			input[type="checkbox"]:disabled+span {
+				color: #fff;
+			}
+			input[type="checkbox"]:not(:disabled)+span:hover:before {
+			}
+
+			button {
+				background-color: #ff6666;
+				border: 0;
+			}
+		}
+	}
+}

@@ -1,36 +1,40 @@
-%h1 
-  This is where we will show the appointment time and the button to pick if they want it or not 
-
 %div.container.well 
-  %h5
-    Maintenance Request: 
-    =@maintenance_request.maintenance_heading
-  %p 
-    Maintenance Request Summary: 
-    =@maintenance_request.maintenance_description
-  %h5
-    Appointment Date: 
-    =@appointment.date.strftime("%A %B %d %Y")
-  %h5 
-    Appointment Time: 
-    =@appointment.time.strftime('%r')
+  %div.appointments
+    %h5.text-center.maintenance-header
+      =@maintenance_request.maintenance_heading
+    %p.maintenance-content
+      =@maintenance_request.maintenance_description
+    -if @appointment.status == "Active"
+      %h5
+        Suggested Appointment Time
+    -elsif @appointment.status == "Accepted"
+      %h5
+        Accepted Appointment Time
+    %div.date-time
+      %p
+        Appointment Date: 
+        =@appointment.date.strftime("%A %B %d %Y")
+      %p
+        Appointment Time: 
+        =@appointment.time.strftime("%H:%M %p")
 
-  %div
-    %h3
-      Comments
-    -@appointment.comments.each do |comment|
+    %div.appointment-comments
+      -@appointment.comments.each do |comment|
+        %div.comment
+          %p.content
+            =comment.body
+          %p.detail
+            %span.time
+              = comment.created_at.strftime("%b %d, %Y %H:%M")
 
-      %div.well
-        =comment.body
-      %br
+    -if @appointment.status == "Active"
+      %div.btn-action
+        %button.accept
+          =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
 
-  %div 
-    %button
-      =link_to "Accept Appointment", accept_appointment_path(appointment_id:@appointment.id, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id, current_user_role:current_user.role.roleable_type), method: :post
-
-      / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
-    %button
-      =link_to "Suggest Other Appointment Time", edit_appointment_path(@appointment,maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id)
+          / This button Below should only show up if appointment status is Active. Should disappear if its Accepted. 
+        %button.other
+          =link_to "Suggest Other Appointment Time", edit_appointment_path(@appointment,maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, tenant_id:@tenant_id)
 
 
 

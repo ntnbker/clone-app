@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170331082541) do
+ActiveRecord::Schema.define(version: 20170918040425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,11 +66,11 @@ ActiveRecord::Schema.define(version: 20170331082541) do
 
   create_table "agency_admins", force: :cascade do |t|
     t.string  "email"
+    t.string  "first_name"
     t.string  "last_name"
     t.integer "user_id"
     t.string  "mobile_phone"
     t.integer "agency_id"
-    t.string  "first_name"
     t.string  "license_number"
   end
 
@@ -128,6 +128,8 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "landlord_id"
+    t.string   "current_user_role"
+    t.string   "appointment_type"
   end
 
   create_table "availabilities", force: :cascade do |t|
@@ -157,6 +159,14 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.datetime "updated_at",             null: false
     t.string   "conversation_type"
     t.integer  "maintenance_request_id"
+    t.integer  "quote_id"
+  end
+
+  create_table "current_roles", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "gods", force: :cascade do |t|
@@ -168,6 +178,20 @@ ActiveRecord::Schema.define(version: 20170331082541) do
 
   create_table "guests", force: :cascade do |t|
     t.integer "user_id"
+  end
+
+  create_table "images", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.text     "image_data"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "instructions", force: :cascade do |t|
+    t.boolean  "read_instruction"
+    t.integer  "user_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "invoice_items", force: :cascade do |t|
@@ -194,13 +218,18 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.integer  "trady_id"
     t.integer  "maintenance_request_id"
     t.float    "amount"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.boolean  "tax"
     t.integer  "ledger_id"
     t.float    "gst_amount"
     t.date     "due_date"
     t.boolean  "delivery_status"
+    t.boolean  "print_status"
+    t.string   "invoice_number"
+    t.text     "trady_invoice_reference"
+    t.boolean  "paid",                    default: false
+    t.integer  "quote_id"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -220,6 +249,14 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.integer  "super_ledger_id"
   end
 
+  create_table "logs", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.string   "action"
+    t.string   "name"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "main_users", force: :cascade do |t|
     t.string   "main_user_type"
     t.datetime "created_at",     null: false
@@ -232,6 +269,7 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.integer  "maintenance_request_id"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.text     "image_data"
   end
 
   create_table "maintenance_requests", force: :cascade do |t|
@@ -257,6 +295,8 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.integer  "agency_id"
     t.integer  "agency_admin_id"
     t.integer  "trady_id"
+    t.text     "availability_and_access"
+    t.string   "work_order_number"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -265,12 +305,14 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.datetime "updated_at",      null: false
     t.text     "body"
     t.integer  "conversation_id"
+    t.string   "role"
   end
 
   create_table "properties", force: :cascade do |t|
     t.integer "agency_admin_id"
     t.integer "landlord_id"
     t.string  "property_address"
+    t.integer "agency_id"
   end
 
   create_table "queries", force: :cascade do |t|
@@ -283,13 +325,22 @@ ActiveRecord::Schema.define(version: 20170331082541) do
   create_table "quote_items", force: :cascade do |t|
     t.integer "quote_id"
     t.string  "item_description"
-    t.integer "amount"
+    t.float   "amount"
     t.string  "pricing_type"
     t.float   "hours"
+    t.float   "total_per_hour"
+  end
+
+  create_table "quote_requests", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.integer  "trady_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "quote_id"
   end
 
   create_table "quotes", force: :cascade do |t|
-    t.integer  "amount"
+    t.float    "amount"
     t.integer  "maintenance_request_id"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
@@ -297,6 +348,10 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.string   "status"
     t.boolean  "delivery_status"
     t.boolean  "tax"
+    t.float    "gst_amount"
+    t.boolean  "forwarded_to_landlord"
+    t.string   "quote_number"
+    t.text     "trady_quote_reference"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -315,6 +370,13 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "god_id"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string   "skill"
+    t.integer  "trady_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "super_ledgers", force: :cascade do |t|
@@ -373,13 +435,38 @@ ActiveRecord::Schema.define(version: 20170331082541) do
     t.integer  "trady_id"
   end
 
-  create_table "uploaded_invoices", force: :cascade do |t|
-    t.string   "invoices",               default: [],              array: true
+  create_table "trady_statuses", force: :cascade do |t|
     t.integer  "maintenance_request_id"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.string   "status"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "uploaded_invoices", force: :cascade do |t|
+    t.integer  "maintenance_request_id"
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.integer  "trady_id"
     t.boolean  "delivery_status"
+    t.text     "pdf_data"
+    t.boolean  "paid",                   default: false
+  end
+
+  create_table "uploaded_quotes", force: :cascade do |t|
+    t.string   "quotes",                 default: [],              array: true
+    t.integer  "maintenance_request_id"
+    t.boolean  "delivery_status"
+    t.integer  "trady_id"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "status"
+  end
+
+  create_table "urls", force: :cascade do |t|
+    t.text     "short_url"
+    t.text     "original_url"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "user_conversations", force: :cascade do |t|

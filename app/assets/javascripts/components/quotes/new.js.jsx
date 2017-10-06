@@ -31,55 +31,59 @@ var QuoteField = React.createClass({
         }
         return <div className="quotefield" style={{display: this.state.remove ? 'none' : 'block' }}>
             <fieldset>
-                <p> Item description </p>
-                <input type="text"
-                       id={'quote_quote_items_attributes_' + x + '_item_description'}
-                       name={'quote[quote_items_attributes][' + x + '][item_description]'}
-                       defaultValue={quote ? quote.item_description : ''}
+                <div>
+                    <input 
+                        required
+                        type="text"
+                        placeholder="Item description"
+                        className="text-center"
+                        defaultValue={quote ? quote.item_description : ''}
+                        id={'quote_quote_items_attributes_' + x + '_item_description'}
+                        name={'quote[quote_items_attributes][' + x + '][item_description]'}
                     />
-
-                <p> Amount </p>
-                <input type="text"
-                       id={'quote_quote_items_attributes_' + x + '_amount'}
-                       name={'quote[quote_items_attributes][' + x + '][amount]'}
-                       defaultValue={quote ? quote.amount : ''}
+                </div>
+                <div className="amount">
+                    <select 
+                        onChange={this.onPricing}
+                        value={this.state.pricing_type}
+                        className="text-center select"
+                        id={'quote_quote_items_attributes_' + x + '_pricing_type'}
+                        name={'quote[quote_items_attributes][' + x + '][pricing_type]'}
+                    >
+                        <option value="Fixed Cost">Fixed Cost</option>
+                        <option value="Hourly">Hourly</option>
+                    </select>
+                    <input 
+                        required
+                        type="number"
+                        placeholder="Amount"
+                        defaultValue={quote ? quote.amount : ''}
+                        className="text-center price"
+                        id={'quote_quote_items_attributes_' + x + '_amount'}
+                        name={'quote[quote_items_attributes][' + x + '][amount]'}
                     />
-
-                <p> Pricing type </p>
-                <select value={this.state.pricing_type}
-                     onChange={this.onPricing}
-                         name={'quote[quote_items_attributes][' + x + '][pricing_type]'}
-                           id={'quote_quote_items_attributes_' + x + '_pricing_type'}>
-                    <option value="Fixed Cost">Fixed Cost</option>
-                    <option value="Hourly">Hourly</option>
-                </select>
-                {
-                    this.state.hours_input
-                    ? <div>
-                        <p> Number of Hours </p>
-                        <input type="text"
-                               id={'quote_quote_items_attributes_' + x + '_hours'}
-                               name={'quote[quote_items_attributes][' + x + '][hours]'}
-                               defaultValue={quote ? quote.hours : ''}
-                            />
-                     </div>
-                    : <input type="hidden"
-                             id={'quote_quote_items_attributes_' + x + '_hours'}
-                             name={'quote[quote_items_attributes][' + x + '][hours]'}
-                        />
-                }
-                <input type="hidden" value={this.state.remove} name={'quote[quote_items_attributes][' + x + '][_destroy]'} id={'quote_quote_items_attributes_' + x + '__destroy'}/>
-                {quote
-                ? <input type="hidden" value={x} name={'quote[quote_items_attributes][' + x + '][id]'} id={'quote_iquote_items_attributes_' + x + '_id'} />
-                : null }
+                    <input 
+                        type="hidden"
+                        id={'quote_quote_items_attributes_' + x + '_hours'}
+                        name={'quote[quote_items_attributes][' + x + '][hours]'}
+                    />
+                    <input type="hidden" value={this.state.remove} name={'quote[quote_items_attributes][' + x + '][_destroy]'} id={'quote_quote_items_attributes_' + x + '__destroy'}/>
+                    {   quote && 
+                        <input type="hidden" value={x} name={'quote[quote_items_attributes][' + x + '][id]'} id={'quote_iquote_items_attributes_' + x + '_id'} />
+                    }
+                </div>
+                
             </fieldset>
-            <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+            <div className="text-center">
+                <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+            </div>
         </div>
     }
 });
 
 var QuoteFields = React.createClass({
     render: function() {
+        const {trady_company, quote} = this.props;
         return <form role="form" id="new_quote" action={this.props.id ? '/quotes/'+this.props.id : '/quotes'} acceptCharset="UTF-8" method="post">   
             <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
             
@@ -88,19 +92,24 @@ var QuoteFields = React.createClass({
             <input type="hidden" value={this.props.trady_id} name="quote[trady_id]" id="quote_trady_id" />
             <input type="hidden" value={this.props.status} name="quote[status]" id="quote_status" />
             <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
+            <input type="hidden" value={this.props.quote_type} name="quote[quote_type]" id="quote_type" />
+            <input type="hidden" value={this.props.system_plan} name="quote[system_plan]" id="system_plan" />
+            <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} flag="quote"/>
 
-            <FieldList existingContent={this.props.quote_items} SampleField={QuoteField} />
+            <div className="text-center">
+                <input type="text" className="m-t-lg text-center" defaultValue={quote && quote.trady_quote_reference} name="quote[trady_quote_reference]" placeholder="Quote Reference Number"/>
+            </div>
 
             <label className="quote_tax">
                 <input type="hidden" value="0" name="quote[tax]" />
-                <input type="checkbox" value="1" defaultChecked={this.props.tax ? this.props.tax : false} name="quote[tax]" id="quote_tax" />
-                Add GST
+                <input type="checkbox" value="1" defaultChecked={trady_company.gst_registration ? trady_company.gst_registration : false} name="quote[tax]" id="quote_tax" />
+                Check box when price includes GST.
             </label>
 
             <hr />
 
-            <div className="qf-button">
-                <button className="button"> <a href={this.props.backlink}> Back </a> </button>
+            <div className="text-center">
+                <a className="button m-r-lg" href={this.props.backlink}> Back </a>
                 <input type="submit" name="commit" value="Next" className="button-primary green" data-disable-with="Next" />
             </div>
         </form>

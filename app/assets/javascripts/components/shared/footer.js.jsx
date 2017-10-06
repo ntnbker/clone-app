@@ -41,9 +41,10 @@ var Footer = React.createClass({
             </div>
         </div>
     },
+
     footer() {
         return <div className="footer-other">
-            <div className="container">
+            <div className="footer-custom">
                 <div className="footer-social">
                     <div> <img src="/assets/ico-twitter.png" /> </div>
                     <div> <img src="/assets/ico-facebook.png" /> </div>
@@ -63,8 +64,18 @@ var Footer = React.createClass({
             </div>
         </div>
     },
+
+    componentDidMount: function() {
+        $(document).ready(function () {
+            var footerHeight = $('#footer').height();
+            if(footerHeight > 0) {
+                $('#main').css('margin-bottom', footerHeight);
+            }
+        });
+    },
+
     render: function() {
-        return <div>
+        return <div id="footer">
             { this.props.expanded
             ? this.footerForExpanded()
             : this.footer() }

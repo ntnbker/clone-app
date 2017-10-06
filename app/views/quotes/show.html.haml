@@ -1,31 +1,71 @@
 %div.container.well
-  %div.send-quote
-    %h4
-      Maintenance Request Quote
-    -@quote.quote_items.each do |f|
-      %div.row
-        %hr
-        -if f.pricing_type == "Hourly"
-          %p
-            ="#{f.item_description.capitalize} (#{f.hours} hours X $ #{f.amount.to_f} /hour) : $#{f.amount * f.hours}" 
-        -elsif f.pricing_type == "Fixed Cost"
-          %p
-            ="#{f.item_description.capitalize}: $ #{f.amount.to_f}"
+  %div.send-email-quote
+    %div.header-quote
+      %div.logo
+        = link_to "#" do
+          %img{:src => asset_path("assets/logo.png"), :class => 'img'}
+      %div.info-quote
+        %p
+          %span
+            = "#{@trady.trady_company.company_name}"
+        %p
+          %span
+            = "#{@trady.trady_company.abn}"
+        %p
+          %span
+            = "#{@trady.trady_company.address}"
+        %p
+          %span
+            = "#{@trady.trady_company.mobile_number}"
+        %p
+          %span
+            = "#{@trady.trady_company.email}"
+
     %hr
-    %div.row
-    -if @quote.tax == true
-      %p
-        = "GST: #{ (@quote.amount - @quote.amount/1.10).round(2)}"
-    -elsif @quote.tax == false
-      %p
-        GST: $ 0.00
-    %br    
-    %span
-      ="Total: $#{@quote.amount}"
-    %br    
-    
-    %button{:type=>"button", :class=>"button button-primary"} 
-      =link_to "Edit Quote", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id)
-    %button{:type=>"button", :class=>"button button-primary green"} 
-      =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id)
-/ = "GST: #{@quote.amount*0.10}"
+    %div.quote
+      %div.info-agency
+        %p.color-grey.bill-to Bill To
+        %p.text-capitalize
+          = @landlord ? "#{@landlord.name}" : nil
+        %p
+          = @agency ? "C/-" + "#{@agency.company_name}" : nil
+        %p
+          = @agency ? "#{@agency.address}" : nil
+
+      %div.date-quote
+        %p
+          %span.font-bold Quote Reference:
+          %span
+            = @quote.trady_quote_reference != "" ? "#{@quote.trady_quote_reference}" : "#{@property.property_address}"
+        %p
+          %span.font-bold Quote Date:
+          %span
+            = "#{@quote.created_at.strftime('%B %d, %Y')}"
+    %div.quote-items
+       
+      %table
+        %tr
+          %th Description
+          %th Pricing
+          %th.text-right Rate
+          %th.text-right Amount
+        -@quote.quote_items.each do |f|
+        
+          %tr
+            %td
+              ="#{f.item_description.capitalize}"
+            %td 
+              =f.pricing_type
+
+            %td.text-right
+              -if f.pricing_type == 'Hourly'
+                ="$#{f.amount.round(2)}" 
+            %td.text-right
+              -if f.pricing_type == 'Fixed Cost'
+                = "$#{f.amount.round(2)}"
+
+      %div.button-quote
+        %button{:type=>"button", :class=>"button button-primary"} 
+          =link_to "Back", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan)
+        %button{:type=>"button", :class=>"button button-primary green"} 
+          =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id)
