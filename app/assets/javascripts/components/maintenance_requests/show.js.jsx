@@ -1688,8 +1688,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote,
 					notification: {
-						title: "Forward Landlord",
-						content: "The email about quote information was sent for Landlord.",
+						title: "Forward Quote To Landlord",
+						content: "You have successfully emailed the quote to the landlord.",
 						bgClass: "bg-success",
 					}
 				});
@@ -1757,8 +1757,8 @@ var MaintenanceRequest = React.createClass({
 						tradies: res.all_tradies,
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
-							title: "Request Quote",
-							content: 'Thank you, a quote has been emailed to "' + params.trady.company_name +'". We will notify you once the quote been received.',
+							title: "Quote Request Sent",
+							content: 'Thank you, an email has been sent to ' + params.trady.company_name +' requesting a quote for the job. We will notify you once the quote been received.',
 							bgClass: "bg-success",
 						},
 					});
@@ -1767,7 +1767,7 @@ var MaintenanceRequest = React.createClass({
 				error: function(err) {
 					self.setState({notification: {
 						title: "Request Quote",
-						content: "The request quote is error",
+						content: "An error has occured with the quote request",
 						bgClass: "bg-error",
 					}});
 					self.onModalWith('notification');
@@ -1796,7 +1796,7 @@ var MaintenanceRequest = React.createClass({
 					tradies: res.all_tradies,
 					notification: {
 						title: "Send Work Order",
-						content: 'Thank you, a work order has been emailed to "Trady Company". You will receive an invoice form "Trady Company" once the job has been completed',
+						content: 'Thank you, a work order has been emailed to ' + params.trady.company_name +'. You will receive an invoice form ' + params.trady.company_name +' once the job has been completed',
 						bgClass: "bg-success",
 					},
 				});
@@ -1831,8 +1831,8 @@ var MaintenanceRequest = React.createClass({
 			success: function(res){
 				self.setState({
 					notification: {
-						title: "Assign Matenance Request",
-						content: "Thank you for reassigning this Mantenance Request.",
+						title: "Assign Maintenance Request",
+						content: "Thank you for reassigning this Maintenance Request.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1841,7 +1841,7 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Assign Matenance Request",
-					content: "The Assign Matenance Request was error" ,
+					content: "An error occured reassigning this maintenance request." ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1869,7 +1869,7 @@ var MaintenanceRequest = React.createClass({
 					maintenance_request: maintenance_request,
 					notification: {
 						title: "Edit Maintenance Request",
-						content: "The Maintenance Request was update",
+						content: "The Maintenance Request has been updated.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1878,7 +1878,7 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Edit Maintenance Request",
-					content: "The Maintenance Request didnt update!" ,
+					content: "The Maintenance Request didn't update!" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1907,7 +1907,7 @@ var MaintenanceRequest = React.createClass({
 					status: res,
 					notification: {
 						title: "Update Status",
-						content: "Thank you for updating the Mantenance Request status",
+						content: "Thank you for updating the maintenance request status.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1916,7 +1916,7 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Update Status",
-					content: "The Status of Maintenance Request didnt update!" ,
+					content: "The Status of Maintenance Request didn't update!" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1951,7 +1951,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					notification: {
 						title: "Mark As Paid",
-						content: "You was paid",
+						content: "You have marked this invoice as paid.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1960,7 +1960,7 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Mark As Paid",
-					content: "You didn't pid" ,
+					content: "An error occured marking this invoice as paid." ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -2282,7 +2282,7 @@ var MaintenanceRequest = React.createClass({
 							title="Update Status"
 							quote={this.state.quote}
 							click={this.updateStatusMR}
-							content="Are you sure you want to update the Maintenance request status ?"
+							content="Are you sure you want to update the maintenance request status ?"
 						/>
 					);
 
@@ -2293,7 +2293,7 @@ var MaintenanceRequest = React.createClass({
 							quote={this.state.quote}
 							click={this.assignToUser}
 							title="Assign Matenance Request"
-							content="Are you sure you want to Reassign this Maintenance request ?"
+							content="Are you sure you want to reassign this maintenance request?"
 						/>
 					);
 
