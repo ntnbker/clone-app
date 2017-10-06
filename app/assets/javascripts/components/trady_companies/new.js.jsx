@@ -1,6 +1,6 @@
 var AddTradycompany = React.createClass({
   getInitialState: function () {
-    return { 
+    return {
     	errorABN: false,
     	openModal: false,
       errorPhone: false,
@@ -14,7 +14,7 @@ var AddTradycompany = React.createClass({
     	errorAccountName: false,
     	errorMailingAdress: false,
       address: this.props.address,
-      mailing_address: this.props.mailing_address, 
+      mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
       notification: {
       	title: "",
@@ -37,7 +37,7 @@ var AddTradycompany = React.createClass({
   	if(!this.state.same_Address) {
   		this.setState({
 	     	mailing_address: this.state.address
-	    	
+
 	   	});
   	}
 
@@ -91,7 +91,7 @@ var AddTradycompany = React.createClass({
   				return this.setState({
   					errorEmail: false
   				});
-  			else 
+  			else
   				return this.setState({
   					errorEmail: true
   				});
@@ -136,7 +136,7 @@ var AddTradycompany = React.createClass({
   					errorABN: true
   				});
   		}
-  		default: 
+  		default:
   			break;
   	}
   },
@@ -148,8 +148,9 @@ var AddTradycompany = React.createClass({
   },
 
   onSubmit: function(e){
-  	
+
   	var flag = false;
+    let isInvoice = this.props.system_plan === 'Invoice';
 
   	if(!this.company_name.value) {
   		flag = true;
@@ -192,7 +193,7 @@ var AddTradycompany = React.createClass({
   			errorEmail: true
   		});
   	}
-    
+
   	if(!this.mobile_number.value || !PHONE_REGEXP.test(this.mobile_number.value)) {
   		flag = true;
   		this.setState({
@@ -200,26 +201,28 @@ var AddTradycompany = React.createClass({
   		});
   	}
 
-  	if(!this.account_name.value) {
-  		flag = true;
-  		this.setState({
-  			errorAccountName: true
-  		});
-  	}
+    if (isInvoice) {
+      if(!this.account_name.value) {
+        flag = true;
+        this.setState({
+          errorAccountName: true
+        });
+      }
 
-  	if(!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
-  		flag = true;
-  		this.setState({
-  			errorBsbNumber: true
-  		});
-  	}
+      if(!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
+        flag = true;
+        this.setState({
+          errorBsbNumber: true
+        });
+      }
 
-  	if(!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
-  		flag = true;
-  		this.setState({
-  			errorBankNumber: true
-  		});
-  	}
+      if(!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
+        flag = true;
+        this.setState({
+          errorBankNumber: true
+        });
+      }
+    }
 
   	if(!flag) {
   		var params = {
@@ -230,17 +233,14 @@ var AddTradycompany = React.createClass({
   				trady_id: this.props.trady_id,
           quote_id: this.props.quote_id,
           work_flow: this.props.work_flow,
-          bsb_number: this.bsb_number.value,
           quote_type: this.props.quote_type,
           system_plan: this.props.system_plan,
           company_name: this.company_name.value,
           trading_name: this.trading_name.value,
           invoice_type: this.props.invoice_type,
-  				account_name: this.account_name.value,
   				mobile_number: this.mobile_number.value,
   				mailing_address: this.mailing_address.value,
   				gst_registration: this.state.gst_registration,
-  				bank_account_number: this.bank_account_number.value,
           maintenance_request_id: this.props.maintenance_request_id,
           quote_id: this.props.quote_id ? this.props.quote_id : null,
           ledger_id: this.props.ledger_id ? this.props.ledger_id : null,
@@ -248,6 +248,12 @@ var AddTradycompany = React.createClass({
           trady_company_id: this.props.trady_company_id ? this.props.trady_company_id : null,
   			}
   		}
+
+      if (isInvoice) {
+          params.bsb = this.bsb_number.value;
+          params.account_name = this.account_name.value;
+          params.bank_account_number = this.bank_account_number.value;
+      }
 
   		const self = this;
 			$.ajax({
@@ -268,7 +274,7 @@ var AddTradycompany = React.createClass({
 				}
 			});
   	}
-  		
+
 		e.preventDefault();
 
   	return;
@@ -291,19 +297,21 @@ var AddTradycompany = React.createClass({
   },
 
   render: function() {
+    let isInvoice = this.props.system_plan === "Invoice";
+
 		return (
 			<div>
-      <form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.onSubmit} >   
+      <form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.onSubmit} >
 
         <div className="form-group">
           <label className="control-label col-sm-2 required">Company name</label>
           <div className="col-sm-10">
-            <input 
-              required 
-              type="text" 
-              id="company_name" 
-              placeholder="Company Name" 
-              defaultValue={this.props.company_name} 
+            <input
+              required
+              type="text"
+              id="company_name"
+              placeholder="Company Name"
+              defaultValue={this.props.company_name}
               ref={(ref) => this.company_name = ref}
               className={"form-control " + (this.state.errorCompanyName ? "has-error" : "")}
             />
@@ -312,12 +320,12 @@ var AddTradycompany = React.createClass({
        <div className="form-group">
         <label className="control-label col-sm-2 required">Trading name</label>
           <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="trading_name" 
-  		        placeholder="Trading Name" 
-  		        defaultValue={this.props.trading_name} 
+  	        <input
+  		        required
+  		        type="text"
+  		        id="trading_name"
+  		        placeholder="Trading Name"
+  		        defaultValue={this.props.trading_name}
   		        ref={(ref) => this.trading_name = ref}
   		        className={"form-control " + (!!this.state.errorTradingName && "has-error")}
   	        />
@@ -327,12 +335,12 @@ var AddTradycompany = React.createClass({
         <div className="form-group">
           <label className="control-label col-sm-2 required">Abn</label>
           <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        id="abn" 
-  		        type="text" 
-  		        placeholder="Abn" 
-  		        defaultValue={this.props.abn} 
+  	        <input
+  		        required
+  		        id="abn"
+  		        type="text"
+  		        placeholder="Abn"
+  		        defaultValue={this.props.abn}
   		        ref={(ref) => this.abn = ref}
   		        className={"form-control " + (!!this.state.errorABN && "has-error")}
   	        />
@@ -340,9 +348,9 @@ var AddTradycompany = React.createClass({
         </div>
 
 				<div className="form-group">
-          <input 
-	          type="checkbox" 
-	          id="gst_registration" 
+          <input
+	          type="checkbox"
+	          id="gst_registration"
 	          onChange={() => {
 	          	this.setState({
 	          		gst_registration: !this.state.gst_registration
@@ -356,13 +364,13 @@ var AddTradycompany = React.createClass({
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Address</label>
           <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="address" 
-  		        placeholder="Address" 
-  		        defaultValue={this.state.address} 
-  		        onChange={this.handleChange} 
+  	        <input
+  		        required
+  		        type="text"
+  		        id="address"
+  		        placeholder="Address"
+  		        defaultValue={this.state.address}
+  		        onChange={this.handleChange}
   		        ref={(ref) => this.address = ref}
   		        className={"form-control " + (!!this.state.errorAddress && "has-error")}
   	        />
@@ -370,22 +378,22 @@ var AddTradycompany = React.createClass({
         </div>
 
         <div className="form-group">
-          <input 
-          	type="checkbox" 
-            onChange={this.onSame} 
-            id="mailing_address_same" 
+          <input
+          	type="checkbox"
+            onChange={this.onSame}
+            id="mailing_address_same"
           />
           Mailing Address same as Above
         </div>
         <div className="form-group">
           <label className="control-label col-sm-2 required">Mailing address</label>
           <div className="col-sm-10">
-          	<input 
-		          required 
-		          type="text" 
-		          id="mailing_address" 
-		          placeholder="Mailing Address" 
-		          value={this.state.mailing_address} 
+          	<input
+		          required
+		          type="text"
+		          id="mailing_address"
+		          placeholder="Mailing Address"
+		          value={this.state.mailing_address}
 		          onChange={this.changeMailingAddress}
 		          ref={(ref) => this.mailing_address = ref}
 		          className={"form-control " + (!!this.state.errorMailingAdress && "has-error")}
@@ -396,11 +404,11 @@ var AddTradycompany = React.createClass({
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Mobile number</label>
           <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="mobile_number" 
-  		        placeholder="Mobile Number" 
+  	        <input
+  		        required
+  		        type="text"
+  		        id="mobile_number"
+  		        placeholder="Mobile Number"
   		        onChange={this.checkValidate}
   		        defaultValue={this.props.mobile_number}
   		        ref={(ref) => this.mobile_number = ref}
@@ -412,11 +420,11 @@ var AddTradycompany = React.createClass({
         <div className="form-group">
           <label className="control-label col-sm-2 required">Company Email</label>
           <div className="col-sm-10">
-  	        <input 
-  	          required 
-  	          id="email" 
-  		        type="text" 
-  		        placeholder="Email" 
+  	        <input
+  	          required
+  	          id="email"
+  		        type="text"
+  		        placeholder="Email"
   		        onChange={this.checkValidate}
   		        defaultValue={this.props.email}
   	          ref={(ref) => this.email = ref}
@@ -425,51 +433,53 @@ var AddTradycompany = React.createClass({
           </div>
         </div>
 
+      { isInvoice && [
         <div className="form-group">
           <label className="control-label col-sm-2 required">Account name</label>
           <div className="col-sm-10">
-  	        <input 
-  			      required 
-  			      type="text" 
-  			      id="account_name" 
-  			      placeholder="Account Name" 
+  	        <input
+  			      required
+  			      type="text"
+  			      id="account_name"
+  			      placeholder="Account Name"
   			      defaultValue={this.props.account_name}
   			      ref={(ref) => this.account_name = ref}
   			      className={"form-control " + (!!this.state.errorAccountName ? "has-error" : "")}
   	        />
           </div>
-        </div>
+        </div>,
 
         <div className="form-group">
           <label className="control-label col-sm-2 required">Bsb number</label>
           <div className="col-sm-10">
-  	        <input 
-  			      required 
-  			      type="text" 
-  			      id="bsb_number" 
-  			      placeholder="BSB Number" 
+  	        <input
+  			      required
+  			      type="text"
+  			      id="bsb_number"
+  			      placeholder="BSB Number"
   			      onChange={this.checkValidate}
   			      defaultValue={this.props.bsb_number}
   			      ref={(ref) => this.bsb_number = ref}
   			      className={"form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")}
   	        />
           </div>
-        </div>
+        </div>,
 
         <div className="form-group">
           <label className="control-label col-sm-2 required">Bank account number</label>
           <div className="col-sm-10">
-  	        <input 
-  		        required 
-  		        type="text" 
-  		        id="bank_account_number" 
-  		        placeholder="Bank Account Number" 
+  	        <input
+  		        required
+  		        type="text"
+  		        id="bank_account_number"
+  		        placeholder="Bank Account Number"
   		        defaultValue={this.props.bank_account_number}
   		        ref={(ref) => this.bank_account_number = ref}
   		        className={"form-control " + (!!this.state.errorBankNumber ? "has-error" : "")}
   	        />
           </div>
         </div>
+      ]}
         <div className="text-center">
           { this.renderButtonBack() }
           <button type="submit" name="commit" value="Next" className="button-primary green option-button">
@@ -477,11 +487,11 @@ var AddTradycompany = React.createClass({
           </button>
         </div>
       </form>
-      { this.state.openModal ? 
-      		<ModalNotification 
-						title={this.state.notification.title} 
+      { this.state.openModal ?
+      		<ModalNotification
+						title={this.state.notification.title}
 						content={this.state.notification.content}
-						close={this.closeModal} 
+						close={this.closeModal}
 						bgClass={this.state.notification.bgClass}
 					/>
 					:
