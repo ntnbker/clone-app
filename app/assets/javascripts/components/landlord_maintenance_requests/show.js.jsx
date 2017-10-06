@@ -289,8 +289,8 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					tradies: res,
 					notification: {
-						title: "Request Quote",
-						content: "the request quote has sent successfully",
+						title: "Quote Request Sent",
+						content: "You have succesfully requested a quote. An email has been sent to the agent. Thank you for your time and input.",
 						bgClass: "bg-success",
 					},
 				});

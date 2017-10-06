@@ -77,7 +77,7 @@ var AccessContactField = React.createClass({
 
   		  	  <p> Name </p>
   		  	  <input 
-              required="required"
+              
               type="text" placeholder="Full name"
               id={this.generateAtt("id", x, "name")}
 	  	  		  name={this.generateAtt("name", x, "name")}
@@ -100,7 +100,7 @@ var AccessContactField = React.createClass({
   		  	<p> Email </p>
 					<input
             type="email" 
-            required="required"
+            
             placeholder="E-mail"
             autoCapitalize="off"
             autoCorrect="off"
@@ -126,7 +126,7 @@ var AccessContactField = React.createClass({
 
 					<p> Mobile </p>
 					<input 
-            required="required"
+            
             type="tel" placeholder="Mobile"
 						name={this.generateAtt("name", x, "mobile")}
 						id={this.generateAtt("id", x, "mobile")}

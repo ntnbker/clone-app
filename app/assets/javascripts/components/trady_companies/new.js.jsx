@@ -7,11 +7,8 @@ var AddTradycompany = React.createClass({
       errorEmail: false,
     	errorAddress: false,
     	same_Address: false,
-      errorBsbNumber: false,
-      errorBankNumber: false,
     	errorCompanyName: false,
     	errorTradingName: false,
-    	errorAccountName: false,
     	errorMailingAdress: false,
       address: this.props.address,
       mailing_address: this.props.mailing_address,
@@ -104,26 +101,6 @@ var AddTradycompany = React.createClass({
   			else
   				return this.setState({
   					errorPhone: true
-  				});
-  		}
-  		case "bsb_number": {
-  			if(NUMBER_REGEXP.test(target.value))
-  				return this.setState({
-  					errorBsbNumber: false
-  				});
-  			else
-  				return this.setState({
-  					errorBsbNumber: true
-  				});
-  		}
-  		case "bank_account_number": {
-  			if(NUMBER_REGEXP.test(target.value))
-  				return this.setState({
-  					errorBankNumber: false
-  				});
-  			else
-  				return this.setState({
-  					errorBankNumber: true
   				});
   		}
   		case "abn": {

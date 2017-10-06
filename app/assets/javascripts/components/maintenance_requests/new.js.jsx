@@ -18,7 +18,8 @@ var MaintenanceRequestsNew = React.createClass({
       validHeading: false,
       selectedRadio: "Agent",
       validDescription: false,
-      totalSize: 0
+      totalSize: 0,
+      errors: {},
     };
   },
 
@@ -175,20 +176,21 @@ var MaintenanceRequestsNew = React.createClass({
 
   handleCheckSubmit: function (e) {
     e.preventDefault();
-    if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
-      e.preventDefault();
-      document.getElementById("errCantSubmit").textContent = strCantSubmit;
-      return;
-    }
+    const self = this;
+    // if (!!self.state.validName || !!self.state.validEmail || !!self.state.validMobile || !!self.state.validHeading || !!self.state.validDescription || !!self.state.validDate) {
+    //   e.preventDefault();
+    //   document.getElementById("errCantSubmit").textContent = strCantSubmit;
+    //   return;
+    // }
 
     var FD = new FormData(document.getElementById('new_maintenance_request'));
-    this.state.dataImages.map((image, index) => {
+    self.state.dataImages.map((image, index) => {
       var idx = index + 1;
       FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
     });
     FD.append('commit', 'Submit Maintenance Request');
 
-    var props = this.props;
+    var props = self.props;
     $.ajax({
       type: 'POST',
       url: '/maintenance_requests',
@@ -200,7 +202,9 @@ var MaintenanceRequestsNew = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-
+        if (res.errors) {
+          self.setState({errors: res.errors});
+        }
       },
       error: function (err) {
 
@@ -461,14 +465,28 @@ var MaintenanceRequestsNew = React.createClass({
     }
   },
 
+  removeError: function({ target: { id } }) {
+    let errors     = Object.assign({}, this.state.errors);
+    let errorField = id.replace('maintenance_request_', '');
+    if (errors[errorField]) {
+      errors[errorField] = false;
+      this.setState({ errors });
+    }
+  },
+
+  renderError: function(error) {
+    return <p id="errorbox" className="error">{error}</p>;
+  },
+
   componentDidMount: function () {
     this.detectAndroid();
   },
 
   render: function () {
-    let { images } = this.state;
+    let { images, errors } = this.state;
     let $imagePreview = [];
     const { current_user_tenant, current_role } = this.props;
+    const renderError = this.renderError;
     let valueEmail = '';
     let valueMobile = '';
     if (current_role && current_role.role == "Tenant") {
@@ -491,33 +509,18 @@ var MaintenanceRequestsNew = React.createClass({
           <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
           <div className="field">
             <input
-              required
+              className={(errors['name'] ? ' border_on_error' : '')}
               type="text"
               placeholder="Full name"
               ref={(ref) => this.name = ref}
               id={this.generateAtt("id", "name")}
               name={this.generateAtt("name", "name")}
-              onBlur={(e) => {
-                if (!e.target.value.length) {
-                  document.getElementById("errorbox").textContent = strRequireName;
-                  e.target.classList.add("border_on_error");
-                  this.setState({ validName: true });
-                }
-                else if (e.target.value.length < 4) {
-                  document.getElementById("errorbox").textContent = strShortName;
-                  e.target.classList.add("border_on_error");
-                  this.setState({ validName: true });
-                }
-                else if (e.target.value.length >= 4) {
-                  document.getElementById("errorbox").textContent = strNone;
-                  e.target.classList.remove("border_on_error");
-                  this.setState({ validName: false });
-                }
-              }} />
-            <p id="errorbox" className="error"></p>
+              onChange={this.removeError}
+            />
+            {renderError(errors['name'])}
 
             <input
-              required
+              className={(errors['email'] ? ' border_on_error' : '')}
               type="email"
               autoCorrect="off"
               autoComplete="off"
@@ -529,23 +532,12 @@ var MaintenanceRequestsNew = React.createClass({
               ref={(ref) => this.email = ref}
               id={this.generateAtt("id", "email")}
               name={this.generateAtt("name", "email")}
-              onBlur={(e) => {
-                if (!e.target.value.length) {
-                  document.getElementById("errorboxemail").textContent = strRequireEmail;
-                  e.target.classList.add("border_on_error");
-                }
-                else if (e.target.value.length < 4) {
-                  document.getElementById("errorboxemail").textContent = strShortEmail;
-                  e.target.classList.add("border_on_error");
-                }
-                else if (e.target.value.length >= 4) {
-                  this.validateEmail(e.target.value, e, false);
-                }
-              }} />
-            <p id="errorboxemail" className="error"></p>
+              onChange={this.removeError}
+            />
+            {renderError(errors['email'])}
 
             <input
-              required
+
               type="text"
               minLength="8"
               maxLength="11"
@@ -556,20 +548,9 @@ var MaintenanceRequestsNew = React.createClass({
               ref={(ref) => this.mobile = ref}
               id={this.generateAtt("id", "mobile")}
               name={this.generateAtt("name", "mobile")}
-              onBlur={(e) => {
-                if (!e.target.value.length) {
-                  document.getElementById("errorboxmobile").textContent = strRequireMobile;
-                  e.target.classList.add("border_on_error");
-                }
-                else if (e.target.value.length < 8) {
-                  document.getElementById("errorboxmobile").textContent = strShortMobile;
-                  e.target.classList.add("border_on_error");
-                }
-                if (e.target.value.length >= 8) {
-                  this.validatePhoneNumber(e.target.value, e, false);
-                }
-              }} />
-            <p id="errorboxmobile" className="error"></p>
+              onChange={this.removeError}
+            />
+            {renderError(errors['mobile'])}
           </div>
 
           <div id="access_contacts" className="m-b-lg">
@@ -582,18 +563,9 @@ var MaintenanceRequestsNew = React.createClass({
               ref={(ref) => this.maintenance_description = ref}
               id={this.generateAtt("id", "maintenance_description")}
               name={this.generateAtt("name", "maintenance_description")}
-              onBlur={(e) => {
-                if (!e.target.value.length) {
-                  document.getElementById("errorboxdescription").textContent = strErrDescription;
-                  e.target.classList.add("border_on_error");
-                  this.setState({ validDescription: false });
-                } else {
-                  document.getElementById("errorboxdescription").textContent = strNone;
-                  e.target.classList.remove("border_on_error");
-                  this.setState({ validDescription: false });
-                }
-              }} />
-            <p id="errorboxdescription" className="error"></p>
+              onChange={this.removeError}
+            />
+            {renderError(errors['maintenance_description'])}
 
             <textarea
               type="text"
@@ -642,22 +614,23 @@ var MaintenanceRequestsNew = React.createClass({
 
               <div>
                 <input
-                  required
+
                   type="email"
                   autoCapitalize="off"
                   autoCorrect="off"
                   autoComplete="off"
                   placeholder="Agent email"
-                  onBlur={this.checkAgentEmail}
+                  // onBlur={this.checkAgentEmail}
                   ref={(ref) => this.agent_email = ref}
                   id={this.generateAtt("id", "agent_email")}
                   name={this.generateAtt("name", "agent_email")}
+                  onChange={this.removeError}
                 />
-                <p id="errAgentEamil" className="error"></p>
+                {renderError(errors['agent_email'])}
                 {!this.state.isAgent ?
                   <div>
                     <input
-                      required
+
                       type="text"
                       pattern=".{4,}"
                       title={strShortRealEstate}
@@ -665,24 +638,12 @@ var MaintenanceRequestsNew = React.createClass({
                       ref={(ref) => this.real_estate_office = ref}
                       id={this.generateAtt("id", "real_estate_office")}
                       name={this.generateAtt("name", "real_estate_office")}
-                      onBlur={(e) => {
-                        if (!e.target.value.length) {
-                          e.target.classList.add("border_on_error");
-                          document.getElementById("errRealEstateOffice").textContent = strRequireText;
-                        }
-                        else if (e.target.value.length < 4) {
-                          e.target.classList.add("border_on_error");
-                          document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
-                        }
-                        else if (e.target.value.length >= 4) {
-                          e.target.classList.remove("border_on_error");
-                          document.getElementById("errRealEstateOffice").textContent = strNone;
-                        }
-                      }} />
-                    <p id="errRealEstateOffice" className="error"></p>
+                      onChange={this.removeError}
+                    />
+                    {renderError(errors['real_estate_office'])}
 
                     <input
-                      required
+
                       type="text"
                       pattern=".{4,}"
                       placeholder="Agent name"
@@ -690,24 +651,12 @@ var MaintenanceRequestsNew = React.createClass({
                       ref={(ref) => this.agent_name = ref}
                       id={this.generateAtt("id", "agent_name")}
                       name={this.generateAtt("name", "agent_name")}
-                      onBlur={(e) => {
-                        if (!e.target.value.length) {
-                          e.target.classList.add("border_on_error");
-                          document.getElementById("errAgentName").textContent = strRequireName;
-                        }
-                        else if (e.target.value.length < 4) {
-                          e.target.classList.add("border_on_error");
-                          document.getElementById("errAgentName").textContent = strShortName;
-                        }
-                        else if (e.target.value.length >= 4) {
-                          e.target.classList.remove("border_on_error");
-                          document.getElementById("errAgentName").textContent = strNone;
-                        }
-                      }} />
-                    <p id="errAgentName" className="error"></p>
+                      onChange={this.removeError}
+                    />
+                    {renderError(errors['agent_name'])}
 
                     <input
-                      required
+
                       type="text"
                       maxLength="11"
                       minLength="10"
@@ -717,20 +666,9 @@ var MaintenanceRequestsNew = React.createClass({
                       ref={(ref) => this.agent_mobile = ref}
                       id={this.generateAtt("id", "agent_mobile")}
                       name={this.generateAtt("name", "agent_mobile")}
-                      onBlur={(e) => {
-                        if (!e.target.value.length) {
-                          e.target.classList.add("border_on_error");
-                          document.getElementById("errAgentMobile").textContent = strRequireMobile;
-                        }
-                        else if (e.target.value.length < 8) {
-                          e.target.classList.add("border_on_error");
-                          document.getElementById("errAgentMobile").textContent = strShortMobile;
-                        }
-                        if (e.target.value.length >= 8) {
-                          this.validatePhoneNumber(e.target.value, e, true);
-                        }
-                      }} />
-                    <p id="errAgentMobile" className="error"></p>
+                      onChange={this.removeError}
+                    />
+                    {renderError(errors['agent_mobile'])}
                   </div>
                   :
                   null

@@ -37,7 +37,9 @@ class MaintenanceRequest < ApplicationRecord
   has_many :images, inverse_of: :maintenance_request
   validates_presence_of :name,:email, :mobile, :maintenance_description
   validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
-  validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
+  validates :mobile,:presence => true, :numericality => true, :length => { :maximum => 10 }
+  #validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
 
   accepts_nested_attributes_for :maintenance_request_image, allow_destroy: true
   accepts_nested_attributes_for :images, allow_destroy: true
