@@ -491,7 +491,7 @@ var MaintenanceRequestsNew = React.createClass({
           <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
           <div className="field">
             <input
-              required
+              
               type="text"
               placeholder="Full name"
               ref={(ref) => this.name = ref}
@@ -517,7 +517,7 @@ var MaintenanceRequestsNew = React.createClass({
             <p id="errorbox" className="error"></p>
 
             <input
-              required
+              
               type="email"
               autoCorrect="off"
               autoComplete="off"
@@ -545,7 +545,7 @@ var MaintenanceRequestsNew = React.createClass({
             <p id="errorboxemail" className="error"></p>
 
             <input
-              required
+              
               type="text"
               minLength="8"
               maxLength="11"
@@ -642,7 +642,7 @@ var MaintenanceRequestsNew = React.createClass({
 
               <div>
                 <input
-                  required
+                  
                   type="email"
                   autoCapitalize="off"
                   autoCorrect="off"
@@ -657,7 +657,7 @@ var MaintenanceRequestsNew = React.createClass({
                 {!this.state.isAgent ?
                   <div>
                     <input
-                      required
+                      
                       type="text"
                       pattern=".{4,}"
                       title={strShortRealEstate}
@@ -682,7 +682,7 @@ var MaintenanceRequestsNew = React.createClass({
                     <p id="errRealEstateOffice" className="error"></p>
 
                     <input
-                      required
+                      
                       type="text"
                       pattern=".{4,}"
                       placeholder="Agent name"
@@ -707,7 +707,7 @@ var MaintenanceRequestsNew = React.createClass({
                     <p id="errAgentName" className="error"></p>
 
                     <input
-                      required
+                      
                       type="text"
                       maxLength="11"
                       minLength="10"

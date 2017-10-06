@@ -304,8 +304,12 @@ class MaintenanceRequestsController < ApplicationController
       Log.create(maintenance_request_id:@maintenance_request.id, action:"Maintenance request created.")
     else
       
-      flash[:danger]= "Something went wrong."
-      render json: @maintenance_request.errors
+      flash[:danger]= "Please fill out all the required information thanks :)"
+      respond_to do |format|
+        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json}}
+        format.html
+      end 
+      
 
     end 
   end
