@@ -20,4 +20,13 @@ class TradyCompany < ApplicationRecord
   attr_accessor :pdf_file_id 
   attr_accessor :ledger_id
 
+
+  def capitalize_company_name
+    self.company_name.split.map(&:capitalize).join(' ')
+  end
+
+  def capitalize_trading_name
+    self.trading_name.split.map(&:capitalize).join(' ')
+  end
+
 end 

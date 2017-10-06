@@ -27,6 +27,14 @@ class Trady < ApplicationRecord
   attr_accessor :skill_required
   attr_accessor :trady_request
 
+  def capitalize_name
+    self.name.split.map(&:capitalize).join(' ')
+  end
+
+  def capitalize_company_name
+    self.company_name.split.map(&:capitalize).join(' ')
+  end
+
   def name_and_company
      
     if self.trady_company != nil 

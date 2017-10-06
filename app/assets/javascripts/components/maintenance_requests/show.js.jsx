@@ -1469,8 +1469,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					landlord: res,
 					notification: {
-						title: landlord ? "Change Landlord" : "Add Lanlord",
-						content: landlord ? 'Your have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
+						title: landlord ? "Change Landlord" : "Add Landlord",
+						content: landlord ? 'You have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
 						bgClass: "bg-success",
 					},
 				});
