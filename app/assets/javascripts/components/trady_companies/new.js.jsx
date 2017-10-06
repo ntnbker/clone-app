@@ -80,44 +80,7 @@ var AddTradycompany = React.createClass({
 		});
 	},
 
-  checkValidate: function(e) {
-  	const target = e.target.id;
-  	switch (target.key) {
-  		case 'email': {
-  			if(EMAIL_REGEXP.test(target.value))
-  				return this.setState({
-  					errorEmail: false
-  				});
-  			else
-  				return this.setState({
-  					errorEmail: true
-  				});
-  		}
-  		case 'mobile_number': {
-  			if(PHONE_REGEXP.test(target.value))
-  				return this.setState({
-  					errorPhone: false
-  				});
-  			else
-  				return this.setState({
-  					errorPhone: true
-  				});
-  		}
-  		case "abn": {
-				if(NUMBER_REGEXP.test(target.value))
-  				return this.setState({
-  					errorABN: false
-  				});
-  			else
-  				return this.setState({
-  					errorABN: true
-  				});
-  		}
-  		default:
-  			break;
-  	}
-  },
-
+  
   changeMailingAddress: function(e) {
   	this.setState({
   		mailing_address: e.target.value
@@ -255,7 +218,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Company name</label>
           <div className="col-sm-10">
             <input
-              required
+              
               type="text"
               id="company_name"
               placeholder="Company Name"
@@ -269,7 +232,7 @@ var AddTradycompany = React.createClass({
         <label className="control-label col-sm-2 required">Trading name</label>
           <div className="col-sm-10">
   	        <input
-  		        required
+  		        
   		        type="text"
   		        id="trading_name"
   		        placeholder="Trading Name"
@@ -284,7 +247,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Abn</label>
           <div className="col-sm-10">
   	        <input
-  		        required
+  		        
   		        id="abn"
   		        type="text"
   		        placeholder="Abn"
@@ -313,7 +276,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Address</label>
           <div className="col-sm-10">
   	        <input
-  		        required
+  		        
   		        type="text"
   		        id="address"
   		        placeholder="Address"
@@ -337,7 +300,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Mailing address</label>
           <div className="col-sm-10">
           	<input
-		          required
+		          
 		          type="text"
 		          id="mailing_address"
 		          placeholder="Mailing Address"
@@ -353,7 +316,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Mobile number</label>
           <div className="col-sm-10">
   	        <input
-  		        required
+  		        
   		        type="text"
   		        id="mobile_number"
   		        placeholder="Mobile Number"
@@ -369,7 +332,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Company Email</label>
           <div className="col-sm-10">
   	        <input
-  	          required
+  	          
   	          id="email"
   		        type="text"
   		        placeholder="Email"
