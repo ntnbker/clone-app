@@ -3,5 +3,5 @@ class AccessContact < ApplicationRecord
 
   validates_presence_of :relation,:name,:email, :mobile
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
-  validates :phone,:presence => true, :numericality => true, :length => { :maximum => 8 }
+  validates :mobile,:presence => true, :numericality => true, :length => { :maximum => 10 }
 end 
