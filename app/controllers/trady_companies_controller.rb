@@ -28,13 +28,8 @@ class TradyCompaniesController < ApplicationController
     @invoice_type = params[:trady_company][:invoice_type]
     @quote_type = params[:trady_company][:quote_type]
 
-    if system_plan == "Quote"
-      
-      @trady_company.perform_trady_company_banking_validation = false
-    elsif system_plan = "Invoice"
-      @trady_company.perform_trady_company_banking_validation = true
-    end 
-        
+     
+    @trady_company.perform_bank_validation(system_plan)        
 
 
     if @existing_company
@@ -104,7 +99,7 @@ class TradyCompaniesController < ApplicationController
           flash[:danger] = "Please fill in below!!"
           
           respond_to do |format|
-            format.html { render :new }
+            
             format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
           
         end
