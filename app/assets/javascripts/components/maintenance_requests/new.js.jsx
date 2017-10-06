@@ -475,7 +475,7 @@ var MaintenanceRequestsNew = React.createClass({
   },
 
   renderError: function(error) {
-    return <p id="errorbox" className="error">{error}</p>;
+    return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
   },
 
   componentDidMount: function () {
@@ -537,7 +537,7 @@ var MaintenanceRequestsNew = React.createClass({
             {renderError(errors['email'])}
 
             <input
-
+              className={(errors['mobile'] ? ' border_on_error' : '')}
               type="text"
               minLength="8"
               maxLength="11"
@@ -554,11 +554,12 @@ var MaintenanceRequestsNew = React.createClass({
           </div>
 
           <div id="access_contacts" className="m-b-lg">
-            <FieldList SampleField={AccessContactField} flag="contact" />
+            <FieldList SampleField={AccessContactField} errors={errors} flag="contact" />
           </div>
 
           <div className="field">
             <textarea
+              className={errors['maintenance_description'] ? 'border_on_error' : ''}
               placeholder="Maintenance Description"
               ref={(ref) => this.maintenance_description = ref}
               id={this.generateAtt("id", "maintenance_description")}
