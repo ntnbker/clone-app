@@ -28,6 +28,10 @@ class TradyCompaniesController < ApplicationController
     @invoice_type = params[:trady_company][:invoice_type]
     @quote_type = params[:trady_company][:quote_type]
 
+     
+    @trady_company.perform_bank_validation(system_plan)        
+
+
     if @existing_company
       @trady_company.perform_uniqueness_validation_of_company_email = false
 
@@ -56,7 +60,12 @@ class TradyCompaniesController < ApplicationController
       else
         @trady_id = params[:trady_company][:trady_id]
         flash[:danger] = "Please fill in below"
-        render :new
+        
+        respond_to do |format|
+          format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
+          format.html
+        end
+
       end
 
     else
@@ -87,8 +96,13 @@ class TradyCompaniesController < ApplicationController
 
           flash[:success] = "You have added your company thank you"
         else
-          flash[:danger] = "Please fill in below"
-          render :new
+          flash[:danger] = "Please fill in below!!"
+          
+          respond_to do |format|
+            
+            format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
+          
+        end
         end
     end
   end
@@ -296,7 +310,7 @@ class TradyCompaniesController < ApplicationController
   private
 
     def trady_company_params
-      params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow)
+      params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow, :trady_company_id, :system_plan, :invoice_type, :quote_type, :pdf_file_id, :ledger_id, :quote_id)
     end
 
     def email_auto_login(id)
