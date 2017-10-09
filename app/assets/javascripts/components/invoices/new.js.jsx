@@ -49,19 +49,18 @@ var FieldList = React.createClass({
     var Fields = {};
     var params = this.props.params;
     var x = 0;
-    const extraProps = { params, removeField: (position) => this.removeField(position) };
 
     if (existingContent ? existingContent.length > 0 : false) {
       existingContent.map((one, index) => {
         x = index + 1;
-        Fields[x] = <SampleField x={x} content={one} {...extraProps} />;
+        tmpFields[x] = {params, SampleField, x };
       });
 
-      return { Fields, x }
+      return { Fields, x };
     } else {
       if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
         x = 1;
-        return { Fields: { "1": <SampleField x={x} {...extraProps} />, }, x}
+        return { Fields: { "1":  {params, SampleField, x } }, x, }
       }
       return { Fields: {}, x }
     }
@@ -73,6 +72,7 @@ var FieldList = React.createClass({
     var params = this.props.params;
     const x = ++this.state.x;
     tmpFields[x] = {params: this.props.params, SampleField, x};
+    debugger
     this.setState({Fields: tmpFields});
   },
 
