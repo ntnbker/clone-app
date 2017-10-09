@@ -91,7 +91,6 @@ var EditTradyCompany = React.createClass({
   },
 
   edit: function(e) {
-    e.preventDefault();
 
   	var flag = false;
     let isInvoice = this.props.system_plan === "Invoice";
@@ -214,6 +213,8 @@ var EditTradyCompany = React.createClass({
 				}
 			});
   	}
+
+    e.preventDefault();
   	return;
   },
 

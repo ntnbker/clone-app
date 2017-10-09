@@ -5,6 +5,7 @@ var AddTradycompany = React.createClass({
     	openModal: false,
       errorPhone: false,
       errorEmail: false,
+      errors: {},
     	errorAddress: false,
     	same_Address: false,
     	errorCompanyName: false,
@@ -80,7 +81,7 @@ var AddTradycompany = React.createClass({
 		});
 	},
 
-  
+
   changeMailingAddress: function(e) {
   	this.setState({
   		mailing_address: e.target.value
@@ -103,13 +104,6 @@ var AddTradycompany = React.createClass({
   		flag = true;
   		this.setState({
   			errorTradingName: true
-  		});
-  	}
-
-  	if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
-  		flag = true;
-  		this.setState({
-  			errorABN: true
   		});
   	}
 
@@ -149,6 +143,13 @@ var AddTradycompany = React.createClass({
         });
       }
 
+      if(!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
+        flag = true;
+        this.setState({
+          errorABN: true
+        });
+      }
+
       if(!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
         flag = true;
         this.setState({
@@ -167,7 +168,6 @@ var AddTradycompany = React.createClass({
   	if(!flag) {
   		var params = {
   			trady_company: {
-  				abn: this.abn.value,
   				email: this.email.value,
   				address: this.address.value,
   				trady_id: this.props.trady_id,
@@ -190,6 +190,7 @@ var AddTradycompany = React.createClass({
   		}
 
       if (isInvoice) {
+          params.abn = this.abn.value;
           params.bsb = this.bsb_number.value;
           params.account_name = this.account_name.value;
           params.bank_account_number = this.bank_account_number.value;
@@ -204,6 +205,9 @@ var AddTradycompany = React.createClass({
 				},
 				data: params,
 				success: function(res){
+          if (res.errors) {
+            self.setState({errors: res.errors});
+          }
 				},
 				error: function(err) {
 					self.openModalNotification({
@@ -247,7 +251,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Company name</label>
           <div className="col-sm-10">
             <input
-              
+
               type="text"
               id="company_name"
               placeholder="Company Name"
@@ -261,7 +265,7 @@ var AddTradycompany = React.createClass({
         <label className="control-label col-sm-2 required">Trading name</label>
           <div className="col-sm-10">
   	        <input
-  		        
+
   		        type="text"
   		        id="trading_name"
   		        placeholder="Trading Name"
@@ -272,20 +276,22 @@ var AddTradycompany = React.createClass({
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="control-label col-sm-2 required">Abn</label>
-          <div className="col-sm-10">
-  	        <input
-  		        
-  		        id="abn"
-  		        type="text"
-  		        placeholder="Abn"
-  		        defaultValue={this.props.abn}
-  		        ref={(ref) => this.abn = ref}
-  		        className={"form-control " + (!!this.state.errorABN && "has-error")}
-  	        />
+        { isInvoice &&
+          <div className="form-group">
+            <label className="control-label col-sm-2 required">Abn</label>
+            <div className="col-sm-10">
+              <input
+
+                id="abn"
+                type="text"
+                placeholder="Abn"
+                defaultValue={this.props.abn}
+                ref={(ref) => this.abn = ref}
+                className={"form-control " + (!!this.state.errorABN && "has-error")}
+              />
+            </div>
           </div>
-        </div>
+        }
 
 				<div className="form-group">
           <input
@@ -305,7 +311,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Address</label>
           <div className="col-sm-10">
   	        <input
-  		        
+
   		        type="text"
   		        id="address"
   		        placeholder="Address"
@@ -329,7 +335,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Mailing address</label>
           <div className="col-sm-10">
           	<input
-		          
+
 		          type="text"
 		          id="mailing_address"
 		          placeholder="Mailing Address"
@@ -345,14 +351,14 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Mobile number</label>
           <div className="col-sm-10">
   	        <input
-  		        
+
   		        type="text"
   		        id="mobile_number"
   		        placeholder="Mobile Number"
   		        onChange={this.checkValidate}
   		        defaultValue={this.props.mobile_number}
   		        ref={(ref) => this.mobile_number = ref}
-  		        className={"form-control " + (!!this.state.errorPhone && "has-error")}
+  		        className={"form-control " + (!!this.state.errors['mobile_number'] && "has-error")}
   	        />
           </div>
         </div>
@@ -361,7 +367,7 @@ var AddTradycompany = React.createClass({
           <label className="control-label col-sm-2 required">Company Email</label>
           <div className="col-sm-10">
   	        <input
-  	          
+
   	          id="email"
   		        type="text"
   		        placeholder="Email"
