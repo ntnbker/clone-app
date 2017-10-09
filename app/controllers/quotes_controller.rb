@@ -28,23 +28,20 @@ class QuotesController < ApplicationController
     if @quote.save
       @quote.calculate_quote_items_totals
       @quote.calculate_tax
-      # @quote.update_attribute(:amount,@total)
-
-      # if the quote id has been set then do nothing. if the quote_id in blank then fill it in. 
-      # if quote_request.quote_id.blank?
-      #   quote.update_attribute(:quote_id, @quote.id)
-      # else  
-
-      # end 
+       
 
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
       #######TradyStatus.create(maintenance_request_id:params[:quote][:maintenance_request_id],status:"Awaiting Quote Approval")
 
     else
-      flash[:danger] = "Please Fill in a Minumum of one item"
+      flash[:danger] = "Please fill all the required information for a complete quote."
       @trady_id = params[:quote][:trady_id]
       @maintenance_request_id= params[:quote][:maintenance_request_id]
-      render :new 
+      respond_to do |format|
+        format.json {render :json=>{errors:@quote.errors.to_hash(true).as_json}}
+        format.html {render :new}
+      end 
+      
     end 
   end
 
