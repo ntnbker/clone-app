@@ -90,6 +90,7 @@ var AddTradycompany = React.createClass({
   onSubmit: function(e){
 
   	var flag = false;
+    let isInvoice = this.props.system_plan === 'Invoice';
 
   	if(!this.company_name.value) {
   		flag = true;
@@ -140,6 +141,29 @@ var AddTradycompany = React.createClass({
   		});
   	}
 
+    if (isInvoice) {
+      if(!this.account_name.value) {
+        flag = true;
+        this.setState({
+          errorAccountName: true
+        });
+      }
+
+      if(!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
+        flag = true;
+        this.setState({
+          errorBsbNumber: true
+        });
+      }
+
+      if(!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
+        flag = true;
+        this.setState({
+          errorBankNumber: true
+        });
+      }
+    }
+
   	if(!flag) {
   		var params = {
   			trady_company: {
@@ -149,17 +173,14 @@ var AddTradycompany = React.createClass({
   				trady_id: this.props.trady_id,
           quote_id: this.props.quote_id,
           work_flow: this.props.work_flow,
-          bsb_number: this.bsb_number.value,
           quote_type: this.props.quote_type,
           system_plan: this.props.system_plan,
           company_name: this.company_name.value,
           trading_name: this.trading_name.value,
           invoice_type: this.props.invoice_type,
-  				account_name: this.account_name.value,
   				mobile_number: this.mobile_number.value,
   				mailing_address: this.mailing_address.value,
   				gst_registration: this.state.gst_registration,
-  				bank_account_number: this.bank_account_number.value,
           maintenance_request_id: this.props.maintenance_request_id,
           quote_id: this.props.quote_id ? this.props.quote_id : null,
           ledger_id: this.props.ledger_id ? this.props.ledger_id : null,
@@ -167,6 +188,12 @@ var AddTradycompany = React.createClass({
           trady_company_id: this.props.trady_company_id ? this.props.trady_company_id : null,
   			}
   		}
+
+      if (isInvoice) {
+          params.bsb = this.bsb_number.value;
+          params.account_name = this.account_name.value;
+          params.bank_account_number = this.bank_account_number.value;
+      }
 
   		const self = this;
 			$.ajax({
@@ -210,6 +237,8 @@ var AddTradycompany = React.createClass({
   },
 
   render: function() {
+    let isInvoice = this.props.system_plan === "Invoice";
+
 		return (
 			<div>
       <form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.onSubmit} >
@@ -344,6 +373,53 @@ var AddTradycompany = React.createClass({
           </div>
         </div>
 
+      { isInvoice && [
+        <div className="form-group">
+          <label className="control-label col-sm-2 required">Account name</label>
+          <div className="col-sm-10">
+  	        <input
+  			      required
+  			      type="text"
+  			      id="account_name"
+  			      placeholder="Account Name"
+  			      defaultValue={this.props.account_name}
+  			      ref={(ref) => this.account_name = ref}
+  			      className={"form-control " + (!!this.state.errorAccountName ? "has-error" : "")}
+  	        />
+          </div>
+        </div>,
+
+        <div className="form-group">
+          <label className="control-label col-sm-2 required">Bsb number</label>
+          <div className="col-sm-10">
+  	        <input
+  			      required
+  			      type="text"
+  			      id="bsb_number"
+  			      placeholder="BSB Number"
+  			      onChange={this.checkValidate}
+  			      defaultValue={this.props.bsb_number}
+  			      ref={(ref) => this.bsb_number = ref}
+  			      className={"form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")}
+  	        />
+          </div>
+        </div>,
+
+        <div className="form-group">
+          <label className="control-label col-sm-2 required">Bank account number</label>
+          <div className="col-sm-10">
+  	        <input
+  		        required
+  		        type="text"
+  		        id="bank_account_number"
+  		        placeholder="Bank Account Number"
+  		        defaultValue={this.props.bank_account_number}
+  		        ref={(ref) => this.bank_account_number = ref}
+  		        className={"form-control " + (!!this.state.errorBankNumber ? "has-error" : "")}
+  	        />
+          </div>
+        </div>
+      ]}
         <div className="text-center">
           { this.renderButtonBack() }
           <button type="submit" name="commit" value="Next" className="button-primary green option-button">
