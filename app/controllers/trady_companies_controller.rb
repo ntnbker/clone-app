@@ -183,126 +183,15 @@ class TradyCompaniesController < ApplicationController
 
         end
 
-
-
-
-
-
-
-      # if params[:trady_company][:invoice_type] == "pdf_file"
-
-      #   if @pdf_files == nil
-      #     redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-      #   elsif @pdf_files != nil
-      #     redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-      #   end
-
-      # elsif params[:trady_company][:invoice_type] == "system_invoice"
-      #   if @ledger == nil
-      #     redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-      #   elsif @ledger != nil
-      #     redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-      #   end
-      # end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
-      render :edit
+      respond_to do |format|
+          format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
+          format.html {render :edit}
+        end
     end
 
   end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  # def edit
-  #   @trady_company = TradyCompany.find_by(id:params[:id])
-  #   @maintenance_request_id = params[:maintenance_request_id]
-  #   @trady_id = params[:trady_id]
-  # end
-
-  # def update
-
-  #   @trady_company = TradyCompany.find_by(id:params[:id])
-  #   @trady = Trady.find_by(id:params[:trady_company][:trady_id])
-
-  #   @maintenance_request_id = params[:trady_company][:maintenance_request_id]
-  #   @trady_id = params[:trady_company][:trady_id]
-
-  #   #if quote already exists we redirect them so they can continue with the form
-  #   @quote = @trady.quotes.where(maintenance_request_id: params[:trady_company][:maintenance_request_id]).first
-
-
-  #   if @trady_company.update(trady_company_params)
-  #     flash[:success] = "You have succesfully edited your company"
-  #     if @quote == nil
-  #       redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])
-  #     elsif @quote != nil
-  #       redirect_to edit_quote_path(@quote.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id])
-  #     end
-  #   else
-  #     flash[:danger] = "Sorry something went wrong please fill in the required fields"
-  #     render :edit
-  #   end
-  # end
-
-
-
-  # def edit_trady_company_invoice_workflow
-  #   @trady_company = TradyCompany.find_by(id:params[:id])
-  #   @maintenance_request_id = params[:maintenance_request_id]
-  #   @trady_id = params[:trady_id]
-  # end
-
-  # def update_trady_company_invoice_workflow
-
-  # end
-
 
 
 
