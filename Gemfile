@@ -72,7 +72,7 @@ group :test do
   gem 'database_cleaner'
   gem 'shoulda-matchers', '~> 3.1'
   gem 'capybara'
-  gem 'capybara-webkit'
+  # gem 'capybara-webkit'
   gem 'rack_session_access'
   gem 'launchy'
   gem 'capybara-email'

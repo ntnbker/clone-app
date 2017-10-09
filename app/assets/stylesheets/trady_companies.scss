@@ -6,6 +6,11 @@ form#new_trady_company {
 		margin: 20px 0 5px;
 	}
 
+	.error {
+    margin-top: 10px;
+    color: red;
+	}
+
 	label {
 		display: inline-block;
 		font-weight: normal;
@@ -36,7 +41,7 @@ form#new_trady_company {
 			margin: 5px 0;
 		}
 	}
-	
+
 	/* For Desktop */
 	@media (min-width: 550px) {
 		width: 50%;

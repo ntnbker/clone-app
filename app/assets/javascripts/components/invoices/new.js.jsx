@@ -53,7 +53,7 @@ var FieldList = React.createClass({
     if (existingContent ? existingContent.length > 0 : false) {
       existingContent.map((one, index) => {
         x = index + 1;
-        tmpFields[x] = {params, SampleField, x };
+        Fields[x] = {params, SampleField, x };
       });
 
       return { Fields, x };
