@@ -76,7 +76,7 @@ var AccessContactField = React.createClass({
         if (
             this.email &&
             (!this.email.value
-              || /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/.test(this.email.value))
+              || !/\A[^@]+@([^@\.]+\.)+[^@\.]+\z/.test(this.email.value))
           ) {
           errorValues.push(errorsForm['access_contacts.email'][0]);
         }
@@ -87,7 +87,7 @@ var AccessContactField = React.createClass({
         }
       }
       if (errorsForm['access_contacts.mobile']) {
-        if (this.mobile && !this.mobile.value) {
+        if (this.mobile && !this.mobile.value && !/^(\d+)$/.test(this.mobile.value)) {
           errorValues.push(errorsForm['access_contacts.mobile'][0]);
         }
       }
