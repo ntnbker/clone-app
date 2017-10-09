@@ -88,35 +88,36 @@ var AddTradycompany = React.createClass({
     let isInvoice = this.props.system_plan === 'Invoice';
 
     const getValidValue = obj => obj && obj.value;
-		var params = {
-			trady_company: {
-				email:           getValidValue(email),
-				address:         getValidValue(address),
-        company_name:    getValidValue(company_name),
-        trading_name:    getValidValue(trading_name),
-				mobile_number:   getValidValue(mobile_number),
-        mailing_address: getValidValue(mailing_address),
-        trady_id:               this.props.trady_id,
-        quote_id:               this.props.quote_id,
-        work_flow:              this.props.work_flow,
-        quote_type:             this.props.quote_type,
-        system_plan:            this.props.system_plan,
-        invoice_type:           this.props.invoice_type,
-				gst_registration:       this.state.gst_registration,
-        maintenance_request_id: this.props.maintenance_request_id,
-        quote_id:               this.props.quote_id                || null,
-        ledger_id:              this.props.ledger_id               || null,
-        pdf_file_id:            this.props.pdf_file_id             || null,
-        trady_company_id:       this.props.trady_company_id        || null,
-			}
-		}
+
+    var trady_company = {
+      email:           getValidValue(email),
+      address:         getValidValue(address),
+      company_name:    getValidValue(company_name),
+      trading_name:    getValidValue(trading_name),
+      mobile_number:   getValidValue(mobile_number),
+      mailing_address: getValidValue(mailing_address),
+      trady_id:               this.props.trady_id,
+      quote_id:               this.props.quote_id,
+      work_flow:              this.props.work_flow,
+      quote_type:             this.props.quote_type,
+      system_plan:            this.props.system_plan,
+      invoice_type:           this.props.invoice_type,
+      maintenance_request_id: this.props.maintenance_request_id,
+      quote_id:               this.props.quote_id                || null,
+      ledger_id:              this.props.ledger_id               || null,
+      pdf_file_id:            this.props.pdf_file_id             || null,
+      trady_company_id:       this.props.trady_company_id        || null,
+    }
 
     if (isInvoice) {
-        params.abn =                 getValidValue(abn);
-        params.bsb =                 getValidValue(bsb_number);
-        params.account_name =        getValidValue(account_name);
-        params.bank_account_number = getValidValue(bank_account_number);
+      trady_company.abn =                 getValidValue(abn);
+      trady_company.gst_registration =    this.state.gst_registration,
+      trady_company.bsb =                 getValidValue(bsb_number);
+      trady_company.account_name =        getValidValue(account_name);
+      trady_company.bank_account_number = getValidValue(bank_account_number);
     }
+
+    var params = { trady_company };
 
 		const self = this;
 		$.ajax({
@@ -127,9 +128,7 @@ var AddTradycompany = React.createClass({
 			},
 			data: params,
 			success: function(res){
-        if (res.errors) {
-          self.setState({errors: res.errors});
-        }
+        self.setState({errors: res.errors || {}});
 			},
 			error: function(err) {
 				self.openModalNotification({

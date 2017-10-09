@@ -7,7 +7,7 @@
                                    :delivery_status => "false",
                                    :quote_type => @quote_type,
                                    :system_plan=> @system_plan,
-                                   :backlink => edit_trady_company_path(@trady_company,maintenance_request_id:@maintenance_request_id, quote_type:@quote_type, quote_id: @quote_id, system_plan:@system_plan)})
+                                   :backlink => edit_trady_company_path(@trady_company,maintenance_request_id:@maintenance_request_id, quote_type:@quote_type, quote_id: @quote_id, system_plan:@system_plan, trady_id:@trady.id)})
 
 
 
@@ -25,4 +25,4 @@
 /         = f.check_box :tax, label: "Add GST", value: "FALSE"
 /       Add total HERE
 /       =f.submit "Next"
-  
+
