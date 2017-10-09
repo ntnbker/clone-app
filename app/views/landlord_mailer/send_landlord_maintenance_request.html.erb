@@ -228,12 +228,11 @@
                                     <p style="margin: 0;">
                                       Hi <%=@landlord.capitalize_name%>,
                                       <br/>
-                                      <br/>
-                                      Unfortunately the tenant, <%=@tenant.capitalize_name%> is unavailable on <%=@appointment.date.strftime("%A %B %d")%> at <%=@appointment.time.strftime("%I:%M %p")%>.
-                                      <br/>
-                                      <br/>
-                                      We will notify you shortly when the tenant suggests a new appointment.
- 
+                                      <%if @maintenance_request.agent %>
+                                        Your agent, <%=@agent.name.capitalize%> would like your instructions regarding a new maintenance request for <%=@property.property_address%>. To view the maintenance request and confirm your instructions, please click on the button below.
+                                      <%elsif @maintenance_request.agency_admin %>
+                                        Your agent, <%=@agent.first_name.capitalize%> would like your instructions regarding a new maintenance request for <%=@property.property_address%>. To view the maintenance request and confirm your instructions, please click on the button below.
+                                      <%end%> 
                                     </p>
                                     
 
@@ -246,7 +245,7 @@
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
                                         <tr>
                                             <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
-                                                <%=link_to "View Quote", landlord_maintenance_request_url(id:@maintenance_request.id,email_quote_id:@quote.id,user_id:@landlord.user.id,:anchor=>"quote_area"), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+                                                <%=link_to "View Maintnenace Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
                                                     
                                                 
                                             </td>
