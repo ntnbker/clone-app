@@ -5,10 +5,12 @@ class Quote < ApplicationRecord
   has_many :quote_items, inverse_of: :quote
   accepts_nested_attributes_for :quote_items, allow_destroy: true
   has_one :conversation
-
+  validates_associated :quote_items
 
   validates_presence_of :maintenance_request_id
   validates_presence_of :trady_id
+  
+
   before_save :create_quote_number
    def calculate_quote_items_totals
     items_amount = []
