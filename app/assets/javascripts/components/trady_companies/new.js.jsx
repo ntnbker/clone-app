@@ -234,6 +234,7 @@ var AddTradycompany = React.createClass({
             </div>
           </div>
         }
+
         { isInvoice &&
           <div className="form-group">
             <div className="col-sm-10 col-sm-offset-2">
@@ -383,7 +384,7 @@ var AddTradycompany = React.createClass({
         ]}
         <div className="text-center">
           { this.renderButtonBack() }
-          <button type="submit" name="commit" value="Next" className="button-primary green option-button">
+          <button type="submit" className="button-primary green option-button">
             Next
           </button>
         </div>

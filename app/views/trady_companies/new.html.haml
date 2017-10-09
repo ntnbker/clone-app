@@ -1,40 +1,40 @@
 %div.container.well
-  
-  / =react_component('AddTradycompany', {:authenticity_token => form_authenticity_token, :company_name => '', :trading_name => @company.nil? ? @trady.company_name : @company.company_name, :abn => '', :gst_registration => '', :address => '', :mailing_address_same => '', :mailing_address => '', :mobile_number => @company.nil? ? @trady.mobile : @company.mobile_number, :email => @company.nil? ? @trady.email : @company.email, :maintenance_request_id => @maintenance_request_id, :trady_id => @trady.id, :trady_company_id => @trady_company_id, :quote_id => @quote_id, :ledger_id => @ledger_id, :pdf_file_id => @pdf_file_id, :work_flow => "Get Quote", :system_plan=>@system_plan, :invoice_type => @invoice_type, :quote_type => @quote_type})
+
+  =react_component('AddTradycompany', {:authenticity_token => form_authenticity_token, :company_name => '', :trading_name => @company.nil? ? @trady.company_name : @company.company_name, :abn => '', :gst_registration => '', :address => '', :mailing_address_same => '', :mailing_address => '', :mobile_number => @company.nil? ? @trady.mobile : @company.mobile_number, :email => @company.nil? ? @trady.email : @company.email, :maintenance_request_id => @maintenance_request_id, :trady_id => @trady.id, :trady_company_id => @trady_company_id, :quote_id => @quote_id, :ledger_id => @ledger_id, :pdf_file_id => @pdf_file_id, :work_flow => "Get Quote", :system_plan=>@system_plan, :invoice_type => @invoice_type, :quote_type => @quote_type})
 
 
-  =bootstrap_nested_form_for(@trady_company, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10", remote: true) do |a|   
-    = a.text_field :company_name, value:"#{@trady.company_name}"    
-    = a.text_field :trading_name, value:"#{@company.nil? ? '' : @company.trading_name}"    
-    / = a.text_field :abn, value:"#{@company.nil? ? '' : @company.abn}"   
-    = a.form_group :gst_registration do     
-      = a.check_box :gst_registration, label: "GST  registration"   
-    = a.text_field :address, value:"#{@company.nil? ? '' : @company.address}"   
-    = a.form_group :mailing_address_same do   
-      = a.check_box :mailing_address_same, label: "Mailing Address same as Above"   
-    = a.text_field :mailing_address, value:"#{@company.nil? ? '' : @company.mailing_address}"   
-    = a.text_field :mobile_number, value:"#{@trady.mobile}"    
-    = a.text_field :email, value:"#{@trady.email}", label:"Company Email"    
-    / = a.text_field :bsb_number    
-    / = a.text_field :bank_account_number   
-    / = a.text_field :account_name    
-           
-    = a.hidden_field :maintenance_request_id, value:@maintenance_request_id   
-    = a.hidden_field :trady_id, value:@trady_id   
-    = a.hidden_field :trady_company_id, value:@trady_company_id   
-    = a.hidden_field :system_plan, value:@system_plan   
-    = a.hidden_field :invoice_type, value:@invoice_type   
-    = a.hidden_field :quote_type, value:@quote_type   
-    = a.hidden_field :pdf_file_id, value:@pdf_file_id   
-    = a.hidden_field :ledger_id, value:@ledger_id   
-    = a.hidden_field :quote_id, value:@quote_id   
-    %br   
-    = a.submit 'Next'   
-    %br   
-    %br   
-    -if @system_plan == "Invoice"   
-      %button.button-primary.green.option-button    
-        =link_to "Back", invoice_options_path(maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, trady_company_id:@trady_company_id)    
-    -elsif @system_plan == "Quote"    
-      %button.button-primary.green.option-button    
-        =link_to "Back", quote_options_path(maintenance_request_id:@maintenance_request_id,trady_id:@trady_id) 
+  / =bootstrap_nested_form_for(@trady_company, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10", remote: true) do |a|
+  /   = a.text_field :company_name, value:"#{@trady.company_name}"
+  /   = a.text_field :trading_name, value:"#{@company.nil? ? '' : @company.trading_name}"
+  /   / = a.text_field :abn, value:"#{@company.nil? ? '' : @company.abn}"
+  /   = a.form_group :gst_registration do
+  /     = a.check_box :gst_registration, label: "GST  registration"
+  /   = a.text_field :address, value:"#{@company.nil? ? '' : @company.address}"
+  /   = a.form_group :mailing_address_same do
+  /     = a.check_box :mailing_address_same, label: "Mailing Address same as Above"
+  /   = a.text_field :mailing_address, value:"#{@company.nil? ? '' : @company.mailing_address}"
+  /   = a.text_field :mobile_number, value:"#{@trady.mobile}"
+  /   = a.text_field :email, value:"#{@trady.email}", label:"Company Email"
+  /   / = a.text_field :bsb_number
+  /   / = a.text_field :bank_account_number
+  /   / = a.text_field :account_name
+
+  /   = a.hidden_field :maintenance_request_id, value:@maintenance_request_id
+  /   = a.hidden_field :trady_id, value:@trady_id
+  /   = a.hidden_field :trady_company_id, value:@trady_company_id
+  /   = a.hidden_field :system_plan, value:@system_plan
+  /   = a.hidden_field :invoice_type, value:@invoice_type
+  /   = a.hidden_field :quote_type, value:@quote_type
+  /   = a.hidden_field :pdf_file_id, value:@pdf_file_id
+  /   = a.hidden_field :ledger_id, value:@ledger_id
+  /   = a.hidden_field :quote_id, value:@quote_id
+  /   %br
+  /   = a.submit 'Next'
+  /   %br
+  /   %br
+  /   -if @system_plan == "Invoice"
+  /     %button.button-primary.green.option-button
+  /       =link_to "Back", invoice_options_path(maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, trady_company_id:@trady_company_id)
+  /   -elsif @system_plan == "Quote"
+  /     %button.button-primary.green.option-button
+  /       =link_to "Back", quote_options_path(maintenance_request_id:@maintenance_request_id,trady_id:@trady_id)
