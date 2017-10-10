@@ -160,7 +160,7 @@ class TradiesController < ApplicationController
       end
       else
         respond_to do |format|
-          format.json {render json:@trady.errors}
+          format.json{render :json=>{errors:@trady.errors.to_hash(true).as_json}}
         end 
       end
     end 
