@@ -74,7 +74,10 @@ class QuotesController < ApplicationController
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
     else
       flash[:danger] = "Sorry Something went wrong "
-      render :edit
+      respond_to do |format|
+        format.json {render :json=>{errors:@quote.errors.to_hash(true).as_json}}
+        format.html {render :edit}
+      end 
     end 
   end
 
