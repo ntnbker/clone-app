@@ -29,7 +29,8 @@ class MessagesController < ApplicationController
         format.json{render json:@message}
         
       else
-        format.js{render json:@message.errors}
+        
+        format.json{render :json=>{errors:@message.errors.to_hash(true).as_json}}
       end
     end
 
@@ -132,7 +133,7 @@ class MessagesController < ApplicationController
         format.json{render json:@message}
         
       else
-        format.js{render json:@message.errors}
+        format.json{render :json=>{errors:@message.errors.to_hash(true).as_json}}
       end
     end
 

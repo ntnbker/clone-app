@@ -39,7 +39,7 @@ var ContentMessage = React.createClass({
 				</ul>
 			);
 		}else {
-			return <p className="text-center" id="message">Message is empty!</p>
+			return <p className="text-center" id="message"> 0 messages in this conversation</p>
 		}
 		
 	}
