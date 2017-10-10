@@ -7,6 +7,12 @@ form#new_quote {
 		margin: 20px 0 5px;
 	}
 
+	.error {
+    margin-top: 10px;
+    color: red;
+    text-align: center;
+	}
+
 	.quotefield {
     	border: 1px dashed #E1E1E1;
 		padding: 10px;
@@ -91,6 +97,9 @@ form#new_quote {
 			&.price {
 				margin-right: 2%;
 			}
+		}
+		.price.error {
+
 		}
 	}
 

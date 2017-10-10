@@ -51,9 +51,9 @@ var FieldList = React.createClass({
     var x = 0;
 
     if (existingContent ? existingContent.length > 0 : false) {
-      existingContent.map((one, index) => {
+      existingContent.map((content, index) => {
         x = index + 1;
-        Fields[x] = {params, SampleField, x };
+        Fields[x] = {params, content, SampleField, x };
       });
 
       return { Fields, x };
@@ -67,12 +67,10 @@ var FieldList = React.createClass({
   },
 
   addField: function() {
-    var SampleField = this.props.SampleField;
+    var { SampleField, params, content } = this.props;
     var tmpFields = this.state.Fields || {};
-    var params = this.props.params;
     const x = ++this.state.x;
-    tmpFields[x] = {params: this.props.params, SampleField, x};
-    debugger
+    tmpFields[x] = {params, content, SampleField, x};
     this.setState({Fields: tmpFields});
   },
 
@@ -94,13 +92,14 @@ var FieldList = React.createClass({
     return <div className="fieldlist">
       <ul id="fieldList">
         {
-          Object.values(this.state.Fields).map(({SampleField, params, x} , index) => {
+          Object.values(this.state.Fields).map(({SampleField, content, params, x} , index) => {
             return (
               <li key={x}>
               {
                 <SampleField
                   x={x}
                   params={params}
+                  content={content}
                   removeField={(position) => this.removeField(position)}
                   validDate={(flag) => this.props.validDate(flag)}
                   errorsForm={errors}
