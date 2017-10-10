@@ -46,10 +46,10 @@ class LandlordsController < ApplicationController
             format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json}}
           end 
         end
-      end 
     end 
+  end 
 
-  end
+  
 
   def update
     @landlord = Landlord.find_by(id:params[:landlord][:id])  
@@ -71,7 +71,7 @@ class LandlordsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id])
     property = maintenance_request.property
     
-   if user
+    if user
       existing_role = user.get_role("Landlord").present?
     end
     
