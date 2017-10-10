@@ -119,7 +119,7 @@ class LandlordsController < ApplicationController
           format.json {render :json=>{landlord:@user.landlord,log:log, notice:"Maintenance Request Successfully Sent" }}
         end
       else
-        @user = User.new(user_params)  
+        # @user = User.new(user_params)  
         respond_to do |format|
           format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json}}
         end 
