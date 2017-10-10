@@ -12,12 +12,18 @@ class Appointment < ApplicationRecord
   #attr_accessor :current_user_role
 
 
-  validate :future_date
+  validate :future_date, :future_time
     
 
   def future_date
     errors.add(:date, "can't be in the past") if
-      self.date < Date.today
+      self.date < DateTime.now
+  end
+
+  def future_time
+    dt = (self.date.to_s + " " + self.time.to_s).to_datetime
+    errors.add(:time, "can't be in the past") if
+      dt < DateTime.now
   end
 
 
