@@ -52,84 +52,39 @@ var ModalAddAskLandlord = React.createClass({
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
-
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value;
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if(!isNaN(value)) {
-						if( 10 <= value.length && value.length <= 11) {
-							this.setState({errorMobile: false});
-						}else {
-							if(value.length > 11) {
-								value = value.substring(0, 11);
-								e.target.value = value;
-							}else if(value.length < 10) {
-								this.setState({errorMobile: true});
-							}
-						}
-					}else {
-						e.target.value = value.substring(0, value.length - 1);
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
-		}
-
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
+		const self = this;
+		var params = {
 				authenticity_token: this.props.authToken,
 				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
+					name: this.name && this.name.value,
+					email: this.email && this.email.value,
+					mobile: this.mobile && this.mobile.value,
 					maintenance_request_id: this.props.maintenance_request_id,
 				},
 			}
-			this.props.addAskLandlord(params);
-		}
-		return;
+			this.props.addAskLandlord(params, function(err) {
+				if (err) {
+					self.setState({
+						errorEmail: err.email,
+						errorName: err.name,
+						errorMobile: err.mobile,
+					})
+				}
+			});
+		return
 	},
 
 	render: function() {
@@ -159,10 +114,11 @@ var ModalAddAskLandlord = React.createClass({
 												name="landlord[name]"
 												placeholder="Landlord Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorName'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
@@ -172,26 +128,30 @@ var ModalAddAskLandlord = React.createClass({
 												maxLength="11"
 												name="landlord[mobile]"
 												placeholder="Landlord Mobile"
-												onChange={this.checkValidate}
-												id="mobile" ref={e => this.mobile = e}
+												id="mobile"
+												ref={e => this.mobile = e}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorMobile'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<input
-												type="email"
+												type="text"
 												autoCorrect="off"
 												autoComplete="off"
 												autoCapitalize="off"
 												name="landlord[email]"
 												placeholder="Landlord Email"
-												onChange={this.checkValidate}
-												id="email" ref={e => this.email = e}
+												id="email"
+												ref={e => this.email = e}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorEmail'])}
 									</div>
 							</div>
 							<div className="modal-footer">
@@ -224,84 +184,45 @@ var ModalEditAskLandlord = React.createClass({
 		this.setState({isEdit: !this.state.isEdit});
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
-
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({errorMobile: false});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({errorMobile: true});
-						}
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
-
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
+		const self = this;
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				id: this.props.landlord.id,
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id,
+			},
 		}
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					id: this.props.landlord.id,
-					maintenance_request_id: this.props.maintenance_request_id,
-				}
+		this.props.editAskLandlord(params, function(err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile,
+				})
 			}
-			this.props.editAskLandlord(params);
-		}
-
+		});
 		return
 	},
 
 	render: function() {
+		const { isEdit, errorName, errorMobile, errorEmail } = this.state;
+		const { landlord } = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -320,55 +241,69 @@ var ModalEditAskLandlord = React.createClass({
 								<h4 className="modal-title text-center">Ask landlord for instructions</h4>
 							</div>
 							<div className="modal-body">
-									<div className="row">
-										<a className="btn-edit" onClick={this.isEdit}>Edit Landlord Details</a>
+							 	{ !isEdit &&
+							 		<div className="row">
+										<a
+											className="btn-edit"
+											onClick={() => this.isEdit()}
+										>
+											Edit Landlord Details
+										</a>
 									</div>
-									<div className="row m-t-lg">
-										<div className="form-input">
-											<input
-												type="text"
-												placeholder="Landlord Nane"
-												onChange={this.checkValidate}
-												readOnly={!this.state.isEdit}
-												id="name" ref={e => this.name = e}
-												defaultValue={this.props.landlord.name}
-												className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")}
-											/>
-										</div>
+								}
+								<div className="row">
+									<div>
+										<input
+											id="name"
+											type="text"
+											name="landlord[name]"
+											placeholder="Landlord Name"
+											readOnly={!isEdit}
+											defaultValue={landlord.name}
+											ref={e => this.name = e}
+											onChange={this.removeError}
+											className={(errorName && "has-error") + (!isEdit && " readonly")}
+										/>
 									</div>
-									<div className="row m-t-lg">
-										<div className="form-input">
-											<input
-												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
-												ref={e => this.mobile = e}
-												placeholder="Landlord Mobile"
-												onChange={this.checkValidate}
-												readOnly={!this.state.isEdit}
-												defaultValue={this.props.landlord.mobile}
-												className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")}
-											/>
-										</div>
+									{renderError(errorName)}
+								</div>
+								<div className="row m-t-lg">
+									<div>
+										<input
+											type="number"
+											minLength="10"
+											maxLength="11"
+											name="landlord[mobile]"
+											placeholder="Landlord Mobile"
+											id="mobile"
+											readOnly={!isEdit}
+											defaultValue={landlord.mobile}
+											ref={e => this.mobile = e}
+											onChange={this.removeError}
+											className={(errorMobile && "has-error") + (!isEdit && " readonly")}
+										/>
 									</div>
-									<div className="row m-t-lg">
-										<div className="form-input">
-											<input
-												id="email"
-												type="text"
-												autoCapitalize="off"
-												autoCorrect="off"
-												autoComplete="off"
-												ref={e => this.email = e}
-												placeholder="Landlord Email"
-												onChange={this.checkValidate}
-												readOnly={!this.state.isEdit}
-												defaultValue={this.props.landlord.email}
-												className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")}
-											/>
-										</div>
+									{renderError(errorMobile)}
+								</div>
+								<div className="row m-t-lg">
+									<div>
+										<input
+											type="text"
+											autoCorrect="off"
+											autoComplete="off"
+											autoCapitalize="off"
+											name="landlord[email]"
+											placeholder="Landlord Email"
+											id="email"
+											readOnly={!isEdit}
+											defaultValue={landlord.email}
+											ref={e => this.email = e}
+											onChange={this.removeError}
+											className={(errorEmail && "has-error") + (!isEdit && " readonly")}
+										/>
 									</div>
+									{renderError(errorEmail)}
+								</div>
 							</div>
 							<div className="modal-footer">
 								<button
@@ -489,18 +424,14 @@ var ModalAddLandlord = React.createClass({
 			'email' : 'errorEmail',
 			'mobile': 'errorMobile',
 		}[key];
-		debugger
 		if (!errorField || !this.state[errorField]) return;
 		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		// let flag = false;
 		const self = this;
-		// debugger
-		// if(!flag) {
-			var params = {
+		var params = {
 				authenticity_token: this.props.authToken,
 				landlord: {
 					name: this.name && this.name.value,
@@ -518,8 +449,6 @@ var ModalAddLandlord = React.createClass({
 					})
 				}
 			});
-		// }
-
 		return
 	},
 
@@ -585,7 +514,7 @@ var ModalAddLandlord = React.createClass({
 											<label>Email <strong>*</strong>:</label>
 											<input
 												id="email"
-												type="email"
+												type="text"
 												autoCapitalize="off"
 												autoCorrect="off"
 												autoComplete="off"
@@ -639,9 +568,6 @@ var ModalEditLandlord = React.createClass({
 	submit: function(e) {
 		e.preventDefault();
 		const self = this;
-		// let flag = false;
-
-		// if(!flag) {
 		var params = {
 			authenticity_token: this.props.authToken,
 			landlord: {
@@ -661,8 +587,7 @@ var ModalEditLandlord = React.createClass({
 				})
 			}
 		});
-		// }
-	},
+		},
 
 	render: function() {
 		return (
@@ -722,7 +647,7 @@ var ModalEditLandlord = React.createClass({
 											<label>Email <strong>*</strong>:</label>
 											<input
 												id="email"
-												type="email"
+												type="text"
 												autoCapitalize="off"
 												autoCorrect="off"
 												autoComplete="off"
@@ -862,8 +787,7 @@ var ModalRequestModal = React.createClass({
 	},
 
 	componentWillMount: function() {
-		//this.selectTrady(this.state.maintenance_request.trady_id);
-	},
+		},
 
 	checkLength: function(e) {
 		var value = e.target.value;
@@ -1321,7 +1245,7 @@ var MaintenanceRequest = React.createClass({
 
 	},
 
-	addAskLandlord: function(params){
+	addAskLandlord: function(params, callback){
 		const {logs} = this.state;
 		var self = this;
 		$.ajax({
@@ -1332,7 +1256,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				logs.push(res.log)
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					logs: logs,
 					landlord: res.landlord,
@@ -1356,7 +1282,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editAskLandlord: function(params) {
+	editAskLandlord: function(params, callback) {
 		const {logs} = this.state;
 		var self = this;
 		$.ajax({
@@ -1367,7 +1293,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				logs.push(res.log);
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					logs: logs,
 					landlord: res.landlord,
