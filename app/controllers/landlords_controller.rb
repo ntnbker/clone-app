@@ -28,11 +28,11 @@ class LandlordsController < ApplicationController
         format.json {render json:existing_user.landlord, notice:"Landlord successfully added" }
       end
     elsif existing_user == nil
-       respond_to do |format|
+       
         if @landlord.valid?
-           
-          format.json {render json:@landlord, :notice=>"Landlord successfully created" }
-          
+           respond_to do |format|
+            format.json {render json:@landlord, :notice=>"Landlord successfully created" }
+            end
           @user = User.create(email:params[:landlord][:email],password:SecureRandom.hex(5))
           @landlord.user_id = @user.id
           @landlord.save
@@ -42,8 +42,9 @@ class LandlordsController < ApplicationController
           property.update_attribute(:landlord_id, @user.landlord.id)
           UserSetPasswordEmailWorker.perform_async(@user.id)
         else
-          
-          format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
+          respond_to do |format|
+            format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json}}
+          end 
         end
       end 
     end 
@@ -57,7 +58,7 @@ class LandlordsController < ApplicationController
       if @landlord.update(landlord_params)
         format.json {render json:@landlord, :notice=>"Landlord successfully created" }
       else
-        format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
+        format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json} }
       end
     end 
   end  
@@ -119,7 +120,9 @@ class LandlordsController < ApplicationController
         end
       else
         @user = User.new(user_params)  
-        format.json{render json:@landlord.errors, :notice=>"Oops something went wrong" }
+        respond_to do |format|
+          format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json}}
+        end 
       end 
     end 
   end 
@@ -129,19 +132,21 @@ class LandlordsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id])
     property = maintenance_request.property
 
-    respond_to do |format|
-      if @landlord.update(landlord_params)
+    if @landlord.update(landlord_params)
         
-        property.update_attribute(:landlord_id, @landlord.id)
+      property.update_attribute(:landlord_id, @landlord.id)
 
-        LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
-        maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
+      LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
+      maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
 
-        log =  Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to - Landlord:", name:@landlord.name.capitalize)
+      log =  Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to - Landlord:", name:@landlord.name.capitalize)
+      respond_to do |format|
         format.json {render :json=>{landlord: @landlord,log:log, :notice=>"Landlord successfully created" }}
-      else
-        format.json{render :json=>{errors:@landlord.errors, :notice=>"Oops something went wrong" }}
-      end
+      end 
+    else
+      respond_to do |format|
+        format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json}}
+      end 
     end 
   end 
 
