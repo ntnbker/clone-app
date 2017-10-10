@@ -1,4 +1,8 @@
-	var ModalConfirm = React.createClass({
+function renderError(error) {
+	return <p id="errorbox" className="error">{error && error[0] || ''}</p>;
+}
+
+var ModalConfirm = React.createClass({
 	render: function() {
 		return (
 			<div className="modal-custom fade">
@@ -472,86 +476,49 @@ var SideBarMobile = React.createClass({
 var ModalAddLandlord = React.createClass({
 	getInitialState: function() {
 		return {
-			errorName: false,
-			errorEmail: false,
-			errorMobile: false,
+			errorName: '',
+			errorEmail: '',
+			errorMobile: '',
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
-
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({errorMobile: false});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({errorMobile: true});
-						}
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
+		debugger
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
-
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
-		}
-
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
+		// let flag = false;
+		const self = this;
+		// debugger
+		// if(!flag) {
 			var params = {
 				authenticity_token: this.props.authToken,
 				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
+					name: this.name && this.name.value,
+					email: this.email && this.email.value,
+					mobile: this.mobile && this.mobile.value,
 					maintenance_request_id: this.props.maintenance_request_id,
 				},
 			}
-			this.props.addLandlord(params);
-		}
+			this.props.addLandlord(params, function(err) {
+				if (err) {
+					self.setState({
+						errorEmail: err.email,
+						errorName: err.name,
+						errorMobile: err.mobile,
+					})
+				}
+			});
+		// }
 
 		return
 	},
@@ -590,10 +557,11 @@ var ModalAddLandlord = React.createClass({
 												name="landlord[name]"
 												placeholder="Enter Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorName'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
@@ -606,10 +574,11 @@ var ModalAddLandlord = React.createClass({
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorMobile'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
@@ -623,10 +592,11 @@ var ModalAddLandlord = React.createClass({
 												name="landlord[email]"
 												placeholder="Enter Email"
 												ref={e => this.email = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorEmail'])}
 									</div>
 							</div>
 							<div className="modal-footer">
@@ -654,81 +624,44 @@ var ModalEditLandlord = React.createClass({
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
 
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({errorMobile: false});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({errorMobile: true});
-						}
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
+		const self = this;
+		// let flag = false;
 
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
+		// if(!flag) {
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				id: this.props.landlord.id,
+				maintenance_request_id: this.props.maintenance_request_id,
+			},
 		}
-
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					id: this.props.landlord.id,
-					maintenance_request_id: this.props.maintenance_request_id,
-				},
+		this.props.editLandlord(params, function(err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile,
+				})
 			}
-			this.props.editLandlord(params);
-		}
+		});
+		// }
 	},
 
 	render: function() {
@@ -759,11 +692,12 @@ var ModalEditLandlord = React.createClass({
 												name="landlord[name]"
 												placeholder="Enter Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												defaultValue={this.props.landlord.name}
 												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorName'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
@@ -776,11 +710,12 @@ var ModalEditLandlord = React.createClass({
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												defaultValue={this.props.landlord.mobile}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorMobile'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
@@ -794,11 +729,12 @@ var ModalEditLandlord = React.createClass({
 												name="landlord[email]"
 												placeholder="Enter Email"
 												ref={e => this.email = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												defaultValue={this.props.landlord.email}
 												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorEmail'])}
 									</div>
 							</div>
 							<div className="modal-footer">
@@ -1455,7 +1391,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	addLandlord: function(params) {
+	addLandlord: function(params, callback) {
 		const {landlord} = this.state;
 		var self = this;
 		$.ajax({
@@ -1466,6 +1402,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					landlord: res,
 					notification: {
@@ -1488,7 +1427,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editLandlord: function(params) {
+	editLandlord: function(params, callback) {
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -1498,6 +1437,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					landlord: res,
 					notification: {
