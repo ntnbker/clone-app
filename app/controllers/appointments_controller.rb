@@ -33,14 +33,14 @@ class AppointmentsController < ApplicationController
 
 
       if params[:appointment][:current_user_role] == "Tenant"
-        TradyAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request.id, @appointment.id, trady.id, tenant.id)
+        TradyAlternativeAppointmentTimePickedEmailWorker.perform_in(5.minutes,maintenance_request.id, @appointment.id, trady.id, tenant.id)
         maintenance_request.action_status.update_columns(agent_status: "Tradie To Confirm Appointment",trady_status:"Alternate Appointment Requested")
 
         log = Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant requested a different appointment. - Tenant: ", name:tenant.name.capitalize)
 
         #send email to trady letting them know that a new appointment time has been picked 
       elsif params[:appointment][:current_user_role] == "Trady"
-        TenantAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request.id, @appointment.id, trady.id, tenant.id)
+        TenantAlternativeAppointmentTimePickedEmailWorker.perform_in(5.minutes,maintenance_request.id, @appointment.id, trady.id, tenant.id)
         maintenance_request.action_status.update_columns(agent_status: "Tenant To Confirm Appointment", trady_status:"Awaiting Appointment Confirmation")
 
         log = Log.create(maintenance_request_id:maintenance_request.id, action:"Tradie requested an appointment. - Tradie: ", name:trady.name.capitalize)
@@ -92,7 +92,7 @@ class AppointmentsController < ApplicationController
     end 
     appointment_and_comments = appointment.as_json(:include => {:comments =>{}})
     respond_to do |format|
-      format.json {render :json=>{appointment:appointment_and_comments,log:log,note:"You have accepted the appointment."}}
+      format.json {render :json=>{appointment:appointment_and_comments,log:log,note:"You have accepted the appointment. An email has been sent to the other party to let them know. Thank you for your time."}}
     end
   end
 

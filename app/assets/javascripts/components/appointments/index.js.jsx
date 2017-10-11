@@ -1,15 +1,15 @@
 const notifyAppointment = {
 	cancel: {
 		title: "Create and Cancel Appointment",
-		content: "You was cancel and create appointment."
+		content: "You have cancelled the old suggested appointment. Thank you for creating a new appointment, an email has been sent with the new appointment details. You will be notified if they accept the appointment time."
 	},
 	decline: {
 		title: "Create and Decline Appointment",
-		content: "You have declined the old suggested appointment. Thank you for creating a new appointment, an email has been sent with the new appointment details."
+		content: "You have declined the old suggested appointment. Thank you for creating a new appointment, an email has been sent with the new appointment details. You will be notified if they accept the appointment time."
 	},
 	normal: {
 		title: "Create Appointment",
-		content: "Thank you for creating an appointment."
+		content: "Thank you for creating an appointment, an email has been sent with the appointment details. You will be notified if they accept the new appointment time."
 	}
 }
 
