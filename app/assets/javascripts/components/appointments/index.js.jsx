@@ -1,11 +1,11 @@
 const notifyAppointment = {
 	cancel: {
 		title: "Create and Cancel Appointment",
-		content: "You was cancel and create appointment."
+		content: "You have cancelled the previous appointment and created a new appointment. An email has been sent to the other party with the newly suggested appointment."
 	},
 	decline: {
 		title: "Create and Decline Appointment",
-		content: "You was decline and create appointment."
+		content: "You have declined the previous appointment and created a new appointment. An email has been sent to the other party with the newly suggested appointment."
 	},
 	normal: {
 		title: "Create Appointment",

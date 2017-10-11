@@ -60,11 +60,16 @@ class InvoicesController < ApplicationController
 
       redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
     else
-      flash[:danger] = "Please Fill in a Minumum of one item"
+      
       @trady_id = params[:ledger][:trady_id]
       @maintenance_request_id= params[:ledger][:maintenance_request_id]
       @quote = Quote.find_by(id:params[:ledger][:quote_id])
-      render :new
+      
+
+      respond_to do |format|
+          format.json{render :json=>{errors:@ledger.errors.to_hash(true).as_json}}
+          format.html{render :new}
+      end
     end
   end
 
@@ -132,8 +137,10 @@ class InvoicesController < ApplicationController
       flash[:success] = "Your Invoice has been updated"
       redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type)
     else
-      flash[:danger] = "Sorry Something went wrong "
-      render :edit
+      respond_to do |format|
+          format.json{render :json=>{errors:@ledger.errors.to_hash(true).as_json}}
+          format.html{render :edit}
+      end
     end
 
   end

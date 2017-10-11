@@ -57,7 +57,7 @@ class AppointmentsController < ApplicationController
     
     else
       respond_to do |format|
-        format.json {render errors:"Something went wrong please add all information"}
+        format.json {render :json=>{errors:@appointment.errors.to_hash(true).as_json}}
       end
     end
 

@@ -6,7 +6,15 @@ class Invoice < ApplicationRecord
   belongs_to :ledger, inverse_of: :invoices
   has_many :invoice_items, inverse_of: :invoice
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
+  validates_associated :invoice_items
 
+  validate :future_date
+    
+
+  def future_date
+    errors.add(:due_date, "can't be in the past") if
+      self.due_date < DateTime.now
+  end
 
 
 
