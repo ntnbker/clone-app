@@ -123,9 +123,7 @@ var ModalAddAskLandlord = React.createClass({
 									<div className="row m-t-lg">
 										<div>
 											<input
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Landlord Mobile"
 												id="mobile"
@@ -270,9 +268,7 @@ var ModalEditAskLandlord = React.createClass({
 								<div className="row m-t-lg">
 									<div>
 										<input
-											type="number"
-											minLength="10"
-											maxLength="11"
+											type="text"
 											name="landlord[mobile]"
 											placeholder="Landlord Mobile"
 											id="mobile"
@@ -497,9 +493,7 @@ var ModalAddLandlord = React.createClass({
 											<label>Mobile <strong>*</strong>:</label>
 											<input
 												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
@@ -629,9 +623,7 @@ var ModalEditLandlord = React.createClass({
 											<label>Mobile <strong>*</strong>:</label>
 											<input
 												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
@@ -1047,7 +1039,7 @@ var ModalRequestModal = React.createClass({
 												<div>
 													<input
 														id="mobile"
-														type="number"
+														type="text"
 														style={style}
 														placeholder="Enter Mobile"
 														ref={e => this.mobile = e}
