@@ -361,7 +361,7 @@ var InvoiceItemField = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      remove: this.props.params.remove,
+      remove: nextProps.params.remove,
       errorsForm: this.filterError(nextProps.errorsForm || {}),
     });
   },
@@ -609,16 +609,15 @@ var InvoiceField = React.createClass({
     });
   },
   render: function() {
-
-    var { content: { invoice }, x, params: { invoiceInfo = {} } } = this.props;
+    var { x, params: { invoiceInfo = {} } } = this.props;
     var {
       errorDate, remove, errors, tax, invoice_total, tax_total, items_total
     } = this.state;
 
+    var invoice       = this.props.content               || {};
     var invoice_items = invoice && invoice.invoice_items || null;
     var hasInvoice    = invoice && !invoice.isCoppy;
 
-    invoice     = invoice     || {};
     invoiceInfo = invoiceInfo || {};
 
     if (hasInvoice) x = invoice.id;
