@@ -332,7 +332,6 @@ var AddTradycompany = React.createClass({
             <label className="control-label col-sm-2 required">Account name</label>
             <div className="col-sm-10">
     	        <input
-    			      required
     			      type="text"
     			      id="account_name"
     			      placeholder="Account Name"
@@ -350,7 +349,6 @@ var AddTradycompany = React.createClass({
             <label className="control-label col-sm-2 required">Bsb number</label>
             <div className="col-sm-10">
     	        <input
-    			      required
     			      type="text"
     			      id="bsb_number"
     			      placeholder="BSB Number"
@@ -368,7 +366,6 @@ var AddTradycompany = React.createClass({
             <label className="control-label col-sm-2 required">Bank account number</label>
             <div className="col-sm-10">
     	        <input
-    		        required
     		        type="text"
     		        id="bank_account_number"
     		        placeholder="Bank Account Number"
