@@ -73,7 +73,6 @@ var SelectTime = React.createClass({
 		return (
 			<div>
 				<select
-					required
 					id="hour"
 					name="hour"
 					ref={ref => this.hour = ref}
@@ -83,7 +82,6 @@ var SelectTime = React.createClass({
 					{this.makeHour()}
 				</select>
 				<select
-					required
 					id="minute"
 					name="minute"
 					onChange={this.props.onChange}
@@ -113,7 +111,7 @@ var CommentAppointment = React.createClass({
 	},
 
 	render: function() {
-		const comments = this.props.comments ? this.props.comments : [];
+		const comments = this.props.comments || [];
 		return (
 			<div className="comments" id="message">
 				{
@@ -139,25 +137,54 @@ var ModalAddAppointment = React.createClass({
 	getInitialState: function() {
 		return {
 			date: new Date(),
+			errorDate   : '',
+			errorTime   : '',
+			errorComment: '',
 		};
 	},
 
 	submit: function(e) {
 		e.preventDefault();
 		const time = $('#hour').val() + ':' + $('#minute').val();
+		const self = this;
 		var params = {
 			time: time,
 			date: this.date.value,
 			body: this.comment.value,
 			appointment_type: this.props.type,
 		};
-		this.props.addAppointment(params);
+		this.props.addAppointment(params, function(err) {
+			if (err) {
+				self.setState({
+					errorDate: err['date'],
+					errorTime: err['time'],
+					errorComment: err['comments.body'],
+				});
+			}
+		});
 	},
 
-	changeDate: function(e){
+	changeDate: function(e) {
 		this.setState({
-			date: e.target.value
+			date: e.target.value,
+			errorDate: '',
 		});
+	},
+
+	changeTime: function(e) {
+		this.setState({
+			errorTime: '',
+		})
+	},
+
+	changeComment: function(e) {
+		this.setState({
+			errorComment: '',
+		})
+	},
+
+	renderError: function(error) {
+	  return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
 	},
 
 	componentDidMount: function() {
@@ -170,6 +197,7 @@ var ModalAddAppointment = React.createClass({
 		const date = new Date().toISOString().substring(0, 10);
 		const time = now.getHours() + ':' + now.getMinutes();
 		const {title, comments} = this.props;
+		const { errorTime, errorDate, errorComment } = this.state;
 
 		return (
 			<div className="modal-custom fade">
@@ -193,28 +221,34 @@ var ModalAddAppointment = React.createClass({
 									<CommentAppointment comments={comments} />
 									<div className="form-group">
 										<textarea
-											required
 											placeholder="Comment"
-											className="text-center"
+											className={"text-center" + (errorComment ? ' border_on_error' : '')}
+											onChange={this.changeComment}
 											ref={ref => this.comment = ref}
 										/>
 									</div>
+									{this.renderError(errorComment)}
 									<div className="form-group date-time">
 										<div className="date">
 											<label>Date</label>
 											<input
-												required
 												id="date-appointment"
 												type="date"
 												defaultValue={date}
-												className="datepicker"
+												className={"datepicker" + (errorDate ? ' border_on_error' : '')}
 												ref={ref => this.date = ref}
 												onChange={this.changeDate}
 											/>
+											{this.renderError(errorDate)}
 										</div>
 										<div className="time">
 											<label>Time</label>
-											<SelectTime date={this.state.date} onChange={this.checkValidate} />
+											<SelectTime
+												date={this.state.date}
+												onChange={this.changeTime}
+												className={(errorDate ? 'border_on_error' : '')}
+											/>
+											{this.renderError(errorTime)}
 										</div>
 									</div>
 								</div>

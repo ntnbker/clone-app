@@ -131,7 +131,7 @@ var TenantMaintenanceRequest = React.createClass({
 				modal: ""
 			});
 		}
-		
+
 		var body = document.getElementsByTagName('body')[0];
 		body.classList.remove("modal-open");
 		var div = document.getElementsByClassName('modal-backdrop in')[0];
@@ -204,12 +204,12 @@ var TenantMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function(params) {
+	addAppointment: function(params, callback) {
 		const self = this;
 		const {tenant, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
 		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate, isDecline, comments, quoteComments, landlordComments, isCancel} = this.state;
-
+		debugger
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
 		fd.append('appointment[date]', params.date);
@@ -240,6 +240,9 @@ var TenantMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let title = '';
 				let	content = '';
 				if(!!isDecline) {
@@ -602,7 +605,7 @@ var TenantMaintenanceRequest = React.createClass({
 							title="Create Appointment"
 							type="Work Order Appointment"
 							comments={this.state.comments}
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}
@@ -614,7 +617,7 @@ var TenantMaintenanceRequest = React.createClass({
 							type="Quote Appointment"
 							comments={this.state.quoteComments}
 							title="Create Appointment For Quote"
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}
@@ -626,7 +629,7 @@ var TenantMaintenanceRequest = React.createClass({
 							type="Landlord Appointment"
 							title="Create Landlord Appointment"
 							comments={this.state.landlordComments}
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}
@@ -845,9 +848,9 @@ var TenantMaintenanceRequest = React.createClass({
 							/>
 					}
 				</div>
-				<TenantSideBarMobile 
-					current_user={this.props.current_user} 
-					onModalWith={(modal) => this.onModalWith(modal)} 
+				<TenantSideBarMobile
+					current_user={this.props.current_user}
+					onModalWith={(modal) => this.onModalWith(modal)}
 				/>
 				{ this.renderModal() }
 			</div>

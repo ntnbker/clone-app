@@ -5,41 +5,53 @@ var ModalSendMessageTenant = React.createClass({
 		};
 	},
 
+	removeError: function(e) {
+		this.setState({
+			errorMessage: '',
+		})
+	},
+
+	renderError: function(error) {
+	  return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+	},
+
 	onSubmit: function(e) {
 		e.preventDefault();
-
-		if(!this.message.value) {
-			this.setState({errorMessage: true});
-			return
-		}
-
+		const self = this;
 		const params = {
 			authenticity_token: this.props.authToken,
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Tenant',
 				maintenance_request_id: this.props.maintenance_request_id,
 			},
 		}
 
-		this.props.sendMessageTenant(params);
+		this.props.sendMessageTenant(params, function(err) {
+			if (err) {
+				self.setState({
+					errorMessage: err['body'],
+				})
+			}
+		});
 		this.message.value = "";
 	},
 
 	render: function() {
 		var tenants_conversation = this.props.tenants_conversation
 		var current_user = this.props.current_user
+		const { errorMessage } 		 = this.state;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
 					<form role="form">
 						<div className="modal-content">
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									data-dismiss="modal" 
-									aria-label="Close" 
+									data-dismiss="modal"
+									aria-label="Close"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -51,18 +63,20 @@ var ModalSendMessageTenant = React.createClass({
 							</div>
 							<div className="modal-footer">
 								<div>
-									<textarea 
-										placeholder="Message" 
+									<textarea
+										placeholder="Message"
 										readOnly={!current_user}
-										ref={(rel) => this.message = rel} 
-										className={'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')} 
+										ref={(rel) => this.message = rel}
+										onChange={this.removeError}
+										className={'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')}
 									/>
 								</div>
-								<button 
+								{this.renderError(errorMessage)}
+								<button
 									type="submit"
 									onClick={this.onSubmit}
-									disabled={!current_user} 
-									className="btn btn-default success" 
+									disabled={!current_user}
+									className="btn btn-default success"
 								>
 									Submit
 								</button>

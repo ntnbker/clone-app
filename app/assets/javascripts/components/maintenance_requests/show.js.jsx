@@ -702,7 +702,7 @@ var ModalRequestModal = React.createClass({
 
 		var keyField = key === 'company' ? 'company_name' : key;
 		// if (!errorField || !this.state[errorField]) return;
-		this.setState({ [errorField]: '', trady: { [keyField]: e.target.value } });
+		this.setState({ [errorField]: '', trady: { ...trady, [keyField]: e.target.value } });
 	},
 
 
@@ -1273,7 +1273,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageLandlord: function(params) {
+	sendMessageLandlord: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -1284,6 +1284,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
 				landlords_conversation.push(res);
 
@@ -1302,7 +1305,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageTenant: function(params) {
+	sendMessageTenant: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -1313,6 +1316,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const tenants_conversation = !!self.state.tenants_conversation ? self.state.tenants_conversation : [];
 				tenants_conversation.push(res);
 				self.setState({
@@ -1330,7 +1336,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageTrady: function(params) {
+	sendMessageTrady: function(params, callback) {
 		const {authenticity_token, maintenance_request, current_user_role} = this.props;
 		const self = this;
 		params.message.maintenance_request_id = maintenance_request.id;
@@ -1343,6 +1349,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const trady_conversation = !!self.state.trady_conversation ? self.state.trady_conversation : [];
 				trady_conversation.push(res);
 				self.setState({
@@ -1360,7 +1369,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageQuote: function(params) {
+	sendMessageQuote: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -1371,6 +1380,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let quote = self.state.quote
 				quote.conversation = quote.conversation ? quote.conversation : {};
 				const messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];

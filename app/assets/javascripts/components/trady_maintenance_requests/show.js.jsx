@@ -403,7 +403,7 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function(params) {
+	addAppointment: function(params, callback) {
 		const self = this;
 		const {tenants, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
@@ -433,6 +433,9 @@ var TradyMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let title = "";
 				let content = "";
 				if(!!isDecline) {
@@ -890,7 +893,7 @@ var TradyMaintenanceRequest = React.createClass({
 							title="Create Appointment"
 							type="Work Order Appointment"
 							comments={this.state.comments}
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}
@@ -902,7 +905,7 @@ var TradyMaintenanceRequest = React.createClass({
 							type="Quote Appointment"
 							comments={this.state.quoteComments}
 							title="Create Appointment For Quote"
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}

@@ -194,7 +194,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	},
 
-	sendMessageLandlord: function(params) {
+	sendMessageLandlord: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_role.role;
 		$.ajax({
@@ -205,6 +205,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors)
+				}
 				const landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
 				landlords_conversation.push(res);
 
@@ -307,7 +310,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function(params) {
+	addAppointment: function(params, callback) {
 		const self = this;
 		const {tenants, current_role, landlord, authenticity_token, tenant} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
@@ -337,6 +340,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let title = '';
 				let content = '';
 
@@ -602,7 +608,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							title="Create Appoinment"
 							type="Landlord Appointment"
 							comments={this.state.comments}
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}
