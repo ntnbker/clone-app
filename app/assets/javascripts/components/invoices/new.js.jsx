@@ -573,14 +573,32 @@ var InvoiceField = React.createClass({
   componentWillReceiveProps({ errors, ...rest }) {
     this.setState({
       remove: rest.params.remove,
-      errorDate: errors && errors['invoices.due_date'] && errors['invoices.due_date'][0],
+      errorDate: this.filterError(errors),
       errors: errors || {},
     });
   },
 
-  nowDate: function() {
+  validDate: function(date) {
+    var nowDate = this.nowDate(0);
+    if (nowDate === date) return false;
+    for (let i = 0; i < date.length; i++) {
+      if (nowDate[i] > date[i]) return false;
+    }
+    return true;
+  },
+
+  filterError: function(errors) {
+    var errorDate = errors && errors['invoices.due_date'];
+    if (errorDate) {
+      if (!this.date.value)                      errorDate = errorDate[0];
+      else if (!this.validDate(this.date.value)) errorDate = errorDate.reverse()[0];
+    }
+    return errorDate;
+  },
+
+  nowDate: function(nextDay = 1) {
     var oneDay = 24 * 60 * 60 * 1000;
-    var now    = new Date(Date.now() + oneDay);
+    var now    = new Date(Date.now() + oneDay*nextDay);
     var month  = now.getMonth() + 1;
     var date   = now.getDate();
     var year   = now.getFullYear();
@@ -685,6 +703,7 @@ var InvoiceField = React.createClass({
             <input
               type="date"
               defaultValue={invoice && invoice.due_date || this.nowDate()}
+              ref={e => this.date = e}
               onChange={() => this.setState({errorDate: ''})}
               name={'ledger[invoices_attributes][' + x + '][due_date]'}
               style={errorDate ? {borderColor: 'red'} : {}}
