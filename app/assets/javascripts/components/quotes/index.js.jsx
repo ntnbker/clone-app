@@ -756,29 +756,39 @@ var ModalViewQuoteMessage = React.createClass({
 		};
 	},
 
+	removeError: function(e) {
+		this.setState({
+			errorMessage: '',
+		})
+	},
+
+	renderError: function(error) {
+	  return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+	},
+
 	onSubmit: function(e) {
 		e.preventDefault();
-
-		if(!this.message.value) {
-			this.setState({errorMessage: true});
-			return
-		}
-
+		const self = this;
 		const params = {
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Quote',
 				quote_id: this.props.quote.id,
 			}
 		}
 
-		this.props.sendMessageQuote(params);
+		this.props.sendMessageQuote(params, function(err) {
+			if (err) {
+				self.setState({ errorMessage: err['body'] });
+			}
+		});
 		this.message.value = "";
 	},
 
 	render: function() {
 		const current_user = this.props.current_user;
 		var quote = this.props.quote;
+		const { errorMessage } 		 = this.state;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -805,9 +815,11 @@ var ModalViewQuoteMessage = React.createClass({
 										placeholder="Message"
 										readOnly={!current_user}
 										ref={(rel) => this.message = rel}
-										className={'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')}
+										onChange={this.removeError}
+										className={'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')}
 									/>
 								</div>
+								{this.renderError(errorMessage)}
 								<button
 									type="submit"
 									onClick={this.onSubmit}

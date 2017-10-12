@@ -344,7 +344,7 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendMessageQuote: function(params) {
+	sendMessageQuote: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_role.role;
 		$.ajax({
@@ -355,6 +355,9 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let quote = self.state.quote
 				quote.conversation = quote.conversation ? quote.conversation : {};
 				const messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
@@ -403,7 +406,7 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function(params) {
+	addAppointment: function(params, callback) {
 		const self = this;
 		const {tenants, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
@@ -433,6 +436,9 @@ var TradyMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let title = "";
 				let content = "";
 				if(!!isDecline) {
@@ -655,7 +661,7 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageAgent: function(params) {
+	sendMessageAgent: function(params, callback) {
 		const {authenticity_token, maintenance_request, current_role} = this.props;
 		const self = this;
 		params.message.maintenance_request_id = maintenance_request.id;
@@ -668,6 +674,9 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const trady_agent_conversation = !!self.state.trady_agent_conversation ? self.state.trady_agent_conversation : [];
 				trady_agent_conversation.push(res);
 				self.setState({
@@ -890,7 +899,7 @@ var TradyMaintenanceRequest = React.createClass({
 							title="Create Appointment"
 							type="Work Order Appointment"
 							comments={this.state.comments}
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}
@@ -902,7 +911,7 @@ var TradyMaintenanceRequest = React.createClass({
 							type="Quote Appointment"
 							comments={this.state.quoteComments}
 							title="Create Appointment For Quote"
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}
