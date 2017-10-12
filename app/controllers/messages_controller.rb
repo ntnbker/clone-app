@@ -37,6 +37,8 @@ class MessagesController < ApplicationController
     conversation_type = params[:message][:conversation_type]
     role = params[:message][:role]
     maintenance_request = MaintenanceRequest.find_by(id:params[:message][:maintenance_request_id])
+    
+  if @message.save
     if conversation_type == "Landlord"
       if role == "AgencyAdmin" || role == "Agent"
         LandlordMessageEmailWorker.perform_async(maintenance_request.id)
@@ -61,6 +63,7 @@ class MessagesController < ApplicationController
         #email the agent  
       end 
     end 
+  end 
     # if conversation type is landlord
     #   if role is agent or agency admin
     #     email the landlord
