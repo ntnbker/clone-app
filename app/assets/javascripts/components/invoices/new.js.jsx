@@ -182,7 +182,7 @@ var FieldListForInvoice = React.createClass({
     const { SampleField, params } = this.props;
     const tempFields = { ...Fields };
     let id = x + 1;
-    tempFields[id] = {params, SampleField, content: {}, x: id, key: Date.now()};
+    tempFields[id] = {params, SampleField, x: id, key: Date.now()};
 
     this.setState({Fields: tempFields, x: id});
   },
@@ -467,7 +467,6 @@ var InvoiceItemField = React.createClass({
     var {
       pricing_type, hours_input, remove, amount, numofhours
     } = this.state;
-
     if (invoice_item) {
       x = invoice_item.id || x;
       invoice_id = invoice_item.invoice_id || invoice_id;
@@ -609,16 +608,14 @@ var InvoiceField = React.createClass({
     });
   },
   render: function() {
-    var { x, params: { invoiceInfo = {} } } = this.props;
+    var { content, x, params: { invoiceInfo = {} } } = this.props;
     var {
       errorDate, remove, errors, tax, invoice_total, tax_total, items_total
     } = this.state;
 
-    var invoice       = this.props.content               || {};
-    var invoice_items = invoice && invoice.invoice_items || null;
-    var hasInvoice    = invoice && !invoice.isCoppy;
-
-    invoiceInfo = invoiceInfo || {};
+    var invoice_items = content && content.invoice_items || null;
+    var hasInvoice    = content && !content.isCoppy;
+    var invoice       = this.props.content || {};
 
     if (hasInvoice) x = invoice.id;
     if (remove) {
