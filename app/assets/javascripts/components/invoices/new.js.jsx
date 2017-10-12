@@ -151,18 +151,18 @@ var FieldListForInvoice = React.createClass({
     if (existingContent ? existingContent.length > 0 : false) {
       existingContent.map((content, index) => {
         x = index + 1;
-        Fields[x] = {params, SampleField, x, content, key: Date.now(), ...rest};
+        Fields[x] = {params, SampleField, x, content, key: x, ...rest};
       });
 
-      return { Fields, x };
+      return { Fields, x, removed: {} };
     }
 
     if (this.props.noQuotes) {
       Fields['1'] = {params, SampleField, content: {}, x: 1, key: 1, ...rest};
-      return { Fields, x: 1 };
+      return { Fields, x: 1, removed: {} };
     }
 
-    return { Fields : {}, x: 0 };
+    return { Fields : {}, x: 0, removed: {} };
   },
 
   setContent(quote) {
@@ -172,7 +172,7 @@ var FieldListForInvoice = React.createClass({
     const invoice_items = (quote.quote_items || []).map(item => ({...item, id: null, invoice_id: null }));
     const item = { ...quote, invoice_items, id, trady_invoice_reference: quote.trady_quote_reference, isCoppy: true, quote_id: quote.id };
 
-    Fields[id] = {params, content: item, SampleField, quote, x: id, key: Date.now()};
+    Fields[id] = {params, content: item, SampleField, quote, x: id, key: id};
 
     this.setState({ Fields, x: id });
   },
@@ -182,7 +182,7 @@ var FieldListForInvoice = React.createClass({
     const { SampleField, params } = this.props;
     const tempFields = { ...Fields };
     let id = x + 1;
-    tempFields[id] = {params, SampleField, x: id, key: Date.now()};
+    tempFields[id] = {params, SampleField, x: id, key: id};
 
     this.setState({Fields: tempFields, x: id});
   },
@@ -201,8 +201,10 @@ var FieldListForInvoice = React.createClass({
 
     return <div className="fieldlist" style={{ paddingBottom: '30px' }}>
       <ul>
-        {Object.values(Fields).map(({SampleField, quote, key, x, ...rest}, fieldIndex) => {
+        {Object.values(Fields).map(({SampleField, quote, key, x, params, ...rest}, fieldIndex) => {
           const style = {}
+          const newParams = { ...params, remove: removed[x] };
+
           if (!removed[x]) indexInvoice += 1;
           else style.display = 'none';
 
@@ -210,6 +212,7 @@ var FieldListForInvoice = React.createClass({
             <li key={key} style={style}>
               <h5 className="invoice-index"> Invoice #{indexInvoice}</h5>
                 <SampleField
+                  params={newParams}
                   {...rest}
                   x={x}
                   quote={quote}
@@ -567,9 +570,9 @@ var InvoiceField = React.createClass({
     }
   },
 
-  componentWillReceiveProps({ errors }) {
+  componentWillReceiveProps({ errors, ...rest }) {
     this.setState({
-      remove: this.props.params.remove,
+      remove: rest.params.remove,
       errorDate: errors && errors['invoices.due_date'] && errors['invoices.due_date'][0],
       errors: errors || {},
     });
@@ -624,7 +627,7 @@ var InvoiceField = React.createClass({
       return (
         <div>
           <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>
-          <input type="hidden" value={this.state.remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
+          <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
         </div>
       )
     }
