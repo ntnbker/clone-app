@@ -758,21 +758,20 @@ var ModalViewQuoteMessage = React.createClass({
 
 	onSubmit: function(e) {
 		e.preventDefault();
-
-		if(!this.message.value) {
-			this.setState({errorMessage: true});
-			return
-		}
-
+		const self = this;
 		const params = {
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Quote',
 				quote_id: this.props.quote.id,
 			}
 		}
 
-		this.props.sendMessageQuote(params);
+		this.props.sendMessageQuote(params, function(err) {
+			if (err) {
+				self.setState({ errorMessage: err['body'] });
+			}
+		});
 		this.message.value = "";
 	},
 

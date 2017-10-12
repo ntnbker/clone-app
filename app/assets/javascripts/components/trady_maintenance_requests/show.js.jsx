@@ -344,7 +344,7 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendMessageQuote: function(params) {
+	sendMessageQuote: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_role.role;
 		$.ajax({
@@ -355,6 +355,9 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let quote = self.state.quote
 				quote.conversation = quote.conversation ? quote.conversation : {};
 				const messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
@@ -658,7 +661,7 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageAgent: function(params) {
+	sendMessageAgent: function(params, callback) {
 		const {authenticity_token, maintenance_request, current_role} = this.props;
 		const self = this;
 		params.message.maintenance_request_id = maintenance_request.id;
@@ -671,6 +674,9 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const trady_agent_conversation = !!self.state.trady_agent_conversation ? self.state.trady_agent_conversation : [];
 				trady_agent_conversation.push(res);
 				self.setState({
