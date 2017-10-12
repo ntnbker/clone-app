@@ -1796,7 +1796,7 @@ var MaintenanceRequest = React.createClass({
 					tradies: res.all_tradies,
 					notification: {
 						title: "Send Work Order",
-						content: 'Thank you, a work order has been emailed to ' + params.trady.company_name +'. You will receive an invoice form ' + params.trady.company_name +' once the job has been completed',
+						content: 'Thank you, a work order has been emailed to ' + params.trady.company_name +'. You will receive an invoice from ' + params.trady.company_name +' once the job has been completed',
 						bgClass: "bg-success",
 					},
 				});

@@ -181,24 +181,25 @@ class QuotesController < ApplicationController
       
     # end
     if current_user.logged_in_as("AgencyAdmin")
-      if params[:status] = "Approved"
+      binding.pry
+      if params[:status] == "Approved"
         flash[:success] = "Thank you for accepting the quote."
-      elsif params[:status] = "Declined"
+      elsif params[:status] == "Declined"
         flash[:success] = "You have declined the quote"
-      elsif params[:status] = "Restore"
+      elsif params[:status] == "Restore"
         flash[:success] = "You have restored the quote"
-      elsif params[:status] = "Cancelled"
+      elsif params[:status] == "Cancelled"
         flash[:success] = "You have cancelled the quote"
       end 
       redirect_to agency_admin_maintenance_request_path(maintenance_request)
     elsif current_user.logged_in_as("Agent")
-      if params[:status] = "Approved"
+      if params[:status] == "Approved"
         flash[:success] = "Thank you for accepting the quote."
-      elsif params[:status] = "Declined"
+      elsif params[:status] == "Declined"
         flash[:success] = "You have declined the quote"
-      elsif params[:status] = "Restore"
+      elsif params[:status] == "Restore"
         flash[:success] = "You have restored the quote"
-      elsif params[:status] = "Cancelled"
+      elsif params[:status] == "Cancelled"
         flash[:success] = "You have cancelled the quote"
       end 
       redirect_to agent_maintenance_request_path(maintenance_request)
