@@ -322,7 +322,6 @@ var EditTradyCompany = React.createClass({
             <label className="control-label col-sm-2 required">Account name</label>
             <div className="col-sm-10">
               <input
-                required
                 type="text"
                 id="account_name"
                 placeholder="Account Name"
@@ -340,11 +339,9 @@ var EditTradyCompany = React.createClass({
             <label className="control-label col-sm-2 required">Bsb number</label>
             <div className="col-sm-10">
               <input
-                required
                 type="text"
                 id="bsb_number"
                 placeholder="BSB Number"
-                // onChange={this.checkValidate}
                 defaultValue={this.props.bsb_number}
                 ref={(ref) => this.bsb_number = ref}
                 className={"form-control " + (errors['bsb_number'] ? "has-error" : "")}
@@ -358,7 +355,6 @@ var EditTradyCompany = React.createClass({
             <label className="control-label col-sm-2 required">Bank account number</label>
             <div className="col-sm-10">
               <input
-                required
                 type="text"
                 id="bank_account_number"
                 placeholder="Bank Account Number"

@@ -123,9 +123,7 @@ var ModalAddAskLandlord = React.createClass({
 									<div className="row m-t-lg">
 										<div>
 											<input
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Landlord Mobile"
 												id="mobile"
@@ -270,9 +268,7 @@ var ModalEditAskLandlord = React.createClass({
 								<div className="row m-t-lg">
 									<div>
 										<input
-											type="number"
-											minLength="10"
-											maxLength="11"
+											type="text"
 											name="landlord[mobile]"
 											placeholder="Landlord Mobile"
 											id="mobile"
@@ -497,9 +493,7 @@ var ModalAddLandlord = React.createClass({
 											<label>Mobile <strong>*</strong>:</label>
 											<input
 												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
@@ -629,9 +623,7 @@ var ModalEditLandlord = React.createClass({
 											<label>Mobile <strong>*</strong>:</label>
 											<input
 												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
@@ -699,110 +691,20 @@ var ModalRequestModal = React.createClass({
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
+		var errorField = {
+			'name'   : 'errorName',
+			'email'  : 'errorEmail',
+			'mobile' : 'errorMobile',
+			'company': 'errorCompany',
+		}[key];
 
-		switch(key) {
-			case "company": {
-					if(e.target.value == "") {
-						this.setState({
-							isDisable: true,
-							errorCompany: true
-						});
-					}else {
-						this.setState({
-							isDisable: false,
-							errorCompany: false
-						});
-					}
-					this.state.trady.company_name = e.target.value;
-					this.forceUpdate();
-				break;
-			}
-
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({
-							isDisable: true,
-							errorName: true
-						});
-					}else {
-						this.setState({
-							isDisable: false,
-							errorName: false
-						});
-					}
-					this.state.trady.name = e.target.value;
-					this.forceUpdate();
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value;
-				if(value == "") {
-					this.setState({
-						isDisable: true,
-						errorMobile: true
-					});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({
-							isDisable: false,
-							errorMobile: false
-						});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({
-								isDisable: true,
-								errorMobile: true
-							});
-						}
-					}
-				}
-				this.state.trady.mobile = value;
-				this.forceUpdate();
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({
-						isDisable: true,
-						errorEmail: true
-					});
-				}else {
-					this.setState({
-						isDisable: false,
-						errorEmail: false
-					});
-				}
-				this.state.trady.email = e.target.value;
-				this.forceUpdate();
-				break;
-			}
-		}
+		var keyField = key === 'company' ? 'company_name' : key;
+		// if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '', trady: { [keyField]: e.target.value } });
 	},
 
-	componentWillMount: function() {
-		},
-
-	checkLength: function(e) {
-		var value = e.target.value;
-		if(value.length > 11) {
-			this.setState({
-				isDisable: true,
-				errorMobile: true,
-			});
-		}else {
-			this.setState({
-				isDisable: false,
-				errorMobile: false
-			});
-		}
-	},
 
 	selectTrady: function(id) {
 		const self = this.props;
@@ -844,72 +746,50 @@ var ModalRequestModal = React.createClass({
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
+		const self = this;
+		var params = {
+			trady: {
+				name:   								this.name && 		this.name.value,
+				email:   								this.email && 	this.email.value,
+				mobile:   							this.mobile && 	this.mobile.value,
+				company_name:   				this.company && this.company.value,
+				item:   								this.state.trady,
+				trady_id:   						this.state.trady.id || "",
+				maintenance_request_id: this.props.maintenance_request.id,
+				skill_required:   			this.props.maintenance_request.service_type,
+				trady_request:   				this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
+			},
+		};
+		this.props.requestQuote(params, function(err) {
+			if (err) {
+				self.setState({
+					isDisable   : false,
+					errorEmail  : err.email,
+					errorName   : err.name,
+					errorMobile : err.mobile,
+					errorCompany: err.company_name,
+				});
+			}
+		});
 
-		if(this.company.value == "") {
-			this.setState({
-				isDisable: true,
-				errorCompany: true
-			});
-			flag = true;
-		}
-
-		if(this.name.value == "") {
-			this.setState({
-				isDisable: true,
-				errorName: true
-			});
-			flag = true;
-		}
-
-		if(this.mobile.value == "") {
-			this.setState({
-				isDisable: true,
-				errorMobile: true
-			});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({
-				isDisable: true,
-				errorEmail: true
-			});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
-				trady: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					company_name: this.company.value,
-					maintenance_request_id: this.props.maintenance_request.id,
-					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
-					skill_required: this.props.maintenance_request.service_type,
-					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
-					item: this.state.trady,
-				},
-			};
-			this.props.requestQuote(params);
-			this.setState({
-				isDisable: true
-			});
-		}
+		this.setState({
+			isDisable: true
+		});
 
 		return
 	},
 
-	changeRadio: function(e) {
+	changeRadio: function({ target: { value } } ) {
+		const boolValue = JSON.parse(value);
 		this.setState({
-			isTrady: e.target.value,
-			isAdd: e.target.value === 'false' ? true : false,
+			isTrady: value,
+			isAdd: !boolValue,
 			trady: {
 				id: null,
 				name: null,
 				email: null,
 				mobile: null,
+				company_name: null,
 			}
 		});
 	},
@@ -937,7 +817,6 @@ var ModalRequestModal = React.createClass({
 		const isAssigned = !!assignedTrady;
 
 		const tradies = isAssigned ? [assignedTrady] : this.props.tradies;
-
 
 		return (
 			<div className="modal-custom fade">
@@ -1003,12 +882,13 @@ var ModalRequestModal = React.createClass({
 														style={style}
 														ref={e => this.company = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
+														onChange={this.removeError}
 														placeholder="Enter Company Name"
-														value={!!this.state.trady.company_name ? this.state.trady.company_name : ""}
+														value={trady.company_name || ""}
 														className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorCompany)}
 											</div>
 											<div className="row m-t-lg">
 												<div>
@@ -1019,17 +899,18 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Name"
 														ref={e => this.name = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
-														value={!!this.state.trady.name ? this.state.trady.name : ""}
+														onChange={this.removeError}
+														value={trady.name || ""}
 														className={"input-custom u-full-width " + (this.state.errorName && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorName)}
 											</div>
 											<div className="row m-t-lg">
 												<div>
 													<input
 														id="email"
-														type="email"
+														type="text"
 														style={style}
 														autoCapitalize="off"
 														autoCorrect="off"
@@ -1037,27 +918,29 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Email"
 														ref={e => this.email = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
-														value={!!this.state.trady.email ? this.state.trady.email : ""}
+														onChange={this.removeError}
+														value={trady.email || ""}
 														className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorEmail)}
 											</div>
 											<div className="row m-t-lg">
 												<div>
 													<input
 														id="mobile"
-														type="number"
+														type="text"
 														style={style}
 														placeholder="Enter Mobile"
 														ref={e => this.mobile = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
+														onChange={this.removeError}
+														value={trady.mobile || ""}
 														onKeyPress={(e) => this.checkLength(e)}
-														value={!!this.state.trady.mobile ? this.state.trady.mobile : ""}
 														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorMobile)}
 											</div>
 										</div>
 								}
@@ -1588,7 +1471,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	requestQuote: function(params) {
+	requestQuote: function(params, callback) {
 		const {logs} = this.state;
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
@@ -1619,6 +1502,9 @@ var MaintenanceRequest = React.createClass({
 				},
 				data: params,
 				success: function(res){
+					if (res.errors) {
+						return callback(res.errors);
+					}
 					logs.push(res.log);
 					tradies_with_quote_requests.push(params.trady.item);
 					self.setState({
@@ -1646,7 +1532,7 @@ var MaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendWorkOrder: function(params) {
+	sendWorkOrder: function(params, callback) {
 		const {logs} = this.state;
 		const self = this;
 		delete params.item;
@@ -1658,6 +1544,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				logs.push(res.log);
 				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
 				self.setState({
