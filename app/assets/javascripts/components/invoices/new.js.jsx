@@ -589,11 +589,12 @@ var InvoiceField = React.createClass({
 
   filterError: function(errors) {
     var errorDate = errors && errors['invoices.due_date'];
+    var error = '';
     if (errorDate) {
-      if (!this.date.value)                      errorDate = errorDate[0];
-      else if (!this.validDate(this.date.value)) errorDate = errorDate.reverse()[0];
+      if (!this.date.value)                      error = errorDate[0];
+      else if (!this.validDate(this.date.value)) error = errorDate.reverse()[0];
     }
-    return errorDate;
+    return error;
   },
 
   nowDate: function(nextDay = 1) {
