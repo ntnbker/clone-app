@@ -182,7 +182,7 @@ var FieldListForInvoice = React.createClass({
     const { SampleField, params } = this.props;
     const tempFields = { ...Fields };
     let id = x + 1;
-    tempFields[x] = {params, SampleField, content: {}, x, key: Date.now()};
+    tempFields[id] = {params, SampleField, content: {}, x: id, key: Date.now()};
 
     this.setState({Fields: tempFields, x: id});
   },
