@@ -31,7 +31,7 @@ class TradyCompany < ApplicationRecord
   validates_presence_of :bsb_number, if: :perform_bsb_number_validation
   validates_presence_of :bank_account_number, if: :perform_bank_account_validation
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
-  validates :mobile_number, :numericality => true, :length => { :maximum => 10 }
+  validates :mobile_number, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
   # binding.pry
 
   def capitalize_company_name
