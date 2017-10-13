@@ -34,7 +34,7 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
     @maintenance_request.perform_contact_maintenance_request_validation = true
     if current_user == nil || current_user.logged_in_as("Tenant")
-      @maintenance_request.perform_realestate_validations = false
+      @maintenance_request.perform_realestate_validations = true
       ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
       the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email]) 
       the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email]) 
