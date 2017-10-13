@@ -18,6 +18,8 @@ var MaintenanceRequestsNew = React.createClass({
       validHeading: false,
       selectedRadio: "Agent",
       validDescription: false,
+      agencies: this.props.agencies || [],
+      emailAgencies: [],
       totalSize: 0,
       errors: {},
     };
@@ -473,20 +475,61 @@ var MaintenanceRequestsNew = React.createClass({
     return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
   },
 
+  selectAgencies: function({ target: { value } }) {
+    const { agencies } = this.state;
+    const choosedAgencies = agencies.filter(curAgen => curAgen.business_name === value);
+
+    if (!choosedAgencies.length) return;
+
+    const firstMatch = choosedAgencies[0];
+    const totalAgent = [...firstMatch['agents'], ...firstMatch['agency_admins']];
+    const emailAgencies = totalAgent.filter(v => v.email).map(agent => agent.email);
+    this.setState({ emailAgencies });
+  },
+
+  substringMatcher: function(values) {
+    return function findMatches(q, cb) {
+      var substringRegex = new RegExp(q.split``.join`.*`, 'i');
+
+      // iterate through the pool of strings and for any string that
+      // contains the substring `q`, add it to the `matches` array
+      var matches = [];
+
+      values.forEach((value) => {
+        if (substringRegex.test(value.business_name)) {
+          matches.push(value.business_name);
+        }
+      });
+
+      cb(matches);
+    };
+  },
+
   componentDidMount: function () {
     this.detectAndroid();
+    $('#the-basics .typeahead.agency_business_name').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 1
+    },
+    {
+      name: 'states',
+      source: this.substringMatcher(this.state.agencies),
+    });
   },
 
   render: function () {
-    let { images, errors } = this.state;
+    let { images, errors, emailAgencies } = this.state;
     let $imagePreview = [];
     const { current_user_tenant, current_role } = this.props;
     const renderError = this.renderError;
     let valueEmail = '';
     let valueMobile = '';
+    let isTenant = false;
     if (current_role && current_role.role == "Tenant") {
       valueEmail = current_user_tenant.email;
       valueMobile = current_user_tenant.mobile;
+      isTenant = true;
     }
     if (images.length > 0) {
       for (i = 0; i < images.length; i++) {
@@ -614,24 +657,44 @@ var MaintenanceRequestsNew = React.createClass({
             </div>
           </div>
 
-          {(!this.props.current_user || this.props.current_user.tenant) ?
+          {isTenant &&
             <div className="field">
               <hr />
 
               <div>
-                <input
-
-                  type="email"
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                  autoComplete="off"
-                  placeholder="Agent email"
-                  // onBlur={this.checkAgentEmail}
-                  ref={(ref) => this.agent_email = ref}
+                <div id="the-basics">
+                  <input
+                    className="typeahead agency_business_name"
+                    type="text"
+                    placeholder="Agency name"
+                    id={this.generateAtt("id", "agency_business_name")}
+                    name={this.generateAtt("name", "agency_business_name")}
+                    onChange={this.removeError}
+                    onBlur={this.selectAgencies}
+                  />
+                </div>
+                {this.renderError(errors['agency_business_name'])}
+                <select
                   id={this.generateAtt("id", "agent_email")}
                   name={this.generateAtt("name", "agent_email")}
+                  ref={e => this.agent_email = e}
+                  className="form-control input-custom"
                   onChange={this.removeError}
-                />
+                >
+                  <option value="">Agent email</option>
+                  {
+                    emailAgencies.map(function(email, index) {
+                      return (
+                        <option
+                          key={index+1}
+                          value={email}
+                        >
+                          {email}
+                        </option>
+                      );
+                    })
+                  }
+                </select>
                 {renderError(errors['agent_email'])}
                 {!this.state.isAgent ?
                   <div>
@@ -679,12 +742,9 @@ var MaintenanceRequestsNew = React.createClass({
                   :
                   null
                 }
-
               </div>
               <hr />
             </div>
-            :
-            <hr />
           }
           <p id="errCantSubmit" className="error"></p>
           <div className="text-center">

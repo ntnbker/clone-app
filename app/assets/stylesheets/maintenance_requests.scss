@@ -39,6 +39,17 @@ form#new_maintenance_request {
             }
         }
     }
+    .twitter-typeahead {
+        width: 100%;
+    }
+    .tt-open {
+        border: 1px solid black;
+        background: white;
+        width: 100%;
+    }
+    .tt-suggestion {
+        margin-left: 20px;
+    }
     #access_contacts ul {
         list-style: none;
         li {
