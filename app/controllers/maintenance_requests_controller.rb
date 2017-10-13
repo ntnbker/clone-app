@@ -24,6 +24,7 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request.availabilities.build
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
+    @agencies = Agency.all.as_json(:include => {:agents => {}, :agency_admins => {}})
 
   end
 
@@ -334,7 +335,7 @@ class MaintenanceRequestsController < ApplicationController
       end 
     end 
 
-    binding.pry
+    
 
 
 
