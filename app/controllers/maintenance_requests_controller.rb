@@ -316,7 +316,7 @@ class MaintenanceRequestsController < ApplicationController
 
   def update
 
-    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request][:maintenance_request_id])
     @maintenance_request.perform_contact_maintenance_request_validation = false
     # @maintenance_request.update(maintenance_description:params[:maintenance_description],service_type:params[:service])
     
