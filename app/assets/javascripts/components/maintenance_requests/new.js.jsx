@@ -185,7 +185,6 @@ var MaintenanceRequestsNew = React.createClass({
     });
     FD.append('commit', 'Submit Maintenance Request');
 
-    debugger
     var props = self.props;
     $.ajax({
       type: 'POST',
