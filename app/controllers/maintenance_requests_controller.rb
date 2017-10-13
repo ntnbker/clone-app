@@ -339,11 +339,11 @@ class MaintenanceRequestsController < ApplicationController
 
     if @maintenance_request.update(maintenance_request_params)
       respond_to do |format|
-        format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
+        format.json {render :json=>{maintenance_description:params[:maintenance_request][:maintenance_description], service_type:params[:maintenance_request][:service], all_tradies:@all_tradies}}
       end
     else
       respond_to do |format|
-        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json, maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
+        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json}}
       end
     end 
 
