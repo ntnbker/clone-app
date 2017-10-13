@@ -11,9 +11,9 @@ class TradyMaintenanceRequestsController < ApplicationController
     trady_id = current_user.trady.id
 
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at ASC')
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, "Quote Requests").order('created_at ASC')
     else
-      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at DESC')
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, "Quote Requests").order('created_at DESC')
     end
 
     @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")
