@@ -322,18 +322,19 @@ class MaintenanceRequestsController < ApplicationController
     
     if @maintenance_request.agency_admin 
       if @maintenance_request.agency_admin.agency.tradies 
-        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
+        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(params[:maintenance_request][:service_type])  
       else 
         @all_tradies= []
       end 
     elsif @maintenance_request.agent
       if @maintenance_request.agent.agency.tradies 
-        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type)  
+        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(params[:maintenance_request][:service_type])  
       else 
         @all_tradies= []
       end 
     end 
 
+    binding.pry
 
 
 
