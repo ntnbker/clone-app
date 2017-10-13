@@ -62,7 +62,7 @@ class MaintenanceRequest < ApplicationRecord
   attr_accessor :perform_uniqueness_validation_of_email
   attr_accessor :perform_realestate_validations
   attr_accessor :perform_contact_maintenance_request_validation
-
+  attr_accessor :maintenance_request_id
   after_create :create_action_status
   after_create :create_workorder_number
 
