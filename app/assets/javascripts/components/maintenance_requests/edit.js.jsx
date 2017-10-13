@@ -1,76 +1,51 @@
 var EditMaintenanceRequest = React.createClass({
 	getInitialState: function() {
 		return {
-			errorTitle: false,
-			errorDescription: false,
+			titleError: false,
+			serviceError: false,
+			descriptionError: false,
 		};
 	},
 
-	checkValidate: function(e, key) {
-		var value = e.target.value;
-		switch(key) {
-			case 'title': {
-				if(value == "") {
-					this.setState({
-						errorTitle: true
-					});
-				}else {
-					this.setState({
-						errorTitle: false
-					});
-				}
-				break;
-			}
+	removeError: function({ target: { id } }) {
+		this.setState({ [`${id}Error`]: '' })
+	},
 
-			case 'description': {
-				if(value == "") {
-					this.setState({
-						errorDescription: true
-					});
-				}else {
-					this.setState({
-						errorDescription: false
-					});
-				}
-				break;
-			}
-		}
+	renderError: function(error) {
+		return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
+		const self = this;
 
-		if(this.description.value == "") {
-			this.setState({
-				errorDescription: true
-			});
-			flag = true;
-		}
+		var FD = new FormData(document.getElementById('addForm'));
 
-		if(flag == true) {
-			return
-		}
-
-		var params = {
-			service: this.serviceType.value,
-			maintenance_description: this.description.value,
-		};
-		this.props.editMaintenanceRequest(params);
+		this.props.editMaintenanceRequest(FD, function(err) {
+			if (err) {
+				self.setState({
+					descriptionError: err['maintenance_description'],
+					titleError 			: err['title'],
+					serviceError 		: err['service_type'],
+				})
+			}
+		});
 	},
 
 	renderServiceType(maintenance_request, services) {
 		if (!!this.props.trady) return null;
+		const { serviceError } = this.state;
 
 		return (
 			<div className="row m-t-lg">
 				<label>Service Type:</label>
 				<select
-					required
-					id="trady"
+					id="service"
 					ref={e => this.serviceType = e}
-					className="form-control input-custom"
+					className={"form-control input-custom " + (serviceError ? 'border_on_error' : '')}
+					name="maintenance_request[service_type]"
 					defaultValue={maintenance_request.service_type}
+					onChange={this.removeError}
 				>
 					<option value="">Service Type</option>
 					{
@@ -86,19 +61,25 @@ var EditMaintenanceRequest = React.createClass({
 						})
 					}
 				</select>
+				{this.renderError(serviceError)}
 			</div>
 		);
 	},
 
 	render: function() {
-		const state = this.state;
+		const { descriptionError, titleError, serviceError } = this.state;
 		const {maintenance_request, services} = this.props;
-
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<form role="form" id="addForm" onSubmit={this.submit}>
+							<input
+							  type="hidden"
+							  value={maintenance_request.id}
+							  name="maintenance_request[maintenance_request_id]"
+							  id="maintenance_request_maintenance_request_id"
+							/>
 							<div className="modal-header">
 								<button
 									type="button"
@@ -126,12 +107,15 @@ var EditMaintenanceRequest = React.createClass({
 									<label>Maintenance Request Description:</label>
 									<textarea
 										placeholder="Enter Description"
+										name="maintenance_request[maintenance_description]"
 										ref={e => this.description = e}
-										onChange={(e, key) => this.checkValidate(e, 'description')}
+										id="description"
+										onChange={this.removeError}
 										defaultValue={maintenance_request.maintenance_description}
-										className={"u-full-width " + (this.state.errorDescription && "has-error")}
+										className={"u-full-width " + (descriptionError && "has-error")}
 									/>
 								</div>
+								{this.renderError(descriptionError)}
 							</div>
 							<div className="modal-footer">
 								<button
@@ -142,7 +126,7 @@ var EditMaintenanceRequest = React.createClass({
 								<button
 									type="submit"
 									className="btn btn-default success"
-									disabled={!!state.errorTitle || !!state.errorDescription ? true : false}
+									disabled={titleError || descriptionError || serviceError}
 								>
 									Submit
 								</button>

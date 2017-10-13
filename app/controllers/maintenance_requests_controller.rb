@@ -31,7 +31,7 @@ class MaintenanceRequestsController < ApplicationController
     
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
-
+    @maintenance_request.perform_contact_maintenance_request_validation = true
     if current_user == nil || current_user.logged_in_as("Tenant")
       @maintenance_request.perform_realestate_validations = false
       ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
@@ -315,30 +315,49 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def update
-    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-    @maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request][:maintenance_request_id])
+    @maintenance_request.perform_contact_maintenance_request_validation = false
+    # @maintenance_request.update(maintenance_description:params[:maintenance_description],service_type:params[:service])
     
     if @maintenance_request.agency_admin 
       if @maintenance_request.agency_admin.agency.tradies 
-        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
+        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(params[:maintenance_request][:service_type])  
       else 
         @all_tradies= []
       end 
     elsif @maintenance_request.agent
       if @maintenance_request.agent.agency.tradies 
-        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type)  
+        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(params[:maintenance_request][:service_type])  
       else 
         @all_tradies= []
       end 
     end 
 
+    binding.pry
 
-    respond_to do |format|
-      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
-      format.html {render body: nil}
 
-    end
+
+    if @maintenance_request.update(maintenance_request_params)
+      respond_to do |format|
+        format.json {render :json=>{maintenance_description:params[:maintenance_request][:maintenance_description], service_type:params[:maintenance_request][:service_type], all_tradies:@all_tradies}}
+      end
+    else
+      respond_to do |format|
+        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json}}
+      end
+    end 
+
+
+
+
+
+
+    # respond_to do |format|
+    #   format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
+    #   format.html {render body: nil}
+
+    # end
   end
 
   def update_status
@@ -356,7 +375,7 @@ class MaintenanceRequestsController < ApplicationController
   private
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
+    params.require(:maintenance_request).permit(:maintenance_request_id, :service_type,:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
   end
 
   def set_user

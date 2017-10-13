@@ -187,9 +187,9 @@ var ModalAddAppointment = React.createClass({
 	  return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
 	},
 
-	componentDidMount: function() {
-		$('#date-appointment').datepicker({ dateFormat: "yy-mm-dd", minDate: new Date() });
-	},
+	// componentDidMount: function() {
+	// 	$('#date-appointment').datepicker({ dateFormat: "yy-mm-dd", minDate: new Date() });
+	// },
 
 	render: function() {
 		var appointment = this.props.appointment ? this.props.appointment : {};
@@ -235,7 +235,7 @@ var ModalAddAppointment = React.createClass({
 												id="date-appointment"
 												type="date"
 												defaultValue={date}
-												className={"datepicker" + (errorDate ? ' border_on_error' : '')}
+												className={(errorDate ? ' border_on_error' : '')}
 												ref={ref => this.date = ref}
 												onChange={this.changeDate}
 											/>

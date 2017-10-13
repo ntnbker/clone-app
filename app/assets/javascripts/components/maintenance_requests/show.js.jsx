@@ -1620,18 +1620,24 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editMaintenanceRequest: function(params) {
+	editMaintenanceRequest: function(params, callback) {
 		const self = this;
-		params.maintenance_request_id = this.state.maintenance_request.id;
 		let {maintenance_request} = this.state;
+
 		$.ajax({
 			type: 'POST',
 			url: '/update_maintenance_request',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				maintenance_request.service_type = res.service_type;
 				maintenance_request.maintenance_heading = res.maintenance_heading;
 				maintenance_request.maintenance_description = res.maintenance_description

@@ -16,14 +16,22 @@ class Appointment < ApplicationRecord
     
 
   def future_date
-    errors.add(:date, "can't be in the past") if
-      self.date <= DateTime.now
+    if self.date == nil
+      
+    else
+      errors.add(:date, "can't be in the past") if
+        self.date <= DateTime.now
+    end 
   end
 
   def future_time
-    dt = (self.date.to_s + " " + self.time.to_s).to_datetime
-    errors.add(:time, "can't be in the past") if
-      dt <= DateTime.now
+    if self.date == nil 
+      
+    else
+      dt = (self.date.to_s + " " + self.time.to_s).to_datetime
+      errors.add(:time, "can't be in the past") if
+        dt <= DateTime.now
+    end 
   end
 
 

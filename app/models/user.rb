@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   authenticates_with_sorcery!
   #VALIDATIONS
-    validates :email, uniqueness: true
+    # validates :email, uniqueness: true
     validates :email, presence: true
     validates :password, length: { minimum: 3 }, if: -> { new_record? || changes[:crypted_password] }
     validates :password, presence: true
@@ -25,7 +25,7 @@ class User < ApplicationRecord
     #######OLD AGENCY_ADMINS NESTED FORM##########
     has_one :agency_admin, inverse_of: :user
     accepts_nested_attributes_for :agency_admin
-    #validates_associated :agency_admin
+    validates_associated :agency_admin
 
 
     has_many :emails, class_name: "Ahoy::Message"

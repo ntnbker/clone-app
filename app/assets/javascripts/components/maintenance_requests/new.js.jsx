@@ -177,11 +177,6 @@ var MaintenanceRequestsNew = React.createClass({
   handleCheckSubmit: function (e) {
     e.preventDefault();
     const self = this;
-    // if (!!self.state.validName || !!self.state.validEmail || !!self.state.validMobile || !!self.state.validHeading || !!self.state.validDescription || !!self.state.validDate) {
-    //   e.preventDefault();
-    //   document.getElementById("errCantSubmit").textContent = strCantSubmit;
-    //   return;
-    // }
 
     var FD = new FormData(document.getElementById('new_maintenance_request'));
     self.state.dataImages.map((image, index) => {
@@ -506,7 +501,17 @@ var MaintenanceRequestsNew = React.createClass({
         <h5 className="text-center color-grey">Enter Tenant Details</h5>
         <form key="add" role="form" id="new_maintenance_request" encType="multipart/form-data" acceptCharset="UTF-8" onSubmit={(e) => this.handleCheckSubmit(e)} >
           <input name="utf8" type="hidden" value="✓" />
-          <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
+          <input
+            type="hidden"
+            name="authenticity_token"
+            value={this.props.authenticity_token}
+          />
+          <input
+            type="hidden"
+            value={this.props.service_type}
+            name="maintenance_request[service_type]"
+            id="maintenance_request_service_type"
+          />
           <div className="field">
             <input
               className={(errors['name'] ? ' border_on_error' : '')}
