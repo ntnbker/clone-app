@@ -68068,15 +68068,15 @@ var Agency = React.createClass({
 var notifyAppointment = {
 	cancel: {
 		title: "Create and Cancel Appointment",
-		content: "You was cancel and create appointment."
+		content: "You have cancelled the previous suggested appointment. Thank you for creating a new appointment, an email has been sent with the new appointment details. You will be notified if they accept the appointment time."
 	},
 	decline: {
 		title: "Create and Decline Appointment",
-		content: "You was decline and create appointment."
+		content: "You have declined the old suggested appointment. Thank you for creating a new appointment, an email has been sent with the new appointment details. You will be notified if they accept the appointment time."
 	},
 	normal: {
 		title: "Create Appointment",
-		content: "Thank you for creating an appointment."
+		content: "Thank you for creating an appointment, an email has been sent with the appointment details. You will be notified if they accept the new appointment time."
 	}
 };
 
@@ -68461,7 +68461,6 @@ var SelectTime = React.createClass({
 			React.createElement(
 				'select',
 				{
-					required: true,
 					id: 'hour',
 					name: 'hour',
 					ref: function (ref) {
@@ -68475,7 +68474,6 @@ var SelectTime = React.createClass({
 			React.createElement(
 				'select',
 				{
-					required: true,
 					id: 'minute',
 					name: 'minute',
 					onChange: this.props.onChange,
@@ -68508,7 +68506,7 @@ var CommentAppointment = React.createClass({
 	},
 
 	render: function () {
-		var comments = this.props.comments ? this.props.comments : [];
+		var comments = this.props.comments || [];
 		return React.createElement(
 			'div',
 			{ className: 'comments', id: 'message' },
@@ -68541,31 +68539,64 @@ var ModalAddAppointment = React.createClass({
 
 	getInitialState: function () {
 		return {
-			date: new Date()
+			date: new Date(),
+			errorDate: '',
+			errorTime: '',
+			errorComment: ''
 		};
 	},
 
 	submit: function (e) {
 		e.preventDefault();
 		var time = $('#hour').val() + ':' + $('#minute').val();
+		var self = this;
 		var params = {
 			time: time,
 			date: this.date.value,
 			body: this.comment.value,
 			appointment_type: this.props.type
 		};
-		this.props.addAppointment(params);
+		this.props.addAppointment(params, function (err) {
+			if (err) {
+				self.setState({
+					errorDate: err['date'],
+					errorTime: err['time'],
+					errorComment: err['comments.body']
+				});
+			}
+		});
 	},
 
 	changeDate: function (e) {
 		this.setState({
-			date: e.target.value
+			date: e.target.value,
+			errorDate: ''
 		});
 	},
 
-	componentDidMount: function () {
-		$('#date-appointment').datepicker({ dateFormat: "yy-mm-dd", minDate: new Date() });
+	changeTime: function (e) {
+		this.setState({
+			errorTime: ''
+		});
 	},
+
+	changeComment: function (e) {
+		this.setState({
+			errorComment: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			'p',
+			{ id: 'errorbox', className: 'error' },
+			error && error[0] ? error[0] : ''
+		);
+	},
+
+	// componentDidMount: function() {
+	// 	$('#date-appointment').datepicker({ dateFormat: "yy-mm-dd", minDate: new Date() });
+	// },
 
 	render: function () {
 		var _this2 = this;
@@ -68577,6 +68608,10 @@ var ModalAddAppointment = React.createClass({
 		var _props = this.props;
 		var title = _props.title;
 		var comments = _props.comments;
+		var _state = this.state;
+		var errorTime = _state.errorTime;
+		var errorDate = _state.errorDate;
+		var errorComment = _state.errorComment;
 
 		return React.createElement(
 			'div',
@@ -68625,14 +68660,15 @@ var ModalAddAppointment = React.createClass({
 									'div',
 									{ className: 'form-group' },
 									React.createElement('textarea', {
-										required: true,
 										placeholder: 'Comment',
-										className: 'text-center',
+										className: "text-center" + (errorComment ? ' border_on_error' : ''),
+										onChange: this.changeComment,
 										ref: function (ref) {
 											return _this2.comment = ref;
 										}
 									})
 								),
+								this.renderError(errorComment),
 								React.createElement(
 									'div',
 									{ className: 'form-group date-time' },
@@ -68645,16 +68681,16 @@ var ModalAddAppointment = React.createClass({
 											'Date'
 										),
 										React.createElement('input', {
-											required: true,
 											id: 'date-appointment',
 											type: 'date',
 											defaultValue: date,
-											className: 'datepicker',
+											className: errorDate ? ' border_on_error' : '',
 											ref: function (ref) {
 												return _this2.date = ref;
 											},
 											onChange: this.changeDate
-										})
+										}),
+										this.renderError(errorDate)
 									),
 									React.createElement(
 										'div',
@@ -68664,7 +68700,12 @@ var ModalAddAppointment = React.createClass({
 											null,
 											'Time'
 										),
-										React.createElement(SelectTime, { date: this.state.date, onChange: this.checkValidate })
+										React.createElement(SelectTime, {
+											date: this.state.date,
+											onChange: this.changeTime,
+											className: errorDate ? 'border_on_error' : ''
+										}),
+										this.renderError(errorTime)
 									)
 								)
 							)
@@ -69556,1073 +69597,1256 @@ var Invoices = React.createClass({
 });
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var StepProgress = React.createClass({
-    displayName: "StepProgress",
+  displayName: "StepProgress",
 
-    matchClass: function (nth, step) {
-        if (nth < step) return "done";else if (nth == step) return "active";else return null;
-    },
+  matchClass: function (nth, step) {
+    if (nth < step) return "done";else if (nth == step) return "active";else return null;
+  },
 
-    matchChar: function (nth, step) {
-        if (nth < step) return "✔";else return nth;
-    },
+  matchChar: function (nth, step) {
+    if (nth < step) return "✔";else return nth;
+  },
 
-    render: function () {
-        return React.createElement(
-            "div",
-            { className: "progress" },
-            React.createElement(
-                "h4",
-                null,
-                " SEND INOVICE "
-            ),
-            React.createElement(
-                "div",
-                null,
-                React.createElement(
-                    "div",
-                    { className: 'circle ' + this.matchClass(1, this.props.step) },
-                    React.createElement(
-                        "span",
-                        { className: "label" },
-                        this.matchChar(1, this.props.step)
-                    ),
-                    React.createElement(
-                        "span",
-                        { className: "title" },
-                        "Template Details"
-                    )
-                ),
-                React.createElement("span", { className: 'bar ' + this.matchClass(2, this.props.step) }),
-                React.createElement(
-                    "div",
-                    { className: 'circle ' + this.matchClass(2, this.props.step) },
-                    React.createElement(
-                        "span",
-                        { className: "label" },
-                        this.matchChar(2, this.props.step)
-                    ),
-                    React.createElement(
-                        "span",
-                        { className: "title" },
-                        "Item Details"
-                    )
-                ),
-                React.createElement("span", { className: 'bar ' + this.matchClass(3, this.props.step) }),
-                React.createElement(
-                    "div",
-                    { className: 'circle ' + this.matchClass(3, this.props.step) },
-                    React.createElement(
-                        "span",
-                        { className: "label" },
-                        this.matchChar(3, this.props.step)
-                    ),
-                    React.createElement(
-                        "span",
-                        { className: "title" },
-                        "Invoice Print View"
-                    )
-                )
-            )
-        );
-    }
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "progress" },
+      React.createElement(
+        "h4",
+        null,
+        " SEND INOVICE "
+      ),
+      React.createElement(
+        "div",
+        null,
+        React.createElement(
+          "div",
+          { className: 'circle ' + this.matchClass(1, this.props.step) },
+          React.createElement(
+            "span",
+            { className: "label" },
+            this.matchChar(1, this.props.step)
+          ),
+          React.createElement(
+            "span",
+            { className: "title" },
+            "Template Details"
+          )
+        ),
+        React.createElement("span", { className: 'bar ' + this.matchClass(2, this.props.step) }),
+        React.createElement(
+          "div",
+          { className: 'circle ' + this.matchClass(2, this.props.step) },
+          React.createElement(
+            "span",
+            { className: "label" },
+            this.matchChar(2, this.props.step)
+          ),
+          React.createElement(
+            "span",
+            { className: "title" },
+            "Item Details"
+          )
+        ),
+        React.createElement("span", { className: 'bar ' + this.matchClass(3, this.props.step) }),
+        React.createElement(
+          "div",
+          { className: 'circle ' + this.matchClass(3, this.props.step) },
+          React.createElement(
+            "span",
+            { className: "label" },
+            this.matchChar(3, this.props.step)
+          ),
+          React.createElement(
+            "span",
+            { className: "title" },
+            "Invoice Print View"
+          )
+        )
+      )
+    );
+  }
 });
 
 var FieldList = React.createClass({
-    displayName: "FieldList",
+  displayName: "FieldList",
 
-    getInitialState: function () {
-        var _this = this;
+  getInitialState: function () {
+    var existingContent = this.props.existingContent;
+    var SampleField = this.props.SampleField;
+    var Fields = {};
+    var params = this.props.params;
+    var x = 0;
 
-        var existingContent = this.props.existingContent;
-        var SampleField = this.props.SampleField;
-        var Fields = {};
-        var params = this.props.params;
-        var x = 0;
-        var extraProps = { params: params, removeField: function (position) {
-                return _this.removeField(position);
-            } };
+    if (existingContent ? existingContent.length > 0 : false) {
+      existingContent.map(function (content, index) {
+        x = index + 1;
+        Fields[x] = { params: params, content: content, SampleField: SampleField, x: x };
+      });
 
-        if (existingContent ? existingContent.length > 0 : false) {
-            existingContent.map(function (one, index) {
-                x = index + 1;
-                Fields[x] = React.createElement(SampleField, _extends({ x: x, content: one }, extraProps));
-            });
-
-            return { Fields: Fields, x: x };
-        } else {
-            if (!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
-                x = 1;
-                return { Fields: { "1": React.createElement(SampleField, _extends({ x: x }, extraProps)) }, x: x };
-            }
-            return { Fields: {}, x: x };
-        }
-    },
-
-    addField: function () {
-        var _this2 = this;
-
-        var SampleField = this.props.SampleField;
-        var tmpFields = this.state.Fields || {};
-        var params = this.props.params;
-        var x = ++this.state.x;
-        tmpFields[x] = React.createElement(SampleField, { x: x, params: params, removeField: function (position) {
-                return _this2.removeField(position);
-            }, validDate: function (flag) {
-                return _this2.props.validDate(flag);
-            } });
-        this.setState({ Fields: tmpFields });
-    },
-
-    removeField: function (x, item) {
-        var self = this;
-        var _state$Fields = this.state.Fields;
-        var Fields = _state$Fields === undefined ? {} : _state$Fields;
-
-        var field = Fields[x];
-
-        if (field) field.params = _extends({}, field.params, { remove: true });
-        Fields[x] = field;
-
-        var tmpFields = _extends({}, Fields);
-
-        this.setState({ Fields: tmpFields });
-    },
-
-    render: function () {
-        return React.createElement(
-            "div",
-            { className: "fieldlist" },
-            React.createElement(
-                "ul",
-                { id: "fieldList" },
-                Object.values(this.state.Fields).map(function (Field, index) {
-                    return React.createElement(
-                        "li",
-                        { key: Field.key || Field.props.x },
-                        Field
-                    );
-                })
-            ),
-            React.createElement(
-                "div",
-                { className: "text-center" },
-                React.createElement(ButtonAddAnotherItem, { flag: this.props.flag, x: this.state.x, addField: this.addField })
-            )
-        );
+      return { Fields: Fields, x: x };
+    } else {
+      if (!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
+        x = 1;
+        return { Fields: { "1": { params: params, SampleField: SampleField, x: x } }, x: x };
+      }
+      return { Fields: {}, x: x };
     }
+  },
+
+  addField: function () {
+    var _props = this.props;
+    var SampleField = _props.SampleField;
+    var params = _props.params;
+    var content = _props.content;
+
+    var rest = _objectWithoutProperties(_props, ["SampleField", "params", "content"]);
+
+    var tmpFields = this.state.Fields || {};
+    var x = ++this.state.x;
+    tmpFields[x] = _extends({ params: params, content: content, SampleField: SampleField, x: x }, rest);
+    this.setState({ Fields: tmpFields });
+  },
+
+  removeField: function (x, item) {
+    var self = this;
+    var _state$Fields = this.state.Fields;
+    var Fields = _state$Fields === undefined ? {} : _state$Fields;
+
+    var field = Fields[x];
+
+    if (field) field.params = _extends({}, field.params, { remove: true });
+    Fields[x] = field;
+
+    var tmpFields = _extends({}, Fields);
+
+    this.setState({ Fields: tmpFields });
+  },
+
+  render: function () {
+    var _this = this;
+
+    var errors = this.props.errors;
+
+    return React.createElement(
+      "div",
+      { className: "fieldlist" },
+      React.createElement(
+        "ul",
+        { id: "fieldList" },
+        Object.values(this.state.Fields).map(function (_ref, index) {
+          var SampleField = _ref.SampleField;
+          var content = _ref.content;
+          var params = _ref.params;
+          var x = _ref.x;
+
+          return React.createElement(
+            "li",
+            { key: x },
+            React.createElement(SampleField, {
+              x: x,
+              params: params,
+              content: content,
+              removeField: function (position) {
+                return _this.removeField(position);
+              },
+              validDate: function (flag) {
+                return _this.props.validDate(flag);
+              },
+              errorsForm: errors
+            })
+          );
+        })
+      ),
+      React.createElement(
+        "div",
+        { className: "text-center" },
+        React.createElement(ButtonAddAnotherItem, { flag: this.props.flag, x: this.state.x, addField: this.addField })
+      )
+    );
+  }
 });
 
 var ButtonAddAnotherItem = React.createClass({
-    displayName: "ButtonAddAnotherItem",
+  displayName: "ButtonAddAnotherItem",
 
-    render: function () {
-        var self = this.props;
-        var x = self.x + 1;
-        switch (self.flag) {
-            case 'date':
-                {
-                    return React.createElement(
-                        "button",
-                        { type: "button", className: "button-add button-primary", onClick: this.props.addField },
-                        x <= 1 ? "Add Suggeted Appointment Times" : "Add Suggeted Appointment Times To The Section"
-                    );
-                }
-
-            case 'contact':
-                {
-                    return React.createElement(
-                        "button",
-                        { type: "button", className: "button-add button-primary", onClick: this.props.addField },
-                        "Add Another Premise Access Contact"
-                    );
-                }
-            default:
-                return React.createElement(
-                    "button",
-                    { type: "button", className: "button-add button-primary", onClick: this.props.addField },
-                    "Add Another Item"
-                );
+  render: function () {
+    var self = this.props;
+    var x = self.x + 1;
+    switch (self.flag) {
+      case 'date':
+        {
+          return React.createElement(
+            "button",
+            { type: "button", className: "button-add button-primary", onClick: this.props.addField },
+            x <= 1 ? "Add Suggeted Appointment Times" : "Add Suggeted Appointment Times To The Section"
+          );
         }
+
+      case 'contact':
+        {
+          return React.createElement(
+            "button",
+            { type: "button", className: "button-add button-primary", onClick: this.props.addField },
+            "Add Another Premise Access Contact"
+          );
+        }
+      default:
+        return React.createElement(
+          "button",
+          { type: "button", className: "button-add button-primary", onClick: this.props.addField },
+          "Add Another Item"
+        );
     }
+  }
 });
 
 var FieldListForInvoice = React.createClass({
-    displayName: "FieldListForInvoice",
+  displayName: "FieldListForInvoice",
 
-    getInitialState: function () {
-        var _this3 = this;
+  getInitialState: function () {
+    var _props2 = this.props;
+    var existingContent = _props2.existingContent;
+    var SampleField = _props2.SampleField;
+    var params = _props2.params;
 
-        var existingContent = this.props.existingContent;
-        var SampleField = this.props.SampleField;
-        var Fields = {};
-        var params = this.props.params;
-        var x = 0;
+    var rest = _objectWithoutProperties(_props2, ["existingContent", "SampleField", "params"]);
 
-        if (existingContent ? existingContent.length > 0 : false) {
-            existingContent.map(function (one, index) {
-                x = index + 1;
-                Fields[x] = React.createElement(SampleField, { x: x, key: x, content: one, params: params, removeField: function () {
-                        return _this3.removeField(x, { id: one.quote_id });
-                    } });
-            });
+    var Fields = {};
+    var x = 0;
+    if (existingContent ? existingContent.length > 0 : false) {
+      existingContent.map(function (content, index) {
+        x = index + 1;
+        Fields[x] = _extends({ params: params, SampleField: SampleField, x: x, content: content, key: x }, rest);
+      });
 
-            return { Fields: Fields, x: x };
-        }
-
-        if (this.props.noQuotes) {
-            Fields['1'] = React.createElement(SampleField, { x: 1, key: 1, params: params, removeField: function () {
-                    return _this3.removeField(1);
-                } });
-            return { Fields: Fields, x: 1 };
-        }
-
-        return { Fields: {}, x: 0 };
-    },
-
-    setContent: function (quote) {
-        var _this4 = this;
-
-        var _state = this.state;
-        var _state$Fields2 = _state.Fields;
-        var Fields = _state$Fields2 === undefined ? {} : _state$Fields2;
-        var _state$x = _state.x;
-        var x = _state$x === undefined ? 0 : _state$x;
-
-        var id = x + 1;
-        var _props = this.props;
-        var SampleField = _props.SampleField;
-        var params = _props.params;
-
-        var invoice_items = [].concat(_toConsumableArray(quote.quote_items)).map(function (item) {
-            return _extends({}, item, { id: null, invoice_id: null });
-        });
-        var item = _extends({}, quote, { invoice_items: invoice_items, id: id, trady_invoice_reference: quote.trady_quote_reference, isCoppy: true, quote_id: quote.id });
-
-        if (Object.keys(Fields).length === 1 && !Object.values(Fields)[0].props.content) {
-            id = 1;
-            Fields = _defineProperty({}, id, React.createElement(SampleField, { key: Date.now(), x: id, content: item, params: params, removeField: function () {
-                    return _this4.removeField(id, quote);
-                } }));
-        } else {
-            Fields[id] = React.createElement(SampleField, { key: Date.now(), x: id, content: item, params: params, removeField: function () {
-                    return _this4.removeField(id, quote);
-                } });
-        }
-
-        this.setState({ Fields: Fields, x: id });
-    },
-
-    addField: function () {
-        var _this5 = this;
-
-        var _state2 = this.state;
-        var _state2$Fields = _state2.Fields;
-        var Fields = _state2$Fields === undefined ? {} : _state2$Fields;
-        var _state2$x = _state2.x;
-        var x = _state2$x === undefined ? 0 : _state2$x;
-
-        var id = x + 1;
-        var _props2 = this.props;
-        var SampleField = _props2.SampleField;
-        var params = _props2.params;
-
-        Fields[id] = React.createElement(SampleField, { key: Date.now(), x: id, params: params, removeField: function () {
-                return _this5.removeField(id);
-            } });
-
-        this.setState({ Fields: Fields, x: id });
-    },
-
-    removeField: function (x) {
-        var quote = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-        var _state$removed = this.state.removed;
-        var removed = _state$removed === undefined ? {} : _state$removed;
-
-        removed[x] = true;
-        if (quote.id) this.props.removeQuote(quote);
-        this.setState({ removed: removed });
-    },
-
-    render: function () {
-        var _this6 = this;
-
-        var _state3 = this.state;
-        var _state3$Fields = _state3.Fields;
-        var Fields = _state3$Fields === undefined ? {} : _state3$Fields;
-        var _state3$removed = _state3.removed;
-        var removed = _state3$removed === undefined ? {} : _state3$removed;
-
-        var indexInvoice = 0;
-
-        return React.createElement(
-            "div",
-            { className: "fieldlist", style: { paddingBottom: '30px' } },
-            React.createElement(
-                "ul",
-                null,
-                Object.values(Fields).map(function (Field, fieldIndex) {
-                    var style = {};
-                    if (!removed[Field.props.x]) indexInvoice += 1;else style.display = 'none';
-
-                    return React.createElement(
-                        "li",
-                        { key: Field.key, style: style },
-                        React.createElement(
-                            "h5",
-                            { className: "invoice-index" },
-                            " Invoice #",
-                            indexInvoice
-                        ),
-                        Field
-                    );
-                })
-            ),
-            React.createElement(
-                "button",
-                { type: "button", className: "button-add button-primary", style: { position: 'absolute', bottom: 0, right: 0 }, onClick: function () {
-                        return _this6.addField();
-                    } },
-                " Add New Invoice "
-            )
-        );
+      return { Fields: Fields, x: x, removed: {} };
     }
+
+    if (this.props.noQuotes) {
+      Fields['1'] = _extends({ params: params, SampleField: SampleField, content: {}, x: 1, key: 1 }, rest);
+      return { Fields: Fields, x: 1, removed: {} };
+    }
+
+    return { Fields: {}, x: 0, removed: {} };
+  },
+
+  setContent: function (quote) {
+    var _state = this.state;
+    var _state$Fields2 = _state.Fields;
+    var Fields = _state$Fields2 === undefined ? {} : _state$Fields2;
+    var _state$x = _state.x;
+    var x = _state$x === undefined ? 0 : _state$x;
+
+    var id = x + 1;
+    var _props3 = this.props;
+    var SampleField = _props3.SampleField;
+    var params = _props3.params;
+
+    var invoice_items = (quote.quote_items || []).map(function (item) {
+      return _extends({}, item, { id: null, invoice_id: null });
+    });
+    var item = _extends({}, quote, { invoice_items: invoice_items, id: id, trady_invoice_reference: quote.trady_quote_reference, isCoppy: true, quote_id: quote.id });
+
+    Fields[id] = { params: params, content: item, SampleField: SampleField, quote: quote, x: id, key: id };
+
+    this.setState({ Fields: Fields, x: id });
+  },
+
+  addField: function () {
+    var _state2 = this.state;
+    var _state2$Fields = _state2.Fields;
+    var Fields = _state2$Fields === undefined ? {} : _state2$Fields;
+    var _state2$x = _state2.x;
+    var x = _state2$x === undefined ? 0 : _state2$x;
+    var _props4 = this.props;
+    var SampleField = _props4.SampleField;
+    var params = _props4.params;
+
+    var tempFields = _extends({}, Fields);
+    var id = x + 1;
+    tempFields[id] = { params: params, SampleField: SampleField, x: id, key: id };
+
+    this.setState({ Fields: tempFields, x: id });
+  },
+
+  removeField: function (x) {
+    var quote = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+    var _state$removed = this.state.removed;
+    var removed = _state$removed === undefined ? {} : _state$removed;
+
+    removed[x] = true;
+    if (quote.id) this.props.removeQuote(quote);
+    this.setState({ removed: removed });
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    var _state3 = this.state;
+    var _state3$Fields = _state3.Fields;
+    var Fields = _state3$Fields === undefined ? {} : _state3$Fields;
+    var _state3$removed = _state3.removed;
+    var removed = _state3$removed === undefined ? {} : _state3$removed;
+    var errors = this.props.errors;
+
+    var indexInvoice = 0;
+
+    return React.createElement(
+      "div",
+      { className: "fieldlist", style: { paddingBottom: '30px' } },
+      React.createElement(
+        "ul",
+        null,
+        Object.values(Fields).map(function (_ref2, fieldIndex) {
+          var SampleField = _ref2.SampleField;
+          var quote = _ref2.quote;
+          var key = _ref2.key;
+          var x = _ref2.x;
+          var params = _ref2.params;
+
+          var rest = _objectWithoutProperties(_ref2, ["SampleField", "quote", "key", "x", "params"]);
+
+          var style = {};
+          var newParams = _extends({}, params, { remove: removed[x] });
+
+          if (!removed[x]) indexInvoice += 1;else style.display = 'none';
+
+          return React.createElement(
+            "li",
+            { key: key, style: style },
+            React.createElement(
+              "h5",
+              { className: "invoice-index" },
+              " Invoice #",
+              indexInvoice
+            ),
+            React.createElement(SampleField, _extends({
+              params: newParams
+            }, rest, {
+              x: x,
+              quote: quote,
+              errors: errors,
+              removeField: function () {
+                return _this2.removeField(x, quote);
+              }
+            })),
+            ";"
+          );
+        })
+      ),
+      React.createElement(
+        "button",
+        { type: "button", className: "button-add button-primary", style: { position: 'absolute', bottom: 0, right: 0 }, onClick: function () {
+            return _this2.addField();
+          } },
+        " Add New Invoice "
+      )
+    );
+  }
 });
 
 var AdditionalInvoice = React.createClass({
-    displayName: "AdditionalInvoice",
+  displayName: "AdditionalInvoice",
 
-    getInitialState: function () {
-        var quote = this.props.content;
-        var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
-        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
-        return {
-            remove: false,
-            pricing_type: pricing_type,
-            hours_input: hours_input
-        };
-    },
-    componentWillReceiveProps: function () {
-        this.setState({
-            remove: this.props.params.remove
-        });
-    },
+  getInitialState: function () {
+    var quote = this.props.content;
+    var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
+    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    return {
+      remove: false,
+      pricing_type: pricing_type,
+      hours_input: hours_input
+    };
+  },
+  componentWillReceiveProps: function () {
+    this.setState({
+      remove: this.props.params.remove
+    });
+  },
 
-    removeField: function () {
-        this.setState({ remove: true });
-    },
+  removeField: function () {
+    this.setState({ remove: true });
+  },
 
-    onPricing: function (event) {
-        var pricing_type = event.target.value;
-        this.setState({ pricing_type: pricing_type });
-        if (pricing_type == "Hourly") {
-            this.setState({ hours_input: true });
-        } else {
-            this.setState({ hours_input: false });
-        }
-    },
-    render: function () {
-        var quote = this.props.content;
-        var x = this.props.x;
-        if (quote) {
-            x = quote.id;
-        }
-        return React.createElement(
-            "div",
-            { className: "quotefield", style: { display: this.state.remove ? 'none' : 'block' } },
+  onPricing: function (event) {
+    var pricing_type = event.target.value;
+    this.setState({ pricing_type: pricing_type });
+    if (pricing_type == "Hourly") {
+      this.setState({ hours_input: true });
+    } else {
+      this.setState({ hours_input: false });
+    }
+  },
+  render: function () {
+    var quote = this.props.content;
+    var x = this.props.x;
+    if (quote) {
+      x = quote.id;
+    }
+    return React.createElement(
+      "div",
+      { className: "quotefield", style: { display: this.state.remove ? 'none' : 'block' } },
+      React.createElement(
+        "fieldset",
+        null,
+        React.createElement("input", {
+          type: "text",
+          placeholder: "Item description",
+          defaultValue: quote ? quote.item_description : '',
+          name: 'invoice[invoice_items_attributes][' + x + '][item_description]'
+        }),
+        React.createElement(
+          "div",
+          { className: "amount" },
+          React.createElement(
+            "select",
+            {
+              onChange: this.onPricing,
+              value: this.state.pricing_type,
+              name: 'invoice[invoice_items_attributes][' + x + '][pricing_type]',
+              className: "text-center " + (this.state.hours_input && 'hour select')
+            },
             React.createElement(
-                "fieldset",
-                null,
-                React.createElement("input", {
-                    required: true,
-                    type: "text",
-                    placeholder: "Item description",
-                    defaultValue: quote ? quote.item_description : '',
-                    name: 'invoice[invoice_items_attributes][' + x + '][item_description]'
-                }),
-                React.createElement(
-                    "div",
-                    { className: "amount" },
-                    React.createElement(
-                        "select",
-                        {
-                            onChange: this.onPricing,
-                            value: this.state.pricing_type,
-                            name: 'invoice[invoice_items_attributes][' + x + '][pricing_type]',
-                            className: "text-center " + (this.state.hours_input && 'hour select')
-                        },
-                        React.createElement(
-                            "option",
-                            { value: "Fixed Cost" },
-                            "Fixed Cost"
-                        ),
-                        React.createElement(
-                            "option",
-                            { value: "Hourly" },
-                            "Hourly"
-                        )
-                    ),
-                    React.createElement("input", {
-                        type: "number",
-                        placeholder: "Amount",
-                        defaultValue: quote.amount > 0 && quote.amount,
-                        name: 'invoice[invoice_items_attributes][' + x + '][amount]',
-                        className: "text-center " + (!!this.state.hours_input && 'hour price')
-                    }),
-                    this.state.hours_input ? React.createElement("input", {
-                        type: "number",
-                        placeholder: "Of Hours",
-                        defaultValue: quote.hours > 0 ? quote.hours : '',
-                        name: 'invoice[invoice_items_attributes][' + x + '][hours]',
-                        className: "text-center " + (this.state.hours_input && 'hour')
-                    }) : React.createElement("input", { type: "hidden",
-                        name: 'invoice[invoice_items_attributes][' + x + '][hours]'
-                    })
-                ),
-                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'invoice[invoice_items_attributes][' + x + '][_destroy]' }),
-                quote && React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]' })
+              "option",
+              { value: "Fixed Cost" },
+              "Fixed Cost"
             ),
             React.createElement(
-                "div",
-                { className: "text-center" },
-                React.createElement(
-                    "button",
-                    { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
-                    " Remove "
-                )
+              "option",
+              { value: "Hourly" },
+              "Hourly"
             )
-        );
-    }
+          ),
+          React.createElement("input", {
+            type: "text",
+            placeholder: "Amount",
+            defaultValue: quote.amount > 0 && quote.amount,
+            name: 'invoice[invoice_items_attributes][' + x + '][amount]',
+            className: "text-center " + (!!this.state.hours_input && 'hour price')
+          }),
+          this.state.hours_input ? React.createElement("input", {
+            type: "text",
+            placeholder: "Of Hours",
+            defaultValue: quote.hours > 0 ? quote.hours : '',
+            name: 'invoice[invoice_items_attributes][' + x + '][hours]',
+            className: "text-center " + (this.state.hours_input && 'hour')
+          }) : React.createElement("input", { type: "hidden",
+            name: 'invoice[invoice_items_attributes][' + x + '][hours]'
+          })
+        ),
+        React.createElement("input", { type: "hidden", value: this.state.remove, name: 'invoice[invoice_items_attributes][' + x + '][_destroy]' }),
+        quote && React.createElement("input", { type: "hidden", value: x, name: 'invoice[invoice_items_attributes][' + x + '][id]' })
+      ),
+      React.createElement(
+        "div",
+        { className: "text-center" },
+        React.createElement(
+          "button",
+          { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+          " Remove "
+        )
+      )
+    );
+  }
 });
 
 var AdditionalInvoiceField = React.createClass({
-    displayName: "AdditionalInvoiceField",
+  displayName: "AdditionalInvoiceField",
 
-    render: function () {
-        return React.createElement(
-            "form",
-            { role: "form", id: "new_quote", action: "/submit_additional_invoice", acceptCharset: "UTF-8", method: "post" },
-            React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
-            React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
-            React.createElement("input", { value: this.props.maintenance_request_id, type: "hidden", name: "invoice[maintenance_request_id]" }),
-            React.createElement("input", { value: this.props.trady_id, type: "hidden", name: "invoice[trady_id]" }),
-            React.createElement(FieldList, { SampleField: AdditionalInvoice }),
-            React.createElement(
-                "label",
-                { className: "quote_tax" },
-                React.createElement("input", { type: "hidden", value: "0", name: "invoice[tax]" }),
-                React.createElement("input", { type: "checkbox", value: "1", defaultChecked: this.props.tax ? this.props.tax : false, name: "invoice[tax]" }),
-                "Add GST"
-            ),
-            React.createElement("hr", null),
-            React.createElement(
-                "div",
-                { className: "qf-button" },
-                React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button-primary green", "data-disable-with": "Next" })
-            )
-        );
-    }
+  render: function () {
+    return React.createElement(
+      "form",
+      { role: "form", id: "new_quote", action: "/submit_additional_invoice", acceptCharset: "UTF-8", method: "post" },
+      React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+      React.createElement("input", { value: this.props.maintenance_request_id, type: "hidden", name: "invoice[maintenance_request_id]" }),
+      React.createElement("input", { value: this.props.trady_id, type: "hidden", name: "invoice[trady_id]" }),
+      React.createElement(FieldList, { SampleField: AdditionalInvoice }),
+      React.createElement(
+        "label",
+        { className: "quote_tax" },
+        React.createElement("input", { type: "hidden", value: "0", name: "invoice[tax]" }),
+        React.createElement("input", { type: "checkbox", value: "1", defaultChecked: this.props.tax ? this.props.tax : false, name: "invoice[tax]" }),
+        "Add GST"
+      ),
+      React.createElement("hr", null),
+      React.createElement(
+        "div",
+        { className: "qf-button" },
+        React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button-primary green", "data-disable-with": "Next" })
+      )
+    );
+  }
 });
 
 var InvoiceItemField = React.createClass({
-    displayName: "InvoiceItemField",
+  displayName: "InvoiceItemField",
 
-    getInitialState: function () {
-        var invoice_item = this.props.content;
-        var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
-        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
-        var amount = invoice_item ? invoice_item.amount : 0;
-        var numofhours = invoice_item && invoice_item.hours ? invoice_item.hours : 1;
-        return {
-            remove: this.props.params.remove,
-            pricing_type: pricing_type,
-            hours_input: hours_input,
-            amount: amount,
-            numofhours: numofhours,
-            totalamount: amount * numofhours
-        };
-    },
+  getInitialState: function () {
+    var invoice_item = this.props.content;
+    var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
+    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    var amount = invoice_item ? invoice_item.amount : 0;
+    var numofhours = invoice_item && invoice_item.hours ? invoice_item.hours : 1;
 
-    componentWillReceiveProps: function () {
-        this.setState({
-            remove: this.props.params.remove
-        });
-    },
+    return {
+      remove: this.props.params.remove,
+      pricing_type: pricing_type,
+      hours_input: hours_input,
+      amount: amount,
+      numofhours: numofhours,
+      totalamount: amount * numofhours,
+      errorsForm: {}
+    };
+  },
 
-    removeField: function (x) {
-        var _state$totalamount = this.state.totalamount;
-        var totalamount = _state$totalamount === undefined ? 0 : _state$totalamount;
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      remove: nextProps.params.remove,
+      errorsForm: this.filterError(nextProps.errorsForm || {})
+    });
+  },
 
-        this.props.params.updatePrice(-totalamount);
-        this.props.removeField(x, this.props.content);
-
-        this.setState({ remove: true,
-            amount: 0,
-            totalamount: 0 });
-    },
-
-    updatePrice: function (amount) {
-        this.props.params.updatePrice(amount - this.state.totalamount);
-    },
-
-    onPricing: function (event) {
-        var pricing_type = event.target.value;
-        this.setState({ pricing_type: pricing_type });
-
-        if (pricing_type == "Hourly") {
-            this.setState({ hours_input: true, numofhours: 0 });
-        } else {
-            this.setState({ hours_input: false,
-                numofhours: 1,
-                totalamount: this.state.amount });
+  filterError: function (errors) {
+    var filterError = { item_description: '', amount: '' };
+    var descriptionError = errors['invoices.invoice_items.item_description'] || [];
+    var amountError = (errors['invoices.invoice_items.amount'] || []).slice();
+    if (descriptionError.length) {
+      if (this.description) {
+        if (!this.description.value) {
+          filterError['item_description'] = descriptionError[0];
         }
-    },
-
-    onAmount: function (event) {
-        var amount = event.target.value;
-        var totalamount = amount * this.state.numofhours;
-
-        this.updatePrice(totalamount);
-        this.setState({
-            amount: amount,
-            totalamount: totalamount
-        });
-    },
-
-    onHours: function (event) {
-        var hours = event.target.value;
-        if (hours > 0) this.setState({ numofhours: hours });else this.setState({ numofhours: 0 });
-
-        var totalamount = this.state.amount * hours;
-        this.updatePrice(totalamount);
-        this.setState({
-            totalamount: totalamount
-        });
-    },
-
-    render: function () {
-        var _this7 = this;
-
-        var invoice_item = this.props.content;
-        var x = this.props.x;
-        var FieldId = null;
-        var invoice_id = this.props.params.x;
-        if (invoice_item) {
-            x = invoice_item.id || x;
-            invoice_id = invoice_item.invoice_id || invoice_id;
-
-            if (invoice_item.id) {
-                FieldId = React.createElement("input", {
-                    value: x,
-                    type: "hidden",
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'
-                });
-            }
+      }
+    }
+    if (amountError.length) {
+      if (this.amount) {
+        if (!this.amount.value) {
+          filterError['amount'] = amountError[0];
+        } else if (!/^\d+$/.test(this.amount.value)) {
+          filterError['amount'] = amountError.reverse()[0];
         }
+      }
+    }
+    return filterError;
+  },
 
-        if (this.state.remove) {
-            return React.createElement(
-                "div",
-                null,
-                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
-                FieldId
-            );
-        }
+  removeField: function (x) {
+    var _state$totalamount = this.state.totalamount;
+    var totalamount = _state$totalamount === undefined ? 0 : _state$totalamount;
 
-        return React.createElement(
-            "div",
-            { className: "invoiceitemfield" },
+    this.props.params.updatePrice(-totalamount);
+    this.props.removeField(x, this.props.content);
+
+    this.setState({
+      remove: true,
+      amount: 0,
+      totalamount: 0
+    });
+  },
+
+  updatePrice: function (amount) {
+    this.props.params.updatePrice(amount - this.state.totalamount);
+  },
+
+  onPricing: function (event) {
+    var pricing_type = event.target.value;
+    this.setState({ pricing_type: pricing_type });
+
+    if (pricing_type == "Hourly") {
+      this.setState({ hours_input: true, numofhours: 0 });
+    } else {
+      this.setState({ hours_input: false,
+        numofhours: 1,
+        totalamount: this.state.amount });
+    }
+  },
+
+  onAmount: function (event) {
+    var amount = event.target.value;
+    var totalamount = (parseInt(amount) || 0) * this.state.numofhours;
+
+    this.updatePrice(totalamount);
+    this.setState({
+      amount: amount,
+      totalamount: totalamount
+    });
+    this.removeError(event);
+  },
+
+  onHours: function (event) {
+    var hours = event.target.value;
+    if (hours > 0) this.setState({ numofhours: hours });else this.setState({ numofhours: 0 });
+
+    var totalamount = this.state.amount * hours;
+    this.updatePrice(totalamount);
+    this.setState({
+      totalamount: totalamount
+    });
+  },
+
+  removeError: function (_ref3) {
+    var id = _ref3.target.id;
+
+    this.setState({
+      errorsForm: _extends({}, this.state.errorsForm, _defineProperty({}, id, ''))
+    });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      "p",
+      { id: "errorbox", className: "error" },
+      error || ''
+    );
+  },
+
+  render: function () {
+    var _this3 = this;
+
+    var invoice_item = this.props.content;
+    var invoice_id = this.props.params.x;
+    var x = this.props.x;
+    var errors = this.state.errorsForm;
+    var FieldId = null;
+    var _state4 = this.state;
+    var pricing_type = _state4.pricing_type;
+    var hours_input = _state4.hours_input;
+    var remove = _state4.remove;
+    var amount = _state4.amount;
+    var numofhours = _state4.numofhours;
+
+    if (invoice_item) {
+      x = invoice_item.id || x;
+      invoice_id = invoice_item.invoice_id || invoice_id;
+
+      if (invoice_item.id) {
+        FieldId = React.createElement("input", {
+          value: x,
+          type: "hidden",
+          name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][id]'
+        });
+      }
+    }
+
+    if (this.state.remove) {
+      return React.createElement(
+        "div",
+        null,
+        React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
+        FieldId
+      );
+    }
+
+    return React.createElement(
+      "div",
+      { className: "invoiceitemfield" },
+      React.createElement(
+        "fieldset",
+        null,
+        React.createElement("input", {
+          type: "text",
+          className: "text-center " + (errors['item_description'] ? 'border_on_error' : ''),
+          placeholder: "Item description",
+          ref: function (ref) {
+            return _this3.description = ref;
+          },
+          id: "item_description",
+          defaultValue: invoice_item ? invoice_item.item_description : null,
+          name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]',
+          onChange: this.removeError
+        }),
+        this.renderError(errors['item_description']),
+        React.createElement(
+          "div",
+          { className: "amount" },
+          React.createElement(
+            "select",
+            {
+              onChange: this.onPricing,
+              value: pricing_type,
+              className: "text-center " + (hours_input && 'hour price'),
+              name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'
+            },
             React.createElement(
-                "fieldset",
-                null,
-                React.createElement("input", {
-                    required: true,
-                    type: "text",
-                    className: "text-center",
-                    placeholder: "Item description",
-                    ref: function (ref) {
-                        return _this7.description = ref;
-                    },
-                    defaultValue: invoice_item ? invoice_item.item_description : null,
-                    name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][item_description]'
-                }),
-                React.createElement(
-                    "div",
-                    { className: "amount" },
-                    React.createElement(
-                        "select",
-                        {
-                            onChange: this.onPricing,
-                            value: this.state.pricing_type,
-                            className: "text-center " + (!!this.state.hours_input && 'hour price'),
-                            name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][pricing_type]'
-                        },
-                        React.createElement(
-                            "option",
-                            { value: "Fixed Cost" },
-                            "Fixed Cost"
-                        ),
-                        React.createElement(
-                            "option",
-                            { value: "Hourly" },
-                            "Hourly"
-                        )
-                    ),
-                    React.createElement("input", {
-                        type: "number",
-                        required: true,
-                        placeholder: "Amount",
-                        onChange: this.onAmount,
-                        value: this.state.amount || '',
-                        className: "text-center " + (!!this.state.hours_input && 'hour price'),
-                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'
-                    }),
-                    this.state.hours_input ? React.createElement("input", {
-                        type: "number",
-                        required: true,
-                        onChange: this.onHours,
-                        placeholder: "Number of Hours",
-                        defaultValue: this.state.numofhours > 0 && this.state.numofhours,
-                        className: "text-center " + (this.state.hours_input && 'hour'),
-                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
-                    }) : React.createElement("input", {
-                        type: "hidden",
-                        value: 1,
-                        name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
-                    })
-                ),
-                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
-                FieldId
+              "option",
+              { value: "Fixed Cost" },
+              "Fixed Cost"
             ),
             React.createElement(
-                "button",
-                { type: "button", className: "button-remove button-primary red", onClick: function () {
-                        return _this7.removeField(_this7.props.x);
-                    } },
-                " X "
+              "option",
+              { value: "Hourly" },
+              "Hourly"
             )
-        );
-    }
+          ),
+          React.createElement("input", {
+            type: "text",
+            placeholder: "Amount",
+            ref: function (e) {
+              return _this3.amount = e;
+            },
+            id: "amount",
+            onChange: this.onAmount,
+            value: amount != undefined ? amount : '',
+            className: "text-center " + (!!hours_input ? 'hour price ' : '') + (errors['amount'] ? 'border_on_error ' : ''),
+            name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][amount]'
+          }),
+          hours_input ? React.createElement("input", {
+            type: "text",
+            onChange: this.onHours,
+            placeholder: "Number of Hours",
+            defaultValue: numofhours > 0 && numofhours,
+            className: "text-center " + (hours_input && 'hour'),
+            name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
+          }) : React.createElement("input", {
+            type: "hidden",
+            value: 1,
+            name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
+          })
+        ),
+        this.renderError(errors['amount']),
+        React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
+        FieldId
+      ),
+      React.createElement(
+        "button",
+        { type: "button", className: "button-remove button-primary red", onClick: function () {
+            return _this3.removeField(_this3.props.x);
+          } },
+        " X "
+      )
+    );
+  }
 });
 
 var InvoiceField = React.createClass({
-    displayName: "InvoiceField",
+  displayName: "InvoiceField",
 
-    getInitialState: function () {
-        var invoice = this.props.content;
-        var invoice_total = invoice && invoice.amount ? invoice.amount : 0;
-        var items_total = invoice && invoice.amount ? invoice_total / 1.1 : 0;
-        var tax_total = invoice && invoice.amount ? invoice_total - invoice_total / 1.1 : 0;
-        var tax = invoice && invoice.tax ? invoice.tax : false;
-        return {
-            invoice_total: invoice_total,
-            items_total: tax ? items_total : invoice_total,
-            tax: tax,
-            tax_total: tax ? tax_total : 0,
-            remove: false
-        };
-    },
+  getInitialState: function () {
+    var invoice = this.props.content;
+    var invoice_total = invoice && invoice.amount ? invoice.amount : 0;
+    var items_total = invoice && invoice.amount ? invoice_total / 1.1 : 0;
+    var tax_total = invoice && invoice.amount ? invoice_total - invoice_total / 1.1 : 0;
+    var tax = invoice && invoice.tax ? invoice.tax : false;
+    return {
+      invoice_total: invoice_total,
+      items_total: tax ? items_total : invoice_total,
+      tax: tax,
+      tax_total: tax ? tax_total : 0,
+      remove: false,
+      errorDate: '',
+      errors: {}
+    };
+  },
 
-    componentWillReceiveProps: function () {
-        this.setState({
-            remove: this.props.params.remove
-        });
-    },
+  componentWillReceiveProps: function (_ref4) {
+    var errors = _ref4.errors;
 
-    removeField: function (x) {
-        this.setState({ remove: true });
-        this.props.removeField(x);
-    },
+    var rest = _objectWithoutProperties(_ref4, ["errors"]);
 
-    calcInvoiceTotal: function (price) {
-        var invoice_total = this.state.invoice_total + price;
-        this.setState({
-            items_total: this.state.tax ? invoice_total / 1.1 : invoice_total,
-            invoice_total: invoice_total,
-            tax_total: this.state.tax ? invoice_total - invoice_total / 1.1 : 0
-        });
-    },
-    onTax: function () {
-        var invoice_total = this.state.invoice_total;
-        var tax = this.state.tax;
-        this.setState({
-            tax: !tax,
-            invoice_total: invoice_total,
-            items_total: !tax ? invoice_total / 1.1 : invoice_total,
-            tax_total: !tax ? invoice_total - invoice_total / 1.1 : 0
-        });
-    },
-    render: function () {
-        var _this8 = this;
+    this.setState({
+      remove: rest.params.remove,
+      errorDate: this.filterError(errors),
+      errors: errors || {}
+    });
+  },
 
-        var invoice = this.props.content;
-        var invoice_items = invoice && invoice.invoice_items || null;
-        var x = this.props.x;
-        var invoiceInfo = this.props.params;
-        var hasInvoice = invoice && !invoice.isCoppy;
-
-        if (hasInvoice) x = invoice.id;
-        if (this.state.remove) {
-            if (!hasInvoice) return null;
-
-            return React.createElement(
-                "div",
-                null,
-                React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' }),
-                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' })
-            );
-        }
-
-        return React.createElement(
-            "div",
-            { className: "invoicefield" },
-            React.createElement("input", { type: "hidden", value: invoice && invoice.maintenance_request_id ? invoice.maintenance_request_id : invoiceInfo.maintenance_request_id, name: 'ledger[invoices_attributes][' + x + '][maintenance_request_id]' }),
-            React.createElement("input", { type: "hidden", value: invoice && invoice.trady_id ? invoice.trady_id : invoiceInfo.trady_id, name: 'ledger[invoices_attributes][' + x + '][trady_id]' }),
-            React.createElement("input", { type: "hidden", value: invoice && invoice.quote_id ? invoice.quote_id : invoiceInfo.quote_id, name: 'ledger[invoices_attributes][' + x + '][quote_id]' }),
-            React.createElement(
-                "fieldset",
-                null,
-                React.createElement(
-                    "div",
-                    null,
-                    React.createElement(FieldList, { existingContent: invoice_items, SampleField: InvoiceItemField, params: { x: x, updatePrice: this.calcInvoiceTotal, remove: this.state.remove }, flag: "invoice" }),
-                    React.createElement(
-                        "div",
-                        { className: "text-center m-t-lg" },
-                        React.createElement("input", {
-                            type: "text",
-                            className: "text-center",
-                            placeholder: "Invoice Reference Number",
-                            defaultValue: invoice && invoice.trady_invoice_reference,
-                            name: 'ledger[invoices_attributes][' + x + '][trady_invoice_reference]'
-                        })
-                    ),
-                    React.createElement(
-                        "label",
-                        null,
-                        React.createElement("input", { type: "checkbox", value: this.state.tax, checked: this.state.tax, name: 'ledger[invoices_attributes][' + x + '][tax]', onChange: this.onTax }),
-                        "Total Includes GST"
-                    )
-                ),
-                React.createElement("hr", null),
-                React.createElement(
-                    "div",
-                    { className: "field" },
-                    React.createElement(
-                        "div",
-                        null,
-                        React.createElement(
-                            "p",
-                            null,
-                            " Invoice Total : "
-                        ),
-                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.invoice_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][invoice_total]' })
-                    ),
-                    React.createElement(
-                        "div",
-                        null,
-                        React.createElement(
-                            "p",
-                            null,
-                            " Tax Total : "
-                        ),
-                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.tax_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][tax_total]' })
-                    ),
-                    React.createElement(
-                        "div",
-                        null,
-                        React.createElement(
-                            "p",
-                            null,
-                            " Items Total : "
-                        ),
-                        React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: this.state.items_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
-                    ),
-                    React.createElement(
-                        "div",
-                        null,
-                        React.createElement(
-                            "p",
-                            null,
-                            " Invoice Due On : "
-                        ),
-                        React.createElement("input", { type: "date", defaultValue: invoice && invoice.due_date || '', name: 'ledger[invoices_attributes][' + x + '][due_date]', required: true })
-                    )
-                ),
-                React.createElement("input", { type: "hidden", value: this.state.remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
-                hasInvoice && React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' })
-            ),
-            React.createElement(
-                "button",
-                { type: "button", className: "button-remove button-primary red", onClick: function () {
-                        return _this8.removeField(_this8.props.x);
-                    } },
-                " Remove Invoice "
-            )
-        );
+  validDate: function (date) {
+    var nowDate = this.nowDate(0);
+    if (nowDate === date) return false;
+    for (var i = 0; i < date.length; i++) {
+      if (nowDate[i] > date[i]) return false;
     }
+    return true;
+  },
+
+  filterError: function (errors) {
+    var errorDate = errors && errors['invoices.due_date'];
+    var error = '';
+    if (errorDate) {
+      if (!this.date.value) error = errorDate[0];else if (!this.validDate(this.date.value)) error = errorDate.reverse()[0];
+    }
+    return error;
+  },
+
+  nowDate: function () {
+    var nextDay = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+
+    var oneDay = 24 * 60 * 60 * 1000;
+    var now = new Date(Date.now() + oneDay * nextDay);
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+    var year = now.getFullYear();
+    return year + "-" + (month < 10 ? '0' : '') + month + "-" + (date < 10 ? '0' : '') + date;
+  },
+
+  removeField: function (x) {
+    this.setState({ remove: true });
+    this.props.removeField(x);
+  },
+
+  calcInvoiceTotal: function (price) {
+    var invoice_total = this.state.invoice_total + price;
+    this.setState({
+      items_total: this.state.tax ? invoice_total / 1.1 : invoice_total,
+      invoice_total: invoice_total,
+      tax_total: this.state.tax ? invoice_total - invoice_total / 1.1 : 0
+    });
+  },
+  onTax: function () {
+    var invoice_total = this.state.invoice_total;
+    var tax = this.state.tax;
+    this.setState({
+      tax: !tax,
+      invoice_total: invoice_total,
+      items_total: !tax ? invoice_total / 1.1 : invoice_total,
+      tax_total: !tax ? invoice_total - invoice_total / 1.1 : 0
+    });
+  },
+  render: function () {
+    var _this4 = this;
+
+    var _props5 = this.props;
+    var content = _props5.content;
+    var x = _props5.x;
+    var _props5$params$invoiceInfo = _props5.params.invoiceInfo;
+    var invoiceInfo = _props5$params$invoiceInfo === undefined ? {} : _props5$params$invoiceInfo;
+    var _state5 = this.state;
+    var errorDate = _state5.errorDate;
+    var remove = _state5.remove;
+    var errors = _state5.errors;
+    var tax = _state5.tax;
+    var invoice_total = _state5.invoice_total;
+    var tax_total = _state5.tax_total;
+    var items_total = _state5.items_total;
+
+    var invoice_items = content && content.invoice_items || null;
+    var hasInvoice = content && !content.isCoppy;
+    var invoice = this.props.content || {};
+
+    if (hasInvoice) x = invoice.id;
+    if (remove) {
+      if (!hasInvoice) return null;
+
+      return React.createElement(
+        "div",
+        null,
+        React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' }),
+        React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' })
+      );
+    }
+
+    return React.createElement(
+      "div",
+      { className: "invoicefield" },
+      React.createElement("input", {
+        type: "hidden",
+        value: invoice.maintenance_request_id || invoiceInfo.maintenance_request_id,
+        name: 'ledger[invoices_attributes][' + x + '][maintenance_request_id]'
+      }),
+      React.createElement("input", {
+        type: "hidden",
+        value: invoice.trady_id || invoiceInfo.trady_id,
+        name: 'ledger[invoices_attributes][' + x + '][trady_id]'
+      }),
+      React.createElement("input", {
+        type: "hidden",
+        value: invoice.quote_id || invoiceInfo.quote_id,
+        name: 'ledger[invoices_attributes][' + x + '][quote_id]'
+      }),
+      React.createElement(
+        "fieldset",
+        null,
+        React.createElement(
+          "div",
+          null,
+          React.createElement(FieldList, { existingContent: invoice_items, SampleField: InvoiceItemField, params: { x: x, updatePrice: this.calcInvoiceTotal, remove: remove }, flag: "invoice", errors: errors }),
+          React.createElement(
+            "div",
+            { className: "text-center m-t-lg" },
+            React.createElement("input", {
+              type: "text",
+              className: "text-center",
+              placeholder: "Invoice Reference Number",
+              defaultValue: invoice && invoice.trady_invoice_reference,
+              name: 'ledger[invoices_attributes][' + x + '][trady_invoice_reference]'
+            })
+          ),
+          React.createElement(
+            "label",
+            null,
+            React.createElement("input", { type: "checkbox", value: tax, checked: tax, name: 'ledger[invoices_attributes][' + x + '][tax]', onChange: this.onTax }),
+            "Total Includes GST"
+          )
+        ),
+        React.createElement("hr", null),
+        React.createElement(
+          "div",
+          { className: "field" },
+          React.createElement(
+            "div",
+            null,
+            React.createElement(
+              "p",
+              null,
+              " Invoice Total : "
+            ),
+            React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: invoice_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][invoice_total]' })
+          ),
+          React.createElement(
+            "div",
+            null,
+            React.createElement(
+              "p",
+              null,
+              " Tax Total : "
+            ),
+            React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: tax_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][tax_total]' })
+          ),
+          React.createElement(
+            "div",
+            null,
+            React.createElement(
+              "p",
+              null,
+              " Items Total : "
+            ),
+            React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: items_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
+          ),
+          React.createElement(
+            "div",
+            null,
+            React.createElement(
+              "p",
+              null,
+              " Invoice Due On : "
+            ),
+            React.createElement("input", {
+              type: "date",
+              defaultValue: invoice && invoice.due_date || this.nowDate(),
+              ref: function (e) {
+                return _this4.date = e;
+              },
+              onChange: function () {
+                return _this4.setState({ errorDate: '' });
+              },
+              name: 'ledger[invoices_attributes][' + x + '][due_date]',
+              style: errorDate ? { borderColor: 'red' } : {}
+            })
+          )
+        ),
+        React.createElement(
+          "p",
+          { id: "errorbox", className: "error" },
+          errorDate || ''
+        ),
+        ";",
+        React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
+        hasInvoice && React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' })
+      ),
+      React.createElement(
+        "button",
+        { type: "button", className: "button-remove button-primary red", onClick: function () {
+            return _this4.removeField(_this4.props.x);
+          } },
+        " Remove Invoice "
+      )
+    );
+  }
 });
 
 var InvoiceFields = React.createClass({
-    displayName: "InvoiceFields",
+  displayName: "InvoiceFields",
 
-    getInitialState: function () {
-        return {
-            modal: "",
-            isModal: false,
-            quote: '',
-            quotes: this.props.quotes
-        };
-    },
+  getInitialState: function () {
+    return {
+      modal: "",
+      isModal: false,
+      quote: '',
+      quotes: this.props.quotes,
+      errors: {}
+    };
+  },
 
-    isClose: function () {
-        if (this.state.isModal == true) {
-            this.setState({
-                isModal: false,
-                modal: ""
-            });
-        }
-
-        var body = document.getElementsByTagName('body')[0];
-        body.classList.remove("modal-open");
-        var div = document.getElementsByClassName('modal-backdrop in')[0];
-        if (div) {
-            div.parentNode.removeChild(div);
-        }
-    },
-
-    onModalWith: function (modal) {
-        this.setState({
-            modal: modal,
-            isModal: true
-        });
-    },
-
-    viewItem: function (key, item) {
-        switch (key) {
-            case 'viewQuote':
-                {
-                    this.setState({
-                        quote: item
-                    });
-
-                    this.onModalWith(key);
-                    break;
-                }
-
-            default:
-                {
-                    break;
-                }
-        }
-    },
-
-    renderModal: function () {
-        if (this.state.isModal) {
-            var body = document.getElementsByTagName('body')[0];
-            body.className += " modal-open";
-            var div = document.getElementsByClassName('modal-backdrop in');
-
-            if (div.length === 0) {
-                div = document.createElement('div');
-                div.className = "modal-backdrop in";
-                body.appendChild(div);
-            }
-
-            switch (this.state.modal) {
-                case 'viewQuote':
-                    {
-                        return React.createElement(ModalViewQuote, {
-                            close: this.isClose,
-                            quote: this.state.quote,
-                            agency: "",
-                            quotes: this.state.quotes,
-                            property: this.props.property,
-                            landlord: ""
-                        });
-                    }
-
-                default:
-                    return null;
-            }
-        }
-    },
-
-    render: function () {
-        var _this9 = this;
-
-        var _props3 = this.props;
-        var quotes = _props3.quotes;
-        var trady = _props3.trady;
-
-        var ledger = this.props.ledger || null;
-        var id = ledger && ledger.id || '';
-        var invoiceInfo = {
-            maintenance_request_id: this.props.maintenance_request_id,
-            trady_id: this.props.trady_id,
-            tax: '',
-            due_date: ''
-        };
-        var invoices = ledger && ledger.invoices ? ledger.invoices : null;
-        var converts = [];
-        var hasQuotes = quotes && quotes.length > 0;
-        (invoices || []).filter(function (e) {
-            return !!e.quote_id;
-        }).forEach(function (e) {
-            return converts.push(e.quote_id);
-        });
-
-        return React.createElement(
-            "form",
-            { role: "form", id: "new_invoice", action: id ? '/update_invoice' : '/invoices', acceptCharset: "UTF-8", method: "post" },
-            React.createElement("input", { type: "hidden", value: this.props.authenticity_token, name: "authenticity_token" }),
-            React.createElement("input", { type: "hidden", value: this.props._method, name: "_method" }),
-            React.createElement("input", { type: "hidden", name: "ledger[grand_total]" }),
-            React.createElement("input", { type: "hidden", value: this.props.maintenance_request_id, name: "ledger[maintenance_request_id]" }),
-            React.createElement("input", { type: "hidden", value: this.props.trady_id, name: "ledger[trady_id]" }),
-            React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "ledger[quote_id]" }),
-            React.createElement("input", { type: "hidden", value: id, name: "ledger[ledger_id]" }),
-            React.createElement("input", { type: "hidden", value: this.props.invoice_type, name: "ledger[invoice_type]" }),
-            hasQuotes && React.createElement(QuotesInInvoice, {
-                quotes: quotes,
-                trady: trady,
-                converts: converts,
-                ref: function (ref) {
-                    return _this9.quotesInInvoice = ref;
-                },
-                viewQuote: function (key, item) {
-                    return _this9.viewItem(key, item);
-                },
-                onConvertToInvoice: function (item) {
-                    return _this9.fieldListForInvoice.setContent(item);
-                }
-            }),
-            React.createElement(FieldListForInvoice, {
-                params: invoiceInfo,
-                noQuotes: !hasQuotes,
-                existingContent: invoices,
-                SampleField: InvoiceField,
-                ref: function (ref) {
-                    return _this9.fieldListForInvoice = ref;
-                },
-                removeQuote: function (quote) {
-                    return _this9.quotesInInvoice.removeConvert(quote.id);
-                }
-            }),
-            React.createElement(
-                "div",
-                { className: "qf-button text-center", style: { marginBottom: '50px' } },
-                React.createElement(
-                    "a",
-                    { className: "button button-primary left", href: this.props.backlink },
-                    " Back "
-                ),
-                React.createElement(
-                    "button",
-                    { type: "submit", name: "commit", value: "Next", className: "button button-primary green" },
-                    "Next"
-                )
-            ),
-            this.renderModal()
-        );
+  isClose: function () {
+    if (this.state.isModal == true) {
+      this.setState({
+        isModal: false,
+        modal: ""
+      });
     }
+
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    if (div) {
+      div.parentNode.removeChild(div);
+    }
+  },
+
+  onModalWith: function (modal) {
+    this.setState({
+      modal: modal,
+      isModal: true
+    });
+  },
+
+  viewItem: function (key, item) {
+    switch (key) {
+      case 'viewQuote':
+        {
+          this.setState({
+            quote: item
+          });
+
+          this.onModalWith(key);
+          break;
+        }
+
+      default:
+        {
+          break;
+        }
+    }
+  },
+
+  renderModal: function () {
+    if (this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if (div.length === 0) {
+        div = document.createElement('div');
+        div.className = "modal-backdrop in";
+        body.appendChild(div);
+      }
+
+      switch (this.state.modal) {
+        case 'viewQuote':
+          {
+            return React.createElement(ModalViewQuote, {
+              close: this.isClose,
+              quote: this.state.quote,
+              agency: "",
+              quotes: this.state.quotes,
+              property: this.props.property,
+              landlord: ""
+            });
+          }
+
+        default:
+          return null;
+      }
+    }
+  },
+
+  handleSummit: function (e) {
+    var ledger = this.props.ledger;
+    var id = ledger && ledger.id || '';
+    var self = this;
+
+    e.preventDefault();
+    var FD = new FormData(document.getElementById('new_invoice'));
+
+    $.ajax({
+      type: 'POST',
+      url: id ? '/update_invoice' : '/invoices',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  render: function () {
+    var _this5 = this;
+
+    var _props6 = this.props;
+    var quotes = _props6.quotes;
+    var trady = _props6.trady;
+
+    var errors = this.state.errors;
+    var ledger = this.props.ledger || null;
+    var id = ledger && ledger.id || '';
+    var invoiceInfo = {
+      maintenance_request_id: this.props.maintenance_request_id,
+      trady_id: this.props.trady_id,
+      tax: '',
+      due_date: ''
+    };
+    var hasQuotes = quotes && quotes.length > 0;
+    var invoices = ledger && ledger.invoices ? ledger.invoices : [];
+    var converts = (invoices || []).filter(function (e) {
+      return e.quote_id;
+    }).map(function (e) {
+      return e.quote_id;
+    });
+
+    return React.createElement(
+      "form",
+      { role: "form", id: "new_invoice", onSubmit: this.handleSummit, acceptCharset: "UTF-8" },
+      React.createElement("input", { type: "hidden", value: this.props.authenticity_token, name: "authenticity_token" }),
+      React.createElement("input", { type: "hidden", value: this.props._method, name: "_method" }),
+      React.createElement("input", { type: "hidden", name: "ledger[grand_total]" }),
+      React.createElement("input", { type: "hidden", value: this.props.maintenance_request_id, name: "ledger[maintenance_request_id]" }),
+      React.createElement("input", { type: "hidden", value: this.props.trady_id, name: "ledger[trady_id]" }),
+      React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "ledger[quote_id]" }),
+      React.createElement("input", { type: "hidden", value: id, name: "ledger[ledger_id]" }),
+      React.createElement("input", { type: "hidden", value: this.props.invoice_type, name: "ledger[invoice_type]" }),
+      hasQuotes && React.createElement(QuotesInInvoice, {
+        quotes: quotes,
+        trady: trady,
+        converts: converts,
+        errors: errors,
+        ref: function (ref) {
+          return _this5.quotesInInvoice = ref;
+        },
+        viewQuote: function (key, item) {
+          return _this5.viewItem(key, item);
+        },
+        onConvertToInvoice: function (item) {
+          return _this5.fieldListForInvoice.setContent(item);
+        }
+      }),
+      React.createElement(FieldListForInvoice, {
+        errors: errors,
+        params: invoiceInfo,
+        noQuotes: !hasQuotes,
+        existingContent: invoices,
+        SampleField: InvoiceField,
+        ref: function (ref) {
+          return _this5.fieldListForInvoice = ref;
+        },
+        removeQuote: function (quote) {
+          return _this5.quotesInInvoice.removeConvert(quote.id);
+        }
+      }),
+      React.createElement(
+        "div",
+        { className: "qf-button text-center", style: { marginBottom: '50px' } },
+        React.createElement(
+          "a",
+          { className: "button button-primary left", href: this.props.backlink },
+          " Back "
+        ),
+        React.createElement(
+          "button",
+          { type: "submit", name: "commit", value: "Next", className: "button button-primary green" },
+          "Next"
+        )
+      ),
+      this.renderModal()
+    );
+  }
 });
 
 var TradyCompanyInvoice = React.createClass({
-    displayName: "TradyCompanyInvoice",
+  displayName: "TradyCompanyInvoice",
 
-    getInitialState: function () {
-        return { same_Address: false,
-            address: this.props.address,
-            mailing: this.props.mailing_address };
-    },
+  getInitialState: function () {
+    return { same_Address: false,
+      address: this.props.address,
+      mailing: this.props.mailing_address };
+  },
 
-    handleChange: function (event) {
-        this.setState({ address: event.target.value });
-        if (this.state.same_Address) {
-            this.setState({ mailing: event.target.value,
-                address: event.target.value });
-        }
-    },
-
-    render: function () {
-        return React.createElement(
-            "form",
-            { role: "form", id: "edit_trady_company_2", action: "/update_company_invoice", acceptCharset: "UTF-8", method: "post" },
-            React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
-            React.createElement("input", { type: "hidden", name: "_method", value: "put" }),
-            React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
-            React.createElement("input", { type: "text", placeholder: "Company Name", defaultValue: this.props.company_name,
-                name: "trady_company[company_name]",
-                id: "trady_company_company_name", required: true }),
-            React.createElement("input", { type: "text", placeholder: "Trading Name", defaultValue: this.props.trading_name,
-                name: "trady_company[trading_name]",
-                id: "trady_company_trading_name", required: true }),
-            React.createElement("input", { type: "text", placeholder: "Abn", defaultValue: this.props.abn,
-                name: "trady_company[abn]",
-                id: "trady_company_abn", required: true }),
-            React.createElement(
-                "label",
-                null,
-                React.createElement("input", { defaultValue: this.props.gst_registration, type: "checkbox", defaultValue: this.props.gst_registration,
-                    name: "trady_company[gst_registration]",
-                    id: "trady_company_gst_registration" }),
-                "GST  Registration"
-            ),
-            React.createElement("input", { type: "text", placeholder: "Address", onChange: this.handleChange, defaultValue: this.props.address,
-                name: "trady_company[address]",
-                id: "trady_company_address", required: true }),
-            React.createElement(
-                "div",
-                { className: "field" },
-                React.createElement(
-                    "label",
-                    null,
-                    React.createElement("input", { type: "checkbox", onChange: this.onSame, defaultValue: this.props.mailing_address_same,
-                        name: "trady_company[mailing_address_same]",
-                        id: "trady_company_mailing_address_same" }),
-                    "Mailing Address same as Above"
-                ),
-                React.createElement("input", { value: this.state.mailing, type: "text", placeholder: "Mailing Address", defaultValue: this.props.mailing_address,
-                    name: "trady_company[mailing_address]",
-                    id: "trady_company_mailing_address", required: true })
-            ),
-            React.createElement("input", { type: "text", placeholder: "Mobile Number", defaultValue: this.props.mobile_number,
-                name: "trady_company[mobile_number]",
-                id: "trady_company_mobile_number", required: true }),
-            React.createElement("input", { type: "email", placeholder: "Email", defaultValue: this.props.email,
-                name: "trady_company[email]",
-                autoCapitalize: "off",
-                autoCorrect: "off",
-                autoComplete: "off",
-                id: "trady_company_email", required: true }),
-            React.createElement("input", { type: "text", placeholder: "Bank Account Number", defaultValue: this.props.account_name,
-                name: "trady_company[bank_account_number]",
-                id: "trady_company_bank_account_number", required: true }),
-            React.createElement("input", { type: "text", placeholder: "BSB Number", defaultValue: this.props.bsb_number,
-                name: "trady_company[bsb_number]",
-                id: "trady_company_bsb_number", required: true }),
-            React.createElement("input", { type: "text", placeholder: "Account Name", defaultValue: this.props.bank_account_number,
-                name: "trady_company[account_name]",
-                id: "trady_company_account_name", required: true }),
-            React.createElement("input", { value: this.props.maintenance_request_id, type: "hidden", name: "trady_company[maintenance_request_id]" }),
-            React.createElement("input", { value: this.props.trady_id, type: "hidden", name: "trady_company[trady_id]" }),
-            React.createElement("input", { value: this.props.trady_company_id, type: "hidden", name: "trady_company[trady_company_id]" }),
-            React.createElement("input", { value: this.props.quote_id, type: "hidden", name: "trady_company[quote_id]" }),
-            React.createElement("input", { value: this.props.invoice_type, type: "hidden", name: "trady_company[invoice_type]" }),
-            React.createElement("input", { value: this.props.pdf_file_id, type: "hidden", name: "trady_company[pdf_file_id]" }),
-            React.createElement("input", { value: this.props.ledger_id, type: "hidden", name: "trady_company[ledger_id]" }),
-            React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button-primary green", "data-disable-with": "Next" })
-        );
-    },
-    onSame: function () {
-        this.setState({ same_Address: !this.state.same_Address,
-            mailing: this.state.address });
+  handleChange: function (event) {
+    this.setState({ address: event.target.value });
+    if (this.state.same_Address) {
+      this.setState({ mailing: event.target.value,
+        address: event.target.value });
     }
+  },
+
+  render: function () {
+    return React.createElement(
+      "form",
+      { role: "form", id: "edit_trady_company_2", action: "/update_company_invoice", acceptCharset: "UTF-8", method: "post" },
+      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+      React.createElement("input", { type: "hidden", name: "_method", value: "put" }),
+      React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+      React.createElement("input", { type: "text", placeholder: "Company Name", defaultValue: this.props.company_name,
+        name: "trady_company[company_name]",
+        id: "trady_company_company_name", required: true }),
+      React.createElement("input", { type: "text", placeholder: "Trading Name", defaultValue: this.props.trading_name,
+        name: "trady_company[trading_name]",
+        id: "trady_company_trading_name", required: true }),
+      React.createElement("input", { type: "text", placeholder: "Abn", defaultValue: this.props.abn,
+        name: "trady_company[abn]",
+        id: "trady_company_abn", required: true }),
+      React.createElement(
+        "label",
+        null,
+        React.createElement("input", { defaultValue: this.props.gst_registration, type: "checkbox", defaultValue: this.props.gst_registration,
+          name: "trady_company[gst_registration]",
+          id: "trady_company_gst_registration" }),
+        "GST  Registration"
+      ),
+      React.createElement("input", { type: "text", placeholder: "Address", onChange: this.handleChange, defaultValue: this.props.address,
+        name: "trady_company[address]",
+        id: "trady_company_address", required: true }),
+      React.createElement(
+        "div",
+        { className: "field" },
+        React.createElement(
+          "label",
+          null,
+          React.createElement("input", { type: "checkbox", onChange: this.onSame, defaultValue: this.props.mailing_address_same,
+            name: "trady_company[mailing_address_same]",
+            id: "trady_company_mailing_address_same" }),
+          "Mailing Address same as Above"
+        ),
+        React.createElement("input", { value: this.state.mailing, type: "text", placeholder: "Mailing Address", defaultValue: this.props.mailing_address,
+          name: "trady_company[mailing_address]",
+          id: "trady_company_mailing_address", required: true })
+      ),
+      React.createElement("input", { type: "text", placeholder: "Mobile Number", defaultValue: this.props.mobile_number,
+        name: "trady_company[mobile_number]",
+        id: "trady_company_mobile_number", required: true }),
+      React.createElement("input", { type: "text", placeholder: "Email", defaultValue: this.props.email,
+        name: "trady_company[email]",
+        autoCapitalize: "off",
+        autoCorrect: "off",
+        autoComplete: "off",
+        id: "trady_company_email", required: true }),
+      React.createElement("input", { type: "text", placeholder: "Bank Account Number", defaultValue: this.props.account_name,
+        name: "trady_company[bank_account_number]",
+        id: "trady_company_bank_account_number", required: true }),
+      React.createElement("input", { type: "text", placeholder: "BSB Number", defaultValue: this.props.bsb_number,
+        name: "trady_company[bsb_number]",
+        id: "trady_company_bsb_number", required: true }),
+      React.createElement("input", { type: "text", placeholder: "Account Name", defaultValue: this.props.bank_account_number,
+        name: "trady_company[account_name]",
+        id: "trady_company_account_name", required: true }),
+      React.createElement("input", { value: this.props.maintenance_request_id, type: "hidden", name: "trady_company[maintenance_request_id]" }),
+      React.createElement("input", { value: this.props.trady_id, type: "hidden", name: "trady_company[trady_id]" }),
+      React.createElement("input", { value: this.props.trady_company_id, type: "hidden", name: "trady_company[trady_company_id]" }),
+      React.createElement("input", { value: this.props.quote_id, type: "hidden", name: "trady_company[quote_id]" }),
+      React.createElement("input", { value: this.props.invoice_type, type: "hidden", name: "trady_company[invoice_type]" }),
+      React.createElement("input", { value: this.props.pdf_file_id, type: "hidden", name: "trady_company[pdf_file_id]" }),
+      React.createElement("input", { value: this.props.ledger_id, type: "hidden", name: "trady_company[ledger_id]" }),
+      React.createElement("input", { type: "submit", name: "commit", value: "Next", className: "button-primary green", "data-disable-with": "Next" })
+    );
+  },
+  onSame: function () {
+    this.setState({ same_Address: !this.state.same_Address,
+      mailing: this.state.address });
+  }
 });
 var DetailInvoice = React.createClass({
 	displayName: "DetailInvoice",
@@ -72171,7 +72395,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendMessageLandlord: function (params) {
+	sendMessageLandlord: function (params, callback) {
 		var self = this;
 		params.message.role = this.props.current_role.role;
 		$.ajax({
@@ -72182,6 +72406,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
 				landlords_conversation.push(res);
 
@@ -72265,8 +72492,8 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					tradies: res,
 					notification: {
-						title: "Request Quote",
-						content: "the request quote has sent successfully",
+						title: "Quote Request Sent",
+						content: "You have succesfully requested a quote. An email has been sent to the agent. Thank you for your time and input.",
 						bgClass: "bg-success"
 					}
 				});
@@ -72283,7 +72510,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function (params) {
+	addAppointment: function (params, callback) {
 		var self = this;
 		var _props2 = this.props;
 		var tenants = _props2.tenants;
@@ -72324,6 +72551,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var title = '';
 				var content = '';
 
@@ -72580,7 +72810,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							openModal: function () {
 								return _this2.onModalWith('createAppointment');
 							},
-							content: ["Are you sure you want to cancel appointment. To cancel the appointment you ", React.createElement(
+							content: ["Are you sure you want to cancel the appointment. To cancel the appointment you ", React.createElement(
 								'strong',
 								{ className: 'text-capitalize' },
 								'must'
@@ -72597,7 +72827,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							openModal: function () {
 								return _this2.onModalWith('createAppointment');
 							},
-							content: ["Are you sure you want to decline appointment. To decline the appointment you ", React.createElement(
+							content: ["Are you sure you want to decline the appointment. To decline the appointment you ", React.createElement(
 								'strong',
 								{ className: 'text-capitalize' },
 								'must'
@@ -72612,9 +72842,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							title: 'Create Appoinment',
 							type: 'Landlord Appointment',
 							comments: this.state.comments,
-							addAppointment: function (params) {
-								return _this2.addAppointment(params);
-							}
+							addAppointment: this.addAppointment
 						});
 					}
 
@@ -72821,7 +73049,8 @@ var AccessContactField = React.createClass({
 
   getInitialState: function () {
     return {
-      remove: false
+      remove: false,
+      errorsForm: this.props.errorsForm || {}
     };
   },
 
@@ -72835,6 +73064,12 @@ var AccessContactField = React.createClass({
 
   removeField: function () {
     this.setState({ remove: true });
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      errorsForm: nextProps.errorsForm || {}
+    });
   },
 
   changeRelation: function (e, position) {
@@ -72871,8 +73106,49 @@ var AccessContactField = React.createClass({
     }
   },
 
-  render: function () {
+  renderError: function (error, index) {
+    return React.createElement(
+      "p",
+      {
+        id: "errorbox",
+        key: index,
+        className: "error",
+        style: { textAlign: 'center' }
+      },
+      error || ''
+    );
+  },
+
+  renderErrors: function (errorsForm) {
     var _this = this;
+
+    if (!errorsForm['access_contacts']) return '';
+    var errorValues = ['Please make sure the information below is valid'];
+    if (errorsForm['access_contacts.email']) {
+      if (this.email && (!this.email.value || !/\A[^@]+@([^@\.]+\.)+[^@\.]+\z/.test(this.email.value))) {
+        errorValues.push(errorsForm['access_contacts.email'][0]);
+      }
+    }
+    if (errorsForm['access_contacts.name']) {
+      if (this.name && !this.name.value) {
+        errorValues.push(errorsForm['access_contacts.name'][0]);
+      }
+    }
+    if (errorsForm['access_contacts.mobile']) {
+      if (this.mobile && !this.mobile.value && !/^(\d+)$/.test(this.mobile.value)) {
+        errorValues.push(errorsForm['access_contacts.mobile'][0]);
+      }
+    }
+
+    return errorValues.length > 1 ? errorValues.map(function (error, index) {
+      return _this.renderError(error, index);
+    }) : '';
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    var errorsForm = this.state.errorsForm;
 
     var accessContact = this.props.content;
     var x = this.props.x;
@@ -72882,12 +73158,21 @@ var AccessContactField = React.createClass({
     var $fullnameid = 'errorboxfullname' + x;
     var $emailid = 'errorboxemail' + x;
     var $mobileid = 'errorboxmobile' + x;
+    var errorField = this.renderErrors(errorsForm) || '';
     return React.createElement(
       "div",
-      { className: "accesscontactfield", style: { display: this.state.remove ? 'none' : 'block' } },
+      {
+        className: "accesscontactfield",
+
+        style: {
+          display: this.state.remove ? 'none' : 'block',
+          border: errorField.length ? '1px solid red' : '1px solid #E1E1E1'
+        }
+      },
       React.createElement(
         "fieldset",
         null,
+        errorField,
         React.createElement(
           "p",
           null,
@@ -72899,7 +73184,7 @@ var AccessContactField = React.createClass({
             name: this.generateAtt("name", x, "relation"),
             id: this.generateAtt("id", x, "relation"),
             onChange: function (e) {
-              _this.changeRelation(e, x);
+              _this2.changeRelation(e, x);
             }
           },
           React.createElement(
@@ -72924,10 +73209,13 @@ var AccessContactField = React.createClass({
           " Name "
         ),
         React.createElement("input", {
-          required: "required",
+
           type: "text", placeholder: "Full name",
           id: this.generateAtt("id", x, "name"),
           name: this.generateAtt("name", x, "name"),
+          ref: function (value) {
+            return _this2.name = value;
+          },
           onBlur: function (e) {
             if (!e.target.value.length) {
               document.getElementById($fullnameid).textContent = strRequireText;
@@ -72948,13 +73236,16 @@ var AccessContactField = React.createClass({
         ),
         React.createElement("input", {
           type: "email",
-          required: "required",
+
           placeholder: "E-mail",
           autoCapitalize: "off",
           autoCorrect: "off",
           autoComplete: "off",
           id: this.generateAtt("id", x, "email"),
           name: this.generateAtt("name", x, "email"),
+          ref: function (value) {
+            return _this2.email = value;
+          },
           onBlur: function (e) {
             if (!!e.target.required) {
               if (!e.target.value.length) {
@@ -72964,7 +73255,7 @@ var AccessContactField = React.createClass({
                 document.getElementById($emailid).textContent = strShortEmail;
                 e.target.classList.add("border_on_error");
               } else if (e.target.value.length >= 4) {
-                _this.validateEmail(e.target.value, e, $emailid);
+                _this2.validateEmail(e.target.value, e, $emailid);
               }
             }
           } }),
@@ -72975,10 +73266,13 @@ var AccessContactField = React.createClass({
           " Mobile "
         ),
         React.createElement("input", {
-          required: "required",
+
           type: "tel", placeholder: "Mobile",
           name: this.generateAtt("name", x, "mobile"),
           id: this.generateAtt("id", x, "mobile"),
+          ref: function (value) {
+            return _this2.mobile = value;
+          },
           onBlur: function (e) {
             if (!e.target.value.length) {
               document.getElementById($mobileid).textContent = strRequireMobile;
@@ -72988,7 +73282,7 @@ var AccessContactField = React.createClass({
               e.target.classList.add("border_on_error");
             }
             if (e.target.value.length >= 8) {
-              _this.validatePhoneNumber(e.target.value, e, $mobileid);
+              _this2.validatePhoneNumber(e.target.value, e, $mobileid);
             }
           }, maxLength: "10" }),
         React.createElement("p", { id: $mobileid, className: "error" }),
@@ -73002,7 +73296,7 @@ var AccessContactField = React.createClass({
         React.createElement(
           "button",
           { type: "button", className: "button-remove button-primary red", onClick: function (position) {
-              _this.props.removeField(x);
+              _this2.props.removeField(x);
             } },
           " Remove "
         )
@@ -74594,103 +74888,84 @@ var ContactMobile = React.createClass({
 		);
 	}
 });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var EditMaintenanceRequest = React.createClass({
-	displayName: 'EditMaintenanceRequest',
+	displayName: "EditMaintenanceRequest",
 
 	getInitialState: function () {
 		return {
-			errorTitle: false,
-			errorDescription: false
+			titleError: false,
+			serviceError: false,
+			descriptionError: false
 		};
 	},
 
-	checkValidate: function (e, key) {
-		var value = e.target.value;
-		switch (key) {
-			case 'title':
-				{
-					if (value == "") {
-						this.setState({
-							errorTitle: true
-						});
-					} else {
-						this.setState({
-							errorTitle: false
-						});
-					}
-					break;
-				}
+	removeError: function (_ref) {
+		var id = _ref.target.id;
 
-			case 'description':
-				{
-					if (value == "") {
-						this.setState({
-							errorDescription: true
-						});
-					} else {
-						this.setState({
-							errorDescription: false
-						});
-					}
-					break;
-				}
-		}
+		this.setState(_defineProperty({}, id + "Error", ''));
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error && error[0] ? error[0] : ''
+		);
 	},
 
 	submit: function (e) {
 		e.preventDefault();
-		var flag = false;
+		var self = this;
 
-		if (this.description.value == "") {
-			this.setState({
-				errorDescription: true
-			});
-			flag = true;
-		}
+		var FD = new FormData(document.getElementById('addForm'));
 
-		if (flag == true) {
-			return;
-		}
-
-		var params = {
-			service: this.serviceType.value,
-			maintenance_description: this.description.value
-		};
-		this.props.editMaintenanceRequest(params);
+		this.props.editMaintenanceRequest(FD, function (err) {
+			if (err) {
+				self.setState({
+					descriptionError: err['maintenance_description'],
+					titleError: err['title'],
+					serviceError: err['service_type']
+				});
+			}
+		});
 	},
 
 	renderServiceType: function (maintenance_request, services) {
 		var _this = this;
 
 		if (!!this.props.trady) return null;
+		var serviceError = this.state.serviceError;
 
 		return React.createElement(
-			'div',
-			{ className: 'row m-t-lg' },
+			"div",
+			{ className: "row m-t-lg" },
 			React.createElement(
-				'label',
+				"label",
 				null,
-				'Service Type:'
+				"Service Type:"
 			),
 			React.createElement(
-				'select',
+				"select",
 				{
-					required: true,
-					id: 'trady',
+					id: "service",
 					ref: function (e) {
 						return _this.serviceType = e;
 					},
-					className: 'form-control input-custom',
-					defaultValue: maintenance_request.service_type
+					className: "form-control input-custom " + (serviceError ? 'border_on_error' : ''),
+					name: "maintenance_request[service_type]",
+					defaultValue: maintenance_request.service_type,
+					onChange: this.removeError
 				},
 				React.createElement(
-					'option',
-					{ value: '' },
-					'Service Type'
+					"option",
+					{ value: "" },
+					"Service Type"
 				),
 				services.map(function (service, index) {
 					return React.createElement(
-						'option',
+						"option",
 						{
 							key: index + 1,
 							value: service.service
@@ -74698,114 +74973,125 @@ var EditMaintenanceRequest = React.createClass({
 						service.service
 					);
 				})
-			)
+			),
+			this.renderError(serviceError)
 		);
 	},
 
 	render: function () {
 		var _this2 = this;
 
-		var state = this.state;
+		var _state = this.state;
+		var descriptionError = _state.descriptionError;
+		var titleError = _state.titleError;
+		var serviceError = _state.serviceError;
 		var _props = this.props;
 		var maintenance_request = _props.maintenance_request;
 		var services = _props.services;
 
 		return React.createElement(
-			'div',
-			{ className: 'modal-custom fade' },
+			"div",
+			{ className: "modal-custom fade" },
 			React.createElement(
-				'div',
-				{ className: 'modal-dialog' },
+				"div",
+				{ className: "modal-dialog" },
 				React.createElement(
-					'div',
-					{ className: 'modal-content' },
+					"div",
+					{ className: "modal-content" },
 					React.createElement(
-						'form',
-						{ role: 'form', id: 'addForm', onSubmit: this.submit },
+						"form",
+						{ role: "form", id: "addForm", onSubmit: this.submit },
+						React.createElement("input", {
+							type: "hidden",
+							value: maintenance_request.id,
+							name: "maintenance_request[maintenance_request_id]",
+							id: "maintenance_request_maintenance_request_id"
+						}),
 						React.createElement(
-							'div',
-							{ className: 'modal-header' },
+							"div",
+							{ className: "modal-header" },
 							React.createElement(
-								'button',
+								"button",
 								{
-									type: 'button',
-									className: 'close',
-									'aria-label': 'Close',
-									'data-dismiss': 'modal',
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
 									onClick: this.props.close
 								},
 								React.createElement(
-									'span',
-									{ 'aria-hidden': 'true' },
-									'×'
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
 								)
 							),
 							React.createElement(
-								'h4',
-								{ className: 'modal-title text-center' },
-								'Edit Maintenance Request'
+								"h4",
+								{ className: "modal-title text-center" },
+								"Edit Maintenance Request"
 							)
 						),
 						React.createElement(
-							'div',
-							{ className: 'modal-body edit-maintenance-request' },
+							"div",
+							{ className: "modal-body edit-maintenance-request" },
 							React.createElement(
-								'div',
-								{ className: 'row' },
+								"div",
+								{ className: "row" },
 								React.createElement(
-									'button',
+									"button",
 									{
-										type: 'button',
-										className: 'btn-edit',
+										type: "button",
+										className: "btn-edit",
 										onClick: function () {
 											return _this2.props.onModalWith('addPhoto');
 										}
 									},
-									'Add Photo'
+									"Add Photo"
 								)
 							),
 							this.renderServiceType(maintenance_request, services),
 							React.createElement(
-								'div',
-								{ className: 'row' },
+								"div",
+								{ className: "row" },
 								React.createElement(
-									'label',
+									"label",
 									null,
-									'Maintenance Request Description:'
+									"Maintenance Request Description:"
 								),
-								React.createElement('textarea', {
-									placeholder: 'Enter Description',
+								React.createElement("textarea", {
+									placeholder: "Enter Description",
+									name: "maintenance_request[maintenance_description]",
 									ref: function (e) {
 										return _this2.description = e;
 									},
-									onChange: function (e, key) {
-										return _this2.checkValidate(e, 'description');
-									},
+									id: "description",
+									onChange: this.removeError,
 									defaultValue: maintenance_request.maintenance_description,
-									className: "u-full-width " + (this.state.errorDescription && "has-error")
+									className: "u-full-width " + (descriptionError && "has-error")
 								})
-							)
+							),
+							this.renderError(descriptionError)
 						),
 						React.createElement(
-							'div',
-							{ className: 'modal-footer' },
+							"div",
+							{ className: "modal-footer" },
 							React.createElement(
-								'button',
+								"button",
 								{
-									type: 'button',
+									type: "button",
 									onClick: this.props.close,
-									className: 'btn btn-primary cancel'
+									className: "btn btn-primary cancel"
 								},
-								'Cancel'
+								"Cancel"
 							),
 							React.createElement(
-								'button',
+								"button",
 								{
-									type: 'submit',
-									className: 'btn btn-default success',
-									disabled: !!state.errorTitle || !!state.errorDescription ? true : false
+									type: "submit",
+									className: "btn btn-default success",
+									disabled: titleError || descriptionError || serviceError
 								},
-								'Submit'
+								"Submit"
 							)
 						)
 					)
@@ -74816,65 +75102,65 @@ var EditMaintenanceRequest = React.createClass({
 });
 
 var ModalEditDescription = React.createClass({
-	displayName: 'ModalEditDescription',
+	displayName: "ModalEditDescription",
 
 	render: function () {
 		return React.createElement(
-			'div',
-			{ className: 'modal-custom fade' },
+			"div",
+			{ className: "modal-custom fade" },
 			React.createElement(
-				'div',
-				{ className: 'modal-dialog' },
+				"div",
+				{ className: "modal-dialog" },
 				React.createElement(
-					'div',
-					{ className: 'modal-content' },
+					"div",
+					{ className: "modal-content" },
 					React.createElement(
-						'form',
-						{ role: 'form', id: 'addForm', onSubmit: this.submit },
+						"form",
+						{ role: "form", id: "addForm", onSubmit: this.submit },
 						React.createElement(
-							'div',
-							{ className: 'modal-header' },
+							"div",
+							{ className: "modal-header" },
 							React.createElement(
-								'button',
+								"button",
 								{
-									type: 'button',
-									className: 'close',
-									'aria-label': 'Close',
-									'data-dismiss': 'modal',
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
 									onClick: this.props.close
 								},
 								React.createElement(
-									'span',
-									{ 'aria-hidden': 'true' },
-									'×'
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
 								)
 							),
 							React.createElement(
-								'h4',
-								{ className: 'modal-title text-center' },
-								'Edit Description'
+								"h4",
+								{ className: "modal-title text-center" },
+								"Edit Description"
 							)
 						),
-						React.createElement('div', { className: 'modal-body edit-maintenance-request' }),
+						React.createElement("div", { className: "modal-body edit-maintenance-request" }),
 						React.createElement(
-							'div',
-							{ className: 'modal-footer' },
+							"div",
+							{ className: "modal-footer" },
 							React.createElement(
-								'button',
+								"button",
 								{
-									type: 'button',
+									type: "button",
 									onClick: this.props.close,
-									className: 'btn btn-primary cancel'
+									className: "btn btn-primary cancel"
 								},
-								'Cancel'
+								"Cancel"
 							),
 							React.createElement(
-								'button',
+								"button",
 								{
-									type: 'submit',
-									className: 'btn btn-default success'
+									type: "submit",
+									className: "btn btn-default success"
 								},
-								'Submit'
+								"Submit"
 							)
 						)
 					)
@@ -76616,6 +76902,13 @@ var ModalConfirmUpdateStatus = React.createClass({
 		);
 	}
 });
+var _templateObject = _taggedTemplateLiteral(['.*'], ['.*']),
+    _templateObject2 = _taggedTemplateLiteral([''], ['']);
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 var setSubmitFlag = false;
 var MaintenanceRequestsNew = React.createClass({
   displayName: 'MaintenanceRequestsNew',
@@ -76638,7 +76931,10 @@ var MaintenanceRequestsNew = React.createClass({
       validHeading: false,
       selectedRadio: "Agent",
       validDescription: false,
-      totalSize: 0
+      agencies: this.props.agencies || [],
+      emailAgencies: [],
+      totalSize: 0,
+      errors: {}
     };
   },
 
@@ -76793,20 +77089,16 @@ var MaintenanceRequestsNew = React.createClass({
 
   handleCheckSubmit: function (e) {
     e.preventDefault();
-    if (!!this.state.validName || !!this.state.validEmail || !!this.state.validMobile || !!this.state.validHeading || !!this.state.validDescription || !!this.state.validDate) {
-      e.preventDefault();
-      document.getElementById("errCantSubmit").textContent = strCantSubmit;
-      return;
-    }
+    var self = this;
 
     var FD = new FormData(document.getElementById('new_maintenance_request'));
-    this.state.dataImages.map(function (image, index) {
+    self.state.dataImages.map(function (image, index) {
       var idx = index + 1;
       FD.append('maintenance_request[images_attributes][' + idx + '][image]', JSON.stringify(image));
     });
     FD.append('commit', 'Submit Maintenance Request');
 
-    var props = this.props;
+    var props = self.props;
     $.ajax({
       type: 'POST',
       url: '/maintenance_requests',
@@ -76817,7 +77109,11 @@ var MaintenanceRequestsNew = React.createClass({
       processData: false,
       contentType: false,
       data: FD,
-      success: function (res) {},
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
       error: function (err) {}
     });
     return false;
@@ -77069,25 +77365,97 @@ var MaintenanceRequestsNew = React.createClass({
     }
   },
 
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    var errors = Object.assign({}, this.state.errors);
+    var errorField = id.replace('maintenance_request_', '');
+    if (errors[errorField]) {
+      errors[errorField] = false;
+      this.setState({ errors: errors });
+    }
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  selectAgencies: function (_ref2) {
+    var value = _ref2.target.value;
+    var agencies = this.state.agencies;
+
+    var choosedAgencies = agencies.filter(function (curAgen) {
+      return curAgen.business_name === value;
+    });
+
+    if (!choosedAgencies.length) return;
+
+    var firstMatch = choosedAgencies[0];
+    var totalAgent = [].concat(_toConsumableArray(firstMatch['agents']), _toConsumableArray(firstMatch['agency_admins']));
+    var emailAgencies = totalAgent.filter(function (v) {
+      return v.email;
+    }).map(function (agent) {
+      return agent.email;
+    });
+    this.setState({ emailAgencies: emailAgencies });
+  },
+
+  substringMatcher: function (values) {
+    return function findMatches(q, cb) {
+      var substringRegex = new RegExp(q.split(_templateObject2).join(_templateObject), 'i');
+
+      // iterate through the pool of strings and for any string that
+      // contains the substring `q`, add it to the `matches` array
+      var matches = [];
+
+      values.forEach(function (value) {
+        if (substringRegex.test(value.business_name)) {
+          matches.push(value.business_name);
+        }
+      });
+
+      cb(matches);
+    };
+  },
+
   componentDidMount: function () {
     this.detectAndroid();
+    $('#the-basics .typeahead.agency_business_name').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 1
+    }, {
+      name: 'states',
+      source: this.substringMatcher(this.state.agencies)
+    });
   },
 
   render: function () {
     var _this2 = this;
 
-    var images = this.state.images;
+    var _state3 = this.state;
+    var images = _state3.images;
+    var errors = _state3.errors;
+    var emailAgencies = _state3.emailAgencies;
 
     var $imagePreview = [];
     var _props = this.props;
     var current_user_tenant = _props.current_user_tenant;
     var current_role = _props.current_role;
+    var current_user = _props.current_user;
 
+    var renderError = this.renderError;
     var valueEmail = '';
     var valueMobile = '';
+    var isTenant = !current_user;
     if (current_role && current_role.role == "Tenant") {
       valueEmail = current_user_tenant.email;
       valueMobile = current_user_tenant.mobile;
+      isTenant = true;
     }
     if (images.length > 0) {
       for (i = 0; i < images.length; i++) {
@@ -77126,12 +77494,22 @@ var MaintenanceRequestsNew = React.createClass({
             return _this2.handleCheckSubmit(e);
           } },
         React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
-        React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
+        React.createElement('input', {
+          type: 'hidden',
+          name: 'authenticity_token',
+          value: this.props.authenticity_token
+        }),
+        React.createElement('input', {
+          type: 'hidden',
+          value: this.props.service_type,
+          name: 'maintenance_request[service_type]',
+          id: 'maintenance_request_service_type'
+        }),
         React.createElement(
           'div',
           { className: 'field' },
           React.createElement('input', {
-            required: true,
+            className: errors['name'] ? ' border_on_error' : '',
             type: 'text',
             placeholder: 'Full name',
             ref: function (ref) {
@@ -77139,24 +77517,11 @@ var MaintenanceRequestsNew = React.createClass({
             },
             id: this.generateAtt("id", "name"),
             name: this.generateAtt("name", "name"),
-            onBlur: function (e) {
-              if (!e.target.value.length) {
-                document.getElementById("errorbox").textContent = strRequireName;
-                e.target.classList.add("border_on_error");
-                _this2.setState({ validName: true });
-              } else if (e.target.value.length < 4) {
-                document.getElementById("errorbox").textContent = strShortName;
-                e.target.classList.add("border_on_error");
-                _this2.setState({ validName: true });
-              } else if (e.target.value.length >= 4) {
-                document.getElementById("errorbox").textContent = strNone;
-                e.target.classList.remove("border_on_error");
-                _this2.setState({ validName: false });
-              }
-            } }),
-          React.createElement('p', { id: 'errorbox', className: 'error' }),
+            onChange: this.removeError
+          }),
+          renderError(errors['name']),
           React.createElement('input', {
-            required: true,
+            className: errors['email'] ? ' border_on_error' : '',
             type: 'email',
             autoCorrect: 'off',
             autoComplete: 'off',
@@ -77170,20 +77535,11 @@ var MaintenanceRequestsNew = React.createClass({
             },
             id: this.generateAtt("id", "email"),
             name: this.generateAtt("name", "email"),
-            onBlur: function (e) {
-              if (!e.target.value.length) {
-                document.getElementById("errorboxemail").textContent = strRequireEmail;
-                e.target.classList.add("border_on_error");
-              } else if (e.target.value.length < 4) {
-                document.getElementById("errorboxemail").textContent = strShortEmail;
-                e.target.classList.add("border_on_error");
-              } else if (e.target.value.length >= 4) {
-                _this2.validateEmail(e.target.value, e, false);
-              }
-            } }),
-          React.createElement('p', { id: 'errorboxemail', className: 'error' }),
+            onChange: this.removeError
+          }),
+          renderError(errors['email']),
           React.createElement('input', {
-            required: true,
+            className: errors['mobile'] ? ' border_on_error' : '',
             type: 'text',
             minLength: '8',
             maxLength: '11',
@@ -77196,47 +77552,29 @@ var MaintenanceRequestsNew = React.createClass({
             },
             id: this.generateAtt("id", "mobile"),
             name: this.generateAtt("name", "mobile"),
-            onBlur: function (e) {
-              if (!e.target.value.length) {
-                document.getElementById("errorboxmobile").textContent = strRequireMobile;
-                e.target.classList.add("border_on_error");
-              } else if (e.target.value.length < 8) {
-                document.getElementById("errorboxmobile").textContent = strShortMobile;
-                e.target.classList.add("border_on_error");
-              }
-              if (e.target.value.length >= 8) {
-                _this2.validatePhoneNumber(e.target.value, e, false);
-              }
-            } }),
-          React.createElement('p', { id: 'errorboxmobile', className: 'error' })
+            onChange: this.removeError
+          }),
+          renderError(errors['mobile'])
         ),
         React.createElement(
           'div',
           { id: 'access_contacts', className: 'm-b-lg' },
-          React.createElement(FieldList, { SampleField: AccessContactField, flag: 'contact' })
+          React.createElement(FieldList, { SampleField: AccessContactField, errors: errors, flag: 'contact' })
         ),
         React.createElement(
           'div',
           { className: 'field' },
           React.createElement('textarea', {
+            className: errors['maintenance_description'] ? 'border_on_error' : '',
             placeholder: 'Maintenance Description',
             ref: function (ref) {
               return _this2.maintenance_description = ref;
             },
             id: this.generateAtt("id", "maintenance_description"),
             name: this.generateAtt("name", "maintenance_description"),
-            onBlur: function (e) {
-              if (!e.target.value.length) {
-                document.getElementById("errorboxdescription").textContent = strErrDescription;
-                e.target.classList.add("border_on_error");
-                _this2.setState({ validDescription: false });
-              } else {
-                document.getElementById("errorboxdescription").textContent = strNone;
-                e.target.classList.remove("border_on_error");
-                _this2.setState({ validDescription: false });
-              }
-            } }),
-          React.createElement('p', { id: 'errorboxdescription', className: 'error' }),
+            onChange: this.removeError
+          }),
+          renderError(errors['maintenance_description']),
           React.createElement('textarea', {
             type: 'text',
             ref: function (ref) {
@@ -77293,33 +77631,60 @@ var MaintenanceRequestsNew = React.createClass({
             })
           )
         ),
-        !this.props.current_user || this.props.current_user.tenant ? React.createElement(
+        isTenant && React.createElement(
           'div',
           { className: 'field' },
           React.createElement('hr', null),
           React.createElement(
             'div',
             null,
-            React.createElement('input', {
-              required: true,
-              type: 'email',
-              autoCapitalize: 'off',
-              autoCorrect: 'off',
-              autoComplete: 'off',
-              placeholder: 'Agent email',
-              onBlur: this.checkAgentEmail,
-              ref: function (ref) {
-                return _this2.agent_email = ref;
+            React.createElement(
+              'div',
+              { id: 'the-basics' },
+              React.createElement('input', {
+                className: 'typeahead agency_business_name',
+                type: 'text',
+                placeholder: 'Agency name',
+                id: this.generateAtt("id", "agency_business_name"),
+                name: this.generateAtt("name", "agency_business_name"),
+                onChange: this.removeError,
+                onBlur: this.selectAgencies
+              })
+            ),
+            this.renderError(errors['agency_business_name']),
+            React.createElement(
+              'select',
+              {
+                id: this.generateAtt("id", "agent_email"),
+                name: this.generateAtt("name", "agent_email"),
+                ref: function (e) {
+                  return _this2.agent_email = e;
+                },
+                className: 'form-control input-custom',
+                onChange: this.removeError
               },
-              id: this.generateAtt("id", "agent_email"),
-              name: this.generateAtt("name", "agent_email")
-            }),
-            React.createElement('p', { id: 'errAgentEamil', className: 'error' }),
+              React.createElement(
+                'option',
+                { value: '' },
+                'Agent email'
+              ),
+              emailAgencies.map(function (email, index) {
+                return React.createElement(
+                  'option',
+                  {
+                    key: index + 1,
+                    value: email
+                  },
+                  email
+                );
+              })
+            ),
+            renderError(errors['agent_email']),
             !this.state.isAgent ? React.createElement(
               'div',
               null,
               React.createElement('input', {
-                required: true,
+
                 type: 'text',
                 pattern: '.{4,}',
                 title: strShortRealEstate,
@@ -77329,21 +77694,11 @@ var MaintenanceRequestsNew = React.createClass({
                 },
                 id: this.generateAtt("id", "real_estate_office"),
                 name: this.generateAtt("name", "real_estate_office"),
-                onBlur: function (e) {
-                  if (!e.target.value.length) {
-                    e.target.classList.add("border_on_error");
-                    document.getElementById("errRealEstateOffice").textContent = strRequireText;
-                  } else if (e.target.value.length < 4) {
-                    e.target.classList.add("border_on_error");
-                    document.getElementById("errRealEstateOffice").textContent = strShortRealEstate;
-                  } else if (e.target.value.length >= 4) {
-                    e.target.classList.remove("border_on_error");
-                    document.getElementById("errRealEstateOffice").textContent = strNone;
-                  }
-                } }),
-              React.createElement('p', { id: 'errRealEstateOffice', className: 'error' }),
+                onChange: this.removeError
+              }),
+              renderError(errors['real_estate_office']),
               React.createElement('input', {
-                required: true,
+
                 type: 'text',
                 pattern: '.{4,}',
                 placeholder: 'Agent name',
@@ -77353,21 +77708,11 @@ var MaintenanceRequestsNew = React.createClass({
                 },
                 id: this.generateAtt("id", "agent_name"),
                 name: this.generateAtt("name", "agent_name"),
-                onBlur: function (e) {
-                  if (!e.target.value.length) {
-                    e.target.classList.add("border_on_error");
-                    document.getElementById("errAgentName").textContent = strRequireName;
-                  } else if (e.target.value.length < 4) {
-                    e.target.classList.add("border_on_error");
-                    document.getElementById("errAgentName").textContent = strShortName;
-                  } else if (e.target.value.length >= 4) {
-                    e.target.classList.remove("border_on_error");
-                    document.getElementById("errAgentName").textContent = strNone;
-                  }
-                } }),
-              React.createElement('p', { id: 'errAgentName', className: 'error' }),
+                onChange: this.removeError
+              }),
+              renderError(errors['agent_name']),
               React.createElement('input', {
-                required: true,
+
                 type: 'text',
                 maxLength: '11',
                 minLength: '10',
@@ -77379,23 +77724,13 @@ var MaintenanceRequestsNew = React.createClass({
                 },
                 id: this.generateAtt("id", "agent_mobile"),
                 name: this.generateAtt("name", "agent_mobile"),
-                onBlur: function (e) {
-                  if (!e.target.value.length) {
-                    e.target.classList.add("border_on_error");
-                    document.getElementById("errAgentMobile").textContent = strRequireMobile;
-                  } else if (e.target.value.length < 8) {
-                    e.target.classList.add("border_on_error");
-                    document.getElementById("errAgentMobile").textContent = strShortMobile;
-                  }
-                  if (e.target.value.length >= 8) {
-                    _this2.validatePhoneNumber(e.target.value, e, true);
-                  }
-                } }),
-              React.createElement('p', { id: 'errAgentMobile', className: 'error' })
+                onChange: this.removeError
+              }),
+              renderError(errors['agent_mobile'])
             ) : null
           ),
           React.createElement('hr', null)
-        ) : React.createElement('hr', null),
+        ),
         React.createElement('p', { id: 'errCantSubmit', className: 'error' }),
         React.createElement(
           'div',
@@ -77410,7 +77745,19 @@ var MaintenanceRequestsNew = React.createClass({
     );
   }
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function renderError(error) {
+	return React.createElement(
+		"p",
+		{ id: "errorbox", className: "error" },
+		error && error[0] || ''
+	);
+}
 
 var ModalConfirm = React.createClass({
 	displayName: "ModalConfirm",
@@ -77504,86 +77851,38 @@ var ModalAddAskLandlord = React.createClass({
 		};
 	},
 
-	checkValidate: function (e) {
+	removeError: function (e) {
 		var key = e.target.id;
-
-		switch (key) {
-			case "name":
-				{
-					if (e.target.value == "") {
-						this.setState({ errorName: true });
-					} else {
-						this.setState({ errorName: false });
-					}
-					break;
-				}
-
-			case "mobile":
-				{
-					var value = e.target.value;
-					if (value == "") {
-						this.setState({ errorMobile: true });
-					} else {
-						if (!isNaN(value)) {
-							if (10 <= value.length && value.length <= 11) {
-								this.setState({ errorMobile: false });
-							} else {
-								if (value.length > 11) {
-									value = value.substring(0, 11);
-									e.target.value = value;
-								} else if (value.length < 10) {
-									this.setState({ errorMobile: true });
-								}
-							}
-						} else {
-							e.target.value = value.substring(0, value.length - 1);
-						}
-					}
-					break;
-				}
-
-			default:
-				{
-					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-						this.setState({ errorEmail: true });
-					} else {
-						this.setState({ errorEmail: false });
-					}
-					break;
-				}
-		}
+		var errorField = ({
+			'name': 'errorName',
+			'email': 'errorEmail',
+			'mobile': 'errorMobile'
+		})[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState(_defineProperty({}, errorField, ''));
 	},
 
 	submit: function (e) {
 		e.preventDefault();
-		var flag = false;
-		if (this.name.value == "") {
-			this.setState({ errorName: true });
-			flag = true;
-		}
-
-		if (this.mobile.value == "") {
-			this.setState({ errorMobile: true });
-			flag = true;
-		}
-
-		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({ errorEmail: true });
-			flag = true;
-		}
-
-		if (!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					maintenance_request_id: this.props.maintenance_request_id
-				}
-			};
-			this.props.addAskLandlord(params);
-		}
+		var self = this;
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id
+			}
+		};
+		this.props.addAskLandlord(params, function (err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile
+				});
+			}
+		});
 		return;
 	},
 
@@ -77643,10 +77942,11 @@ var ModalAddAskLandlord = React.createClass({
 										ref: function (e) {
 											return _this2.name = e;
 										},
-										onChange: this.checkValidate,
+										onChange: this.removeError,
 										className: "u-full-width " + (this.state.errorName && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorName'])
 							),
 							React.createElement(
 								"div",
@@ -77655,18 +77955,18 @@ var ModalAddAskLandlord = React.createClass({
 									"div",
 									null,
 									React.createElement("input", {
-										type: "number",
-										minLength: "10",
-										maxLength: "11",
+										type: "text",
 										name: "landlord[mobile]",
 										placeholder: "Landlord Mobile",
-										onChange: this.checkValidate,
-										id: "mobile", ref: function (e) {
+										id: "mobile",
+										ref: function (e) {
 											return _this2.mobile = e;
 										},
+										onChange: this.removeError,
 										className: "u-full-width " + (this.state.errorMobile && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorMobile'])
 							),
 							React.createElement(
 								"div",
@@ -77675,19 +77975,21 @@ var ModalAddAskLandlord = React.createClass({
 									"div",
 									null,
 									React.createElement("input", {
-										type: "email",
+										type: "text",
 										autoCorrect: "off",
 										autoComplete: "off",
 										autoCapitalize: "off",
 										name: "landlord[email]",
 										placeholder: "Landlord Email",
-										onChange: this.checkValidate,
-										id: "email", ref: function (e) {
+										id: "email",
+										ref: function (e) {
 											return _this2.email = e;
 										},
+										onChange: this.removeError,
 										className: "u-full-width " + (this.state.errorEmail && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorEmail'])
 							)
 						),
 						React.createElement(
@@ -77731,88 +78033,51 @@ var ModalEditAskLandlord = React.createClass({
 		this.setState({ isEdit: !this.state.isEdit });
 	},
 
-	checkValidate: function (e) {
+	removeError: function (e) {
 		var key = e.target.id;
-
-		switch (key) {
-			case "name":
-				{
-					if (e.target.value == "") {
-						this.setState({ errorName: true });
-					} else {
-						this.setState({ errorName: false });
-					}
-					break;
-				}
-
-			case "mobile":
-				{
-					var value = e.target.value;
-					if (value == "") {
-						this.setState({ errorMobile: true });
-					} else {
-						if (10 <= value.length && value.length <= 11) {
-							this.setState({ errorMobile: false });
-						} else {
-							if (value.length > 11) {
-								value = value.substring(0, 11);
-								e.target.value = value;
-							} else if (value.length < 10) {
-								this.setState({ errorMobile: true });
-							}
-						}
-					}
-					break;
-				}
-
-			default:
-				{
-					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-						this.setState({ errorEmail: true });
-					} else {
-						this.setState({ errorEmail: false });
-					}
-					break;
-				}
-		}
+		var errorField = ({
+			'name': 'errorName',
+			'email': 'errorEmail',
+			'mobile': 'errorMobile'
+		})[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState(_defineProperty({}, errorField, ''));
 	},
 
 	submit: function (e) {
 		e.preventDefault();
-		var flag = false;
-
-		if (this.name.value == "") {
-			this.setState({ errorName: true });
-			flag = true;
-		}
-		if (this.mobile.value == "") {
-			this.setState({ errorMobile: true });
-			flag = true;
-		}
-		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({ errorEmail: true });
-			flag = true;
-		}
-
-		if (!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					id: this.props.landlord.id,
-					maintenance_request_id: this.props.maintenance_request_id
-				}
-			};
-			this.props.editAskLandlord(params);
-		}
-
+		var self = this;
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				id: this.props.landlord.id,
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id
+			}
+		};
+		this.props.editAskLandlord(params, function (err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile
+				});
+			}
+		});
 		return;
 	},
 
 	render: function () {
 		var _this3 = this;
+
+		var _state = this.state;
+		var isEdit = _state.isEdit;
+		var errorName = _state.errorName;
+		var errorMobile = _state.errorMobile;
+		var errorEmail = _state.errorEmail;
+		var landlord = this.props.landlord;
 
 		return React.createElement(
 			"div",
@@ -77853,78 +78118,88 @@ var ModalEditAskLandlord = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "modal-body" },
-							React.createElement(
+							!isEdit && React.createElement(
 								"div",
 								{ className: "row" },
 								React.createElement(
 									"a",
-									{ className: "btn-edit", onClick: this.isEdit },
+									{
+										className: "btn-edit",
+										onClick: function () {
+											return _this3.isEdit();
+										}
+									},
 									"Edit Landlord Details"
 								)
 							),
 							React.createElement(
 								"div",
-								{ className: "row m-t-lg" },
+								{ className: "row" },
 								React.createElement(
 									"div",
-									{ className: "form-input" },
+									null,
 									React.createElement("input", {
+										id: "name",
 										type: "text",
-										placeholder: "Landlord Nane",
-										onChange: this.checkValidate,
-										readOnly: !this.state.isEdit,
-										id: "name", ref: function (e) {
+										name: "landlord[name]",
+										placeholder: "Landlord Name",
+										readOnly: !isEdit,
+										defaultValue: landlord.name,
+										ref: function (e) {
 											return _this3.name = e;
 										},
-										defaultValue: this.props.landlord.name,
-										className: (this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")
+										onChange: this.removeError,
+										className: (errorName && "has-error") + (!isEdit && " readonly")
 									})
-								)
+								),
+								renderError(errorName)
 							),
 							React.createElement(
 								"div",
 								{ className: "row m-t-lg" },
 								React.createElement(
 									"div",
-									{ className: "form-input" },
+									null,
 									React.createElement("input", {
+										type: "text",
+										name: "landlord[mobile]",
+										placeholder: "Landlord Mobile",
 										id: "mobile",
-										type: "number",
-										minLength: "10",
-										maxLength: "11",
+										readOnly: !isEdit,
+										defaultValue: landlord.mobile,
 										ref: function (e) {
 											return _this3.mobile = e;
 										},
-										placeholder: "Landlord Mobile",
-										onChange: this.checkValidate,
-										readOnly: !this.state.isEdit,
-										defaultValue: this.props.landlord.mobile,
-										className: (this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")
+										onChange: this.removeError,
+										className: (errorMobile && "has-error") + (!isEdit && " readonly")
 									})
-								)
+								),
+								renderError(errorMobile)
 							),
 							React.createElement(
 								"div",
 								{ className: "row m-t-lg" },
 								React.createElement(
 									"div",
-									{ className: "form-input" },
+									null,
 									React.createElement("input", {
-										id: "email",
 										type: "text",
-										autoCapitalize: "off",
 										autoCorrect: "off",
 										autoComplete: "off",
+										autoCapitalize: "off",
+										name: "landlord[email]",
+										placeholder: "Landlord Email",
+										id: "email",
+										readOnly: !isEdit,
+										defaultValue: landlord.email,
 										ref: function (e) {
 											return _this3.email = e;
 										},
-										placeholder: "Landlord Email",
-										onChange: this.checkValidate,
-										readOnly: !this.state.isEdit,
-										defaultValue: this.props.landlord.email,
-										className: (this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")
+										onChange: this.removeError,
+										className: (errorEmail && "has-error") + (!isEdit && " readonly")
 									})
-								)
+								),
+								renderError(errorEmail)
 							)
 						),
 						React.createElement(
@@ -78066,90 +78341,44 @@ var ModalAddLandlord = React.createClass({
 
 	getInitialState: function () {
 		return {
-			errorName: false,
-			errorEmail: false,
-			errorMobile: false
+			errorName: '',
+			errorEmail: '',
+			errorMobile: ''
 		};
 	},
 
-	checkValidate: function (e) {
+	removeError: function (e) {
 		var key = e.target.id;
-
-		switch (key) {
-			case "name":
-				{
-					if (e.target.value == "") {
-						this.setState({ errorName: true });
-					} else {
-						this.setState({ errorName: false });
-					}
-					break;
-				}
-
-			case "mobile":
-				{
-					var value = e.target.value;
-					if (value == "") {
-						this.setState({ errorMobile: true });
-					} else {
-						if (10 <= value.length && value.length <= 11) {
-							this.setState({ errorMobile: false });
-						} else {
-							if (value.length > 11) {
-								value = value.substring(0, 11);
-								e.target.value = value;
-							} else if (value.length < 10) {
-								this.setState({ errorMobile: true });
-							}
-						}
-					}
-					break;
-				}
-
-			default:
-				{
-					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-						this.setState({ errorEmail: true });
-					} else {
-						this.setState({ errorEmail: false });
-					}
-					break;
-				}
-		}
+		var errorField = ({
+			'name': 'errorName',
+			'email': 'errorEmail',
+			'mobile': 'errorMobile'
+		})[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState(_defineProperty({}, errorField, ''));
 	},
 
 	submit: function (e) {
 		e.preventDefault();
-		var flag = false;
-
-		if (this.name.value == "") {
-			this.setState({ errorName: true });
-			flag = true;
-		}
-
-		if (this.mobile.value == "") {
-			this.setState({ errorMobile: true });
-			flag = true;
-		}
-
-		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({ errorEmail: true });
-			flag = true;
-		}
-
-		if (!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					maintenance_request_id: this.props.maintenance_request_id
-				}
-			};
-			this.props.addLandlord(params);
-		}
-
+		var self = this;
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id
+			}
+		};
+		this.props.addLandlord(params, function (err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile
+				});
+			}
+		});
 		return;
 	},
 
@@ -78233,10 +78462,11 @@ var ModalAddLandlord = React.createClass({
 										ref: function (e) {
 											return _this5.name = e;
 										},
-										onChange: this.checkValidate,
+										onChange: this.removeError,
 										className: "u-full-width " + (this.state.errorName && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorName'])
 							),
 							React.createElement(
 								"div",
@@ -78257,18 +78487,17 @@ var ModalAddLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "mobile",
-										type: "number",
-										minLength: "10",
-										maxLength: "11",
+										type: "text",
 										name: "landlord[mobile]",
 										placeholder: "Enter Mobile",
 										ref: function (e) {
 											return _this5.mobile = e;
 										},
-										onChange: this.checkValidate,
+										onChange: this.removeError,
 										className: "u-full-width " + (this.state.errorMobile && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorMobile'])
 							),
 							React.createElement(
 								"div",
@@ -78289,7 +78518,7 @@ var ModalAddLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "email",
+										type: "text",
 										autoCapitalize: "off",
 										autoCorrect: "off",
 										autoComplete: "off",
@@ -78298,10 +78527,11 @@ var ModalAddLandlord = React.createClass({
 										ref: function (e) {
 											return _this5.email = e;
 										},
-										onChange: this.checkValidate,
+										onChange: this.removeError,
 										className: "u-full-width " + (this.state.errorEmail && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorEmail'])
 							)
 						),
 						React.createElement(
@@ -78340,84 +78570,40 @@ var ModalEditLandlord = React.createClass({
 		};
 	},
 
-	checkValidate: function (e) {
+	removeError: function (e) {
 		var key = e.target.id;
+		var errorField = ({
+			'name': 'errorName',
+			'email': 'errorEmail',
+			'mobile': 'errorMobile'
+		})[key];
 
-		switch (key) {
-			case "name":
-				{
-					if (e.target.value == "") {
-						this.setState({ errorName: true });
-					} else {
-						this.setState({ errorName: false });
-					}
-					break;
-				}
-
-			case "mobile":
-				{
-					var value = e.target.value;
-					if (value == "") {
-						this.setState({ errorMobile: true });
-					} else {
-						if (10 <= value.length && value.length <= 11) {
-							this.setState({ errorMobile: false });
-						} else {
-							if (value.length > 11) {
-								value = value.substring(0, 11);
-								e.target.value = value;
-							} else if (value.length < 10) {
-								this.setState({ errorMobile: true });
-							}
-						}
-					}
-					break;
-				}
-
-			default:
-				{
-					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-						this.setState({ errorEmail: true });
-					} else {
-						this.setState({ errorEmail: false });
-					}
-					break;
-				}
-		}
+		if (!errorField || !this.state[errorField]) return;
+		this.setState(_defineProperty({}, errorField, ''));
 	},
 
 	submit: function (e) {
 		e.preventDefault();
-		var flag = false;
-
-		if (this.name.value == "") {
-			this.setState({ errorName: true });
-			flag = true;
-		}
-
-		if (this.mobile.value == "") {
-			this.setState({ errorMobile: true });
-			flag = true;
-		}
-
-		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({ errorEmail: true });
-			flag = true;
-		}
-
-		if (!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					id: this.props.landlord.id,
-					maintenance_request_id: this.props.maintenance_request_id
-				}
-			};
-			this.props.editLandlord(params);
-		}
+		var self = this;
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				id: this.props.landlord.id,
+				maintenance_request_id: this.props.maintenance_request_id
+			}
+		};
+		this.props.editLandlord(params, function (err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile
+				});
+			}
+		});
 	},
 
 	render: function () {
@@ -78487,11 +78673,12 @@ var ModalEditLandlord = React.createClass({
 										ref: function (e) {
 											return _this6.name = e;
 										},
-										onChange: this.checkValidate,
+										onChange: this.removeError,
 										defaultValue: this.props.landlord.name,
 										className: "u-full-width " + (this.state.errorName && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorName'])
 							),
 							React.createElement(
 								"div",
@@ -78512,19 +78699,18 @@ var ModalEditLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "mobile",
-										type: "number",
-										minLength: "10",
-										maxLength: "11",
+										type: "text",
 										name: "landlord[mobile]",
 										placeholder: "Enter Mobile",
 										ref: function (e) {
 											return _this6.mobile = e;
 										},
-										onChange: this.checkValidate,
+										onChange: this.removeError,
 										defaultValue: this.props.landlord.mobile,
 										className: "u-full-width " + (this.state.errorMobile && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorMobile'])
 							),
 							React.createElement(
 								"div",
@@ -78545,7 +78731,7 @@ var ModalEditLandlord = React.createClass({
 									),
 									React.createElement("input", {
 										id: "email",
-										type: "email",
+										type: "text",
 										autoCapitalize: "off",
 										autoCorrect: "off",
 										autoComplete: "off",
@@ -78554,11 +78740,12 @@ var ModalEditLandlord = React.createClass({
 										ref: function (e) {
 											return _this6.email = e;
 										},
-										onChange: this.checkValidate,
+										onChange: this.removeError,
 										defaultValue: this.props.landlord.email,
 										className: "u-full-width " + (this.state.errorEmail && "has-error")
 									})
-								)
+								),
+								renderError(this.state['errorEmail'])
 							)
 						),
 						React.createElement(
@@ -78609,114 +78796,20 @@ var ModalRequestModal = React.createClass({
 		};
 	},
 
-	checkValidate: function (e) {
+	removeError: function (e) {
+		var _setState5;
+
 		var key = e.target.id;
+		var errorField = ({
+			'name': 'errorName',
+			'email': 'errorEmail',
+			'mobile': 'errorMobile',
+			'company': 'errorCompany'
+		})[key];
 
-		switch (key) {
-			case "company":
-				{
-					if (e.target.value == "") {
-						this.setState({
-							isDisable: true,
-							errorCompany: true
-						});
-					} else {
-						this.setState({
-							isDisable: false,
-							errorCompany: false
-						});
-					}
-					this.state.trady.company_name = e.target.value;
-					this.forceUpdate();
-					break;
-				}
-
-			case "name":
-				{
-					if (e.target.value == "") {
-						this.setState({
-							isDisable: true,
-							errorName: true
-						});
-					} else {
-						this.setState({
-							isDisable: false,
-							errorName: false
-						});
-					}
-					this.state.trady.name = e.target.value;
-					this.forceUpdate();
-					break;
-				}
-
-			case "mobile":
-				{
-					var value = e.target.value;
-					if (value == "") {
-						this.setState({
-							isDisable: true,
-							errorMobile: true
-						});
-					} else {
-						if (10 <= value.length && value.length <= 11) {
-							this.setState({
-								isDisable: false,
-								errorMobile: false
-							});
-						} else {
-							if (value.length > 11) {
-								value = value.substring(0, 11);
-								e.target.value = value;
-							} else if (value.length < 10) {
-								this.setState({
-									isDisable: true,
-									errorMobile: true
-								});
-							}
-						}
-					}
-					this.state.trady.mobile = value;
-					this.forceUpdate();
-					break;
-				}
-
-			default:
-				{
-					if (e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-						this.setState({
-							isDisable: true,
-							errorEmail: true
-						});
-					} else {
-						this.setState({
-							isDisable: false,
-							errorEmail: false
-						});
-					}
-					this.state.trady.email = e.target.value;
-					this.forceUpdate();
-					break;
-				}
-		}
-	},
-
-	componentWillMount: function () {
-		//this.selectTrady(this.state.maintenance_request.trady_id);
-	},
-
-	checkLength: function (e) {
-		var value = e.target.value;
-		if (value.length > 11) {
-			this.setState({
-				isDisable: true,
-				errorMobile: true
-			});
-		} else {
-			this.setState({
-				isDisable: false,
-				errorMobile: false
-			});
-		}
+		var keyField = key === 'company' ? 'company_name' : key;
+		// if (!errorField || !this.state[errorField]) return;
+		this.setState((_setState5 = {}, _defineProperty(_setState5, errorField, ''), _defineProperty(_setState5, "trady", _extends({}, trady, _defineProperty({}, keyField, e.target.value))), _setState5));
 	},
 
 	selectTrady: function (id) {
@@ -78759,72 +78852,52 @@ var ModalRequestModal = React.createClass({
 
 	submit: function (e) {
 		e.preventDefault();
-		var flag = false;
+		var self = this;
+		var params = {
+			trady: {
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				company_name: this.company && this.company.value,
+				item: this.state.trady,
+				trady_id: this.state.trady.id || "",
+				maintenance_request_id: this.props.maintenance_request.id,
+				skill_required: this.props.maintenance_request.service_type,
+				trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order"
+			}
+		};
+		this.props.requestQuote(params, function (err) {
+			if (err) {
+				self.setState({
+					isDisable: false,
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile,
+					errorCompany: err.company_name
+				});
+			}
+		});
 
-		if (this.company.value == "") {
-			this.setState({
-				isDisable: true,
-				errorCompany: true
-			});
-			flag = true;
-		}
-
-		if (this.name.value == "") {
-			this.setState({
-				isDisable: true,
-				errorName: true
-			});
-			flag = true;
-		}
-
-		if (this.mobile.value == "") {
-			this.setState({
-				isDisable: true,
-				errorMobile: true
-			});
-			flag = true;
-		}
-
-		if (this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({
-				isDisable: true,
-				errorEmail: true
-			});
-			flag = true;
-		}
-
-		if (!flag) {
-			var params = {
-				trady: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					company_name: this.company.value,
-					maintenance_request_id: this.props.maintenance_request.id,
-					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
-					skill_required: this.props.maintenance_request.service_type,
-					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
-					item: this.state.trady
-				}
-			};
-			this.props.requestQuote(params);
-			this.setState({
-				isDisable: true
-			});
-		}
+		this.setState({
+			isDisable: true
+		});
 
 		return;
 	},
 
-	changeRadio: function (e) {
+	changeRadio: function (_ref) {
+		var value = _ref.target.value;
+
+		var boolValue = JSON.parse(value);
 		this.setState({
-			isTrady: e.target.value,
-			isAdd: e.target.value === 'false' ? true : false,
+			isTrady: value,
+			isAdd: !boolValue,
 			trady: {
 				id: null,
 				name: null,
 				email: null,
-				mobile: null
+				mobile: null,
+				company_name: null
 			}
 		});
 	},
@@ -78850,11 +78923,11 @@ var ModalRequestModal = React.createClass({
 		var self = this;
 		var state = this.state;
 		var assignedTrady = this.props.assigned_trady;
-		var _state = this.state;
-		var isTrady = _state.isTrady;
-		var isDisable = _state.isDisable;
-		var trady = _state.trady;
-		var isAdd = _state.isAdd;
+		var _state2 = this.state;
+		var isTrady = _state2.isTrady;
+		var isDisable = _state2.isDisable;
+		var trady = _state2.trady;
+		var isAdd = _state2.isAdd;
 
 		var style = { background: isAdd ? 'none' : '#f2f2f2' };
 		var isAssigned = !!assignedTrady;
@@ -78965,12 +79038,13 @@ var ModalRequestModal = React.createClass({
 												return _this7.company = e;
 											},
 											readOnly: !this.state.isAdd,
-											onChange: this.checkValidate,
+											onChange: this.removeError,
 											placeholder: "Enter Company Name",
-											value: !!this.state.trady.company_name ? this.state.trady.company_name : "",
+											value: trady.company_name || "",
 											className: "input-custom u-full-width " + (this.state.errorCompany && "has-error")
 										})
-									)
+									),
+									renderError(this.state.errorCompany)
 								),
 								React.createElement(
 									"div",
@@ -78987,11 +79061,12 @@ var ModalRequestModal = React.createClass({
 												return _this7.name = e;
 											},
 											readOnly: !this.state.isAdd,
-											onChange: this.checkValidate,
-											value: !!this.state.trady.name ? this.state.trady.name : "",
+											onChange: this.removeError,
+											value: trady.name || "",
 											className: "input-custom u-full-width " + (this.state.errorName && "has-error")
 										})
-									)
+									),
+									renderError(this.state.errorName)
 								),
 								React.createElement(
 									"div",
@@ -79001,7 +79076,7 @@ var ModalRequestModal = React.createClass({
 										null,
 										React.createElement("input", {
 											id: "email",
-											type: "email",
+											type: "text",
 											style: style,
 											autoCapitalize: "off",
 											autoCorrect: "off",
@@ -79011,11 +79086,12 @@ var ModalRequestModal = React.createClass({
 												return _this7.email = e;
 											},
 											readOnly: !this.state.isAdd,
-											onChange: this.checkValidate,
-											value: !!this.state.trady.email ? this.state.trady.email : "",
+											onChange: this.removeError,
+											value: trady.email || "",
 											className: "input-custom u-full-width " + (this.state.errorEmail && "has-error")
 										})
-									)
+									),
+									renderError(this.state.errorEmail)
 								),
 								React.createElement(
 									"div",
@@ -79025,21 +79101,22 @@ var ModalRequestModal = React.createClass({
 										null,
 										React.createElement("input", {
 											id: "mobile",
-											type: "number",
+											type: "text",
 											style: style,
 											placeholder: "Enter Mobile",
 											ref: function (e) {
 												return _this7.mobile = e;
 											},
 											readOnly: !this.state.isAdd,
-											onChange: this.checkValidate,
+											onChange: this.removeError,
+											value: trady.mobile || "",
 											onKeyPress: function (e) {
 												return _this7.checkLength(e);
 											},
-											value: !!this.state.trady.mobile ? this.state.trady.mobile : "",
 											className: "input-custom u-full-width " + (this.state.errorMobile && "has-error")
 										})
-									)
+									),
+									renderError(this.state.errorMobile)
 								)
 							)
 						),
@@ -79242,7 +79319,7 @@ var MaintenanceRequest = React.createClass({
 		}
 	},
 
-	addAskLandlord: function (params) {
+	addAskLandlord: function (params, callback) {
 		var logs = this.state.logs;
 
 		var self = this;
@@ -79254,7 +79331,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
-				logs.push(res.log);
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					logs: logs,
 					landlord: res.landlord,
@@ -79278,7 +79357,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editAskLandlord: function (params) {
+	editAskLandlord: function (params, callback) {
 		var logs = this.state.logs;
 
 		var self = this;
@@ -79290,7 +79369,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
-				logs.push(res.log);
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					logs: logs,
 					landlord: res.landlord,
@@ -79314,7 +79395,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	addLandlord: function (params) {
+	addLandlord: function (params, callback) {
 		var landlord = this.state.landlord;
 
 		var self = this;
@@ -79326,11 +79407,14 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					landlord: res,
 					notification: {
-						title: landlord ? "Change Landlord" : "Add Lanlord",
-						content: landlord ? 'Your have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
+						title: landlord ? "Change Landlord" : "Add Landlord",
+						content: landlord ? 'You have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
 						bgClass: "bg-success"
 					}
 				});
@@ -79348,7 +79432,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editLandlord: function (params) {
+	editLandlord: function (params, callback) {
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -79358,6 +79442,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					landlord: res,
 					notification: {
@@ -79380,7 +79467,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageLandlord: function (params) {
+	sendMessageLandlord: function (params, callback) {
 		var self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -79391,6 +79478,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
 				landlords_conversation.push(res);
 
@@ -79409,7 +79499,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageTenant: function (params) {
+	sendMessageTenant: function (params, callback) {
 		var self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -79420,6 +79510,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var tenants_conversation = !!self.state.tenants_conversation ? self.state.tenants_conversation : [];
 				tenants_conversation.push(res);
 				self.setState({
@@ -79437,7 +79530,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageTrady: function (params) {
+	sendMessageTrady: function (params, callback) {
 		var _props3 = this.props;
 		var authenticity_token = _props3.authenticity_token;
 		var maintenance_request = _props3.maintenance_request;
@@ -79454,6 +79547,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var trady_conversation = !!self.state.trady_conversation ? self.state.trady_conversation : [];
 				trady_conversation.push(res);
 				self.setState({
@@ -79471,7 +79567,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageQuote: function (params) {
+	sendMessageQuote: function (params, callback) {
 		var self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -79482,6 +79578,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var quote = self.state.quote;
 				quote.conversation = quote.conversation ? quote.conversation : {};
 				var messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
@@ -79550,8 +79649,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote,
 					notification: {
-						title: "Forward Landlord",
-						content: "The email about quote information was sent for Landlord.",
+						title: "Forward Quote To Landlord",
+						content: "You have successfully emailed the quote to the landlord.",
 						bgClass: "bg-success"
 					}
 				});
@@ -79581,7 +79680,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	requestQuote: function (params) {
+	requestQuote: function (params, callback) {
 		var logs = this.state.logs;
 
 		var self = this;
@@ -79613,6 +79712,9 @@ var MaintenanceRequest = React.createClass({
 				},
 				data: params,
 				success: function (res) {
+					if (res.errors) {
+						return callback(res.errors);
+					}
 					logs.push(res.log);
 					tradies_with_quote_requests.push(params.trady.item);
 					self.setState({
@@ -79621,8 +79723,8 @@ var MaintenanceRequest = React.createClass({
 						tradies: res.all_tradies,
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
-							title: "Request Quote",
-							content: 'Thank you, a quote has been emailed to "' + params.trady.company_name + '". We will notify you once the quote been received.',
+							title: "Quote Request Sent",
+							content: 'Thank you, an email has been sent to ' + params.trady.company_name + ' requesting a quote for the job. We will notify you once the quote been received.',
 							bgClass: "bg-success"
 						}
 					});
@@ -79631,7 +79733,7 @@ var MaintenanceRequest = React.createClass({
 				error: function (err) {
 					self.setState({ notification: {
 							title: "Request Quote",
-							content: "The request quote is error",
+							content: "An error has occured with the quote request",
 							bgClass: "bg-error"
 						} });
 					self.onModalWith('notification');
@@ -79640,7 +79742,7 @@ var MaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendWorkOrder: function (params) {
+	sendWorkOrder: function (params, callback) {
 		var logs = this.state.logs;
 
 		var self = this;
@@ -79653,6 +79755,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				logs.push(res.log);
 				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length - 1].id;
 				self.setState({
@@ -79661,7 +79766,7 @@ var MaintenanceRequest = React.createClass({
 					tradies: res.all_tradies,
 					notification: {
 						title: "Send Work Order",
-						content: 'Thank you, a work order has been emailed to "Trady Company". You will receive an invoice form "Trady Company" once the job has been completed',
+						content: 'Thank you, a work order has been emailed to ' + params.trady.company_name + '. You will receive an invoice from ' + params.trady.company_name + ' once the job has been completed',
 						bgClass: "bg-success"
 					}
 				});
@@ -79680,9 +79785,9 @@ var MaintenanceRequest = React.createClass({
 
 	assignToUser: function () {
 		var self = this;
-		var _state2 = this.state;
-		var maintenance_request = _state2.maintenance_request;
-		var assignEmail = _state2.assignEmail;
+		var _state3 = this.state;
+		var maintenance_request = _state3.maintenance_request;
+		var assignEmail = _state3.assignEmail;
 
 		var params = {
 			email: assignEmail,
@@ -79699,8 +79804,8 @@ var MaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.setState({
 					notification: {
-						title: "Assign Matenance Request",
-						content: "Thank you for reassigning this Mantenance Request.",
+						title: "Assign Maintenance Request",
+						content: "Thank you for reassigning this Maintenance Request.",
 						bgClass: "bg-success"
 					}
 				});
@@ -79709,7 +79814,7 @@ var MaintenanceRequest = React.createClass({
 			error: function (err) {
 				self.setState({ notification: {
 						title: "Assign Matenance Request",
-						content: "The Assign Matenance Request was error",
+						content: "An error occured reassigning this maintenance request.",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -79717,9 +79822,8 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editMaintenanceRequest: function (params) {
+	editMaintenanceRequest: function (params, callback) {
 		var self = this;
-		params.maintenance_request_id = this.state.maintenance_request.id;
 		var maintenance_request = this.state.maintenance_request;
 
 		$.ajax({
@@ -79728,8 +79832,14 @@ var MaintenanceRequest = React.createClass({
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				maintenance_request.service_type = res.service_type;
 				maintenance_request.maintenance_heading = res.maintenance_heading;
 				maintenance_request.maintenance_description = res.maintenance_description;
@@ -79738,7 +79848,7 @@ var MaintenanceRequest = React.createClass({
 					maintenance_request: maintenance_request,
 					notification: {
 						title: "Edit Maintenance Request",
-						content: "The Maintenance Request was update",
+						content: "The Maintenance Request has been updated.",
 						bgClass: "bg-success"
 					}
 				});
@@ -79747,7 +79857,7 @@ var MaintenanceRequest = React.createClass({
 			error: function (err) {
 				self.setState({ notification: {
 						title: "Edit Maintenance Request",
-						content: "The Maintenance Request didnt update!",
+						content: "The Maintenance Request didn't update!",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -79757,10 +79867,10 @@ var MaintenanceRequest = React.createClass({
 
 	updateStatusMR: function () {
 		var self = this;
-		var _state3 = this.state;
-		var maintenance_request = _state3.maintenance_request;
-		var status = _state3.status;
-		var statusItem = _state3.statusItem;
+		var _state4 = this.state;
+		var maintenance_request = _state4.maintenance_request;
+		var status = _state4.status;
+		var statusItem = _state4.statusItem;
 
 		var params = {
 			action_category: status.action_category,
@@ -79780,7 +79890,7 @@ var MaintenanceRequest = React.createClass({
 					status: res,
 					notification: {
 						title: "Update Status",
-						content: "Thank you for updating the Mantenance Request status",
+						content: "Thank you for updating the maintenance request status.",
 						bgClass: "bg-success"
 					}
 				});
@@ -79789,7 +79899,7 @@ var MaintenanceRequest = React.createClass({
 			error: function (err) {
 				self.setState({ notification: {
 						title: "Update Status",
-						content: "The Status of Maintenance Request didnt update!",
+						content: "The Status of Maintenance Request didn't update!",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -79827,7 +79937,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					notification: {
 						title: "Mark As Paid",
-						content: "You was paid",
+						content: "You have marked this invoice as paid.",
 						bgClass: "bg-success"
 					}
 				});
@@ -79836,7 +79946,7 @@ var MaintenanceRequest = React.createClass({
 			error: function (err) {
 				self.setState({ notification: {
 						title: "Mark As Paid",
-						content: "You didn't pid",
+						content: "An error occured marking this invoice as paid.",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -79846,9 +79956,9 @@ var MaintenanceRequest = React.createClass({
 
 	cancelWorkOrder: function () {
 		var self = this;
-		var _state4 = this.state;
-		var maintenance_request = _state4.maintenance_request;
-		var logs = _state4.logs;
+		var _state5 = this.state;
+		var maintenance_request = _state5.maintenance_request;
+		var logs = _state5.logs;
 
 		var params = {
 			maintenance_request_id: maintenance_request.id
@@ -80099,11 +80209,11 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state5 = this.state;
-						var comments = _state5.comments;
-						var quoteComments = _state5.quoteComments;
-						var landlordComments = _state5.landlordComments;
-						var appointment = _state5.appointment;
+						var _state6 = this.state;
+						var comments = _state6.comments;
+						var quoteComments = _state6.quoteComments;
+						var landlordComments = _state6.landlordComments;
+						var appointment = _state6.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -80145,7 +80255,7 @@ var MaintenanceRequest = React.createClass({
 						title: "Update Status",
 						quote: this.state.quote,
 						click: this.updateStatusMR,
-						content: "Are you sure you want to update the Maintenance request status ?"
+						content: "Are you sure you want to update the maintenance request status ?"
 					});
 
 				case 'confirmAssign':
@@ -80154,7 +80264,7 @@ var MaintenanceRequest = React.createClass({
 						quote: this.state.quote,
 						click: this.assignToUser,
 						title: "Assign Matenance Request",
-						content: "Are you sure you want to Reassign this Maintenance request ?"
+						content: "Are you sure you want to reassign this maintenance request?"
 					});
 
 				case 'viewModalInstruction':
@@ -80315,9 +80425,9 @@ var MaintenanceRequest = React.createClass({
 		var tenants = _props4.tenants;
 		var quotes = _props4.quotes;
 		var invoices = _props4.invoices;
-		var _state6 = this.state;
-		var invoice_pdf_files = _state6.invoice_pdf_files;
-		var trady = _state6.trady;
+		var _state7 = this.state;
+		var invoice_pdf_files = _state7.invoice_pdf_files;
+		var trady = _state7.trady;
 
 		return React.createElement(
 			"div",
@@ -80719,7 +80829,7 @@ var ContentMessage = React.createClass({
 			return React.createElement(
 				'p',
 				{ className: 'text-center', id: 'message' },
-				'Message is empty!'
+				' 0 messages in this conversation'
 			);
 		}
 	}
@@ -80733,24 +80843,39 @@ var ModalSendMessageLandlord = React.createClass({
 		};
 	},
 
+	removeError: function (e) {
+		this.setState({
+			errorMessage: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error && error[0] ? error[0] : ''
+		);
+	},
+
 	onSubmit: function (e) {
 		e.preventDefault();
-
-		if (!this.message.value) {
-			this.setState({ errorMessage: true });
-			return;
-		}
-
+		var self = this;
 		var params = {
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Landlord',
 				maintenance_request_id: this.props.maintenance_request_id
 			},
 			authenticity_token: this.props.authToken
 		};
 
-		this.props.sendMessageLandlord(params);
+		this.props.sendMessageLandlord(params, function (err) {
+			if (err) {
+				self.setState({
+					errorMessage: err['body']
+				});
+			}
+		});
 		this.message.value = "";
 	},
 
@@ -80759,6 +80884,8 @@ var ModalSendMessageLandlord = React.createClass({
 
 		var landlords_conversation = this.props.landlords_conversation;
 		var current_user = this.props.current_user;
+		var errorMessage = this.state.errorMessage;
+
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -80812,9 +80939,11 @@ var ModalSendMessageLandlord = React.createClass({
 									ref: function (rel) {
 										return _this.message = rel;
 									},
-									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+									onChange: this.removeError,
+									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
 								})
 							),
+							this.renderError(errorMessage),
 							React.createElement(
 								"button",
 								{
@@ -80841,24 +80970,39 @@ var ModalSendMessageTenant = React.createClass({
 		};
 	},
 
+	removeError: function (e) {
+		this.setState({
+			errorMessage: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error && error[0] ? error[0] : ''
+		);
+	},
+
 	onSubmit: function (e) {
 		e.preventDefault();
-
-		if (!this.message.value) {
-			this.setState({ errorMessage: true });
-			return;
-		}
-
+		var self = this;
 		var params = {
 			authenticity_token: this.props.authToken,
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Tenant',
 				maintenance_request_id: this.props.maintenance_request_id
 			}
 		};
 
-		this.props.sendMessageTenant(params);
+		this.props.sendMessageTenant(params, function (err) {
+			if (err) {
+				self.setState({
+					errorMessage: err['body']
+				});
+			}
+		});
 		this.message.value = "";
 	},
 
@@ -80867,6 +81011,8 @@ var ModalSendMessageTenant = React.createClass({
 
 		var tenants_conversation = this.props.tenants_conversation;
 		var current_user = this.props.current_user;
+		var errorMessage = this.state.errorMessage;
+
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -80920,9 +81066,11 @@ var ModalSendMessageTenant = React.createClass({
 									ref: function (rel) {
 										return _this.message = rel;
 									},
-									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+									onChange: this.removeError,
+									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
 								})
 							),
+							this.renderError(errorMessage),
 							React.createElement(
 								"button",
 								{
@@ -80949,22 +81097,37 @@ var ModalSendMessageTrady = React.createClass({
 		};
 	},
 
+	removeError: function (e) {
+		this.setState({
+			errorMessage: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error && error[0] ? error[0] : ''
+		);
+	},
+
 	onSubmit: function (e) {
 		e.preventDefault();
-
-		if (!this.message.value) {
-			this.setState({ errorMessage: true });
-			return;
-		}
-
+		var self = this;
 		var params = {
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Trady_Agent'
 			}
 		};
 
-		this.props.sendMessageTrady(params);
+		this.props.sendMessageTrady(params, function (err) {
+			if (err) {
+				self.setState({
+					errorMessage: err['body']
+				});
+			}
+		});
 		this.message.value = "";
 	},
 
@@ -80974,6 +81137,7 @@ var ModalSendMessageTrady = React.createClass({
 		var _props = this.props;
 		var trady_conversation = _props.trady_conversation;
 		var current_user = _props.current_user;
+		var errorMessage = this.state.errorMessage;
 
 		return React.createElement(
 			"div",
@@ -81028,9 +81192,11 @@ var ModalSendMessageTrady = React.createClass({
 									ref: function (rel) {
 										return _this.message = rel;
 									},
-									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+									onChange: this.removeError,
+									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
 								})
 							),
+							this.renderError(errorMessage),
 							React.createElement(
 								"button",
 								{
@@ -81057,22 +81223,37 @@ var ModalSendMessageAgent = React.createClass({
 		};
 	},
 
+	removeError: function (e) {
+		this.setState({
+			errorMessage: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error && error[0] ? error[0] : ''
+		);
+	},
+
 	onSubmit: function (e) {
 		e.preventDefault();
-
-		if (!this.message.value) {
-			this.setState({ errorMessage: true });
-			return;
-		}
-
+		var self = this;
 		var params = {
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Trady_Agent'
 			}
 		};
 
-		this.props.sendMessageAgent(params);
+		this.props.sendMessageAgent(params, function (err) {
+			if (err) {
+				self.setState({
+					errorMessage: err['body']
+				});
+			}
+		});
 		this.message.value = "";
 	},
 
@@ -81082,6 +81263,7 @@ var ModalSendMessageAgent = React.createClass({
 		var _props = this.props;
 		var trady_agent_conversation = _props.trady_agent_conversation;
 		var current_user = _props.current_user;
+		var errorMessage = this.state.errorMessage;
 
 		return React.createElement(
 			"div",
@@ -81136,9 +81318,11 @@ var ModalSendMessageAgent = React.createClass({
 									ref: function (rel) {
 										return _this.message = rel;
 									},
-									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+									onChange: this.removeError,
+									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
 								})
 							),
+							this.renderError(errorMessage),
 							React.createElement(
 								"button",
 								{
@@ -82165,23 +82349,36 @@ var ModalViewQuoteMessage = React.createClass({
 		};
 	},
 
+	removeError: function (e) {
+		this.setState({
+			errorMessage: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error && error[0] ? error[0] : ''
+		);
+	},
+
 	onSubmit: function (e) {
 		e.preventDefault();
-
-		if (!this.message.value) {
-			this.setState({ errorMessage: true });
-			return;
-		}
-
+		var self = this;
 		var params = {
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Quote',
 				quote_id: this.props.quote.id
 			}
 		};
 
-		this.props.sendMessageQuote(params);
+		this.props.sendMessageQuote(params, function (err) {
+			if (err) {
+				self.setState({ errorMessage: err['body'] });
+			}
+		});
 		this.message.value = "";
 	},
 
@@ -82190,6 +82387,8 @@ var ModalViewQuoteMessage = React.createClass({
 
 		var current_user = this.props.current_user;
 		var quote = this.props.quote;
+		var errorMessage = this.state.errorMessage;
+
 		return React.createElement(
 			"div",
 			{ className: "modal-custom fade" },
@@ -82243,9 +82442,11 @@ var ModalViewQuoteMessage = React.createClass({
 									ref: function (rel) {
 										return _this4.message = rel;
 									},
-									className: 'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')
+									onChange: this.removeError,
+									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
 								})
 							),
+							this.renderError(errorMessage),
 							React.createElement(
 								"button",
 								{
@@ -82354,157 +82555,275 @@ var ModalConfirmQuote = React.createClass({
 		);
 	}
 });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var QuoteField = React.createClass({
-    displayName: 'QuoteField',
+  displayName: 'QuoteField',
 
-    getInitialState: function () {
-        var quote = this.props.content;
-        var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
-        var hours_input = pricing_type == 'Fixed Cost' ? false : true;
-        return {
-            remove: false,
-            pricing_type: pricing_type,
-            hours_input: hours_input
-        };
-    },
+  getInitialState: function () {
+    var quote = this.props.content;
+    var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
+    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    return {
+      remove: false,
+      pricing_type: pricing_type,
+      hours_input: hours_input,
+      item_description_error: '',
+      amount_error: ''
+    };
+  },
 
-    removeField: function () {
-        this.setState({ remove: true });
-    },
+  validateDescription: function (errors) {
+    var error = errors['quote_items.item_description'];
+    return error && error.length && !this.item_description.value ? error[0] : '';
+  },
 
-    onPricing: function (event) {
-        var pricing_type = event.target.value;
-        this.setState({ pricing_type: pricing_type });
-        if (pricing_type == "Hourly") {
-            this.setState({ hours_input: true });
-        } else {
-            this.setState({ hours_input: false });
-        }
-    },
-    render: function () {
-        var quote = this.props.content;
-        var x = this.props.x;
-        if (quote) {
-            x = quote.id;
-        }
-        return React.createElement(
-            'div',
-            { className: 'quotefield', style: { display: this.state.remove ? 'none' : 'block' } },
+  validateAmount: function (errors) {
+    var error = errors['quote_items.amount'];
+    if (!error || error.length === 0) return '';
+    var amount = this.amount.value;
+
+    if (!amount === '') return error[0];
+    if (!/\d+/.test(amount)) return error.reverse()[0];
+    return '';
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    var _nextProps$errorsForm = nextProps.errorsForm;
+    var errorsForm = _nextProps$errorsForm === undefined ? {} : _nextProps$errorsForm;
+
+    this.setState({
+      item_description_error: this.validateDescription(errorsForm),
+      amount_error: this.validateAmount(errorsForm)
+    });
+  },
+
+  removeField: function () {
+    this.setState({ remove: true });
+  },
+
+  onPricing: function (event) {
+    var pricing_type = event.target.value;
+    var hours_input = pricing_type === 'Hourly';
+    this.setState({ pricing_type: pricing_type, hours_input: hours_input });
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    var field = id.match(/\d+_(\w+)$/);
+    if (!field) return;
+
+    this.setState(_defineProperty({}, field[1] + '_error', ''));
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error || ''
+    );
+  },
+
+  render: function () {
+    var _this = this;
+
+    var quote = this.props.content;
+    var x = this.props.x;
+    var currentState = this.state;
+    var removeErrorFunc = this.removeError;
+    var renderErrorFunc = this.renderError;
+
+    if (quote) {
+      x = quote.id;
+    }
+
+    return React.createElement(
+      'div',
+      { className: 'quotefield', style: { display: this.state.remove ? 'none' : 'block' } },
+      React.createElement(
+        'fieldset',
+        null,
+        React.createElement(
+          'div',
+          null,
+          React.createElement('input', {
+            type: 'text',
+            placeholder: 'Item description',
+            className: "text-center" + (currentState['item_description_error'] ? ' has-error' : ''),
+            defaultValue: quote ? quote.item_description : '',
+            ref: function (value) {
+              return _this.item_description = value;
+            },
+            id: 'quote_quote_items_attributes_' + x + '_item_description',
+            name: 'quote[quote_items_attributes][' + x + '][item_description]',
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(currentState['item_description_error'])
+        ),
+        React.createElement(
+          'div',
+          { className: 'amount' },
+          React.createElement(
+            'select',
+            {
+              onChange: this.onPricing,
+              value: this.state.pricing_type,
+              className: 'text-center select',
+              id: 'quote_quote_items_attributes_' + x + '_pricing_type',
+              name: 'quote[quote_items_attributes][' + x + '][pricing_type]'
+            },
             React.createElement(
-                'fieldset',
-                null,
-                React.createElement(
-                    'div',
-                    null,
-                    React.createElement('input', {
-                        required: true,
-                        type: 'text',
-                        placeholder: 'Item description',
-                        className: 'text-center',
-                        defaultValue: quote ? quote.item_description : '',
-                        id: 'quote_quote_items_attributes_' + x + '_item_description',
-                        name: 'quote[quote_items_attributes][' + x + '][item_description]'
-                    })
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'amount' },
-                    React.createElement(
-                        'select',
-                        {
-                            onChange: this.onPricing,
-                            value: this.state.pricing_type,
-                            className: 'text-center select',
-                            id: 'quote_quote_items_attributes_' + x + '_pricing_type',
-                            name: 'quote[quote_items_attributes][' + x + '][pricing_type]'
-                        },
-                        React.createElement(
-                            'option',
-                            { value: 'Fixed Cost' },
-                            'Fixed Cost'
-                        ),
-                        React.createElement(
-                            'option',
-                            { value: 'Hourly' },
-                            'Hourly'
-                        )
-                    ),
-                    React.createElement('input', {
-                        required: true,
-                        type: 'number',
-                        placeholder: 'Amount',
-                        defaultValue: quote ? quote.amount : '',
-                        className: 'text-center price',
-                        id: 'quote_quote_items_attributes_' + x + '_amount',
-                        name: 'quote[quote_items_attributes][' + x + '][amount]'
-                    }),
-                    React.createElement('input', {
-                        type: 'hidden',
-                        id: 'quote_quote_items_attributes_' + x + '_hours',
-                        name: 'quote[quote_items_attributes][' + x + '][hours]'
-                    }),
-                    React.createElement('input', { type: 'hidden', value: this.state.remove, name: 'quote[quote_items_attributes][' + x + '][_destroy]', id: 'quote_quote_items_attributes_' + x + '__destroy' }),
-                    quote && React.createElement('input', { type: 'hidden', value: x, name: 'quote[quote_items_attributes][' + x + '][id]', id: 'quote_iquote_items_attributes_' + x + '_id' })
-                )
+              'option',
+              { value: 'Fixed Cost' },
+              'Fixed Cost'
             ),
             React.createElement(
-                'div',
-                { className: 'text-center' },
-                React.createElement(
-                    'button',
-                    { type: 'button', className: 'button-remove button-primary red', onClick: this.removeField },
-                    ' Remove '
-                )
+              'option',
+              { value: 'Hourly' },
+              'Hourly'
             )
-        );
-    }
+          ),
+          React.createElement('input', {
+            type: 'number',
+            placeholder: 'Amount',
+            defaultValue: quote ? quote.amount : '',
+            ref: function (value) {
+              return _this.amount = value;
+            },
+            className: "text-center price" + (currentState['amount_error'] ? ' has-error' : ''),
+            id: 'quote_quote_items_attributes_' + x + '_amount',
+            name: 'quote[quote_items_attributes][' + x + '][amount]',
+            onChange: removeErrorFunc
+          }),
+          React.createElement('input', {
+            type: 'hidden',
+            id: 'quote_quote_items_attributes_' + x + '_hours',
+            name: 'quote[quote_items_attributes][' + x + '][hours]'
+          }),
+          React.createElement('input', {
+            type: 'hidden',
+            value: this.state.remove,
+            name: 'quote[quote_items_attributes][' + x + '][_destroy]',
+            id: 'quote_quote_items_attributes_' + x + '__destroy'
+          }),
+          quote && React.createElement('input', {
+            type: 'hidden',
+            value: x,
+            name: 'quote[quote_items_attributes][' + x + '][id]',
+            id: 'quote_iquote_items_attributes_' + x + '_id'
+          })
+        ),
+        React.createElement(
+          'div',
+          null,
+          renderErrorFunc(currentState['amount_error'])
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'text-center' },
+        React.createElement(
+          'button',
+          {
+            type: 'button',
+            className: 'button-remove button-primary red',
+            onClick: this.removeField
+          },
+          'Remove'
+        )
+      )
+    );
+  }
 });
 
 var QuoteFields = React.createClass({
-    displayName: 'QuoteFields',
+  displayName: 'QuoteFields',
 
-    render: function () {
-        var _props = this.props;
-        var trady_company = _props.trady_company;
-        var quote = _props.quote;
+  getInitialState: function () {
+    return {
+      errors: {}
+    };
+  },
 
-        return React.createElement(
-            'form',
-            { role: 'form', id: 'new_quote', action: this.props.id ? '/quotes/' + this.props.id : '/quotes', acceptCharset: 'UTF-8', method: 'post' },
-            React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
-            React.createElement('input', { type: 'hidden', name: '_method', value: this.props._method }),
-            React.createElement('input', { type: 'hidden', value: this.props.maintenance_request_id, name: 'quote[maintenance_request_id]', id: 'quote_maintenance_request_id' }),
-            React.createElement('input', { type: 'hidden', value: this.props.trady_id, name: 'quote[trady_id]', id: 'quote_trady_id' }),
-            React.createElement('input', { type: 'hidden', value: this.props.status, name: 'quote[status]', id: 'quote_status' }),
-            React.createElement('input', { type: 'hidden', value: this.props.delivery_status, name: 'quote[delivery_status]', id: 'quote_delivery_status' }),
-            React.createElement('input', { type: 'hidden', value: this.props.quote_type, name: 'quote[quote_type]', id: 'quote_type' }),
-            React.createElement('input', { type: 'hidden', value: this.props.system_plan, name: 'quote[system_plan]', id: 'system_plan' }),
-            React.createElement(FieldList, { existingContent: this.props.quote_items, SampleField: QuoteField, flag: 'quote' }),
-            React.createElement(
-                'div',
-                { className: 'text-center' },
-                React.createElement('input', { type: 'text', className: 'm-t-lg text-center', defaultValue: quote && quote.trady_quote_reference, name: 'quote[trady_quote_reference]', placeholder: 'Quote Reference Number' })
-            ),
-            React.createElement(
-                'label',
-                { className: 'quote_tax' },
-                React.createElement('input', { type: 'hidden', value: '0', name: 'quote[tax]' }),
-                React.createElement('input', { type: 'checkbox', value: '1', defaultChecked: trady_company.gst_registration ? trady_company.gst_registration : false, name: 'quote[tax]', id: 'quote_tax' }),
-                'Check box when price includes GST.'
-            ),
-            React.createElement('hr', null),
-            React.createElement(
-                'div',
-                { className: 'text-center' },
-                React.createElement(
-                    'a',
-                    { className: 'button m-r-lg', href: this.props.backlink },
-                    ' Back '
-                ),
-                React.createElement('input', { type: 'submit', name: 'commit', value: 'Next', className: 'button-primary green', 'data-disable-with': 'Next' })
-            )
-        );
-    }
+  handleSummit: function (e) {
+    e.preventDefault();
+    var self = this;
+    var FD = new FormData(document.getElementById('new_quote'));
+
+    $.ajax({
+      type: 'POST',
+      url: self.props.id ? '/quotes/' + self.props.id : '/quotes',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  render: function () {
+    var _props = this.props;
+    var trady_company = _props.trady_company;
+    var quote = _props.quote;
+
+    return React.createElement(
+      'form',
+      {
+        role: 'form',
+        id: 'new_quote',
+        encType: 'multipart/form-data',
+        acceptCharset: 'UTF-8',
+        onSubmit: this.handleSummit
+      },
+      React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
+      React.createElement('input', { type: 'hidden', name: '_method', value: this.props._method }),
+      React.createElement('input', { type: 'hidden', value: this.props.maintenance_request_id, name: 'quote[maintenance_request_id]', id: 'quote_maintenance_request_id' }),
+      React.createElement('input', { type: 'hidden', value: this.props.trady_id, name: 'quote[trady_id]', id: 'quote_trady_id' }),
+      React.createElement('input', { type: 'hidden', value: this.props.status, name: 'quote[status]', id: 'quote_status' }),
+      React.createElement('input', { type: 'hidden', value: this.props.delivery_status, name: 'quote[delivery_status]', id: 'quote_delivery_status' }),
+      React.createElement('input', { type: 'hidden', value: this.props.quote_type, name: 'quote[quote_type]', id: 'quote_type' }),
+      React.createElement('input', { type: 'hidden', value: this.props.system_plan, name: 'quote[system_plan]', id: 'system_plan' }),
+      React.createElement(FieldList, {
+        existingContent: this.props.quote_items,
+        SampleField: QuoteField,
+        errors: this.state.errors,
+        flag: 'quote'
+      }),
+      React.createElement(
+        'div',
+        { className: 'text-center' },
+        React.createElement('input', { type: 'text', className: 'm-t-lg text-center', defaultValue: quote && quote.trady_quote_reference, name: 'quote[trady_quote_reference]', placeholder: 'Quote Reference Number' })
+      ),
+      React.createElement(
+        'label',
+        { className: 'quote_tax' },
+        React.createElement('input', { type: 'hidden', value: '0', name: 'quote[tax]' }),
+        React.createElement('input', { type: 'checkbox', value: '1', defaultChecked: trady_company.gst_registration ? trady_company.gst_registration : false, name: 'quote[tax]', id: 'quote_tax' }),
+        'Check box when price includes GST.'
+      ),
+      React.createElement('hr', null),
+      React.createElement(
+        'div',
+        { className: 'text-center' },
+        React.createElement(
+          'a',
+          { className: 'button m-r-lg', href: this.props.backlink },
+          ' Back '
+        ),
+        React.createElement('input', { type: 'submit', name: 'commit', value: 'Next', className: 'button-primary green' })
+      )
+    );
+  }
 });
 var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
 var PHONE_REGEXP = new RegExp('^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$', 'i');
@@ -83623,7 +83942,7 @@ var TenantMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function (params) {
+	addAppointment: function (params, callback) {
 		var self = this;
 		var _props2 = this.props;
 		var tenant = _props2.tenant;
@@ -83644,6 +83963,7 @@ var TenantMaintenanceRequest = React.createClass({
 		var landlordComments = _state.landlordComments;
 		var isCancel = _state.isCancel;
 
+		debugger;
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
 		fd.append('appointment[date]', params.date);
@@ -83674,6 +83994,9 @@ var TenantMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var title = '';
 				var content = '';
 				if (!!isDecline) {
@@ -84021,7 +84344,7 @@ var TenantMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: ["Are you sure you want to cancel appointment. To cancel the appointment you ", React.createElement(
+									content: ["Are you sure you want to cancel the appointment. To cancel the appointment you ", React.createElement(
 										'strong',
 										{ className: 'text-capitalize' },
 										'must'
@@ -84063,7 +84386,7 @@ var TenantMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: ["Are you sure you want to decline appointment. To decline the appointment you ", React.createElement(
+									content: ["Are you sure you want to decline the appointment. To decline the appointment you ", React.createElement(
 										'strong',
 										{ className: 'text-capitalize' },
 										'must'
@@ -84082,9 +84405,7 @@ var TenantMaintenanceRequest = React.createClass({
 							title: 'Create Appointment',
 							type: 'Work Order Appointment',
 							comments: this.state.comments,
-							addAppointment: function (params) {
-								return _this2.addAppointment(params);
-							}
+							addAppointment: this.addAppointment
 						});
 					}
 
@@ -84095,9 +84416,7 @@ var TenantMaintenanceRequest = React.createClass({
 							type: 'Quote Appointment',
 							comments: this.state.quoteComments,
 							title: 'Create Appointment For Quote',
-							addAppointment: function (params) {
-								return _this2.addAppointment(params);
-							}
+							addAppointment: this.addAppointment
 						});
 					}
 
@@ -84108,9 +84427,7 @@ var TenantMaintenanceRequest = React.createClass({
 							type: 'Landlord Appointment',
 							title: 'Create Landlord Appointment',
 							comments: this.state.landlordComments,
-							addAppointment: function (params) {
-								return _this2.addAppointment(params);
-							}
+							addAppointment: this.addAppointment
 						});
 					}
 
@@ -84387,18 +84704,7 @@ var EditTradyCompany = React.createClass({
 
   getInitialState: function () {
     return {
-      errorABN: false,
-      openModal: false,
-      errorPhone: false,
-      errorEmail: false,
-      errorAddress: false,
-      same_Address: false,
-      errorBsbNumber: false,
-      errorBankNumber: false,
-      errorCompanyName: false,
-      errorTradingName: false,
-      errorAccountName: false,
-      errorMailingAdress: false,
+      errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
@@ -84413,18 +84719,20 @@ var EditTradyCompany = React.createClass({
   handleChange: function (event) {
     this.setState({ address: event.target.value });
     if (!!this.state.same_Address) {
+      this.removeError({ target: { id: 'mailing_address' } });
       this.setState({
         mailing_address: this.address.value
       });
     }
+    this.removeError(event);
   },
 
   onSame: function () {
     if (!this.state.same_Address) {
       this.setState({
         mailing_address: this.state.address
-
       });
+      this.removeError({ target: { id: 'mailing_address' } });
     }
 
     this.setState({
@@ -84436,6 +84744,7 @@ var EditTradyCompany = React.createClass({
     this.setState({
       mailing_address: e.target.value
     });
+    this.removeError(e);
   },
 
   checkValidate: function (e) {
@@ -84457,22 +84766,6 @@ var EditTradyCompany = React.createClass({
             errorPhone: true
           });
         }
-      case "bsb_number":
-        {
-          if (NUMBER_REGEXP.test(target.value)) return this.setState({
-            errorBsbNumber: false
-          });else return this.setState({
-            errorBsbNumber: true
-          });
-        }
-      case "bank_account_number":
-        {
-          if (NUMBER_REGEXP.test(target.value)) return this.setState({
-            errorBankNumber: false
-          });else return this.setState({
-            errorBankNumber: true
-          });
-        }
       case "abn":
         {
           if (NUMBER_REGEXP.test(target.value)) return this.setState({
@@ -84487,132 +84780,76 @@ var EditTradyCompany = React.createClass({
   },
 
   edit: function (e) {
-    var _this = this;
-
-    e.preventDefault();
-
-    var flag = false;
     var isInvoice = this.props.system_plan === "Invoice";
 
-    if (!this.company_name.value) {
-      flag = true;
-      this.setState({
-        errorCompanyName: true
-      });
-    }
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var trady_company = {
+      email: getValidValue(email),
+      address: getValidValue(address),
+      company_name: getValidValue(company_name),
+      trading_name: getValidValue(trading_name),
+      mobile_number: getValidValue(mobile_number),
+      mailing_address: getValidValue(mailing_address),
+      trady_company_id: this.props.id,
+      trady_id: this.props.trady_id,
+      quote_id: this.props.quote_id,
+      work_flow: this.props.work_flow,
+      quote_type: this.props.quote_type,
+      system_plan: this.props.system_plan,
+      invoice_type: this.props.invoice_type,
+      maintenance_request_id: this.props.maintenance_request_id,
+      trady_company_id: this.props.id || null,
+      quote_id: this.props.quote_id || null,
+      ledger_id: this.props.ledger_id || null,
+      pdf_file_id: this.props.pdf_file_id || null
+    };
 
     if (isInvoice) {
-      if (!this.trading_name.value) {
-        flag = true;
-        this.setState({
-          errorTradingName: true
-        });
-      }
-
-      if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
-        flag = true;
-        this.setState({
-          errorTradingName: true
-        });
-      }
-
-      if (!this.account_name.value) {
-        flag = true;
-        this.setState({
-          errorAccountName: true
-        });
-      }
-
-      if (!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
-        flag = true;
-        this.setState({
-          errorBsbNumber: true
-        });
-      }
-
-      if (!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
-        flag = true;
-        this.setState({
-          errorBankNumber: true
-        });
-      }
+      trady_company.abn = getValidValue(abn);
+      trady_company.gst_registration = this.state.gst_registration;
+      trady_company.bsb = getValidValue(bsb_number);
+      trady_company.account_name = getValidValue(account_name);
+      trady_company.bank_account_number = getValidValue(bank_account_number);
     }
 
-    if (!this.address.value) {
-      flag = true;
-      this.setState({
-        errorAddress: true
-      });
-    }
+    var params = { trady_company: trady_company };
+    var self = this;
+    $.ajax({
+      type: 'PUT',
+      url: '/trady_companies/' + self.props.id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        self.setState({ errors: res.errors || {} });
+      },
+      error: function (err) {}
+    });
 
-    if (!this.mailing_address.value) {
-      flag = true;
-      this.setState({
-        errorTradingName: true
-      });
-    }
-
-    if (!this.email.value || !EMAIL_REGEXP.test(this.email.value)) {
-      flag = true;
-      this.setState({
-        errorEmail: true
-      });
-    }
-
-    if (!this.mobile_number.value || !PHONE_REGEXP.test(this.mobile_number.value)) {
-      flag = true;
-      this.setState({
-        errorPhone: true
-      });
-    }
-
-    if (!flag) {
-      var params;
-
-      (function () {
-        params = {
-          trady_company: {
-            email: _this.email.value,
-            address: _this.address.value,
-            trady_id: _this.props.trady_id,
-            quote_id: _this.props.quote_id,
-            ledger_id: _this.props.ledger_id,
-            trady_company_id: _this.props.id,
-            work_flow: _this.props.work_flow,
-            quote_type: _this.props.quote_type,
-            pdf_file_id: _this.props.pdf_file_id,
-            system_plan: _this.props.system_plan,
-            company_name: _this.company_name.value,
-            trading_name: _this.trading_name.value,
-            invoice_type: _this.props.invoice_type,
-            mobile_number: _this.mobile_number.value,
-            mailing_address: _this.mailing_address.value,
-            maintenance_request_id: _this.props.maintenance_request_id
-          }
-        };
-
-        if (isInvoice) {
-          params.trady_company.abn = _this.abn.value;
-          params.trady_company.bsb_number = _this.bsb_number.value;
-          params.trady_company.account_name = _this.account_name.value;
-          params.trady_company.gst_registration = _this.state.gst_registration;
-          params.trady_company.bank_account_number = _this.bank_account_number.value;
-        }
-
-        var self = _this;
-        $.ajax({
-          type: 'PUT',
-          url: '/trady_companies/' + self.props.id,
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-          },
-          data: params,
-          success: function (res) {},
-          error: function (err) {}
-        });
-      })();
-    }
+    e.preventDefault();
     return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    var errors = Object.assign({}, this.state.errors);
+    if (errors[id]) {
+      errors[id] = false;
+      this.setState({ errors: errors });
+    }
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      "p",
+      { id: "errorbox", className: "error" },
+      error && error[0] ? error[0] : ''
+    );
   },
 
   renderButtonBack: function () {
@@ -84632,9 +84869,13 @@ var EditTradyCompany = React.createClass({
   },
 
   render: function () {
-    var _this2 = this;
+    var _this = this;
 
     var isInvoice = this.props.system_plan === "Invoice";
+    var errors = this.state.errors;
+
+    var renderErrorFunc = this.renderError;
+    var removeErrorFunc = this.removeError;
 
     return React.createElement(
       "form",
@@ -84651,16 +84892,18 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
+
             type: "text",
             id: "company_name",
             placeholder: "Company Name",
             defaultValue: this.props.company_name,
             ref: function (ref) {
-              return _this2.company_name = ref;
+              return _this.company_name = ref;
             },
-            className: "form-control " + (this.state.errorCompanyName ? "has-error" : "")
-          })
+            className: "form-control " + (errors['company_name'] ? "has-error" : ""),
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(errors['company_name'])
         )
       ),
       React.createElement(
@@ -84675,17 +84918,18 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
+
             type: "text",
             id: "trading_name",
-            className: "form-control",
             placeholder: "Trading Name",
             defaultValue: this.props.trading_name,
             ref: function (ref) {
-              return _this2.trading_name = ref;
+              return _this.trading_name = ref;
             },
-            className: "form-control " + (!!this.state.errorTradingName && "has-error")
-          })
+            className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(errors['trading_name'])
         )
       ),
       isInvoice && React.createElement(
@@ -84700,16 +84944,18 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
+
             id: "abn",
             type: "text",
             placeholder: "Abn",
             defaultValue: this.props.abn,
             ref: function (ref) {
-              return _this2.abn = ref;
+              return _this.abn = ref;
             },
-            className: "form-control " + (!!this.state.errorABN && "has-error")
-          })
+            className: "form-control " + (errors['abn'] ? "has-error" : ""),
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(errors['abn'])
         )
       ),
       isInvoice && React.createElement(
@@ -84722,8 +84968,8 @@ var EditTradyCompany = React.createClass({
             type: "checkbox",
             id: "gst_registration",
             onChange: function () {
-              _this2.setState({
-                gst_registration: !_this2.state.gst_registration
+              _this.setState({
+                gst_registration: !_this.state.gst_registration
               });
             },
             checked: !!this.state.gst_registration ? "checked" : false
@@ -84743,17 +84989,19 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
+
             type: "text",
             id: "address",
             placeholder: "Address",
             defaultValue: this.state.address,
             onChange: this.handleChange,
             ref: function (ref) {
-              return _this2.address = ref;
+              return _this.address = ref;
             },
-            className: "form-control " + (!!this.state.errorAddress && "has-error")
-          })
+            className: "form-control " + (errors['address'] ? "has-error" : "")
+            // onChange={removeErrorFunc}
+          }),
+          renderErrorFunc(errors['address'])
         )
       ),
       React.createElement(
@@ -84778,17 +85026,18 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
+
             type: "text",
             id: "mailing_address",
             placeholder: "Mailing Address",
             value: this.state.mailing_address,
             onChange: this.changeMailingAddress,
             ref: function (ref) {
-              return _this2.mailing_address = ref;
+              return _this.mailing_address = ref;
             },
-            className: "form-control " + (!!this.state.errorMailingAdress && "has-error")
-          })
+            className: "form-control " + (errors['mailing_address'] ? "has-error" : "")
+          }),
+          renderErrorFunc(errors['mailing_address'])
         )
       ),
       React.createElement(
@@ -84803,17 +85052,18 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
+
             type: "text",
             id: "mobile_number",
             placeholder: "Mobile Number",
-            onChange: this.checkValidate,
             defaultValue: this.props.mobile_number,
             ref: function (ref) {
-              return _this2.mobile_number = ref;
+              return _this.mobile_number = ref;
             },
-            className: "form-control " + (!!this.state.errorPhone && "has-error")
-          })
+            className: "form-control " + (!!this.state.errors['mobile_number'] && "has-error"),
+            onChange: removeErrorFunc
+          }),
+          this.renderError(errors['mobile_number'])
         )
       ),
       React.createElement(
@@ -84828,22 +85078,23 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
+
             id: "email",
             type: "text",
             placeholder: "Email",
-            onChange: this.checkValidate,
             defaultValue: this.props.email,
             ref: function (ref) {
-              return _this2.email = ref;
+              return _this.email = ref;
             },
-            className: "form-control " + (!!this.state.errorEmail && "has-error")
-          })
+            className: "form-control " + (errors['email'] ? "has-error" : ""),
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(errors['email'])
         )
       ),
       isInvoice && [React.createElement(
         "div",
-        { className: "form-group", key: "Account-name" },
+        { className: "form-group" },
         React.createElement(
           "label",
           { className: "control-label col-sm-2 required" },
@@ -84853,20 +85104,22 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
             type: "text",
             id: "account_name",
             placeholder: "Account Name",
+            // onChange={this.checkValidate}
             defaultValue: this.props.account_name,
             ref: function (ref) {
-              return _this2.account_name = ref;
+              return _this.account_name = ref;
             },
-            className: "form-control " + (!!this.state.errorAccountName ? "has-error" : "")
-          })
+            className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(errors['trading_name'])
         )
       ), React.createElement(
         "div",
-        { className: "form-group", key: "Bsb-number" },
+        { className: "form-group" },
         React.createElement(
           "label",
           { className: "control-label col-sm-2 required" },
@@ -84876,21 +85129,21 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
             type: "text",
             id: "bsb_number",
             placeholder: "BSB Number",
-            onChange: this.checkValidate,
             defaultValue: this.props.bsb_number,
             ref: function (ref) {
-              return _this2.bsb_number = ref;
+              return _this.bsb_number = ref;
             },
-            className: "form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")
-          })
+            className: "form-control " + (errors['bsb_number'] ? "has-error" : ""),
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(errors['bsb_number'])
         )
       ), React.createElement(
         "div",
-        { className: "form-group", key: "Bank-Account-number" },
+        { className: "form-group" },
         React.createElement(
           "label",
           { className: "control-label col-sm-2 required" },
@@ -84900,16 +85153,17 @@ var EditTradyCompany = React.createClass({
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
-            required: true,
             type: "text",
             id: "bank_account_number",
             placeholder: "Bank Account Number",
             defaultValue: this.props.bank_account_number,
             ref: function (ref) {
-              return _this2.bank_account_number = ref;
+              return _this.bank_account_number = ref;
             },
-            className: "form-control " + (!!this.state.errorBankNumber ? "has-error" : "")
-          })
+            className: "form-control " + (errors['bank_account_number'] ? "has-error" : ""),
+            onChange: removeErrorFunc
+          }),
+          renderErrorFunc(errors['bank_account_number'])
         )
       )],
       React.createElement(
@@ -84930,18 +85184,7 @@ var AddTradycompany = React.createClass({
 
   getInitialState: function () {
     return {
-      errorABN: false,
-      openModal: false,
-      errorPhone: false,
-      errorEmail: false,
-      errorAddress: false,
-      same_Address: false,
-      errorBsbNumber: false,
-      errorBankNumber: false,
-      errorCompanyName: false,
-      errorTradingName: false,
-      errorAccountName: false,
-      errorMailingAdress: false,
+      errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
@@ -84956,18 +85199,20 @@ var AddTradycompany = React.createClass({
   handleChange: function (event) {
     this.setState({ address: event.target.value });
     if (!!this.state.same_Address) {
+      this.removeError({ target: { id: 'mailing_address' } });
       this.setState({
         mailing_address: this.address.value
       });
     }
+    this.removeError(event);
   },
 
   onSame: function () {
     if (!this.state.same_Address) {
       this.setState({
         mailing_address: this.state.address
-
       });
+      this.removeError({ target: { id: 'mailing_address' } });
     }
 
     this.setState({
@@ -85012,189 +85257,92 @@ var AddTradycompany = React.createClass({
     });
   },
 
-  checkValidate: function (e) {
-    var target = e.target.id;
-    switch (target.key) {
-      case 'email':
-        {
-          if (EMAIL_REGEXP.test(target.value)) return this.setState({
-            errorEmail: false
-          });else return this.setState({
-            errorEmail: true
-          });
-        }
-      case 'mobile_number':
-        {
-          if (PHONE_REGEXP.test(target.value)) return this.setState({
-            errorPhone: false
-          });else return this.setState({
-            errorPhone: true
-          });
-        }
-      case "bsb_number":
-        {
-          if (NUMBER_REGEXP.test(target.value)) return this.setState({
-            errorBsbNumber: false
-          });else return this.setState({
-            errorBsbNumber: true
-          });
-        }
-      case "bank_account_number":
-        {
-          if (NUMBER_REGEXP.test(target.value)) return this.setState({
-            errorBankNumber: false
-          });else return this.setState({
-            errorBankNumber: true
-          });
-        }
-      case "abn":
-        {
-          if (NUMBER_REGEXP.test(target.value)) return this.setState({
-            errorABN: false
-          });else return this.setState({
-            errorABN: true
-          });
-        }
-      default:
-        break;
-    }
-  },
-
   changeMailingAddress: function (e) {
     this.setState({
       mailing_address: e.target.value
     });
+    this.removeError(e);
   },
 
   onSubmit: function (e) {
-    var _this = this;
 
     var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
 
-    if (!this.company_name.value) {
-      flag = true;
-      this.setState({
-        errorCompanyName: true
-      });
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var trady_company = {
+      email: getValidValue(email),
+      address: getValidValue(address),
+      company_name: getValidValue(company_name),
+      trading_name: getValidValue(trading_name),
+      mobile_number: getValidValue(mobile_number),
+      mailing_address: getValidValue(mailing_address),
+      trady_id: this.props.trady_id,
+      quote_id: this.props.quote_id,
+      work_flow: this.props.work_flow,
+      quote_type: this.props.quote_type,
+      system_plan: this.props.system_plan,
+      invoice_type: this.props.invoice_type,
+      maintenance_request_id: this.props.maintenance_request_id,
+      quote_id: this.props.quote_id || null,
+      ledger_id: this.props.ledger_id || null,
+      pdf_file_id: this.props.pdf_file_id || null,
+      trady_company_id: this.props.trady_company_id || null
+    };
+
+    if (isInvoice) {
+      trady_company.abn = getValidValue(abn);
+      trady_company.gst_registration = this.state.gst_registration, trady_company.bsb = getValidValue(bsb_number);
+      trady_company.account_name = getValidValue(account_name);
+      trady_company.bank_account_number = getValidValue(bank_account_number);
     }
 
-    if (!this.trading_name.value) {
-      flag = true;
-      this.setState({
-        errorTradingName: true
-      });
-    }
+    var params = { trady_company: trady_company };
 
-    if (!this.abn.value || !NUMBER_REGEXP.test(this.abn.value)) {
-      flag = true;
-      this.setState({
-        errorABN: true
-      });
-    }
-
-    if (!this.address.value) {
-      flag = true;
-      this.setState({
-        errorAddress: true
-      });
-    }
-
-    if (!this.mailing_address.value) {
-      flag = true;
-      this.setState({
-        errorMailingAdress: true
-      });
-    }
-
-    if (!this.email.value || !EMAIL_REGEXP.test(this.email.value)) {
-      flag = true;
-      this.setState({
-        errorEmail: true
-      });
-    }
-
-    if (!this.mobile_number.value || !PHONE_REGEXP.test(this.mobile_number.value)) {
-      flag = true;
-      this.setState({
-        errorPhone: true
-      });
-    }
-
-    if (!this.account_name.value) {
-      flag = true;
-      this.setState({
-        errorAccountName: true
-      });
-    }
-
-    if (!this.bsb_number.value || !NUMBER_REGEXP.test(this.bsb_number.value)) {
-      flag = true;
-      this.setState({
-        errorBsbNumber: true
-      });
-    }
-
-    if (!this.bank_account_number.value || !NUMBER_REGEXP.test(this.bank_account_number.value)) {
-      flag = true;
-      this.setState({
-        errorBankNumber: true
-      });
-    }
-
-    if (!flag) {
-      var params;
-
-      (function () {
-        params = {
-          trady_company: {
-            abn: _this.abn.value,
-            email: _this.email.value,
-            address: _this.address.value,
-            trady_id: _this.props.trady_id,
-            quote_id: _this.props.quote_id,
-            work_flow: _this.props.work_flow,
-            bsb_number: _this.bsb_number.value,
-            quote_type: _this.props.quote_type,
-            system_plan: _this.props.system_plan,
-            company_name: _this.company_name.value,
-            trading_name: _this.trading_name.value,
-            invoice_type: _this.props.invoice_type,
-            account_name: _this.account_name.value,
-            mobile_number: _this.mobile_number.value,
-            mailing_address: _this.mailing_address.value,
-            gst_registration: _this.state.gst_registration,
-            bank_account_number: _this.bank_account_number.value,
-            maintenance_request_id: _this.props.maintenance_request_id,
-            quote_id: _this.props.quote_id ? _this.props.quote_id : null,
-            ledger_id: _this.props.ledger_id ? _this.props.ledger_id : null,
-            pdf_file_id: _this.props.pdf_file_id ? _this.props.pdf_file_id : null,
-            trady_company_id: _this.props.trady_company_id ? _this.props.trady_company_id : null
-          }
-        };
-
-        var self = _this;
-        $.ajax({
-          type: 'POST',
-          url: '/trady_companies',
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-          },
-          data: params,
-          success: function (res) {},
-          error: function (err) {
-            self.openModalNotification({
-              bgClass: 'bg-error',
-              title: "Add Trady Company",
-              content: "Add trady company is error!"
-            });
-          }
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/trady_companies',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        self.setState({ errors: res.errors || {} });
+      },
+      error: function (err) {
+        self.openModalNotification({
+          bgClass: 'bg-error',
+          title: "Add Trady Company",
+          content: "Add trady company is error!"
         });
-      })();
-    }
+      }
+    });
 
     e.preventDefault();
 
     return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    var errors = Object.assign({}, this.state.errors);
+    if (errors[id]) {
+      errors[id] = false;
+      this.setState({ errors: errors });
+    }
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      "p",
+      { id: "errorbox", className: "error" },
+      error && error[0] ? error[0] : ''
+    );
   },
 
   renderButtonBack: function () {
@@ -85214,7 +85362,13 @@ var AddTradycompany = React.createClass({
   },
 
   render: function () {
-    var _this2 = this;
+    var _this = this;
+
+    var isInvoice = this.props.system_plan === "Invoice";
+    var errors = this.state.errors;
+
+    var renderErrorFunc = this.renderError;
+    var removeErrorFunc = this.removeError;
 
     return React.createElement(
       "div",
@@ -85234,16 +85388,18 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
+
               type: "text",
               id: "company_name",
               placeholder: "Company Name",
               defaultValue: this.props.company_name,
               ref: function (ref) {
-                return _this2.company_name = ref;
+                return _this.company_name = ref;
               },
-              className: "form-control " + (this.state.errorCompanyName ? "has-error" : "")
-            })
+              className: "form-control " + (errors['company_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['company_name'])
           )
         ),
         React.createElement(
@@ -85258,19 +85414,21 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
+
               type: "text",
               id: "trading_name",
               placeholder: "Trading Name",
               defaultValue: this.props.trading_name,
               ref: function (ref) {
-                return _this2.trading_name = ref;
+                return _this.trading_name = ref;
               },
-              className: "form-control " + (!!this.state.errorTradingName && "has-error")
-            })
+              className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['trading_name'])
           )
         ),
-        React.createElement(
+        isInvoice && React.createElement(
           "div",
           { className: "form-group" },
           React.createElement(
@@ -85282,32 +85440,38 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
+
               id: "abn",
               type: "text",
               placeholder: "Abn",
               defaultValue: this.props.abn,
               ref: function (ref) {
-                return _this2.abn = ref;
+                return _this.abn = ref;
               },
-              className: "form-control " + (!!this.state.errorABN && "has-error")
-            })
+              className: "form-control " + (errors['abn'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['abn'])
           )
         ),
-        React.createElement(
+        isInvoice && React.createElement(
           "div",
           { className: "form-group" },
-          React.createElement("input", {
-            type: "checkbox",
-            id: "gst_registration",
-            onChange: function () {
-              _this2.setState({
-                gst_registration: !_this2.state.gst_registration
-              });
-            },
-            checked: !!this.state.gst_registration ? "checked" : false
-          }),
-          "GST  Registration"
+          React.createElement(
+            "div",
+            { className: "col-sm-10 col-sm-offset-2" },
+            React.createElement("input", {
+              type: "checkbox",
+              id: "gst_registration",
+              onChange: function () {
+                _this.setState({
+                  gst_registration: !_this.state.gst_registration
+                });
+              },
+              checked: !!this.state.gst_registration ? "checked" : false
+            }),
+            "GST  Registration"
+          )
         ),
         React.createElement(
           "div",
@@ -85321,17 +85485,19 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
+
               type: "text",
               id: "address",
               placeholder: "Address",
               defaultValue: this.state.address,
               onChange: this.handleChange,
               ref: function (ref) {
-                return _this2.address = ref;
+                return _this.address = ref;
               },
-              className: "form-control " + (!!this.state.errorAddress && "has-error")
-            })
+              className: "form-control " + (errors['address'] ? "has-error" : "")
+              // onChange={removeErrorFunc}
+            }),
+            renderErrorFunc(errors['address'])
           )
         ),
         React.createElement(
@@ -85356,17 +85522,18 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
+
               type: "text",
               id: "mailing_address",
               placeholder: "Mailing Address",
               value: this.state.mailing_address,
               onChange: this.changeMailingAddress,
               ref: function (ref) {
-                return _this2.mailing_address = ref;
+                return _this.mailing_address = ref;
               },
-              className: "form-control " + (!!this.state.errorMailingAdress && "has-error")
-            })
+              className: "form-control " + (errors['mailing_address'] ? "has-error" : "")
+            }),
+            renderErrorFunc(errors['mailing_address'])
           )
         ),
         React.createElement(
@@ -85381,17 +85548,18 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
+
               type: "text",
               id: "mobile_number",
               placeholder: "Mobile Number",
-              onChange: this.checkValidate,
               defaultValue: this.props.mobile_number,
               ref: function (ref) {
-                return _this2.mobile_number = ref;
+                return _this.mobile_number = ref;
               },
-              className: "form-control " + (!!this.state.errorPhone && "has-error")
-            })
+              className: "form-control " + (!!this.state.errors['mobile_number'] && "has-error"),
+              onChange: removeErrorFunc
+            }),
+            this.renderError(errors['mobile_number'])
           )
         ),
         React.createElement(
@@ -85406,20 +85574,21 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
+
               id: "email",
               type: "text",
               placeholder: "Email",
-              onChange: this.checkValidate,
               defaultValue: this.props.email,
               ref: function (ref) {
-                return _this2.email = ref;
+                return _this.email = ref;
               },
-              className: "form-control " + (!!this.state.errorEmail && "has-error")
-            })
+              className: "form-control " + (errors['email'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['email'])
           )
         ),
-        React.createElement(
+        isInvoice && [React.createElement(
           "div",
           { className: "form-group" },
           React.createElement(
@@ -85431,19 +85600,20 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
               type: "text",
               id: "account_name",
               placeholder: "Account Name",
+              // onChange={this.checkValidate}
               defaultValue: this.props.account_name,
               ref: function (ref) {
-                return _this2.account_name = ref;
+                return _this.account_name = ref;
               },
-              className: "form-control " + (!!this.state.errorAccountName ? "has-error" : "")
-            })
+              className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['trading_name'])
           )
-        ),
-        React.createElement(
+        ), React.createElement(
           "div",
           { className: "form-group" },
           React.createElement(
@@ -85455,20 +85625,20 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
               type: "text",
               id: "bsb_number",
               placeholder: "BSB Number",
-              onChange: this.checkValidate,
+              // onChange={this.checkValidate}
               defaultValue: this.props.bsb_number,
               ref: function (ref) {
-                return _this2.bsb_number = ref;
+                return _this.bsb_number = ref;
               },
-              className: "form-control " + (!!this.state.errorBsbNumber ? "has-error" : "")
-            })
+              className: "form-control " + (errors['bsb_number'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['bsb_number'])
           )
-        ),
-        React.createElement(
+        ), React.createElement(
           "div",
           { className: "form-group" },
           React.createElement(
@@ -85480,25 +85650,26 @@ var AddTradycompany = React.createClass({
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-              required: true,
               type: "text",
               id: "bank_account_number",
               placeholder: "Bank Account Number",
               defaultValue: this.props.bank_account_number,
               ref: function (ref) {
-                return _this2.bank_account_number = ref;
+                return _this.bank_account_number = ref;
               },
-              className: "form-control " + (!!this.state.errorBankNumber ? "has-error" : "")
-            })
+              className: "form-control " + (errors['bank_account_number'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['bank_account_number'])
           )
-        ),
+        )],
         React.createElement(
           "div",
           { className: "text-center" },
           this.renderButtonBack(),
           React.createElement(
             "button",
-            { type: "submit", name: "commit", value: "Next", className: "button-primary green option-button" },
+            { type: "submit", className: "button-primary green option-button" },
             "Next"
           )
         )
@@ -86565,7 +86736,7 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendMessageQuote: function (params) {
+	sendMessageQuote: function (params, callback) {
 		var self = this;
 		params.message.role = this.props.current_role.role;
 		$.ajax({
@@ -86576,6 +86747,9 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var quote = self.state.quote;
 				quote.conversation = quote.conversation ? quote.conversation : {};
 				var messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
@@ -86624,7 +86798,7 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function (params) {
+	addAppointment: function (params, callback) {
 		var self = this;
 		var _props2 = this.props;
 		var tenants = _props2.tenants;
@@ -86667,6 +86841,9 @@ var TradyMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var title = "";
 				var content = "";
 				if (!!isDecline) {
@@ -86902,7 +87079,7 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageAgent: function (params) {
+	sendMessageAgent: function (params, callback) {
 		var _props6 = this.props;
 		var authenticity_token = _props6.authenticity_token;
 		var maintenance_request = _props6.maintenance_request;
@@ -86918,6 +87095,9 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				var trady_agent_conversation = !!self.state.trady_agent_conversation ? self.state.trady_agent_conversation : [];
 				trady_agent_conversation.push(res);
 				self.setState({
@@ -87049,7 +87229,7 @@ var TradyMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: ["Are you sure you want to cancel appointment. To cancel the appointment you ", React.createElement(
+									content: ["Are you sure you want to cancel the appointment. To cancel the appointment you ", React.createElement(
 										'strong',
 										{ className: 'text-capitalize' },
 										'must'
@@ -87087,7 +87267,7 @@ var TradyMaintenanceRequest = React.createClass({
 									openModal: function () {
 										return _this2.onModalWith(key);
 									},
-									content: ["Are you sure you want to decline appointment. To decline the appointment you ", React.createElement(
+									content: ["Are you sure you want to decline the appointment. To decline the appointment you ", React.createElement(
 										'strong',
 										{ className: 'text-capitalize' },
 										'must'
@@ -87160,9 +87340,7 @@ var TradyMaintenanceRequest = React.createClass({
 							title: 'Create Appointment',
 							type: 'Work Order Appointment',
 							comments: this.state.comments,
-							addAppointment: function (params) {
-								return _this2.addAppointment(params);
-							}
+							addAppointment: this.addAppointment
 						});
 					}
 
@@ -87173,9 +87351,7 @@ var TradyMaintenanceRequest = React.createClass({
 							type: 'Quote Appointment',
 							comments: this.state.quoteComments,
 							title: 'Create Appointment For Quote',
-							addAppointment: function (params) {
-								return _this2.addAppointment(params);
-							}
+							addAppointment: this.addAppointment
 						});
 					}
 
@@ -88177,6 +88353,2458 @@ $(function() {
 
 
 }).call(this);
+/*!
+ * typeahead.js 0.11.1
+ * https://github.com/twitter/typeahead.js
+ * Copyright 2013-2015 Twitter, Inc. and other contributors; Licensed MIT
+ */
+
+
+(function(root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define("bloodhound", [ "jquery" ], function(a0) {
+            return root["Bloodhound"] = factory(a0);
+        });
+    } else if (typeof exports === "object") {
+        module.exports = factory(require("jquery"));
+    } else {
+        root["Bloodhound"] = factory(jQuery);
+    }
+})(this, function($) {
+    var _ = function() {
+        "use strict";
+        return {
+            isMsie: function() {
+                return /(msie|trident)/i.test(navigator.userAgent) ? navigator.userAgent.match(/(msie |rv:)(\d+(.\d+)?)/i)[2] : false;
+            },
+            isBlankString: function(str) {
+                return !str || /^\s*$/.test(str);
+            },
+            escapeRegExChars: function(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            },
+            isString: function(obj) {
+                return typeof obj === "string";
+            },
+            isNumber: function(obj) {
+                return typeof obj === "number";
+            },
+            isArray: $.isArray,
+            isFunction: $.isFunction,
+            isObject: $.isPlainObject,
+            isUndefined: function(obj) {
+                return typeof obj === "undefined";
+            },
+            isElement: function(obj) {
+                return !!(obj && obj.nodeType === 1);
+            },
+            isJQuery: function(obj) {
+                return obj instanceof $;
+            },
+            toStr: function toStr(s) {
+                return _.isUndefined(s) || s === null ? "" : s + "";
+            },
+            bind: $.proxy,
+            each: function(collection, cb) {
+                $.each(collection, reverseArgs);
+                function reverseArgs(index, value) {
+                    return cb(value, index);
+                }
+            },
+            map: $.map,
+            filter: $.grep,
+            every: function(obj, test) {
+                var result = true;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (!(result = test.call(null, val, key, obj))) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            some: function(obj, test) {
+                var result = false;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (result = test.call(null, val, key, obj)) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            mixin: $.extend,
+            identity: function(x) {
+                return x;
+            },
+            clone: function(obj) {
+                return $.extend(true, {}, obj);
+            },
+            getIdGenerator: function() {
+                var counter = 0;
+                return function() {
+                    return counter++;
+                };
+            },
+            templatify: function templatify(obj) {
+                return $.isFunction(obj) ? obj : template;
+                function template() {
+                    return String(obj);
+                }
+            },
+            defer: function(fn) {
+                setTimeout(fn, 0);
+            },
+            debounce: function(func, wait, immediate) {
+                var timeout, result;
+                return function() {
+                    var context = this, args = arguments, later, callNow;
+                    later = function() {
+                        timeout = null;
+                        if (!immediate) {
+                            result = func.apply(context, args);
+                        }
+                    };
+                    callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) {
+                        result = func.apply(context, args);
+                    }
+                    return result;
+                };
+            },
+            throttle: function(func, wait) {
+                var context, args, timeout, result, previous, later;
+                previous = 0;
+                later = function() {
+                    previous = new Date();
+                    timeout = null;
+                    result = func.apply(context, args);
+                };
+                return function() {
+                    var now = new Date(), remaining = wait - (now - previous);
+                    context = this;
+                    args = arguments;
+                    if (remaining <= 0) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        previous = now;
+                        result = func.apply(context, args);
+                    } else if (!timeout) {
+                        timeout = setTimeout(later, remaining);
+                    }
+                    return result;
+                };
+            },
+            stringify: function(val) {
+                return _.isString(val) ? val : JSON.stringify(val);
+            },
+            noop: function() {}
+        };
+    }();
+    var VERSION = "0.11.1";
+    var tokenizers = function() {
+        "use strict";
+        return {
+            nonword: nonword,
+            whitespace: whitespace,
+            obj: {
+                nonword: getObjTokenizer(nonword),
+                whitespace: getObjTokenizer(whitespace)
+            }
+        };
+        function whitespace(str) {
+            str = _.toStr(str);
+            return str ? str.split(/\s+/) : [];
+        }
+        function nonword(str) {
+            str = _.toStr(str);
+            return str ? str.split(/\W+/) : [];
+        }
+        function getObjTokenizer(tokenizer) {
+            return function setKey(keys) {
+                keys = _.isArray(keys) ? keys : [].slice.call(arguments, 0);
+                return function tokenize(o) {
+                    var tokens = [];
+                    _.each(keys, function(k) {
+                        tokens = tokens.concat(tokenizer(_.toStr(o[k])));
+                    });
+                    return tokens;
+                };
+            };
+        }
+    }();
+    var LruCache = function() {
+        "use strict";
+        function LruCache(maxSize) {
+            this.maxSize = _.isNumber(maxSize) ? maxSize : 100;
+            this.reset();
+            if (this.maxSize <= 0) {
+                this.set = this.get = $.noop;
+            }
+        }
+        _.mixin(LruCache.prototype, {
+            set: function set(key, val) {
+                var tailItem = this.list.tail, node;
+                if (this.size >= this.maxSize) {
+                    this.list.remove(tailItem);
+                    delete this.hash[tailItem.key];
+                    this.size--;
+                }
+                if (node = this.hash[key]) {
+                    node.val = val;
+                    this.list.moveToFront(node);
+                } else {
+                    node = new Node(key, val);
+                    this.list.add(node);
+                    this.hash[key] = node;
+                    this.size++;
+                }
+            },
+            get: function get(key) {
+                var node = this.hash[key];
+                if (node) {
+                    this.list.moveToFront(node);
+                    return node.val;
+                }
+            },
+            reset: function reset() {
+                this.size = 0;
+                this.hash = {};
+                this.list = new List();
+            }
+        });
+        function List() {
+            this.head = this.tail = null;
+        }
+        _.mixin(List.prototype, {
+            add: function add(node) {
+                if (this.head) {
+                    node.next = this.head;
+                    this.head.prev = node;
+                }
+                this.head = node;
+                this.tail = this.tail || node;
+            },
+            remove: function remove(node) {
+                node.prev ? node.prev.next = node.next : this.head = node.next;
+                node.next ? node.next.prev = node.prev : this.tail = node.prev;
+            },
+            moveToFront: function(node) {
+                this.remove(node);
+                this.add(node);
+            }
+        });
+        function Node(key, val) {
+            this.key = key;
+            this.val = val;
+            this.prev = this.next = null;
+        }
+        return LruCache;
+    }();
+    var PersistentStorage = function() {
+        "use strict";
+        var LOCAL_STORAGE;
+        try {
+            LOCAL_STORAGE = window.localStorage;
+            LOCAL_STORAGE.setItem("~~~", "!");
+            LOCAL_STORAGE.removeItem("~~~");
+        } catch (err) {
+            LOCAL_STORAGE = null;
+        }
+        function PersistentStorage(namespace, override) {
+            this.prefix = [ "__", namespace, "__" ].join("");
+            this.ttlKey = "__ttl__";
+            this.keyMatcher = new RegExp("^" + _.escapeRegExChars(this.prefix));
+            this.ls = override || LOCAL_STORAGE;
+            !this.ls && this._noop();
+        }
+        _.mixin(PersistentStorage.prototype, {
+            _prefix: function(key) {
+                return this.prefix + key;
+            },
+            _ttlKey: function(key) {
+                return this._prefix(key) + this.ttlKey;
+            },
+            _noop: function() {
+                this.get = this.set = this.remove = this.clear = this.isExpired = _.noop;
+            },
+            _safeSet: function(key, val) {
+                try {
+                    this.ls.setItem(key, val);
+                } catch (err) {
+                    if (err.name === "QuotaExceededError") {
+                        this.clear();
+                        this._noop();
+                    }
+                }
+            },
+            get: function(key) {
+                if (this.isExpired(key)) {
+                    this.remove(key);
+                }
+                return decode(this.ls.getItem(this._prefix(key)));
+            },
+            set: function(key, val, ttl) {
+                if (_.isNumber(ttl)) {
+                    this._safeSet(this._ttlKey(key), encode(now() + ttl));
+                } else {
+                    this.ls.removeItem(this._ttlKey(key));
+                }
+                return this._safeSet(this._prefix(key), encode(val));
+            },
+            remove: function(key) {
+                this.ls.removeItem(this._ttlKey(key));
+                this.ls.removeItem(this._prefix(key));
+                return this;
+            },
+            clear: function() {
+                var i, keys = gatherMatchingKeys(this.keyMatcher);
+                for (i = keys.length; i--; ) {
+                    this.remove(keys[i]);
+                }
+                return this;
+            },
+            isExpired: function(key) {
+                var ttl = decode(this.ls.getItem(this._ttlKey(key)));
+                return _.isNumber(ttl) && now() > ttl ? true : false;
+            }
+        });
+        return PersistentStorage;
+        function now() {
+            return new Date().getTime();
+        }
+        function encode(val) {
+            return JSON.stringify(_.isUndefined(val) ? null : val);
+        }
+        function decode(val) {
+            return $.parseJSON(val);
+        }
+        function gatherMatchingKeys(keyMatcher) {
+            var i, key, keys = [], len = LOCAL_STORAGE.length;
+            for (i = 0; i < len; i++) {
+                if ((key = LOCAL_STORAGE.key(i)).match(keyMatcher)) {
+                    keys.push(key.replace(keyMatcher, ""));
+                }
+            }
+            return keys;
+        }
+    }();
+    var Transport = function() {
+        "use strict";
+        var pendingRequestsCount = 0, pendingRequests = {}, maxPendingRequests = 6, sharedCache = new LruCache(10);
+        function Transport(o) {
+            o = o || {};
+            this.cancelled = false;
+            this.lastReq = null;
+            this._send = o.transport;
+            this._get = o.limiter ? o.limiter(this._get) : this._get;
+            this._cache = o.cache === false ? new LruCache(0) : sharedCache;
+        }
+        Transport.setMaxPendingRequests = function setMaxPendingRequests(num) {
+            maxPendingRequests = num;
+        };
+        Transport.resetCache = function resetCache() {
+            sharedCache.reset();
+        };
+        _.mixin(Transport.prototype, {
+            _fingerprint: function fingerprint(o) {
+                o = o || {};
+                return o.url + o.type + $.param(o.data || {});
+            },
+            _get: function(o, cb) {
+                var that = this, fingerprint, jqXhr;
+                fingerprint = this._fingerprint(o);
+                if (this.cancelled || fingerprint !== this.lastReq) {
+                    return;
+                }
+                if (jqXhr = pendingRequests[fingerprint]) {
+                    jqXhr.done(done).fail(fail);
+                } else if (pendingRequestsCount < maxPendingRequests) {
+                    pendingRequestsCount++;
+                    pendingRequests[fingerprint] = this._send(o).done(done).fail(fail).always(always);
+                } else {
+                    this.onDeckRequestArgs = [].slice.call(arguments, 0);
+                }
+                function done(resp) {
+                    cb(null, resp);
+                    that._cache.set(fingerprint, resp);
+                }
+                function fail() {
+                    cb(true);
+                }
+                function always() {
+                    pendingRequestsCount--;
+                    delete pendingRequests[fingerprint];
+                    if (that.onDeckRequestArgs) {
+                        that._get.apply(that, that.onDeckRequestArgs);
+                        that.onDeckRequestArgs = null;
+                    }
+                }
+            },
+            get: function(o, cb) {
+                var resp, fingerprint;
+                cb = cb || $.noop;
+                o = _.isString(o) ? {
+                    url: o
+                } : o || {};
+                fingerprint = this._fingerprint(o);
+                this.cancelled = false;
+                this.lastReq = fingerprint;
+                if (resp = this._cache.get(fingerprint)) {
+                    cb(null, resp);
+                } else {
+                    this._get(o, cb);
+                }
+            },
+            cancel: function() {
+                this.cancelled = true;
+            }
+        });
+        return Transport;
+    }();
+    var SearchIndex = window.SearchIndex = function() {
+        "use strict";
+        var CHILDREN = "c", IDS = "i";
+        function SearchIndex(o) {
+            o = o || {};
+            if (!o.datumTokenizer || !o.queryTokenizer) {
+                $.error("datumTokenizer and queryTokenizer are both required");
+            }
+            this.identify = o.identify || _.stringify;
+            this.datumTokenizer = o.datumTokenizer;
+            this.queryTokenizer = o.queryTokenizer;
+            this.reset();
+        }
+        _.mixin(SearchIndex.prototype, {
+            bootstrap: function bootstrap(o) {
+                this.datums = o.datums;
+                this.trie = o.trie;
+            },
+            add: function(data) {
+                var that = this;
+                data = _.isArray(data) ? data : [ data ];
+                _.each(data, function(datum) {
+                    var id, tokens;
+                    that.datums[id = that.identify(datum)] = datum;
+                    tokens = normalizeTokens(that.datumTokenizer(datum));
+                    _.each(tokens, function(token) {
+                        var node, chars, ch;
+                        node = that.trie;
+                        chars = token.split("");
+                        while (ch = chars.shift()) {
+                            node = node[CHILDREN][ch] || (node[CHILDREN][ch] = newNode());
+                            node[IDS].push(id);
+                        }
+                    });
+                });
+            },
+            get: function get(ids) {
+                var that = this;
+                return _.map(ids, function(id) {
+                    return that.datums[id];
+                });
+            },
+            search: function search(query) {
+                var that = this, tokens, matches;
+                tokens = normalizeTokens(this.queryTokenizer(query));
+                _.each(tokens, function(token) {
+                    var node, chars, ch, ids;
+                    if (matches && matches.length === 0) {
+                        return false;
+                    }
+                    node = that.trie;
+                    chars = token.split("");
+                    while (node && (ch = chars.shift())) {
+                        node = node[CHILDREN][ch];
+                    }
+                    if (node && chars.length === 0) {
+                        ids = node[IDS].slice(0);
+                        matches = matches ? getIntersection(matches, ids) : ids;
+                    } else {
+                        matches = [];
+                        return false;
+                    }
+                });
+                return matches ? _.map(unique(matches), function(id) {
+                    return that.datums[id];
+                }) : [];
+            },
+            all: function all() {
+                var values = [];
+                for (var key in this.datums) {
+                    values.push(this.datums[key]);
+                }
+                return values;
+            },
+            reset: function reset() {
+                this.datums = {};
+                this.trie = newNode();
+            },
+            serialize: function serialize() {
+                return {
+                    datums: this.datums,
+                    trie: this.trie
+                };
+            }
+        });
+        return SearchIndex;
+        function normalizeTokens(tokens) {
+            tokens = _.filter(tokens, function(token) {
+                return !!token;
+            });
+            tokens = _.map(tokens, function(token) {
+                return token.toLowerCase();
+            });
+            return tokens;
+        }
+        function newNode() {
+            var node = {};
+            node[IDS] = [];
+            node[CHILDREN] = {};
+            return node;
+        }
+        function unique(array) {
+            var seen = {}, uniques = [];
+            for (var i = 0, len = array.length; i < len; i++) {
+                if (!seen[array[i]]) {
+                    seen[array[i]] = true;
+                    uniques.push(array[i]);
+                }
+            }
+            return uniques;
+        }
+        function getIntersection(arrayA, arrayB) {
+            var ai = 0, bi = 0, intersection = [];
+            arrayA = arrayA.sort();
+            arrayB = arrayB.sort();
+            var lenArrayA = arrayA.length, lenArrayB = arrayB.length;
+            while (ai < lenArrayA && bi < lenArrayB) {
+                if (arrayA[ai] < arrayB[bi]) {
+                    ai++;
+                } else if (arrayA[ai] > arrayB[bi]) {
+                    bi++;
+                } else {
+                    intersection.push(arrayA[ai]);
+                    ai++;
+                    bi++;
+                }
+            }
+            return intersection;
+        }
+    }();
+    var Prefetch = function() {
+        "use strict";
+        var keys;
+        keys = {
+            data: "data",
+            protocol: "protocol",
+            thumbprint: "thumbprint"
+        };
+        function Prefetch(o) {
+            this.url = o.url;
+            this.ttl = o.ttl;
+            this.cache = o.cache;
+            this.prepare = o.prepare;
+            this.transform = o.transform;
+            this.transport = o.transport;
+            this.thumbprint = o.thumbprint;
+            this.storage = new PersistentStorage(o.cacheKey);
+        }
+        _.mixin(Prefetch.prototype, {
+            _settings: function settings() {
+                return {
+                    url: this.url,
+                    type: "GET",
+                    dataType: "json"
+                };
+            },
+            store: function store(data) {
+                if (!this.cache) {
+                    return;
+                }
+                this.storage.set(keys.data, data, this.ttl);
+                this.storage.set(keys.protocol, location.protocol, this.ttl);
+                this.storage.set(keys.thumbprint, this.thumbprint, this.ttl);
+            },
+            fromCache: function fromCache() {
+                var stored = {}, isExpired;
+                if (!this.cache) {
+                    return null;
+                }
+                stored.data = this.storage.get(keys.data);
+                stored.protocol = this.storage.get(keys.protocol);
+                stored.thumbprint = this.storage.get(keys.thumbprint);
+                isExpired = stored.thumbprint !== this.thumbprint || stored.protocol !== location.protocol;
+                return stored.data && !isExpired ? stored.data : null;
+            },
+            fromNetwork: function(cb) {
+                var that = this, settings;
+                if (!cb) {
+                    return;
+                }
+                settings = this.prepare(this._settings());
+                this.transport(settings).fail(onError).done(onResponse);
+                function onError() {
+                    cb(true);
+                }
+                function onResponse(resp) {
+                    cb(null, that.transform(resp));
+                }
+            },
+            clear: function clear() {
+                this.storage.clear();
+                return this;
+            }
+        });
+        return Prefetch;
+    }();
+    var Remote = function() {
+        "use strict";
+        function Remote(o) {
+            this.url = o.url;
+            this.prepare = o.prepare;
+            this.transform = o.transform;
+            this.transport = new Transport({
+                cache: o.cache,
+                limiter: o.limiter,
+                transport: o.transport
+            });
+        }
+        _.mixin(Remote.prototype, {
+            _settings: function settings() {
+                return {
+                    url: this.url,
+                    type: "GET",
+                    dataType: "json"
+                };
+            },
+            get: function get(query, cb) {
+                var that = this, settings;
+                if (!cb) {
+                    return;
+                }
+                query = query || "";
+                settings = this.prepare(query, this._settings());
+                return this.transport.get(settings, onResponse);
+                function onResponse(err, resp) {
+                    err ? cb([]) : cb(that.transform(resp));
+                }
+            },
+            cancelLastRequest: function cancelLastRequest() {
+                this.transport.cancel();
+            }
+        });
+        return Remote;
+    }();
+    var oParser = function() {
+        "use strict";
+        return function parse(o) {
+            var defaults, sorter;
+            defaults = {
+                initialize: true,
+                identify: _.stringify,
+                datumTokenizer: null,
+                queryTokenizer: null,
+                sufficient: 5,
+                sorter: null,
+                local: [],
+                prefetch: null,
+                remote: null
+            };
+            o = _.mixin(defaults, o || {});
+            !o.datumTokenizer && $.error("datumTokenizer is required");
+            !o.queryTokenizer && $.error("queryTokenizer is required");
+            sorter = o.sorter;
+            o.sorter = sorter ? function(x) {
+                return x.sort(sorter);
+            } : _.identity;
+            o.local = _.isFunction(o.local) ? o.local() : o.local;
+            o.prefetch = parsePrefetch(o.prefetch);
+            o.remote = parseRemote(o.remote);
+            return o;
+        };
+        function parsePrefetch(o) {
+            var defaults;
+            if (!o) {
+                return null;
+            }
+            defaults = {
+                url: null,
+                ttl: 24 * 60 * 60 * 1e3,
+                cache: true,
+                cacheKey: null,
+                thumbprint: "",
+                prepare: _.identity,
+                transform: _.identity,
+                transport: null
+            };
+            o = _.isString(o) ? {
+                url: o
+            } : o;
+            o = _.mixin(defaults, o);
+            !o.url && $.error("prefetch requires url to be set");
+            o.transform = o.filter || o.transform;
+            o.cacheKey = o.cacheKey || o.url;
+            o.thumbprint = VERSION + o.thumbprint;
+            o.transport = o.transport ? callbackToDeferred(o.transport) : $.ajax;
+            return o;
+        }
+        function parseRemote(o) {
+            var defaults;
+            if (!o) {
+                return;
+            }
+            defaults = {
+                url: null,
+                cache: true,
+                prepare: null,
+                replace: null,
+                wildcard: null,
+                limiter: null,
+                rateLimitBy: "debounce",
+                rateLimitWait: 300,
+                transform: _.identity,
+                transport: null
+            };
+            o = _.isString(o) ? {
+                url: o
+            } : o;
+            o = _.mixin(defaults, o);
+            !o.url && $.error("remote requires url to be set");
+            o.transform = o.filter || o.transform;
+            o.prepare = toRemotePrepare(o);
+            o.limiter = toLimiter(o);
+            o.transport = o.transport ? callbackToDeferred(o.transport) : $.ajax;
+            delete o.replace;
+            delete o.wildcard;
+            delete o.rateLimitBy;
+            delete o.rateLimitWait;
+            return o;
+        }
+        function toRemotePrepare(o) {
+            var prepare, replace, wildcard;
+            prepare = o.prepare;
+            replace = o.replace;
+            wildcard = o.wildcard;
+            if (prepare) {
+                return prepare;
+            }
+            if (replace) {
+                prepare = prepareByReplace;
+            } else if (o.wildcard) {
+                prepare = prepareByWildcard;
+            } else {
+                prepare = idenityPrepare;
+            }
+            return prepare;
+            function prepareByReplace(query, settings) {
+                settings.url = replace(settings.url, query);
+                return settings;
+            }
+            function prepareByWildcard(query, settings) {
+                settings.url = settings.url.replace(wildcard, encodeURIComponent(query));
+                return settings;
+            }
+            function idenityPrepare(query, settings) {
+                return settings;
+            }
+        }
+        function toLimiter(o) {
+            var limiter, method, wait;
+            limiter = o.limiter;
+            method = o.rateLimitBy;
+            wait = o.rateLimitWait;
+            if (!limiter) {
+                limiter = /^throttle$/i.test(method) ? throttle(wait) : debounce(wait);
+            }
+            return limiter;
+            function debounce(wait) {
+                return function debounce(fn) {
+                    return _.debounce(fn, wait);
+                };
+            }
+            function throttle(wait) {
+                return function throttle(fn) {
+                    return _.throttle(fn, wait);
+                };
+            }
+        }
+        function callbackToDeferred(fn) {
+            return function wrapper(o) {
+                var deferred = $.Deferred();
+                fn(o, onSuccess, onError);
+                return deferred;
+                function onSuccess(resp) {
+                    _.defer(function() {
+                        deferred.resolve(resp);
+                    });
+                }
+                function onError(err) {
+                    _.defer(function() {
+                        deferred.reject(err);
+                    });
+                }
+            };
+        }
+    }();
+    var Bloodhound = function() {
+        "use strict";
+        var old;
+        old = window && window.Bloodhound;
+        function Bloodhound(o) {
+            o = oParser(o);
+            this.sorter = o.sorter;
+            this.identify = o.identify;
+            this.sufficient = o.sufficient;
+            this.local = o.local;
+            this.remote = o.remote ? new Remote(o.remote) : null;
+            this.prefetch = o.prefetch ? new Prefetch(o.prefetch) : null;
+            this.index = new SearchIndex({
+                identify: this.identify,
+                datumTokenizer: o.datumTokenizer,
+                queryTokenizer: o.queryTokenizer
+            });
+            o.initialize !== false && this.initialize();
+        }
+        Bloodhound.noConflict = function noConflict() {
+            window && (window.Bloodhound = old);
+            return Bloodhound;
+        };
+        Bloodhound.tokenizers = tokenizers;
+        _.mixin(Bloodhound.prototype, {
+            __ttAdapter: function ttAdapter() {
+                var that = this;
+                return this.remote ? withAsync : withoutAsync;
+                function withAsync(query, sync, async) {
+                    return that.search(query, sync, async);
+                }
+                function withoutAsync(query, sync) {
+                    return that.search(query, sync);
+                }
+            },
+            _loadPrefetch: function loadPrefetch() {
+                var that = this, deferred, serialized;
+                deferred = $.Deferred();
+                if (!this.prefetch) {
+                    deferred.resolve();
+                } else if (serialized = this.prefetch.fromCache()) {
+                    this.index.bootstrap(serialized);
+                    deferred.resolve();
+                } else {
+                    this.prefetch.fromNetwork(done);
+                }
+                return deferred.promise();
+                function done(err, data) {
+                    if (err) {
+                        return deferred.reject();
+                    }
+                    that.add(data);
+                    that.prefetch.store(that.index.serialize());
+                    deferred.resolve();
+                }
+            },
+            _initialize: function initialize() {
+                var that = this, deferred;
+                this.clear();
+                (this.initPromise = this._loadPrefetch()).done(addLocalToIndex);
+                return this.initPromise;
+                function addLocalToIndex() {
+                    that.add(that.local);
+                }
+            },
+            initialize: function initialize(force) {
+                return !this.initPromise || force ? this._initialize() : this.initPromise;
+            },
+            add: function add(data) {
+                this.index.add(data);
+                return this;
+            },
+            get: function get(ids) {
+                ids = _.isArray(ids) ? ids : [].slice.call(arguments);
+                return this.index.get(ids);
+            },
+            search: function search(query, sync, async) {
+                var that = this, local;
+                local = this.sorter(this.index.search(query));
+                sync(this.remote ? local.slice() : local);
+                if (this.remote && local.length < this.sufficient) {
+                    this.remote.get(query, processRemote);
+                } else if (this.remote) {
+                    this.remote.cancelLastRequest();
+                }
+                return this;
+                function processRemote(remote) {
+                    var nonDuplicates = [];
+                    _.each(remote, function(r) {
+                        !_.some(local, function(l) {
+                            return that.identify(r) === that.identify(l);
+                        }) && nonDuplicates.push(r);
+                    });
+                    async && async(nonDuplicates);
+                }
+            },
+            all: function all() {
+                return this.index.all();
+            },
+            clear: function clear() {
+                this.index.reset();
+                return this;
+            },
+            clearPrefetchCache: function clearPrefetchCache() {
+                this.prefetch && this.prefetch.clear();
+                return this;
+            },
+            clearRemoteCache: function clearRemoteCache() {
+                Transport.resetCache();
+                return this;
+            },
+            ttAdapter: function ttAdapter() {
+                return this.__ttAdapter();
+            }
+        });
+        return Bloodhound;
+    }();
+    return Bloodhound;
+});
+
+(function(root, factory) {
+    if (typeof define === "function" && define.amd) {
+        define("typeahead.js", [ "jquery" ], function(a0) {
+            return factory(a0);
+        });
+    } else if (typeof exports === "object") {
+        module.exports = factory(require("jquery"));
+    } else {
+        factory(jQuery);
+    }
+})(this, function($) {
+    var _ = function() {
+        "use strict";
+        return {
+            isMsie: function() {
+                return /(msie|trident)/i.test(navigator.userAgent) ? navigator.userAgent.match(/(msie |rv:)(\d+(.\d+)?)/i)[2] : false;
+            },
+            isBlankString: function(str) {
+                return !str || /^\s*$/.test(str);
+            },
+            escapeRegExChars: function(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            },
+            isString: function(obj) {
+                return typeof obj === "string";
+            },
+            isNumber: function(obj) {
+                return typeof obj === "number";
+            },
+            isArray: $.isArray,
+            isFunction: $.isFunction,
+            isObject: $.isPlainObject,
+            isUndefined: function(obj) {
+                return typeof obj === "undefined";
+            },
+            isElement: function(obj) {
+                return !!(obj && obj.nodeType === 1);
+            },
+            isJQuery: function(obj) {
+                return obj instanceof $;
+            },
+            toStr: function toStr(s) {
+                return _.isUndefined(s) || s === null ? "" : s + "";
+            },
+            bind: $.proxy,
+            each: function(collection, cb) {
+                $.each(collection, reverseArgs);
+                function reverseArgs(index, value) {
+                    return cb(value, index);
+                }
+            },
+            map: $.map,
+            filter: $.grep,
+            every: function(obj, test) {
+                var result = true;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (!(result = test.call(null, val, key, obj))) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            some: function(obj, test) {
+                var result = false;
+                if (!obj) {
+                    return result;
+                }
+                $.each(obj, function(key, val) {
+                    if (result = test.call(null, val, key, obj)) {
+                        return false;
+                    }
+                });
+                return !!result;
+            },
+            mixin: $.extend,
+            identity: function(x) {
+                return x;
+            },
+            clone: function(obj) {
+                return $.extend(true, {}, obj);
+            },
+            getIdGenerator: function() {
+                var counter = 0;
+                return function() {
+                    return counter++;
+                };
+            },
+            templatify: function templatify(obj) {
+                return $.isFunction(obj) ? obj : template;
+                function template() {
+                    return String(obj);
+                }
+            },
+            defer: function(fn) {
+                setTimeout(fn, 0);
+            },
+            debounce: function(func, wait, immediate) {
+                var timeout, result;
+                return function() {
+                    var context = this, args = arguments, later, callNow;
+                    later = function() {
+                        timeout = null;
+                        if (!immediate) {
+                            result = func.apply(context, args);
+                        }
+                    };
+                    callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) {
+                        result = func.apply(context, args);
+                    }
+                    return result;
+                };
+            },
+            throttle: function(func, wait) {
+                var context, args, timeout, result, previous, later;
+                previous = 0;
+                later = function() {
+                    previous = new Date();
+                    timeout = null;
+                    result = func.apply(context, args);
+                };
+                return function() {
+                    var now = new Date(), remaining = wait - (now - previous);
+                    context = this;
+                    args = arguments;
+                    if (remaining <= 0) {
+                        clearTimeout(timeout);
+                        timeout = null;
+                        previous = now;
+                        result = func.apply(context, args);
+                    } else if (!timeout) {
+                        timeout = setTimeout(later, remaining);
+                    }
+                    return result;
+                };
+            },
+            stringify: function(val) {
+                return _.isString(val) ? val : JSON.stringify(val);
+            },
+            noop: function() {}
+        };
+    }();
+    var WWW = function() {
+        "use strict";
+        var defaultClassNames = {
+            wrapper: "twitter-typeahead",
+            input: "tt-input",
+            hint: "tt-hint",
+            menu: "tt-menu",
+            dataset: "tt-dataset",
+            suggestion: "tt-suggestion",
+            selectable: "tt-selectable",
+            empty: "tt-empty",
+            open: "tt-open",
+            cursor: "tt-cursor",
+            highlight: "tt-highlight"
+        };
+        return build;
+        function build(o) {
+            var www, classes;
+            classes = _.mixin({}, defaultClassNames, o);
+            www = {
+                css: buildCss(),
+                classes: classes,
+                html: buildHtml(classes),
+                selectors: buildSelectors(classes)
+            };
+            return {
+                css: www.css,
+                html: www.html,
+                classes: www.classes,
+                selectors: www.selectors,
+                mixin: function(o) {
+                    _.mixin(o, www);
+                }
+            };
+        }
+        function buildHtml(c) {
+            return {
+                wrapper: '<span class="' + c.wrapper + '"></span>',
+                menu: '<div class="' + c.menu + '"></div>'
+            };
+        }
+        function buildSelectors(classes) {
+            var selectors = {};
+            _.each(classes, function(v, k) {
+                selectors[k] = "." + v;
+            });
+            return selectors;
+        }
+        function buildCss() {
+            var css = {
+                wrapper: {
+                    position: "relative",
+                    display: "inline-block"
+                },
+                hint: {
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    borderColor: "transparent",
+                    boxShadow: "none",
+                    opacity: "1"
+                },
+                input: {
+                    position: "relative",
+                    verticalAlign: "top",
+                    backgroundColor: "transparent"
+                },
+                inputWithNoHint: {
+                    position: "relative",
+                    verticalAlign: "top"
+                },
+                menu: {
+                    position: "absolute",
+                    top: "100%",
+                    left: "0",
+                    zIndex: "100",
+                    display: "none"
+                },
+                ltr: {
+                    left: "0",
+                    right: "auto"
+                },
+                rtl: {
+                    left: "auto",
+                    right: " 0"
+                }
+            };
+            if (_.isMsie()) {
+                _.mixin(css.input, {
+                    backgroundImage: "url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7)"
+                });
+            }
+            return css;
+        }
+    }();
+    var EventBus = function() {
+        "use strict";
+        var namespace, deprecationMap;
+        namespace = "typeahead:";
+        deprecationMap = {
+            render: "rendered",
+            cursorchange: "cursorchanged",
+            select: "selected",
+            autocomplete: "autocompleted"
+        };
+        function EventBus(o) {
+            if (!o || !o.el) {
+                $.error("EventBus initialized without el");
+            }
+            this.$el = $(o.el);
+        }
+        _.mixin(EventBus.prototype, {
+            _trigger: function(type, args) {
+                var $e;
+                $e = $.Event(namespace + type);
+                (args = args || []).unshift($e);
+                this.$el.trigger.apply(this.$el, args);
+                return $e;
+            },
+            before: function(type) {
+                var args, $e;
+                args = [].slice.call(arguments, 1);
+                $e = this._trigger("before" + type, args);
+                return $e.isDefaultPrevented();
+            },
+            trigger: function(type) {
+                var deprecatedType;
+                this._trigger(type, [].slice.call(arguments, 1));
+                if (deprecatedType = deprecationMap[type]) {
+                    this._trigger(deprecatedType, [].slice.call(arguments, 1));
+                }
+            }
+        });
+        return EventBus;
+    }();
+    var EventEmitter = function() {
+        "use strict";
+        var splitter = /\s+/, nextTick = getNextTick();
+        return {
+            onSync: onSync,
+            onAsync: onAsync,
+            off: off,
+            trigger: trigger
+        };
+        function on(method, types, cb, context) {
+            var type;
+            if (!cb) {
+                return this;
+            }
+            types = types.split(splitter);
+            cb = context ? bindContext(cb, context) : cb;
+            this._callbacks = this._callbacks || {};
+            while (type = types.shift()) {
+                this._callbacks[type] = this._callbacks[type] || {
+                    sync: [],
+                    async: []
+                };
+                this._callbacks[type][method].push(cb);
+            }
+            return this;
+        }
+        function onAsync(types, cb, context) {
+            return on.call(this, "async", types, cb, context);
+        }
+        function onSync(types, cb, context) {
+            return on.call(this, "sync", types, cb, context);
+        }
+        function off(types) {
+            var type;
+            if (!this._callbacks) {
+                return this;
+            }
+            types = types.split(splitter);
+            while (type = types.shift()) {
+                delete this._callbacks[type];
+            }
+            return this;
+        }
+        function trigger(types) {
+            var type, callbacks, args, syncFlush, asyncFlush;
+            if (!this._callbacks) {
+                return this;
+            }
+            types = types.split(splitter);
+            args = [].slice.call(arguments, 1);
+            while ((type = types.shift()) && (callbacks = this._callbacks[type])) {
+                syncFlush = getFlush(callbacks.sync, this, [ type ].concat(args));
+                asyncFlush = getFlush(callbacks.async, this, [ type ].concat(args));
+                syncFlush() && nextTick(asyncFlush);
+            }
+            return this;
+        }
+        function getFlush(callbacks, context, args) {
+            return flush;
+            function flush() {
+                var cancelled;
+                for (var i = 0, len = callbacks.length; !cancelled && i < len; i += 1) {
+                    cancelled = callbacks[i].apply(context, args) === false;
+                }
+                return !cancelled;
+            }
+        }
+        function getNextTick() {
+            var nextTickFn;
+            if (window.setImmediate) {
+                nextTickFn = function nextTickSetImmediate(fn) {
+                    setImmediate(function() {
+                        fn();
+                    });
+                };
+            } else {
+                nextTickFn = function nextTickSetTimeout(fn) {
+                    setTimeout(function() {
+                        fn();
+                    }, 0);
+                };
+            }
+            return nextTickFn;
+        }
+        function bindContext(fn, context) {
+            return fn.bind ? fn.bind(context) : function() {
+                fn.apply(context, [].slice.call(arguments, 0));
+            };
+        }
+    }();
+    var highlight = function(doc) {
+        "use strict";
+        var defaults = {
+            node: null,
+            pattern: null,
+            tagName: "strong",
+            className: null,
+            wordsOnly: false,
+            caseSensitive: false
+        };
+        return function hightlight(o) {
+            var regex;
+            o = _.mixin({}, defaults, o);
+            if (!o.node || !o.pattern) {
+                return;
+            }
+            o.pattern = _.isArray(o.pattern) ? o.pattern : [ o.pattern ];
+            regex = getRegex(o.pattern, o.caseSensitive, o.wordsOnly);
+            traverse(o.node, hightlightTextNode);
+            function hightlightTextNode(textNode) {
+                var match, patternNode, wrapperNode;
+                if (match = regex.exec(textNode.data)) {
+                    wrapperNode = doc.createElement(o.tagName);
+                    o.className && (wrapperNode.className = o.className);
+                    patternNode = textNode.splitText(match.index);
+                    patternNode.splitText(match[0].length);
+                    wrapperNode.appendChild(patternNode.cloneNode(true));
+                    textNode.parentNode.replaceChild(wrapperNode, patternNode);
+                }
+                return !!match;
+            }
+            function traverse(el, hightlightTextNode) {
+                var childNode, TEXT_NODE_TYPE = 3;
+                for (var i = 0; i < el.childNodes.length; i++) {
+                    childNode = el.childNodes[i];
+                    if (childNode.nodeType === TEXT_NODE_TYPE) {
+                        i += hightlightTextNode(childNode) ? 1 : 0;
+                    } else {
+                        traverse(childNode, hightlightTextNode);
+                    }
+                }
+            }
+        };
+        function getRegex(patterns, caseSensitive, wordsOnly) {
+            var escapedPatterns = [], regexStr;
+            for (var i = 0, len = patterns.length; i < len; i++) {
+                escapedPatterns.push(_.escapeRegExChars(patterns[i]));
+            }
+            regexStr = wordsOnly ? "\\b(" + escapedPatterns.join("|") + ")\\b" : "(" + escapedPatterns.join("|") + ")";
+            return caseSensitive ? new RegExp(regexStr) : new RegExp(regexStr, "i");
+        }
+    }(window.document);
+    var Input = function() {
+        "use strict";
+        var specialKeyCodeMap;
+        specialKeyCodeMap = {
+            9: "tab",
+            27: "esc",
+            37: "left",
+            39: "right",
+            13: "enter",
+            38: "up",
+            40: "down"
+        };
+        function Input(o, www) {
+            o = o || {};
+            if (!o.input) {
+                $.error("input is missing");
+            }
+            www.mixin(this);
+            this.$hint = $(o.hint);
+            this.$input = $(o.input);
+            this.query = this.$input.val();
+            this.queryWhenFocused = this.hasFocus() ? this.query : null;
+            this.$overflowHelper = buildOverflowHelper(this.$input);
+            this._checkLanguageDirection();
+            if (this.$hint.length === 0) {
+                this.setHint = this.getHint = this.clearHint = this.clearHintIfInvalid = _.noop;
+            }
+        }
+        Input.normalizeQuery = function(str) {
+            return _.toStr(str).replace(/^\s*/g, "").replace(/\s{2,}/g, " ");
+        };
+        _.mixin(Input.prototype, EventEmitter, {
+            _onBlur: function onBlur() {
+                this.resetInputValue();
+                this.trigger("blurred");
+            },
+            _onFocus: function onFocus() {
+                this.queryWhenFocused = this.query;
+                this.trigger("focused");
+            },
+            _onKeydown: function onKeydown($e) {
+                var keyName = specialKeyCodeMap[$e.which || $e.keyCode];
+                this._managePreventDefault(keyName, $e);
+                if (keyName && this._shouldTrigger(keyName, $e)) {
+                    this.trigger(keyName + "Keyed", $e);
+                }
+            },
+            _onInput: function onInput() {
+                this._setQuery(this.getInputValue());
+                this.clearHintIfInvalid();
+                this._checkLanguageDirection();
+            },
+            _managePreventDefault: function managePreventDefault(keyName, $e) {
+                var preventDefault;
+                switch (keyName) {
+                  case "up":
+                  case "down":
+                    preventDefault = !withModifier($e);
+                    break;
+
+                  default:
+                    preventDefault = false;
+                }
+                preventDefault && $e.preventDefault();
+            },
+            _shouldTrigger: function shouldTrigger(keyName, $e) {
+                var trigger;
+                switch (keyName) {
+                  case "tab":
+                    trigger = !withModifier($e);
+                    break;
+
+                  default:
+                    trigger = true;
+                }
+                return trigger;
+            },
+            _checkLanguageDirection: function checkLanguageDirection() {
+                var dir = (this.$input.css("direction") || "ltr").toLowerCase();
+                if (this.dir !== dir) {
+                    this.dir = dir;
+                    this.$hint.attr("dir", dir);
+                    this.trigger("langDirChanged", dir);
+                }
+            },
+            _setQuery: function setQuery(val, silent) {
+                var areEquivalent, hasDifferentWhitespace;
+                areEquivalent = areQueriesEquivalent(val, this.query);
+                hasDifferentWhitespace = areEquivalent ? this.query.length !== val.length : false;
+                this.query = val;
+                if (!silent && !areEquivalent) {
+                    this.trigger("queryChanged", this.query);
+                } else if (!silent && hasDifferentWhitespace) {
+                    this.trigger("whitespaceChanged", this.query);
+                }
+            },
+            bind: function() {
+                var that = this, onBlur, onFocus, onKeydown, onInput;
+                onBlur = _.bind(this._onBlur, this);
+                onFocus = _.bind(this._onFocus, this);
+                onKeydown = _.bind(this._onKeydown, this);
+                onInput = _.bind(this._onInput, this);
+                this.$input.on("blur.tt", onBlur).on("focus.tt", onFocus).on("keydown.tt", onKeydown);
+                if (!_.isMsie() || _.isMsie() > 9) {
+                    this.$input.on("input.tt", onInput);
+                } else {
+                    this.$input.on("keydown.tt keypress.tt cut.tt paste.tt", function($e) {
+                        if (specialKeyCodeMap[$e.which || $e.keyCode]) {
+                            return;
+                        }
+                        _.defer(_.bind(that._onInput, that, $e));
+                    });
+                }
+                return this;
+            },
+            focus: function focus() {
+                this.$input.focus();
+            },
+            blur: function blur() {
+                this.$input.blur();
+            },
+            getLangDir: function getLangDir() {
+                return this.dir;
+            },
+            getQuery: function getQuery() {
+                return this.query || "";
+            },
+            setQuery: function setQuery(val, silent) {
+                this.setInputValue(val);
+                this._setQuery(val, silent);
+            },
+            hasQueryChangedSinceLastFocus: function hasQueryChangedSinceLastFocus() {
+                return this.query !== this.queryWhenFocused;
+            },
+            getInputValue: function getInputValue() {
+                return this.$input.val();
+            },
+            setInputValue: function setInputValue(value) {
+                this.$input.val(value);
+                this.clearHintIfInvalid();
+                this._checkLanguageDirection();
+            },
+            resetInputValue: function resetInputValue() {
+                this.setInputValue(this.query);
+            },
+            getHint: function getHint() {
+                return this.$hint.val();
+            },
+            setHint: function setHint(value) {
+                this.$hint.val(value);
+            },
+            clearHint: function clearHint() {
+                this.setHint("");
+            },
+            clearHintIfInvalid: function clearHintIfInvalid() {
+                var val, hint, valIsPrefixOfHint, isValid;
+                val = this.getInputValue();
+                hint = this.getHint();
+                valIsPrefixOfHint = val !== hint && hint.indexOf(val) === 0;
+                isValid = val !== "" && valIsPrefixOfHint && !this.hasOverflow();
+                !isValid && this.clearHint();
+            },
+            hasFocus: function hasFocus() {
+                return this.$input.is(":focus");
+            },
+            hasOverflow: function hasOverflow() {
+                var constraint = this.$input.width() - 2;
+                this.$overflowHelper.text(this.getInputValue());
+                return this.$overflowHelper.width() >= constraint;
+            },
+            isCursorAtEnd: function() {
+                var valueLength, selectionStart, range;
+                valueLength = this.$input.val().length;
+                selectionStart = this.$input[0].selectionStart;
+                if (_.isNumber(selectionStart)) {
+                    return selectionStart === valueLength;
+                } else if (document.selection) {
+                    range = document.selection.createRange();
+                    range.moveStart("character", -valueLength);
+                    return valueLength === range.text.length;
+                }
+                return true;
+            },
+            destroy: function destroy() {
+                this.$hint.off(".tt");
+                this.$input.off(".tt");
+                this.$overflowHelper.remove();
+                this.$hint = this.$input = this.$overflowHelper = $("<div>");
+            }
+        });
+        return Input;
+        function buildOverflowHelper($input) {
+            return $('<pre aria-hidden="true"></pre>').css({
+                position: "absolute",
+                visibility: "hidden",
+                whiteSpace: "pre",
+                fontFamily: $input.css("font-family"),
+                fontSize: $input.css("font-size"),
+                fontStyle: $input.css("font-style"),
+                fontVariant: $input.css("font-variant"),
+                fontWeight: $input.css("font-weight"),
+                wordSpacing: $input.css("word-spacing"),
+                letterSpacing: $input.css("letter-spacing"),
+                textIndent: $input.css("text-indent"),
+                textRendering: $input.css("text-rendering"),
+                textTransform: $input.css("text-transform")
+            }).insertAfter($input);
+        }
+        function areQueriesEquivalent(a, b) {
+            return Input.normalizeQuery(a) === Input.normalizeQuery(b);
+        }
+        function withModifier($e) {
+            return $e.altKey || $e.ctrlKey || $e.metaKey || $e.shiftKey;
+        }
+    }();
+    var Dataset = function() {
+        "use strict";
+        var keys, nameGenerator;
+        keys = {
+            val: "tt-selectable-display",
+            obj: "tt-selectable-object"
+        };
+        nameGenerator = _.getIdGenerator();
+        function Dataset(o, www) {
+            o = o || {};
+            o.templates = o.templates || {};
+            o.templates.notFound = o.templates.notFound || o.templates.empty;
+            if (!o.source) {
+                $.error("missing source");
+            }
+            if (!o.node) {
+                $.error("missing node");
+            }
+            if (o.name && !isValidName(o.name)) {
+                $.error("invalid dataset name: " + o.name);
+            }
+            www.mixin(this);
+            this.highlight = !!o.highlight;
+            this.name = o.name || nameGenerator();
+            this.limit = o.limit || 5;
+            this.displayFn = getDisplayFn(o.display || o.displayKey);
+            this.templates = getTemplates(o.templates, this.displayFn);
+            this.source = o.source.__ttAdapter ? o.source.__ttAdapter() : o.source;
+            this.async = _.isUndefined(o.async) ? this.source.length > 2 : !!o.async;
+            this._resetLastSuggestion();
+            this.$el = $(o.node).addClass(this.classes.dataset).addClass(this.classes.dataset + "-" + this.name);
+        }
+        Dataset.extractData = function extractData(el) {
+            var $el = $(el);
+            if ($el.data(keys.obj)) {
+                return {
+                    val: $el.data(keys.val) || "",
+                    obj: $el.data(keys.obj) || null
+                };
+            }
+            return null;
+        };
+        _.mixin(Dataset.prototype, EventEmitter, {
+            _overwrite: function overwrite(query, suggestions) {
+                suggestions = suggestions || [];
+                if (suggestions.length) {
+                    this._renderSuggestions(query, suggestions);
+                } else if (this.async && this.templates.pending) {
+                    this._renderPending(query);
+                } else if (!this.async && this.templates.notFound) {
+                    this._renderNotFound(query);
+                } else {
+                    this._empty();
+                }
+                this.trigger("rendered", this.name, suggestions, false);
+            },
+            _append: function append(query, suggestions) {
+                suggestions = suggestions || [];
+                if (suggestions.length && this.$lastSuggestion.length) {
+                    this._appendSuggestions(query, suggestions);
+                } else if (suggestions.length) {
+                    this._renderSuggestions(query, suggestions);
+                } else if (!this.$lastSuggestion.length && this.templates.notFound) {
+                    this._renderNotFound(query);
+                }
+                this.trigger("rendered", this.name, suggestions, true);
+            },
+            _renderSuggestions: function renderSuggestions(query, suggestions) {
+                var $fragment;
+                $fragment = this._getSuggestionsFragment(query, suggestions);
+                this.$lastSuggestion = $fragment.children().last();
+                this.$el.html($fragment).prepend(this._getHeader(query, suggestions)).append(this._getFooter(query, suggestions));
+            },
+            _appendSuggestions: function appendSuggestions(query, suggestions) {
+                var $fragment, $lastSuggestion;
+                $fragment = this._getSuggestionsFragment(query, suggestions);
+                $lastSuggestion = $fragment.children().last();
+                this.$lastSuggestion.after($fragment);
+                this.$lastSuggestion = $lastSuggestion;
+            },
+            _renderPending: function renderPending(query) {
+                var template = this.templates.pending;
+                this._resetLastSuggestion();
+                template && this.$el.html(template({
+                    query: query,
+                    dataset: this.name
+                }));
+            },
+            _renderNotFound: function renderNotFound(query) {
+                var template = this.templates.notFound;
+                this._resetLastSuggestion();
+                template && this.$el.html(template({
+                    query: query,
+                    dataset: this.name
+                }));
+            },
+            _empty: function empty() {
+                this.$el.empty();
+                this._resetLastSuggestion();
+            },
+            _getSuggestionsFragment: function getSuggestionsFragment(query, suggestions) {
+                var that = this, fragment;
+                fragment = document.createDocumentFragment();
+                _.each(suggestions, function getSuggestionNode(suggestion) {
+                    var $el, context;
+                    context = that._injectQuery(query, suggestion);
+                    $el = $(that.templates.suggestion(context)).data(keys.obj, suggestion).data(keys.val, that.displayFn(suggestion)).addClass(that.classes.suggestion + " " + that.classes.selectable);
+                    fragment.appendChild($el[0]);
+                });
+                this.highlight && highlight({
+                    className: this.classes.highlight,
+                    node: fragment,
+                    pattern: query
+                });
+                return $(fragment);
+            },
+            _getFooter: function getFooter(query, suggestions) {
+                return this.templates.footer ? this.templates.footer({
+                    query: query,
+                    suggestions: suggestions,
+                    dataset: this.name
+                }) : null;
+            },
+            _getHeader: function getHeader(query, suggestions) {
+                return this.templates.header ? this.templates.header({
+                    query: query,
+                    suggestions: suggestions,
+                    dataset: this.name
+                }) : null;
+            },
+            _resetLastSuggestion: function resetLastSuggestion() {
+                this.$lastSuggestion = $();
+            },
+            _injectQuery: function injectQuery(query, obj) {
+                return _.isObject(obj) ? _.mixin({
+                    _query: query
+                }, obj) : obj;
+            },
+            update: function update(query) {
+                var that = this, canceled = false, syncCalled = false, rendered = 0;
+                this.cancel();
+                this.cancel = function cancel() {
+                    canceled = true;
+                    that.cancel = $.noop;
+                    that.async && that.trigger("asyncCanceled", query);
+                };
+                this.source(query, sync, async);
+                !syncCalled && sync([]);
+                function sync(suggestions) {
+                    if (syncCalled) {
+                        return;
+                    }
+                    syncCalled = true;
+                    suggestions = (suggestions || []).slice(0, that.limit);
+                    rendered = suggestions.length;
+                    that._overwrite(query, suggestions);
+                    if (rendered < that.limit && that.async) {
+                        that.trigger("asyncRequested", query);
+                    }
+                }
+                function async(suggestions) {
+                    suggestions = suggestions || [];
+                    if (!canceled && rendered < that.limit) {
+                        that.cancel = $.noop;
+                        rendered += suggestions.length;
+                        that._append(query, suggestions.slice(0, that.limit - rendered));
+                        that.async && that.trigger("asyncReceived", query);
+                    }
+                }
+            },
+            cancel: $.noop,
+            clear: function clear() {
+                this._empty();
+                this.cancel();
+                this.trigger("cleared");
+            },
+            isEmpty: function isEmpty() {
+                return this.$el.is(":empty");
+            },
+            destroy: function destroy() {
+                this.$el = $("<div>");
+            }
+        });
+        return Dataset;
+        function getDisplayFn(display) {
+            display = display || _.stringify;
+            return _.isFunction(display) ? display : displayFn;
+            function displayFn(obj) {
+                return obj[display];
+            }
+        }
+        function getTemplates(templates, displayFn) {
+            return {
+                notFound: templates.notFound && _.templatify(templates.notFound),
+                pending: templates.pending && _.templatify(templates.pending),
+                header: templates.header && _.templatify(templates.header),
+                footer: templates.footer && _.templatify(templates.footer),
+                suggestion: templates.suggestion || suggestionTemplate
+            };
+            function suggestionTemplate(context) {
+                return $("<div>").text(displayFn(context));
+            }
+        }
+        function isValidName(str) {
+            return /^[_a-zA-Z0-9-]+$/.test(str);
+        }
+    }();
+    var Menu = function() {
+        "use strict";
+        function Menu(o, www) {
+            var that = this;
+            o = o || {};
+            if (!o.node) {
+                $.error("node is required");
+            }
+            www.mixin(this);
+            this.$node = $(o.node);
+            this.query = null;
+            this.datasets = _.map(o.datasets, initializeDataset);
+            function initializeDataset(oDataset) {
+                var node = that.$node.find(oDataset.node).first();
+                oDataset.node = node.length ? node : $("<div>").appendTo(that.$node);
+                return new Dataset(oDataset, www);
+            }
+        }
+        _.mixin(Menu.prototype, EventEmitter, {
+            _onSelectableClick: function onSelectableClick($e) {
+                this.trigger("selectableClicked", $($e.currentTarget));
+            },
+            _onRendered: function onRendered(type, dataset, suggestions, async) {
+                this.$node.toggleClass(this.classes.empty, this._allDatasetsEmpty());
+                this.trigger("datasetRendered", dataset, suggestions, async);
+            },
+            _onCleared: function onCleared() {
+                this.$node.toggleClass(this.classes.empty, this._allDatasetsEmpty());
+                this.trigger("datasetCleared");
+            },
+            _propagate: function propagate() {
+                this.trigger.apply(this, arguments);
+            },
+            _allDatasetsEmpty: function allDatasetsEmpty() {
+                return _.every(this.datasets, isDatasetEmpty);
+                function isDatasetEmpty(dataset) {
+                    return dataset.isEmpty();
+                }
+            },
+            _getSelectables: function getSelectables() {
+                return this.$node.find(this.selectors.selectable);
+            },
+            _removeCursor: function _removeCursor() {
+                var $selectable = this.getActiveSelectable();
+                $selectable && $selectable.removeClass(this.classes.cursor);
+            },
+            _ensureVisible: function ensureVisible($el) {
+                var elTop, elBottom, nodeScrollTop, nodeHeight;
+                elTop = $el.position().top;
+                elBottom = elTop + $el.outerHeight(true);
+                nodeScrollTop = this.$node.scrollTop();
+                nodeHeight = this.$node.height() + parseInt(this.$node.css("paddingTop"), 10) + parseInt(this.$node.css("paddingBottom"), 10);
+                if (elTop < 0) {
+                    this.$node.scrollTop(nodeScrollTop + elTop);
+                } else if (nodeHeight < elBottom) {
+                    this.$node.scrollTop(nodeScrollTop + (elBottom - nodeHeight));
+                }
+            },
+            bind: function() {
+                var that = this, onSelectableClick;
+                onSelectableClick = _.bind(this._onSelectableClick, this);
+                this.$node.on("click.tt", this.selectors.selectable, onSelectableClick);
+                _.each(this.datasets, function(dataset) {
+                    dataset.onSync("asyncRequested", that._propagate, that).onSync("asyncCanceled", that._propagate, that).onSync("asyncReceived", that._propagate, that).onSync("rendered", that._onRendered, that).onSync("cleared", that._onCleared, that);
+                });
+                return this;
+            },
+            isOpen: function isOpen() {
+                return this.$node.hasClass(this.classes.open);
+            },
+            open: function open() {
+                this.$node.addClass(this.classes.open);
+            },
+            close: function close() {
+                this.$node.removeClass(this.classes.open);
+                this._removeCursor();
+            },
+            setLanguageDirection: function setLanguageDirection(dir) {
+                this.$node.attr("dir", dir);
+            },
+            selectableRelativeToCursor: function selectableRelativeToCursor(delta) {
+                var $selectables, $oldCursor, oldIndex, newIndex;
+                $oldCursor = this.getActiveSelectable();
+                $selectables = this._getSelectables();
+                oldIndex = $oldCursor ? $selectables.index($oldCursor) : -1;
+                newIndex = oldIndex + delta;
+                newIndex = (newIndex + 1) % ($selectables.length + 1) - 1;
+                newIndex = newIndex < -1 ? $selectables.length - 1 : newIndex;
+                return newIndex === -1 ? null : $selectables.eq(newIndex);
+            },
+            setCursor: function setCursor($selectable) {
+                this._removeCursor();
+                if ($selectable = $selectable && $selectable.first()) {
+                    $selectable.addClass(this.classes.cursor);
+                    this._ensureVisible($selectable);
+                }
+            },
+            getSelectableData: function getSelectableData($el) {
+                return $el && $el.length ? Dataset.extractData($el) : null;
+            },
+            getActiveSelectable: function getActiveSelectable() {
+                var $selectable = this._getSelectables().filter(this.selectors.cursor).first();
+                return $selectable.length ? $selectable : null;
+            },
+            getTopSelectable: function getTopSelectable() {
+                var $selectable = this._getSelectables().first();
+                return $selectable.length ? $selectable : null;
+            },
+            update: function update(query) {
+                var isValidUpdate = query !== this.query;
+                if (isValidUpdate) {
+                    this.query = query;
+                    _.each(this.datasets, updateDataset);
+                }
+                return isValidUpdate;
+                function updateDataset(dataset) {
+                    dataset.update(query);
+                }
+            },
+            empty: function empty() {
+                _.each(this.datasets, clearDataset);
+                this.query = null;
+                this.$node.addClass(this.classes.empty);
+                function clearDataset(dataset) {
+                    dataset.clear();
+                }
+            },
+            destroy: function destroy() {
+                this.$node.off(".tt");
+                this.$node = $("<div>");
+                _.each(this.datasets, destroyDataset);
+                function destroyDataset(dataset) {
+                    dataset.destroy();
+                }
+            }
+        });
+        return Menu;
+    }();
+    var DefaultMenu = function() {
+        "use strict";
+        var s = Menu.prototype;
+        function DefaultMenu() {
+            Menu.apply(this, [].slice.call(arguments, 0));
+        }
+        _.mixin(DefaultMenu.prototype, Menu.prototype, {
+            open: function open() {
+                !this._allDatasetsEmpty() && this._show();
+                return s.open.apply(this, [].slice.call(arguments, 0));
+            },
+            close: function close() {
+                this._hide();
+                return s.close.apply(this, [].slice.call(arguments, 0));
+            },
+            _onRendered: function onRendered() {
+                if (this._allDatasetsEmpty()) {
+                    this._hide();
+                } else {
+                    this.isOpen() && this._show();
+                }
+                return s._onRendered.apply(this, [].slice.call(arguments, 0));
+            },
+            _onCleared: function onCleared() {
+                if (this._allDatasetsEmpty()) {
+                    this._hide();
+                } else {
+                    this.isOpen() && this._show();
+                }
+                return s._onCleared.apply(this, [].slice.call(arguments, 0));
+            },
+            setLanguageDirection: function setLanguageDirection(dir) {
+                this.$node.css(dir === "ltr" ? this.css.ltr : this.css.rtl);
+                return s.setLanguageDirection.apply(this, [].slice.call(arguments, 0));
+            },
+            _hide: function hide() {
+                this.$node.hide();
+            },
+            _show: function show() {
+                this.$node.css("display", "block");
+            }
+        });
+        return DefaultMenu;
+    }();
+    var Typeahead = function() {
+        "use strict";
+        function Typeahead(o, www) {
+            var onFocused, onBlurred, onEnterKeyed, onTabKeyed, onEscKeyed, onUpKeyed, onDownKeyed, onLeftKeyed, onRightKeyed, onQueryChanged, onWhitespaceChanged;
+            o = o || {};
+            if (!o.input) {
+                $.error("missing input");
+            }
+            if (!o.menu) {
+                $.error("missing menu");
+            }
+            if (!o.eventBus) {
+                $.error("missing event bus");
+            }
+            www.mixin(this);
+            this.eventBus = o.eventBus;
+            this.minLength = _.isNumber(o.minLength) ? o.minLength : 1;
+            this.input = o.input;
+            this.menu = o.menu;
+            this.enabled = true;
+            this.active = false;
+            this.input.hasFocus() && this.activate();
+            this.dir = this.input.getLangDir();
+            this._hacks();
+            this.menu.bind().onSync("selectableClicked", this._onSelectableClicked, this).onSync("asyncRequested", this._onAsyncRequested, this).onSync("asyncCanceled", this._onAsyncCanceled, this).onSync("asyncReceived", this._onAsyncReceived, this).onSync("datasetRendered", this._onDatasetRendered, this).onSync("datasetCleared", this._onDatasetCleared, this);
+            onFocused = c(this, "activate", "open", "_onFocused");
+            onBlurred = c(this, "deactivate", "_onBlurred");
+            onEnterKeyed = c(this, "isActive", "isOpen", "_onEnterKeyed");
+            onTabKeyed = c(this, "isActive", "isOpen", "_onTabKeyed");
+            onEscKeyed = c(this, "isActive", "_onEscKeyed");
+            onUpKeyed = c(this, "isActive", "open", "_onUpKeyed");
+            onDownKeyed = c(this, "isActive", "open", "_onDownKeyed");
+            onLeftKeyed = c(this, "isActive", "isOpen", "_onLeftKeyed");
+            onRightKeyed = c(this, "isActive", "isOpen", "_onRightKeyed");
+            onQueryChanged = c(this, "_openIfActive", "_onQueryChanged");
+            onWhitespaceChanged = c(this, "_openIfActive", "_onWhitespaceChanged");
+            this.input.bind().onSync("focused", onFocused, this).onSync("blurred", onBlurred, this).onSync("enterKeyed", onEnterKeyed, this).onSync("tabKeyed", onTabKeyed, this).onSync("escKeyed", onEscKeyed, this).onSync("upKeyed", onUpKeyed, this).onSync("downKeyed", onDownKeyed, this).onSync("leftKeyed", onLeftKeyed, this).onSync("rightKeyed", onRightKeyed, this).onSync("queryChanged", onQueryChanged, this).onSync("whitespaceChanged", onWhitespaceChanged, this).onSync("langDirChanged", this._onLangDirChanged, this);
+        }
+        _.mixin(Typeahead.prototype, {
+            _hacks: function hacks() {
+                var $input, $menu;
+                $input = this.input.$input || $("<div>");
+                $menu = this.menu.$node || $("<div>");
+                $input.on("blur.tt", function($e) {
+                    var active, isActive, hasActive;
+                    active = document.activeElement;
+                    isActive = $menu.is(active);
+                    hasActive = $menu.has(active).length > 0;
+                    if (_.isMsie() && (isActive || hasActive)) {
+                        $e.preventDefault();
+                        $e.stopImmediatePropagation();
+                        _.defer(function() {
+                            $input.focus();
+                        });
+                    }
+                });
+                $menu.on("mousedown.tt", function($e) {
+                    $e.preventDefault();
+                });
+            },
+            _onSelectableClicked: function onSelectableClicked(type, $el) {
+                this.select($el);
+            },
+            _onDatasetCleared: function onDatasetCleared() {
+                this._updateHint();
+            },
+            _onDatasetRendered: function onDatasetRendered(type, dataset, suggestions, async) {
+                this._updateHint();
+                this.eventBus.trigger("render", suggestions, async, dataset);
+            },
+            _onAsyncRequested: function onAsyncRequested(type, dataset, query) {
+                this.eventBus.trigger("asyncrequest", query, dataset);
+            },
+            _onAsyncCanceled: function onAsyncCanceled(type, dataset, query) {
+                this.eventBus.trigger("asynccancel", query, dataset);
+            },
+            _onAsyncReceived: function onAsyncReceived(type, dataset, query) {
+                this.eventBus.trigger("asyncreceive", query, dataset);
+            },
+            _onFocused: function onFocused() {
+                this._minLengthMet() && this.menu.update(this.input.getQuery());
+            },
+            _onBlurred: function onBlurred() {
+                if (this.input.hasQueryChangedSinceLastFocus()) {
+                    this.eventBus.trigger("change", this.input.getQuery());
+                }
+            },
+            _onEnterKeyed: function onEnterKeyed(type, $e) {
+                var $selectable;
+                if ($selectable = this.menu.getActiveSelectable()) {
+                    this.select($selectable) && $e.preventDefault();
+                }
+            },
+            _onTabKeyed: function onTabKeyed(type, $e) {
+                var $selectable;
+                if ($selectable = this.menu.getActiveSelectable()) {
+                    this.select($selectable) && $e.preventDefault();
+                } else if ($selectable = this.menu.getTopSelectable()) {
+                    this.autocomplete($selectable) && $e.preventDefault();
+                }
+            },
+            _onEscKeyed: function onEscKeyed() {
+                this.close();
+            },
+            _onUpKeyed: function onUpKeyed() {
+                this.moveCursor(-1);
+            },
+            _onDownKeyed: function onDownKeyed() {
+                this.moveCursor(+1);
+            },
+            _onLeftKeyed: function onLeftKeyed() {
+                if (this.dir === "rtl" && this.input.isCursorAtEnd()) {
+                    this.autocomplete(this.menu.getTopSelectable());
+                }
+            },
+            _onRightKeyed: function onRightKeyed() {
+                if (this.dir === "ltr" && this.input.isCursorAtEnd()) {
+                    this.autocomplete(this.menu.getTopSelectable());
+                }
+            },
+            _onQueryChanged: function onQueryChanged(e, query) {
+                this._minLengthMet(query) ? this.menu.update(query) : this.menu.empty();
+            },
+            _onWhitespaceChanged: function onWhitespaceChanged() {
+                this._updateHint();
+            },
+            _onLangDirChanged: function onLangDirChanged(e, dir) {
+                if (this.dir !== dir) {
+                    this.dir = dir;
+                    this.menu.setLanguageDirection(dir);
+                }
+            },
+            _openIfActive: function openIfActive() {
+                this.isActive() && this.open();
+            },
+            _minLengthMet: function minLengthMet(query) {
+                query = _.isString(query) ? query : this.input.getQuery() || "";
+                return query.length >= this.minLength;
+            },
+            _updateHint: function updateHint() {
+                var $selectable, data, val, query, escapedQuery, frontMatchRegEx, match;
+                $selectable = this.menu.getTopSelectable();
+                data = this.menu.getSelectableData($selectable);
+                val = this.input.getInputValue();
+                if (data && !_.isBlankString(val) && !this.input.hasOverflow()) {
+                    query = Input.normalizeQuery(val);
+                    escapedQuery = _.escapeRegExChars(query);
+                    frontMatchRegEx = new RegExp("^(?:" + escapedQuery + ")(.+$)", "i");
+                    match = frontMatchRegEx.exec(data.val);
+                    match && this.input.setHint(val + match[1]);
+                } else {
+                    this.input.clearHint();
+                }
+            },
+            isEnabled: function isEnabled() {
+                return this.enabled;
+            },
+            enable: function enable() {
+                this.enabled = true;
+            },
+            disable: function disable() {
+                this.enabled = false;
+            },
+            isActive: function isActive() {
+                return this.active;
+            },
+            activate: function activate() {
+                if (this.isActive()) {
+                    return true;
+                } else if (!this.isEnabled() || this.eventBus.before("active")) {
+                    return false;
+                } else {
+                    this.active = true;
+                    this.eventBus.trigger("active");
+                    return true;
+                }
+            },
+            deactivate: function deactivate() {
+                if (!this.isActive()) {
+                    return true;
+                } else if (this.eventBus.before("idle")) {
+                    return false;
+                } else {
+                    this.active = false;
+                    this.close();
+                    this.eventBus.trigger("idle");
+                    return true;
+                }
+            },
+            isOpen: function isOpen() {
+                return this.menu.isOpen();
+            },
+            open: function open() {
+                if (!this.isOpen() && !this.eventBus.before("open")) {
+                    this.menu.open();
+                    this._updateHint();
+                    this.eventBus.trigger("open");
+                }
+                return this.isOpen();
+            },
+            close: function close() {
+                if (this.isOpen() && !this.eventBus.before("close")) {
+                    this.menu.close();
+                    this.input.clearHint();
+                    this.input.resetInputValue();
+                    this.eventBus.trigger("close");
+                }
+                return !this.isOpen();
+            },
+            setVal: function setVal(val) {
+                this.input.setQuery(_.toStr(val));
+            },
+            getVal: function getVal() {
+                return this.input.getQuery();
+            },
+            select: function select($selectable) {
+                var data = this.menu.getSelectableData($selectable);
+                if (data && !this.eventBus.before("select", data.obj)) {
+                    this.input.setQuery(data.val, true);
+                    this.eventBus.trigger("select", data.obj);
+                    this.close();
+                    return true;
+                }
+                return false;
+            },
+            autocomplete: function autocomplete($selectable) {
+                var query, data, isValid;
+                query = this.input.getQuery();
+                data = this.menu.getSelectableData($selectable);
+                isValid = data && query !== data.val;
+                if (isValid && !this.eventBus.before("autocomplete", data.obj)) {
+                    this.input.setQuery(data.val);
+                    this.eventBus.trigger("autocomplete", data.obj);
+                    return true;
+                }
+                return false;
+            },
+            moveCursor: function moveCursor(delta) {
+                var query, $candidate, data, payload, cancelMove;
+                query = this.input.getQuery();
+                $candidate = this.menu.selectableRelativeToCursor(delta);
+                data = this.menu.getSelectableData($candidate);
+                payload = data ? data.obj : null;
+                cancelMove = this._minLengthMet() && this.menu.update(query);
+                if (!cancelMove && !this.eventBus.before("cursorchange", payload)) {
+                    this.menu.setCursor($candidate);
+                    if (data) {
+                        this.input.setInputValue(data.val);
+                    } else {
+                        this.input.resetInputValue();
+                        this._updateHint();
+                    }
+                    this.eventBus.trigger("cursorchange", payload);
+                    return true;
+                }
+                return false;
+            },
+            destroy: function destroy() {
+                this.input.destroy();
+                this.menu.destroy();
+            }
+        });
+        return Typeahead;
+        function c(ctx) {
+            var methods = [].slice.call(arguments, 1);
+            return function() {
+                var args = [].slice.call(arguments);
+                _.each(methods, function(method) {
+                    return ctx[method].apply(ctx, args);
+                });
+            };
+        }
+    }();
+    (function() {
+        "use strict";
+        var old, keys, methods;
+        old = $.fn.typeahead;
+        keys = {
+            www: "tt-www",
+            attrs: "tt-attrs",
+            typeahead: "tt-typeahead"
+        };
+        methods = {
+            initialize: function initialize(o, datasets) {
+                var www;
+                datasets = _.isArray(datasets) ? datasets : [].slice.call(arguments, 1);
+                o = o || {};
+                www = WWW(o.classNames);
+                return this.each(attach);
+                function attach() {
+                    var $input, $wrapper, $hint, $menu, defaultHint, defaultMenu, eventBus, input, menu, typeahead, MenuConstructor;
+                    _.each(datasets, function(d) {
+                        d.highlight = !!o.highlight;
+                    });
+                    $input = $(this);
+                    $wrapper = $(www.html.wrapper);
+                    $hint = $elOrNull(o.hint);
+                    $menu = $elOrNull(o.menu);
+                    defaultHint = o.hint !== false && !$hint;
+                    defaultMenu = o.menu !== false && !$menu;
+                    defaultHint && ($hint = buildHintFromInput($input, www));
+                    defaultMenu && ($menu = $(www.html.menu).css(www.css.menu));
+                    $hint && $hint.val("");
+                    $input = prepInput($input, www);
+                    if (defaultHint || defaultMenu) {
+                        $wrapper.css(www.css.wrapper);
+                        $input.css(defaultHint ? www.css.input : www.css.inputWithNoHint);
+                        $input.wrap($wrapper).parent().prepend(defaultHint ? $hint : null).append(defaultMenu ? $menu : null);
+                    }
+                    MenuConstructor = defaultMenu ? DefaultMenu : Menu;
+                    eventBus = new EventBus({
+                        el: $input
+                    });
+                    input = new Input({
+                        hint: $hint,
+                        input: $input
+                    }, www);
+                    menu = new MenuConstructor({
+                        node: $menu,
+                        datasets: datasets
+                    }, www);
+                    typeahead = new Typeahead({
+                        input: input,
+                        menu: menu,
+                        eventBus: eventBus,
+                        minLength: o.minLength
+                    }, www);
+                    $input.data(keys.www, www);
+                    $input.data(keys.typeahead, typeahead);
+                }
+            },
+            isEnabled: function isEnabled() {
+                var enabled;
+                ttEach(this.first(), function(t) {
+                    enabled = t.isEnabled();
+                });
+                return enabled;
+            },
+            enable: function enable() {
+                ttEach(this, function(t) {
+                    t.enable();
+                });
+                return this;
+            },
+            disable: function disable() {
+                ttEach(this, function(t) {
+                    t.disable();
+                });
+                return this;
+            },
+            isActive: function isActive() {
+                var active;
+                ttEach(this.first(), function(t) {
+                    active = t.isActive();
+                });
+                return active;
+            },
+            activate: function activate() {
+                ttEach(this, function(t) {
+                    t.activate();
+                });
+                return this;
+            },
+            deactivate: function deactivate() {
+                ttEach(this, function(t) {
+                    t.deactivate();
+                });
+                return this;
+            },
+            isOpen: function isOpen() {
+                var open;
+                ttEach(this.first(), function(t) {
+                    open = t.isOpen();
+                });
+                return open;
+            },
+            open: function open() {
+                ttEach(this, function(t) {
+                    t.open();
+                });
+                return this;
+            },
+            close: function close() {
+                ttEach(this, function(t) {
+                    t.close();
+                });
+                return this;
+            },
+            select: function select(el) {
+                var success = false, $el = $(el);
+                ttEach(this.first(), function(t) {
+                    success = t.select($el);
+                });
+                return success;
+            },
+            autocomplete: function autocomplete(el) {
+                var success = false, $el = $(el);
+                ttEach(this.first(), function(t) {
+                    success = t.autocomplete($el);
+                });
+                return success;
+            },
+            moveCursor: function moveCursoe(delta) {
+                var success = false;
+                ttEach(this.first(), function(t) {
+                    success = t.moveCursor(delta);
+                });
+                return success;
+            },
+            val: function val(newVal) {
+                var query;
+                if (!arguments.length) {
+                    ttEach(this.first(), function(t) {
+                        query = t.getVal();
+                    });
+                    return query;
+                } else {
+                    ttEach(this, function(t) {
+                        t.setVal(newVal);
+                    });
+                    return this;
+                }
+            },
+            destroy: function destroy() {
+                ttEach(this, function(typeahead, $input) {
+                    revert($input);
+                    typeahead.destroy();
+                });
+                return this;
+            }
+        };
+        $.fn.typeahead = function(method) {
+            if (methods[method]) {
+                return methods[method].apply(this, [].slice.call(arguments, 1));
+            } else {
+                return methods.initialize.apply(this, arguments);
+            }
+        };
+        $.fn.typeahead.noConflict = function noConflict() {
+            $.fn.typeahead = old;
+            return this;
+        };
+        function ttEach($els, fn) {
+            $els.each(function() {
+                var $input = $(this), typeahead;
+                (typeahead = $input.data(keys.typeahead)) && fn(typeahead, $input);
+            });
+        }
+        function buildHintFromInput($input, www) {
+            return $input.clone().addClass(www.classes.hint).removeData().css(www.css.hint).css(getBackgroundStyles($input)).prop("readonly", true).removeAttr("id name placeholder required").attr({
+                autocomplete: "off",
+                spellcheck: "false",
+                tabindex: -1
+            });
+        }
+        function prepInput($input, www) {
+            $input.data(keys.attrs, {
+                dir: $input.attr("dir"),
+                autocomplete: $input.attr("autocomplete"),
+                spellcheck: $input.attr("spellcheck"),
+                style: $input.attr("style")
+            });
+            $input.addClass(www.classes.input).attr({
+                autocomplete: "off",
+                spellcheck: false
+            });
+            try {
+                !$input.attr("dir") && $input.attr("dir", "auto");
+            } catch (e) {}
+            return $input;
+        }
+        function getBackgroundStyles($el) {
+            return {
+                backgroundAttachment: $el.css("background-attachment"),
+                backgroundClip: $el.css("background-clip"),
+                backgroundColor: $el.css("background-color"),
+                backgroundImage: $el.css("background-image"),
+                backgroundOrigin: $el.css("background-origin"),
+                backgroundPosition: $el.css("background-position"),
+                backgroundRepeat: $el.css("background-repeat"),
+                backgroundSize: $el.css("background-size")
+            };
+        }
+        function revert($input) {
+            var www, $wrapper;
+            www = $input.data(keys.www);
+            $wrapper = $input.parent().filter(www.selectors.wrapper);
+            _.each($input.data(keys.attrs), function(val, key) {
+                _.isUndefined(val) ? $input.removeAttr(key) : $input.attr(key, val);
+            });
+            $input.removeData(keys.typeahead).removeData(keys.www).removeData(keys.attr).removeClass(www.classes.input);
+            if ($wrapper.length) {
+                $input.detach().insertAfter($wrapper);
+                $wrapper.remove();
+            }
+        }
+        function $elOrNull(obj) {
+            var isValid, $el;
+            isValid = _.isJQuery(obj) || _.isElement(obj);
+            $el = isValid ? $(obj).first() : [];
+            return $el.length ? $el : null;
+        }
+    })();
+});
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //
