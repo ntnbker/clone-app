@@ -521,11 +521,11 @@ var MaintenanceRequestsNew = React.createClass({
   render: function () {
     let { images, errors, emailAgencies } = this.state;
     let $imagePreview = [];
-    const { current_user_tenant, current_role } = this.props;
+    const { current_user_tenant, current_role, current_user } = this.props;
     const renderError = this.renderError;
     let valueEmail = '';
     let valueMobile = '';
-    let isTenant = false;
+    let isTenant = !current_user;
     if (current_role && current_role.role == "Tenant") {
       valueEmail = current_user_tenant.email;
       valueMobile = current_user_tenant.mobile;
