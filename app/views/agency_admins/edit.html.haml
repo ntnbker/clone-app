@@ -1,3 +1,6 @@
+%div.well.container
+  =react_component('AgencyAdminEdit', {:agency_admin => @agency_admin, :authenticity_token => form_authenticity_token, :change_password_path => change_password_path, :new_agent_path => new_agent_path, :new_agency_admin_path => new_agency_admin_path})
+
 .container.well
   = bootstrap_form_for @agency_admin do |f|
     =f.text_field :first_name
@@ -13,9 +16,9 @@
   =link_to "Reset Password", change_password_path
   =link_to "Add Agent", new_agent_path
   =link_to "Add Agency Admin", new_agency_admin_path
-  
-  =link_to "Add Agency Admin Profile Picture"  
-  
+
+  =link_to "Add Agency Admin Profile Picture"
+
 
 
 
