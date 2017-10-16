@@ -1,6 +1,6 @@
 -if logged_in? && current_user.logged_in_as("AgencyAdmin")
   =link_to "Agency Account Settings", edit_agency_path(current_user.agency_admin.agency.id)
-  =link_to "Agency Admin Account Settings", edit_agency_admin_path(current_user.agency_admin.agency.id)
+  =link_to "Agency Admin Account Settings", edit_agency_admin_path(current_user.agency_admin.id)
 -elsif logged_in? && current_user.logged_in_as("Trady")
   =link_to "Trady Account Settings", edit_trady_path(current_user.trady.id)
 -elsif logged_in? && current_user.logged_in_as("Agent")
