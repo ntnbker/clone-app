@@ -1,8 +1,8 @@
-
-form#edit_agency_admin {
+.agency_admin {
   width: 100%;
   margin: 20px auto;
   text-align: center;
+  display: flex;
   p {
     margin: 20px 0 5px;
   }
@@ -10,6 +10,20 @@ form#edit_agency_admin {
   .error {
     margin-top: 10px;
     color: red;
+  }
+
+  .left {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    >* {
+      margin: 10px 0;
+    }
+  }
+
+  .right {
+    margin-left: 10%;
+    width: 60%;
   }
 
   label {
@@ -45,6 +59,6 @@ form#edit_agency_admin {
 
   /* For Desktop */
   @media (min-width: 550px) {
-    width: 50%;
+    width: 100%;
   }
 }

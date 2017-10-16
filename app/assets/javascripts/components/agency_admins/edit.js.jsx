@@ -33,11 +33,6 @@ var AgencyAdminEdit = React.createClass({
         self.setState({errors: res.errors || {}});
       },
       error: function(err) {
-        // self.openModalNotification({
-        //   bgClass: 'bg-error',
-        //   title: "Add Trady Company",
-        //   content: "Add trady company is error!",
-        // });
       }
     });
 
@@ -47,11 +42,7 @@ var AgencyAdminEdit = React.createClass({
   },
 
   removeError: function({ target: { id } }) {
-    let errors     = Object.assign({}, this.state.errors);
-    if (errors[id]) {
-      errors[id] = false;
-      this.setState({ errors });
-    }
+      this.setState({ errors: {...this.state.errors, [id]: ''} });
   },
 
   renderError: function(error) {
@@ -79,82 +70,79 @@ var AgencyAdminEdit = React.createClass({
     const renderButtonFunc = this.renderButton;
 
     return (
-      <div>
-        <div className="col-md-5">
+      <div className="agency_admin">
+        <div className="left">
           {renderButtonFunc('Change Password', this.props.change_password_path)}
           {renderButtonFunc('Add New Agency', this.props.new_agent_path)}
           {renderButtonFunc('Add New Admin Agency', this.props.new_agency_admin_path)}
         </div>
-        <div className="col-md-7">
-          <form role="form" className="form-horizontal" id="edit_agency_admin" onSubmit={this.onSubmit} >
+        <form role="form" className="form-horizontal right" id="edit_agency_admin" onSubmit={this.onSubmit} >
+          <div className="form-group">
+            <div className="col-sm-10">
+              <input
 
-            <div className="form-group">
-              <div className="col-sm-10">
-                <input
+                type="text"
+                id="first_name"
+                placeholder="First Name"
+                defaultValue={first_name}
+                ref={(ref) => this.first_name = ref}
+                className={"form-control " + (errors['first_name'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['first_name'])}
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="col-sm-10">
+              <input
 
-                  type="text"
-                  id="first_name"
-                  placeholder="First Name"
-                  defaultValue={first_name}
-                  ref={(ref) => this.first_name = ref}
-                  className={"form-control " + (errors['first_name'] ? "has-error" : "")}
-                  onChange={removeErrorFunc}
-                />
-                {renderErrorFunc(errors['first_name'])}
-              </div>
+                type="text"
+                id="last_name"
+                placeholder="Last Name"
+                defaultValue={last_name}
+                ref={(ref) => this.last_name = ref}
+                className={"form-control " + (errors['last_name'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['last_name'])}
             </div>
-            <div className="form-group">
-              <div className="col-sm-10">
-                <input
+          </div>
+          <div className="form-group">
+            <div className="col-sm-10">
+              <input
 
-                  type="text"
-                  id="last_name"
-                  placeholder="Last Name"
-                  defaultValue={last_name}
-                  ref={(ref) => this.last_name = ref}
-                  className={"form-control " + (errors['last_name'] ? "has-error" : "")}
-                  onChange={removeErrorFunc}
-                />
-                {renderErrorFunc(errors['last_name'])}
-              </div>
+                type="text"
+                id="mobile_phone"
+                placeholder="Mobile Phone"
+                defaultValue={mobile_phone}
+                ref={(ref) => this.mobile_phone = ref}
+                className={"form-control " + (errors['mobile_phone'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['mobile_phone'])}
             </div>
-            <div className="form-group">
-              <div className="col-sm-10">
-                <input
+          </div>
+          <div className="form-group">
+            <div className="col-sm-10">
+              <input
 
-                  type="text"
-                  id="mobile_phone"
-                  placeholder="Mobile Phone"
-                  defaultValue={mobile_phone}
-                  ref={(ref) => this.mobile_phone = ref}
-                  className={"form-control " + (errors['mobile_phone'] ? "has-error" : "")}
-                  onChange={removeErrorFunc}
-                />
-                {renderErrorFunc(errors['mobile_phone'])}
-              </div>
+                type="text"
+                id="license_number"
+                placeholder="License Number"
+                defaultValue={license_number}
+                ref={(ref) => this.license_number = ref}
+                className={"form-control " + (errors['license_number'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['license_number'])}
             </div>
-            <div className="form-group">
-              <div className="col-sm-10">
-                <input
-
-                  type="text"
-                  id="license_number"
-                  placeholder="License Number"
-                  defaultValue={license_number}
-                  ref={(ref) => this.license_number = ref}
-                  className={"form-control " + (errors['license_number'] ? "has-error" : "")}
-                  onChange={removeErrorFunc}
-                />
-                {renderErrorFunc(errors['license_number'])}
-              </div>
-            </div>
-            <div className="text-center">
-              <button type="submit" className="button-primary green option-button">
-                Update Your Profile
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div className="text-center">
+            <button type="submit" className="button-primary green option-button">
+              Update Your Profile
+            </button>
+          </div>
+        </form>
       </div>
     );
   }
