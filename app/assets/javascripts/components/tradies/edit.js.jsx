@@ -1,4 +1,4 @@
-var AgencyEdit = React.createClass({
+var TradyEdit = React.createClass({
   getInitialState: function () {
     return {
       errors: {},
@@ -60,8 +60,8 @@ var AgencyEdit = React.createClass({
 
   renderTextField: function(field, textHolder) {
     const { errors }      = this.state;
-    const { agency = {} } = this.props;
-    const value           = agency[field];
+    const { trady = {} } = this.props;
+    const value           = trady[field];
 
     return (
       <div className="form-group">
@@ -96,7 +96,7 @@ var AgencyEdit = React.createClass({
         </div>
         <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
           {renderTextField('name', 'Name')}
-          {renderTextField('company_name', 'Business Name')}
+          {renderTextField('company_name', 'Company Name')}
           {renderTextField('mobile', 'Mobile')}
           <div className="text-center">
             <button type="submit" className="button-primary green option-button">
