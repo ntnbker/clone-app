@@ -1,4 +1,7 @@
-This is where we edit 
+This is where we edit
+%div.well.container
+  =react_component('AgencyEdit', {:agency => @agency, :authenticity_token => form_authenticity_token, :new_agent_path => new_agent_path, :new_agency_admin_path => new_agency_admin_path})
+
 .container.well
   = bootstrap_form_for @agency do |f|
     =f.text_field :company_name
@@ -8,9 +11,9 @@ This is where we edit
     =f.text_field :mailing_address
     =f.telephone_field :phone
     =f.telephone_field :mobile_phone
-    = f.form_group :license_type, label: { text: "License Type" } do 
-      = f.radio_button :license_type, "Individual License", label: "Individual License", inline: true 
-      = f.radio_button :license_type, "Corporate License", label: "Corporate License", inline: true 
+    = f.form_group :license_type, label: { text: "License Type" } do
+      = f.radio_button :license_type, "Individual License", label: "Individual License", inline: true
+      = f.radio_button :license_type, "Corporate License", label: "Corporate License", inline: true
     =f.text_field :corporation_license_number
     =f.submit
 
@@ -20,8 +23,8 @@ This is where we edit
 %div
   =link_to "Add Agency Admin", new_agency_admin_path
   =link_to "Add Agent", new_agent_path
-  
-  
+
+
 
 
 
