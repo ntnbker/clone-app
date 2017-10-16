@@ -70,7 +70,7 @@ var AgencyAdminEdit = React.createClass({
     const renderButtonFunc = this.renderButton;
 
     return (
-      <div className="agency_admin">
+      <div className="edit_agency_admin">
         <div className="left">
           {renderButtonFunc('Change Password', this.props.change_password_path)}
           {renderButtonFunc('Add New Agency', this.props.new_agent_path)}
