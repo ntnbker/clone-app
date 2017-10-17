@@ -35,7 +35,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @maintenance_scheduled_with_landlord_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled With Landlord")  
     @deferred_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Defer")  
     @archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")  
-    @jobs_completed = MaintenanceRequest.find_maintenance_requests_total(current_user, "Jobs Completed")  
+    @jobs_completed = MaintenanceRequest.find_maintenance_requests_total(current_user, "Jobs Completed")
+    @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
 
     @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 

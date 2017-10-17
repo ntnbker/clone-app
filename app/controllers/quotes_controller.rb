@@ -181,7 +181,7 @@ class QuotesController < ApplicationController
       
     # end
     if current_user.logged_in_as("AgencyAdmin")
-      binding.pry
+      
       if params[:status] == "Approved"
         flash[:success] = "Thank you for accepting the quote."
       elsif params[:status] == "Declined"

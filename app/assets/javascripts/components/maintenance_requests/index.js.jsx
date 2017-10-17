@@ -406,9 +406,9 @@ var ListMaintenanceRequest = React.createClass({
           count: this.props.new_invoice_count,
         },
         {
-          title: "Pending Payment",
-          value: "Pending Payment",
-          count: this.props.pending_payment_count,
+          title: "Cancelled Work Orders",
+          value: "Cancelled Work Order",
+          count: this.props.cancelled_work_orders
         }
       ],
       awaitingAction: [
@@ -524,6 +524,12 @@ var ListMaintenanceRequest = React.createClass({
           value: "Declined Quotes",
           count: this.props.declined_quotes
         },
+
+        {
+          title: "Cancelled Work Orders",
+          value: "Cancelled Work Order",
+          count: this.props.cancelled_work_orders
+        }
       ]
     };
   },
