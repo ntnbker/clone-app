@@ -43,6 +43,7 @@ var TradyEdit = React.createClass({
     });
     return false;
   },
+
   onSubmit: function(e){
 
     var flag = false;
@@ -121,7 +122,8 @@ var TradyEdit = React.createClass({
   },
 
   render: function() {
-    let trady = this.props.trady || {};
+    let trady                          = this.props.trady || {};
+    let image_url                      = this.props.image_url;
     let { errors = {}, gallery}        = this.state;
     const renderTextField              = this.renderTextField;
     const renderButtonFunc             = this.renderButton;
