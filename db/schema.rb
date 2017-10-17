@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171014034525) do
+ActiveRecord::Schema.define(version: 20171017025152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,13 @@ ActiveRecord::Schema.define(version: 20171014034525) do
     t.string   "license_type"
   end
 
+  create_table "agency_admin_profile_images", force: :cascade do |t|
+    t.integer  "agency_admin_id"
+    t.text     "image_data"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
   create_table "agency_admins", force: :cascade do |t|
     t.string  "email"
     t.string  "first_name"
@@ -87,6 +94,13 @@ ActiveRecord::Schema.define(version: 20171014034525) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "trady_id"
+  end
+
+  create_table "agent_profile_images", force: :cascade do |t|
+    t.integer  "agent_id"
+    t.text     "image_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "agents", force: :cascade do |t|
@@ -434,6 +448,20 @@ ActiveRecord::Schema.define(version: 20171014034525) do
     t.string   "bsb_number"
     t.string   "bank_account_number"
     t.integer  "trady_id"
+  end
+
+  create_table "trady_company_profile_images", force: :cascade do |t|
+    t.integer  "trady_company_id"
+    t.text     "image_data"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  create_table "trady_profile_images", force: :cascade do |t|
+    t.integer  "trady_id"
+    t.text     "image_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "trady_statuses", force: :cascade do |t|

@@ -4,6 +4,7 @@ class AgencyAdmin <ApplicationRecord
   belongs_to :user, inverse_of: :agency_admin
   belongs_to :agency, inverse_of: :agency_admins
   has_many :action_statuses
+  has_one :agency_admin_profile_image
   
   # validates_presence_of :first_name 
   # validates_presence_of :first_name,:email, :mobile_phone, :last_name, :license_number
