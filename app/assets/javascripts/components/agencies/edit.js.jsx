@@ -4,7 +4,46 @@ var AgencyEdit = React.createClass({
     return {
       license_type: agency.license_type,
       errors: {},
+      image_url: this.props.image_url || '',
+      gallery: null,
     };
+  },
+
+  uploadImage: function(images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+
+    var FD = new FormData();
+    images.map((image, index) => {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[agency_id]', this.props.agency.id);
+
+    var props = this.props;
+    $.ajax({
+      type: 'POST',
+      url: '/agency_profile_images',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+          callback(res);
+          if (!res.errors && res.profile_image) {
+            this.setState({ gallery: res.profile_image });
+          }
+      },
+      error: function (err) {
+
+      }
+    });
+    return false;
   },
 
   changeLicenseType: function({ target: {value} }) {
@@ -99,18 +138,25 @@ var AgencyEdit = React.createClass({
 
   render: function() {
     let isInvoice          = this.props.system_plan === "Invoice";
+    let image_url          = this.props.image_url;
     let agency             = this.props.agency || {};
     let {
       company_name, business_name, abn, address, mailing_address, phone, mobile_phone, corporation_license_number
     } = agency;
 
-    let { errors = {}, license_type } = this.state;
-    const renderTextField             = this.renderTextField;
-    const renderButtonFunc            = this.renderButton;
+    let { errors = {}, license_type, gallery } = this.state;
+    const renderTextField                      = this.renderTextField;
+    const renderButtonFunc                     = this.renderButton;
 
     return (
       <div className="edit_agency">
         <div className="left">
+          <ModalImageUpload
+            uploadImage={this.uploadImage}
+            gallery={gallery || image_url && [{ image_url }]}
+            text="Add/Change Photo"
+            className="btn btn-default btn-back m-r-lg"
+          />
           {renderButtonFunc('Add New Agency', this.props.new_agent_path)}
           {renderButtonFunc('Add New Admin Agency', this.props.new_agency_admin_path)}
         </div>

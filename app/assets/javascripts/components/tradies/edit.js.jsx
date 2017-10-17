@@ -2,9 +2,47 @@ var TradyEdit = React.createClass({
   getInitialState: function () {
     return {
       errors: {},
+      image_url: this.props.image_url || '',
+      gallery: null,
     };
   },
 
+  uploadImage: function(images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+
+    var FD = new FormData();
+    images.map((image, index) => {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[trady_id]', this.props.trady.id);
+
+    var props = this.props;
+    $.ajax({
+      type: 'POST',
+      url: '/trady_profile_images',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+          callback(res);
+          if (!res.errors && res.profile_image) {
+            this.setState({ gallery: res.profile_image });
+          }
+      },
+      error: function (err) {
+
+      }
+    });
+    return false;
+  },
   onSubmit: function(e){
 
     var flag = false;
@@ -84,7 +122,7 @@ var TradyEdit = React.createClass({
 
   render: function() {
     let trady = this.props.trady || {};
-    let { errors = {}}                 = this.state;
+    let { errors = {}, gallery}        = this.state;
     const renderTextField              = this.renderTextField;
     const renderButtonFunc             = this.renderButton;
 
@@ -93,6 +131,12 @@ var TradyEdit = React.createClass({
         <div className="left">
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
           {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company)}
+          <ModalImageUpload
+            uploadImage={this.uploadImage}
+            gallery={gallery || image_url && [{ image_url }]}
+            text="Add/Change Photo"
+            className="btn btn-default btn-back m-r-lg"
+          />
         </div>
         <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
           {renderTextField('name', 'Name')}

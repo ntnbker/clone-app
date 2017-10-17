@@ -2,7 +2,8 @@ var AgencyAdminEdit = React.createClass({
   getInitialState: function () {
     return {
       errors: {},
-      image_url: props.image_url || '',
+      image_url: this.props.image_url || '',
+      gallery: null,
     };
   },
 
@@ -33,7 +34,7 @@ var AgencyAdminEdit = React.createClass({
       success: function (res) {
           callback(res);
           if (!res.errors && res.profile_image) {
-            this.setState({ image_url: res.profile_image.image_url || '' });
+            this.setState({ gallery: res.profile_image });
           }
       },
       error: function (err) {
@@ -103,10 +104,10 @@ var AgencyAdminEdit = React.createClass({
       first_name, last_name, mobile_phone, license_number
     } = agency_admin;
 
-    let { errors = {} }    = this.state;
-    const renderErrorFunc  = this.renderError;
-    const removeErrorFunc  = this.removeError;
-    const renderButtonFunc = this.renderButton;
+    let { errors = {}, gallery }    = this.state;
+    const renderErrorFunc           = this.renderError;
+    const removeErrorFunc           = this.removeError;
+    const renderButtonFunc          = this.renderButton;
 
     return (
       <div className="edit_agency_admin">
@@ -114,7 +115,7 @@ var AgencyAdminEdit = React.createClass({
           {renderButtonFunc('Change Password', this.props.change_password_path)}
           <ModalImageUpload
             uploadImage={this.uploadImage}
-            gallery={[{ image_url }]}
+            gallery={gallery || image_url && [{ image_url }]}
             text="Add/Change Photo"
             className="btn btn-default btn-back m-r-lg"
           />
