@@ -117,7 +117,7 @@ var EditTradyCompany = React.createClass({
       trady_company.bank_account_number = getValidValue(bank_account_number);
     }
 
-    var params = { trady_company };
+    var params = { trady_company, trady_company_id: this.props.id };
 		const self = this;
 		$.ajax({
 			type: 'PUT',

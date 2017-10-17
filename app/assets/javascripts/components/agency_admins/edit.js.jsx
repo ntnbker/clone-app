@@ -58,7 +58,7 @@ var AgencyAdminEdit = React.createClass({
       license_number: getValidValue(license_number),
     }
 
-    var params = { agency_admin, agency_admin_id: this.props.agency_admin.id };
+    var params = { agency_admin };
 
     const self = this;
     $.ajax({
