@@ -345,7 +345,7 @@ UploadImageComponent = React.createClass({
       <div className="modal-custom fade">
         <div className="modal-dialog">
           <div className="modal-content">
-            <form role="form" id="addForm" onSubmit={this.submit}>
+            <form role="form" onSubmit={this.submit}>
               <div className="modal-header">
                 <button
                   type="button"
@@ -464,24 +464,28 @@ ModalImageUpload = React.createClass({
     switch (this.state.modal) {
       case 'addPhoto':
         return (
-          <UploadImageComponent
-            close={this.isClose}
-            notifyAddPhoto={this.notifyAddPhoto}
-            uploadImage={this.props.uploadImage}
-            gallery={this.state.gallery}
-            authenticity_token={this.props.authenticity_token}
-            maintenance_request={this.state.maintenance_request}
-            onModalWith={this.onModalWith}
-            {...this.props}
-          />
+          <div id="image_uploader">
+            <UploadImageComponent
+              close={this.isClose}
+              notifyAddPhoto={this.notifyAddPhoto}
+              uploadImage={this.props.uploadImage}
+              gallery={this.state.gallery}
+              authenticity_token={this.props.authenticity_token}
+              maintenance_request={this.state.maintenance_request}
+              onModalWith={this.onModalWith}
+              {...this.props}
+            />
+          </div>
         );
 
       case 'confirmAddPhoto':
         return (
-          <ModalConfirmAddPhoto
-            close={this.isClose}
-            onModalWith={this.onModalWith}
-          />
+          <div id="image_uploader">
+            <ModalConfirmAddPhoto
+              close={this.isClose}
+              onModalWith={this.onModalWith}
+            />
+          </div>
         );
     }
   },
