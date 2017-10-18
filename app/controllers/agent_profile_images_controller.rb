@@ -3,13 +3,10 @@ class AgentProfileImagesController < ApplicationController
   before_action(only:[:show,:index]) {allow("Agent")}
   
   def create
-    
-    
     @image =  AgentProfileImage.new(image_params)
 
     if @image.save
       profile_image = @image.as_json(methods: :image_url)
-      
       respond_to do |format|
         format.json {render :json=>{:profile_image=>profile_image}}
       end 
