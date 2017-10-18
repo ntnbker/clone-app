@@ -8,6 +8,36 @@
 		margin: 20px 0 5px;
 	}
 
+  #avatar {
+    /* make a square container */
+    width: 100px;
+    height: 100px;
+
+    /* fill the container, preserving aspect ratio, and cropping to fit */
+    background-size: cover;
+
+    /* center the image vertically and horizontally */
+    background-position: center;
+
+    /* round the edges to a circle with border radius 1/2 container size */
+    border-radius: 50%;
+  }
+  .left {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 5%;
+    >* {
+      margin: 10px 0;
+    }
+  }
+
+  .right {
+    margin-left: 15%;
+    width: 40%;
+  }
+
 	label {
 		display: inline-block;
 		font-weight: normal;
@@ -19,6 +49,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .option-button {
+    width: 100%;
   }
 
   .left {
@@ -66,8 +100,25 @@
 			margin-right: 10px;
 		}
 	}
-	/* For Desktop */
-	@media (min-width: 550px) {
-		width: 100%;
-	}
+
+  /* For Mobile */
+  @media (max-width: 768px) {
+    width: 100%;
+    flex-direction: column;
+    .left {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: 25%;
+      >* {
+        margin: 10px 0;
+      }
+    }
+
+    .right {
+      margin-left: 25%;
+      width: 50%;
+    }
+  }
 }

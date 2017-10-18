@@ -1,10 +1,12 @@
 var EditTradyCompany = React.createClass({
 	getInitialState: function() {
+    const image_url = this.props.image_url;
 		return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
+      gallery: image_url && { image_url } || null,
       notification: {
       	title: "",
       	bgClass: "",
@@ -37,6 +39,42 @@ var EditTradyCompany = React.createClass({
     });
   },
 
+  uploadImage: function(images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+
+    var FD = new FormData();
+    images.map((image, index) => {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[trady_company_id]', this.props.id);
+
+    const self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/trady_company_profile_images',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+          callback(res.errors);
+          if (!res.errors && res.profile_image) {
+            self.setState({ gallery: res.profile_image });
+          }
+      },
+      error: function (err) {
+
+      }
+    });
+    return false;
+  },
 
   changeMailingAddress: function(e) {
     this.setState({
@@ -103,7 +141,6 @@ var EditTradyCompany = React.createClass({
       system_plan:            this.props.system_plan,
       invoice_type:           this.props.invoice_type,
       maintenance_request_id: this.props.maintenance_request_id,
-      trady_company_id:       this.props.id                      || null,
       quote_id:               this.props.quote_id                || null,
       ledger_id:              this.props.ledger_id               || null,
       pdf_file_id:            this.props.pdf_file_id             || null,
@@ -167,13 +204,22 @@ var EditTradyCompany = React.createClass({
   },
 
 	render: function() {
-    let isInvoice = this.props.system_plan === "Invoice";
-    let { errors } = this.state;
-    const renderErrorFunc = this.renderError;
-    const removeErrorFunc = this.removeError;
+    let isInvoice           = this.props.system_plan === "Invoice";
+    let { errors, gallery } = this.state;
+    const renderErrorFunc   = this.renderError;
+    const removeErrorFunc   = this.removeError;
 
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
+        { gallery &&
+            <div className="left"><img id="avatar" src={gallery.image_url} alt="Avatar Image"/></div>
+        }
+        <ModalImageUpload
+          uploadImage={this.uploadImage}
+          gallery={gallery && [gallery] || []}
+          text="Add/Change Photo"
+          className="btn btn-default btn-back m-r-lg"
+        />
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Company name</label>
           <div className="col-sm-10">

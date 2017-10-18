@@ -1,9 +1,9 @@
 var TradyEdit = React.createClass({
   getInitialState: function () {
+    let image_url = this.props.image_url;
     return {
       errors: {},
-      image_url: this.props.image_url || '',
-      gallery: null,
+      gallery: image_url && { image_url } || null,
     };
   },
 
@@ -20,21 +20,21 @@ var TradyEdit = React.createClass({
 
     FD.append('picture[trady_id]', this.props.trady.id);
 
-    var props = this.props;
+    var self = this;
     $.ajax({
       type: 'POST',
       url: '/trady_profile_images',
       beforeSend: function (xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       enctype: 'multipart/form-data',
       processData: false,
       contentType: false,
       data: FD,
       success: function (res) {
-          callback(res);
+          callback(res.errors);
           if (!res.errors && res.profile_image) {
-            this.setState({ gallery: res.profile_image });
+            self.setState({ gallery: res.profile_image });
           }
       },
       error: function (err) {
@@ -91,7 +91,7 @@ var TradyEdit = React.createClass({
 
   renderButton: function(text, link) {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={link}>
+      <a className="btn btn-default btn-back m-r-lg" href={link} title={text}>
         {text}
       </a>
     );
@@ -123,22 +123,24 @@ var TradyEdit = React.createClass({
 
   render: function() {
     let trady                          = this.props.trady || {};
-    let image_url                      = this.props.image_url;
-    let { errors = {}, gallery}        = this.state;
+    let { errors = {}, gallery }       = this.state;
     const renderTextField              = this.renderTextField;
     const renderButtonFunc             = this.renderButton;
 
     return (
       <div className="edit_trady">
         <div className="left">
-          {renderButtonFunc('Reset Password', this.props.change_password_path)}
-          {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company)}
+          { gallery &&
+              <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
+          }
           <ModalImageUpload
             uploadImage={this.uploadImage}
-            gallery={gallery || image_url && [{ image_url }]}
+            gallery={gallery && [gallery] || []}
             text="Add/Change Photo"
             className="btn btn-default btn-back m-r-lg"
           />
+          {renderButtonFunc('Reset Password', this.props.change_password_path)}
+          {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
           {renderTextField('name', 'Name')}

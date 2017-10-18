@@ -6,6 +6,25 @@ form#new_trady_company {
 		margin: 20px 0 5px;
 	}
 
+	#avatar {
+    /* make a square container */
+    width: 100px;
+    height: 100px;
+
+    /* fill the container, preserving aspect ratio, and cropping to fit */
+    background-size: cover;
+
+    /* center the image vertically and horizontally */
+    background-position: center;
+
+    /* round the edges to a circle with border radius 1/2 container size */
+    border-radius: 50%;
+  }
+
+  .left {
+    align-items: center;
+  }
+
 	.error {
     margin-top: 10px;
     color: red;
