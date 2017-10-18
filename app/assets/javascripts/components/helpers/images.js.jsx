@@ -1,3 +1,5 @@
+const SUCCESS_MESSAGE = 'Thank you for uploading your profile image.';
+
 UploadImageComponent = React.createClass({
   getInitialState: function () {
     // this.getAgentEmail();
@@ -313,10 +315,7 @@ UploadImageComponent = React.createClass({
 
     var FD = new FormData();
     self.props.uploadImage(dataImages, function(errors) {
-      if (errors) {
-        return self.setState({ errors: res.errors });
-      }
-      self.props.notifyAddPhoto();
+      self.props.notifyAddPhoto(errors || SUCCESS_MESSAGE);
       // self.props.close();
     });
     return false;
@@ -405,6 +404,43 @@ UploadImageComponent = React.createClass({
   }
 })
 
+ModalMessageAddPhoto = React.createClass({
+  render: function () {
+    const { close, message } = this.props;
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={close}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 className="modal-title text-center">Add Photo</h4>
+            </div>
+            <div className="modal-body">
+              <p className="text-center">{message}</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-default cancel"
+                onClick={close}
+                data-dismiss="modal"
+              >OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
 ModalImageUpload = React.createClass({
 
   getInitialState: function() {
@@ -426,7 +462,8 @@ ModalImageUpload = React.createClass({
     if(this.state.isModal == true) {
       this.setState({
         isModal: false,
-        modal: ""
+        modal: "",
+        message: '',
       });
     }
 
@@ -438,15 +475,16 @@ ModalImageUpload = React.createClass({
     }
   },
 
-  onModalWith: function(modal) {
+  onModalWith: function(modal, message) {
     this.setState({
       modal: modal,
       isModal: true,
+      message,
     });
   },
 
-  notifyAddPhoto: function() {
-    this.onModalWith('confirmAddPhoto');
+  notifyAddPhoto: function(message) {
+    this.onModalWith('messageAddPhoto', message);
   },
 
   renderModal: function() {
@@ -478,12 +516,13 @@ ModalImageUpload = React.createClass({
           </div>
         );
 
-      case 'confirmAddPhoto':
+      case 'messageAddPhoto':
         return (
           <div id="image_uploader">
-            <ModalConfirmAddPhoto
+            <ModalMessageAddPhoto
               close={this.isClose}
               onModalWith={this.onModalWith}
+              message={this.state.message}
             />
           </div>
         );
