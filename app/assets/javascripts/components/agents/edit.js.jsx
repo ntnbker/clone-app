@@ -1,11 +1,10 @@
 var AgentEdit = React.createClass({
   getInitialState: function () {
-    const agent = this.props.agent || {};
-    const image_url = this.props.image_url;
+    const { image_url, profile_image = {}, agent = {} } = this.props;
 
     return {
       errors: {},
-      gallery: image_url && { image_url } || null,
+      gallery: {...profile_image, image_url},
     };
   },
 
@@ -13,7 +12,7 @@ var AgentEdit = React.createClass({
     if (images.length == 0) {
       return;
     }
-
+    const { gallery } = this.state;
     var FD = new FormData();
     images.map((image, index) => {
       var idx = index + 1;
@@ -21,11 +20,14 @@ var AgentEdit = React.createClass({
     });
 
     FD.append('picture[agent_id]', this.props.agent.id);
+    if (gallery) {
+      FD.append('picture[agent_profile_image_id]', gallery.id);
+    }
 
     const self = this;
     $.ajax({
-      type: 'POST',
-      url: '/agent_profile_images',
+      type: gallery ? 'PUT' : 'POST',
+      url: `/agent_profile_images${gallery ? '/' + gallery.id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -106,9 +108,9 @@ var AgentEdit = React.createClass({
 
   renderButton: function(text, link) {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={link} title={text}>
+      <button className="btn button-primary option-button" onClick={() => location.href = link} title={text}>
         {text}
-      </a>
+      </button>
     );
   },
 
@@ -148,7 +150,7 @@ var AgentEdit = React.createClass({
     const renderButtonFunc                     = this.renderButton;
 
     return (
-      <div className="edit_agent">
+      <div className="edit_profile">
         <div className="left">
           { gallery &&
               <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
@@ -157,12 +159,14 @@ var AgentEdit = React.createClass({
             uploadImage={this.uploadImage}
             gallery={gallery && [gallery] || []}
             text="Add/Change Photo"
-            className="btn btn-default btn-back m-r-lg"
+            className="btn button-primary option-button"
           />
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_agent" onSubmit={this.onSubmit} >
-          {renderTextField('name', 'Name')}
+          <label className="control-label col-sm-2 required">
+            Edit Agent Profile
+          </label>          {renderTextField('name', 'Name')}
           {renderTextField('last_name', 'Last Name')}
           {renderTextField('phone', 'Phone')}
           {renderTextField('mobile_phone', 'Mobile Phone')}

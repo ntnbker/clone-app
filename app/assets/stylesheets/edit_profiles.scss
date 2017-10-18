@@ -1,0 +1,130 @@
+.edit_profile {
+  width: 100%;
+  margin: 20px auto;
+  text-align: center;
+  @include flexbox;
+
+  #avatar {
+    /* make a square container */
+    width: 20vw;
+    height: 20vw;
+
+    /* fill the container, preserving aspect ratio, and cropping to fit */
+    background-size: cover;
+
+    /* center the image vertically and horizontally */
+    background-position: center;
+
+    /* round the edges to a circle with border radius 1/2 container size */
+    border-radius: 50%;
+  }
+
+  p {
+    margin: 20px 0 5px;
+  }
+
+  .error {
+    margin-top: 10px;
+    color: red;
+  }
+
+  .btn {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 20px;
+  }
+
+  .option-button {
+    width: 100%;
+  }
+
+  .left {
+    width: 30%;
+    display: flex;
+    @include flex-direction(column);
+    align-items: center;
+    margin: 0 5%;
+    >* {
+      margin: 10px 0;
+    }
+  }
+
+  .right {
+    margin-left: 10%;
+    width: 40%;
+  }
+
+  label {
+    display: inline-block;
+    font-weight: normal;
+    margin-left: 0;
+    margin-bottom: 15px;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+        margin-right: 8px;
+        display: inline-block;
+        width: auto;
+  }
+
+  .field {
+    margin: 20px 0;
+
+    label {
+      margin: 0;
+    }
+
+    p {
+      margin: 5px 0;
+    }
+  }
+
+  /* For Mobile */
+  @media (max-width: 768px) {
+    width: 100%;
+    @include flex-direction(column);
+    .left {
+      width: 80%;
+      display: flex;
+      @include flex-direction(column);
+      align-items: center;
+      margin-left: 10%;
+      margin-bottom: 20px;
+      >* {
+        width: 100%;
+        margin: 10px 0;
+      }
+    }
+
+    .right {
+      width: 80%;
+      margin-left: 10%;
+    }
+
+    .btn-back {
+      padding: 0;
+    }
+
+
+    #avatar {
+      width: 40vw;
+      height: 40vw;
+    }
+  }
+
+
+  /* For Mobile */
+  @media (max-width: 412px) {
+    #avatar {
+      width: 55vw;
+      height: 55vw;
+    }
+  }
+}

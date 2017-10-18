@@ -1,9 +1,10 @@
 var TradyEdit = React.createClass({
   getInitialState: function () {
-    let image_url = this.props.image_url;
+    const { image_url, profile_image = {}, trady = {} } = this.props;
+
     return {
       errors: {},
-      gallery: image_url && { image_url } || null,
+      gallery: {...profile_image, image_url},
     };
   },
 
@@ -11,7 +12,7 @@ var TradyEdit = React.createClass({
     if (images.length == 0) {
       return;
     }
-
+    const { gallery } = this.state;
     var FD = new FormData();
     images.map((image, index) => {
       var idx = index + 1;
@@ -19,11 +20,14 @@ var TradyEdit = React.createClass({
     });
 
     FD.append('picture[trady_id]', this.props.trady.id);
+    if (gallery) {
+      FD.append('picture[trady_profile_image_id]', gallery.id);
+    }
 
-    var self = this;
+    const self = this;
     $.ajax({
-      type: 'POST',
-      url: '/trady_profile_images',
+      type: gallery ? 'PUT' : 'POST',
+      url: `/trady_profile_images${gallery ? '/' + gallery.id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -91,9 +95,9 @@ var TradyEdit = React.createClass({
 
   renderButton: function(text, link) {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={link} title={text}>
+      <button className="btn button-primary option-button" onClick={() => location.href = link} title={text}>
         {text}
-      </a>
+      </button>
     );
   },
 
@@ -128,7 +132,7 @@ var TradyEdit = React.createClass({
     const renderButtonFunc             = this.renderButton;
 
     return (
-      <div className="edit_trady">
+      <div className="edit_profile">
         <div className="left">
           { gallery &&
               <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
@@ -137,12 +141,15 @@ var TradyEdit = React.createClass({
             uploadImage={this.uploadImage}
             gallery={gallery && [gallery] || []}
             text="Add/Change Photo"
-            className="btn btn-default btn-back m-r-lg"
+            className="btn button-primary option-button"
           />
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
           {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
+          <label className="control-label col-sm-2 required">
+            Edit Trady Profile
+          </label>
           {renderTextField('name', 'Name')}
           {renderTextField('company_name', 'Company Name')}
           {renderTextField('mobile', 'Mobile')}
