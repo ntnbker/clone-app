@@ -408,7 +408,7 @@ ModalMessageAddPhoto = React.createClass({
   render: function () {
     const { close, message } = this.props;
     return (
-      <div className="modal-custom fade">
+      <div className="modal-custom fade add-photo">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -424,12 +424,12 @@ ModalMessageAddPhoto = React.createClass({
               <h4 className="modal-title text-center">Add Photo</h4>
             </div>
             <div className="modal-body">
-              <p className="text-center">{message}</p>
+              <p className="title">{message}</p>
             </div>
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-default cancel"
+                className="btn btn-default success title"
                 onClick={close}
                 data-dismiss="modal"
               >OK</button>
@@ -530,12 +530,12 @@ ModalImageUpload = React.createClass({
   },
 
   render: function() {
-    return this.renderModal() || (<a
+    return this.renderModal() || (<button
         className={this.props.className || 'btn-edit'}
         onClick={() => this.onModalWith('addPhoto')}
       >
         {this.props.text || 'Add Photo'}
-      </a>
+      </button>
     )
   }
 })

@@ -1,12 +1,12 @@
 var EditTradyCompany = React.createClass({
 	getInitialState: function() {
-    const image_url = this.props.image_url;
+    const { image_url, profile_image = {}, trady_company = {} } = this.props;
 		return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
-      gallery: image_url && { image_url } || null,
+      gallery: {...profile_image, image_url},
       notification: {
       	title: "",
       	bgClass: "",
@@ -43,19 +43,22 @@ var EditTradyCompany = React.createClass({
     if (images.length == 0) {
       return;
     }
-
+    const { gallery } = this.state;
     var FD = new FormData();
     images.map((image, index) => {
       var idx = index + 1;
       FD.append('picture[image]', JSON.stringify(image));
     });
 
-    FD.append('picture[trady_company_id]', this.props.id);
+    FD.append('picture[trady_companyid]', this.props.trady.id);
+    if (gallery) {
+      FD.append('picture[trady_companyprofile_image_id]', gallery.id);
+    }
 
     const self = this;
     $.ajax({
-      type: 'POST',
-      url: '/trady_company_profile_images',
+      type: gallery ? 'PUT' : 'POST',
+      url: `/trady_companyprofile_images${gallery ? '/' + gallery.id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -212,13 +215,13 @@ var EditTradyCompany = React.createClass({
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
         { gallery &&
-            <div className="left"><img id="avatar" src={gallery.image_url} alt="Avatar Image"/></div>
+            <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
         }
         <ModalImageUpload
           uploadImage={this.uploadImage}
           gallery={gallery && [gallery] || []}
           text="Add/Change Photo"
-          className="btn btn-default btn-back m-r-lg"
+          className="btn button-primary option-button"
         />
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Company name</label>

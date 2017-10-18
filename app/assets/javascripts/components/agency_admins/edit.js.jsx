@@ -1,9 +1,10 @@
 var AgencyAdminEdit = React.createClass({
   getInitialState: function () {
+    const profile_image = this.props.profile_image || {};
     const image_url = this.props.image_url;
     return {
       errors: {},
-      gallery: image_url && { image_url } || null,
+      gallery: {...profile_image, image_url},
     };
   },
 
@@ -21,7 +22,7 @@ var AgencyAdminEdit = React.createClass({
     if (images.length == 0) {
       return;
     }
-
+    const { gallery } = this.state;
     var FD = new FormData();
     images.map((image, index) => {
       var idx = index + 1;
@@ -29,11 +30,14 @@ var AgencyAdminEdit = React.createClass({
     });
 
     FD.append('picture[agency_admin_id]', this.props.agency_admin.id);
+    if (gallery) {
+      FD.append('picture[agency_admin_profile_image_id]', gallery.id);
+    }
 
     const self = this;
     $.ajax({
-      type: 'POST',
-      url: '/agency_admin_profile_images',
+      type: gallery ? 'PUT' : 'POST',
+      url: `/agency_admin_profile_images${gallery ? '/' + gallery.id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -100,9 +104,9 @@ var AgencyAdminEdit = React.createClass({
 
   renderButton: function(text, link) {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={link} title={text}>
+      <button className="btn button-primary option-button" onClick={() => location.href = link} title={text}>
         {text}
-      </a>
+      </button>
     );
   },
 
@@ -119,7 +123,7 @@ var AgencyAdminEdit = React.createClass({
     const renderButtonFunc       = this.renderButton;
 
     return (
-      <div className="edit_agency_admin">
+      <div className="edit_profile">
         <div className="left">
           { gallery &&
               <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
@@ -128,7 +132,7 @@ var AgencyAdminEdit = React.createClass({
             uploadImage={this.uploadImage}
             gallery={gallery && [gallery] || []}
             text="Add/Change Photo"
-            className="btn btn-default btn-back m-r-lg"
+            className="btn button-primary option-button"
           />
           {renderButtonFunc('Change Password', this.props.change_password_path)}
         </div>
@@ -138,6 +142,10 @@ var AgencyAdminEdit = React.createClass({
           id="edit_agency_admin"
           onSubmit={this.onSubmit}
         >
+
+          <label className="control-label col-sm-2 required">
+            Edit Agency Admin Profile
+          </label>
           <div className="form-group">
             <div className="col-sm-10">
               <input

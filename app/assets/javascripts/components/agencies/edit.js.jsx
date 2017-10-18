@@ -1,50 +1,14 @@
 var AgencyEdit = React.createClass({
   getInitialState: function () {
     const agency = this.props.agency || {};
+    const profile_image = this.props.profile_image || {};
     const image_url = this.props.image_url;
 
     return {
       license_type: agency.license_type,
       errors: {},
-      gallery: image_url && { image_url } || null,
+      gallery: {...profile_image, image_url},
     };
-  },
-
-  uploadImage: function(images, callback) {
-    if (images.length == 0) {
-      return;
-    }
-
-    var FD = new FormData();
-    images.map((image, index) => {
-      var idx = index + 1;
-      FD.append('picture[image]', JSON.stringify(image));
-    });
-
-    FD.append('picture[agency_id]', this.props.agency.id);
-
-    const self = this;
-    $.ajax({
-      type: 'POST',
-      url: '/agent_profile_images',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-      },
-      enctype: 'multipart/form-data',
-      processData: false,
-      contentType: false,
-      data: FD,
-      success: function (res) {
-          callback(res.errors);
-          if (!res.errors && res.profile_image) {
-            self.setState({ gallery: res.profile_image });
-          }
-      },
-      error: function (err) {
-
-      }
-    });
-    return false;
   },
 
   changeLicenseType: function({ target: {value} }) {
@@ -107,9 +71,9 @@ var AgencyEdit = React.createClass({
 
   renderButton: function(text, link) {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={link} title={text}>
+      <button className="btn button-primary option-button" onClick={() => location.href = link} title={text}>
         {text}
-      </a>
+      </button>
     );
   },
 
@@ -149,12 +113,15 @@ var AgencyEdit = React.createClass({
     const renderButtonFunc                     = this.renderButton;
 
     return (
-      <div className="edit_agency">
+      <div className="edit_profiles">
         <div className="left">
           {renderButtonFunc('Add New Agency', this.props.new_agent_path)}
           {renderButtonFunc('Add New Admin Agency', this.props.new_agency_admin_path)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_agency_admin" onSubmit={this.onSubmit} >
+          <label className="control-label col-sm-2 required">
+            Edit Agency Profile
+          </label>
           {renderTextField('company_name', 'Company Name')}
           {renderTextField('business_name', 'Business Name')}
           {renderTextField('abn', 'ABN')}
