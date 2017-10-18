@@ -1,7 +1,7 @@
 class TradyCompany < ApplicationRecord
   
   has_many :tradies
-  
+  has_one :trady_company_profile_image
 
   attr_accessor :maintenance_request_id
   attr_accessor :trady_id
