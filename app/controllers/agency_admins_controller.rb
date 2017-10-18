@@ -55,7 +55,11 @@ class AgencyAdminsController < ApplicationController
 
   def edit
     @agency_admin = AgencyAdmin.find_by(id:params[:id])
-    @profile_image = @agency_admin.agency_admin_profile_image.image_url
+    if @agency_admin.agency_admin_profile_image
+      @profile_image = @agency_admin.agency_admin_profile_image.image_url
+    else
+      @profile_image = nil
+    end
   end
 
   def update
