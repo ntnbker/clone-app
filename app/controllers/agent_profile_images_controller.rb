@@ -1,6 +1,6 @@
 class AgentProfileImagesController < ApplicationController
   before_action :require_login, only:[:create]
-  before_action(only:[:show,:index]) {allow("AgencyAdmin")}
+  before_action(only:[:show,:index]) {allow("Agent")}
   
   def create
     
