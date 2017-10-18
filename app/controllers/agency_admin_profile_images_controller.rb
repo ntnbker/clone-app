@@ -41,6 +41,6 @@ class AgencyAdminProfileImagesController < ApplicationController
 
 
   def image_params
-    params.require(:picture).permit(:image, :agency_admin_id)
+    params.require(:picture).permit(:image, :agency_admin_id, :agency_admin_profile_image_id)
   end
 end 
