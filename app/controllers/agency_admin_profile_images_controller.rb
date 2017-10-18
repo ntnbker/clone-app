@@ -23,7 +23,20 @@ class AgencyAdminProfileImagesController < ApplicationController
   end
 
   def update
-    
+    @image =  AgencyAdminProfileImage.find_by(id:params[:picture][:agency_admin_profile_image_id])
+
+    if @image.update(image_params)
+      profile_image = @image.as_json(methods: :image_url)
+      
+      respond_to do |format|
+        format.json {render :json=>{:profile_image=>profile_image}}
+      end 
+    else
+      respond_to do |format|
+        format.json {render :json=>{error=>image.errors}}
+      end
+    end 
+
   end
 
 
