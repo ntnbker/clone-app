@@ -120,6 +120,8 @@ GEM
       multi_json
     errbase (0.0.3)
     erubis (2.7.0)
+    et-orbi (1.0.7)
+      tzinfo
     eventmachine (1.2.3)
     execjs (2.7.0)
     fabrication (2.16.1)
@@ -270,6 +272,8 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     rubyzip (1.2.1)
+    rufus-scheduler (3.4.2)
+      et-orbi (~> 1.0)
     safe_yaml (1.0.4)
     safely_block (0.2.0)
       errbase
@@ -298,6 +302,11 @@ GEM
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (~> 3.3, >= 3.3.3)
+    sidekiq-scheduler (2.1.10)
+      redis (>= 3, < 5)
+      rufus-scheduler (~> 3.2)
+      sidekiq (>= 3)
+      tilt (>= 1.4.0)
     sinatra (1.0)
       rack (>= 1.0)
     slop (3.6.0)
@@ -406,6 +415,7 @@ DEPENDENCIES
   shoulda-matchers (~> 3.1)
   shrine
   sidekiq
+  sidekiq-scheduler
   sinatra
   sorcery (~> 0.9.1)
   spring

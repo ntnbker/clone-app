@@ -4,3 +4,7 @@ production:
   :concurrency: 6
 :queues:
   - default
+:schedule:
+  reminder_queue:
+    cron: '0 * * * * *'   # Runs once per minute
+    class: ReminderQueueWorker

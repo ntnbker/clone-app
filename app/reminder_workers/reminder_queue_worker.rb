@@ -7,7 +7,7 @@ class ReminderQueueWorker
   def perform
     
 
-    agent_type = ["AgencyAdmin", "Agent"]
+    AgenyAdminOutstandingMaintenanceRequestReminderWorker.perform_async
 
     
 

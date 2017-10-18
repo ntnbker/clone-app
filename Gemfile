@@ -43,6 +43,7 @@ gem "aws-sdk", "~> 2.1"
 gem 'chardinjs-rails'
 gem "shrine"
 gem "roda"
+gem "sidekiq-scheduler"
 
 # gem 'elasticsearch-model'
 # gem 'elasticsearch-rails'
