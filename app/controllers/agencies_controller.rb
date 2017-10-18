@@ -62,6 +62,11 @@ class AgenciesController < ApplicationController
   def edit
 
     @agency = Agency.find_by(id:params[:id])
+    # if @agency.agency_profile_image
+    #   @profile_image = @agency_admin.agency_admin_profile_image.image_url
+    # else
+    #   @profile_image = nil
+    # end
 
   end
 
