@@ -1,6 +1,6 @@
 This is where we edit
 %div.well.container
-  =react_component('AgencyEdit', {:agency => @agency, :authenticity_token => form_authenticity_token, :new_agent_path => new_agent_path, :new_agency_admin_path => new_agency_admin_path})
+  =react_component('AgencyEdit', {:agency => @agency, :image_url => @profile_image, :authenticity_token => form_authenticity_token, :new_agent_path => new_agent_path, :new_agency_admin_path => new_agency_admin_path})
 
 .container.well
   = bootstrap_form_for @agency do |f|

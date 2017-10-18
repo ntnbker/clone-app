@@ -1,10 +1,20 @@
 var AgencyAdminEdit = React.createClass({
   getInitialState: function () {
+    const image_url = this.props.image_url;
     return {
       errors: {},
-      image_url: this.props.image_url || '',
-      gallery: null,
+      gallery: image_url && { image_url } || null,
     };
+  },
+
+  detectAndroid: function () {
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1;
+    if (isAndroid) {
+      this.setState({
+        isAndroid: true
+      });
+    }
   },
 
   uploadImage: function(images, callback) {
@@ -20,21 +30,21 @@ var AgencyAdminEdit = React.createClass({
 
     FD.append('picture[agency_admin_id]', this.props.agency_admin.id);
 
-    var props = this.props;
+    const self = this;
     $.ajax({
       type: 'POST',
       url: '/agency_admin_profile_images',
       beforeSend: function (xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       enctype: 'multipart/form-data',
       processData: false,
       contentType: false,
       data: FD,
       success: function (res) {
-          callback(res);
+          callback(res.errors);
           if (!res.errors && res.profile_image) {
-            this.setState({ gallery: res.profile_image });
+            self.setState({ gallery: res.profile_image });
           }
       },
       error: function (err) {
@@ -81,7 +91,7 @@ var AgencyAdminEdit = React.createClass({
   },
 
   removeError: function({ target: { id } }) {
-      this.setState({ errors: {...this.state.errors, [id]: ''} });
+    this.setState({ errors: {...this.state.errors, [id]: ''} });
   },
 
   renderError: function(error) {
@@ -90,7 +100,7 @@ var AgencyAdminEdit = React.createClass({
 
   renderButton: function(text, link) {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={link}>
+      <a className="btn btn-default btn-back m-r-lg" href={link} title={text}>
         {text}
       </a>
     );
@@ -98,29 +108,36 @@ var AgencyAdminEdit = React.createClass({
 
   render: function() {
     let isInvoice          = this.props.system_plan === "Invoice";
-    let image_url          = this.props.image_url;
     let agency_admin       = this.props.agency_admin || {};
     let {
       first_name, last_name, mobile_phone, license_number
     } = agency_admin;
 
-    let { errors = {}, gallery }    = this.state;
-    const renderErrorFunc           = this.renderError;
-    const removeErrorFunc           = this.removeError;
-    const renderButtonFunc          = this.renderButton;
+    let { errors = {}, gallery } = this.state;
+    const renderErrorFunc        = this.renderError;
+    const removeErrorFunc        = this.removeError;
+    const renderButtonFunc       = this.renderButton;
 
     return (
       <div className="edit_agency_admin">
         <div className="left">
-          {renderButtonFunc('Change Password', this.props.change_password_path)}
+          { gallery &&
+              <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
+          }
           <ModalImageUpload
             uploadImage={this.uploadImage}
-            gallery={gallery || image_url && [{ image_url }]}
+            gallery={gallery && [gallery] || []}
             text="Add/Change Photo"
             className="btn btn-default btn-back m-r-lg"
           />
+          {renderButtonFunc('Change Password', this.props.change_password_path)}
         </div>
-        <form role="form" className="form-horizontal right" id="edit_agency_admin" onSubmit={this.onSubmit} >
+        <form
+          role="form"
+          className="form-horizontal right"
+          id="edit_agency_admin"
+          onSubmit={this.onSubmit}
+        >
           <div className="form-group">
             <div className="col-sm-10">
               <input
@@ -181,11 +198,9 @@ var AgencyAdminEdit = React.createClass({
               {renderErrorFunc(errors['license_number'])}
             </div>
           </div>
-          <div className="text-center">
-            <button type="submit" className="button-primary green option-button">
-              Update Your Profile
-            </button>
-          </div>
+          <button type="submit" className="btn button-primary green option-button">
+            Update Your Profile
+          </button>
         </form>
       </div>
     );

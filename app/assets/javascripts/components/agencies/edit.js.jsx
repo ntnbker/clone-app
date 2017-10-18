@@ -1,11 +1,12 @@
 var AgencyEdit = React.createClass({
   getInitialState: function () {
     const agency = this.props.agency || {};
+    const image_url = this.props.image_url;
+
     return {
       license_type: agency.license_type,
       errors: {},
-      image_url: this.props.image_url || '',
-      gallery: null,
+      gallery: image_url && { image_url } || null,
     };
   },
 
@@ -22,21 +23,21 @@ var AgencyEdit = React.createClass({
 
     FD.append('picture[agency_id]', this.props.agency.id);
 
-    var props = this.props;
+    const self = this;
     $.ajax({
       type: 'POST',
       url: '/agency_profile_images',
       beforeSend: function (xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', props.authenticity_token);
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       enctype: 'multipart/form-data',
       processData: false,
       contentType: false,
       data: FD,
       success: function (res) {
-          callback(res);
+          callback(res.errors);
           if (!res.errors && res.profile_image) {
-            this.setState({ gallery: res.profile_image });
+            self.setState({ gallery: res.profile_image });
           }
       },
       error: function (err) {
@@ -106,7 +107,7 @@ var AgencyEdit = React.createClass({
 
   renderButton: function(text, link) {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={link}>
+      <a className="btn btn-default btn-back m-r-lg" href={link} title={text}>
         {text}
       </a>
     );
@@ -138,7 +139,6 @@ var AgencyEdit = React.createClass({
 
   render: function() {
     let isInvoice          = this.props.system_plan === "Invoice";
-    let image_url          = this.props.image_url;
     let agency             = this.props.agency || {};
     let {
       company_name, business_name, abn, address, mailing_address, phone, mobile_phone, corporation_license_number
@@ -151,9 +151,12 @@ var AgencyEdit = React.createClass({
     return (
       <div className="edit_agency">
         <div className="left">
+          { gallery &&
+              <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
+          }
           <ModalImageUpload
             uploadImage={this.uploadImage}
-            gallery={gallery || image_url && [{ image_url }]}
+            gallery={gallery && [gallery] || []}
             text="Add/Change Photo"
             className="btn btn-default btn-back m-r-lg"
           />

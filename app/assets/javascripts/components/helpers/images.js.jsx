@@ -312,11 +312,11 @@ UploadImageComponent = React.createClass({
     }
 
     var FD = new FormData();
-    self.props.uploadImage(dataImages, function(res) {
-      if (res.errors) {
+    self.props.uploadImage(dataImages, function(errors) {
+      if (errors) {
         return self.setState({ errors: res.errors });
       }
-      self.props.notifyAddPhoto([res.profile_image]);
+      self.props.notifyAddPhoto();
       // self.props.close();
     });
     return false;
@@ -361,7 +361,7 @@ UploadImageComponent = React.createClass({
               <div className="modal-body add-photo">
                 <div className="list-img">
                   {
-                    gallery.map((item, key) => {
+                    gallery && gallery.map((item, key) => {
                       return (
                         <img key={key} src={item.image_url} className="img" />
                       );
@@ -416,6 +416,12 @@ ModalImageUpload = React.createClass({
     }
   },
 
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      gallery: nextProps.gallery || [],
+    });
+  },
+
   isClose: function() {
     if(this.state.isModal == true) {
       this.setState({
@@ -432,12 +438,6 @@ ModalImageUpload = React.createClass({
     }
   },
 
-  componentWillReceiveProps: function (nextProps) {
-    this.setState({
-      gallery: nextProps.gallery || [],
-    });
-  },
-
   onModalWith: function(modal) {
     this.setState({
       modal: modal,
@@ -445,10 +445,7 @@ ModalImageUpload = React.createClass({
     });
   },
 
-  notifyAddPhoto: function(gallery) {
-    this.setState({
-      gallery: gallery || [],
-    });
+  notifyAddPhoto: function() {
     this.onModalWith('confirmAddPhoto');
   },
 
