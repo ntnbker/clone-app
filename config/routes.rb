@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     resources :agent_maintenance_requests, only:[:index,:show]
     resources :agency_admins, only:[:new, :create, :show, :edit, :update]
     resources :agency_admin_profile_images, only:[:create, :update]
+    resources :agent_profile_images, only:[:create, :update]
     resources :agencies, only:[:new, :create, :edit, :update]
     get "agency_settings" => 'agencies#settings', :as => "agency_settings"
     resources :agency_admin_maintenance_requests, only:[:index, :show] 
