@@ -18,6 +18,46 @@ var AgencyEdit = React.createClass({
     });
   },
 
+  uploadImage: function(images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+    const { gallery: { id } } = this.state;
+    var FD = new FormData();
+    images.map((image, index) => {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[agency_id]', this.props.agency.id);
+    if (id) {
+      FD.append('picture[agency_profile_image_id]', id);
+    }
+
+    const self = this;
+    $.ajax({
+      type: id ? 'PUT' : 'POST',
+      url: `/agency_profile_images${id ? '/' + id : ''}`,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+          callback(res.errors);
+          if (!res.errors && res.profile_image) {
+            self.setState({ gallery: res.profile_image });
+          }
+      },
+      error: function (err) {
+
+      }
+    });
+    return false;
+  },
+
   onSubmit: function(e){
 
     var flag = false;
@@ -84,7 +124,6 @@ var AgencyEdit = React.createClass({
 
     return (
       <div className="form-group">
-        <label className="control-label col-sm-2 required">{textHolder}</label>
         <div className="col-sm-10">
           <input
             type="text"
@@ -113,12 +152,21 @@ var AgencyEdit = React.createClass({
     const renderButtonFunc                     = this.renderButton;
 
     return (
-      <div className="edit_profiles">
+      <div className="edit_profile edit_agency_profile">
         <div className="left">
-          {renderButtonFunc('Add New Agency', this.props.new_agent_path)}
+          { gallery &&
+              <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
+          }
+          <ModalImageUpload
+            uploadImage={this.uploadImage}
+            gallery={gallery && [gallery] || []}
+            text="Add/Change Photo"
+            className="btn button-primary option-button"
+          />
+          {renderButtonFunc('Add New Agent', this.props.new_agent_path)}
           {renderButtonFunc('Add New Admin Agency', this.props.new_agency_admin_path)}
         </div>
-        <form role="form" className="form-horizontal right" id="edit_agency_admin" onSubmit={this.onSubmit} >
+        <form role="form" className="form-horizontal right" id="edit_agency" onSubmit={this.onSubmit} >
           <h5 className="control-label col-sm-2 required title">
             Edit Agency Profile
           </h5>
