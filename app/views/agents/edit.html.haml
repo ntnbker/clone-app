@@ -1,5 +1,5 @@
 %div.well.container
-  =react_component('AgentEdit', {:agent => @agent, :image_url => @profile_image, :authenticity_token => form_authenticity_token, :change_password_path => change_password_path})
+  =react_component('AgentEdit', {:agent => @agent, :image_url => @profile_image, :profile_image => @agency_admin_profile_image, :authenticity_token => form_authenticity_token, :change_password_path => change_password_path})
 
 .container.well
   = bootstrap_form_for @agent do |f|

@@ -12,7 +12,7 @@ var AgentEdit = React.createClass({
     if (images.length == 0) {
       return;
     }
-    const { gallery } = this.state;
+    const { gallery: { id } } = this.state;
     var FD = new FormData();
     images.map((image, index) => {
       var idx = index + 1;
@@ -20,14 +20,14 @@ var AgentEdit = React.createClass({
     });
 
     FD.append('picture[agent_id]', this.props.agent.id);
-    if (gallery) {
-      FD.append('picture[agent_profile_image_id]', gallery.id);
+    if (id) {
+      FD.append('picture[agent_profile_image_id]', id);
     }
 
     const self = this;
     $.ajax({
-      type: gallery ? 'PUT' : 'POST',
-      url: `/agent_profile_images${gallery ? '/' + gallery.id : ''}`,
+      type: id ? 'PUT' : 'POST',
+      url: `/agent_profile_images${id ? '/' + id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -121,7 +121,6 @@ var AgentEdit = React.createClass({
 
     return (
       <div className="form-group">
-        <label className="control-label col-sm-2 required">{textHolder}</label>
         <div className="col-sm-10">
           <input
             type="text"
@@ -150,7 +149,7 @@ var AgentEdit = React.createClass({
     const renderButtonFunc                     = this.renderButton;
 
     return (
-      <div className="edit_profile">
+      <div className="edit_agent_profile edit_profile">
         <div className="left">
           { gallery &&
               <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
