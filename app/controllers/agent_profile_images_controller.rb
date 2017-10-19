@@ -19,12 +19,26 @@ class AgentProfileImagesController < ApplicationController
   end
 
   def update
-    
+
+    @image =  AgentProfileImage.find_by(id:params[:picture][:agent_profile_image_id])
+
+    if @image.update(image_params)
+      profile_image = @image.as_json(methods: :image_url)
+      
+      respond_to do |format|
+        format.json {render :json=>{:profile_image=>profile_image}}
+      end 
+    else
+      respond_to do |format|
+        format.json {render :json=>{error=>image.errors}}
+      end
+    end 
+
   end
 
 
   def image_params
-    params.require(:picture).permit(:image, :agent_id)
+    params.require(:picture).permit(:image, :agent_id, :agent_profile_image_id)
   end
 
 end 

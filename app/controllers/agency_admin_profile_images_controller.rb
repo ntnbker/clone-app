@@ -4,7 +4,7 @@ class AgencyAdminProfileImagesController < ApplicationController
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   
   def create
-    current_user
+    
     
     @image =  AgencyAdminProfileImage.new(image_params)
 
@@ -23,6 +23,7 @@ class AgencyAdminProfileImagesController < ApplicationController
   end
 
   def update
+
     @image =  AgencyAdminProfileImage.find_by(id:params[:picture][:agency_admin_profile_image_id])
 
     if @image.update(image_params)
