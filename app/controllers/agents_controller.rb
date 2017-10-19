@@ -48,6 +48,7 @@ class AgentsController < ApplicationController
 
     if @agent.agent_profile_image
       @profile_image = @agent.agent_profile_image.image_url
+      @agent_profile_image = @agent.agent_profile_image
     else
       @profile_image = nil
     end
