@@ -197,10 +197,18 @@ class TradyCompaniesController < ApplicationController
 
   def change_trady_company_information
     @trady_company = TradyCompany.find_by(id:params[:id])
+
+    if @trady_company.trady_company_profile_image
+      @trady_company_logo = @trady_company.trady_company_profile_image.image_url
+      @trady_company_profile_image = @trady_company.trady_company_profile_image
+    else
+      @trady_company_logo = nil
+    end
+
   end
 
   def update_trady_company_information
-    binding.pry
+    
     @trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
 
     if @trady_company.update(trady_company_params)
