@@ -98,7 +98,7 @@ class AgenciesController < ApplicationController
     
     agency = Agency.find_by(id:params[:id])
     if current_user
-      if current_user.agency_admin.agency.id == agency
+      if current_user.agency_admin.agency.id == agency.id
         #do nothing
       else 
         flash[:notice] = "Sorry you can't see that."
