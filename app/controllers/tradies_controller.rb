@@ -176,9 +176,12 @@ class TradiesController < ApplicationController
 
     if @trady.trady_profile_image
       @profile_image = @trady.trady_profile_image.image_url
+      @trady_profile_image = @trady.trady_profile_image
     else
       @profile_image = nil
     end
+
+
   end 
 
   def update
