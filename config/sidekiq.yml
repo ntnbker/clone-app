@@ -6,5 +6,5 @@ production:
   - default
 :schedule:
   reminder_queue:
-    cron: '0 * * * * *'   # Runs once per minute
+    every: ['24h', first_in: '120s']
     class: ReminderQueueWorker
