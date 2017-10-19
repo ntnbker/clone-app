@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     resources :agency_admins, only:[:new, :create, :show, :edit, :update]
     resources :agency_admin_profile_images, only:[:create, :update]
     resources :agent_profile_images, only:[:create, :update]
+    resources :agency_profile_images, only:[:create, :update]
     resources :agencies, only:[:new, :create, :edit, :update]
     get "agency_settings" => 'agencies#settings', :as => "agency_settings"
     resources :agency_admin_maintenance_requests, only:[:index, :show] 
@@ -129,6 +130,7 @@ Rails.application.routes.draw do
     resources :trady_companies, only:[:new, :create, :edit, :update]
     resources :trady_maintenance_requests, only:[:index, :show]
     resources :trady_company_profile_images, only:[:create, :update]
+    resources :trady_profile_images, only:[:create, :update]
     get "change_trady_company_information" => "trady_companies#change_trady_company_information", :as=> :change_trady_company_information
     patch "update_trady_company_information" => "trady_companies#update_trady_company_information", :as=> :update_trady_company_information
     get "edit_trady_company" => 'trady_companies#edit_trady_company_invoice_workflow', :as =>:edit_trady_company_path
