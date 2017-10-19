@@ -1,27 +1,28 @@
 /** Lib CSS / SCSS in gem or vendor**/
 
+@import 'skeleton';
+@import 'normalize';
+@import 'jquery-ui/core';
+@import 'jquery-ui/datepicker';
+@import 'jquery-ui/theme';
+@import 'popup';
+@import 'font-awesome';
+@import 'chardinjs';
+@import 'mixins';
 
+@import 'pages';
+@import 'maintenance_requests';
+@import 'agencies';
+@import 'shared';
 
-@import "skeleton";
-@import "normalize";
-@import "jquery-ui";
-@import "popup";
-@import "font-awesome";
-@import "chardinjs";
-
-@import "pages.scss";
-@import "maintenance_requests.scss";
-@import "agencies.scss";
-@import "shared.scss";
-
-@import "trady_companies.scss";
-@import "quotes.scss";
-@import "invoices.scss";
-@import "user_sessions.scss";
-@import "agency_admin_maintenance_request/show.scss";
-@import "password_resets.scss";
-@import "spinner.scss";
-@import "agent.scss";
-@import "appointment.scss";
-@import "instruction.scss";
-@import "flash_message.scss";
+@import 'trady_companies';
+@import 'quotes';
+@import 'invoices';
+@import 'user_sessions';
+@import 'agency_admin_maintenance_request/show';
+@import 'password_resets';
+@import 'spinner';
+@import 'agent';
+@import 'appointment';
+@import 'instruction';
+@import 'flash_message';

@@ -8,7 +8,12 @@ attr_accessor :maintenance_request_id
 
 
 validates_presence_of :name, :email, :mobile
+validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
+validates :mobile,:numericality => true, :length => {:minimum=>10, :maximum => 10 }
 
+def capitalize_name
+  self.name.split.map(&:capitalize).join(' ')
+end
 
 def all_maintenance_requests
   maintenance_requests = []

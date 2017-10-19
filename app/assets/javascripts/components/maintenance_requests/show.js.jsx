@@ -1,4 +1,8 @@
-	var ModalConfirm = React.createClass({
+function renderError(error) {
+	return <p id="errorbox" className="error">{error && error[0] || ''}</p>;
+}
+
+var ModalConfirm = React.createClass({
 	render: function() {
 		return (
 			<div className="modal-custom fade">
@@ -48,84 +52,39 @@ var ModalAddAskLandlord = React.createClass({
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
-
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value;
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if(!isNaN(value)) {
-						if( 10 <= value.length && value.length <= 11) {
-							this.setState({errorMobile: false});
-						}else {
-							if(value.length > 11) {
-								value = value.substring(0, 11);
-								e.target.value = value;
-							}else if(value.length < 10) {
-								this.setState({errorMobile: true});
-							}
-						}
-					}else {
-						e.target.value = value.substring(0, value.length - 1);
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
-		}
-
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
+		const self = this;
+		var params = {
 				authenticity_token: this.props.authToken,
 				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
+					name: this.name && this.name.value,
+					email: this.email && this.email.value,
+					mobile: this.mobile && this.mobile.value,
 					maintenance_request_id: this.props.maintenance_request_id,
 				},
 			}
-			this.props.addAskLandlord(params);
-		}
-		return;
+			this.props.addAskLandlord(params, function(err) {
+				if (err) {
+					self.setState({
+						errorEmail: err.email,
+						errorName: err.name,
+						errorMobile: err.mobile,
+					})
+				}
+			});
+		return
 	},
 
 	render: function() {
@@ -155,39 +114,42 @@ var ModalAddAskLandlord = React.createClass({
 												name="landlord[name]"
 												placeholder="Landlord Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorName'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<input
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Landlord Mobile"
-												onChange={this.checkValidate}
-												id="mobile" ref={e => this.mobile = e}
+												id="mobile"
+												ref={e => this.mobile = e}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorMobile'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<input
-												type="email"
+												type="text"
 												autoCorrect="off"
 												autoComplete="off"
 												autoCapitalize="off"
 												name="landlord[email]"
 												placeholder="Landlord Email"
-												onChange={this.checkValidate}
-												id="email" ref={e => this.email = e}
+												id="email"
+												ref={e => this.email = e}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorEmail'])}
 									</div>
 							</div>
 							<div className="modal-footer">
@@ -220,84 +182,45 @@ var ModalEditAskLandlord = React.createClass({
 		this.setState({isEdit: !this.state.isEdit});
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
-
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({errorMobile: false});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({errorMobile: true});
-						}
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
-
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
+		const self = this;
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				id: this.props.landlord.id,
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id,
+			},
 		}
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					id: this.props.landlord.id,
-					maintenance_request_id: this.props.maintenance_request_id,
-				}
+		this.props.editAskLandlord(params, function(err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile,
+				})
 			}
-			this.props.editAskLandlord(params);
-		}
-
+		});
 		return
 	},
 
 	render: function() {
+		const { isEdit, errorName, errorMobile, errorEmail } = this.state;
+		const { landlord } = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -316,55 +239,67 @@ var ModalEditAskLandlord = React.createClass({
 								<h4 className="modal-title text-center">Ask landlord for instructions</h4>
 							</div>
 							<div className="modal-body">
-									<div className="row">
-										<a className="btn-edit" onClick={this.isEdit}>Edit Landlord Details</a>
+							 	{ !isEdit &&
+							 		<div className="row">
+										<a
+											className="btn-edit"
+											onClick={() => this.isEdit()}
+										>
+											Edit Landlord Details
+										</a>
 									</div>
-									<div className="row m-t-lg">
-										<div className="form-input">
-											<input
-												type="text"
-												placeholder="Landlord Nane"
-												onChange={this.checkValidate}
-												readOnly={!this.state.isEdit}
-												id="name" ref={e => this.name = e}
-												defaultValue={this.props.landlord.name}
-												className={(this.state.errorName && "has-error") + (!this.state.isEdit && " readonly")}
-											/>
-										</div>
+								}
+								<div className="row">
+									<div>
+										<input
+											id="name"
+											type="text"
+											name="landlord[name]"
+											placeholder="Landlord Name"
+											readOnly={!isEdit}
+											defaultValue={landlord.name}
+											ref={e => this.name = e}
+											onChange={this.removeError}
+											className={(errorName && "has-error") + (!isEdit && " readonly")}
+										/>
 									</div>
-									<div className="row m-t-lg">
-										<div className="form-input">
-											<input
-												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
-												ref={e => this.mobile = e}
-												placeholder="Landlord Mobile"
-												onChange={this.checkValidate}
-												readOnly={!this.state.isEdit}
-												defaultValue={this.props.landlord.mobile}
-												className={(this.state.errorMobile && "has-error") + (!this.state.isEdit && " readonly")}
-											/>
-										</div>
+									{renderError(errorName)}
+								</div>
+								<div className="row m-t-lg">
+									<div>
+										<input
+											type="text"
+											name="landlord[mobile]"
+											placeholder="Landlord Mobile"
+											id="mobile"
+											readOnly={!isEdit}
+											defaultValue={landlord.mobile}
+											ref={e => this.mobile = e}
+											onChange={this.removeError}
+											className={(errorMobile && "has-error") + (!isEdit && " readonly")}
+										/>
 									</div>
-									<div className="row m-t-lg">
-										<div className="form-input">
-											<input
-												id="email"
-												type="text"
-												autoCapitalize="off"
-												autoCorrect="off"
-												autoComplete="off"
-												ref={e => this.email = e}
-												placeholder="Landlord Email"
-												onChange={this.checkValidate}
-												readOnly={!this.state.isEdit}
-												defaultValue={this.props.landlord.email}
-												className={(this.state.errorEmail && "has-error") + (!this.state.isEdit && " readonly")}
-											/>
-										</div>
+									{renderError(errorMobile)}
+								</div>
+								<div className="row m-t-lg">
+									<div>
+										<input
+											type="text"
+											autoCorrect="off"
+											autoComplete="off"
+											autoCapitalize="off"
+											name="landlord[email]"
+											placeholder="Landlord Email"
+											id="email"
+											readOnly={!isEdit}
+											defaultValue={landlord.email}
+											ref={e => this.email = e}
+											onChange={this.removeError}
+											className={(errorEmail && "has-error") + (!isEdit && " readonly")}
+										/>
 									</div>
+									{renderError(errorEmail)}
+								</div>
 							</div>
 							<div className="modal-footer">
 								<button
@@ -438,14 +373,14 @@ var SideBarMobile = React.createClass({
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
-							Contact
+							CONTACT MENU
 						</button>
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
-							Actions
+							ACTIONS MENU
 						</button>
 					</div>
 				</div>
@@ -472,87 +407,44 @@ var SideBarMobile = React.createClass({
 var ModalAddLandlord = React.createClass({
 	getInitialState: function() {
 		return {
-			errorName: false,
-			errorEmail: false,
-			errorMobile: false,
+			errorName: '',
+			errorEmail: '',
+			errorMobile: '',
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
-
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({errorMobile: false});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({errorMobile: true});
-						}
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
-
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
-		}
-
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
+		const self = this;
+		var params = {
 				authenticity_token: this.props.authToken,
 				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
+					name: this.name && this.name.value,
+					email: this.email && this.email.value,
+					mobile: this.mobile && this.mobile.value,
 					maintenance_request_id: this.props.maintenance_request_id,
 				},
 			}
-			this.props.addLandlord(params);
-		}
-
+			this.props.addLandlord(params, function(err) {
+				if (err) {
+					self.setState({
+						errorEmail: err.email,
+						errorName: err.name,
+						errorMobile: err.mobile,
+					})
+				}
+			});
 		return
 	},
 
@@ -590,43 +482,44 @@ var ModalAddLandlord = React.createClass({
 												name="landlord[name]"
 												placeholder="Enter Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorName'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Mobile <strong>*</strong>:</label>
 											<input
 												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorMobile'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Email <strong>*</strong>:</label>
 											<input
 												id="email"
-												type="email"
+												type="text"
 												autoCapitalize="off"
 												autoCorrect="off"
 												autoComplete="off"
 												name="landlord[email]"
 												placeholder="Enter Email"
 												ref={e => this.email = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorEmail'])}
 									</div>
 							</div>
 							<div className="modal-footer">
@@ -654,82 +547,41 @@ var ModalEditLandlord = React.createClass({
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
 
-		switch(key) {
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({errorName: true});
-					}else {
-						this.setState({errorName: false});
-					}
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value
-				if(value == "") {
-					this.setState({errorMobile: true});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({errorMobile: false});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({errorMobile: true});
-						}
-					}
-				}
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({errorEmail: true});
-				}else {
-					this.setState({errorEmail: false});
-				}
-				break;
-			}
-		}
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
 	},
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
-
-		if(this.name.value == "") {
-			this.setState({errorName: true});
-			flag = true;
+		const self = this;
+		var params = {
+			authenticity_token: this.props.authToken,
+			landlord: {
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				id: this.props.landlord.id,
+				maintenance_request_id: this.props.maintenance_request_id,
+			},
 		}
-
-		if(this.mobile.value == "") {
-			this.setState({errorMobile: true});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({errorEmail: true});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
-				authenticity_token: this.props.authToken,
-				landlord: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					id: this.props.landlord.id,
-					maintenance_request_id: this.props.maintenance_request_id,
-				},
+		this.props.editLandlord(params, function(err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile,
+				})
 			}
-			this.props.editLandlord(params);
-		}
-	},
+		});
+		},
 
 	render: function() {
 		return (
@@ -759,46 +611,47 @@ var ModalEditLandlord = React.createClass({
 												name="landlord[name]"
 												placeholder="Enter Name"
 												ref={e => this.name = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												defaultValue={this.props.landlord.name}
 												className={"u-full-width " + (this.state.errorName && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorName'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Mobile <strong>*</strong>:</label>
 											<input
 												id="mobile"
-												type="number"
-												minLength="10"
-												maxLength="11"
+												type="text"
 												name="landlord[mobile]"
 												placeholder="Enter Mobile"
 												ref={e => this.mobile = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												defaultValue={this.props.landlord.mobile}
 												className={"u-full-width " + (this.state.errorMobile && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorMobile'])}
 									</div>
 									<div className="row m-t-lg">
 										<div>
 											<label>Email <strong>*</strong>:</label>
 											<input
 												id="email"
-												type="email"
+												type="text"
 												autoCapitalize="off"
 												autoCorrect="off"
 												autoComplete="off"
 												name="landlord[email]"
 												placeholder="Enter Email"
 												ref={e => this.email = e}
-												onChange={this.checkValidate}
+												onChange={this.removeError}
 												defaultValue={this.props.landlord.email}
 												className={"u-full-width " + (this.state.errorEmail && "has-error")}
 											/>
 										</div>
+										{renderError(this.state['errorEmail'])}
 									</div>
 							</div>
 							<div className="modal-footer">
@@ -838,111 +691,20 @@ var ModalRequestModal = React.createClass({
 		};
 	},
 
-	checkValidate: function(e) {
+	removeError: function(e) {
 		var key = e.target.id;
+		var errorField = {
+			'name'   : 'errorName',
+			'email'  : 'errorEmail',
+			'mobile' : 'errorMobile',
+			'company': 'errorCompany',
+		}[key];
 
-		switch(key) {
-			case "company": {
-					if(e.target.value == "") {
-						this.setState({
-							isDisable: true,
-							errorCompany: true
-						});
-					}else {
-						this.setState({
-							isDisable: false,
-							errorCompany: false
-						});
-					}
-					this.state.trady.company_name = e.target.value;
-					this.forceUpdate();
-				break;
-			}
-
-			case "name": {
-					if(e.target.value == "") {
-						this.setState({
-							isDisable: true,
-							errorName: true
-						});
-					}else {
-						this.setState({
-							isDisable: false,
-							errorName: false
-						});
-					}
-					this.state.trady.name = e.target.value;
-					this.forceUpdate();
-				break;
-			}
-
-			case "mobile": {
-				let value = e.target.value;
-				if(value == "") {
-					this.setState({
-						isDisable: true,
-						errorMobile: true
-					});
-				}else {
-					if( 10 <= value.length && value.length <= 11) {
-						this.setState({
-							isDisable: false,
-							errorMobile: false
-						});
-					}else {
-						if(value.length > 11) {
-							value = value.substring(0, 11);
-							e.target.value = value;
-						}else if(value.length < 10) {
-							this.setState({
-								isDisable: true,
-								errorMobile: true
-							});
-						}
-					}
-				}
-				this.state.trady.mobile = value;
-				this.forceUpdate();
-				break;
-			}
-
-			default: {
-				if(e.target.value == "" || !EMAIL_REGEXP.test(e.target.value)) {
-					this.setState({
-						isDisable: true,
-						errorEmail: true
-					});
-				}else {
-					this.setState({
-						isDisable: false,
-						errorEmail: false
-					});
-				}
-				this.state.trady.email = e.target.value;
-				this.forceUpdate();
-				break;
-			}
-		}
+		var keyField = key === 'company' ? 'company_name' : key;
+		// if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '', trady: { ...trady, [keyField]: e.target.value } });
 	},
 
-	componentWillMount: function() {
-		//this.selectTrady(this.state.maintenance_request.trady_id);
-	},
-
-	checkLength: function(e) {
-		var value = e.target.value;
-		if(value.length > 11) {
-			this.setState({
-				isDisable: true,
-				errorMobile: true,
-			});
-		}else {
-			this.setState({
-				isDisable: false,
-				errorMobile: false
-			});
-		}
-	},
 
 	selectTrady: function(id) {
 		const self = this.props;
@@ -984,83 +746,78 @@ var ModalRequestModal = React.createClass({
 
 	submit: function(e) {
 		e.preventDefault();
-		let flag = false;
+		const self = this;
+		var params = {
+			trady: {
+				name:   								this.name && 		this.name.value,
+				email:   								this.email && 	this.email.value,
+				mobile:   							this.mobile && 	this.mobile.value,
+				company_name:   				this.company && this.company.value,
+				item:   								this.state.trady,
+				trady_id:   						this.state.trady.id || "",
+				maintenance_request_id: this.props.maintenance_request.id,
+				skill_required:   			this.props.maintenance_request.service_type,
+				trady_request:   				this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
+			},
+		};
+		this.props.requestQuote(params, function(err) {
+			if (err) {
+				self.setState({
+					isDisable   : false,
+					errorEmail  : err.email,
+					errorName   : err.name,
+					errorMobile : err.mobile,
+					errorCompany: err.company_name,
+				});
+			}
+		});
 
-		if(this.company.value == "") {
-			this.setState({
-				isDisable: true,
-				errorCompany: true
-			});
-			flag = true;
-		}
-
-		if(this.name.value == "") {
-			this.setState({
-				isDisable: true,
-				errorName: true
-			});
-			flag = true;
-		}
-
-		if(this.mobile.value == "") {
-			this.setState({
-				isDisable: true,
-				errorMobile: true
-			});
-			flag = true;
-		}
-
-		if(this.email.value == "" || !EMAIL_REGEXP.test(this.email.value)) {
-			this.setState({
-				isDisable: true,
-				errorEmail: true
-			});
-			flag = true;
-		}
-
-		if(!flag) {
-			var params = {
-				trady: {
-					name: this.name.value,
-					email: this.email.value,
-					mobile: this.mobile.value,
-					company_name: this.company.value,
-					maintenance_request_id: this.props.maintenance_request.id,
-					trady_id: !!this.state.trady.id ? this.state.trady.id : "",
-					skill_required: this.props.maintenance_request.service_type,
-					trady_request: this.props.keyTitle == "request-quote" ? "Quote" : "Work Order",
-					item: this.state.trady,
-				},
-			};
-			this.props.requestQuote(params);
-			this.setState({
-				isDisable: true
-			});
-		}
+		this.setState({
+			isDisable: true
+		});
 
 		return
 	},
 
-	changeRadio: function(e) {
+	changeRadio: function({ target: { value } } ) {
+		const boolValue = JSON.parse(value);
 		this.setState({
-			isTrady: e.target.value,
-			isAdd: e.target.value === 'false' ? true : false,
+			isTrady: value,
+			isAdd: !boolValue,
 			trady: {
 				id: null,
 				name: null,
 				email: null,
 				mobile: null,
+				company_name: null,
 			}
 		});
+	},
+
+	renderAddTrady() {
+		if (!!this.props.assigned_trady) return null;
+
+		return (
+			<div className="radio">
+				<label>
+					<input type="radio" value="false" onChange={this.changeRadio} checked={this.state.isTrady === 'false' && "checked"}/>
+					Add trady
+				</label>
+			</div>
+		);
 	},
 
 	render: function() {
 		const self = this;
 		const state = this.state;
+		const assignedTrady = this.props.assigned_trady;
 		const {isTrady, isDisable, trady, isAdd} = this.state;
-		const style = {
-			background: this.state.isAdd ? 'none' : '#f2f2f2'
-		};
+
+		const style = { background: isAdd ? 'none' : '#f2f2f2' };
+		const isAssigned = !!assignedTrady;
+
+		const tradies = isAssigned ? [assignedTrady] : this.props.tradies;
+
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -1086,32 +843,27 @@ var ModalRequestModal = React.createClass({
 											Select trady
 										</label>
 									</div>
-									<div className="radio">
-										<label>
-											<input type="radio" value="false" onChange={this.changeRadio} checked={isTrady === 'false' && "checked"}/>
-											Add trady
-										</label>
-									</div>
+									{this.renderAddTrady()}
 								</div>
 								{
 									isTrady === 'true' &&
 										<div className="row">
 											<select
 												id="trady"
+												value={trady.id || ""}
 												ref={e => this.trady_id = e}
 												className="form-control input-custom"
 												onChange={() => this.selectTrady(this.trady_id.value)}
 											>
-												<option value="" selected={!trady.id && "selected"}>Select Tradie</option>
+												<option value="">Select Tradie</option>
 												{
-													this.props.tradies.map(function(item, index) {
+													tradies.map(function(item, index) {
 														return (
 															<option
 																key={index+1}
 																value={item.id}
-																selected={trady.id == item.id && "selected"}
 															>
-																{item.name}
+																{item.company_name}
 															</option>
 														);
 													})
@@ -1130,12 +882,13 @@ var ModalRequestModal = React.createClass({
 														style={style}
 														ref={e => this.company = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
+														onChange={this.removeError}
 														placeholder="Enter Company Name"
-														value={!!this.state.trady.company_name ? this.state.trady.company_name : ""}
+														value={trady.company_name || ""}
 														className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorCompany)}
 											</div>
 											<div className="row m-t-lg">
 												<div>
@@ -1146,17 +899,18 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Name"
 														ref={e => this.name = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
-														value={!!this.state.trady.name ? this.state.trady.name : ""}
+														onChange={this.removeError}
+														value={trady.name || ""}
 														className={"input-custom u-full-width " + (this.state.errorName && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorName)}
 											</div>
 											<div className="row m-t-lg">
 												<div>
 													<input
 														id="email"
-														type="email"
+														type="text"
 														style={style}
 														autoCapitalize="off"
 														autoCorrect="off"
@@ -1164,27 +918,29 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Email"
 														ref={e => this.email = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
-														value={!!this.state.trady.email ? this.state.trady.email : ""}
+														onChange={this.removeError}
+														value={trady.email || ""}
 														className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorEmail)}
 											</div>
 											<div className="row m-t-lg">
 												<div>
 													<input
 														id="mobile"
-														type="number"
+														type="text"
 														style={style}
 														placeholder="Enter Mobile"
 														ref={e => this.mobile = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.checkValidate}
+														onChange={this.removeError}
+														value={trady.mobile || ""}
 														onKeyPress={(e) => this.checkLength(e)}
-														value={!!this.state.trady.mobile ? this.state.trady.mobile : ""}
 														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")}
 													/>
 												</div>
+												{renderError(this.state.errorMobile)}
 											</div>
 										</div>
 								}
@@ -1252,11 +1008,13 @@ var MaintenanceRequest = React.createClass({
 			quotes: this.props.quotes,
 			status: this.props.status,
 			tradies: this.props.tradies,
+			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
+			trady: this.props.hired_trady,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
-			invoice_pdf_files: this.props.pdf_urls,
+			invoice_pdf_files: this.props.pdf_files,
 			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
@@ -1349,7 +1107,16 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest': {
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewTrady': {
+				this.setState({
+					trady: item
+				});
 				this.onModalWith(key);
 				break;
 			}
@@ -1361,7 +1128,7 @@ var MaintenanceRequest = React.createClass({
 
 	},
 
-	addAskLandlord: function(params){
+	addAskLandlord: function(params, callback){
 		const {logs} = this.state;
 		var self = this;
 		$.ajax({
@@ -1372,8 +1139,11 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
-					logs: logs.push(res.log),
+					logs: logs,
 					landlord: res.landlord,
 					notification: {
 						bgClass: "bg-success",
@@ -1395,7 +1165,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editAskLandlord: function(params) {
+	editAskLandlord: function(params, callback) {
 		const {logs} = this.state;
 		var self = this;
 		$.ajax({
@@ -1406,8 +1176,11 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
-					logs: logs.push(res.log),
+					logs: logs,
 					landlord: res.landlord,
 					notification: {
 						title: "Ask landlord for instructions",
@@ -1429,7 +1202,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	addLandlord: function(params) {
+	addLandlord: function(params, callback) {
 		const {landlord} = this.state;
 		var self = this;
 		$.ajax({
@@ -1440,11 +1213,14 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					landlord: res,
 					notification: {
-						title: landlord ? "Change Landlord" : "Add Lanlord",
-						content: landlord ? 'Your have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
+						title: landlord ? "Change Landlord" : "Add Landlord",
+						content: landlord ? 'You have successfully changed the landlord for the property "Address".' : "Your Landlord has been added successfully!",
 						bgClass: "bg-success",
 					},
 				});
@@ -1462,7 +1238,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editLandlord: function(params) {
+	editLandlord: function(params, callback) {
 		var self = this;
 		$.ajax({
 			type: 'POST',
@@ -1472,6 +1248,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					landlord: res,
 					notification: {
@@ -1494,7 +1273,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageLandlord: function(params) {
+	sendMessageLandlord: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -1505,6 +1284,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
 				landlords_conversation.push(res);
 
@@ -1523,7 +1305,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageTenant: function(params) {
+	sendMessageTenant: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -1534,6 +1316,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const tenants_conversation = !!self.state.tenants_conversation ? self.state.tenants_conversation : [];
 				tenants_conversation.push(res);
 				self.setState({
@@ -1551,7 +1336,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageTrady: function(params) {
+	sendMessageTrady: function(params, callback) {
 		const {authenticity_token, maintenance_request, current_user_role} = this.props;
 		const self = this;
 		params.message.maintenance_request_id = maintenance_request.id;
@@ -1564,6 +1349,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				const trady_conversation = !!self.state.trady_conversation ? self.state.trady_conversation : [];
 				trady_conversation.push(res);
 				self.setState({
@@ -1581,7 +1369,7 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	sendMessageQuote: function(params) {
+	sendMessageQuote: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_user_role.role;
 		$.ajax({
@@ -1592,6 +1380,9 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let quote = self.state.quote
 				quote.conversation = quote.conversation ? quote.conversation : {};
 				const messages = !!quote.conversation && quote.conversation.messages ? quote.conversation.messages : [];
@@ -1662,8 +1453,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					quote: quote,
 					notification: {
-						title: "Forward Landlord",
-						content: "The email about quote information was sent for Landlord.",
+						title: "Forward Quote To Landlord",
+						content: "You have successfully emailed the quote to the landlord.",
 						bgClass: "bg-success",
 					}
 				});
@@ -1692,12 +1483,15 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	requestQuote: function(params) {
+	requestQuote: function(params, callback) {
+		const {logs} = this.state;
 		const self = this;
 		const tradies_with_quote_requests = this.state.tradies_with_quote_requests;
 		let flag = false;
+		const hasAssiged = !!this.props.assigned_trady;
+
 		tradies_with_quote_requests.map((item, index) => {
-			if(params.trady.trady_id == item.id) {
+			if(params.trady.trady_id == item.id && !hasAssiged) {
 				flag = true;
 			}
 		});
@@ -1720,13 +1514,19 @@ var MaintenanceRequest = React.createClass({
 				},
 				data: params,
 				success: function(res){
+					if (res.errors) {
+						return callback(res.errors);
+					}
+					logs.push(res.log);
 					tradies_with_quote_requests.push(params.trady.item);
 					self.setState({
-						tradies: res,
+						logs: logs,
+						trady: res.hired_trady,
+						tradies: res.all_tradies,
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
-							title: "Request Quote",
-							content: 'Thank you, a quote has been emailed to "' + params.trady.company_name +'". We will notify you once the quote been received.',
+							title: "Quote Request Sent",
+							content: 'Thank you, an email has been sent to ' + params.trady.company_name +' requesting a quote for the job. We will notify you once the quote been received.',
 							bgClass: "bg-success",
 						},
 					});
@@ -1735,7 +1535,7 @@ var MaintenanceRequest = React.createClass({
 				error: function(err) {
 					self.setState({notification: {
 						title: "Request Quote",
-						content: "The request quote is error",
+						content: "An error has occured with the quote request",
 						bgClass: "bg-error",
 					}});
 					self.onModalWith('notification');
@@ -1744,7 +1544,8 @@ var MaintenanceRequest = React.createClass({
 		}
 	},
 
-	sendWorkOrder: function(params) {
+	sendWorkOrder: function(params, callback) {
+		const {logs} = this.state;
 		const self = this;
 		delete params.item;
 		$.ajax({
@@ -1755,12 +1556,18 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				self.state.maintenance_request.trady_id = !!params.trady.trady_id ? params.trady.trady_id : res[res.length-1].id;
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				logs.push(res.log);
+				self.state.maintenance_request.trady_id = !!params.trady ? params.trady.trady_id : res.all_tradies[res.all_tradies.length-1].id;
 				self.setState({
-					tradies: res,
+					logs: logs,
+					trady: res.hired_trady,
+					tradies: res.all_tradies,
 					notification: {
 						title: "Send Work Order",
-						content: 'Thank you, a work order has been emailed to "Trady Company". You will receive an invoice form "Trady Company" once the job has been completed',
+						content: 'Thank you, a work order has been emailed to ' + params.trady.company_name +'. You will receive an invoice from ' + params.trady.company_name +' once the job has been completed',
 						bgClass: "bg-success",
 					},
 				});
@@ -1795,8 +1602,8 @@ var MaintenanceRequest = React.createClass({
 			success: function(res){
 				self.setState({
 					notification: {
-						title: "Assign Matenance Request",
-						content: "Thank you for reassigning this Mantenance Request.",
+						title: "Assign Maintenance Request",
+						content: "Thank you for reassigning this Maintenance Request.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1805,7 +1612,7 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Assign Matenance Request",
-					content: "The Assign Matenance Request was error" ,
+					content: "An error occured reassigning this maintenance request." ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1813,26 +1620,33 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
-	editMaintenanceRequest: function(params) {
+	editMaintenanceRequest: function(params, callback) {
 		const self = this;
-		params.maintenance_request_id = this.state.maintenance_request.id;
 		let {maintenance_request} = this.state;
+
 		$.ajax({
 			type: 'POST',
 			url: '/update_maintenance_request',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				maintenance_request.service_type = res.service_type;
 				maintenance_request.maintenance_heading = res.maintenance_heading;
 				maintenance_request.maintenance_description = res.maintenance_description
 				self.setState({
+					tradies: res.all_tradies,
 					maintenance_request: maintenance_request,
 					notification: {
 						title: "Edit Maintenance Request",
-						content: "The Maintenance Request was update",
+						content: "The Maintenance Request has been updated.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1841,7 +1655,7 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Edit Maintenance Request",
-					content: "The Maintenance Request didnt update!" ,
+					content: "The Maintenance Request didn't update!" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1870,7 +1684,7 @@ var MaintenanceRequest = React.createClass({
 					status: res,
 					notification: {
 						title: "Update Status",
-						content: "Thank you for updating the Mantenance Request status",
+						content: "Thank you for updating the maintenance request status.",
 						bgClass: "bg-success",
 					},
 				});
@@ -1879,7 +1693,89 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Update Status",
-					content: "The Status of Maintenance Request didnt update!" ,
+					content: "The Status of Maintenance Request didn't update!" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	markAsPaid: function(invoice, uploaded = false) {
+		const self = this;
+		const {maintenance_request} = this.state;
+		const params = {
+			invoice_id: invoice.id,
+			invoice_type: 'system_invoice',
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		if (uploaded) {
+			delete params.invoice_id;
+			params.uploaded_invoice_id = invoice.id;
+			params.invoice_type = 'uploaded_invoice';
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: '/mark_as_paid',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				invoice.paid = true;
+				self.setState({
+					notification: {
+						title: "Mark As Paid",
+						content: "You have marked this invoice as paid.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Mark As Paid",
+					content: "An error occured marking this invoice as paid." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	cancelWorkOrder: function() {
+		const self = this;
+		const {maintenance_request, logs} = this.state;
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/cancel_work_order',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				logs.push(res.log);
+				self.setState({
+					logs: logs,
+					trady: null,
+					notification: {
+						title: "Cancel Work Order",
+						content: "You have now cancelled the work order. Please choose another tradie to complete this maintenance request",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Cancel Work Order",
+					content: "Cancel Work Order is error" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -2032,8 +1928,8 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
-							viewQuote={(quote) => this.viewQuote(quote)}
 							updateStatusQuote={this.updateStatusQuote}
+							viewQuote={(quote) => this.viewQuote(quote)}
 							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
 						/>
 					);
@@ -2057,6 +1953,7 @@ var MaintenanceRequest = React.createClass({
 							keyTitle="request-quote"
 							tradies={this.state.tradies}
 							requestQuote={this.requestQuote}
+							assigned_trady={this.state.trady}
 							maintenance_request={this.state.maintenance_request}
 						/>
 					);
@@ -2076,13 +1973,13 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewInvoice': {
 					return (
-							<ModalViewInvoice
-								close={this.isClose}
-								agency={this.props.agency}
-							 	invoice={this.state.invoice}
-							 	invoices={this.state.invoices}
-								property={this.props.property}
-							/>
+						<ModalViewInvoice
+							close={this.isClose}
+							agency={this.props.agency}
+						 	invoice={this.state.invoice}
+						 	invoices={this.state.invoices}
+							property={this.props.property}
+						/>
 					);
 
 					break;
@@ -2107,8 +2004,10 @@ var MaintenanceRequest = React.createClass({
 						<EditMaintenanceRequest
 							close={this.isClose}
 							services={this.props.services}
+							onModalWith={(modal) => this.onModalWith(modal)}
 							maintenance_request={this.state.maintenance_request}
 							editMaintenanceRequest={this.editMaintenanceRequest}
+							trady={this.state.trady || this.props.assigned_trady}
 						/>
 					);
 				}
@@ -2160,18 +2059,18 @@ var MaintenanceRequest = React.createClass({
 							title="Update Status"
 							quote={this.state.quote}
 							click={this.updateStatusMR}
-							content="Are you sure you want to update the Maintenance request status ?"
+							content="Are you sure you want to update the maintenance request status ?"
 						/>
 					);
 
 				case 'confirmAssign':
 					return (
 						<ModalConfirmUpdateStatus
-							title="Assign Matenance Request"
 							close={this.isClose}
 							quote={this.state.quote}
 							click={this.assignToUser}
-							content="Are you sure you want to Reassign this Maintenance request ?"
+							title="Assign Matenance Request"
+							content="Are you sure you want to reassign this maintenance request?"
 						/>
 					);
 
@@ -2180,6 +2079,41 @@ var MaintenanceRequest = React.createClass({
 						<ModalInstruction
 							authenticity_token={this.props.authenticity_token}
 							updateInsruction={this.updateInsruction}
+						/>
+					);
+
+				case 'addPhoto':
+					return (
+						<ModalAddPhoto
+							close={this.isClose}
+							gallery={this.state.gallery}
+							notifyAddPhoto={this.notifyAddPhoto}
+							authenticity_token={this.props.authenticity_token}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					);
+
+				case 'confirmAddPhoto':
+					return (
+						<ModalConfirmAddPhoto
+							close={this.isClose}
+							onModalWith={(modal) => this.onModalWith(modal)}
+						/>
+					);
+
+				case 'viewTrady':
+					return (
+						<ModalViewTrady
+							close={this.isClose}
+							trady={this.state.trady}
+						/>
+					);
+
+				case 'confirmCancelTrady':
+					return (
+						<ModalConfirmCancelTrady
+							close={this.isClose}
+							cancelWorkOrder={this.cancelWorkOrder}
 						/>
 					);
 
@@ -2287,16 +2221,23 @@ var MaintenanceRequest = React.createClass({
 		return json;
 	},
 
+	notifyAddPhoto: function(gallery) {
+		this.setState({
+			gallery: gallery
+		});
+		this.onModalWith('confirmAddPhoto');
+	},
+
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
-		const {invoice_pdf_files} = this.state;
+		const {invoice_pdf_files, trady} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
 					<div className="section">
 						<ItemMaintenanceRequest
 							status={this.state.status}
-							gallery={this.props.gallery}
+							gallery={this.state.gallery}
 							property={this.props.property}
 							all_agents={this.props.all_agents}
 							updateStatusMR={this.updateStatusMR}
@@ -2306,6 +2247,15 @@ var MaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
 						/>
+						{
+							this.state.trady &&
+								<AssignTrady
+									trady={this.state.trady}
+									current_role={this.props.current_user_role}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									viewTrady={(key, item) => this.viewItem(key, item)}
+								/>
+						}
 						{	(quotes && quotes.length > 0) &&
 						 		<Quotes
 							 		quotes={this.state.quotes}
@@ -2321,6 +2271,8 @@ var MaintenanceRequest = React.createClass({
 						{	(invoices && invoices.length > 0) &&
 								<Invoices
 									invoices={this.state.invoices}
+									current_role={this.props.current_user_role}
+									markAsPaid={(item) => this.markAsPaid(item)}
 									viewInvoice={(key, item) => this.viewItem(key, item)}
 								/>
 						}
@@ -2328,7 +2280,9 @@ var MaintenanceRequest = React.createClass({
 								<PDFInvoices
 									trady={this.props.assigned_trady}
 									invoice_pdf_files={invoice_pdf_files}
+									current_role={this.props.current_user_role}
 									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
+									markAsPaid={(item) => this.markAsPaid(item, true)}
 								/>
 						}
 					</div>
@@ -2337,12 +2291,13 @@ var MaintenanceRequest = React.createClass({
 							tenants={tenants}
 							landlord={this.state.landlord}
 							current_user={this.props.current_user}
-							assigned_trady={this.props.assigned_trady}
+							assigned_trady={trady || this.props.assigned_trady}
 							onModalWith={(modal) => this.onModalWith(modal)}
 						/>
 						<Action
 							landlord={this.state.landlord}
 							onModalWith={(modal) => this.onModalWith(modal)}
+							assigned_trady={trady || this.props.assigned_trady}
 						/>
 						{
 							(work_order_appointments && work_order_appointments.length > 0) &&
@@ -2406,8 +2361,8 @@ var MaintenanceRequest = React.createClass({
 					tenants={tenants}
 					landlord={this.state.landlord}
 					current_user={this.props.current_user}
-					assigned_trady={this.props.assigned_trady}
 					onModalWith={(modal) => this.onModalWith(modal)}
+					assigned_trady={trady || this.props.assigned_trady}
 					viewItem={(key, item) => this.viewItem(key, item)}
 				/>
 				{ this.renderModal() }

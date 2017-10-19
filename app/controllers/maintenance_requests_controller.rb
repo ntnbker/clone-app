@@ -24,6 +24,7 @@ class MaintenanceRequestsController < ApplicationController
     @maintenance_request.availabilities.build
     @maintenance_request.build_maintenance_request_image
     @customer_input = Query.find_by(id:session[:customer_input])
+    @agencies = Agency.all.as_json(:include => {:agents => {}, :agency_admins => {}})
 
   end
 
@@ -31,9 +32,9 @@ class MaintenanceRequestsController < ApplicationController
     
     @customer_input = Query.find_by(id:session[:customer_input])
     @maintenance_request = MaintenanceRequest.new(maintenance_request_params)
-
+    @maintenance_request.perform_contact_maintenance_request_validation = true
     if current_user == nil || current_user.logged_in_as("Tenant")
-      @maintenance_request.perform_realestate_validations = false
+      @maintenance_request.perform_realestate_validations = true
       ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
       the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email]) 
       the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email]) 
@@ -275,43 +276,89 @@ class MaintenanceRequestsController < ApplicationController
       
       the_url = agency_admin_maintenance_request_url(@maintenance_request)
      
-      EmailWorker.perform_async(@maintenance_request.id)
+
+      #EmailWorker.perform_in(5.minutes, @maintenance_request.id)
+
       #AgencyAdminOrAgentNewMaintenanceRequestNotificationTextingWorker.perform_async(@maintenance_request.id,the_url)
 
       MaintenanceRequest.last.reindex
       if current_user == nil
-        flash[:notice]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
+        EmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        flash[:success]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
         redirect_to root_path
       elsif current_user.logged_in_as("AgencyAdmin")
+        AgentSubmittedMaintenanceRequestEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        NotifyTenantMaintenanceRequestSubmittedEmailWorker.perform_in(5.minutes,@maintenance_request.id)
         flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
         redirect_to agency_admin_maintenance_request_path(@maintenance_request)
       elsif current_user.logged_in_as("Agent")
+        AgentSubmittedMaintenanceRequestEmailWorker.perform_in(5.minutes,@maintenance_request.id)
+        NotifyTenantMaintenanceRequestSubmittedEmailWorker.perform_in(5.minutes,@maintenance_request.id)
         flash[:success]= "Thank you for submitting a maintenance request. An email confirmation has been sent you and the tenant. Please action the maintenance request at the earliest convenience."
         redirect_to agent_maintenance_request_path(@maintenance_request)
       elsif current_user.logged_in_as("Tenant") 
+        EmailWorker.perform_in(5.minutes,@maintenance_request.id)
         flash[:success]= "Thank you for submitting your maintenance request to your real estate agent. An email confirmation has been sent to you. We will keep you updated with its progress."
         redirect_to tenant_maintenance_request_path(@maintenance_request)
       end
 
       Log.create(maintenance_request_id:@maintenance_request.id, action:"Maintenance request created.")
-      
     else
       
-      flash[:danger]= "Something went wrong."
-      render json: @maintenance_request.errors
+      flash[:danger]= "Please fill out all the required information thanks :)"
+      respond_to do |format|
+        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json}}
+        format.html
+      end 
+      
 
     end 
   end
 
   def update
-    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-    maintenance_request.update_columns(maintenance_heading:params[:maintenance_heading], maintenance_description:params[:maintenance_description],service_type:params[:service])
-    respond_to do |format|
-      format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service]}}
-      format.html {render body: nil}
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request][:maintenance_request_id])
+    @maintenance_request.perform_contact_maintenance_request_validation = false
+    # @maintenance_request.update(maintenance_description:params[:maintenance_description],service_type:params[:service])
+    
+    if @maintenance_request.agency_admin 
+      if @maintenance_request.agency_admin.agency.tradies 
+        @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(params[:maintenance_request][:service_type])  
+      else 
+        @all_tradies= []
+      end 
+    elsif @maintenance_request.agent
+      if @maintenance_request.agent.agency.tradies 
+        @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(params[:maintenance_request][:service_type])  
+      else 
+        @all_tradies= []
+      end 
+    end 
 
-    end
+    
+
+
+
+    if @maintenance_request.update(maintenance_request_params)
+      respond_to do |format|
+        format.json {render :json=>{maintenance_description:params[:maintenance_request][:maintenance_description], service_type:params[:maintenance_request][:service_type], all_tradies:@all_tradies}}
+      end
+    else
+      respond_to do |format|
+        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json}}
+      end
+    end 
+
+
+
+
+
+
+    # respond_to do |format|
+    #   format.json {render :json=>{maintenance_heading:params[:maintenance_heading],maintenance_description:params[:maintenance_description], service_type:params[:service], all_tradies:@all_tradies}}
+    #   format.html {render body: nil}
+
+    # end
   end
 
   def update_status
@@ -329,7 +376,7 @@ class MaintenanceRequestsController < ApplicationController
   private
 
   def maintenance_request_params
-    params.require(:maintenance_request).permit(:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
+    params.require(:maintenance_request).permit(:maintenance_request_id,:agency_business_name,  :service_type,:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
   end
 
   def set_user
@@ -338,24 +385,30 @@ class MaintenanceRequestsController < ApplicationController
 
   def check_for_role
     @customer_input = Query.find_by(id:session[:customer_input])
-    if current_user
-      if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
-        if @customer_input.user_role == "Tenant"
-          flash[:notice] = "Sorry you are signed in as an agent. To submit a maintenance request as a tenant please log out and try again."
-          redirect_to root_path
+    if @customer_input
+      if current_user
+        if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
+          if @customer_input.user_role == "Tenant"
+            flash[:notice] = "Sorry you are signed in as an agent. To submit a maintenance request as a tenant please log out and try again."
+            redirect_to root_path
+          end 
+        elsif current_user.current_role.role == "Landlord" 
+          if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+            flash[:notice] = "Sorry you are signed in as a Landlord. To submit a maintenance request as a tenant please log out and try again."
+            redirect_to root_path
+          end 
+        elsif current_user.current_role.role == "Trady"
+          if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
+            flash[:notice] = "Sorry you are signed in as a Trady. To submit a maintenance request as a tenant please log out and try again."
+            redirect_to root_path
+          end 
         end 
-      elsif current_user.current_role.role == "Landlord" 
-        if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
-          flash[:notice] = "Sorry you are signed in as a Landlord. To submit a maintenance request as a tenant please log out and try again."
-          redirect_to root_path
-        end 
-      elsif current_user.current_role.role == "Trady"
-        if @customer_input.user_role == "Tenant" || @customer_input.user_role == "Agent"
-          flash[:notice] = "Sorry you are signed in as a Trady. To submit a maintenance request as a tenant please log out and try again."
-          redirect_to root_path
-        end 
-      end 
-    end 
+      end
+    else
+      flash[:danger] =  "Sorry you must fill in all the required fields."
+      redirect_to root_path
+
+    end  
   end
 
   # def email_auto_login(id)

@@ -71,6 +71,13 @@ var Carousel = React.createClass({
 		}
 	},
 
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			gallery: nextProps.gallery,
+			stlen: nextProps.gallery.length > 0 ? nextProps.gallery.length : 0
+		});
+	},
+
 	render: function() {
 		var styles = {
 			left: this.state.stx,
@@ -114,10 +121,10 @@ var Carousel = React.createClass({
 				}
 				</div>
 				{
-					this.props.gallery.length > 1 && <div className="btn-slider btn-next" onClick={this.sliderNext}><i className="fa fa-angle-right"></i></div>
+					this.state.gallery.length > 1 && <div className="btn-slider btn-next" onClick={this.sliderNext}><i className="fa fa-angle-right"></i></div>
 				}
 				{
-					this.props.gallery.length > 1 && <div className="btn-slider btn-prev" onClick={this.sliderPrev}><i className="fa fa-angle-left"></i></div>
+					this.state.gallery.length > 1 && <div className="btn-slider btn-prev" onClick={this.sliderPrev}><i className="fa fa-angle-left"></i></div>
 				}
 
 			</div>
@@ -266,18 +273,10 @@ var ButtonHeaderMR = React.createClass({
 	show: function(key) {
 		switch(key) {
 			case 'assign':
-				this.setState({
-					isShow: true
-				});
-				break;
-
-				case 'status':
-					this.setState({
-						isShowStatus: true
-					});
-					break;
+				return this.setState({ isShow: !this.state.isShow, isShowStatus: false });
+			case 'status':
+				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false });
 		}
-
 	},
 
 	close: function(key) {
@@ -288,24 +287,16 @@ var ButtonHeaderMR = React.createClass({
 				});
 				break;
 
-				case 'status':
-					this.setState({
-						isShowStatus: false
-					});
-					break;
+			case 'status':
+				this.setState({
+					isShowStatus: false
+				});
+				break;
 		}
 	},
 
 	componentDidMount: function() {
-		const self = this;
-		$(document).bind('click', function(e) {
-			if(self.state.isShow) {
-				self.close('assign');
-			}
-			if(self.state.isShowStatus) {
-				self.close('status');
-			}
-		});
+
 	},
 
 	render: function() {
@@ -369,9 +360,9 @@ var ItemMaintenanceRequest = React.createClass({
 		const {status} = this.props;
 		const props = this.props;
 		const d = new Date();
-  	const n = d.getTimezoneOffset();
-  	const date = new Date(maintenance.created_at);
-		let created_at = moment(date).utcOffset(+n).startOf('hour').fromNow();
+		const n = d.getTimezoneOffset();
+		const date = new Date(maintenance.created_at);
+		let created_at = moment(date + (-n/60)).fromNow();
 		return (
 			<div className="post">
 				<div className="info">

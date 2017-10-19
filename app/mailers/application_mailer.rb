@@ -1,7 +1,9 @@
 require 'digest/sha2'
 class ApplicationMailer < ActionMailer::Base
-  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sg.maintenanceapp.com.au"
-  default from: 'info@sg.maintenanceapp.com.au'
+
+  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sm.maintenanceapp.com.au"
+  default from: 'info@sm.maintenanceapp.com.au'
+
   # layout 'mailer'
   # default from: 'notify@mysite.com'
 
@@ -53,6 +55,7 @@ class ApplicationMailer < ActionMailer::Base
 
   def email_extra_tenant(maintenance_request, tenant_email, user_id, tenant_name)
     @user = User.find_by(id:user_id)
+    @tenant = Tenant.find_by(email:tenant_email)
     @maintenance_request = maintenance_request
     @property = maintenance_request.property
     @tenant_name = tenant_name
@@ -61,7 +64,7 @@ class ApplicationMailer < ActionMailer::Base
     
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
-    mail(to:tenant_email, subject: " Receipt for maintenance request - #{@property.property_address}")
+    mail(to:@tenant.email, subject: "Receipt for maintenance request - #{@property.property_address}")
   end
 
 

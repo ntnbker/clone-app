@@ -1,3 +1,14 @@
+$color-white: #FFFFFF;
+$color-grey: #f4f8fb;
+$color-grey-1: #aab8c3;
+$color-grey-dark: #849aaa;
+$color-grey-dark-1: #cedae3;
+$color-green: #7dc691;
+$color-gray: #3e4b54;
+$color-gray-dark: #baccd8;
+$color-red: #e34f4f;
+$color-black: #000000;
+$color-blue-light: #7646FF;
 .invoice-form {
 	width: 98%;
 	min-height: 500px;
@@ -8,6 +19,9 @@
 	/*box-shadow: 0 1px 10px #888888;*/
 	margin: 30px auto;
 	color: #aab8c3;
+  @include flexbox;
+  @include flex-direction(column);
+
 	p{
 		margin-bottom: 0;
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -17,20 +31,339 @@
 		margin-top: 20px;
 	}
 
+
+  .border_on_error {
+      border-color: red;
+  }
+
 	button {
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
-	button.button-primary.option-button {
+	.button-primary.option-button {
 		margin: 0;
 		height: 38px;
 		padding: 0px 10px;
 	}
 
+	.quotes {
+    p {
+      color: $color-grey-dark;
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .list-quote {
+      border: 1px solid $color-grey;
+      border-radius: 5px;
+    }
+    .item-quote {
+      overflow: hidden;
+      border-bottom: 1px solid $color-grey;
+      &:last-child {
+        border-bottom: none;
+      }
+      .user {
+        overflow: hidden;
+        img {
+          float: left;
+          display: block;
+          margin: 20px 0px 0 20px;
+          width: 48px;
+          height: 48px;
+        }
+        .icon-user {
+          float: left;
+          display: block;
+          margin: 20px 0px 0 20px;
+          i {
+            font-size: 40px;
+            color: #849aaa;
+          }
+        }
+      }
+      .info {
+        margin-left: 10px;
+        float: left;
+        margin-top: 20px;
+        .name {
+          color: $color-gray;
+          font-size: 15px;
+          margin-bottom: 5px;
+          font-weight: 500;
+        }
+        .description {
+          color: $color-grey-dark;
+          font-size: 12px;
+          margin-bottom: 20px;
+          font-weight: 500;
+        }
+      }
+      .info .name button {
+        height: 27px;
+        display: inline-block;
+        margin-left: 10px;
+        font-weight: 500;
+        font-size: 11px;
+        text-align: center;
+        width: 80px;
+        background-color: $color-white;
+        padding: 0;
+        margin: 0;
+        &.Approved {
+          border-color: $color-green;
+          color: $color-green;
+        }
+        &.Active {
+          border-color: $color-gray;
+          color: $color-gray;
+        }
+        &.Declined {
+          border-color: $color-red;
+          color: $color-red;
+        }
+        &.Cancelled {
+
+        }
+      }
+      .actions {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        .price {
+          float: right;
+          margin-right: 10px;
+        }
+        button {
+          background-color: $color-grey;
+          height: 43px;
+          width: 43px;
+          padding: 0;
+          margin-left: 5px;
+          line-height: 43px;
+          border: none;
+          padding: 0;
+          i {
+            display: inline-block;
+            font-size: 18px;
+            background-position: center;
+            width: 19px;
+            height: 19px;
+            background-repeat: no-repeat;
+            margin-bottom: -3px;
+            &.icon-reload {
+              background-image: url(/assets/icon-reload.png);
+            }
+            &.icon-close {
+              background-image: url(/assets/icon-close.png);
+            }
+          }
+          &.money {
+            width: 100px;
+            background-color: $color-grey-dark;
+            font-weight: bold;
+            font-size: 14px;
+            color: $color-white;
+            font-weight: 600;
+          }
+          &:first-child {
+            margin-right: 20px;
+          }
+        }
+        .btn-view {
+          margin-right: 0px !important;
+          background-color: $color-white;
+          height: 35px;
+          width: auto;
+          padding: 0 20px;
+          line-height: 35px;
+          font-weight: 400;
+          font-size: 14px;
+          color: $color-black;
+          margin-left: 0px;
+          border: 1px solid $color-black;
+        }
+      }
+
+    }
+    .actions {
+      button {
+        float: right;
+      }
+    }
+    .actions-quote {
+      overflow: hidden;
+      clear: both;
+      margin-left: 20px;
+      float: right;
+      margin-bottom: 10px;
+      button {
+        padding: 0 20px;
+        height: 33px;
+        margin-right: 15px;
+        margin-bottom: 0px;
+        font-size: 14px;
+        margin-top: 0;
+      }
+      .btn-accept {
+        background-color: $color-green;
+        border-color: $color-green;
+        color: $color-white;
+      }
+      .btn-decline {
+        background-color: $color-red;
+        border-color: $color-red;
+        color: $color-white;
+      }
+      .btn-cancel {
+        background-color: $color-gray;
+        border-color: $color-gray;
+        color: $color-white;
+      }
+      .btn-mark-as-paid {
+    		margin-right: 0px !important;
+          background-color: #8ADEFF;
+          height: 35px;
+          width: auto;
+          padding: 0 20px;
+          line-height: 35px;
+          font-weight: 400;
+          font-size: 14px;
+          color: $color-white;
+          margin-left: 0px;
+          border: 1px solid #8ADEFF;
+        }
+    }
+  }
+  	.show-quote {
+    text-transform: initial;
+    .info-quote {
+      clear: both;
+      overflow: hidden;
+    }
+    .info-trady {
+      width: 50%;
+      float: left;
+      margin-bottom: 15px;
+      overflow: hidden;
+      p {
+        margin-bottom: 0px;
+        text-align: left;
+        text-transform: none;
+      }
+    }
+    .info-agency {
+      width: 50%;
+      overflow: hidden;
+      p {
+        text-align: right;
+        overflow: hidden;
+        margin-bottom: 0px;
+      }
+    }
+    .detail-quote {
+      .info-maintenance {
+        margin-top: 10px;
+        p {
+          text-align: center;
+          margin-bottom: 0;
+        }
+      }
+    }
+    .detail-quote {
+      margin-top: 15px;
+      .table {
+        width: 100%;
+        font-size: 13px;
+        overflow: auto;
+        th {
+          color: #b3b3b3;
+          font-size: 13px;
+          text-transform: uppercase;
+        }
+        tr td {
+          padding-left: 0;
+          padding: 10px 3px;
+        }
+      }
+    }
+  }
+  .actions-quote {
+    overflow: hidden;
+    clear: both;
+    margin-left: 20px;
+    float: right;
+    margin-bottom: 20px;
+    text-align: center;
+    button {
+      padding: 0 20px;
+      height: 33px;
+      margin-right: 15px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: $color-black;
+      text-transform: capitalize !important;
+    }
+    .btn-accept {
+      background-color: $color-green;
+      border-color: $color-green;
+      color: $color-white;
+    }
+    .btn-decline {
+      background-color: $color-red;
+      border-color: $color-red;
+      color: $color-white;
+
+      &:disabled {
+        background-color: $color-gray;
+      }
+    }
+    .btn-cancel {
+      background-color: $color-gray;
+      border-color: $color-gray;
+      color: $color-white;
+    }
+    .btn-default {
+      border: 1px solid $color-gray !important;
+      color: $color-black !important;
+    }
+    .btn-message {
+      border: 1px solid $color-red;
+      color: $color-red;
+    }
+  }
+  .modal-custom .modal-footer-quote {
+    overflow: hidden;
+    text-align: left;
+    .actions-quote {
+      margin-left: 0px;
+    }
+  }
+  .slider-quote {
+    position: relative;
+    .button-slider {
+      button {
+        line-height: 30px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        position: absolute;
+        padding: 0px;
+      }
+      .btn-prev {
+        top: 34%;
+        left: 5px;
+      }
+      .btn-next {
+        top: 34%;
+        right: 5px;
+      }
+    }
+  }
 	.info-invoice {
-		display: flex;
-		justify-content: space-between;
-		flex-direction: row;
+		@include flexbox;
+		@include justify-content(space-between);
+		@include flex-direction(row);
 
 		.title {
 			font-weight: bold;
@@ -105,8 +438,8 @@
 		&.left {
 				width: 100px;
 				bottom: 30px;
-				position: absolute;
 				margin: 0;
+				margin-right: 10px;
 		}
 	}
 
@@ -236,9 +569,9 @@
 				}
 			}
 		}
-		
+
 		button {
-			&.button-add {	
+			&.button-add {
 				margin-top: 5px;
 				font-size: 13px;
 				height: 24px;
@@ -297,7 +630,7 @@
 	}
 
 	.amount {
-		display: flex;
+		@include flexbox;
 		margin-top: 10px;
 		select {
 			width: 49%;
@@ -325,7 +658,7 @@
 
 	@media (max-width: 640px) {
 		.info-invoice {
-			flex-direction: column;
+			@include flex-direction(column);
 		}
 	}
 }
@@ -435,7 +768,7 @@
 
 #Iframe-Master-CC-and-Rs {
   max-width: 100%;
-  max-height: 100%; 
+  max-height: 100%;
   overflow: hidden;
 }
 
@@ -443,14 +776,14 @@
   position: relative;
   height: 0;
 }
- 
+
 .responsive-wrapper iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  
+
   margin: 0;
   padding: 0;
   border: none;
@@ -483,13 +816,14 @@
 		border: solid 1px #d2d2d7;
 		position: relative;
 		text-align: center;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		width: 350px;
+		@include flexbox;
+		@include flex-direction(column);
+		@include align-items(center);
+		width: 90px;
 		margin: 0 auto;
-	}	
+	}
 	.title {
+    width: 100%;
     color:#3b5998;
     font-size:14px;
     font-weight:bold;

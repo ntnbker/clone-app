@@ -56,9 +56,9 @@ end
 
 group :development do
   gem 'web-console'
-  gem 'listen', '~> 3.0.5'
+  # gem 'listen', '~> 3.0.5'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  # gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'thin'
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -72,7 +72,7 @@ group :test do
   gem 'database_cleaner'
   gem 'shoulda-matchers', '~> 3.1'
   gem 'capybara'
-  gem 'capybara-webkit'
+  # gem 'capybara-webkit'
   gem 'rack_session_access'
   gem 'launchy'
   gem 'capybara-email'

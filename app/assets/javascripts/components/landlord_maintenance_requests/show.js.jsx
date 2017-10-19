@@ -47,14 +47,14 @@ var LandlordSideBarMobile = React.createClass({
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
-							Contact
+							CONTACT MENU
 						</button>
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
 							className={"actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
-							Actions
+							ACTIONS MENU
 						</button>
 					</div>
 				</div>
@@ -194,7 +194,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	},
 
-	sendMessageLandlord: function(params) {
+	sendMessageLandlord: function(params, callback) {
 		const self = this;
 		params.message.role = this.props.current_role.role;
 		$.ajax({
@@ -205,6 +205,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors)
+				}
 				const landlords_conversation = !!self.state.landlords_conversation ? self.state.landlords_conversation : [];
 				landlords_conversation.push(res);
 
@@ -227,7 +230,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		const self = this;
 		$.ajax({
 			type: 'POST',
-			url: '/quote_status',
+			url: '/picks_quote',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
@@ -289,8 +292,8 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.setState({
 					tradies: res,
 					notification: {
-						title: "Request Quote",
-						content: "the request quote has sent successfully",
+						title: "Quote Request Sent",
+						content: "You have succesfully requested a quote. An email has been sent to the agent. Thank you for your time and input.",
 						bgClass: "bg-success",
 					},
 				});
@@ -307,7 +310,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
-	addAppointment: function(params) {
+	addAppointment: function(params, callback) {
 		const self = this;
 		const {tenants, current_role, landlord, authenticity_token, tenant} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
@@ -337,6 +340,9 @@ var LandlordMaintenanceRequest = React.createClass({
 			contentType: false,
 			data: fd,
 			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
 				let title = '';
 				let content = '';
 
@@ -578,7 +584,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							title="Cancel Appointment"
 							btnContent="Create and Cancel"
 							openModal={() => this.onModalWith('createAppointment')}
-							content={["Are you sure you want to cancel appointment. To cancel the appointment you ", <strong className="text-capitalize">must</strong>, " submit a new appointment time."]}
+							content={["Are you sure you want to cancel the appointment. To cancel the appointment you ", <strong className="text-capitalize">must</strong>, " submit a new appointment time."]}
 						/>
 					);
 				}
@@ -590,7 +596,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							title="Decline Appointment"
 							btnContent="Create and Decline"
 							openModal={() => this.onModalWith('createAppointment')}
-							content={["Are you sure you want to decline appointment. To decline the appointment you ", <strong className="text-capitalize">must</strong> ," submit a new appointment time."]}
+							content={["Are you sure you want to decline the appointment. To decline the appointment you ", <strong className="text-capitalize">must</strong> ," submit a new appointment time."]}
 						/>
 					);
 				}
@@ -602,7 +608,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							title="Create Appoinment"
 							type="Landlord Appointment"
 							comments={this.state.comments}
-							addAppointment={(params) => this.addAppointment(params)}
+							addAppointment={this.addAppointment}
 						/>
 					);
 				}

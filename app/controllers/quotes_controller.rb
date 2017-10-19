@@ -28,23 +28,20 @@ class QuotesController < ApplicationController
     if @quote.save
       @quote.calculate_quote_items_totals
       @quote.calculate_tax
-      # @quote.update_attribute(:amount,@total)
-
-      # if the quote id has been set then do nothing. if the quote_id in blank then fill it in. 
-      # if quote_request.quote_id.blank?
-      #   quote.update_attribute(:quote_id, @quote.id)
-      # else  
-
-      # end 
+       
 
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
       #######TradyStatus.create(maintenance_request_id:params[:quote][:maintenance_request_id],status:"Awaiting Quote Approval")
 
     else
-      flash[:danger] = "Please Fill in a Minumum of one item"
+      flash[:danger] = "Please fill all the required information for a complete quote."
       @trady_id = params[:quote][:trady_id]
       @maintenance_request_id= params[:quote][:maintenance_request_id]
-      render :new 
+      respond_to do |format|
+        format.json {render :json=>{errors:@quote.errors.to_hash(true).as_json}}
+        format.html {render :new}
+      end 
+      
     end 
   end
 
@@ -77,7 +74,10 @@ class QuotesController < ApplicationController
       redirect_to quote_path(@quote,maintenance_request_id:params[:quote][:maintenance_request_id], trady_id:params[:quote][:trady_id], quote_type:@quote_type, system_plan:@system_plan)
     else
       flash[:danger] = "Sorry Something went wrong "
-      render :edit
+      respond_to do |format|
+        format.json {render :json=>{errors:@quote.errors.to_hash(true).as_json}}
+        format.html {render :edit}
+      end 
     end 
   end
 
@@ -85,19 +85,19 @@ class QuotesController < ApplicationController
     #this controller is to show the quote before sending in the quote email 
     @quote = Quote.find_by(id:params[:id])
     @maintenance_request = MaintenanceRequest.find_by(id: params[:maintenance_request_id])
+    @property = @maintenance_request.property
     @trady = Trady.find_by(id:params[:trady_id])
     @trady_id = params[:trady_id]
     @quote_type = params[:quote_type]
     @system_plan = params[:system_plan]
-
     if @maintenance_request.agency_admin == nil
       @agency = @maintenance_request.agent.agency
     else
       @agency = @maintenance_request.agency_admin.agency
     end
 
-    if  @maintenance_request.property.landlord != nil
-      @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
+    if  @property.landlord != nil
+      @landlord = Landlord.find_by(id:@property.landlord.id)
     end 
   end
 
@@ -138,8 +138,10 @@ class QuotesController < ApplicationController
           end 
 
         else
-          quote.update_attribute(:status, "Declined")
-          trady = quote.trady
+          unless quote.status == "Approved"
+            quote.update_attribute(:status, "Declined")
+            trady = quote.trady
+          end 
           
           #TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
         end 
@@ -168,13 +170,41 @@ class QuotesController < ApplicationController
       maintenance_request.update_attribute(:trady_id, nil)
       Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been cancelled by: ", name:name)
 
-    end   
+    end  
 
-    respond_to do |format|
-      format.json {render json: quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})}}
+    if maintenance_request.trady
+      hired_trady = maintenance_request.trady
+    end  
+
+    # respond_to do |format|
+    #   format.json {render :json=> quotes.collect{ |quote| quote.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})}, :notice=>hired_trady}
       
-    end
-
+    # end
+    if current_user.logged_in_as("AgencyAdmin")
+      
+      if params[:status] == "Approved"
+        flash[:success] = "Thank you for accepting the quote."
+      elsif params[:status] == "Declined"
+        flash[:success] = "You have declined the quote"
+      elsif params[:status] == "Restore"
+        flash[:success] = "You have restored the quote"
+      elsif params[:status] == "Cancelled"
+        flash[:success] = "You have cancelled the quote"
+      end 
+      redirect_to agency_admin_maintenance_request_path(maintenance_request)
+    elsif current_user.logged_in_as("Agent")
+      if params[:status] == "Approved"
+        flash[:success] = "Thank you for accepting the quote."
+      elsif params[:status] == "Declined"
+        flash[:success] = "You have declined the quote"
+      elsif params[:status] == "Restore"
+        flash[:success] = "You have restored the quote"
+      elsif params[:status] == "Cancelled"
+        flash[:success] = "You have cancelled the quote"
+      end 
+      redirect_to agent_maintenance_request_path(maintenance_request)
+    end 
+      
     
     
   end
@@ -307,7 +337,7 @@ class QuotesController < ApplicationController
   private
   
   def quote_params
-    params.require(:quote).permit(:id, :trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type])
+    params.require(:quote).permit(:id,:trady_quote_reference ,:trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type])
   end
 
   def email_auto_login(id)

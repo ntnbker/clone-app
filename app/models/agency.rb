@@ -33,6 +33,10 @@ class Agency < ApplicationRecord
     the_tradies = Trady.where(id:tradies_with_desired_skill)
   end
 
+  def capitalize_company_name
+  self.company_name.split.map(&:capitalize).join(' ')
+end
+
 
 
 end 

@@ -33,14 +33,14 @@ class LandlordAppointmentsController < ApplicationController
       # redirect_to root_path
 
       if params[:appointment][:current_user_role] == "Tenant"
-        LandlordAlternativeAppointmentTimePickedEmailWorker.perform_async(maintenance_request.id, @appointment.id, landlord.id, tenant.id)
+        LandlordAlternativeAppointmentTimePickedEmailWorker.perform_in(5.minutes,maintenance_request.id, @appointment.id, landlord.id, tenant.id)
         maintenance_request.action_status.update_attribute(:agent_status, "Landlord To Confirm Appointment")
 
         Log.create(maintenance_request_id:maintenance_request.id, action:"Tenant suggested appointment time - Tenant: ", name:tenant.name.capitalize)
 
         #send email to trady letting them know that a new appointment time has been picked 
       elsif params[:appointment][:current_user_role] == "Landlord"
-        TenantAlternativeLandlordAppointmentTimePickedEmailWorker.perform_async(maintenance_request.id, @appointment.id, landlord.id, tenant.id)
+        TenantAlternativeLandlordAppointmentTimePickedEmailWorker.perform_in(5.minutes,maintenance_request.id, @appointment.id, landlord.id, tenant.id)
         maintenance_request.action_status.update_attribute(:agent_status, "Tenant To Confirm Appointment")
 
         Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord suggested appointment time - Landlord", name:landlord.name.capitalize)
@@ -57,7 +57,7 @@ class LandlordAppointmentsController < ApplicationController
       
     else
       respond_to do |format|
-        format.json {render errors:"Something went wrong please add all information"}
+        format.json {render :json=>{errors:@appointment.errors.to_hash(true).as_json}}
       end
     end 
   end

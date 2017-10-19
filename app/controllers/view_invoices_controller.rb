@@ -2,9 +2,7 @@ class ViewInvoicesController < ApplicationController
   def show
     @invoice = Invoice.find_by(id:params[:invoice_id])
     @trady = @invoice.maintenance_request.trady
-    # @payment = InvoicePayment.new
-
-    # InvoicePayment.invoice_payment_total(@invoice.id)
+    
   end
 
   def show_pdf

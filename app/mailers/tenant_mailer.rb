@@ -1,7 +1,9 @@
 require 'digest/sha2'
 class TenantMailer < ActionMailer::Base
-  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sg.maintenanceapp.com.au"
-  default from: 'info@sg.maintenanceapp.com.au'
+
+  default "Message-ID"=>"#{Digest::SHA2.hexdigest(Time.now.to_i.to_s)}@sm.maintenanceapp.com.au"
+  default from: 'info@sm.maintenanceapp.com.au'
+
   def send_tenant_initial_appointment_request(maintenance_request,appointment, tenant, trady)
 
     @appointment = appointment
@@ -11,7 +13,7 @@ class TenantMailer < ActionMailer::Base
     @trady = trady
     track user: tenant.user
     track extra: {maintenance_request_id:@maintenance_request.id}
-    mail to:tenant.email, subject:"Appointment request by tradie, #{@trady.trady_company.company_name.capitalize} - #{@property.property_address}"
+    mail to:tenant.email, subject:"Appointment request by tradie, #{@trady.company_name.capitalize} - #{@property.property_address}"
   end
 
   def appointment_accepted_email(maintenance_request_object,appointment_object, trady_object, tenant_object)
@@ -22,7 +24,7 @@ class TenantMailer < ActionMailer::Base
     @tenant = tenant_object
     track user: @tenant.user
     track extra: {maintenance_request_id:@maintenance_request.id}
-    mail(to:@tenant.email, subject:"Appointment confirmed by #{@trady.trady_company.company_name.capitalize} - #{@property.property_address}")
+    mail(to:@tenant.email, subject:"Appointment confirmed by #{@trady.company_name.capitalize} - #{@property.property_address}")
   end
 
   
@@ -35,7 +37,7 @@ class TenantMailer < ActionMailer::Base
     @user = @tenant.user
     track user: @trady.user
     track extra: {maintenance_request_id:@maintenance_request.id}
-    mail(to:@tenant.email, subject:"New appointment request by #{@trady.trady_company.company_name.capitalize} - #{@property.property_address.capitalize}")
+    mail(to:@tenant.email, subject:"New appointment request by #{@trady.company_name.capitalize} - #{@property.property_address.capitalize}")
   end
 
   def send_tenant_initial_landlord_appointment_request(maintenance_request,appointment, tenant, landlord)
@@ -78,7 +80,7 @@ class TenantMailer < ActionMailer::Base
     @property = @maintenance_request.property
     @tenant = tenant_object
     @trady = trady_object
-    mail(to:@tenant.email, subject:"Cancelled appointment by #{@trady.trady_company.company_name.capitalize} - #{@property.property_address}")
+    mail(to:@tenant.email, subject:"Cancelled appointment by #{@trady.company_name.capitalize} - #{@property.property_address}")
   end
 
   def trady_declined_appointment_email(tenant_object, trady_object, maintenance_request_object,appointment_object)
@@ -87,7 +89,7 @@ class TenantMailer < ActionMailer::Base
     @tenant = tenant_object
     @trady = trady_object
     @appointment = appointment_object
-    mail(to:@tenant.email, subject:"Appointment declined by #{@trady.trady_company.company_name.capitalize} - #{@property.property_address}")
+    mail(to:@tenant.email, subject:"Appointment declined by #{@trady.company_name.capitalize} - #{@property.property_address}")
   end
 
   def landlord_cancelled_appointment(tenant_object,maintenance_request_object)
@@ -139,6 +141,23 @@ class TenantMailer < ActionMailer::Base
         
         
     mail(to:@tenant.email, subject:"Quote Approved by Agent, #{@person} - #{@property.property_address}")
+  end
+
+  def tenant_maintenace_request_submitted_by_agent(maintenance_request)
+    @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    
+    @tenant = @maintenance_request.tenants.first
+
+    @user = @tenant.user
+    if @maintenance_request.agent
+      @person = @maintenance_request.agent.name.capitalize
+
+    elsif @maintenance_request.agency_admin
+      @person = @maintenance_request.agency_admin.first_name.capitalize
+    end     
+        
+    mail(to:@tenant.email, subject:"A maintenance request was submitted by your agent - #{@person} - #{@property.property_address}")
   end
   
   

@@ -39,6 +39,12 @@ body::-webkit-scrollbar-thumb {
   position: relative;
   top: 100px;
 }
+.error {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  color: red;
+  text-align: center;
+}
 .modal-open {
   overflow: hidden;
 }
@@ -110,8 +116,8 @@ body::-webkit-scrollbar-thumb {
         margin-bottom: 10px;
       }
       .print {
-        display: flex;
-        justify-content: flex-end;
+        @include flexbox;
+        @include justify-content(flex-end);
         margin-right: 20px;
       }
     }
@@ -124,10 +130,9 @@ body::-webkit-scrollbar-thumb {
       background-color: $color-grey-dark;
       .modal-title {
         margin-bottom: 0px;
-        font-size: 16px;
         color: $color-white;
         font-weight: 500;
-        font-size: 20px;
+        font-size: 16px;
         text-transform: initial;
         text-align: center;
       }
@@ -171,7 +176,6 @@ body::-webkit-scrollbar-thumb {
     .modal-body {
       position: relative;
       padding: 15px;
-      text-transform: uppercase;
       overflow: hidden;
       padding-bottom: 0;
       text-align: center;
@@ -300,7 +304,7 @@ body::-webkit-scrollbar-thumb {
       padding: 15px;
       text-align: center;
       border-top: none;
-      overflow: hidden; 
+      overflow: hidden;
       button {
         border: none;
         color: $color-white;
@@ -330,6 +334,14 @@ body::-webkit-scrollbar-thumb {
   .main-summary {
     margin: auto 120px;
     overflow: hidden;
+    .show-waring {
+      color: #a94442;
+      background-color: #f2dede;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      border-radius: 5px;
+    }
   }
   .section {
     float: left;
@@ -526,6 +538,15 @@ body::-webkit-scrollbar-thumb {
           width: 48px;
           height: 48px;
         }
+        .icon-user {
+          float: left;
+          display: block;
+          margin: 20px 0px 0 20px;
+          i {
+            font-size: 40px;
+            color: #849aaa;
+          }
+        }
       }
       .info {
         margin-left: 10px;
@@ -551,9 +572,8 @@ body::-webkit-scrollbar-thumb {
         font-weight: 500;
         font-size: 11px;
         text-align: center;
-        width: 80px;
         background-color: $color-white;
-        padding: 0;
+        padding: 0 10px;
         &.Approved {
           border-color: $color-green;
           color: $color-green;
@@ -627,6 +647,19 @@ body::-webkit-scrollbar-thumb {
           margin-left: 0px;
           border: 1px solid $color-black;
         }
+        .btn-mark-as-paid {
+          margin-right: 0px !important;
+          background-color: #8ADEFF;
+          height: 35px;
+          width: auto;
+          padding: 0 20px;
+          line-height: 35px;
+          font-weight: 400;
+          font-size: 14px;
+          color: $color-white;
+          margin-left: 0px;
+          border: 1px solid #8ADEFF;
+        }
       }
     }
     .actions {
@@ -662,6 +695,20 @@ body::-webkit-scrollbar-thumb {
         border-color: $color-gray;
         color: $color-white;
       }
+    }
+
+    .btn-mark-as-paid {
+      background-color: #8ADEFF;
+      height: 35px;
+      width: auto;
+      padding: 0 20px;
+      line-height: 35px;
+      font-weight: 400;
+      font-size: 14px;
+      color: $color-white;
+      margin-left: 0px;
+      border: none;
+      margin-right: 10px;
     }
   }
   .sidebar, .activity-mobile {
@@ -760,14 +807,14 @@ body::-webkit-scrollbar-thumb {
         margin-bottom: 0px;
         cursor: pointer;
         a {
-          display: flex;
+          @include flexbox;
           width: 100%;
           height: 100%;
           font-size: 13px;
           font-weight: 500;
           text-decoration: none;
           color: $color-grey-dark;
-          align-items: center;
+          @include align-items(center);
           i {
             display: inline-block;
             margin-right: 10px;
@@ -823,10 +870,10 @@ body::-webkit-scrollbar-thumb {
       .user {
         margin-left: 10px;
         padding: 0;
-        display: flex;
-        justify-content: flex-start;
-        flex-direction: row;
-        flex-wrap: wrap;
+        @include flexbox;
+        @include justify-content(flex-start);
+        @include flex-direction(row);
+        @include flex-wrap(wrap);
         margin-bottom: 5px;
         .img-user {
           width: 36px;
@@ -871,6 +918,7 @@ body::-webkit-scrollbar-thumb {
     z-index: 1;
     overflow: hidden;
     width: 100%;
+
     button {
       float: left;
       height: 60px;
@@ -882,10 +930,16 @@ body::-webkit-scrollbar-thumb {
       border: none;
       &.contact {
         background-color: #ff5a5f;
+        border: #f58285;
+        border-style: solid;
+        border-width: 5px;
       }
       &.actions {
         margin-left: 20px;
         background-color: #ff5a5f;
+        border: #f58285;
+        border-style: solid;
+        border-width: 5px;
       }
       &.active {
         background-color: $color-grey-dark;
@@ -936,8 +990,8 @@ body::-webkit-scrollbar-thumb {
     }
   }
   .action-mobile {
-    display: flex;
-    flex-direction: row;
+    @include flexbox;
+    @include flex-direction(row);
   }
   .actions-full {
     display: block;
@@ -1002,6 +1056,7 @@ body::-webkit-scrollbar-thumb {
       p {
         margin-bottom: 0px;
         text-align: left;
+        text-transform: none;
       }
     }
     .info-agency {
@@ -1089,7 +1144,7 @@ body::-webkit-scrollbar-thumb {
   }
   .slider-quote {
     position: relative;
-    .button-slider { 
+    .button-slider {
       button {
         line-height: 30px;
         width: 30px;
@@ -1115,8 +1170,10 @@ body::-webkit-scrollbar-thumb {
 
   }
   .invoices .content p{
-    display: flex;
-    justify-content: flex-end;
+    @include flexbox;
+    @include justify-content(flex-end);
+    -ms-flex-pack: end;
+
     margin-right: 20px;
   }
   .invoices .content p span{
@@ -1226,10 +1283,10 @@ body::-webkit-scrollbar-thumb {
       li {
         width: 100%;
         min-height: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: row;
+        @include flexbox;
+        @include justify-content(center);
+        @include align-items(center);
+        @include flex-direction(row);
         border-bottom: 1px solid #849aaa;
         margin-bottom: 0;
         text-align: center;
@@ -1311,12 +1368,14 @@ body::-webkit-scrollbar-thumb {
     .sidebar-mobile {
       display: block;
       .fixed {
-        display: flex;
-        justify-content: center;
+        @include flexbox;
+        @include justify-content(center);
       }
       button {
-        height: 50px;
-        width: 150px;
+        height: 82px;
+        width: auto;
+        width: initial;
+        padding: 0 10px;
         color: $color-white;
         font-weight: 400;
         font-size: 16px;
@@ -1349,14 +1408,14 @@ body::-webkit-scrollbar-thumb {
     }
 
     .invoices .content p {
-      justify-content: flex-start;
+      @include justify-content(flex-start);
       margin-right: 0px;
       margin-left: 20px;
     }
 
     .invoices .content .btn-view {
       width: 100px;
-      justify-content: flex-start;
+      @include justify-content(flex-start);
     }
     .dropdown-status {
       width: 330px;
@@ -1382,8 +1441,8 @@ body::-webkit-scrollbar-thumb {
       .author {
         font-size: 14px;
         a {
-          font-size: 13px;	
-        }	
+          font-size: 13px;
+        }
       }
       .info .title {
         font-size: 18px;
@@ -1426,12 +1485,13 @@ body::-webkit-scrollbar-thumb {
       left: calc((100% - 355px) / 2);
     }
     .sidebar-mobile {
-      display: flex;
+      @include flexbox;
       bottom: 0px;
-      justify-content: center;
+      @include justify-content(center);
       button {
         height: 50px;
-        width: 170px;
+        width: auto;
+        width: initial;
         padding: 0 18px;
         border-radius: 5px;
         font-size: 16px;
@@ -1519,13 +1579,16 @@ body::-webkit-scrollbar-thumb {
     .sidebar-mobile {
       display: block;
       .fixed {
-        display: flex;
-        justify-content: center;
+        @include flexbox;
+        @include justify-content(center);
       }
       button {
-        font-size: 20px;
-        width: 150px;
         height: 50px;
+        width: auto;
+        width: initial;
+        font-size: 20px;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
       }
     }
     .activity-mobile {
@@ -1601,11 +1664,16 @@ body::-webkit-scrollbar-thumb {
     .sidebar-mobile {
       display: block;
       .fixed {
-        display: flex;
-        justify-content: center;
+        @include flexbox;
+        @include justify-content(center);
       }
+
       button {
+        width: auto;
+        width: initial;
         font-size: 20px;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
       }
     }
     .activity-mobile {

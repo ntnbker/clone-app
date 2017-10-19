@@ -67,14 +67,16 @@ Rails.application.routes.draw do
   ###################################################
   ##########INVOICE RESOURCES/ROUTES#################
   ###################################################
-    resources :invoices, only:[:new, :create, :edit, :show]
+    resources :invoices, only:[:new, :create, :edit]
+    get "invoices"=> "invoices#show", :as => :invoice
     get "invoice_email" => "invoices#send_invoice_email", :as => :invoice_email
     get "confirm_company_invoice" =>"invoices#edit_trady_company_invoice"
     put "update_company_invoice" =>"invoices#update_trady_company_invoice"
     post "send_invoice" => "invoices#send_invoice", :as => :send_invoice
     get "invoice_sent_success" => "invoices#invoice_sent_success", :as=> :invoice_sent_success
     put 'update_invoice' => "invoices#update"
-
+    post "mark_as_paid" => "invoices#mark_as_paid"
+    post "payment_reminder" => "invoices#payment_reminder"
     get "new_additional_invoice" => "invoices#new_additional_invoice", :as=> :new_additional_invoice
     post"submit_additional_invoice" => "invoices#create_additional_invoice" 
   ###################################################
@@ -199,6 +201,15 @@ Rails.application.routes.draw do
   ###################################################
   ##########REASSIGN AGENTS RESOURCES/ROUTES############
   ###################################################
-    post "update_instruction"=> "instructions#update" 
+    post "update_instruction"=> "instructions#update"
+
+  ###################################################
+  ##########REASSIGN AGENTS RESOURCES/ROUTES#########
+  ################################################### 
+    post "update_images"=> "images#update"
+  ###################################################
+  ##########WORK ORDER RESOURCES/ROUTES#########
+  ################################################### 
+    post "cancel_work_order"=> "work_orders#cancel_work_order"
     
  end

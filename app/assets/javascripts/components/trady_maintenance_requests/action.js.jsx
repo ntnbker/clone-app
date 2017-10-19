@@ -65,6 +65,19 @@ var CreateAppointmentForQuote = React.createClass({
 	}
 });
 
+var AddPhoto = React.createClass({
+	render: function() {
+		return (
+			<li>
+				<a onClick={() => this.props.onModalWith('addPhoto')}>
+					<i className="fa fa-plus" aria-hidden="true" />
+					Add Photo
+				</a>
+			</li>
+		);
+	}
+})
+
 var ContentTradyAction = React.createClass({
 	render: function() {
 		const maintenance_request = this.props.maintenance_request;
@@ -77,9 +90,10 @@ var ContentTradyAction = React.createClass({
 				<ul>
 					<CreactOrUploadQuote link={link} />
 					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
-					<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{/*<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />*/}
 					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
@@ -87,6 +101,7 @@ var ContentTradyAction = React.createClass({
 				<ul>
 					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else {
@@ -101,9 +116,12 @@ var ContentTradyAction = React.createClass({
 						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
 					{ !!this.props.assigned_trady &&
-							<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+						<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
 					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{ !!this.props.assigned_trady &&
+						<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
+					}
 				</ul>
 			);
 		}
@@ -114,7 +132,7 @@ var TradyAction = React.createClass({
 	getInitialState: function() {
 		return {
 			show: true
-		};  
+		};
 	},
 
 	showAction: function(e) {
@@ -125,24 +143,24 @@ var TradyAction = React.createClass({
 		return (
 			<div className="item" data-intro="This is Action" data-position="left">
 				<div className="header action">
-					<a>Actions:</a> 
-					<i 
-						aria-hidden="true" 
-						onClick={this.showAction} 
-						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")} 
+					<a>Actions:</a>
+					<i
+						aria-hidden="true"
+						onClick={this.showAction}
+						className={"fa " + (this.state.show ? "fa-angle-down" : "fa-angle-right")}
 					/>
 				</div>
 				<div className="content">
 					{ this.state.show &&
 						 	<ContentTradyAction
 						 		trady={this.props.trady}
-					  		landlord={this.props.landlord} 
+					  		landlord={this.props.landlord}
 					  		invoices={this.props.invoices}
 						 		assigned_trady={this.props.assigned_trady}
-						 		signed_in_trady={this.props.signed_in_trady} 
+						 		signed_in_trady={this.props.signed_in_trady}
 						 		maintenance_request={this.props.maintenance_request}
-					  		onModalWith={(modal) => this.props.onModalWith(modal)} 
-						  /> 
+					  		onModalWith={(modal) => this.props.onModalWith(modal)}
+						  />
 					}
 				</div>
 			</div>
@@ -157,19 +175,19 @@ var TradyActionMobile = React.createClass({
 				<div className="item">
 					<div className="header action">
 						<a>Actions:</a>
-						<i 
-							aria-hidden="true" 
-							className="fa fa-close" 
+						<i
+							aria-hidden="true"
+							className="fa fa-close"
 							onClick={this.props.close}
 						/>
 					</div>
 					<div className="content">
 						<ContentTradyAction
 							trady={this.props.trady}
-							landlord={this.props.landlord} 
+							landlord={this.props.landlord}
 							invoices={this.props.invoices}
 					 		assigned_trady={this.props.assigned_trady}
-							signed_in_trady={this.props.signed_in_trady} 
+							signed_in_trady={this.props.signed_in_trady}
 					 		maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>

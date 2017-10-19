@@ -16,9 +16,9 @@ var BtnAcceptAppointment = React.createClass({
 var BtnDeclineAppointment = React.createClass({
 	render: function(){
 		return (
-			<button 
-				type="button" 
-				className="btn-decline" 
+			<button
+				type="button"
+				className="btn-decline"
 				onClick={this.props.clickDecline}
 			>
 				Decline
@@ -36,7 +36,7 @@ var BtnViewAppointment = React.createClass({
 				className="btn-view-detail"
 				onClick={this.props.clickView}
 			>
-				View Deails
+				View Details
 			</button>
 		);
 	}
@@ -98,15 +98,15 @@ var ModalAppointment = React.createClass({
 		const {appointment, current_role, comments} = this.props;
 		var title = "";
 		switch(appointment.appointment_type) {
-			case 'Work Order Appointment': 
+			case 'Work Order Appointment':
 				title = "Appointment Request";
 				break;
 
-			case 'Quote Appointment': 
+			case 'Quote Appointment':
 				title = "Appointment Request For Quote"
 				break;
 
-			case 'Landlord Appointment': 
+			case 'Landlord Appointment':
 				title = 'Landlord Appointment';
 				break;
 
@@ -126,11 +126,11 @@ var ModalAppointment = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>

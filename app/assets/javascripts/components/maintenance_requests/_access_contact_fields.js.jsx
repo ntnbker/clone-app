@@ -1,8 +1,9 @@
 var AccessContactField = React.createClass({
     getInitialState : function() {
-        return {
-            remove : false
-        };
+      return {
+          remove : false,
+          errorsForm : this.props.errorsForm || {},
+      };
     },
 
     generateAtt(name_id, x, type) {
@@ -18,6 +19,12 @@ var AccessContactField = React.createClass({
         this.setState({remove: true});
     },
 
+    componentWillReceiveProps(nextProps) {
+      this.setState({
+        errorsForm: nextProps.errorsForm || {}
+      });
+    },
+
     changeRelation: function(e, position) {
       if( e.target.value == "Tenant"){
         $("#maintenance_request_access_contacts_attributes_" + position + "_email").attr('required', 'required');
@@ -27,7 +34,7 @@ var AccessContactField = React.createClass({
         document.getElementById('errorboxemail' + position).textContent = "";
       }
     },
-    
+
     validateEmail: function(inputText, e, emailid) {
       if(!!e.target.required) {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -52,7 +59,47 @@ var AccessContactField = React.createClass({
       }
     },
 
+    renderError: function(error, index) {
+      return <p
+          id="errorbox"
+          key={index}
+          className="error"
+          style={{textAlign: 'center'}}
+        >{error || ''}</p>;
+    },
+
+    renderErrors: function(errorsForm) {
+
+      if (!errorsForm['access_contacts']) return '';
+      const errorValues = ['Please make sure the information below is valid'];
+      if (errorsForm['access_contacts.email']) {
+        if (
+            this.email &&
+            (!this.email.value
+              || !/\A[^@]+@([^@\.]+\.)+[^@\.]+\z/.test(this.email.value))
+          ) {
+          errorValues.push(errorsForm['access_contacts.email'][0]);
+        }
+      }
+      if (errorsForm['access_contacts.name']) {
+        if (this.name && !this.name.value) {
+          errorValues.push(errorsForm['access_contacts.name'][0]);
+        }
+      }
+      if (errorsForm['access_contacts.mobile']) {
+        if (this.mobile && !this.mobile.value && !/^(\d+)$/.test(this.mobile.value)) {
+          errorValues.push(errorsForm['access_contacts.mobile'][0]);
+        }
+      }
+
+      return errorValues.length > 1
+        ? errorValues.map((error, index) => this.renderError(error, index))
+        : '';
+    },
+
     render : function() {
+      var { errorsForm } = this.state;
+
       var accessContact = this.props.content;
       var x= this.props.x;
       if (accessContact) {
@@ -61,11 +108,20 @@ var AccessContactField = React.createClass({
 			var $fullnameid = 'errorboxfullname'+x;
 			var $emailid='errorboxemail'+x;
 			var $mobileid='errorboxmobile'+x;
+      var errorField = this.renderErrors(errorsForm) || '';
       return (
-        <div className="accesscontactfield" style={{display: this.state.remove ? 'none' : 'block' }}>
+        <div
+          className= "accesscontactfield"
+
+          style={{
+            display: this.state.remove ? 'none' : 'block',
+            border: errorField.length ? '1px solid red' : '1px solid #E1E1E1',
+          }}
+        >
           <fieldset>
+            { errorField }
             <p> Another Access Contact </p>
-        	  <select 
+        	  <select
               name={this.generateAtt("name", x, "relation")}
   	  			  id={this.generateAtt("id", x, "relation")}
               onChange={(e) => {this.changeRelation(e, x)}}
@@ -76,11 +132,12 @@ var AccessContactField = React.createClass({
   		  	  </select>
 
   		  	  <p> Name </p>
-  		  	  <input 
-              required="required"
+  		  	  <input
+
               type="text" placeholder="Full name"
               id={this.generateAtt("id", x, "name")}
 	  	  		  name={this.generateAtt("name", x, "name")}
+              ref={(value) => this.name = value}
 							onBlur={(e) => {
 								if (!e.target.value.length) {
 										document.getElementById($fullnameid).textContent = strRequireText;
@@ -99,14 +156,15 @@ var AccessContactField = React.createClass({
 
   		  	<p> Email </p>
 					<input
-            type="email" 
-            required="required"
+            type="email"
+
             placeholder="E-mail"
             autoCapitalize="off"
             autoCorrect="off"
             autoComplete="off"
-						id={this.generateAtt("id", x, "email")} 
+						id={this.generateAtt("id", x, "email")}
             name={this.generateAtt("name", x, "email")}
+            ref={value => this.email = value}
 						onBlur={(e) => {
               if(!!e.target.required) {
                 if (!e.target.value.length) {
@@ -125,11 +183,12 @@ var AccessContactField = React.createClass({
 					<p id={$emailid} className="error"></p>
 
 					<p> Mobile </p>
-					<input 
-            required="required"
+					<input
+
             type="tel" placeholder="Mobile"
 						name={this.generateAtt("name", x, "mobile")}
 						id={this.generateAtt("id", x, "mobile")}
+            ref={value => this.mobile = value}
 						onBlur={(e) => {
 								if (!e.target.value.length) {
 										document.getElementById($mobileid).textContent = strRequireMobile;

@@ -2,28 +2,29 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.pages {	
+.pages {
 	background-color: white;
-		
+
 	.header {
-		background-image: url(/assets/slider.png);
+		background-image: url(/assets/family-pic-3.jpg);
 		background-size: cover;
 		background-position: center center;
 		height: 764px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		@include flexbox;
+		@include justify-content(center);
+		@include align-items(center);
 
 		.form-address {
 			width: 450px;
-			margin: auto;
-			display: flex;
-			flex-wrap: wrap;
-			flex-direction: column;
+			@include flexbox;
+			@include flex-wrap(wrap);
+			@include flex-direction(column);
+			@include justify-content(center);
 
 			.select {
-				display: flex;
-				justify-content: space-between;
+				@include flexbox;
+				@include justify-content(space-between);
+
 				select {
 					height: 50px;
 					width: 49%;
@@ -96,7 +97,7 @@
 			color: #3e4b54;
 			text-align: center;
 			margin: 80px 0;
-		}	
+		}
 
 		.how-it-works {
 			margin: 80px;
@@ -176,7 +177,7 @@
 			.form-address {
 				width: 300px;
 				.select {
-					flex-direction: column;
+					@include flex-direction(column);
 					select {
 						width: 100%;
 						&:last-child {
@@ -194,7 +195,7 @@
 	}
 }
 
-body {	
+body {
 	background: #f4f8fb;
 }
 
@@ -205,7 +206,7 @@ body {
 	border-color: #edf1f4;
 	/*box-shadow: 0 1px 10px #888888;*/
 
-	
+
 	margin-top: 30px;
 	min-height: calc(100vh - 210px);
 }

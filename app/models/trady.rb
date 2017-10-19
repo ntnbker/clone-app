@@ -20,12 +20,22 @@ class Trady < ApplicationRecord
   validates_presence_of :name
   validates_presence_of :email
   validates_presence_of :mobile
-  validates_uniqueness_of :email
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
+  validates :mobile,:numericality => true, :length => {:minimum=>10, :maximum => 10 }
+  
 
 
   attr_accessor :maintenance_request_id
   attr_accessor :skill_required
   attr_accessor :trady_request
+
+  def capitalize_name
+    self.name.split.map(&:capitalize).join(' ')
+  end
+
+  def capitalize_company_name
+    self.company_name.split.map(&:capitalize).join(' ')
+  end
 
   def name_and_company
      

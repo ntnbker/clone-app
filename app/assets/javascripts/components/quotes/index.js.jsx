@@ -7,7 +7,7 @@ var ButtonForwardLandlord = React.createClass({
 
 	sendEmail: function() {
 		if(!!this.props.landlord){
-			const params = { 
+			const params = {
 				quote_id: this.props.quote.id,
 				maintenance_request_id: this.props.quote.maintenance_request_id,
 			};
@@ -32,8 +32,8 @@ var ButtonForwardLandlord = React.createClass({
 			opacity: this.state.isSend ? 0.5 : 1
 		};
 		return (
-			<button 
-				type="button" 
+			<button
+				type="button"
 				style={style}
 				onClick={!this.state.isSend && this.sendEmail}
 				className="btn btn-default"
@@ -57,9 +57,9 @@ var ButtonAccept = React.createClass({
 
 	render: function() {
 		return (
-			<button 
-			type="button" 
-			className="btn btn-accept" 
+			<button
+			type="button"
+			className="btn btn-accept"
 			onClick={this.updateStatus}
 			>
 				Accept
@@ -81,9 +81,9 @@ var ButtonDecline = React.createClass({
 
 	render: function() {
 		return (
-			<button 
-			type="button" 
-			className="btn btn-decline" 
+			<button
+			type="button"
+			className="btn btn-decline"
 			onClick={this.updateStatus}
 			>
 				Decline
@@ -114,9 +114,9 @@ var ButtonRestore = React.createClass({
 var ButtonCancle = React.createClass({
 	render: function() {
 		return (
-			<button 
+			<button
 				type="button"
-				className="btn btn-cancel" 
+				className="btn btn-cancel"
 				onClick={(key, item) => this.props.viewQuote('viewConfirmQuote', this.props.quote)}
 			>
 				Cancel
@@ -128,9 +128,9 @@ var ButtonCancle = React.createClass({
 var ButtonView = React.createClass({
 	render: function() {
 		return (
-			<button 
-				type="button" 
-				className="btn btn-default" 
+			<button
+				type="button"
+				className="btn btn-default"
 				onClick={(key, item) => this.props.viewQuote('viewQuote', this.props.quote)}
 			>
 				View
@@ -141,13 +141,13 @@ var ButtonView = React.createClass({
 
 var ButtonRequestAnotherQuote = React.createClass({
 	sendEmail: function() {
-			const params = { 
+			const params = {
 				maintenance_request_id: this.props.quote.maintenance_request_id,
 			};
 
 			this.props.sendEmailLandlord(params);
 	},
-	
+
 	render: function() {
 		return (
 			<button type="button" className="btn btn-default" onClick={this.sendEmail}>
@@ -181,7 +181,7 @@ var ActionQuote = React.createClass({
 	getInitialState() {
 		return {
 			quote: this.props.quote
-		};	
+		};
 	},
 
 	componentWillReceiveProps: function(nextProps) {
@@ -195,32 +195,32 @@ var ActionQuote = React.createClass({
 		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return (
 				<div className="actions-quote">
-					{ quote.status == "Active" && 
-							<ButtonAccept 
-								quote={quote} 
-								updateStatusQuote={self.updateStatusQuote} 
-							/> 
+					{ quote.status == "Active" &&
+							<ButtonAccept
+								quote={quote}
+								updateStatusQuote={self.updateStatusQuote}
+							/>
 					}
-					{ quote.status == "Active" && 
-							<ButtonDecline 
-								quote={quote} 
-								updateStatusQuote={self.updateStatusQuote} 
-							/> 
+					{ quote.status == "Active" &&
+							<ButtonDecline
+								quote={quote}
+								updateStatusQuote={self.updateStatusQuote}
+							/>
 					}
-					{ quote.status == "Active" && 
-							<ButtonRequestAnotherQuote 
-								quote={quote} 
-								sendEmailLandlord={self.sendEmailLandlord} 
-							/> 
+					{ quote.status == "Active" &&
+							<ButtonRequestAnotherQuote
+								quote={quote}
+								sendEmailLandlord={self.sendEmailLandlord}
+							/>
 					}
-					{ !self.quotes && 
-							<ButtonView 
+					{ !self.quotes &&
+							<ButtonView
 								quote={self.quote}
-								viewQuote={(key, item) => self.viewQuote(key, item)} 
-							/> 
+								viewQuote={(key, item) => self.viewQuote(key, item)}
+							/>
 					}
 					{
-						!!this.props.isModal && 
+						!!this.props.isModal &&
 							<ButtonPrint
 								printQuote={this.props.printQuote}
 							/>
@@ -230,20 +230,20 @@ var ActionQuote = React.createClass({
 		}else if(self.keyLandlord == "trady") {
 			return (
 				<div className="actions-quote">
-					{ (!!self.current_user_show_quote_message && quote.status != "Declined") && 
-							<ButtonQuoteMessage 
-								quote={quote} 
-								viewQuoteMessage={(key, item) => self.viewQuote(key, item)} 
+					{ (!!self.current_user_show_quote_message && quote.status != "Declined") &&
+							<ButtonQuoteMessage
+								quote={quote}
+								viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
 							/>
 					}
-					{ !self.quotes && 
-							<ButtonView 
-								viewQuote={(key, item) => self.viewQuote(key, item)} 
+					{ !self.quotes &&
+							<ButtonView
+								viewQuote={(key, item) => self.viewQuote(key, item)}
 								quote={self.quote}
-							/> 
+							/>
 					}
 					{
-						!!this.props.isModal && 
+						!!this.props.isModal &&
 							<ButtonPrint
 								printQuote={this.props.printQuote}
 							/>
@@ -253,52 +253,46 @@ var ActionQuote = React.createClass({
 		}else {
 			return (
 				<div className="actions-quote">
-					{ (!!self.current_user_show_quote_message && quote.status != "Declined") && 
-							<ButtonQuoteMessage 
-								quote={quote} 
-								viewQuoteMessage={(key, item) => self.viewQuote(key, item)} 
+					{ (!!self.current_user_show_quote_message && quote.status != "Declined") &&
+							<ButtonQuoteMessage
+								quote={quote}
+								viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
 							/>
 					}
-					{ quote.status == "Active" && 
-							<ButtonForwardLandlord 
-								quote={quote} 
-								landlord={self.landlord} 
-								onModalWith={self.onModalWith} 
-								sendEmailLandlord={self.sendEmailLandlord} 
-							/> 
-					}
-					{ quote.status == "Active" && 
-							<ButtonAccept 
-								quote={quote} 
-								updateStatusQuote={self.updateStatusQuote} 
-							/> 
-					}
-					{ quote.status == "Active" && 
-							<ButtonDecline 
-								quote={quote} 
-								updateStatusQuote={self.updateStatusQuote} 
-							/> 
-					}
-					{ (quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved") && 
-							<ButtonRestore 
-								quote={quote} 
-								updateStatusQuote={self.updateStatusQuote} 
+					{ quote.status == "Active" &&
+							<ButtonForwardLandlord
+								quote={quote}
+								landlord={self.landlord}
+								onModalWith={self.onModalWith}
+								sendEmailLandlord={self.sendEmailLandlord}
 							/>
 					}
-					{ !self.quotes && 
-							<ButtonView 
+					{ quote.status == "Active" &&
+							<ButtonAccept
+								quote={quote}
+								updateStatusQuote={self.updateStatusQuote}
+							/>
+					}
+					{ quote.status == "Active" &&
+							<ButtonDecline
+								quote={quote}
+								updateStatusQuote={self.updateStatusQuote}
+							/>
+					}
+					{ (quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved") &&
+							<ButtonRestore
+								quote={quote}
+								updateStatusQuote={self.updateStatusQuote}
+							/>
+					}
+					{ !self.quotes &&
+							<ButtonView
 								quote={self.quote}
-								viewQuote={(key, item) => self.viewQuote(key, item)} 
-							/> 
-					}
-					{ quote.status == "Approved" && 
-							<ButtonCancle
-								quote={this.props.quote}
 								viewQuote={(key, item) => self.viewQuote(key, item)}
 							/>
 					}
 					{
-						!!this.props.isModal && 
+						!!this.props.isModal &&
 							<ButtonPrint
 								printQuote={this.props.printQuote}
 							/>
@@ -325,8 +319,81 @@ var Quotes = React.createClass({
 	render: function() {
 		const {quotes} = this.state;
 		const self = this.props;
+
 		return (
-			<div className="quotes" id="quotes">
+			<div className="quotes m-t-lg" id="quotes">
+				<p>
+					Quotes ({quotes.length})
+				</p>
+				<div className="list-quote">
+				{
+					quotes.map(function(quote, index) {
+						const status = quote.status;
+						const showStatus = ['Approved', 'Declined'].indexOf(status) !== -1;
+
+						return (
+							<div className="item-quote row" key={index}>
+								<div className="user seven columns">
+									<span className="icon-user">
+										<i className="fa fa-user" />
+									</span>
+									<div className="info">
+										<div className="name">
+											<span>{quote.trady.name}</span>
+											{showStatus && <button className={'button-default ' + status}><span>{status}</span></button>}
+										</div>
+										<p className="description">
+											{quote.trady && quote.trady.name} <br />
+											{(quote.trady && quote.trady.trady_company) && quote.trady.trady_company.trading_name}
+										</p>
+									</div>
+								</div>
+								{ !!self.current_user &&
+										<ActionQuote
+											quote={quote}
+											key={quote.id}
+											landlord={self.landlord}
+											keyLandlord={self.keyLandlord}
+											onModalWith={self.onModalWith}
+											updateStatusQuote={self.updateStatusQuote}
+											sendEmailLandlord={self.sendEmailLandlord}
+											viewQuote={(key, item) => self.viewQuote(key, item)}
+											current_user_show_quote_message={self.current_user_show_quote_message}
+										/>
+								}
+							</div>
+						);
+					})
+				}
+				</div>
+			</div>
+		);
+	}
+});
+
+var QuotesInInvoice = React.createClass({
+	getInitialState() {
+		const { converts = [] } = this.props;
+		return {
+			convert: converts.reduce((obj, id) => ({ ...obj, [id]: true }), {}),
+		};
+	},
+
+	setConvert(id) {
+		this.setState((pre) => ({ convert: { ...pre.convert, [id]: true }}));
+	},
+
+	removeConvert(id) {
+		this.setState((pre) => ({ convert: { ...pre.convert, [id]: false }}));
+	},
+
+	render: function() {
+		const { convert = {} } = this.state;
+		const { quotes, trady } = this.props;
+		const self = this;
+
+		return (
+			<div className="quotes m-t-lg m-b-lg" id="quotes">
 				<p>
 					Quotes ({quotes.length})
 				</p>
@@ -336,7 +403,9 @@ var Quotes = React.createClass({
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
-									<img src="/assets/user1.png" />
+									<span className="icon-user">
+										<i className="fa fa-user" />
+									</span>
 									<div className="info">
 										<div className="name">
 											<span>{quote.trady.name}</span>
@@ -353,19 +422,23 @@ var Quotes = React.createClass({
 								<div className="actions five columns">
 									<p className="price">Amount: {quote.amount}AUD</p>
 								</div>
-								{ !!self.current_user &&
-										<ActionQuote 
-											quote={quote} 
-											key={quote.id}
-											landlord={self.landlord} 
-											keyLandlord={self.keyLandlord} 
-											onModalWith={self.onModalWith}
-											updateStatusQuote={self.updateStatusQuote} 
-											sendEmailLandlord={self.sendEmailLandlord} 
-											viewQuote={(key, item) => self.viewQuote(key, item)} 
-											current_user_show_quote_message={self.current_user_show_quote_message}
-										/>
-								}
+								<div className="actions-quote">
+									<button
+										type="button"
+										className="btn btn-decline"
+										disabled={!!convert[quote.id]}
+										onClick={() => {
+											self.setConvert(quote.id);
+											self.props.onConvertToInvoice(quote);
+										}}
+									>
+										Convert Into Invoice
+									</button>
+									<ButtonView
+										quote={quote}
+										viewQuote={(key, item) => self.props.viewQuote(key, item)}
+									/>
+								</div>
 							</div>
 						);
 					})
@@ -392,9 +465,6 @@ var DetailQuote = React.createClass({
 						<th>
 							Pricing
 						</th>
-						<th>
-							Hours
-						</th>
 						<th className="text-right">
 							Rate
 						</th>
@@ -415,40 +485,12 @@ var DetailQuote = React.createClass({
 								<tr key={key}>
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
-									<td>{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
-									<td className="text-right">${item.amount.toFixed(2)}</td>
-									<td className="text-right">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
+									<td className="text-right">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
+									<td className="text-right">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
 								</tr>
 							);
 						})
 					}
-					<tr>
-						<td colSpan="3" className="border-none p-b-n"></td>
-						<td className="text-right border-none font-bold p-b-n">
-							Subtotal:
-						</td>
-						<td className="border-none text-right p-b-n">
-							${(subTotal - quote.gst_amount).toFixed(2)}
-						</td>
-					</tr>
-					<tr>
-						<td colSpan="3" className="border-none p-t-n"></td>
-						<td className="text-right p-t-n">
-							GST 10%:
-						</td>
-						<td className="text-right p-t-n">
-							${(quote.gst_amount).toFixed(2)}
-						</td>
-					</tr>
-					<tr>
-						<td colSpan="3" className="border-none"></td>
-						<td className="text-right font-bold border-none">
-							Amount Due (AUD):
-						</td>
-						<td className="text-right font-bold border-none">
-							${subTotal.toFixed(2)}
-						</td>
-					</tr>
 					</tbody>
 				</table>
 			);
@@ -487,7 +529,7 @@ var ModalViewQuote = React.createClass({
 			index: null,
 			quote: quote,
 			quotes: quotes,
-		};	
+		};
 	},
 
 	switchSlider: function(key, index) {
@@ -532,7 +574,7 @@ var ModalViewQuote = React.createClass({
 
 	printQuote: function() {
 		var contents = $('#print-quote').html();
-		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" +
+		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
 								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
 								".info-trady p {margin-bottom: 0px;}" +
 								".info-agency {flex: 1;}" +
@@ -546,7 +588,7 @@ var ModalViewQuote = React.createClass({
 								".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" +
 								"#print-quote { color: #404040;}" +
 								".modal-dialog { width: 700px !important;}" +
-								".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: flex;}" +
+								".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
 								".modal-header .logo img { width: 80px;}" +
 								".modal-header .info-trady {margin-left: 15px;}" +
 								".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
@@ -592,7 +634,7 @@ var ModalViewQuote = React.createClass({
 		frame.write(contents);
 		frame.write("</body></html>");
 		frame.close();
-		
+
 		// print just the modal div
 		setTimeout(function() {
 			$('#printframe')[0].contentWindow.print();
@@ -604,8 +646,9 @@ var ModalViewQuote = React.createClass({
 	render: function() {
 		const self = this.props;
 		const quote = this.state.quote;
+		const {property} = this.props;
 		let total = 0;
-		
+
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
@@ -641,11 +684,11 @@ var ModalViewQuote = React.createClass({
 									</span>
 								</p>
 							</div>
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span className="close" aria-hidden="true">&times;</span>
@@ -665,8 +708,8 @@ var ModalViewQuote = React.createClass({
 										</div>
 										<div className="info-agency">
 											<p>
-												<span className="font-bold">Quote Number: </span>
-												<span> {quote.quote_number}</span>
+												<span className="font-bold">Quote Reference: </span>
+												<span> {quote.trady_quote_reference != "" ? quote.trady_quote_reference : property.property_address}</span>
 											</p>
 											<p>
 												<span className="font-bold">Quote Date: </span>
@@ -680,26 +723,26 @@ var ModalViewQuote = React.createClass({
 								</div>
 							</div>
 							<div className="modal-footer-quote print">
-								{ !!self.current_user && 
-									<ActionQuote 
-										quote={quote} 
+								{ !!self.current_user &&
+									<ActionQuote
+										quote={quote}
 										isModal="true"
 										className="print"
-										landlord={self.landlord} 
-										quotes={this.state.quotes} 
+										landlord={self.landlord}
+										quotes={this.state.quotes}
 										printQuote={this.printQuote}
-										onModalWith={self.onModalWith} 
-										keyLandlord={this.props.keyLandlord} 
-										updateStatusQuote={self.updateStatusQuote} 
-										sendEmailLandlord={self.sendEmailLandlord} 
-									/> 
+										onModalWith={self.onModalWith}
+										keyLandlord={this.props.keyLandlord}
+										updateStatusQuote={self.updateStatusQuote}
+										sendEmailLandlord={self.sendEmailLandlord}
+									/>
 								}
 							</div>
 						</div>
 					</div>
 				</div>
 				<div id="modal-print">
-					<iframe id="printframe" />  
+					<iframe id="printframe" />
 				</div>
 			</div>
 		);
@@ -713,40 +756,50 @@ var ModalViewQuoteMessage = React.createClass({
 		};
 	},
 
+	removeError: function(e) {
+		this.setState({
+			errorMessage: '',
+		})
+	},
+
+	renderError: function(error) {
+	  return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+	},
+
 	onSubmit: function(e) {
 		e.preventDefault();
-
-		if(!this.message.value) {
-			this.setState({errorMessage: true});
-			return
-		}
-
+		const self = this;
 		const params = {
 			message: {
-				body: this.message.value,
+				body: this.message && this.message.value,
 				conversation_type: 'Quote',
 				quote_id: this.props.quote.id,
 			}
 		}
 
-		this.props.sendMessageQuote(params);
+		this.props.sendMessageQuote(params, function(err) {
+			if (err) {
+				self.setState({ errorMessage: err['body'] });
+			}
+		});
 		this.message.value = "";
 	},
 
 	render: function() {
 		const current_user = this.props.current_user;
 		var quote = this.props.quote;
+		const { errorMessage } 		 = this.state;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
 					<form role="form">
 						<div className="modal-content">
 							<div className="modal-header">
-								<button 
-									type="button" 
+								<button
+									type="button"
 									className="close"
-									data-dismiss="modal" 
-									aria-label="Close" 
+									data-dismiss="modal"
+									aria-label="Close"
 									onClick={this.props.close}
 								>
 									<span aria-hidden="true">&times;</span>
@@ -758,18 +811,20 @@ var ModalViewQuoteMessage = React.createClass({
 							</div>
 							<div className="modal-footer">
 								<div>
-									<textarea 
-										placeholder="Message" 
+									<textarea
+										placeholder="Message"
 										readOnly={!current_user}
 										ref={(rel) => this.message = rel}
-										className={'textarea-message ' + (!current_user && 'readonly ') + (!!this.state.errorMessage && 'has-error')}
+										onChange={this.removeError}
+										className={'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')}
 									/>
 								</div>
-								<button 
+								{this.renderError(errorMessage)}
+								<button
 									type="submit"
 									onClick={this.onSubmit}
-									disabled={!current_user} 
-									className="btn btn-default success" 
+									disabled={!current_user}
+									className="btn btn-default success"
 								>
 									Submit
 								</button>
@@ -801,11 +856,11 @@ var ModalConfirmQuote = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -816,15 +871,15 @@ var ModalConfirmQuote = React.createClass({
 							<p className="text-center">{content}</p>
 						</div>
 						<div className="modal-footer">
-							<button 
-								type="button" 
-								className="btn btn-default success" 
-								onClick={this.updateStatus} 
+							<button
+								type="button"
+								className="btn btn-default success"
+								onClick={this.updateStatus}
 								data-dismiss="modal"
 							>Yes</button>
-							<button 
-								type="button" 
-								className="btn btn-primary cancel" 
+							<button
+								type="button"
+								className="btn btn-primary cancel"
 								onClick={this.props.close}
 							>No</button>
 						</div>

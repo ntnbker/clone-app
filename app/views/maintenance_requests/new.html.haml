@@ -1,5 +1,6 @@
 %div.container.well
-  =react_component('MaintenanceRequestsNew', {:authenticity_token => form_authenticity_token, :current_user => current_user, :current_role => @current_user ? @current_user.current_role : nil, :current_user_tenant => @current_user ? @current_user.tenant : nil})
+
+  =react_component('MaintenanceRequestsNew', {:authenticity_token => form_authenticity_token, :current_user => current_user, :current_role => @current_user ? @current_user.current_role : nil, :current_user_tenant => @current_user ? @current_user.tenant : nil, :service_type => @customer_input.tradie, :agencies => @agencies})
 
 
 / %h1 maintenance request
@@ -21,7 +22,7 @@
 /       =f.text_field :maintenance_heading
 /       =f.text_area :maintenance_description
 /     .field
-/       =f.form_group :person_in_charge do 
+/       =f.form_group :person_in_charge do
 /         = f.radio_button :person_in_charge, "Agent", label: "Agent"
 /         = f.radio_button :person_in_charge, "Owner", label: "Owner"
 /       =f.text_field :real_estate_office
@@ -33,5 +34,5 @@
 /         = render "availability_fields", f: availability_form
 /         = link_to_add_association "Add Another Availability", f, :availabilities
 
-    
+
 /     =f.submit "Submit Maintenance Request"

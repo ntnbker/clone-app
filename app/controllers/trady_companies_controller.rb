@@ -1,7 +1,7 @@
 class TradyCompaniesController < ApplicationController
   before_action(only: [:new]) { email_auto_login(params[:user_id]) }
   before_action :require_login, only:[:new,:create,:edit,:update]
-  before_action(only:[:show,:index]) {allow("Trady")}
+  before_action(only:[:show,:index,:edit]) {allow("Trady")}
 
 
   def new
@@ -14,10 +14,10 @@ class TradyCompaniesController < ApplicationController
     @invoice_type = params[:invoice_type]
     @quote_type = params[:quote_type]
   end
-  
+
   def create
-    
-    
+
+
     @trady_company = TradyCompany.new(trady_company_params)
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
     @trady_id = @trady.id
@@ -28,6 +28,10 @@ class TradyCompaniesController < ApplicationController
     @invoice_type = params[:trady_company][:invoice_type]
     @quote_type = params[:trady_company][:quote_type]
 
+     
+    @trady_company.perform_bank_validation(system_plan)        
+
+
     if @existing_company
       @trady_company.perform_uniqueness_validation_of_company_email = false
 
@@ -36,62 +40,72 @@ class TradyCompaniesController < ApplicationController
         @trady.update_attribute(:trady_company_id, @existing_company.id)
         @trady.update_attribute(:company_name,params[:trady_company][:company_name])
         @trady.update_attribute(:mobile,params[:trady_company][:mobile_number])
-        
-        
+
+
 
         if system_plan == "Invoice"
           if params[:trady_company][:invoice_type] == "pdf_file"
             redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
           elsif params[:trady_company][:invoice_type] == "system_invoice"
-            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)  
+            redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)
           end
         elsif system_plan == "Quote"
           if params[:trady_company][:quote_type] == "pdf_file"
             redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@quote_type, system_plan:system_plan)
           elsif params[:trady_company][:quote_type] == "system_quote"
-            redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)  
+            redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)
           end
-        end 
-        
+        end
+
       else
         @trady_id = params[:trady_company][:trady_id]
         flash[:danger] = "Please fill in below"
-        render :new
+        
+        respond_to do |format|
+          format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
+          format.html
+        end
+
       end
-      
-    else 
+
+    else
         @trady_company.perform_uniqueness_validation_of_company_email = true
         if @trady_company.valid?
-          
+
           @trady_company.save
           @trady.update_attribute(:trady_company_id, @trady_company.id)
           @trady.update_attribute(:mobile,params[:trady_company][:mobile_number])
           @trady.update_attribute(:company_name,params[:trady_company][:company_name])
-          
+
 
           if system_plan == "Invoice"
             if params[:trady_company][:invoice_type] == "pdf_file"
               redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
             elsif params[:trady_company][:invoice_type] == "system_invoice"
-              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)  
+              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)
             end
           elsif system_plan == "Quote"
             if params[:trady_company][:quote_type] == "pdf_file"
               redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@quote_type, system_plan:system_plan)
             elsif params[:trady_company][:quote_type] == "system_quote"
-              redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)  
+              redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)
             end
-          end 
-          
-        
+          end
+
+
 
           flash[:success] = "You have added your company thank you"
         else
-          flash[:danger] = "Please fill in below"
-          render :new
+          flash[:danger] = "Please fill in below!!"
+          
+          respond_to do |format|
+            
+            format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
+          
+        end
         end
     end
-  end 
+  end
 
 
 
@@ -100,21 +114,21 @@ class TradyCompaniesController < ApplicationController
     @trady_company = TradyCompany.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
     @trady = Trady.find_by(id:params[:trady_id])
-    @trady_id = params[:trady_id]
+    @trady_id = current_user.trady.id
     @quote_id = params[:quote_id]
     @invoice_type= params[:invoice_type]
     @quote_type = params[:quote_type]
     @pdf_file_id = params[:pdf_file_id]
-    @ledger_id = params[:ledger_id] 
+    @ledger_id = params[:ledger_id]
     @system_plan = params[:system_plan]
   end
 
   def update
-    
+
     @trady_company = TradyCompany.find_by(id:params[:trady_company][:trady_company_id])
     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
-    @trady.update_attribute(:email,params[:trady_company][:email]) 
-    @trady.user.update_attribute(:email,params[:trady_company][:email]) 
+    @trady.update_attribute(:email,params[:trady_company][:email])
+    @trady.user.update_attribute(:email,params[:trady_company][:email])
     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
     @trady_id = params[:trady_company][:trady_id]
     @quote_id = params[:trady_company][:quote_id]
@@ -124,195 +138,85 @@ class TradyCompaniesController < ApplicationController
     @invoice_type = params[:trady_company][:invoice_type]
     @quote_type = params[:trady_company][:quote_type]
     system_plan = params[:trady_company][:system_plan]
-    
+
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
     @quote_pdf_files = UploadedQuote.find_by(id:params[:trady_company][:pdf_file_id])
-
+    @trady_company.perform_bank_validation(system_plan)
+    
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully edited your company"
-      
-      
+
+
       if system_plan == "Invoice"
           if params[:trady_company][:invoice_type] == "pdf_file"
             if @pdf_files == nil
               redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
             elsif @pdf_files != nil
               redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:system_plan)
-            end 
-      
+            end
+
           elsif params[:trady_company][:invoice_type] == "system_invoice"
             if @ledger == nil
-              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)  
+              redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)
             elsif @ledger != nil
               redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type, system_plan:system_plan)
-            end 
+            end
           end
 
 
         elsif system_plan == "Quote"
-          
+
           if params[:trady_company][:quote_type] == "pdf_file"
             if @quote_pdf_files == nil
               redirect_to new_uploaded_quote_path(trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_type:@invoice_type, system_plan:system_plan)
             elsif @quote_pdf_files != nil
               redirect_to edit_uploaded_quote_path(@quote_pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, quote_type:@quote_type, system_plan:system_plan)
-            end    
+            end
           elsif params[:trady_company][:quote_type] == "system_quote"
-            if @quote == nil 
-              redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)  
+            if @quote == nil
+              redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)
             elsif @quote != nil
               redirect_to edit_quote_path(@quote, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], quote_type:@quote_type, system_plan:system_plan)
-            end 
-              
+            end
+
           end
 
 
         end
 
-
-
-
-
-
-
-      # if params[:trady_company][:invoice_type] == "pdf_file"
-        
-      #   if @pdf_files == nil
-      #     redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-      #   elsif @pdf_files != nil
-      #     redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-      #   end 
-      
-      # elsif params[:trady_company][:invoice_type] == "system_invoice"
-      #   if @ledger == nil
-      #     redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
-      #   elsif @ledger != nil
-      #     redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-      #   end 
-      # end
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
-      render :edit
-    end 
+      respond_to do |format|
+          format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
+          format.html {render :edit}
+        end
+    end
 
   end
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  # def edit
-  #   @trady_company = TradyCompany.find_by(id:params[:id])
-  #   @maintenance_request_id = params[:maintenance_request_id]
-  #   @trady_id = params[:trady_id]
-  # end
-
-  # def update
-    
-  #   @trady_company = TradyCompany.find_by(id:params[:id])
-  #   @trady = Trady.find_by(id:params[:trady_company][:trady_id])
-     
-  #   @maintenance_request_id = params[:trady_company][:maintenance_request_id]
-  #   @trady_id = params[:trady_company][:trady_id]
-    
-  #   #if quote already exists we redirect them so they can continue with the form
-  #   @quote = @trady.quotes.where(maintenance_request_id: params[:trady_company][:maintenance_request_id]).first
-
-
-  #   if @trady_company.update(trady_company_params)
-  #     flash[:success] = "You have succesfully edited your company"
-  #     if @quote == nil
-  #       redirect_to new_quote_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id])  
-  #     elsif @quote != nil
-  #       redirect_to edit_quote_path(@quote.id, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id])
-  #     end   
-  #   else
-  #     flash[:danger] = "Sorry something went wrong please fill in the required fields"
-  #     render :edit
-  #   end 
-  # end
-
-
-
-  # def edit_trady_company_invoice_workflow
-  #   @trady_company = TradyCompany.find_by(id:params[:id])
-  #   @maintenance_request_id = params[:maintenance_request_id]
-  #   @trady_id = params[:trady_id]
-  # end
-
-  # def update_trady_company_invoice_workflow
-    
-  # end
-
-
-
-  
-
   private
-    
+
     def trady_company_params
-      params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow)
+      params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow, :trady_company_id, :system_plan, :invoice_type, :quote_type, :pdf_file_id, :ledger_id, :quote_id)
     end
 
     def email_auto_login(id)
       user = User.find_by(id:id)
-    
+
     if current_user
       if current_user
         if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("AgencyAdmin") || current_user.logged_in_as("Agent")
           answer = true
         else
           answer = false
-        end 
+        end
       else
         auto_login(user)
         user.current_role.update_attribute(:role, "Trady")
-      end 
+      end
 
       if current_user  && answer && user.has_role("Trady")
         logout
@@ -323,15 +227,15 @@ class TradyCompaniesController < ApplicationController
         user.current_role.update_attribute(:role, "Trady")
       elsif current_user && current_user.logged_in_as("Trady")
           #do nothing
-      end 
+      end
     else
       auto_login(user)
       user.current_role.update_attribute(:role, "Trady")
-    end 
+    end
   end
 
 
-end 
+end
 
 
 
@@ -349,15 +253,15 @@ end
 #     @quote_id = params[:quote_id]
 #     @invoice_type= params[:invoice_type]
 #     @pdf_file_id = params[:pdf_file_id]
-#     @ledger_id = params[:ledger_id] 
+#     @ledger_id = params[:ledger_id]
 #   end
 
 #   def update_trady_company_invoice
-    
+
 #     @trady_company = TradyCompany.find_by(id:params[:trady_company][:trady_company_id])
 #     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
-#     @trady.update_attribute(:email,params[:trady_company][:email]) 
-#     @trady.user.update_attribute(:email,params[:trady_company][:email]) 
+#     @trady.update_attribute(:email,params[:trady_company][:email])
+#     @trady.user.update_attribute(:email,params[:trady_company][:email])
 #     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
 #     @trady_id = params[:trady_company][:trady_id]
 #     @quote_id = params[:trady_company][:quote_id]
@@ -365,38 +269,38 @@ end
 #     @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
 #     @invoice_type = params[:trady_company][:invoice_type]
 #     #WE HAVE TO FIND THE RIGHT LEDGER
-    
+
 #     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
 #     #@invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
 
 #     if @trady_company.update(trady_company_params)
 #       flash[:success] = "You have succesfully edited your company"
-      
-      
+
+
 #       if params[:trady_company][:invoice_type] == "pdf_file"
-        
+
 #         if @pdf_files == nil
 #           redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
 #         elsif @pdf_files != nil
 #           redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-#         end 
-      
+#         end
+
 #       elsif params[:trady_company][:invoice_type] == "system_invoice"
 #         if @ledger == nil
-#           redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)  
+#           redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
 #         elsif @ledger != nil
 #           redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-#         end 
+#         end
 #       end
 
 
 
-      
+
 
 #     else
 #       flash[:danger] = "Sorry something went wrong please fill in the required fields"
 #       render :edit
-#     end 
+#     end
 
 #   end
 

@@ -11,9 +11,9 @@ class TradyMaintenanceRequestsController < ApplicationController
     trady_id = current_user.trady.id
 
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at ASC')
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, "Quote Requests").order('created_at ASC')
     else
-      @maintenance_requests = TradyMaintenanceRequest.find_trady_maintenance_requests(trady_id).order('created_at DESC')
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, "Quote Requests").order('created_at DESC')
     end
 
     @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")
@@ -56,7 +56,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
     
     @signed_in_trady = @current_user.trady
-    if @maintenance_request.trady != nil
+    if @maintenance_request.trady 
       @the_assigned_trady = @maintenance_request.trady 
       @assigned_trady = @maintenance_request.trady.as_json(:include => {:trady_company => {}}) 
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @the_assigned_trady.id).as_json
@@ -71,8 +71,8 @@ class TradyMaintenanceRequestsController < ApplicationController
     
    
     @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
-
-
+    
+    @pdf_files = UploadedInvoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}},methods: :pdf_url)
     
 
     # if @quote
@@ -145,7 +145,7 @@ class TradyMaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery,:instruction=>@instruction ,:quotes=> @quotes, :landlord=> @landlord,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :pdf_urls=>@invoice_pdf_urls, :invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery,:instruction=>@instruction ,:quotes=> @quotes, :landlord=> @landlord,:trady_agent_conversation=>@trady_agent_conversation ,:tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, :agency=>@agency, :property=>@maintenance_request.property, :agent=>@agent ,:assigned_trady=>@assigned_trady, :signed_in_trady=>@signed_in_trady, :pdf_urls=>@invoice_pdf_urls, pdf_files:@pdf_files,:invoices=>@invoices, logs:@logs,tenants:@tenants, work_order_appointments:@work_order_appointments, :trady => @trady, :quote_appointments => @quote_appointments,time_and_access:@maintenance_request.availability_and_access}}
       format.html{render :show}
     end 
   end

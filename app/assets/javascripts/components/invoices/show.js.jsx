@@ -84,7 +84,7 @@ var ModalViewInvoice = React.createClass({
 			index: null,
 			invoice: this.props.invoice,
 			invoices: this.props.invoices,
-		};	
+		};
 	},
 
 	switchSlider: function(key, index) {
@@ -128,9 +128,9 @@ var ModalViewInvoice = React.createClass({
 	},
 
 	printInvoice: function() {
-		$('.button-slider').toggle('hide');	
+		$('.button-slider').toggle('hide');
 		var contents = $('#print-invoice').html();
-		var style = ".info-quote {display: flex; flex-direction: row; justify-content: space-between;}" +
+		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
 								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
 								".info-trady p {margin-bottom: 0px;}" +
 								".info-agency {flex: 1;}" +
@@ -143,7 +143,7 @@ var ModalViewInvoice = React.createClass({
 								".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}"+
 								"#print-invoice { color: #404040;}" +
 								".modal-dialog { width: 700px !important;}" +
-								".modal-header {background-color: #fff !important;display: flex;}" +
+								".modal-header {background-color: #fff !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
 								".modal-header .logo img { width: 80px;}" +
 								".modal-header .info-trady {margin-left: 15px;}" +
 								".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
@@ -184,7 +184,7 @@ var ModalViewInvoice = React.createClass({
 		frame.write(contents);
 		frame.write("</body></html>");
 		frame.close();
-    
+
     // print just the modal div
     setTimeout(function() {
     	$('#printframe')[0].contentWindow.print();
@@ -233,11 +233,11 @@ var ModalViewInvoice = React.createClass({
 									</span>
 								</p>
 							</div>
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -258,7 +258,7 @@ var ModalViewInvoice = React.createClass({
 										<div className="info-agency">
 											<p>
 												<span className="font-bold">Invoice Number: </span>
-												<span> {invoice.id}</span>
+												<span> {invoice.invoice_number}</span>
 											</p>
 											<p>
 												<span className="font-bold">Invoice Date: </span>
@@ -324,7 +324,7 @@ var ModalViewInvoice = React.createClass({
 					</div>
 				</div>
 				<div id="modal-print">
-					<iframe id="printframe" />  
+					<iframe id="printframe" />
 				</div>
 			</div>
 		);

@@ -8,8 +8,33 @@ class Appointment < ApplicationRecord
 
   accepts_nested_attributes_for :comments
   validates_associated :comments
-
+  validates_presence_of :date, :time
   #attr_accessor :current_user_role
+
+
+  validate :future_date, :future_time
+    
+
+  def future_date
+    if self.date == nil
+      
+    else
+      errors.add(:date, "can't be in the past") if
+        self.date <= DateTime.now
+    end 
+  end
+
+  def future_time
+    if self.date == nil 
+      
+    else
+      dt = (self.date.to_s + " " + self.time.to_s).to_datetime
+      errors.add(:time, "can't be in the past") if
+        dt <= DateTime.now
+    end 
+  end
+
+
 
 
   def self.tenant_and_landlord_appointments(maintenance_request_id)
