@@ -119,9 +119,9 @@ var AgencyEdit = React.createClass({
           {renderButtonFunc('Add New Admin Agency', this.props.new_agency_admin_path)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_agency_admin" onSubmit={this.onSubmit} >
-          <label className="control-label col-sm-2 required">
+          <h5 className="control-label col-sm-2 required title">
             Edit Agency Profile
-          </label>
+          </h5>
           {renderTextField('company_name', 'Company Name')}
           {renderTextField('business_name', 'Business Name')}
           {renderTextField('abn', 'ABN')}

@@ -147,9 +147,9 @@ var TradyEdit = React.createClass({
           {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
-          <label className="control-label col-sm-2 required">
+          <h5 className="control-label col-sm-2 required title">
             Edit Trady Profile
-          </label>
+          </h5>
           {renderTextField('name', 'Name')}
           {renderTextField('company_name', 'Company Name')}
           {renderTextField('mobile', 'Mobile')}

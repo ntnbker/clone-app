@@ -164,9 +164,9 @@ var AgentEdit = React.createClass({
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_agent" onSubmit={this.onSubmit} >
-          <label className="control-label col-sm-2 required">
+          <h5 className="control-label col-sm-2 required title">
             Edit Agent Profile
-          </label>          {renderTextField('name', 'Name')}
+          </h5>          {renderTextField('name', 'Name')}
           {renderTextField('last_name', 'Last Name')}
           {renderTextField('phone', 'Phone')}
           {renderTextField('mobile_phone', 'Mobile Phone')}
