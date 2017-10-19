@@ -16,6 +16,7 @@ class Trady < ApplicationRecord
   has_many :uploaded_quotes
   has_many :quote_requests
   has_many :skills
+  has_one :trady_profile_image
   validates_presence_of :company_name
   validates_presence_of :name
   validates_presence_of :email
