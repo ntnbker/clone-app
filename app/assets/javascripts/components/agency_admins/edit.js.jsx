@@ -30,14 +30,14 @@ var AgencyAdminEdit = React.createClass({
     });
 
     FD.append('picture[agency_admin_id]', this.props.agency_admin.id);
-    if (gallery) {
+    if (gallery.id) {
       FD.append('picture[agency_admin_profile_image_id]', gallery.id);
     }
 
     const self = this;
     $.ajax({
-      type: gallery ? 'PUT' : 'POST',
-      url: `/agency_admin_profile_images${gallery ? '/' + gallery.id : ''}`,
+      type: gallery.id ? 'PUT' : 'POST',
+      url: `/agency_admin_profile_images${gallery.id ? '/' + gallery.id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
