@@ -8,7 +8,7 @@ class AgencyProfileImagesController < ApplicationController
   def create
     
     
-    @image =  AgencyAdminProfileImage.new(image_params)
+    @image =  AgencyProfileImage.new(image_params)
 
     if @image.save
       profile_image = @image.as_json(methods: :image_url)
@@ -26,7 +26,7 @@ class AgencyProfileImagesController < ApplicationController
 
   def update
 
-    @image =  AgencyAdminProfileImage.find_by(id:params[:picture][:agency_admin_profile_image_id])
+    @image =  AgencyProfileImage.find_by(id:params[:picture][:agency_profile_image_id])
 
     if @image.update(image_params)
       profile_image = @image.as_json(methods: :image_url)
@@ -45,7 +45,7 @@ class AgencyProfileImagesController < ApplicationController
   private
 
   def image_params
-    params.require(:picture).permit(:image, :agency__id, :agency_profile_image_id)
+    params.require(:picture).permit(:image, :agency_id, :agency_profile_image_id)
   end
 
   def belongs_to_agency_admin
