@@ -143,9 +143,9 @@ var AgencyAdminEdit = React.createClass({
           onSubmit={this.onSubmit}
         >
 
-          <label className="control-label col-sm-2 required">
+          <h5 className="control-label col-sm-2 required title">
             Edit Agency Admin Profile
-          </label>
+          </h5>
           <div className="form-group">
             <div className="col-sm-10">
               <input

@@ -6,8 +6,8 @@
 
   #avatar {
     /* make a square container */
-    width: 20vw;
-    height: 20vw;
+    width: 200px;
+    height: 200px;
 
     /* fill the container, preserving aspect ratio, and cropping to fit */
     background-size: cover;
@@ -21,6 +21,11 @@
 
   p {
     margin: 20px 0 5px;
+  }
+
+  h5.title {
+    font-size: 2.15rem;
+    margin-top: 22px;
   }
 
   .error {
@@ -112,10 +117,13 @@
       padding: 0;
     }
 
-
     #avatar {
       width: 40vw;
       height: 40vw;
+    }
+
+    h5.title {
+      font-size: 2.4rem;
     }
   }
 
@@ -125,6 +133,10 @@
     #avatar {
       width: 55vw;
       height: 55vw;
+    }
+
+    h5.title {
+      font-size: 2rem;
     }
   }
 }
