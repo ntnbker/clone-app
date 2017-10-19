@@ -1,5 +1,5 @@
 form#new_trady_company {
-	width: 100%;
+	width: 50%;
 	margin: 20px auto;
 
 	p {
@@ -63,6 +63,7 @@ form#new_trady_company {
 
   /* For Mobile */
   @media (max-width: 768px) {
+    width: 100%;
     #avatar {
       width: 35vw;
       height: 35vw;

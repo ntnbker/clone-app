@@ -12,7 +12,7 @@ var TradyEdit = React.createClass({
     if (images.length == 0) {
       return;
     }
-    const { gallery } = this.state;
+    const { gallery: { id } } = this.state;
     var FD = new FormData();
     images.map((image, index) => {
       var idx = index + 1;
@@ -20,14 +20,14 @@ var TradyEdit = React.createClass({
     });
 
     FD.append('picture[trady_id]', this.props.trady.id);
-    if (gallery) {
-      FD.append('picture[trady_profile_image_id]', gallery.id);
+    if (id) {
+      FD.append('picture[trady_profile_image_id]', id);
     }
 
     const self = this;
     $.ajax({
-      type: gallery ? 'PUT' : 'POST',
-      url: `/trady_profile_images${gallery ? '/' + gallery.id : ''}`,
+      type: id ? 'PUT' : 'POST',
+      url: `/trady_profile_images${id ? '/' + id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -103,12 +103,11 @@ var TradyEdit = React.createClass({
 
   renderTextField: function(field, textHolder) {
     const { errors }      = this.state;
-    const { trady = {} } = this.props;
+    const { trady = {} }  = this.props;
     const value           = trady[field];
 
     return (
       <div className="form-group">
-        <label className="control-label col-sm-2 required">{textHolder}</label>
         <div className="col-sm-10">
           <input
             type="text"
@@ -132,7 +131,7 @@ var TradyEdit = React.createClass({
     const renderButtonFunc             = this.renderButton;
 
     return (
-      <div className="edit_profile">
+      <div className="edit_profile edit_trady_profile">
         <div className="left">
           { gallery &&
               <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
@@ -144,7 +143,7 @@ var TradyEdit = React.createClass({
             className="btn button-primary option-button"
           />
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
-          {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company)}
+          {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company_id)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
           <h5 className="control-label col-sm-2 required title">

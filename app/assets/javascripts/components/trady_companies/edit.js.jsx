@@ -43,22 +43,22 @@ var EditTradyCompany = React.createClass({
     if (images.length == 0) {
       return;
     }
-    const { gallery } = this.state;
+    const { gallery: { id } } = this.state;
     var FD = new FormData();
     images.map((image, index) => {
       var idx = index + 1;
       FD.append('picture[image]', JSON.stringify(image));
     });
 
-    FD.append('picture[trady_companyid]', this.props.trady.id);
-    if (gallery) {
-      FD.append('picture[trady_companyprofile_image_id]', gallery.id);
+    FD.append('picture[trady_company_id]', this.props.id);
+    if (id) {
+      FD.append('picture[trady_company_profile_image_id]', id);
     }
 
     const self = this;
     $.ajax({
-      type: gallery ? 'PUT' : 'POST',
-      url: `/trady_companyprofile_images${gallery ? '/' + gallery.id : ''}`,
+      type: id ? 'PUT' : 'POST',
+      url: `/trady_company_profile_images${id ? '/' + id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -157,7 +157,7 @@ var EditTradyCompany = React.createClass({
       trady_company.bank_account_number = getValidValue(bank_account_number);
     }
 
-    var params = { trady_company, trady_company_id: this.props.id };
+    var params = { trady_company };
 		const self = this;
 		$.ajax({
 			type: 'PUT',
