@@ -183,7 +183,6 @@ class TradyCompaniesController < ApplicationController
 
 
         end
-
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
       respond_to do |format|
