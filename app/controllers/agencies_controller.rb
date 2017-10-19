@@ -5,7 +5,7 @@ class AgenciesController < ApplicationController
   before_action :require_login, only:[:edit,:update]
 
   before_action(only:[:edit,:update]) {allow("AgencyAdmin")}
-  before_action(only:[:show]) {belongs_to_agency_admin}
+  before_action(only:[:edit]) {belongs_to_agency_admin}
   
   def new
     @user = User.new
@@ -62,11 +62,12 @@ class AgenciesController < ApplicationController
   def edit
 
     @agency = Agency.find_by(id:params[:id])
-    # if @agency.agency_profile_image
-    #   @profile_image = @agency_admin.agency_admin_profile_image.image_url
-    # else
-    #   @profile_image = nil
-    # end
+    if @agency.agency_profile_image
+      @logo = @agency.agency_profile_image.image_url
+      @agency_logo_image = @agency.agency_profile_image
+    else
+      @logo = nil
+    end
 
   end
 

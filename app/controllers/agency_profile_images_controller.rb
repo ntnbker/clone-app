@@ -1,8 +1,8 @@
 class AgencyProfileImagesController < ApplicationController
   before_action :require_login, only:[:create,:update]
 
-  before_action(only:[:edit,:update]) {allow("AgencyAdmin")}
-  before_action(only:[:show]) {belongs_to_agency_admin}
+  before_action(only:[:create,:update]) {allow("AgencyAdmin")}
+  
 
   
   def create
@@ -48,18 +48,6 @@ class AgencyProfileImagesController < ApplicationController
     params.require(:picture).permit(:image, :agency_id, :agency_profile_image_id)
   end
 
-  def belongs_to_agency_admin
-    
-    agency = Agency.find_by(id:params[:id])
-    if current_user
-      if current_user.agency_admin.agency.id == agency
-        #do nothing
-      else 
-        flash[:notice] = "Sorry you can't see that."
-        redirect_to root_path
-      end 
-    end
   
-  end
 
 end 
