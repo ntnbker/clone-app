@@ -308,7 +308,6 @@ UploadImageComponent = React.createClass({
     e.preventDefault();
     const self = this;
     const { dataImages } = self.state;
-    debugger
     if (dataImages.length == 0) {
       return;
     }
