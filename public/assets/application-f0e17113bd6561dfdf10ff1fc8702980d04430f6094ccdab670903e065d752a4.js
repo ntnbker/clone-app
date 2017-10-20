@@ -84699,15 +84699,25 @@ var TenantMaintenanceRequest = React.createClass({
 		);
 	}
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var EditTradyCompany = React.createClass({
   displayName: "EditTradyCompany",
 
   getInitialState: function () {
+    var _props = this.props;
+    var image_url = _props.image_url;
+    var _props$profile_image = _props.profile_image;
+    var profile_image = _props$profile_image === undefined ? {} : _props$profile_image;
+    var _props$trady_company = _props.trady_company;
+    var trady_company = _props$trady_company === undefined ? {} : _props$trady_company;
+
     return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
+      gallery: _extends({}, profile_image, { image_url: image_url }),
       notification: {
         title: "",
         bgClass: "",
@@ -84787,12 +84797,12 @@ var EditTradyCompany = React.createClass({
     };
 
     var trady_company = {
-      email: getValidValue(email),
-      address: getValidValue(address),
-      company_name: getValidValue(company_name),
-      trading_name: getValidValue(trading_name),
-      mobile_number: getValidValue(mobile_number),
-      mailing_address: getValidValue(mailing_address),
+      email: getValidValue(this.email),
+      address: getValidValue(this.address),
+      company_name: getValidValue(this.company_name),
+      trading_name: getValidValue(this.trading_name),
+      mobile_number: getValidValue(this.mobile_number),
+      mailing_address: getValidValue(this.mailing_address),
       trady_company_id: this.props.id,
       trady_id: this.props.trady_id,
       quote_id: this.props.quote_id,
@@ -84801,18 +84811,17 @@ var EditTradyCompany = React.createClass({
       system_plan: this.props.system_plan,
       invoice_type: this.props.invoice_type,
       maintenance_request_id: this.props.maintenance_request_id,
-      trady_company_id: this.props.id || null,
       quote_id: this.props.quote_id || null,
       ledger_id: this.props.ledger_id || null,
       pdf_file_id: this.props.pdf_file_id || null
     };
 
     if (isInvoice) {
-      trady_company.abn = getValidValue(abn);
       trady_company.gst_registration = this.state.gst_registration;
-      trady_company.bsb = getValidValue(bsb_number);
-      trady_company.account_name = getValidValue(account_name);
-      trady_company.bank_account_number = getValidValue(bank_account_number);
+      trady_company.abn = getValidValue(this.abn);
+      trady_company.bsb_number = getValidValue(this.bsb_number);
+      trady_company.account_name = getValidValue(this.account_name);
+      trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
 
     var params = { trady_company: trady_company };
@@ -84872,7 +84881,9 @@ var EditTradyCompany = React.createClass({
     var _this = this;
 
     var isInvoice = this.props.system_plan === "Invoice";
-    var errors = this.state.errors;
+    var _state = this.state;
+    var errors = _state.errors;
+    var gallery = _state.gallery;
 
     var renderErrorFunc = this.renderError;
     var removeErrorFunc = this.removeError;
@@ -85115,7 +85126,7 @@ var EditTradyCompany = React.createClass({
             className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
           }),
-          renderErrorFunc(errors['trading_name'])
+          renderErrorFunc(errors['account_name'])
         )
       ), React.createElement(
         "div",
@@ -85274,12 +85285,12 @@ var AddTradycompany = React.createClass({
     };
 
     var trady_company = {
-      email: getValidValue(email),
-      address: getValidValue(address),
-      company_name: getValidValue(company_name),
-      trading_name: getValidValue(trading_name),
-      mobile_number: getValidValue(mobile_number),
-      mailing_address: getValidValue(mailing_address),
+      email: getValidValue(this.email),
+      address: getValidValue(this.address),
+      company_name: getValidValue(this.company_name),
+      trading_name: getValidValue(this.trading_name),
+      mobile_number: getValidValue(this.mobile_number),
+      mailing_address: getValidValue(this.mailing_address),
       trady_id: this.props.trady_id,
       quote_id: this.props.quote_id,
       work_flow: this.props.work_flow,
@@ -85294,10 +85305,10 @@ var AddTradycompany = React.createClass({
     };
 
     if (isInvoice) {
-      trady_company.abn = getValidValue(abn);
-      trady_company.gst_registration = this.state.gst_registration, trady_company.bsb = getValidValue(bsb_number);
-      trady_company.account_name = getValidValue(account_name);
-      trady_company.bank_account_number = getValidValue(bank_account_number);
+      trady_company.abn = getValidValue(this.abn);
+      trady_company.gst_registration = this.state.gst_registration, trady_company.bsb_number = getValidValue(this.bsb_number);
+      trady_company.account_name = getValidValue(this.account_name);
+      trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
 
     var params = { trady_company: trady_company };
@@ -85611,7 +85622,7 @@ var AddTradycompany = React.createClass({
               className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
             }),
-            renderErrorFunc(errors['trading_name'])
+            renderErrorFunc(errors['account_name'])
           )
         ), React.createElement(
           "div",
