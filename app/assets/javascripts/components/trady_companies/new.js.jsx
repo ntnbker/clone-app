@@ -112,7 +112,7 @@ var AddTradycompany = React.createClass({
     if (isInvoice) {
       trady_company.gst_registration =    this.state.gst_registration,
       trady_company.abn =                 getValidValue(this.abn);
-      trady_company.bsb =                 getValidValue(this.bsb_number);
+      trady_company.bsb_number =          getValidValue(this.bsb_number);
       trady_company.account_name =        getValidValue(this.account_name);
       trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
@@ -341,7 +341,7 @@ var AddTradycompany = React.createClass({
                 className={"form-control " + (errors['trading_name'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
               />
-              {renderErrorFunc(errors['trading_name'])}
+              {renderErrorFunc(errors['account_name'])}
             </div>
           </div>,
 

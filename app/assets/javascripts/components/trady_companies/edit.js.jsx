@@ -39,46 +39,6 @@ var EditTradyCompany = React.createClass({
     });
   },
 
-  uploadImage: function(images, callback) {
-    if (images.length == 0) {
-      return;
-    }
-    const { gallery: { id } } = this.state;
-    var FD = new FormData();
-    images.map((image, index) => {
-      var idx = index + 1;
-      FD.append('picture[image]', JSON.stringify(image));
-    });
-
-    FD.append('picture[trady_company_id]', this.props.id);
-    if (id) {
-      FD.append('picture[trady_company_profile_image_id]', id);
-    }
-
-    const self = this;
-    $.ajax({
-      type: id ? 'PUT' : 'POST',
-      url: `/trady_company_profile_images${id ? '/' + id : ''}`,
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-      },
-      enctype: 'multipart/form-data',
-      processData: false,
-      contentType: false,
-      data: FD,
-      success: function (res) {
-          callback(res.errors);
-          if (!res.errors && res.profile_image) {
-            self.setState({ gallery: res.profile_image });
-          }
-      },
-      error: function (err) {
-
-      }
-    });
-    return false;
-  },
-
   changeMailingAddress: function(e) {
     this.setState({
       mailing_address: e.target.value
@@ -152,7 +112,7 @@ var EditTradyCompany = React.createClass({
     if (isInvoice) {
       trady_company.gst_registration =    this.state.gst_registration;
       trady_company.abn =                 getValidValue(this.abn);
-      trady_company.bsb =                 getValidValue(this.bsb_number);
+      trady_company.bsb_number =          getValidValue(this.bsb_number);
       trady_company.account_name =        getValidValue(this.account_name);
       trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
@@ -214,15 +174,6 @@ var EditTradyCompany = React.createClass({
 
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
-        { gallery &&
-            <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
-        }
-        <ModalImageUpload
-          uploadImage={this.uploadImage}
-          gallery={gallery && [gallery] || []}
-          text="Add/Change Photo"
-          className="btn button-primary option-button"
-        />
 				<div className="form-group">
           <label className="control-label col-sm-2 required">Company name</label>
           <div className="col-sm-10">
@@ -380,7 +331,7 @@ var EditTradyCompany = React.createClass({
                 className={"form-control " + (errors['trading_name'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
               />
-              {renderErrorFunc(errors['trading_name'])}
+              {renderErrorFunc(errors['account_name'])}
             </div>
           </div>,
 
