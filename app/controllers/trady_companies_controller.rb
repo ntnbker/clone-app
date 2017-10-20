@@ -142,7 +142,7 @@ class TradyCompaniesController < ApplicationController
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
     @quote_pdf_files = UploadedQuote.find_by(id:params[:trady_company][:pdf_file_id])
     @trady_company.perform_bank_validation(system_plan)
-    binding.pry
+    
 
     if @trady_company.update(trady_company_params)
 
