@@ -72,7 +72,7 @@ var TradyCompanyEdit = React.createClass({
       abn                 : getValidValue(this.abn),
       address             : getValidValue(this.address),
       mailing_address     : getValidValue(this.mailing_address),
-      mobile_phone        : getValidValue(this.mobile_phone),
+      mobile_number       : getValidValue(this.mobile_number),
       account_name        : getValidValue(this.account_name),
       bsb_number          : getValidValue(this.bsb_number),
       bank_account_number : getValidValue(this.bank_account_number),
