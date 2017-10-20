@@ -123,10 +123,12 @@ var TradyEdit = React.createClass({
   },
 
   render: function() {
-    let trady                          = this.props.trady || {};
-    let { errors = {}, gallery }       = this.state;
-    const renderTextField              = this.renderTextField;
-    const renderButtonFunc             = this.renderButton;
+    let trady                              = this.props.trady || {};
+    let trady_company                      = this.props.trady_company || {};
+    let { errors = {}, gallery }           = this.state;
+    const renderTextField                  = this.renderTextField;
+    const renderButtonFunc                 = this.renderButton;
+    const haveCompanyClass                 = !trady_company.id ? 'no-company' : '';
 
     return (
       <div className="edit_profile edit_trady_profile">
@@ -141,10 +143,15 @@ var TradyEdit = React.createClass({
             className="btn button-primary option-button"
           />
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
-          {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '?id=' + trady.trady_company_id)}
+          {!haveCompanyClass && renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '?id=' + trady_company.id)}
         </div>
-        <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
-          <h5 className="control-label col-sm-2 required title">
+        <form
+          role="form"
+          className={"form-horizontal right " + haveCompanyClass}
+          id="edit_trady"
+          onSubmit={this.onSubmit}
+        >
+          <h5 className="control-label col-sm-2 required title" >
             Edit Trady Profile
           </h5>
           {renderTextField('name', 'Name')}
