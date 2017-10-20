@@ -175,6 +175,8 @@ class TradiesController < ApplicationController
     @trady = Trady.find_by(id:params[:id])
     if @trady.trady_company
       @trady_company = @trady.trady_company
+    else
+      @trady_company = nil
     end 
 
 
