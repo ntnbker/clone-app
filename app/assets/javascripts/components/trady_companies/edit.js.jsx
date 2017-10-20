@@ -1,10 +1,12 @@
 var EditTradyCompany = React.createClass({
 	getInitialState: function() {
+    const { image_url, profile_image = {}, trady_company = {} } = this.props;
 		return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
+      gallery: {...profile_image, image_url},
       notification: {
       	title: "",
       	bgClass: "",
@@ -36,7 +38,6 @@ var EditTradyCompany = React.createClass({
       same_Address: !this.state.same_Address
     });
   },
-
 
   changeMailingAddress: function(e) {
     this.setState({
@@ -89,12 +90,12 @@ var EditTradyCompany = React.createClass({
     const getValidValue = obj => obj && obj.value;
 
 		var trady_company = {
-      email:           getValidValue(email),
-      address:         getValidValue(address),
-      company_name:    getValidValue(company_name),
-      trading_name:    getValidValue(trading_name),
-      mobile_number:   getValidValue(mobile_number),
-      mailing_address: getValidValue(mailing_address),
+      email:           getValidValue(this.email),
+      address:         getValidValue(this.address),
+      company_name:    getValidValue(this.company_name),
+      trading_name:    getValidValue(this.trading_name),
+      mobile_number:   getValidValue(this.mobile_number),
+      mailing_address: getValidValue(this.mailing_address),
       trady_company_id:       this.props.id,
       trady_id:               this.props.trady_id,
       quote_id:               this.props.quote_id,
@@ -103,18 +104,17 @@ var EditTradyCompany = React.createClass({
       system_plan:            this.props.system_plan,
       invoice_type:           this.props.invoice_type,
       maintenance_request_id: this.props.maintenance_request_id,
-      trady_company_id:       this.props.id                      || null,
       quote_id:               this.props.quote_id                || null,
       ledger_id:              this.props.ledger_id               || null,
       pdf_file_id:            this.props.pdf_file_id             || null,
     }
 
     if (isInvoice) {
-      trady_company.abn =                 getValidValue(abn);
       trady_company.gst_registration =    this.state.gst_registration;
-      trady_company.bsb =                 getValidValue(bsb_number);
-      trady_company.account_name =        getValidValue(account_name);
-      trady_company.bank_account_number = getValidValue(bank_account_number);
+      trady_company.abn =                 getValidValue(this.abn);
+      trady_company.bsb_number =          getValidValue(this.bsb_number);
+      trady_company.account_name =        getValidValue(this.account_name);
+      trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
 
     var params = { trady_company };
@@ -167,10 +167,10 @@ var EditTradyCompany = React.createClass({
   },
 
 	render: function() {
-    let isInvoice = this.props.system_plan === "Invoice";
-    let { errors } = this.state;
-    const renderErrorFunc = this.renderError;
-    const removeErrorFunc = this.removeError;
+    let isInvoice           = this.props.system_plan === "Invoice";
+    let { errors, gallery } = this.state;
+    const renderErrorFunc   = this.renderError;
+    const removeErrorFunc   = this.removeError;
 
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
@@ -331,7 +331,7 @@ var EditTradyCompany = React.createClass({
                 className={"form-control " + (errors['trading_name'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
               />
-              {renderErrorFunc(errors['trading_name'])}
+              {renderErrorFunc(errors['account_name'])}
             </div>
           </div>,
 
