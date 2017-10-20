@@ -23,17 +23,17 @@ class TradyCompanyProfileImagesController < ApplicationController
 
   def update
 
-    @image =  AgencyAdminProfileImage.find_by(id:params[:picture][:trady_company_profile_image_id])
+    @image =  TradyCompanyProfileImage.find_by(id:params[:picture][:trady_company_profile_image_id])
 
     if @image.update(image_params)
-      profile_image = @image.as_json(methods: :image_url)
+      company_image = @image.as_json(methods: :image_url)
       
       respond_to do |format|
-        format.json {render :json=>{:profile_image=>profile_image}}
+        format.json {render :json=>{:company_image=>company_image}}
       end 
     else
       respond_to do |format|
-        format.json {render :json=>{error=>image.errors}}
+        format.json {render :json=>{error=>@image.errors}}
       end
     end 
 
