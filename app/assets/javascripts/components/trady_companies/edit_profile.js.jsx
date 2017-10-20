@@ -175,7 +175,7 @@ var TradyCompanyEdit = React.createClass({
           {renderTextField('abn', 'ABN')}
           {renderTextField('address', 'Address')}
           {renderTextField('mailing_address', 'Mailing Address')}
-          {renderTextField('mobile_phone', 'Mobile Phone')}
+          {renderTextField('mobile_number', 'Mobile Number')}
           <div className="form-group">
             <div className="col-sm-10">
               <input
