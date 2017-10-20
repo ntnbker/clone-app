@@ -61,25 +61,18 @@ var AgentEdit = React.createClass({
     let isInvoice = this.props.system_plan === 'Invoice';
 
     const getValidValue = obj => obj && obj.value;
-
     var agent = {
-      company_name              : getValidValue(company_name),
-      business_name             : getValidValue(business_name),
-      abn                       : getValidValue(abn),
-      address                   : getValidValue(address),
-      mailing_address           : getValidValue(mailing_address),
-      phone                     : getValidValue(phone),
-      mobile_phone              : getValidValue(mobile_phone),
-      corporation_license_number: getValidValue(corporation_license_number),
-      license_type              : this.state.license_type,
+      name          : getValidValue(this.name),
+      last_name     : getValidValue(this.last_name),
+      mobile_phone  : getValidValue(this.mobile_phone),
+      license_number: getValidValue(this.license_number),
     }
 
     var params = { agent };
-
     const self = this;
     $.ajax({
       type: 'PUT',
-      url: `/agencies/${(this.props.agent || {}).id}`,
+      url: `/agents/${(this.props.agent || {}).id}`,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -116,7 +109,7 @@ var AgentEdit = React.createClass({
 
   renderTextField: function(field, textHolder) {
     const { errors }      = this.state;
-    const { agent = {} } = this.props;
+    const { agent = {} }  = this.props;
     const value           = agent[field];
 
     return (
@@ -165,9 +158,9 @@ var AgentEdit = React.createClass({
         <form role="form" className="form-horizontal right" id="edit_agent" onSubmit={this.onSubmit} >
           <h5 className="control-label col-sm-2 required title">
             Edit Agent Profile
-          </h5>          {renderTextField('name', 'Name')}
+          </h5>
+          {renderTextField('name', 'Name')}
           {renderTextField('last_name', 'Last Name')}
-          {renderTextField('phone', 'Phone')}
           {renderTextField('mobile_phone', 'Mobile Phone')}
           {renderTextField('license_number', 'License Number')}
           <div className="text-center">

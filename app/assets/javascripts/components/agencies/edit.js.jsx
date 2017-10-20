@@ -66,14 +66,14 @@ var AgencyEdit = React.createClass({
     const getValidValue = obj => obj && obj.value;
 
     var agency = {
-      company_name              : getValidValue(company_name),
-      business_name             : getValidValue(business_name),
-      abn                       : getValidValue(abn),
-      address                   : getValidValue(address),
-      mailing_address           : getValidValue(mailing_address),
-      phone                     : getValidValue(phone),
-      mobile_phone              : getValidValue(mobile_phone),
-      corporation_license_number: getValidValue(corporation_license_number),
+      company_name              : getValidValue(this.company_name),
+      business_name             : getValidValue(this.business_name),
+      abn                       : getValidValue(this.abn),
+      address                   : getValidValue(this.address),
+      mailing_address           : getValidValue(this.mailing_address),
+      phone                     : getValidValue(this.phone),
+      mobile_phone              : getValidValue(this.mobile_phone),
+      corporation_license_number: getValidValue(this.corporation_license_number),
       license_type              : this.state.license_type,
     }
 
