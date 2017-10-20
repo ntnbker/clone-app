@@ -173,6 +173,10 @@ class TradiesController < ApplicationController
 
   def edit
     @trady = Trady.find_by(id:params[:id])
+    if @trady.trady_company
+      @trady_company = @trady.trady_company
+    end 
+
 
     if @trady.trady_profile_image
       @profile_image = @trady.trady_profile_image.image_url
