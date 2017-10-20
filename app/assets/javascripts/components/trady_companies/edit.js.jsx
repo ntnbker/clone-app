@@ -130,12 +130,12 @@ var EditTradyCompany = React.createClass({
     const getValidValue = obj => obj && obj.value;
 
 		var trady_company = {
-      email:           getValidValue(email),
-      address:         getValidValue(address),
-      company_name:    getValidValue(company_name),
-      trading_name:    getValidValue(trading_name),
-      mobile_number:   getValidValue(mobile_number),
-      mailing_address: getValidValue(mailing_address),
+      email:           getValidValue(this.email),
+      address:         getValidValue(this.address),
+      company_name:    getValidValue(this.company_name),
+      trading_name:    getValidValue(this.trading_name),
+      mobile_number:   getValidValue(this.mobile_number),
+      mailing_address: getValidValue(this.mailing_address),
       trady_company_id:       this.props.id,
       trady_id:               this.props.trady_id,
       quote_id:               this.props.quote_id,
@@ -150,11 +150,11 @@ var EditTradyCompany = React.createClass({
     }
 
     if (isInvoice) {
-      trady_company.abn =                 getValidValue(abn);
       trady_company.gst_registration =    this.state.gst_registration;
-      trady_company.bsb =                 getValidValue(bsb_number);
-      trady_company.account_name =        getValidValue(account_name);
-      trady_company.bank_account_number = getValidValue(bank_account_number);
+      trady_company.abn =                 getValidValue(this.abn);
+      trady_company.bsb =                 getValidValue(this.bsb_number);
+      trady_company.account_name =        getValidValue(this.account_name);
+      trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
 
     var params = { trady_company };

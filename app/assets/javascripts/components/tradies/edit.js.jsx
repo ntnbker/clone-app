@@ -49,16 +49,16 @@ var TradyEdit = React.createClass({
   },
 
   onSubmit: function(e){
-
+    e.preventDefault();
     var flag = false;
     let isInvoice = this.props.system_plan === 'Invoice';
 
     const getValidValue = obj => obj && obj.value;
 
     var trady = {
-      name        : getValidValue(name),
-      company_name: getValidValue(company_name),
-      mobile      : getValidValue(mobile),
+      name        : getValidValue(this.name),
+      company_name: getValidValue(this.company_name),
+      mobile      : getValidValue(this.mobile),
     }
 
     var params = { trady };
@@ -79,8 +79,6 @@ var TradyEdit = React.createClass({
       error: function(err) {
       }
     });
-
-    e.preventDefault();
 
     return;
   },
@@ -143,7 +141,7 @@ var TradyEdit = React.createClass({
             className="btn button-primary option-button"
           />
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
-          {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '/' + trady.trady_company_id)}
+          {renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '?id=' + trady.trady_company_id)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_trady" onSubmit={this.onSubmit} >
           <h5 className="control-label col-sm-2 required title">
