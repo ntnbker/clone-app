@@ -72,7 +72,7 @@ var AgencyEdit = React.createClass({
       address                   : getValidValue(this.address),
       mailing_address           : getValidValue(this.mailing_address),
       phone                     : getValidValue(this.phone),
-      mobile_phone              : getValidValue(this.mobile_phone),
+      mobile_number             : getValidValue(this.mobile_number),
       corporation_license_number: getValidValue(this.corporation_license_number),
       license_type              : this.state.license_type,
     }
@@ -176,7 +176,7 @@ var AgencyEdit = React.createClass({
           {renderTextField('address', 'Address')}
           {renderTextField('mailing_address', 'Mailing Address')}
           {renderTextField('phone', 'Phone')}
-          {renderTextField('mobile_phone', 'Mobile Phone')}
+          {renderTextField('mobile_number', 'Mobile Number')}
           <div className="license-type">
             <p> License Type </p>
             <label className="one-half column">
