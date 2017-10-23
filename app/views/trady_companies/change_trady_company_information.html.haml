@@ -1,5 +1,8 @@
+%div.well.container
+  =react_component('TradyCompanyEdit', {:trady_company => @trady_company,  :image_url => @trady_company_logo, :profile_image => @trady_company_profile_image, :authenticity_token => form_authenticity_token, :change_password_path => change_password_path, :edit_trady_path => edit_trady_path(current_user.trady.id)})
+
 .container.well
-  %h5 
+  %h5
     Edit Company Details
   = bootstrap_form_for @trady_company, url:"/update_trady_company_information" do |f|
     =f.hidden_field :id, value:@trady_company.id
@@ -9,9 +12,9 @@
     =f.text_field :address
     =f.text_field :mailing_address
     =f.telephone_field :mobile_number
-    = f.form_group :gst_registration, label: { text: "GST Registration" } do 
-      = f.radio_button :gst_registration, true, label: "True", inline: true 
-      = f.radio_button :gst_registration, false, label: "False", inline: true 
+    = f.form_group :gst_registration, label: { text: "GST Registration" } do
+      = f.radio_button :gst_registration, true, label: "True", inline: true
+      = f.radio_button :gst_registration, false, label: "False", inline: true
     =f.text_field :account_name
     =f.text_field :bsb_number
     =f.text_field :bank_account_number

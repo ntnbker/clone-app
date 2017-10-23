@@ -1,20 +1,20 @@
-var AgencyEdit = React.createClass({
+var TradyCompanyEdit = React.createClass({
   getInitialState: function () {
-    const agency = this.props.agency || {};
+    const trady_company = this.props.trady_company || {};
     const profile_image = this.props.profile_image || {};
     const image_url = this.props.image_url;
 
     return {
-      license_type: agency.license_type,
+      gst_registration: trady_company.gst_registration,
       errors: {},
       gallery: {...profile_image, image_url},
     };
   },
 
-  changeLicenseType: function({ target: {value} }) {
+  changeGstRegistration: function({ }) {
     this.setState({
-      license_type: value,
-      errors: {...this.state.errors, license_type: ''}
+      gst_registration: !this.state.gst_registration,
+      errors: {...this.state.errors, gst_registration: ''},
     });
   },
 
@@ -29,15 +29,15 @@ var AgencyEdit = React.createClass({
       FD.append('picture[image]', JSON.stringify(image));
     });
 
-    FD.append('picture[agency_id]', this.props.agency.id);
+    FD.append('picture[trady_company_id]', this.props.trady_company.id);
     if (id) {
-      FD.append('picture[agency_profile_image_id]', id);
+      FD.append('picture[trady_company_profile_image_id]', id);
     }
 
     const self = this;
     $.ajax({
       type: id ? 'PUT' : 'POST',
-      url: `/agency_profile_images${id ? '/' + id : ''}`,
+      url: `/trady_company_profile_images${id ? '/' + id : ''}`,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -47,8 +47,8 @@ var AgencyEdit = React.createClass({
       data: FD,
       success: function (res) {
           callback(res.errors);
-          if (!res.errors && res.profile_image) {
-            self.setState({ gallery: res.profile_image });
+          if (!res.errors && res.company_image) {
+            self.setState({ gallery: res.company_image });
           }
       },
       error: function (err) {
@@ -63,26 +63,28 @@ var AgencyEdit = React.createClass({
     var flag = false;
     let isInvoice = this.props.system_plan === 'Invoice';
 
+    e.preventDefault();
     const getValidValue = obj => obj && obj.value;
 
-    var agency = {
-      company_name              : getValidValue(this.company_name),
-      business_name             : getValidValue(this.business_name),
-      abn                       : getValidValue(this.abn),
-      address                   : getValidValue(this.address),
-      mailing_address           : getValidValue(this.mailing_address),
-      phone                     : getValidValue(this.phone),
-      mobile_number             : getValidValue(this.mobile_number),
-      corporation_license_number: getValidValue(this.corporation_license_number),
-      license_type              : this.state.license_type,
+    var trady_company = {
+      company_name        : getValidValue(this.company_name),
+      trading_name        : getValidValue(this.trading_name),
+      abn                 : getValidValue(this.abn),
+      address             : getValidValue(this.address),
+      mailing_address     : getValidValue(this.mailing_address),
+      mobile_number       : getValidValue(this.mobile_number),
+      account_name        : getValidValue(this.account_name),
+      bsb_number          : getValidValue(this.bsb_number),
+      bank_account_number : getValidValue(this.bank_account_number),
+      gst_registration    : this.state.gst_registration,
+      id                  : this.props.trady_company.id,
     }
-
-    var params = { agency };
+    var params = { trady_company };
 
     const self = this;
     $.ajax({
-      type: 'PUT',
-      url: `/agencies/${(this.props.agency || {}).id}`,
+      type: 'PATCH',
+      url: '/update_trady_company_information',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -96,7 +98,6 @@ var AgencyEdit = React.createClass({
       }
     });
 
-    e.preventDefault();
 
     return;
   },
@@ -118,9 +119,9 @@ var AgencyEdit = React.createClass({
   },
 
   renderTextField: function(field, textHolder) {
-    const { errors }      = this.state;
-    const { agency = {} } = this.props;
-    const value           = agency[field];
+    const { errors }             = this.state;
+    const { trady_company = {} } = this.props;
+    const value                  = trady_company[field];
 
     return (
       <div className="form-group">
@@ -141,18 +142,17 @@ var AgencyEdit = React.createClass({
   },
 
   render: function() {
-    let isInvoice          = this.props.system_plan === "Invoice";
-    let agency             = this.props.agency || {};
+    let trady_company      = this.props.trady_company || {};
     let {
-      company_name, business_name, abn, address, mailing_address, phone, mobile_phone, corporation_license_number
-    } = agency;
+      company_name, trading_name, abn, address, mailing_address, mobile_phone, account_name, bsb_number, bank_account_number
+    } = trady_company;
 
-    let { errors = {}, license_type, gallery } = this.state;
-    const renderTextField                      = this.renderTextField;
-    const renderButtonFunc                     = this.renderButton;
+    let { errors = {}, gst_registration, gallery } = this.state;
+    const renderTextField                          = this.renderTextField;
+    const renderButtonFunc                         = this.renderButton;
 
     return (
-      <div className="edit_profile edit_agency_profile">
+      <div className="edit_profile edit_trady_company_profile">
         <div className="left">
           { gallery &&
               <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
@@ -163,49 +163,34 @@ var AgencyEdit = React.createClass({
             text="Add/Change Photo"
             className="btn button-primary option-button"
           />
-          {renderButtonFunc('Add New Agent', this.props.new_agent_path)}
-          {renderButtonFunc('Add New Admin Agency', this.props.new_agency_admin_path)}
+          {renderButtonFunc('Reset Password', this.props.change_password_path)}
+          {renderButtonFunc('Trady Account Settings', this.props.edit_trady_path)}
         </div>
         <form role="form" className="form-horizontal right" id="edit_agency" onSubmit={this.onSubmit} >
           <h5 className="control-label col-sm-2 required title">
-            Edit Agency Profile
+            Edit Trady Company Profile
           </h5>
           {renderTextField('company_name', 'Company Name')}
-          {renderTextField('business_name', 'Business Name')}
+          {renderTextField('trading_name', 'Business Name')}
           {renderTextField('abn', 'ABN')}
           {renderTextField('address', 'Address')}
           {renderTextField('mailing_address', 'Mailing Address')}
-          {renderTextField('phone', 'Phone')}
           {renderTextField('mobile_number', 'Mobile Number')}
-          <div className="license-type">
-            <p> License Type </p>
-            <label className="one-half column">
+          <div className="form-group">
+            <div className="col-sm-10">
               <input
-                type="radio"
-                value="Individual License"
-                checked={license_type === "Individual License"}
-                ref={e => this.license_type_individual_license = e}
-                name="license_type"
-                id="license_type_individual_license"
-                onChange={this.changeLicenseType}
+                type="checkbox"
+                id="gst_registration"
+                onChange={this.changeGstRegistration}
+                checked={gst_registration ? "checked" : false}
               />
-              Individual License
-            </label>
-            <label className="one-half column">
-              <input
-                type="radio"
-                value="Corporate License"
-                checked={license_type === "Corporate License"}
-                ref={e => this.license_type_corporate_license = e}
-                name="license_type"
-                id="license_type_corporate_license"
-                onChange={this.changeLicenseType}
-              />
-              Corporate License
-            </label>
-            {this.renderError(errors['license_type'])}
+              GST  Registration
+            </div>
           </div>
-          {renderTextField('corporation_license_number', 'Corporation License Number')}
+          {this.renderError(errors['gst_registration'])}
+          {renderTextField('account_name', 'Account Name')}
+          {renderTextField('bsb_number', 'BSB Number')}
+          {renderTextField('bank_account_number', 'Bank Account Number')}
           <div className="text-center">
             <button type="submit" className="button-primary green option-button">
               Update Your Profile
