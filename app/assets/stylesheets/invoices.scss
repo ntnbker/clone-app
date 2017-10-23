@@ -22,6 +22,26 @@ $color-blue-light: #7646FF;
   @include flexbox;
   @include flex-direction(column);
 
+  @media (max-width: 330px) {
+    .invoicefield {
+      fieldset {
+        .field {
+          div {
+            margin-bottom: 5px;
+          }
+          p {
+            display: inline-block;
+            width: 100% !important;
+          }
+          input {
+            display: inline-block;
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+
 	p{
 		margin-bottom: 0;
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -111,6 +131,7 @@ $color-blue-light: #7646FF;
         padding: 0;
         margin: 0;
         &.Approved {
+          margin-left: 5px;
           border-color: $color-green;
           color: $color-green;
         }
@@ -213,6 +234,8 @@ $color-blue-light: #7646FF;
       .btn-decline {
         background-color: $color-red;
         border-color: $color-red;
+        border-width: 0px;
+        margin-bottom: 5px;
         color: $color-white;
       }
       .btn-cancel {
@@ -500,13 +523,16 @@ $color-blue-light: #7646FF;
 				}
 			}
 			.field {
+        div {
+          margin-bottom: 5px;
+        }
 				p {
 					display: inline-block;
-					width: 115px;
+					width: 45%;
 				}
 				input {
 					display: inline-block;
-					width: auto;
+					width: 55%;
 				}
 				input[type="date"] {
 					height: 38px;
@@ -633,21 +659,21 @@ $color-blue-light: #7646FF;
 		@include flexbox;
 		margin-top: 10px;
 		select {
-			width: 49%;
+			width: 59%;
 			margin-right: 1%;
 		}
-		input[type="number"] {
-			width: 49%;
+		input {
+			width: 39%;
 			margin-left: 1%;
 		}
 		.hour {
-			width: 32% !important;
-			&.select {
-				margin-right: 2%;
-			}
-			&.price {
-				margin-right: 2%;
-			}
+			&.input {
+        width: 24% !important;
+		  	margin-right: 1%;
+      }
+      &.select {
+        width: 49%;
+      }
 		}
 	}
 
