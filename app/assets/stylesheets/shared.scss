@@ -265,31 +265,6 @@ header {
             &:hover {
               background-color: #7DC691;
             }
-            &:first-child {
-              height: 40px;
-              border-top: none;
-              @include flexbox;
-              @include align-items(center);
-              @include flex-direction(row);
-              @include justify-content(flex-start);
-              img {
-                width: 35px;
-                height: 35px;
-                padding-left: 10px;
-              }
-              span {
-                padding-left: 10px;
-                font-size: 16px;
-              }
-              &:hover {
-                background: transparent;
-              }
-            }
-            .icon-user {
-              i {
-                font-size: 24px;
-              }
-            }
           }
         }
       }
@@ -298,16 +273,26 @@ header {
     .menu-button {
       margin-top: 25px;
       float: right;
-      width: 40px;
       height: 40px;
-      border-radius: 25px;
       font-size: 20px;
       color: #fff;
       line-height: 40px;
       text-align: center;
-      background: #005600;
       cursor: pointer;
       display: none;
+
+      span {
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+
+      .icon-user {
+        font-size: 30px;
+      }
+
+      .fa-angle-down {
+      font-size: 15px;
+      }
     }
 
     .logo {

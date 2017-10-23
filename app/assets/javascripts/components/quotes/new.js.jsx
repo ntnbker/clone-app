@@ -98,7 +98,7 @@ var QuoteField = React.createClass({
               <option value="Hourly">Hourly</option>
             </select>
             <input
-              type="number"
+              type="text"
               placeholder="Amount"
               defaultValue={quote ? quote.amount : ''}
               ref={value => this.amount = value}
