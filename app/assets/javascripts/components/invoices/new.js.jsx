@@ -223,7 +223,9 @@ var FieldListForInvoice = React.createClass({
           )
         })}
       </ul>
-      <button type="button" className="button-add button-primary" style={{position: 'absolute', bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
+      <div className="text-center">
+        <button type="button" className="button-add button-primary" style={{bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
+      </div>
     </div>
   }
 });
@@ -719,7 +721,9 @@ var InvoiceField = React.createClass({
         {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}
       </fieldset>
 
-      <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
+      <div className="text-center">
+        <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
+        </div>
     </div>
   }
 });
