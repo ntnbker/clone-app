@@ -1,45 +1,63 @@
-const MenuAgency = [
-  {
-    url: "/agency_admin_maintenance_requests",
-    name: "My Maintenance Requests",
-  },
-  {
-    url: "/agents/new",
-    name: "Add Agent",
-  },
-  {
-    url: "/agency_admins/new",
-    name: "Add Agency Admin",
-  }
-];
+const MenuAgency = function(edit_agency, edit_agency_admin) {
+  return [
+    {
+      url: "/agency_admin_maintenance_requests",
+      name: "My Maintenance Requests",
+    },
+    {
+      url: edit_agency,
+      name: "Agency Account Settings",
+    },
+    {
+      url: edit_agency_admin,
+      name: "Agency Admin Account Settings",
+    },
+  ];
+}
 
-const MenuAgent = [
-  {
-    url: "/agent_maintenance_requests",
-    name: "My Maintenance Requests",
-  },
-];
+const MenuAgent = function(edit_agent) {
+  return [
+    {
+      url: "/agent_maintenance_requests",
+      name: "My Maintenance Requests",
+    },
+    {
+      url: edit_agent,
+      name: "Agent Account Settings",
+    },
+  ];
+}
 
-const MenuTrady = [
-  {
-    url: "/trady_maintenance_requests",
-    name: "My Maintenance Requests",
-  }
-];
+const MenuTrady = function(edit_trady) {
+  return [
+    {
+      url: "/trady_maintenance_requests",
+      name: "My Maintenance Requests",
+    },
+    {
+      url: edit_trady,
+      name: "Trady Account Settings",
+    },
+  ];
+}
 
-const MenuTenant = [
-  {
-    url: "/tenant_maintenance_requests",
-    name: "My Maintenance Requests",
-  }
-];
+const MenuTenant = function() {
+  return [
+    {
+      url: "/tenant_maintenance_requests",
+      name: "My Maintenance Requests",
+    },
+  ];
+}
 
-const MenuLandlord = [
-  {
-    url: "/landlord_maintenance_requests",
-    name: "My Maintenance Requests",
-  }
-];
+const MenuLandlord = function() {
+  return [
+    {
+      url: "/landlord_maintenance_requests",
+      name: "My Maintenance Requests",
+    },
+  ];
+}
 
 var MobileMenu = React.createClass({
   getInitialState: function() {
@@ -166,27 +184,30 @@ var Header = React.createClass({
     },
 
     menuBar: function() {
+      var {
+        edit_agency, edit_agency_admin, edit_agent, edit_trady, user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
+      } = this.props;
       var dataMenu = [];
-      if(!!this.props.user_agency_admin)
-        dataMenu = [...MenuAgency];
-      else if(!!this.props.user_agent)
-        dataMenu = [...MenuAgent];
-      else if(!!this.props.user_trady)
-        dataMenu = [...MenuTrady];
-      else if(!!this.props.user_tenant)
-        dataMenu = [...MenuTenant];
-      else if(!!this.props.user_landlord)
-        dataMenu = [...MenuLandlord];
+      if (user_agency_admin)
+        dataMenu = [...MenuAgency(edit_agency, edit_agency_admin)];
+      else if (user_agent)
+        dataMenu = [...MenuAgent(edit_agent)];
+      else if (user_trady)
+        dataMenu = [...MenuTrady(edit_trady)];
+      else if (user_tenant)
+        dataMenu = [...MenuTenant()];
+      else if (user_landlord)
+        dataMenu = [...MenuLandlord()];
 
       return(
         dataMenu.map((item, key) => {
-          return (
+        return (
             <li key={key}>
               <a href={item.url} className="click">
                 {item.name}
               </a>
             </li>
-          );
+          )
         })
       );
     },
@@ -288,18 +309,22 @@ var Header = React.createClass({
                           </div>
                           :
                           <div className="log_in">
-                            <div className="menu-button" onClick={this.showItems} ref="showItems"> S </div>
+                            <div
+                              className="menu-button"
+                              onClick={this.showItems}
+                              ref="showItems"
+                            >
+                              <span className="icon-user">
+                                <i className="fa fa-user" />
+                              </span>
+                              <span>
+                                Hi, {props.role}
+                              </span>
+                              <i className="fa fa-angle-down"/>
+                            </div>
                             {
                             this.state.isItems &&
                               <ul className="desktop-menu-items">
-                                <li>
-                                  <span className="icon-user">
-                                    <i className="fa fa-user" />
-                                  </span>
-                                  <span>
-                                    Hi, {props.role}
-                                  </span>
-                                </li>
                                 { this.menuBar() }
                                 <li  ref="Items">
                                   <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
