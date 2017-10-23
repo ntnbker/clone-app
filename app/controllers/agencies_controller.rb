@@ -78,7 +78,11 @@ class AgenciesController < ApplicationController
       redirect_to edit_agency_path(@agency)
     else
       flash[:danger] = "Sorry something went wrong. Please fix the errors to succesfully submit"
-      render :edit
+      
+      respond_to do |format|
+        format.json {render :json=>{errors: @agency.errors.to_hash(true).as_json}}
+        format.html {render :edit}
+      end 
     end 
   end
 
