@@ -7,14 +7,20 @@ class Invoice < ApplicationRecord
   has_many :invoice_items, inverse_of: :invoice
   accepts_nested_attributes_for :invoice_items, allow_destroy: true
   validates_associated :invoice_items
-
+  validates_presence_of :due_date
   validate :future_date
     
 
   def future_date
-    errors.add(:due_date, "can't be in the past") if
-      self.due_date < DateTime.now
+    if self.due_date == nil
+      
+    else
+      errors.add(:due_date, "can't be in the past") if
+        self.due_date <= DateTime.now
+    end 
   end
+
+
 
 
 
