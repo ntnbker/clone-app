@@ -213,12 +213,18 @@ class TradyCompaniesController < ApplicationController
 
     @trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
 
+    @trady_company.perform_bank_validation("Invoice")
+
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have succesfully updated the company details."
       redirect_to change_trady_company_information_path(id:@trady_company)
     else
       flash[:danger] = "Oops something went wrong. Please add all information below."
-      render :change_trady_company_information
+      
+      respond_to do |format|
+        format.json {render :json=>{errors: @trady_company.errors.to_hash(true).as_json}}
+        format.html {render :change_trady_company_information}
+      end 
     end
   end
 

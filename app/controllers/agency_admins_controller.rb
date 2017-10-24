@@ -12,6 +12,7 @@ class AgencyAdminsController < ApplicationController
 
   def create
     @agency_admin = AgencyAdmin.new(agency_admin_params)
+    @agency_admin.perform_add_agency_admin_validations = true
 
     existing_user = User.find_by(email:params[:agency_admin][:email])
     if existing_user
@@ -31,11 +32,11 @@ class AgencyAdminsController < ApplicationController
       flash[:danger] = "Sorry this person is already an Agency Administrator"
       redirect_to new_agency_admin_path
     else 
-      if @agency_admin.valid?
+      if @agency_admin.save
       
         @user = User.create(email:params[:agency_admin][:email],password:SecureRandom.hex(5))
         
-        @agency_admin.save
+        # @agency_admin.save
         @agency_admin.update_attribute(:user_id, @user.id)
         role = Role.create(user_id:@user.id)
         @agency_admin.roles << role
@@ -48,13 +49,18 @@ class AgencyAdminsController < ApplicationController
       else
         @agency_admin = AgencyAdmin.new(agency_admin_params)
         flash[:danger] = "Something went wrong"
-        render :new
+        respond_to do |format|
+          format.json {render :json=>{errors: @agency_admin.errors.to_hash(true).as_json}}
+          format.html {render :new}
+        end  
+        
       end 
     end 
   end
 
   def edit
     @agency_admin = AgencyAdmin.find_by(id:params[:id])
+    @agency_admin.perform_add_agency_admin_validations = true
     if @agency_admin.agency_admin_profile_image
       @profile_image = @agency_admin.agency_admin_profile_image.image_url
       @agency_admin_profile_image = @agency_admin.agency_admin_profile_image
@@ -65,13 +71,18 @@ class AgencyAdminsController < ApplicationController
 
   def update
     @agency_admin = AgencyAdmin.find_by(id:params[:id])
-
+    @agency_admin.perform_add_agency_admin_validations = true
     if @agency_admin.update(agency_admin_params)
       flash[:success] = "You have successfully updated your profile information"
       redirect_to edit_agency_admin_path(@agency_admin)
     else
       flash[:danger] = "Sorry something went wrong. Please fix the errors"
-      render :edit
+      respond_to do |format|
+        format.json {render :json=>{errors: @agency_admin.errors.to_hash(true).as_json}}
+        format.html {render :edit}
+      end 
+
+
     end
 
   end

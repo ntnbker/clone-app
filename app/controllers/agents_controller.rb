@@ -38,7 +38,10 @@ class AgentsController < ApplicationController
       else
         @agent = Agent.new(agent_params)
         flash[:danger] = "Something went wrong"
-        render :new
+        respond_to do |format|
+          format.json {render :json=>{errors: @agent.errors.to_hash(true).as_json}}
+          format.html {render :new}
+        end
       end 
     end 
   end
@@ -62,7 +65,10 @@ class AgentsController < ApplicationController
       redirect_to edit_agent_path(@agent)
     else
       flash[:danger] = "Oops something went wrong. Please add all information below."
-      render :edit
+      respond_to do |format|
+          format.json {render :json=>{errors: @agent.errors.to_hash(true).as_json}}
+          format.html {render :edit}
+        end
     end   
         
   end
