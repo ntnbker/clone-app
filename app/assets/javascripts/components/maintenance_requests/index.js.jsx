@@ -491,7 +491,7 @@ var ListMaintenanceRequest = React.createClass({
         },
         {
           title: "Appointments Required",
-          value: "Appointments Required",
+          value: "Appointment Required",
           count: this.props.appointments_required
         },
         {
