@@ -467,16 +467,6 @@ var ListMaintenanceRequest = React.createClass({
           value: "Maintenance Scheduled With Landlord",
           count: this.props.maintenance_scheduled_with_landlord_count
         },
-        {
-          title: "Deferred",
-          value: "Defer",
-          count: this.props.deferred_count
-        },
-        {
-          title: "Jobs Completed and Closed",
-          value: "Jobs Completed",
-          count: this.props.jobs_completed
-        }
       ],
       tradyFilter: [
         {
