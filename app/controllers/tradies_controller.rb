@@ -198,7 +198,10 @@ class TradiesController < ApplicationController
       redirect_to edit_trady_path(@trady)
     else
       flash[:danger] = "Oops it looks something went wrong. Please add all information below."
-      render :edit
+      respond_to do |format|
+          format.json {render :json=>{errors: @trady.errors.to_hash(true).as_json}}
+          format.html {render :edit}
+        end 
     end 
   end
 

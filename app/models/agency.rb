@@ -22,17 +22,16 @@ class Agency < ApplicationRecord
   validates_presence_of :license_type
   validates_presence_of :license_number
   
-  validates_associated :agency_admins
+  #validates_associated :agency_admins
 
 
 
 
-  # validates_format_of :agent_email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/ , if: :perform_realestate_validations
-  # validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
+  
   validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
-  validates :license_number, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
+  
   validates :abn, :numericality => true, :length => {:minimum=>11, :maximum => 11 }
-  attr_accessor :perform_presence_validation
+  
 
   
   def skilled_tradies_required(skill_params)

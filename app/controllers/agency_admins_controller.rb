@@ -50,9 +50,9 @@ class AgencyAdminsController < ApplicationController
         @agency_admin = AgencyAdmin.new(agency_admin_params)
         flash[:danger] = "Something went wrong"
         respond_to do |format|
-        format.json {render :json=>{errors: @agency_admin.errors.to_hash(true).as_json}}
-        format.html {render :new}
-      end  
+          format.json {render :json=>{errors: @agency_admin.errors.to_hash(true).as_json}}
+          format.html {render :new}
+        end  
         
       end 
     end 
@@ -60,6 +60,7 @@ class AgencyAdminsController < ApplicationController
 
   def edit
     @agency_admin = AgencyAdmin.find_by(id:params[:id])
+    @agency_admin.perform_add_agency_admin_validations = true
     if @agency_admin.agency_admin_profile_image
       @profile_image = @agency_admin.agency_admin_profile_image.image_url
       @agency_admin_profile_image = @agency_admin.agency_admin_profile_image
@@ -70,13 +71,18 @@ class AgencyAdminsController < ApplicationController
 
   def update
     @agency_admin = AgencyAdmin.find_by(id:params[:id])
-
+    @agency_admin.perform_add_agency_admin_validations = true
     if @agency_admin.update(agency_admin_params)
       flash[:success] = "You have successfully updated your profile information"
       redirect_to edit_agency_admin_path(@agency_admin)
     else
       flash[:danger] = "Sorry something went wrong. Please fix the errors"
-      render :edit
+      respond_to do |format|
+        format.json {render :json=>{errors: @agency_admin.errors.to_hash(true).as_json}}
+        format.html {render :edit}
+      end 
+
+
     end
 
   end

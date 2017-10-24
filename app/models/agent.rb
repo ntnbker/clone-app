@@ -8,4 +8,9 @@ class Agent < ApplicationRecord
   
   validates_presence_of :name,:email, :mobile_phone, :last_name, :license_number
   validates_uniqueness_of :email
+
+
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
+  validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
+
 end 

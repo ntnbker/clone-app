@@ -11,8 +11,8 @@ class AgencyAdmin <ApplicationRecord
   
   
 
-  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
-  validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/, if: :perform_add_agency_admin_validations
+  validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }, if: :perform_add_agency_admin_validations
 
 
   accepts_nested_attributes_for :agency
