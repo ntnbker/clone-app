@@ -1,6 +1,6 @@
 class AgencyAdminMaintenanceRequestsController < ApplicationController
   
-  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
   
   before_action :require_login, only:[:show,:index]
 

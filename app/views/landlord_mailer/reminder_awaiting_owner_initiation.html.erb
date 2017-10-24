@@ -226,37 +226,18 @@
                             <tr>
                                 <td style="padding: 100px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #849aaa; text-align: leftt;">
                                     <p style="margin: 0;">
-                                      
-                                        Hi <%= @agency_admin.first_name.capitalize %>, <br/>
-                                        <br/>
-                                        Here is an overview of the maintenance requests that are outstanding in each type of status.
-                                        <br/>
-                                        <br/>
-                                        Please action them at your earliest convenience. 
-                                        <br/><br/>
-                                        <ul>
-                                          <li><%=@new_count%> New Maintenance Requests</li>
-                                          <li><%=@quote_requested_count%> New Quote Requests </li>
-                                          <li><%=@quote_recieved_count%> New Quotes Received </li>
-                                          <li><%=@new_invoice_count%> New Invoices Received</li>
-                                          <li><%=@cancelled_work_order_count%> Cancelled Work Orders </li>
-                                        </ul>
-
-
-
-                                        To view them now please click on the buttons below.
-                                       
+                                      Hi <%=@landlord.capitalize_name%>,
+                                      <br/>
+                                      <%if @maintenance_request.agent %>
+                                        This is friendly reminder from your agent, <%=@agent.name.capitalize%>, letting you know that they would like your instructions regarding a maintenance request for <%=@property.property_address%>. To view the maintenance request and confirm your instructions, please click on the button below.
+                                      <%elsif @maintenance_request.agency_admin %>
+                                        This is friendly reminder from your agent, <%=@agent.first_name.capitalize%>, letting you know that they would like your instructions regarding a maintenance request for <%=@property.property_address%>. To view the maintenance request and confirm your instructions, please click on the button below.
+                                      <%end%> 
                                     </p>
                                     
 
                                 </td>
                             </tr>
-                            
-
-                                        
-                                        
-                                          
-                                          
                             
                               <tr>
                                 <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
@@ -264,9 +245,9 @@
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
                                         <tr>
                                             <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
-                                              <%=link_to "View Maintenance Requests", agency_admin_maintenance_requests_url(user_id:@agency_admin.user.id), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
-            
-                              
+                                                <%=link_to "View Maintnenace Request", landlord_maintenance_request_url(id:@maintenance_request.id,user_id:@landlord.user.id), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+                                                    
+                                                
                                             </td>
                                         </tr>
                                     </table>
@@ -274,6 +255,9 @@
                                 </td>
                               </tr>
                                         
+                                        
+                                          
+                                          
                             
                             
 

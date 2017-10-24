@@ -14,7 +14,7 @@ class AgenyAdminOutstandingMaintenanceRequestReminderWorker
 
     agency_admins.each do |agency_admin|
       
-        new_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Inititate Maintenance Request" }).distinct.count
+        new_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Initiate Maintenance Request" }).distinct.count
         
         quote_requested_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Quote Requested" }).distinct.count
 

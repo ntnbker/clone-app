@@ -212,5 +212,21 @@ class AgentMailer < ActionMailer::Base
 
   end
 
+  def agent_outstanding_maintenance_requests(agent, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count)
+    @agent = agent
+    @new_count = new_count
+    @quote_requested_count= quote_requested_count 
+    @quote_recieved_count = quote_recieved_count
+    @new_invoice_count = new_invoice_count
+    @cancelled_work_order_count= cancelled_work_order_count
+    
+    email = agent.email 
+    
+
+    mail(to:email, subject:"Outstanding Work")
+    ###WHAT YOU NEED TO DO IS MAKE THE TEMPLATE FOR THE EMAIL
+    ### THEN YOU HAVE TO ADD THE CODE FOR THE SCHEDULER AND THEN RUN IT.
+  end
+
 end 
 
