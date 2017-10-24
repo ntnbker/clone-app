@@ -72,7 +72,7 @@ var AgencyEdit = React.createClass({
       address                   : getValidValue(this.address),
       mailing_address           : getValidValue(this.mailing_address),
       phone                     : getValidValue(this.phone),
-      mobile_number             : getValidValue(this.mobile_number),
+      mobile_phone              : getValidValue(this.mobile_phone),
       corporation_license_number: getValidValue(this.corporation_license_number),
       license_type              : this.state.license_type,
     }
@@ -141,11 +141,6 @@ var AgencyEdit = React.createClass({
   },
 
   render: function() {
-    let isInvoice          = this.props.system_plan === "Invoice";
-    let agency             = this.props.agency || {};
-    let {
-      company_name, business_name, abn, address, mailing_address, phone, mobile_phone, corporation_license_number
-    } = agency;
 
     let { errors = {}, license_type, gallery } = this.state;
     const renderTextField                      = this.renderTextField;
@@ -176,7 +171,7 @@ var AgencyEdit = React.createClass({
           {renderTextField('address', 'Address')}
           {renderTextField('mailing_address', 'Mailing Address')}
           {renderTextField('phone', 'Phone')}
-          {renderTextField('mobile_number', 'Mobile Number')}
+          {renderTextField('mobile_phone', 'Mobile Phone')}
           <div className="license-type">
             <p> License Type </p>
             <label className="one-half column">
