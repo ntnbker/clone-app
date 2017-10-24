@@ -943,6 +943,7 @@ body::-webkit-scrollbar-thumb {
       }
       &.active {
         background-color: $color-grey-dark;
+        border-color: $color-grey-dark;
       }
     }
   }
@@ -1374,11 +1375,10 @@ body::-webkit-scrollbar-thumb {
       button {
         height: 82px;
         width: auto;
-        width: initial;
-        padding: 0 10px;
+        width: 50%;
         color: $color-white;
-        font-weight: 400;
-        font-size: 16px;
+        font-weight: 600;
+        font-size: 14px;
       }
     }
     .activity-mobile {
