@@ -60,7 +60,6 @@ header {
       @include flexbox;
       @include flex-direction(row);
       @include justify-content(space-between);
-      max-width: 960px;
 
       .search {
         .form-search {
@@ -193,6 +192,7 @@ header {
         @include align-items(center);
         @include justify-content(flex-end);
         -ms-flex-align: center;
+        margin-top: 19px;
 
         height: 100%;
       }
@@ -222,9 +222,26 @@ header {
       }
     }
 
+    .full-header {
+      width: 100% !important;
+
+      .logo {
+        margin-left: 10%;
+      }
+
+      .desktop-menu-items {
+        margin-right: 10%;
+      }
+
+      .log_in {
+        margin-right: 10%;
+      }
+    }
+
     .forhome {
       position: absolute;
       left: 0;
+      background-color: rgba(1,2,3,0.3);
       .log_in {
         display: block;
         .desktop-menu-items {
@@ -271,10 +288,10 @@ header {
     }
 
     .menu-button {
-      margin-top: 25px;
+      margin-top: 19px;
       float: right;
       height: 40px;
-      font-size: 20px;
+      font-size: 22px;
       color: #fff;
       line-height: 40px;
       text-align: center;
@@ -450,6 +467,7 @@ header {
     }
     .header-custom .header-right {
       margin-right: 70px;
+      margin-top: 0;
     }
     .menu-btn {
       top: 28%;
@@ -473,8 +491,18 @@ header {
           }
         }
       }
+
+      .full-header {
+        .logo {
+          margin-left: 0;
+        }
+      }
+
       .menu-btn {
         right: 10px;
+      }
+      .forhome {
+        width: 100%;
       }
     }
   }

@@ -270,7 +270,7 @@ var Header = React.createClass({
             }
           </MobileMenu>
 
-          <div className="container">
+          <div className={"container " + (expanded ? 'full-header' : '')} >
             <div className={"column header-custom " + (e && "forhome")}>
                 <div className="logo">
                   <img src="/assets/logo.png" alt="logo" />
@@ -278,62 +278,60 @@ var Header = React.createClass({
                 </div>
                 {
                   logged_in?
-                    <div>
-                      {
-                        !expanded ?
-                          <div className="header-right">
-                            { this.search() }
-                            <div className="question">
-                              <i className="fa fa-question" />
-                            </div>
-                            <div className="notification">
-                              <i className="fa fa-bell" />
-                            </div>
-                            <div className="menu-bar dropdown-custom">
-                              <button type="button" className="btn-menu" onClick={this.showMenu}>
-                                <span className="icon-user">
-                                  <i className="fa fa-user" />
-                                </span>
-                                <span>
-                                  Hi, {props.role}
-                                  <i className="fa fa-angle-down"/>
-                                </span>
-                              </button>
-                              <ul className="dropdown-menu" id="menu-bar">
-                                { this.menuBar() }
-                                <li  ref="Items">
-                                  <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
-                                </li>
-                              </ul>
-                            </div>
+                    (
+                      !expanded ?
+                        <div className="header-right">
+                          { this.search() }
+                          <div className="question">
+                            <i className="fa fa-question" />
                           </div>
-                          :
-                          <div className="log_in">
-                            <div
-                              className="menu-button"
-                              onClick={this.showItems}
-                              ref="showItems"
-                            >
+                          <div className="notification">
+                            <i className="fa fa-bell" />
+                          </div>
+                          <div className="menu-bar dropdown-custom">
+                            <button type="button" className="btn-menu" onClick={this.showMenu}>
                               <span className="icon-user">
                                 <i className="fa fa-user" />
                               </span>
                               <span>
                                 Hi, {props.role}
+                                <i className="fa fa-angle-down"/>
                               </span>
-                              <i className="fa fa-angle-down"/>
-                            </div>
-                            {
-                            this.state.isItems &&
-                              <ul className="desktop-menu-items">
-                                { this.menuBar() }
-                                <li  ref="Items">
-                                  <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
-                                </li>
-                              </ul>
-                            }
+                            </button>
+                            <ul className="dropdown-menu" id="menu-bar">
+                              { this.menuBar() }
+                              <li  ref="Items">
+                                <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                              </li>
+                            </ul>
                           </div>
-                      }
-                    </div>
+                        </div>
+                        :
+                        <div className="log_in">
+                          <div
+                            className="menu-button"
+                            onClick={this.showItems}
+                            ref="showItems"
+                          >
+                            <span className="icon-user">
+                              <i className="fa fa-user" />
+                            </span>
+                            <span>
+                              Hi, {props.role}
+                            </span>
+                            <i className="fa fa-angle-down"/>
+                          </div>
+                          {
+                          this.state.isItems &&
+                            <ul className="desktop-menu-items">
+                              { this.menuBar() }
+                              <li  ref="Items">
+                                <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                              </li>
+                            </ul>
+                          }
+                        </div>
+                    )
                     :
                     <span className="desktop-menu-items">
                       <a href={props.menu_login_path} > Login </a>
