@@ -1,12 +1,10 @@
 var EditTradyCompany = React.createClass({
 	getInitialState: function() {
-    const { image_url, profile_image = {}, trady_company = {} } = this.props;
 		return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
-      gallery: {...profile_image, image_url},
       notification: {
       	title: "",
       	bgClass: "",
@@ -167,10 +165,10 @@ var EditTradyCompany = React.createClass({
   },
 
 	render: function() {
-    let isInvoice           = this.props.system_plan === "Invoice";
-    let { errors, gallery } = this.state;
-    const renderErrorFunc   = this.renderError;
-    const removeErrorFunc   = this.removeError;
+    let isInvoice         = this.props.system_plan === "Invoice";
+    let { errors }        = this.state;
+    const renderErrorFunc = this.renderError;
+    const removeErrorFunc = this.removeError;
 
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>

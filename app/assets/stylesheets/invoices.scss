@@ -10,6 +10,7 @@ $color-red: #e34f4f;
 $color-black: #000000;
 $color-blue-light: #7646FF;
 .invoice-form {
+  margin-bottom: 150px;
 	width: 98%;
 	min-height: 500px;
 	padding: 30px;
@@ -40,6 +41,9 @@ $color-blue-light: #7646FF;
         }
       }
     }
+    .button-type {
+      font-size: 12px;
+    }
   }
 
 	p{
@@ -61,8 +65,7 @@ $color-blue-light: #7646FF;
 	}
 
 	.button-primary.option-button {
-		margin: 0;
-		height: 38px;
+		margin: 0 0 10px 0;
 		padding: 0px 10px;
 	}
 

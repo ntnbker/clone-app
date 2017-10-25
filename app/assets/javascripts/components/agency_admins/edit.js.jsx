@@ -1,7 +1,8 @@
 var AgencyAdminEdit = React.createClass({
   getInitialState: function () {
     const profile_image = this.props.profile_image || {};
-    const image_url = this.props.image_url;
+    const image_url     = this.props.image_url || '/default-avatar.png';
+
     return {
       errors: {},
       gallery: {...profile_image, image_url},
