@@ -1,4 +1,7 @@
 %div.well.container
+  =react_component('AgencyAdminNew', {:agency_id => @agency_id})
+
+%div.well.container
   %div
     -if @agency_admin.errors.any?
       -@agency_admin.errors.full_messages.each do |message|
