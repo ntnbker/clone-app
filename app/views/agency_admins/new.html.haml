@@ -1,5 +1,5 @@
 %div.well.container
-  =react_component('AgencyAdminNew', {:agency_id => @agency_id})
+  =react_component('AgencyAdminNew', {:agency_id => @agency_id, :authenticity_token => form_authenticity_token})
 
 %div.well.container
   %div

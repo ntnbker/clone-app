@@ -1,11 +1,14 @@
+%div.well.container
+  =react_component('AgentNew', {:agency_id => @agency_id, :authenticity_token => form_authenticity_token})
+
 %div.container.well
   %div
     -if @agent.errors.any?
       -@agent.errors.full_messages.each do |message|
         %p
           =message
-      
-    
+
+
   %h4.title-agent.text-center
     Add agent to your team
   =form_for @agent do |f|
@@ -30,4 +33,4 @@
 
 
 
-  
+
