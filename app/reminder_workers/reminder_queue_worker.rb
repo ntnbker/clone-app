@@ -7,11 +7,12 @@ class ReminderQueueWorker
   def perform
     
 
-    AgenyAdminOutstandingMaintenanceRequestReminderWorker.perform_async
-    AgentOutstandingMaintenanceRequestReminderWorker.perform_async
-    LandlordReminderAwaitingOwnerInitiationWorker.perform_async
-    LandlordReminderAwaitingOwnerInstructionWorker.perform_async
-    TradyAwaitingTradieInitiationWorker.perform_async
+    # AgenyAdminOutstandingMaintenanceRequestReminderWorker.perform_async
+    # AgentOutstandingMaintenanceRequestReminderWorker.perform_async
+    # LandlordReminderAwaitingOwnerInitiationWorker.perform_async
+    # LandlordReminderAwaitingOwnerInstructionWorker.perform_async
+    TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker.perform_async
+    TradyAwaitingQuoteRequestAssignedMaintenanceRequestWorker.perform_async
 
   end
 

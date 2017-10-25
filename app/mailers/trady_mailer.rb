@@ -140,7 +140,37 @@ class TradyMailer < ActionMailer::Base
     end 
     mail(to:@trady.email, subject:"Question about quote from #{@agency.company_name.capitalize} - #{@property.property_address}")
   end
+
+  def reminder_awaiting_quote_request(maintenance_request, trady, property)
+    @maintenance_request = maintenance_request
+    
+    @trady = trady
+    @property = property
+    if @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+      @agent = @maintenance_request.agent
+    elsif @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+      @agent = @maintenance_request.agency_admin
+    end 
+    mail(to:@trady.email, subject:"Reminder for a requested quote from #{@agency.capitalize_company_name}- #{@property.property_address}")
+  end
   
 end 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
