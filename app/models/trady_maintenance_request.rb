@@ -29,7 +29,7 @@ class TradyMaintenanceRequest
     elsif parameter == "Awaiting Quote Approvals"
       quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active").pluck(:maintenance_request_id)
       maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids)
-    elsif parameter == "Appointments Required"
+    elsif parameter == "Appointment Required"
       
        maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Appointment Required"}).distinct
     elsif parameter == "Awaiting Appointment Confirmation"
