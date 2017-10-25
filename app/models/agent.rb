@@ -7,7 +7,7 @@ class Agent < ApplicationRecord
   has_one :agent_profile_image
   
   validates_presence_of :name,:email, :mobile_phone, :last_name, :license_number
-  validates_uniqueness_of :email
+  # validates_uniqueness_of :email
 
 
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
