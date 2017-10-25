@@ -2,7 +2,7 @@ var TradyCompanyEdit = React.createClass({
   getInitialState: function () {
     const trady_company = this.props.trady_company || {};
     const profile_image = this.props.profile_image || {};
-    const image_url = this.props.image_url;
+    const image_url     = this.props.image_url || '/default-avatar.png';
 
     return {
       gst_registration: trady_company.gst_registration,

@@ -1,8 +1,8 @@
 var AgencyEdit = React.createClass({
   getInitialState: function () {
-    const agency = this.props.agency || {};
+    const agency        = this.props.agency || {};
     const profile_image = this.props.profile_image || {};
-    const image_url = this.props.image_url;
+    const image_url     = this.props.image_url || '/default-avatar.png';
 
     return {
       license_type: agency.license_type,

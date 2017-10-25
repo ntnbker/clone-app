@@ -1,6 +1,7 @@
 var AgentEdit = React.createClass({
   getInitialState: function () {
-    const { image_url, profile_image = {}, agent = {} } = this.props;
+    const profile_image = this.props.profile_image || {};
+    const image_url     = this.props.image_url || '/default-avatar.png';
 
     return {
       errors: {},

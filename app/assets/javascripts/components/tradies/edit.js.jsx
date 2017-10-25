@@ -1,10 +1,13 @@
 var TradyEdit = React.createClass({
   getInitialState: function () {
-    const { image_url, profile_image = {}, trady = {} } = this.props;
+    const trady         = this.props.trady || {};
+    const profile_image = this.props.profile_image || {};
+    const image_url     = this.props.image_url || '/default-avatar.png';
+
 
     return {
       errors: {},
-      gallery: {...profile_image, image_url},
+      gallery: {...profile_image, image_url },
     };
   },
 
