@@ -13,7 +13,7 @@ class AgencyAdminsController < ApplicationController
   def create
     @agency_admin = AgencyAdmin.new(agency_admin_params)
     @agency_admin.perform_add_agency_admin_validations = true
-
+    
     existing_user = User.find_by(email:params[:agency_admin][:email])
     if existing_user
       existing_role = existing_user.get_role("AgencyAdmin").present?
@@ -47,8 +47,10 @@ class AgencyAdminsController < ApplicationController
       
       
       else
-        @agency_admin = AgencyAdmin.new(agency_admin_params)
-        flash[:danger] = "Something went wrong"
+        
+        
+        
+        flash[:danger] = "Please fill in the required information."
         respond_to do |format|
           format.json {render :json=>{errors: @agency_admin.errors.to_hash(true).as_json}}
           format.html {render :new}

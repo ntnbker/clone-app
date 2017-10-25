@@ -36,7 +36,7 @@ class AgentsController < ApplicationController
         UserSetPasswordEmailWorker.perform_async(@user.id)
         redirect_to new_agent_path
       else
-        @agent = Agent.new(agent_params)
+        
         flash[:danger] = "Something went wrong"
         respond_to do |format|
           format.json {render :json=>{errors: @agent.errors.to_hash(true).as_json}}
