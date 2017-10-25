@@ -11,9 +11,9 @@ class ReminderQueueWorker
     # AgentOutstandingMaintenanceRequestReminderWorker.perform_async
     # LandlordReminderAwaitingOwnerInitiationWorker.perform_async
     # LandlordReminderAwaitingOwnerInstructionWorker.perform_async
-    TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker.perform_async
-    TradyAwaitingQuoteRequestAssignedMaintenanceRequestWorker.perform_async
-
+    #TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker.perform_async
+    #TradyAwaitingQuoteRequestAssignedMaintenanceRequestWorker.perform_async
+    #LandlordReminderQuoteRecievedAwaitingLandlordApprovalWorker.perform_async
   end
 
 

@@ -137,6 +137,20 @@ class LandlordMailer < ActionMailer::Base
 
     mail(to:@landlord.email, subject:"Reminder landlord instructions required - #{@property.property_address}")
   end
+
+
+  def reminder_quote_recieved_awaiting_landlord_approval(maintenance_request, landlord, property, quote)
+   
+    track user: landlord.user
+    track extra: {maintenance_request_id:maintenance_request.id}
+    @maintenance_request = maintenance_request
+    @property = property
+    @landlord = landlord
+    @quote = quote
+    @trady = @quote.trady
+
+    mail(to:@landlord.email, subject:"Reminder Quote received - #{@property.property_address}")
+  end
   
 
 end 
