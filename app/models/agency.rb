@@ -5,12 +5,12 @@ class Agency < ApplicationRecord
   has_many :agency_tradies
   has_many :tradies, through: :agency_tradies
   has_many :properties
-  
+  has_one :agency_profile_image
   
   validates :company_name, uniqueness: true
   validates :business_name, uniqueness: true
   validates :abn, uniqueness: true
-  validates :mobile_phone, uniqueness: true
+  
   validates :license_number, uniqueness:true 
   
   
@@ -19,12 +19,20 @@ class Agency < ApplicationRecord
   validates_presence_of :abn
   validates_presence_of :address
   validates_presence_of :mobile_phone
+  validates_presence_of :phone
   validates_presence_of :license_type
   validates_presence_of :license_number
   
-  validates_associated :agency_admins
+  #validates_associated :agency_admins
+
+
+
+
   
-  attr_accessor :perform_presence_validation
+  validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
+  validates :phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
+  validates :abn, :numericality => true, :length => {:minimum=>11, :maximum => 11 }
+  
 
   
   def skilled_tradies_required(skill_params)

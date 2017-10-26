@@ -1,0 +1,15 @@
+%div.well.container
+  =react_component('TradyEdit', {:trady => @trady,  :image_url => @profile_image, :profile_image => @trady_profile_image, :trady_company => @trady_company, :authenticity_token => form_authenticity_token, :change_password_path => change_password_path, :change_trady_company_information_path => change_trady_company_information_path})
+
+.container.well
+  = bootstrap_form_for @trady do |f|
+    =f.text_field :name
+    =f.text_field :company_name
+    =f.telephone_field :mobile
+    =f.submit
+
+.div
+  =link_to "Reset Password", change_password_path
+  =link_to "Edit Tradie Company Details", change_trady_company_information_path(id:@trady.trady_company)
+  =link_to "Add Company Logo"
+  =link_to "Add Tradie Profile Picture"

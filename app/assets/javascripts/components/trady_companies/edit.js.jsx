@@ -167,10 +167,12 @@ var EditTradyCompany = React.createClass({
   },
 
 	render: function() {
-    let isInvoice           = this.props.system_plan === "Invoice";
-    let { errors, gallery } = this.state;
-    const renderErrorFunc   = this.renderError;
-    const removeErrorFunc   = this.removeError;
+
+    let isInvoice         = this.props.system_plan === "Invoice";
+    let { errors }        = this.state;
+    const renderErrorFunc = this.renderError;
+    const removeErrorFunc = this.removeError;
+
 
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>

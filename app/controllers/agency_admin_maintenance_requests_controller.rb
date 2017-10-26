@@ -19,7 +19,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
     @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
     @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
-    @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
+    #@pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
     
     @awaiting_owner_initiation_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Initiation")
     @awaiting_owner_instruction_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Instruction")

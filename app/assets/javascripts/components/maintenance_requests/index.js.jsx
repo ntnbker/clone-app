@@ -467,16 +467,6 @@ var ListMaintenanceRequest = React.createClass({
           value: "Maintenance Scheduled With Landlord",
           count: this.props.maintenance_scheduled_with_landlord_count
         },
-        {
-          title: "Deferred",
-          value: "Defer",
-          count: this.props.deferred_count
-        },
-        {
-          title: "Jobs Completed and Closed",
-          value: "Jobs Completed",
-          count: this.props.jobs_completed
-        }
       ],
       tradyFilter: [
         {
@@ -491,7 +481,7 @@ var ListMaintenanceRequest = React.createClass({
         },
         {
           title: "Appointments Required",
-          value: "Appointments Required",
+          value: "Appointment Required",
           count: this.props.appointments_required
         },
         {
@@ -652,8 +642,30 @@ var ListMaintenanceRequest = React.createClass({
                 <span className="count">
                   {this.props.archived_count}
                 </span>
-                <a onClick={(value) => this.getAction('Archive')}>
+                <a onClick={() => this.getAction('Archive')}>
                   Archived
+                </a>
+              </div>
+          }
+          {
+            (!!current_user_agent || !!current_user_agency_admin) &&
+              <div className="dropdown-custom archived">
+                <span className="count">
+                  {this.props.deferred_count}
+                </span>
+                <a onClick={() => this.getAction('Defer')}>
+                  Deferred
+                </a>
+              </div>
+          }
+          {
+            (!!current_user_agent || !!current_user_agency_admin) &&
+              <div className="dropdown-custom archived">
+                <span className="count">
+                  {this.props.jobs_completed}
+                </span>
+                <a onClick={() => this.getAction('Jobs Completed')}>
+                  Completed
                 </a>
               </div>
           }

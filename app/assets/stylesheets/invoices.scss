@@ -10,6 +10,7 @@ $color-red: #e34f4f;
 $color-black: #000000;
 $color-blue-light: #7646FF;
 .invoice-form {
+  margin-bottom: 150px;
 	width: 98%;
 	min-height: 500px;
 	padding: 30px;
@@ -17,10 +18,32 @@ $color-blue-light: #7646FF;
 	border-radius: 4px;
 	border: 1px solid #edf1f4;
 	/*box-shadow: 0 1px 10px #888888;*/
-	margin: 30px auto;
 	color: #aab8c3;
   @include flexbox;
   @include flex-direction(column);
+
+  @media (max-width: 330px) {
+    .invoicefield {
+      fieldset {
+        .field {
+          div {
+            margin-bottom: 5px;
+          }
+          p {
+            display: inline-block;
+            width: 100% !important;
+          }
+          input {
+            display: inline-block;
+            width: 100% !important;
+          }
+        }
+      }
+    }
+    .button-type {
+      font-size: 12px;
+    }
+  }
 
 	p{
 		margin-bottom: 0;
@@ -41,8 +64,7 @@ $color-blue-light: #7646FF;
 	}
 
 	.button-primary.option-button {
-		margin: 0;
-		height: 38px;
+		margin: 0 0 10px 0;
 		padding: 0px 10px;
 	}
 
@@ -111,6 +133,7 @@ $color-blue-light: #7646FF;
         padding: 0;
         margin: 0;
         &.Approved {
+          margin-left: 5px;
           border-color: $color-green;
           color: $color-green;
         }
@@ -213,6 +236,8 @@ $color-blue-light: #7646FF;
       .btn-decline {
         background-color: $color-red;
         border-color: $color-red;
+        border-width: 0px;
+        margin-bottom: 5px;
         color: $color-white;
       }
       .btn-cancel {
@@ -500,13 +525,16 @@ $color-blue-light: #7646FF;
 				}
 			}
 			.field {
+        div {
+          margin-bottom: 5px;
+        }
 				p {
 					display: inline-block;
-					width: 115px;
+					width: 45%;
 				}
 				input {
 					display: inline-block;
-					width: auto;
+					width: 55%;
 				}
 				input[type="date"] {
 					height: 38px;
@@ -633,21 +661,21 @@ $color-blue-light: #7646FF;
 		@include flexbox;
 		margin-top: 10px;
 		select {
-			width: 49%;
+			width: 59%;
 			margin-right: 1%;
 		}
-		input[type="number"] {
-			width: 49%;
+		input {
+			width: 39%;
 			margin-left: 1%;
 		}
 		.hour {
-			width: 32% !important;
-			&.select {
-				margin-right: 2%;
-			}
-			&.price {
-				margin-right: 2%;
-			}
+			&.input {
+        width: 24% !important;
+		  	margin-right: 1%;
+      }
+      &.select {
+        width: 49%;
+      }
 		}
 	}
 

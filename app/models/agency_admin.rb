@@ -4,19 +4,25 @@ class AgencyAdmin <ApplicationRecord
   belongs_to :user, inverse_of: :agency_admin
   belongs_to :agency, inverse_of: :agency_admins
   has_many :action_statuses
+  has_one :agency_admin_profile_image
   
-  # validates_presence_of :first_name 
-  # validates_presence_of :first_name,:email, :mobile_phone, :last_name, :license_number
-  # validates_uniqueness_of :email
+  
+  validates_presence_of :email, :license_number,:first_name, :mobile_phone, :last_name, if: :perform_add_agency_admin_validations
+  
+  
+
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/, if: :perform_add_agency_admin_validations
+  validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }, if: :perform_add_agency_admin_validations
+
 
   accepts_nested_attributes_for :agency
-  # validates_associated :user
+  #validates_associated :user
 
 
 
 
 
-
+attr_accessor :perform_add_agency_admin_validations
 
 
 # #########################

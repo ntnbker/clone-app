@@ -218,12 +218,14 @@ var FieldListForInvoice = React.createClass({
                   quote={quote}
                   errors={errors}
                   removeField={() => this.removeField(x, quote)}
-                />;
+                />
             </li>
           )
         })}
       </ul>
-      <button type="button" className="button-add button-primary" style={{position: 'absolute', bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
+      <div className="text-center">
+        <button type="button" className="button-add button-primary" style={{bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
+      </div>
     </div>
   }
 });
@@ -239,6 +241,7 @@ var AdditionalInvoice = React.createClass({
       hours_input: hours_input
     }
   },
+
   componentWillReceiveProps() {
     this.setState({
       remove: this.props.params.remove
@@ -251,13 +254,12 @@ var AdditionalInvoice = React.createClass({
 
   onPricing(event) {
     var pricing_type = event.target.value;
-    this.setState({pricing_type: pricing_type});
-    if (pricing_type == "Hourly") {
-      this.setState({hours_input: true});
-    } else {
-      this.setState({hours_input: false});
-    }
+    this.setState({
+      pricing_type,
+      hours_input: pricing_type === "Hourly",
+    });
   },
+
   render: function() {
     var quote = this.props.content;
     var x= this.props.x;
@@ -414,11 +416,13 @@ var InvoiceItemField = React.createClass({
     this.setState({pricing_type: pricing_type});
 
     if (pricing_type == "Hourly") {
-      this.setState({hours_input: true, numofhours: 0});
+      this.setState({hours_input: true, numofhours: 1});
     } else {
-      this.setState({hours_input: false,
-               numofhours: 1,
-               totalamount: this.state.amount});
+      this.setState({
+        hours_input: false,
+        numofhours: 1,
+        totalamount: this.state.amount
+      });
     }
   },
 
@@ -434,8 +438,8 @@ var InvoiceItemField = React.createClass({
     this.removeError(event);
   },
 
-  onHours(event) {
-    const hours = event.target.value;
+  onHours({ target: { value } }) {
+    const hours = value;
     if (hours > 0)
       this.setState({numofhours: hours});
     else
@@ -530,7 +534,7 @@ var InvoiceItemField = React.createClass({
                 type="text"
                 onChange={this.onHours}
                 placeholder="Number of Hours"
-                defaultValue={numofhours > 0 && numofhours}
+                defaultValue={numofhours > 0 ? numofhours : 0}
                 className={"text-center " + (hours_input && 'hour')}
                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
               />
@@ -711,13 +715,15 @@ var InvoiceField = React.createClass({
             />
           </div>
         </div>
-        <p id="errorbox" className="error">{errorDate || ''}</p>;
+        <p id="errorbox" className="error">{errorDate || ''}</p>
 
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
         {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}
       </fieldset>
 
-      <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
+      <div className="text-center">
+        <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
+        </div>
     </div>
   }
 });

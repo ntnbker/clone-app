@@ -209,7 +209,6 @@ var TenantMaintenanceRequest = React.createClass({
 		const {tenant, current_role, signed_in_trady, landlord, authenticity_token} = this.props;
 		const maintenance_request_id = this.state.maintenance_request.id;
 		const {appointments, quote_appointments, landlord_appointments, appointmentUpdate, isDecline, comments, quoteComments, landlordComments, isCancel} = this.state;
-		debugger
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
 		fd.append('appointment[date]', params.date);

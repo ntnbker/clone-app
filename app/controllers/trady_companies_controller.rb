@@ -28,8 +28,8 @@ class TradyCompaniesController < ApplicationController
     @invoice_type = params[:trady_company][:invoice_type]
     @quote_type = params[:trady_company][:quote_type]
 
-     
-    @trady_company.perform_bank_validation(system_plan)        
+
+    @trady_company.perform_bank_validation(system_plan)
 
 
     if @existing_company
@@ -60,7 +60,7 @@ class TradyCompaniesController < ApplicationController
       else
         @trady_id = params[:trady_company][:trady_id]
         flash[:danger] = "Please fill in below"
-        
+
         respond_to do |format|
           format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
           format.html
@@ -97,11 +97,11 @@ class TradyCompaniesController < ApplicationController
           flash[:success] = "You have added your company thank you"
         else
           flash[:danger] = "Please fill in below!!"
-          
+
           respond_to do |format|
-            
+
             format.json {render :json=>{errors:@trady_company.errors.to_hash(true).as_json}}
-          
+
         end
         end
     end
@@ -142,8 +142,9 @@ class TradyCompaniesController < ApplicationController
     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
     @quote_pdf_files = UploadedQuote.find_by(id:params[:trady_company][:pdf_file_id])
     @trady_company.perform_bank_validation(system_plan)
-      
+
     if @trady_company.update(trady_company_params)
+
       flash[:success] = "You have succesfully edited your company"
 
 
@@ -183,7 +184,6 @@ class TradyCompaniesController < ApplicationController
 
 
         end
-
     else
       flash[:danger] = "Sorry something went wrong please fill in the required fields"
       respond_to do |format|
@@ -196,6 +196,36 @@ class TradyCompaniesController < ApplicationController
 
 
 
+  def change_trady_company_information
+    @trady_company = TradyCompany.find_by(id:params[:id])
+
+    if @trady_company.trady_company_profile_image
+      @trady_company_logo = @trady_company.trady_company_profile_image.image_url
+      @trady_company_profile_image = @trady_company.trady_company_profile_image
+    else
+      @trady_company_logo = nil
+    end
+
+  end
+
+  def update_trady_company_information
+
+    @trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
+
+    @trady_company.perform_bank_validation("Invoice")
+
+    if @trady_company.update(trady_company_params)
+      flash[:success] = "You have succesfully updated the company details."
+      redirect_to change_trady_company_information_path(id:@trady_company)
+    else
+      flash[:danger] = "Oops something went wrong. Please add all information below."
+      
+      respond_to do |format|
+        format.json {render :json=>{errors: @trady_company.errors.to_hash(true).as_json}}
+        format.html {render :change_trady_company_information}
+      end 
+    end
+  end
 
   private
 
@@ -242,67 +272,6 @@ end
 
 
 
-
-
-
-
-# def edit_trady_company_invoice
-#     @trady_company = TradyCompany.find_by(id:params[:trady_company_id])
-#     @maintenance_request_id = params[:maintenance_request_id]
-#     @trady_id = params[:trady_id]
-#     @quote_id = params[:quote_id]
-#     @invoice_type= params[:invoice_type]
-#     @pdf_file_id = params[:pdf_file_id]
-#     @ledger_id = params[:ledger_id]
-#   end
-
-#   def update_trady_company_invoice
-
-#     @trady_company = TradyCompany.find_by(id:params[:trady_company][:trady_company_id])
-#     @trady = Trady.find_by(id:params[:trady_company][:trady_id])
-#     @trady.update_attribute(:email,params[:trady_company][:email])
-#     @trady.user.update_attribute(:email,params[:trady_company][:email])
-#     @maintenance_request_id = params[:trady_company][:maintenance_request_id]
-#     @trady_id = params[:trady_company][:trady_id]
-#     @quote_id = params[:trady_company][:quote_id]
-#     @maintenance_request = MaintenanceRequest.find_by(id:params[:trady_company][:maintenance_request_id])
-#     @ledger = Ledger.find_by(id:params[:trady_company][:ledger_id])
-#     @invoice_type = params[:trady_company][:invoice_type]
-#     #WE HAVE TO FIND THE RIGHT LEDGER
-
-#     @pdf_files = UploadedInvoice.find_by(id:params[:trady_company][:pdf_file_id])
-#     #@invoice = @trady.invoices.where(maintenance_request_id:@maintenance_request_id).first
-
-#     if @trady_company.update(trady_company_params)
-#       flash[:success] = "You have succesfully edited your company"
-
-
-#       if params[:trady_company][:invoice_type] == "pdf_file"
-
-#         if @pdf_files == nil
-#           redirect_to new_uploaded_invoice_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-#         elsif @pdf_files != nil
-#           redirect_to edit_uploaded_invoice_path(@pdf_files,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
-#         end
-
-#       elsif params[:trady_company][:invoice_type] == "system_invoice"
-#         if @ledger == nil
-#           redirect_to new_invoice_path(maintenance_request_id:params[:trady_company][:maintenance_request_id],trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-#         elsif @ledger != nil
-#           redirect_to edit_invoice_path(@ledger, maintenance_request_id:params[:trady_company][:maintenance_request_id], trady_id:params[:trady_company][:trady_id],quote_id:params[:trady_company][:quote_id], invoice_type:@invoice_type)
-#         end
-#       end
-
-
-
-
-
-#     else
-#       flash[:danger] = "Sorry something went wrong please fill in the required fields"
-#       render :edit
-#     end
-
-#   end
 
 
 

@@ -17,9 +17,9 @@ body {
   position: relative;
 }
 .content-custom{
-  max-width: 1366px;
   margin: 0 auto;
   margin-bottom: 53%;
+  max-width: 1366px;
 }
 
 input, textarea, select {
@@ -60,7 +60,6 @@ header {
       @include flexbox;
       @include flex-direction(row);
       @include justify-content(space-between);
-      max-width: 960px;
 
       .search {
         .form-search {
@@ -149,7 +148,7 @@ header {
             }
           }
           span {
-            font-size: 14px;
+            font-size: 22px;
             padding-left: 10px;
             i {
               display: inline-block;
@@ -193,6 +192,7 @@ header {
         @include align-items(center);
         @include justify-content(flex-end);
         -ms-flex-align: center;
+        margin-top: 22.5px;
 
         height: 100%;
       }
@@ -205,7 +205,6 @@ header {
 
         i {
           color: #fff;
-          font-size: 18px;
         }
       }
       .notification {
@@ -217,14 +216,26 @@ header {
 
         i {
           color: #fff;
-          font-size: 16px;
         }
+      }
+    }
+
+    .full-header {
+      width: 100%;
+      max-width: 1366px;
+      .logo {
+        margin-left: 7.5%;
+      }
+      .desktop-menu-items, .log_in {
+        margin-right: 7.5%;
+        letter-spacing: .1rem;
       }
     }
 
     .forhome {
       position: absolute;
       left: 0;
+      background-color: rgba(1,2,3,0.3);
       .log_in {
         display: block;
         .desktop-menu-items {
@@ -237,10 +248,9 @@ header {
           border-radius: 2px;
           position: absolute;
           right: 0;
-          top: 80px;
+          top: 70px;
           list-style: none;
           padding: 0;
-          margin: 0;
 
           &:before {
             content: "\A";
@@ -265,49 +275,34 @@ header {
             &:hover {
               background-color: #7DC691;
             }
-            &:first-child {
-              height: 40px;
-              border-top: none;
-              @include flexbox;
-              @include align-items(center);
-              @include flex-direction(row);
-              @include justify-content(flex-start);
-              img {
-                width: 35px;
-                height: 35px;
-                padding-left: 10px;
-              }
-              span {
-                padding-left: 10px;
-                font-size: 16px;
-              }
-              &:hover {
-                background: transparent;
-              }
-            }
-            .icon-user {
-              i {
-                font-size: 24px;
-              }
-            }
           }
         }
       }
     }
 
     .menu-button {
-      margin-top: 25px;
+      margin-top: 19px;
       float: right;
-      width: 40px;
       height: 40px;
-      border-radius: 25px;
-      font-size: 20px;
+      font-size: 22px;
       color: #fff;
       line-height: 40px;
       text-align: center;
-      background: #005600;
       cursor: pointer;
       display: none;
+
+      span {
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+
+      .icon-user {
+        font-size: 30px;
+      }
+
+      .fa-angle-down {
+        font-size: 22px;
+      }
     }
 
     .logo {
@@ -335,6 +330,8 @@ header {
       float: right;
       margin-bottom: 0px;
       list-style: none;
+      letter-spacing: .1rem;
+
       li {
         margin-bottom: 0;
       }
@@ -465,6 +462,7 @@ header {
     }
     .header-custom .header-right {
       margin-right: 70px;
+      margin-top: 0;
     }
     .menu-btn {
       top: 28%;
@@ -488,8 +486,18 @@ header {
           }
         }
       }
+
+      .full-header {
+        .logo {
+          margin-left: 0;
+        }
+      }
+
       .menu-btn {
         right: 10px;
+      }
+      .forhome {
+        width: 100%;
       }
     }
   }
