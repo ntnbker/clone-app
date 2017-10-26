@@ -194,14 +194,14 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Invoice Payment Reminder")
   end
 
-  def agency_admin_outstanding_maintenance_requests(agency_admin, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count)
+  def agency_admin_outstanding_maintenance_requests(agency_admin, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count)
     @agency_admin = agency_admin
     @new_count = new_count
     @quote_requested_count= quote_requested_count 
     @quote_recieved_count = quote_recieved_count
     @new_invoice_count = new_invoice_count
     @cancelled_work_order_count= cancelled_work_order_count
-    
+    @deferred_maintenance_request_count = deferred_maintenance_request_count
     email = agency_admin.email 
     
 
@@ -212,14 +212,14 @@ class AgentMailer < ActionMailer::Base
 
   end
 
-  def agent_outstanding_maintenance_requests(agent, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count)
+  def agent_outstanding_maintenance_requests(agent, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count)
     @agent = agent
     @new_count = new_count
     @quote_requested_count= quote_requested_count 
     @quote_recieved_count = quote_recieved_count
     @new_invoice_count = new_invoice_count
     @cancelled_work_order_count= cancelled_work_order_count
-    
+    @deferred_maintenance_request_count = deferred_maintenance_request_count
     email = agent.email 
     
 

@@ -24,7 +24,8 @@ class AgentOutstandingMaintenanceRequestReminderWorker
 
         cancelled_work_order_count = MaintenanceRequest.all.where({ agent_id: agent.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Cancelled Work Order" }).distinct.count
     
-        AgentMailer.agent_outstanding_maintenance_requests(agent, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count).deliver
+        deferred_maintenance_request_count = MaintenanceRequest.all.where({ agent_id: agent.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Defer" }).distinct.count
+        AgentMailer.agent_outstanding_maintenance_requests(agent, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count).deliver
     end 
 
     

@@ -1,4 +1,4 @@
-class AgenyAdminOutstandingMaintenanceRequestReminderWorker
+class AgencyAdminOutstandingMaintenanceRequestReminderWorker
   include Sidekiq::Worker
 
   def perform
@@ -24,7 +24,8 @@ class AgenyAdminOutstandingMaintenanceRequestReminderWorker
 
         cancelled_work_order_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Cancelled Work Order" }).distinct.count
     
-        AgentMailer.agency_admin_outstanding_maintenance_requests(agency_admin, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count).deliver
+        deferred_maintenance_request_count = MaintenanceRequest.all.where({ agency_admin_id: agency_admin.id}).joins(:action_status).where(:action_statuses => { :agent_status =>"Defer" }).distinct.count
+        AgentMailer.agency_admin_outstanding_maintenance_requests(agency_admin, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count).deliver
     end 
 
     

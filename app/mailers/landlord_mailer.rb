@@ -151,6 +151,18 @@ class LandlordMailer < ActionMailer::Base
 
     mail(to:@landlord.email, subject:"Reminder Quote received - #{@property.property_address}")
   end
+
+  def reminder_landlord_to_confirm_appointment(maintenance_request_object, landlord_object, property_object, tenant_object)
+    @maintenance_request = maintenance_request_object
+    @property =property_object
+    
+    @landlord = landlord_object
+    @tenant = tenant_object
+    @user = @landlord.user
+    
+    
+    mail(to:@landlord.email, subject:"Change appointment request by tenant #{@tenant.name.capitalize}- #{@property.property_address}")
+  end
   
 
 end 

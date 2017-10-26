@@ -9,7 +9,12 @@ class TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker
     #we have to grab all of their MR with that particular type of status.
     #get the count and then send them an email for each agency admin on the system
 
+    ######WE HAVE TO DO THIS AGAIN IT SHOULD NOT BE BASED OF OF THE STATUS OF MR BUT
+    ###ON WHETHER A QUOTE REQUEST WAS SUBMITTED AND THAT THE MR IS ALSO STILL OPEN FOR QUOTES
+    ## TO BE SUBMITTED. WE HAVE 
 
+    ###FOR THE OTHER ONE WE HAVE TO MAKE SURE THAT THE TRADY IS THE SAME AS THE MR ASSIGNED TRADY AND
+    ## THAT THEY HAVE AN OUTSTANDING QUOTE REQUEST
     
 
     
