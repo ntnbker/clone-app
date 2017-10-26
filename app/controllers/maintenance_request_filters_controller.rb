@@ -27,7 +27,7 @@ class MaintenanceRequestFiltersController < ApplicationController
   def trady_filtered_maintenance_requests
     p = params[:maintenance_request_filter]
     t = params[:trady_id]
-    binding.pry
+    
 
     if params[:sort_by_date] == "Newest to Oldest"
       @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(t, p).order('created_at DESC')
