@@ -31,7 +31,7 @@
 .container {
   position: relative;
   width: 100%;
-  /*max-width: 1366px;*/
+  max-width: 1161.1px;
   margin: 0 auto;
   padding: 0 20px;
   box-sizing: border-box; }
@@ -51,7 +51,8 @@
 /* For devices larger than 550px */
 @media (min-width: 550px) {
   .container {
-    width: 80%; }
+    width: 85%;
+  }
   .column,
   .columns {
     margin-left: 4%; }
@@ -125,7 +126,6 @@ body {
   line-height: 1.6;
   font-weight: 400;
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  max-width: 1366px;
   color: #222; }
 
 
