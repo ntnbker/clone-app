@@ -247,7 +247,7 @@ form#new_maintenance_request {
             opacity: .7;
         }
         &.active {
-            background-color: #8499aa;
+            background-color: $color-green;
             border-radius: 5px 5px 0 0;
             &:hover {
                 opacity: .7;

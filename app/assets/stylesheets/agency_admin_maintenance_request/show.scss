@@ -747,7 +747,7 @@ body::-webkit-scrollbar-thumb {
         background-color: $color-green;
       }
       &.action {
-        background-color: $color-grey-dark;
+        background-color: $color-green;
       }
     }
     .activity-content {
@@ -841,9 +841,16 @@ body::-webkit-scrollbar-thumb {
             }
           }
         }
-        &.active {
+        &:hover, &.active {
           a {
-            color: $color-green;
+            color: #7dc691;
+          }
+
+          span {
+            color: #7dc691 !important;
+            i {
+              color: #7dc691 !important;
+            }
           }
         }
         &:first-child {
