@@ -43,6 +43,9 @@ body::-webkit-scrollbar-thumb {
   li {
     list-style: none;
   }
+  .button-remove {
+    margin-bottom: 12px;
+  }
 }
 .error {
   margin-top: 10px;
@@ -56,6 +59,20 @@ body::-webkit-scrollbar-thumb {
 }
 .modal-open {
   overflow: hidden;
+  .information {
+    margin: 10px 0 0 15px;
+  }
+  .scroll-height {
+    height: 300px;
+    overflow: scroll;
+  }
+  p.notice {
+    font-size: 10px;
+    font-weight: 100;
+    margin: 15px;
+    font-style: italic;
+    text-align: justify;
+  }
 }
 .modal-backdrop {
   position: fixed;
@@ -1357,7 +1374,7 @@ body::-webkit-scrollbar-thumb {
         font-size: 16px;
       }
       .info .actions {
-        width: 345px;
+        width: 95%;
         float: left;
         overflow: hidden;
         margin-top: 10px;

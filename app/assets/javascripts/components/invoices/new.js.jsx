@@ -46,6 +46,7 @@ var FieldList = React.createClass({
   getInitialState : function(){
     const existingContent = this.props.existingContent;
     var SampleField = this.props.SampleField;
+    var flag = this.props.flag;
     var Fields = {};
     var params = this.props.params;
     var x = 0;
@@ -58,7 +59,7 @@ var FieldList = React.createClass({
 
       return { Fields, x };
     } else {
-      if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
+      if(!!flag && (flag == "quote" || flag == "invoice" || flag == "splitMR")) {
         x = 1;
         return { Fields: { "1":  {params, SampleField, x } }, x, }
       }
@@ -92,9 +93,11 @@ var FieldList = React.createClass({
     return <div className="fieldlist">
       <ul id="fieldList">
         {
-          Object.values(this.state.Fields).map(({SampleField, content, params, x} , index) => {
+          Object.values(this.state.Fields).map(({SampleField, content, params = {}, x} , index) => {
             return (
-              <li key={x}>
+              params.remove
+              ? ''
+              : <li key={x}>
               {
                 <SampleField
                   x={x}

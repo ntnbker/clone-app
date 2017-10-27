@@ -1742,44 +1742,38 @@ var MaintenanceRequest = React.createClass({
 	splitSubmit: function(params, callback) {
 		const self = this;
 
-		return callback();
-		// $.ajax({
-		// 	type: 'POST',
-		// 	url: '/update_maintenance_request',
-		// 	beforeSend: function(xhr) {
-		// 		xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-		// 	},
-  //     enctype: 'multipart/form-data',
-  //     processData: false,
-  //     contentType: false,
-		// 	data: params,
-		// 	success: function(res){
-		// 		if (res.errors) {
-		// 			return callback(res.errors);
-		// 		}
-		// 		maintenance_request.service_type = res.service_type;
-		// 		maintenance_request.maintenance_heading = res.maintenance_heading;
-		// 		maintenance_request.maintenance_description = res.maintenance_description
-		// 		self.setState({
-		// 			tradies: res.all_tradies,
-		// 			maintenance_request: maintenance_request,
-		// 			notification: {
-		// 				title: "Edit Maintenance Request",
-		// 				content: "The Maintenance Request has been updated.",
-		// 				bgClass: "bg-success",
-		// 			},
-		// 		});
-		// 		self.onModalWith('notification');
-		// 	},
-		// 	error: function(err) {
-		// 		self.setState({notification: {
-		// 			title: "Edit Maintenance Request",
-		// 			content: "The Maintenance Request didn't update!" ,
-		// 			bgClass: "bg-error",
-		// 		}});
-		// 		self.onModalWith('notification');
-		// 	}
-		// });
+		$.ajax({
+			type: 'POST',
+			url: '/split_maintenance_request',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				self.setState({
+					notification: {
+						title: "Split Maintenance Request",
+						content: "The Maintenance Request has been splitted.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Split Maintenance Request",
+					content: "The Maintenance Request didn't split!" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	markAsPaid: function(invoice, uploaded = false) {

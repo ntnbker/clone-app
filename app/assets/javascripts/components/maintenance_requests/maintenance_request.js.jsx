@@ -497,7 +497,7 @@ var ModalEditMR = React.createClass({
 		return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
 	},
 
-	renderServiceType(maintenance_request, services) {
+	renderServiceType(services) {
 		if (!!this.props.trady) return null;
 		const { serviceError } = this.state;
 		const { x } 					 = this.props;
@@ -510,7 +510,6 @@ var ModalEditMR = React.createClass({
 					ref={e => this.serviceType = e}
 					className={"form-control input-custom " + (serviceError ? 'border_on_error' : '')}
 					name={`maintenance_requests[${x}][service_type]`}
-					defaultValue={maintenance_request.service_type}
 					onChange={this.removeError}
 				>
 					<option value="">Service Type</option>
@@ -533,17 +532,21 @@ var ModalEditMR = React.createClass({
 	},
 
 	render() {
-		const { descriptionError } 	= this.state;
-		const content 							= this.props.content || {};
-		const params 								= this.props.params || {};
-		const x 										= this.props.x || 0;
+		const { descriptionError } 	 = this.state;
+		const content 							 = this.props.content || {};
+		const params 								 = this.props.params || {};
+		const { x = 0, removeField } = this.props;
 
-		const { maintenance_request = {} } = content;
-		const { services = {} } 					 = params;
+		const { maintenance_request = {}, services = {} } = params;
 
 		return (
 			<div className="modal-body split-maintenance-request edit-maintenance-request">
-				{this.renderServiceType(maintenance_request, services)}
+				<input
+				  type="hidden"
+				  value={maintenance_request.id}
+				  name={`maintenance_requests[${x}][maintenance_request_id]`}
+				/>
+				{this.renderServiceType(services)}
 				<div className="row">
 					<label>Maintenance Request Description:</label>
 					<textarea
@@ -552,11 +555,16 @@ var ModalEditMR = React.createClass({
 						ref={e => this.description = e}
 						id="description"
 						onChange={this.removeError}
-						defaultValue={maintenance_request.maintenance_description}
 						className={"u-full-width " + (descriptionError && "has-error")}
 					/>
 				</div>
 				{this.renderError(descriptionError)}
+
+	      <button
+	      	type="button"
+	      	className="button-remove button-primary red"
+	      	onClick={() => removeField(this.props.x)}
+	      > Remove </button>
 			</div>
 		)
 	}
@@ -572,13 +580,17 @@ var ModalSplitMR = React.createClass({
 
 	onSubmit(e) {
 		e.preventDefault();
+
+		const self = this;
 		const { splitSubmit } = this.props;
 
-		splitSubmit({}, function(errors) {
+		var FD = new FormData(document.getElementById('splitMRForm'));
+
+		splitSubmit(FD, function(errors) {
 			if (errors) {
-				this.setState({ errors });
+				self.setState({ errors });
 			}
-		})
+		});
 	},
 
 	render() {
@@ -589,7 +601,7 @@ var ModalSplitMR = React.createClass({
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
 					<div className="modal-content">
-						<form role="form" id="splitForm" onSubmit={this.onSubmit}>
+						<form role="form" id="splitMRForm" onSubmit={this.onSubmit}>
 							<input
 							  type="hidden"
 							  value={maintenance_request.id}
@@ -608,12 +620,19 @@ var ModalSplitMR = React.createClass({
 								</button>
 								<h4 className="modal-title text-center">Split Maintenance Request</h4>
 							</div>
-							<FieldList
-								SampleField={ModalEditMR}
-								existingContent={[{ maintenance_request }]}
-								params={{ services }}
-								errors={errors}
-							/>
+							<p className="notice">
+								The split feature can be used to split up a maintenance request that a tenant has submitted with multiple types of services required. To ensure each type of tradie receives the correct job type.
+							</p>
+							<label className="modal-title information">Service Type: {maintenance_request.service_type}</label>
+							<label className="modal-title information">Description: {maintenance_request.maintenance_description}</label>
+							<div className="scroll-height">
+								<FieldList
+									SampleField={ModalEditMR}
+									flag="splitMR"
+									params={{ services, maintenance_request }}
+									errors={errors}
+								/>
+							</div>
 							<div className="modal-footer">
 								<button
 									type="button"
