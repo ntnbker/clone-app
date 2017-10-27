@@ -1,30 +1,33 @@
 %div.well.container
-  %div
-    -if @agency_admin.errors.any?
-      -@agency_admin.errors.full_messages.each do |message|
-        %p
-          =message
-  %h4.text-center
-    Add Another Agency Admin to this agency
-  =form_for @agency_admin do |f|
-    %div.form-group
-      =f.label :email
-      =f.email_field :email, required: true
-    %div.form-group
-      =f.label :first_name
-      =f.text_field :first_name, required: true
-    %div.form-group
-      =f.label :last_name
-      =f.text_field :last_name, required: true
-    %div.form-group
-      =f.label :mobile_phone
-      =f.telephone_field :mobile_phone, required: true
-    %div.form-group
-      =f.label :license_number
-      =f.text_field :license_number, required: true
-      =f.hidden_field :agency_id, value:@agency_id
-    %div.form-group
-      =f.button "Submit"
+  =react_component('AgencyAdminNew', {:agency_id => @agency_id, :authenticity_token => form_authenticity_token})
+
+/ %div.well.container
+/   %div
+/     -if @agency_admin.errors.any?
+/       -@agency_admin.errors.full_messages.each do |message|
+/         %p
+/           =message
+/   %h4.text-center
+/     Add Another Agency Admin to this agency
+/   =form_for @agency_admin do |f|
+/     %div.form-group
+/       =f.label :email
+/       =f.email_field :email, required: true
+/     %div.form-group
+/       =f.label :first_name
+/       =f.text_field :first_name, required: true
+/     %div.form-group
+/       =f.label :last_name
+/       =f.text_field :last_name, required: true
+/     %div.form-group
+/       =f.label :mobile_phone
+/       =f.telephone_field :mobile_phone, required: true
+/     %div.form-group
+/       =f.label :license_number
+/       =f.text_field :license_number, required: true
+/       =f.hidden_field :agency_id, value:@agency_id
+/     %div.form-group
+/       =f.button "Submit"
 
 
 

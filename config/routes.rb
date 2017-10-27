@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     delete 'logout' => 'user_sessions#destroy', :as => :logout
     resources :password_resets, only:[:new, :create, :edit,:update]
     resources :passwords, only:[:edit, :update]
+    get "change_password"=> "passwords#change_password",:as=> :change_password
+    patch "update_password"=>"passwords#update_password"
     resources :gods, only:[:show]
     resources :gods do 
       resources :services, only:[:new,:create, :update]
@@ -30,11 +32,14 @@ Rails.application.routes.draw do
   ###################################################
   ##########AGENT ROLE RESOURCES/ROUTES##############
   ###################################################
-    resources :agents, only:[:show,:update, :new, :create]
+    resources :agents, only:[:show,:update, :new, :create, :edit,:update]
     resources :agent_maintenance_requests, only:[:index,:show]
-    resources :agency_admins, only:[:new, :create, :show]
-    resources :agencies, only:[:new, :create]
-
+    resources :agency_admins, only:[:new, :create, :show, :edit, :update]
+    resources :agency_admin_profile_images, only:[:create, :update]
+    resources :agent_profile_images, only:[:create, :update]
+    resources :agency_profile_images, only:[:create, :update]
+    resources :agencies, only:[:new, :create, :edit, :update]
+    get "agency_settings" => 'agencies#settings', :as => "agency_settings"
     resources :agency_admin_maintenance_requests, only:[:index, :show] 
   ###################################################
   ##########LANDLORD ROLE RESOURCES/ROUTES###########
@@ -121,9 +126,13 @@ Rails.application.routes.draw do
   ##########TRADIE RESOURCES/ROUTES#################
   ###################################################
     get "trady_information" => 'tradies#trady_information', :as=>:trady_information
-    resources :tradies, only:[:create]
+    resources :tradies, only:[:create, :edit, :update]
     resources :trady_companies, only:[:new, :create, :edit, :update]
     resources :trady_maintenance_requests, only:[:index, :show]
+    resources :trady_company_profile_images, only:[:create, :update]
+    resources :trady_profile_images, only:[:create, :update]
+    get "change_trady_company_information" => "trady_companies#change_trady_company_information", :as=> :change_trady_company_information
+    patch "update_trady_company_information" => "trady_companies#update_trady_company_information", :as=> :update_trady_company_information
     get "edit_trady_company" => 'trady_companies#edit_trady_company_invoice_workflow', :as =>:edit_trady_company_path
     put "update_trady_company" => "trady_companies#update_trady_company_invoice_workflow"
     post "tradie_company_redirect"=>"trady_companies#trady_company_router", :as=>:trady_company_router

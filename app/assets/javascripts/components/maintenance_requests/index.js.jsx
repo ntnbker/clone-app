@@ -406,9 +406,9 @@ var ListMaintenanceRequest = React.createClass({
           count: this.props.new_invoice_count,
         },
         {
-          title: "Pending Payment",
-          value: "Pending Payment",
-          count: this.props.pending_payment_count,
+          title: "Cancelled Work Orders",
+          value: "Cancelled Work Order",
+          count: this.props.cancelled_work_orders
         }
       ],
       awaitingAction: [
@@ -423,11 +423,6 @@ var ListMaintenanceRequest = React.createClass({
           count: this.props.awaiting_owner_instruction_count
         },
         {
-          title: "Awaiting Tradie Initiation",
-          value: "Awaiting Tradie Initiation",
-          count: this.props.awaiting_trady_initiation_count
-        },
-        {
           title: "Awaiting Tradie`s Quote",
           value: "Awaiting Quote",
           count: this.props.awaiting_trady_quote_count
@@ -438,7 +433,7 @@ var ListMaintenanceRequest = React.createClass({
           count: this.props.awaiting_quote_approval_count
         },
         {
-          title: "Quote Approved Tradie To Organise Appointment",
+          title: "Job Approved Tradie To Set Appointment",
           value: "Quote Approved Tradie To Organise Appointment",
           count: this.props.trady_organise_appointment_count
         },
@@ -467,16 +462,6 @@ var ListMaintenanceRequest = React.createClass({
           value: "Maintenance Scheduled With Landlord",
           count: this.props.maintenance_scheduled_with_landlord_count
         },
-        {
-          title: "Deferred",
-          value: "Defer",
-          count: this.props.deferred_count
-        },
-        {
-          title: "Jobs Completed and Closed",
-          value: "Jobs Completed",
-          count: this.props.jobs_completed
-        }
       ],
       tradyFilter: [
         {
@@ -491,7 +476,7 @@ var ListMaintenanceRequest = React.createClass({
         },
         {
           title: "Appointments Required",
-          value: "Appointments Required",
+          value: "Appointment Required",
           count: this.props.appointments_required
         },
         {
@@ -524,6 +509,12 @@ var ListMaintenanceRequest = React.createClass({
           value: "Declined Quotes",
           count: this.props.declined_quotes
         },
+
+        {
+          title: "Cancelled Work Orders",
+          value: "Cancelled Work Order",
+          count: this.props.cancelled_work_orders
+        }
       ]
     };
   },
@@ -652,8 +643,30 @@ var ListMaintenanceRequest = React.createClass({
                 <span className="count">
                   {this.props.archived_count}
                 </span>
-                <a onClick={(value) => this.getAction('Archive')}>
+                <a onClick={() => this.getAction('Archive')}>
                   Archived
+                </a>
+              </div>
+          }
+          {
+            (!!current_user_agent || !!current_user_agency_admin) &&
+              <div className="dropdown-custom archived">
+                <span className="count">
+                  {this.props.deferred_count}
+                </span>
+                <a onClick={() => this.getAction('Defer')}>
+                  Deferred
+                </a>
+              </div>
+          }
+          {
+            (!!current_user_agent || !!current_user_agency_admin) &&
+              <div className="dropdown-custom archived">
+                <span className="count">
+                  {this.props.jobs_completed}
+                </span>
+                <a onClick={() => this.getAction('Jobs Completed')}>
+                  Completed
                 </a>
               </div>
           }

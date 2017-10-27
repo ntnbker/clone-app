@@ -1,10 +1,29 @@
 form#new_trady_company {
-	width: 100%;
+	width: 50%;
 	margin: 20px auto;
 
 	p {
 		margin: 20px 0 5px;
 	}
+
+	#avatar {
+    /* make a square container */
+    width: 200px;
+    height: 200px;
+
+    /* fill the container, preserving aspect ratio, and cropping to fit */
+    background-size: cover;
+
+    /* center the image vertically and horizontally */
+    background-position: center;
+
+    /* round the edges to a circle with border radius 1/2 container size */
+    border-radius: 50%;
+  }
+
+  .left {
+    align-items: center;
+  }
 
 	.error {
     margin-top: 10px;
@@ -42,8 +61,12 @@ form#new_trady_company {
 		}
 	}
 
-	/* For Desktop */
-	@media (min-width: 550px) {
-		width: 50%;
-	}
+  /* For Mobile */
+  @media (max-width: 768px) {
+    width: 100%;
+    #avatar {
+      width: 35vw;
+      height: 35vw;
+    }
+  }
 }

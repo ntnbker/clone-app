@@ -36,11 +36,41 @@ class AgentsController < ApplicationController
         UserSetPasswordEmailWorker.perform_async(@user.id)
         redirect_to new_agent_path
       else
-        @agent = Agent.new(agent_params)
+        
         flash[:danger] = "Something went wrong"
-        render :new
+        respond_to do |format|
+          format.json {render :json=>{errors: @agent.errors.to_hash(true).as_json}}
+          format.html {render :new}
+        end
       end 
     end 
+  end
+
+  def edit
+    @agent = Agent.find_by(id:params[:id])
+
+    if @agent.agent_profile_image
+      @profile_image = @agent.agent_profile_image.image_url
+      @agent_profile_image = @agent.agent_profile_image
+    else
+      @profile_image = nil
+    end
+  end
+
+  def update
+    @agent = Agent.find_by(id:params[:id])
+
+    if @agent.update(agent_params)
+      flash[:success] = "You have successfully update your profile information."
+      redirect_to edit_agent_path(@agent)
+    else
+      flash[:danger] = "Oops something went wrong. Please add all information below."
+      respond_to do |format|
+          format.json {render :json=>{errors: @agent.errors.to_hash(true).as_json}}
+          format.html {render :edit}
+        end
+    end   
+        
   end
 
 

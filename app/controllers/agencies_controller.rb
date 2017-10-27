@@ -1,5 +1,11 @@
 class AgenciesController < ApplicationController
-  authorize_resource :class => false
+  # authorize_resource :class => false
+   # before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  
+  before_action :require_login, only:[:edit,:update]
+
+  before_action(only:[:edit,:update]) {allow("AgencyAdmin")}
+  before_action(only:[:edit]) {belongs_to_agency_admin}
   
   def new
     @user = User.new
@@ -52,11 +58,58 @@ class AgenciesController < ApplicationController
 
 
   end
+
+  def edit
+
+    @agency = Agency.find_by(id:params[:id])
+    if @agency.agency_profile_image
+      @logo = @agency.agency_profile_image.image_url
+      @agency_logo_image = @agency.agency_profile_image
+    else
+      @logo = nil
+    end
+
+  end
+
+  def update
+    @agency = Agency.find_by(id:params[:id])
+    if @agency.update(agency_params)
+      flash[:success] = "Thank you, have updated the agencie's information."
+      redirect_to edit_agency_path(@agency)
+    else
+      flash[:danger] = "Sorry something went wrong. Please fix the errors to succesfully submit"
+      
+      respond_to do |format|
+        format.json {render :json=>{errors: @agency.errors.to_hash(true).as_json}}
+        format.html {render :edit}
+      end 
+    end 
+  end
+
+
   
   private
+
+  def agency_params
+    params.require(:agency).permit(:company_name,:business_name,:abn,:address,:mailing_address, :phone, :mobile_phone,:license_number,:license_type, :corporation_license_number)
+  end
   
   def user_params
     params.require(:user).permit(:id,:email,:password,:password_confirmation, agency_admin_attributes: [:id,:first_name,:last_name,:mobile_phone, agency_attributes:[:id, :company_name,:business_name,:abn,:address,:mailing_same_address ,:mailing_address, :phone, :mobile_phone,:license_number,:license_type, :corporation_license_number,:bdm_verification_status,:bdm_verification_id]])
+  end
+
+  def belongs_to_agency_admin
+    
+    agency = Agency.find_by(id:params[:id])
+    if current_user
+      if current_user.agency_admin.agency.id == agency.id
+        #do nothing
+      else 
+        flash[:notice] = "Sorry you can't see that."
+        redirect_to root_path
+      end 
+    end
+  
   end
 
 end 

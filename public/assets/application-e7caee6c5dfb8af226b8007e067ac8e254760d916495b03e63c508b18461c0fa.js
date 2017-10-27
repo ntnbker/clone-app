@@ -67695,6 +67695,271 @@ module.exports = function(reqctx) {
 /***/ })
 /******/ ]);
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AgencyEdit = React.createClass({
+  displayName: 'AgencyEdit',
+
+  getInitialState: function () {
+    var agency = this.props.agency || {};
+    var profile_image = this.props.profile_image || {};
+    var image_url = this.props.image_url || '/default-avatar.png';
+
+    return {
+      license_type: agency.license_type,
+      errors: {},
+      gallery: _extends({}, profile_image, { image_url: image_url })
+    };
+  },
+
+  changeLicenseType: function (_ref) {
+    var value = _ref.target.value;
+
+    this.setState({
+      license_type: value,
+      errors: _extends({}, this.state.errors, { license_type: '' })
+    });
+  },
+
+  uploadImage: function (images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+    var id = this.state.gallery.id;
+
+    var FD = new FormData();
+    images.map(function (image, index) {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[agency_id]', this.props.agency.id);
+    if (id) {
+      FD.append('picture[agency_profile_image_id]', id);
+    }
+
+    var self = this;
+    $.ajax({
+      type: id ? 'PUT' : 'POST',
+      url: '/agency_profile_images' + (id ? '/' + id : ''),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        callback(res.errors);
+        if (!res.errors && res.profile_image) {
+          self.setState({ gallery: res.profile_image });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  onSubmit: function (e) {
+
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var agency = {
+      company_name: getValidValue(this.company_name),
+      business_name: getValidValue(this.business_name),
+      abn: getValidValue(this.abn),
+      address: getValidValue(this.address),
+      mailing_address: getValidValue(this.mailing_address),
+      phone: getValidValue(this.phone),
+      mobile_phone: getValidValue(this.mobile_phone),
+      corporation_license_number: getValidValue(this.corporation_license_number),
+      license_type: this.state.license_type
+    };
+
+    var params = { agency: agency };
+
+    var self = this;
+    $.ajax({
+      type: 'PUT',
+      url: '/agencies/' + (this.props.agency || {}).id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    e.preventDefault();
+
+    return;
+  },
+
+  removeError: function (_ref2) {
+    var id = _ref2.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  renderTextField: function (field, textHolder) {
+    var _this = this;
+
+    var errors = this.state.errors;
+    var _props$agency = this.props.agency;
+    var agency = _props$agency === undefined ? {} : _props$agency;
+
+    var value = agency[field];
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'div',
+        { className: 'col-sm-10' },
+        React.createElement('input', {
+          type: 'text',
+          id: field,
+          placeholder: textHolder,
+          defaultValue: value,
+          ref: function (ref) {
+            return _this[field] = ref;
+          },
+          className: "form-control " + (errors[field] ? "has-error" : ""),
+          onChange: this.removeError
+        }),
+        this.renderError(errors[field])
+      )
+    );
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    var _state = this.state;
+    var _state$errors = _state.errors;
+    var errors = _state$errors === undefined ? {} : _state$errors;
+    var license_type = _state.license_type;
+    var gallery = _state.gallery;
+
+    var renderTextField = this.renderTextField;
+    var renderButtonFunc = this.renderButton;
+
+    return React.createElement(
+      'div',
+      { className: 'edit_profile edit_agency_profile' },
+      React.createElement(
+        'div',
+        { className: 'left' },
+        gallery && React.createElement('img', { id: 'avatar', src: gallery.image_url, alt: 'Avatar Image' }),
+        React.createElement(ModalImageUpload, {
+          uploadImage: this.uploadImage,
+          gallery: gallery && [gallery] || [],
+          text: 'Add/Change Photo',
+          className: 'btn button-primary option-button'
+        }),
+        renderButtonFunc('Add New Agent', this.props.new_agent_path),
+        renderButtonFunc('Add New Admin Agency', this.props.new_agency_admin_path)
+      ),
+      React.createElement(
+        'form',
+        { role: 'form', className: 'form-horizontal right', id: 'edit_agency', onSubmit: this.onSubmit },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Edit Agency Profile'
+        ),
+        renderTextField('company_name', 'Company Name'),
+        renderTextField('business_name', 'Business Name'),
+        renderTextField('abn', 'ABN'),
+        renderTextField('address', 'Address'),
+        renderTextField('mailing_address', 'Mailing Address'),
+        renderTextField('phone', 'Phone'),
+        renderTextField('mobile_phone', 'Mobile Phone'),
+        React.createElement(
+          'div',
+          { className: 'license-type' },
+          React.createElement(
+            'p',
+            null,
+            ' License Type '
+          ),
+          React.createElement(
+            'label',
+            { className: 'one-half column' },
+            React.createElement('input', {
+              type: 'radio',
+              value: 'Individual License',
+              checked: license_type === "Individual License",
+              ref: function (e) {
+                return _this2.license_type_individual_license = e;
+              },
+              name: 'license_type',
+              id: 'license_type_individual_license',
+              onChange: this.changeLicenseType
+            }),
+            'Individual License'
+          ),
+          React.createElement(
+            'label',
+            { className: 'one-half column' },
+            React.createElement('input', {
+              type: 'radio',
+              value: 'Corporate License',
+              checked: license_type === "Corporate License",
+              ref: function (e) {
+                return _this2.license_type_corporate_license = e;
+              },
+              name: 'license_type',
+              id: 'license_type_corporate_license',
+              onChange: this.changeLicenseType
+            }),
+            'Corporate License'
+          ),
+          this.renderError(errors['license_type'])
+        ),
+        renderTextField('corporation_license_number', 'Corporation License Number'),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            'Update Your Profile'
+          )
+        )
+      )
+    );
+  }
+});
 var BDM = React.createClass({
   displayName: "BDM",
 
@@ -68060,6 +68325,748 @@ var Agency = React.createClass({
           "a",
           { href: "/login" },
           "Login"
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AgencyAdminEdit = React.createClass({
+  displayName: 'AgencyAdminEdit',
+
+  getInitialState: function () {
+    var profile_image = this.props.profile_image || {};
+    var image_url = this.props.image_url || '/default-avatar.png';
+
+    return {
+      errors: {},
+      gallery: _extends({}, profile_image, { image_url: image_url })
+    };
+  },
+
+  detectAndroid: function () {
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1;
+    if (isAndroid) {
+      this.setState({
+        isAndroid: true
+      });
+    }
+  },
+
+  uploadImage: function (images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+    var gallery = this.state.gallery;
+
+    var FD = new FormData();
+    images.map(function (image, index) {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[agency_admin_id]', this.props.agency_admin.id);
+    if (gallery.id) {
+      FD.append('picture[agency_admin_profile_image_id]', gallery.id);
+    }
+
+    var self = this;
+    $.ajax({
+      type: gallery.id ? 'PUT' : 'POST',
+      url: '/agency_admin_profile_images' + (gallery.id ? '/' + gallery.id : ''),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        callback(res.errors);
+        if (!res.errors && res.profile_image) {
+          self.setState({ gallery: res.profile_image });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  onSubmit: function (e) {
+
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var agency_admin = {
+      last_name: getValidValue(last_name),
+      first_name: getValidValue(first_name),
+      mobile_phone: getValidValue(mobile_phone),
+      license_number: getValidValue(license_number)
+    };
+
+    var params = { agency_admin: agency_admin };
+
+    var self = this;
+    $.ajax({
+      type: 'PUT',
+      url: '/agency_admins/' + this.props.agency_admin.id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        self.setState({ errors: res.errors || {} });
+      },
+      error: function (err) {}
+    });
+
+    e.preventDefault();
+
+    return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  render: function () {
+    var _this = this;
+
+    var isInvoice = this.props.system_plan === "Invoice";
+    var agency_admin = this.props.agency_admin || {};
+    var first_name = agency_admin.first_name;
+    var last_name = agency_admin.last_name;
+    var mobile_phone = agency_admin.mobile_phone;
+    var license_number = agency_admin.license_number;
+    var _state = this.state;
+    var _state$errors = _state.errors;
+    var errors = _state$errors === undefined ? {} : _state$errors;
+    var gallery = _state.gallery;
+
+    var renderErrorFunc = this.renderError;
+    var removeErrorFunc = this.removeError;
+    var renderButtonFunc = this.renderButton;
+
+    return React.createElement(
+      'div',
+      { className: 'edit_profile' },
+      React.createElement(
+        'div',
+        { className: 'left' },
+        gallery && React.createElement('img', { id: 'avatar', src: gallery.image_url, alt: 'Avatar Image' }),
+        React.createElement(ModalImageUpload, {
+          uploadImage: this.uploadImage,
+          gallery: gallery && [gallery] || [],
+          text: 'Add/Change Photo',
+          className: 'btn button-primary option-button'
+        }),
+        renderButtonFunc('Change Password', this.props.change_password_path)
+      ),
+      React.createElement(
+        'form',
+        {
+          role: 'form',
+          className: 'form-horizontal right',
+          id: 'edit_agency_admin',
+          onSubmit: this.onSubmit
+        },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Edit Agency Admin Profile'
+        ),
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement(
+            'div',
+            { className: 'col-sm-10' },
+            React.createElement('input', {
+
+              type: 'text',
+              id: 'first_name',
+              placeholder: 'First Name',
+              defaultValue: first_name,
+              ref: function (ref) {
+                return _this.first_name = ref;
+              },
+              className: "form-control " + (errors['first_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['first_name'])
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement(
+            'div',
+            { className: 'col-sm-10' },
+            React.createElement('input', {
+
+              type: 'text',
+              id: 'last_name',
+              placeholder: 'Last Name',
+              defaultValue: last_name,
+              ref: function (ref) {
+                return _this.last_name = ref;
+              },
+              className: "form-control " + (errors['last_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['last_name'])
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement(
+            'div',
+            { className: 'col-sm-10' },
+            React.createElement('input', {
+
+              type: 'text',
+              id: 'mobile_phone',
+              placeholder: 'Mobile Phone',
+              defaultValue: mobile_phone,
+              ref: function (ref) {
+                return _this.mobile_phone = ref;
+              },
+              className: "form-control " + (errors['mobile_phone'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['mobile_phone'])
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement(
+            'div',
+            { className: 'col-sm-10' },
+            React.createElement('input', {
+
+              type: 'text',
+              id: 'license_number',
+              placeholder: 'License Number',
+              defaultValue: license_number,
+              ref: function (ref) {
+                return _this.license_number = ref;
+              },
+              className: "form-control " + (errors['license_number'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['license_number'])
+          )
+        ),
+        React.createElement(
+          'button',
+          { type: 'submit', className: 'btn button-primary green option-button' },
+          'Update Your Profile'
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AgencyAdminNew = React.createClass({
+  displayName: 'AgencyAdminNew',
+
+  getInitialState: function () {
+    return {
+      errors: {}
+    };
+  },
+
+  onSubmit: function (e) {
+
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+    var agency_admin = {
+      agency_id: this.props.agency_id,
+      email: getValidValue(this.email),
+      first_name: getValidValue(this.first_name),
+      last_name: getValidValue(this.last_name),
+      mobile_phone: getValidValue(this.mobile_phone),
+      license_number: getValidValue(this.license_number)
+    };
+
+    var params = { agency_admin: agency_admin };
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/agency_admins',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    e.preventDefault();
+
+    return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  renderTextField: function (field, textHolder) {
+    var _this = this;
+
+    var errors = this.state.errors;
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement('input', {
+        type: 'text',
+        id: field,
+        placeholder: textHolder,
+        ref: function (ref) {
+          return _this[field] = ref;
+        },
+        className: "form-control " + (errors[field] ? "has-error" : ""),
+        onChange: this.removeError
+      }),
+      this.renderError(errors[field])
+    );
+  },
+
+  render: function () {
+    var renderTextField = this.renderTextField;
+    var renderButtonFunc = this.renderButton;
+
+    return React.createElement(
+      'div',
+      { className: 'new_agency_admin new_profile' },
+      React.createElement(
+        'form',
+        { role: 'form', className: 'form-horizontal', id: 'new_agency_admin', onSubmit: this.onSubmit },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Add Another Agency Admin to this agency'
+        ),
+        renderTextField('email', 'Email'),
+        renderTextField('first_name', 'First Name'),
+        renderTextField('last_name', 'Last Name'),
+        renderTextField('mobile_phone', 'Mobile Phone'),
+        renderTextField('license_number', 'License Number'),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            'Submit'
+          )
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AgentEdit = React.createClass({
+  displayName: 'AgentEdit',
+
+  getInitialState: function () {
+    var profile_image = this.props.profile_image || {};
+    var image_url = this.props.image_url || '/default-avatar.png';
+
+    return {
+      errors: {},
+      gallery: _extends({}, profile_image, { image_url: image_url })
+    };
+  },
+
+  uploadImage: function (images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+    var id = this.state.gallery.id;
+
+    var FD = new FormData();
+    images.map(function (image, index) {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[agent_id]', this.props.agent.id);
+    if (id) {
+      FD.append('picture[agent_profile_image_id]', id);
+    }
+
+    var self = this;
+    $.ajax({
+      type: id ? 'PUT' : 'POST',
+      url: '/agent_profile_images' + (id ? '/' + id : ''),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        callback(res.errors);
+        if (!res.errors && res.profile_image) {
+          self.setState({ gallery: res.profile_image });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  changeLicenseType: function (_ref) {
+    var value = _ref.target.value;
+
+    this.setState({
+      license_type: value,
+      errors: _extends({}, this.state.errors, { license_type: '' })
+    });
+  },
+
+  onSubmit: function (e) {
+
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+    var agent = {
+      name: getValidValue(this.name),
+      last_name: getValidValue(this.last_name),
+      mobile_phone: getValidValue(this.mobile_phone),
+      license_number: getValidValue(this.license_number)
+    };
+
+    var params = { agent: agent };
+    var self = this;
+    $.ajax({
+      type: 'PUT',
+      url: '/agents/' + (this.props.agent || {}).id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    e.preventDefault();
+
+    return;
+  },
+
+  removeError: function (_ref2) {
+    var id = _ref2.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  renderTextField: function (field, textHolder) {
+    var _this = this;
+
+    var errors = this.state.errors;
+    var _props$agent = this.props.agent;
+    var agent = _props$agent === undefined ? {} : _props$agent;
+
+    var value = agent[field];
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'div',
+        { className: 'col-sm-10' },
+        React.createElement('input', {
+          type: 'text',
+          id: field,
+          placeholder: textHolder,
+          defaultValue: value,
+          ref: function (ref) {
+            return _this[field] = ref;
+          },
+          className: "form-control " + (errors[field] ? "has-error" : ""),
+          onChange: this.removeError
+        }),
+        this.renderError(errors[field])
+      )
+    );
+  },
+
+  render: function () {
+    var isInvoice = this.props.system_plan === "Invoice";
+    var agent = this.props.agent || {};
+    var company_name = agent.company_name;
+    var business_name = agent.business_name;
+    var abn = agent.abn;
+    var address = agent.address;
+    var mailing_address = agent.mailing_address;
+    var phone = agent.phone;
+    var mobile_phone = agent.mobile_phone;
+    var corporation_license_number = agent.corporation_license_number;
+    var _state = this.state;
+    var _state$errors = _state.errors;
+    var errors = _state$errors === undefined ? {} : _state$errors;
+    var license_type = _state.license_type;
+    var gallery = _state.gallery;
+
+    var renderTextField = this.renderTextField;
+    var renderButtonFunc = this.renderButton;
+
+    return React.createElement(
+      'div',
+      { className: 'edit_agent_profile edit_profile' },
+      React.createElement(
+        'div',
+        { className: 'left' },
+        gallery && React.createElement('img', { id: 'avatar', src: gallery.image_url, alt: 'Avatar Image' }),
+        React.createElement(ModalImageUpload, {
+          uploadImage: this.uploadImage,
+          gallery: gallery && [gallery] || [],
+          text: 'Add/Change Photo',
+          className: 'btn button-primary option-button'
+        }),
+        renderButtonFunc('Reset Password', this.props.change_password_path)
+      ),
+      React.createElement(
+        'form',
+        { role: 'form', className: 'form-horizontal right', id: 'edit_agent', onSubmit: this.onSubmit },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Edit Agent Profile'
+        ),
+        renderTextField('name', 'Name'),
+        renderTextField('last_name', 'Last Name'),
+        renderTextField('mobile_phone', 'Mobile Phone'),
+        renderTextField('license_number', 'License Number'),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            'Update Your Profile'
+          )
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AgentNew = React.createClass({
+  displayName: 'AgentNew',
+
+  getInitialState: function () {
+    return {
+      errors: {}
+    };
+  },
+
+  onSubmit: function (e) {
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+    var agent = {
+      agency_id: this.props.agency_id,
+      email: getValidValue(this.email),
+      name: getValidValue(this.name),
+      last_name: getValidValue(this.last_name),
+      mobile_phone: getValidValue(this.mobile_phone),
+      license_number: getValidValue(this.license_number)
+    };
+
+    var params = { agent: agent };
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/agents',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    e.preventDefault();
+
+    return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  renderTextField: function (field, textHolder) {
+    var _this = this;
+
+    var errors = this.state.errors;
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement('input', {
+        type: 'text',
+        id: field,
+        placeholder: textHolder,
+        ref: function (ref) {
+          return _this[field] = ref;
+        },
+        className: "form-control " + (errors[field] ? "has-error" : ""),
+        onChange: this.removeError
+      }),
+      this.renderError(errors[field])
+    );
+  },
+
+  render: function () {
+    var renderTextField = this.renderTextField;
+    var renderButtonFunc = this.renderButton;
+
+    return React.createElement(
+      'div',
+      { className: 'new_agent new_profile' },
+      React.createElement(
+        'form',
+        { role: 'form', className: 'form-horizontal', id: 'new_agent', onSubmit: this.onSubmit },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Add Another Agency Admin to this agency'
+        ),
+        renderTextField('email', 'Email'),
+        renderTextField('name', 'Name'),
+        renderTextField('last_name', 'Last Name'),
+        renderTextField('mobile_phone', 'Mobile Phone'),
+        renderTextField('license_number', 'License Number'),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            'Submit'
+          )
         )
       )
     );
@@ -69400,6 +70407,631 @@ var ModalConfirmCancelTrady = React.createClass({
 		);
 	}
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var SUCCESS_MESSAGE = 'Thank you for uploading your profile image.';
+
+UploadImageComponent = React.createClass({
+  displayName: 'UploadImageComponent',
+
+  getInitialState: function () {
+    // this.getAgentEmail();
+    return {
+      images: [],
+      fileDisabled: false,
+      totalFile: 0,
+      dataImages: [],
+      totalProgress: 0,
+      totalSize: 0,
+      uploadComplete: false,
+      gallery: this.props.gallery || [],
+      errors: {}
+    };
+  },
+
+  componentDidMount: function () {
+    this.detectAndroid();
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      gallery: nextProps.gallery || []
+    });
+  },
+
+  getOrientation: function (result) {
+    var view = new DataView(result);
+    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    var length = view.byteLength,
+        offset = 2;
+    while (offset < length) {
+      var marker = view.getUint16(offset, false);
+      offset += 2;
+      if (marker == 0xFFE1) {
+        if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+        var little = view.getUint16(offset += 6, false) == 0x4949;
+        offset += view.getUint32(offset + 4, little);
+        var tags = view.getUint16(offset, little);
+        offset += 2;
+        for (var i = 0; i < tags; i++) if (view.getUint16(offset + i * 12, little) == 0x0112) return view.getUint16(offset + i * 12 + 8, little);
+      } else if ((marker & 0xFF00) != 0xFF00) break;else offset += view.getUint16(offset, false);
+    }
+    return -1;
+  },
+
+  _handleImageChange: function (e) {
+    var _this = this;
+
+    var self = this;
+    var files = e.target.files;
+    var reader = new FileReader();
+    var fr = new FileReader();
+    var images = this.state.images;
+    var orientation;
+    self.setState({ fileDisabled: true });
+    readFile = function (index) {
+      if (index >= files.length) {
+        _this.setState({
+          images: images
+        });
+        return;
+      }
+      var file = files[index];
+      var fileAlreadyExists = false;
+      for (var i = 0; i < images.length; i++) {
+        if (images[i].fileInfo.name == file.name && images[i].fileInfo.size == file.size) {
+          fileAlreadyExists = true;
+          break;
+        }
+      }
+      if (!fileAlreadyExists) {
+        var fr = new FileReader();
+        fr.readAsArrayBuffer(file);
+        fr.onload = function (e) {
+          orientation = self.getOrientation(e.target.result);
+          reader.readAsDataURL(file);
+          reader.onload = function (e) {
+            images.push({ url: e.target.result, fileInfo: file, isUpload: false, orientation: orientation });
+            self.setState({
+              totalFile: index + 1,
+              totalSize: self.state.totalSize + file.size
+            });
+            readFile(index + 1);
+          };
+        };
+      } else {
+        readFile(index + 1);
+      }
+    };
+    readFile(0);
+  },
+
+  updateImage: function (image) {
+    var dataImages = this.state.dataImages;
+
+    dataImages.push(image);
+    this.setState({
+      dataImages: dataImages
+    });
+  },
+
+  removeImage: function (index) {
+    var _state = this.state;
+    var images = _state.images;
+    var dataImages = _state.dataImages;
+
+    images.splice(index, 1);
+    dataImages.splice(index, 1);
+    this.setState({
+      images: images,
+      dataImages: dataImages
+    });
+  },
+
+  loadImage: function (e, image, key) {
+    var img = e.target;
+    var maxSize = 500000; // byte
+    var self = this;
+    var _self$state$data = self.state.data;
+    var data = _self$state$data === undefined ? {} : _self$state$data;
+
+    data[key] = 0;
+    if (!image.isUpload) {
+      var target_img = {};
+      var images = this.state.images;
+
+      var file = image.fileInfo;
+      image.isUpload = true;
+
+      // resize image
+      if (file.size > maxSize) {
+        var quality = Math.ceil(maxSize / file.size * 100);
+        target_img.src = self.reduceQuality(img, file.type, quality, image.orientation).src;
+      } else {
+        if (!!this.state.isAndroid) {
+          target_img.src = self.reduceQuality(img, file.type, 100, image.orientation).src;
+        } else {
+          target_img.src = image.url;
+        }
+      }
+
+      image.url = target_img.src;
+      images[key] = image;
+      this.setState({
+        images: images
+      });
+
+      var filename = file;
+      var options = {
+        extension: filename.name.match(/(\.\w+)?$/)[0],
+        _: Date.now()
+      };
+      // start upload file into S3
+      $.getJSON('/images/cache/presign', options, function (result) {
+        var fd = new FormData();
+        $.each(result.fields, function (key, value) {
+          fd.append(key, value);
+        });
+
+        fd.append('file', self.dataURItoBlob(target_img.src));
+        $.ajax({
+          type: 'POST',
+          url: result['url'],
+          enctype: 'multipart/form-data',
+          processData: false,
+          contentType: false,
+          data: fd,
+          xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (evt) {
+              if (evt.loaded > 0 && evt.total > 0) {
+                var progressValue = file.size >= evt.loaded ? evt.loaded - data[key] : file.size - data[key];
+                data[key] = evt.loaded;
+                var totalProgress = self.state.totalProgress + progressValue;
+
+                self.setState({ totalProgress: totalProgress });
+
+                if (evt.loaded == evt.total) {
+                  self.setState({
+                    totalFile: self.state.totalFile - 1
+                  });
+                }
+
+                var percentComplete = Math.ceil(totalProgress / self.state.totalSize * 100);
+                var progress = $('.progress');
+                if (progress.length == 0) {
+                  $('<div class="progress" style="width: 80%;"><div class="progress-bar" style="width: ' + percentComplete + '%"></div></div>').insertAfter("#input-file");
+                } else {
+                  $('.progress .progress-bar').css('width', percentComplete + '%');
+                }
+                $('#title-upload').html('Uploading ' + percentComplete + '%');
+              }
+            }, false);
+            return xhr;
+          },
+          success: function () {
+            if (self.state.totalFile == 0) {
+              self.setState({
+                totalFile: 0,
+                fileDisabled: false
+              });
+              setTimeout(function () {
+                $('#title-upload').html('<i class="fa fa-upload" /> Choose image to change');
+                $('.progress').remove();
+              }, 200);
+            }
+            var image = {
+              id: result.fields.key.match(/cache\/(.+)/)[1],
+              storage: 'cache',
+              metadata: {
+                size: file.size,
+                filename: file.name.match(/[^\/\\]*$/)[0],
+                mime_type: file.type
+              }
+            };
+            self.updateImage(image);
+          }
+        });
+      });
+    }
+  },
+
+  reduceQuality: function (source_img, type, quality, orientation) {
+    var mime_type = "image/jpeg";
+    if (typeof output_format !== "undefined" && output_format == "image/png") {
+      mime_type = "image/png";
+    }
+
+    var cvs = document.createElement('canvas'),
+        width = source_img.naturalWidth,
+        height = source_img.naturalHeight,
+        ctx = cvs.getContext("2d");
+
+    // set proper canvas dimensions before transform & export
+    if ([5, 6, 7, 8].indexOf(orientation) > -1) {
+      cvs.width = height;
+      cvs.height = width;
+    } else {
+      cvs.width = width;
+      cvs.height = height;
+    }
+
+    // transform context before drawing image
+    switch (orientation) {
+      case 2:
+        ctx.transform(-1, 0, 0, 1, width, 0);
+        break;
+      case 3:
+        ctx.transform(-1, 0, 0, -1, width, height);
+        break;
+      case 4:
+        ctx.transform(1, 0, 0, -1, 0, height);
+        break;
+      case 5:
+        ctx.transform(0, 1, 1, 0, 0, 0);
+        break;
+      case 6:
+        ctx.transform(0, 1, -1, 0, height, 0);
+        break;
+      case 7:
+        ctx.transform(0, -1, -1, 0, height, width);
+        break;
+      case 8:
+        ctx.transform(0, -1, 1, 0, 0, width);
+        break;
+    }
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    ctx.strokeRect(0, 0, cvs.width, cvs.height);
+    ctx.lineWidth = 0;
+    ctx.drawImage(source_img, 0, 0);
+    var newImageData = cvs.toDataURL(mime_type, quality / 100);
+    var result_image = new Image();
+    result_image.src = newImageData;
+    return result_image;
+  },
+
+  dataURItoBlob: function (dataURI) {
+    var byteString, mimestring;
+
+    if (dataURI.split(',')[0].indexOf('base64') !== -1) {
+      byteString = atob(dataURI.split(',')[1]);
+    } else {
+      byteString = decodeURI(dataURI.split(',')[1]);
+    }
+
+    mimestring = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    var content = new Array();
+    for (var i = 0; i < byteString.length; i++) {
+      content[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([new Uint8Array(content)], { type: mimestring });
+  },
+
+  detectAndroid: function () {
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1;
+    if (isAndroid) {
+      this.setState({
+        isAndroid: true
+      });
+    }
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    var self = this;
+    var dataImages = self.state.dataImages;
+
+    if (dataImages.length == 0) {
+      return;
+    }
+
+    var FD = new FormData();
+    self.props.uploadImage(dataImages, function (errors) {
+      self.props.notifyAddPhoto(errors || SUCCESS_MESSAGE);
+      // self.props.close();
+    });
+    return false;
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    var _state2 = this.state;
+    var images = _state2.images;
+    var gallery = _state2.gallery;
+    var dataImages = _state2.dataImages;
+    var uploadComplete = _state2.uploadComplete;
+
+    var uploadButton = !uploadComplete ? React.createElement(
+      'div',
+      { className: 'browse-wrap' },
+      React.createElement(
+        'div',
+        { className: 'title', id: 'title-upload' },
+        React.createElement('i', { className: 'fa fa-upload' }),
+        'Choose image to ',
+        gallery.length ? 'change' : 'add'
+      ),
+      React.createElement('input', {
+        multiple: true,
+        type: 'file',
+        id: 'input-file',
+        className: "upload inputfile",
+        accept: 'image/jpeg, image/png',
+        onChange: function (e) {
+          return _this2._handleImageChange(e);
+        }
+      })
+    ) : '';
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'form',
+            { role: 'form', onSubmit: this.submit },
+            React.createElement(
+              'div',
+              { className: 'modal-header' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  className: 'close',
+                  'aria-label': 'Close',
+                  'data-dismiss': 'modal',
+                  onClick: this.props.close
+                },
+                React.createElement(
+                  'span',
+                  { 'aria-hidden': 'true' },
+                  '×'
+                )
+              ),
+              React.createElement(
+                'h4',
+                { className: 'modal-title text-center' },
+                'Add Photo'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-body add-photo' },
+              React.createElement(
+                'div',
+                { className: 'list-img' },
+                gallery && gallery.map(function (item, key) {
+                  return React.createElement('img', { key: key, src: item.image_url, className: 'img' });
+                }),
+                images.map(function (img, index) {
+                  return React.createElement(
+                    'div',
+                    { key: index, className: 'img' },
+                    React.createElement('img', {
+                      src: img.url,
+                      className: 'img',
+                      onLoad: function (e, image, key) {
+                        return _this2.loadImage(e, img, index);
+                      }
+                    }),
+                    React.createElement('i', { className: 'fa fa-close', onClick: function (key) {
+                        return _this2.removeImage(index);
+                      } })
+                  );
+                })
+              ),
+              uploadButton
+            ),
+            React.createElement(
+              'div',
+              { className: 'modal-footer' },
+              React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  onClick: this.props.close,
+                  className: 'btn btn-primary cancel'
+                },
+                'Cancel'
+              ),
+              React.createElement(
+                'button',
+                {
+                  type: 'submit',
+                  className: 'btn btn-default success'
+                },
+                'Submit'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+ModalMessageAddPhoto = React.createClass({
+  displayName: 'ModalMessageAddPhoto',
+
+  render: function () {
+    var _props = this.props;
+    var close = _props.close;
+    var message = _props.message;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade add-photo' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'close',
+                'data-dismiss': 'modal',
+                'aria-label': 'Close',
+                onClick: close
+              },
+              React.createElement(
+                'span',
+                { 'aria-hidden': 'true' },
+                '×'
+              )
+            ),
+            React.createElement(
+              'h4',
+              { className: 'modal-title text-center' },
+              'Add Photo'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'p',
+              { className: 'title' },
+              message
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-footer' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-default success title',
+                onClick: close,
+                'data-dismiss': 'modal'
+              },
+              'OK'
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+ModalImageUpload = React.createClass({
+  displayName: 'ModalImageUpload',
+
+  getInitialState: function () {
+    return {
+      modal: "",
+      isModal: false,
+      gallery: this.props.gallery || [],
+      errors: {}
+    };
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      gallery: nextProps.gallery || []
+    });
+  },
+
+  isClose: function () {
+    if (this.state.isModal == true) {
+      this.setState({
+        isModal: false,
+        modal: "",
+        message: ''
+      });
+    }
+
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    if (div) {
+      div.parentNode.removeChild(div);
+    }
+  },
+
+  onModalWith: function (modal, message) {
+    this.setState({
+      modal: modal,
+      isModal: true,
+      message: message
+    });
+  },
+
+  notifyAddPhoto: function (message) {
+    this.onModalWith('messageAddPhoto', message);
+  },
+
+  renderModal: function () {
+    if (!this.state.isModal) return '';
+    var body = document.getElementsByTagName('body')[0];
+    body.className += " modal-open";
+    var div = document.getElementsByClassName('modal-backdrop in');
+
+    if (div.length === 0) {
+      div = document.createElement('div');
+      div.className = "modal-backdrop in";
+      body.appendChild(div);
+    }
+
+    switch (this.state.modal) {
+      case 'addPhoto':
+        return React.createElement(
+          'div',
+          { id: 'image_uploader' },
+          React.createElement(UploadImageComponent, _extends({
+            close: this.isClose,
+            notifyAddPhoto: this.notifyAddPhoto,
+            uploadImage: this.props.uploadImage,
+            gallery: this.state.gallery,
+            authenticity_token: this.props.authenticity_token,
+            maintenance_request: this.state.maintenance_request,
+            onModalWith: this.onModalWith
+          }, this.props))
+        );
+
+      case 'messageAddPhoto':
+        return React.createElement(
+          'div',
+          { id: 'image_uploader' },
+          React.createElement(ModalMessageAddPhoto, {
+            close: this.isClose,
+            onModalWith: this.onModalWith,
+            message: this.state.message
+          })
+        );
+    }
+  },
+
+  render: function () {
+    var _this3 = this;
+
+    return this.renderModal() || React.createElement(
+      'button',
+      {
+        className: this.props.className || 'btn-edit',
+        onClick: function () {
+          return _this3.onModalWith('addPhoto');
+        }
+      },
+      this.props.text || 'Add Photo'
+    );
+  }
+});
 var ModalInstruction = React.createClass({
 	displayName: 'ModalInstruction',
 
@@ -69935,17 +71567,20 @@ var FieldListForInvoice = React.createClass({
               removeField: function () {
                 return _this2.removeField(x, quote);
               }
-            })),
-            ";"
+            }))
           );
         })
       ),
       React.createElement(
-        "button",
-        { type: "button", className: "button-add button-primary", style: { position: 'absolute', bottom: 0, right: 0 }, onClick: function () {
-            return _this2.addField();
-          } },
-        " Add New Invoice "
+        "div",
+        { className: "text-center" },
+        React.createElement(
+          "button",
+          { type: "button", className: "button-add button-primary", style: { bottom: 0, right: 0 }, onClick: function () {
+              return _this2.addField();
+            } },
+          " Add New Invoice "
+        )
       )
     );
   }
@@ -69964,6 +71599,7 @@ var AdditionalInvoice = React.createClass({
       hours_input: hours_input
     };
   },
+
   componentWillReceiveProps: function () {
     this.setState({
       remove: this.props.params.remove
@@ -69976,13 +71612,12 @@ var AdditionalInvoice = React.createClass({
 
   onPricing: function (event) {
     var pricing_type = event.target.value;
-    this.setState({ pricing_type: pricing_type });
-    if (pricing_type == "Hourly") {
-      this.setState({ hours_input: true });
-    } else {
-      this.setState({ hours_input: false });
-    }
+    this.setState({
+      pricing_type: pricing_type,
+      hours_input: pricing_type === "Hourly"
+    });
   },
+
   render: function () {
     var quote = this.props.content;
     var x = this.props.x;
@@ -70159,11 +71794,13 @@ var InvoiceItemField = React.createClass({
     this.setState({ pricing_type: pricing_type });
 
     if (pricing_type == "Hourly") {
-      this.setState({ hours_input: true, numofhours: 0 });
+      this.setState({ hours_input: true, numofhours: 1 });
     } else {
-      this.setState({ hours_input: false,
+      this.setState({
+        hours_input: false,
         numofhours: 1,
-        totalamount: this.state.amount });
+        totalamount: this.state.amount
+      });
     }
   },
 
@@ -70179,8 +71816,10 @@ var InvoiceItemField = React.createClass({
     this.removeError(event);
   },
 
-  onHours: function (event) {
-    var hours = event.target.value;
+  onHours: function (_ref3) {
+    var value = _ref3.target.value;
+
+    var hours = value;
     if (hours > 0) this.setState({ numofhours: hours });else this.setState({ numofhours: 0 });
 
     var totalamount = this.state.amount * hours;
@@ -70190,8 +71829,8 @@ var InvoiceItemField = React.createClass({
     });
   },
 
-  removeError: function (_ref3) {
-    var id = _ref3.target.id;
+  removeError: function (_ref4) {
+    var id = _ref4.target.id;
 
     this.setState({
       errorsForm: _extends({}, this.state.errorsForm, _defineProperty({}, id, ''))
@@ -70300,7 +71939,7 @@ var InvoiceItemField = React.createClass({
             type: "text",
             onChange: this.onHours,
             placeholder: "Number of Hours",
-            defaultValue: numofhours > 0 && numofhours,
+            defaultValue: numofhours > 0 ? numofhours : 0,
             className: "text-center " + (hours_input && 'hour'),
             name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
           }) : React.createElement("input", {
@@ -70344,10 +71983,10 @@ var InvoiceField = React.createClass({
     };
   },
 
-  componentWillReceiveProps: function (_ref4) {
-    var errors = _ref4.errors;
+  componentWillReceiveProps: function (_ref5) {
+    var errors = _ref5.errors;
 
-    var rest = _objectWithoutProperties(_ref4, ["errors"]);
+    var rest = _objectWithoutProperties(_ref5, ["errors"]);
 
     this.setState({
       remove: rest.params.remove,
@@ -70545,16 +72184,19 @@ var InvoiceField = React.createClass({
           { id: "errorbox", className: "error" },
           errorDate || ''
         ),
-        ";",
         React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
         hasInvoice && React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' })
       ),
       React.createElement(
-        "button",
-        { type: "button", className: "button-remove button-primary red", onClick: function () {
-            return _this4.removeField(_this4.props.x);
-          } },
-        " Remove Invoice "
+        "div",
+        { className: "text-center" },
+        React.createElement(
+          "button",
+          { type: "button", className: "button-remove button-primary red", onClick: function () {
+              return _this4.removeField(_this4.props.x);
+            } },
+          " Remove Invoice "
+        )
       )
     );
   }
@@ -73943,7 +75585,8 @@ var ModalAddPhoto = React.createClass({
       gallery: this.props.gallery,
       totalSize: 0,
       uploading: false,
-      uploadComplete: false
+      uploadComplete: false,
+      isAndroid: false
     };
   },
 
@@ -75709,14 +77352,6 @@ var ListMaintenanceRequest = React.createClass({
         title: "Maintenance Scheduled With Landlord",
         value: "Maintenance Scheduled With Landlord",
         count: this.props.maintenance_scheduled_with_landlord_count
-      }, {
-        title: "Deferred",
-        value: "Defer",
-        count: this.props.deferred_count
-      }, {
-        title: "Jobs Completed and Closed",
-        value: "Jobs Completed",
-        count: this.props.jobs_completed
       }],
       tradyFilter: [{
         title: "Quote Requests",
@@ -75728,7 +77363,7 @@ var ListMaintenanceRequest = React.createClass({
         count: this.props.awaiting_quote_approvals
       }, {
         title: "Appointments Required",
-        value: "Appointments Required",
+        value: "Appointment Required",
         count: this.props.appointments_required
       }, {
         title: "Awaiting Appointment Confirmation",
@@ -75892,10 +77527,42 @@ var ListMaintenanceRequest = React.createClass({
           ),
           React.createElement(
             "a",
-            { onClick: function (value) {
+            { onClick: function () {
                 return _this3.getAction('Archive');
               } },
             "Archived"
+          )
+        ),
+        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(
+          "div",
+          { className: "dropdown-custom archived" },
+          React.createElement(
+            "span",
+            { className: "count" },
+            this.props.deferred_count
+          ),
+          React.createElement(
+            "a",
+            { onClick: function () {
+                return _this3.getAction('Defer');
+              } },
+            "Deferred"
+          )
+        ),
+        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(
+          "div",
+          { className: "dropdown-custom archived" },
+          React.createElement(
+            "span",
+            { className: "count" },
+            this.props.jobs_completed
+          ),
+          React.createElement(
+            "a",
+            { onClick: function () {
+                return _this3.getAction('Jobs Completed');
+              } },
+            "Completed"
           )
         )
       ),
@@ -82685,7 +84352,7 @@ var QuoteField = React.createClass({
             )
           ),
           React.createElement('input', {
-            type: 'number',
+            type: 'text',
             placeholder: 'Amount',
             defaultValue: quote ? quote.amount : '',
             ref: function (value) {
@@ -83057,36 +84724,54 @@ var Footer = React.createClass({
         );
     }
 });
-var MenuAgency = [{
-  url: "/agency_admin_maintenance_requests",
-  name: "My Maintenance Requests"
-}, {
-  url: "/agents/new",
-  name: "Add Agent"
-}, {
-  url: "/agency_admins/new",
-  name: "Add Agency Admin"
-}];
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
-var MenuAgent = [{
-  url: "/agent_maintenance_requests",
-  name: "My Maintenance Requests"
-}];
+var MenuAgency = function (edit_agency, edit_agency_admin) {
+  return [{
+    url: "/agency_admin_maintenance_requests",
+    name: "My Maintenance Requests"
+  }, {
+    url: edit_agency,
+    name: "Agency Account Settings"
+  }, {
+    url: edit_agency_admin,
+    name: "Agency Admin Account Settings"
+  }];
+};
 
-var MenuTrady = [{
-  url: "/trady_maintenance_requests",
-  name: "My Maintenance Requests"
-}];
+var MenuAgent = function (edit_agent) {
+  return [{
+    url: "/agent_maintenance_requests",
+    name: "My Maintenance Requests"
+  }, {
+    url: edit_agent,
+    name: "Agent Account Settings"
+  }];
+};
 
-var MenuTenant = [{
-  url: "/tenant_maintenance_requests",
-  name: "My Maintenance Requests"
-}];
+var MenuTrady = function (edit_trady) {
+  return [{
+    url: "/trady_maintenance_requests",
+    name: "My Maintenance Requests"
+  }, {
+    url: edit_trady,
+    name: "Trady Account Settings"
+  }];
+};
 
-var MenuLandlord = [{
-  url: "/landlord_maintenance_requests",
-  name: "My Maintenance Requests"
-}];
+var MenuTenant = function () {
+  return [{
+    url: "/tenant_maintenance_requests",
+    name: "My Maintenance Requests"
+  }];
+};
+
+var MenuLandlord = function () {
+  return [{
+    url: "/landlord_maintenance_requests",
+    name: "My Maintenance Requests"
+  }];
+};
 
 var MobileMenu = React.createClass({
   displayName: "MobileMenu",
@@ -83216,8 +84901,19 @@ var Header = React.createClass({
   },
 
   menuBar: function () {
+    var _props = this.props;
+    var edit_agency = _props.edit_agency;
+    var edit_agency_admin = _props.edit_agency_admin;
+    var edit_agent = _props.edit_agent;
+    var edit_trady = _props.edit_trady;
+    var user_agency_admin = _props.user_agency_admin;
+    var user_agent = _props.user_agent;
+    var user_trady = _props.user_trady;
+    var user_tenant = _props.user_tenant;
+    var user_landlord = _props.user_landlord;
+
     var dataMenu = [];
-    if (!!this.props.user_agency_admin) dataMenu = [].concat(MenuAgency);else if (!!this.props.user_agent) dataMenu = [].concat(MenuAgent);else if (!!this.props.user_trady) dataMenu = [].concat(MenuTrady);else if (!!this.props.user_tenant) dataMenu = [].concat(MenuTenant);else if (!!this.props.user_landlord) dataMenu = [].concat(MenuLandlord);
+    if (user_agency_admin) dataMenu = [].concat(_toConsumableArray(MenuAgency(edit_agency, edit_agency_admin)));else if (user_agent) dataMenu = [].concat(_toConsumableArray(MenuAgent(edit_agent)));else if (user_trady) dataMenu = [].concat(_toConsumableArray(MenuTrady(edit_trady)));else if (user_tenant) dataMenu = [].concat(_toConsumableArray(MenuTenant()));else if (user_landlord) dataMenu = [].concat(_toConsumableArray(MenuLandlord()));
 
     return dataMenu.map(function (item, key) {
       return React.createElement(
@@ -83233,10 +84929,10 @@ var Header = React.createClass({
   },
 
   search: function () {
-    var _props = this.props;
-    var role = _props.role;
-    var _props$searchText = _props.searchText;
-    var searchText = _props$searchText === undefined ? '' : _props$searchText;
+    var _props2 = this.props;
+    var role = _props2.role;
+    var _props2$searchText = _props2.searchText;
+    var searchText = _props2$searchText === undefined ? '' : _props2$searchText;
 
     if (['AgencyAdmin', 'Agent'].indexOf(role) === -1) return null;
 
@@ -83320,7 +85016,7 @@ var Header = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "container" },
+        { className: "container " + (expanded ? 'full-header' : '') },
         React.createElement(
           "div",
           { className: "column header-custom " + (e && "forhome") },
@@ -83334,83 +85030,42 @@ var Header = React.createClass({
               " MaintenanceApp "
             )
           ),
-          logged_in ? React.createElement(
+          logged_in ? !expanded ? React.createElement(
             "div",
-            null,
-            !expanded ? React.createElement(
+            { className: "header-right" },
+            this.search(),
+            React.createElement(
               "div",
-              { className: "header-right" },
-              this.search(),
+              { className: "question" },
+              React.createElement("i", { className: "fa fa-question" })
+            ),
+            React.createElement(
+              "div",
+              { className: "notification" },
+              React.createElement("i", { className: "fa fa-bell" })
+            ),
+            React.createElement(
+              "div",
+              { className: "menu-bar dropdown-custom" },
               React.createElement(
-                "div",
-                { className: "question" },
-                React.createElement("i", { className: "fa fa-question" })
-              ),
-              React.createElement(
-                "div",
-                { className: "notification" },
-                React.createElement("i", { className: "fa fa-bell" })
-              ),
-              React.createElement(
-                "div",
-                { className: "menu-bar dropdown-custom" },
+                "button",
+                { type: "button", className: "btn-menu", onClick: this.showMenu },
                 React.createElement(
-                  "button",
-                  { type: "button", className: "btn-menu", onClick: this.showMenu },
-                  React.createElement(
-                    "span",
-                    { className: "icon-user" },
-                    React.createElement("i", { className: "fa fa-user" })
-                  ),
-                  React.createElement(
-                    "span",
-                    null,
-                    "Hi, ",
-                    props.role,
-                    React.createElement("i", { className: "fa fa-angle-down" })
-                  )
+                  "span",
+                  { className: "icon-user" },
+                  React.createElement("i", { className: "fa fa-user" })
                 ),
                 React.createElement(
-                  "ul",
-                  { className: "dropdown-menu", id: "menu-bar" },
-                  this.menuBar(),
-                  React.createElement(
-                    "li",
-                    { ref: "Items" },
-                    React.createElement(
-                      "a",
-                      { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
-                      " Sign Out"
-                    )
-                  )
-                )
-              )
-            ) : React.createElement(
-              "div",
-              { className: "log_in" },
-              React.createElement(
-                "div",
-                { className: "menu-button", onClick: this.showItems, ref: "showItems" },
-                " S "
-              ),
-              this.state.isItems && React.createElement(
-                "ul",
-                { className: "desktop-menu-items" },
-                React.createElement(
-                  "li",
+                  "span",
                   null,
-                  React.createElement(
-                    "span",
-                    { className: "icon-user" },
-                    React.createElement("i", { className: "fa fa-user" })
-                  ),
-                  React.createElement(
-                    "span",
-                    null,
-                    "Hi, ",
-                    props.role
-                  )
-                ),
+                  "Hi, ",
+                  props.role,
+                  React.createElement("i", { className: "fa fa-angle-down" })
+                )
+              ),
+              React.createElement(
+                "ul",
+                { className: "dropdown-menu", id: "menu-bar" },
                 this.menuBar(),
                 React.createElement(
                   "li",
@@ -83420,6 +85075,43 @@ var Header = React.createClass({
                     { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
                     " Sign Out"
                   )
+                )
+              )
+            )
+          ) : React.createElement(
+            "div",
+            { className: "log_in" },
+            React.createElement(
+              "div",
+              {
+                className: "menu-button",
+                onClick: this.showItems,
+                ref: "showItems"
+              },
+              React.createElement(
+                "span",
+                { className: "icon-user" },
+                React.createElement("i", { className: "fa fa-user" })
+              ),
+              React.createElement(
+                "span",
+                null,
+                "Hi, ",
+                props.role
+              ),
+              React.createElement("i", { className: "fa fa-angle-down" })
+            ),
+            this.state.isItems && React.createElement(
+              "ul",
+              { className: "desktop-menu-items" },
+              this.menuBar(),
+              React.createElement(
+                "li",
+                { ref: "Items" },
+                React.createElement(
+                  "a",
+                  { href: props.logout_path, "data-method": "delete", rel: "nofollow" },
+                  " Sign Out"
                 )
               )
             )
@@ -83963,7 +85655,6 @@ var TenantMaintenanceRequest = React.createClass({
 		var landlordComments = _state.landlordComments;
 		var isCancel = _state.isCancel;
 
-		debugger;
 		var fd = new FormData();
 		fd.append('appointment[status]', 'Active');
 		fd.append('appointment[date]', params.date);
@@ -84699,15 +86390,230 @@ var TenantMaintenanceRequest = React.createClass({
 		);
 	}
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var TradyEdit = React.createClass({
+  displayName: 'TradyEdit',
+
+  getInitialState: function () {
+    var trady = this.props.trady || {};
+    var profile_image = this.props.profile_image || {};
+    var image_url = this.props.image_url || '/default-avatar.png';
+
+    return {
+      errors: {},
+      gallery: _extends({}, profile_image, { image_url: image_url })
+    };
+  },
+
+  uploadImage: function (images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+    var id = this.state.gallery.id;
+
+    var FD = new FormData();
+    images.map(function (image, index) {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[trady_id]', this.props.trady.id);
+    if (id) {
+      FD.append('picture[trady_profile_image_id]', id);
+    }
+
+    var self = this;
+    $.ajax({
+      type: id ? 'PUT' : 'POST',
+      url: '/trady_profile_images' + (id ? '/' + id : ''),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        callback(res.errors);
+        if (!res.errors && res.profile_image) {
+          self.setState({ gallery: res.profile_image });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  onSubmit: function (e) {
+    e.preventDefault();
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var trady = {
+      name: getValidValue(this.name),
+      company_name: getValidValue(this.company_name),
+      mobile: getValidValue(this.mobile)
+    };
+
+    var params = { trady: trady };
+
+    var self = this;
+    $.ajax({
+      type: 'PUT',
+      url: '/tradies/' + (this.props.trady || {}).id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  renderTextField: function (field, textHolder) {
+    var _this = this;
+
+    var errors = this.state.errors;
+    var _props$trady = this.props.trady;
+    var trady = _props$trady === undefined ? {} : _props$trady;
+
+    var value = trady[field];
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'div',
+        { className: 'col-sm-10' },
+        React.createElement('input', {
+          type: 'text',
+          id: field,
+          placeholder: textHolder,
+          defaultValue: value,
+          ref: function (ref) {
+            return _this[field] = ref;
+          },
+          className: "form-control " + (errors[field] ? "has-error" : ""),
+          onChange: this.removeError
+        }),
+        this.renderError(errors[field])
+      )
+    );
+  },
+
+  render: function () {
+    var trady = this.props.trady || {};
+    var trady_company = this.props.trady_company || {};
+    var _state = this.state;
+    var _state$errors = _state.errors;
+    var errors = _state$errors === undefined ? {} : _state$errors;
+    var gallery = _state.gallery;
+
+    var renderTextField = this.renderTextField;
+    var renderButtonFunc = this.renderButton;
+    var haveCompanyClass = !trady_company.id ? 'no-company' : '';
+
+    return React.createElement(
+      'div',
+      { className: 'edit_profile edit_trady_profile' },
+      React.createElement(
+        'div',
+        { className: 'left' },
+        gallery && React.createElement('img', { id: 'avatar', src: gallery.image_url, alt: 'Avatar Image' }),
+        React.createElement(ModalImageUpload, {
+          uploadImage: this.uploadImage,
+          gallery: gallery && [gallery] || [],
+          text: 'Add/Change Photo',
+          className: 'btn button-primary option-button'
+        }),
+        renderButtonFunc('Reset Password', this.props.change_password_path),
+        !haveCompanyClass && renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '?id=' + trady_company.id)
+      ),
+      React.createElement(
+        'form',
+        {
+          role: 'form',
+          className: "form-horizontal right " + haveCompanyClass,
+          id: 'edit_trady',
+          onSubmit: this.onSubmit
+        },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Edit Trady Profile'
+        ),
+        renderTextField('name', 'Name'),
+        renderTextField('company_name', 'Company Name'),
+        renderTextField('mobile', 'Mobile'),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            'Update Your Profile'
+          )
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var EditTradyCompany = React.createClass({
   displayName: "EditTradyCompany",
 
   getInitialState: function () {
+    var _props = this.props;
+    var image_url = _props.image_url;
+    var _props$profile_image = _props.profile_image;
+    var profile_image = _props$profile_image === undefined ? {} : _props$profile_image;
+    var _props$trady_company = _props.trady_company;
+    var trady_company = _props$trady_company === undefined ? {} : _props$trady_company;
+
     return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
       gst_registration: !!this.props.gst_registration ? true : false,
+      gallery: _extends({}, profile_image, { image_url: image_url }),
       notification: {
         title: "",
         bgClass: "",
@@ -84787,12 +86693,12 @@ var EditTradyCompany = React.createClass({
     };
 
     var trady_company = {
-      email: getValidValue(email),
-      address: getValidValue(address),
-      company_name: getValidValue(company_name),
-      trading_name: getValidValue(trading_name),
-      mobile_number: getValidValue(mobile_number),
-      mailing_address: getValidValue(mailing_address),
+      email: getValidValue(this.email),
+      address: getValidValue(this.address),
+      company_name: getValidValue(this.company_name),
+      trading_name: getValidValue(this.trading_name),
+      mobile_number: getValidValue(this.mobile_number),
+      mailing_address: getValidValue(this.mailing_address),
       trady_company_id: this.props.id,
       trady_id: this.props.trady_id,
       quote_id: this.props.quote_id,
@@ -84801,18 +86707,17 @@ var EditTradyCompany = React.createClass({
       system_plan: this.props.system_plan,
       invoice_type: this.props.invoice_type,
       maintenance_request_id: this.props.maintenance_request_id,
-      trady_company_id: this.props.id || null,
       quote_id: this.props.quote_id || null,
       ledger_id: this.props.ledger_id || null,
       pdf_file_id: this.props.pdf_file_id || null
     };
 
     if (isInvoice) {
-      trady_company.abn = getValidValue(abn);
       trady_company.gst_registration = this.state.gst_registration;
-      trady_company.bsb = getValidValue(bsb_number);
-      trady_company.account_name = getValidValue(account_name);
-      trady_company.bank_account_number = getValidValue(bank_account_number);
+      trady_company.abn = getValidValue(this.abn);
+      trady_company.bsb_number = getValidValue(this.bsb_number);
+      trady_company.account_name = getValidValue(this.account_name);
+      trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
 
     var params = { trady_company: trady_company };
@@ -85115,7 +87020,7 @@ var EditTradyCompany = React.createClass({
             className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
           }),
-          renderErrorFunc(errors['trading_name'])
+          renderErrorFunc(errors['account_name'])
         )
       ), React.createElement(
         "div",
@@ -85174,6 +87079,256 @@ var EditTradyCompany = React.createClass({
           "button",
           { type: "submit", className: "button-primary green option-button" },
           "Next"
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError('Cannot destructure undefined'); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var TradyCompanyEdit = React.createClass({
+  displayName: 'TradyCompanyEdit',
+
+  getInitialState: function () {
+    var trady_company = this.props.trady_company || {};
+    var profile_image = this.props.profile_image || {};
+    var image_url = this.props.image_url || '/default-avatar.png';
+
+    return {
+      gst_registration: trady_company.gst_registration,
+      errors: {},
+      gallery: _extends({}, profile_image, { image_url: image_url })
+    };
+  },
+
+  changeGstRegistration: function (_ref) {
+    _objectDestructuringEmpty(_ref);
+
+    this.setState({
+      gst_registration: !this.state.gst_registration,
+      errors: _extends({}, this.state.errors, { gst_registration: '' })
+    });
+  },
+
+  uploadImage: function (images, callback) {
+    if (images.length == 0) {
+      return;
+    }
+    var id = this.state.gallery.id;
+
+    var FD = new FormData();
+    images.map(function (image, index) {
+      var idx = index + 1;
+      FD.append('picture[image]', JSON.stringify(image));
+    });
+
+    FD.append('picture[trady_company_id]', this.props.trady_company.id);
+    if (id) {
+      FD.append('picture[trady_company_profile_image_id]', id);
+    }
+
+    var self = this;
+    $.ajax({
+      type: id ? 'PUT' : 'POST',
+      url: '/trady_company_profile_images' + (id ? '/' + id : ''),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        callback(res.errors);
+        if (!res.errors && res.company_image) {
+          self.setState({ gallery: res.company_image });
+        }
+      },
+      error: function (err) {}
+    });
+    return false;
+  },
+
+  onSubmit: function (e) {
+
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    e.preventDefault();
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var trady_company = {
+      company_name: getValidValue(this.company_name),
+      trading_name: getValidValue(this.trading_name),
+      abn: getValidValue(this.abn),
+      address: getValidValue(this.address),
+      mailing_address: getValidValue(this.mailing_address),
+      mobile_number: getValidValue(this.mobile_number),
+      account_name: getValidValue(this.account_name),
+      bsb_number: getValidValue(this.bsb_number),
+      bank_account_number: getValidValue(this.bank_account_number),
+      gst_registration: this.state.gst_registration,
+      id: this.props.trady_company.id
+    };
+    var params = { trady_company: trady_company };
+
+    var self = this;
+    $.ajax({
+      type: 'PATCH',
+      url: '/update_trady_company_information',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    return;
+  },
+
+  removeError: function (_ref2) {
+    var id = _ref2.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  renderTextField: function (field, textHolder) {
+    var _this = this;
+
+    var errors = this.state.errors;
+    var _props$trady_company = this.props.trady_company;
+    var trady_company = _props$trady_company === undefined ? {} : _props$trady_company;
+
+    var value = trady_company[field];
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'div',
+        { className: 'col-sm-10' },
+        React.createElement('input', {
+          type: 'text',
+          id: field,
+          placeholder: textHolder,
+          defaultValue: value,
+          ref: function (ref) {
+            return _this[field] = ref;
+          },
+          className: "form-control " + (errors[field] ? "has-error" : ""),
+          onChange: this.removeError
+        }),
+        this.renderError(errors[field])
+      )
+    );
+  },
+
+  render: function () {
+    var trady_company = this.props.trady_company || {};
+    var company_name = trady_company.company_name;
+    var trading_name = trady_company.trading_name;
+    var abn = trady_company.abn;
+    var address = trady_company.address;
+    var mailing_address = trady_company.mailing_address;
+    var mobile_phone = trady_company.mobile_phone;
+    var account_name = trady_company.account_name;
+    var bsb_number = trady_company.bsb_number;
+    var bank_account_number = trady_company.bank_account_number;
+    var _state = this.state;
+    var _state$errors = _state.errors;
+    var errors = _state$errors === undefined ? {} : _state$errors;
+    var gst_registration = _state.gst_registration;
+    var gallery = _state.gallery;
+
+    var renderTextField = this.renderTextField;
+    var renderButtonFunc = this.renderButton;
+
+    return React.createElement(
+      'div',
+      { className: 'edit_profile edit_trady_company_profile' },
+      React.createElement(
+        'div',
+        { className: 'left' },
+        gallery && React.createElement('img', { id: 'avatar', src: gallery.image_url, alt: 'Avatar Image' }),
+        React.createElement(ModalImageUpload, {
+          uploadImage: this.uploadImage,
+          gallery: gallery && [gallery] || [],
+          text: 'Add/Change Photo',
+          className: 'btn button-primary option-button'
+        }),
+        renderButtonFunc('Reset Password', this.props.change_password_path),
+        renderButtonFunc('Trady Account Settings', this.props.edit_trady_path)
+      ),
+      React.createElement(
+        'form',
+        { role: 'form', className: 'form-horizontal right', id: 'edit_agency', onSubmit: this.onSubmit },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Edit Trady Company Profile'
+        ),
+        renderTextField('company_name', 'Company Name'),
+        renderTextField('trading_name', 'Business Name'),
+        renderTextField('abn', 'ABN'),
+        renderTextField('address', 'Address'),
+        renderTextField('mailing_address', 'Mailing Address'),
+        renderTextField('mobile_number', 'Mobile Number'),
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement(
+            'div',
+            { className: 'col-sm-10' },
+            React.createElement('input', {
+              type: 'checkbox',
+              id: 'gst_registration',
+              onChange: this.changeGstRegistration,
+              checked: gst_registration ? "checked" : false
+            }),
+            'GST  Registration'
+          )
+        ),
+        this.renderError(errors['gst_registration']),
+        renderTextField('account_name', 'Account Name'),
+        renderTextField('bsb_number', 'BSB Number'),
+        renderTextField('bank_account_number', 'Bank Account Number'),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            'Update Your Profile'
+          )
         )
       )
     );
@@ -85274,12 +87429,12 @@ var AddTradycompany = React.createClass({
     };
 
     var trady_company = {
-      email: getValidValue(email),
-      address: getValidValue(address),
-      company_name: getValidValue(company_name),
-      trading_name: getValidValue(trading_name),
-      mobile_number: getValidValue(mobile_number),
-      mailing_address: getValidValue(mailing_address),
+      email: getValidValue(this.email),
+      address: getValidValue(this.address),
+      company_name: getValidValue(this.company_name),
+      trading_name: getValidValue(this.trading_name),
+      mobile_number: getValidValue(this.mobile_number),
+      mailing_address: getValidValue(this.mailing_address),
       trady_id: this.props.trady_id,
       quote_id: this.props.quote_id,
       work_flow: this.props.work_flow,
@@ -85294,10 +87449,10 @@ var AddTradycompany = React.createClass({
     };
 
     if (isInvoice) {
-      trady_company.abn = getValidValue(abn);
-      trady_company.gst_registration = this.state.gst_registration, trady_company.bsb = getValidValue(bsb_number);
-      trady_company.account_name = getValidValue(account_name);
-      trady_company.bank_account_number = getValidValue(bank_account_number);
+      trady_company.abn = getValidValue(this.abn);
+      trady_company.gst_registration = this.state.gst_registration, trady_company.bsb_number = getValidValue(this.bsb_number);
+      trady_company.account_name = getValidValue(this.account_name);
+      trady_company.bank_account_number = getValidValue(this.bank_account_number);
     }
 
     var params = { trady_company: trady_company };
@@ -85611,7 +87766,7 @@ var AddTradycompany = React.createClass({
               className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
             }),
-            renderErrorFunc(errors['trading_name'])
+            renderErrorFunc(errors['account_name'])
           )
         ), React.createElement(
           "div",

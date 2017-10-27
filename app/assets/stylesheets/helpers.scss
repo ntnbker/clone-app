@@ -1,0 +1,271 @@
+#image_uploader {
+  .modal-custom {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    outline: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    .modal-dialog {
+      -webkit-transform: translate(0,0);
+      -ms-transform: translate(0,0);
+      -o-transform: translate(0,0);
+      transform: translate(0,0);
+      width: 500px;
+      margin: 30px auto;
+    }
+    .modal-content {
+      position: relative;
+      background-color: #fff;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      border: 1px solid #999;
+      border: 1px solid rgba(0,0,0,.2);
+      outline: 0;
+      -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      font-weight: 400;
+      font-size: 14px;
+      .due {
+        margin-left: 20px;
+        margin-bottom: 10px;
+      }
+      .print {
+        @include flexbox;
+        @include justify-content(flex-end);
+        margin-right: 20px;
+      }
+    }
+    .readonly {
+      background-color: $color-grey;
+    }
+    .modal-header {
+      padding: 15px;
+      border-bottom: 1px solid #e5e5e5;
+      background-color: $color-grey-dark;
+      .modal-title {
+        margin-bottom: 0px;
+        color: $color-white;
+        font-weight: 500;
+        font-size: 16px;
+        text-transform: initial;
+        text-align: center;
+      }
+      .close {
+        float: right;
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1;
+        color: $color-white;
+        text-shadow: 0 1px 0 $color-white;
+        filter: alpha(opacity=20);
+        opacity: .8;
+        padding: 0;
+        cursor: pointer;
+        background: 0 0;
+        border: 0;
+        margin-top: 2px;
+        margin-right: 5px;
+        height: auto;
+        span {
+          border: 1px solid $color-white;
+          border-radius: 100%;
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          line-height: 18px;
+          text-align: center;
+          color: $color-white;
+        }
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+    .bg-success {
+      background-color: $color-green;
+    }
+    .bg-error {
+      background-color: $color-red
+    }
+    .modal-body {
+      position: relative;
+      padding: 15px;
+      overflow: hidden;
+      padding-bottom: 0;
+      text-align: center;
+      p:first-child {
+        text-transform: initial;
+      }
+      .scroll-custom::-webkit-scrollbar-track
+      {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 15px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      .scroll-custom::-webkit-scrollbar
+      {
+        width: 5px;
+        background-color: #F5F5F5;
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      .scroll-custom::-webkit-scrollbar-thumb
+      {
+        border-radius: 15px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: rgba(0, 0, 0, 0.5);
+        margin-right: 0px;
+        padding: 0 10px;
+      }
+      .note-landlord {
+        color: #849aaa;
+        text-transform: none;
+        text-align: center;
+        margin-bottom: 15px;
+        display: block;
+      }
+      label {
+        font-weight: 400;
+        float: left;
+        text-transform: uppercase;
+        width: 80px;
+        line-height: 38px;
+        strong {
+          color: $color-red;
+          font-weight: 500;
+          font-size: 20px;
+        }
+      }
+      .label-custom {
+        width: 140px;
+        text-align: left;
+      }
+      input {
+        width: 80%;
+      }
+      .input-custom {
+        width: 80%;
+      }
+      .message {
+        list-style: none;
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: inherit;
+        margin-bottom: 0px;
+      }
+      .item-message {
+        width: 100%;
+        position: relative;
+        margin-top: 20px;
+        text-align: left;
+        &:after {
+          bottom: 98%;
+          left: 12px;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+          border-bottom-color: $color-grey;
+          border-width: 8px;
+          margin-left: -8px;
+        }
+        span {
+          background-color: $color-grey;
+          color: $color-black;
+          display: inline-block;
+          text-transform: capitalize;
+          border-radius: 5px;
+          padding: 5px 20px;
+          display: inline-block;
+          margin-right: 5px;
+        }
+      }
+      .current-message {
+        text-align: right;
+        &:after {
+          border-bottom-color: $color-green;
+          right: 12px;
+          left: inherit;
+        }
+        span {
+          background-color: $color-green;
+          color: $color-white;
+        }
+      }
+    }
+    .edit-maintenance-request {
+      select {
+        float: left;
+        width: 100% !important;
+      }
+      label {
+        width: 100%;
+        text-align: left;
+        text-transform: initial;
+      }
+      input {
+        width: 100%;
+      }
+      textarea {
+        width: 100%;
+      }
+    }
+    .modal-footer {
+      padding: 15px;
+      text-align: center;
+      border-top: none;
+      overflow: hidden;
+      button {
+        border: none;
+        color: $color-white;
+        text-transform: capitalize;
+      }
+      .textarea-message {
+        width: 100%;
+        margin-bottom: 1px;
+      }
+      .success {
+        background-color: $color-green;
+        margin-right: 10px;
+      }
+      .cancel {
+        background-color: $color-red;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex-direction: column;
+    .left {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: 25%;
+      >* {
+        margin: 10px 0;
+      }
+    }
+
+    .right {
+      margin-left: 25%;
+      width: 50%;
+    }
+    .modal-custom {
+      .modal-dialog {
+        width: 80%;
+      }
+    }
+  }
+}

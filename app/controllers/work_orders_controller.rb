@@ -5,6 +5,9 @@ class WorkOrdersController < ApplicationController
     maintenance_request.update_attribute(:trady_id, nil)
     log = Log.create(maintenance_request_id:maintenance_request.id, action:"Work order cancelled.")
     #WE NEED TO SET THE MR TO A NEW STATUS HERE.
+
+    maintenance_request.action_status.update_columns(agent_status:"Cancelled Work Order", trady_status:"Cancelled Work Order")
+
     if current_user.logged_in_as("AgencyAdmin")
       
       redirect_to agency_admin_maintenance_request_path(maintenance_request)

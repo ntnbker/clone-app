@@ -8,7 +8,8 @@ var ModalAddPhoto = React.createClass({
       gallery: this.props.gallery,
       totalSize: 0,
       uploading: false,
-      uploadComplete: false
+      uploadComplete: false,
+      isAndroid: false,
     };
   },
 

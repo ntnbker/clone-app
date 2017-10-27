@@ -1,5 +1,5 @@
 class AgentMaintenanceRequestsController < ApplicationController 
-  before_action(only: [:show]) { email_auto_login(params[:user_id]) }
+  before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
   
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Agent")}
@@ -17,7 +17,7 @@ class AgentMaintenanceRequestsController < ApplicationController
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
     @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
     @new_invoice_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "New Invoice")
-    @pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
+    #@pending_payment_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Pending Payment")
     
     @awaiting_owner_initiation_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Initiation")
     @awaiting_owner_instruction_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Awaiting Owner Instruction")
@@ -32,8 +32,11 @@ class AgentMaintenanceRequestsController < ApplicationController
     @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")  
     @maintenance_scheduled_with_landlord_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled With Landlord")  
     @deferred_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Defer")  
-    @archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")  
-    
+
+    @archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")
+    @jobs_completed = MaintenanceRequest.find_maintenance_requests_total(current_user, "Jobs Completed")  
+    @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
+
     @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|

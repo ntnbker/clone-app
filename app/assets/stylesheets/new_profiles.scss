@@ -1,0 +1,35 @@
+.new_profile {
+  @include flexbox;
+  @include flex-wrap(wrap);
+  @include flex-direction(column);
+  @include align-items(center);
+  .form-group {
+    @include flexbox;
+    @include flex-direction(column);
+    @include align-items(center);
+
+    width: 80%;
+    margin-left: 10%;
+    input {
+      width: 100%;
+    }
+    button {
+      background-color: #7dc691;
+      border-color: #7dc691;
+      color: #fff;
+      &:hover, &:active{
+        background-color: #2FA342;
+        border-color: #2FA342;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .new_agency_admin {
+      .form-group {
+        width: 80%;
+      }
+    }
+  }
+}
+
