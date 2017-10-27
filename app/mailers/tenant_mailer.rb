@@ -159,6 +159,18 @@ class TenantMailer < ActionMailer::Base
         
     mail(to:@tenant.email, subject:"A maintenance request was submitted by your agent - #{@person} - #{@property.property_address}")
   end
+
+
+  def reminder_tenant_to_confirm_appointment(maintenance_request_object, trady_object, property_object,tenant_object)
+    @maintenance_request = maintenance_request_object
+    
+    @property = property_object
+    @trady = trady_object
+    @tenant = tenant_object
+    @user = @tenant.user
+    
+    mail(to:@tenant.email, subject:"Reminder New appointment request by #{@trady.company_name.capitalize} - #{@property.property_address.capitalize}")
+  end
   
   
 

@@ -4,3 +4,7 @@ production:
   :concurrency: 6
 :queues:
   - default
+:schedule:
+  reminder_queue:
+    every: ['24h', first_in: '14hr']
+    class: ReminderQueueWorker

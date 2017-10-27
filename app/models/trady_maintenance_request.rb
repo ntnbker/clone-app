@@ -70,6 +70,8 @@ class TradyMaintenanceRequest
       count = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Awaiting Payment"}).distinct.count
     elsif parameter == "Job Complete"
       count = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{maintenance_request_status:"Completed"}).distinct.count
+    elsif parameter == "Cancelled Work Order"
+      count = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{maintenance_request_status:"Cancelled Work Order"}).distinct.count
     elsif parameter == "Declined Quotes"
       quote_mr_ids = Quote.where(trady_id:trady_id,status:"Declined").pluck(:maintenance_request_id)
       count = MaintenanceRequest.where(id:quote_mr_ids).count

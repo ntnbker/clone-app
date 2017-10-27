@@ -67,12 +67,16 @@ class TradiesController < ApplicationController
           QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
         end
         TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id,@trady.id) 
-        mr.action_status.update_columns(agent_status:"Awaiting Tradie Initiation", trady_status:"Appointment Required")
+
+        mr.action_status.update_columns(agent_status:"Awaiting Quote", trady_status:"Appointment Required")
+
       elsif params[:trady][:trady_request] == "Work Order"
         log = Log.create(maintenance_request_id:mr.id, action:"Work order sent to #{@trady.capitalize_company_name} by: ", name:name)
         TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
         mr.update_attribute(:trady_id, @user.trady.id )
-        mr.action_status.update_columns(agent_status:"Awaiting Tradie Initiation", trady_status:"Appointment Required")
+
+        mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
+
       end 
       
       #mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
@@ -111,13 +115,17 @@ class TradiesController < ApplicationController
           QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
         end
 
-        mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
+
+        mr.action_status.update_columns(agent_status:"Awaiting Quote", trady_status:"Appointment Required")
+
 
       elsif params[:trady][:trady_request] == "Work Order"
         log = Log.create(maintenance_request_id:mr.id, action:"Work order sent to #{@user.trady.capitalize_company_name} by: ", name:name)
         TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
         mr.update_attribute(:trady_id, @user.trady.id )
-        mr.action_status.update_columns(agent_status:"Awaiting Tradie Initiation", trady_status:"Appointment Required")
+
+        mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
+
       end 
       
       #mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
@@ -155,12 +163,16 @@ class TradiesController < ApplicationController
           else
             QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
           end
-          mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation") 
+
+          mr.action_status.update_columns(agent_status:"Awaiting Quote", trady_status:"Appointment Required") 
+
         elsif params[:trady][:trady_request] == "Work Order"
           log = Log.create(maintenance_request_id:mr.id, action:"Work Order sent to #{@trady.capitalize_company_name} by: ", name:name)
           TradyWorkOrderEmailWorker.perform_async(@user.trady.id, mr.id)
           mr.update_attribute(:trady_id, @user.trady.id )
-          mr.action_status.update_columns(agent_status:"Awaiting Tradie Initiation", trady_status:"Appointment Required")
+
+          mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
+
         end 
 
         # mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
