@@ -1711,8 +1711,8 @@ var MaintenanceRequest = React.createClass({
 		};
 
 		$.ajax({
-			type: 'PUT',
-			url: '/update_maintenance_request_status',
+			type: 'POST',
+			url: '/duplicate_maintenance_request',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
