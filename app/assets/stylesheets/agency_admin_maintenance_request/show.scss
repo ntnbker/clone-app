@@ -39,11 +39,20 @@ body::-webkit-scrollbar-thumb {
   position: relative;
   top: 100px;
 }
+.fieldlist {
+  li {
+    list-style: none;
+  }
+}
 .error {
   margin-top: 10px;
   margin-bottom: 0px;
   color: red;
   text-align: center;
+}
+.split-maintenance-request {
+  border: rgba(0,0,0,0.2) solid 2px;
+  margin: 5px;
 }
 .modal-open {
   overflow: hidden;

@@ -466,14 +466,27 @@ var ItemMaintenanceRequest = React.createClass({
 	}
 });
 
-var ModalSplitMR = React.createClass({
+var ModalEditMR = React.createClass({
+	getInitialState() {
 
-	getInitialState: function() {
 		return {
-			titleError: false,
-			serviceError: false,
-			descriptionError: false,
+			serviceError: '',
+			descriptionError: '',
 		};
+	},
+
+	componentWillReceiveProps(nextProps) {
+		const errorForms 		 = nextProps.errorForms || {};
+		const { serviceError = '', descriptionError = '' } = this.filterErrors(errorForms);
+
+		this.setState({ serviceError, descriptionError });
+	},
+
+	filterErrors({ serviceError = '', descriptionError = '' }) {
+		return {
+			serviceError: 		this.serviceType.value 			 ? '' : serviceError,
+			descriptionError: this.serviceType.description ? '' : descriptionError,
+		}
 	},
 
 	removeError: function({ target: { id } }) {
@@ -487,6 +500,7 @@ var ModalSplitMR = React.createClass({
 	renderServiceType(maintenance_request, services) {
 		if (!!this.props.trady) return null;
 		const { serviceError } = this.state;
+		const { x } 					 = this.props;
 
 		return (
 			<div className="row m-t-lg">
@@ -495,7 +509,7 @@ var ModalSplitMR = React.createClass({
 					id="service"
 					ref={e => this.serviceType = e}
 					className={"form-control input-custom " + (serviceError ? 'border_on_error' : '')}
-					name="maintenance_request[service_type]"
+					name={`maintenance_requests[${x}][service_type]`}
 					defaultValue={maintenance_request.service_type}
 					onChange={this.removeError}
 				>
@@ -518,15 +532,23 @@ var ModalSplitMR = React.createClass({
 		);
 	},
 
-	renderMR: function() {
+	render() {
+		const { descriptionError } 	= this.state;
+		const content 							= this.props.content || {};
+		const params 								= this.props.params || {};
+		const x 										= this.props.x || 0;
+
+		const { maintenance_request = {} } = content;
+		const { services = {} } 					 = params;
+
 		return (
-			<div className="modal-body edit-maintenance-request">
+			<div className="modal-body split-maintenance-request edit-maintenance-request">
 				{this.renderServiceType(maintenance_request, services)}
 				<div className="row">
 					<label>Maintenance Request Description:</label>
 					<textarea
 						placeholder="Enter Description"
-						name="maintenance_request[maintenance_description]"
+						name={`maintenance_requests[${x}][maintenance_description]`}
 						ref={e => this.description = e}
 						id="description"
 						onChange={this.removeError}
@@ -537,6 +559,15 @@ var ModalSplitMR = React.createClass({
 				{this.renderError(descriptionError)}
 			</div>
 		)
+	}
+})
+
+var ModalSplitMR = React.createClass({
+
+	getInitialState: function() {
+		return {
+			errors: {},
+		};
 	},
 
 	onSubmit(e) {
@@ -551,15 +582,14 @@ var ModalSplitMR = React.createClass({
 	},
 
 	render() {
-
-		const { descriptionError, titleError, serviceError } = this.state;
-		const {maintenance_request, services} = this.props;
+		const { errors } 										   = this.state;
+		const {maintenance_request, services } = this.props;
 
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
 					<div className="modal-content">
-						<form role="form" id="addForm" onSubmit={this.onSubmit}>
+						<form role="form" id="splitForm" onSubmit={this.onSubmit}>
 							<input
 							  type="hidden"
 							  value={maintenance_request.id}
@@ -578,6 +608,12 @@ var ModalSplitMR = React.createClass({
 								</button>
 								<h4 className="modal-title text-center">Split Maintenance Request</h4>
 							</div>
+							<FieldList
+								SampleField={ModalEditMR}
+								existingContent={[{ maintenance_request }]}
+								params={{ services }}
+								errors={errors}
+							/>
 							<div className="modal-footer">
 								<button
 									type="button"
@@ -587,7 +623,6 @@ var ModalSplitMR = React.createClass({
 								<button
 									type="submit"
 									className="btn btn-default success"
-									disabled={titleError || descriptionError || serviceError}
 								>
 									Submit
 								</button>
@@ -598,7 +633,7 @@ var ModalSplitMR = React.createClass({
 			</div>
 		)
 	}
-})
+});
 
 var ModalConfirmUpdateStatus = React.createClass({
 	render: function() {
