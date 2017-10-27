@@ -373,6 +373,12 @@ class MaintenanceRequestsController < ApplicationController
 
 
 
+  def duplicate
+    
+  end
+
+
+
   private
 
   def maintenance_request_params

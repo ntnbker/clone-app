@@ -61,6 +61,7 @@ Rails.application.routes.draw do
     resources :maintenance_requests, only:[:new,:create,:destroy]
     post "update_maintenance_request" => "maintenance_requests#update"
     post "update_maintenance_request_status"=> "maintenance_requests#update_status"
+    post "duplicate_maintenance_request"=> "maintenance_requests#duplicate"
   ###################################################
   ##########MESSAGING RESOURCES/ROUTES###############
   ###################################################
