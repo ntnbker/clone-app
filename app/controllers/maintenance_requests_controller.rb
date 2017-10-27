@@ -377,6 +377,10 @@ class MaintenanceRequestsController < ApplicationController
     
   end
 
+  def split
+    
+  end
+
 
 
   private
