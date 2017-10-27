@@ -409,14 +409,14 @@ body::-webkit-scrollbar-thumb {
     }
     .info .actions {
       margin-left: 0px;
-      width: 429px;
+      width: 100%;
       float: right;
       button {
         background-color: $color-grey;
         color: $color-grey-dark;
         font-size: 14px;
         float: right;
-        width: 138px;
+        width: 120px;
         margin-right: 5px;
         margin-bottom: 5px;
         font-weight: 400;
@@ -1448,7 +1448,7 @@ body::-webkit-scrollbar-thumb {
         font-size: 18px;
       }
       .info .actions {
-        width: 429px;
+        width: 100%;
         float: left;
         margin-top: 10px;
       }
@@ -1521,14 +1521,13 @@ body::-webkit-scrollbar-thumb {
         float: none;
       }
       .info .actions {
-        width: 429px;
+        width: 100%;
         float: left;
         overflow: hidden;
         margin-top: 20px;
         margin-bottom: 10px;
         button {
           height: 40px;
-          padding: 0 10px;
         }
       }
       .info {
@@ -1615,7 +1614,7 @@ body::-webkit-scrollbar-thumb {
         width: 100%;
       }
       .info .actions {
-        width: 429px;
+        width: 100%;
         overflow: hidden;
         float: left;
         margin-top: 25px;
@@ -1706,7 +1705,7 @@ body::-webkit-scrollbar-thumb {
         }
       }
       .actions {
-        width: 429px;
+        width: 100%;
         margin: 10px 0;
         button {
           font-size: 12px;

@@ -305,6 +305,16 @@ var ButtonHeaderMR = React.createClass({
 		const {standBy, actionRequests, awaitingAction} = this.state;
 		return (
 			<div className="actions">
+				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
+					<span>
+						Split
+					</span>
+				</button>
+				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('duplicateMR')}>
+					<span>
+						Duplicate
+					</span>
+				</button>
 				<div id="update-status">
 					<button className="button-primary update-status" onClick={(key) => this.show('status')}>
 						Update status
@@ -346,6 +356,52 @@ var ButtonHeaderMR = React.createClass({
 						<div>
 							<p className="agent">Agents</p>
 							<Assigns assigns={all_agents} viewItem={(key, item) => this.props.viewItem(key, item)} />
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalConfirmMR = React.createClass({
+	handleConfirm: function() {
+		this.props.confirm();
+	},
+
+	render: function() {
+		const {title, content} = this.props;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button
+								type="button"
+								className="close"
+								data-dismiss="modal"
+								aria-label="Close"
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">{title}</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">{content}</p>
+						</div>
+						<div className="modal-footer">
+							<button
+								type="button"
+								className="btn btn-default success"
+								onClick={this.handleConfirm}
+								data-dismiss="modal"
+							>Yes</button>
+							<button
+								type="button"
+								className="btn btn-primary cancel"
+								onClick={this.props.close}
+							>No</button>
 						</div>
 					</div>
 				</div>
@@ -409,6 +465,140 @@ var ItemMaintenanceRequest = React.createClass({
 		);
 	}
 });
+
+var ModalSplitMR = React.createClass({
+
+	getInitialState: function() {
+		return {
+			titleError: false,
+			serviceError: false,
+			descriptionError: false,
+		};
+	},
+
+	removeError: function({ target: { id } }) {
+		this.setState({ [`${id}Error`]: '' })
+	},
+
+	renderError: function(error) {
+		return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+	},
+
+	renderServiceType(maintenance_request, services) {
+		if (!!this.props.trady) return null;
+		const { serviceError } = this.state;
+
+		return (
+			<div className="row m-t-lg">
+				<label>Service Type:</label>
+				<select
+					id="service"
+					ref={e => this.serviceType = e}
+					className={"form-control input-custom " + (serviceError ? 'border_on_error' : '')}
+					name="maintenance_request[service_type]"
+					defaultValue={maintenance_request.service_type}
+					onChange={this.removeError}
+				>
+					<option value="">Service Type</option>
+					{
+						services.map(function(service, index) {
+							return (
+								<option
+									key={index+1}
+									value={service.service}
+								>
+									{service.service}
+								</option>
+							);
+						})
+					}
+				</select>
+				{this.renderError(serviceError)}
+			</div>
+		);
+	},
+
+	renderMR: function() {
+		return (
+			<div className="modal-body edit-maintenance-request">
+				{this.renderServiceType(maintenance_request, services)}
+				<div className="row">
+					<label>Maintenance Request Description:</label>
+					<textarea
+						placeholder="Enter Description"
+						name="maintenance_request[maintenance_description]"
+						ref={e => this.description = e}
+						id="description"
+						onChange={this.removeError}
+						defaultValue={maintenance_request.maintenance_description}
+						className={"u-full-width " + (descriptionError && "has-error")}
+					/>
+				</div>
+				{this.renderError(descriptionError)}
+			</div>
+		)
+	},
+
+	onSubmit(e) {
+		e.preventDefault();
+		const { splitSubmit } = this.props;
+
+		splitSubmit({}, function(errors) {
+			if (errors) {
+				this.setState({ errors });
+			}
+		})
+	},
+
+	render() {
+
+		const { descriptionError, titleError, serviceError } = this.state;
+		const {maintenance_request, services} = this.props;
+
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<form role="form" id="addForm" onSubmit={this.onSubmit}>
+							<input
+							  type="hidden"
+							  value={maintenance_request.id}
+							  name="maintenance_request[maintenance_request_id]"
+							  id="maintenance_request_maintenance_request_id"
+							/>
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									aria-label="Close"
+									data-dismiss="modal"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Split Maintenance Request</h4>
+							</div>
+							<div className="modal-footer">
+								<button
+									type="button"
+									onClick={this.props.close}
+									className="btn btn-primary cancel"
+								>Cancel</button>
+								<button
+									type="submit"
+									className="btn btn-default success"
+									disabled={titleError || descriptionError || serviceError}
+								>
+									Submit
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		)
+	}
+})
 
 var ModalConfirmUpdateStatus = React.createClass({
 	render: function() {
