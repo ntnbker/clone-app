@@ -281,7 +281,7 @@ header {
     }
 
     .menu-button {
-      margin-top: 19px;
+      margin-top: 18px;
       float: right;
       height: 40px;
       font-size: 22px;
@@ -298,6 +298,12 @@ header {
 
       .icon-user {
         font-size: 30px;
+        img {
+          position: relative;
+          top: 4px;
+          width: 35px;
+          height: 35px;
+        }
       }
 
       .fa-angle-down {
@@ -402,7 +408,10 @@ header {
         &:first-child {
           display: inline-block;
           width: 100%;
+          padding-bottom: 10px;
           img {
+            position: relative;
+            top: 4px;
             width: 35px;
             height: 35px;
           }

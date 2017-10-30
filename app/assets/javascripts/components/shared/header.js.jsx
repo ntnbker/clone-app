@@ -249,7 +249,7 @@ var Header = React.createClass({
                 <ul className="menu-mobile">
                     <li>
                       <span className="icon-user">
-                        <i className="fa fa-user" />
+                        <AvatarImage className="fa fa-user" />
                       </span>
                       <span>
                         Hi, {props.role}
@@ -291,7 +291,7 @@ var Header = React.createClass({
                           <div className="menu-bar dropdown-custom">
                             <button type="button" className="btn-menu" onClick={this.showMenu}>
                               <span className="icon-user">
-                                <i className="fa fa-user" />
+                                <AvatarImage className="fa fa-user" />
                               </span>
                               <span>
                                 Hi, {props.role}
@@ -314,7 +314,7 @@ var Header = React.createClass({
                             ref="showItems"
                           >
                             <span className="icon-user">
-                              <i className="fa fa-user" />
+                              <AvatarImage className="fa fa-user" />
                             </span>
                             <span>
                               Hi, {props.role}
