@@ -382,6 +382,7 @@ class MaintenanceRequestsController < ApplicationController
     #@maintenance_request = MaintenanceRequest.new(split_maintenance_request_params)
     original_maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request][:maintenance_request_id])
     errors = []
+    success = []
     if original_maintenance_request.agent
       agent_id = original_maintenance_request.agent.id
       agency_admin = nil
@@ -392,15 +393,15 @@ class MaintenanceRequestsController < ApplicationController
     
     array = params[:maintenance_requests].to_a
     maintenance_requests_array = []
-
+    success_array = []
     array.each do |maintenance_request|
       @maintenance_request = MaintenanceRequest.new(name:original_maintenance_request.name,email:original_maintenance_request.email,mobile:original_maintenance_request.mobile,property_id:original_maintenance_request.property_id,maintenance_description:maintenance_request[1][:maintenance_description], service_type: maintenance_request[1][:service_type], agency_admin_id: agency_admin_id, agent_id: agent_id)
       @maintenance_request.perform_contact_maintenance_request_validation = false
       if @maintenance_request.valid?
         @maintenance_request.save
-
+        success.push(@maintenance_request)
       else
-        errors = maintenance_requests_array.push(@maintenance_request.errors.to_hash(true))
+        errors.push(@maintenance_request.errors.to_hash(true))
 
       end 
 
@@ -408,7 +409,7 @@ class MaintenanceRequestsController < ApplicationController
 
 
     respond_to do |format|
-      format.json {render :json=> {errors: errors}}
+      format.json {render :json=> {errors: errors, success:success}}
       
     end
     
