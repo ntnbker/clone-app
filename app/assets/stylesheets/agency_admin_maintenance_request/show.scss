@@ -56,6 +56,13 @@ body::-webkit-scrollbar-thumb {
 .split-maintenance-request {
   border: rgba(0,0,0,0.2) solid 2px;
   margin: 5px;
+  &.mr-success {
+    border-color: rgba(0,255,0,0.5);
+  }
+  .text-success {
+    color: green;
+    text-align: center !important;
+  }
 }
 .modal-open {
   overflow: hidden;
@@ -1659,7 +1666,7 @@ body::-webkit-scrollbar-thumb {
       }
       .info {
         .title {
-          font-size: 22px;
+          font-size: 20px;
           button {
             font-size: 12px;
           }

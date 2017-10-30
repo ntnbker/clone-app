@@ -468,24 +468,37 @@ var ItemMaintenanceRequest = React.createClass({
 
 var ModalEditMR = React.createClass({
 	getInitialState() {
-
 		return {
 			serviceError: '',
 			descriptionError: '',
+			isSuccess: false,
 		};
 	},
 
 	componentWillReceiveProps(nextProps) {
-		const errorForms 		 = nextProps.errorForms || {};
-		const { serviceError = '', descriptionError = '' } = this.filterErrors(errorForms);
+		const {
+			serviceError = '', descriptionError = '', isSuccess
+		} = this.filterErrors(nextProps);
 
-		this.setState({ serviceError, descriptionError });
+		this.setState({
+			isSuccess,
+			serviceError,
+			descriptionError,
+		});
 	},
 
-	filterErrors({ serviceError = '', descriptionError = '' }) {
+	filterErrors({ position, errorsForm: { errors = {}, success = [] } }) {
+		const detectedErrors = (errors && errors[position] || {}).errors || {};
+
+		const description    = this.description.value;
+		const serviceType    = this.serviceType.value;
+
+		const isSuccess = !!success.filter(mr => mr.maintenance_description === description && mr.service_type === serviceType).length;
+
 		return {
-			serviceError: 		this.serviceType.value 			 ? '' : serviceError,
-			descriptionError: this.serviceType.description ? '' : descriptionError,
+			isSuccess: 				 this.state.isSuccess || isSuccess,
+			serviceError: 		!this.serviceType.value && detectedErrors.service_type || '',
+			descriptionError: !this.description.value && detectedErrors.maintenance_description || '',
 		}
 	},
 
@@ -494,21 +507,22 @@ var ModalEditMR = React.createClass({
 	},
 
 	renderError: function(error) {
-		return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+		return <p id="errorbox" className="error">{error ? error : ''}</p>;
 	},
 
 	renderServiceType(services) {
 		if (!!this.props.trady) return null;
-		const { serviceError } = this.state;
-		const { x } 					 = this.props;
+		const { serviceError, isSuccess } = this.state;
+		const { x }          							= this.props;
 
 		return (
 			<div className="row m-t-lg">
 				<label>Service Type:</label>
 				<select
 					id="service"
+					disabled={isSuccess && 'disabled' || false}
 					ref={e => this.serviceType = e}
-					className={"form-control input-custom " + (serviceError ? 'border_on_error' : '')}
+					className={"form-control input-custom " + (serviceError ? 'has-error' : '')}
 					name={`maintenance_requests[${x}][service_type]`}
 					onChange={this.removeError}
 				>
@@ -532,24 +546,30 @@ var ModalEditMR = React.createClass({
 	},
 
 	render() {
-		const { descriptionError } 	 = this.state;
-		const content 							 = this.props.content || {};
-		const params 								 = this.props.params || {};
-		const { x = 0, removeField } = this.props;
+		const { descriptionError, isSuccess }	= this.state;
+		const params 								        	= this.props.params || {};
+		const { x = 0, removeField }          = this.props;
 
 		const { maintenance_request = {}, services = {} } = params;
 
 		return (
-			<div className="modal-body split-maintenance-request edit-maintenance-request">
+			<div className={"modal-body split-maintenance-request edit-maintenance-request " + (isSuccess ? 'mr-success' : '')}>
 				<input
 				  type="hidden"
 				  value={maintenance_request.id}
 				  name={`maintenance_requests[${x}][maintenance_request_id]`}
 				/>
+				{ isSuccess
+					? <label className="text-success">
+							Maintenance Request Has Been Saved
+						</label>
+					: ''
+				}
 				{this.renderServiceType(services)}
 				<div className="row">
 					<label>Maintenance Request Description:</label>
 					<textarea
+						disabled={isSuccess && 'disabled' || false}
 						placeholder="Enter Description"
 						name={`maintenance_requests[${x}][maintenance_description]`}
 						ref={e => this.description = e}
@@ -560,12 +580,18 @@ var ModalEditMR = React.createClass({
 				</div>
 				{this.renderError(descriptionError)}
 
-	      <button
-	      	type="button"
-	      	className="button-remove button-primary red"
-	      	onClick={() => removeField(this.props.x)}
-	      > Remove </button>
+	      { !true
+	      ? <button
+		      	type="button"
+		      	className="button-remove button-primary red"
+		      	onClick={() => removeField(this.props.x)}
+		      >
+		      	Remove
+		      </button>
+		    : ''
+		    }
 			</div>
+
 		)
 	}
 })
@@ -574,7 +600,7 @@ var ModalSplitMR = React.createClass({
 
 	getInitialState: function() {
 		return {
-			errors: {},
+			result: {},
 		};
 	},
 
@@ -586,15 +612,16 @@ var ModalSplitMR = React.createClass({
 
 		var FD = new FormData(document.getElementById('splitMRForm'));
 
-		splitSubmit(FD, function(errors) {
+		splitSubmit(FD, function({ errors, success }) {
 			if (errors) {
-				self.setState({ errors });
+				const convertedErrors = errors.reduce((result, obj) => ({...result, [obj.id]: obj}), {});
+				self.setState({ result: { errors: convertedErrors, success } });
 			}
 		});
 	},
 
 	render() {
-		const { errors } 										   = this.state;
+		const { result }				   						 = this.state;
 		const {maintenance_request, services } = this.props;
 
 		return (
@@ -630,7 +657,7 @@ var ModalSplitMR = React.createClass({
 									SampleField={ModalEditMR}
 									flag="splitMR"
 									params={{ services, maintenance_request }}
-									errors={errors}
+									errors={result}
 								/>
 							</div>
 							<div className="modal-footer">

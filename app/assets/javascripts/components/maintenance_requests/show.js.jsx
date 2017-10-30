@@ -1753,13 +1753,13 @@ var MaintenanceRequest = React.createClass({
       contentType: false,
 			data: params,
 			success: function(res){
-				if (res.errors) {
-					return callback(res.errors);
+				if (res.errors && res.errors.length) {
+					return callback(res);
 				}
 				self.setState({
 					notification: {
 						title: "Split Maintenance Request",
-						content: "The Maintenance Request has been splitted.",
+						content: "You have successfully split the maintenance request. Please edit the original maintenance request by removing the information that no longer pertains. The split maintenance request(s) will now be listed under new maintenance request(s).",
 						bgClass: "bg-success",
 					},
 				});
