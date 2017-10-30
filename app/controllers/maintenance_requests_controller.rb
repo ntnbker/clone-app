@@ -379,11 +379,49 @@ class MaintenanceRequestsController < ApplicationController
 
   def split
     
+    #@maintenance_request = MaintenanceRequest.new(split_maintenance_request_params)
+    original_maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request][:maintenance_request_id])
+    errors = []
+    if original_maintenance_request.agent
+      agent_id = original_maintenance_request.agent.id
+      agency_admin = nil
+    elsif original_maintenance_request.agency_admin
+      agency_admin_id = original_maintenance_request.agency_admin.id
+      agent = nil 
+    end 
+    
+    array = params[:maintenance_requests].to_a
+    maintenance_requests_array = []
+
+    array.each do |maintenance_request|
+      @maintenance_request = MaintenanceRequest.new(name:original_maintenance_request.name,email:original_maintenance_request.email,mobile:original_maintenance_request.mobile,property_id:original_maintenance_request.property_id,maintenance_description:maintenance_request[1][:maintenance_description], service_type: maintenance_request[1][:service_type], agency_admin_id: agency_admin_id, agent_id: agent_id)
+      @maintenance_request.perform_contact_maintenance_request_validation = false
+      if @maintenance_request.valid?
+        @maintenance_request.save
+
+      else
+        errors = maintenance_requests_array.push(@maintenance_request.errors.to_hash(true))
+
+      end 
+
+    end 
+
+
+    respond_to do |format|
+      format.json {render :json=> {errors: errors}}
+      
+    end
+    
+    
   end
 
 
 
   private
+
+  def split_maintenance_request_params
+    
+  end
 
   def maintenance_request_params
     params.require(:maintenance_request).permit(:maintenance_request_id,:agency_business_name,  :service_type,:name,:email,:mobile,:maintenance_heading,:availability_and_access,:agent_id,:agency_admin_id,:tenant_id,:tradie_id,:maintenance_description,:images,:availability,:access_contact,:real_estate_office, :agent_email, :agent_name, :agent_mobile,:person_in_charge ,availabilities_attributes:[:id,:maintenance_request_id,:date,:start_time,:finish_time,:available_only_by_appointment,:_destroy],access_contacts_attributes: [:id,:maintenance_request_id,:relation,:name,:email,:mobile,:_destroy], images_attributes:[:id,:maintenance_request_id,:image,:_destoy])
