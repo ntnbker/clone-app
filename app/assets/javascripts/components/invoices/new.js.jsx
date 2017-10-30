@@ -89,23 +89,25 @@ var FieldList = React.createClass({
   },
 
   render: function(){
-    const { errors } = this.props;
+    const { errors, isSubmitted } = this.props;
     return <div className="fieldlist">
       <ul id="fieldList">
         {
-          Object.values(this.state.Fields).map(({SampleField, content, params = {}, x} , index) => {
+          Object.values(this.state.Fields)
+            .filter(({params}) => !params.remove)
+            .map(({SampleField, content, params = {}, x} , index) => {
             return (
-              params.remove
-              ? ''
-              : <li key={x}>
+              <li key={x}>
               {
                 <SampleField
                   x={x}
+                  position={index + 1}
                   params={params}
                   content={content}
                   removeField={(position) => this.removeField(position)}
                   validDate={(flag) => this.props.validDate(flag)}
                   errorsForm={errors}
+                  isSubmitted={isSubmitted}
                 />
               }
               </li>
