@@ -38,14 +38,25 @@ class ApplicationController < ActionController::Base
   def profile_and_company_avatar
     if current_user
       if current_user.logged_in_as("AgencyAdmin")
-        @profile_avatar = current_user.agency_admin.agency_admin_profile_image.image_url
-        @company_logo = current_user.agency_admin.agency.agency_profile_image.image_url
+        if current_user.agency_admin.agency_admin_profile_image
+          @profile_avatar = current_user.agency_admin.agency_admin_profile_image.image_url
+        end 
+        if current_user.agency_admin.agency.agency_profile_image
+          @company_logo = current_user.agency_admin.agency.agency_profile_image.image_url
+        end 
       elsif current_user.logged_in_as("Agent")
-        @profile_avatar = current_user.agent.agent_profile_image.image_url
-        @company_logo = current_user.agent.agency.agency_profile_image.image_url
+        if current_user.agent.agent_profile_image
+          @profile_avatar = current_user.agent.agent_profile_image.image_url
+        end 
+
+        if current_user.agent.agency.agency_profile_image
+          @company_logo = current_user.agent.agency.agency_profile_image.image_url
+        end 
       elsif current_user.logged_in_as("Trady")
-        @profile_avatar = current_user.trady.trady_profile_image.image_url
-        if current_user.trady.trady_company
+        if current_user.trady.trady_profile_image
+          @profile_avatar = current_user.trady.trady_profile_image.image_url
+        end 
+        if current_user.trady.trady_company && current_user.trady.trady_company.trady_company_profile_image
           @company_logo = current_user.trady.trady_company.trady_company_profile_image.image_url
         end 
       end 
