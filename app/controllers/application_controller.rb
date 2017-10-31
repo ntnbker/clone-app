@@ -49,9 +49,9 @@ class ApplicationController < ActionController::Base
           @company_logo = current_user.trady.trady_company.trady_company_profile_image.image_url
         end 
       end 
-
-          
     end 
+    array = [profile:@profile_avatar, logo:@company_logo]
+    return array
   end
 
   
