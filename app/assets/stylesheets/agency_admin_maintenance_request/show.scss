@@ -53,15 +53,17 @@ body::-webkit-scrollbar-thumb {
   color: red;
   text-align: center;
 }
-.split-maintenance-request {
-  border: rgba(0,0,0,0.2) solid 2px;
-  margin: 5px;
-  &.mr-success {
-    border-color: rgba(0,255,0,0.5);
+#splitMRForm {
+  .alert {
+    margin: 5px;
+    padding: 5px;
   }
-  .text-success {
-    color: green;
-    text-align: center !important;
+  .split-maintenance-request {
+    border: rgba(0,0,0,0.2) solid 2px;
+    margin: 5px;
+    &.mr-success {
+      border-color: #dff0d8;
+    }
   }
 }
 .modal-open {
@@ -204,7 +206,7 @@ body::-webkit-scrollbar-thumb {
       background-color: $color-green;
     }
     .bg-error {
-      background-color: $color-red
+      background-color: $color-red;
     }
     .modal-body {
       position: relative;

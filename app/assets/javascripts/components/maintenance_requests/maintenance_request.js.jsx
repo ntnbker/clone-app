@@ -546,9 +546,9 @@ var ModalEditMR = React.createClass({
 	},
 
 	render() {
-		const { descriptionError, isSuccess }	= this.state;
-		const params 								        	= this.props.params || {};
-		const { x = 0, removeField }          = this.props;
+		const { serviceError, descriptionError, isSuccess }	= this.state;
+		const params 								        								= this.props.params || {};
+		const { x = 0, removeField }          							= this.props;
 
 		const { maintenance_request = {}, services = {} } = params;
 
@@ -560,9 +560,16 @@ var ModalEditMR = React.createClass({
 				  name={`maintenance_requests[${x}][maintenance_request_id]`}
 				/>
 				{ isSuccess
-					? <label className="text-success">
-							Maintenance Request Has Been Saved
-						</label>
+					? <div className="alert alert-success">
+							This maintenance request has been saved.
+						</div>
+					: ''
+				}
+				{
+					descriptionError || serviceError
+					? <div className="alert alert-danger">
+							Sorry there seems to be a problem. One form below is invalid, please fix and resubmit.
+						</div>
 					: ''
 				}
 				{this.renderServiceType(services)}
@@ -614,6 +621,7 @@ var ModalSplitMR = React.createClass({
 
 		splitSubmit(FD, function({ errors, success }) {
 			if (errors) {
+				//defined in header.js.jsx
 				const convertedErrors = errors.reduce((result, obj) => ({...result, [obj.id]: obj}), {});
 				self.setState({ result: { errors: convertedErrors, success } });
 			}
@@ -647,9 +655,10 @@ var ModalSplitMR = React.createClass({
 								</button>
 								<h4 className="modal-title text-center">Split Maintenance Request</h4>
 							</div>
-							<p className="notice">
+							<ShowMessage position="splitMR" />
+							<div className="alert alert-info">
 								The split feature can be used to split up a maintenance request that a tenant has submitted with multiple types of services required. To ensure each type of tradie receives the correct job type.
-							</p>
+							</div>
 							<label className="modal-title information">Service Type: {maintenance_request.service_type}</label>
 							<label className="modal-title information">Description: {maintenance_request.maintenance_description}</label>
 							<div className="scroll-height">
