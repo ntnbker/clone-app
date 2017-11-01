@@ -249,7 +249,6 @@ var Header = React.createClass({
           : user_name;
 
       const {
-        logo    = '/assets/logo.png',
         profile = '',
       } = images && images.length && images[0] || {};
 
@@ -285,11 +284,7 @@ var Header = React.createClass({
           <div className={"container " + (expanded ? 'full-header' : '')} >
             <div className={"column header-custom " + (e && "forhome")}>
                 <div className="logo">
-                  <AvatarImage
-                    imageUri={logo || "/assets/logo.png"}
-                    defaultImage={'/assets/logo.png'}
-                    alt="logo"
-                  />
+                  <img src="/assets/logo.png" alt="logo" />
                   <a href={props.root_path}> MaintenanceApp </a>
                 </div>
                 {

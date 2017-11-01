@@ -21,6 +21,16 @@ body {
   margin-bottom: 53%;
   max-width: 1366px;
 }
+#avatar {
+  /* fill the container, preserving aspect ratio, and cropping to fit */
+  background-size: cover;
+
+  /* center the image vertically and horizontally */
+  background-position: center;
+
+  /* round the edges to a circle with border radius 1/2 container size */
+  border-radius: 50%;
+}
 
 input, textarea, select {
   color: #7D7D7D;
