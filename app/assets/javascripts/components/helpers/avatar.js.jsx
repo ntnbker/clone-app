@@ -12,10 +12,20 @@ AvatarImage = React.createClass({
     });
   },
 
+  handleError() {
+    this.setState({ imageUri: this.props.defaultImage || '/default-avatar.png' });
+  },
+
   render: function() {
     const { imageUri } = this.state;
     return (
-      <img {...this.props} id="avatar" src={imageUri} alt="Avatar Image"/>
+      <img
+        {...this.props}
+        id="avatar"
+        src={imageUri}
+        onError={this.handleError}
+        alt="Avatar Image"
+      />
     )
   }
-})
+});

@@ -148,7 +148,7 @@ header {
             }
           }
           span {
-            font-size: 22px;
+            font-size: 20px;
             padding-left: 10px;
             i {
               display: inline-block;
@@ -284,7 +284,7 @@ header {
       margin-top: 18px;
       float: right;
       height: 40px;
-      font-size: 22px;
+      font-size: 20px;
       color: #fff;
       line-height: 40px;
       text-align: center;
@@ -307,7 +307,7 @@ header {
       }
 
       .fa-angle-down {
-        font-size: 22px;
+        font-size: 20px;
       }
     }
 
@@ -320,11 +320,13 @@ header {
       img {
         vertical-align: middle;
         padding-bottom: 13px;
+        max-width: 55px;
+        height: 55px;
       }
 
       a {
         text-decoration: none;
-        font-size: 22px;
+        font-size: 20px;
         color: white;
       }
     }
@@ -535,7 +537,7 @@ footer {
 
     .footer-logo {
       color: white;
-      font-size: 22px;
+      font-size: 20px;
       float: left;
       line-height: 60px;
       text-align: center;

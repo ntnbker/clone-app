@@ -4,9 +4,9 @@
 
 / %div.container
 /   %div.well
-/     %h4.text-center 
+/     %h4.text-center
 /       Set Appointment Time
-/     %div.appointment  
+/     %div.appointment
 /       = form_for @appointment, remote: true do |f|
 /         =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
 /         =f.hidden_field :tenant_id, value: @current_user.tenant.id
@@ -19,7 +19,7 @@
 /             =comments_form.text_area :body, placeholder: "Comment", class: "text-center", required: true
 /             =comments_form.hidden_field :tenant_id, value: @current_user.tenant.id
 /             =comments_form.hidden_field :trady_id, value:"Appointment.trady_id"
-           
+
 /         %div.form-group.date-time
 /           %div.date
 /             =f.label :date
