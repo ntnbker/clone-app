@@ -58,7 +58,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     @signed_in_trady = @current_user.trady
     if @maintenance_request.trady 
       @the_assigned_trady = @maintenance_request.trady 
-      @assigned_trady = @maintenance_request.trady.as_json(:include => {:trady_company => {}}) 
+      @assigned_trady = @maintenance_request.trady.as_json({:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}})
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @the_assigned_trady.id).as_json
     end
     
