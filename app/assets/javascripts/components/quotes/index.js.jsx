@@ -361,8 +361,7 @@ var Quotes = React.createClass({
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
 									<span className="icon-user">
-										<AvatarImage
-										imageUri={pictures[index]} />
+										<AvatarImage imageUri={pictures[index]} />
 									</span>
 									<div className="info">
 										<div className="name">
@@ -695,8 +694,7 @@ var ModalViewQuote = React.createClass({
 						<div className="modal-header">
 							<div className="logo">
                 <span className="icon-user">
-                  <AvatarImage
-                  imageUri={image_url} />
+                  <AvatarImage id="logo" imageUri={image_url} />
                 </span>
 							</div>
 							<div className="info-trady">

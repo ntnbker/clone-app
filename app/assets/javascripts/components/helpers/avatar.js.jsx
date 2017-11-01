@@ -20,8 +20,8 @@ AvatarImage = React.createClass({
     const { imageUri } = this.state;
     return (
       <img
-        {...this.props}
         id="avatar"
+        {...this.props}
         src={imageUri}
         onError={this.handleError}
         alt="Avatar Image"
