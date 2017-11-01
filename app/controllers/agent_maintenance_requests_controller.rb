@@ -79,7 +79,7 @@ class AgentMaintenanceRequestsController < ApplicationController
     @status = @maintenance_request.action_status
     @tradie = Trady.new
     @assigned_trady = @maintenance_request.trady
-    @hired_trady = @assigned_trady.as_json({:include => :trady_company})
+    @hired_trady = @assigned_trady.as_json({:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}})
     if @assigned_trady
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id)
     end
