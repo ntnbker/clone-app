@@ -2232,7 +2232,6 @@ var MaintenanceRequest = React.createClass({
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
 		const {invoice_pdf_files, trady} = this.state;
 
-		debugger
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
