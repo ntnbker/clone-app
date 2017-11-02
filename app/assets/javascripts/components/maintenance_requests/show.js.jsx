@@ -1011,7 +1011,7 @@ var MaintenanceRequest = React.createClass({
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
-			trady: this.props.hired_trady,
+			trady: this.props.hired_trady || this.props.assigned_trady || null,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.pdf_files,
@@ -2231,6 +2231,8 @@ var MaintenanceRequest = React.createClass({
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
 		const {invoice_pdf_files, trady} = this.state;
+
+		debugger
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">

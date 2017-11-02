@@ -10,7 +10,7 @@ var AssignTrady = React.createClass({
 		return (
 			<div className="quotes invoices m-t-xl" id="invoices">
 				<p>
-					Work Order Assigned To:
+					{current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"}
 				</p>
 				<div className="list-quote">
 					<div className="item-quote row">
