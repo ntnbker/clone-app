@@ -285,6 +285,7 @@ var TradyMaintenanceRequest = React.createClass({
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			invoice_pdf_files: pdf_files,
+			trady: this.props.assigned_trady,
 			quote_appointments: quote_appointments,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
@@ -537,6 +538,15 @@ var TradyMaintenanceRequest = React.createClass({
 				this.onModalWith(key);
 				break;
 			}
+
+			case 'viewTrady': {
+				this.setState({
+					trady: item
+				});
+				this.onModalWith(key);
+				break;
+			}
+
 
 			default: {
 				break;
@@ -978,6 +988,16 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					);
 
+
+				case 'viewTrady':
+					return (
+						<ModalViewTrady
+							close={this.isClose}
+							trady={this.state.trady}
+						/>
+					);
+
+
 				default:
 					return null;
 			}
@@ -1102,7 +1122,9 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
-		const {appointments, quote_appointments, invoices, invoice_pdf_files} = this.state;
+		const {
+			appointments, quote_appointments, invoices, invoice_pdf_files, trady
+		} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -1118,6 +1140,15 @@ var TradyMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
+						{
+							trady && this.props.current_role &&
+								<AssignTrady
+									trady={trady}
+									current_role={this.props.current_role.role}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									viewTrady={(key, item) => this.viewItem(key, item)}
+								/>
+						}
 						{ (this.props.quotes && this.props.quotes.length > 0) &&
 								<Quotes
 									keyLandlord="trady"

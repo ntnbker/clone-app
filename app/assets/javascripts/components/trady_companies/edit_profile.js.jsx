@@ -155,7 +155,7 @@ var TradyCompanyEdit = React.createClass({
       <div className="edit_profile edit_trady_company_profile">
         <div className="left">
           { gallery &&
-              <img id="avatar" src={gallery.image_url} alt="Avatar Image"/>
+              <AvatarImage imageUri={gallery.image_url} alt="Avatar Image" />
           }
           <ModalImageUpload
             uploadImage={this.uploadImage}

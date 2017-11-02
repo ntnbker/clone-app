@@ -237,9 +237,20 @@ var Header = React.createClass({
 
     header: function(e) {
       const props = this.props;
-      const expanded = this.props.expanded;
-      const logged_in = this.props.logged_in;
-      const current_user = this.props.current_user;
+      const { expanded, logged_in, current_user, role, images } = props;
+      const user_name = (props.user_name ||  '').trim() || role || '';
+
+      const user_name_show_pc = user_name.length > 12
+          ? (user_name.trim() && user_name || role).replace(/(.{0,12}).+/, '$1...')
+          : user_name;
+
+      const user_name_show_mobile = user_name.length > 20
+          ? (user_name.trim() && user_name || role).replace(/(.{0,20}).*/, '$1...')
+          : user_name;
+
+      const {
+        profile = '',
+      } = images && images.length && images[0] || {};
 
       return (
         <nav className="header-expanded">
@@ -249,10 +260,10 @@ var Header = React.createClass({
                 <ul className="menu-mobile">
                     <li>
                       <span className="icon-user">
-                        <i className="fa fa-user" />
+                        <AvatarImage className="fa fa-user" imageUri={profile} />
                       </span>
-                      <span>
-                        Hi, {props.role}
+                      <span title={user_name}>
+                        {user_name_show_mobile}
                       </span>
                     </li>
                     { this.menuBar() }
@@ -291,10 +302,10 @@ var Header = React.createClass({
                           <div className="menu-bar dropdown-custom">
                             <button type="button" className="btn-menu" onClick={this.showMenu}>
                               <span className="icon-user">
-                                <i className="fa fa-user" />
+                                <AvatarImage className="fa fa-user" imageUri={profile} />
                               </span>
-                              <span>
-                                Hi, {props.role}
+                              <span title={user_name}>
+                                {user_name_show_pc}
                                 <i className="fa fa-angle-down"/>
                               </span>
                             </button>
@@ -314,10 +325,10 @@ var Header = React.createClass({
                             ref="showItems"
                           >
                             <span className="icon-user">
-                              <i className="fa fa-user" />
+                              <AvatarImage className="fa fa-user" imageUri={profile} />
                             </span>
-                            <span>
-                              Hi, {props.role}
+                            <span title={user_name}>
+                              {user_name_show_pc}
                             </span>
                             <i className="fa fa-angle-down"/>
                           </div>
