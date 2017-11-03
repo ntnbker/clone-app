@@ -224,6 +224,14 @@ class QuotesController < ApplicationController
       else  
 
       end
+
+      if @quote.quote_request_id.blank?
+        @quote.update_attribute(:quote_request_id, quote_request.id)
+      else  
+
+      end
+
+
     end 
 
     if @quote.delivery_status == false

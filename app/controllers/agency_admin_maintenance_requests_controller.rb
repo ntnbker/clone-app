@@ -56,7 +56,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})
     
     @agency = @current_user.agency_admin.agency
-
+    @quote_requests = @maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote=>{:include=> {:quote_items=>{}, :conversation=>{:include=>:messages}}} })
     @quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
     @services = Service.all
     @email_quote_id = params[:email_quote_id]
