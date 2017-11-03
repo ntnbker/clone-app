@@ -1,8 +1,12 @@
 class UserSessionsController < ApplicationController
-  before_action :is_signed_in, only:[:new]
+  #before_action :is_signed_in, only:[:new]
   before_action :is_logged_out, only:[:destroy]
   def new
     @query = params[:query_id]
+    if current_user
+      flash[:danger] = "You are already logged in"
+      redirect_to root_path
+    end 
   end
 
   def create
@@ -10,7 +14,7 @@ class UserSessionsController < ApplicationController
     @user = login(params[:email], params[:password])
     @query = Query.find_by(id:params[:query_id])
     
-    if logged_in? && @user.has_role(params[:role_picked])
+    if @user && @user.has_role(params[:role_picked])
       @user.current_role.update_attribute(:role, params[:role_picked])
       
       if @user.logged_in_as("God")
@@ -49,7 +53,7 @@ class UserSessionsController < ApplicationController
     else
 
       flash[:danger] = "Please use your correct email, password and role you have access to."
-      render :new
+      redirect_to menu_login_path
       
     end 
   end
