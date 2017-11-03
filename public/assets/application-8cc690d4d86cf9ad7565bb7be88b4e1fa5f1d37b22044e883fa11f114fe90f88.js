@@ -70068,7 +70068,7 @@ var ModalAppointment = React.createClass({
 	}
 });
 var AssignTrady = React.createClass({
-	displayName: "AssignTrady",
+	displayName: 'AssignTrady',
 
 	render: function () {
 		var _this = this;
@@ -70076,6 +70076,7 @@ var AssignTrady = React.createClass({
 		var current_role = this.props.current_role;
 
 		var trady = this.props.trady || {};
+		trady['trady_company'] = trady['trady_company'] || {};
 
 		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
 		var trady_profile_image = trady.trady_profile_image;
@@ -70083,64 +70084,64 @@ var AssignTrady = React.createClass({
 		var image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 
 		return React.createElement(
-			"div",
-			{ className: "quotes invoices m-t-xl", id: "invoices" },
+			'div',
+			{ className: 'quotes invoices m-t-xl', id: 'invoices' },
 			React.createElement(
-				"p",
+				'p',
 				null,
 				current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"
 			),
 			React.createElement(
-				"div",
-				{ className: "list-quote" },
+				'div',
+				{ className: 'list-quote' },
 				React.createElement(
-					"div",
-					{ className: "item-quote row" },
+					'div',
+					{ className: 'item-quote row' },
 					React.createElement(
-						"div",
-						{ className: "user seven columns" },
+						'div',
+						{ className: 'user seven columns' },
 						React.createElement(
-							"span",
-							{ className: "icon-user" },
+							'span',
+							{ className: 'icon-user' },
 							React.createElement(AvatarImage, { imageUri: image_url })
 						),
 						React.createElement(
-							"div",
-							{ className: "info" },
+							'div',
+							{ className: 'info' },
 							React.createElement(
-								"div",
-								{ className: "name" },
+								'div',
+								{ className: 'name' },
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.name
 								)
 							),
 							React.createElement(
-								"p",
-								{ className: "description" },
+								'p',
+								{ className: 'description' },
 								trady.company_name,
-								React.createElement("br", null),
+								React.createElement('br', null),
 								trady.trady_company && trady.trady_company.trading_name
 							)
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "actions-quote" },
+						'div',
+						{ className: 'actions-quote' },
 						(current_role.role == 'Agent' || current_role.role == "AgencyAdmin") && React.createElement(
-							"button",
-							{ type: "button", className: "btn btn-decline", onClick: function (modal) {
+							'button',
+							{ type: 'button', className: 'btn btn-decline', onClick: function (modal) {
 									return _this.props.onModalWith('confirmCancelTrady');
 								} },
-							"Cancel"
+							'Cancel'
 						),
 						React.createElement(
-							"button",
-							{ type: "button", className: "btn btn-default btn-view", onClick: function (key, item) {
+							'button',
+							{ type: 'button', className: 'btn btn-default btn-view', onClick: function (key, item) {
 									return _this.props.viewTrady('viewTrady', trady);
 								} },
-							"View"
+							'View'
 						)
 					)
 				)
@@ -70150,190 +70151,193 @@ var AssignTrady = React.createClass({
 });
 
 var ModalViewTrady = React.createClass({
-	displayName: "ModalViewTrady",
+	displayName: 'ModalViewTrady',
 
 	render: function () {
 		var trady = this.props.trady;
+
+		trady['trady_company'] = trady['trady_company'] || {};
+
 		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
 		var trady_profile_image = trady.trady_profile_image;
 
 		var image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 
 		return React.createElement(
-			"div",
-			{ className: "modal-custom modal-quote fade" },
+			'div',
+			{ className: 'modal-custom modal-quote fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content", id: "print-invoice" },
+					'div',
+					{ className: 'modal-content', id: 'print-invoice' },
 					React.createElement(
-						"div",
-						{ className: "modal-header" },
+						'div',
+						{ className: 'modal-header' },
 						React.createElement(
-							"div",
-							{ className: "logo" },
+							'div',
+							{ className: 'logo' },
 							React.createElement(
-								"span",
-								{ className: "icon-user" },
-								React.createElement(AvatarImage, { id: "logo", imageUri: image_url })
+								'span',
+								{ className: 'icon-user' },
+								React.createElement(AvatarImage, { id: 'logo', imageUri: image_url })
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "info-trady" },
+							'div',
+							{ className: 'info-trady' },
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.company_name
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.abn
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.address
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.mobile_number
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.email
 								)
 							)
 						),
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
+								type: 'button',
+								className: 'close',
+								'data-dismiss': 'modal',
+								'aria-label': 'Close',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "footer" },
+						'div',
+						{ className: 'footer' },
 						React.createElement(
-							"div",
-							{ className: "bank" },
+							'div',
+							{ className: 'bank' },
 							React.createElement(
-								"div",
+								'div',
 								null,
-								React.createElement("i", { className: "fa fa-bank" }),
+								React.createElement('i', { className: 'fa fa-bank' }),
 								React.createElement(
-									"p",
-									{ className: "font-bold" },
-									"Bank Deposit"
+									'p',
+									{ className: 'font-bold' },
+									'Bank Deposit'
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
-									{ className: "font-bold" },
-									"BSB:"
+									'span',
+									{ className: 'font-bold' },
+									'BSB:'
 								),
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.bsb_number
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
-									{ className: "font-bold" },
-									"Account Number:"
+									'span',
+									{ className: 'font-bold' },
+									'Account Number:'
 								),
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.bank_account_number
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
-									{ className: "font-bold" },
-									"Account Name:"
+									'span',
+									{ className: 'font-bold' },
+									'Account Name:'
 								),
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.account_name
 								)
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "contact" },
+							'div',
+							{ className: 'contact' },
 							React.createElement(
-								"div",
+								'div',
 								null,
-								React.createElement("i", { className: "fa fa-envelope-o" }),
+								React.createElement('i', { className: 'fa fa-envelope-o' }),
 								React.createElement(
-									"p",
-									{ className: "font-bold" },
-									"Mail"
+									'p',
+									{ className: 'font-bold' },
+									'Mail'
 								)
 							),
 							React.createElement(
-								"p",
-								{ className: "font-bold" },
-								"Make your cheque payable to:"
+								'p',
+								{ className: 'font-bold' },
+								'Make your cheque payable to:'
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								trady.trady_company && trady.trady_company.account_name
 							),
 							React.createElement(
-								"p",
-								{ className: "font-bold" },
-								"Detach this section and mail with your cheque to:"
+								'p',
+								{ className: 'font-bold' },
+								'Detach this section and mail with your cheque to:'
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								trady.trady_company && trady.trady_company.address
 							)
@@ -70346,73 +70350,73 @@ var ModalViewTrady = React.createClass({
 });
 
 var ModalConfirmCancelTrady = React.createClass({
-	displayName: "ModalConfirmCancelTrady",
+	displayName: 'ModalConfirmCancelTrady',
 
 	render: function () {
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content" },
+					'div',
+					{ className: 'modal-content' },
 					React.createElement(
-						"div",
-						{ className: "modal-header" },
+						'div',
+						{ className: 'modal-header' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
+								type: 'button',
+								className: 'close',
+								'data-dismiss': 'modal',
+								'aria-label': 'Close',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Cancel Work Order"
+							'h4',
+							{ className: 'modal-title text-center' },
+							'Cancel Work Order'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-body" },
+						'div',
+						{ className: 'modal-body' },
 						React.createElement(
-							"p",
-							{ className: "text-center" },
-							"Are you sure you want to cancel the work order?"
+							'p',
+							{ className: 'text-center' },
+							'Are you sure you want to cancel the work order?'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-footer" },
+						'div',
+						{ className: 'modal-footer' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								"data-dismiss": "modal",
-								className: "btn btn-default success",
+								type: 'button',
+								'data-dismiss': 'modal',
+								className: 'btn btn-default success',
 								onClick: this.props.cancelWorkOrder
 							},
-							"Yes"
+							'Yes'
 						),
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "btn btn-default cancel",
+								type: 'button',
+								className: 'btn btn-default cancel',
 								onClick: this.props.close,
-								"data-dismiss": "modal"
+								'data-dismiss': 'modal'
 							},
-							"No"
+							'No'
 						)
 					)
 				)
@@ -83455,11 +83459,12 @@ var Quotes = React.createClass({
 	getPictureImage: function (quotes) {
 		var self = this;
 
-		var pictures = quotes.map(function (_ref) {
-			var _ref$trady = _ref.trady;
-			var trady_company_profile_image = _ref$trady.trady_company.trady_company_profile_image;
-			var id = _ref$trady.id;
-			var trady_profile_image = _ref$trady.trady_profile_image;
+		var pictures = quotes.map(function (quote) {
+			var trady = quote.trady || {};
+			var id = trady.id || '';
+			var trady_company = trady.trady_company || {};
+			var trady_profile_image = trady.trady_profile_image || {};
+			var trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
 			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 		});
