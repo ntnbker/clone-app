@@ -2,6 +2,7 @@ var AssignTrady = React.createClass({
 	render: function() {
 		const { current_role } = this.props;
     const trady            = this.props.trady || {};
+    trady['trady_company'] = trady['trady_company'] || {};
 
     const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
 
@@ -50,6 +51,8 @@ var AssignTrady = React.createClass({
 var ModalViewTrady = React.createClass({
 	render: function() {
 		const {trady} = this.props;
+
+    trady['trady_company'] = trady['trady_company'] || {};
 
     const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
 

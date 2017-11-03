@@ -326,15 +326,13 @@ var Quotes = React.createClass({
 	getPictureImage(quotes) {
 		const self = this;
 
-		const pictures = quotes.map(({
-			trady: {
-				trady_company: {
-					trady_company_profile_image
-				},
-				id,
-				trady_profile_image
-			}
-		}) => {
+		const pictures = quotes.map((quote) => {
+			const trady 											= quote.trady || {};
+			const id 													= trady.id || '';
+			const trady_company 							=  trady.trady_company || {};
+			const trady_profile_image 				= trady.trady_profile_image || {};
+			const trady_company_profile_image = trady_company.trady_company_profile_image || {};
+
 			return trady_company_profile_image && trady_company_profile_image.image_url
 					|| trady_profile_image && trady_profile_image.image_url;
 		});
