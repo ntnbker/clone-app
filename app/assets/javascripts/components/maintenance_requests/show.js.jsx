@@ -995,31 +995,32 @@ var MaintenanceRequest = React.createClass({
 		});
 
 		return {
-			modal: "",
-			quote: null,
-			invoice: null,
-			isModal: false,
-			statusItem: null,
-			assignEmail: null,
-			appointment: null,
-			comments: comments,
-			logs: this.props.logs,
-			invoice_pdf_file: null,
-			quotes: this.props.quotes,
-			status: this.props.status,
-			tradies: this.props.tradies,
-			gallery: this.props.gallery,
-			quoteComments: quoteComments,
-			landlord: this.props.landlord,
-			trady: this.props.hired_trady || this.props.assigned_trady || null,
-			invoices: this.props.invoices,
-			landlordComments: landlordComments,
-			invoice_pdf_files: this.props.pdf_files,
-			trady_conversation: this.props.trady_conversation,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
-			instruction: this.props.instruction ? this.props.instruction : {},
+			modal  	 	 		 			 		   : "",
+			quote  	 	 		 			 		   : null,
+			invoice  	 	 		 			 		 : null,
+			isModal  	 	 		 			 		 : false,
+			statusItem  	 	 		 			 : null,
+			assignEmail  	 	 		 			 : null,
+			appointment  	 	 		 			 : null,
+			comments  	 	 		 			 	 : comments,
+			logs  	 	 		 						 : this.props.logs,
+			invoice_pdf_file  	 	 		 : null,
+			quotes  	 	 		 					 : this.props.quotes,
+			status  	 	 		 					 : this.props.status,
+			tradies  	 	 		 					 : this.props.tradies,
+			gallery  	 	 		 					 : this.props.gallery,
+			quoteComments  	 	 		 		 : quoteComments,
+			landlord  	 	 		 				 : this.props.landlord,
+			trady  	 	 		 						 : this.props.hired_trady || null,
+			invoices  	 	 		 				 : this.props.invoices,
+			landlordComments  	 	 		 : landlordComments,
+			invoice_pdf_files  	 	 		 : this.props.pdf_files,
+			quote_requests  	 	       : this.props.quote_requests,
+			trady_conversation  	 	   : this.props.trady_conversation,
+			maintenance_request  	 	   : this.props.maintenance_request,
+			tenants_conversation  	 	 : this.props.tenants_conversation,
+			landlords_conversation  	 : this.props.landlords_conversation,
+			instruction  	 						 : this.props.instruction || {},
 			tradies_with_quote_requests: this.props.tradies_with_quote_requests,
 			notification: {
 				title: "",
@@ -2229,7 +2230,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	summary(e) {
-		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
+		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices, quote_requests} = this.props;
 		const {invoice_pdf_files, trady} = this.state;
 
 		return (
@@ -2248,6 +2249,20 @@ var MaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
 						/>
+						{
+							quote_requests && quote_requests.length
+							? <QuoteRequests
+									quote_requests={quote_requests}
+									onModalWith={this.onModalWith}
+									landlord={this.state.landlord}
+									current_user={this.props.current_user}
+									updateStatusQuote={this.updateStatusQuote}
+									sendEmailLandlord={this.sendEmailLandlord}
+									viewQuote={(key, item) => this.viewItem(key, item)}
+									current_user_show_quote_message={this.props.current_user_show_quote_message}
+								/>
+							: ''
+						}
 						{
 							this.state.trady &&
 								<AssignTrady
