@@ -10,8 +10,8 @@
         = f.radio_button :role_picked, "AgencyAdmin", label: "Agency Administrator" 
         = f.radio_button :role_picked, "Agent", label: "Agent"
 
-    = f.email_field :email, placeholder: 'Enter email'
-    = f.password_field :password,  placeholder: 'Enter password'
+    = f.email_field :email, placeholder: 'Enter email', novalidate: true
+    = f.password_field :password,  placeholder: 'Enter password', novalidate: true
     = f.hidden_field :query_id,  value: @query
     .form-group.text-center
       = link_to "Forgot your password?", new_password_reset_path, class: 'forgot-password'
