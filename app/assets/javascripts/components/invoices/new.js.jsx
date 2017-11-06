@@ -640,7 +640,7 @@ var InvoiceField = React.createClass({
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
-    var hasInvoice    = content && !content.isCoppy;
+    var hasInvoice    = content && content.isCoppy === false;
     var invoice       = this.props.content || {};
 
     if (hasInvoice) x = invoice.id;
