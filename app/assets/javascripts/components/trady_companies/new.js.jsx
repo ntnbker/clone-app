@@ -338,7 +338,7 @@ var AddTradycompany = React.createClass({
                 // onChange={this.checkValidate}
     			      defaultValue={this.props.account_name}
     			      ref={(ref) => this.account_name = ref}
-                className={"form-control " + (errors['trading_name'] ? "has-error" : "")}
+                className={"form-control " + (errors['account_name'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
               />
               {renderErrorFunc(errors['account_name'])}
