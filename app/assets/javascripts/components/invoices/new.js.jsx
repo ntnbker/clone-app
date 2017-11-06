@@ -881,7 +881,7 @@ var InvoiceFields = React.createClass({
 
       <FieldListForInvoice
         errors={errors}
-        params={invoiceInfo}
+        params={{invoiceInfo}}
         noQuotes={!hasQuotes}
         existingContent={invoices}
         SampleField={InvoiceField}
