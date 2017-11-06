@@ -342,6 +342,11 @@ class QuotesController < ApplicationController
   end
 
 
+  def quote_already_sent
+    
+  end
+
+
   private
   
   def quote_params
