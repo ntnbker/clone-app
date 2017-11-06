@@ -57,7 +57,9 @@ class UserSessionsController < ApplicationController
           
       end 
     else
-      current_user.current_role.update_attribute(:role,nil)
+      if current_user
+        current_user.current_role.update_attribute(:role,nil)
+      end 
       logout
       flash[:danger] = "Please use your correct email, password and role you have access to."
       redirect_to menu_login_path
