@@ -27,7 +27,7 @@ class TradyMaintenanceRequest
       quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil).pluck(:maintenance_request_id)
       maintenance_requests = MaintenanceRequest.where(id:quote_request_mr_ids)
     elsif parameter == "Awaiting Quote Approvals"
-      quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active").pluck(:maintenance_request_id)
+      quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active",delivery_status: true).pluck(:maintenance_request_id)
       maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids)
     elsif parameter == "Appointment Required"
       
@@ -56,7 +56,7 @@ class TradyMaintenanceRequest
       quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil).pluck(:maintenance_request_id)
       count = MaintenanceRequest.where(id:quote_request_mr_ids).count
     elsif parameter == "Awaiting Quote Approvals"
-      quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active").pluck(:maintenance_request_id)
+      quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active", delivery_status: true).pluck(:maintenance_request_id)
       count = MaintenanceRequest.where(id:quote_mr_ids).count
     elsif parameter == "Appointments Required"
       count = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Appointment Required"}).distinct.count
