@@ -58,7 +58,7 @@ class InvoicesController < ApplicationController
 
       # @invoice.update_attribute(:amount,@total)
 
-      binding.pry    
+          
 
 
       redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
@@ -98,6 +98,7 @@ class InvoicesController < ApplicationController
   end
 
   def edit
+    
     @ledger = Ledger.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
 
@@ -131,7 +132,7 @@ class InvoicesController < ApplicationController
     @trady = Trady.find_by(id:params[:ledger][:trady_id])
     @invoice_type = params[:ledger][:invoice_type]
     @trady_company = @trady.trady_company
-
+    
     if @ledger.update(ledger_params)
       # @invoice.update_attribute(:amount,@total)
       @ledger.invoices.each {|invoice| invoice.save_total }
@@ -185,13 +186,13 @@ class InvoicesController < ApplicationController
     maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", trady_status:"Awaiting Payment")
     trady = Trady.find_by(id:params[:trady_id])
     # maintenance_request.action_status.update_columns(agent_status:"New Invoice", action_category:"Action Required", maintenance_request_status:"Completed", trady_status:"Awaiting Payment")
-
+    @ledger = Ledger.find_by(id:params[:ledger_id])
     Log.create(maintenance_request_id:maintenance_request.id, action:"Invoice created by - Tradie: ", name:trady.name.capitalize)
 
-    maintenance_request.invoices.each do |invoice|
+    @ledger.invoices.each do |invoice|
       invoice.update_attribute(:delivery_status, true)
     end
-    binding.pry
+    
     redirect_to invoice_sent_success_path(maintenance_request_id: params[:maintenance_request_id], trady_id: params[:trady_id] )
 
 
