@@ -72115,7 +72115,7 @@ var InvoiceField = React.createClass({
     var items_total = _state5.items_total;
 
     var invoice_items = content && content.invoice_items || null;
-    var hasInvoice = content && !content.isCoppy;
+    var hasInvoice = content && Object.keys(content).length > 0 && !content.isCoppy;
     var invoice = this.props.content || {};
 
     if (hasInvoice) x = invoice.id;
@@ -72418,7 +72418,7 @@ var InvoiceFields = React.createClass({
       }),
       React.createElement(FieldListForInvoice, {
         errors: errors,
-        params: invoiceInfo,
+        params: { invoiceInfo: invoiceInfo },
         noQuotes: !hasQuotes,
         existingContent: invoices,
         SampleField: InvoiceField,
@@ -87119,7 +87119,7 @@ var EditTradyCompany = React.createClass({
             ref: function (ref) {
               return _this.account_name = ref;
             },
-            className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+            className: "form-control " + (errors['account_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
           }),
           renderErrorFunc(errors['account_name'])
@@ -87865,7 +87865,7 @@ var AddTradycompany = React.createClass({
               ref: function (ref) {
                 return _this.account_name = ref;
               },
-              className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+              className: "form-control " + (errors['account_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
             }),
             renderErrorFunc(errors['account_name'])
