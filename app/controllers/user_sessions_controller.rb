@@ -13,7 +13,7 @@ class UserSessionsController < ApplicationController
     
     @user = login(params[:email], params[:password])
     @query = Query.find_by(id:params[:query_id])
-    binding.pry
+    
     @role = params[:role_picked]
     if @user && @role && @user.has_role(params[:role_picked])
       @user.current_role.update_attribute(:role, params[:role_picked])
