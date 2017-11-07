@@ -345,7 +345,7 @@ class QuotesController < ApplicationController
   def quote_already_sent
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     quote_request = QuoteRequest.find_by(id:params[:quote_requests_id])
-    quote_request.update_attribute(quote_sent:, true)
+    quote_request.update_attribute(:quote_sent, true)
     @quote_requests = @maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_items=>{}, :conversation=>{:include=>:messages}}} })
     respond_to do |format|
       format.json{ render :json=>{quote_requests:@quote_requests}}
