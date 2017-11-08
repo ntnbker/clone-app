@@ -483,7 +483,7 @@ ModalImageUpload = React.createClass({
   },
 
   notifyAddPhoto: function(message) {
-    this.onModalWith('messageAddPhoto', this.props.message || message);
+    this.onModalWith('messageAddPhoto', message);
   },
 
   renderModal: function() {

@@ -1780,6 +1780,7 @@ var MaintenanceRequest = React.createClass({
 			},
 		}
 
+		alert(JSON.stringify(data));
 		const self = this;
 		$.ajax({
 		  type: 'POST',
@@ -1789,15 +1790,14 @@ var MaintenanceRequest = React.createClass({
 		  },
 		  data: data,
 		  success: function (res) {
-		  	callback();
-        self.setState({ quote_requests: res.quote_requests });
+		  	callback(JSON.stringify(res));
+		  	// callback('You Has Successfully Upload');
+        // self.setState({ quote_requests: res.quote_requests });
 		  },
 		  error: function (err) {
 
 		  }
 		});
-		return false;
-		callback('You Has Successfully Upload');
 	},
 
 	chooseQuoteRequest: function(quote_request) {

@@ -225,6 +225,14 @@ var ActionQuote = React.createClass({
 		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return (
 				<div className="actions-quote">
+					{
+						quote.images && quote.images.length || true
+						? <ButtonViewPhoto
+								viewQuote={this.props.viewQuote}
+								gallery={quote.images || ['/assets/logo.png']}
+							/>
+						: ''
+					}
 					{ quote.status == "Active" &&
 							<ButtonAccept
 								quote={quote}
@@ -260,6 +268,14 @@ var ActionQuote = React.createClass({
 		}else if(self.keyLandlord == "trady") {
 			return (
 				<div className="actions-quote">
+					{
+						quote.images && quote.images.length || true
+						? <ButtonViewPhoto
+								viewQuote={this.props.viewQuote}
+								gallery={quote.images || ['/assets/logo.png']}
+							/>
+						: ''
+					}
 					{ (!!self.current_user_show_quote_message && quote.status != "Declined") &&
 							<ButtonQuoteMessage
 								quote={quote}
@@ -288,14 +304,6 @@ var ActionQuote = React.createClass({
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
 								gallery={quote.images || ['/assets/logo.png']}
-							/>
-						: ''
-					}
-					{
-						!quote.quote_items || quote.quote_items.length === 0
-						? <ModalImageUpload
-								gallery={quote.images || []}
-								uploadImage={this.props.uploadImage}
 							/>
 						: ''
 					}
@@ -518,7 +526,7 @@ var QuoteRequests = React.createClass({
 																											 || quote.quote_items.length === 0);
 
 						const needAlreadySentButton = quotes.length === 0 && !quote_request.quote_sent;
-						const needPhotoButton 			= quote_request.quote_sent && quoteAlready.length === 0;
+						const needPhotoButton 			= quote_request.quote_sent;
 
 						return (
 							<div className="item-quote row" key={index}>
