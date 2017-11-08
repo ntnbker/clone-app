@@ -139,6 +139,35 @@ var ButtonView = React.createClass({
 	}
 });
 
+var ButtonQuoteAlreadySent = React.createClass({
+	render: function() {
+		const { viewQuote, quote_request } = this.props;
+		return (
+			<button
+				type="button"
+				className="btn btn-default"
+				onClick={() => viewQuote('confirmQuoteAlreadySent', quote_request)}
+			>
+				Quote Already Sent
+			</button>
+		);
+	}
+});
+
+var ButtonViewPhoto = React.createClass({
+	render: function() {
+		return (
+			<button
+				type="button"
+				className="btn btn-default"
+				onClick={(key, item) => this.props.viewQuote('viewPhoto', this.props.gallery)}
+			>
+				View Photo
+			</button>
+		);
+	}
+});
+
 var ButtonRequestAnotherQuote = React.createClass({
 	sendEmail: function() {
 			const params = {
@@ -254,6 +283,22 @@ var ActionQuote = React.createClass({
 		}else {
 			return (
 				<div className="actions-quote">
+					{
+						quote.images && quote.images.length || true
+						? <ButtonViewPhoto
+								viewQuote={this.props.viewQuote}
+								gallery={quote.images || ['/assets/logo.png']}
+							/>
+						: ''
+					}
+					{
+						!quote.quote_items || quote.quote_items.length === 0
+						? <ModalImageUpload
+								gallery={quote.images || []}
+								uploadImage={this.props.uploadImage}
+							/>
+						: ''
+					}
 					{ (!!self.current_user_show_quote_message && quote.status != "Declined") &&
 							<ButtonQuoteMessage
 								quote={quote}
@@ -318,14 +363,13 @@ var ActionQuoteRequest = React.createClass({
 	},
 
 	render: function(){
-		const self  = this.props;
-		const quote = this.state.quote_request || {};
+		const quote_request = this.state.quote_request || {};
 
-		if (!quote.quote_id) {
-			return <div></div>;
-		}
-
-		return <ActionQuote {...this.props} quote={quote.quote} />
+		return <div>
+				{(quote_request.quotes || [])
+					.map(quote => <ActionQuote {...this.props} key={quote.id} quote={quote} />)
+				}
+			</div>
 	}
 });
 
@@ -467,8 +511,14 @@ var QuoteRequests = React.createClass({
 				<div className="list-quote">
 				{
 					quote_requests.map(function(quote_request, index) {
-						const status = quote_requests.status;
-						const showStatus = ['Approved', 'Declined'].indexOf(status) !== -1;
+						const status 				= quote_requests.status;
+						const showStatus 		= ['Approved', 'Declined'].indexOf(status) !== -1;
+						const quotes 				= quote_request.quotes || [];
+						const quoteAlready  = quotes.filter(quote => !quote.quote_items
+																											 || quote.quote_items.length === 0);
+
+						const needAlreadySentButton = quotes.length === 0 && !quote_request.quote_sent;
+						const needPhotoButton 			= quote_request.quote_sent && quoteAlready.length === 0;
 
 						return (
 							<div className="item-quote row" key={index}>
@@ -479,16 +529,40 @@ var QuoteRequests = React.createClass({
 									<div className="info">
 										<div className="name">
 											<span>{quote_request.trady.name}</span>
-											{showStatus && <button className={'button-default ' + status}><span>{status}</span></button>}
+											{ showStatus &&
+												<button className={'button-default ' + status}>
+													<span>{status}</span>
+												</button>
+											}
+											{ needAlreadySentButton
+												? <div className="actions-quote">
+														<ButtonQuoteAlreadySent
+															{...self}
+															quote_request={quote_request}
+														/>
+													</div>
+												: ''
+											}
+											{ needPhotoButton
+												? <div className="actions-quote">
+														<ModalImageUpload
+															{...self}
+															onClick={() => self.chooseQuoteRequest(quote_request)}
+														/>
+													</div>
+												: ''
+											}
 										</div>
-										<p className="description">
-											{quote_request.trady && quote_request.trady.name} <br />
+										<div className="description">
+											{quote_request.trady && quote_request.trady.name}
+											<br />
 											{(quote_request.trady && quote_request.trady.trady_company) && quote_request.trady.trady_company.trading_name}
-										</p>
+										</div>
 									</div>
 								</div>
 								{ !!self.current_user &&
 										<ActionQuoteRequest
+											{...self}
 											quote_request={quote_request}
 											key={quote_request.id}
 											landlord={self.landlord}
@@ -496,6 +570,7 @@ var QuoteRequests = React.createClass({
 											onModalWith={self.onModalWith}
 											updateStatusQuote={self.updateStatusQuote}
 											sendEmailLandlord={self.sendEmailLandlord}
+											uploadImage={self.uploadImage}
 											viewQuote={(key, item) => self.viewQuote(key, item)}
 											current_user_show_quote_message={self.current_user_show_quote_message}
 										/>
@@ -990,6 +1065,44 @@ var ModalViewQuoteMessage = React.createClass({
 	}
 });
 
+var ModalViewPhoto = React.createClass({
+	getInitialState: function() {
+		return {};
+	},
+
+	render: function() {
+		const { gallery } = this.props;
+
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<form role="form">
+						<div className="modal-content">
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									data-dismiss="modal"
+									aria-label="Close"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">
+									{this.props.title || 'View Photo'}
+								</h4>
+							</div>
+							<div className="modal-body">
+								<Carousel gallery={gallery} fullWidth />
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		);
+	}
+});
+
 var ModalConfirmQuote = React.createClass({
 	updateStatus: function() {
 		const {quote} = this.props;
@@ -1042,3 +1155,51 @@ var ModalConfirmQuote = React.createClass({
 		);
 	}
 });
+
+var ModalConfirmAnyThing = React.createClass({
+	confirm: function() {
+		this.props.confirm();
+	},
+
+	render: function() {
+		const {title, content} = this.props;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button
+								type="button"
+								className="close"
+								data-dismiss="modal"
+								aria-label="Close"
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">{title}</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">{content}</p>
+						</div>
+						<div className="modal-footer">
+							<button
+								type="button"
+								className="btn btn-default success"
+								onClick={this.confirm}
+								data-dismiss="modal"
+							>Yes</button>
+							<button
+								type="button"
+								className="btn btn-primary cancel"
+								onClick={this.props.close}
+							>No</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+

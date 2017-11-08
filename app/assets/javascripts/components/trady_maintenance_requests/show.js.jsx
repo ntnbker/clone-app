@@ -1125,6 +1125,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const {
 			appointments, quote_appointments, invoices, invoice_pdf_files, trady
 		} = this.state;
+
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">

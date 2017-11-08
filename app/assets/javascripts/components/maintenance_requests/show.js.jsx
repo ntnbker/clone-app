@@ -1002,6 +1002,7 @@ var MaintenanceRequest = React.createClass({
 			statusItem  	 	 		 			 : null,
 			assignEmail  	 	 		 			 : null,
 			appointment  	 	 		 			 : null,
+			quote_request 						 : null,
 			comments  	 	 		 			 	 : comments,
 			logs  	 	 		 						 : this.props.logs,
 			invoice_pdf_file  	 	 		 : null,
@@ -1060,6 +1061,25 @@ var MaintenanceRequest = React.createClass({
 			case 'viewQuoteMessage': {
 				this.setState({
 					quote: item
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewPhoto': {
+				this.setState({
+					quote_images: item,
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+
+			case 'confirmQuoteAlreadySent': {
+				this.setState({
+					quote_request: item,
 				});
 
 				this.onModalWith(key);
@@ -1702,6 +1722,88 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	quoteAlreadySent: function() {
+		const self = this;
+		const { maintenance_request, quote_request } = this.state;
+		const { current_user_role } = this.props;
+
+		const params = {
+			trady_id: quote_request.trady_id,
+			quote_request_id: quote_request.id,
+			maintenance_request_id: maintenance_request.id,
+			role: current_user_role.role,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/quote_sent',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Quote Already Sent",
+						content: "Quote Already Sent has confirmed.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Quote Already Sent",
+					content: "Quote Already Sent didn't confirm." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	uploadImage: function(images, callback) {
+		if (images.length == 0) {
+		  return;
+		}
+
+		const { quote_request } = this.state;
+		const image = images[0];
+
+		const data = {
+			picture: {
+				image,
+				quote_request_id 			: quote_request.id,
+				trady_id 							: quote_request.trady_id,
+				maintenance_request_id: quote_request.maintenance_request_id,
+			},
+		}
+
+		const self = this;
+		$.ajax({
+		  type: 'POST',
+		  url: '/quote_image',
+		  beforeSend: function (xhr) {
+		    xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+		  },
+		  data: data,
+		  success: function (res) {
+		  	callback();
+        self.setState({ quote_requests: res.quote_requests });
+		  },
+		  error: function (err) {
+
+		  }
+		});
+		return false;
+		callback('You Has Successfully Upload');
+	},
+
+	chooseQuoteRequest: function(quote_request) {
+		this.setState({ quote_request });
+	},
+
 	markAsPaid: function(invoice, uploaded = false) {
 		const self = this;
 		const {maintenance_request} = this.state;
@@ -2118,6 +2220,25 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'confirmQuoteAlreadySent':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={this.quoteAlreadySent}
+							title="Quote Already Sent"
+							content="Are you sure that the tradie has already submitted a quote?"
+						/>
+					);
+
+				case 'viewPhoto':
+					return (
+						<ModalViewPhoto
+							gallery={this.state.quote_images}
+							close={this.isClose}
+							title="Quote Photo"
+						/>
+					)
+
 				default:
 					return null;
 			}
@@ -2230,8 +2351,8 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	summary(e) {
-		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices, quote_requests} = this.props;
-		const {invoice_pdf_files, trady} = this.state;
+		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
+		const {invoice_pdf_files, trady, quote_requests} = this.state;
 
 		return (
 			<div className="summary-container-index" id="summary-container-index">
@@ -2258,6 +2379,8 @@ var MaintenanceRequest = React.createClass({
 									current_user={this.props.current_user}
 									updateStatusQuote={this.updateStatusQuote}
 									sendEmailLandlord={this.sendEmailLandlord}
+									uploadImage={this.uploadImage}
+									chooseQuoteRequest={this.chooseQuoteRequest}
 									viewQuote={(key, item) => this.viewItem(key, item)}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
