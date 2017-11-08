@@ -81,7 +81,9 @@ var Carousel = React.createClass({
 	render: function() {
 		var styles = {
 			left: this.state.stx,
-			width: this.state.stlen * this.state.stwidth,
+			width: !this.props.fullWidth
+							? this.state.stlen * this.state.stwidth
+							: '100%',
 		};
 		const temp = this;
 		var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
@@ -95,7 +97,7 @@ var Carousel = React.createClass({
 								<img
 									key={index}
 									src={img}
-									style={{width: subWidth}}
+									style={{width: temp.props.fullWidth ? '100%': subWidth}}
 									className="swiper-slide slide-image"
 								/>
 							);

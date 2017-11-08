@@ -177,7 +177,6 @@ body::-webkit-scrollbar-thumb {
       position: relative;
       padding: 15px;
       overflow: hidden;
-      padding-bottom: 0;
       text-align: center;
       p:first-child {
         text-transform: initial;
@@ -531,6 +530,7 @@ body::-webkit-scrollbar-thumb {
       }
       .user {
         overflow: hidden;
+        width: 100%;
         img {
           float: left;
           display: block;
@@ -552,6 +552,7 @@ body::-webkit-scrollbar-thumb {
         margin-left: 10px;
         float: left;
         margin-top: 20px;
+        width: calc(100% - 60px);
         .name {
           color: $color-gray;
           font-size: 15px;

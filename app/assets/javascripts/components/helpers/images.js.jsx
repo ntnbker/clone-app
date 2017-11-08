@@ -321,7 +321,7 @@ UploadImageComponent = React.createClass({
   },
 
   render: function () {
-    const { images, gallery, dataImages, uploadComplete } = this.state;
+    const { images, gallery, uploadComplete } = this.state;
 
     const uploadButton = !uploadComplete
       ? <div className="browse-wrap">
@@ -483,7 +483,7 @@ ModalImageUpload = React.createClass({
   },
 
   notifyAddPhoto: function(message) {
-    this.onModalWith('messageAddPhoto', message);
+    this.onModalWith('messageAddPhoto', this.props.message || message);
   },
 
   renderModal: function() {
@@ -529,9 +529,14 @@ ModalImageUpload = React.createClass({
   },
 
   render: function() {
+    const { className, onClick } = this.props;
+
     return this.renderModal() || (<button
-        className={this.props.className || 'btn-edit'}
-        onClick={() => this.onModalWith('addPhoto')}
+        className={className || 'btn-edit'}
+        onClick={() => {
+          if (onClick) onClick();
+          this.onModalWith('addPhoto')
+        }}
       >
         {this.props.text || 'Add Photo'}
       </button>
