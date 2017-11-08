@@ -343,7 +343,7 @@ class QuotesController < ApplicationController
 
 
   def quote_already_sent
-    binding.pry
+    
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     quote_request = QuoteRequest.find_by(id:params[:quote_request_id])
     quote_request.update_attribute(:quote_sent, true)
