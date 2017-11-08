@@ -27,7 +27,7 @@ class QuoteImagesController < ApplicationController
       end 
     end 
   end
-
+end 
   private
 
   def quote_image_params
