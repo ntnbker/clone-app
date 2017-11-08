@@ -1,4 +1,4 @@
-class QuoteImages < ApplicationRecord
+class QuoteImage < ApplicationRecord
   include QuoteImageUploader::Attachment.new(:image) # adds an `image` virtual attribute
   belongs_to :quote
 
