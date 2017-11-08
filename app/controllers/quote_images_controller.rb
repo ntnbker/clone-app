@@ -3,9 +3,10 @@ class QuoteImagesController < ApplicationController
   def create
 
 
-    if 
+    binding.pry 
     @quote_image = QuoteImage.new(quote_image_params)
     @maintenance_request = MaintenanceRequest.find_by(id:params[:picture][:maintenance_request_id])
+    binding.pry
     if @quote_image.valid?
       quote = Quote.create(maintenance_request_id:params[:picture][:maintenance_request_id], trady_id:params[:picture][:trady_id],quote_request_id:params[:picture][:quote_request_id], delivery_status:true, status: "Active")
       @quote_image.quote_id = quote.id 
@@ -27,7 +28,7 @@ class QuoteImagesController < ApplicationController
       end 
     end 
   end
-end 
+   
   private
 
   def quote_image_params
