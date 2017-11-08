@@ -1731,7 +1731,7 @@ var MaintenanceRequest = React.createClass({
 			trady_id: quote_request.trady_id,
 			quote_request_id: quote_request.id,
 			maintenance_request_id: maintenance_request.id,
-			role: current_user_role.role,
+			role: current_user_role.role === 'Trady' ? 'Trady' : 'Agent' ,
 		};
 
 		$.ajax({
@@ -1768,19 +1768,21 @@ var MaintenanceRequest = React.createClass({
 		  return;
 		}
 
-		const { quote_request } = this.state;
+		const { quote_request } 		= this.state;
+		const { current_user_role } = this.props;
+
 		const image = images[0];
 
 		const data = {
 			picture: {
-				image,
+				image: JSON.stringify(image),
 				quote_request_id 			: quote_request.id,
 				trady_id 							: quote_request.trady_id,
 				maintenance_request_id: quote_request.maintenance_request_id,
+				role 									: current_user_role.role === 'Trady' ? 'Trady' : 'Agent',
 			},
 		}
 
-		alert(JSON.stringify(data));
 		const self = this;
 		$.ajax({
 		  type: 'POST',
@@ -1790,9 +1792,10 @@ var MaintenanceRequest = React.createClass({
 		  },
 		  data: data,
 		  success: function (res) {
-		  	callback(JSON.stringify(res));
-		  	// callback('You Has Successfully Upload');
-        // self.setState({ quote_requests: res.quote_requests });
+		  	callback('You Has Successfully Upload');
+        if (res && res.quote_requests) {
+        	self.setState({ quote_requests: res.quote_requests });
+        }
 		  },
 		  error: function (err) {
 

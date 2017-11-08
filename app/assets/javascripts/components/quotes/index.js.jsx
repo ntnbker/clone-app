@@ -222,6 +222,8 @@ var ActionQuote = React.createClass({
 	render: function(){
 		const {quote} = this.state;
 		const self = this.props;
+		const image = quote.quote_image && quote.quote_image.image_url || '/assets/logo.png';
+
 		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
 			return (
 				<div className="actions-quote">
@@ -229,7 +231,7 @@ var ActionQuote = React.createClass({
 						quote.images && quote.images.length || true
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
-								gallery={quote.images || ['/assets/logo.png']}
+								gallery={[image]}
 							/>
 						: ''
 					}
@@ -272,7 +274,7 @@ var ActionQuote = React.createClass({
 						quote.images && quote.images.length || true
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
-								gallery={quote.images || ['/assets/logo.png']}
+								gallery={[image]}
 							/>
 						: ''
 					}
@@ -303,7 +305,7 @@ var ActionQuote = React.createClass({
 						quote.images && quote.images.length || true
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
-								gallery={quote.images || ['/assets/logo.png']}
+								gallery={[image]}
 							/>
 						: ''
 					}

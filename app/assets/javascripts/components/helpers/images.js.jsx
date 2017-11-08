@@ -312,7 +312,6 @@ UploadImageComponent = React.createClass({
       return;
     }
 
-    var FD = new FormData();
     self.props.uploadImage(dataImages, function(errors) {
       self.props.notifyAddPhoto(errors || SUCCESS_MESSAGE);
       // self.props.close();
