@@ -76,7 +76,20 @@ var AddPhoto = React.createClass({
 			</li>
 		);
 	}
-})
+});
+
+var AddQuotePhoto = React.createClass({
+	render: function() {
+		return (
+			<li>
+				<a onClick={() => this.props.onModalWith('addQuotePhoto')}>
+					<i className="fa fa-plus" aria-hidden="true" />
+					Add Quote Photo
+				</a>
+			</li>
+		);
+	}
+});
 
 var ContentTradyAction = React.createClass({
 	render: function() {
@@ -85,6 +98,7 @@ var ContentTradyAction = React.createClass({
 
 		const maintenance_trady_id = maintenance_request.trady_id;
 		const link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+
 		if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return (
 				<ul>

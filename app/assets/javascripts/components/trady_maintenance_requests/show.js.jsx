@@ -267,31 +267,32 @@ var TradyMaintenanceRequest = React.createClass({
 			}
 		});
 		return {
-			modal: "",
-			quote: null,
-			invoice: null,
-			isModal: false,
-			quotes: quotes,
-			isCancel: false,
-			tradies: tradies,
-			isDecline: false,
-			appointment: null,
-			comments: comments,
-			landlord: landlord,
-			invoices: invoices,
-			invoice_pdf_file: null,
-			appointmentUpdate: null,
-			appointments: appointments,
-			gallery: this.props.gallery,
-			quoteComments: quoteComments,
-			invoice_pdf_files: pdf_files,
-			trady: this.props.assigned_trady,
-			quote_appointments: quote_appointments,
-			maintenance_request: maintenance_request,
-			tenants_conversation: tenants_conversation,
-			landlords_conversation: landlords_conversation,
+			modal   								: "",
+			isModal   							: false,
+			isCancel   							: false,
+			isDecline   						: false,
+			quote   								: null,
+			invoice   							: null,
+			appointment   					: null,
+			invoice_pdf_file  			: null,
+			appointmentUpdate  			: null,
+			quotes   								: quotes,
+			tradies   							: tradies,
+			comments   							: comments,
+			landlord   							: landlord,
+			invoices   							: invoices,
+			invoice_pdf_files  			: pdf_files,
+			appointments  					: appointments,
+			quoteComments  					: quoteComments,
+			quote_appointments  		: quote_appointments,
+			gallery  								: this.props.gallery,
+			maintenance_request  		: maintenance_request,
+			tenants_conversation  	: tenants_conversation,
+			landlords_conversation  : landlords_conversation,
 			trady_agent_conversation: trady_agent_conversation,
-			instruction: this.props.instruction ? this.props.instruction : {},
+			quote_requests  				: this.props.quote_requests,
+			trady  									: this.props.assigned_trady,
+			instruction 						: this.props.instruction ? this.props.instruction : {},
 			notification: {
 				title: "",
 				content: "",
@@ -498,6 +499,24 @@ var TradyMaintenanceRequest = React.createClass({
 			case 'viewQuoteMessage': {
 				this.setState({
 					quote: item
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewPhoto': {
+				this.setState({
+					quote_images: item,
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'confirmQuoteAlreadySent': {
+				this.setState({
+					quote_request: item,
 				});
 
 				this.onModalWith(key);
@@ -997,6 +1016,25 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'confirmQuoteAlreadySent':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={this.quoteAlreadySent}
+							title="Quote Already Sent"
+							content="Are you sure that the tradie has already submitted a quote?"
+						/>
+					);
+
+				case 'viewPhoto':
+					return (
+						<ModalViewPhoto
+							gallery={this.state.quote_images}
+							close={this.isClose}
+							title="Quote Photo"
+						/>
+					)
+
 
 				default:
 					return null;
@@ -1004,11 +1042,96 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
+	chooseQuoteRequest: function(quote_request) {
+		this.setState({ quote_request });
+	},
+
 	autoScroll: function(key) {
 		var offset = $('#' + key).offset();
 		$('body').animate({
 			scrollTop: offset.top
 		}, 500);
+	},
+
+	quoteAlreadySent: function() {
+		const self = this;
+		const { quote_request } 		= this.state;
+		const { current_user_role } = this.props;
+
+		const params = {
+			trady_id: quote_request.trady_id,
+			quote_request_id: quote_request.id,
+			maintenance_request_id: quote_request.maintenance_request_id,
+			role: 'Trady',
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/quote_sent',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Quote Already Sent",
+						content: "Quote Already Sent has confirmed.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Quote Already Sent",
+					content: "Quote Already Sent didn't confirm." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	uploadImage: function(images, callback) {
+		if (images.length == 0) {
+		  return;
+		}
+
+		const { quote_request } 		= this.state;
+		const { current_user_role } = this.props;
+
+		const image = images[0];
+
+		const data = {
+			picture: {
+				image: JSON.stringify(image),
+				quote_request_id 			: quote_request.id,
+				trady_id 							: quote_request.trady_id,
+				maintenance_request_id: quote_request.maintenance_request_id,
+				role 									: 'Trady',
+			},
+		}
+
+		const self = this;
+		$.ajax({
+		  type: 'POST',
+		  url: '/quote_image',
+		  beforeSend: function (xhr) {
+		    xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+		  },
+		  data: data,
+		  success: function (res) {
+		  	callback('You Has Successfully Upload');
+        if (res && res.quote_requests) {
+        	self.setState({ quote_requests: res.quote_requests });
+        }
+		  },
+		  error: function (err) {
+
+		  }
+		});
 	},
 
 	openQuoteMesssage: function(quote_id) {
@@ -1123,7 +1246,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 	render: function() {
 		const {
-			appointments, quote_appointments, invoices, invoice_pdf_files, trady
+			appointments, quote_appointments, invoices, invoice_pdf_files, trady, quote_requests, quotes
 		} = this.state;
 
 		return (
@@ -1150,10 +1273,23 @@ var TradyMaintenanceRequest = React.createClass({
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{ (this.props.quotes && this.props.quotes.length > 0) &&
+						{ quote_requests && quote_requests.length &&
+								<QuoteRequests
+									keyLandlord="trady"
+									landlord={this.state.landlord}
+									quote_requests={quote_requests}
+									onModalWith={this.onModalWith}
+									uploadImage={this.uploadImage}
+									current_user={this.props.current_user}
+									chooseQuoteRequest={this.chooseQuoteRequest}
+									viewQuote={(key, item) => this.viewItem(key, item)}
+									current_user_show_quote_message={this.props.current_user_show_quote_message}
+								/>
+						}
+						{ (quotes && quotes.length > 0) &&
 								<Quotes
 									keyLandlord="trady"
-									quotes={this.state.quotes}
+									quotes={quotes}
 									landlord={this.state.landlord}
 									onModalWith={this.onModalWith}
 									current_user={this.props.current_user}
