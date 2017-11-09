@@ -2,7 +2,7 @@ class MaintenanceRequestsController < ApplicationController
   
   # before_action(only: [:show]) { email_auto_login(params[:user_id]) }
   # before_action(only: [:show]) { maintenance_request_stakeholders(params[:id]) }
-  before_action :require_login, only:[:update]
+  before_action :require_login, only:[:update,:duplicate]
   before_action :set_user, only:[:new,:create]
   
   before_action :customer_input_session, only:[:create,:new]
@@ -374,7 +374,29 @@ class MaintenanceRequestsController < ApplicationController
 
 
   def duplicate
-    
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @maintenance_request_duplicate = @maintenance_request.dup
+    @maintenance_request_duplicate.trady_id = nil
+    @maintenance_request_duplicate.save
+    @images = @maintenance_request.images
+
+
+    @images.each do |image|
+      image_duplicate = image.dup
+
+      image_duplicate.maintenance_request_id = @maintenance_request_duplicate.id
+      image_duplicate.save
+    end 
+
+    if current_user.logged_in_as("Agent")
+      flash[:success] = "You have made a copy of a maintenance request. It is now listed as a new maintenance request."
+      redirect_to agent_maintenance_requests_path
+    elsif current_user.logged_in_as("AgencyAdmin")
+      flash[:success] = "You have made a copy of a maintenance request. It is now listed as a new maintenance request."
+      redirect_to agency_admin_maintenance_requests_path
+    end
+
+
   end
 
   def split
@@ -398,9 +420,11 @@ class MaintenanceRequestsController < ApplicationController
     array.each do |maintenance_request|
       counter = counter + 1
       @maintenance_request = MaintenanceRequest.new(name:original_maintenance_request.name,email:original_maintenance_request.email,mobile:original_maintenance_request.mobile,property_id:original_maintenance_request.property_id,maintenance_description:maintenance_request[1][:maintenance_description], service_type: maintenance_request[1][:service_type], agency_admin_id: agency_admin_id, agent_id: agent_id)
+      
       @maintenance_request.perform_contact_maintenance_request_validation = false
       if @maintenance_request.valid?
         @maintenance_request.save
+        ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:@maintenance_request.id)
         success.push(@maintenance_request)
       else
         @maintenance_request.id = counter
