@@ -156,13 +156,17 @@ var ButtonQuoteAlreadySent = React.createClass({
 
 var ButtonViewPhoto = React.createClass({
 	render: function() {
+		const { chooseQuoteRequest, quote, viewQuote, gallery } = this.props;
 		return (
 			<button
 				type="button"
 				className="btn btn-default"
-				onClick={(key, item) => this.props.viewQuote('viewPhoto', this.props.gallery)}
+				onClick={(key, item) => {
+					chooseQuoteRequest(quote);
+					viewQuote('viewPhoto', gallery);
+				}}
 			>
-				View Quote Photo
+				View
 			</button>
 		);
 	}
@@ -246,10 +250,12 @@ var ActionQuote = React.createClass({
 							/>
 					}
 					{
-						image
+						!self.quotes && image
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
 								gallery={[image]}
+								quote={quote}
+								chooseQuoteRequest={this.props.chooseQuoteRequest}
 							/>
 						: !self.quotes
 							? <ButtonView
@@ -259,7 +265,7 @@ var ActionQuote = React.createClass({
 							: ''
 					}
 					{
-						!!this.props.isModal &&
+						!!this.props.isModal && this.props.printQuote &&
 							<ButtonPrint
 								printQuote={this.props.printQuote}
 							/>
@@ -276,10 +282,12 @@ var ActionQuote = React.createClass({
 							/>
 					}
 					{
-						image
+						!self.quotes && image
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
 								gallery={[image]}
+								quote={quote}
+								chooseQuoteRequest={this.props.chooseQuoteRequest}
 							/>
 						: !self.quotes
 							? <ButtonView
@@ -289,7 +297,7 @@ var ActionQuote = React.createClass({
 							: ''
 					}
 					{
-						!!this.props.isModal &&
+						!!this.props.isModal && this.props.printQuote &&
 							<ButtonPrint
 								printQuote={this.props.printQuote}
 							/>
@@ -332,10 +340,12 @@ var ActionQuote = React.createClass({
 							/>
 					}
 					{
-						image
+						!self.quotes && image
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
 								gallery={[image]}
+								quote={quote}
+								chooseQuoteRequest={this.props.chooseQuoteRequest}
 							/>
 						: !self.quotes
 							? <ButtonView
@@ -345,7 +355,7 @@ var ActionQuote = React.createClass({
 							: ''
 					}
 					{
-						!!this.props.isModal &&
+						!!this.props.isModal && this.props.printQuote &&
 							<ButtonPrint
 								printQuote={this.props.printQuote}
 							/>
@@ -372,7 +382,7 @@ var ActionQuoteRequest = React.createClass({
 	render: function(){
 		const quote_request = this.state.quote_request || {};
 
-		return <div>
+		return <div className="quote-request">
 				{(quote_request.quotes || [])
 					.map(quote => <ActionQuote {...this.props} key={quote.id} quote={quote} />)
 				}
@@ -400,6 +410,7 @@ var Quotes = React.createClass({
 
 	getPictureImage(quotes) {
 		const self = this;
+		if (!quotes || quotes.length === 0) return this.setState({ pictures: []});
 
 		const pictures = (quotes || []).map((quote) => {
 			const trady 											= quote.trady || {};
@@ -491,6 +502,8 @@ var QuoteRequests = React.createClass({
 
 	getPictureImage(quote_requests) {
 		const self = this;
+		if (!quote_requests || quote_requests.length === 0)
+			return this.setState({ pictures: []});
 
 		const pictures = (quote_requests || []).map((quote_request) => {
 			const trady 											= quote_request.trady || {};
@@ -518,8 +531,6 @@ var QuoteRequests = React.createClass({
 				<div className="list-quote">
 				{
 					quote_requests.map(function(quote_request, index) {
-						const status 				= quote_requests.status;
-						const showStatus 		= ['Approved', 'Declined'].indexOf(status) !== -1;
 						const quotes 				= quote_request.quotes || [];
 						const quoteAlready  = quotes.filter(quote => !quote.quote_items
 																											 || quote.quote_items.length === 0);
@@ -535,28 +546,19 @@ var QuoteRequests = React.createClass({
 									</span>
 									<div className="info">
 										<div className="name">
-											<span>{quote_request.trady.name}</span>
-											{ showStatus &&
-												<button className={'button-default ' + status}>
-													<span>{status}</span>
-												</button>
-											}
 											{ needAlreadySentButton
-												? <div className="actions-quote">
-														<ButtonQuoteAlreadySent
-															{...self}
-															quote_request={quote_request}
-														/>
-													</div>
+												? <ButtonQuoteAlreadySent
+														{...self}
+														quote_request={quote_request}
+													/>
 												: ''
 											}
 											{ needPhotoButton
-												? <div className="actions-quote">
-														<ModalImageUpload
-															{...self}
-															onClick={() => self.chooseQuoteRequest(quote_request)}
-														/>
-													</div>
+												? <ModalImageUpload
+														className="btn btn-default"
+														{...self}
+														onClick={() => self.chooseQuoteRequest(quote_request)}
+													/>
 												: ''
 											}
 										</div>
@@ -578,6 +580,7 @@ var QuoteRequests = React.createClass({
 											updateStatusQuote={self.updateStatusQuote}
 											sendEmailLandlord={self.sendEmailLandlord}
 											uploadImage={self.uploadImage}
+											chooseQuoteRequest={self.chooseQuoteRequest}
 											viewQuote={(key, item) => self.viewQuote(key, item)}
 											current_user_show_quote_message={self.current_user_show_quote_message}
 										/>
@@ -1079,31 +1082,45 @@ var ModalViewPhoto = React.createClass({
 
 	render: function() {
 		const { gallery } = this.props;
+		const self 				= this.props;
 
 		return (
-			<div className="modal-custom fade">
+			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
-					<form role="form">
-						<div className="modal-content">
-							<div className="modal-header">
-								<button
-									type="button"
-									className="close"
-									data-dismiss="modal"
-									aria-label="Close"
-									onClick={this.props.close}
-								>
-									<span aria-hidden="true">&times;</span>
-								</button>
-								<h4 className="modal-title text-center">
-									{this.props.title || 'View Photo'}
-								</h4>
-							</div>
-							<div className="modal-body">
-								<Carousel gallery={gallery} fullWidth />
-							</div>
+					<div className="modal-content quote-height" id="print-quote">
+						<div className="modal-header">
+							<button
+								type="button"
+								className="close"
+								data-dismiss="modal"
+								aria-label="Close"
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">
+								{this.props.title || 'View Photo'}
+							</h4>
 						</div>
-					</form>
+						<div className="modal-body">
+							<Carousel gallery={gallery} fullWidth />
+						</div>
+						<div className="modal-footer-quote print">
+							{ !!self.current_user &&
+								<ActionQuote
+									isModal="true"
+									className="print"
+									quote={self.quote}
+									landlord={self.landlord}
+									quotes={self.quotes}
+									onModalWith={self.onModalWith}
+									keyLandlord={this.props.keyLandlord}
+									updateStatusQuote={self.updateStatusQuote}
+									sendEmailLandlord={self.sendEmailLandlord}
+								/>
+							}
+						</div>
+					</div>
 				</div>
 			</div>
 		);

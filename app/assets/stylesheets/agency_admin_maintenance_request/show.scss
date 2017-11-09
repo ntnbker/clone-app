@@ -567,11 +567,14 @@ body::-webkit-scrollbar-thumb {
         }
       }
       .info .name button {
-        height: 27px;
+        height: 33px;
+        float: right;
+        border: 1px solid #3e4b54 !important;
+        margin-right: 25px;
         display: inline-block;
         margin-left: 10px;
         font-weight: 500;
-        font-size: 11px;
+        font-size: 14px;
         text-align: center;
         background-color: $color-white;
         padding: 0 10px;
@@ -674,11 +677,12 @@ body::-webkit-scrollbar-thumb {
       margin-left: 20px;
       float: right;
       margin-bottom: 20px;
+      width: calc(100% - 22px);
+      padding: 10px;
       button {
         padding: 0 20px;
         height: 33px;
-        margin-right: 15px;
-        margin-bottom: 5px;
+        margin: 5px 15px 5px 0px;
         font-size: 14px;
       }
       .btn-accept {
@@ -697,7 +701,12 @@ body::-webkit-scrollbar-thumb {
         color: $color-white;
       }
     }
-
+    .quote-request {
+      .actions-quote {
+        margin-top: 5px;
+        border: 1px solid rgba(0,0,0,0.3) !important;
+      }
+    }
     .btn-mark-as-paid {
       background-color: #8ADEFF;
       height: 35px;
@@ -1108,14 +1117,13 @@ body::-webkit-scrollbar-thumb {
     overflow: hidden;
     clear: both;
     margin-left: 20px;
-    float: right;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: right;
     button {
       padding: 0 20px;
       height: 33px;
       margin-right: 15px;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
       font-size: 14px;
       color: $color-black;
       text-transform: capitalize !important;

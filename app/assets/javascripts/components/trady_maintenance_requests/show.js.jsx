@@ -1029,9 +1029,18 @@ var TradyMaintenanceRequest = React.createClass({
 				case 'viewPhoto':
 					return (
 						<ModalViewPhoto
-							gallery={this.state.quote_images}
-							close={this.isClose}
 							title="Quote Photo"
+							close={this.isClose}
+							keyLandlord="trady"
+							agency={this.props.agency}
+							landlord={this.props.landlord}
+							property={this.props.property}
+							onModalWith={this.onModalWith}
+							quote={this.state.quote_request}
+							gallery={this.state.quote_images}
+							quotes={this.state.quote_requests}
+							current_user={this.props.current_user}
+							viewQuote={(quote) => this.viewQuote(quote)}
 						/>
 					)
 

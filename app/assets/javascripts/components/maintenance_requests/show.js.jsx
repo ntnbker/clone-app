@@ -2236,9 +2236,18 @@ var MaintenanceRequest = React.createClass({
 				case 'viewPhoto':
 					return (
 						<ModalViewPhoto
-							gallery={this.state.quote_images}
-							close={this.isClose}
 							title="Quote Photo"
+							close={this.isClose}
+							quote={this.state.quote_request}
+							quotes={this.state.quote_requests}
+							agency={this.props.agency}
+							property={this.props.property}
+							landlord={this.state.landlord}
+							onModalWith={this.onModalWith}
+							gallery={this.state.quote_images}
+							updateStatusQuote={this.updateStatusQuote}
+							viewQuote={(quote) => this.viewQuote(quote)}
+							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
 						/>
 					)
 
