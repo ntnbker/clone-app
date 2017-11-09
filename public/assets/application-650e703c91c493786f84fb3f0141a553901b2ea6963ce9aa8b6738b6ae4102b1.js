@@ -70068,74 +70068,80 @@ var ModalAppointment = React.createClass({
 	}
 });
 var AssignTrady = React.createClass({
-	displayName: "AssignTrady",
+	displayName: 'AssignTrady',
 
 	render: function () {
 		var _this = this;
 
-		var _props = this.props;
-		var trady = _props.trady;
-		var current_role = _props.current_role;
+		var current_role = this.props.current_role;
+
+		var trady = this.props.trady || {};
+		trady['trady_company'] = trady['trady_company'] || {};
+
+		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
+		var trady_profile_image = trady.trady_profile_image;
+
+		var image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 
 		return React.createElement(
-			"div",
-			{ className: "quotes invoices m-t-xl", id: "invoices" },
+			'div',
+			{ className: 'quotes invoices m-t-xl', id: 'invoices' },
 			React.createElement(
-				"p",
+				'p',
 				null,
-				"Work Order Assigned To:"
+				current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"
 			),
 			React.createElement(
-				"div",
-				{ className: "list-quote" },
+				'div',
+				{ className: 'list-quote' },
 				React.createElement(
-					"div",
-					{ className: "item-quote row" },
+					'div',
+					{ className: 'item-quote row' },
 					React.createElement(
-						"div",
-						{ className: "user seven columns" },
+						'div',
+						{ className: 'user seven columns' },
 						React.createElement(
-							"span",
-							{ className: "icon-user" },
-							React.createElement("i", { className: "fa fa-user" })
+							'span',
+							{ className: 'icon-user' },
+							React.createElement(AvatarImage, { imageUri: image_url })
 						),
 						React.createElement(
-							"div",
-							{ className: "info" },
+							'div',
+							{ className: 'info' },
 							React.createElement(
-								"div",
-								{ className: "name" },
+								'div',
+								{ className: 'name' },
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.name
 								)
 							),
 							React.createElement(
-								"p",
-								{ className: "description" },
+								'p',
+								{ className: 'description' },
 								trady.company_name,
-								React.createElement("br", null),
+								React.createElement('br', null),
 								trady.trady_company && trady.trady_company.trading_name
 							)
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "actions-quote" },
+						'div',
+						{ className: 'actions-quote' },
 						(current_role.role == 'Agent' || current_role.role == "AgencyAdmin") && React.createElement(
-							"button",
-							{ type: "button", className: "btn btn-decline", onClick: function (modal) {
+							'button',
+							{ type: 'button', className: 'btn btn-decline', onClick: function (modal) {
 									return _this.props.onModalWith('confirmCancelTrady');
 								} },
-							"Cancel"
+							'Cancel'
 						),
 						React.createElement(
-							"button",
-							{ type: "button", className: "btn btn-default btn-view", onClick: function (key, item) {
+							'button',
+							{ type: 'button', className: 'btn btn-default btn-view', onClick: function (key, item) {
 									return _this.props.viewTrady('viewTrady', trady);
 								} },
-							"View"
+							'View'
 						)
 					)
 				)
@@ -70145,182 +70151,193 @@ var AssignTrady = React.createClass({
 });
 
 var ModalViewTrady = React.createClass({
-	displayName: "ModalViewTrady",
+	displayName: 'ModalViewTrady',
 
 	render: function () {
 		var trady = this.props.trady;
 
+		trady['trady_company'] = trady['trady_company'] || {};
+
+		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
+		var trady_profile_image = trady.trady_profile_image;
+
+		var image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
 		return React.createElement(
-			"div",
-			{ className: "modal-custom modal-quote fade" },
+			'div',
+			{ className: 'modal-custom modal-quote fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content", id: "print-invoice" },
+					'div',
+					{ className: 'modal-content', id: 'print-invoice' },
 					React.createElement(
-						"div",
-						{ className: "modal-header" },
+						'div',
+						{ className: 'modal-header' },
 						React.createElement(
-							"div",
-							{ className: "logo" },
-							React.createElement("img", { src: "/assets/logo.png" })
+							'div',
+							{ className: 'logo' },
+							React.createElement(
+								'span',
+								{ className: 'icon-user' },
+								React.createElement(AvatarImage, { id: 'logo', imageUri: image_url })
+							)
 						),
 						React.createElement(
-							"div",
-							{ className: "info-trady" },
+							'div',
+							{ className: 'info-trady' },
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.company_name
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.abn
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.address
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.mobile_number
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.email
 								)
 							)
 						),
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
+								type: 'button',
+								className: 'close',
+								'data-dismiss': 'modal',
+								'aria-label': 'Close',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "footer" },
+						'div',
+						{ className: 'footer' },
 						React.createElement(
-							"div",
-							{ className: "bank" },
+							'div',
+							{ className: 'bank' },
 							React.createElement(
-								"div",
+								'div',
 								null,
-								React.createElement("i", { className: "fa fa-bank" }),
+								React.createElement('i', { className: 'fa fa-bank' }),
 								React.createElement(
-									"p",
-									{ className: "font-bold" },
-									"Bank Deposit"
+									'p',
+									{ className: 'font-bold' },
+									'Bank Deposit'
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
-									{ className: "font-bold" },
-									"BSB:"
+									'span',
+									{ className: 'font-bold' },
+									'BSB:'
 								),
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.bsb_number
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
-									{ className: "font-bold" },
-									"Account Number:"
+									'span',
+									{ className: 'font-bold' },
+									'Account Number:'
 								),
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.bank_account_number
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								React.createElement(
-									"span",
-									{ className: "font-bold" },
-									"Account Name:"
+									'span',
+									{ className: 'font-bold' },
+									'Account Name:'
 								),
 								React.createElement(
-									"span",
+									'span',
 									null,
 									trady.trady_company && trady.trady_company.account_name
 								)
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "contact" },
+							'div',
+							{ className: 'contact' },
 							React.createElement(
-								"div",
+								'div',
 								null,
-								React.createElement("i", { className: "fa fa-envelope-o" }),
+								React.createElement('i', { className: 'fa fa-envelope-o' }),
 								React.createElement(
-									"p",
-									{ className: "font-bold" },
-									"Mail"
+									'p',
+									{ className: 'font-bold' },
+									'Mail'
 								)
 							),
 							React.createElement(
-								"p",
-								{ className: "font-bold" },
-								"Make your cheque payable to:"
+								'p',
+								{ className: 'font-bold' },
+								'Make your cheque payable to:'
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								trady.trady_company && trady.trady_company.account_name
 							),
 							React.createElement(
-								"p",
-								{ className: "font-bold" },
-								"Detach this section and mail with your cheque to:"
+								'p',
+								{ className: 'font-bold' },
+								'Detach this section and mail with your cheque to:'
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
 								trady.trady_company && trady.trady_company.address
 							)
@@ -70333,79 +70350,112 @@ var ModalViewTrady = React.createClass({
 });
 
 var ModalConfirmCancelTrady = React.createClass({
-	displayName: "ModalConfirmCancelTrady",
+	displayName: 'ModalConfirmCancelTrady',
 
 	render: function () {
 		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
+			'div',
+			{ className: 'modal-custom fade' },
 			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
+				'div',
+				{ className: 'modal-dialog' },
 				React.createElement(
-					"div",
-					{ className: "modal-content" },
+					'div',
+					{ className: 'modal-content' },
 					React.createElement(
-						"div",
-						{ className: "modal-header" },
+						'div',
+						{ className: 'modal-header' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
+								type: 'button',
+								className: 'close',
+								'data-dismiss': 'modal',
+								'aria-label': 'Close',
 								onClick: this.props.close
 							},
 							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
 							)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"Cancel Work Order"
+							'h4',
+							{ className: 'modal-title text-center' },
+							'Cancel Work Order'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-body" },
+						'div',
+						{ className: 'modal-body' },
 						React.createElement(
-							"p",
-							{ className: "text-center" },
-							"Are you sure you want to cancel the work order?"
+							'p',
+							{ className: 'text-center' },
+							'Are you sure you want to cancel the work order?'
 						)
 					),
 					React.createElement(
-						"div",
-						{ className: "modal-footer" },
+						'div',
+						{ className: 'modal-footer' },
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								"data-dismiss": "modal",
-								className: "btn btn-default success",
+								type: 'button',
+								'data-dismiss': 'modal',
+								className: 'btn btn-default success',
 								onClick: this.props.cancelWorkOrder
 							},
-							"Yes"
+							'Yes'
 						),
 						React.createElement(
-							"button",
+							'button',
 							{
-								type: "button",
-								className: "btn btn-default cancel",
+								type: 'button',
+								className: 'btn btn-default cancel',
 								onClick: this.props.close,
-								"data-dismiss": "modal"
+								'data-dismiss': 'modal'
 							},
-							"No"
+							'No'
 						)
 					)
 				)
 			)
 		);
 	}
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+AvatarImage = React.createClass({
+  displayName: 'AvatarImage',
+
+  getInitialState: function () {
+    return {
+      imageUri: this.props.imageUri || '/default-avatar.png'
+    };
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({
+      imageUri: nextProps.imageUri || this.state.imageUri
+    });
+  },
+
+  handleError: function () {
+    this.setState({ imageUri: this.props.defaultImage || '/default-avatar.png' });
+  },
+
+  render: function () {
+    var imageUri = this.state.imageUri;
+
+    return React.createElement('img', _extends({
+      id: 'avatar'
+    }, this.props, {
+      src: imageUri,
+      onError: this.handleError,
+      alt: 'Avatar Image'
+    }));
+  }
 });
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -72065,7 +72115,7 @@ var InvoiceField = React.createClass({
     var items_total = _state5.items_total;
 
     var invoice_items = content && content.invoice_items || null;
-    var hasInvoice = content && !content.isCoppy;
+    var hasInvoice = content && Object.keys(content).length > 0 && !content.isCoppy;
     var invoice = this.props.content || {};
 
     if (hasInvoice) x = invoice.id;
@@ -72368,7 +72418,7 @@ var InvoiceFields = React.createClass({
       }),
       React.createElement(FieldListForInvoice, {
         errors: errors,
-        params: invoiceInfo,
+        params: { invoiceInfo: invoiceInfo },
         noQuotes: !hasQuotes,
         existingContent: invoices,
         SampleField: InvoiceField,
@@ -77304,9 +77354,9 @@ var ListMaintenanceRequest = React.createClass({
         value: "New Invoice",
         count: this.props.new_invoice_count
       }, {
-        title: "Pending Payment",
-        value: "Pending Payment",
-        count: this.props.pending_payment_count
+        title: "Cancelled Work Orders",
+        value: "Cancelled Work Order",
+        count: this.props.cancelled_work_orders
       }],
       awaitingAction: [{
         title: "Awaiting Owner Initiation",
@@ -77317,10 +77367,6 @@ var ListMaintenanceRequest = React.createClass({
         value: "Awaiting Owner Instruction",
         count: this.props.awaiting_owner_instruction_count
       }, {
-        title: "Awaiting Tradie Initiation",
-        value: "Awaiting Tradie Initiation",
-        count: this.props.awaiting_trady_initiation_count
-      }, {
         title: "Awaiting Tradie`s Quote",
         value: "Awaiting Quote",
         count: this.props.awaiting_trady_quote_count
@@ -77329,7 +77375,7 @@ var ListMaintenanceRequest = React.createClass({
         value: "Quote Received Awaiting Approval",
         count: this.props.awaiting_quote_approval_count
       }, {
-        title: "Quote Approved Tradie To Organise Appointment",
+        title: "Job Approved Tradie To Set Appointment",
         value: "Quote Approved Tradie To Organise Appointment",
         count: this.props.trady_organise_appointment_count
       }, {
@@ -77389,6 +77435,10 @@ var ListMaintenanceRequest = React.createClass({
         title: "Declined Quotes",
         value: "Declined Quotes",
         count: this.props.declined_quotes
+      }, {
+        title: "Cancelled Work Orders",
+        value: "Cancelled Work Order",
+        count: this.props.cancelled_work_orders
       }]
     };
   },
@@ -80861,7 +80911,7 @@ var MaintenanceRequest = React.createClass({
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
-			trady: this.props.hired_trady,
+			trady: this.props.hired_trady || this.props.assigned_trady || null,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.pdf_files,
@@ -83389,18 +83439,43 @@ var Quotes = React.createClass({
 
 	getInitialState: function () {
 		return {
-			quotes: this.props.quotes
+			quotes: this.props.quotes,
+			pictures: []
 		};
 	},
 
+	componentWillMount: function () {
+		this.getPictureImage(this.state.quotes);
+	},
+
 	componentWillReceiveProps: function (nextProps) {
+		this.getPictureImage(nextProps.quotes);
 		this.setState({
-			quotes: nextProps.quotes
+			quotes: nextProps.quotes,
+			pictures: []
 		});
 	},
 
+	getPictureImage: function (quotes) {
+		var self = this;
+
+		var pictures = quotes.map(function (quote) {
+			var trady = quote.trady || {};
+			var id = trady.id || '';
+			var trady_company = trady.trady_company || {};
+			var trady_profile_image = trady.trady_profile_image || {};
+			var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+
+			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+		});
+
+		this.setState({ pictures: pictures });
+	},
+
 	render: function () {
-		var quotes = this.state.quotes;
+		var _state = this.state;
+		var quotes = _state.quotes;
+		var pictures = _state.pictures;
 
 		var self = this.props;
 
@@ -83430,7 +83505,7 @@ var Quotes = React.createClass({
 							React.createElement(
 								"span",
 								{ className: "icon-user" },
-								React.createElement("i", { className: "fa fa-user" })
+								React.createElement(AvatarImage, { imageUri: pictures[index] })
 							),
 							React.createElement(
 								"div",
@@ -83787,6 +83862,17 @@ var ModalViewQuote = React.createClass({
 		}
 	},
 
+	getImage: function (trady) {
+		if (!trady) return '';
+
+		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
+		var trady_profile_image = trady.trady_profile_image;
+
+		var image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
+		return image_url;
+	},
+
 	printQuote: function () {
 		var contents = $('#print-quote').html();
 		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" + ".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {flex: 1;}" + ".slider-quote { border-top: 1px solid #e5e5e5 !important;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "#print-quote { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3 !important;}" + ".font-bold { font-weight: bold !important;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}" + "@media print {" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "}";
@@ -83815,6 +83901,8 @@ var ModalViewQuote = React.createClass({
 
 		var total = 0;
 
+		var image_url = this.getImage(quote.trady);
+
 		return React.createElement(
 			"div",
 			{ className: "modal-custom modal-quote fade" },
@@ -83830,7 +83918,11 @@ var ModalViewQuote = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "logo" },
-							React.createElement("img", { src: "/assets/logo.png" })
+							React.createElement(
+								"span",
+								{ className: "icon-user" },
+								React.createElement(AvatarImage, { id: "logo", imageUri: image_url })
+							)
 						),
 						React.createElement(
 							"div",
@@ -84961,9 +85053,22 @@ var Header = React.createClass({
 
   header: function (e) {
     var props = this.props;
-    var expanded = this.props.expanded;
-    var logged_in = this.props.logged_in;
-    var current_user = this.props.current_user;
+    var expanded = props.expanded;
+    var logged_in = props.logged_in;
+    var current_user = props.current_user;
+    var role = props.role;
+    var images = props.images;
+
+    var user_name = (props.user_name || '').trim() || role || '';
+
+    var user_name_show_pc = user_name.length > 12 ? (user_name.trim() && user_name || role).replace(/(.{0,12}).+/, '$1...') : user_name;
+
+    var user_name_show_mobile = user_name.length > 20 ? (user_name.trim() && user_name || role).replace(/(.{0,20}).*/, '$1...') : user_name;
+
+    var _ref = images && images.length && images[0] || {};
+
+    var _ref$profile = _ref.profile;
+    var profile = _ref$profile === undefined ? '' : _ref$profile;
 
     return React.createElement(
       "nav",
@@ -84980,13 +85085,12 @@ var Header = React.createClass({
             React.createElement(
               "span",
               { className: "icon-user" },
-              React.createElement("i", { className: "fa fa-user" })
+              React.createElement(AvatarImage, { className: "fa fa-user", imageUri: profile })
             ),
             React.createElement(
               "span",
-              null,
-              "Hi, ",
-              props.role
+              { title: user_name },
+              user_name_show_mobile
             )
           ),
           this.menuBar(),
@@ -85053,13 +85157,12 @@ var Header = React.createClass({
                 React.createElement(
                   "span",
                   { className: "icon-user" },
-                  React.createElement("i", { className: "fa fa-user" })
+                  React.createElement(AvatarImage, { className: "fa fa-user", imageUri: profile })
                 ),
                 React.createElement(
                   "span",
-                  null,
-                  "Hi, ",
-                  props.role,
+                  { title: user_name },
+                  user_name_show_pc,
                   React.createElement("i", { className: "fa fa-angle-down" })
                 )
               ),
@@ -85091,13 +85194,12 @@ var Header = React.createClass({
               React.createElement(
                 "span",
                 { className: "icon-user" },
-                React.createElement("i", { className: "fa fa-user" })
+                React.createElement(AvatarImage, { className: "fa fa-user", imageUri: profile })
               ),
               React.createElement(
                 "span",
-                null,
-                "Hi, ",
-                props.role
+                { title: user_name },
+                user_name_show_pc
               ),
               React.createElement("i", { className: "fa fa-angle-down" })
             ),
@@ -86556,7 +86658,7 @@ var TradyEdit = React.createClass({
       React.createElement(
         'div',
         { className: 'left' },
-        gallery && React.createElement('img', { id: 'avatar', src: gallery.image_url, alt: 'Avatar Image' }),
+        gallery && React.createElement(AvatarImage, { imageUri: gallery.image_url, alt: 'Avatar Image' }),
         React.createElement(ModalImageUpload, {
           uploadImage: this.uploadImage,
           gallery: gallery && [gallery] || [],
@@ -87017,7 +87119,7 @@ var EditTradyCompany = React.createClass({
             ref: function (ref) {
               return _this.account_name = ref;
             },
-            className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+            className: "form-control " + (errors['account_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
           }),
           renderErrorFunc(errors['account_name'])
@@ -87278,7 +87380,7 @@ var TradyCompanyEdit = React.createClass({
       React.createElement(
         'div',
         { className: 'left' },
-        gallery && React.createElement('img', { id: 'avatar', src: gallery.image_url, alt: 'Avatar Image' }),
+        gallery && React.createElement(AvatarImage, { imageUri: gallery.image_url, alt: 'Avatar Image' }),
         React.createElement(ModalImageUpload, {
           uploadImage: this.uploadImage,
           gallery: gallery && [gallery] || [],
@@ -87763,7 +87865,7 @@ var AddTradycompany = React.createClass({
               ref: function (ref) {
                 return _this.account_name = ref;
               },
-              className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+              className: "form-control " + (errors['account_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
             }),
             renderErrorFunc(errors['account_name'])
@@ -88829,6 +88931,7 @@ var TradyMaintenanceRequest = React.createClass({
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			invoice_pdf_files: pdf_files,
+			trady: this.props.assigned_trady,
 			quote_appointments: quote_appointments,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
@@ -89098,6 +89201,15 @@ var TradyMaintenanceRequest = React.createClass({
 						appointment: item
 					});
 
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewTrady':
+				{
+					this.setState({
+						trady: item
+					});
 					this.onModalWith(key);
 					break;
 				}
@@ -89575,6 +89687,12 @@ var TradyMaintenanceRequest = React.createClass({
 						}
 					});
 
+				case 'viewTrady':
+					return React.createElement(ModalViewTrady, {
+						close: this.isClose,
+						trady: this.state.trady
+					});
+
 				default:
 					return null;
 			}
@@ -89710,6 +89828,7 @@ var TradyMaintenanceRequest = React.createClass({
 		var quote_appointments = _state5.quote_appointments;
 		var invoices = _state5.invoices;
 		var invoice_pdf_files = _state5.invoice_pdf_files;
+		var trady = _state5.trady;
 
 		return React.createElement(
 			'div',
@@ -89729,6 +89848,16 @@ var TradyMaintenanceRequest = React.createClass({
 						gallery: this.state.gallery,
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
+					}),
+					trady && this.props.current_role && React.createElement(AssignTrady, {
+						trady: trady,
+						current_role: this.props.current_role.role,
+						onModalWith: function (modal) {
+							return _this3.onModalWith(modal);
+						},
+						viewTrady: function (key, item) {
+							return _this3.viewItem(key, item);
+						}
 					}),
 					this.props.quotes && this.props.quotes.length > 0 && React.createElement(Quotes, {
 						keyLandlord: 'trady',

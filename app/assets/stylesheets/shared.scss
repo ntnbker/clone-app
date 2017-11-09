@@ -26,6 +26,19 @@ body {
   margin-bottom: 53%;
   max-width: 1366px;
 }
+#avatar {
+  /* fill the container, preserving aspect ratio, and cropping to fit */
+  background-size: cover;
+
+  /* center the image vertically and horizontally */
+  background-position: center;
+
+  /* round the edges to a circle with border radius 1/2 container size */
+  border-radius: 50%;
+}
+.logo {
+  margin: auto 0 auto 0;
+}
 
 input, textarea, select {
   color: #7D7D7D;
@@ -153,7 +166,7 @@ header {
             }
           }
           span {
-            font-size: 22px;
+            font-size: 20px;
             padding-left: 10px;
             i {
               display: inline-block;
@@ -286,10 +299,10 @@ header {
     }
 
     .menu-button {
-      margin-top: 19px;
+      margin-top: 18px;
       float: right;
       height: 40px;
-      font-size: 22px;
+      font-size: 20px;
       color: #fff;
       line-height: 40px;
       text-align: center;
@@ -303,10 +316,16 @@ header {
 
       .icon-user {
         font-size: 30px;
+        img {
+          position: relative;
+          top: 4px;
+          width: 35px;
+          height: 35px;
+        }
       }
 
       .fa-angle-down {
-        font-size: 22px;
+        font-size: 20px;
       }
     }
 
@@ -319,11 +338,13 @@ header {
       img {
         vertical-align: middle;
         padding-bottom: 13px;
+        max-width: 55px;
+        height: 55px;
       }
 
       a {
         text-decoration: none;
-        font-size: 22px;
+        font-size: 20px;
         color: white;
       }
     }
@@ -407,7 +428,10 @@ header {
         &:first-child {
           display: inline-block;
           width: 100%;
+          padding-bottom: 10px;
           img {
+            position: relative;
+            top: 4px;
             width: 35px;
             height: 35px;
           }
@@ -531,7 +555,7 @@ footer {
 
     .footer-logo {
       color: white;
-      font-size: 22px;
+      font-size: 20px;
       float: left;
       line-height: 60px;
       text-align: center;

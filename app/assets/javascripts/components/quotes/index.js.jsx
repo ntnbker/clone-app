@@ -306,18 +306,42 @@ var ActionQuote = React.createClass({
 var Quotes = React.createClass({
 	getInitialState: function() {
 		return {
-			quotes: this.props.quotes
+			quotes: this.props.quotes,
+			pictures: [],
 		};
 	},
 
+	componentWillMount() {
+		this.getPictureImage(this.state.quotes);
+	},
+
 	componentWillReceiveProps: function(nextProps) {
+		this.getPictureImage(nextProps.quotes);
 		this.setState({
-			quotes: nextProps.quotes
+			quotes: nextProps.quotes,
+			pictures: [],
 		});
 	},
 
+	getPictureImage(quotes) {
+		const self = this;
+
+		const pictures = quotes.map((quote) => {
+			const trady 											= quote.trady || {};
+			const id 													= trady.id || '';
+			const trady_company 							=  trady.trady_company || {};
+			const trady_profile_image 				= trady.trady_profile_image || {};
+			const trady_company_profile_image = trady_company.trady_company_profile_image || {};
+
+			return trady_company_profile_image && trady_company_profile_image.image_url
+					|| trady_profile_image && trady_profile_image.image_url;
+		});
+
+		this.setState({ pictures });
+	},
+
 	render: function() {
-		const {quotes} = this.state;
+		const {quotes, pictures} = this.state;
 		const self = this.props;
 
 		return (
@@ -335,7 +359,7 @@ var Quotes = React.createClass({
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
 									<span className="icon-user">
-										<i className="fa fa-user" />
+										<AvatarImage imageUri={pictures[index]} />
 									</span>
 									<div className="info">
 										<div className="name">
@@ -572,6 +596,16 @@ var ModalViewQuote = React.createClass({
 		}
 	},
 
+	getImage: function(trady) {
+		if (!trady) return '';
+
+		const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
+
+		const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
+		return image_url;
+	},
+
 	printQuote: function() {
 		var contents = $('#print-quote').html();
 		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
@@ -649,13 +683,17 @@ var ModalViewQuote = React.createClass({
 		const {property} = this.props;
 		let total = 0;
 
+		const image_url = this.getImage(quote.trady);
+
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
 					<div className="modal-content quote-height" id="print-quote">
 						<div className="modal-header">
 							<div className="logo">
-								<img src="/assets/logo.png" />
+                <span className="icon-user">
+                  <AvatarImage id="logo" imageUri={image_url} />
+                </span>
 							</div>
 							<div className="info-trady">
 								<p>

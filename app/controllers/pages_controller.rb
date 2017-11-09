@@ -48,7 +48,7 @@ class PagesController < ApplicationController
           
     else
       flash[:danger] = "Please fill all the fields below"
-      render :home
+      redirect_to root_path
     end
     
   end

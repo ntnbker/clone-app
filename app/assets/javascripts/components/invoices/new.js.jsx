@@ -641,7 +641,7 @@ var InvoiceField = React.createClass({
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
-    var hasInvoice    = content && !content.isCoppy;
+    var hasInvoice    = content && Object.keys(content).length > 0 && !content.isCoppy;
     var invoice       = this.props.content || {};
 
     if (hasInvoice) x = invoice.id;
@@ -880,7 +880,7 @@ var InvoiceFields = React.createClass({
 
       <FieldListForInvoice
         errors={errors}
-        params={invoiceInfo}
+        params={{invoiceInfo}}
         noQuotes={!hasQuotes}
         existingContent={invoices}
         SampleField={InvoiceField}

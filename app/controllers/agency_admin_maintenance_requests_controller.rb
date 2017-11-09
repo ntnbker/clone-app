@@ -53,8 +53,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}, :conversation=>{:include=>:messages}})
-
+    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})
+    
     @agency = @current_user.agency_admin.agency
 
     @quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
@@ -71,7 +71,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     
     @tradie = Trady.new
     @assigned_trady = @maintenance_request.trady
-    @hired_trady = @assigned_trady.as_json({:include => :trady_company})
+    @hired_trady = @assigned_trady.as_json({:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}})
     if @assigned_trady
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id).as_json
     end 

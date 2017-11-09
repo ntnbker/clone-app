@@ -6,5 +6,5 @@ production:
   - default
 :schedule:
   reminder_queue:
-    every: ['24h', first_in: '14hr']
+    every: ['3d', first_in: '3d']
     class: ReminderQueueWorker

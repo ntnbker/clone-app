@@ -1,16 +1,23 @@
 var AssignTrady = React.createClass({
 	render: function() {
-		const {trady, current_role} = this.props;
+		const { current_role } = this.props;
+    const trady            = this.props.trady || {};
+    trady['trady_company'] = trady['trady_company'] || {};
+
+    const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
+
+    const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
 		return (
 			<div className="quotes invoices m-t-xl" id="invoices">
 				<p>
-					Work Order Assigned To:
+					{current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"}
 				</p>
 				<div className="list-quote">
 					<div className="item-quote row">
 						<div className="user seven columns">
 							<span className="icon-user">
-								<i className="fa fa-user" />
+                <AvatarImage imageUri={image_url} />
 							</span>
 							<div className="info">
 								<div className="name">
@@ -33,7 +40,7 @@ var AssignTrady = React.createClass({
 								View
 							</button>
 						</div>
-					</div>      
+					</div>
 				</div>
 			</div>
 		);
@@ -44,13 +51,22 @@ var AssignTrady = React.createClass({
 var ModalViewTrady = React.createClass({
 	render: function() {
 		const {trady} = this.props;
+
+    trady['trady_company'] = trady['trady_company'] || {};
+
+    const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
+
+    const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
 					<div className="modal-content"  id="print-invoice">
 						<div className="modal-header">
 							<div className="logo">
-								<img src="/assets/logo.png" />
+                <span className="icon-user">
+                  <AvatarImage id="logo" imageUri={image_url} />
+                </span>
 							</div>
 							<div className="info-trady">
 								<p>
@@ -79,11 +95,11 @@ var ModalViewTrady = React.createClass({
 									</span>
 								</p>
 							</div>
-							<button 
-								type="button" 
+							<button
+								type="button"
 								className="close"
-								data-dismiss="modal" 
-								aria-label="Close" 
+								data-dismiss="modal"
+								aria-label="Close"
 								onClick={this.props.close}
 							>
 								<span aria-hidden="true">&times;</span>
@@ -142,11 +158,11 @@ var ModalConfirmCancelTrady = React.createClass({
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="close"
-                data-dismiss="modal" 
-                aria-label="Close" 
+                data-dismiss="modal"
+                aria-label="Close"
                 onClick={this.props.close}
               >
                 <span aria-hidden="true">&times;</span>
@@ -157,16 +173,16 @@ var ModalConfirmCancelTrady = React.createClass({
               <p className="text-center">Are you sure you want to cancel the work order?</p>
             </div>
             <div className="modal-footer">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 data-dismiss="modal"
-                className="btn btn-default success" 
-                onClick={this.props.cancelWorkOrder} 
+                className="btn btn-default success"
+                onClick={this.props.cancelWorkOrder}
               >Yes</button>
-              <button 
-                type="button" 
-                className="btn btn-default cancel" 
-                onClick={this.props.close} 
+              <button
+                type="button"
+                className="btn btn-default cancel"
+                onClick={this.props.close}
                 data-dismiss="modal"
               >No</button>
             </div>
