@@ -1076,7 +1076,6 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
-
 			case 'confirmQuoteAlreadySent': {
 				this.setState({
 					quote_request: item,

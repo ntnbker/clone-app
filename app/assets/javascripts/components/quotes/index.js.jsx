@@ -398,13 +398,6 @@ var ActionQuoteRequest = React.createClass({
 	}
 });
 
-/*<p>
- 	<span className="index">{quotes.length}</span>Quotes
-</p>
-{quotes
- 	.map(quote => <ActionQuote {...this.props} key={quote.id} quote={quote} />)
-}*/
-
 var Quotes = React.createClass({
 	getInitialState: function() {
 		return {
@@ -563,7 +556,7 @@ var QuoteRequests = React.createClass({
 						const needPhotoButton 			= quote_request.quote_sent;
 
 						return (
-							<div className="item-quote row" key={index}>
+							<div className="item-quote row item-quote-request" key={index}>
 								<div className="user seven columns">
 									<span className="index quote">{index + 1}</span>
 									<span className="icon-user">

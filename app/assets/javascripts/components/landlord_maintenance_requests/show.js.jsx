@@ -110,7 +110,9 @@ var ModalNotification = React.createClass({
 
 var LandlordMaintenanceRequest = React.createClass({
 	getInitialState: function() {
-		const {quotes, tradies, landlord, appointments, maintenance_request, tenants_conversation, landlords_conversation} = this.props;
+		const {
+			quotes, tradies, landlord, appointments, maintenance_request, tenants_conversation, landlords_conversation, quote_requests
+		} = this.props;
 		const comments = [];
 		appointments.map((appointment, key) => {
 			if(appointment.comments.length > 0) {
@@ -130,6 +132,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			comments: comments,
 			appointmentUpdate: null,
 			appointments: appointments,
+			quote_requests: quote_requests,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
@@ -174,6 +177,15 @@ var LandlordMaintenanceRequest = React.createClass({
 			}
 
 			case 'createAppointment': {
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewPhoto': {
+				this.setState({
+					quote_images: item,
+				});
+
 				this.onModalWith(key);
 				break;
 			}
@@ -509,6 +521,10 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
+	chooseQuoteRequest: function(quote_request) {
+		this.setState({ quote_request });
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -621,6 +637,22 @@ var LandlordMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'viewPhoto':
+					return (
+						<ModalViewPhoto
+							title="Quote Photo"
+							close={this.isClose}
+							quote={this.state.quote_request}
+							quotes={this.state.quote_requests}
+							agency={this.props.agency}
+							property={this.props.property}
+							landlord={this.state.landlord}
+							onModalWith={this.onModalWith}
+							gallery={this.state.quote_images}
+							updateStatusQuote={this.updateStatusQuote}
+							viewQuote={(quote) => this.viewQuote(quote)}
+						/>
+					)
 				default:
 					return null;
 			}
@@ -709,7 +741,7 @@ var LandlordMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
-		const {appointments} = this.state;
+		const {appointments, quote_requests, quotes} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -719,7 +751,22 @@ var LandlordMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{ (this.props.quotes && this.props.quotes.length > 0) &&
+						{
+							quote_requests && quote_requests.length
+							? <QuoteRequests
+									quote_requests={quote_requests}
+									onModalWith={this.onModalWith}
+									landlord={this.state.landlord}
+									current_user={this.props.current_user}
+									updateStatusQuote={this.updateStatusQuote}
+									sendEmailLandlord={this.sendEmailLandlord}
+									uploadImage={this.uploadImage}
+									chooseQuoteRequest={this.chooseQuoteRequest}
+									viewQuote={(key, item) => this.viewItem(key, item)}
+								/>
+							: ''
+						}
+						{ (quotes && quotes.length > 0) &&
 								<Quotes
 									keyLandlord="landlord"
 									quotes={this.state.quotes}

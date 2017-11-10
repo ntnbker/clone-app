@@ -45,14 +45,17 @@ body::-webkit-scrollbar-thumb {
   color: red;
   text-align: center;
 }
+.item-quote-request {
+  border: 1px solid #e0e3e6;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
 span.index {
   display: inline-block;
-  border: 1px solid;
+  border: 1px solid $color-green;
+  background-color: $color-green;
   border-radius: 3px;
-  color: $color-green;
-  // width: 25px;
-  // height: 25px;
-  // line-height: 30px;
+  color: $color-white;
   margin-right: 10px;
   margin-left: 10px;
   width: 25px;
@@ -542,9 +545,8 @@ span.index {
     }
     .item-quote {
       overflow: hidden;
-      border-bottom: 1px solid $color-grey;
       &:last-child {
-        border-bottom: none;
+        // border-bottom: none;
       }
       .user {
         overflow: hidden;
@@ -729,11 +731,13 @@ span.index {
       width: 90%;
       margin-top: 10px;
       float: right;
+      margin-right: 10px;
       .item-quote {
         width: 100%;
         float: right;
         border: 1px solid rgba(0, 0, 0, 0.3) !important;
         margin-bottom: 10px;
+        border-radius: 5px;
       }
 
       .actions-quote {
