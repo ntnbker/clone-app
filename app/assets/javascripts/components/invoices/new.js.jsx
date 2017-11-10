@@ -48,7 +48,7 @@ var FieldList = React.createClass({
     var SampleField = this.props.SampleField;
     var flag = this.props.flag;
     var Fields = {};
-    var params = this.props.params;
+    var params = this.props.params || {};
     var x = 0;
 
     if (existingContent ? existingContent.length > 0 : false) {
