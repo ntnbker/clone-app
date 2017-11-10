@@ -71363,7 +71363,7 @@ var FieldList = React.createClass({
     var SampleField = this.props.SampleField;
     var flag = this.props.flag;
     var Fields = {};
-    var params = this.props.params;
+    var params = this.props.params || {};
     var x = 0;
 
     if (existingContent ? existingContent.length > 0 : false) {
@@ -71426,7 +71426,7 @@ var FieldList = React.createClass({
         { id: "fieldList" },
         Object.values(this.state.Fields).filter(function (_ref) {
           var params = _ref.params;
-          return !params.remove;
+          return !params || !params.remove;
         }).map(function (_ref2, index) {
           var SampleField = _ref2.SampleField;
           var content = _ref2.content;
@@ -71626,17 +71626,20 @@ var FieldListForInvoice = React.createClass({
               removeField: function () {
                 return _this2.removeField(x, quote);
               }
-            })),
-            ";"
+            }))
           );
         })
       ),
       React.createElement(
-        "button",
-        { type: "button", className: "button-add button-primary", style: { position: 'absolute', bottom: 0, right: 0 }, onClick: function () {
-            return _this2.addField();
-          } },
-        " Add New Invoice "
+        "div",
+        { className: "text-center" },
+        React.createElement(
+          "button",
+          { type: "button", className: "button-add button-primary", onClick: function () {
+              return _this2.addField();
+            } },
+          " Add New Invoice "
+        )
       )
     );
   }
@@ -71667,12 +71670,10 @@ var AdditionalInvoice = React.createClass({
 
   onPricing: function (event) {
     var pricing_type = event.target.value;
-    this.setState({ pricing_type: pricing_type });
-    if (pricing_type == "Hourly") {
-      this.setState({ hours_input: true });
-    } else {
-      this.setState({ hours_input: false });
-    }
+    this.setState({
+      pricing_type: pricing_type,
+      hours_input: pricing_type === "Hourly"
+    });
   },
   render: function () {
     var quote = this.props.content;
@@ -71850,11 +71851,13 @@ var InvoiceItemField = React.createClass({
     this.setState({ pricing_type: pricing_type });
 
     if (pricing_type == "Hourly") {
-      this.setState({ hours_input: true, numofhours: 0 });
+      this.setState({ hours_input: true, numofhours: 1 });
     } else {
-      this.setState({ hours_input: false,
+      this.setState({
+        hours_input: false,
         numofhours: 1,
-        totalamount: this.state.amount });
+        totalamount: this.state.amount
+      });
     }
   },
 
@@ -71870,8 +71873,10 @@ var InvoiceItemField = React.createClass({
     this.removeError(event);
   },
 
-  onHours: function (event) {
-    var hours = event.target.value;
+  onHours: function (_ref4) {
+    var value = _ref4.target.value;
+
+    var hours = value;
     if (hours > 0) this.setState({ numofhours: hours });else this.setState({ numofhours: 0 });
 
     var totalamount = this.state.amount * hours;
@@ -71881,8 +71886,8 @@ var InvoiceItemField = React.createClass({
     });
   },
 
-  removeError: function (_ref4) {
-    var id = _ref4.target.id;
+  removeError: function (_ref5) {
+    var id = _ref5.target.id;
 
     this.setState({
       errorsForm: _extends({}, this.state.errorsForm, _defineProperty({}, id, ''))
@@ -71991,7 +71996,7 @@ var InvoiceItemField = React.createClass({
             type: "text",
             onChange: this.onHours,
             placeholder: "Number of Hours",
-            defaultValue: numofhours > 0 && numofhours,
+            defaultValue: numofhours > 0 ? numofhours : 0,
             className: "text-center " + (hours_input && 'hour'),
             name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
           }) : React.createElement("input", {
@@ -72035,10 +72040,10 @@ var InvoiceField = React.createClass({
     };
   },
 
-  componentWillReceiveProps: function (_ref5) {
-    var errors = _ref5.errors;
+  componentWillReceiveProps: function (_ref6) {
+    var errors = _ref6.errors;
 
-    var rest = _objectWithoutProperties(_ref5, ["errors"]);
+    var rest = _objectWithoutProperties(_ref6, ["errors"]);
 
     this.setState({
       remove: rest.params.remove,
@@ -72236,16 +72241,19 @@ var InvoiceField = React.createClass({
           { id: "errorbox", className: "error" },
           errorDate || ''
         ),
-        ";",
         React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
         hasInvoice && React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' })
       ),
       React.createElement(
-        "button",
-        { type: "button", className: "button-remove button-primary red", onClick: function () {
-            return _this4.removeField(_this4.props.x);
-          } },
-        " Remove Invoice "
+        "div",
+        { className: "text-center" },
+        React.createElement(
+          "button",
+          { type: "button", className: "button-remove button-primary red", onClick: function () {
+              return _this4.removeField(_this4.props.x);
+            } },
+          " Remove Invoice "
+        )
       )
     );
   }
