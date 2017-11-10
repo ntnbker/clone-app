@@ -94,7 +94,7 @@ var FieldList = React.createClass({
       <ul id="fieldList">
         {
           Object.values(this.state.Fields)
-            .filter(({params}) => !params.remove)
+            .filter(({params}) => !params || !params.remove)
             .map(({SampleField, content, params = {}, x} , index) => {
             return (
               <li key={x}>
