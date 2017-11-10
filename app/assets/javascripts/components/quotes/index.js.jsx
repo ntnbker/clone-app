@@ -250,14 +250,14 @@ var ActionQuote = React.createClass({
 							/>
 					}
 					{
-						!self.quotes && image
+						self.showView && image
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
 								gallery={[image]}
 								quote={quote}
 								chooseQuoteRequest={this.props.chooseQuoteRequest}
 							/>
-						: !self.quotes
+						: self.showView
 							? <ButtonView
 									quote={self.quote}
 									viewQuote={(key, item) => self.viewQuote(key, item)}
@@ -282,14 +282,14 @@ var ActionQuote = React.createClass({
 							/>
 					}
 					{
-						!self.quotes && image
+						self.showView && image
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
 								gallery={[image]}
 								quote={quote}
 								chooseQuoteRequest={this.props.chooseQuoteRequest}
 							/>
-						: !self.quotes
+						: self.showView
 							? <ButtonView
 									quote={self.quote}
 									viewQuote={(key, item) => self.viewQuote(key, item)}
@@ -340,14 +340,14 @@ var ActionQuote = React.createClass({
 							/>
 					}
 					{
-						!self.quotes && image
+						self.showView && image
 						? <ButtonViewPhoto
 								viewQuote={this.props.viewQuote}
 								gallery={[image]}
 								quote={quote}
 								chooseQuoteRequest={this.props.chooseQuoteRequest}
 							/>
-						: !self.quotes
+						: self.showView
 							? <ButtonView
 									quote={self.quote}
 									viewQuote={(key, item) => self.viewQuote(key, item)}
@@ -381,14 +381,29 @@ var ActionQuoteRequest = React.createClass({
 
 	render: function(){
 		const quote_request = this.state.quote_request || {};
+		const quotes        = (quote_request.quotes || []).map((quote) => {
+			return {
+				...quote,
+				trady: quote_request.trady
+			};
+		});
+
+		if (quotes.length === 0) {
+			return <div></div>;
+		}
 
 		return <div className="quote-request">
-				{(quote_request.quotes || [])
-					.map(quote => <ActionQuote {...this.props} key={quote.id} quote={quote} />)
-				}
+				<Quotes {...this.props} quotes={quotes} />
 			</div>
 	}
 });
+
+/*<p>
+ 	<span className="index">{quotes.length}</span>Quotes
+</p>
+{quotes
+ 	.map(quote => <ActionQuote {...this.props} key={quote.id} quote={quote} />)
+}*/
 
 var Quotes = React.createClass({
 	getInitialState: function() {
@@ -415,7 +430,7 @@ var Quotes = React.createClass({
 		const pictures = (quotes || []).map((quote) => {
 			const trady 											= quote.trady || {};
 			const id 													= trady.id || '';
-			const trady_company 							=  trady.trady_company || {};
+			const trady_company 							= trady.trady_company || {};
 			const trady_profile_image 				= trady.trady_profile_image || {};
 			const trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
@@ -433,7 +448,7 @@ var Quotes = React.createClass({
 		return (
 			<div className="quotes m-t-lg" id="quotes">
 				<p>
-					Quotes ({quotes.length})
+					<span className="index">{quotes.length}</span>Quotes
 				</p>
 				<div className="list-quote">
 				{
@@ -444,13 +459,19 @@ var Quotes = React.createClass({
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
+									<span className="index quote">{index + 1}</span>
 									<span className="icon-user">
 										<AvatarImage imageUri={pictures[index]} />
 									</span>
 									<div className="info">
 										<div className="name">
 											<span>{quote.trady.name}</span>
-											{showStatus && <button className={'button-default ' + status}><span>{status}</span></button>}
+											{showStatus &&
+												<button
+													className={'button-default status ' + status}>
+													<span>{status}</span>
+												</button>
+											}
 										</div>
 										<p className="description">
 											{quote.trady && quote.trady.name} <br />
@@ -460,7 +481,9 @@ var Quotes = React.createClass({
 								</div>
 								{ !!self.current_user &&
 										<ActionQuote
+										 	{...self}
 											quote={quote}
+											showView={true}
 											key={quote.id}
 											landlord={self.landlord}
 											keyLandlord={self.keyLandlord}
@@ -483,6 +506,7 @@ var Quotes = React.createClass({
 
 var QuoteRequests = React.createClass({
 	getInitialState: function() {
+
 		return {
 			quote_requests: this.props.quote_requests,
 			pictures: [],
@@ -526,7 +550,7 @@ var QuoteRequests = React.createClass({
 		return (
 			<div className="quotes m-t-lg" id="quote_requests">
 				<p>
-					Quote Requests ({quote_requests.length})
+					<span className="index">{quote_requests.length}</span>Quote Requests
 				</p>
 				<div className="list-quote">
 				{
@@ -541,6 +565,7 @@ var QuoteRequests = React.createClass({
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
+									<span className="index quote">{index + 1}</span>
 									<span className="icon-user">
 										<AvatarImage imageUri={pictures[index]} />
 									</span>
@@ -572,6 +597,7 @@ var QuoteRequests = React.createClass({
 								{ !!self.current_user &&
 										<ActionQuoteRequest
 											{...self}
+											index={index}
 											quote_request={quote_request}
 											key={quote_request.id}
 											landlord={self.landlord}
