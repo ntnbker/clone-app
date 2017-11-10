@@ -46,6 +46,7 @@ var FieldList = React.createClass({
   getInitialState : function(){
     const existingContent = this.props.existingContent;
     var SampleField = this.props.SampleField;
+    var flag = this.props.flag;
     var Fields = {};
     var params = this.props.params;
     var x = 0;
@@ -58,7 +59,7 @@ var FieldList = React.createClass({
 
       return { Fields, x };
     } else {
-      if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
+      if(!!flag && (flag == "quote" || flag == "invoice" || flag == "splitMR")) {
         x = 1;
         return { Fields: { "1":  {params, SampleField, x } }, x, }
       }
@@ -88,21 +89,25 @@ var FieldList = React.createClass({
   },
 
   render: function(){
-    const { errors } = this.props;
+    const { errors, isSubmitted } = this.props;
     return <div className="fieldlist">
       <ul id="fieldList">
         {
-          Object.values(this.state.Fields).map(({SampleField, content, params, x} , index) => {
+          Object.values(this.state.Fields)
+            .filter(({params}) => !params.remove)
+            .map(({SampleField, content, params = {}, x} , index) => {
             return (
               <li key={x}>
               {
                 <SampleField
                   x={x}
+                  position={index + 1}
                   params={params}
                   content={content}
                   removeField={(position) => this.removeField(position)}
                   validDate={(flag) => this.props.validDate(flag)}
                   errorsForm={errors}
+                  isSubmitted={isSubmitted}
                 />
               }
               </li>
@@ -218,14 +223,12 @@ var FieldListForInvoice = React.createClass({
                   quote={quote}
                   errors={errors}
                   removeField={() => this.removeField(x, quote)}
-                />
+                />;
             </li>
           )
         })}
       </ul>
-      <div className="text-center">
-        <button type="button" className="button-add button-primary" style={{bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
-      </div>
+      <button type="button" className="button-add button-primary" style={{position: 'absolute', bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
     </div>
   }
 });
@@ -241,7 +244,6 @@ var AdditionalInvoice = React.createClass({
       hours_input: hours_input
     }
   },
-
   componentWillReceiveProps() {
     this.setState({
       remove: this.props.params.remove
@@ -254,12 +256,13 @@ var AdditionalInvoice = React.createClass({
 
   onPricing(event) {
     var pricing_type = event.target.value;
-    this.setState({
-      pricing_type,
-      hours_input: pricing_type === "Hourly",
-    });
+    this.setState({pricing_type: pricing_type});
+    if (pricing_type == "Hourly") {
+      this.setState({hours_input: true});
+    } else {
+      this.setState({hours_input: false});
+    }
   },
-
   render: function() {
     var quote = this.props.content;
     var x= this.props.x;
@@ -416,13 +419,11 @@ var InvoiceItemField = React.createClass({
     this.setState({pricing_type: pricing_type});
 
     if (pricing_type == "Hourly") {
-      this.setState({hours_input: true, numofhours: 1});
+      this.setState({hours_input: true, numofhours: 0});
     } else {
-      this.setState({
-        hours_input: false,
-        numofhours: 1,
-        totalamount: this.state.amount
-      });
+      this.setState({hours_input: false,
+               numofhours: 1,
+               totalamount: this.state.amount});
     }
   },
 
@@ -438,8 +439,8 @@ var InvoiceItemField = React.createClass({
     this.removeError(event);
   },
 
-  onHours({ target: { value } }) {
-    const hours = value;
+  onHours(event) {
+    const hours = event.target.value;
     if (hours > 0)
       this.setState({numofhours: hours});
     else
@@ -534,7 +535,7 @@ var InvoiceItemField = React.createClass({
                 type="text"
                 onChange={this.onHours}
                 placeholder="Number of Hours"
-                defaultValue={numofhours > 0 ? numofhours : 0}
+                defaultValue={numofhours > 0 && numofhours}
                 className={"text-center " + (hours_input && 'hour')}
                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
               />
@@ -715,15 +716,13 @@ var InvoiceField = React.createClass({
             />
           </div>
         </div>
-        <p id="errorbox" className="error">{errorDate || ''}</p>
+        <p id="errorbox" className="error">{errorDate || ''}</p>;
 
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
         {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}
       </fieldset>
 
-      <div className="text-center">
-        <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
-        </div>
+      <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
     </div>
   }
 });

@@ -40,8 +40,8 @@ class MaintenanceRequest < ApplicationRecord
   # validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
   validates_presence_of :agent_email,:agency_business_name, if: :perform_realestate_validations
   validates_format_of :agent_email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/ , if: :perform_realestate_validations
-  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
-  validates :mobile, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/, if: :perform_contact_maintenance_request_validation
+  validates :mobile, :numericality => true, :length => {:minimum=>10, :maximum => 10 }, if: :perform_contact_maintenance_request_validation
   #validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_email
 
   accepts_nested_attributes_for :maintenance_request_image, allow_destroy: true

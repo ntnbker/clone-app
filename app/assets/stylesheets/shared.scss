@@ -9,6 +9,11 @@ body {
   height: 100%;
 
 }
+.show-message {
+  button {
+    border-width: 0px;
+  }
+}
 .layout {
   margin: auto;
   background: #F4F8FB;

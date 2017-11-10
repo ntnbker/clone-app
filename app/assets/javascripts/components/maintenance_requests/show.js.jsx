@@ -1107,6 +1107,8 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'splitMR':
+			case 'duplicateMR':
 			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest': {
 				this.onModalWith(key);
@@ -1622,44 +1624,44 @@ var MaintenanceRequest = React.createClass({
 
 	editMaintenanceRequest: function(params, callback) {
 		const self = this;
-		let {maintenance_request} = this.state;
+				let {maintenance_request} = this.state;
 
-		$.ajax({
-			type: 'POST',
-			url: '/update_maintenance_request',
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-			},
-      enctype: 'multipart/form-data',
-      processData: false,
-      contentType: false,
-			data: params,
-			success: function(res){
-				if (res.errors) {
-					return callback(res.errors);
-				}
-				maintenance_request.service_type = res.service_type;
-				maintenance_request.maintenance_heading = res.maintenance_heading;
-				maintenance_request.maintenance_description = res.maintenance_description
-				self.setState({
-					tradies: res.all_tradies,
-					maintenance_request: maintenance_request,
-					notification: {
-						title: "Edit Maintenance Request",
-						content: "The Maintenance Request has been updated.",
-						bgClass: "bg-success",
+				$.ajax({
+					type: 'POST',
+					url: '/update_maintenance_request',
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 					},
-				});
-				self.onModalWith('notification');
-			},
-			error: function(err) {
-				self.setState({notification: {
-					title: "Edit Maintenance Request",
-					content: "The Maintenance Request didn't update!" ,
-					bgClass: "bg-error",
-				}});
-				self.onModalWith('notification');
-			}
+		      enctype: 'multipart/form-data',
+		      processData: false,
+		      contentType: false,
+					data: params,
+					success: function(res){
+						if (res.errors) {
+							return callback(res.errors);
+						}
+						maintenance_request.service_type = res.service_type;
+						maintenance_request.maintenance_heading = res.maintenance_heading;
+						maintenance_request.maintenance_description = res.maintenance_description
+						self.setState({
+							tradies: res.all_tradies,
+							maintenance_request: maintenance_request,
+							notification: {
+								title: "Edit Maintenance Request",
+								content: "The Maintenance Request has been updated.",
+								bgClass: "bg-success",
+							},
+						});
+						self.onModalWith('notification');
+					},
+					error: function(err) {
+						self.setState({notification: {
+							title: "Edit Maintenance Request",
+							content: "The Maintenance Request didn't update!" ,
+							bgClass: "bg-error",
+						}});
+						self.onModalWith('notification');
+					}
 		});
 	},
 
@@ -1694,6 +1696,79 @@ var MaintenanceRequest = React.createClass({
 				self.setState({notification: {
 					title: "Update Status",
 					content: "The Status of Maintenance Request didn't update!" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	duplicateMR: function() {
+		const self = this;
+		const {maintenance_request} = this.state;
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/duplicate_maintenance_request',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					status: res,
+					notification: {
+						title: "Duplicate Maintenance Request",
+						content: "The Maintenance Request has been duplicated.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Duplicate Maintenance Request",
+					content: "The Maintenance Request has been error." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	splitSubmit: function(params, callback) {
+		const self = this;
+
+		$.ajax({
+			type: 'POST',
+			url: '/split_maintenance_request',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+			data: params,
+			success: function(res){
+				if (res.errors && res.errors.length) {
+					return callback(res);
+				}
+				self.setState({
+					notification: {
+						title: "Split Maintenance Request",
+						content: "You have successfully split the maintenance request. Please edit the original maintenance request by removing the information that no longer pertains. The split maintenance request(s) will now be listed under new maintenance request(s).",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Split Maintenance Request",
+					content: "The Maintenance Request didn't split!" ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -2012,6 +2087,19 @@ var MaintenanceRequest = React.createClass({
 					);
 				}
 
+				case 'splitMR': {
+					return (
+						<ModalSplitMR
+							close={this.isClose}
+							services={this.props.services}
+							onModalWith={(modal) => this.onModalWith(modal)}
+							maintenance_request={this.state.maintenance_request}
+							splitSubmit={this.splitSubmit}
+							trady={this.state.trady || this.props.assigned_trady}
+						/>
+					);
+				}
+
 				case 'viewAppointment': {
 					const {comments, quoteComments, landlordComments, appointment} = this.state;
 					let commentShow = [];
@@ -2051,6 +2139,17 @@ var MaintenanceRequest = React.createClass({
 							content="Are you sure you want to cancel the job ?"
 						/>
 					);
+
+
+				case 'duplicateMR':
+					return (
+						<ModalConfirmMR
+							close={this.isClose}
+							confirm={this.duplicateMR}
+							title="Duplicate Maintenance Request"
+							content="Are you sure you want to duplicate this maintenance request? If there are any quotes or work orders associated with this maintenance request they WONT be carried over"
+						/>
+					)
 
 				case 'confirmUpdateStatus':
 					return (
