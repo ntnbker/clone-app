@@ -424,7 +424,7 @@ class MaintenanceRequestsController < ApplicationController
       @maintenance_request.perform_contact_maintenance_request_validation = false
       if @maintenance_request.valid?
         @maintenance_request.save
-        ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:@maintenance_request.id)
+        # ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:@maintenance_request.id)
         success.push(@maintenance_request)
       else
         @maintenance_request.id = counter
