@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107132654) do
+ActiveRecord::Schema.define(version: 20171113044138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(version: 20171107132654) do
     t.string   "conversation_type"
     t.integer  "maintenance_request_id"
     t.integer  "quote_id"
+    t.integer  "quote_request_id"
   end
 
   create_table "current_roles", force: :cascade do |t|

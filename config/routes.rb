@@ -67,7 +67,7 @@ Rails.application.routes.draw do
     resources :messages
     resources :conversations
     post "quote_messages"=>"messages#create_quote_messages", :as =>:quote_messages
-  
+    post "quote_request_messages"=> "messages#create_quote_request_message", :as=>:quote_request_messages
   
   ###################################################
   ##########INVOICE RESOURCES/ROUTES#################

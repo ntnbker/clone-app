@@ -2,7 +2,7 @@ class QuoteRequest < ApplicationRecord
   belongs_to :maintenance_request
   belongs_to :trady
   has_many :quotes, -> { where delivery_status: true }
-
+  has_one :conversation
 
 
   def self.tradies_with_quote_requests(maintenance_request_id)

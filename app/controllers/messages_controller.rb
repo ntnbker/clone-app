@@ -154,9 +154,48 @@ class MessagesController < ApplicationController
       end 
     end 
 
+  end
 
+  def create_quote_request_message
+    @message = current_user.messages.new(message_params)
+    
+    respond_to do |format|
+      if @message.save
+        if Conversation.quote_request_conversation(params[:message][:conversation_type],params[:message][:quote_request_id]).present?
+          @conversation = Conversation.quote_request_conversation(params[:message][:conversation_type],params[:message][:quote_request_id]).first
+          @message.update_attribute(:conversation_id,@conversation.id)
+          
+          if UserConversation.check_user_conversation(current_user.id, @conversation.id).present?
+            #do nothing
+          else
+            UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
+          end 
+        else 
+          @conversation = Conversation.create(conversation_type:params[:message][:conversation_type], quote_request_id:params[:message][:quote_request_id])
+          @message.update_attribute(:conversation_id,@conversation.id)
+          UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
+        end
 
+        format.json{render json:@message}
+        
+      else
+        format.json{render :json=>{errors:@message.errors.to_hash(true).as_json}}
+      end
+    end
 
+    conversation_type = params[:message][:conversation_type]
+    role = params[:message][:role]
+    quote_request = QuoteRequest.find_by(id:params[:message][:quote_request_id])
+    maintenance_request = quote.maintenance_request
+    if conversation_type == "QuoteRequest"
+      if role == "AgencyAdmin" || role == "Agent"
+        #email the trady 
+        TradyAgentQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote_request.id)
+      elsif role == "Trady"
+        AgentTradyQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote_request.id)
+        #email the agent  
+      end 
+    end 
   end
 
 
