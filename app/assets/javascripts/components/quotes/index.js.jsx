@@ -441,7 +441,7 @@ var Quotes = React.createClass({
 		return (
 			<div className="quotes m-t-lg" id="quotes">
 				<p>
-					<span className="index">{quotes.length}</span>Quotes
+					<span className="index circle">{quotes.length}</span>Quotes
 				</p>
 				<div className="list-quote">
 				{
@@ -452,7 +452,7 @@ var Quotes = React.createClass({
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
-									<span className="index quote">{index + 1}</span>
+									<span className="index quote circle">{index + 1}</span>
 									<span className="icon-user">
 										<AvatarImage imageUri={pictures[index]} />
 									</span>
@@ -564,6 +564,7 @@ var QuoteRequests = React.createClass({
 									</span>
 									<div className="info">
 										<div className="name">
+											<span>{quote_request.trady && quote_request.trady.name}</span>
 											{ needAlreadySentButton
 												? <ButtonQuoteAlreadySent
 														{...self}

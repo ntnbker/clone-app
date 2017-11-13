@@ -62,8 +62,11 @@ span.index {
   height: 25px;
   text-align: center;
   &.quote {
-    margin-top: 30px;
+    margin-top: 43px;
     float: left;
+  }
+  &.circle {
+    border-radius: 50%;
   }
 }
 .modal-open {
@@ -554,13 +557,13 @@ span.index {
         img {
           float: left;
           display: block;
-          width: 50px;
-          height: 50px;
+          width: 60px;
+          height: 60px;
         }
         .icon-user {
           float: left;
           display: block;
-          margin: 20px 0px 0 0px;
+          margin: 25px 0px 20px 0px;
           i {
             font-size: 40px;
             color: #849aaa;
@@ -568,10 +571,9 @@ span.index {
         }
       }
       .info {
-        margin-left: 10px;
+        margin: 20px 0px 20px 10px;
         float: left;
-        margin-top: 20px;
-        width: calc(100% - 110px);
+        width: calc(100% - 130px);
         .name {
           color: $color-gray;
           font-size: 15px;
@@ -592,9 +594,8 @@ span.index {
       .info .name button {
         height: 33px;
         float: right;
-        margin-right: 25px;
+        margin: 20px 25px 0px 10px;
         display: inline-block;
-        margin-left: 10px;
         font-weight: 500;
         font-size: 14px;
         text-align: center;
@@ -617,6 +618,7 @@ span.index {
         }
         &.status {
           float: none;
+          margin-top: 0px;
         }
       }
       .actions {
@@ -729,7 +731,6 @@ span.index {
     }
     .quote-request {
       width: 90%;
-      margin-top: 10px;
       float: right;
       margin-right: 10px;
       .item-quote {

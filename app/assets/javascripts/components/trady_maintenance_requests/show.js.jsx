@@ -1022,7 +1022,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							confirm={this.quoteAlreadySent}
 							title="Quote Already Sent"
-							content="Are you sure that the tradie has already submitted a quote?"
+							content="Are you sure you have already submitted a quote? If you want the quote request reminder emails to stop because you have already submitted a quote please click the YES button. You also have the option to quickly upload a photo of the quote that you have submitted to help out the agent. Thank you."
 						/>
 					);
 
