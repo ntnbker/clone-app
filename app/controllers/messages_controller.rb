@@ -186,7 +186,7 @@ class MessagesController < ApplicationController
     conversation_type = params[:message][:conversation_type]
     role = params[:message][:role]
     quote_request = QuoteRequest.find_by(id:params[:message][:quote_request_id])
-    maintenance_request = quote.maintenance_request
+    maintenance_request = quote_request.maintenance_request
     if conversation_type == "QuoteRequest"
       if role == "AgencyAdmin" || role == "Agent"
         #email the trady 
