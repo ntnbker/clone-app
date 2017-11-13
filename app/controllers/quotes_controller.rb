@@ -345,6 +345,8 @@ class QuotesController < ApplicationController
   def quote_already_sent
     
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+
+    @maintenance_request.action_status.update_columns(agent_status:"Quote Received",trady_status:"Awaiting Quote Approvals")
     quote_request = QuoteRequest.find_by(id:params[:quote_request_id])
     quote_request.update_attribute(:quote_sent, true)
 
