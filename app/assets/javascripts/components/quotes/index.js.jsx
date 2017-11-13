@@ -228,7 +228,7 @@ var ActionQuote = React.createClass({
 		const self = this.props;
 		const image = quote.quote_image && quote.quote_image.image_url || '';
 
-		if(!!self.keyLandlord && self.keyLandlord == "landlord") {
+		if(!!self.keyLandlord && self.keyLandlord === "landlord") {
 			return (
 				<div className="actions-quote">
 					{ quote.status == "Active" &&
@@ -552,8 +552,13 @@ var QuoteRequests = React.createClass({
 						const quoteAlready  = quotes.filter(quote => !quote.quote_items
 																											 || quote.quote_items.length === 0);
 
-						const needAlreadySentButton = quotes.length === 0 && !quote_request.quote_sent;
-						const needPhotoButton 			= quote_request.quote_sent;
+						const isLandlord = self.keyLandlord === "landlord";
+
+						const needAlreadySentButton = !isLandlord
+																			 && quotes.length === 0
+																			 && !quote_request.quote_sent;
+
+						const needPhotoButton 			= !isLandlord && quote_request.quote_sent;
 
 						return (
 							<div className="item-quote row item-quote-request" key={index}>

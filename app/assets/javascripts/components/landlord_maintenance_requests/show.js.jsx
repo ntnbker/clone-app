@@ -567,7 +567,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						<ModalViewQuote
 							close={this.isClose}
 							quote={this.state.quote}
-							keyLandlord={"landlord"}
+							keyLandlord="landlord"
 							quotes={this.state.quotes}
 							agency={this.props.agency}
 							property={this.props.property}
@@ -754,6 +754,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						{
 							quote_requests && quote_requests.length
 							? <QuoteRequests
+									keyLandlord="landlord"
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
