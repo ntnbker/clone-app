@@ -573,7 +573,6 @@ span.index {
       .info {
         margin: 20px 0px 20px 10px;
         float: left;
-        width: calc(100% - 130px);
         .name {
           color: $color-gray;
           font-size: 15px;
@@ -589,6 +588,19 @@ span.index {
           color: $color-grey-dark;
           font-size: 12px;
           font-weight: 500;
+        }
+      }
+      .quote-request-button {
+        float: right;
+        margin-right: 10px;
+        margin-top: 40px;
+        button {
+          margin-right: 20px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 250px;
+          padding: 0 10px;
         }
       }
       .info .name button {
@@ -1933,8 +1945,63 @@ span.index {
 .m-b-n {
   margin-bottom: 0;
 }
-@media (max-width: 400px) {
+@media (max-width: 820px) {
+  .summary-container-index .quotes .item-quote .user .quote-request-button {
+    margin-top: 110px;
+    margin-left: 25%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    float: initial;
+    button {
+      margin-right: 0px;
+      margin-bottom: 20px;
+      padding: 0px;
+      max-width: 400px;
+    }
+  }
+  .summary-container-index .quotes .quote-request .actions-quote {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-left: 25%;
+    margin-bottom: 10px;
+    float: none;
+    padding: 0px;
+    button {
+      padding: 0px;
+      margin: 0px 0px 10px 0px;
+    }
+  }
+}
+@media (max-width: 550px) {
   .modal-custom .modal-footer .cancel {
     margin-top: 10px;
+  }
+  .summary-container-index .quotes .item-quote .user .quote-request-button {
+    margin-top: 110px;
+    margin-left: 15%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    float: initial;
+    button {
+      margin-right: 0px;
+      margin-bottom: 20px;
+    }
+  }
+  .summary-container-index .quotes .quote-request .actions-quote {
+    width: 70%;
+    margin-left: 15%;
+  }
+}
+@media (max-width: 350px) {
+  .summary-container-index .quotes .item-quote .user .quote-request-button {
+    width: 90%;
+    margin-left: 5%;
+  }
+  .summary-container-index .quotes .quote-request .actions-quote {
+    width: 90%;
+    margin-left: 5%;
   }
 }
