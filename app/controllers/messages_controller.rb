@@ -190,9 +190,9 @@ class MessagesController < ApplicationController
     if conversation_type == "QuoteRequest"
       if role == "AgencyAdmin" || role == "Agent"
         #email the trady 
-        TradyAgentQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote_request.id)
+        TradyAgentQuoteRequestMessageEmailWorker.perform_async(maintenance_request.id,quote_request.id)
       elsif role == "Trady"
-        AgentTradyQuoteMessageEmailWorker.perform_async(maintenance_request.id,quote_request.id)
+        AgentTradyQuoteRequestMessageEmailWorker.perform_async(maintenance_request.id,quote_request.id)
         #email the agent  
       end 
     end 
