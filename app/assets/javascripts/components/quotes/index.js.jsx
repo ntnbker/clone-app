@@ -200,6 +200,24 @@ var ButtonQuoteMessage = React.createClass({
 	}
 });
 
+var ButtonQuoteRequestMessage = React.createClass({
+	render: function() {
+		const { name = '', quote_request, viewQuote } = this.props;
+
+		return (
+			<button
+				type="button"
+				className="btn btn-message"
+				title={`Message ${name}`}
+				onClick={() => viewQuote('viewQuoteRequestMessage', quote_request)
+				}
+			>
+				Message {name}
+			</button>
+		);
+	}
+});
+
 var ButtonPrint = React.createClass({
 	render: function() {
 		return (
@@ -275,8 +293,10 @@ var ActionQuote = React.createClass({
 		}else if(self.keyLandlord == "trady") {
 			return (
 				<div className="actions-quote">
-					{ (!!self.current_user_show_quote_message && quote.status != "Declined") &&
-							<ButtonQuoteMessage
+					{ (!self.quote_request
+						&& !!self.current_user_show_quote_message
+						&& quote.status != "Declined")
+						&& <ButtonQuoteMessage
 								quote={quote}
 								viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
 							/>
@@ -307,8 +327,10 @@ var ActionQuote = React.createClass({
 		}else {
 			return (
 				<div className="actions-quote">
-					{ (!!self.current_user_show_quote_message && quote.status != "Declined") &&
-							<ButtonQuoteMessage
+					{ (!self.quote_request
+						&& !!self.current_user_show_quote_message
+						&& quote.status != "Declined")
+						&& <ButtonQuoteMessage
 								quote={quote}
 								viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
 							/>
@@ -559,6 +581,8 @@ var QuoteRequests = React.createClass({
 																			 && !quote_request.quote_sent;
 
 						const needPhotoButton 			= !isLandlord && quote_request.quote_sent;
+						const needMessageButton 		= !isLandlord
+																				&& !!self.current_user_show_quote_message;
 
 						return (
 							<div className="item-quote row item-quote-request" key={index}>
@@ -570,27 +594,38 @@ var QuoteRequests = React.createClass({
 									<div className="info">
 										<div className="name">
 											<span>{quote_request.trady && quote_request.trady.name}</span>
-											{ needAlreadySentButton
-												? <ButtonQuoteAlreadySent
-														{...self}
-														quote_request={quote_request}
-													/>
-												: ''
-											}
-											{ needPhotoButton
-												? <ModalImageUpload
-														className="btn btn-default"
-														{...self}
-														onClick={() => self.chooseQuoteRequest(quote_request)}
-													/>
-												: ''
-											}
 										</div>
 										<div className="description">
 											{quote_request.trady && quote_request.trady.name}
 											<br />
 											{(quote_request.trady && quote_request.trady.trady_company) && quote_request.trady.trady_company.trading_name}
 										</div>
+									</div>
+									<div className="quote-request-button">
+										{
+											needMessageButton
+											? <ButtonQuoteRequestMessage
+													quote_request={quote_request}
+													name={quote_request.trady ? quote_request.trady.name : ''}
+													viewQuote={self.viewQuote}
+												/>
+											: ''
+										}
+										{ needAlreadySentButton
+											? <ButtonQuoteAlreadySent
+													{...self}
+													quote_request={quote_request}
+												/>
+											: ''
+										}
+										{ needPhotoButton
+											? <ModalImageUpload
+													className="btn btn-default"
+													{...self}
+													onClick={() => self.chooseQuoteRequest(quote_request)}
+												/>
+											: ''
+										}
 									</div>
 								</div>
 								{ !!self.current_user &&
@@ -1099,6 +1134,101 @@ var ModalViewQuoteMessage = React.createClass({
 		);
 	}
 });
+
+var ModalViewQuoteRequestMessage = React.createClass({
+	getInitialState: function() {
+		return {
+			errorMessage: false
+		};
+	},
+
+	removeError: function(e) {
+		this.setState({
+			errorMessage: '',
+		})
+	},
+
+	renderError: function(error) {
+	  return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+	},
+
+	onSubmit: function(e) {
+		e.preventDefault();
+		const self = this;
+		const params = {
+			message: {
+				body: this.message && this.message.value,
+				conversation_type: 'QuoteRequest',
+				quote_request_id: this.props.quote_request.id,
+			}
+		}
+
+		this.props.sendMessageQuoteRequest(params, function(err) {
+			if (err) {
+				self.setState({ errorMessage: err['body'] });
+			}
+		});
+		this.message.value = "";
+	},
+
+	render: function() {
+		const current_user 		 = this.props.current_user;
+		const quote_request		 = this.props.quote_request;
+		const { errorMessage } = this.state;
+
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<form role="form">
+						<div className="modal-content">
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									data-dismiss="modal"
+									aria-label="Close"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Message Quote Request</h4>
+							</div>
+							<div className="modal-body">
+							{
+								<ContentMessage
+									current_user={current_user}
+									messages={quote_request.conversation && quote_request.conversation.messages ? quote_request.conversation.messages : null}
+								/>
+							}
+							</div>
+							<div className="modal-footer">
+								<div>
+									<textarea
+										placeholder="Message"
+										readOnly={!current_user}
+										ref={(rel) => this.message = rel}
+										onChange={this.removeError}
+										className={'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')}
+									/>
+								</div>
+								{this.renderError(errorMessage)}
+								<button
+									type="submit"
+									onClick={this.onSubmit}
+									disabled={!current_user}
+									className="btn btn-default success"
+								>
+									Submit
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		);
+	}
+});
+
 
 var ModalViewPhoto = React.createClass({
 	getInitialState: function() {

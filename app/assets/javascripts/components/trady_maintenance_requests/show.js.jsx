@@ -380,6 +380,40 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageQuoteRequest: function(params, callback) {
+		const self = this;
+		params.message.role = this.props.current_role.role;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_request_messages',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				let quote_request = self.state.quote_request
+				quote_request.conversation = quote_request.conversation ? quote_request.conversation : {};
+				const messages = !!quote_request.conversation && quote_request.conversation.messages ? quote_request.conversation.messages : [];
+				messages.push(res);
+				quote_request.conversation.messages = messages;
+				self.setState({
+					quote_request: quote_request
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Message Trady",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	jobCompleted: function(params){
 		const self = this;
 		$.ajax({
@@ -514,6 +548,7 @@ var TradyMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'viewQuoteRequestMessage':
 			case 'confirmQuoteAlreadySent': {
 				this.setState({
 					quote_request: item,
@@ -806,6 +841,17 @@ var TradyMaintenanceRequest = React.createClass({
 							quote={this.state.quote}
 							current_user={this.props.current_user}
 							sendMessageQuote={this.sendMessageQuote}
+						/>
+					)
+				}
+
+				case 'viewQuoteRequestMessage': {
+					return (
+						<ModalViewQuoteRequestMessage
+							close={this.isClose}
+							quote_request={this.state.quote_request}
+							current_user={this.props.current_user}
+							sendMessageQuoteRequest={this.sendMessageQuoteRequest}
 						/>
 					)
 				}
@@ -1158,6 +1204,16 @@ var TradyMaintenanceRequest = React.createClass({
 		}
 	},
 
+	openQuoteRequestMesssage: function(quote_request_id) {
+		const { quote_requests } = this.state;
+
+		const quote_request = quote_requests.filter(item => item.id == quote_request_id)[0];
+
+		if(quote_request) {
+			this.viewItem('viewQuoteRequestMessage', quote_request);
+		}
+	},
+
 	openAppointment: function(appointment_id) {
 		let appointment = '';
 		const {appointments, quote_appointments} = this.state;
@@ -1178,6 +1234,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const self = this;
 		const {instruction} = this.state;
 		const body = $('body');
+
 		if(!instruction.read_instruction) {
 			body.chardinJs('toggle');
 
@@ -1218,6 +1275,10 @@ var TradyMaintenanceRequest = React.createClass({
 
 				case 'open_quote_message':
 					self.openQuoteMesssage(json.quote_message_id);
+					break;
+
+				case 'open_quote_request_message':
+					self.openQuoteRequestMesssage(json.quote_request_message_id);
 					break;
 
 				default:
