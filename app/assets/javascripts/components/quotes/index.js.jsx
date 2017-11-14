@@ -104,7 +104,7 @@ var ButtonRestore = React.createClass({
 
 	render: function() {
 		return (
-			<button type="button" className="btn btn-default" onClick={this.updateStatus}>
+			<button type="button" className="btn" onClick={this.updateStatus}>
 				Restore
 			</button>
 		);
