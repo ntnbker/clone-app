@@ -2348,14 +2348,12 @@ var MaintenanceRequest = React.createClass({
 					if(e.target.className != 'show-instruction') {
 						body.chardinJs('stop');
 						self.isClose();
-						// self.viewModalMessage();
-						self.viewQuoteRequestModalMessage();
+						self.viewModalMessage();
 					}
 				}
 			});
 		}else {
-			// this.viewModalMessage();
-			self.viewQuoteRequestModalMessage();
+			this.viewModalMessage();
 		}
 	},
 
@@ -2396,37 +2394,8 @@ var MaintenanceRequest = React.createClass({
 				self.openQuoteMesssage(json.quote_message_id);
 				break;
 
-			default:
-				break;
-		}
-	},
-
-	viewQuoteRequestModalMessage: function() {
-		const href = window.location.href;
-		const self = this;
-
-		if(href.indexOf('email_quote_id') >= 0) {
-			self.autoScroll('quotes');
-		}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
-			self.autoScroll('invoices');
-		}
-
-		const json = self.getUrlVars(href);
-		switch(json.message) {
-			case 'open_landlord_message':
-					self.onModalWith('sendMessageLandlord');
-				break;
-
-			case 'open_tenant_message':
-				self.onModalWith('sendMessageTenant');
-				break;
-
-			case 'open_trady_message':
-				self.onModalWith('sendMessageTrady');
-				break;
-
-			case 'open_quote_message':
-				self.openQuoteRequestMesssage(json.quote_message_id);
+			case 'open_quote_request_message':
+				self.openQuoteRequestMesssage(json.quote_request_message_id);
 				break;
 
 			default:

@@ -1245,15 +1245,13 @@ var TradyMaintenanceRequest = React.createClass({
 				if(showInstruction.length > 0) {
 					if(e.target.className != 'show-instruction') {
 						self.isClose();
-						// self.viewModalMessage();
-						self.viewQuoteRequestModalMessage();
+						self.viewModalMessage();
 						body.chardinJs('stop');
 					}
 				}
 			});
 		}else {
-			// this.viewModalMessage();
-			this.viewQuoteRequestModalMessage();
+			this.viewModalMessage();
 		}
 	},
 
@@ -1279,32 +1277,8 @@ var TradyMaintenanceRequest = React.createClass({
 					self.openQuoteMesssage(json.quote_message_id);
 					break;
 
-				default:
-					break;
-			}
-		}
-	},
-
-	viewQuoteRequestModalMessage: function() {
-		const href = window.location.href;
-		const self = this;
-
-		const json = self.getUrlVars(href);
-		if(href.indexOf('email_quote_id') >= 0) {
-			self.autoScroll('quotes');
-		}else if(href.indexOf('send_maintenance_request_invoice') >= 0) {
-			self.autoScroll('invoices');
-
-		}else if(href.indexOf('appointment_id') >= 0) {
-			self.openAppointment(json.appointment_id);
-		}else {
-			switch(json.message) {
-				case 'open_agent_message':
-					self.onModalWith('sendMessageAgent');
-					break;
-
-				case 'open_quote_message':
-					self.openQuoteRequestMesssage(json.quote_message_id);
+				case 'open_quote_request_message':
+					self.openQuoteRequestMesssage(json.quote_request_message_id);
 					break;
 
 				default:
