@@ -36,7 +36,7 @@ var ButtonForwardLandlord = React.createClass({
 				type="button"
 				style={style}
 				onClick={!this.state.isSend && this.sendEmail}
-				className="btn btn-default"
+				className="btn"
 			>
 				{!!this.state.isSend ? 'Send to Landlord' : 'Forward to LandLord'}
 			</button>
@@ -130,7 +130,7 @@ var ButtonView = React.createClass({
 		return (
 			<button
 				type="button"
-				className="btn btn-default"
+				className="btn"
 				onClick={(key, item) => this.props.viewQuote('viewQuote', this.props.quote)}
 			>
 				View
@@ -160,7 +160,7 @@ var ButtonViewPhoto = React.createClass({
 		return (
 			<button
 				type="button"
-				className="btn btn-default"
+				className="btn"
 				onClick={(key, item) => {
 					chooseQuoteRequest(quote);
 					viewQuote('viewPhoto', gallery);
@@ -183,7 +183,7 @@ var ButtonRequestAnotherQuote = React.createClass({
 
 	render: function() {
 		return (
-			<button type="button" className="btn btn-default" onClick={this.sendEmail}>
+			<button type="button" className="btn" onClick={this.sendEmail}>
 				Request Another Quote
 			</button>
 		);
@@ -212,6 +212,7 @@ var ButtonQuoteRequestMessage = React.createClass({
 				onClick={() => viewQuote('viewQuoteRequestMessage', quote_request)
 				}
 			>
+				<i className="fa fa-commenting" aria-hidden="true" />
 				Message {name}
 			</button>
 		);
@@ -249,6 +250,21 @@ var ActionQuote = React.createClass({
 		if(!!self.keyLandlord && self.keyLandlord === "landlord") {
 			return (
 				<div className="actions-quote">
+					{
+						self.showView && image
+						? <ButtonViewPhoto
+								viewQuote={this.props.viewQuote}
+								gallery={[image]}
+								quote={quote}
+								chooseQuoteRequest={this.props.chooseQuoteRequest}
+							/>
+						: self.showView
+							? <ButtonView
+									quote={self.quote}
+									viewQuote={(key, item) => self.viewQuote(key, item)}
+								/>
+							: ''
+					}
 					{ quote.status == "Active" &&
 							<ButtonAccept
 								quote={quote}
@@ -268,21 +284,6 @@ var ActionQuote = React.createClass({
 							/>
 					}
 					{
-						self.showView && image
-						? <ButtonViewPhoto
-								viewQuote={this.props.viewQuote}
-								gallery={[image]}
-								quote={quote}
-								chooseQuoteRequest={this.props.chooseQuoteRequest}
-							/>
-						: self.showView
-							? <ButtonView
-									quote={self.quote}
-									viewQuote={(key, item) => self.viewQuote(key, item)}
-								/>
-							: ''
-					}
-					{
 						!!this.props.isModal && this.props.printQuote &&
 							<ButtonPrint
 								printQuote={this.props.printQuote}
@@ -293,14 +294,6 @@ var ActionQuote = React.createClass({
 		}else if(self.keyLandlord == "trady") {
 			return (
 				<div className="actions-quote">
-					{ (!self.quote_request
-						&& !!self.current_user_show_quote_message
-						&& quote.status != "Declined")
-						&& <ButtonQuoteMessage
-								quote={quote}
-								viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
-							/>
-					}
 					{
 						self.showView && image
 						? <ButtonViewPhoto
@@ -315,6 +308,14 @@ var ActionQuote = React.createClass({
 									viewQuote={(key, item) => self.viewQuote(key, item)}
 								/>
 							: ''
+					}
+					{ (!self.quote_request
+						&& !!self.current_user_show_quote_message
+						&& quote.status != "Declined")
+						&& <ButtonQuoteMessage
+								quote={quote}
+								viewQuoteMessage={(key, item) => self.viewQuote(key, item)}
+							/>
 					}
 					{
 						!!this.props.isModal && this.props.printQuote &&
@@ -327,6 +328,21 @@ var ActionQuote = React.createClass({
 		}else {
 			return (
 				<div className="actions-quote">
+					{
+						self.showView && image
+						? <ButtonViewPhoto
+								viewQuote={this.props.viewQuote}
+								gallery={[image]}
+								quote={quote}
+								chooseQuoteRequest={this.props.chooseQuoteRequest}
+							/>
+						: self.showView
+							? <ButtonView
+									quote={self.quote}
+									viewQuote={(key, item) => self.viewQuote(key, item)}
+								/>
+							: ''
+					}
 					{ (!self.quote_request
 						&& !!self.current_user_show_quote_message
 						&& quote.status != "Declined")
@@ -360,21 +376,6 @@ var ActionQuote = React.createClass({
 								quote={quote}
 								updateStatusQuote={self.updateStatusQuote}
 							/>
-					}
-					{
-						self.showView && image
-						? <ButtonViewPhoto
-								viewQuote={this.props.viewQuote}
-								gallery={[image]}
-								quote={quote}
-								chooseQuoteRequest={this.props.chooseQuoteRequest}
-							/>
-						: self.showView
-							? <ButtonView
-									quote={self.quote}
-									viewQuote={(key, item) => self.viewQuote(key, item)}
-								/>
-							: ''
 					}
 					{
 						!!this.props.isModal && this.props.printQuote &&

@@ -2292,7 +2292,8 @@ var MaintenanceRequest = React.createClass({
 							gallery={this.state.quote_images}
 							updateStatusQuote={this.updateStatusQuote}
 							viewQuote={(quote) => this.viewQuote(quote)}
-							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
+							sendEmailLandlord={this.sendEmailLandlord}
+							current_user={this.props.current_user}
 						/>
 					)
 

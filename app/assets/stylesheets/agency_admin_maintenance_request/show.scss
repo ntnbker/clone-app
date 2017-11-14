@@ -601,6 +601,14 @@ span.index {
           text-overflow: ellipsis;
           max-width: 250px;
           padding: 0 10px;
+          border: none;
+          background-color: #f4f8fb;
+          color: #849aaa;
+          font-size: 14px;
+          font-weight: 400;
+          i {
+            padding-right: 5px;
+          }
         }
       }
       .info .name button {
@@ -724,6 +732,11 @@ span.index {
         height: 33px;
         margin: 5px 15px 5px 0px;
         font-size: 14px;
+        background-color: #f4f8fb;
+        color: #849aaa;
+        border: none;
+        font-size: 14px;
+        font-weight: 400;
       }
       .btn-accept {
         background-color: $color-green;

@@ -651,6 +651,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							gallery={this.state.quote_images}
 							updateStatusQuote={this.updateStatusQuote}
 							viewQuote={(quote) => this.viewQuote(quote)}
+							current_user={this.props.current_user}
 						/>
 					)
 				default:
