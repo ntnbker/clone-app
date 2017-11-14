@@ -194,7 +194,7 @@ class TradyMailer < ActionMailer::Base
   def notify_trady_about_quote_request_message(maintenance_request,quote_request)
     @maintenance_request = maintenance_request
     @quote_request = quote_request
-    @trady = @quote.trady
+    @trady = @quote_request.trady
     @property = @maintenance_request.property
     if @maintenance_request.agent
       @agency = @maintenance_request.agent.agency
