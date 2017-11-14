@@ -36,7 +36,7 @@ var AssignTrady = React.createClass({
 										Cancel
 									</button>
 							}
-							<button type="button" className="btn btn-default btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
+							<button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
 								View
 							</button>
 						</div>

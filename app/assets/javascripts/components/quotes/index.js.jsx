@@ -585,6 +585,12 @@ var QuoteRequests = React.createClass({
 						const needMessageButton 		= !isLandlord
 																				&& !!self.current_user_show_quote_message;
 
+						const messageTo 						= self.keyLandlord === 'trady'
+																				? 'Agent'
+																				: quote_request.trady
+																					? quote_request.trady.name
+																					: '';
+
 						return (
 							<div className="item-quote row item-quote-request" key={index}>
 								<div className="user seven columns">
@@ -607,7 +613,7 @@ var QuoteRequests = React.createClass({
 											needMessageButton
 											? <ButtonQuoteRequestMessage
 													quote_request={quote_request}
-													name={quote_request.trady ? quote_request.trady.name : ''}
+													name={messageTo}
 													viewQuote={self.viewQuote}
 												/>
 											: ''
@@ -1229,7 +1235,6 @@ var ModalViewQuoteRequestMessage = React.createClass({
 		);
 	}
 });
-
 
 var ModalViewPhoto = React.createClass({
 	getInitialState: function() {
