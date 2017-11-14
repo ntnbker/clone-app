@@ -49,6 +49,10 @@ body::-webkit-scrollbar-thumb {
   border: 1px solid #e0e3e6;
   margin-bottom: 20px;
   border-radius: 5px;
+  .quotes .index {
+    border: 1px solid #ff5a5f;
+    background-color: #ff5a5f;
+  }
 }
 span.index {
   display: inline-block;
@@ -536,6 +540,10 @@ span.index {
     }
   }
   .quotes {
+    &.assign .item-quote .user {
+      width: calc(100% - 47px);
+      float: right;
+    }
     p {
       color: $color-grey-dark;
       font-size: 14px;
@@ -1973,7 +1981,7 @@ span.index {
       max-width: 400px;
     }
   }
-  .summary-container-index .quotes .quote-request .actions-quote {
+  .summary-container-index .quotes .actions-quote {
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -2003,7 +2011,7 @@ span.index {
       margin-bottom: 20px;
     }
   }
-  .summary-container-index .quotes .quote-request .actions-quote {
+  .summary-container-index .quotes .actions-quote {
     width: 70%;
     margin-left: 15%;
   }
@@ -2013,7 +2021,7 @@ span.index {
     width: 90%;
     margin-left: 5%;
   }
-  .summary-container-index .quotes .quote-request .actions-quote {
+  .summary-container-index .quotes .actions-quote {
     width: 90%;
     margin-left: 5%;
   }
