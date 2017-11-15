@@ -272,7 +272,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function(res){
 				self.setState({notification: {
 					title: "Request Another Quote",
-					content: "Send email is successfully.",
+					content: "You have successfully sent an email to the agent requesting another quote for the maintenance request. Thank you for your time.",
 					bgClass: "bg-success",
 				}});
 				self.onModalWith('notification');

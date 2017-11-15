@@ -304,8 +304,10 @@ class QuotesController < ApplicationController
   end
 
   def landlord_decides_quote
+    binding.pry
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     quotes = maintenance_request.quotes.where(:delivery_status=>true)
+    binding.pry
     landlord = maintenance_request.property.landlord
     # @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     if params[:status] == "Approved" 
@@ -320,11 +322,11 @@ class QuotesController < ApplicationController
           quote.update_attribute(:status, params[:status])
           NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
-          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been approved by - Landlord: ", name:landlord.name.capitalize)
+          Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been approved by - Landlord: ", name:landlord.name.capitalize)
         else
           quote.update_attribute(:status, "Declined")
-          trady = quote.trady
-          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been declined by - Landlord: ", name:landlord.name.capitalize)
+          #trady = quote.trady
+          Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been declined by - Landlord: ", name:landlord.name.capitalize)
 
           #EMAIL AGENT QUOTE DECLINED
           # TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
@@ -333,9 +335,9 @@ class QuotesController < ApplicationController
     
       
     end 
-    q = quotes.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    quote_requests = maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
     respond_to do |format|
-      format.json {render :json => q}
+      format.json {render :json=>{quote_requests:quote_requests}}
       
     end
     
