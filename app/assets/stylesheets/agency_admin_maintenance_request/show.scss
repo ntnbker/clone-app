@@ -1243,6 +1243,11 @@ span.index {
       font-size: 14px;
       color: $color-black;
       text-transform: capitalize !important;
+      &.btn-trans {
+        background-color: #f4f8fb;
+        color: #849aaa;
+        border: none;
+      }
     }
     .btn-accept {
       background-color: $color-green;

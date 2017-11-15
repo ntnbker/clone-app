@@ -36,7 +36,7 @@ var ButtonForwardLandlord = React.createClass({
 				type="button"
 				style={style}
 				onClick={!this.state.isSend && this.sendEmail}
-				className="btn"
+				className="btn btn-trans"
 			>
 				{!!this.state.isSend ? 'Send to Landlord' : 'Forward to LandLord'}
 			</button>
@@ -104,7 +104,7 @@ var ButtonRestore = React.createClass({
 
 	render: function() {
 		return (
-			<button type="button" className="btn" onClick={this.updateStatus}>
+			<button type="button" className="btn btn-trans" onClick={this.updateStatus}>
 				Restore
 			</button>
 		);
@@ -130,7 +130,7 @@ var ButtonView = React.createClass({
 		return (
 			<button
 				type="button"
-				className="btn"
+				className="btn btn-trans"
 				onClick={(key, item) => this.props.viewQuote('viewQuote', this.props.quote)}
 			>
 				View
@@ -160,7 +160,7 @@ var ButtonViewPhoto = React.createClass({
 		return (
 			<button
 				type="button"
-				className="btn"
+				className="btn btn-trans"
 				onClick={(key, item) => {
 					chooseQuoteRequest(quote);
 					viewQuote('viewPhoto', gallery);
@@ -183,7 +183,7 @@ var ButtonRequestAnotherQuote = React.createClass({
 
 	render: function() {
 		return (
-			<button type="button" className="btn" onClick={this.sendEmail}>
+			<button type="button" className="btn btn-trans" onClick={this.sendEmail}>
 				Request Another Quote
 			</button>
 		);
@@ -267,12 +267,6 @@ var ActionQuote = React.createClass({
 					}
 					{ quote.status == "Active" &&
 							<ButtonAccept
-								quote={quote}
-								updateStatusQuote={self.updateStatusQuote}
-							/>
-					}
-					{ quote.status == "Active" &&
-							<ButtonDecline
 								quote={quote}
 								updateStatusQuote={self.updateStatusQuote}
 							/>
@@ -1275,7 +1269,7 @@ var ModalViewPhoto = React.createClass({
 									landlord={self.landlord}
 									quotes={self.quotes}
 									onModalWith={self.onModalWith}
-									keyLandlord={this.props.keyLandlord}
+									keyLandlord={self.keyLandlord}
 									updateStatusQuote={self.updateStatusQuote}
 									sendEmailLandlord={self.sendEmailLandlord}
 								/>

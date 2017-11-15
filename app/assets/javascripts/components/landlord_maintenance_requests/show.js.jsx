@@ -682,6 +682,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					return (
 						<ModalViewPhoto
 							title="Quote Photo"
+							keyLandlord="landlord"
 							close={this.isClose}
 							quote={this.state.quote_request}
 							quotes={this.state.quote_requests}

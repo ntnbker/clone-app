@@ -1463,7 +1463,7 @@ var MaintenanceRequest = React.createClass({
 
 	updateStatusQuote: function(params) {
 		const self = this;
-		$.ajax({
+		 $.ajax({
 			type: 'POST',
 			url: '/quote_status',
 			beforeSend: function(xhr) {
