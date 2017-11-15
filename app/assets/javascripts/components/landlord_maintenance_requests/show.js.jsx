@@ -176,6 +176,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'approveJob':
 			case 'createAppointment': {
 				this.onModalWith(key);
 				break;
@@ -442,6 +443,46 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
+	approveJob: function(params, callback) {
+		const self = this;
+		const { authenticity_token, maintenance_request } = this.props;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/pre_approved',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				maintenance_request.preapproved_note = res.preapproved_note;
+
+				self.setState({
+					maintenance_request,
+					notification: {
+						bgClass: "bg-success",
+						title: "Approve Jobs",
+						content: 'Approved',
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Approve Jobs",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	decline: function(appointment) {
 		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
@@ -652,6 +693,16 @@ var LandlordMaintenanceRequest = React.createClass({
 							updateStatusQuote={this.updateStatusQuote}
 							viewQuote={(quote) => this.viewQuote(quote)}
 							current_user={this.props.current_user}
+						/>
+					)
+
+				case 'approveJob':
+					return (
+						<ModalApproveJob
+							content="Pre-Approved Amount"
+							close={this.isClose}
+							confirmText="Send"
+							approveJob={this.approveJob}
 						/>
 					)
 				default:
