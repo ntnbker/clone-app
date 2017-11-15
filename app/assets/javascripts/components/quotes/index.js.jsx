@@ -1347,7 +1347,7 @@ var ModalConfirmAnyThing = React.createClass({
 	},
 
 	render: function() {
-		const {title, content} = this.props;
+		const {title, content, confirmText} = this.props;
 		return (
 			<div className="modal-custom fade">
 				<div className="modal-dialog">
@@ -1373,7 +1373,7 @@ var ModalConfirmAnyThing = React.createClass({
 								className="btn btn-default success"
 								onClick={this.confirm}
 								data-dismiss="modal"
-							>Yes</button>
+							>{confirmText || 'Yes'}</button>
 							<button
 								type="button"
 								className="btn btn-primary cancel"

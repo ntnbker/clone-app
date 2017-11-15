@@ -307,6 +307,11 @@ var ButtonHeaderMR = React.createClass({
 		const {standBy, actionRequests, awaitingAction} = this.state;
 		return (
 			<div className="actions">
+				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
+					<span>
+						Approve Job
+					</span>
+				</button>
 				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
 					<span>
 						Split
@@ -457,6 +462,13 @@ var ItemMaintenanceRequest = React.createClass({
 						<p className="m-b-n">Job Description:</p>
 						<p>{maintenance.maintenance_description}</p>
 					</div>
+					{ maintenance.preapproved_note !== undefined
+						? <div className="vailability pre-approved-note">
+								<p className="header">Pre-Approve Job Note: </p>
+								<p className="description">{maintenance.preapproved_note}</p>
+							</div>
+						: ''
+					}
 					<div className="vailability">
 							<p className="header">Tenant Availability and Access Instructions: </p>
 							<p className="description">{maintenance.availability_and_access}</p>
