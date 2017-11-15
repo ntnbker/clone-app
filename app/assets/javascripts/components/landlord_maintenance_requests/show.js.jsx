@@ -704,6 +704,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							confirmText="Send"
 							approveJob={this.approveJob}
+							maintenance_request={this.state.maintenance_request}
 						/>
 					)
 				default:

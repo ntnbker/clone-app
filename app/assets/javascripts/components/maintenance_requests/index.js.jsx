@@ -152,7 +152,10 @@ var DropDownMobileList = React.createClass({
   componentDidMount: function() {
     const self = this;
     $(document).bind('click', function(e) {
-      if (!e.target.matches('#' + self.props.id)) {
+      const match = e.target.matches
+                  ? e.target.matches('#' + self.props.id)
+                  : e.target.msMatchesSelector('#' + self.props.id);
+      if (!match) {
         self.onDrop('over');
       }
     });
@@ -828,7 +831,10 @@ var DropforSortDate = React.createClass({
 
   componentDidMount: function() {
     window.onclick = function(e) {
-      if (!e.target.matches('.btn-show')) {
+      const match = e.target.matches
+                  ? e.target.matches('#' + self.props.id)
+                  : e.target.msMatchesSelector('#' + self.props.id);
+      if (!match) {
         var myDropdown = document.getElementById("menu");
           if (myDropdown && myDropdown.classList.contains('show')) {
             myDropdown.classList.remove('show');

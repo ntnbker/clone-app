@@ -134,7 +134,7 @@ var ModalApproveJob = React.createClass({
 	},
 
 	render: function() {
-		const current_user 		 = this.props.current_user;
+		const { maintenance_request, current_user } = this.props;
 		const { errorMessage } = this.state;
 
 		return (
@@ -152,14 +152,15 @@ var ModalApproveJob = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Approve Job</h4>
+								<h4 className="modal-title text-center">Pre-Approve Note</h4>
 							</div>
 							<div className="modal-body">
 								<div>
-									<div>Pre-Approved Amount</div>
+									<div className="note">Please let us know if you have a pre approved amount that you would like to spend on this job.</div>
 									<textarea
 										style={{ width: '100%', marginTop: '10px' }}
 										placeholder="Note"
+										defaultValue={maintenance_request.preapproved_note || ''}
 										ref={(rel) => this.note = rel}
 										onChange={this.removeError}
 										className={'textarea-message ' + (errorMessage ? ' has-error' : '')}
