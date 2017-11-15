@@ -38,23 +38,21 @@ var Invoices = React.createClass({
 		return (
 			<div className="quotes invoices m-t-xl" id="invoices">
 				<p>
-					<span className="index">{invoices.length}</span>Invoice
-				</p>
-				{
-					(current_role.role == 'Trady' && notPaid) &&
-					<p>
+					<span className="index index-invoice">{invoices.length}</span>Invoice
+					{
+						// (current_role.role == 'Trady' && notPaid) &&
 						<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
-							Remind Agent of Payment
+											Remind Agent of Payment
 						</button>
-					</p>
-				}
+					}
+				</p>
 				<div className="list-quote">
 				{
 					invoices.map(function(invoice, index) {
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
-									<span className="index quote">{index + 1}</span>
+									<span className="index quote index-invoice">{index + 1}</span>
 									<span className="icon-user">
 										<AvatarImage imageUri={pictures[index]} />
 									</span>
