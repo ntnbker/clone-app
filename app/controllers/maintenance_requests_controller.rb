@@ -381,7 +381,7 @@ class MaintenanceRequestsController < ApplicationController
       end
     elsif params[:preapproved_note].empty?
       respond_to do |format|
-        format.json {render :json=>{:errors=>{"Note must not be blank thank you."}}}
+        format.json {render :json=>{errors:"Note must not be blank thank you."}}
       end 
     end 
       
