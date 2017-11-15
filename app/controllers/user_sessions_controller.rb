@@ -11,10 +11,16 @@ class UserSessionsController < ApplicationController
 
   def create
     
+    
+    
+    @role = params[:role_picked]
     @user = login(params[:email], params[:password])
     @query = Query.find_by(id:params[:query_id])
     
-    if @user && @user.has_role(params[:role_picked])
+
+    
+    if @user && @role && @user.has_role(params[:role_picked])
+      
       @user.current_role.update_attribute(:role, params[:role_picked])
       
       if @user.logged_in_as("God")
@@ -51,7 +57,10 @@ class UserSessionsController < ApplicationController
           
       end 
     else
-
+      if current_user
+        current_user.current_role.update_attribute(:role,nil)
+      end 
+      logout
       flash[:danger] = "Please use your correct email, password and role you have access to."
       redirect_to menu_login_path
       

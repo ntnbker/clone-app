@@ -59,6 +59,48 @@ const MenuLandlord = function() {
   ];
 }
 
+var showFlash = function(message, status, positionShow) {
+  flashFunctions.forEach(flashFunc => flashFunc(message, status, positionShow));
+};
+
+var flashFunctions = [];
+
+var ShowMessage = React.createClass({
+  getInitialState: function() {
+    flashFunctions.push(this.showMessage.bind(this));
+    return {
+      status: '',
+      message: '',
+      positionShow: '',
+      isShow: false,
+      position: this.props.position,
+    }
+  },
+
+  showMessage(message, status, position) {
+    this.setState({ message, status, positionShow: position, isShow: true });
+  },
+
+  close() {
+    this.setState({ isShow: false });
+  },
+
+  render() {
+    const { message, status, isShow, position, positionShow } = this.state;
+
+    return isShow && positionShow === position
+      ? <div className={`alert alert-${status} show-message`}>
+          <div className="content-message">
+            <div id={`flash_${status}`}>
+              {message}
+            </div>
+            <button><i className="fa fa-times" aria-hidden="true" onClick={this.close}></i></button>
+          </div>
+        </div>
+      : <div></div>
+  }
+});
+
 var MobileMenu = React.createClass({
   getInitialState: function() {
     return {
@@ -359,6 +401,7 @@ var Header = React.createClass({
     render: function() {
       return (
         <div>
+          <ShowMessage position="header" />
           { this.props.expanded ?
               this.header(true)
               :

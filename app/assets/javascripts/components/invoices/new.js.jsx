@@ -46,8 +46,9 @@ var FieldList = React.createClass({
   getInitialState : function(){
     const existingContent = this.props.existingContent;
     var SampleField = this.props.SampleField;
+    var flag = this.props.flag;
     var Fields = {};
-    var params = this.props.params;
+    var params = this.props.params || {};
     var x = 0;
 
     if (existingContent ? existingContent.length > 0 : false) {
@@ -58,7 +59,7 @@ var FieldList = React.createClass({
 
       return { Fields, x };
     } else {
-      if(!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
+      if(!!flag && (flag == "quote" || flag == "invoice" || flag == "splitMR")) {
         x = 1;
         return { Fields: { "1":  {params, SampleField, x } }, x, }
       }
@@ -88,21 +89,25 @@ var FieldList = React.createClass({
   },
 
   render: function(){
-    const { errors } = this.props;
+    const { errors, isSubmitted } = this.props;
     return <div className="fieldlist">
       <ul id="fieldList">
         {
-          Object.values(this.state.Fields).map(({SampleField, content, params, x} , index) => {
+          Object.values(this.state.Fields)
+            .filter(({params}) => !params || !params.remove)
+            .map(({SampleField, content, params = {}, x} , index) => {
             return (
               <li key={x}>
               {
                 <SampleField
                   x={x}
+                  position={index + 1}
                   params={params}
                   content={content}
                   removeField={(position) => this.removeField(position)}
                   validDate={(flag) => this.props.validDate(flag)}
                   errorsForm={errors}
+                  isSubmitted={isSubmitted}
                 />
               }
               </li>
@@ -224,7 +229,7 @@ var FieldListForInvoice = React.createClass({
         })}
       </ul>
       <div className="text-center">
-        <button type="button" className="button-add button-primary" style={{bottom: 0, right: 0 }} onClick={() => this.addField()}> Add New Invoice </button>
+        <button type="button" className="button-add button-primary" onClick={() => this.addField()}> Add New Invoice </button>
       </div>
     </div>
   }
@@ -241,7 +246,6 @@ var AdditionalInvoice = React.createClass({
       hours_input: hours_input
     }
   },
-
   componentWillReceiveProps() {
     this.setState({
       remove: this.props.params.remove
@@ -259,7 +263,6 @@ var AdditionalInvoice = React.createClass({
       hours_input: pricing_type === "Hourly",
     });
   },
-
   render: function() {
     var quote = this.props.content;
     var x= this.props.x;
@@ -640,7 +643,7 @@ var InvoiceField = React.createClass({
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
-    var hasInvoice    = content && !content.isCoppy;
+    var hasInvoice    = content && Object.keys(content).length > 0 && !content.isCoppy;
     var invoice       = this.props.content || {};
 
     if (hasInvoice) x = invoice.id;
@@ -720,10 +723,9 @@ var InvoiceField = React.createClass({
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
         {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}
       </fieldset>
-
       <div className="text-center">
         <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
-        </div>
+      </div>
     </div>
   }
 });
@@ -881,7 +883,7 @@ var InvoiceFields = React.createClass({
 
       <FieldListForInvoice
         errors={errors}
-        params={invoiceInfo}
+        params={{invoiceInfo}}
         noQuotes={!hasQuotes}
         existingContent={invoices}
         SampleField={InvoiceField}

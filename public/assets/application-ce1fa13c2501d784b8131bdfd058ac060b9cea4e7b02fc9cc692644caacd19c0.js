@@ -71361,8 +71361,9 @@ var FieldList = React.createClass({
   getInitialState: function () {
     var existingContent = this.props.existingContent;
     var SampleField = this.props.SampleField;
+    var flag = this.props.flag;
     var Fields = {};
-    var params = this.props.params;
+    var params = this.props.params || {};
     var x = 0;
 
     if (existingContent ? existingContent.length > 0 : false) {
@@ -71373,7 +71374,7 @@ var FieldList = React.createClass({
 
       return { Fields: Fields, x: x };
     } else {
-      if (!!this.props.flag && (this.props.flag == "quote" || this.props.flag == "invoice")) {
+      if (!!flag && (flag == "quote" || flag == "invoice" || flag == "splitMR")) {
         x = 1;
         return { Fields: { "1": { params: params, SampleField: SampleField, x: x } }, x: x };
       }
@@ -71413,7 +71414,9 @@ var FieldList = React.createClass({
   render: function () {
     var _this = this;
 
-    var errors = this.props.errors;
+    var _props2 = this.props;
+    var errors = _props2.errors;
+    var isSubmitted = _props2.isSubmitted;
 
     return React.createElement(
       "div",
@@ -71421,17 +71424,22 @@ var FieldList = React.createClass({
       React.createElement(
         "ul",
         { id: "fieldList" },
-        Object.values(this.state.Fields).map(function (_ref, index) {
-          var SampleField = _ref.SampleField;
-          var content = _ref.content;
+        Object.values(this.state.Fields).filter(function (_ref) {
           var params = _ref.params;
-          var x = _ref.x;
+          return !params || !params.remove;
+        }).map(function (_ref2, index) {
+          var SampleField = _ref2.SampleField;
+          var content = _ref2.content;
+          var _ref2$params = _ref2.params;
+          var params = _ref2$params === undefined ? {} : _ref2$params;
+          var x = _ref2.x;
 
           return React.createElement(
             "li",
             { key: x },
             React.createElement(SampleField, {
               x: x,
+              position: index + 1,
               params: params,
               content: content,
               removeField: function (position) {
@@ -71440,7 +71448,8 @@ var FieldList = React.createClass({
               validDate: function (flag) {
                 return _this.props.validDate(flag);
               },
-              errorsForm: errors
+              errorsForm: errors,
+              isSubmitted: isSubmitted
             })
           );
         })
@@ -71492,12 +71501,12 @@ var FieldListForInvoice = React.createClass({
   displayName: "FieldListForInvoice",
 
   getInitialState: function () {
-    var _props2 = this.props;
-    var existingContent = _props2.existingContent;
-    var SampleField = _props2.SampleField;
-    var params = _props2.params;
+    var _props3 = this.props;
+    var existingContent = _props3.existingContent;
+    var SampleField = _props3.SampleField;
+    var params = _props3.params;
 
-    var rest = _objectWithoutProperties(_props2, ["existingContent", "SampleField", "params"]);
+    var rest = _objectWithoutProperties(_props3, ["existingContent", "SampleField", "params"]);
 
     var Fields = {};
     var x = 0;
@@ -71526,9 +71535,9 @@ var FieldListForInvoice = React.createClass({
     var x = _state$x === undefined ? 0 : _state$x;
 
     var id = x + 1;
-    var _props3 = this.props;
-    var SampleField = _props3.SampleField;
-    var params = _props3.params;
+    var _props4 = this.props;
+    var SampleField = _props4.SampleField;
+    var params = _props4.params;
 
     var invoice_items = (quote.quote_items || []).map(function (item) {
       return _extends({}, item, { id: null, invoice_id: null });
@@ -71546,9 +71555,9 @@ var FieldListForInvoice = React.createClass({
     var Fields = _state2$Fields === undefined ? {} : _state2$Fields;
     var _state2$x = _state2.x;
     var x = _state2$x === undefined ? 0 : _state2$x;
-    var _props4 = this.props;
-    var SampleField = _props4.SampleField;
-    var params = _props4.params;
+    var _props5 = this.props;
+    var SampleField = _props5.SampleField;
+    var params = _props5.params;
 
     var tempFields = _extends({}, Fields);
     var id = x + 1;
@@ -71585,14 +71594,14 @@ var FieldListForInvoice = React.createClass({
       React.createElement(
         "ul",
         null,
-        Object.values(Fields).map(function (_ref2, fieldIndex) {
-          var SampleField = _ref2.SampleField;
-          var quote = _ref2.quote;
-          var key = _ref2.key;
-          var x = _ref2.x;
-          var params = _ref2.params;
+        Object.values(Fields).map(function (_ref3, fieldIndex) {
+          var SampleField = _ref3.SampleField;
+          var quote = _ref3.quote;
+          var key = _ref3.key;
+          var x = _ref3.x;
+          var params = _ref3.params;
 
-          var rest = _objectWithoutProperties(_ref2, ["SampleField", "quote", "key", "x", "params"]);
+          var rest = _objectWithoutProperties(_ref3, ["SampleField", "quote", "key", "x", "params"]);
 
           var style = {};
           var newParams = _extends({}, params, { remove: removed[x] });
@@ -71626,7 +71635,7 @@ var FieldListForInvoice = React.createClass({
         { className: "text-center" },
         React.createElement(
           "button",
-          { type: "button", className: "button-add button-primary", style: { bottom: 0, right: 0 }, onClick: function () {
+          { type: "button", className: "button-add button-primary", onClick: function () {
               return _this2.addField();
             } },
           " Add New Invoice "
@@ -71649,7 +71658,6 @@ var AdditionalInvoice = React.createClass({
       hours_input: hours_input
     };
   },
-
   componentWillReceiveProps: function () {
     this.setState({
       remove: this.props.params.remove
@@ -71667,7 +71675,6 @@ var AdditionalInvoice = React.createClass({
       hours_input: pricing_type === "Hourly"
     });
   },
-
   render: function () {
     var quote = this.props.content;
     var x = this.props.x;
@@ -71866,8 +71873,8 @@ var InvoiceItemField = React.createClass({
     this.removeError(event);
   },
 
-  onHours: function (_ref3) {
-    var value = _ref3.target.value;
+  onHours: function (_ref4) {
+    var value = _ref4.target.value;
 
     var hours = value;
     if (hours > 0) this.setState({ numofhours: hours });else this.setState({ numofhours: 0 });
@@ -71879,8 +71886,8 @@ var InvoiceItemField = React.createClass({
     });
   },
 
-  removeError: function (_ref4) {
-    var id = _ref4.target.id;
+  removeError: function (_ref5) {
+    var id = _ref5.target.id;
 
     this.setState({
       errorsForm: _extends({}, this.state.errorsForm, _defineProperty({}, id, ''))
@@ -72033,10 +72040,10 @@ var InvoiceField = React.createClass({
     };
   },
 
-  componentWillReceiveProps: function (_ref5) {
-    var errors = _ref5.errors;
+  componentWillReceiveProps: function (_ref6) {
+    var errors = _ref6.errors;
 
-    var rest = _objectWithoutProperties(_ref5, ["errors"]);
+    var rest = _objectWithoutProperties(_ref6, ["errors"]);
 
     this.setState({
       remove: rest.params.remove,
@@ -72100,11 +72107,11 @@ var InvoiceField = React.createClass({
   render: function () {
     var _this4 = this;
 
-    var _props5 = this.props;
-    var content = _props5.content;
-    var x = _props5.x;
-    var _props5$params$invoiceInfo = _props5.params.invoiceInfo;
-    var invoiceInfo = _props5$params$invoiceInfo === undefined ? {} : _props5$params$invoiceInfo;
+    var _props6 = this.props;
+    var content = _props6.content;
+    var x = _props6.x;
+    var _props6$params$invoiceInfo = _props6.params.invoiceInfo;
+    var invoiceInfo = _props6$params$invoiceInfo === undefined ? {} : _props6$params$invoiceInfo;
     var _state5 = this.state;
     var errorDate = _state5.errorDate;
     var remove = _state5.remove;
@@ -72115,7 +72122,7 @@ var InvoiceField = React.createClass({
     var items_total = _state5.items_total;
 
     var invoice_items = content && content.invoice_items || null;
-    var hasInvoice = content && !content.isCoppy;
+    var hasInvoice = content && Object.keys(content).length > 0 && !content.isCoppy;
     var invoice = this.props.content || {};
 
     if (hasInvoice) x = invoice.id;
@@ -72369,9 +72376,9 @@ var InvoiceFields = React.createClass({
   render: function () {
     var _this5 = this;
 
-    var _props6 = this.props;
-    var quotes = _props6.quotes;
-    var trady = _props6.trady;
+    var _props7 = this.props;
+    var quotes = _props7.quotes;
+    var trady = _props7.trady;
 
     var errors = this.state.errors;
     var ledger = this.props.ledger || null;
@@ -72418,7 +72425,7 @@ var InvoiceFields = React.createClass({
       }),
       React.createElement(FieldListForInvoice, {
         errors: errors,
-        params: invoiceInfo,
+        params: { invoiceInfo: invoiceInfo },
         noQuotes: !hasQuotes,
         existingContent: invoices,
         SampleField: InvoiceField,
@@ -78023,6 +78030,10 @@ var SearchResultMaintenanceRequest = React.createClass({
     );
   }
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var Carousel = React.createClass({
 	displayName: "Carousel",
 
@@ -78326,6 +78337,28 @@ var ButtonHeaderMR = React.createClass({
 			"div",
 			{ className: "actions" },
 			React.createElement(
+				"button",
+				{ className: "button-primary edit-detail", onClick: function (key) {
+						return _this3.props.viewItem('splitMR');
+					} },
+				React.createElement(
+					"span",
+					null,
+					"Split"
+				)
+			),
+			React.createElement(
+				"button",
+				{ className: "button-primary edit-detail", onClick: function (key) {
+						return _this3.props.viewItem('duplicateMR');
+					} },
+				React.createElement(
+					"span",
+					null,
+					"Duplicate"
+				)
+			),
+			React.createElement(
 				"div",
 				{ id: "update-status" },
 				React.createElement(
@@ -78437,6 +78470,89 @@ var ButtonHeaderMR = React.createClass({
 	}
 });
 
+var ModalConfirmMR = React.createClass({
+	displayName: "ModalConfirmMR",
+
+	handleConfirm: function () {
+		this.props.confirm();
+	},
+
+	render: function () {
+		var _props = this.props;
+		var title = _props.title;
+		var content = _props.content;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							content
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-default success",
+								onClick: this.handleConfirm,
+								"data-dismiss": "modal"
+							},
+							"Yes"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-primary cancel",
+								onClick: this.props.close
+							},
+							"No"
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
 var ItemMaintenanceRequest = React.createClass({
 	displayName: "ItemMaintenanceRequest",
 
@@ -78541,13 +78657,335 @@ var ItemMaintenanceRequest = React.createClass({
 	}
 });
 
+var ModalEditMR = React.createClass({
+	displayName: "ModalEditMR",
+
+	getInitialState: function () {
+		return {
+			serviceError: '',
+			descriptionError: '',
+			isSuccess: false
+		};
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		var _filterErrors = this.filterErrors(nextProps);
+
+		var _filterErrors$serviceError = _filterErrors.serviceError;
+		var serviceError = _filterErrors$serviceError === undefined ? '' : _filterErrors$serviceError;
+		var _filterErrors$descriptionError = _filterErrors.descriptionError;
+		var descriptionError = _filterErrors$descriptionError === undefined ? '' : _filterErrors$descriptionError;
+		var isSuccess = _filterErrors.isSuccess;
+
+		this.setState({
+			isSuccess: isSuccess,
+			serviceError: serviceError,
+			descriptionError: descriptionError
+		});
+	},
+
+	filterErrors: function (_ref) {
+		var position = _ref.position;
+		var _ref$errorsForm = _ref.errorsForm;
+		var _ref$errorsForm$errors = _ref$errorsForm.errors;
+		var errors = _ref$errorsForm$errors === undefined ? {} : _ref$errorsForm$errors;
+		var _ref$errorsForm$success = _ref$errorsForm.success;
+		var success = _ref$errorsForm$success === undefined ? [] : _ref$errorsForm$success;
+
+		var detectedErrors = (errors && errors[position] || {}).errors || {};
+
+		var description = this.description.value;
+		var serviceType = this.serviceType.value;
+
+		var isSuccess = !!success.filter(function (mr) {
+			return mr.maintenance_description === description && mr.service_type === serviceType;
+		}).length;
+
+		return {
+			isSuccess: this.state.isSuccess || isSuccess,
+			serviceError: !this.serviceType.value && detectedErrors.service_type || '',
+			descriptionError: !this.description.value && detectedErrors.maintenance_description || ''
+		};
+	},
+
+	removeError: function (_ref2) {
+		var id = _ref2.target.id;
+
+		this.setState(_defineProperty({}, id + "Error", ''));
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error ? error : ''
+		);
+	},
+
+	renderServiceType: function (services) {
+		var _this5 = this;
+
+		if (!!this.props.trady) return null;
+		var _state2 = this.state;
+		var serviceError = _state2.serviceError;
+		var isSuccess = _state2.isSuccess;
+		var x = this.props.x;
+
+		return React.createElement(
+			"div",
+			{ className: "row m-t-lg" },
+			React.createElement(
+				"label",
+				null,
+				"Service Type:"
+			),
+			React.createElement(
+				"select",
+				{
+					id: "service",
+					disabled: isSuccess && 'disabled' || false,
+					ref: function (e) {
+						return _this5.serviceType = e;
+					},
+					className: "form-control input-custom " + (serviceError ? 'has-error' : ''),
+					name: "maintenance_requests[" + x + "][service_type]",
+					onChange: this.removeError
+				},
+				React.createElement(
+					"option",
+					{ value: "" },
+					"Service Type"
+				),
+				services.map(function (service, index) {
+					return React.createElement(
+						"option",
+						{
+							key: index + 1,
+							value: service.service
+						},
+						service.service
+					);
+				})
+			),
+			this.renderError(serviceError)
+		);
+	},
+
+	render: function () {
+		var _this6 = this;
+
+		var _state3 = this.state;
+		var serviceError = _state3.serviceError;
+		var descriptionError = _state3.descriptionError;
+		var isSuccess = _state3.isSuccess;
+
+		var params = this.props.params || {};
+		var _props2 = this.props;
+		var _props2$x = _props2.x;
+		var x = _props2$x === undefined ? 0 : _props2$x;
+		var removeField = _props2.removeField;
+		var _params$maintenance_request = params.maintenance_request;
+		var maintenance_request = _params$maintenance_request === undefined ? {} : _params$maintenance_request;
+		var _params$services = params.services;
+		var services = _params$services === undefined ? {} : _params$services;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-body split-maintenance-request edit-maintenance-request " + (isSuccess ? 'mr-success' : '') },
+			React.createElement("input", {
+				type: "hidden",
+				value: maintenance_request.id,
+				name: "maintenance_requests[" + x + "][maintenance_request_id]"
+			}),
+			isSuccess ? React.createElement(
+				"div",
+				{ className: "alert alert-success" },
+				"This maintenance request has been saved."
+			) : '',
+			descriptionError || serviceError ? React.createElement(
+				"div",
+				{ className: "alert alert-danger" },
+				"Sorry there seems to be a problem. One form below is invalid, please fix and resubmit."
+			) : '',
+			this.renderServiceType(services),
+			React.createElement(
+				"div",
+				{ className: "row" },
+				React.createElement(
+					"label",
+					null,
+					"Maintenance Request Description:"
+				),
+				React.createElement("textarea", {
+					disabled: isSuccess && 'disabled' || false,
+					placeholder: "Enter Description",
+					name: "maintenance_requests[" + x + "][maintenance_description]",
+					ref: function (e) {
+						return _this6.description = e;
+					},
+					id: "description",
+					onChange: this.removeError,
+					className: "u-full-width " + (descriptionError && "has-error")
+				})
+			),
+			this.renderError(descriptionError),
+			!true ? React.createElement(
+				"button",
+				{
+					type: "button",
+					className: "button-remove button-primary red",
+					onClick: function () {
+						return removeField(_this6.props.x);
+					}
+				},
+				"Remove"
+			) : ''
+		);
+	}
+});
+
+var ModalSplitMR = React.createClass({
+	displayName: "ModalSplitMR",
+
+	getInitialState: function () {
+		return {
+			result: {}
+		};
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+
+		var self = this;
+		var splitSubmit = this.props.splitSubmit;
+
+		var FD = new FormData(document.getElementById('splitMRForm'));
+
+		splitSubmit(FD, function (_ref3) {
+			var errors = _ref3.errors;
+			var success = _ref3.success;
+
+			if (errors) {
+				//defined in header.js.jsx
+				var convertedErrors = errors.reduce(function (result, obj) {
+					return _extends({}, result, _defineProperty({}, obj.id, obj));
+				}, {});
+				self.setState({ result: { errors: convertedErrors, success: success } });
+			}
+		});
+	},
+
+	render: function () {
+		var result = this.state.result;
+		var _props3 = this.props;
+		var maintenance_request = _props3.maintenance_request;
+		var services = _props3.services;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"form",
+						{ role: "form", id: "splitMRForm", onSubmit: this.onSubmit },
+						React.createElement("input", {
+							type: "hidden",
+							value: maintenance_request.id,
+							name: "maintenance_request[maintenance_request_id]",
+							id: "maintenance_request_maintenance_request_id"
+						}),
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"aria-label": "Close",
+									"data-dismiss": "modal",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Split Maintenance Request"
+							)
+						),
+						React.createElement(ShowMessage, { position: "splitMR" }),
+						React.createElement(
+							"div",
+							{ className: "alert alert-info" },
+							"The split feature can be used to split up a maintenance request that a tenant has submitted with multiple types of services required. To ensure each type of tradie receives the correct job type."
+						),
+						React.createElement(
+							"label",
+							{ className: "modal-title information" },
+							"Service Type: ",
+							maintenance_request.service_type
+						),
+						React.createElement(
+							"label",
+							{ className: "modal-title information" },
+							"Description: ",
+							maintenance_request.maintenance_description
+						),
+						React.createElement(
+							"div",
+							{ className: "scroll-height" },
+							React.createElement(FieldList, {
+								SampleField: ModalEditMR,
+								flag: "splitMR",
+								params: { services: services, maintenance_request: maintenance_request },
+								errors: result
+							})
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									onClick: this.props.close,
+									className: "btn btn-primary cancel"
+								},
+								"Cancel"
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
 var ModalConfirmUpdateStatus = React.createClass({
 	displayName: "ModalConfirmUpdateStatus",
 
 	render: function () {
-		var _props = this.props;
-		var content = _props.content;
-		var title = _props.title;
+		var _props4 = this.props;
+		var content = _props4.content;
+		var title = _props4.title;
 
 		return React.createElement(
 			"div",
@@ -81013,6 +81451,8 @@ var MaintenanceRequest = React.createClass({
 					break;
 				}
 
+			case 'splitMR':
+			case 'duplicateMR':
 			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest':
 				{
@@ -81624,6 +82064,80 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	duplicateMR: function () {
+		var self = this;
+		var maintenance_request = this.state.maintenance_request;
+
+		var params = {
+			maintenance_request_id: maintenance_request.id
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/duplicate_maintenance_request',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					status: res,
+					notification: {
+						title: "Duplicate Maintenance Request",
+						content: "The Maintenance Request has been duplicated.",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Duplicate Maintenance Request",
+						content: "The Maintenance Request has been error.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	splitSubmit: function (params, callback) {
+		var self = this;
+
+		$.ajax({
+			type: 'POST',
+			url: '/split_maintenance_request',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			data: params,
+			success: function (res) {
+				if (res.errors && res.errors.length) {
+					return callback(res);
+				}
+				self.setState({
+					notification: {
+						title: "Split Maintenance Request",
+						content: "You have successfully split the maintenance request. Please edit the original maintenance request by removing the information that no longer pertains. The split maintenance request(s) will now be listed under new maintenance request(s).",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Split Maintenance Request",
+						content: "The Maintenance Request didn't split!",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	markAsPaid: function (invoice) {
 		var uploaded = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
@@ -81924,6 +82438,20 @@ var MaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'splitMR':
+					{
+						return React.createElement(ModalSplitMR, {
+							close: this.isClose,
+							services: this.props.services,
+							onModalWith: function (modal) {
+								return _this8.onModalWith(modal);
+							},
+							maintenance_request: this.state.maintenance_request,
+							splitSubmit: this.splitSubmit,
+							trady: this.state.trady || this.props.assigned_trady
+						});
+					}
+
 				case 'viewAppointment':
 					{
 						var _state6 = this.state;
@@ -81964,6 +82492,14 @@ var MaintenanceRequest = React.createClass({
 						quote: this.state.quote,
 						updateStatusQuote: this.updateStatusQuote,
 						content: "Are you sure you want to cancel the job ?"
+					});
+
+				case 'duplicateMR':
+					return React.createElement(ModalConfirmMR, {
+						close: this.isClose,
+						confirm: this.duplicateMR,
+						title: "Duplicate Maintenance Request",
+						content: "Are you sure you want to duplicate this maintenance request? If there are any quotes or work orders associated with this maintenance request they WONT be carried over"
 					});
 
 				case 'confirmUpdateStatus':
@@ -84865,6 +85401,65 @@ var MenuLandlord = function () {
   }];
 };
 
+var showFlash = function (message, status, positionShow) {
+  flashFunctions.forEach(function (flashFunc) {
+    return flashFunc(message, status, positionShow);
+  });
+};
+
+var flashFunctions = [];
+
+var ShowMessage = React.createClass({
+  displayName: "ShowMessage",
+
+  getInitialState: function () {
+    flashFunctions.push(this.showMessage.bind(this));
+    return {
+      status: '',
+      message: '',
+      positionShow: '',
+      isShow: false,
+      position: this.props.position
+    };
+  },
+
+  showMessage: function (message, status, position) {
+    this.setState({ message: message, status: status, positionShow: position, isShow: true });
+  },
+
+  close: function () {
+    this.setState({ isShow: false });
+  },
+
+  render: function () {
+    var _state = this.state;
+    var message = _state.message;
+    var status = _state.status;
+    var isShow = _state.isShow;
+    var position = _state.position;
+    var positionShow = _state.positionShow;
+
+    return isShow && positionShow === position ? React.createElement(
+      "div",
+      { className: "alert alert-" + status + " show-message" },
+      React.createElement(
+        "div",
+        { className: "content-message" },
+        React.createElement(
+          "div",
+          { id: "flash_" + status },
+          message
+        ),
+        React.createElement(
+          "button",
+          null,
+          React.createElement("i", { className: "fa fa-times", "aria-hidden": "true", onClick: this.close })
+        )
+      )
+    ) : React.createElement("div", null);
+  }
+});
+
 var MobileMenu = React.createClass({
   displayName: "MobileMenu",
 
@@ -85245,6 +85840,7 @@ var Header = React.createClass({
     return React.createElement(
       "div",
       null,
+      React.createElement(ShowMessage, { position: "header" }),
       this.props.expanded ? this.header(true) : this.header()
     );
   }
@@ -87119,7 +87715,7 @@ var EditTradyCompany = React.createClass({
             ref: function (ref) {
               return _this.account_name = ref;
             },
-            className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+            className: "form-control " + (errors['account_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
           }),
           renderErrorFunc(errors['account_name'])
@@ -87865,7 +88461,7 @@ var AddTradycompany = React.createClass({
               ref: function (ref) {
                 return _this.account_name = ref;
               },
-              className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+              className: "form-control " + (errors['account_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
             }),
             renderErrorFunc(errors['account_name'])
