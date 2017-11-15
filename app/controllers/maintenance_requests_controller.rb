@@ -371,6 +371,11 @@ class MaintenanceRequestsController < ApplicationController
     end 
   end
 
+  def landlord_preapproved
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    maintenance_request.update_attribute(:preapproved_amount, params[:preapproved_note])
+  end
+
 
 
   private
