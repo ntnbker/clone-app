@@ -304,10 +304,10 @@ class QuotesController < ApplicationController
   end
 
   def landlord_decides_quote
-    binding.pry
+    
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     quotes = maintenance_request.quotes.where(:delivery_status=>true)
-    binding.pry
+    
     landlord = maintenance_request.property.landlord
     # @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     if params[:status] == "Approved" 
@@ -334,12 +334,14 @@ class QuotesController < ApplicationController
       end
     
       
-    end 
-    quote_requests = maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
-    respond_to do |format|
-      format.json {render :json=>{quote_requests:quote_requests}}
-      
     end
+
+    redirect_to landlord_maintenance_request_path(maintenance_request) 
+    # quote_requests = maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
+    # respond_to do |format|
+    #   format.json {render :json=>{quote_requests:quote_requests}}
+      
+    # end
     
   end
 
