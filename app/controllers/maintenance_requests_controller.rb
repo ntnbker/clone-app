@@ -372,14 +372,15 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def preapproved
+    binding.pry
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
 
-    if params[:preapproved_note]
+    if !params[:preapproved_note].empty? 
       maintenance_request.update_attribute(:preapproved_note, params[:preapproved_note])
       respond_to do |format|
         format.json {render :json=>{:preapproved_note=>params[:preapproved_note]}}
       end
-    elsif params[:preapproved_note].empty?
+    else
       respond_to do |format|
         format.json {render :json=>{errors:"Note must not be blank thank you."}}
       end 
