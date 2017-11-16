@@ -116,7 +116,7 @@ var ModalApproveJob = React.createClass({
 	},
 
 	renderError: function(error) {
-	  return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+	  return <p id="errorbox" className="error">{error || ''}</p>;
 	},
 
 	onSubmit: function(e) {
@@ -128,7 +128,7 @@ var ModalApproveJob = React.createClass({
 
 		this.props.approveJob(params, function(err) {
 			if (err) {
-				self.setState({ errorMessage: err['body'] });
+				self.setState({ errorMessage: err });
 			}
 		});
 	},

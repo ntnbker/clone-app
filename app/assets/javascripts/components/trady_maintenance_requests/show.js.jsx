@@ -1334,6 +1334,15 @@ var TradyMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
+						{
+							trady && this.props.current_role &&
+								<AssignTrady
+									trady={trady}
+									current_role={this.props.current_role.role}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									viewTrady={(key, item) => this.viewItem(key, item)}
+								/>
+						}
 						{ quote_requests && quote_requests.length &&
 								<QuoteRequests
 									keyLandlord="trady"
@@ -1345,15 +1354,6 @@ var TradyMaintenanceRequest = React.createClass({
 									chooseQuoteRequest={this.chooseQuoteRequest}
 									viewQuote={(key, item) => this.viewItem(key, item)}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
-								/>
-						}
-						{
-							trady && this.props.current_role &&
-								<AssignTrady
-									trady={trady}
-									current_role={this.props.current_role.role}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}
 						{ (quotes && quotes.length > 0) &&

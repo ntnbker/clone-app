@@ -2594,6 +2594,15 @@ var MaintenanceRequest = React.createClass({
 							show_assign={this.props.current_user_show_quote_message}
 						/>
 						{
+							this.state.trady &&
+								<AssignTrady
+									trady={this.state.trady}
+									current_role={this.props.current_user_role}
+									onModalWith={(modal) => this.onModalWith(modal)}
+									viewTrady={(key, item) => this.viewItem(key, item)}
+								/>
+						}
+						{
 							quote_requests && quote_requests.length
 							? <QuoteRequests
 									quote_requests={quote_requests}
@@ -2608,15 +2617,6 @@ var MaintenanceRequest = React.createClass({
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 							: ''
-						}
-						{
-							this.state.trady &&
-								<AssignTrady
-									trady={this.state.trady}
-									current_role={this.props.current_user_role}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									viewTrady={(key, item) => this.viewItem(key, item)}
-								/>
 						}
 						{	(quotes && quotes.length > 0) &&
 						 		<Quotes

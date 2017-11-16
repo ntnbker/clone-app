@@ -273,32 +273,47 @@ var ButtonHeaderMR = React.createClass({
 	},
 
 	show: function(key) {
+		if (this.state.isBlur) return;
 		switch(key) {
 			case 'assign':
-				return this.setState({ isShow: !this.state.isShow, isShowStatus: false });
+				return this.setState({ isShow: !this.state.isShow, isShowStatus: false }, () => {
+					if (this.state.isShow) this.dropdown_assign.focus();
+				});
 			case 'status':
-				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false });
+				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false }, () => {
+					if (this.state.isShowStatus) this.dropdown_status.focus();
+				});
 		}
 	},
 
 	close: function(key) {
+		const self = this;
 		switch(key) {
 			case 'assign':
 				this.setState({
-					isShow: false
+					isShow: false,
+					isBlur: true,
+				}, () => {
+					setTimeout(() => {
+						self.setState({ isBlur: false });
+					}, 100);
 				});
 				break;
 
 			case 'status':
 				this.setState({
-					isShowStatus: false
+					isShowStatus: false,
+					isBlur: true,
+				}, () => {
+					setTimeout(() => {
+						self.setState({ isBlur: false });
+					}, 100);
 				});
 				break;
 		}
 	},
 
 	componentDidMount: function() {
-
 	},
 
 	render: function() {
@@ -326,7 +341,13 @@ var ButtonHeaderMR = React.createClass({
 					<button className="button-primary update-status" onClick={(key) => this.show('status')}>
 						Update status
 					</button>
-					<div className="dropdown-status" style={{display: this.state.isShowStatus ? 'block' : 'none'}}>
+					<div
+						className="dropdown-status"
+						style={{display: this.state.isShowStatus ? 'block' : 'none'}}
+						ref={elem => this.dropdown_status = elem}
+						tabIndex="2"
+						onBlur={() => this.close('status')}
+					>
 						<div>
 							<p>Stand By</p>
 							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
@@ -348,14 +369,26 @@ var ButtonHeaderMR = React.createClass({
 					</span>
 				</button>
 				<div className="assign">
-					<button className="button-primary assign-to" id="assign-to" onClick={(key) => this.show('assign')}>
+					<button
+						className="button-primary assign-to"
+						id="assign-to"
+						ref={elem => this.assignBtn = elem}
+						onClick={key => this.show('assign')}
+					>
 						<i className="icon-user" aria-hidden="true" />
 						<span>
 							Assign to
 						</span>
 						<i className="fa fa-angle-down" aria-hidden="true" />
 					</button>
-					<div className="dropdown-assign" style={{display: this.state.isShow ? 'block' : 'none'}}>
+					<div
+						className="dropdown-assign"
+						id="dropdown-assign"
+						style={{display: this.state.isShow ? 'block' : 'none'}}
+						ref={(elem) => this.dropdown_assign = elem}
+						tabIndex="0"
+						onBlur={() => this.close('assign')}
+					>
 						<div>
 							<p>Agency Administrators</p>
 							<Assigns assigns={all_agency_admins} viewItem={(key, item) => this.props.viewItem(key, item)} />
