@@ -279,9 +279,22 @@ class QuotesController < ApplicationController
     @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
     
     Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been forwarded to landlord by: ", name:name)
-    respond_to do |format|
-      format.json {render json: @quote}
-    end 
+    
+
+
+    # respond_to do |format|
+    #   format.json {render json: @quote}
+    # end
+
+
+
+    if current_user.logged_in_as("AgencyAdmin")
+      flash[:success] = "An email has been sent to the landlord informing them of the quote. Thank you!"
+      redirect_to agency_admin_maintenance_request_path(@maintenance_request)
+    elsif current_user.logged_in_as("Agent")
+      flash[:success] = "An email has been sent to the landlord informing them of the quote. Thank you!"
+      redirect_to agent_maintenance_request_path(@maintenance_request)
+    end  
   end
 
   def check_landlord
@@ -335,7 +348,7 @@ class QuotesController < ApplicationController
     
       
     end
-
+    flash[:success] = "Thank you for accepting a quote. The agent and tradie will be notified so the work can start."
     redirect_to landlord_maintenance_request_path(maintenance_request) 
     # quote_requests = maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
     # respond_to do |format|
