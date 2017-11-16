@@ -422,13 +422,13 @@ span.index {
     float: right;
   }
   .post {
-    overflow: hidden;
+    // overflow: hidden;
     .info-title {
       float: left;
       width: 50%;
     }
     .info {
-      overflow: hidden;
+      // overflow: hidden;
       .title {
         overflow: hidden;
         color: $color-grey-dark;
@@ -498,6 +498,10 @@ span.index {
         background-repeat: no-repeat;
         margin-bottom: -3px;
         background-image: url(/assets/icon-user.png);
+      }
+      .assign {
+        float: right;
+        position: relative;
       }
     }
     .info .actions button.edit-detail {
@@ -1482,7 +1486,7 @@ span.index {
       .info .actions {
         width: 95%;
         float: left;
-        overflow: hidden;
+        // overflow: hidden;
         margin-top: 10px;
         margin-bottom: 5px;
         button {
@@ -1662,7 +1666,7 @@ span.index {
       .info .actions {
         width: 100%;
         float: left;
-        overflow: hidden;
+        // overflow: hidden;
         margin-top: 20px;
         margin-bottom: 10px;
         button {
@@ -1736,6 +1740,15 @@ span.index {
       display: block;
     }
   }
+  @media (min-width: 720px) and (max-width: 900px) {
+    .dropdown-assign {
+      right: 6px;
+      &:after {
+        right: 6%;
+        left: unset;
+      }
+    }
+  }
   @media (min-width: 769px) and (max-width: 1024px) {
     .main-summary {
       margin: auto 50px;
@@ -1754,7 +1767,7 @@ span.index {
       }
       .info .actions {
         width: 100%;
-        overflow: hidden;
+        // overflow: hidden;
         float: left;
         margin-top: 25px;
         margin-bottom: 15px;

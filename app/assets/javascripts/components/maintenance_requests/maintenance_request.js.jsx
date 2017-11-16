@@ -273,13 +273,14 @@ var ButtonHeaderMR = React.createClass({
 	},
 
 	show: function(key) {
-		if (this.state.isBlur) return;
 		switch(key) {
 			case 'assign':
+				if (this.state.isBlurAssign) return;
 				return this.setState({ isShow: !this.state.isShow, isShowStatus: false }, () => {
 					if (this.state.isShow) this.dropdown_assign.focus();
 				});
 			case 'status':
+				if (this.state.isBlurStatus) return;
 				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false }, () => {
 					if (this.state.isShowStatus) this.dropdown_status.focus();
 				});
@@ -292,10 +293,10 @@ var ButtonHeaderMR = React.createClass({
 			case 'assign':
 				this.setState({
 					isShow: false,
-					isBlur: true,
+					isBlurAssign: true,
 				}, () => {
 					setTimeout(() => {
-						self.setState({ isBlur: false });
+						self.setState({ isBlurAssign: false });
 					}, 100);
 				});
 				break;
@@ -303,10 +304,10 @@ var ButtonHeaderMR = React.createClass({
 			case 'status':
 				this.setState({
 					isShowStatus: false,
-					isBlur: true,
+					isBlurStatus: true,
 				}, () => {
 					setTimeout(() => {
-						self.setState({ isBlur: false });
+						self.setState({ isBlurStatus: false });
 					}, 100);
 				});
 				break;
