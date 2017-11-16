@@ -616,6 +616,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							onModalWith={this.onModalWith}
 							current_user={this.props.current_user}
 							updateStatusQuote={this.updateStatusQuote}
+							sendEmailLandlord={this.sendEmailLandlord}
 							viewQuote={(quote) => this.viewQuote(quote)}
 						/>
 					);
