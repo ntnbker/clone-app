@@ -323,7 +323,7 @@ var ButtonHeaderMR = React.createClass({
 		const {standBy, actionRequests, awaitingAction} = this.state;
 		return (
 			<div className="actions">
-				<button className="button-primary approval-note" onClick={(key) => this.props.viewItem('approveJob')}>
+				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
 					<span>
 						Approval Note
 					</span>
@@ -498,7 +498,7 @@ var ItemMaintenanceRequest = React.createClass({
 					</div>
 					{ maintenance.preapproved_note
 						? <div className="vailability pre-approved-note">
-								<p className="header">Pre-Approve Job Note: </p>
+								<p className="header">Approval Note: </p>
 								<p className="description">{maintenance.preapproved_note}</p>
 							</div>
 						: ''
