@@ -52,7 +52,7 @@ var ContentContact = React.createClass({
 						<li>
 							<a href={`tel:${assigned_trady.mobile}`}>
 								<i className="fa fa-phone" aria-hidden="true" />
-								{assigned_trady.mobile}
+								Trady - {assigned_trady.name}: {assigned_trady.mobile}
 							</a>
 						</li>
 					}

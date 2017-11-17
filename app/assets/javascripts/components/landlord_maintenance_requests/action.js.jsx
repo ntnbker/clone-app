@@ -152,7 +152,7 @@ var ModalApproveJob = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Approve Note</h4>
+								<h4 className="modal-title text-center">Approval Note</h4>
 							</div>
 							<div className="modal-body">
 								<div>

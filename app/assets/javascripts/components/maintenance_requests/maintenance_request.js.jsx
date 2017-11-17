@@ -323,9 +323,9 @@ var ButtonHeaderMR = React.createClass({
 		const {standBy, actionRequests, awaitingAction} = this.state;
 		return (
 			<div className="actions">
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
+				<button className="button-primary approval-note" onClick={(key) => this.props.viewItem('approveJob')}>
 					<span>
-						Approve Note
+						Approval Note
 					</span>
 				</button>
 				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>

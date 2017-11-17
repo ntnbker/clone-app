@@ -512,6 +512,13 @@ span.index {
         font-size: 16px;
       }
     }
+    .info .actions button.approval-note {
+      i {
+        font-size: 16px;
+      }
+      background-color: yellow;
+      color: cornflowerblue;
+    }
     .content {
       clear: both;
       margin-top: 20px;
