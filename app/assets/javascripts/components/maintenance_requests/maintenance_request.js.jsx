@@ -188,6 +188,10 @@ var ButtonHeaderMR = React.createClass({
         value: "Initiate Maintenance Request",
       },
       {
+      	title: "Send Work Order",
+      	value: "Send Work Order",
+      },
+      {
         title: "Awaiting Tradie`s Quote",
         value: "Awaiting Quote",
       },
@@ -202,6 +206,10 @@ var ButtonHeaderMR = React.createClass({
       {
         title: "New Invoice",
         value: "New Invoice",
+      },
+      {
+      	title: "Cancelled Work Order",
+      	value: "Cancelled Work Order",
       },
       // {
       //   title: "Pending Payment",
