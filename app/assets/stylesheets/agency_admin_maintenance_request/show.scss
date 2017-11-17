@@ -489,7 +489,7 @@ span.index {
         border: none;
         padding: 0;
         &:hover {
-          opacity: 0.7;
+          background-color: #deeaf3;
         }
       }
       .icon-user {
@@ -508,11 +508,6 @@ span.index {
       }
     }
     .info .actions button.edit-detail {
-      i {
-        font-size: 16px;
-      }
-    }
-    .info .actions button.approval-note {
       i {
         font-size: 16px;
       }
@@ -672,6 +667,9 @@ span.index {
           i {
             padding-right: 5px;
           }
+          &:hover {
+            background-color: #deeaf3;
+          }
         }
       }
       .info .name button {
@@ -747,6 +745,9 @@ span.index {
           &:first-child {
             margin-right: 20px;
           }
+          &:hover {
+            background-color: #deeaf3;
+          }
         }
         .btn-view {
           margin-right: 0px !important;
@@ -800,21 +801,33 @@ span.index {
         border: none;
         font-size: 14px;
         font-weight: 400;
+        &:hover {
+          background-color: #deeaf3;
+        }
       }
       .btn-accept {
         background-color: $color-green;
         border-color: $color-green;
         color: $color-white;
+        &:hover {
+          background-color: #619970;
+        }
       }
       .btn-decline {
         background-color: $color-red;
         border-color: $color-red;
         color: $color-white;
+        &:hover {
+          background-color: #c14343;
+        }
       }
       .btn-cancel {
         background-color: $color-gray;
         border-color: $color-gray;
         color: $color-white;
+        &:hover {
+          background-color: #deeaf3;
+        }
       }
     }
     .quote-request {
@@ -835,8 +848,8 @@ span.index {
       }
     }
     .btn-mark-as-paid {
-      color: $color-white !important;
-      background-color: #8ADEFF !important;
+      color: $color-white;
+      background-color: #8ADEFF;
       height: 35px;
       width: auto;
       padding: 0 20px;
@@ -847,6 +860,9 @@ span.index {
       border: none;
       margin-right: 10px;
       float: right;
+      &:hover {
+        background-color: #75bed6;
+      }
     }
   }
   .sidebar, .activity-mobile {

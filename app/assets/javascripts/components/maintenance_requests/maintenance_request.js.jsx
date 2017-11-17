@@ -203,10 +203,10 @@ var ButtonHeaderMR = React.createClass({
         title: "New Invoice",
         value: "New Invoice",
       },
-      {
-        title: "Pending Payment",
-        value: "Pending Payment",
-      }
+      // {
+      //   title: "Pending Payment",
+      //   value: "Pending Payment",
+      // }
     ];
 
     const awaitingAction = [
@@ -218,10 +218,10 @@ var ButtonHeaderMR = React.createClass({
         title: "Awaiting Owner Instruction",
         value: "Awaiting Owner Instruction",
       },
-      {
-        title: "Awaiting Tradie Initiation",
-        value: "Awaiting Tradie Initiation",
-      },
+      // {
+      //   title: "Awaiting Tradie Initiation",
+      //   value: "Awaiting Tradie Initiation",
+      // },
       {
         title: "Awaiting Quote Approval",
         value: "Quote Received Awaiting Approval",
