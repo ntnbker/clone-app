@@ -222,7 +222,7 @@ var ButtonQuoteRequestMessage = React.createClass({
 var ButtonPrint = React.createClass({
 	render: function() {
 		return (
-			<button className="btn btn-default btn-print" onClick={this.props.printQuote}>
+			<button className="btn btn-print" onClick={this.props.printQuote}>
 				Print
 			</button>
 		);
@@ -744,16 +744,16 @@ var DetailQuote = React.createClass({
 				<table  className="table">
 				<thead>
 					<tr>
-						<th>
+						<th className="description">
 							Description
 						</th>
-						<th>
+						<th className="price">
 							Pricing
 						</th>
-						<th className="text-right">
+						<th className="text-right rate">
 							Rate
 						</th>
-						<th className="text-right">
+						<th className="text-right amount">
 							Amount
 						</th>
 					</tr>
@@ -768,10 +768,10 @@ var DetailQuote = React.createClass({
 							}
 							return (
 								<tr key={key}>
-									<td>{item.item_description}</td>
-									<td>{item.pricing_type}</td>
-									<td className="text-right">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
-									<td className="text-right">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
+									<td className="description">{item.item_description}</td>
+									<td className="price">{item.pricing_type}</td>
+									<td className="text-right rate">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
+									<td className="text-right amount">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
 								</tr>
 							);
 						})
@@ -1021,7 +1021,7 @@ var ModalViewQuote = React.createClass({
 									</div>
 								</div>
 							</div>
-							<div className="modal-footer-quote print">
+							<div className="modal-footer-quote quotes">
 								{ !!self.current_user &&
 									<ActionQuote
 										quote={quote}
@@ -1260,7 +1260,7 @@ var ModalViewPhoto = React.createClass({
 						<div className="modal-body">
 							<Carousel gallery={gallery} fullWidth />
 						</div>
-						<div className="modal-footer-quote print">
+						<div className="modal-footer-quote quotes">
 							{ !!self.current_user &&
 								<ActionQuote
 									isModal="true"

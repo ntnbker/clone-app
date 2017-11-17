@@ -1190,9 +1190,11 @@ span.index {
       overflow: hidden;
     }
     .info-trady {
-      width: 50%;
+      width: calc(50% - 10px);
       float: left;
       margin-bottom: 15px;
+      margin-right: 10px;
+      word-wrap: break-word;
       overflow: hidden;
       p {
         margin-bottom: 0px;
@@ -1203,6 +1205,7 @@ span.index {
     .info-agency {
       width: 50%;
       overflow: hidden;
+      word-wrap: break-word;
       p {
         text-align: right;
         overflow: hidden;
@@ -1283,9 +1286,6 @@ span.index {
   .modal-custom .modal-footer-quote {
     overflow: hidden;
     text-align: left;
-    .actions-quote {
-      margin-left: 0px;
-    }
   }
   .slider-quote {
     position: relative;
@@ -1552,7 +1552,31 @@ span.index {
     .modal-custom .modal-body .input-custom {
       width: 100%;
     }
-
+    .show-quote .detail-quote .table tr {
+      word-wrap: break-word;
+      padding: 5px;
+      padding-left: 0px;
+      th {
+        font-size: 9px;
+      }
+      td {
+        font-size: 9px;
+      }
+      .description {
+        width: 40%;
+      }
+      .price {
+        width: 20%;
+      }
+      .rate {
+        width: 10%;
+        word-break: break-all;
+      }
+      .amount {
+        width: 30%;
+        word-break: break-all;
+      }
+    }
     .invoices .content p {
       @include justify-content(flex-start);
       margin-right: 0px;
