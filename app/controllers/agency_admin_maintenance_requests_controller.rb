@@ -37,7 +37,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")  
     @jobs_completed = MaintenanceRequest.find_maintenance_requests_total(current_user, "Jobs Completed")
     @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
-
+    @send_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Send Work Order")    
+    
     @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|

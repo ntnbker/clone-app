@@ -372,10 +372,14 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def preapproved
-    binding.pry
+    
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    
 
+    
     if !params[:preapproved_note].empty? 
+      maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
+      AgentLandlordApprovedWorkOrderEmailWorker.perform_async(maintenance_request.id)
       maintenance_request.update_attribute(:preapproved_note, params[:preapproved_note])
       respond_to do |format|
         format.json {render :json=>{:preapproved_note=>params[:preapproved_note]}}

@@ -394,6 +394,11 @@ var ListMaintenanceRequest = React.createClass({
           count: this.props.new_maintenance_requests_count,
         },
         {
+          title: "Send Work Order",
+          value: "Send Work Order",
+          count: this.props.send_work_order_count
+        },
+        {
           title: "Quote Requested",
           value: "Quote Requested",
           count: this.props.quote_requested_count
