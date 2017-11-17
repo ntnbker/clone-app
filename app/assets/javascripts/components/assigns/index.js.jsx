@@ -30,15 +30,15 @@ var AssignTrady = React.createClass({
 							</div>
 						</div>
 						<div className="actions-quote">
+              <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
+                View
+              </button>
 							{
 								(current_role.role == 'Agent' || current_role.role == "AgencyAdmin") &&
 									<button type="button" className="btn btn-decline" onClick={(modal) => this.props.onModalWith('confirmCancelTrady')}>
 										Cancel
 									</button>
 							}
-							<button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
-								View
-							</button>
 						</div>
 					</div>
 				</div>
