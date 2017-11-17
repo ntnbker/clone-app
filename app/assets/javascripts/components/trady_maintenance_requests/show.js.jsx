@@ -1356,7 +1356,7 @@ var TradyMaintenanceRequest = React.createClass({
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}
-						{ (quotes && quotes.length > 0) &&
+						{ false && (quotes && quotes.length > 0) &&
 								<Quotes
 									keyLandlord="trady"
 									quotes={quotes}

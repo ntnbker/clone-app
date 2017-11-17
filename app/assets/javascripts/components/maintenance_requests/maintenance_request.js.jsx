@@ -325,7 +325,7 @@ var ButtonHeaderMR = React.createClass({
 			<div className="actions">
 				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
 					<span>
-						Approve Job
+						Approve Note
 					</span>
 				</button>
 				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>

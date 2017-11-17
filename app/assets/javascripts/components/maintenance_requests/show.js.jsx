@@ -2440,7 +2440,7 @@ var MaintenanceRequest = React.createClass({
 				case 'approveJob':
 					return (
 						<ModalApproveJob
-							content="Pre-Approved Amount"
+							content="Pre-Approved Note"
 							close={this.isClose}
 							confirmText="Send"
 							approveJob={this.approveJob}
@@ -2618,7 +2618,7 @@ var MaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
-						{	(quotes && quotes.length > 0) &&
+						{	false && (quotes && quotes.length > 0) &&
 						 		<Quotes
 							 		quotes={this.state.quotes}
 							 		onModalWith={this.onModalWith}

@@ -823,7 +823,7 @@ var LandlordMaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
-						{ (quotes && quotes.length > 0) &&
+						{ false && (quotes && quotes.length > 0) &&
 								<Quotes
 									keyLandlord="landlord"
 									quotes={this.state.quotes}
