@@ -17,10 +17,10 @@ var DetailInvoice = React.createClass({
 						<th>
 							Hours
 						</th>
-						<th className="text-right">
+						<th className="text-right rate">
 							Rate
 						</th>
-						<th className="text-right">
+						<th className="text-right amount">
 							Amount
 						</th>
 					</tr>
@@ -38,8 +38,8 @@ var DetailInvoice = React.createClass({
 									<td>{item.item_description}</td>
 									<td>{item.pricing_type}</td>
 									<td>${item.amount.toFixed(2)}</td>
-									<td className="text-right">{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
-									<td className="text-right">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
+									<td className="text-right rate">{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
+									<td className="text-right amount">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
 								</tr>
 							);
 						})
