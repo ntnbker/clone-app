@@ -1896,7 +1896,7 @@ var MaintenanceRequest = React.createClass({
 					quote_requests: res.quote_requests,
 					notification: {
 						title: "Quote Already Sent",
-						content: "Quote Already Sent has confirmed.",
+						content: "Thank you for marking quote as 'Already Sent'. To keep the work flow automated please upload a photo of the quote, so you may quickly forward the quote to the landlord and keep the automated email reminders for the landlord going.",
 						bgClass: "bg-success",
 					},
 				});
