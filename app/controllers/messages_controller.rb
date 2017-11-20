@@ -158,7 +158,8 @@ class MessagesController < ApplicationController
 
   def create_quote_request_message
     @message = current_user.messages.new(message_params)
-    
+    quote_request = QuoteRequest.find_by(id:params[:message][:quote_request_id])
+    maintenance_request = quote_request.maintenance_request
     respond_to do |format|
       if @message.save
         if Conversation.quote_request_conversation(params[:message][:conversation_type],params[:message][:quote_request_id]).present?
@@ -171,7 +172,7 @@ class MessagesController < ApplicationController
             UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
           end 
         else 
-          @conversation = Conversation.create(conversation_type:params[:message][:conversation_type], quote_request_id:params[:message][:quote_request_id])
+          @conversation = Conversation.create(conversation_type:params[:message][:conversation_type], quote_request_id:params[:message][:quote_request_id], maintenance_request_id:maintenance_request.id)
           @message.update_attribute(:conversation_id,@conversation.id)
           UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
         end
@@ -186,7 +187,7 @@ class MessagesController < ApplicationController
     conversation_type = params[:message][:conversation_type]
     role = params[:message][:role]
     quote_request = QuoteRequest.find_by(id:params[:message][:quote_request_id])
-    maintenance_request = quote_request.maintenance_request
+    #maintenance_request = quote_request.maintenance_request
     if conversation_type == "QuoteRequest"
       if role == "AgencyAdmin" || role == "Agent"
         #email the trady 
