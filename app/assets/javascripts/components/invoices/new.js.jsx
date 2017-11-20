@@ -67,6 +67,10 @@ var FieldList = React.createClass({
     }
   },
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ errors: nextProps.errors || {} });
+  },
+
   addField: function() {
     var { SampleField, params, content, ...rest } = this.props;
     var tmpFields = this.state.Fields || {};
@@ -77,15 +81,22 @@ var FieldList = React.createClass({
 
   removeField: function(x, item) {
     const self = this;
-    const { Fields = {}} = this.state;
-    const field = Fields[x];
+    const { Fields = {}, errors } = this.state;
+    let handledError = errors && errors.errors || errors || {};
+    let field = Fields[x];
 
-    if (field) field.params = { ...field.params, remove: true };
+    if (field) {
+      field.params = { ...field.params, remove: true };
+      handledError[x] = null;
+    }
+    if (errors && errors.errors) {
+      errors.errors = handledError;
+    }
     Fields[x] = field;
 
+    const newErrors = errors.errors ? errors : handledError;
     const tmpFields = { ...Fields };
-
-    this.setState({ Fields: tmpFields });
+    this.setState({ Fields: tmpFields, errors: newErrors });
   },
 
   render: function(){
