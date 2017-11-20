@@ -78,18 +78,22 @@ header {
       @include flexbox;
       @include flex-direction(row);
       @include justify-content(space-between);
-
+      padding: 5px 0;
       .search {
+        @include flex(1);
+        justify-content: center;
         .form-search {
           height: 100%;
           margin-bottom: 0px;
           @include flexbox;
           @include align-items(center);
           position: relative;
+          margin: auto;
+          max-width: 300px;
         }
 
         .input-search {
-          height: 35px;
+          // height: 35px;
           padding: 0;
           margin: 0;
           border: none;
@@ -99,7 +103,8 @@ header {
           border-radius: 20px;
           padding-left: 40px;
           font-size: 12px;
-          width: 180px;
+          max-width: 350px;
+          width: 100%;
           line-height: 36px;
           &::placeholder {
             color: #fff;
@@ -169,8 +174,9 @@ header {
             font-size: 20px;
             padding-left: 10px;
             i {
-              display: inline-block;
+              display: flex;
               margin-left: 5px;
+              align-items: center;
             }
           }
         }
@@ -207,10 +213,12 @@ header {
       }
       .header-right {
         @include flexbox;
+        @include flex(1);
         @include align-items(center);
         @include justify-content(flex-end);
         -ms-flex-align: center;
-        margin-top: 22.5px;
+        margin: auto 0;
+        // margin-top: 22.5px;
 
         height: 100%;
       }
@@ -255,7 +263,8 @@ header {
       left: 0;
       background-color: rgba(1,2,3,0.3);
       .log_in {
-        display: block;
+        display: flex;
+        align-items: center;
         .desktop-menu-items {
           width: 300px;
           background-color: white;
@@ -299,7 +308,7 @@ header {
     }
 
     .menu-button {
-      margin-top: 18px;
+      // margin-top: 18px;
       float: right;
       height: 40px;
       font-size: 20px;
@@ -323,21 +332,23 @@ header {
           height: 35px;
         }
       }
-
       .fa-angle-down {
         font-size: 20px;
+        display: flex;
+        align-items: center;
       }
     }
 
     .logo {
-      display: inline-block;
-      padding-top: 10px;
-      height: 60px;
-      @include flex(1);
+      display: flex;
+      // padding-top: 10px;
+      // height: 60px;
+      align-items: center;
+      // @include flex(1);
 
       img {
         vertical-align: middle;
-        padding-bottom: 13px;
+        // padding-bottom: 13px;
         max-width: 55px;
         height: 55px;
       }
@@ -346,6 +357,7 @@ header {
         text-decoration: none;
         font-size: 20px;
         color: white;
+        margin: 0 5px;
       }
     }
 
@@ -469,7 +481,7 @@ header {
         @include flexbox;
       }
       .forhome .log_in .menu-button {
-        display: inline-block;
+        display: flex;
       }
     }
   }
@@ -487,14 +499,20 @@ header {
   header .header-expanded {
     .forhome {
       @include flexbox;
-      @include justify-content(center);
+      // @include justify-content(center);
+      .menu-btn {
+        margin-right: 7.5%;
+      }
     }
     .header-custom .header-right {
       margin-right: 70px;
-      margin-top: 0;
+      // margin-top: 0;
+    }
+    .header-custom .search .input-search {
+      width: 180px;
     }
     .menu-btn {
-      top: 28%;
+      top: 25%;
       margin: 0;
     }
   }
@@ -508,6 +526,7 @@ header {
         @include align-items(center);
         .header-right {
           margin-right: 0;
+          margin-top: 5px;
         }
         .search {
           .form-search {
@@ -515,18 +534,32 @@ header {
           }
         }
       }
-
       .full-header {
         .logo {
           margin-left: 0;
         }
       }
-
       .menu-btn {
+        top: 15%;
         right: 10px;
       }
       .forhome {
         width: 100%;
+        .menu-btn {
+          top: 27%;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  header {
+    .header-expanded {
+      .forhome {
+        .menu-btn {
+          margin-right: 0px;
+        }
       }
     }
   }
