@@ -42,7 +42,7 @@
           %span
             = "#{@quote.created_at.strftime('%B %d, %Y')}"
     %div.quote-items
-       
+
       %table
         %tr
           %th Description
@@ -50,22 +50,20 @@
           %th.text-right Rate
           %th.text-right Amount
         -@quote.quote_items.each do |f|
-        
+
           %tr
             %td
               ="#{f.item_description.capitalize}"
-            %td 
+            %td
               =f.pricing_type
 
             %td.text-right
               -if f.pricing_type == 'Hourly'
-                ="$#{f.amount.round(2)}" 
+                ="$#{f.amount.round(2)}"
             %td.text-right
               -if f.pricing_type == 'Fixed Cost'
                 = "$#{f.amount.round(2)}"
 
       %div.button-quote
-        %button{:type=>"button", :class=>"button button-primary"} 
-          =link_to "Back", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan)
-        %button{:type=>"button", :class=>"button button-primary green"} 
-          =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id)
+        =link_to "Back", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan), class: 'button button-primary'
+        =link_to "Send Quote", quote_email_path(maintenance_request_id:@maintenance_request.id,quote_id:@quote.id), class: 'button button-primary green'

@@ -228,5 +228,39 @@ class AgentMailer < ActionMailer::Base
     ### THEN YOU HAVE TO ADD THE CODE FOR THE SCHEDULER AND THEN RUN IT.
   end
 
+  def notify_agent_about_trady_quote_request_message(maintenance_request,quote_request)
+    @maintenance_request = maintenance_request
+    # @trady = @maintenance_request.trady
+
+    @property = @maintenance_request.property
+    if @maintenance_request.agent 
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end
+    @quote_request = quote_request
+    @trady = @quote_request.trady
+    mail(to:email, subject:"Quote comment from trady #{@quote_request.trady.capitalize_name} - #{@property.property_address}.")
+  end
+
+  def work_order_approved_by_landlord(maintenance_request)
+    @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
+    @trady = @maintenance_request.trady
+    if @maintenance_request.agent 
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end
+
+    # track user: @user
+    mail(to:email, subject:"Work order approved for - #{@property.property_address}.")
+  end
+
 end 
 

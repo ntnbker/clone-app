@@ -995,31 +995,33 @@ var MaintenanceRequest = React.createClass({
 		});
 
 		return {
-			modal: "",
-			quote: null,
-			invoice: null,
-			isModal: false,
-			statusItem: null,
-			assignEmail: null,
-			appointment: null,
-			comments: comments,
-			logs: this.props.logs,
-			invoice_pdf_file: null,
-			quotes: this.props.quotes,
-			status: this.props.status,
-			tradies: this.props.tradies,
-			gallery: this.props.gallery,
-			quoteComments: quoteComments,
-			landlord: this.props.landlord,
-			trady: this.props.hired_trady || this.props.assigned_trady || null,
-			invoices: this.props.invoices,
-			landlordComments: landlordComments,
-			invoice_pdf_files: this.props.pdf_files,
-			trady_conversation: this.props.trady_conversation,
-			maintenance_request: this.props.maintenance_request,
-			tenants_conversation: this.props.tenants_conversation,
-			landlords_conversation: this.props.landlords_conversation,
-			instruction: this.props.instruction ? this.props.instruction : {},
+			modal  	 	 		 			 		   : "",
+			quote  	 	 		 			 		   : null,
+			invoice  	 	 		 			 		 : null,
+			isModal  	 	 		 			 		 : false,
+			statusItem  	 	 		 			 : null,
+			assignEmail  	 	 		 			 : null,
+			appointment  	 	 		 			 : null,
+			quote_request 						 : null,
+			comments  	 	 		 			 	 : comments,
+			logs  	 	 		 						 : this.props.logs,
+			invoice_pdf_file  	 	 		 : null,
+			quotes  	 	 		 					 : this.props.quotes,
+			status  	 	 		 					 : this.props.status,
+			tradies  	 	 		 					 : this.props.tradies,
+			gallery  	 	 		 					 : this.props.gallery,
+			quoteComments  	 	 		 		 : quoteComments,
+			landlord  	 	 		 				 : this.props.landlord,
+			trady  	 	 		 						 : this.props.hired_trady || null,
+			invoices  	 	 		 				 : this.props.invoices,
+			landlordComments  	 	 		 : landlordComments,
+			invoice_pdf_files  	 	 		 : this.props.pdf_files,
+			quote_requests  	 	       : this.props.quote_requests,
+			trady_conversation  	 	   : this.props.trady_conversation,
+			maintenance_request  	 	   : this.props.maintenance_request,
+			tenants_conversation  	 	 : this.props.tenants_conversation,
+			landlords_conversation  	 : this.props.landlords_conversation,
+			instruction  	 						 : this.props.instruction || {},
 			tradies_with_quote_requests: this.props.tradies_with_quote_requests,
 			notification: {
 				title: "",
@@ -1059,6 +1061,25 @@ var MaintenanceRequest = React.createClass({
 			case 'viewQuoteMessage': {
 				this.setState({
 					quote: item
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewPhoto': {
+				this.setState({
+					quote_images: item,
+				});
+
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewQuoteRequestMessage':
+			case 'confirmQuoteAlreadySent': {
+				this.setState({
+					quote_request: item,
 				});
 
 				this.onModalWith(key);
@@ -1108,6 +1129,7 @@ var MaintenanceRequest = React.createClass({
 			}
 
 			case 'splitMR':
+			case 'approveJob':
 			case 'duplicateMR':
 			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest': {
@@ -1405,9 +1427,43 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageQuoteRequest: function(params, callback) {
+		const self = this;
+		params.message.role = this.props.current_user_role.role;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_request_messages',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				let quote_request = self.state.quote_request
+				quote_request.conversation = quote_request.conversation ? quote_request.conversation : {};
+				const messages = !!quote_request.conversation && quote_request.conversation.messages ? quote_request.conversation.messages : [];
+				messages.push(res);
+				quote_request.conversation.messages = messages;
+				self.setState({
+					quote_request: quote_request
+				});
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Message Trady",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	updateStatusQuote: function(params) {
 		const self = this;
-		$.ajax({
+		 $.ajax({
 			type: 'POST',
 			url: '/quote_status',
 			beforeSend: function(xhr) {
@@ -1544,6 +1600,46 @@ var MaintenanceRequest = React.createClass({
 				}
 			});
 		}
+	},
+
+	approveJob: function(params, callback) {
+		const self = this;
+		const { authenticity_token, maintenance_request } = this.props;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/pre_approved',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				maintenance_request.preapproved_note = res.preapproved_note;
+
+				self.setState({
+					maintenance_request,
+					notification: {
+						bgClass: "bg-success",
+						title: "Approve Jobs",
+						content: 'Approved',
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Approve Jobs",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	sendWorkOrder: function(params, callback) {
@@ -1774,6 +1870,91 @@ var MaintenanceRequest = React.createClass({
 				self.onModalWith('notification');
 			}
 		});
+	},
+
+	quoteAlreadySent: function() {
+		const self = this;
+		const { maintenance_request, quote_request } = this.state;
+		const { current_user_role } = this.props;
+
+		const params = {
+			trady_id: quote_request.trady_id,
+			quote_request_id: quote_request.id,
+			maintenance_request_id: maintenance_request.id,
+			role: current_user_role.role === 'Trady' ? 'Trady' : 'Agent' ,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/quote_sent',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Quote Already Sent",
+						content: "Thank you for marking quote as 'Already Sent'. To keep the work flow automated please upload a photo of the quote, so you may quickly forward the quote to the landlord and keep the automated email reminders for the landlord going.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Quote Already Sent",
+					content: "Quote Already Sent didn't confirm." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	uploadImage: function(images, callback) {
+		if (images.length == 0) {
+		  return;
+		}
+
+		const { quote_request } 		= this.state;
+		const { current_user_role } = this.props;
+
+		const image = images[0];
+
+		const data = {
+			picture: {
+				image: JSON.stringify(image),
+				quote_request_id 			: quote_request.id,
+				trady_id 							: quote_request.trady_id,
+				maintenance_request_id: quote_request.maintenance_request_id,
+				role 									: current_user_role.role === 'Trady' ? 'Trady' : 'Agent',
+			},
+		}
+
+		const self = this;
+		$.ajax({
+		  type: 'POST',
+		  url: '/quote_image',
+		  beforeSend: function (xhr) {
+		    xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+		  },
+		  data: data,
+		  success: function (res) {
+		  	callback('You Has Successfully Upload');
+        if (res && res.quote_requests) {
+        	self.setState({ quote_requests: res.quote_requests });
+        }
+		  },
+		  error: function (err) {
+
+		  }
+		});
+	},
+
+	chooseQuoteRequest: function(quote_request) {
+		this.setState({ quote_request });
 	},
 
 	markAsPaid: function(invoice, uploaded = false) {
@@ -2021,6 +2202,17 @@ var MaintenanceRequest = React.createClass({
 					)
 				}
 
+				case 'viewQuoteRequestMessage': {
+					return (
+						<ModalViewQuoteRequestMessage
+							close={this.isClose}
+							quote_request={this.state.quote_request}
+							current_user={this.props.current_user}
+							sendMessageQuoteRequest={this.sendMessageQuoteRequest}
+						/>
+					)
+				}
+
 				case 'requestQuote': {
 					return (
 						<ModalRequestModal
@@ -2216,6 +2408,46 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'confirmQuoteAlreadySent':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={this.quoteAlreadySent}
+							title="Quote Already Sent"
+							content="Are you sure that the tradie has already submitted a quote?"
+						/>
+					);
+
+				case 'viewPhoto':
+					return (
+						<ModalViewPhoto
+							title="Quote Photo"
+							close={this.isClose}
+							quote={this.state.quote_request}
+							quotes={this.state.quote_requests}
+							agency={this.props.agency}
+							property={this.props.property}
+							landlord={this.state.landlord}
+							onModalWith={this.onModalWith}
+							gallery={this.state.quote_images}
+							updateStatusQuote={this.updateStatusQuote}
+							viewQuote={(quote) => this.viewQuote(quote)}
+							sendEmailLandlord={this.sendEmailLandlord}
+							current_user={this.props.current_user}
+						/>
+					)
+
+				case 'approveJob':
+					return (
+						<ModalApproveJob
+							content="Pre-Approved Note"
+							close={this.isClose}
+							confirmText="Send"
+							approveJob={this.approveJob}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					)
+
 				default:
 					return null;
 			}
@@ -2242,6 +2474,16 @@ var MaintenanceRequest = React.createClass({
 
 		if(quote) {
 			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
+	openQuoteRequestMesssage: function(quote_request_id) {
+		const { quote_requests } = this.state;
+
+		const quote_request = quote_requests.filter(item => item.id == quote_request_id)[0];
+
+		if(quote_request) {
+			this.viewItem('viewQuoteRequestMessage', quote_request);
 		}
 	},
 
@@ -2304,6 +2546,10 @@ var MaintenanceRequest = React.createClass({
 				self.openQuoteMesssage(json.quote_message_id);
 				break;
 
+			case 'open_quote_request_message':
+				self.openQuoteRequestMesssage(json.quote_request_message_id);
+				break;
+
 			default:
 				break;
 		}
@@ -2329,7 +2575,7 @@ var MaintenanceRequest = React.createClass({
 
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
-		const {invoice_pdf_files, trady} = this.state;
+		const {invoice_pdf_files, trady, quote_requests} = this.state;
 
 		return (
 			<div className="summary-container-index" id="summary-container-index">
@@ -2356,7 +2602,23 @@ var MaintenanceRequest = React.createClass({
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{	(quotes && quotes.length > 0) &&
+						{
+							quote_requests && quote_requests.length
+							? <QuoteRequests
+									quote_requests={quote_requests}
+									onModalWith={this.onModalWith}
+									landlord={this.state.landlord}
+									current_user={this.props.current_user}
+									updateStatusQuote={this.updateStatusQuote}
+									sendEmailLandlord={this.sendEmailLandlord}
+									uploadImage={this.uploadImage}
+									chooseQuoteRequest={this.chooseQuoteRequest}
+									viewQuote={(key, item) => this.viewItem(key, item)}
+									current_user_show_quote_message={this.props.current_user_show_quote_message}
+								/>
+							: ''
+						}
+						{	false && (quotes && quotes.length > 0) &&
 						 		<Quotes
 							 		quotes={this.state.quotes}
 							 		onModalWith={this.onModalWith}

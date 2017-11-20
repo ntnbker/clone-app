@@ -63,13 +63,14 @@ Rails.application.routes.draw do
     post "update_maintenance_request_status"=> "maintenance_requests#update_status"
     post "duplicate_maintenance_request"=> "maintenance_requests#duplicate"
     post "split_maintenance_request" => "maintenance_requests#split"
+    post "pre_approved"=> "maintenance_requests#preapproved"
   ###################################################
   ##########MESSAGING RESOURCES/ROUTES###############
   ###################################################
     resources :messages
     resources :conversations
     post "quote_messages"=>"messages#create_quote_messages", :as =>:quote_messages
-  
+    post "quote_request_messages"=> "messages#create_quote_request_message", :as=>:quote_request_messages
   
   ###################################################
   ##########INVOICE RESOURCES/ROUTES#################
@@ -148,7 +149,7 @@ Rails.application.routes.draw do
     post "request_quote" => "quotes#landlord_requests_quote", :as => :request_quote 
     post "picks_quote" => "quotes#landlord_decides_quote", :as => :landlord_decides_quote
     post "forward_quote"=> "quotes#forward_quote", :as => :forward_quote
-
+    post "quote_sent" => "quotes#quote_already_sent", :as => :quote_sent
   ###################################################
   ########## QUOTE OPTIONS RESOURCES/ROUTES######
   ###################################################
@@ -159,6 +160,10 @@ Rails.application.routes.draw do
     resources :uploaded_quotes, only:[:new, :create, :show, :edit, :update]
     post "send_pdf_quote" => "uploaded_quotes#send_quote", :as => :send_pdf_quote
     get "uploaded_quote_sent" => "uploaded_quotes#uploaded_quote_sent", :as => :uploaded_quote_sent
+  ###################################################
+  ########## QUOTES IMAGES ######################
+  ###################################################
+    post "quote_image"=> "quote_images#create", :as=> :upload_quote_image
   ###################################################################
   ##########TRADY AND TENANT APPOINTMENTS RESOURCES/ROUTES###########
   ###################################################################

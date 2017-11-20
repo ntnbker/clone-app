@@ -224,6 +224,14 @@ class QuotesController < ApplicationController
       else  
 
       end
+
+      if @quote.quote_request_id.blank?
+        @quote.update_attribute(:quote_request_id, quote_request.id)
+      else  
+
+      end
+
+
     end 
 
     if @quote.delivery_status == false
@@ -271,9 +279,22 @@ class QuotesController < ApplicationController
     @maintenance_request.action_status.update_columns(agent_status:"Quote Received Awaiting Approval", action_category: "Awaiting Action")
     
     Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been forwarded to landlord by: ", name:name)
-    respond_to do |format|
-      format.json {render json: @quote}
-    end 
+    
+
+
+    # respond_to do |format|
+    #   format.json {render json: @quote}
+    # end
+
+
+
+    if current_user.logged_in_as("AgencyAdmin")
+      flash[:success] = "An email has been sent to the landlord informing them of the quote. Thank you!"
+      redirect_to agency_admin_maintenance_request_path(@maintenance_request)
+    elsif current_user.logged_in_as("Agent")
+      flash[:success] = "An email has been sent to the landlord informing them of the quote. Thank you!"
+      redirect_to agent_maintenance_request_path(@maintenance_request)
+    end  
   end
 
   def check_landlord
@@ -296,8 +317,10 @@ class QuotesController < ApplicationController
   end
 
   def landlord_decides_quote
+    
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     quotes = maintenance_request.quotes.where(:delivery_status=>true)
+    
     landlord = maintenance_request.property.landlord
     # @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
     if params[:status] == "Approved" 
@@ -312,11 +335,11 @@ class QuotesController < ApplicationController
           quote.update_attribute(:status, params[:status])
           NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
-          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been approved by - Landlord: ", name:landlord.name.capitalize)
+          Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been approved by - Landlord: ", name:landlord.name.capitalize)
         else
           quote.update_attribute(:status, "Declined")
-          trady = quote.trady
-          Log.create(maintenance_request_id:@maintenance_request.id, action:"Quote has been declined by - Landlord: ", name:landlord.name.capitalize)
+          #trady = quote.trady
+          Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been declined by - Landlord: ", name:landlord.name.capitalize)
 
           #EMAIL AGENT QUOTE DECLINED
           # TradyQuoteDeclinedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
@@ -324,13 +347,37 @@ class QuotesController < ApplicationController
       end
     
       
-    end 
-    q = quotes.as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
-    respond_to do |format|
-      format.json {render :json => q}
-      
     end
+    flash[:success] = "Thank you for accepting a quote. The agent and tradie will be notified so the work can start."
+    redirect_to landlord_maintenance_request_path(maintenance_request) 
+    # quote_requests = maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
+    # respond_to do |format|
+    #   format.json {render :json=>{quote_requests:quote_requests}}
+      
+    # end
     
+  end
+
+
+  def quote_already_sent
+    
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+
+    @maintenance_request.action_status.update_columns(agent_status:"Quote Received",trady_status:"Awaiting Quote Approvals")
+    quote_request = QuoteRequest.find_by(id:params[:quote_request_id])
+    quote_request.update_attribute(:quote_sent, true)
+
+
+    if params[:role] == "Agent"
+      @quote_requests = @maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}, :conversation=>{:include=>:messages}}} })
+    elsif params[:role] == "Trady"
+      @quote_requests = QuoteRequest.where(trady_id:params[:trady_id], :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}, :conversation=>{:include=>:messages}}} })
+    end 
+
+
+    respond_to do |format|
+      format.json{ render :json=>{quote_requests:@quote_requests}}
+    end 
   end
 
 

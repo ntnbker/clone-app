@@ -53,6 +53,38 @@ body::-webkit-scrollbar-thumb {
   color: red;
   text-align: center;
 }
+.item-quote-request {
+  border: 1px solid #e0e3e6;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  .quotes .index {
+    border: 1px solid #ff5a5f;
+    background-color: #ff5a5f;
+  }
+}
+span.index {
+  display: inline-block;
+  border: 1px solid $color-green;
+  background-color: $color-green;
+  border-radius: 3px;
+  color: $color-white;
+  margin-right: 10px;
+  margin-left: 10px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  &.quote {
+    margin-top: 43px;
+    float: left;
+  }
+  &.circle {
+    border-radius: 50%;
+  }
+  &.index-invoice {
+    border: 1px solid #8ADEFF;
+    background-color: #8ADEFF;
+  }
+}
 #splitMRForm {
   .alert {
     margin: 5px;
@@ -212,7 +244,6 @@ body::-webkit-scrollbar-thumb {
       position: relative;
       padding: 15px;
       overflow: hidden;
-      padding-bottom: 0;
       text-align: center;
       p:first-child {
         text-transform: initial;
@@ -391,13 +422,13 @@ body::-webkit-scrollbar-thumb {
     float: right;
   }
   .post {
-    overflow: hidden;
+    // overflow: hidden;
     .info-title {
       float: left;
       width: 50%;
     }
     .info {
-      overflow: hidden;
+      // overflow: hidden;
       .title {
         overflow: hidden;
         color: $color-grey-dark;
@@ -457,6 +488,9 @@ body::-webkit-scrollbar-thumb {
         font-weight: 400;
         border: none;
         padding: 0;
+        &:hover {
+          background-color: #deeaf3;
+        }
       }
       .icon-user {
         display: inline-block;
@@ -467,6 +501,10 @@ body::-webkit-scrollbar-thumb {
         background-repeat: no-repeat;
         margin-bottom: -3px;
         background-image: url(/assets/icon-user.png);
+      }
+      .assign {
+        float: right;
+        position: relative;
       }
     }
     .info .actions button.edit-detail {
@@ -544,10 +582,18 @@ body::-webkit-scrollbar-thumb {
           margin-top: 0px;
           margin-bottom: 15px;
         }
+        &.pre-approved-note {
+          background-color: #fcf8e3;
+          color: #8a6d3b;
+        }
       }
     }
   }
   .quotes {
+    &.assign .item-quote .user {
+      width: calc(100% - 47px);
+      float: right;
+    }
     p {
       color: $color-grey-dark;
       font-size: 14px;
@@ -560,23 +606,22 @@ body::-webkit-scrollbar-thumb {
     }
     .item-quote {
       overflow: hidden;
-      border-bottom: 1px solid $color-grey;
       &:last-child {
-        border-bottom: none;
+        // border-bottom: none;
       }
       .user {
         overflow: hidden;
+        width: 100%;
         img {
           float: left;
           display: block;
-          margin-top: 10px;
-          width: 50px;
-          height: 50px;
+          width: 60px;
+          height: 60px;
         }
         .icon-user {
           float: left;
           display: block;
-          margin: 20px 0px 0 0px;
+          margin: 25px 0px 20px 0px;
           i {
             font-size: 40px;
             color: #849aaa;
@@ -584,28 +629,56 @@ body::-webkit-scrollbar-thumb {
         }
       }
       .info {
-        margin-left: 10px;
+        margin: 20px 0px 20px 10px;
         float: left;
-        margin-top: 20px;
         .name {
           color: $color-gray;
           font-size: 15px;
           margin-bottom: 5px;
           font-weight: 500;
+          .modal-footer {
+            button {
+              float: initial;
+            }
+          }
         }
         .description {
           color: $color-grey-dark;
           font-size: 12px;
-          margin-bottom: 20px;
           font-weight: 500;
         }
       }
+      .quote-request-button {
+        float: right;
+        margin-right: 10px;
+        margin-top: 40px;
+        button {
+          margin-right: 20px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 250px;
+          padding: 0 10px;
+          border: none;
+          background-color: #f4f8fb;
+          color: #849aaa;
+          font-size: 14px;
+          font-weight: 400;
+          i {
+            padding-right: 5px;
+          }
+          &:hover {
+            background-color: #deeaf3;
+          }
+        }
+      }
       .info .name button {
-        height: 27px;
+        height: 33px;
+        float: right;
+        margin: 20px 25px 0px 10px;
         display: inline-block;
-        margin-left: 10px;
         font-weight: 500;
-        font-size: 11px;
+        font-size: 14px;
         text-align: center;
         background-color: $color-white;
         padding: 0 10px;
@@ -623,6 +696,10 @@ body::-webkit-scrollbar-thumb {
         }
         &.Cancelled {
 
+        }
+        &.status {
+          float: none;
+          margin-top: 0px;
         }
       }
       .actions {
@@ -668,6 +745,9 @@ body::-webkit-scrollbar-thumb {
           &:first-child {
             margin-right: 20px;
           }
+          &:hover {
+            background-color: #deeaf3;
+          }
         }
         .btn-view {
           margin-right: 0px !important;
@@ -708,31 +788,67 @@ body::-webkit-scrollbar-thumb {
       margin-left: 20px;
       float: right;
       margin-bottom: 20px;
+      width: calc(100% - 22px);
+      padding: 10px;
+      padding-top: 0px;
       button {
         padding: 0 20px;
         height: 33px;
-        margin-right: 15px;
-        margin-bottom: 5px;
+        margin: 5px 15px 5px 0px;
         font-size: 14px;
+        background-color: #f4f8fb;
+        color: #849aaa;
+        border: none;
+        font-size: 14px;
+        font-weight: 400;
+        &:hover {
+          background-color: #deeaf3;
+        }
       }
       .btn-accept {
         background-color: $color-green;
         border-color: $color-green;
         color: $color-white;
+        &:hover {
+          background-color: #619970;
+        }
       }
       .btn-decline {
         background-color: $color-red;
         border-color: $color-red;
         color: $color-white;
+        &:hover {
+          background-color: #c14343;
+        }
       }
       .btn-cancel {
         background-color: $color-gray;
         border-color: $color-gray;
         color: $color-white;
+        &:hover {
+          background-color: #deeaf3;
+        }
       }
     }
+    .quote-request {
+      width: 90%;
+      float: right;
+      margin-right: 10px;
+      .item-quote {
+        width: 100%;
+        float: right;
+        border: 1px solid rgba(0, 0, 0, 0.3) !important;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
 
+      .actions-quote {
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+    }
     .btn-mark-as-paid {
+      color: $color-white;
       background-color: #8ADEFF;
       height: 35px;
       width: auto;
@@ -740,10 +856,13 @@ body::-webkit-scrollbar-thumb {
       line-height: 35px;
       font-weight: 400;
       font-size: 14px;
-      color: $color-white;
       margin-left: 0px;
       border: none;
       margin-right: 10px;
+      float: right;
+      &:hover {
+        background-color: #75bed6;
+      }
     }
   }
   .sidebar, .activity-mobile {
@@ -1092,9 +1211,11 @@ body::-webkit-scrollbar-thumb {
       overflow: hidden;
     }
     .info-trady {
-      width: 50%;
+      width: calc(50% - 10px);
       float: left;
       margin-bottom: 15px;
+      margin-right: 10px;
+      word-wrap: break-word;
       overflow: hidden;
       p {
         margin-bottom: 0px;
@@ -1105,6 +1226,7 @@ body::-webkit-scrollbar-thumb {
     .info-agency {
       width: 50%;
       overflow: hidden;
+      word-wrap: break-word;
       p {
         text-align: right;
         overflow: hidden;
@@ -1142,17 +1264,21 @@ body::-webkit-scrollbar-thumb {
     overflow: hidden;
     clear: both;
     margin-left: 20px;
-    float: right;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: right;
     button {
       padding: 0 20px;
       height: 33px;
       margin-right: 15px;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
       font-size: 14px;
       color: $color-black;
       text-transform: capitalize !important;
+      &.btn-trans {
+        background-color: #f4f8fb;
+        color: #849aaa;
+        border: none;
+      }
     }
     .btn-accept {
       background-color: $color-green;
@@ -1181,9 +1307,6 @@ body::-webkit-scrollbar-thumb {
   .modal-custom .modal-footer-quote {
     overflow: hidden;
     text-align: left;
-    .actions-quote {
-      margin-left: 0px;
-    }
   }
   .slider-quote {
     position: relative;
@@ -1231,6 +1354,7 @@ body::-webkit-scrollbar-thumb {
     width: 220px;
     border-radius: 5px;
     color: #849aaa;
+    outline: none;
     &:after {
       bottom: 100%;
       left: 6%;
@@ -1287,6 +1411,7 @@ body::-webkit-scrollbar-thumb {
     overflow: auto;
     border-radius: 5px;
     color: #849aaa;
+    outline: none;
     &::-webkit-scrollbar-track {
       -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
       border-radius: 15px;
@@ -1385,7 +1510,7 @@ body::-webkit-scrollbar-thumb {
       .info .actions {
         width: 95%;
         float: left;
-        overflow: hidden;
+        // overflow: hidden;
         margin-top: 10px;
         margin-bottom: 5px;
         button {
@@ -1448,7 +1573,32 @@ body::-webkit-scrollbar-thumb {
     .modal-custom .modal-body .input-custom {
       width: 100%;
     }
-
+    .show-quote .detail-quote .table tr {
+      word-wrap: break-word;
+      padding: 5px;
+      padding-left: 0px;
+      th {
+        font-size: 9px;
+        padding: 3px;
+      }
+      td {
+        font-size: 9px;
+      }
+      .description {
+        width: 40%;
+      }
+      .price {
+        width: 20%;
+      }
+      .rate {
+        width: 10%;
+        word-break: break-all;
+      }
+      .amount {
+        width: 30%;
+        word-break: break-all;
+      }
+    }
     .invoices .content p {
       @include justify-content(flex-start);
       margin-right: 0px;
@@ -1565,7 +1715,7 @@ body::-webkit-scrollbar-thumb {
       .info .actions {
         width: 100%;
         float: left;
-        overflow: hidden;
+        // overflow: hidden;
         margin-top: 20px;
         margin-bottom: 10px;
         button {
@@ -1639,6 +1789,15 @@ body::-webkit-scrollbar-thumb {
       display: block;
     }
   }
+  @media (min-width: 720px) and (max-width: 900px) {
+    .dropdown-assign {
+      right: 6px;
+      &:after {
+        right: 6%;
+        left: unset;
+      }
+    }
+  }
   @media (min-width: 769px) and (max-width: 1024px) {
     .main-summary {
       margin: auto 50px;
@@ -1657,13 +1816,13 @@ body::-webkit-scrollbar-thumb {
       }
       .info .actions {
         width: 100%;
-        overflow: hidden;
+        // overflow: hidden;
         float: left;
         margin-top: 25px;
         margin-bottom: 15px;
         button {
           height: 40px;
-          padding: 0 10px;
+          // padding: 0 10px;
         }
       }
       .info {
@@ -1919,8 +2078,83 @@ body::-webkit-scrollbar-thumb {
 .m-b-n {
   margin-bottom: 0;
 }
-@media (max-width: 400px) {
+@media (max-width: 820px) {
+  .summary-container-index {
+    .quotes {
+      .actions-quote {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        margin-left: 25%;
+        margin-bottom: 10px;
+        float: none;
+        padding: 0px;
+        button {
+          align-items: center;
+          padding: 0px;
+          margin: 0px 0px 10px 0px;
+        }
+      }
+      .btn-mark-as-paid {
+        margin-top: 20px;
+        margin-left: calc(50% - 125px);
+        display: flex;
+        flex-direction: column;
+        float: initial;
+      }
+    }
+    .item-quote .user .quote-request-button {
+      margin-top: 110px;
+      margin-left: 25%;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      float: initial;
+      button {
+        margin-right: 0px;
+        margin-bottom: 20px;
+        padding: 0px;
+        max-width: 400px;
+      }
+    }
+  }
+}
+@media (max-width: 550px) {
   .modal-custom .modal-footer .cancel {
     margin-top: 10px;
+  }
+  .summary-container-index {
+    .quotes {
+      .actions-quote {
+        width: 70%;
+        margin-left: 15%;
+      }
+    }
+    .item-quote .user .quote-request-button {
+      margin-top: 110px;
+      margin-left: 15%;
+      width: 70%;
+      display: flex;
+      flex-direction: column;
+      float: initial;
+      button {
+        margin-right: 0px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
+@media (max-width: 350px) {
+  .summary-container-index {
+    .quotes {
+      .actions-quote {
+        width: 90%;
+        margin-left: 5%;
+      }
+    }
+    .item-quote .user .quote-request-button {
+      width: 90%;
+      margin-left: 5%;
+    }
   }
 }

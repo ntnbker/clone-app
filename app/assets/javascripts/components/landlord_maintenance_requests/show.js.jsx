@@ -110,7 +110,9 @@ var ModalNotification = React.createClass({
 
 var LandlordMaintenanceRequest = React.createClass({
 	getInitialState: function() {
-		const {quotes, tradies, landlord, appointments, maintenance_request, tenants_conversation, landlords_conversation} = this.props;
+		const {
+			quotes, tradies, landlord, appointments, maintenance_request, tenants_conversation, landlords_conversation, quote_requests
+		} = this.props;
 		const comments = [];
 		appointments.map((appointment, key) => {
 			if(appointment.comments.length > 0) {
@@ -130,6 +132,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			comments: comments,
 			appointmentUpdate: null,
 			appointments: appointments,
+			quote_requests: quote_requests,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
@@ -173,7 +176,17 @@ var LandlordMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'approveJob':
 			case 'createAppointment': {
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'viewPhoto': {
+				this.setState({
+					quote_images: item,
+				});
+
 				this.onModalWith(key);
 				break;
 			}
@@ -260,7 +273,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function(res){
 				self.setState({notification: {
 					title: "Request Another Quote",
-					content: "Send email is successfully.",
+					content: "You have successfully sent an email to the agent requesting another quote for the maintenance request. Thank you for your time.",
 					bgClass: "bg-success",
 				}});
 				self.onModalWith('notification');
@@ -430,6 +443,46 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
+	approveJob: function(params, callback) {
+		const self = this;
+		const { authenticity_token, maintenance_request } = this.props;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/pre_approved',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				maintenance_request.preapproved_note = res.preapproved_note;
+
+				self.setState({
+					maintenance_request,
+					notification: {
+						bgClass: "bg-success",
+						title: "Approve Jobs",
+						content: 'Approved',
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Approve Jobs",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	decline: function(appointment) {
 		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
@@ -509,6 +562,10 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
+	chooseQuoteRequest: function(quote_request) {
+		this.setState({ quote_request });
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -551,7 +608,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						<ModalViewQuote
 							close={this.isClose}
 							quote={this.state.quote}
-							keyLandlord={"landlord"}
+							keyLandlord="landlord"
 							quotes={this.state.quotes}
 							agency={this.props.agency}
 							property={this.props.property}
@@ -559,6 +616,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							onModalWith={this.onModalWith}
 							current_user={this.props.current_user}
 							updateStatusQuote={this.updateStatusQuote}
+							sendEmailLandlord={this.sendEmailLandlord}
 							viewQuote={(quote) => this.viewQuote(quote)}
 						/>
 					);
@@ -621,6 +679,36 @@ var LandlordMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'viewPhoto':
+					return (
+						<ModalViewPhoto
+							title="Quote Photo"
+							keyLandlord="landlord"
+							close={this.isClose}
+							quote={this.state.quote_request}
+							quotes={this.state.quote_requests}
+							agency={this.props.agency}
+							property={this.props.property}
+							landlord={this.state.landlord}
+							onModalWith={this.onModalWith}
+							gallery={this.state.quote_images}
+							updateStatusQuote={this.updateStatusQuote}
+							viewQuote={(quote) => this.viewQuote(quote)}
+							sendEmailLandlord={this.sendEmailLandlord}
+							current_user={this.props.current_user}
+						/>
+					)
+
+				case 'approveJob':
+					return (
+						<ModalApproveJob
+							content="Pre-Approved Amount"
+							close={this.isClose}
+							confirmText="Send"
+							approveJob={this.approveJob}
+							maintenance_request={this.state.maintenance_request}
+						/>
+					)
 				default:
 					return null;
 			}
@@ -709,7 +797,7 @@ var LandlordMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
-		const {appointments} = this.state;
+		const {appointments, quote_requests, quotes} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary">
@@ -719,7 +807,23 @@ var LandlordMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 						/>
-						{ (this.props.quotes && this.props.quotes.length > 0) &&
+						{
+							quote_requests && quote_requests.length
+							? <QuoteRequests
+									keyLandlord="landlord"
+									quote_requests={quote_requests}
+									onModalWith={this.onModalWith}
+									landlord={this.state.landlord}
+									current_user={this.props.current_user}
+									updateStatusQuote={this.updateStatusQuote}
+									sendEmailLandlord={this.sendEmailLandlord}
+									uploadImage={this.uploadImage}
+									chooseQuoteRequest={this.chooseQuoteRequest}
+									viewQuote={(key, item) => this.viewItem(key, item)}
+								/>
+							: ''
+						}
+						{ false && (quotes && quotes.length > 0) &&
 								<Quotes
 									keyLandlord="landlord"
 									quotes={this.state.quotes}

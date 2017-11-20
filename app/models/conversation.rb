@@ -4,13 +4,18 @@ class Conversation < ApplicationRecord
   has_many :messages
   belongs_to :maintenance_request
   belongs_to :quote
+  belongs_to :quote_request
 
   def self.type_of_conversation(type, maintenance_request_id)
-  Conversation.where(:conversation_type =>type,:maintenance_request_id=>maintenance_request_id)  
+    Conversation.where(:conversation_type =>type,:maintenance_request_id=>maintenance_request_id)  
   end
 
   def self.quote_conversation(type, quote_id)
-  Conversation.where(:conversation_type =>type,:quote_id=>quote_id)  
+    Conversation.where(:conversation_type =>type,:quote_id=>quote_id)  
+  end
+
+  def self.quote_request_conversation(type, quote_request_id)
+    Conversation.where(:conversation_type =>type,:quote_request_id=>quote_request_id)  
   end
 
 

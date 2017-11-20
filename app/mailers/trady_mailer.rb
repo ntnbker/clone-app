@@ -190,6 +190,21 @@ class TradyMailer < ActionMailer::Base
     
     mail(to:@trady.email, subject:"Reminder Awaiting Invoice - #{@property.property_address}")
   end
+
+  def notify_trady_about_quote_request_message(maintenance_request,quote_request)
+    @maintenance_request = maintenance_request
+    @quote_request = quote_request
+    @trady = @quote_request.trady
+    @property = @maintenance_request.property
+    if @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+      @agent = @maintenance_request.agent
+    elsif @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+      @agent = @maintenance_request.agency_admin
+    end 
+    mail(to:@trady.email, subject:"Question about quote from #{@agency.capitalize_company_name} - #{@property.property_address}")
+  end
   
 end 
 

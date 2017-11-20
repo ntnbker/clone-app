@@ -9,7 +9,7 @@ var AssignTrady = React.createClass({
     const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 
 		return (
-			<div className="quotes invoices m-t-xl" id="invoices">
+			<div className="quotes invoices m-t-xl assign" id="invoices">
 				<p>
 					{current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"}
 				</p>
@@ -30,15 +30,15 @@ var AssignTrady = React.createClass({
 							</div>
 						</div>
 						<div className="actions-quote">
+              <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
+                View
+              </button>
 							{
 								(current_role.role == 'Agent' || current_role.role == "AgencyAdmin") &&
 									<button type="button" className="btn btn-decline" onClick={(modal) => this.props.onModalWith('confirmCancelTrady')}>
 										Cancel
 									</button>
 							}
-							<button type="button" className="btn btn-default btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
-								View
-							</button>
 						</div>
 					</div>
 				</div>

@@ -81,7 +81,9 @@ var Carousel = React.createClass({
 	render: function() {
 		var styles = {
 			left: this.state.stx,
-			width: this.state.stlen * this.state.stwidth,
+			width: !this.props.fullWidth
+							? this.state.stlen * this.state.stwidth
+							: '100%',
 		};
 		const temp = this;
 		var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
@@ -95,7 +97,7 @@ var Carousel = React.createClass({
 								<img
 									key={index}
 									src={img}
-									style={{width: subWidth}}
+									style={{width: temp.props.fullWidth ? '100%': subWidth}}
 									className="swiper-slide slide-image"
 								/>
 							);
@@ -186,6 +188,10 @@ var ButtonHeaderMR = React.createClass({
         value: "Initiate Maintenance Request",
       },
       {
+      	title: "Send Work Order",
+      	value: "Send Work Order",
+      },
+      {
         title: "Awaiting Tradie`s Quote",
         value: "Awaiting Quote",
       },
@@ -202,9 +208,13 @@ var ButtonHeaderMR = React.createClass({
         value: "New Invoice",
       },
       {
-        title: "Pending Payment",
-        value: "Pending Payment",
-      }
+      	title: "Cancelled Work Order",
+      	value: "Cancelled Work Order",
+      },
+      // {
+      //   title: "Pending Payment",
+      //   value: "Pending Payment",
+      // }
     ];
 
     const awaitingAction = [
@@ -216,10 +226,10 @@ var ButtonHeaderMR = React.createClass({
         title: "Awaiting Owner Instruction",
         value: "Awaiting Owner Instruction",
       },
-      {
-        title: "Awaiting Tradie Initiation",
-        value: "Awaiting Tradie Initiation",
-      },
+      // {
+      //   title: "Awaiting Tradie Initiation",
+      //   value: "Awaiting Tradie Initiation",
+      // },
       {
         title: "Awaiting Quote Approval",
         value: "Quote Received Awaiting Approval",
@@ -273,30 +283,46 @@ var ButtonHeaderMR = React.createClass({
 	show: function(key) {
 		switch(key) {
 			case 'assign':
-				return this.setState({ isShow: !this.state.isShow, isShowStatus: false });
+				if (this.state.isBlurAssign) return;
+				return this.setState({ isShow: !this.state.isShow, isShowStatus: false }, () => {
+					if (this.state.isShow) this.dropdown_assign.focus();
+				});
 			case 'status':
-				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false });
+				if (this.state.isBlurStatus) return;
+				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false }, () => {
+					if (this.state.isShowStatus) this.dropdown_status.focus();
+				});
 		}
 	},
 
 	close: function(key) {
+		const self = this;
 		switch(key) {
 			case 'assign':
 				this.setState({
-					isShow: false
+					isShow: false,
+					isBlurAssign: true,
+				}, () => {
+					setTimeout(() => {
+						self.setState({ isBlurAssign: false });
+					}, 100);
 				});
 				break;
 
 			case 'status':
 				this.setState({
-					isShowStatus: false
+					isShowStatus: false,
+					isBlurStatus: true,
+				}, () => {
+					setTimeout(() => {
+						self.setState({ isBlurStatus: false });
+					}, 100);
 				});
 				break;
 		}
 	},
 
 	componentDidMount: function() {
-
 	},
 
 	render: function() {
@@ -305,6 +331,11 @@ var ButtonHeaderMR = React.createClass({
 		const {standBy, actionRequests, awaitingAction} = this.state;
 		return (
 			<div className="actions">
+				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
+					<span>
+						Approval Note
+					</span>
+				</button>
 				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
 					<span>
 						Split
@@ -319,7 +350,13 @@ var ButtonHeaderMR = React.createClass({
 					<button className="button-primary update-status" onClick={(key) => this.show('status')}>
 						Update status
 					</button>
-					<div className="dropdown-status" style={{display: this.state.isShowStatus ? 'block' : 'none'}}>
+					<div
+						className="dropdown-status"
+						style={{display: this.state.isShowStatus ? 'block' : 'none'}}
+						ref={elem => this.dropdown_status = elem}
+						tabIndex="2"
+						onBlur={() => this.close('status')}
+					>
 						<div>
 							<p>Stand By</p>
 							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
@@ -341,14 +378,26 @@ var ButtonHeaderMR = React.createClass({
 					</span>
 				</button>
 				<div className="assign">
-					<button className="button-primary assign-to" id="assign-to" onClick={(key) => this.show('assign')}>
+					<button
+						className="button-primary assign-to"
+						id="assign-to"
+						ref={elem => this.assignBtn = elem}
+						onClick={key => this.show('assign')}
+					>
 						<i className="icon-user" aria-hidden="true" />
 						<span>
 							Assign to
 						</span>
 						<i className="fa fa-angle-down" aria-hidden="true" />
 					</button>
-					<div className="dropdown-assign" style={{display: this.state.isShow ? 'block' : 'none'}}>
+					<div
+						className="dropdown-assign"
+						id="dropdown-assign"
+						style={{display: this.state.isShow ? 'block' : 'none'}}
+						ref={(elem) => this.dropdown_assign = elem}
+						tabIndex="0"
+						onBlur={() => this.close('assign')}
+					>
 						<div>
 							<p>Agency Administrators</p>
 							<Assigns assigns={all_agency_admins} viewItem={(key, item) => this.props.viewItem(key, item)} />
@@ -455,6 +504,13 @@ var ItemMaintenanceRequest = React.createClass({
 						<p className="m-b-n">Job Description:</p>
 						<p>{maintenance.maintenance_description}</p>
 					</div>
+					{ maintenance.preapproved_note
+						? <div className="vailability pre-approved-note">
+								<p className="header">Approval Note: </p>
+								<p className="description">{maintenance.preapproved_note}</p>
+							</div>
+						: ''
+					}
 					<div className="vailability">
 							<p className="header">Tenant Availability and Access Instructions: </p>
 							<p className="description">{maintenance.availability_and_access}</p>

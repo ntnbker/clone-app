@@ -70085,7 +70085,7 @@ var AssignTrady = React.createClass({
 
 		return React.createElement(
 			'div',
-			{ className: 'quotes invoices m-t-xl', id: 'invoices' },
+			{ className: 'quotes invoices m-t-xl assign', id: 'invoices' },
 			React.createElement(
 				'p',
 				null,
@@ -70129,19 +70129,19 @@ var AssignTrady = React.createClass({
 					React.createElement(
 						'div',
 						{ className: 'actions-quote' },
+						React.createElement(
+							'button',
+							{ type: 'button', className: 'btn btn-view', onClick: function (key, item) {
+									return _this.props.viewTrady('viewTrady', trady);
+								} },
+							'View'
+						),
 						(current_role.role == 'Agent' || current_role.role == "AgencyAdmin") && React.createElement(
 							'button',
 							{ type: 'button', className: 'btn btn-decline', onClick: function (modal) {
 									return _this.props.onModalWith('confirmCancelTrady');
 								} },
 							'Cancel'
-						),
-						React.createElement(
-							'button',
-							{ type: 'button', className: 'btn btn-default btn-view', onClick: function (key, item) {
-									return _this.props.viewTrady('viewTrady', trady);
-								} },
-							'View'
 						)
 					)
 				)
@@ -70779,7 +70779,6 @@ UploadImageComponent = React.createClass({
       return;
     }
 
-    var FD = new FormData();
     self.props.uploadImage(dataImages, function (errors) {
       self.props.notifyAddPhoto(errors || SUCCESS_MESSAGE);
       // self.props.close();
@@ -70793,7 +70792,6 @@ UploadImageComponent = React.createClass({
     var _state2 = this.state;
     var images = _state2.images;
     var gallery = _state2.gallery;
-    var dataImages = _state2.dataImages;
     var uploadComplete = _state2.uploadComplete;
 
     var uploadButton = !uploadComplete ? React.createElement(
@@ -71070,12 +71068,17 @@ ModalImageUpload = React.createClass({
   render: function () {
     var _this3 = this;
 
+    var _props2 = this.props;
+    var className = _props2.className;
+    var onClick = _props2.onClick;
+
     return this.renderModal() || React.createElement(
       'button',
       {
-        className: this.props.className || 'btn-edit',
+        className: className || 'btn-edit',
         onClick: function () {
-          return _this3.onModalWith('addPhoto');
+          if (onClick) onClick();
+          _this3.onModalWith('addPhoto');
         }
       },
       this.props.text || 'Add Photo'
@@ -71144,12 +71147,40 @@ var ModalInstruction = React.createClass({
 var Invoices = React.createClass({
 	displayName: "Invoices",
 
-	render: function () {
-		var _props = this.props;
-		var invoices = _props.invoices;
-		var current_role = _props.current_role;
+	getInitialState: function () {
+		return {
+			invoices: this.props.invoices,
+			pictures: []
+		};
+	},
 
+	componentWillMount: function () {
+		this.getPictureImage(this.state.invoices);
+	},
+
+	getPictureImage: function (invoices) {
+		if (!invoices || invoices.length === 0) return this.setState({ pictures: [] });
+
+		var pictures = (invoices || []).map(function (invoice) {
+			var trady = invoice.trady || {};
+			var id = trady.id || '';
+			var trady_company = trady.trady_company || {};
+			var trady_profile_image = trady.trady_profile_image || {};
+			var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+
+			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+		});
+
+		this.setState({ pictures: pictures });
+	},
+
+	render: function () {
 		var self = this;
+		var current_role = this.props.current_role;
+		var _state = this.state;
+		var invoices = _state.invoices;
+		var pictures = _state.pictures;
+
 		var notPaid = invoices.filter(function (i) {
 			return !i.paid;
 		}).length !== 0;
@@ -71160,13 +71191,14 @@ var Invoices = React.createClass({
 			React.createElement(
 				"p",
 				null,
-				"Invoice (",
-				invoices.length,
-				")"
-			),
-			current_role.role == 'Trady' && notPaid && React.createElement(
-				"p",
-				null,
+				React.createElement(
+					"span",
+					{ className: "index index-invoice" },
+					invoices.length
+				),
+				"Invoice",
+				
+				// (current_role.role == 'Trady' && notPaid) &&
 				React.createElement(
 					"button",
 					{ type: "button", className: "btn btn-mark-as-paid", onClick: function (item) {
@@ -71187,8 +71219,13 @@ var Invoices = React.createClass({
 							{ className: "user seven columns" },
 							React.createElement(
 								"span",
+								{ className: "index quote index-invoice" },
+								index + 1
+							),
+							React.createElement(
+								"span",
 								{ className: "icon-user" },
-								React.createElement("i", { className: "fa fa-user" })
+								React.createElement(AvatarImage, { imageUri: pictures[index] })
 							),
 							React.createElement(
 								"div",
@@ -71203,7 +71240,7 @@ var Invoices = React.createClass({
 									),
 									invoice.paid == false ? React.createElement(
 										"button",
-										{ className: 'button-default Declined' },
+										{ className: 'button-default status Declined' },
 										React.createElement(
 											"span",
 											null,
@@ -71211,7 +71248,7 @@ var Invoices = React.createClass({
 										)
 									) : React.createElement(
 										"button",
-										{ className: 'button-default Approved' },
+										{ className: 'button-default status Approved' },
 										React.createElement(
 											"span",
 											null,
@@ -71265,7 +71302,7 @@ var Invoices = React.createClass({
 							),
 							React.createElement(
 								"button",
-								{ type: "button", className: "btn btn-default btn-view", onClick: function (key, item) {
+								{ type: "button", className: "btn btn-view", onClick: function (key, item) {
 										return self.props.viewInvoice('viewInvoice', invoice);
 									} },
 								"View Invoice"
@@ -72582,12 +72619,12 @@ var DetailInvoice = React.createClass({
 						),
 						React.createElement(
 							"th",
-							{ className: "text-right" },
+							{ className: "text-right rate" },
 							"Rate"
 						),
 						React.createElement(
 							"th",
-							{ className: "text-right" },
+							{ className: "text-right amount" },
 							"Amount"
 						)
 					)
@@ -72622,12 +72659,12 @@ var DetailInvoice = React.createClass({
 							),
 							React.createElement(
 								"td",
-								{ className: "text-right" },
+								{ className: "text-right rate" },
 								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A'
 							),
 							React.createElement(
 								"td",
-								{ className: "text-right" },
+								{ className: "text-right amount" },
 								"$",
 								item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2)
 							)
@@ -73599,6 +73636,18 @@ var ContentLandlordAction = React.createClass({
 					React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
 					"Create appointment to fix myself"
 				)
+			),
+			React.createElement(
+				"li",
+				null,
+				React.createElement(
+					"a",
+					{ onClick: function () {
+							return _this.props.onModalWith('approveJob');
+						} },
+					React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
+					"Approve Job"
+				)
 			)
 		);
 	}
@@ -73690,6 +73739,140 @@ var LandlordActionMobile = React.createClass({
 							return _this3.props.onModalWith(modal);
 						}
 					})
+				)
+			)
+		);
+	}
+});
+
+var ModalApproveJob = React.createClass({
+	displayName: "ModalApproveJob",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	removeError: function (e) {
+		this.setState({
+			errorMessage: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error || ''
+		);
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+		var self = this;
+		var params = {
+			preapproved_note: this.note && this.note.value
+		};
+
+		this.props.approveJob(params, function (err) {
+			if (err) {
+				self.setState({ errorMessage: err });
+			}
+		});
+	},
+
+	render: function () {
+		var _this4 = this;
+
+		var _props = this.props;
+		var maintenance_request = _props.maintenance_request;
+		var current_user = _props.current_user;
+		var errorMessage = this.state.errorMessage;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Approval Note"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement(
+									"div",
+									{ className: "note" },
+									"Please let us know if you have a pre approved amount that you would like to spend on this job."
+								),
+								React.createElement("textarea", {
+									style: { width: '100%', marginTop: '10px' },
+									placeholder: "Note",
+									defaultValue: maintenance_request.preapproved_note || '',
+									ref: function (rel) {
+										return _this4.note = rel;
+									},
+									onChange: this.removeError,
+									className: 'textarea-message ' + (errorMessage ? ' has-error' : '')
+								})
+							),
+							this.renderError(errorMessage)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.props.close,
+									className: "btn btn-default cancel"
+								},
+								"Cancel"
+							)
+						)
+					)
 				)
 			)
 		);
@@ -74007,6 +74190,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		var maintenance_request = _props.maintenance_request;
 		var tenants_conversation = _props.tenants_conversation;
 		var landlords_conversation = _props.landlords_conversation;
+		var quote_requests = _props.quote_requests;
 
 		var comments = [];
 		appointments.map(function (appointment, key) {
@@ -74027,6 +74211,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			comments: comments,
 			appointmentUpdate: null,
 			appointments: appointments,
+			quote_requests: quote_requests,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
@@ -74071,8 +74256,19 @@ var LandlordMaintenanceRequest = React.createClass({
 					break;
 				}
 
+			case 'approveJob':
 			case 'createAppointment':
 				{
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewPhoto':
+				{
+					this.setState({
+						quote_images: item
+					});
+
 					this.onModalWith(key);
 					break;
 				}
@@ -74159,7 +74355,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.setState({ notification: {
 						title: "Request Another Quote",
-						content: "Send email is successfully.",
+						content: "You have successfully sent an email to the agent requesting another quote for the maintenance request. Thank you for your time.",
 						bgClass: "bg-success"
 					} });
 				self.onModalWith('notification');
@@ -74344,6 +74540,48 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
+	approveJob: function (params, callback) {
+		var self = this;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var maintenance_request = _props4.maintenance_request;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/pre_approved',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				maintenance_request.preapproved_note = res.preapproved_note;
+
+				self.setState({
+					maintenance_request: maintenance_request,
+					notification: {
+						bgClass: "bg-success",
+						title: "Approve Jobs",
+						content: 'Approved'
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Approve Jobs",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	decline: function (appointment) {
 		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
@@ -74354,9 +74592,9 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	declineAppointment: function (appointment) {
 		var self = this;
-		var _props4 = this.props;
-		var authenticity_token = _props4.authenticity_token;
-		var current_role = _props4.current_role;
+		var _props5 = this.props;
+		var authenticity_token = _props5.authenticity_token;
+		var current_role = _props5.current_role;
 
 		var params = {
 			appointment_id: appointment.id,
@@ -74397,9 +74635,9 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	cancelAppointment: function (appointment) {
 		var self = this;
-		var _props5 = this.props;
-		var authenticity_token = _props5.authenticity_token;
-		var current_role = _props5.current_role;
+		var _props6 = this.props;
+		var authenticity_token = _props6.authenticity_token;
+		var current_role = _props6.current_role;
 
 		var params = {
 			appointment_id: appointment.id,
@@ -74427,6 +74665,10 @@ var LandlordMaintenanceRequest = React.createClass({
 				self.onModalWith('notification');
 			}
 		});
+	},
+
+	chooseQuoteRequest: function (quote_request) {
+		this.setState({ quote_request: quote_request });
 	},
 
 	renderModal: function () {
@@ -74470,7 +74712,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						return React.createElement(ModalViewQuote, {
 							close: this.isClose,
 							quote: this.state.quote,
-							keyLandlord: "landlord",
+							keyLandlord: 'landlord',
 							quotes: this.state.quotes,
 							agency: this.props.agency,
 							property: this.props.property,
@@ -74478,6 +74720,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							onModalWith: this.onModalWith,
 							current_user: this.props.current_user,
 							updateStatusQuote: this.updateStatusQuote,
+							sendEmailLandlord: this.sendEmailLandlord,
 							viewQuote: function (quote) {
 								return _this2.viewQuote(quote);
 							}
@@ -74551,6 +74794,34 @@ var LandlordMaintenanceRequest = React.createClass({
 						updateInsruction: this.updateInsruction
 					});
 
+				case 'viewPhoto':
+					return React.createElement(ModalViewPhoto, {
+						title: 'Quote Photo',
+						keyLandlord: 'landlord',
+						close: this.isClose,
+						quote: this.state.quote_request,
+						quotes: this.state.quote_requests,
+						agency: this.props.agency,
+						property: this.props.property,
+						landlord: this.state.landlord,
+						onModalWith: this.onModalWith,
+						gallery: this.state.quote_images,
+						updateStatusQuote: this.updateStatusQuote,
+						viewQuote: function (quote) {
+							return _this2.viewQuote(quote);
+						},
+						sendEmailLandlord: this.sendEmailLandlord,
+						current_user: this.props.current_user
+					});
+
+				case 'approveJob':
+					return React.createElement(ModalApproveJob, {
+						content: 'Pre-Approved Amount',
+						close: this.isClose,
+						confirmText: 'Send',
+						approveJob: this.approveJob,
+						maintenance_request: this.state.maintenance_request
+					});
 				default:
 					return null;
 			}
@@ -74642,7 +74913,10 @@ var LandlordMaintenanceRequest = React.createClass({
 	render: function () {
 		var _this3 = this;
 
-		var appointments = this.state.appointments;
+		var _state2 = this.state;
+		var appointments = _state2.appointments;
+		var quote_requests = _state2.quote_requests;
+		var quotes = _state2.quotes;
 
 		return React.createElement(
 			'div',
@@ -74658,7 +74932,21 @@ var LandlordMaintenanceRequest = React.createClass({
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
-					this.props.quotes && this.props.quotes.length > 0 && React.createElement(Quotes, {
+					quote_requests && quote_requests.length ? React.createElement(QuoteRequests, {
+						keyLandlord: 'landlord',
+						quote_requests: quote_requests,
+						onModalWith: this.onModalWith,
+						landlord: this.state.landlord,
+						current_user: this.props.current_user,
+						updateStatusQuote: this.updateStatusQuote,
+						sendEmailLandlord: this.sendEmailLandlord,
+						uploadImage: this.uploadImage,
+						chooseQuoteRequest: this.chooseQuoteRequest,
+						viewQuote: function (key, item) {
+							return _this3.viewItem(key, item);
+						}
+					}) : '',
+					false && quotes && quotes.length > 0 && React.createElement(Quotes, {
 						keyLandlord: 'landlord',
 						quotes: this.state.quotes,
 						landlord: this.state.landlord,
@@ -76426,6 +76714,19 @@ var ContentContact = React.createClass({
 						landlord.mobile
 					)
 				),
+				assigned_trady && assigned_trady.mobile && React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ href: "tel:" + assigned_trady.mobile },
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Trady - ",
+						assigned_trady.name,
+						": ",
+						assigned_trady.mobile
+					)
+				),
 				React.createElement(
 					"li",
 					null,
@@ -77065,7 +77366,8 @@ var DropDownMobileList = React.createClass({
   componentDidMount: function () {
     var self = this;
     $(document).bind('click', function (e) {
-      if (!e.target.matches('#' + self.props.id)) {
+      var match = e.target.matches ? e.target.matches('#' + self.props.id) : e.target.msMatchesSelector('#' + self.props.id);
+      if (!match) {
         self.onDrop('over');
       }
     });
@@ -77348,6 +77650,10 @@ var ListMaintenanceRequest = React.createClass({
         title: "Maintenance Request",
         value: "Initiate Maintenance Request",
         count: this.props.new_maintenance_requests_count
+      }, {
+        title: "Send Work Order",
+        value: "Send Work Order",
+        count: this.props.send_work_order_count
       }, {
         title: "Quote Requested",
         value: "Quote Requested",
@@ -77807,7 +78113,8 @@ var DropforSortDate = React.createClass({
 
   componentDidMount: function () {
     window.onclick = function (e) {
-      if (!e.target.matches('.btn-show')) {
+      var match = e.target.matches ? e.target.matches('#' + self.props.id) : e.target.msMatchesSelector('#' + self.props.id);
+      if (!match) {
         var myDropdown = document.getElementById("menu");
         if (myDropdown && myDropdown.classList.contains('show')) {
           myDropdown.classList.remove('show');
@@ -78118,7 +78425,7 @@ var Carousel = React.createClass({
 	render: function () {
 		var styles = {
 			left: this.state.stx,
-			width: this.state.stlen * this.state.stwidth
+			width: !this.props.fullWidth ? this.state.stlen * this.state.stwidth : '100%'
 		};
 		var temp = this;
 		var subWidth = 100 / (this.state.stlen ? this.state.stlen : 1) + '%';
@@ -78135,7 +78442,7 @@ var Carousel = React.createClass({
 						return React.createElement("img", {
 							key: index,
 							src: img,
-							style: { width: subWidth },
+							style: { width: temp.props.fullWidth ? '100%' : subWidth },
 							className: "swiper-slide slide-image"
 						});
 					})
@@ -78231,6 +78538,9 @@ var ButtonHeaderMR = React.createClass({
 			title: "Maintenance Request",
 			value: "Initiate Maintenance Request"
 		}, {
+			title: "Send Work Order",
+			value: "Send Work Order"
+		}, {
 			title: "Awaiting Tradie`s Quote",
 			value: "Awaiting Quote"
 		}, {
@@ -78243,20 +78553,26 @@ var ButtonHeaderMR = React.createClass({
 			title: "New Invoice",
 			value: "New Invoice"
 		}, {
-			title: "Pending Payment",
-			value: "Pending Payment"
+			title: "Cancelled Work Order",
+			value: "Cancelled Work Order"
 		}];
 
+		// {
+		//   title: "Pending Payment",
+		//   value: "Pending Payment",
+		// }
 		var awaitingAction = [{
 			title: "Awaiting Owner Initiation",
 			value: "Awaiting Owner Initiation"
 		}, {
 			title: "Awaiting Owner Instruction",
 			value: "Awaiting Owner Instruction"
-		}, {
-			title: "Awaiting Tradie Initiation",
-			value: "Awaiting Tradie Initiation"
-		}, {
+		},
+		// {
+		//   title: "Awaiting Tradie Initiation",
+		//   value: "Awaiting Tradie Initiation",
+		// },
+		{
 			title: "Awaiting Quote Approval",
 			value: "Quote Received Awaiting Approval"
 		}, {
@@ -78297,25 +78613,44 @@ var ButtonHeaderMR = React.createClass({
 	},
 
 	show: function (key) {
+		var _this3 = this;
+
 		switch (key) {
 			case 'assign':
-				return this.setState({ isShow: !this.state.isShow, isShowStatus: false });
+				if (this.state.isBlurAssign) return;
+				return this.setState({ isShow: !this.state.isShow, isShowStatus: false }, function () {
+					if (_this3.state.isShow) _this3.dropdown_assign.focus();
+				});
 			case 'status':
-				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false });
+				if (this.state.isBlurStatus) return;
+				return this.setState({ isShowStatus: !this.state.isShowStatus, isShow: false }, function () {
+					if (_this3.state.isShowStatus) _this3.dropdown_status.focus();
+				});
 		}
 	},
 
 	close: function (key) {
+		var self = this;
 		switch (key) {
 			case 'assign':
 				this.setState({
-					isShow: false
+					isShow: false,
+					isBlurAssign: true
+				}, function () {
+					setTimeout(function () {
+						self.setState({ isBlurAssign: false });
+					}, 100);
 				});
 				break;
 
 			case 'status':
 				this.setState({
-					isShowStatus: false
+					isShowStatus: false,
+					isBlurStatus: true
+				}, function () {
+					setTimeout(function () {
+						self.setState({ isBlurStatus: false });
+					}, 100);
 				});
 				break;
 		}
@@ -78324,7 +78659,7 @@ var ButtonHeaderMR = React.createClass({
 	componentDidMount: function () {},
 
 	render: function () {
-		var _this3 = this;
+		var _this4 = this;
 
 		var all_agents = this.props.all_agents;
 		var all_agency_admins = this.props.all_agency_admins;
@@ -78339,7 +78674,18 @@ var ButtonHeaderMR = React.createClass({
 			React.createElement(
 				"button",
 				{ className: "button-primary edit-detail", onClick: function (key) {
-						return _this3.props.viewItem('splitMR');
+						return _this4.props.viewItem('approveJob');
+					} },
+				React.createElement(
+					"span",
+					null,
+					"Approval Note"
+				)
+			),
+			React.createElement(
+				"button",
+				{ className: "button-primary edit-detail", onClick: function (key) {
+						return _this4.props.viewItem('splitMR');
 					} },
 				React.createElement(
 					"span",
@@ -78350,7 +78696,7 @@ var ButtonHeaderMR = React.createClass({
 			React.createElement(
 				"button",
 				{ className: "button-primary edit-detail", onClick: function (key) {
-						return _this3.props.viewItem('duplicateMR');
+						return _this4.props.viewItem('duplicateMR');
 					} },
 				React.createElement(
 					"span",
@@ -78364,13 +78710,23 @@ var ButtonHeaderMR = React.createClass({
 				React.createElement(
 					"button",
 					{ className: "button-primary update-status", onClick: function (key) {
-							return _this3.show('status');
+							return _this4.show('status');
 						} },
 					"Update status"
 				),
 				React.createElement(
 					"div",
-					{ className: "dropdown-status", style: { display: this.state.isShowStatus ? 'block' : 'none' } },
+					{
+						className: "dropdown-status",
+						style: { display: this.state.isShowStatus ? 'block' : 'none' },
+						ref: function (elem) {
+							return _this4.dropdown_status = elem;
+						},
+						tabIndex: "2",
+						onBlur: function () {
+							return _this4.close('status');
+						}
+					},
 					React.createElement(
 						"div",
 						null,
@@ -78380,7 +78736,7 @@ var ButtonHeaderMR = React.createClass({
 							"Stand By"
 						),
 						React.createElement(DropDownStatus, { viewItem: function (key, item) {
-								return _this3.props.viewItem(key, item);
+								return _this4.props.viewItem(key, item);
 							}, data: standBy })
 					),
 					React.createElement(
@@ -78392,7 +78748,7 @@ var ButtonHeaderMR = React.createClass({
 							"Action Request"
 						),
 						React.createElement(DropDownStatus, { viewItem: function (key, item) {
-								return _this3.props.viewItem(key, item);
+								return _this4.props.viewItem(key, item);
 							}, data: actionRequests })
 					),
 					React.createElement(
@@ -78404,7 +78760,7 @@ var ButtonHeaderMR = React.createClass({
 							"Awaiting Action"
 						),
 						React.createElement(DropDownStatus, { viewItem: function (key, item) {
-								return _this3.props.viewItem(key, item);
+								return _this4.props.viewItem(key, item);
 							}, data: awaitingAction })
 					)
 				)
@@ -78412,7 +78768,7 @@ var ButtonHeaderMR = React.createClass({
 			React.createElement(
 				"button",
 				{ className: "button-primary edit-detail", onClick: function (key) {
-						return _this3.props.viewItem('editMaintenanceRequest');
+						return _this4.props.viewItem('editMaintenanceRequest');
 					} },
 				React.createElement("i", { className: "fa fa-pencil", "aria-hidden": "true" }),
 				React.createElement(
@@ -78426,9 +78782,16 @@ var ButtonHeaderMR = React.createClass({
 				{ className: "assign" },
 				React.createElement(
 					"button",
-					{ className: "button-primary assign-to", id: "assign-to", onClick: function (key) {
-							return _this3.show('assign');
-						} },
+					{
+						className: "button-primary assign-to",
+						id: "assign-to",
+						ref: function (elem) {
+							return _this4.assignBtn = elem;
+						},
+						onClick: function (key) {
+							return _this4.show('assign');
+						}
+					},
 					React.createElement("i", { className: "icon-user", "aria-hidden": "true" }),
 					React.createElement(
 						"span",
@@ -78439,7 +78802,18 @@ var ButtonHeaderMR = React.createClass({
 				),
 				React.createElement(
 					"div",
-					{ className: "dropdown-assign", style: { display: this.state.isShow ? 'block' : 'none' } },
+					{
+						className: "dropdown-assign",
+						id: "dropdown-assign",
+						style: { display: this.state.isShow ? 'block' : 'none' },
+						ref: function (elem) {
+							return _this4.dropdown_assign = elem;
+						},
+						tabIndex: "0",
+						onBlur: function () {
+							return _this4.close('assign');
+						}
+					},
 					React.createElement(
 						"div",
 						null,
@@ -78449,7 +78823,7 @@ var ButtonHeaderMR = React.createClass({
 							"Agency Administrators"
 						),
 						React.createElement(Assigns, { assigns: all_agency_admins, viewItem: function (key, item) {
-								return _this3.props.viewItem(key, item);
+								return _this4.props.viewItem(key, item);
 							} })
 					),
 					React.createElement(
@@ -78461,7 +78835,7 @@ var ButtonHeaderMR = React.createClass({
 							"Agents"
 						),
 						React.createElement(Assigns, { assigns: all_agents, viewItem: function (key, item) {
-								return _this3.props.viewItem(key, item);
+								return _this4.props.viewItem(key, item);
 							} })
 					)
 				)
@@ -78557,7 +78931,7 @@ var ItemMaintenanceRequest = React.createClass({
 	displayName: "ItemMaintenanceRequest",
 
 	render: function () {
-		var _this4 = this;
+		var _this5 = this;
 
 		var maintenance = this.props.maintenance_request;
 		var status = this.props.status;
@@ -78616,7 +78990,7 @@ var ItemMaintenanceRequest = React.createClass({
 					all_agents: props.all_agents,
 					all_agency_admins: props.all_agency_admins,
 					viewItem: function (key, item) {
-						return _this4.props.viewItem(key, item);
+						return _this5.props.viewItem(key, item);
 					}
 				})
 			),
@@ -78637,6 +79011,20 @@ var ItemMaintenanceRequest = React.createClass({
 						maintenance.maintenance_description
 					)
 				),
+				maintenance.preapproved_note ? React.createElement(
+					"div",
+					{ className: "vailability pre-approved-note" },
+					React.createElement(
+						"p",
+						{ className: "header" },
+						"Approval Note: "
+					),
+					React.createElement(
+						"p",
+						{ className: "description" },
+						maintenance.preapproved_note
+					)
+				) : '',
 				React.createElement(
 					"div",
 					{ className: "vailability" },
@@ -78723,7 +79111,7 @@ var ModalEditMR = React.createClass({
 	},
 
 	renderServiceType: function (services) {
-		var _this5 = this;
+		var _this6 = this;
 
 		if (!!this.props.trady) return null;
 		var _state2 = this.state;
@@ -78745,7 +79133,7 @@ var ModalEditMR = React.createClass({
 					id: "service",
 					disabled: isSuccess && 'disabled' || false,
 					ref: function (e) {
-						return _this5.serviceType = e;
+						return _this6.serviceType = e;
 					},
 					className: "form-control input-custom " + (serviceError ? 'has-error' : ''),
 					name: "maintenance_requests[" + x + "][service_type]",
@@ -78772,7 +79160,7 @@ var ModalEditMR = React.createClass({
 	},
 
 	render: function () {
-		var _this6 = this;
+		var _this7 = this;
 
 		var _state3 = this.state;
 		var serviceError = _state3.serviceError;
@@ -78821,7 +79209,7 @@ var ModalEditMR = React.createClass({
 					placeholder: "Enter Description",
 					name: "maintenance_requests[" + x + "][maintenance_description]",
 					ref: function (e) {
-						return _this6.description = e;
+						return _this7.description = e;
 					},
 					id: "description",
 					onChange: this.removeError,
@@ -78835,7 +79223,7 @@ var ModalEditMR = React.createClass({
 					type: "button",
 					className: "button-remove button-primary red",
 					onClick: function () {
-						return removeField(_this6.props.x);
+						return removeField(_this7.props.x);
 					}
 				},
 				"Remove"
@@ -81340,6 +81728,7 @@ var MaintenanceRequest = React.createClass({
 			statusItem: null,
 			assignEmail: null,
 			appointment: null,
+			quote_request: null,
 			comments: comments,
 			logs: this.props.logs,
 			invoice_pdf_file: null,
@@ -81349,15 +81738,16 @@ var MaintenanceRequest = React.createClass({
 			gallery: this.props.gallery,
 			quoteComments: quoteComments,
 			landlord: this.props.landlord,
-			trady: this.props.hired_trady || this.props.assigned_trady || null,
+			trady: this.props.hired_trady || null,
 			invoices: this.props.invoices,
 			landlordComments: landlordComments,
 			invoice_pdf_files: this.props.pdf_files,
+			quote_requests: this.props.quote_requests,
 			trady_conversation: this.props.trady_conversation,
 			maintenance_request: this.props.maintenance_request,
 			tenants_conversation: this.props.tenants_conversation,
 			landlords_conversation: this.props.landlords_conversation,
-			instruction: this.props.instruction ? this.props.instruction : {},
+			instruction: this.props.instruction || {},
 			tradies_with_quote_requests: this.props.tradies_with_quote_requests,
 			notification: {
 				title: "",
@@ -81398,6 +81788,27 @@ var MaintenanceRequest = React.createClass({
 				{
 					this.setState({
 						quote: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewPhoto':
+				{
+					this.setState({
+						quote_images: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewQuoteRequestMessage':
+			case 'confirmQuoteAlreadySent':
+				{
+					this.setState({
+						quote_request: item
 					});
 
 					this.onModalWith(key);
@@ -81452,6 +81863,7 @@ var MaintenanceRequest = React.createClass({
 				}
 
 			case 'splitMR':
+			case 'approveJob':
 			case 'duplicateMR':
 			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest':
@@ -81758,6 +82170,40 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	sendMessageQuoteRequest: function (params, callback) {
+		var self = this;
+		params.message.role = this.props.current_user_role.role;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_request_messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				var quote_request = self.state.quote_request;
+				quote_request.conversation = quote_request.conversation ? quote_request.conversation : {};
+				var messages = !!quote_request.conversation && quote_request.conversation.messages ? quote_request.conversation.messages : [];
+				messages.push(res);
+				quote_request.conversation.messages = messages;
+				self.setState({
+					quote_request: quote_request
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Trady",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	updateStatusQuote: function (params) {
 		var self = this;
 		$.ajax({
@@ -81897,6 +82343,48 @@ var MaintenanceRequest = React.createClass({
 				}
 			});
 		}
+	},
+
+	approveJob: function (params, callback) {
+		var self = this;
+		var _props4 = this.props;
+		var authenticity_token = _props4.authenticity_token;
+		var maintenance_request = _props4.maintenance_request;
+
+		params.maintenance_request_id = maintenance_request.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/pre_approved',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				maintenance_request.preapproved_note = res.preapproved_note;
+
+				self.setState({
+					maintenance_request: maintenance_request,
+					notification: {
+						bgClass: "bg-success",
+						title: "Approve Jobs",
+						content: 'Approved'
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						bgClass: "bg-error",
+						title: "Approve Jobs",
+						content: err.responseText
+					} });
+				self.onModalWith('notification');
+			}
+		});
 	},
 
 	sendWorkOrder: function (params, callback) {
@@ -82138,6 +82626,91 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	quoteAlreadySent: function () {
+		var self = this;
+		var _state5 = this.state;
+		var maintenance_request = _state5.maintenance_request;
+		var quote_request = _state5.quote_request;
+		var current_user_role = this.props.current_user_role;
+
+		var params = {
+			trady_id: quote_request.trady_id,
+			quote_request_id: quote_request.id,
+			maintenance_request_id: maintenance_request.id,
+			role: current_user_role.role === 'Trady' ? 'Trady' : 'Agent'
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/quote_sent',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Quote Already Sent",
+						content: "Thank you for marking quote as 'Already Sent'. To keep the work flow automated please upload a photo of the quote, so you may quickly forward the quote to the landlord and keep the automated email reminders for the landlord going.",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Quote Already Sent",
+						content: "Quote Already Sent didn't confirm.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	uploadImage: function (images, callback) {
+		if (images.length == 0) {
+			return;
+		}
+
+		var quote_request = this.state.quote_request;
+		var current_user_role = this.props.current_user_role;
+
+		var image = images[0];
+
+		var data = {
+			picture: {
+				image: JSON.stringify(image),
+				quote_request_id: quote_request.id,
+				trady_id: quote_request.trady_id,
+				maintenance_request_id: quote_request.maintenance_request_id,
+				role: current_user_role.role === 'Trady' ? 'Trady' : 'Agent'
+			}
+		};
+
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_image',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: data,
+			success: function (res) {
+				callback('You Has Successfully Upload');
+				if (res && res.quote_requests) {
+					self.setState({ quote_requests: res.quote_requests });
+				}
+			},
+			error: function (err) {}
+		});
+	},
+
+	chooseQuoteRequest: function (quote_request) {
+		this.setState({ quote_request: quote_request });
+	},
+
 	markAsPaid: function (invoice) {
 		var uploaded = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
@@ -82187,9 +82760,9 @@ var MaintenanceRequest = React.createClass({
 
 	cancelWorkOrder: function () {
 		var self = this;
-		var _state5 = this.state;
-		var maintenance_request = _state5.maintenance_request;
-		var logs = _state5.logs;
+		var _state6 = this.state;
+		var maintenance_request = _state6.maintenance_request;
+		var logs = _state6.logs;
 
 		var params = {
 			maintenance_request_id: maintenance_request.id
@@ -82375,6 +82948,16 @@ var MaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'viewQuoteRequestMessage':
+					{
+						return React.createElement(ModalViewQuoteRequestMessage, {
+							close: this.isClose,
+							quote_request: this.state.quote_request,
+							current_user: this.props.current_user,
+							sendMessageQuoteRequest: this.sendMessageQuoteRequest
+						});
+					}
+
 				case 'requestQuote':
 					{
 						return React.createElement(ModalRequestModal, {
@@ -82454,11 +83037,11 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state6 = this.state;
-						var comments = _state6.comments;
-						var quoteComments = _state6.quoteComments;
-						var landlordComments = _state6.landlordComments;
-						var appointment = _state6.appointment;
+						var _state7 = this.state;
+						var comments = _state7.comments;
+						var quoteComments = _state7.quoteComments;
+						var landlordComments = _state7.landlordComments;
+						var appointment = _state7.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -82555,6 +83138,42 @@ var MaintenanceRequest = React.createClass({
 						cancelWorkOrder: this.cancelWorkOrder
 					});
 
+				case 'confirmQuoteAlreadySent':
+					return React.createElement(ModalConfirmAnyThing, {
+						close: this.isClose,
+						confirm: this.quoteAlreadySent,
+						title: "Quote Already Sent",
+						content: "Are you sure that the tradie has already submitted a quote?"
+					});
+
+				case 'viewPhoto':
+					return React.createElement(ModalViewPhoto, {
+						title: "Quote Photo",
+						close: this.isClose,
+						quote: this.state.quote_request,
+						quotes: this.state.quote_requests,
+						agency: this.props.agency,
+						property: this.props.property,
+						landlord: this.state.landlord,
+						onModalWith: this.onModalWith,
+						gallery: this.state.quote_images,
+						updateStatusQuote: this.updateStatusQuote,
+						viewQuote: function (quote) {
+							return _this8.viewQuote(quote);
+						},
+						sendEmailLandlord: this.sendEmailLandlord,
+						current_user: this.props.current_user
+					});
+
+				case 'approveJob':
+					return React.createElement(ModalApproveJob, {
+						content: "Pre-Approved Note",
+						close: this.isClose,
+						confirmText: "Send",
+						approveJob: this.approveJob,
+						maintenance_request: this.state.maintenance_request
+					});
+
 				default:
 					return null;
 			}
@@ -82581,6 +83200,18 @@ var MaintenanceRequest = React.createClass({
 
 		if (quote) {
 			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
+	openQuoteRequestMesssage: function (quote_request_id) {
+		var quote_requests = this.state.quote_requests;
+
+		var quote_request = quote_requests.filter(function (item) {
+			return item.id == quote_request_id;
+		})[0];
+
+		if (quote_request) {
+			this.viewItem('viewQuoteRequestMessage', quote_request);
 		}
 	},
 
@@ -82644,6 +83275,10 @@ var MaintenanceRequest = React.createClass({
 				self.openQuoteMesssage(json.quote_message_id);
 				break;
 
+			case 'open_quote_request_message':
+				self.openQuoteRequestMesssage(json.quote_request_message_id);
+				break;
+
 			default:
 				break;
 		}
@@ -82670,17 +83305,18 @@ var MaintenanceRequest = React.createClass({
 	summary: function (e) {
 		var _this9 = this;
 
-		var _props4 = this.props;
-		var work_order_appointments = _props4.work_order_appointments;
-		var landlord_appointments = _props4.landlord_appointments;
-		var quote_appointments = _props4.quote_appointments;
-		var current_user_role = _props4.current_user_role;
-		var tenants = _props4.tenants;
-		var quotes = _props4.quotes;
-		var invoices = _props4.invoices;
-		var _state7 = this.state;
-		var invoice_pdf_files = _state7.invoice_pdf_files;
-		var trady = _state7.trady;
+		var _props5 = this.props;
+		var work_order_appointments = _props5.work_order_appointments;
+		var landlord_appointments = _props5.landlord_appointments;
+		var quote_appointments = _props5.quote_appointments;
+		var current_user_role = _props5.current_user_role;
+		var tenants = _props5.tenants;
+		var quotes = _props5.quotes;
+		var invoices = _props5.invoices;
+		var _state8 = this.state;
+		var invoice_pdf_files = _state8.invoice_pdf_files;
+		var trady = _state8.trady;
+		var quote_requests = _state8.quote_requests;
 
 		return React.createElement(
 			"div",
@@ -82717,7 +83353,21 @@ var MaintenanceRequest = React.createClass({
 							return _this9.viewItem(key, item);
 						}
 					}),
-					quotes && quotes.length > 0 && React.createElement(Quotes, {
+					quote_requests && quote_requests.length ? React.createElement(QuoteRequests, {
+						quote_requests: quote_requests,
+						onModalWith: this.onModalWith,
+						landlord: this.state.landlord,
+						current_user: this.props.current_user,
+						updateStatusQuote: this.updateStatusQuote,
+						sendEmailLandlord: this.sendEmailLandlord,
+						uploadImage: this.uploadImage,
+						chooseQuoteRequest: this.chooseQuoteRequest,
+						viewQuote: function (key, item) {
+							return _this9.viewItem(key, item);
+						},
+						current_user_show_quote_message: this.props.current_user_show_quote_message
+					}) : '',
+					false && quotes && quotes.length > 0 && React.createElement(Quotes, {
 						quotes: this.state.quotes,
 						onModalWith: this.onModalWith,
 						landlord: this.state.landlord,
@@ -83696,9 +84346,9 @@ var ButtonForwardLandlord = React.createClass({
 				type: "button",
 				style: style,
 				onClick: !this.state.isSend && this.sendEmail,
-				className: "btn btn-default"
+				className: "btn btn-trans"
 			},
-			!!this.state.isSend ? 'Send to Landlord' : 'Forward to LandLord'
+			!!this.state.isSend ? 'Sent to Landlord' : 'Forward to LandLord'
 		);
 	}
 });
@@ -83770,7 +84420,7 @@ var ButtonRestore = React.createClass({
 	render: function () {
 		return React.createElement(
 			"button",
-			{ type: "button", className: "btn btn-default", onClick: this.updateStatus },
+			{ type: "button", className: "btn btn-trans", onClick: this.updateStatus },
 			"Restore"
 		);
 	}
@@ -83806,9 +84456,56 @@ var ButtonView = React.createClass({
 			"button",
 			{
 				type: "button",
-				className: "btn btn-default",
+				className: "btn btn-trans",
 				onClick: function (key, item) {
 					return _this2.props.viewQuote('viewQuote', _this2.props.quote);
+				}
+			},
+			"View"
+		);
+	}
+});
+
+var ButtonQuoteAlreadySent = React.createClass({
+	displayName: "ButtonQuoteAlreadySent",
+
+	render: function () {
+		var _props = this.props;
+		var viewQuote = _props.viewQuote;
+		var quote_request = _props.quote_request;
+
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-default",
+				onClick: function () {
+					return viewQuote('confirmQuoteAlreadySent', quote_request);
+				}
+			},
+			"Quote Already Sent"
+		);
+	}
+});
+
+var ButtonViewPhoto = React.createClass({
+	displayName: "ButtonViewPhoto",
+
+	render: function () {
+		var _props2 = this.props;
+		var chooseQuoteRequest = _props2.chooseQuoteRequest;
+		var quote = _props2.quote;
+		var viewQuote = _props2.viewQuote;
+		var gallery = _props2.gallery;
+
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-trans",
+				onClick: function (key, item) {
+					chooseQuoteRequest(quote);
+					viewQuote('viewPhoto', gallery);
 				}
 			},
 			"View"
@@ -83830,7 +84527,7 @@ var ButtonRequestAnotherQuote = React.createClass({
 	render: function () {
 		return React.createElement(
 			"button",
-			{ type: "button", className: "btn btn-default", onClick: this.sendEmail },
+			{ type: "button", className: "btn btn-trans", onClick: this.sendEmail },
 			"Request Another Quote"
 		);
 	}
@@ -83852,13 +84549,40 @@ var ButtonQuoteMessage = React.createClass({
 	}
 });
 
+var ButtonQuoteRequestMessage = React.createClass({
+	displayName: "ButtonQuoteRequestMessage",
+
+	render: function () {
+		var _props3 = this.props;
+		var _props3$name = _props3.name;
+		var name = _props3$name === undefined ? '' : _props3$name;
+		var quote_request = _props3.quote_request;
+		var viewQuote = _props3.viewQuote;
+
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-message",
+				title: "Message " + name,
+				onClick: function () {
+					return viewQuote('viewQuoteRequestMessage', quote_request);
+				}
+			},
+			React.createElement("i", { className: "fa fa-commenting", "aria-hidden": "true" }),
+			"Message ",
+			name
+		);
+	}
+});
+
 var ButtonPrint = React.createClass({
 	displayName: "ButtonPrint",
 
 	render: function () {
 		return React.createElement(
 			"button",
-			{ className: "btn btn-default btn-print", onClick: this.props.printQuote },
+			{ className: "btn btn-print", onClick: this.props.printQuote },
 			"Print"
 		);
 	}
@@ -83878,19 +84602,29 @@ var ActionQuote = React.createClass({
 			quote: nextProps.quote
 		});
 	},
+
 	render: function () {
 		var quote = this.state.quote;
 
 		var self = this.props;
-		if (!!self.keyLandlord && self.keyLandlord == "landlord") {
+		var image = quote.quote_image && quote.quote_image.image_url || '';
+
+		if (!!self.keyLandlord && self.keyLandlord === "landlord") {
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				quote.status == "Active" && React.createElement(ButtonAccept, {
+				self.showView && image ? React.createElement(ButtonViewPhoto, {
+					viewQuote: this.props.viewQuote,
+					gallery: [image],
 					quote: quote,
-					updateStatusQuote: self.updateStatusQuote
-				}),
-				quote.status == "Active" && React.createElement(ButtonDecline, {
+					chooseQuoteRequest: this.props.chooseQuoteRequest
+				}) : self.showView ? React.createElement(ButtonView, {
+					quote: self.quote,
+					viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}
+				}) : '',
+				quote.status == "Active" && React.createElement(ButtonAccept, {
 					quote: quote,
 					updateStatusQuote: self.updateStatusQuote
 				}),
@@ -83898,13 +84632,7 @@ var ActionQuote = React.createClass({
 					quote: quote,
 					sendEmailLandlord: self.sendEmailLandlord
 				}),
-				!self.quotes && React.createElement(ButtonView, {
-					quote: self.quote,
-					viewQuote: function (key, item) {
-						return self.viewQuote(key, item);
-					}
-				}),
-				!!this.props.isModal && React.createElement(ButtonPrint, {
+				!!this.props.isModal && this.props.printQuote && React.createElement(ButtonPrint, {
 					printQuote: this.props.printQuote
 				})
 			);
@@ -83912,19 +84640,24 @@ var ActionQuote = React.createClass({
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && quote.status != "Declined" && React.createElement(ButtonQuoteMessage, {
+				self.showView && image ? React.createElement(ButtonViewPhoto, {
+					viewQuote: this.props.viewQuote,
+					gallery: [image],
+					quote: quote,
+					chooseQuoteRequest: this.props.chooseQuoteRequest
+				}) : self.showView ? React.createElement(ButtonView, {
+					quote: self.quote,
+					viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}
+				}) : '',
+				!self.quote_request && !!self.current_user_show_quote_message && quote.status != "Declined" && React.createElement(ButtonQuoteMessage, {
 					quote: quote,
 					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
 					}
 				}),
-				!self.quotes && React.createElement(ButtonView, {
-					viewQuote: function (key, item) {
-						return self.viewQuote(key, item);
-					},
-					quote: self.quote
-				}),
-				!!this.props.isModal && React.createElement(ButtonPrint, {
+				!!this.props.isModal && this.props.printQuote && React.createElement(ButtonPrint, {
 					printQuote: this.props.printQuote
 				})
 			);
@@ -83932,7 +84665,18 @@ var ActionQuote = React.createClass({
 			return React.createElement(
 				"div",
 				{ className: "actions-quote" },
-				!!self.current_user_show_quote_message && quote.status != "Declined" && React.createElement(ButtonQuoteMessage, {
+				self.showView && image ? React.createElement(ButtonViewPhoto, {
+					viewQuote: this.props.viewQuote,
+					gallery: [image],
+					quote: quote,
+					chooseQuoteRequest: this.props.chooseQuoteRequest
+				}) : self.showView ? React.createElement(ButtonView, {
+					quote: self.quote,
+					viewQuote: function (key, item) {
+						return self.viewQuote(key, item);
+					}
+				}) : '',
+				!self.quote_request && !!self.current_user_show_quote_message && quote.status != "Declined" && React.createElement(ButtonQuoteMessage, {
 					quote: quote,
 					viewQuoteMessage: function (key, item) {
 						return self.viewQuote(key, item);
@@ -83956,17 +84700,46 @@ var ActionQuote = React.createClass({
 					quote: quote,
 					updateStatusQuote: self.updateStatusQuote
 				}),
-				!self.quotes && React.createElement(ButtonView, {
-					quote: self.quote,
-					viewQuote: function (key, item) {
-						return self.viewQuote(key, item);
-					}
-				}),
-				!!this.props.isModal && React.createElement(ButtonPrint, {
+				!!this.props.isModal && this.props.printQuote && React.createElement(ButtonPrint, {
 					printQuote: this.props.printQuote
 				})
 			);
 		}
+	}
+});
+
+var ActionQuoteRequest = React.createClass({
+	displayName: "ActionQuoteRequest",
+
+	getInitialState: function () {
+		return {
+			quote_request: this.props.quote_request
+		};
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this.setState({
+			quote_request: nextProps.quote_request
+		});
+	},
+
+	render: function () {
+		var quote_request = this.state.quote_request || {};
+		var quotes = (quote_request.quotes || []).map(function (quote) {
+			return _extends({}, quote, {
+				trady: quote_request.trady
+			});
+		});
+
+		if (quotes.length === 0) {
+			return React.createElement("div", null);
+		}
+
+		return React.createElement(
+			"div",
+			{ className: "quote-request" },
+			React.createElement(Quotes, _extends({}, this.props, { quotes: quotes }))
+		);
 	}
 });
 
@@ -83975,8 +84748,7 @@ var Quotes = React.createClass({
 
 	getInitialState: function () {
 		return {
-			quotes: this.props.quotes,
-			pictures: []
+			quotes: this.props.quotes
 		};
 	},
 
@@ -83987,15 +84759,15 @@ var Quotes = React.createClass({
 	componentWillReceiveProps: function (nextProps) {
 		this.getPictureImage(nextProps.quotes);
 		this.setState({
-			quotes: nextProps.quotes,
-			pictures: []
+			quotes: nextProps.quotes
 		});
 	},
 
 	getPictureImage: function (quotes) {
 		var self = this;
+		if (!quotes || quotes.length === 0) return this.setState({ pictures: [] });
 
-		var pictures = quotes.map(function (quote) {
+		var pictures = (quotes || []).map(function (quote) {
 			var trady = quote.trady || {};
 			var id = trady.id || '';
 			var trady_company = trady.trady_company || {};
@@ -84021,9 +84793,12 @@ var Quotes = React.createClass({
 			React.createElement(
 				"p",
 				null,
-				"Quotes (",
-				quotes.length,
-				")"
+				React.createElement(
+					"span",
+					{ className: "index circle" },
+					quotes.length
+				),
+				"Quotes"
 			),
 			React.createElement(
 				"div",
@@ -84038,6 +84813,11 @@ var Quotes = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "user seven columns" },
+							React.createElement(
+								"span",
+								{ className: "index quote circle" },
+								index + 1
+							),
 							React.createElement(
 								"span",
 								{ className: "icon-user" },
@@ -84056,7 +84836,8 @@ var Quotes = React.createClass({
 									),
 									showStatus && React.createElement(
 										"button",
-										{ className: 'button-default ' + status },
+										{
+											className: 'button-default status ' + status },
 										React.createElement(
 											"span",
 											null,
@@ -84074,8 +84855,9 @@ var Quotes = React.createClass({
 								)
 							)
 						),
-						!!self.current_user && React.createElement(ActionQuote, {
+						!!self.current_user && React.createElement(ActionQuote, _extends({}, self, {
 							quote: quote,
+							showView: true,
 							key: quote.id,
 							landlord: self.landlord,
 							keyLandlord: self.keyLandlord,
@@ -84086,7 +84868,163 @@ var Quotes = React.createClass({
 								return self.viewQuote(key, item);
 							},
 							current_user_show_quote_message: self.current_user_show_quote_message
-						})
+						}))
+					);
+				})
+			)
+		);
+	}
+});
+
+var QuoteRequests = React.createClass({
+	displayName: "QuoteRequests",
+
+	getInitialState: function () {
+
+		return {
+			quote_requests: this.props.quote_requests,
+			pictures: []
+		};
+	},
+
+	componentWillMount: function () {
+		this.getPictureImage(this.state.quote_requests);
+	},
+
+	componentWillReceiveProps: function (nextProps) {
+		this.getPictureImage(nextProps.quote_requests);
+		this.setState({
+			quote_requests: nextProps.quote_requests
+		});
+	},
+
+	getPictureImage: function (quote_requests) {
+		var self = this;
+		if (!quote_requests || quote_requests.length === 0) return this.setState({ pictures: [] });
+
+		var pictures = (quote_requests || []).map(function (quote_request) {
+			var trady = quote_request.trady || {};
+			var id = trady.id || '';
+			var trady_company = trady.trady_company || {};
+			var trady_profile_image = trady.trady_profile_image || {};
+			var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+
+			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+		});
+
+		this.setState({ pictures: pictures });
+	},
+
+	render: function () {
+		var _state2 = this.state;
+		var quote_requests = _state2.quote_requests;
+		var pictures = _state2.pictures;
+
+		var self = this.props;
+
+		return React.createElement(
+			"div",
+			{ className: "quotes m-t-lg", id: "quote_requests" },
+			React.createElement(
+				"p",
+				null,
+				React.createElement(
+					"span",
+					{ className: "index" },
+					quote_requests.length
+				),
+				"Quote Requests"
+			),
+			React.createElement(
+				"div",
+				{ className: "list-quote" },
+				quote_requests.map(function (quote_request, index) {
+					var quotes = quote_request.quotes || [];
+					var quoteAlready = quotes.filter(function (quote) {
+						return !quote.quote_items || quote.quote_items.length === 0;
+					});
+
+					var isLandlord = self.keyLandlord === "landlord";
+
+					var needAlreadySentButton = !isLandlord && quotes.length === 0 && !quote_request.quote_sent;
+
+					var needPhotoButton = !isLandlord && quote_request.quote_sent;
+					var needMessageButton = !isLandlord && !!self.current_user_show_quote_message;
+
+					var messageTo = self.keyLandlord === 'trady' ? 'Agent' : quote_request.trady ? quote_request.trady.name : '';
+
+					return React.createElement(
+						"div",
+						{ className: "item-quote row item-quote-request", key: index },
+						React.createElement(
+							"div",
+							{ className: "user seven columns" },
+							React.createElement(
+								"span",
+								{ className: "index quote" },
+								index + 1
+							),
+							React.createElement(
+								"span",
+								{ className: "icon-user" },
+								React.createElement(AvatarImage, { imageUri: pictures[index] })
+							),
+							React.createElement(
+								"div",
+								{ className: "info" },
+								React.createElement(
+									"div",
+									{ className: "name" },
+									React.createElement(
+										"span",
+										null,
+										quote_request.trady && quote_request.trady.name
+									)
+								),
+								React.createElement(
+									"div",
+									{ className: "description" },
+									quote_request.trady && quote_request.trady.name,
+									React.createElement("br", null),
+									quote_request.trady && quote_request.trady.trady_company && quote_request.trady.trady_company.trading_name
+								)
+							),
+							React.createElement(
+								"div",
+								{ className: "quote-request-button" },
+								needMessageButton ? React.createElement(ButtonQuoteRequestMessage, {
+									quote_request: quote_request,
+									name: messageTo,
+									viewQuote: self.viewQuote
+								}) : '',
+								needAlreadySentButton ? React.createElement(ButtonQuoteAlreadySent, _extends({}, self, {
+									quote_request: quote_request
+								})) : '',
+								needPhotoButton ? React.createElement(ModalImageUpload, _extends({
+									className: "btn btn-default"
+								}, self, {
+									onClick: function () {
+										return self.chooseQuoteRequest(quote_request);
+									}
+								})) : ''
+							)
+						),
+						!!self.current_user && React.createElement(ActionQuoteRequest, _extends({}, self, {
+							index: index,
+							quote_request: quote_request,
+							key: quote_request.id,
+							landlord: self.landlord,
+							keyLandlord: self.keyLandlord,
+							onModalWith: self.onModalWith,
+							updateStatusQuote: self.updateStatusQuote,
+							sendEmailLandlord: self.sendEmailLandlord,
+							uploadImage: self.uploadImage,
+							chooseQuoteRequest: self.chooseQuoteRequest,
+							viewQuote: function (key, item) {
+								return self.viewQuote(key, item);
+							},
+							current_user_show_quote_message: self.current_user_show_quote_message
+						}))
 					);
 				})
 			)
@@ -84123,9 +85061,9 @@ var QuotesInInvoice = React.createClass({
 	render: function () {
 		var _state$convert = this.state.convert;
 		var convert = _state$convert === undefined ? {} : _state$convert;
-		var _props = this.props;
-		var quotes = _props.quotes;
-		var trady = _props.trady;
+		var _props4 = this.props;
+		var quotes = _props4.quotes;
+		var trady = _props4.trady;
 
 		var self = this;
 
@@ -84246,22 +85184,22 @@ var DetailQuote = React.createClass({
 						null,
 						React.createElement(
 							"th",
-							null,
+							{ className: "description" },
 							"Description"
 						),
 						React.createElement(
 							"th",
-							null,
+							{ className: "price" },
 							"Pricing"
 						),
 						React.createElement(
 							"th",
-							{ className: "text-right" },
+							{ className: "text-right rate" },
 							"Rate"
 						),
 						React.createElement(
 							"th",
-							{ className: "text-right" },
+							{ className: "text-right amount" },
 							"Amount"
 						)
 					)
@@ -84280,22 +85218,22 @@ var DetailQuote = React.createClass({
 							{ key: key },
 							React.createElement(
 								"td",
-								null,
+								{ className: "description" },
 								item.item_description
 							),
 							React.createElement(
 								"td",
-								null,
+								{ className: "price" },
 								item.pricing_type
 							),
 							React.createElement(
 								"td",
-								{ className: "text-right" },
+								{ className: "text-right rate" },
 								item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2)
 							),
 							React.createElement(
 								"td",
-								{ className: "text-right" },
+								{ className: "text-right amount" },
 								item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2)
 							)
 						);
@@ -84609,7 +85547,7 @@ var ModalViewQuote = React.createClass({
 						),
 						React.createElement(
 							"div",
-							{ className: "modal-footer-quote print" },
+							{ className: "modal-footer-quote quotes" },
 							!!self.current_user && React.createElement(ActionQuote, {
 								quote: quote,
 								isModal: "true",
@@ -84760,6 +85698,205 @@ var ModalViewQuoteMessage = React.createClass({
 	}
 });
 
+var ModalViewQuoteRequestMessage = React.createClass({
+	displayName: "ModalViewQuoteRequestMessage",
+
+	getInitialState: function () {
+		return {
+			errorMessage: false
+		};
+	},
+
+	removeError: function (e) {
+		this.setState({
+			errorMessage: ''
+		});
+	},
+
+	renderError: function (error) {
+		return React.createElement(
+			"p",
+			{ id: "errorbox", className: "error" },
+			error && error[0] ? error[0] : ''
+		);
+	},
+
+	onSubmit: function (e) {
+		e.preventDefault();
+		var self = this;
+		var params = {
+			message: {
+				body: this.message && this.message.value,
+				conversation_type: 'QuoteRequest',
+				quote_request_id: this.props.quote_request.id
+			}
+		};
+
+		this.props.sendMessageQuoteRequest(params, function (err) {
+			if (err) {
+				self.setState({ errorMessage: err['body'] });
+			}
+		});
+		this.message.value = "";
+	},
+
+	render: function () {
+		var _this5 = this;
+
+		var current_user = this.props.current_user;
+		var quote_request = this.props.quote_request;
+		var errorMessage = this.state.errorMessage;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"form",
+					{ role: "form" },
+					React.createElement(
+						"div",
+						{ className: "modal-content" },
+						React.createElement(
+							"div",
+							{ className: "modal-header" },
+							React.createElement(
+								"button",
+								{
+									type: "button",
+									className: "close",
+									"data-dismiss": "modal",
+									"aria-label": "Close",
+									onClick: this.props.close
+								},
+								React.createElement(
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
+								)
+							),
+							React.createElement(
+								"h4",
+								{ className: "modal-title text-center" },
+								"Message Quote Request"
+							)
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-body" },
+							React.createElement(ContentMessage, {
+								current_user: current_user,
+								messages: quote_request.conversation && quote_request.conversation.messages ? quote_request.conversation.messages : null
+							})
+						),
+						React.createElement(
+							"div",
+							{ className: "modal-footer" },
+							React.createElement(
+								"div",
+								null,
+								React.createElement("textarea", {
+									placeholder: "Message",
+									readOnly: !current_user,
+									ref: function (rel) {
+										return _this5.message = rel;
+									},
+									onChange: this.removeError,
+									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
+								})
+							),
+							this.renderError(errorMessage),
+							React.createElement(
+								"button",
+								{
+									type: "submit",
+									onClick: this.onSubmit,
+									disabled: !current_user,
+									className: "btn btn-default success"
+								},
+								"Submit"
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalViewPhoto = React.createClass({
+	displayName: "ModalViewPhoto",
+
+	getInitialState: function () {
+		return {};
+	},
+
+	render: function () {
+		var gallery = this.props.gallery;
+
+		var self = this.props;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom modal-quote fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content quote-height", id: "print-quote" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							this.props.title || 'View Photo'
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(Carousel, { gallery: gallery, fullWidth: true })
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer-quote quotes" },
+						!!self.current_user && React.createElement(ActionQuote, {
+							isModal: "true",
+							className: "print",
+							quote: self.quote,
+							landlord: self.landlord,
+							quotes: self.quotes,
+							onModalWith: self.onModalWith,
+							keyLandlord: self.keyLandlord,
+							updateStatusQuote: self.updateStatusQuote,
+							sendEmailLandlord: self.sendEmailLandlord
+						})
+					)
+				)
+			)
+		);
+	}
+});
+
 var ModalConfirmQuote = React.createClass({
 	displayName: "ModalConfirmQuote",
 
@@ -84776,9 +85913,9 @@ var ModalConfirmQuote = React.createClass({
 	},
 
 	render: function () {
-		var _props2 = this.props;
-		var title = _props2.title;
-		var content = _props2.content;
+		var _props5 = this.props;
+		var title = _props5.title;
+		var content = _props5.content;
 
 		return React.createElement(
 			"div",
@@ -84834,6 +85971,90 @@ var ModalConfirmQuote = React.createClass({
 								"data-dismiss": "modal"
 							},
 							"Yes"
+						),
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-primary cancel",
+								onClick: this.props.close
+							},
+							"No"
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+var ModalConfirmAnyThing = React.createClass({
+	displayName: "ModalConfirmAnyThing",
+
+	confirm: function () {
+		this.props.confirm();
+	},
+
+	render: function () {
+		var _props6 = this.props;
+		var title = _props6.title;
+		var content = _props6.content;
+		var confirmText = _props6.confirmText;
+
+		return React.createElement(
+			"div",
+			{ className: "modal-custom fade" },
+			React.createElement(
+				"div",
+				{ className: "modal-dialog" },
+				React.createElement(
+					"div",
+					{ className: "modal-content" },
+					React.createElement(
+						"div",
+						{ className: "modal-header" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "close",
+								"data-dismiss": "modal",
+								"aria-label": "Close",
+								onClick: this.props.close
+							},
+							React.createElement(
+								"span",
+								{ "aria-hidden": "true" },
+								"×"
+							)
+						),
+						React.createElement(
+							"h4",
+							{ className: "modal-title text-center" },
+							title
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-body" },
+						React.createElement(
+							"p",
+							{ className: "text-center" },
+							content
+						)
+					),
+					React.createElement(
+						"div",
+						{ className: "modal-footer" },
+						React.createElement(
+							"button",
+							{
+								type: "button",
+								className: "btn btn-default success",
+								onClick: this.confirm,
+								"data-dismiss": "modal"
+							},
+							confirmText || 'Yes'
 						),
 						React.createElement(
 							"button",
@@ -88660,33 +89881,55 @@ var AddPhoto = React.createClass({
 	}
 });
 
+var AddQuotePhoto = React.createClass({
+	displayName: "AddQuotePhoto",
+
+	render: function () {
+		var _this6 = this;
+
+		return React.createElement(
+			"li",
+			null,
+			React.createElement(
+				"a",
+				{ onClick: function () {
+						return _this6.props.onModalWith('addQuotePhoto');
+					} },
+				React.createElement("i", { className: "fa fa-plus", "aria-hidden": "true" }),
+				"Add Quote Photo"
+			)
+		);
+	}
+});
+
 var ContentTradyAction = React.createClass({
 	displayName: "ContentTradyAction",
 
 	render: function () {
-		var _this6 = this;
+		var _this7 = this;
 
 		var maintenance_request = this.props.maintenance_request;
 		var trady_id = !!this.props.signed_in_trady ? this.props.signed_in_trady.id : "";
 
 		var maintenance_trady_id = maintenance_request.trady_id;
 		var link = "/quote_options?maintenance_request_id=" + maintenance_request.id + "&trady_id=" + trady_id;
+
 		if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return React.createElement(
 				"ul",
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointment, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				React.createElement(AddPhoto, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} })
 			);
 		} else if (!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
@@ -88694,13 +89937,13 @@ var ContentTradyAction = React.createClass({
 				"ul",
 				null,
 				React.createElement(CreateAppointment, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				React.createElement(AddPhoto, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} })
 			);
 		} else {
@@ -88709,19 +89952,19 @@ var ContentTradyAction = React.createClass({
 				null,
 				React.createElement(CreactOrUploadQuote, { link: link }),
 				!!this.props.assigned_trady && React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				!!this.props.assigned_trady && React.createElement(MarkJobAsCompleted, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				!!this.props.assigned_trady && React.createElement(CreateAppointment, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				React.createElement(CreateAppointmentForQuote, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} }),
 				!!this.props.assigned_trady && React.createElement(AddPhoto, { onModalWith: function (modal) {
-						return _this6.props.onModalWith(modal);
+						return _this7.props.onModalWith(modal);
 					} })
 			);
 		}
@@ -88742,7 +89985,7 @@ var TradyAction = React.createClass({
 	},
 
 	render: function () {
-		var _this7 = this;
+		var _this8 = this;
 
 		return React.createElement(
 			"div",
@@ -88772,7 +90015,7 @@ var TradyAction = React.createClass({
 					signed_in_trady: this.props.signed_in_trady,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
-						return _this7.props.onModalWith(modal);
+						return _this8.props.onModalWith(modal);
 					}
 				})
 			)
@@ -88784,7 +90027,7 @@ var TradyActionMobile = React.createClass({
 	displayName: "TradyActionMobile",
 
 	render: function () {
-		var _this8 = this;
+		var _this9 = this;
 
 		return React.createElement(
 			"div",
@@ -88817,7 +90060,7 @@ var TradyActionMobile = React.createClass({
 						signed_in_trady: this.props.signed_in_trady,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
-							return _this8.props.onModalWith(modal);
+							return _this9.props.onModalWith(modal);
 						}
 					})
 				)
@@ -89510,29 +90753,30 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 		return {
 			modal: "",
+			isModal: false,
+			isCancel: false,
+			isDecline: false,
 			quote: null,
 			invoice: null,
-			isModal: false,
-			quotes: quotes,
-			isCancel: false,
-			tradies: tradies,
-			isDecline: false,
 			appointment: null,
+			invoice_pdf_file: null,
+			appointmentUpdate: null,
+			quotes: quotes,
+			tradies: tradies,
 			comments: comments,
 			landlord: landlord,
 			invoices: invoices,
-			invoice_pdf_file: null,
-			appointmentUpdate: null,
-			appointments: appointments,
-			gallery: this.props.gallery,
-			quoteComments: quoteComments,
 			invoice_pdf_files: pdf_files,
-			trady: this.props.assigned_trady,
+			appointments: appointments,
+			quoteComments: quoteComments,
 			quote_appointments: quote_appointments,
+			gallery: this.props.gallery,
 			maintenance_request: maintenance_request,
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
 			trady_agent_conversation: trady_agent_conversation,
+			quote_requests: this.props.quote_requests,
+			trady: this.props.assigned_trady,
 			instruction: this.props.instruction ? this.props.instruction : {},
 			notification: {
 				title: "",
@@ -89611,6 +90855,40 @@ var TradyMaintenanceRequest = React.createClass({
 				quote.conversation.messages = messages;
 				self.setState({
 					quote: quote
+				});
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Message Trady",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	sendMessageQuoteRequest: function (params, callback) {
+		var self = this;
+		params.message.role = this.props.current_role.role;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_request_messages',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				var quote_request = self.state.quote_request;
+				quote_request.conversation = quote_request.conversation ? quote_request.conversation : {};
+				var messages = !!quote_request.conversation && quote_request.conversation.messages ? quote_request.conversation.messages : [];
+				messages.push(res);
+				quote_request.conversation.messages = messages;
+				self.setState({
+					quote_request: quote_request
 				});
 			},
 			error: function (err) {
@@ -89756,6 +91034,27 @@ var TradyMaintenanceRequest = React.createClass({
 				{
 					this.setState({
 						quote: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewPhoto':
+				{
+					this.setState({
+						quote_images: item
+					});
+
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'viewQuoteRequestMessage':
+			case 'confirmQuoteAlreadySent':
+				{
+					this.setState({
+						quote_request: item
 					});
 
 					this.onModalWith(key);
@@ -90066,6 +91365,16 @@ var TradyMaintenanceRequest = React.createClass({
 						});
 					}
 
+				case 'viewQuoteRequestMessage':
+					{
+						return React.createElement(ModalViewQuoteRequestMessage, {
+							close: this.isClose,
+							quote_request: this.state.quote_request,
+							current_user: this.props.current_user,
+							sendMessageQuoteRequest: this.sendMessageQuoteRequest
+						});
+					}
+
 				case 'confirmCancelAppointment':
 					{
 						var _ret = (function () {
@@ -90289,10 +91598,40 @@ var TradyMaintenanceRequest = React.createClass({
 						trady: this.state.trady
 					});
 
+				case 'confirmQuoteAlreadySent':
+					return React.createElement(ModalConfirmAnyThing, {
+						close: this.isClose,
+						confirm: this.quoteAlreadySent,
+						title: 'Quote Already Sent',
+						content: 'Are you sure you have already submitted a quote? If you want the quote request reminder emails to stop because you have already submitted a quote please click the YES button. You also have the option to quickly upload a photo of the quote that you have submitted to help out the agent. Thank you.'
+					});
+
+				case 'viewPhoto':
+					return React.createElement(ModalViewPhoto, {
+						title: 'Quote Photo',
+						close: this.isClose,
+						keyLandlord: 'trady',
+						agency: this.props.agency,
+						landlord: this.props.landlord,
+						property: this.props.property,
+						onModalWith: this.onModalWith,
+						quote: this.state.quote_request,
+						gallery: this.state.quote_images,
+						quotes: this.state.quote_requests,
+						current_user: this.props.current_user,
+						viewQuote: function (quote) {
+							return _this2.viewQuote(quote);
+						}
+					});
+
 				default:
 					return null;
 			}
 		}
+	},
+
+	chooseQuoteRequest: function (quote_request) {
+		this.setState({ quote_request: quote_request });
 	},
 
 	autoScroll: function (key) {
@@ -90300,6 +91639,85 @@ var TradyMaintenanceRequest = React.createClass({
 		$('body').animate({
 			scrollTop: offset.top
 		}, 500);
+	},
+
+	quoteAlreadySent: function () {
+		var self = this;
+		var quote_request = this.state.quote_request;
+		var current_user_role = this.props.current_user_role;
+
+		var params = {
+			trady_id: quote_request.trady_id,
+			quote_request_id: quote_request.id,
+			maintenance_request_id: quote_request.maintenance_request_id,
+			role: 'Trady'
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/quote_sent',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Quote Already Sent",
+						content: "Thank you for marking quote as 'Already Sent'. To keep the work flow automated please upload a photo of the quote. This would greatly help out you and the agent keep MaintenanceApp organized. Thank you for your time.",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Quote Already Sent",
+						content: "Quote Already Sent didn't confirm.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	uploadImage: function (images, callback) {
+		if (images.length == 0) {
+			return;
+		}
+
+		var quote_request = this.state.quote_request;
+		var current_user_role = this.props.current_user_role;
+
+		var image = images[0];
+
+		var data = {
+			picture: {
+				image: JSON.stringify(image),
+				quote_request_id: quote_request.id,
+				trady_id: quote_request.trady_id,
+				maintenance_request_id: quote_request.maintenance_request_id,
+				role: 'Trady'
+			}
+		};
+
+		var self = this;
+		$.ajax({
+			type: 'POST',
+			url: '/quote_image',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: data,
+			success: function (res) {
+				callback('You Has Successfully Upload');
+				if (res && res.quote_requests) {
+					self.setState({ quote_requests: res.quote_requests });
+				}
+			},
+			error: function (err) {}
+		});
 	},
 
 	openQuoteMesssage: function (quote_id) {
@@ -90315,6 +91733,18 @@ var TradyMaintenanceRequest = React.createClass({
 
 		if (quote) {
 			this.viewItem('viewQuoteMessage', quote);
+		}
+	},
+
+	openQuoteRequestMesssage: function (quote_request_id) {
+		var quote_requests = this.state.quote_requests;
+
+		var quote_request = quote_requests.filter(function (item) {
+			return item.id == quote_request_id;
+		})[0];
+
+		if (quote_request) {
+			this.viewItem('viewQuoteRequestMessage', quote_request);
 		}
 	},
 
@@ -90342,6 +91772,7 @@ var TradyMaintenanceRequest = React.createClass({
 		var instruction = this.state.instruction;
 
 		var body = $('body');
+
 		if (!instruction.read_instruction) {
 			body.chardinJs('toggle');
 
@@ -90381,6 +91812,10 @@ var TradyMaintenanceRequest = React.createClass({
 
 				case 'open_quote_message':
 					self.openQuoteMesssage(json.quote_message_id);
+					break;
+
+				case 'open_quote_request_message':
+					self.openQuoteRequestMesssage(json.quote_request_message_id);
 					break;
 
 				default:
@@ -90425,6 +91860,8 @@ var TradyMaintenanceRequest = React.createClass({
 		var invoices = _state5.invoices;
 		var invoice_pdf_files = _state5.invoice_pdf_files;
 		var trady = _state5.trady;
+		var quote_requests = _state5.quote_requests;
+		var quotes = _state5.quotes;
 
 		return React.createElement(
 			'div',
@@ -90455,9 +91892,22 @@ var TradyMaintenanceRequest = React.createClass({
 							return _this3.viewItem(key, item);
 						}
 					}),
-					this.props.quotes && this.props.quotes.length > 0 && React.createElement(Quotes, {
+					quote_requests && quote_requests.length && React.createElement(QuoteRequests, {
 						keyLandlord: 'trady',
-						quotes: this.state.quotes,
+						landlord: this.state.landlord,
+						quote_requests: quote_requests,
+						onModalWith: this.onModalWith,
+						uploadImage: this.uploadImage,
+						current_user: this.props.current_user,
+						chooseQuoteRequest: this.chooseQuoteRequest,
+						viewQuote: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						current_user_show_quote_message: this.props.current_user_show_quote_message
+					}),
+					false && quotes && quotes.length > 0 && React.createElement(Quotes, {
+						keyLandlord: 'trady',
+						quotes: quotes,
 						landlord: this.state.landlord,
 						onModalWith: this.onModalWith,
 						current_user: this.props.current_user,

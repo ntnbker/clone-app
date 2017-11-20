@@ -226,37 +226,26 @@
                             <tr>
                                 <td style="padding: 100px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #849aaa; text-align: leftt;">
                                     <p style="margin: 0;">
-                                      Hi <%=@trady.capitalize_name%>,
-                                      <br/>
-                                      <br/>
-          
                                       <%if @maintenance_request.agent %>
-                                        This is a friendly reminder from <%= @maintenance_request.agent.name.capitalize%> from <%=@agency.capitalize_company_name%>. We require a quote for a job we have recieved. 
-                                        <br/>
-                                        <br/>
-                                        If you have already sent a quote by email or text message to the agent, please click the button below so you may update the maintenance request by clicking the "Quote Already Sent" button and stop the reminder email. 
+                                        Hi <%= @maintenance_request.agent.name.capitalize %>, <br/>
+                                        <%= @landlord.capitalize_name %> the landlord has approved a work order. To view the maintenance request and send the work order to a tradie please click the button below.
                                       <%elsif @maintenance_request.agency_admin %>
-                                        This is a friendly reminder from <%= @maintenance_request.agency_admin.first_name.capitalize %> from <%=@agency.capitalize_company_name%>. We require a quote for a job we have recieved. 
-                                        <br/>
-                                        <br/>
-                                        If you have already sent a quote by email or text message to the agent, please click the button below so you may update the maintenance request by clicking the "Quote Already Sent" button and stop the reminder email.  
+                                        Hi <%= @maintenance_request.agency_admin.first_name.capitalize %>, <br/>
+                                        <%= @landlord.capitalize_name %> the landlord has approved a work order. To view the maintenance request and send the work order to a tradie please click the button below.
                                       <%end%> 
-                                      <br/>
-                                      <br/>
-                                      To view the job details, create a quote, make an appointment with the tenant(s), contact agent/tenants or stop the email reminder, please click on the button below. Thank you for your time.
                                     </p>
                                     
 
                                 </td>
                             </tr>
-
-                            <tr>
+                            <%if @maintenance_request.agent %>
+                              <tr>
                                 <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
                                     <!-- Button : BEGIN -->
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
                                         <tr>
                                             <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
-                                                <%=link_to "View Maintenance Request", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+                                                <%=link_to "View Maintenance Request", agent_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_landlord_message"), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
                                                     
                                                 
                                             </td>
@@ -265,12 +254,28 @@
                                     <!-- Button : END -->
                                 </td>
                               </tr>
+                                        
+                                        
+                                          
+                                          
+                            <%elsif @maintenance_request.agency_admin%>
+                              <tr>
+                                <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
+                                    <!-- Button : BEGIN -->
+                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
+                                        <tr>
+                                            <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
+                                              <%=link_to "View Maintenance Request", agency_admin_maintenance_request_url(@maintenance_request,user_id:@user.id,message:"open_landlord_message"), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+            
                               
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!-- Button : END -->
+                                </td>
+                              </tr>
                                         
-                                        
-                                          
-                                          
-                            
+                            <%end %> 
                             
 
                         </table>

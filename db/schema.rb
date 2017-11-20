@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171019035459) do
+ActiveRecord::Schema.define(version: 20171115042520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(version: 20171019035459) do
     t.string   "conversation_type"
     t.integer  "maintenance_request_id"
     t.integer  "quote_id"
+    t.integer  "quote_request_id"
   end
 
   create_table "current_roles", force: :cascade do |t|
@@ -319,6 +320,7 @@ ActiveRecord::Schema.define(version: 20171019035459) do
     t.text     "availability_and_access"
     t.string   "work_order_number"
     t.string   "agency_business_name"
+    t.text     "preapproved_note"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -344,6 +346,13 @@ ActiveRecord::Schema.define(version: 20171019035459) do
     t.string  "address"
   end
 
+  create_table "quote_images", force: :cascade do |t|
+    t.integer  "quote_id"
+    t.text     "image_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "quote_items", force: :cascade do |t|
     t.integer "quote_id"
     t.string  "item_description"
@@ -359,6 +368,7 @@ ActiveRecord::Schema.define(version: 20171019035459) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "quote_id"
+    t.boolean  "quote_sent"
   end
 
   create_table "quotes", force: :cascade do |t|
@@ -374,6 +384,8 @@ ActiveRecord::Schema.define(version: 20171019035459) do
     t.boolean  "forwarded_to_landlord"
     t.string   "quote_number"
     t.text     "trady_quote_reference"
+    t.boolean  "trady_fee"
+    t.integer  "quote_request_id"
   end
 
   create_table "roles", force: :cascade do |t|

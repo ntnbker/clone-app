@@ -3,6 +3,7 @@ class Quote < ApplicationRecord
   belongs_to :maintenance_request
   belongs_to :quote_request
   has_many :quote_items, inverse_of: :quote
+  has_one :quote_image
   accepts_nested_attributes_for :quote_items, allow_destroy: true
   has_one :conversation
   validates_associated :quote_items

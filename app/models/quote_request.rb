@@ -1,8 +1,8 @@
 class QuoteRequest < ApplicationRecord
   belongs_to :maintenance_request
   belongs_to :trady
-  has_one :quote
-
+  has_many :quotes, -> { where delivery_status: true }
+  has_one :conversation
 
 
   def self.tradies_with_quote_requests(maintenance_request_id)
@@ -13,6 +13,10 @@ class QuoteRequest < ApplicationRecord
 
     tradies = Trady.where(id:trady_ids)
     return tradies.as_json
+  end
+
+  def self.submitted_quote
+    self.quotes.where(delivery_status: true).distinct
   end
 
 

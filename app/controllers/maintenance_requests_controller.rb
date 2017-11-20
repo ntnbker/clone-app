@@ -371,15 +371,40 @@ class MaintenanceRequestsController < ApplicationController
     end 
   end
 
+  def preapproved
+    
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    
+
+    
+    if !params[:preapproved_note].empty? 
+      maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
+
+      if current_user.logged_in_as("Landlord")
+        AgentLandlordApprovedWorkOrderEmailWorker.perform_async(maintenance_request.id)
+      end 
+      maintenance_request.update_attribute(:preapproved_note, params[:preapproved_note])
+      respond_to do |format|
+        format.json {render :json=>{:preapproved_note=>params[:preapproved_note]}}
+      end
+    else
+      respond_to do |format|
+        format.json {render :json=>{errors:"Note must not be blank thank you."}}
+      end 
+    end 
+      
+  end
+
 
 
   def duplicate
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    @tenant = @maintenance_request.tenants.first
     @maintenance_request_duplicate = @maintenance_request.dup
     @maintenance_request_duplicate.trady_id = nil
     @maintenance_request_duplicate.save
     @images = @maintenance_request.images
-
+    TenantMaintenanceRequest.create(tenant_id:@tenant.id, maintenance_request_id:@maintenance_request_duplicate.id)
 
     @images.each do |image|
       image_duplicate = image.dup
@@ -387,6 +412,8 @@ class MaintenanceRequestsController < ApplicationController
       image_duplicate.maintenance_request_id = @maintenance_request_duplicate.id
       image_duplicate.save
     end 
+
+
 
     if current_user.logged_in_as("Agent")
       flash[:success] = "You have made a copy of a maintenance request. It is now listed as a new maintenance request."
@@ -403,6 +430,7 @@ class MaintenanceRequestsController < ApplicationController
     
     #@maintenance_request = MaintenanceRequest.new(split_maintenance_request_params)
     original_maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request][:maintenance_request_id])
+    tenant = original_maintenance_request.tenants.first
     errors = []
     success = []
     if original_maintenance_request.agent
@@ -423,7 +451,10 @@ class MaintenanceRequestsController < ApplicationController
       
       @maintenance_request.perform_contact_maintenance_request_validation = false
       if @maintenance_request.valid?
+
+
         @maintenance_request.save
+        TenantMaintenanceRequest.create(tenant_id:tenant.id, maintenance_request_id:@maintenance_request.id)
         # ActionStatus.create(maintenance_request_status:"New",agent_status:"Initiate Maintenance Request",action_category:"Action Required" , maintenance_request_id:@maintenance_request.id)
         success.push(@maintenance_request)
       else

@@ -152,7 +152,10 @@ var DropDownMobileList = React.createClass({
   componentDidMount: function() {
     const self = this;
     $(document).bind('click', function(e) {
-      if (!e.target.matches('#' + self.props.id)) {
+      const match = e.target.matches
+                  ? e.target.matches('#' + self.props.id)
+                  : e.target.msMatchesSelector('#' + self.props.id);
+      if (!match) {
         self.onDrop('over');
       }
     });
@@ -389,6 +392,11 @@ var ListMaintenanceRequest = React.createClass({
           title: "Maintenance Request",
           value: "Initiate Maintenance Request",
           count: this.props.new_maintenance_requests_count,
+        },
+        {
+          title: "Send Work Order",
+          value: "Send Work Order",
+          count: this.props.send_work_order_count
         },
         {
           title: "Quote Requested",
@@ -828,7 +836,10 @@ var DropforSortDate = React.createClass({
 
   componentDidMount: function() {
     window.onclick = function(e) {
-      if (!e.target.matches('.btn-show')) {
+      const match = e.target.matches
+                  ? e.target.matches('#' + self.props.id)
+                  : e.target.msMatchesSelector('#' + self.props.id);
+      if (!match) {
         var myDropdown = document.getElementById("menu");
           if (myDropdown && myDropdown.classList.contains('show')) {
             myDropdown.classList.remove('show');
