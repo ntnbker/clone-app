@@ -262,5 +262,23 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Work order approved for - #{@property.property_address}.")
   end
 
+  def notify_agent_about_landlord_deferring_maintenance(maintenance_request)
+    @maintenance_request = maintenance_request
+
+    @property = @maintenance_request.property
+    @landlord = @property.landlord
+    @trady = @maintenance_request.trady
+    if @maintenance_request.agent 
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end
+
+    # track user: @user
+    mail(to:email, subject:"Landlord has deferred maintenance for - #{@property.property_address}.")
+  end
+
 end 
 
