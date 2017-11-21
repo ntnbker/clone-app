@@ -748,7 +748,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					return (
 						<ModalConfirmDefere
 							title="Defere"
-							content="Thank you for deferring the maintenance request. An email has been sent to the agent to inform them."
+							content="Thank you. An email has been sent to the agent letting them know you want to defer this maintenance. on your property"
 							close={this.isClose}
 							confirm={this.confirmDefere}
 						/>

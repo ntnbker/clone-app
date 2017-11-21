@@ -187,6 +187,16 @@ span.index {
         @include justify-content(flex-end);
         margin-right: 20px;
       }
+      .work-order-for, .agency-info {
+        flex: 1;
+        .title {
+          font-weight: bold;
+          font-size: 15px;
+        }
+        .detail {
+          display: flex;
+        }
+      }
     }
     .readonly {
       background-color: $color-grey;
@@ -242,9 +252,15 @@ span.index {
     }
     .modal-body {
       position: relative;
-      padding: 15px;
+      padding: 13px;
       overflow: hidden;
       text-align: center;
+      &.work-order-detail {
+        text-align: left;
+        p {
+          margin-bottom: 10px;
+        }
+      }
       p:first-child {
         text-transform: initial;
       }
@@ -375,6 +391,7 @@ span.index {
         border: none;
         color: $color-white;
         text-transform: capitalize;
+        margin-bottom: 10px;
       }
       .textarea-message {
         width: 100%;
@@ -504,7 +521,6 @@ span.index {
       }
       .assign {
         float: right;
-        position: relative;
       }
     }
     .info .actions button.edit-detail {
@@ -1508,7 +1524,7 @@ span.index {
         font-size: 16px;
       }
       .info .actions {
-        width: 95%;
+        width: 83%;
         float: left;
         // overflow: hidden;
         margin-top: 10px;
@@ -1523,6 +1539,11 @@ span.index {
       .content .slider-custom .swiper-pagination .swiper-pagination-bullet {
         width: 20px;
         height: 5px;
+      }
+      @media (max-width: 370px) {
+        .info .actions {
+          width: 89%;
+        }
       }
     }
     .sidebar {
@@ -1610,7 +1631,8 @@ span.index {
       @include justify-content(flex-start);
     }
     .dropdown-status {
-      width: 330px;
+      width: 290px;
+      margin-top: 90px;
     }
   }
   @media (min-width: 481px) and (max-width: 640px) {
@@ -1789,9 +1811,9 @@ span.index {
       display: block;
     }
   }
-  @media (min-width: 720px) and (max-width: 900px) {
+  @media (min-width: 776px) and (max-width: 900px) {
     .dropdown-assign {
-      right: 6px;
+      right: 76px;
       &:after {
         right: 6%;
         left: unset;

@@ -49,8 +49,26 @@ var AssignTrady = React.createClass({
 
 
 var ModalViewTrady = React.createClass({
+  getInitialState: function() {
+    const {tenant, agency, agent, trady, maintenance_request} = this.filterData(this.props);
+
+    return { tenant, agency, agent, trady, maintenance_request };
+  },
+
+  filterData({ agency, tenants, trady, maintenance_request }) {
+    const agent = {
+      name: maintenance_request.agent_name,
+      phone: maintenance_request.agent_mobile,
+    };
+    const tenant = tenants.filter(t => t.id === maintenance_request.tenant_id);
+
+    return { tenant, agency, agent, trady, maintenance_request };
+  },
+
 	render: function() {
-		const {trady} = this.props;
+    const {
+      tenant, agency, agent, trady, maintenance_request
+    } = this.state;
 
     trady['trady_company'] = trady['trady_company'] || {};
 
@@ -63,38 +81,68 @@ var ModalViewTrady = React.createClass({
 				<div className="modal-dialog">
 					<div className="modal-content"  id="print-invoice">
 						<div className="modal-header">
-							<div className="logo">
-                <span className="icon-user">
-                  <AvatarImage id="logo" imageUri={image_url} />
-                </span>
-							</div>
-							<div className="info-trady">
-								<p>
-									<span>
-										{trady.company_name}
-									</span>
-								</p>
-								<p>
-									<span>
-										{trady.trady_company && trady.trady_company.abn}
-									</span>
-								</p>
-								<p>
-									<span>
-										{trady.trady_company && trady.trady_company.address}
-									</span>
-								</p>
-								<p>
-									<span>
-										{trady.trady_company && trady.trady_company.mobile_number}
-									</span>
-								</p>
-								<p>
-									<span>
-										{trady.trady_company && trady.trady_company.email}
-									</span>
-								</p>
-							</div>
+            <div className="work-order-for">
+              <div className="title">
+                WORK ORDER FOR:
+              </div>
+              <div className="detail">
+                <div className="logo">
+                  <span className="icon-user">
+                    <AvatarImage id="logo" imageUri={image_url} />
+                  </span>
+                </div>
+                <div className="info-trady">
+                  <p>
+                    <span>
+                      {trady.company_name}
+                    </span>
+                  </p>
+                  <p>
+                    <span>
+                      {trady.trady_company && trady.trady_company.abn}
+                    </span>
+                  </p>
+                  <p>
+                    <span>
+                      {trady.trady_company && trady.trady_company.address}
+                    </span>
+                  </p>
+                  <p>
+                    <span>
+                      {trady.trady_company && trady.trady_company.mobile_number || trady.mobile}
+                    </span>
+                  </p>
+                  <p>
+                    <span>
+                      {trady.trady_company && trady.trady_company.email || trady.email}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="agency-info">
+              <div className="title">
+                FROM AGENCY:
+              </div>
+              <div className="info-trady">
+                <p>
+                  {agency && agency.address}
+                </p>
+                <p>
+                  {agency && agency.phone}
+                </p>
+                <p className="font-bold">
+                    Agent Information:
+                </p>
+                <p>
+                  {agent && agent.name}
+                </p>
+                <p>
+                  {agent && agent.phone}
+                </p>
+              </div>
+            </div>
+
 							<button
 								type="button"
 								className="close"
@@ -105,6 +153,17 @@ var ModalViewTrady = React.createClass({
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
+
+            <div className="modal-body work-order-detail">
+              <p>
+                <span className="font-bold">Approval Note: </span>
+                {maintenance_request && maintenance_request.preapprove_note}
+              </p>
+              <p>
+                <span className="font-bold">Description: </span>
+                {maintenance_request && maintenance_request.maintenance_description}
+              </p>
+            </div>
 						<div className="footer">
 							<div className="bank">
 								<div>
@@ -124,24 +183,24 @@ var ModalViewTrady = React.createClass({
 									<span>{trady.trady_company && trady.trady_company.account_name}</span>
 								</p>
 							</div>
-							<div className="contact">
-								<div>
-									<i className="fa fa-envelope-o" />
-									<p className="font-bold">Mail</p>
-								</div>
-								<p className="font-bold">
-									Make your cheque payable to:
-								</p>
-								<p>
-									{trady.trady_company && trady.trady_company.account_name}
-								</p>
-								<p className="font-bold">
-									Detach this section and mail with your cheque to:
-								</p>
-								<p>
-									{trady.trady_company && trady.trady_company.address}
-								</p>
-							</div>
+              <div className="contact">
+                <div>
+                  <i className="fa fa-envelope-o" />
+                  <p className="font-bold">Mail</p>
+                </div>
+                <p className="font-bold">
+                  Make your cheque payable to:
+                </p>
+                <p>
+                  {trady.trady_company && trady.trady_company.account_name}
+                </p>
+                <p className="font-bold">
+                  Detach this section and mail with your cheque to:
+                </p>
+                <p>
+                  {trady.trady_company && trady.trady_company.address}
+                </p>
+              </div>
 						</div>
 					</div>
 				</div>
