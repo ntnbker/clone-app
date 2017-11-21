@@ -33,6 +33,12 @@ var ContentLandlordAction = React.createClass({
 						Approve Job
 					</a>
 				</li>
+				<li>
+					<a onClick={() => this.props.onModalWith('defere')}>
+						<i className="icon-send" aria-hidden="true" />
+						Defere
+					</a>
+				</li>
 			</ul>
 		);
 	}
@@ -186,6 +192,52 @@ var ModalApproveJob = React.createClass({
 							</div>
 						</div>
 					</form>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalConfirmDefere = React.createClass({
+	confirm: function() {
+		this.props.confirm();
+	},
+
+	render: function() {
+		const {title, content, confirmText} = this.props;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<button
+								type="button"
+								className="close"
+								data-dismiss="modal"
+								aria-label="Close"
+								onClick={this.props.close}
+							>
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 className="modal-title text-center">{title}</h4>
+						</div>
+						<div className="modal-body">
+							<p className="text-center">{content}</p>
+						</div>
+						<div className="modal-footer">
+							<button
+								type="button"
+								className="btn btn-default success"
+								onClick={this.confirm}
+								data-dismiss="modal"
+							>{confirmText || 'Yes'}</button>
+							<button
+								type="button"
+								className="btn btn-primary cancel"
+								onClick={this.props.close}
+							>No</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		);
