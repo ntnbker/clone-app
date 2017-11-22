@@ -946,6 +946,16 @@ var ModalRequestModal = React.createClass({
 								}
 							</div>
 							<div className="modal-footer">
+								{ this.props.keyTitle === 'request-quote' &&
+									<div className="row">
+										<button
+											className="btn btn-primary cancel"
+											onClick={() => this.props.viewQuote('justSendMeOne')}
+										>
+											JUST SEND ME ONE!
+										</button>
+									</div>
+								}
 								<button
 									type="button"
 									onClick={this.props.close}
@@ -1006,8 +1016,10 @@ var MaintenanceRequest = React.createClass({
 			comments  	 	 		 			 	 : comments,
 			logs  	 	 		 						 : this.props.logs,
 			invoice_pdf_file  	 	 		 : null,
+			agency 										 : this.props.agency,
 			quotes  	 	 		 					 : this.props.quotes,
 			status  	 	 		 					 : this.props.status,
+			tenants 									 : this.props.tenants,
 			tradies  	 	 		 					 : this.props.tradies,
 			gallery  	 	 		 					 : this.props.gallery,
 			quoteComments  	 	 		 		 : quoteComments,
@@ -2222,6 +2234,7 @@ var MaintenanceRequest = React.createClass({
 							requestQuote={this.requestQuote}
 							assigned_trady={this.state.trady}
 							maintenance_request={this.state.maintenance_request}
+							viewItem={this.viewItem}
 						/>
 					);
 				}
@@ -2234,6 +2247,7 @@ var MaintenanceRequest = React.createClass({
 							tradies={this.state.tradies}
 							requestQuote={this.sendWorkOrder}
 							maintenance_request={this.state.maintenance_request}
+							viewItem={this.viewItem}
 						/>
 					);
 				}
@@ -2397,6 +2411,9 @@ var MaintenanceRequest = React.createClass({
 						<ModalViewTrady
 							close={this.isClose}
 							trady={this.state.trady}
+							maintenance_request={this.state.maintenance_request}
+							agency={this.state.agency}
+							tenants={this.state.tenants}
 						/>
 					);
 
