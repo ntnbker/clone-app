@@ -13,8 +13,8 @@ class TradyReminderWorkOrderAssignedAppointmentRequiredWorker
     
 
     
-     maintenance_requests = MaintenanceRequest.all.includes(:trady,:quotes,property:[:landlord]).joins(:action_status).where(:action_statuses => { :agent_status =>"Quote Approved Tradie To Organise Appointment" }).distinct
-
+     maintenance_requests = MaintenanceRequest.all.where.not(trady_id: nil).includes(:trady,:quotes,property:[:landlord]).joins(:action_status).where(:action_statuses => { :agent_status =>"Quote Approved Tradie To Organise Appointment" }).distinct
+     # where trady is not nil 
 
      maintenance_requests.each do |maintenance_request|
       
@@ -24,8 +24,8 @@ class TradyReminderWorkOrderAssignedAppointmentRequiredWorker
 
       
 
-          
-            TradyMailer.reminder_work_order_assigned_appointment_required(maintenance_request, trady, property).deliver
+            
+      TradyMailer.reminder_work_order_assigned_appointment_required(maintenance_request, trady, property).deliver
           
 
       #LandlordMailer.reminder_quote_recieved_awaiting_landlord_approval(maintenance_request, landlord, property).deliver
