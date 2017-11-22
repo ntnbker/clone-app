@@ -212,7 +212,7 @@ class AgentMailer < ActionMailer::Base
 
   end
 
-  def agent_outstanding_maintenance_requests(agent, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count)
+  def agent_outstanding_maintenance_requests(agent, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count, send_work_order_count)
     @agent = agent
     @new_count = new_count
     @quote_requested_count= quote_requested_count 
@@ -220,6 +220,7 @@ class AgentMailer < ActionMailer::Base
     @new_invoice_count = new_invoice_count
     @cancelled_work_order_count= cancelled_work_order_count
     @deferred_maintenance_request_count = deferred_maintenance_request_count
+    @send_work_order_count = send_work_order_count
     email = agent.email 
     
 
