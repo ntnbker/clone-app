@@ -58,7 +58,7 @@ var ModalViewTrady = React.createClass({
   },
 
   filterData({ agency, tenants = [], trady, maintenance_request, property = {} }) {
-    debugger
+
     const agent = {
       name: maintenance_request.agent_name,
       phone: maintenance_request.agent_mobile,
@@ -80,7 +80,6 @@ var ModalViewTrady = React.createClass({
 
     const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 
-    debugger
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
