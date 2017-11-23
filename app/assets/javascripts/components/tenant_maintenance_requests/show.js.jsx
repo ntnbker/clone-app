@@ -755,7 +755,7 @@ var TenantMaintenanceRequest = React.createClass({
 		const {appointments, quote_appointments, landlord_appointments} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
-				<div className="main-summary">
+				<div className="main-summary dontprint">
 					<div className="section">
 						<ItemMaintenanceRequest
 							gallery={this.state.gallery}

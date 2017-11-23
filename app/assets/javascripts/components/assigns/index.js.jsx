@@ -69,6 +69,10 @@ var ModalViewTrady = React.createClass({
     return { tenant, agency, agent, trady, maintenance_request, property };
   },
 
+  printWork() {
+    window.print();
+  },
+
 	render: function() {
     const {
       tenant, agency, agent, trady, maintenance_request, property
@@ -83,7 +87,7 @@ var ModalViewTrady = React.createClass({
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
-					<div className="modal-content"  id="print-invoice">
+					<div className="modal-content"  id="print-work-order">
 						<div className="modal-header modal-quote-header">
               <div className="top-part">
                 <div className="work-order-for left">
@@ -134,7 +138,7 @@ var ModalViewTrady = React.createClass({
 
     						<button
     							type="button"
-    							className="close"
+    							className="close dontprint"
     							data-dismiss="modal"
     							aria-label="Close"
     							onClick={this.props.close}
@@ -234,6 +238,9 @@ var ModalViewTrady = React.createClass({
                 </p>
               </div>
 						</div>
+            <div className="footer dontprint">
+              <ButtonPrint printQuote={this.printWork} />
+            </div>
 					</div>
 				</div>
 			</div>

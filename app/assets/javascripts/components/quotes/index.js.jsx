@@ -868,6 +868,8 @@ var ModalViewQuote = React.createClass({
 	},
 
 	printQuote: function() {
+		$('#print-quote').printElement();
+		return;
 		var contents = $('#print-quote').html();
 		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
 								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +

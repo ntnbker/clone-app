@@ -767,3 +767,16 @@ footer {
     padding: 0 30px;
   }
 }
+
+@media print {
+  .dontprint {
+    display: none !important;
+  }
+  .modal-custom .modal-dialog {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: fixed;
+    top: 0;
+  }
+}

@@ -1321,7 +1321,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 		return (
 			<div className="summary-container-index" id="summary-container-index">
-				<div className="main-summary">
+				<div className="main-summary dontprint">
 					{
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
 							<div className="section show-waring">

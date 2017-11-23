@@ -75,7 +75,7 @@ var Footer = React.createClass({
     },
 
     render: function() {
-        return <div id="footer">
+        return <div  className="dontprint" id="footer">
             { this.props.expanded
             ? this.footerForExpanded()
             : this.footer() }

@@ -394,7 +394,7 @@ var Header = React.createClass({
 
     render: function() {
       return (
-        <div>
+        <div className="dontprint">
           <ShowMessage position="header" />
           { this.props.expanded ?
               this.header(true)

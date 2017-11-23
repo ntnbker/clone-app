@@ -2598,7 +2598,7 @@ var MaintenanceRequest = React.createClass({
 
 		return (
 			<div className="summary-container-index" id="summary-container-index">
-				<div className="main-summary">
+				<div className="main-summary dontprint">
 					<div className="section">
 						<ItemMaintenanceRequest
 							status={this.state.status}
