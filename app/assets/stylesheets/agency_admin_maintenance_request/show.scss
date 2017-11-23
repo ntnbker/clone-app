@@ -205,6 +205,9 @@ span.index {
       padding: 15px;
       border-bottom: 1px solid #e5e5e5;
       background-color: $color-grey-dark;
+      &.modal-quote-header {
+        flex-direction: column;
+      }
       .modal-title {
         margin-bottom: 0px;
         color: $color-white;
@@ -242,6 +245,9 @@ span.index {
         &:hover {
           opacity: 1;
         }
+      }
+      .top-part {
+        @include flexbox;
       }
     }
     .bg-success {

@@ -692,6 +692,8 @@ var ModalRequestModal = React.createClass({
 	},
 
 	removeError: function(e) {
+		const { trady } = this.state;
+
 		var key = e.target.id;
 		var errorField = {
 			'name'   : 'errorName',
@@ -700,7 +702,7 @@ var ModalRequestModal = React.createClass({
 			'company': 'errorCompany',
 		}[key];
 
-		var keyField = key === 'company' ? 'company_name' : key;
+		var keyField = (key === 'company' ? 'company_name' : key);
 		// if (!errorField || !this.state[errorField]) return;
 		this.setState({ [errorField]: '', trady: { ...trady, [keyField]: e.target.value } });
 	},
@@ -815,7 +817,6 @@ var ModalRequestModal = React.createClass({
 
 		const style = { background: isAdd ? 'none' : '#f2f2f2' };
 		const isAssigned = !!assignedTrady;
-
 		const tradies = isAssigned ? [assignedTrady] : this.props.tradies;
 
 		return (
@@ -899,7 +900,7 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Name"
 														ref={e => this.name = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.removeError}
+														onChange={self.removeError}
 														value={trady.name || ""}
 														className={"input-custom u-full-width " + (this.state.errorName && "has-error")}
 													/>
@@ -918,7 +919,7 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Email"
 														ref={e => this.email = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.removeError}
+														onChange={self.removeError}
 														value={trady.email || ""}
 														className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")}
 													/>
@@ -934,7 +935,7 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Mobile"
 														ref={e => this.mobile = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.removeError}
+														onChange={self.removeError}
 														value={trady.mobile || ""}
 														onKeyPress={(e) => this.checkLength(e)}
 														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")}

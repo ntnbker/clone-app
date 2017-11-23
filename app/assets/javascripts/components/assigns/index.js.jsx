@@ -80,78 +80,83 @@ var ModalViewTrady = React.createClass({
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
 					<div className="modal-content"  id="print-invoice">
-						<div className="modal-header">
-            <div className="work-order-for">
-              <div className="title">
-                WORK ORDER FOR:
-              </div>
-              <div className="detail">
-                <div className="logo">
-                  <span className="icon-user">
-                    <AvatarImage id="logo" imageUri={image_url} />
-                  </span>
+						<div className="modal-header modal-quote-header">
+              <div className="top-part">
+                <div className="work-order-for">
+                  <div className="detail">
+                    <div className="logo">
+                      <span className="icon-user">
+                        <AvatarImage id="logo" imageUri={image_url} />
+                      </span>
+                    </div>
+                    <div className="info-trady">
+                      <p>
+                        <span>
+                          {trady.company_name}
+                        </span>
+                      </p>
+                      <p>
+                        <span>
+                          {trady.trady_company && trady.trady_company.abn}
+                        </span>
+                      </p>
+                      <p>
+                        <span>
+                          {trady.trady_company && trady.trady_company.address}
+                        </span>
+                      </p>
+                      <p>
+                        <span>
+                          {trady.trady_company && trady.trady_company.mobile_number || trady.mobile}
+                        </span>
+                      </p>
+                      <p>
+                        <span>
+                          {trady.trady_company && trady.trady_company.email || trady.email}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="info-trady">
-                  <p>
-                    <span>
-                      {trady.company_name}
-                    </span>
-                  </p>
-                  <p>
-                    <span>
-                      {trady.trady_company && trady.trady_company.abn}
-                    </span>
-                  </p>
-                  <p>
-                    <span>
-                      {trady.trady_company && trady.trady_company.address}
-                    </span>
-                  </p>
-                  <p>
-                    <span>
-                      {trady.trady_company && trady.trady_company.mobile_number || trady.mobile}
-                    </span>
-                  </p>
-                  <p>
-                    <span>
-                      {trady.trady_company && trady.trady_company.email || trady.email}
-                    </span>
-                  </p>
+                <div className="work-order-for">
+                  <div className="detail">
+                    <div className="logo">
+                      <span className="icon-user">
+                        <AvatarImage id="logo" imageUri={image_url} />
+                      </span>
+                    </div>
+                    <div className="info-trady">
+                      <p>
+                        {agency && agency.address}
+                      </p>
+                      <p>
+                        {agency && agency.phone}
+                      </p>
+                      <p>
+                        {agent && agent.name}
+                      </p>
+                      <p>
+                        {agent && agent.phone}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="agency-info">
-              <div className="title">
-                FROM AGENCY:
-              </div>
-              <div className="info-trady">
-                <p>
-                  {agency && agency.address}
-                </p>
-                <p>
-                  {agency && agency.phone}
-                </p>
-                <p className="font-bold">
-                    Agent Information:
-                </p>
-                <p>
-                  {agent && agent.name}
-                </p>
-                <p>
-                  {agent && agent.phone}
-                </p>
-              </div>
-            </div>
 
-							<button
-								type="button"
-								className="close"
-								data-dismiss="modal"
-								aria-label="Close"
-								onClick={this.props.close}
-							>
-								<span aria-hidden="true">&times;</span>
-							</button>
+    						<button
+    							type="button"
+    							className="close"
+    							data-dismiss="modal"
+    							aria-label="Close"
+    							onClick={this.props.close}
+    						>
+    							<span aria-hidden="true">&times;</span>
+    						</button>
+              </div>
+              <div className="bottom-part">
+                <div className="title">
+                  WORK ORDER
+                </div>
+              </div>
 						</div>
 
             <div className="modal-body work-order-detail">
