@@ -50,24 +50,28 @@ var AssignTrady = React.createClass({
 
 var ModalViewTrady = React.createClass({
   getInitialState: function() {
-    const {tenant, agency, agent, trady, maintenance_request} = this.filterData(this.props);
+    const {
+      tenant, agency, agent, trady, maintenance_request, property,
+    } = this.filterData(this.props);
 
-    return { tenant, agency, agent, trady, maintenance_request };
+    return { tenant, agency, agent, trady, maintenance_request, property };
   },
 
-  filterData({ agency, tenants, trady, maintenance_request }) {
+  filterData({ agency, tenants = [], trady, maintenance_request, property = {} }) {
+    debugger
     const agent = {
       name: maintenance_request.agent_name,
       phone: maintenance_request.agent_mobile,
+      email: maintenance_request.agent_email,
     };
-    const tenant = tenants.filter(t => t.id === maintenance_request.tenant_id);
+    const tenant = tenants.filter(t => t.id === maintenance_request.tenant_id)[0] || {};
 
-    return { tenant, agency, agent, trady, maintenance_request };
+    return { tenant, agency, agent, trady, maintenance_request, property };
   },
 
 	render: function() {
     const {
-      tenant, agency, agent, trady, maintenance_request
+      tenant, agency, agent, trady, maintenance_request, property
     } = this.state;
 
     trady['trady_company'] = trady['trady_company'] || {};
@@ -76,69 +80,56 @@ var ModalViewTrady = React.createClass({
 
     const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 
+    debugger
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
 					<div className="modal-content"  id="print-invoice">
 						<div className="modal-header modal-quote-header">
               <div className="top-part">
-                <div className="work-order-for">
-                  <div className="detail">
-                    <div className="logo">
-                      <span className="icon-user">
-                        <AvatarImage id="logo" imageUri={image_url} />
-                      </span>
-                    </div>
-                    <div className="info-trady">
-                      <p>
-                        <span>
-                          {trady.company_name}
-                        </span>
-                      </p>
-                      <p>
-                        <span>
-                          {trady.trady_company && trady.trady_company.abn}
-                        </span>
-                      </p>
-                      <p>
-                        <span>
-                          {trady.trady_company && trady.trady_company.address}
-                        </span>
-                      </p>
-                      <p>
-                        <span>
-                          {trady.trady_company && trady.trady_company.mobile_number || trady.mobile}
-                        </span>
-                      </p>
-                      <p>
-                        <span>
-                          {trady.trady_company && trady.trady_company.email || trady.email}
-                        </span>
-                      </p>
-                    </div>
+                <div className="work-order-for left">
+                  <div className="logo">
+                    <span className="icon-user">
+                      <AvatarImage id="logo" imageUri={image_url} />
+                    </span>
+                  </div>
+                  <div className="info-trady">
+                    <p>
+                        {trady.company_name}
+                    </p>
+                    <p>
+                        {trady.trady_company && trady.trady_company.abn}
+                    </p>
+                    <p>
+                        {trady.trady_company && trady.trady_company.address}
+                    </p>
+                    <p>
+                        {trady.trady_company && trady.trady_company.mobile_number || trady.mobile}
+                    </p>
+                    <p>
+                        {trady.trady_company && trady.trady_company.email || trady.email}
+                    </p>
                   </div>
                 </div>
-                <div className="work-order-for">
-                  <div className="detail">
-                    <div className="logo">
-                      <span className="icon-user">
-                        <AvatarImage id="logo" imageUri={image_url} />
-                      </span>
-                    </div>
-                    <div className="info-trady">
-                      <p>
-                        {agency && agency.address}
-                      </p>
-                      <p>
-                        {agency && agency.phone}
-                      </p>
-                      <p>
-                        {agent && agent.name}
-                      </p>
-                      <p>
-                        {agent && agent.phone}
-                      </p>
-                    </div>
+                <div className="work-order-for right">
+                  <div className="logo">
+                    <span className="icon-user">
+                      <AvatarImage id="logo" imageUri={image_url} />
+                    </span>
+                  </div>
+                  <div className="info-trady">
+                    <p>
+                      {agency && agency.company_name}
+                    </p>
+                    <p>
+                      {agency && agency.abn}
+                    </p>
+                    <p>
+                      {agency && agency.phone}
+                    </p>
+                    <p>
+                      {agency && agency.address}
+                    </p>
                   </div>
                 </div>
 
@@ -160,14 +151,51 @@ var ModalViewTrady = React.createClass({
 						</div>
 
             <div className="modal-body work-order-detail">
-              <p>
-                <span className="font-bold">Approval Note: </span>
-                {maintenance_request && maintenance_request.preapprove_note}
-              </p>
-              <p>
-                <span className="font-bold">Description: </span>
-                {maintenance_request && maintenance_request.maintenance_description}
-              </p>
+              <div className="job-contact">
+                <div className="left">
+                  <div className="job-address rect-info">
+                    <div className="title">Job Address</div>
+                    <div className="detail">
+                      <p>{property && property.property_address}</p>
+                    </div>
+                  </div>
+                  <div className="agent-contact rect-info">
+                    <div className="title">Agent Contact</div>
+                    <div className="detail">
+                      <p><span className="heading">Name:</span>{agent.name}</p>
+                      <p><span className="heading">Phone:</span>{agent.phone}</p>
+                      <p><span className="heading">Email:</span>{agent.email}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="right">
+                  <div className="invoice-detail rect-info">
+                    <div className="title">Invoice</div>
+                    <div className="detail">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="access-contact rect-info">
+                  <div className="title">Access Contacts</div>
+                  <div className="detail">
+                    <p><span className="heading">Name:</span>{tenant.name}</p>
+                    <p><span className="heading">Phone:</span>{tenant.phone}</p>
+                    <p><span className="heading">Email:</span>{tenant.email}</p>
+                  </div>
+              </div>
+              <div className="approval-note rect-info">
+                  <div className="title">Approval Note</div>
+                  <div className="detail">
+                    <p>{maintenance_request && maintenance_request.preapproved_note}</p>
+                  </div>
+              </div>
+              <div className="job-description rect-info">
+                  <div className="title">Job Description</div>
+                  <div className="detail">
+                    <p>{maintenance_request && maintenance_request.maintenance_description}</p>
+                  </div>
+              </div>
             </div>
 						<div className="footer">
 							<div className="bank">

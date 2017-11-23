@@ -187,14 +187,15 @@ span.index {
         @include justify-content(flex-end);
         margin-right: 20px;
       }
-      .work-order-for, .agency-info {
-        flex: 1;
-        .title {
-          font-weight: bold;
-          font-size: 15px;
+      .work-order-for {
+        @include flex(1);
+        @include flexbox;
+        &.left {
+          @include justify-content(flex-start);
         }
-        .detail {
-          display: flex;
+        &.right {
+          float: right;
+          @include justify-content(flex-end);
         }
       }
     }
@@ -248,6 +249,16 @@ span.index {
       }
       .top-part {
         @include flexbox;
+        margin-top: 20px;
+      }
+      .bottom-part {
+        margin-top: 20px;
+        .title {
+          width: 100%;
+          text-align: center;
+          font-weight: 600;
+          font-size: 16px;
+        }
       }
     }
     .bg-success {
@@ -262,9 +273,49 @@ span.index {
       overflow: hidden;
       text-align: center;
       &.work-order-detail {
-        text-align: left;
-        p {
-          margin-bottom: 10px;
+        @include flexbox;
+        @include flex-direction(column);
+        .job-contact {
+          @include flexbox;
+          @include flex-direction(row);
+          .left, .right {
+            @include flex(1);
+          }
+          .left {
+            @include flexbox;
+            @include flex-direction(column);
+            .job-address, .agent-contact {
+              @include flex(1);
+            }
+          }
+          .right .invoice-detail {
+            height: calc(100% - 21px);
+          }
+        }
+        .rect-info {
+          margin: 10px;
+          border: 1px solid black;
+          text-align: left;
+          > * {
+            padding: 0px 10px;
+          }
+          .title {
+            background-color: darkgray;
+            font-weight: 900;
+          }
+          .detail {
+            border-top: 1px solid black;
+            min-height: 50px;
+            height: 100%;
+            p {
+              margin: 5px 0;
+            }
+            .heading {
+              width: 70px;
+              display: inline-block;
+              font-weight: 600;
+            }
+          }
         }
       }
       p:first-child {
@@ -1593,12 +1644,39 @@ span.index {
     .modal-custom .modal-dialog {
       width: 95%;
 
-      .modal-body input{
-        width: 100%;
+      .modal-header {
+        .top-part {
+          @include flex-direction(column);
+          .right {
+            @include justify-content(flex-start);
+            margin-top: 10px;
+          }
+        }
+      }
+      .modal-body {
+        input{
+          width: 100%;
+        }
+        &.work-order-detail {
+          .job-contact {
+            .right {
+              .invoice-detail {
+                height: calc(100% - 6px);
+              }
+            }
+          }
+          .rect-info {
+            text-size: 9px;
+            margin: 2px;
+          }
+        }
       }
     }
     .modal-custom .modal-body .input-custom {
       width: 100%;
+    }
+    .modal-custom .modal-header .top-part {
+
     }
     .show-quote .detail-quote .table tr {
       word-wrap: break-word;
