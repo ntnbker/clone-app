@@ -25,8 +25,12 @@ class UploadedInvoicesController < ApplicationController
       # @file.update_attribute(:url, @file.pdf_url)
       redirect_to uploaded_invoice_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, invoice_type:invoice_type, system_plan:system_plan)
     else
-      flash[:danger] = "Something went wrong."
-      render :new
+      # flash[:danger] = "Something went wrong."
+      # render :new
+
+      respond_to do |format|
+        format.json {render :json=>{error=>@file.errors}}
+      end
     end
 
 
@@ -59,8 +63,11 @@ class UploadedInvoicesController < ApplicationController
       flash[:success] = "Thank you for uploading your invoice(s)"
       redirect_to uploaded_invoice_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, invoice_type:invoice_type, system_plan:system_plan)
     else
-      flash[:danger] = "Something went wrong."
-      render :new
+      # flash[:danger] = "Something went wrong."
+      # render :new
+      respond_to do |format|
+        format.json {render :json=>{error=>@file.errors}}
+      end
     end
 
   end
