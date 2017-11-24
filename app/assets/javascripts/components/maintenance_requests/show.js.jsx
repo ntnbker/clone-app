@@ -2413,6 +2413,7 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose}
 							trady={this.state.trady}
 							property={this.props.property}
+							agency_admin={this.props.agency_admin}
 							maintenance_request={this.state.maintenance_request}
 							agency={this.state.agency}
 							agent={this.props.agent}

@@ -51,23 +51,21 @@ var AssignTrady = React.createClass({
 var ModalViewTrady = React.createClass({
   getInitialState: function() {
     const {
-      tenant, agency, agent, trady, maintenance_request, property,
+      agency, agent, agency_admin, trady, maintenance_request, property,
     } = this.filterData(this.props);
 
-    return { tenant, agency, agent, trady, maintenance_request, property };
+    return { agency, agent, agency_admin, trady, maintenance_request, property };
   },
 
   filterData(props) {
     const  agency              = props.agency || {};
-    const  tenants             = props.tenants || [];
     const  agent               = props.agent || {};
+    const  agency_admin        = props.agency_admin || {};
     const  trady               = props.trady || {};
     const  property            = props.property || {};
     const  maintenance_request = props.maintenance_request || {};
 
-    const tenant = tenants.filter(t => t.id === maintenance_request.tenant_id)[0] || {};
-
-    return { tenant, agency, agent, trady, maintenance_request, property };
+    return { agency, agent, agency_admin, trady, maintenance_request, property };
   },
 
   printWork() {
@@ -76,7 +74,7 @@ var ModalViewTrady = React.createClass({
 
 	render: function() {
     const {
-      tenant, agency, agent, trady, maintenance_request, property
+      agency, agent, agency_admin, trady, maintenance_request, property
     } = this.state;
 
     trady['trady_company'] = trady['trady_company'] || {};
@@ -166,9 +164,9 @@ var ModalViewTrady = React.createClass({
                   <div className="agent-contact rect-info">
                     <div className="title">Agent Contact</div>
                     <div className="detail">
-                      <p><span className="heading">Name:</span>{agent.name}</p>
-                      <p><span className="heading">Phone:</span>{agent.phone}</p>
-                      <p><span className="heading">Email:</span>{agent.email}</p>
+                      <p><span className="heading">Name:</span>{agent.name || agency_admin.name}</p>
+                      <p><span className="heading">Phone:</span>{agent.phone || agency_admin.phone}</p>
+                      <p><span className="heading">Email:</span>{agent.email || agency_admin.email}</p>
                     </div>
                   </div>
                 </div>
@@ -183,9 +181,9 @@ var ModalViewTrady = React.createClass({
               <div className="access-contact rect-info">
                   <div className="title">Access Contacts</div>
                   <div className="detail">
-                    <p><span className="heading">Name:</span>{tenant.name}</p>
-                    <p><span className="heading">Phone:</span>{tenant.phone}</p>
-                    <p><span className="heading">Email:</span>{tenant.email}</p>
+                    <p><span className="heading">Name:</span>{maintenance_request.name}</p>
+                    <p><span className="heading">Phone:</span>{maintenance_request.mobile}</p>
+                    <p><span className="heading">Email:</span>{maintenance_request.email}</p>
                   </div>
               </div>
               <div className="approval-note rect-info">

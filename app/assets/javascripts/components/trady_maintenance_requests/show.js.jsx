@@ -1061,6 +1061,7 @@ var TradyMaintenanceRequest = React.createClass({
 							trady={this.state.trady}
 							maintenance_request={this.state.maintenance_request}
 							agency={this.state.agency}
+							agency_admin={this.props.agency_admin}
 							agent={this.props.agent}
 							tenants={this.props.tenants}
 							property={this.props.property}
