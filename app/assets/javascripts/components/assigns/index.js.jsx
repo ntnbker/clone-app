@@ -238,7 +238,7 @@ var ModalViewTrady = React.createClass({
                 </p>
               </div>
 						</div>
-            <div className="footer dontprint">
+            <div className="modal-body dontprint">
               <ButtonPrint printQuote={this.printWork} />
             </div>
 					</div>
