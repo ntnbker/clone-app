@@ -22,8 +22,9 @@ class UploadedQuotesController < ApplicationController
       flash[:success] = "Thank you for uploading your Quotes(s)"
       redirect_to uploaded_quote_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, quote_type:quote_type, system_plan:system_plan)
     else
-      flash[:danger] = "Something went wrong."
-      render :new
+      respond_to do |format|
+        format.json {render :json=>{:error=>@file.errors}}
+      end
     end
 
 
@@ -56,8 +57,9 @@ class UploadedQuotesController < ApplicationController
       flash[:success] = "Thank you for uploading your invoice(s)"
       redirect_to uploaded_quote_path(@file, maintenance_request_id:maintenance_request_id, trady_id:trady_id, quote_id:quote_id, quote_type:quote_type, system_plan:system_plan)
     else
-      flash[:danger] = "Something went wrong."
-      render :new
+      respond_to do |format|
+        format.json {render :json=>{:error=>@file.errors}}
+      end
     end
 
   end
