@@ -678,7 +678,7 @@ span.index {
       border-radius: 5px;
     }
     .item-quote {
-      overflow: hidden;
+      // overflow: hidden;
       &:last-child {
         // border-bottom: none;
       }
@@ -711,7 +711,7 @@ span.index {
           font-weight: 500;
           .modal-footer {
             button {
-              float: initial;
+              float: none;
             }
           }
         }
@@ -2206,7 +2206,7 @@ span.index {
         margin-left: calc(50% - 125px);
         display: flex;
         flex-direction: column;
-        float: initial;
+        float: none;
       }
     }
     .item-quote .user .quote-request-button {
@@ -2215,7 +2215,7 @@ span.index {
       width: 50%;
       display: flex;
       flex-direction: column;
-      float: initial;
+      float: none;
       button {
         margin-right: 0px;
         margin-bottom: 20px;
@@ -2242,7 +2242,7 @@ span.index {
       width: 70%;
       display: flex;
       flex-direction: column;
-      float: initial;
+      float: none;
       button {
         margin-right: 0px;
         margin-bottom: 20px;
