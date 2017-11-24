@@ -29,7 +29,8 @@ class UploadedInvoicesController < ApplicationController
       # render :new
 
       respond_to do |format|
-        format.json {render :json=>{error=>@file.errors}}
+        format.json {render :json=>{:error=>@file.errors}}
+        
       end
     end
 
@@ -66,7 +67,7 @@ class UploadedInvoicesController < ApplicationController
       # flash[:danger] = "Something went wrong."
       # render :new
       respond_to do |format|
-        format.json {render :json=>{error=>@file.errors}}
+        format.json {render :json=>{:error=>@file.errors}}
       end
     end
 
