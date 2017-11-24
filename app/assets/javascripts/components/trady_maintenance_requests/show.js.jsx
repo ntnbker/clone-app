@@ -1059,6 +1059,11 @@ var TradyMaintenanceRequest = React.createClass({
 						<ModalViewTrady
 							close={this.isClose}
 							trady={this.state.trady}
+							maintenance_request={this.state.maintenance_request}
+							agency={this.state.agency}
+							agent={this.props.agent}
+							tenants={this.props.tenants}
+							property={this.props.property}
 						/>
 					);
 

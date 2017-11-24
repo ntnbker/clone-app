@@ -2415,6 +2415,7 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 							agency={this.state.agency}
+							agent={this.props.agent}
 							tenants={this.state.tenants}
 						/>
 					);

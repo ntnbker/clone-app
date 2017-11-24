@@ -57,13 +57,14 @@ var ModalViewTrady = React.createClass({
     return { tenant, agency, agent, trady, maintenance_request, property };
   },
 
-  filterData({ agency, tenants = [], trady, maintenance_request, property = {} }) {
+  filterData(props) {
+    const  agency              = props.agency || {};
+    const  tenants             = props.tenants || [];
+    const  agent               = props.agent || {};
+    const  trady               = props.trady || {};
+    const  property            = props.property || {};
+    const  maintenance_request = props.maintenance_request || {};
 
-    const agent = {
-      name: maintenance_request.agent_name,
-      phone: maintenance_request.agent_mobile,
-      email: maintenance_request.agent_email,
-    };
     const tenant = tenants.filter(t => t.id === maintenance_request.tenant_id)[0] || {};
 
     return { tenant, agency, agent, trady, maintenance_request, property };
