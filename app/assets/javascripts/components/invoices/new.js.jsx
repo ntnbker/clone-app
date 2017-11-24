@@ -94,7 +94,7 @@ var FieldList = React.createClass({
     }
     Fields[x] = field;
 
-    const newErrors = errors.errors ? errors : handledError;
+    const newErrors = errors && errors.errors ? errors : handledError;
     const tmpFields = { ...Fields };
     this.setState({ Fields: tmpFields, errors: newErrors });
   },
