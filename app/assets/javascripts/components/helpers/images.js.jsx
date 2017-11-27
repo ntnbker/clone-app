@@ -116,7 +116,7 @@ UploadImageComponent = React.createClass({
     });
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     const img = e.target;
     const maxSize = 500000; // byte
     const self = this;
@@ -141,8 +141,12 @@ UploadImageComponent = React.createClass({
         }
       }
 
-      image.url = target_img.src
+      if (isError && target_img.src.includes('data:application/pdf')) {
+        image.isPdf = true;
+      }
+      image.url = target_img.src;
       images[key] = image;
+
       this.setState({
         images: images
       });
@@ -339,7 +343,7 @@ UploadImageComponent = React.createClass({
             type="file"
             id="input-file"
             className={"upload inputfile"}
-            accept="image/jpeg, image/png"
+            accept="image/jpeg, image/png, application/pdf"
             onChange={(e) => this._handleImageChange(e)}
           />
         </div>
@@ -374,12 +378,17 @@ UploadImageComponent = React.createClass({
                     images.map((img, index) => {
                       return (
                         <div key={index} className="img">
-                          <img
-                            src={img.url}
-                            className="img"
-                            onLoad={(e) => this.loadImage(e, img, index)}
-                            onError={(e) => this.loadImage(e, img, index)}
-                          />
+                          { !img.isPdf
+                            ? <img
+                                src={img.url}
+                                className="img"
+                                onLoad={(e) => this.loadImage(e, img, index)}
+                                onError={(e) => this.loadImage(e, img, index, true)}
+                              />
+                            : <div className="file-pdf">
+                                <i className="fa fa-file-pdf-o" />
+                              </div>
+                          }
                           <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
                         </div>
                       );

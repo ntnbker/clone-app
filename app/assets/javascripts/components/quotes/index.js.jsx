@@ -1232,12 +1232,16 @@ var ModalViewQuoteRequestMessage = React.createClass({
 
 var ModalViewPhoto = React.createClass({
 	getInitialState: function() {
-		return {};
+		const { gallery } = this.props;
+		return {
+			gallery,
+			pdf: gallery && gallery.length && gallery.filter(v => v.includes('.pdf'))[0],
+		};
 	},
 
 	render: function() {
-		const { gallery } = this.props;
-		const self 				= this.props;
+		const { pdf, gallery } = this.state;
+		const self  					 = this.props;
 
 		return (
 			<div className="modal-custom modal-quote fade">
@@ -1257,9 +1261,20 @@ var ModalViewPhoto = React.createClass({
 								{this.props.title || 'View Photo'}
 							</h4>
 						</div>
-						<div className="modal-body">
-							<Carousel gallery={gallery} fullWidth />
-						</div>
+						{ !pdf
+							? <div className="modal-body">
+									<Carousel gallery={gallery} fullWidth />
+								</div>
+							: <div className="detail-quote">
+									<div className="detail-quote">
+										<iframe
+											src={`https://docs.google.com/gview?url=${pdf.replace(/.pdf\?.*/, '')}.pdf&embedded=true`}
+											className="scroll-custom"
+											style={{ width: 'calc(100% - 4px)', height: '400px' }}
+										/>
+									</div>
+								</div>
+						}
 						<div className="modal-footer-quote quotes">
 							{ !!self.current_user &&
 								<ActionQuote
