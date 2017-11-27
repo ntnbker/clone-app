@@ -84,31 +84,41 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @all_agents = @agency.agents
     @all_agency_admins = @agency.agency_admins
     
-    if @maintenance_request.images != nil
+    if @maintenance_request.images 
       @gallery = @maintenance_request.get_image_urls
     end 
 
-    if  @maintenance_request.property.landlord != nil
+    if  @maintenance_request.property.landlord 
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end 
     
-    if @maintenance_request.agency_admin != nil
+    if @maintenance_request.agency_admin 
       @agency_admin = @maintenance_request.agency_admin
-      if @maintenance_request.agency_admin.agency.tradies !=nil
+      if @maintenance_request.agency_admin.agency.tradies 
         @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
       else 
         @all_tradies= []
       end 
     end 
 
-    if @maintenance_request.agent != nil
+    if @maintenance_request.agent 
       @agent = @maintenance_request.agent
-      if @maintenance_request.agent.agency.tradies !=nil 
+      if @maintenance_request.agent.agency.tradies 
         @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type) 
       else 
         @all_tradies= []
       end
-    end 
+    end
+
+
+
+
+
+
+
+
+
+
     
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
