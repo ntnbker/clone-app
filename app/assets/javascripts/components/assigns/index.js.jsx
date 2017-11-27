@@ -164,8 +164,8 @@ var ModalViewTrady = React.createClass({
                   <div className="agent-contact rect-info">
                     <div className="title">Agent Contact</div>
                     <div className="detail">
-                      <p><span className="heading">Name:</span>{agent.name || agency_admin.name}</p>
-                      <p><span className="heading">Phone:</span>{agent.phone || agency_admin.phone}</p>
+                      <p><span className="heading">Name:</span>{agent.name || `${agency_admin.first_name || ''} ${agency_admin.last_name || ''}`.trim()}</p>
+                      <p><span className="heading">Phone:</span>{agent.phone || agent.mobile_phone || agency_admin.mobile_phone}</p>
                       <p><span className="heading">Email:</span>{agent.email || agency_admin.email}</p>
                     </div>
                   </div>

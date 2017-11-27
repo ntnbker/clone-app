@@ -2415,7 +2415,7 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							agency_admin={this.props.agency_admin}
 							maintenance_request={this.state.maintenance_request}
-							agency={this.state.agency}
+							agency={this.props.agency}
 							agent={this.props.agent}
 							tenants={this.state.tenants}
 						/>
