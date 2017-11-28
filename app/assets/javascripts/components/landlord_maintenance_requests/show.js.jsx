@@ -11,11 +11,11 @@ var LandlordSideBarMobile = React.createClass({
 		if(key == 'action') {
 			this.setState({showAction: true});
 			this.setState({showContact: false});
-			$('#actions-full').css({'height': 250, 'border-width': 1});
+			$('#actions-full').css({'height': 270, 'border-width': 1});
 		}else {
 			this.setState({showAction: false});
 			this.setState({showContact: true});
-			$('#contacts-full').css({'height': 250, 'border-width': 1});
+			$('#contacts-full').css({'height': 270, 'border-width': 1});
 		}
 	},
 
@@ -176,6 +176,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'defere':
 			case 'approveJob':
 			case 'createAppointment': {
 				this.onModalWith(key);
@@ -483,6 +484,39 @@ var LandlordMaintenanceRequest = React.createClass({
 		});
 	},
 
+	confirmDefere: function() {
+		const self = this;
+		var params = {
+			maintenance_request_id: this.props.maintenance_request.id
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/defer_maintenance',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Defere",
+						content: "You has successfully",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Defere",
+					content: "The defere is error",
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	decline: function(appointment) {
 		this.onModalWith('confirmDeclineAppointment');
 		this.setState({
@@ -709,6 +743,17 @@ var LandlordMaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 						/>
 					)
+
+				case 'defere':
+					return (
+						<ModalConfirmDefere
+							title="Defere"
+							content="Thank you. An email has been sent to the agent letting them know you want to defer this maintenance. on your property"
+							close={this.isClose}
+							confirm={this.confirmDefere}
+						/>
+					);
+
 				default:
 					return null;
 			}
@@ -800,7 +845,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		const {appointments, quote_requests, quotes} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
-				<div className="main-summary">
+				<div className="main-summary dontprint">
 					<div className="section">
 						<ItemMaintenanceRequest
 							gallery={this.props.gallery}

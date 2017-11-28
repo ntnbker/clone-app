@@ -528,23 +528,26 @@ var ModalEditMR = React.createClass({
 			serviceError: '',
 			descriptionError: '',
 			isSuccess: false,
+			position: this.props.position,
 		};
 	},
 
 	componentWillReceiveProps(nextProps) {
 		const {
-			serviceError = '', descriptionError = '', isSuccess
+			serviceError = '', descriptionError = '', isSuccess, position
 		} = this.filterErrors(nextProps);
 
 		this.setState({
 			isSuccess,
 			serviceError,
 			descriptionError,
+			position,
 		});
 	},
 
 	filterErrors({ position, errorsForm: { errors = {}, success = [] } }) {
-		const detectedErrors = (errors && errors[position] || {}).errors || {};
+		const { x } = this.props;
+		const detectedErrors = (errors && errors[x] || {}).errors || {};
 
 		const description    = this.description.value;
 		const serviceType    = this.serviceType.value;
@@ -552,6 +555,7 @@ var ModalEditMR = React.createClass({
 		const isSuccess = !!success.filter(mr => mr.maintenance_description === description && mr.service_type === serviceType).length;
 
 		return {
+			position,
 			isSuccess: 				 this.state.isSuccess || isSuccess,
 			serviceError: 		!this.serviceType.value && detectedErrors.service_type || '',
 			descriptionError: !this.description.value && detectedErrors.maintenance_description || '',
@@ -568,8 +572,8 @@ var ModalEditMR = React.createClass({
 
 	renderServiceType(services) {
 		if (!!this.props.trady) return null;
-		const { serviceError, isSuccess } = this.state;
-		const { x }          							= this.props;
+		const { serviceError, isSuccess, position } = this.state;
+		const { x }          												= this.props;
 
 		return (
 			<div className="row m-t-lg">
@@ -579,7 +583,7 @@ var ModalEditMR = React.createClass({
 					disabled={isSuccess && 'disabled' || false}
 					ref={e => this.serviceType = e}
 					className={"form-control input-custom " + (serviceError ? 'has-error' : '')}
-					name={`maintenance_requests[${x}][service_type]`}
+					name={`maintenance_requests[${position}][service_type]`}
 					onChange={this.removeError}
 				>
 					<option value="">Service Type</option>
@@ -597,12 +601,13 @@ var ModalEditMR = React.createClass({
 					}
 				</select>
 				{this.renderError(serviceError)}
+
 			</div>
 		);
 	},
 
 	render() {
-		const { serviceError, descriptionError, isSuccess }	= this.state;
+		const { serviceError, descriptionError, isSuccess, position }	= this.state;
 		const params 								        								= this.props.params || {};
 		const { x = 0, removeField }          							= this.props;
 
@@ -612,8 +617,14 @@ var ModalEditMR = React.createClass({
 			<div className={"modal-body split-maintenance-request edit-maintenance-request " + (isSuccess ? 'mr-success' : '')}>
 				<input
 				  type="hidden"
+					disabled={isSuccess && 'disabled' || false}
 				  value={maintenance_request.id}
-				  name={`maintenance_requests[${x}][maintenance_request_id]`}
+				  name={`maintenance_requests[${position}][maintenance_request_id]`}
+				/>
+				<input
+					type="hidden"
+					value={x}
+					name={`indexes[${position}]`}
 				/>
 				{ isSuccess
 					? <div className="alert alert-success">
@@ -634,8 +645,9 @@ var ModalEditMR = React.createClass({
 					<textarea
 						disabled={isSuccess && 'disabled' || false}
 						placeholder="Enter Description"
-						name={`maintenance_requests[${x}][maintenance_description]`}
+						name={`maintenance_requests[${position}][maintenance_description]`}
 						ref={e => this.description = e}
+						defaultValue={maintenance_request.maintenance_description}
 						id="description"
 						onChange={this.removeError}
 						className={"u-full-width " + (descriptionError && "has-error")}
@@ -643,11 +655,11 @@ var ModalEditMR = React.createClass({
 				</div>
 				{this.renderError(descriptionError)}
 
-	      { !true
+	      { !false && !isSuccess
 	      ? <button
 		      	type="button"
 		      	className="button-remove button-primary red"
-		      	onClick={() => removeField(this.props.x)}
+		      	onClick={() => removeField(x)}
 		      >
 		      	Remove
 		      </button>
@@ -678,7 +690,13 @@ var ModalSplitMR = React.createClass({
 		splitSubmit(FD, function({ errors, success }) {
 			if (errors) {
 				//defined in header.js.jsx
-				const convertedErrors = errors.reduce((result, obj) => ({...result, [obj.id]: obj}), {});
+				const convertedErrors = errors.reduce((result, obj) => {
+					const fieldId = FD.get(`indexes[${obj.id}]`);
+					return {
+						...result,
+						[fieldId]: obj
+					};
+				}, {});
 				self.setState({ result: { errors: convertedErrors, success } });
 			}
 		});
