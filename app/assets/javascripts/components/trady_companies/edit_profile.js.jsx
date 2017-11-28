@@ -46,7 +46,8 @@ var TradyCompanyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-          callback(res.errors);
+          if (res.error) return callback(res.error);
+          callback();
           if (!res.errors && res.company_image) {
             self.setState({ gallery: res.company_image });
           }

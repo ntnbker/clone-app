@@ -263,12 +263,14 @@ var MaintenanceRequestsNew = React.createClass({
   },
 
   removeImage: function (index) {
-    let { images, dataImages } = this.state;
+    let { images, dataImages, errors } = this.state;
     images.splice(index, 1);
     dataImages.splice(index, 1);
+    errors['images.image'] = '';
     this.setState({
       images: images,
-      dataImages: dataImages
+      dataImages: dataImages,
+      errors
     });
   },
 
@@ -647,7 +649,8 @@ var MaintenanceRequestsNew = React.createClass({
                       <img
                         src={img.url}
                         className=""
-                        onLoad={(e, image, key) => this.loadImage(e, img, index)}
+                        onLoad={e => this.loadImage(e, img, index)}
+                        onError={e => this.loadImage(e, img, index)}
                       />
                       <a className="remove" onClick={(key) => this.removeImage(index)}>Remove</a>
                     </div>
@@ -655,6 +658,7 @@ var MaintenanceRequestsNew = React.createClass({
                 })
               }
             </div>
+            {renderError(errors['images.image'])}
           </div>
 
           {isTenant &&

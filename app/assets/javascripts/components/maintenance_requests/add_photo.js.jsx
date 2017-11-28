@@ -95,7 +95,8 @@ var ModalAddPhoto = React.createClass({
     dataImages.splice(index, 1);
     this.setState({
       images: images,
-      dataImages: dataImages
+      dataImages: dataImages,
+      error: '',
     });
     if (!dataImages.length) {
       this.setState({ uploadComplete: false });
@@ -300,6 +301,7 @@ var ModalAddPhoto = React.createClass({
 
   submit: function (e) {
     e.preventDefault();
+    const self = this;
     if (this.state.dataImages.length == 0) {
       return;
     }
@@ -324,10 +326,13 @@ var ModalAddPhoto = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
+        if (res.error) {
+          return self.setState({ error: res.error.image });
+        }
         props.notifyAddPhoto(res.all_images.length > 0 ? res.all_images : []);
       },
       error: function (err) {
-
+        self.setState({ error: err });
       }
     });
     return false;
@@ -340,7 +345,7 @@ var ModalAddPhoto = React.createClass({
   },
 
   render: function () {
-    const { images, gallery, dataImages } = this.state;
+    const { images, gallery, dataImages, error } = this.state;
 
     const uploadButton = !this.state.uploadComplete ? <div className="browse-wrap">
       <div className="title" id="title-upload">
@@ -389,7 +394,8 @@ var ModalAddPhoto = React.createClass({
                           <img
                             src={img.url}
                             className="img"
-                            onLoad={(e, image, key) => this.loadImage(e, img, index)}
+                            onLoad={e => this.loadImage(e, img, index)}
+                            onError={e => this.loadImage(e, img, index)}
                           />
                           <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
                         </div>
@@ -398,6 +404,7 @@ var ModalAddPhoto = React.createClass({
                   }
                 </div>
                 {uploadButton}
+                <p id="errorbox" className="error">{error ? error : ''}</p>
               </div>
               <div className="modal-footer">
                 <button

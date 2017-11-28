@@ -1184,7 +1184,8 @@ var TradyMaintenanceRequest = React.createClass({
 		  },
 		  data: data,
 		  success: function (res) {
-		  	callback('You Has Successfully Upload');
+        if (res.error) return callback(res.error);
+		  	callback(null, 'You Has Successfully Upload');
         if (res && res.quote_requests) {
         	self.setState({ quote_requests: res.quote_requests });
         }
