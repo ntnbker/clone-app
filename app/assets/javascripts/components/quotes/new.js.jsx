@@ -22,8 +22,8 @@ var QuoteField = React.createClass({
     if (!error || error.length === 0) return '';
     const amount = this.amount.value;
 
-    if (!amount === '') return error[0];
-    if (!/\d+/.test(amount)) return error.reverse()[0];
+    if (amount === '') return error.filter(e => e.includes('blank'))[0];
+    if (!/^\d+$/.test(amount)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 

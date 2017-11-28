@@ -835,6 +835,7 @@ var DropforSortDate = React.createClass({
   },
 
   componentDidMount: function() {
+    const self = this;
     window.onclick = function(e) {
       const match = e.target.matches
                   ? e.target.matches('#' + self.props.id)

@@ -64,6 +64,7 @@ Rails.application.routes.draw do
     post "duplicate_maintenance_request"=> "maintenance_requests#duplicate"
     post "split_maintenance_request" => "maintenance_requests#split"
     post "pre_approved"=> "maintenance_requests#preapproved"
+    post "defer_maintenance"=> "maintenance_requests#defer"
   ###################################################
   ##########MESSAGING RESOURCES/ROUTES###############
   ###################################################

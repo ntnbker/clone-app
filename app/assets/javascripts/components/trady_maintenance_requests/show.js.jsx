@@ -1059,6 +1059,12 @@ var TradyMaintenanceRequest = React.createClass({
 						<ModalViewTrady
 							close={this.isClose}
 							trady={this.state.trady}
+							maintenance_request={this.state.maintenance_request}
+							agency={this.state.agency}
+							agency_admin={this.props.agency_admin}
+							agent={this.props.agent}
+							tenants={this.props.tenants}
+							property={this.props.property}
 						/>
 					);
 
@@ -1321,7 +1327,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 		return (
 			<div className="summary-container-index" id="summary-container-index">
-				<div className="main-summary">
+				<div className="main-summary dontprint">
 					{
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
 							<div className="section show-waring">

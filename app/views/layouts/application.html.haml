@@ -12,12 +12,18 @@
     %link{:href => "https://cdnjs.cloudflare.com/ajax/libs/chardin.js/0.1.3/chardinjs.css", :rel => "stylesheet"}
     %link{:href => "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css.map", :rel => "stylesheet"}
     %link{:href => "https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.css", :rel => "stylesheet"}
+    %link{:type => "image/png", :href => "/assets/logo.png", :rel => "shortcut icon"}
     %script{:type=>"text/javascript", :src=>"https://maps.googleapis.com/maps/api/js?key=AIzaSyCRbOTNRo0sO0yxBpHdhn0NpB_p_Axmye8&libraries=places"}
 
     %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/js/swiper.min.js"}
     %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"}
     %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.4.1/moment-timezone-with-data-2010-2020.min.js"}
     %script{:type=>"text/javascript", :src=>"https://cdnjs.cloudflare.com/ajax/libs/chardin.js/0.1.3/chardinjs.min.js"}
+
+    %style{:media => "print", :type => "text/css"}
+      :cdata
+        \.dontprint
+        { display: none; }
 
     = csrf_meta_tags
 

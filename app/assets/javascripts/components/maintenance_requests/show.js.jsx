@@ -692,6 +692,8 @@ var ModalRequestModal = React.createClass({
 	},
 
 	removeError: function(e) {
+		const { trady } = this.state;
+
 		var key = e.target.id;
 		var errorField = {
 			'name'   : 'errorName',
@@ -700,7 +702,7 @@ var ModalRequestModal = React.createClass({
 			'company': 'errorCompany',
 		}[key];
 
-		var keyField = key === 'company' ? 'company_name' : key;
+		var keyField = (key === 'company' ? 'company_name' : key);
 		// if (!errorField || !this.state[errorField]) return;
 		this.setState({ [errorField]: '', trady: { ...trady, [keyField]: e.target.value } });
 	},
@@ -815,7 +817,6 @@ var ModalRequestModal = React.createClass({
 
 		const style = { background: isAdd ? 'none' : '#f2f2f2' };
 		const isAssigned = !!assignedTrady;
-
 		const tradies = isAssigned ? [assignedTrady] : this.props.tradies;
 
 		return (
@@ -899,7 +900,7 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Name"
 														ref={e => this.name = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.removeError}
+														onChange={self.removeError}
 														value={trady.name || ""}
 														className={"input-custom u-full-width " + (this.state.errorName && "has-error")}
 													/>
@@ -918,7 +919,7 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Email"
 														ref={e => this.email = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.removeError}
+														onChange={self.removeError}
 														value={trady.email || ""}
 														className={"input-custom u-full-width " + (this.state.errorEmail && "has-error")}
 													/>
@@ -934,7 +935,7 @@ var ModalRequestModal = React.createClass({
 														placeholder="Enter Mobile"
 														ref={e => this.mobile = e}
 														readOnly={!this.state.isAdd}
-														onChange={this.removeError}
+														onChange={self.removeError}
 														value={trady.mobile || ""}
 														onKeyPress={(e) => this.checkLength(e)}
 														className={"input-custom u-full-width " + (this.state.errorMobile && "has-error")}
@@ -946,6 +947,16 @@ var ModalRequestModal = React.createClass({
 								}
 							</div>
 							<div className="modal-footer">
+								{ this.props.keyTitle === 'request-quote' &&
+									<div className="row">
+										<button
+											className="btn btn-primary cancel"
+											onClick={() => this.props.viewQuote('justSendMeOne')}
+										>
+											JUST SEND ME ONE!
+										</button>
+									</div>
+								}
 								<button
 									type="button"
 									onClick={this.props.close}
@@ -1006,8 +1017,10 @@ var MaintenanceRequest = React.createClass({
 			comments  	 	 		 			 	 : comments,
 			logs  	 	 		 						 : this.props.logs,
 			invoice_pdf_file  	 	 		 : null,
+			agency 										 : this.props.agency,
 			quotes  	 	 		 					 : this.props.quotes,
 			status  	 	 		 					 : this.props.status,
+			tenants 									 : this.props.tenants,
 			tradies  	 	 		 					 : this.props.tradies,
 			gallery  	 	 		 					 : this.props.gallery,
 			quoteComments  	 	 		 		 : quoteComments,
@@ -2222,6 +2235,7 @@ var MaintenanceRequest = React.createClass({
 							requestQuote={this.requestQuote}
 							assigned_trady={this.state.trady}
 							maintenance_request={this.state.maintenance_request}
+							viewItem={this.viewItem}
 						/>
 					);
 				}
@@ -2234,6 +2248,7 @@ var MaintenanceRequest = React.createClass({
 							tradies={this.state.tradies}
 							requestQuote={this.sendWorkOrder}
 							maintenance_request={this.state.maintenance_request}
+							viewItem={this.viewItem}
 						/>
 					);
 				}
@@ -2397,6 +2412,12 @@ var MaintenanceRequest = React.createClass({
 						<ModalViewTrady
 							close={this.isClose}
 							trady={this.state.trady}
+							property={this.props.property}
+							agency_admin={this.props.agency_admin}
+							maintenance_request={this.state.maintenance_request}
+							agency={this.props.agency}
+							agent={this.props.agent}
+							tenants={this.state.tenants}
 						/>
 					);
 
@@ -2579,7 +2600,7 @@ var MaintenanceRequest = React.createClass({
 
 		return (
 			<div className="summary-container-index" id="summary-container-index">
-				<div className="main-summary">
+				<div className="main-summary dontprint">
 					<div className="section">
 						<ItemMaintenanceRequest
 							status={this.state.status}

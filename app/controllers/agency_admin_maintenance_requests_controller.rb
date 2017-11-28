@@ -84,29 +84,41 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @all_agents = @agency.agents
     @all_agency_admins = @agency.agency_admins
     
-    if @maintenance_request.images != nil
+    if @maintenance_request.images 
       @gallery = @maintenance_request.get_image_urls
     end 
 
-    if  @maintenance_request.property.landlord != nil
+    if  @maintenance_request.property.landlord 
       @landlord = Landlord.find_by(id:@maintenance_request.property.landlord.id)
     end 
     
-    if @maintenance_request.agency_admin != nil
-      if @maintenance_request.agency_admin.agency.tradies !=nil
+    if @maintenance_request.agency_admin 
+      @agency_admin = @maintenance_request.agency_admin
+      if @maintenance_request.agency_admin.agency.tradies 
         @all_tradies = @maintenance_request.agency_admin.agency.skilled_tradies_required(@maintenance_request.service_type)  
       else 
         @all_tradies= []
       end 
     end 
 
-    if @maintenance_request.agent != nil
-      if @maintenance_request.agent.agency.tradies !=nil 
+    if @maintenance_request.agent 
+      @agent = @maintenance_request.agent
+      if @maintenance_request.agent.agency.tradies 
         @all_tradies = @maintenance_request.agent.agency.skilled_tradies_required(@maintenance_request.service_type) 
       else 
         @all_tradies= []
       end
-    end 
+    end
+
+
+
+
+
+
+
+
+
+
     
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
@@ -126,7 +138,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     
 
     respond_to do |format|
-      format.json { render :json=>{hired_trady:@hired_trady, :gallery=>@gallery,:instruction=>@instruction ,:status=>@status,:quotes=> @quotes, :quote_requests=>@quote_requests,  :landlord=> @landlord,:services=>@services ,:assigned_trady=>@assigned_trady,:all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:trady_agent_conversation=>@trady_agent_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, :invoice_pdf_files=>@invoice_pdf_files,pdf_files:@pdf_files, :pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins,work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants, time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{hired_trady:@hired_trady,agent:@agent,agency_admin:@agency_admin ,:gallery=>@gallery,:instruction=>@instruction ,:status=>@status,:quotes=> @quotes, :quote_requests=>@quote_requests,  :landlord=> @landlord,:services=>@services ,:assigned_trady=>@assigned_trady,:all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:trady_agent_conversation=>@trady_agent_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, :invoice_pdf_files=>@invoice_pdf_files,pdf_files:@pdf_files, :pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins,work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants, time_and_access:@maintenance_request.availability_and_access}}
       format.html{}
     end 
 

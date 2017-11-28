@@ -395,6 +395,12 @@ class MaintenanceRequestsController < ApplicationController
       
   end
 
+  def defer
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    maintenance_request.action_status.update_attribute(:agent_status, "Defer")
+    AgentLandlordDeferredMaintenanceEmailWorker.perform_async(maintenance_request.id)
+  end
+
 
 
   def duplicate

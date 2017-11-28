@@ -187,6 +187,17 @@ span.index {
         @include justify-content(flex-end);
         margin-right: 20px;
       }
+      .work-order-for {
+        @include flex(1);
+        @include flexbox;
+        &.left {
+          @include justify-content(flex-start);
+        }
+        &.right {
+          float: right;
+          @include justify-content(flex-end);
+        }
+      }
     }
     .readonly {
       background-color: $color-grey;
@@ -195,6 +206,9 @@ span.index {
       padding: 15px;
       border-bottom: 1px solid #e5e5e5;
       background-color: $color-grey-dark;
+      &.modal-quote-header {
+        flex-direction: column;
+      }
       .modal-title {
         margin-bottom: 0px;
         color: $color-white;
@@ -233,6 +247,19 @@ span.index {
           opacity: 1;
         }
       }
+      .top-part {
+        @include flexbox;
+        margin-top: 20px;
+      }
+      .bottom-part {
+        margin-top: 20px;
+        .title {
+          width: 100%;
+          text-align: center;
+          font-weight: 600;
+          font-size: 16px;
+        }
+      }
     }
     .bg-success {
       background-color: $color-green;
@@ -242,9 +269,55 @@ span.index {
     }
     .modal-body {
       position: relative;
-      padding: 15px;
+      padding: 13px;
       overflow: hidden;
       text-align: center;
+      &.work-order-detail {
+        @include flexbox;
+        @include flex-direction(column);
+        .job-contact {
+          @include flexbox;
+          @include flex-direction(row);
+          .left, .right {
+            @include flex(1);
+          }
+          .left {
+            @include flexbox;
+            @include flex-direction(column);
+            .job-address, .agent-contact {
+              @include flex(1);
+            }
+          }
+          .right .invoice-detail {
+            height: calc(100% - 21px);
+          }
+        }
+        .rect-info {
+          margin: 10px;
+          border: 1px solid black;
+          text-align: left;
+          > * {
+            padding: 0px 10px;
+          }
+          .title {
+            background-color: darkgray;
+            font-weight: 900;
+          }
+          .detail {
+            border-top: 1px solid black;
+            min-height: 50px;
+            height: 100%;
+            p {
+              margin: 5px 0;
+            }
+            .heading {
+              width: 70px;
+              display: inline-block;
+              font-weight: 600;
+            }
+          }
+        }
+      }
       p:first-child {
         text-transform: initial;
       }
@@ -375,6 +448,7 @@ span.index {
         border: none;
         color: $color-white;
         text-transform: capitalize;
+        margin-bottom: 10px;
       }
       .textarea-message {
         width: 100%;
@@ -504,7 +578,6 @@ span.index {
       }
       .assign {
         float: right;
-        position: relative;
       }
     }
     .info .actions button.edit-detail {
@@ -605,7 +678,7 @@ span.index {
       border-radius: 5px;
     }
     .item-quote {
-      overflow: hidden;
+      // overflow: hidden;
       &:last-child {
         // border-bottom: none;
       }
@@ -638,7 +711,7 @@ span.index {
           font-weight: 500;
           .modal-footer {
             button {
-              float: initial;
+              float: none;
             }
           }
         }
@@ -1508,7 +1581,7 @@ span.index {
         font-size: 16px;
       }
       .info .actions {
-        width: 95%;
+        width: 83%;
         float: left;
         // overflow: hidden;
         margin-top: 10px;
@@ -1523,6 +1596,11 @@ span.index {
       .content .slider-custom .swiper-pagination .swiper-pagination-bullet {
         width: 20px;
         height: 5px;
+      }
+      @media (max-width: 370px) {
+        .info .actions {
+          width: 89%;
+        }
       }
     }
     .sidebar {
@@ -1566,12 +1644,39 @@ span.index {
     .modal-custom .modal-dialog {
       width: 95%;
 
-      .modal-body input{
-        width: 100%;
+      .modal-header {
+        .top-part {
+          @include flex-direction(column);
+          .right {
+            @include justify-content(flex-start);
+            margin-top: 10px;
+          }
+        }
+      }
+      .modal-body {
+        input{
+          width: 100%;
+        }
+        &.work-order-detail {
+          .job-contact {
+            .right {
+              .invoice-detail {
+                height: calc(100% - 6px);
+              }
+            }
+          }
+          .rect-info {
+            text-size: 9px;
+            margin: 2px;
+          }
+        }
       }
     }
     .modal-custom .modal-body .input-custom {
       width: 100%;
+    }
+    .modal-custom .modal-header .top-part {
+
     }
     .show-quote .detail-quote .table tr {
       word-wrap: break-word;
@@ -1610,7 +1715,8 @@ span.index {
       @include justify-content(flex-start);
     }
     .dropdown-status {
-      width: 330px;
+      width: 290px;
+      margin-top: 90px;
     }
   }
   @media (min-width: 481px) and (max-width: 640px) {
@@ -1789,9 +1895,9 @@ span.index {
       display: block;
     }
   }
-  @media (min-width: 720px) and (max-width: 900px) {
+  @media (min-width: 776px) and (max-width: 900px) {
     .dropdown-assign {
-      right: 6px;
+      right: 76px;
       &:after {
         right: 6%;
         left: unset;
@@ -2100,7 +2206,7 @@ span.index {
         margin-left: calc(50% - 125px);
         display: flex;
         flex-direction: column;
-        float: initial;
+        float: none;
       }
     }
     .item-quote .user .quote-request-button {
@@ -2109,7 +2215,7 @@ span.index {
       width: 50%;
       display: flex;
       flex-direction: column;
-      float: initial;
+      float: none;
       button {
         margin-right: 0px;
         margin-bottom: 20px;
@@ -2136,7 +2242,7 @@ span.index {
       width: 70%;
       display: flex;
       flex-direction: column;
-      float: initial;
+      float: none;
       button {
         margin-right: 0px;
         margin-bottom: 20px;
