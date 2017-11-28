@@ -46,7 +46,7 @@
 
   .left {
     width: 30%;
-    display: flex;
+    @include flexbox;
     @include flex-direction(column);
     align-items: center;
     margin: 0 5%;
@@ -97,7 +97,7 @@
     @include flex-direction(column);
     .left {
       width: 80%;
-      display: flex;
+      @include flexbox;
       @include flex-direction(column);
       align-items: center;
       margin-left: 10%;

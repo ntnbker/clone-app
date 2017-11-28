@@ -81,7 +81,7 @@ header {
       padding: 5px 0;
       .search {
         @include flex(1);
-        justify-content: center;
+        @include justify-content(center);
         .form-search {
           height: 100%;
           margin-bottom: 0px;
@@ -174,7 +174,7 @@ header {
             font-size: 20px;
             padding-left: 10px;
             i {
-              display: flex;
+              @include flexbox;
               margin-left: 5px;
               align-items: center;
             }
@@ -263,7 +263,7 @@ header {
       left: 0;
       background-color: rgba(1,2,3,0.3);
       .log_in {
-        display: flex;
+        @include flexbox;
         align-items: center;
         .desktop-menu-items {
           width: 300px;
@@ -334,13 +334,13 @@ header {
       }
       .fa-angle-down {
         font-size: 20px;
-        display: flex;
+        @include flexbox;
         align-items: center;
       }
     }
 
     .logo {
-      display: flex;
+      @include flexbox;
       // padding-top: 10px;
       // height: 60px;
       align-items: center;
@@ -481,7 +481,7 @@ header {
         @include flexbox;
       }
       .forhome .log_in .menu-button {
-        display: flex;
+        @include flexbox;
       }
     }
   }
@@ -779,4 +779,9 @@ footer {
     position: fixed;
     top: 0;
   }
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+   /* IE10+ CSS */
+
 }

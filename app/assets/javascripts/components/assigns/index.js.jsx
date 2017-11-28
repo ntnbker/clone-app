@@ -116,7 +116,7 @@ var ModalViewTrady = React.createClass({
                 <div className="work-order-for right">
                   <div className="logo">
                     <span className="icon-user">
-                      <AvatarImage id="logo" imageUri={image_url} />
+                      <AvatarImage id="logo" imageUri={'/nothing'} />
                     </span>
                   </div>
                   <div className="info-trady">

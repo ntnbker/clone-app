@@ -396,11 +396,11 @@ $color-blue-light: #7646FF;
 	}
 
 	.invoice-left {
-		flex: 1;
+		@include flex(1);
 	}
 
 	.invoice-right {
-		flex: 1;
+		@include flex(1);
 	}
 
 	.optionheader {

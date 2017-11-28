@@ -145,7 +145,7 @@ form#new_quote {
 	@include flexbox;
 	@include flex-direction(row);
 	.info-quote {
-		flex: 1;
+		@include flex(1);
 		margin: 0 30px;
 
 		.title {
@@ -179,6 +179,7 @@ form#new_quote {
 		.logo {
 			img {
 				width: 80px;
+				height: auto;
 			}
 		}
 		.info-trady {
@@ -242,7 +243,7 @@ form#new_quote {
 		}
 		.bank {
 			margin-left: 25px;
-			flex: 1;
+			@include flex(1);
 			span {
 				&:first-child {
 					width: 110px;
@@ -252,7 +253,7 @@ form#new_quote {
 		}
 		.contact {
 			margin-left: 15px;
-			flex: 1;
+			@include flex(1);
 		}
 	}
 	.border-none {
@@ -301,10 +302,10 @@ form#new_quote {
 		@include flexbox;
 		@include justify-content(flex-start);
 		.info-agency {
-			flex: 1;
+			@include flex(1);
 		}
 		.date-quote {
-			flex: 1;
+			@include flex(1);
 		}
 	}
 	.quote-items {
