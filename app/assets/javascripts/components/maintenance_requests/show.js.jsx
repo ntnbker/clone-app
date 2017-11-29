@@ -947,7 +947,7 @@ var ModalRequestModal = React.createClass({
 								}
 							</div>
 							<div className="modal-footer">
-								{ this.props.keyTitle === 'request-quote' &&
+								{ false && this.props.keyTitle === 'request-quote' &&
 									<div className="row">
 										<button
 											className="btn btn-primary cancel"
