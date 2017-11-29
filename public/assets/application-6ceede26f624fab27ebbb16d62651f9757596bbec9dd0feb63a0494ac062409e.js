@@ -70161,23 +70161,21 @@ var ModalViewTrady = React.createClass({
 
     var agency = _filterData.agency;
     var agent = _filterData.agent;
-    var agency_admin = _filterData.agency_admin;
     var trady = _filterData.trady;
     var maintenance_request = _filterData.maintenance_request;
     var property = _filterData.property;
 
-    return { agency: agency, agent: agent, agency_admin: agency_admin, trady: trady, maintenance_request: maintenance_request, property: property };
+    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property };
   },
 
   filterData: function (props) {
     var agency = props.agency || {};
-    var agent = props.agent || {};
-    var agency_admin = props.agency_admin || {};
+    var agent = props.agent || props.agency_admin || {};
     var trady = props.trady || {};
     var property = props.property || {};
     var maintenance_request = props.maintenance_request || {};
 
-    return { agency: agency, agent: agent, agency_admin: agency_admin, trady: trady, maintenance_request: maintenance_request, property: property };
+    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property };
   },
 
   printWork: function () {
@@ -70188,7 +70186,6 @@ var ModalViewTrady = React.createClass({
     var _state = this.state;
     var agency = _state.agency;
     var agent = _state.agent;
-    var agency_admin = _state.agency_admin;
     var trady = _state.trady;
     var maintenance_request = _state.maintenance_request;
     var property = _state.property;
@@ -70266,7 +70263,7 @@ var ModalViewTrady = React.createClass({
                   React.createElement(
                     'span',
                     { className: 'icon-user' },
-                    React.createElement(AvatarImage, { id: 'logo', imageUri: image_url })
+                    React.createElement(AvatarImage, { id: 'logo', imageUri: '/nothing' })
                   )
                 ),
                 React.createElement(
@@ -70366,7 +70363,7 @@ var ModalViewTrady = React.createClass({
                         { className: 'heading' },
                         'Name:'
                       ),
-                      agent.name || ((agency_admin.first_name || '') + ' ' + (agency_admin.last_name || '')).trim()
+                      ((agent.first_name || agent.name || '') + ' ' + (agent.last_name || '')).trim()
                     ),
                     React.createElement(
                       'p',
@@ -70376,7 +70373,7 @@ var ModalViewTrady = React.createClass({
                         { className: 'heading' },
                         'Phone:'
                       ),
-                      agent.phone || agent.mobile_phone || agency_admin.mobile_phone
+                      agent.phone || agent.mobile_phone
                     ),
                     React.createElement(
                       'p',
@@ -70386,7 +70383,7 @@ var ModalViewTrady = React.createClass({
                         { className: 'heading' },
                         'Email:'
                       ),
-                      agent.email || agency_admin.email
+                      agent.email
                     )
                   )
                 )
@@ -82136,7 +82133,7 @@ var ModalRequestModal = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "modal-footer" },
-							this.props.keyTitle === 'request-quote' && React.createElement(
+							false && this.props.keyTitle === 'request-quote' && React.createElement(
 								"div",
 								{ className: "row" },
 								React.createElement(
@@ -92111,7 +92108,7 @@ var TradyMaintenanceRequest = React.createClass({
 						close: this.isClose,
 						trady: this.state.trady,
 						maintenance_request: this.state.maintenance_request,
-						agency: this.state.agency,
+						agency: this.props.agency,
 						agency_admin: this.props.agency_admin,
 						agent: this.props.agent,
 						tenants: this.props.tenants,
