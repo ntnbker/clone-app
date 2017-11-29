@@ -51,21 +51,20 @@ var AssignTrady = React.createClass({
 var ModalViewTrady = React.createClass({
   getInitialState: function() {
     const {
-      agency, agent, agency_admin, trady, maintenance_request, property,
+      agency, agent, trady, maintenance_request, property,
     } = this.filterData(this.props);
 
-    return { agency, agent, agency_admin, trady, maintenance_request, property };
+    return { agency, agent, trady, maintenance_request, property };
   },
 
   filterData(props) {
     const  agency              = props.agency || {};
-    const  agent               = props.agent || {};
-    const  agency_admin        = props.agency_admin || {};
+    const  agent               = props.agent || props.agency_admin || {};
     const  trady               = props.trady || {};
     const  property            = props.property || {};
     const  maintenance_request = props.maintenance_request || {};
 
-    return { agency, agent, agency_admin, trady, maintenance_request, property };
+    return { agency, agent, trady, maintenance_request, property };
   },
 
   printWork() {
@@ -74,7 +73,7 @@ var ModalViewTrady = React.createClass({
 
 	render: function() {
     const {
-      agency, agent, agency_admin, trady, maintenance_request, property
+      agency, agent, trady, maintenance_request, property
     } = this.state;
 
     trady['trady_company'] = trady['trady_company'] || {};
@@ -116,7 +115,7 @@ var ModalViewTrady = React.createClass({
                 <div className="work-order-for right">
                   <div className="logo">
                     <span className="icon-user">
-                      <AvatarImage id="logo" imageUri={image_url} />
+                      <AvatarImage id="logo" imageUri={'/nothing'} />
                     </span>
                   </div>
                   <div className="info-trady">
@@ -164,9 +163,9 @@ var ModalViewTrady = React.createClass({
                   <div className="agent-contact rect-info">
                     <div className="title">Agent Contact</div>
                     <div className="detail">
-                      <p><span className="heading">Name:</span>{agent.name || `${agency_admin.first_name || ''} ${agency_admin.last_name || ''}`.trim()}</p>
-                      <p><span className="heading">Phone:</span>{agent.phone || agent.mobile_phone || agency_admin.mobile_phone}</p>
-                      <p><span className="heading">Email:</span>{agent.email || agency_admin.email}</p>
+                      <p><span className="heading">Name:</span>{`${agent.first_name || agent.name || ''} ${agent.last_name || ''}`.trim()}</p>
+                      <p><span className="heading">Phone:</span>{agent.phone || agent.mobile_phone}</p>
+                      <p><span className="heading">Email:</span>{agent.email}</p>
                     </div>
                   </div>
                 </div>
