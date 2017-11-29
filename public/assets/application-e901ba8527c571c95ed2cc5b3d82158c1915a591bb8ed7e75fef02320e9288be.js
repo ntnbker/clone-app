@@ -67752,7 +67752,7 @@ var AgencyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.error && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -68387,7 +68387,7 @@ var AgencyAdminEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -68775,7 +68775,7 @@ var AgentEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -83181,7 +83181,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				if (res.error) return callback(res.error);
+				if (res.error || res.errors) return callback(res.error || res.errors);
 				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });
@@ -88865,7 +88865,7 @@ var TradyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -89572,7 +89572,7 @@ var TradyCompanyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.company_image) {
           self.setState({ gallery: res.company_image });
@@ -92228,7 +92228,7 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				if (res.error) return callback(res.error);
+				if (res.error || res.errors) return callback(res.error || res.errors);
 				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });
