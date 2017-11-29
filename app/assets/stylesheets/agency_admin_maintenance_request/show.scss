@@ -63,7 +63,7 @@ body::-webkit-scrollbar-thumb {
 .error {
   margin-top: 10px;
   margin-bottom: 0px;
-  color: red;
+  color: red !important;
   text-align: center;
 }
 .item-quote-request {
