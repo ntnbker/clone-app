@@ -141,8 +141,9 @@ UploadImageComponent = React.createClass({
         }
       }
 
-      if (isError && target_img.src.includes('data:application/pdf')) {
-        image.isPdf = true;
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
       }
       image.url = target_img.src;
       images[key] = image;
@@ -378,16 +379,21 @@ UploadImageComponent = React.createClass({
                     images.map((img, index) => {
                       return (
                         <div key={index} className="img">
-                          { !img.isPdf
+                          { !img.isPdf && !img.isInvalid
                             ? <img
                                 src={img.url}
                                 className="img"
                                 onLoad={(e) => this.loadImage(e, img, index)}
                                 onError={(e) => this.loadImage(e, img, index, true)}
                               />
-                            : <div className="file-pdf">
-                                <i className="fa fa-file-pdf-o" />
-                              </div>
+                            : !img.isInvalid
+                              ? <div className="file-pdf">
+                                  <i className="fa fa-file-pdf-o" />
+                                </div>
+                              : <div className="file-pdf file-error">
+                                  <i className="fa fa-file" />
+                                </div>
+
                           }
                           <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
                         </div>
@@ -396,6 +402,7 @@ UploadImageComponent = React.createClass({
                   }
                 </div>
                 {uploadButton}
+                <p id="errorbox" className="error">{error ? 'Please remove invalid file!' : ''}</p>
                 <p id="errorbox" className="error">{error ? error : ''}</p>
               </div>
               <div className="modal-footer">
