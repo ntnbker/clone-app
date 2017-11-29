@@ -15,7 +15,7 @@ class TradyCompanyProfileImagesController < ApplicationController
       end 
     else
       respond_to do |format|
-        format.json {render :json=>{error=>@image.errors}}
+        format.json {render :json=>{:error=>@image.errors}}
       end
     end 
     
@@ -33,7 +33,7 @@ class TradyCompanyProfileImagesController < ApplicationController
       end 
     else
       respond_to do |format|
-        format.json {render :json=>{error=>@image.errors}}
+        format.json {render :json=>{:error=>@image.errors}}
       end
     end 
 

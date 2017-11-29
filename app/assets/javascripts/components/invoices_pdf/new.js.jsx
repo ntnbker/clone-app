@@ -92,12 +92,14 @@ var AddInvoicePDF = React.createClass({
 	removeFile: function (index) {
 		$('#input-file').val('');
 		this.setState({
-			file: {}
+			file: {},
+			error: '',
 		});
 	},
 
 	handelSubmit: function (e) {
 		e.preventDefault();
+		const self = this;
 
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
 		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
@@ -114,7 +116,9 @@ var AddInvoicePDF = React.createClass({
 			contentType: false,
 			data: FD,
 			success: function (res) {
-
+				if (res.error) {
+					self.setState({ error: res.error.pdf });
+				}
 			},
 			error: function (err) {
 
@@ -125,6 +129,7 @@ var AddInvoicePDF = React.createClass({
 
 	render: function () {
 		const { maintenance_request_id, trady_id, quote_id, trady_company, trady_company_id } = this.props;
+		const { error } = this.state;
 		return (
 			<div className="container invoice-form">
 				<h5 className="text-center">
@@ -153,6 +158,7 @@ var AddInvoicePDF = React.createClass({
 									/>
 								</div>
 						}
+    				<p id="errorbox" className="error">{error ? error : ''}</p>
 						<input
 							type="hidden"
 							defaultValue={maintenance_request_id}

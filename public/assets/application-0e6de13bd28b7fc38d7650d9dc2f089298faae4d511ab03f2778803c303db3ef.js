@@ -67752,8 +67752,9 @@ var AgencyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        callback(res.errors);
-        if (!res.errors && res.profile_image) {
+        if (res.error) return callback(res.error);
+        callback();
+        if (!res.error && res.profile_image) {
           self.setState({ gallery: res.profile_image });
         }
       },
@@ -68386,7 +68387,8 @@ var AgencyAdminEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        callback(res.errors);
+        if (res.error) return callback(res.error);
+        callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
         }
@@ -68773,7 +68775,8 @@ var AgentEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        callback(res.errors);
+        if (res.error) return callback(res.error);
+        callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
         }
@@ -70757,6 +70760,7 @@ UploadImageComponent = React.createClass({
     var fr = new FileReader();
     var images = this.state.images;
     var orientation;
+
     self.setState({ fileDisabled: true });
     readFile = function (index) {
       if (index >= files.length) {
@@ -70813,11 +70817,12 @@ UploadImageComponent = React.createClass({
     dataImages.splice(index, 1);
     this.setState({
       images: images,
-      dataImages: dataImages
+      dataImages: dataImages,
+      error: ''
     });
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     var img = e.target;
     var maxSize = 500000; // byte
     var self = this;
@@ -70825,6 +70830,7 @@ UploadImageComponent = React.createClass({
     var data = _self$state$data === undefined ? {} : _self$state$data;
 
     data[key] = 0;
+
     if (!image.isUpload) {
       var target_img = {};
       var images = this.state.images;
@@ -70844,8 +70850,12 @@ UploadImageComponent = React.createClass({
         }
       }
 
+      if (isError && target_img.src.includes('data:application/pdf')) {
+        image.isPdf = true;
+      }
       image.url = target_img.src;
       images[key] = image;
+
       this.setState({
         images: images
       });
@@ -71018,8 +71028,11 @@ UploadImageComponent = React.createClass({
       return;
     }
 
-    self.props.uploadImage(dataImages, function (errors) {
-      self.props.notifyAddPhoto(errors || SUCCESS_MESSAGE);
+    self.props.uploadImage(dataImages, function (error, message) {
+      if (error) {
+        return self.setState({ error: error.image && error.image[0] });
+      }
+      self.props.notifyAddPhoto(message || SUCCESS_MESSAGE);
       // self.props.close();
     });
     return false;
@@ -71032,8 +71045,9 @@ UploadImageComponent = React.createClass({
     var images = _state2.images;
     var gallery = _state2.gallery;
     var uploadComplete = _state2.uploadComplete;
+    var error = _state2.error;
 
-    var uploadButton = !uploadComplete ? React.createElement(
+    var uploadButton = !uploadComplete && !images.length ? React.createElement(
       'div',
       { className: 'browse-wrap' },
       React.createElement(
@@ -71048,7 +71062,7 @@ UploadImageComponent = React.createClass({
         type: 'file',
         id: 'input-file',
         className: "upload inputfile",
-        accept: 'image/jpeg, image/png',
+        accept: 'image/jpeg, image/png, application/pdf',
         onChange: function (e) {
           return _this2._handleImageChange(e);
         }
@@ -71103,20 +71117,32 @@ UploadImageComponent = React.createClass({
                   return React.createElement(
                     'div',
                     { key: index, className: 'img' },
-                    React.createElement('img', {
+                    !img.isPdf ? React.createElement('img', {
                       src: img.url,
                       className: 'img',
-                      onLoad: function (e, image, key) {
+                      onLoad: function (e) {
                         return _this2.loadImage(e, img, index);
+                      },
+                      onError: function (e) {
+                        return _this2.loadImage(e, img, index, true);
                       }
-                    }),
+                    }) : React.createElement(
+                      'div',
+                      { className: 'file-pdf' },
+                      React.createElement('i', { className: 'fa fa-file-pdf-o' })
+                    ),
                     React.createElement('i', { className: 'fa fa-close', onClick: function (key) {
                         return _this2.removeImage(index);
                       } })
                   );
                 })
               ),
-              uploadButton
+              uploadButton,
+              React.createElement(
+                'p',
+                { id: 'errorbox', className: 'error' },
+                error ? error : ''
+              )
             ),
             React.createElement(
               'div',
@@ -71134,7 +71160,8 @@ UploadImageComponent = React.createClass({
                 'button',
                 {
                   type: 'submit',
-                  className: 'btn btn-default success'
+                  className: 'btn btn-default success',
+                  onClick: this.submit
                 },
                 'Submit'
               )
@@ -73583,12 +73610,14 @@ var AddInvoicePDF = React.createClass({
 	removeFile: function (index) {
 		$('#input-file').val('');
 		this.setState({
-			file: {}
+			file: {},
+			error: ''
 		});
 	},
 
 	handelSubmit: function (e) {
 		e.preventDefault();
+		var self = this;
 
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
 		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
@@ -73604,7 +73633,11 @@ var AddInvoicePDF = React.createClass({
 			processData: false,
 			contentType: false,
 			data: FD,
-			success: function (res) {},
+			success: function (res) {
+				if (res.error) {
+					self.setState({ error: res.error.pdf });
+				}
+			},
 			error: function (err) {}
 		});
 		return false;
@@ -73619,6 +73652,7 @@ var AddInvoicePDF = React.createClass({
 		var quote_id = _props.quote_id;
 		var trady_company = _props.trady_company;
 		var trady_company_id = _props.trady_company_id;
+		var error = this.state.error;
 
 		return React.createElement(
 			'div',
@@ -73663,6 +73697,11 @@ var AddInvoicePDF = React.createClass({
 								return _this._handleChangeFile(e);
 							}
 						})
+					),
+					React.createElement(
+						'p',
+						{ id: 'errorbox', className: 'error' },
+						error ? error : ''
 					),
 					React.createElement('input', {
 						type: 'hidden',
@@ -76410,7 +76449,8 @@ var ModalAddPhoto = React.createClass({
     dataImages.splice(index, 1);
     this.setState({
       images: images,
-      dataImages: dataImages
+      dataImages: dataImages,
+      error: ''
     });
     if (!dataImages.length) {
       this.setState({ uploadComplete: false });
@@ -76617,6 +76657,7 @@ var ModalAddPhoto = React.createClass({
 
   submit: function (e) {
     e.preventDefault();
+    var self = this;
     if (this.state.dataImages.length == 0) {
       return;
     }
@@ -76641,9 +76682,14 @@ var ModalAddPhoto = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
+        if (res.error) {
+          return self.setState({ error: res.error.image });
+        }
         props.notifyAddPhoto(res.all_images.length > 0 ? res.all_images : []);
       },
-      error: function (err) {}
+      error: function (err) {
+        self.setState({ error: err });
+      }
     });
     return false;
   },
@@ -76661,6 +76707,7 @@ var ModalAddPhoto = React.createClass({
     var images = _state2.images;
     var gallery = _state2.gallery;
     var dataImages = _state2.dataImages;
+    var error = _state2.error;
 
     var uploadButton = !this.state.uploadComplete ? React.createElement(
       'div',
@@ -76734,7 +76781,10 @@ var ModalAddPhoto = React.createClass({
                     React.createElement('img', {
                       src: img.url,
                       className: 'img',
-                      onLoad: function (e, image, key) {
+                      onLoad: function (e) {
+                        return _this2.loadImage(e, img, index);
+                      },
+                      onError: function (e) {
                         return _this2.loadImage(e, img, index);
                       }
                     }),
@@ -76744,7 +76794,12 @@ var ModalAddPhoto = React.createClass({
                   );
                 })
               ),
-              uploadButton
+              uploadButton,
+              React.createElement(
+                'p',
+                { id: 'errorbox', className: 'error' },
+                error ? error : ''
+              )
             ),
             React.createElement(
               'div',
@@ -80114,12 +80169,15 @@ var MaintenanceRequestsNew = React.createClass({
     var _state2 = this.state;
     var images = _state2.images;
     var dataImages = _state2.dataImages;
+    var errors = _state2.errors;
 
     images.splice(index, 1);
     dataImages.splice(index, 1);
+    errors['images.image'] = '';
     this.setState({
       images: images,
-      dataImages: dataImages
+      dataImages: dataImages,
+      errors: errors
     });
   },
 
@@ -80566,7 +80624,10 @@ var MaintenanceRequestsNew = React.createClass({
                 React.createElement('img', {
                   src: img.url,
                   className: '',
-                  onLoad: function (e, image, key) {
+                  onLoad: function (e) {
+                    return _this2.loadImage(e, img, index);
+                  },
+                  onError: function (e) {
                     return _this2.loadImage(e, img, index);
                   }
                 }),
@@ -80579,7 +80640,8 @@ var MaintenanceRequestsNew = React.createClass({
                 )
               );
             })
-          )
+          ),
+          renderError(errors['images.image'])
         ),
         isTenant && React.createElement(
           'div',
@@ -83122,7 +83184,8 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				callback('You Has Successfully Upload');
+				if (res.error) return callback(res.error);
+				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });
 				}
@@ -86264,11 +86327,20 @@ var ModalViewPhoto = React.createClass({
 	displayName: "ModalViewPhoto",
 
 	getInitialState: function () {
-		return {};
+		var gallery = this.props.gallery;
+
+		return {
+			gallery: gallery,
+			pdf: gallery && gallery.length && gallery.filter(function (v) {
+				return v.includes('.pdf');
+			})[0]
+		};
 	},
 
 	render: function () {
-		var gallery = this.props.gallery;
+		var _state3 = this.state;
+		var pdf = _state3.pdf;
+		var gallery = _state3.gallery;
 
 		var self = this.props;
 
@@ -86305,10 +86377,22 @@ var ModalViewPhoto = React.createClass({
 							this.props.title || 'View Photo'
 						)
 					),
-					React.createElement(
+					!pdf ? React.createElement(
 						"div",
 						{ className: "modal-body" },
 						React.createElement(Carousel, { gallery: gallery, fullWidth: true })
+					) : React.createElement(
+						"div",
+						{ className: "detail-quote" },
+						React.createElement(
+							"div",
+							{ className: "detail-quote" },
+							React.createElement("iframe", {
+								src: "https://docs.google.com/gview?url=" + pdf.replace(/.pdf\?.*/, '') + ".pdf&embedded=true",
+								className: "scroll-custom",
+								style: { width: 'calc(100% - 4px)', height: '400px' }
+							})
+						)
 					),
 					React.createElement(
 						"div",
@@ -88784,7 +88868,8 @@ var TradyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        callback(res.errors);
+        if (res.error) return callback(res.error);
+        callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
         }
@@ -89490,7 +89575,8 @@ var TradyCompanyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        callback(res.errors);
+        if (res.error) return callback(res.error);
+        callback();
         if (!res.errors && res.company_image) {
           self.setState({ gallery: res.company_image });
         }
@@ -92145,7 +92231,8 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				callback('You Has Successfully Upload');
+				if (res.error) return callback(res.error);
+				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });
 				}

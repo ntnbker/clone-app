@@ -13,6 +13,19 @@ $color-blue-light: #7646FF;
 body{
   position: relative;
 }
+
+
+.file-pdf {
+  text-align: center;
+  i {
+    font-size: 80px;
+    display: block;
+  }
+  span {
+    cursor: pointer;
+    text-decoration: blink;
+  }
+}
 body::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
   border-radius: 15px;

@@ -39,7 +39,8 @@ var TradyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-          callback(res.errors);
+          if (res.error) return callback(res.error);
+          callback();
           if (!res.errors && res.profile_image) {
             self.setState({ gallery: res.profile_image });
           }

@@ -57,6 +57,7 @@ UploadImageComponent = React.createClass({
     var fr = new FileReader();
     var images = this.state.images;
     var orientation;
+
     self.setState({ fileDisabled: true });
     readFile = (index) => {
       if (index >= files.length) {
@@ -110,16 +111,18 @@ UploadImageComponent = React.createClass({
     dataImages.splice(index, 1);
     this.setState({
       images: images,
-      dataImages: dataImages
+      dataImages: dataImages,
+      error: '',
     });
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     const img = e.target;
     const maxSize = 500000; // byte
     const self = this;
     const { data = {} } = self.state;
     data[key] = 0;
+
     if (!image.isUpload) {
       var target_img = {};
       var { images } = this.state;
@@ -138,8 +141,12 @@ UploadImageComponent = React.createClass({
         }
       }
 
-      image.url = target_img.src
+      if (isError && target_img.src.includes('data:application/pdf')) {
+        image.isPdf = true;
+      }
+      image.url = target_img.src;
       images[key] = image;
+
       this.setState({
         images: images
       });
@@ -312,17 +319,20 @@ UploadImageComponent = React.createClass({
       return;
     }
 
-    self.props.uploadImage(dataImages, function(errors) {
-      self.props.notifyAddPhoto(errors || SUCCESS_MESSAGE);
+    self.props.uploadImage(dataImages, function(error, message) {
+      if (error) {
+        return self.setState({ error: error.image && error.image[0] });
+      }
+      self.props.notifyAddPhoto(message || SUCCESS_MESSAGE);
       // self.props.close();
     });
     return false;
   },
 
   render: function () {
-    const { images, gallery, uploadComplete } = this.state;
+    const { images, gallery, uploadComplete, error } = this.state;
 
-    const uploadButton = !uploadComplete
+    const uploadButton = !uploadComplete && !images.length
       ? <div className="browse-wrap">
           <div className="title" id="title-upload">
             <i className="fa fa-upload" />
@@ -333,7 +343,7 @@ UploadImageComponent = React.createClass({
             type="file"
             id="input-file"
             className={"upload inputfile"}
-            accept="image/jpeg, image/png"
+            accept="image/jpeg, image/png, application/pdf"
             onChange={(e) => this._handleImageChange(e)}
           />
         </div>
@@ -368,11 +378,17 @@ UploadImageComponent = React.createClass({
                     images.map((img, index) => {
                       return (
                         <div key={index} className="img">
-                          <img
-                            src={img.url}
-                            className="img"
-                            onLoad={(e, image, key) => this.loadImage(e, img, index)}
-                          />
+                          { !img.isPdf
+                            ? <img
+                                src={img.url}
+                                className="img"
+                                onLoad={(e) => this.loadImage(e, img, index)}
+                                onError={(e) => this.loadImage(e, img, index, true)}
+                              />
+                            : <div className="file-pdf">
+                                <i className="fa fa-file-pdf-o" />
+                              </div>
+                          }
                           <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
                         </div>
                       );
@@ -380,6 +396,7 @@ UploadImageComponent = React.createClass({
                   }
                 </div>
                 {uploadButton}
+                <p id="errorbox" className="error">{error ? error : ''}</p>
               </div>
               <div className="modal-footer">
                 <button
@@ -390,6 +407,7 @@ UploadImageComponent = React.createClass({
                 <button
                   type="submit"
                   className="btn btn-default success"
+                  onClick={this.submit}
                 >
                   Submit
                 </button>
