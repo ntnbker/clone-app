@@ -45,7 +45,7 @@ class TradyMaintenanceRequestsController < ApplicationController
       
       @agency = @maintenance_request.agency_admin.agency
       @agent = @maintenance_request.agency_admin
-      @agency_admin = @agent
+      
     elsif @maintenance_request.agent
       @agency = @maintenance_request.agent.agency
       @agent = @maintenance_request.agent
