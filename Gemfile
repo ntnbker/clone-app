@@ -70,8 +70,8 @@ group :development do
   gem 'sinatra', require: nil
   gem 'bullet'
   gem "ruby-growl"
-  gem "xmpp4r"
   gem 'rack-mini-profiler'
+      # For memory profiling (requires Ruby MRI 2.1+)
   gem 'memory_profiler'
 
   # For call-stack profiling flamegraphs (requires Ruby MRI 2.0.0+)

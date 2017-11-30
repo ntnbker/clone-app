@@ -8,13 +8,19 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only:[:show]) {belongs_to_agency_admin}
 
   def index
+    
+    if params[:maintenance_request_filter] == nil 
+      params[:maintenance_request_filter] = 'Initiate Maintenance Request'
+    end 
+
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at ASC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at DESC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
     end
 
-    @page = params[:page]
+    
+    #@page = params[:page]
     @sort_by_date = params[:sort_by_date]
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
     @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
@@ -39,12 +45,31 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
     @send_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Send Work Order")    
     
-    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+     @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+
+    #@maintenance_requests_json = @maintenance_requests.paginate(:page => params[:page], :per_page => 10)
+
+    # .as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    # @posts =  Post.all.paginate(:page => params[:page], :per_page => 4)
+    # render :json => @posts.to_json(:methods => [:image_url])
+
+
+    # respond_to do |format|
+    #   # format.json {render json:@maintenance_requests_json.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+      
+    # end 
 
     respond_to do |format|
-      format.json {render json:@maintenance_requests_json}
+      format.json {
+        render :json => {
+          :current_page => @maintenance_requests.current_page,
+          :per_page => @maintenance_requests.per_page,
+          :total_entries => @maintenance_requests.total_entries,
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+        }
+      }
       format.html
-    end 
+    end
 
 
   end
