@@ -10,6 +10,9 @@
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  > div {
+    // @include flex(1 1 0%);
+  }
 }
 
 // The 'flex' shorthand
@@ -21,17 +24,6 @@
       -webkit-flex: $values;
       -ms-flex: $values;
           flex: $values;
-}
-
-// The 'flex-none' shorthand
-// - applies to: flex items
-// remove flex-basis
-@mixin flex-none($values) {
-  -webkit-box-flex: $values $values none;
-     -moz-box-flex: $values $values none;
-      -webkit-flex: $values $values none;
-      -ms-flex: $values $values none;
-          flex: $values $values none;
 }
 
 // Flex Flow Direction

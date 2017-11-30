@@ -9,6 +9,15 @@ body {
   height: 100%;
 
 }
+.flex {
+  @include flexbox;
+  &.flex-column {
+    @include flex-direction(column);
+  }
+  &.flex-row {
+    @include flex-direction(row);
+  }
+}
 .show-message {
   button {
     border-width: 0px;
@@ -173,8 +182,10 @@ header {
           span {
             font-size: 20px;
             padding-left: 10px;
+            line-height: 55px;
             i {
-              @include flexbox;
+              // @include flexbox;
+              line-height: 55px;
               margin-left: 5px;
               align-items: center;
             }
@@ -264,6 +275,8 @@ header {
       background-color: rgba(1,2,3,0.3);
       .log_in {
         @include flexbox;
+        @include flex(1);
+        @include justify-content(flex-end);
         align-items: center;
         .desktop-menu-items {
           width: 300px;
@@ -310,10 +323,10 @@ header {
     .menu-button {
       // margin-top: 18px;
       float: right;
-      height: 40px;
+      // height: 40px;
       font-size: 20px;
       color: #fff;
-      line-height: 40px;
+      line-height: 55px;
       text-align: center;
       cursor: pointer;
       display: none;
@@ -334,8 +347,9 @@ header {
       }
       .fa-angle-down {
         font-size: 20px;
-        @include flexbox;
+        // @include flexbox;
         align-items: center;
+        line-height: 55px;
       }
     }
 
@@ -358,13 +372,14 @@ header {
         font-size: 20px;
         color: white;
         margin: 0 5px;
+        line-height: 55px;
       }
     }
 
     .desktop-menu-items {
       display: none;
-      line-height: 65px;
-      padding-top: 10px;
+      line-height: 55px;
+      // padding-top: 10px;
       float: right;
       margin-bottom: 0px;
       list-style: none;
@@ -376,14 +391,14 @@ header {
       a {
         color: white;
         font-size: 16px;
-        padding: 15px 20px;
+        padding: 0 20px;
         text-decoration: none
       }
 
       .register {
         color: white;
         font-size: 16px;
-        padding: 15px 20px;
+        padding: 0 20px;
         border: 1px solid white;
         border-radius: 4px;
         text-decoration: none;
@@ -467,6 +482,11 @@ header {
     @media (min-width: 769px) {
       .desktop-menu-items {
         display: block;
+        &.log_in {
+          @include flex(1);
+          @include flexbox;
+          @include justify-content(flex-end);
+        }
       }
       .header-custom .menu-bar {
         @include flexbox;

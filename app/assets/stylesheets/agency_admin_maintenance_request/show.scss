@@ -13,8 +13,6 @@ $color-blue-light: #7646FF;
 body{
   position: relative;
 }
-
-
 .file-pdf {
   text-align: center;
   i {
@@ -298,7 +296,7 @@ span.index {
             @include flexbox;
             @include flex-direction(column);
             .job-address, .agent-contact {
-              @include flex-none(1);
+              @include flex(none);
             }
           }
           .right .invoice-detail {
