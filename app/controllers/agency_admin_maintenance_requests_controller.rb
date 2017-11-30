@@ -67,7 +67,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
           :total_entries => @maintenance_requests.total_entries,
           :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
         }
-      }
+      
       format.html
     end
 
