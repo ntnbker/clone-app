@@ -68,6 +68,16 @@ group :development do
   gem 'pry'
   gem 'pry-nav'
   gem 'sinatra', require: nil
+  gem 'bullet'
+  gem "ruby-growl"
+  gem "xmpp4r"
+  gem 'rack-mini-profiler'
+  gem 'memory_profiler'
+
+  # For call-stack profiling flamegraphs (requires Ruby MRI 2.0.0+)
+  gem 'flamegraph'
+  gem 'stackprof'     # For Ruby MRI 2.1+
+  gem 'fast_stack'    # For Ruby MRI 2.0
 end
 
 group :test do
