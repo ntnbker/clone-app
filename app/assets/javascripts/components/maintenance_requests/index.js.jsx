@@ -371,17 +371,17 @@ var DropforSort = React.createClass({
 
 var ListMaintenanceRequest = React.createClass({
   getInitialState: function() {
-    const {maintenance_requests} = this.props;
+    // const {maintenance_requests} = this.props;
     const page = 1;
-    const prePage = 3;
-    const dataShow = [...maintenance_requests].splice(0, prePage);
+    const prePage = 5;
+    // const dataShow = [...(maintenance_requests || [])].splice(0, prePage);
 
     return {
       page: page,
-      valueAction: "",
+      valueAction: "Initiate Maintenance Request",
       prePage: prePage,
-      dataShow: dataShow,
-      data: maintenance_requests,
+      dataShow: [],
+      data: [],
       sortByDate: "Newest to Oldest",
       filterDate: [
         {value: "Oldest to Newest", name: "Oldest to Newest"},
@@ -538,6 +538,9 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   getData: function(link, page, params) {
+    if (page) {
+      params.page = page;
+    }
     const self = this;
     $.ajax({
       type: 'GET',
@@ -561,6 +564,7 @@ var ListMaintenanceRequest = React.createClass({
 
   componentWillMount: function() {
     //this.getMaintenanceRequests();
+    this.setPage(1);
   },
 
   setPage: function(page){
