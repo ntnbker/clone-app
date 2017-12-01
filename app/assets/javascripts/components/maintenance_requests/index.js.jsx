@@ -538,7 +538,7 @@ var ListMaintenanceRequest = React.createClass({
 
   getData: function(link, page, params) {
     params.page = page;
-    debugger
+
     const self = this;
     $.ajax({
       type: 'GET',
