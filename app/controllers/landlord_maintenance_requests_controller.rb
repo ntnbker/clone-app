@@ -6,6 +6,17 @@ class LandlordMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("Landlord")}
   before_action(only:[:show]) {belongs_to_landlord}
   def index
+
+    if params[:page] == nil
+      params[:page] = 1 
+    end 
+    
+    # if params[:maintenance_request_filter] == nil 
+    #   params[:maintenance_request_filter] = 'Quote Requests'
+    # end 
+
+
+
     if params[:sort_by_date] == "Oldest to Newest"
       @maintenance_requests = current_user.landlord.order_maintenance_request_by_ascending.paginate(:page => params[:page], :per_page => 10)
     else
