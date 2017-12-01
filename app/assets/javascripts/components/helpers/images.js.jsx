@@ -114,6 +114,9 @@ UploadImageComponent = React.createClass({
       dataImages: dataImages,
       error: '',
     });
+    if (!dataImages.length) {
+      this.setState({ uploadComplete: false });
+    }
   },
 
   loadImage: function (e, image, key, isError) {
@@ -204,7 +207,8 @@ UploadImageComponent = React.createClass({
             if (self.state.totalFile == 0) {
               self.setState({
                 totalFile: 0,
-                fileDisabled: false
+                totalProgress: 0,
+                uploadComplete: true
               });
               setTimeout(function () {
                 $('#title-upload').html('<i class="fa fa-upload" /> Choose image to change');
@@ -333,11 +337,13 @@ UploadImageComponent = React.createClass({
   render: function () {
     const { images, gallery, uploadComplete, error } = this.state;
 
-    const uploadButton = !uploadComplete && !images.length
+    const uploadButton = !uploadComplete
       ? <div className="browse-wrap">
           <div className="title" id="title-upload">
             <i className="fa fa-upload" />
-            Choose image to {gallery.length ? 'change' : 'add'}
+            { this.props.chooseImageText ||
+              "Choose/Take a picture to upload"
+            }
           </div>
           <input
             multiple

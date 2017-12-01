@@ -354,7 +354,7 @@ var ModalAddPhoto = React.createClass({
     const uploadButton = !this.state.uploadComplete ? <div className="browse-wrap">
       <div className="title" id="title-upload">
         <i className="fa fa-upload" />
-        Choose image to upload
+        Choose/Take a picture to upload
     </div>
       <input
         multiple

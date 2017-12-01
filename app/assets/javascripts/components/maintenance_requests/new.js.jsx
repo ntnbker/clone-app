@@ -363,7 +363,7 @@ var MaintenanceRequestsNew = React.createClass({
                 fileDisabled: false
               });
               setTimeout(function () {
-                $('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+                $('#title-upload').html('<i class="fa fa-upload" /> Choose/Take a picture to upload');
                 $('.progress').remove();
               }, 500);
             }
@@ -633,7 +633,7 @@ var MaintenanceRequestsNew = React.createClass({
             <div className="browse-wrap">
               <div className="title" id="title-upload">
                 <i className="fa fa-upload" />
-                Choose image to upload
+                Choose/Take a picture to upload
               </div>
               <input
                 multiple
