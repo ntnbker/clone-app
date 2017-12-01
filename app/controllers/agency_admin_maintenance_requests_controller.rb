@@ -9,6 +9,10 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
 
   def index
     
+    if params[:page] == nil
+      params[:page] = 1 
+    end 
+    
     if params[:maintenance_request_filter] == nil 
       params[:maintenance_request_filter] = 'Initiate Maintenance Request'
     end 
@@ -20,7 +24,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     end
 
     
-    #@page = params[:page]
+    
     @sort_by_date = params[:sort_by_date]
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
     @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
@@ -44,6 +48,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @jobs_completed = MaintenanceRequest.find_maintenance_requests_total(current_user, "Jobs Completed")
     @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
     @send_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Send Work Order")    
+    
     
      # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
