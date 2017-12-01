@@ -572,7 +572,12 @@ var ListMaintenanceRequest = React.createClass({
       page: page
     });
     if(this.state.valueAction) {
-      if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+      if(!!this.props.current_user_agent) {
+        this.getData("/agent_maintenance_requests.json", this.state.page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction
+        });
+      }else if(!!this.props.current_user_agency_admin) {
         this.getData("/agency_admin_maintenance_requests.json", page, {
           sort_by_date: this.state.sortByDate,
           maintenance_request_filter: this.state.valueAction,
@@ -595,7 +600,12 @@ var ListMaintenanceRequest = React.createClass({
     });
 
     if(this.state.valueAction) {
-      if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+      if(!!this.props.current_user_agent) {
+        this.getData("/agent_maintenance_requests.json", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction
+        });
+      }else if(!!this.props.current_user_agency_admin) {
         this.getData("/agency_admin_maintenance_requests.json", this.state.page, {
           sort_by_date: value,
           maintenance_request_filter: this.state.valueAction
@@ -623,9 +633,11 @@ var ListMaintenanceRequest = React.createClass({
       valueAction: action,
     });
 
-    if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
+    if(!!this.props.current_user_agent) {
+      this.getData("/agent_maintenance_requests.json", 1, params);
+    }else if(!!this.props.current_user_agency_admin) {
       this.getData("/agency_admin_maintenance_requests.json", 1, params);
-    } else if(!!this.props.current_user_trady) {
+    }else if(!!this.props.current_user_trady) {
       params.trady_id = this.props.current_user_trady.id;
       this.getData("/trady_maintenance_requests.json", 1, params);
     }
