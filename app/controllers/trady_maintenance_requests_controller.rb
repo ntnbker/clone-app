@@ -7,13 +7,23 @@ class TradyMaintenanceRequestsController < ApplicationController
   # authorize_resource :class => false
 
   def index
+
+    if params[:page] == nil
+      params[:page] = 1 
+    end 
+    
+    if params[:maintenance_request_filter] == nil 
+      params[:maintenance_request_filter] = 'Quote Requests'
+    end 
+
+    
     
     trady_id = current_user.trady.id
 
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, "Quote Requests").order('created_at ASC')
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, "Quote Requests").order('created_at DESC')
+      @maintenance_requests = TradyMaintenanceRequest.filtered_trady_maintenance_requests(trady_id, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
     end
 
     @quote_request = TradyMaintenanceRequest.filtered_trady_maintenance_requests_count(trady_id, "Quote Requests")
@@ -29,7 +39,14 @@ class TradyMaintenanceRequestsController < ApplicationController
     @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     respond_to do |format|
-      format.json {render json:@maintenance_requests_json}
+      format.json {
+        render :json => {
+          :current_page => @maintenance_requests.current_page,
+          :per_page => @maintenance_requests.per_page,
+          :total_entries => @maintenance_requests.total_entries,
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+        }
+      
       format.html
     end
   end

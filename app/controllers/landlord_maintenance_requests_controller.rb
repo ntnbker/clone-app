@@ -12,13 +12,25 @@ class LandlordMaintenanceRequestsController < ApplicationController
       @maintenance_requests = current_user.landlord.order_maintenance_request_by_descending
     end
 
-    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+
+    # respond_to do |format|
+    #   format.json {render json:@maintenance_requests_json}
+    #   format.html
+    # end 
+
 
     respond_to do |format|
-      format.json {render json:@maintenance_requests_json}
+      format.json {
+        render :json => {
+          :current_page => @maintenance_requests.current_page,
+          :per_page => @maintenance_requests.per_page,
+          :total_entries => @maintenance_requests.total_entries,
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+        }
+      
       format.html
-    end 
-
+    end
 
     
   end
