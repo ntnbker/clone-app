@@ -375,7 +375,6 @@ var ListMaintenanceRequest = React.createClass({
     const page = 1;
     const prePage = 5;
     // const dataShow = [...(maintenance_requests || [])].splice(0, prePage);
-
     return {
       page: page,
       valueAction: "Initiate Maintenance Request",
@@ -538,19 +537,20 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   getData: function(link, page, params) {
-    if (page) {
-      params.page = page;
-    }
+    params.page = page;
+    debugger
     const self = this;
     $.ajax({
       type: 'GET',
       url: link,
       data: params,
       success: function(res){
-        const dataShow = [...res].splice((page-1) * self.state.prePage, self.state.prePage);
+        const dataShow = res.entries;
         self.setState({
-          data: [...res],
+          data: new Array(res.total_entries).fill(1),
           dataShow: dataShow,
+          prePage: res.per_page,
+          page: res.current_page,
         });
       },
       error: function(err) {
@@ -573,12 +573,12 @@ var ListMaintenanceRequest = React.createClass({
     });
     if(this.state.valueAction) {
       if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-        this.getData("/maintenance_request_filter", page, {
+        this.getData("/agency_admin_maintenance_requests.json", page, {
           sort_by_date: this.state.sortByDate,
           maintenance_request_filter: this.state.valueAction,
         });
       }else if(!!this.props.current_user_trady) {
-        this.getData("/trady_maintenance_request_filter", page, {
+        this.getData("/trady_maintenance_requests.json", page, {
           sort_by_date: this.state.sortByDate,
           trady_id: this.props.current_user_trady.id,
           maintenance_request_filter: this.state.valueAction,
@@ -596,12 +596,12 @@ var ListMaintenanceRequest = React.createClass({
 
     if(this.state.valueAction) {
       if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-        this.getData("/maintenance_request_filter", this.state.page, {
+        this.getData("/agency_admin_maintenance_requests.json", this.state.page, {
           sort_by_date: value,
           maintenance_request_filter: this.state.valueAction
         });
       }else if(!!this.props.current_user_trady) {
-        this.getData("/trady_maintenance_request_filter", this.state.page, {
+        this.getData("/trady_maintenance_request.json", this.state.page, {
           sort_by_date: value,
           trady_id: this.props.current_user_trady.id,
           maintenance_request_filter: this.state.valueAction,
@@ -624,10 +624,10 @@ var ListMaintenanceRequest = React.createClass({
     });
 
     if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-      this.getData("/maintenance_request_filter", 1, params);
+      this.getData("/agency_admin_maintenance_requests.json", 1, params);
     } else if(!!this.props.current_user_trady) {
       params.trady_id = this.props.current_user_trady.id;
-      this.getData("/trady_maintenance_request_filter", 1, params);
+      this.getData("/trady_maintenance_requests.json", 1, params);
     }
   },
 
