@@ -375,9 +375,13 @@ var ListMaintenanceRequest = React.createClass({
     const page = 1;
     const prePage = 5;
     // const dataShow = [...(maintenance_requests || [])].splice(0, prePage);
+    let valueDefault = 'Initiate Maintenance Request';
+    if (this.props.current_user_trady) {
+      valueDefault = 'Quote Requests';
+    }
     return {
       page: page,
-      valueAction: "Initiate Maintenance Request",
+      valueAction: valueDefault,
       prePage: prePage,
       dataShow: [],
       data: [],
