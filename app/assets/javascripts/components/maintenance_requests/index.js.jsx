@@ -588,6 +588,16 @@ var ListMaintenanceRequest = React.createClass({
           trady_id: this.props.current_user_trady.id,
           maintenance_request_filter: this.state.valueAction,
         });
+      }else if(!!this.props.current_user_landlord) {
+        this.getData("/landlord_maintenance_requests.json", page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }else if(!!this.props.current_user_tenant) {
+        this.getData("/tenant_maintenance_requests.json", page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction,
+        });
       }
     }else {
       this.getData(this.props.link, page, {sort_by_date: this.state.sortByDate});
@@ -616,6 +626,16 @@ var ListMaintenanceRequest = React.createClass({
           trady_id: this.props.current_user_trady.id,
           maintenance_request_filter: this.state.valueAction,
         });
+      }else if(!!this.props.current_user_landlord) {
+        this.getData("/landlord_maintenance_request.json", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }else if(!!this.props.current_user_tenant) {
+        this.getData("/tenant_maintenance_request.json", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction,
+        });
       }
     }else {
       this.getData(this.props.link, this.state.page, {sort_by_date: value});
@@ -640,16 +660,22 @@ var ListMaintenanceRequest = React.createClass({
     }else if(!!this.props.current_user_trady) {
       params.trady_id = this.props.current_user_trady.id;
       this.getData("/trady_maintenance_requests.json", 1, params);
+    }else if(!!this.props.current_user_landlord) {
+      this.getData("/landlord_maintenance_requests.json", 1, params);
+    }else if(!!this.props.current_user_tenant) {
+      this.getData("/tenant_maintenance_requests.json", 1, params);
     }
   },
 
   render: function() {
     const self = this;
-    const current_user_agent = this.props.current_user_agent;
-    const current_user_trady = this.props.current_user_trady;
-    const current_user_tenant = this.props.current_user_tenant;
-    const current_user_landlord = this.props.current_user_landlord;
-    const current_user_agency_admin = this.props.current_user_agency_admin;
+    const {
+      current_user_agent,
+      current_user_trady,
+      current_user_tenant,
+      current_user_landlord,
+      current_user_agency_admin,
+    } = this.props;
 
     return (
       <div className="maintenance-list">
