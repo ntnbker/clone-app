@@ -103,7 +103,7 @@ var ModalAddPhoto = React.createClass({
     }
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     const img = e.target;
     const maxSize = 500000; // byte
     const self = this;
@@ -128,6 +128,10 @@ var ModalAddPhoto = React.createClass({
         }
       }
 
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
+      }
       image.url = target_img.src
       images[key] = image;
       this.setState({
@@ -350,7 +354,7 @@ var ModalAddPhoto = React.createClass({
     const uploadButton = !this.state.uploadComplete ? <div className="browse-wrap">
       <div className="title" id="title-upload">
         <i className="fa fa-upload" />
-        Choose image to upload
+        Choose/Take a picture to upload
     </div>
       <input
         multiple
@@ -391,12 +395,21 @@ var ModalAddPhoto = React.createClass({
                     images.map((img, index) => {
                       return (
                         <div key={index} className="img">
-                          <img
-                            src={img.url}
-                            className="img"
-                            onLoad={e => this.loadImage(e, img, index)}
-                            onError={e => this.loadImage(e, img, index)}
-                          />
+                          { !img.isPdf && !img.isInvalid
+                            ? <img
+                                src={img.url}
+                                className="img"
+                                onLoad={(e) => this.loadImage(e, img, index)}
+                                onError={(e) => this.loadImage(e, img, index, true)}
+                              />
+                            : !img.isInvalid
+                              ? <div className="file-pdf">
+                                  <i className="fa fa-file-pdf-o" />
+                                </div>
+                              : <div className="file-pdf">
+                                  <i className="fa fa-file" />
+                                </div>
+                          }
                           <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
                         </div>
                       );
@@ -404,6 +417,7 @@ var ModalAddPhoto = React.createClass({
                   }
                 </div>
                 {uploadButton}
+                <p id="errorbox" className="error">{error ? 'Please remove invalid file!' : ''}</p>
                 <p id="errorbox" className="error">{error ? error : ''}</p>
               </div>
               <div className="modal-footer">

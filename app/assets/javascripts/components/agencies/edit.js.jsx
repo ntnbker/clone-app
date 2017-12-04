@@ -46,11 +46,11 @@ var AgencyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-          if (res.error) return callback(res.error);
-          callback();
-          if (!res.error && res.profile_image) {
-            self.setState({ gallery: res.profile_image });
-          }
+        if (res.error || res.errors) return callback(res.error || res.errors);
+        callback();
+        if (!res.error && res.profile_image) {
+          self.setState({ gallery: res.profile_image });
+        }
       },
       error: function (err) {
 
