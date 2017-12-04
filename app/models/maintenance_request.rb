@@ -123,7 +123,7 @@ class MaintenanceRequest < ApplicationRecord
 
 
   def delivered_invoices
-    self.invoices.where(delivery_status: true).order("created_at DESC")
+    self.invoices.where(delivery_status: true).includes(:trady, :invoice_items).order("created_at DESC")
   end
 
   def delivered_uploaded_invoices

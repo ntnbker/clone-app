@@ -107,9 +107,9 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id).as_json
     end 
     @status = @maintenance_request.action_status
-    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
-    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
-    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").includes(:comments).order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").includes(:comments).order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").includes(:comments).order('created_at DESC').as_json(:include=>{:comments=>{}})
 
     @all_agents = @agency.agents
     @all_agency_admins = @agency.agency_admins
