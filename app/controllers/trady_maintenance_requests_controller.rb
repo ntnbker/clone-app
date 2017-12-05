@@ -84,14 +84,14 @@ class TradyMaintenanceRequestsController < ApplicationController
     
     #@invoice_pdf_files = @maintenance_request.trady_delivered_uploaded_invoices(@maintenance_request.id,@signed_in_trady.id).as_json(:include => {:trady => {:include => :trady_company}})
     
-    @quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})   
-    @quote_requests = @maintenance_request.quote_requests.where(trady_id:@signed_in_trady, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>:messages} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
+    #@quotes = @maintenance_request.quotes.where(trady_id:@signed_in_trady,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})   
+    @quote_requests = @maintenance_request.quote_requests.where(trady_id:@signed_in_trady, :maintenance_request_id=>@maintenance_request.id).includes(quotes:[:quote_items, :quote_image]).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>:messages} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
     
     
 
     
    
-    @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
+    @invoices = Invoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).includes(:invoice_items, :trady).as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
     
     @pdf_files = UploadedInvoice.where(trady_id:@signed_in_trady.id,:delivery_status=>true, :maintenance_request_id=>@maintenance_request.id).as_json(:include => {:trady => {:include => :trady_company}},methods: :pdf_url)
     
@@ -154,8 +154,8 @@ class TradyMaintenanceRequestsController < ApplicationController
     
     #@appointments = @maintenance_request.appointments.as_json(:include => {:comments =>{}})
     
-    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
-    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
     
     # we dont need thishere only in tenant controller show @tenant_id  = maintenance_request.property.tenants.first.id
 

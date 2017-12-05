@@ -499,8 +499,8 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function(res){
 				self.setState({
 					notification: {
-						title: "Defere",
-						content: "You has successfully",
+						title: "Defer",
+						content: "You have now deferred the maintenance for your property. An email has been sent to the agent to let them know. Thank you for your time.",
 						bgClass: "bg-success",
 					},
 				});
@@ -508,8 +508,8 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Defere",
-					content: "The defere is error",
+					title: "Defer",
+					content: "An error has occured with deferring the maintenance_request. Please try again or let an agent know.",
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -748,7 +748,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					return (
 						<ModalConfirmDefere
 							title="Defere"
-							content="Thank you. An email has been sent to the agent letting them know you want to defer this maintenance. on your property"
+							content="Are you sure you want to defer the maintenance on your property?"
 							close={this.isClose}
 							confirm={this.confirmDefere}
 						/>
