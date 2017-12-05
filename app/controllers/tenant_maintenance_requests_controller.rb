@@ -51,13 +51,13 @@ class TenantMaintenanceRequestsController < ApplicationController
     @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices
+    # @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
+    # @pdf_files = @maintenance_request.delivered_uploaded_invoices
     @open_message = params[:message]
     @open_appoinment = params[:appointment_id]
     @message = Message.new
     # @tradie = Trady.new
-    @logs = @maintenance_request.logs
+    # @logs = @maintenance_request.logs
     @tenant = @current_user.tenant.as_json(:include => {:user => {:include => :current_role}})
 
     if @maintenance_request.images != nil
@@ -100,12 +100,12 @@ class TenantMaintenanceRequestsController < ApplicationController
     @added_image =  Image.new
     
 
-    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
-    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
-    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,  :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, logs:@logs, quote_appointments:@quote_appointments, work_order_appointments:@work_order_appointments,landlord_appointments:@landlord_appointments, tenant:@tenant,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction, :landlord=> @landlord,  :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, quote_appointments:@quote_appointments, work_order_appointments:@work_order_appointments,landlord_appointments:@landlord_appointments, tenant:@tenant,time_and_access:@maintenance_request.availability_and_access}}
       format.html{render :show}
     end 
 
