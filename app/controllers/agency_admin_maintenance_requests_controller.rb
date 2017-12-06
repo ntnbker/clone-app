@@ -7,6 +7,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   before_action(only:[:show]) {belongs_to_agency_admin}
 
+  caches_action  :show
+
   def index
     
     if params[:page] == nil

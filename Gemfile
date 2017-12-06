@@ -49,6 +49,7 @@ gem 'scout_apm'
 # gem 'elasticsearch-rails'
 gem 'twilio-ruby', '~> 4.11.1'
 gem 'rails_12factor', group: :production
+gem 'actionpack-action_caching'
 
 group :development, :test do
   gem 'byebug', platform: :mri
