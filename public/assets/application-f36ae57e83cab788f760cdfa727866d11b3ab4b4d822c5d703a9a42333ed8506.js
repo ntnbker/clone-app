@@ -73946,7 +73946,7 @@ var ContentLandlordAction = React.createClass({
 							return _this.props.onModalWith('defere');
 						} },
 					React.createElement("i", { className: "icon-send", "aria-hidden": "true" }),
-					"Defere"
+					"Defer"
 				)
 			)
 		);
@@ -74982,8 +74982,8 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.setState({
 					notification: {
-						title: "Defere",
-						content: "You has successfully",
+						title: "Defer",
+						content: "You have now deferred the maintenance for your property. An email has been sent to the agent to let them know. Thank you for your time.",
 						bgClass: "bg-success"
 					}
 				});
@@ -74991,8 +74991,8 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			error: function (err) {
 				self.setState({ notification: {
-						title: "Defere",
-						content: "The defere is error",
+						title: "Defer",
+						content: "An error has occured with deferring the maintenance_request. Please try again or let an agent know.",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -75244,7 +75244,7 @@ var LandlordMaintenanceRequest = React.createClass({
 				case 'defere':
 					return React.createElement(ModalConfirmDefere, {
 						title: 'Defere',
-						content: 'Thank you. An email has been sent to the agent letting them know you want to defer this maintenance. on your property',
+						content: 'Are you sure you want to defer the maintenance on your property?',
 						close: this.isClose,
 						confirm: this.confirmDefere
 					});
@@ -78075,18 +78075,20 @@ var ListMaintenanceRequest = React.createClass({
   displayName: "ListMaintenanceRequest",
 
   getInitialState: function () {
-    var maintenance_requests = this.props.maintenance_requests;
-
+    // const {maintenance_requests} = this.props;
     var page = 1;
-    var prePage = 3;
-    var dataShow = [].concat(_toConsumableArray(maintenance_requests)).splice(0, prePage);
-
+    var prePage = 5;
+    // const dataShow = [...(maintenance_requests || [])].splice(0, prePage);
+    var valueDefault = 'Initiate Maintenance Request';
+    if (this.props.current_user_trady) {
+      valueDefault = 'Quote Requests';
+    }
     return {
       page: page,
-      valueAction: "",
+      valueAction: valueDefault,
       prePage: prePage,
-      dataShow: dataShow,
-      data: maintenance_requests,
+      dataShow: [],
+      data: [],
       sortByDate: "Newest to Oldest",
       filterDate: [{ value: "Oldest to Newest", name: "Oldest to Newest" }, { value: "Newest to Oldest", name: "Newest to Oldest" }],
       actionRequests: [{
@@ -78213,16 +78215,20 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   getData: function (link, page, params) {
+    params.page = page;
+
     var self = this;
     $.ajax({
       type: 'GET',
       url: link,
       data: params,
       success: function (res) {
-        var dataShow = [].concat(_toConsumableArray(res)).splice((page - 1) * self.state.prePage, self.state.prePage);
+        var dataShow = res.entries;
         self.setState({
-          data: [].concat(_toConsumableArray(res)),
-          dataShow: dataShow
+          data: new Array(res.total_entries).fill(1),
+          dataShow: dataShow,
+          prePage: res.per_page,
+          page: res.current_page
         });
       },
       error: function (err) {
@@ -78236,6 +78242,7 @@ var ListMaintenanceRequest = React.createClass({
 
   componentWillMount: function () {
     //this.getMaintenanceRequests();
+    this.setPage(1);
   },
 
   setPage: function (page) {
@@ -78243,15 +78250,30 @@ var ListMaintenanceRequest = React.createClass({
       page: page
     });
     if (this.state.valueAction) {
-      if (!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-        this.getData("/maintenance_request_filter", page, {
+      if (!!this.props.current_user_agent) {
+        this.getData("/agent_maintenance_requests.json", this.state.page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_agency_admin) {
+        this.getData("/agency_admin_maintenance_requests.json", page, {
           sort_by_date: this.state.sortByDate,
           maintenance_request_filter: this.state.valueAction
         });
       } else if (!!this.props.current_user_trady) {
-        this.getData("/trady_maintenance_request_filter", page, {
+        this.getData("/trady_maintenance_requests.json", page, {
           sort_by_date: this.state.sortByDate,
           trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_landlord) {
+        this.getData("/landlord_maintenance_requests.json", page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_tenant) {
+        this.getData("/tenant_maintenance_requests.json", page, {
+          sort_by_date: this.state.sortByDate,
           maintenance_request_filter: this.state.valueAction
         });
       }
@@ -78266,15 +78288,30 @@ var ListMaintenanceRequest = React.createClass({
     });
 
     if (this.state.valueAction) {
-      if (!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-        this.getData("/maintenance_request_filter", this.state.page, {
+      if (!!this.props.current_user_agent) {
+        this.getData("/agent_maintenance_requests.json", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_agency_admin) {
+        this.getData("/agency_admin_maintenance_requests.json", this.state.page, {
           sort_by_date: value,
           maintenance_request_filter: this.state.valueAction
         });
       } else if (!!this.props.current_user_trady) {
-        this.getData("/trady_maintenance_request_filter", this.state.page, {
+        this.getData("/trady_maintenance_request.json", this.state.page, {
           sort_by_date: value,
           trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_landlord) {
+        this.getData("/landlord_maintenance_request.json", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction
+        });
+      } else if (!!this.props.current_user_tenant) {
+        this.getData("/tenant_maintenance_request.json", this.state.page, {
+          sort_by_date: value,
           maintenance_request_filter: this.state.valueAction
         });
       }
@@ -78294,11 +78331,17 @@ var ListMaintenanceRequest = React.createClass({
       valueAction: action
     });
 
-    if (!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-      this.getData("/maintenance_request_filter", 1, params);
+    if (!!this.props.current_user_agent) {
+      this.getData("/agent_maintenance_requests.json", 1, params);
+    } else if (!!this.props.current_user_agency_admin) {
+      this.getData("/agency_admin_maintenance_requests.json", 1, params);
     } else if (!!this.props.current_user_trady) {
       params.trady_id = this.props.current_user_trady.id;
-      this.getData("/trady_maintenance_request_filter", 1, params);
+      this.getData("/trady_maintenance_requests.json", 1, params);
+    } else if (!!this.props.current_user_landlord) {
+      this.getData("/landlord_maintenance_requests.json", 1, params);
+    } else if (!!this.props.current_user_tenant) {
+      this.getData("/tenant_maintenance_requests.json", 1, params);
     }
   },
 
@@ -78306,11 +78349,12 @@ var ListMaintenanceRequest = React.createClass({
     var _this3 = this;
 
     var self = this;
-    var current_user_agent = this.props.current_user_agent;
-    var current_user_trady = this.props.current_user_trady;
-    var current_user_tenant = this.props.current_user_tenant;
-    var current_user_landlord = this.props.current_user_landlord;
-    var current_user_agency_admin = this.props.current_user_agency_admin;
+    var _props = this.props;
+    var current_user_agent = _props.current_user_agent;
+    var current_user_trady = _props.current_user_trady;
+    var current_user_tenant = _props.current_user_tenant;
+    var current_user_landlord = _props.current_user_landlord;
+    var current_user_agency_admin = _props.current_user_agency_admin;
 
     return React.createElement(
       "div",
@@ -78725,10 +78769,10 @@ var SearchResultMaintenanceRequest = React.createClass({
   displayName: "SearchResultMaintenanceRequest",
 
   getInitialState: function () {
-    var _props = this.props;
-    var maintenance_requests = _props.maintenance_requests;
-    var _props$query = _props.query;
-    var query = _props$query === undefined ? '' : _props$query;
+    var _props2 = this.props;
+    var maintenance_requests = _props2.maintenance_requests;
+    var _props2$query = _props2.query;
+    var query = _props2$query === undefined ? '' : _props2$query;
 
     var page = 1;
     var prePage = 3;
