@@ -7,7 +7,8 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   before_action(only:[:show]) {belongs_to_agency_admin}
 
-  caches_action  :show
+  caches_action :index, unless: -> { request.format.json? }
+  caches_action :show
 
   def index
     
