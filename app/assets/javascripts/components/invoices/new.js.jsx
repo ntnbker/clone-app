@@ -358,7 +358,6 @@ var AdditionalInvoiceField = React.createClass({
   }
 });
 
-
 var InvoiceItemField = React.createClass({
   getInitialState : function() {
     var invoice_item = this.props.content;
@@ -568,7 +567,6 @@ var InvoiceItemField = React.createClass({
     </div>
   }
 });
-
 
 var InvoiceField = React.createClass({
   getInitialState : function() {
@@ -826,11 +824,14 @@ var InvoiceFields = React.createClass({
   },
 
   handleSummit: function(e) {
+    e.preventDefault();
     const ledger = this.props.ledger;
     const id = (ledger && ledger.id) || '';
     const self = this;
 
-    e.preventDefault();
+    let isExistInvoice = $('#new_invoice').serialize().includes('ledger%5Binvoices_attributes%5D');
+    if (!isExistInvoice) return;
+
     var FD = new FormData(document.getElementById('new_invoice'));
 
     $.ajax({
