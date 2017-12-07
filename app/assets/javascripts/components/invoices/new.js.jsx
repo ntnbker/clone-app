@@ -829,7 +829,9 @@ var InvoiceFields = React.createClass({
     const id = (ledger && ledger.id) || '';
     const self = this;
 
-    let isExistInvoice = $('#new_invoice').serialize().includes('ledger%5Binvoices_attributes%5D');
+    const invRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i
+    let isExistInvoice = invRegex.test($('#new_invoice').serialize());
+
     if (!isExistInvoice) return;
 
     var FD = new FormData(document.getElementById('new_invoice'));
