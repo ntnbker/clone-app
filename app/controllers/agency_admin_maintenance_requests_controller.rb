@@ -66,7 +66,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     #   # format.json {render json:@maintenance_requests_json.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
       
     # end 
-
+    
     respond_to do |format|
       format.json {
         render :json => {

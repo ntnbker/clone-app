@@ -4,6 +4,10 @@ class AgentMaintenanceRequestsController < ApplicationController
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Agent")}
   before_action(only:[:show]) {belong_to_agent}
+
+  caches_action :index, unless: -> { request.format.json? }
+  caches_action :show
+
   def index
 
     if params[:page] == nil

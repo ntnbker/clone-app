@@ -5,6 +5,10 @@ class TenantMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("Tenant")}
   before_action(only:[:show]) {belongs_to_tenant}
   
+  caches_action :index, unless: -> { request.format.json? }
+  caches_action :show
+
+
   def index
 
     if params[:page] == nil

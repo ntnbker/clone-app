@@ -1,4 +1,5 @@
 class AgentEmailsController < ApplicationController
+  
   def index
     #grabs all the emails in our system
     @emails = AgencyEmail.find_all

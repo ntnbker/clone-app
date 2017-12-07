@@ -9,6 +9,9 @@ class MaintenanceRequestsController < ApplicationController
   before_action :check_for_role, only:[:new]
   #authorize_resource :class => false
 
+  
+  caches_action :new
+
   def new
     
     if current_user != nil 

@@ -2,6 +2,10 @@ class AgentsController < ApplicationController
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   
+  
+  caches_action :new, :edit
+
+
   def new
     @agent = Agent.new
     @agency_id = current_user.agency_admin.agency.id
