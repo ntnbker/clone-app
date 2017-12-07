@@ -148,7 +148,7 @@ var Header = React.createClass({
 
     clickDocument: function(e) {
       if (this.props.expanded) {
-        var component = ReactDOM.findDOMNode(this.refs.showItems);
+        var component = ReactDOM.findDOMNode(this.showItemMenus);
         if (e.target == component || $(component).has(e.target).length) {
             // Inside of the component.
         } else {
@@ -358,7 +358,7 @@ var Header = React.createClass({
                           <div
                             className="menu-button"
                             onClick={this.showItems}
-                            ref={ref => this.showItems = ref}
+                            ref={ref => this.showItemMenus = ref}
                           >
                             <span className="icon-user">
                               <AvatarImage className="fa fa-user" imageUri={profile} />
