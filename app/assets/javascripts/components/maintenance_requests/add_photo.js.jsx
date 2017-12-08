@@ -60,7 +60,12 @@ var ModalAddPhoto = React.createClass({
 
   getOrientation: function (result) {
     var view = new DataView(result);
-    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    try {
+      if (view.getUint16(0, false) != 0xFFD8) return -2;
+    }
+    catch (e) {
+      return -2;
+    }
     var length = view.byteLength, offset = 2;
     while (offset < length) {
       var marker = view.getUint16(offset, false);

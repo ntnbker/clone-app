@@ -690,8 +690,18 @@ var ModalSplitMR = React.createClass({
 		splitSubmit(FD, function({ errors, success }) {
 			if (errors) {
 				//defined in header.js.jsx
+				debugger
+				const indexRegex = /indexes%5B(\d+)%5D=(\d+)/i;
+				const indexes = $('#splitMRForm').serialize()
+													.split('&')
+													.filter(v => indexRegex.test(v))
+													.reduce((r, v) => ({
+														...r,
+														[v.replace(indexRegex, '$1')]: v.replace(indexRegex, '$2')
+													}), {});
+
 				const convertedErrors = errors.reduce((result, obj) => {
-					const fieldId = FD.get(`indexes[${obj.id}]`);
+					const fieldId = indexes[obj.id];
 					return {
 						...result,
 						[fieldId]: obj
