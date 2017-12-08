@@ -6,6 +6,9 @@ class TradyMaintenanceRequestsController < ApplicationController
   before_action(only:[:show]) {belongs_to_trady}
   # authorize_resource :class => false
 
+  caches_action :index, unless: -> { request.format.json? }
+  caches_action :show
+
   def index
 
     if params[:page] == nil

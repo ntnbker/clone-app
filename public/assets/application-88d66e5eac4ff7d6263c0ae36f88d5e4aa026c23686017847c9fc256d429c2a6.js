@@ -87313,7 +87313,7 @@ var Header = React.createClass({
 
   clickDocument: function (e) {
     if (this.props.expanded) {
-      var component = ReactDOM.findDOMNode(this.refs.showItems);
+      var component = ReactDOM.findDOMNode(this.showItemMenus);
       if (e.target == component || $(component).has(e.target).length) {
         // Inside of the component.
       } else {
@@ -87577,7 +87577,7 @@ var Header = React.createClass({
                 className: "menu-button",
                 onClick: this.showItems,
                 ref: function (ref) {
-                  return _this.showItems = ref;
+                  return _this.showItemMenus = ref;
                 }
               },
               React.createElement(
