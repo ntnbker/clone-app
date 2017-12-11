@@ -7,8 +7,15 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   before_action(only:[:show]) {belongs_to_agency_admin}
 
-  caches_action :index, unless: -> { request.format.json? }
-  caches_action :show
+  caches_action :index
+  # , unless: -> { request.format.json? }
+  # caches_action :show
+
+  # caches_action :index, :cache_path => proc {|c|
+  # { :tag => Post.maximum('updated_at') }
+  # }
+
+  cache_sweeper :action_status_sweeper
 
   def index
     
@@ -53,7 +60,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @send_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Send Work Order")    
     
     
-     # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
 
     #@maintenance_requests_json = @maintenance_requests.paginate(:page => params[:page], :per_page => 10)
 
@@ -66,7 +73,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     #   # format.json {render json:@maintenance_requests_json.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
       
     # end 
-    
+
     respond_to do |format|
       format.json {
         render :json => {
@@ -90,7 +97,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     #@quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})
     
     @agency = @current_user.agency_admin.agency
-    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>{}).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
     @quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
     @services = Service.all
     @email_quote_id = params[:email_quote_id]

@@ -1,4 +1,8 @@
 class ApplicationController < ActionController::Base
+  
+  # include ActionController::Caching::Sweeping
+
+
   protect_from_forgery with: :exception
   helper_method :profile_and_company_avatar
   rescue_from CanCan::AccessDenied do |exception|
