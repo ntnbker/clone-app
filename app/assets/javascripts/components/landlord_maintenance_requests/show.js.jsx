@@ -1,4 +1,4 @@
-var LandlordSideBarMobile = React.createClass({
+var LaLandlordSideBarMobile = React.createClass({
 	getInitialState: function() {
 		return {
 			showAction: false,
@@ -39,7 +39,7 @@ var LandlordSideBarMobile = React.createClass({
 
 	render: function() {
 		return (
-			<div>
+			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
 						<button

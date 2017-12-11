@@ -128,69 +128,70 @@ var ModalViewInvoice = React.createClass({
 	},
 
 	printInvoice: function() {
-		$('.button-slider').toggle('hide');
-		var contents = $('#print-invoice').html();
-		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
-								".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
-								".info-trady p {margin-bottom: 0px;}" +
-								".info-agency {flex: 1;}" +
-								".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" +
-								".detail-quote .info-maintenance {margin-top: 10px;}" +
-								".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" +
-								".detail-quote {margin-top: 15px;}" +
-								".detail-quote .table {width: 100%;}" +
-								".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" +
-								".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}"+
-								"#print-invoice { color: #404040;}" +
-								".modal-dialog { width: 700px !important;}" +
-								".modal-header {background-color: #fff !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
-								".modal-header .logo img { width: 80px;}" +
-								".modal-header .info-trady {margin-left: 15px;}" +
-								".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
-								".modal-header .info-trady p span:last-child {padding-left: 5px;}" +
-								".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" +
-								".modal-header .close span {color: #ccc !important;}" +
-								".info-quote { font-size: 13px; clear: both; overflow: hidde}" +
-								".info-quote .bill-to { font-size: 16px;}" +
-								".info-quote .info-agency p { text-align: left !important;}" +
-								".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" +
-								".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" +
-								".footer i { font-size: 36px;}" +
-								".footer p { margin-bottom: 5px;}" +
-								".footer .bank { margin-left: 5%; width: 45%; float: left;}" +
-								".footer .bank span:first-child { width: 110px; display: inline-block;}" +
-								".footer .contact { margin-left: 5%; width: 45%; float: left;}" +
-								".border-none { border: none !important;}" +
-								".color-grey { color: #b3b3b3;}" +
-								".font-bold { font-weight: bold;}" +
-								".m-t-md { margin-top: 10px;}" +
-								".p-t-n { padding-top: 0 !important;}" +
-								".p-b-n { padding-bottom: 0 !important;}" +
-								".print {display: none;}" +
-								".close {display: none;}";
+		window.print();
+		// $('.button-slider').toggle('hide');
+		// var contents = $('#print-invoice').html();
+		// var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
+		// 						".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
+		// 						".info-trady p {margin-bottom: 0px;}" +
+		// 						".info-agency {flex: 1;}" +
+		// 						".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" +
+		// 						".detail-quote .info-maintenance {margin-top: 10px;}" +
+		// 						".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" +
+		// 						".detail-quote {margin-top: 15px;}" +
+		// 						".detail-quote .table {width: 100%;}" +
+		// 						".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" +
+		// 						".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}"+
+		// 						"#print-invoice { color: #404040;}" +
+		// 						".modal-dialog { width: 700px !important;}" +
+		// 						".modal-header {background-color: #fff !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
+		// 						".modal-header .logo img { width: 80px;}" +
+		// 						".modal-header .info-trady {margin-left: 15px;}" +
+		// 						".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
+		// 						".modal-header .info-trady p span:last-child {padding-left: 5px;}" +
+		// 						".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" +
+		// 						".modal-header .close span {color: #ccc !important;}" +
+		// 						".info-quote { font-size: 13px; clear: both; overflow: hidde}" +
+		// 						".info-quote .bill-to { font-size: 16px;}" +
+		// 						".info-quote .info-agency p { text-align: left !important;}" +
+		// 						".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" +
+		// 						".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" +
+		// 						".footer i { font-size: 36px;}" +
+		// 						".footer p { margin-bottom: 5px;}" +
+		// 						".footer .bank { margin-left: 5%; width: 45%; float: left;}" +
+		// 						".footer .bank span:first-child { width: 110px; display: inline-block;}" +
+		// 						".footer .contact { margin-left: 5%; width: 45%; float: left;}" +
+		// 						".border-none { border: none !important;}" +
+		// 						".color-grey { color: #b3b3b3;}" +
+		// 						".font-bold { font-weight: bold;}" +
+		// 						".m-t-md { margin-top: 10px;}" +
+		// 						".p-t-n { padding-top: 0 !important;}" +
+		// 						".p-b-n { padding-bottom: 0 !important;}" +
+		// 						".print {display: none;}" +
+		// 						".close {display: none;}";
 
-		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
-		var htmlContent = "<html>" +
-											"<head>" +
-											"<title> Invoice </title>" +
-											'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
-											'<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' +
-											'<style type="text/css" media="print,screen">' +
-											style +
-											"</style>";
-		frame.open();
-		frame.write(htmlContent);
-		frame.write("</head><body>");
-		frame.write(contents);
-		frame.write("</body></html>");
-		frame.close();
+		// var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
+		// var htmlContent = "<html>" +
+		// 									"<head>" +
+		// 									"<title> Invoice </title>" +
+		// 									'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
+		// 									'<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' +
+		// 									'<style type="text/css" media="print,screen">' +
+		// 									style +
+		// 									"</style>";
+		// frame.open();
+		// frame.write(htmlContent);
+		// frame.write("</head><body>");
+		// frame.write(contents);
+		// frame.write("</body></html>");
+		// frame.close();
 
-    // print just the modal div
-    setTimeout(function() {
-    	$('#printframe')[0].contentWindow.print();
-      $('#printframe')[0].contentWindow.close();
-    	$('.button-slider').toggle('show');
-    }, 1000);
+  //   // print just the modal div
+  //   setTimeout(function() {
+  //   	$('#printframe')[0].contentWindow.print();
+  //     $('#printframe')[0].contentWindow.close();
+  //   	$('.button-slider').toggle('show');
+  //   }, 1000);
 	},
 
 	render: function() {
@@ -235,7 +236,7 @@ var ModalViewInvoice = React.createClass({
 							</div>
 							<button
 								type="button"
-								className="close"
+								className="close dontprint"
 								data-dismiss="modal"
 								aria-label="Close"
 								onClick={this.props.close}
@@ -316,11 +317,9 @@ var ModalViewInvoice = React.createClass({
 								</p>
 							</div>
 						</div>
-						<p className="print">
-							<button className="btn btn-default btn-print" onClick={this.printInvoice}>
-								Print
-							</button>
-						</p>
+            <div className="modal-body dontprint">
+              <ButtonPrint printQuote={this.printInvoice} />
+            </div>
 					</div>
 				</div>
 				<div id="modal-print">

@@ -23,6 +23,9 @@ body {
     border-width: 0px;
   }
 }
+.relative-class {
+  position: relative !important;
+}
 .layout {
   margin: auto;
   background: #F4F8FB;
@@ -790,18 +793,50 @@ footer {
 
 @media print {
   .dontprint {
+    // visibility: 'hidden';
     display: none !important;
   }
+  // body.modal-custom {
+  //   display: block;
+  // }
+  // body.modal-open {
+  //     visibility: visible;
+  // }
+
+  // body.modal-open .modal .modal-header,
+  // body.modal-open .modal .modal-body {
+  //     visibility: visible; /* make visible modal body and header */
+  // }
+
   .modal-custom .modal-dialog {
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     position: fixed;
+    left: 0;
     top: 0;
+  }
+
+  body.modal-dialog .modal-content .modal-header .modal-title,
+  body.modal-dialog .modal-content .modal-body,
+  body.modal-dialog .modal-content .modal-body * {
+    visibility: visible;
+  }
+
+  body.modal-dialog .modal-content .modal-header,
+  body.modal-dialog .modal-content .modal-body {
+    padding: 0;
+  }
+
+  body.modal-dialog .modal-content .modal-header .modal-title {
+    margin-bottom: 20px;
   }
 }
 
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-   /* IE10+ CSS */
 
+@media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS here */
+  .modal-custom .modal-dialog {
+    position: absolute;
+  }
 }
