@@ -1018,7 +1018,6 @@ var MaintenanceRequest = React.createClass({
 			logs  	 	 		 						 : this.props.logs,
 			invoice_pdf_file  	 	 		 : null,
 			agency 										 : this.props.agency,
-			quotes  	 	 		 					 : this.props.quotes,
 			status  	 	 		 					 : this.props.status,
 			tenants 									 : this.props.tenants,
 			tradies  	 	 		 					 : this.props.tradies,
@@ -1486,7 +1485,7 @@ var MaintenanceRequest = React.createClass({
 			success: function(res){
 				self.isClose();
 				self.setState({
-					quotes: res
+					quote_requests: res
 				});
 				if(params.status == 'Approved') {
 					self.setState({notification: {
@@ -1543,14 +1542,14 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	updateQuotes: function(quote) {
-		const {quotes} = this.state;
-		let data = quotes.map((item, key) => {
+		const {quote_requests} = this.state;
+		let data = quote_requests.map((item, key) => {
 			item.forwarded_to_landlord = quote.id == item.id ? quote.forwarded_to_landlord : item.forwarded_to_landlord;
 			return item
 		});
 
 		this.setState({
-			quotes: data
+			quote_requests: data
 		});
 	},
 
@@ -2193,7 +2192,7 @@ var MaintenanceRequest = React.createClass({
 						<ModalViewQuote
 							close={this.isClose}
 							quote={this.state.quote}
-							quotes={this.state.quotes}
+							quotes={this.state.quote_requests}
 							agency={this.props.agency}
 							property={this.props.property}
 							landlord={this.state.landlord}
@@ -2485,9 +2484,9 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	openQuoteMesssage: function(quote_id) {
-		const {quotes} = this.state;
+		const {quote_requests} = this.state;
 		let quote = '';
-		quotes.map((item, key) => {
+		quote_requests.map((item, key) => {
 			if(item.id == quote_id) {
 				quote = item;
 				return;
@@ -2596,7 +2595,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	summary(e) {
-		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, quotes, invoices} = this.props;
+		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, invoices} = this.props;
 		const {invoice_pdf_files, trady, quote_requests} = this.state;
 
 		return (
@@ -2640,9 +2639,9 @@ var MaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
-						{	false && (quotes && quotes.length > 0) &&
+						{	false && (quote_requests && quote_requests.length > 0) &&
 						 		<Quotes
-							 		quotes={this.state.quotes}
+							 		quotes={this.state.quote_requests}
 							 		onModalWith={this.onModalWith}
 							 		landlord={this.state.landlord}
 							 		current_user={this.props.current_user}
