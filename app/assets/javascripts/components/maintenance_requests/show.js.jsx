@@ -947,7 +947,7 @@ var ModalRequestModal = React.createClass({
 								}
 							</div>
 							<div className="modal-footer">
-								{ this.props.keyTitle === 'request-quote' &&
+								{ false && this.props.keyTitle === 'request-quote' &&
 									<div className="row">
 										<button
 											className="btn btn-primary cancel"
@@ -1955,7 +1955,12 @@ var MaintenanceRequest = React.createClass({
 		  },
 		  data: data,
 		  success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) {
+					const error = {
+						image: [((res.error || res.errors).image || [])[0].replace(/\w+ /, '')]
+					};
+					return callback(error);
+        }
 		  	callback(null, 'You Has Successfully Upload');
         if (res && res.quote_requests) {
         	self.setState({ quote_requests: res.quote_requests });

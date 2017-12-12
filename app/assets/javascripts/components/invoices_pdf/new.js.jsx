@@ -65,7 +65,7 @@ var AddInvoicePDF = React.createClass({
 				},
 				success: function (res) {
 					setTimeout(function () {
-						$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+						$('#title-upload').html('<i class="fa fa-upload" /> Choose PDF to upload');
 						$('.progress').remove();
 					}, 0);
 					var filePDF = {
@@ -147,7 +147,7 @@ var AddInvoicePDF = React.createClass({
 								<div className="browse-wrap">
 									<div className="title" id="title-upload">
 										<i className="fa fa-upload" />
-										Choose image to upload
+										Choose PDF to upload
 									</div>
 									<input
 										type="file"

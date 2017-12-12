@@ -623,6 +623,7 @@ var QuoteRequests = React.createClass({
 											? <ModalImageUpload
 													className="btn btn-default"
 													{...self}
+													chooseImageText="Choose Image or PDF to upload"
 													onClick={() => self.chooseQuoteRequest(quote_request)}
 												/>
 											: ''

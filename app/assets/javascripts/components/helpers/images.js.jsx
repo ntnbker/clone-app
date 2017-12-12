@@ -119,6 +119,9 @@ UploadImageComponent = React.createClass({
       dataImages: dataImages,
       error: '',
     });
+    if (!dataImages.length) {
+      this.setState({ uploadComplete: false });
+    }
   },
 
   loadImage: function (e, image, key, isError) {
@@ -146,8 +149,9 @@ UploadImageComponent = React.createClass({
         }
       }
 
-      if (isError && target_img.src.includes('data:application/pdf')) {
-        image.isPdf = true;
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
       }
       image.url = target_img.src;
       images[key] = image;
@@ -208,7 +212,8 @@ UploadImageComponent = React.createClass({
             if (self.state.totalFile == 0) {
               self.setState({
                 totalFile: 0,
-                fileDisabled: false
+                totalProgress: 0,
+                uploadComplete: true
               });
               setTimeout(function () {
                 $('#title-upload').html('<i class="fa fa-upload" /> Choose image to change');
@@ -337,11 +342,13 @@ UploadImageComponent = React.createClass({
   render: function () {
     const { images, gallery, uploadComplete, error } = this.state;
 
-    const uploadButton = !uploadComplete && !images.length
+    const uploadButton = !uploadComplete
       ? <div className="browse-wrap">
           <div className="title" id="title-upload">
             <i className="fa fa-upload" />
-            Choose image to {gallery.length ? 'change' : 'add'}
+            { this.props.chooseImageText ||
+              "Choose/Take a picture to upload"
+            }
           </div>
           <input
             multiple
@@ -383,16 +390,21 @@ UploadImageComponent = React.createClass({
                     images.map((img, index) => {
                       return (
                         <div key={index} className="img">
-                          { !img.isPdf
+                          { !img.isPdf && !img.isInvalid
                             ? <img
                                 src={img.url}
                                 className="img"
                                 onLoad={(e) => this.loadImage(e, img, index)}
                                 onError={(e) => this.loadImage(e, img, index, true)}
                               />
-                            : <div className="file-pdf">
-                                <i className="fa fa-file-pdf-o" />
-                              </div>
+                            : !img.isInvalid
+                              ? <div className="file-pdf">
+                                  <i className="fa fa-file-pdf-o" />
+                                </div>
+                              : <div className="file-pdf file-error">
+                                  <i className="fa fa-file" />
+                                </div>
+
                           }
                           <i className="fa fa-close" onClick={(key) => this.removeImage(index)} />
                         </div>
@@ -401,6 +413,7 @@ UploadImageComponent = React.createClass({
                   }
                 </div>
                 {uploadButton}
+                <p id="errorbox" className="error">{error ? 'Please remove invalid file!' : ''}</p>
                 <p id="errorbox" className="error">{error ? error : ''}</p>
               </div>
               <div className="modal-footer">

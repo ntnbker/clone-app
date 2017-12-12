@@ -67752,7 +67752,7 @@ var AgencyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.error && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -68387,7 +68387,7 @@ var AgencyAdminEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -68775,7 +68775,7 @@ var AgentEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -70161,23 +70161,21 @@ var ModalViewTrady = React.createClass({
 
     var agency = _filterData.agency;
     var agent = _filterData.agent;
-    var agency_admin = _filterData.agency_admin;
     var trady = _filterData.trady;
     var maintenance_request = _filterData.maintenance_request;
     var property = _filterData.property;
 
-    return { agency: agency, agent: agent, agency_admin: agency_admin, trady: trady, maintenance_request: maintenance_request, property: property };
+    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property };
   },
 
   filterData: function (props) {
     var agency = props.agency || {};
-    var agent = props.agent || {};
-    var agency_admin = props.agency_admin || {};
+    var agent = props.agent || props.agency_admin || {};
     var trady = props.trady || {};
     var property = props.property || {};
     var maintenance_request = props.maintenance_request || {};
 
-    return { agency: agency, agent: agent, agency_admin: agency_admin, trady: trady, maintenance_request: maintenance_request, property: property };
+    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property };
   },
 
   printWork: function () {
@@ -70188,7 +70186,6 @@ var ModalViewTrady = React.createClass({
     var _state = this.state;
     var agency = _state.agency;
     var agent = _state.agent;
-    var agency_admin = _state.agency_admin;
     var trady = _state.trady;
     var maintenance_request = _state.maintenance_request;
     var property = _state.property;
@@ -70266,7 +70263,7 @@ var ModalViewTrady = React.createClass({
                   React.createElement(
                     'span',
                     { className: 'icon-user' },
-                    React.createElement(AvatarImage, { id: 'logo', imageUri: image_url })
+                    React.createElement(AvatarImage, { id: 'logo', imageUri: '/nothing' })
                   )
                 ),
                 React.createElement(
@@ -70366,7 +70363,7 @@ var ModalViewTrady = React.createClass({
                         { className: 'heading' },
                         'Name:'
                       ),
-                      agent.name || ((agency_admin.first_name || '') + ' ' + (agency_admin.last_name || '')).trim()
+                      ((agent.first_name || agent.name || '') + ' ' + (agent.last_name || '')).trim()
                     ),
                     React.createElement(
                       'p',
@@ -70376,7 +70373,7 @@ var ModalViewTrady = React.createClass({
                         { className: 'heading' },
                         'Phone:'
                       ),
-                      agent.phone || agent.mobile_phone || agency_admin.mobile_phone
+                      agent.phone || agent.mobile_phone
                     ),
                     React.createElement(
                       'p',
@@ -70386,7 +70383,7 @@ var ModalViewTrady = React.createClass({
                         { className: 'heading' },
                         'Email:'
                       ),
-                      agent.email || agency_admin.email
+                      agent.email
                     )
                   )
                 )
@@ -70820,6 +70817,9 @@ UploadImageComponent = React.createClass({
       dataImages: dataImages,
       error: ''
     });
+    if (!dataImages.length) {
+      this.setState({ uploadComplete: false });
+    }
   },
 
   loadImage: function (e, image, key, isError) {
@@ -70850,8 +70850,9 @@ UploadImageComponent = React.createClass({
         }
       }
 
-      if (isError && target_img.src.includes('data:application/pdf')) {
-        image.isPdf = true;
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
       }
       image.url = target_img.src;
       images[key] = image;
@@ -70912,7 +70913,8 @@ UploadImageComponent = React.createClass({
             if (self.state.totalFile == 0) {
               self.setState({
                 totalFile: 0,
-                fileDisabled: false
+                totalProgress: 0,
+                uploadComplete: true
               });
               setTimeout(function () {
                 $('#title-upload').html('<i class="fa fa-upload" /> Choose image to change');
@@ -71047,15 +71049,14 @@ UploadImageComponent = React.createClass({
     var uploadComplete = _state2.uploadComplete;
     var error = _state2.error;
 
-    var uploadButton = !uploadComplete && !images.length ? React.createElement(
+    var uploadButton = !uploadComplete ? React.createElement(
       'div',
       { className: 'browse-wrap' },
       React.createElement(
         'div',
         { className: 'title', id: 'title-upload' },
         React.createElement('i', { className: 'fa fa-upload' }),
-        'Choose image to ',
-        gallery.length ? 'change' : 'add'
+        this.props.chooseImageText || "Choose/Take a picture to upload"
       ),
       React.createElement('input', {
         multiple: true,
@@ -71117,7 +71118,7 @@ UploadImageComponent = React.createClass({
                   return React.createElement(
                     'div',
                     { key: index, className: 'img' },
-                    !img.isPdf ? React.createElement('img', {
+                    !img.isPdf && !img.isInvalid ? React.createElement('img', {
                       src: img.url,
                       className: 'img',
                       onLoad: function (e) {
@@ -71126,10 +71127,14 @@ UploadImageComponent = React.createClass({
                       onError: function (e) {
                         return _this2.loadImage(e, img, index, true);
                       }
-                    }) : React.createElement(
+                    }) : !img.isInvalid ? React.createElement(
                       'div',
                       { className: 'file-pdf' },
                       React.createElement('i', { className: 'fa fa-file-pdf-o' })
+                    ) : React.createElement(
+                      'div',
+                      { className: 'file-pdf file-error' },
+                      React.createElement('i', { className: 'fa fa-file' })
                     ),
                     React.createElement('i', { className: 'fa fa-close', onClick: function (key) {
                         return _this2.removeImage(index);
@@ -71138,6 +71143,11 @@ UploadImageComponent = React.createClass({
                 })
               ),
               uploadButton,
+              React.createElement(
+                'p',
+                { id: 'errorbox', className: 'error' },
+                error ? 'Please remove invalid file!' : ''
+              ),
               React.createElement(
                 'p',
                 { id: 'errorbox', className: 'error' },
@@ -72662,11 +72672,16 @@ var InvoiceFields = React.createClass({
   },
 
   handleSummit: function (e) {
+    e.preventDefault();
     var ledger = this.props.ledger;
     var id = ledger && ledger.id || '';
     var self = this;
 
-    e.preventDefault();
+    var invRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i;
+    var isExistInvoice = invRegex.test($('#new_invoice').serialize());
+
+    if (!isExistInvoice) return;
+
     var FD = new FormData(document.getElementById('new_invoice'));
 
     $.ajax({
@@ -73583,7 +73598,7 @@ var AddInvoicePDF = React.createClass({
 				},
 				success: function (res) {
 					setTimeout(function () {
-						$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+						$('#title-upload').html('<i class="fa fa-upload" /> Choose PDF to upload');
 						$('.progress').remove();
 					}, 0);
 					var filePDF = {
@@ -73686,7 +73701,7 @@ var AddInvoicePDF = React.createClass({
 							'div',
 							{ className: 'title', id: 'title-upload' },
 							React.createElement('i', { className: 'fa fa-upload' }),
-							'Choose image to upload'
+							'Choose PDF to upload'
 						),
 						React.createElement('input', {
 							type: 'file',
@@ -76457,7 +76472,7 @@ var ModalAddPhoto = React.createClass({
     }
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     var img = e.target;
     var maxSize = 500000; // byte
     var self = this;
@@ -76485,6 +76500,10 @@ var ModalAddPhoto = React.createClass({
         }
       }
 
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
+      }
       image.url = target_img.src;
       images[key] = image;
       this.setState({
@@ -76716,7 +76735,7 @@ var ModalAddPhoto = React.createClass({
         'div',
         { className: 'title', id: 'title-upload' },
         React.createElement('i', { className: 'fa fa-upload' }),
-        'Choose image to upload'
+        'Choose/Take a picture to upload'
       ),
       React.createElement('input', {
         multiple: true,
@@ -76778,16 +76797,24 @@ var ModalAddPhoto = React.createClass({
                   return React.createElement(
                     'div',
                     { key: index, className: 'img' },
-                    React.createElement('img', {
+                    !img.isPdf && !img.isInvalid ? React.createElement('img', {
                       src: img.url,
                       className: 'img',
                       onLoad: function (e) {
                         return _this2.loadImage(e, img, index);
                       },
                       onError: function (e) {
-                        return _this2.loadImage(e, img, index);
+                        return _this2.loadImage(e, img, index, true);
                       }
-                    }),
+                    }) : !img.isInvalid ? React.createElement(
+                      'div',
+                      { className: 'file-pdf' },
+                      React.createElement('i', { className: 'fa fa-file-pdf-o' })
+                    ) : React.createElement(
+                      'div',
+                      { className: 'file-pdf' },
+                      React.createElement('i', { className: 'fa fa-file' })
+                    ),
                     React.createElement('i', { className: 'fa fa-close', onClick: function (key) {
                         return _this2.removeImage(index);
                       } })
@@ -76795,6 +76822,11 @@ var ModalAddPhoto = React.createClass({
                 })
               ),
               uploadButton,
+              React.createElement(
+                'p',
+                { id: 'errorbox', className: 'error' },
+                error ? 'Please remove invalid file!' : ''
+              ),
               React.createElement(
                 'p',
                 { id: 'errorbox', className: 'error' },
@@ -80181,7 +80213,7 @@ var MaintenanceRequestsNew = React.createClass({
     });
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     var img = e.target;
     var maxSize = 500000; // byte
     var self = this;
@@ -80208,6 +80240,10 @@ var MaintenanceRequestsNew = React.createClass({
         }
       }
 
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
+      }
       image.url = target_img.src;
       images[key] = image;
       this.setState({
@@ -80269,7 +80305,7 @@ var MaintenanceRequestsNew = React.createClass({
                 fileDisabled: false
               });
               setTimeout(function () {
-                $('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+                $('#title-upload').html('<i class="fa fa-upload" /> Choose/Take a picture to upload');
                 $('.progress').remove();
               }, 500);
             }
@@ -80600,7 +80636,7 @@ var MaintenanceRequestsNew = React.createClass({
               'div',
               { className: 'title', id: 'title-upload' },
               React.createElement('i', { className: 'fa fa-upload' }),
-              'Choose image to upload'
+              'Choose/Take a picture to upload'
             ),
             React.createElement('input', {
               multiple: true,
@@ -80621,16 +80657,24 @@ var MaintenanceRequestsNew = React.createClass({
               return React.createElement(
                 'div',
                 { key: index, className: 'img' },
-                React.createElement('img', {
+                !img.isPdf && !img.isInvalid ? React.createElement('img', {
                   src: img.url,
-                  className: '',
+                  className: 'img',
                   onLoad: function (e) {
                     return _this2.loadImage(e, img, index);
                   },
                   onError: function (e) {
-                    return _this2.loadImage(e, img, index);
+                    return _this2.loadImage(e, img, index, true);
                   }
-                }),
+                }) : !img.isInvalid ? React.createElement(
+                  'div',
+                  { className: 'file-pdf' },
+                  React.createElement('i', { className: 'fa fa-file-pdf-o' })
+                ) : React.createElement(
+                  'div',
+                  { className: 'file-pdf' },
+                  React.createElement('i', { className: 'fa fa-file' })
+                ),
                 React.createElement(
                   'a',
                   { className: 'remove', onClick: function (key) {
@@ -82136,7 +82180,7 @@ var ModalRequestModal = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "modal-footer" },
-							this.props.keyTitle === 'request-quote' && React.createElement(
+							false && this.props.keyTitle === 'request-quote' && React.createElement(
 								"div",
 								{ className: "row" },
 								React.createElement(
@@ -83184,7 +83228,12 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				if (res.error) return callback(res.error);
+				if (res.error || res.errors) {
+					var error = {
+						image: [((res.error || res.errors).image || [])[0].replace(/\w+ /, '')]
+					};
+					return callback(error);
+				}
 				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });
@@ -85498,6 +85547,7 @@ var QuoteRequests = React.createClass({
 								needPhotoButton ? React.createElement(ModalImageUpload, _extends({
 									className: "btn btn-default"
 								}, self, {
+									chooseImageText: "Choose Image or PDF to upload",
 									onClick: function () {
 										return self.chooseQuoteRequest(quote_request);
 									}
@@ -88868,7 +88918,7 @@ var TradyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -89575,7 +89625,7 @@ var TradyCompanyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.company_image) {
           self.setState({ gallery: res.company_image });
@@ -92111,7 +92161,7 @@ var TradyMaintenanceRequest = React.createClass({
 						close: this.isClose,
 						trady: this.state.trady,
 						maintenance_request: this.state.maintenance_request,
-						agency: this.state.agency,
+						agency: this.props.agency,
 						agency_admin: this.props.agency_admin,
 						agent: this.props.agent,
 						tenants: this.props.tenants,
@@ -92231,7 +92281,12 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				if (res.error) return callback(res.error);
+				if (res.error || res.errors) {
+					var error = {
+						image: [((res.error || res.errors).image || [])[0].replace(/\w+ /, '')]
+					};
+					return callback(error);
+				}
 				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });

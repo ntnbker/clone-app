@@ -279,7 +279,7 @@ var MaintenanceRequestsNew = React.createClass({
     });
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     const img = e.target;
     const maxSize = 500000; // byte
     const self = this;
@@ -303,7 +303,11 @@ var MaintenanceRequestsNew = React.createClass({
         }
       }
 
-      image.url = target_img.src
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
+      }
+      image.url = target_img.src;
       images[key] = image;
       this.setState({
         images: images
@@ -364,7 +368,7 @@ var MaintenanceRequestsNew = React.createClass({
                 fileDisabled: false
               });
               setTimeout(function () {
-                $('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+                $('#title-upload').html('<i class="fa fa-upload" /> Choose/Take a picture to upload');
                 $('.progress').remove();
               }, 500);
             }
@@ -634,7 +638,7 @@ var MaintenanceRequestsNew = React.createClass({
             <div className="browse-wrap">
               <div className="title" id="title-upload">
                 <i className="fa fa-upload" />
-                Choose image to upload
+                Choose/Take a picture to upload
               </div>
               <input
                 multiple
@@ -651,12 +655,22 @@ var MaintenanceRequestsNew = React.createClass({
                 images.map((img, index) => {
                   return (
                     <div key={index} className="img">
-                      <img
-                        src={img.url}
-                        className=""
-                        onLoad={e => this.loadImage(e, img, index)}
-                        onError={e => this.loadImage(e, img, index)}
-                      />
+                      { !img.isPdf && !img.isInvalid
+                        ? <img
+                            src={img.url}
+                            className="img"
+                            onLoad={(e) => this.loadImage(e, img, index)}
+                            onError={(e) => this.loadImage(e, img, index, true)}
+                          />
+                        : !img.isInvalid
+                          ? <div className="file-pdf">
+                              <i className="fa fa-file-pdf-o" />
+                            </div>
+                          : <div className="file-pdf">
+                              <i className="fa fa-file" />
+                            </div>
+
+                      }
                       <a className="remove" onClick={(key) => this.removeImage(index)}>Remove</a>
                     </div>
                   );

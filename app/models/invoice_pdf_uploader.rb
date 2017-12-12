@@ -3,7 +3,7 @@ class InvoicePdfUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_mime_type_inclusion ["application/pdf"]
+    validate_mime_type_inclusion ["application/pdf"], message: "Please upload a PDF file."
   end
   # plugins and uploading logic
   #Shrine.plugin :determine_mime_type

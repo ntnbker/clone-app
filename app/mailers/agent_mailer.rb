@@ -194,9 +194,10 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Invoice Payment Reminder")
   end
 
-  def agency_admin_outstanding_maintenance_requests(agency_admin, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count)
+  def agency_admin_outstanding_maintenance_requests(agency_admin, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count, send_work_order_count)
     @agency_admin = agency_admin
     @new_count = new_count
+    @send_work_order_count = send_work_order_count
     @quote_requested_count= quote_requested_count 
     @quote_recieved_count = quote_recieved_count
     @new_invoice_count = new_invoice_count
