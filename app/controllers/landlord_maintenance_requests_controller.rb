@@ -5,20 +5,48 @@ class LandlordMaintenanceRequestsController < ApplicationController
   
   before_action(only:[:show,:index]) {allow("Landlord")}
   before_action(only:[:show]) {belongs_to_landlord}
+
+
+  # caches_action :index, unless: -> { request.format.json? }
+  # caches_action :show
+  
   def index
+
+    if params[:page] == nil
+      params[:page] = 1 
+    end 
+    
+    # if params[:maintenance_request_filter] == nil 
+    #   params[:maintenance_request_filter] = 'Quote Requests'
+    # end 
+
+
+
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = current_user.landlord.order_maintenance_request_by_ascending
+      @maintenance_requests = current_user.landlord.order_maintenance_request_by_ascending.paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = current_user.landlord.order_maintenance_request_by_descending
+      @maintenance_requests = current_user.landlord.order_maintenance_request_by_descending.paginate(:page => params[:page], :per_page => 10)
     end
 
-    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+
+    # respond_to do |format|
+    #   format.json {render json:@maintenance_requests_json}
+    #   format.html
+    # end 
+
 
     respond_to do |format|
-      format.json {render json:@maintenance_requests_json}
+      format.json {
+        render :json => {
+          :current_page => @maintenance_requests.current_page,
+          :per_page => @maintenance_requests.per_page,
+          :total_entries => @maintenance_requests.total_entries,
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+        }
+      
       format.html
-    end 
-
+    end
 
     
   end
@@ -28,8 +56,8 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @non_json_quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
-    @quote_requests = @maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
+    # @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
+    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image],quotes:[:quote_items, :quote_image]).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
     @agency = @maintenance_request.property.agency
     @email_quote_id = params[:email_quote_id]
     @pdf_files = @maintenance_request.delivered_uploaded_invoices

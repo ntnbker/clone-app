@@ -111,7 +111,7 @@ var ModalNotification = React.createClass({
 var LandlordMaintenanceRequest = React.createClass({
 	getInitialState: function() {
 		const {
-			quotes, tradies, landlord, appointments, maintenance_request, tenants_conversation, landlords_conversation, quote_requests
+			tradies, landlord, appointments, maintenance_request, tenants_conversation, landlords_conversation, quote_requests
 		} = this.props;
 		const comments = [];
 		appointments.map((appointment, key) => {
@@ -123,7 +123,6 @@ var LandlordMaintenanceRequest = React.createClass({
 			modal: "",
 			quote: null,
 			isModal: false,
-			quotes: quotes,
 			isCancel: false,
 			isDecline: false,
 			tradies: tradies,
@@ -251,7 +250,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			data: params,
 			success: function(res){
 				self.setState({
-					quotes: res
+					quote_requests: res
 				});
 			},
 			error: function(err) {
@@ -499,8 +498,8 @@ var LandlordMaintenanceRequest = React.createClass({
 			success: function(res){
 				self.setState({
 					notification: {
-						title: "Defere",
-						content: "You has successfully",
+						title: "Defer",
+						content: "You have now deferred the maintenance for your property. An email has been sent to the agent to let them know. Thank you for your time.",
 						bgClass: "bg-success",
 					},
 				});
@@ -508,8 +507,8 @@ var LandlordMaintenanceRequest = React.createClass({
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Defere",
-					content: "The defere is error",
+					title: "Defer",
+					content: "An error has occured with deferring the maintenance_request. Please try again or let an agent know.",
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -643,7 +642,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote}
 							keyLandlord="landlord"
-							quotes={this.state.quotes}
+							quotes={this.state.quote_requests}
 							agency={this.props.agency}
 							property={this.props.property}
 							landlord={this.state.landlord}
@@ -748,7 +747,7 @@ var LandlordMaintenanceRequest = React.createClass({
 					return (
 						<ModalConfirmDefere
 							title="Defere"
-							content="Thank you. An email has been sent to the agent letting them know you want to defer this maintenance. on your property"
+							content="Are you sure you want to defer the maintenance on your property?"
 							close={this.isClose}
 							confirm={this.confirmDefere}
 						/>
@@ -842,7 +841,7 @@ var LandlordMaintenanceRequest = React.createClass({
 	},
 
 	render: function() {
-		const {appointments, quote_requests, quotes} = this.state;
+		const {appointments, quote_requests} = this.state;
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary dontprint">
@@ -868,10 +867,10 @@ var LandlordMaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
-						{ false && (quotes && quotes.length > 0) &&
+						{ false && (quote_requests && quote_requests.length > 0) &&
 								<Quotes
 									keyLandlord="landlord"
-									quotes={this.state.quotes}
+									quotes={this.state.quote_requests}
 									landlord={this.state.landlord}
 									onModalWith={this.onModalWith}
 									current_user={this.props.current_user}

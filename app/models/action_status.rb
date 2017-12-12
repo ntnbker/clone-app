@@ -1,7 +1,7 @@
 
 class ActionStatus < ApplicationRecord
   
-  belongs_to :maintenance_request
+  belongs_to :maintenance_request, touch: true
   belongs_to :agent
   belongs_to :agency_admin
   belongs_to :landlord

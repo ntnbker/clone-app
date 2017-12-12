@@ -253,7 +253,7 @@ var ModalNotification = React.createClass({
 
 var TradyMaintenanceRequest = React.createClass({
 	getInitialState: function() {
-		const {quotes, tradies, landlord, invoices, appointments, pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
+		const {quote_requests, tradies, landlord, invoices, appointments, pdf_files, quote_appointments, maintenance_request, tenants_conversation, landlords_conversation, trady_agent_conversation} = this.props;
 		const comments = [],
 					quoteComments = [];
 		appointments.map((appointment, key) => {
@@ -276,7 +276,6 @@ var TradyMaintenanceRequest = React.createClass({
 			appointment   					: null,
 			invoice_pdf_file  			: null,
 			appointmentUpdate  			: null,
-			quotes   								: quotes,
 			tradies   							: tradies,
 			comments   							: comments,
 			landlord   							: landlord,
@@ -824,7 +823,7 @@ var TradyMaintenanceRequest = React.createClass({
 							quote={this.state.quote}
 							keyLandlord="trady"
 							landlord={this.props.landlord}
-							quotes={this.state.quotes}
+							quotes={this.state.quote_requests}
 							agency={this.props.agency}
 							property={this.props.property}
 							onModalWith={this.onModalWith}
@@ -1202,9 +1201,9 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	openQuoteMesssage: function(quote_id) {
-		const {quotes} = this.state;
+		const {quote_requests} = this.state;
 		let quote = '';
-		quotes.map((item, key) => {
+		quote_requests.map((item, key) => {
 			if(item.id == quote_id) {
 				quote = item;
 				return;
@@ -1328,7 +1327,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 	render: function() {
 		const {
-			appointments, quote_appointments, invoices, invoice_pdf_files, trady, quote_requests, quotes
+			appointments, quote_appointments, invoices, invoice_pdf_files, trady, quote_requests
 		} = this.state;
 
 		return (
@@ -1347,7 +1346,7 @@ var TradyMaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 						/>
 						{
-							trady && this.props.current_role &&
+							trady && trady.id === this.props.signed_in_trady.id && this.props.current_role &&
 								<AssignTrady
 									trady={trady}
 									current_role={this.props.current_role.role}
@@ -1355,7 +1354,7 @@ var TradyMaintenanceRequest = React.createClass({
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{ quote_requests && quote_requests.length &&
+						{ (!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length &&
 								<QuoteRequests
 									keyLandlord="trady"
 									landlord={this.state.landlord}
@@ -1368,10 +1367,10 @@ var TradyMaintenanceRequest = React.createClass({
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}
-						{ false && (quotes && quotes.length > 0) &&
+						{ false && (quote_requests && quote_requests.length > 0) &&
 								<Quotes
 									keyLandlord="trady"
-									quotes={quotes}
+									quotes={quote_requests}
 									landlord={this.state.landlord}
 									onModalWith={this.onModalWith}
 									current_user={this.props.current_user}

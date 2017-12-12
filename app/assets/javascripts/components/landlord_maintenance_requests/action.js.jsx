@@ -36,7 +36,7 @@ var ContentLandlordAction = React.createClass({
 				<li>
 					<a onClick={() => this.props.onModalWith('defere')}>
 						<i className="icon-send" aria-hidden="true" />
-						Defere
+						Defer
 					</a>
 				</li>
 			</ul>

@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
   
+  # caches_action :home
   
   def home
     session[:customer_input] = nil
