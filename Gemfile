@@ -49,6 +49,8 @@ gem 'scout_apm'
 # gem 'elasticsearch-rails'
 gem 'twilio-ruby', '~> 4.11.1'
 gem 'rails_12factor', group: :production
+gem 'actionpack-action_caching'
+gem 'rails-observers'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -68,6 +70,16 @@ group :development do
   gem 'pry'
   gem 'pry-nav'
   gem 'sinatra', require: nil
+  gem 'bullet'
+  gem "ruby-growl"
+  gem 'rack-mini-profiler'
+      # For memory profiling (requires Ruby MRI 2.1+)
+  gem 'memory_profiler'
+
+  # For call-stack profiling flamegraphs (requires Ruby MRI 2.0.0+)
+  gem 'flamegraph'
+  gem 'stackprof'     # For Ruby MRI 2.1+
+  gem 'fast_stack'    # For Ruby MRI 2.0
 end
 
 group :test do

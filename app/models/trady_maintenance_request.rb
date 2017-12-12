@@ -25,23 +25,23 @@ class TradyMaintenanceRequest
     
     if parameter == "Quote Requests"
       quote_request_mr_ids = QuoteRequest.where(trady_id:trady_id,quote_id:nil).pluck(:maintenance_request_id)
-      maintenance_requests = MaintenanceRequest.where(id:quote_request_mr_ids)
+      maintenance_requests = MaintenanceRequest.where(id:quote_request_mr_ids).includes(:property)
     elsif parameter == "Awaiting Quote Approvals"
       quote_mr_ids = Quote.where(trady_id:trady_id,status:"Active",delivery_status: true).pluck(:maintenance_request_id)
-      maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids)
+      maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids).includes(:property)
     elsif parameter == "Appointment Required"
       
-       maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Appointment Required"}).distinct
+       maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Appointment Required"}).includes(:property).distinct
     elsif parameter == "Awaiting Appointment Confirmation"
-      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Awaiting Appointment Confirmation"}).distinct
+      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Awaiting Appointment Confirmation"}).includes(:property).distinct
     elsif parameter == "Alternate Appointment Requested"
-      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Alternate Appointment Requested"}).distinct
+      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Alternate Appointment Requested"}).includes(:property).distinct
     elsif parameter == "Job Booked"
-      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Job Booked"}).distinct
+      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Job Booked"}).includes(:property).distinct
     elsif parameter == "Awaiting Payment"
-      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Awaiting Payment"}).distinct
+      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{trady_status:"Awaiting Payment"}).includes(:property).distinct
     elsif parameter == "Job Complete"
-      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{maintenance_request_status:"Completed"}).distinct
+      maintenance_requests = MaintenanceRequest.where(trady_id:trady_id).joins(:action_status).where(action_statuses:{maintenance_request_status:"Completed"}).includes(:property).distinct
     elsif parameter == "Declined Quotes"
       quote_mr_ids = Quote.where(trady_id:trady_id,status:"Declined").pluck(:maintenance_request_id)
       maintenance_requests = MaintenanceRequest.where(id:quote_mr_ids)

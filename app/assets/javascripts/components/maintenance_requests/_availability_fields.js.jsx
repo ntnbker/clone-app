@@ -1,5 +1,5 @@
 var AvailabilityField = React.createClass({
-    
+
     getInitialState: function() {
         return {
             remove : false,
@@ -48,7 +48,7 @@ var AvailabilityField = React.createClass({
       data.map((item, key) => {
         date.push(<option key={key} value={item}>{item == 0 ? item + "0" : item}</option>);
       });
-      
+
       return date;
     },
 
@@ -117,10 +117,10 @@ var AvailabilityField = React.createClass({
       var yyyy = today.getFullYear();
       if(dd < 10) {
           dd = '0'+dd;
-      } 
+      }
       if(mm < 10) {
           mm = '0'+mm;
-      } 
+      }
       today = yyyy+'-'+mm+'-'+dd;
       return today;
     },
@@ -137,56 +137,56 @@ var AvailabilityField = React.createClass({
         <div className="availabilityfield" style={{display: this.state.remove ? 'none' : 'block' }}>
           <fieldset>
             <p> Date </p>
-            <input 
+            <input
               type="date"
               required="required"
-              id={this.generateAtt("id", x, "date")}  
+              id={this.generateAtt("id", x, "date")}
               name={this.generateAtt("name", x, "date")}
-              onChange={(e) =>this.onChange(e, $datepickerrorid)} 
+              onChange={(e) =>this.onChange(e, $datepickerrorid)}
             />
             <p id={$datepickerrorid} className="error"></p>
 
             <div className="starttime">
               <p> Start time </p>
 
-              <input 
-                type="hidden" 
+              <input
+                type="hidden"
                 value={new Date().getFullYear()}
-                id={this.generateAtt("id", x, "start_time_1i")} 
+                id={this.generateAtt("id", x, "start_time_1i")}
                 name={this.generateAtt("name", x, "start_time(1i)")}
               />
 
-              <input 
-                type="hidden" 
+              <input
+                type="hidden"
                 value={new Date().getMonth()+1}
-                id={this.generateAtt("id", x, "start_time_2i")} 
+                id={this.generateAtt("id", x, "start_time_2i")}
                 name={this.generateAtt("name", x, "start_time(2i)")}
               />
 
-              <input 
+              <input
                 type="hidden" value={new Date().getDate()}
-                id={this.generateAtt("id", x, "start_time_3i")} 
+                id={this.generateAtt("id", x, "start_time_3i")}
                 name={this.generateAtt("name", x, "start_time(3i)")}
-              /> 
+              />
 
-              <select 
+              <select
                 required="required"
-                ref="startTimeHour"
-                id={this.generateAtt("id", x, "start_time_4i")} 
+                ref={ref => this.startTimeHour = ref}
+                id={this.generateAtt("id", x, "start_time_4i")}
                 name={this.generateAtt("name", x, "start_time(4i)")}
-                onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
+                onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)}
               >
                 { this.makeHour(24) }
               </select>
 
               <span> : </span>
 
-              <select 
+              <select
                 required="required"
-                ref="startTimeMin"
-                id={this.generateAtt("id", x, "start_time_5i")} 
+                ref={ref => this.startTimeMin = ref}
+                id={this.generateAtt("id", x, "start_time_5i")}
                 name={this.generateAtt("name", x, "start_time(5i)")}
-                onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)} 
+                onChange={(e) =>this.onChangeStartTime(e, $timepickerrorid)}
               >
                 { this.makeMinute() }
               </select>
@@ -194,30 +194,30 @@ var AvailabilityField = React.createClass({
 
             <div className="finishtime">
               <p> Finish time </p>
-              <input 
-                type="hidden" 
+              <input
+                type="hidden"
                 value={new Date().getFullYear()}
-                id={this.generateAtt("id", x, "finish_time_1i")} 
+                id={this.generateAtt("id", x, "finish_time_1i")}
                 name={this.generateAtt("name", x, "finish_time(1i)")}
               />
 
-              <input 
-                type="hidden" 
+              <input
+                type="hidden"
                 value={new Date().getMonth()+1}
-                id={this.generateAtt("id", x, "finish_time_2i")} 
+                id={this.generateAtt("id", x, "finish_time_2i")}
                 name={this.generateAtt("name", x, "finish_time(2i)")}
               />
 
-              <input 
+              <input
                 type="hidden" value={new Date().getDate()}
                 name={this.generateAtt("name", x, "finish_time(3i)")}
-                id={this.generateAtt("id", x, "finish_time_3i")} 
-              /> 
+                id={this.generateAtt("id", x, "finish_time_3i")}
+              />
 
               <select
                 required="required"
-                ref="finishTimeHour"
-                id={this.generateAtt("id", x, "finish_time_4i")} 
+                ref={ref => this.finishTimeHour = ref}
+                id={this.generateAtt("id", x, "finish_time_4i")}
                 name={this.generateAtt("name", x, "finish_time(4i)")}
                 onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)}
               >
@@ -226,12 +226,12 @@ var AvailabilityField = React.createClass({
 
               <span> : </span>
 
-              <select 
+              <select
                 required="required"
-                ref="finishTimeMin"
-                id={this.generateAtt("id", x, "finish_time_5i")} 
+                ref={ref => this.finishTimeMin = ref}
+                id={this.generateAtt("id", x, "finish_time_5i")}
                 name={this.generateAtt("name", x, "finish_time(5i)")}
-                onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)} 
+                onChange={(e) =>this.onChangeFinishTime(e, $timepickerrorid)}
               >
                 { this.makeMinute() }
               </select>
@@ -239,19 +239,19 @@ var AvailabilityField = React.createClass({
           </fieldset>
           <p id={$timepickerrorid} className="error"></p>
           <label>
-            <input 
-              value="1" 
-              type="checkbox" 
+            <input
+              value="1"
+              type="checkbox"
               onChange={this.onCheck}
-              id={this.generateAtt("id", x, "available_only_by_appointment")} 
+              id={this.generateAtt("id", x, "available_only_by_appointment")}
               name={this.generateAtt("name", x, "available_only_by_appointment")}
             />
             Check box if accesss only available by appointment
           </label>
-          <input 
-            type="hidden" 
+          <input
+            type="hidden"
             value={this.state.remove}
-            id={this.generateAtt("id", x, "_destroy")} 
+            id={this.generateAtt("id", x, "_destroy")}
             name={this.generateAtt("name", x, "_destroy")}
           />
           <div className="text-center">

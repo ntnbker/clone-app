@@ -2,6 +2,7 @@ class InvoicesController < ApplicationController
   before_action :require_login, only:[:new,:create,:edit,:update,:show,:new_additional_invoice, :create_additional_invoice,:send_invoice,:invoice_sent_success]
   before_action(only:[:new,:create,:edit,:update,:show,:new_additional_invoice, :create_additional_invoice,:send_invoice,:invoice_sent_success]) {allow("Trady")}
 
+  #caches_action :new, :show, :edit, :send_invoice
 
   def new
     #this quote instance variable is for front end to add the values into the form using JS

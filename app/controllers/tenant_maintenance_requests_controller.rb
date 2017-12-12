@@ -5,19 +5,45 @@ class TenantMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("Tenant")}
   before_action(only:[:show]) {belongs_to_tenant}
   
+  # caches_action :index, unless: -> { request.format.json? }
+  # caches_action :show
+
+
   def index
+
+    if params[:page] == nil
+      params[:page] = 1 
+    end 
+    
+    
+
+
+
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC')
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC')
+      @maintenance_requests = current_user.tenant.maintenance_requests.order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
     end
 
-    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+
+    # respond_to do |format|
+    #   format.json {render json:@maintenance_requests_json}
+    #   format.html
+    # end 
+
 
     respond_to do |format|
-      format.json {render json:@maintenance_requests_json}
+      format.json {
+        render :json => {
+          :current_page => @maintenance_requests.current_page,
+          :per_page => @maintenance_requests.per_page,
+          :total_entries => @maintenance_requests.total_entries,
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+        }
+      
       format.html
-    end 
+    end
 
 
 
@@ -29,13 +55,13 @@ class TenantMaintenanceRequestsController < ApplicationController
     @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
-    @pdf_files = @maintenance_request.delivered_uploaded_invoices
+    # @quotes = @maintenance_request.quotes.where(:delivery_status=>true)
+    # @pdf_files = @maintenance_request.delivered_uploaded_invoices
     @open_message = params[:message]
     @open_appoinment = params[:appointment_id]
     @message = Message.new
     # @tradie = Trady.new
-    @logs = @maintenance_request.logs
+    # @logs = @maintenance_request.logs
     @tenant = @current_user.tenant.as_json(:include => {:user => {:include => :current_role}})
 
     if @maintenance_request.images != nil
@@ -78,12 +104,12 @@ class TenantMaintenanceRequestsController < ApplicationController
     @added_image =  Image.new
     
 
-    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
-    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
-    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include => {:comments =>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").includes(:comments).order('created_at DESC').as_json(:include => {:comments =>{}})
 
     respond_to do |format|
-      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction,:quotes=> @quotes, :landlord=> @landlord,  :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, logs:@logs, quote_appointments:@quote_appointments, work_order_appointments:@work_order_appointments,landlord_appointments:@landlord_appointments, tenant:@tenant,time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{:gallery=>@gallery, :instruction=>@instruction, :landlord=> @landlord,  :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation, quote_appointments:@quote_appointments, work_order_appointments:@work_order_appointments,landlord_appointments:@landlord_appointments, tenant:@tenant,time_and_access:@maintenance_request.availability_and_access}}
       format.html{render :show}
     end 
 
