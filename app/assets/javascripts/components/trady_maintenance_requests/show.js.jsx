@@ -1354,7 +1354,7 @@ var TradyMaintenanceRequest = React.createClass({
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{ quote_requests && quote_requests.length &&
+						{ (!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length &&
 								<QuoteRequests
 									keyLandlord="trady"
 									landlord={this.state.landlord}
