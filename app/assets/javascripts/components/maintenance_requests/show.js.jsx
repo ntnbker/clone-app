@@ -2629,7 +2629,7 @@ var MaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							quote_requests && quote_requests.length
+							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
