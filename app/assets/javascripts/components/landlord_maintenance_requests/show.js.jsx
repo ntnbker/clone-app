@@ -1,4 +1,4 @@
-var LaLandlordSideBarMobile = React.createClass({
+var LandlordSideBarMobile = React.createClass({
 	getInitialState: function() {
 		return {
 			showAction: false,

@@ -13,7 +13,7 @@ var TradySideBarMobile = React.createClass({
 			if($('#actions-full').length > 0) {
 				$('#actions-full').css({'height': 400, 'border-width': 1});
 			}
-		}else {
+		}else {DMM
 			this.setState({showAction: false});
 			this.setState({showContact: true});
 			if($('#contacts-full').length > 0) {
@@ -46,7 +46,7 @@ var TradySideBarMobile = React.createClass({
 
 	render: function() {
 		return (
-			<div>
+			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
 						<button
