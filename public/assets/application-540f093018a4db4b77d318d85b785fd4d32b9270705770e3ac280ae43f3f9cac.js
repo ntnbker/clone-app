@@ -72672,11 +72672,16 @@ var InvoiceFields = React.createClass({
   },
 
   handleSummit: function (e) {
+    e.preventDefault();
     var ledger = this.props.ledger;
     var id = ledger && ledger.id || '';
     var self = this;
 
-    e.preventDefault();
+    var invRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i;
+    var isExistInvoice = invRegex.test($('#new_invoice').serialize());
+
+    if (!isExistInvoice) return;
+
     var FD = new FormData(document.getElementById('new_invoice'));
 
     $.ajax({
