@@ -67752,7 +67752,7 @@ var AgencyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.error && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -68387,7 +68387,7 @@ var AgencyAdminEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -68775,7 +68775,7 @@ var AgentEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -70817,6 +70817,9 @@ UploadImageComponent = React.createClass({
       dataImages: dataImages,
       error: ''
     });
+    if (!dataImages.length) {
+      this.setState({ uploadComplete: false });
+    }
   },
 
   loadImage: function (e, image, key, isError) {
@@ -70847,8 +70850,9 @@ UploadImageComponent = React.createClass({
         }
       }
 
-      if (isError && target_img.src.includes('data:application/pdf')) {
-        image.isPdf = true;
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
       }
       image.url = target_img.src;
       images[key] = image;
@@ -70909,7 +70913,8 @@ UploadImageComponent = React.createClass({
             if (self.state.totalFile == 0) {
               self.setState({
                 totalFile: 0,
-                fileDisabled: false
+                totalProgress: 0,
+                uploadComplete: true
               });
               setTimeout(function () {
                 $('#title-upload').html('<i class="fa fa-upload" /> Choose image to change');
@@ -71044,15 +71049,14 @@ UploadImageComponent = React.createClass({
     var uploadComplete = _state2.uploadComplete;
     var error = _state2.error;
 
-    var uploadButton = !uploadComplete && !images.length ? React.createElement(
+    var uploadButton = !uploadComplete ? React.createElement(
       'div',
       { className: 'browse-wrap' },
       React.createElement(
         'div',
         { className: 'title', id: 'title-upload' },
         React.createElement('i', { className: 'fa fa-upload' }),
-        'Choose image to ',
-        gallery.length ? 'change' : 'add'
+        this.props.chooseImageText || "Choose/Take a picture to upload"
       ),
       React.createElement('input', {
         multiple: true,
@@ -71114,7 +71118,7 @@ UploadImageComponent = React.createClass({
                   return React.createElement(
                     'div',
                     { key: index, className: 'img' },
-                    !img.isPdf ? React.createElement('img', {
+                    !img.isPdf && !img.isInvalid ? React.createElement('img', {
                       src: img.url,
                       className: 'img',
                       onLoad: function (e) {
@@ -71123,10 +71127,14 @@ UploadImageComponent = React.createClass({
                       onError: function (e) {
                         return _this2.loadImage(e, img, index, true);
                       }
-                    }) : React.createElement(
+                    }) : !img.isInvalid ? React.createElement(
                       'div',
                       { className: 'file-pdf' },
                       React.createElement('i', { className: 'fa fa-file-pdf-o' })
+                    ) : React.createElement(
+                      'div',
+                      { className: 'file-pdf file-error' },
+                      React.createElement('i', { className: 'fa fa-file' })
                     ),
                     React.createElement('i', { className: 'fa fa-close', onClick: function (key) {
                         return _this2.removeImage(index);
@@ -71135,6 +71143,11 @@ UploadImageComponent = React.createClass({
                 })
               ),
               uploadButton,
+              React.createElement(
+                'p',
+                { id: 'errorbox', className: 'error' },
+                error ? 'Please remove invalid file!' : ''
+              ),
               React.createElement(
                 'p',
                 { id: 'errorbox', className: 'error' },
@@ -72659,11 +72672,16 @@ var InvoiceFields = React.createClass({
   },
 
   handleSummit: function (e) {
+    e.preventDefault();
     var ledger = this.props.ledger;
     var id = ledger && ledger.id || '';
     var self = this;
 
-    e.preventDefault();
+    var invRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i;
+    var isExistInvoice = invRegex.test($('#new_invoice').serialize());
+
+    if (!isExistInvoice) return;
+
     var FD = new FormData(document.getElementById('new_invoice'));
 
     $.ajax({
@@ -73580,7 +73598,7 @@ var AddInvoicePDF = React.createClass({
 				},
 				success: function (res) {
 					setTimeout(function () {
-						$('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+						$('#title-upload').html('<i class="fa fa-upload" /> Choose PDF to upload');
 						$('.progress').remove();
 					}, 0);
 					var filePDF = {
@@ -73683,7 +73701,7 @@ var AddInvoicePDF = React.createClass({
 							'div',
 							{ className: 'title', id: 'title-upload' },
 							React.createElement('i', { className: 'fa fa-upload' }),
-							'Choose image to upload'
+							'Choose PDF to upload'
 						),
 						React.createElement('input', {
 							type: 'file',
@@ -74567,7 +74585,6 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	getInitialState: function () {
 		var _props = this.props;
-		var quotes = _props.quotes;
 		var tradies = _props.tradies;
 		var landlord = _props.landlord;
 		var appointments = _props.appointments;
@@ -74586,7 +74603,6 @@ var LandlordMaintenanceRequest = React.createClass({
 			modal: "",
 			quote: null,
 			isModal: false,
-			quotes: quotes,
 			isCancel: false,
 			isDecline: false,
 			tradies: tradies,
@@ -74718,7 +74734,7 @@ var LandlordMaintenanceRequest = React.createClass({
 			data: params,
 			success: function (res) {
 				self.setState({
-					quotes: res
+					quote_requests: res
 				});
 			},
 			error: function (err) {}
@@ -75131,7 +75147,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							close: this.isClose,
 							quote: this.state.quote,
 							keyLandlord: 'landlord',
-							quotes: this.state.quotes,
+							quotes: this.state.quote_requests,
 							agency: this.props.agency,
 							property: this.props.property,
 							landlord: this.state.landlord,
@@ -75343,7 +75359,6 @@ var LandlordMaintenanceRequest = React.createClass({
 		var _state2 = this.state;
 		var appointments = _state2.appointments;
 		var quote_requests = _state2.quote_requests;
-		var quotes = _state2.quotes;
 
 		return React.createElement(
 			'div',
@@ -75373,9 +75388,9 @@ var LandlordMaintenanceRequest = React.createClass({
 							return _this3.viewItem(key, item);
 						}
 					}) : '',
-					false && quotes && quotes.length > 0 && React.createElement(Quotes, {
+					false && quote_requests && quote_requests.length > 0 && React.createElement(Quotes, {
 						keyLandlord: 'landlord',
-						quotes: this.state.quotes,
+						quotes: this.state.quote_requests,
 						landlord: this.state.landlord,
 						onModalWith: this.onModalWith,
 						current_user: this.props.current_user,
@@ -76462,7 +76477,7 @@ var ModalAddPhoto = React.createClass({
     }
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     var img = e.target;
     var maxSize = 500000; // byte
     var self = this;
@@ -76490,6 +76505,10 @@ var ModalAddPhoto = React.createClass({
         }
       }
 
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
+      }
       image.url = target_img.src;
       images[key] = image;
       this.setState({
@@ -76721,7 +76740,7 @@ var ModalAddPhoto = React.createClass({
         'div',
         { className: 'title', id: 'title-upload' },
         React.createElement('i', { className: 'fa fa-upload' }),
-        'Choose image to upload'
+        'Choose/Take a picture to upload'
       ),
       React.createElement('input', {
         multiple: true,
@@ -76783,16 +76802,24 @@ var ModalAddPhoto = React.createClass({
                   return React.createElement(
                     'div',
                     { key: index, className: 'img' },
-                    React.createElement('img', {
+                    !img.isPdf && !img.isInvalid ? React.createElement('img', {
                       src: img.url,
                       className: 'img',
                       onLoad: function (e) {
                         return _this2.loadImage(e, img, index);
                       },
                       onError: function (e) {
-                        return _this2.loadImage(e, img, index);
+                        return _this2.loadImage(e, img, index, true);
                       }
-                    }),
+                    }) : !img.isInvalid ? React.createElement(
+                      'div',
+                      { className: 'file-pdf' },
+                      React.createElement('i', { className: 'fa fa-file-pdf-o' })
+                    ) : React.createElement(
+                      'div',
+                      { className: 'file-pdf' },
+                      React.createElement('i', { className: 'fa fa-file' })
+                    ),
                     React.createElement('i', { className: 'fa fa-close', onClick: function (key) {
                         return _this2.removeImage(index);
                       } })
@@ -76800,6 +76827,11 @@ var ModalAddPhoto = React.createClass({
                 })
               ),
               uploadButton,
+              React.createElement(
+                'p',
+                { id: 'errorbox', className: 'error' },
+                error ? 'Please remove invalid file!' : ''
+              ),
               React.createElement(
                 'p',
                 { id: 'errorbox', className: 'error' },
@@ -80234,7 +80266,7 @@ var MaintenanceRequestsNew = React.createClass({
     });
   },
 
-  loadImage: function (e, image, key) {
+  loadImage: function (e, image, key, isError) {
     var img = e.target;
     var maxSize = 500000; // byte
     var self = this;
@@ -80261,6 +80293,10 @@ var MaintenanceRequestsNew = React.createClass({
         }
       }
 
+      if (isError) {
+        image.isPdf = target_img.src.includes('data:application/pdf');
+        image.isInvalid = !image.isPdf;
+      }
       image.url = target_img.src;
       images[key] = image;
       this.setState({
@@ -80322,7 +80358,7 @@ var MaintenanceRequestsNew = React.createClass({
                 fileDisabled: false
               });
               setTimeout(function () {
-                $('#title-upload').html('<i class="fa fa-upload" /> Choose a file to upload');
+                $('#title-upload').html('<i class="fa fa-upload" /> Choose/Take a picture to upload');
                 $('.progress').remove();
               }, 500);
             }
@@ -80653,7 +80689,7 @@ var MaintenanceRequestsNew = React.createClass({
               'div',
               { className: 'title', id: 'title-upload' },
               React.createElement('i', { className: 'fa fa-upload' }),
-              'Choose image to upload'
+              'Choose/Take a picture to upload'
             ),
             React.createElement('input', {
               multiple: true,
@@ -80674,16 +80710,24 @@ var MaintenanceRequestsNew = React.createClass({
               return React.createElement(
                 'div',
                 { key: index, className: 'img' },
-                React.createElement('img', {
+                !img.isPdf && !img.isInvalid ? React.createElement('img', {
                   src: img.url,
-                  className: '',
+                  className: 'img',
                   onLoad: function (e) {
                     return _this2.loadImage(e, img, index);
                   },
                   onError: function (e) {
-                    return _this2.loadImage(e, img, index);
+                    return _this2.loadImage(e, img, index, true);
                   }
-                }),
+                }) : !img.isInvalid ? React.createElement(
+                  'div',
+                  { className: 'file-pdf' },
+                  React.createElement('i', { className: 'fa fa-file-pdf-o' })
+                ) : React.createElement(
+                  'div',
+                  { className: 'file-pdf' },
+                  React.createElement('i', { className: 'fa fa-file' })
+                ),
                 React.createElement(
                   'a',
                   { className: 'remove', onClick: function (key) {
@@ -82270,7 +82314,6 @@ var MaintenanceRequest = React.createClass({
 			logs: this.props.logs,
 			invoice_pdf_file: null,
 			agency: this.props.agency,
-			quotes: this.props.quotes,
 			status: this.props.status,
 			tenants: this.props.tenants,
 			tradies: this.props.tradies,
@@ -82755,7 +82798,7 @@ var MaintenanceRequest = React.createClass({
 			success: function (res) {
 				self.isClose();
 				self.setState({
-					quotes: res
+					quote_requests: res
 				});
 				if (params.status == 'Approved') {
 					self.setState({ notification: {
@@ -82810,15 +82853,15 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	updateQuotes: function (quote) {
-		var quotes = this.state.quotes;
+		var quote_requests = this.state.quote_requests;
 
-		var data = quotes.map(function (item, key) {
+		var data = quote_requests.map(function (item, key) {
 			item.forwarded_to_landlord = quote.id == item.id ? quote.forwarded_to_landlord : item.forwarded_to_landlord;
 			return item;
 		});
 
 		this.setState({
-			quotes: data
+			quote_requests: data
 		});
 	},
 
@@ -83237,7 +83280,12 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				if (res.error) return callback(res.error);
+				if (res.error || res.errors) {
+					var error = {
+						image: [((res.error || res.errors).image || [])[0].replace(/\w+ /, '')]
+					};
+					return callback(error);
+				}
 				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });
@@ -83465,7 +83513,7 @@ var MaintenanceRequest = React.createClass({
 						return React.createElement(ModalViewQuote, {
 							close: this.isClose,
 							quote: this.state.quote,
-							quotes: this.state.quotes,
+							quotes: this.state.quote_requests,
 							agency: this.props.agency,
 							property: this.props.property,
 							landlord: this.state.landlord,
@@ -83736,10 +83784,10 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	openQuoteMesssage: function (quote_id) {
-		var quotes = this.state.quotes;
+		var quote_requests = this.state.quote_requests;
 
 		var quote = '';
-		quotes.map(function (item, key) {
+		quote_requests.map(function (item, key) {
 			if (item.id == quote_id) {
 				quote = item;
 				return;
@@ -83859,7 +83907,6 @@ var MaintenanceRequest = React.createClass({
 		var quote_appointments = _props5.quote_appointments;
 		var current_user_role = _props5.current_user_role;
 		var tenants = _props5.tenants;
-		var quotes = _props5.quotes;
 		var invoices = _props5.invoices;
 		var _state8 = this.state;
 		var invoice_pdf_files = _state8.invoice_pdf_files;
@@ -83915,8 +83962,8 @@ var MaintenanceRequest = React.createClass({
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
 					}) : '',
-					false && quotes && quotes.length > 0 && React.createElement(Quotes, {
-						quotes: this.state.quotes,
+					false && quote_requests && quote_requests.length > 0 && React.createElement(Quotes, {
+						quotes: this.state.quote_requests,
 						onModalWith: this.onModalWith,
 						landlord: this.state.landlord,
 						current_user: this.props.current_user,
@@ -85551,6 +85598,7 @@ var QuoteRequests = React.createClass({
 								needPhotoButton ? React.createElement(ModalImageUpload, _extends({
 									className: "btn btn-default"
 								}, self, {
+									chooseImageText: "Choose Image or PDF to upload",
 									onClick: function () {
 										return self.chooseQuoteRequest(quote_request);
 									}
@@ -88931,7 +88979,7 @@ var TradyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.profile_image) {
           self.setState({ gallery: res.profile_image });
@@ -89638,7 +89686,7 @@ var TradyCompanyEdit = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.error) return callback(res.error);
+        if (res.error || res.errors) return callback(res.error || res.errors);
         callback();
         if (!res.errors && res.company_image) {
           self.setState({ gallery: res.company_image });
@@ -91304,7 +91352,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 	getInitialState: function () {
 		var _props = this.props;
-		var quotes = _props.quotes;
+		var quote_requests = _props.quote_requests;
 		var tradies = _props.tradies;
 		var landlord = _props.landlord;
 		var invoices = _props.invoices;
@@ -91338,7 +91386,6 @@ var TradyMaintenanceRequest = React.createClass({
 			appointment: null,
 			invoice_pdf_file: null,
 			appointmentUpdate: null,
-			quotes: quotes,
 			tradies: tradies,
 			comments: comments,
 			landlord: landlord,
@@ -91921,7 +91968,7 @@ var TradyMaintenanceRequest = React.createClass({
 							quote: this.state.quote,
 							keyLandlord: 'trady',
 							landlord: this.props.landlord,
-							quotes: this.state.quotes,
+							quotes: this.state.quote_requests,
 							agency: this.props.agency,
 							property: this.props.property,
 							onModalWith: this.onModalWith,
@@ -92294,7 +92341,12 @@ var TradyMaintenanceRequest = React.createClass({
 			},
 			data: data,
 			success: function (res) {
-				if (res.error) return callback(res.error);
+				if (res.error || res.errors) {
+					var error = {
+						image: [((res.error || res.errors).image || [])[0].replace(/\w+ /, '')]
+					};
+					return callback(error);
+				}
 				callback(null, 'You Has Successfully Upload');
 				if (res && res.quote_requests) {
 					self.setState({ quote_requests: res.quote_requests });
@@ -92305,10 +92357,10 @@ var TradyMaintenanceRequest = React.createClass({
 	},
 
 	openQuoteMesssage: function (quote_id) {
-		var quotes = this.state.quotes;
+		var quote_requests = this.state.quote_requests;
 
 		var quote = '';
-		quotes.map(function (item, key) {
+		quote_requests.map(function (item, key) {
 			if (item.id == quote_id) {
 				quote = item;
 				return;
@@ -92445,7 +92497,6 @@ var TradyMaintenanceRequest = React.createClass({
 		var invoice_pdf_files = _state5.invoice_pdf_files;
 		var trady = _state5.trady;
 		var quote_requests = _state5.quote_requests;
-		var quotes = _state5.quotes;
 
 		return React.createElement(
 			'div',
@@ -92489,9 +92540,9 @@ var TradyMaintenanceRequest = React.createClass({
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
 					}),
-					false && quotes && quotes.length > 0 && React.createElement(Quotes, {
+					false && quote_requests && quote_requests.length > 0 && React.createElement(Quotes, {
 						keyLandlord: 'trady',
-						quotes: quotes,
+						quotes: quote_requests,
 						landlord: this.state.landlord,
 						onModalWith: this.onModalWith,
 						current_user: this.props.current_user,
