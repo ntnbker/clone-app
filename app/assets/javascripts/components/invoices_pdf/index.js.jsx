@@ -38,7 +38,7 @@ var PDFInvoices = React.createClass({
 		return (
 			<div className="quotes invoices m-t-xl">
 				<p>
-					<span className="index index-invoice">{invoices.length}</span>Invoice
+					<span className="index index-invoice">{invoices.length}</span>PDF Invoice
 				</p>
 				{
 					(role == 'Trady' && notPaid) &&
