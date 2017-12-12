@@ -7,8 +7,8 @@ class LandlordMaintenanceRequestsController < ApplicationController
   before_action(only:[:show]) {belongs_to_landlord}
 
 
-  caches_action :index, unless: -> { request.format.json? }
-  caches_action :show
+  # caches_action :index, unless: -> { request.format.json? }
+  # caches_action :show
   
   def index
 

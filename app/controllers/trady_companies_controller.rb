@@ -4,7 +4,7 @@ class TradyCompaniesController < ApplicationController
   before_action(only:[:show,:index,:edit]) {allow("Trady")}
 
   
-  caches_action :new, :edit, :change_trady_company_information
+  #caches_action :new, :edit, :change_trady_company_information
   
   def new
     @trady_company = TradyCompany.new

@@ -3,7 +3,7 @@ class QuotesController < ApplicationController
   before_action :require_login
   before_action(only:[:new,:create,:edit,:update,:show,:show_quote]) {allow("Trady")}
   
-  caches_action :new, :edit, :show
+  #caches_action :new, :edit, :show
 
   def new
     

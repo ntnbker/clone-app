@@ -7,8 +7,8 @@ class AgenciesController < ApplicationController
   before_action(only:[:edit,:update]) {allow("AgencyAdmin")}
   before_action(only:[:edit]) {belongs_to_agency_admin}
 
-  caches_action :new
-  caches_action :edit
+  # caches_action :new
+  # caches_action :edit
   
   
   

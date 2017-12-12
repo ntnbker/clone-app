@@ -5,8 +5,8 @@ class AgentMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("Agent")}
   before_action(only:[:show]) {belong_to_agent}
 
-  caches_action :index, unless: -> { request.format.json? }
-  caches_action :show
+  # caches_action :index, unless: -> { request.format.json? }
+  # caches_action :show
 
   def index
 

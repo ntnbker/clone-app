@@ -7,15 +7,15 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   before_action(only:[:show]) {belongs_to_agency_admin}
 
-  caches_action :index
-  # , unless: -> { request.format.json? }
+  # caches_action :index
+  # # , unless: -> { request.format.json? }
   # caches_action :show
 
-  # caches_action :index, :cache_path => proc {|c|
-  # { :tag => Post.maximum('updated_at') }
-  # }
+  # # caches_action :index, :cache_path => proc {|c|
+  # # { :tag => Post.maximum('updated_at') }
+  # # }
 
-  cache_sweeper :action_status_sweeper
+  # cache_sweeper :action_status_sweeper
 
   def index
     

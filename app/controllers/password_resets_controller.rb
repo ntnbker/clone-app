@@ -1,7 +1,7 @@
 class PasswordResetsController < ApplicationController
 
   
-  caches_action :edit, :new
+  #caches_action :edit, :new
 
   def new
     

@@ -10,7 +10,7 @@ class MaintenanceRequestsController < ApplicationController
   #authorize_resource :class => false
 
   
-  caches_action :new
+  #caches_action :new
 
   def new
     

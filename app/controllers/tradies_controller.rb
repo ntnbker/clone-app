@@ -3,7 +3,7 @@ class TradiesController < ApplicationController
   
   # before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   
-  caches_action :edit
+  
   def create
     
     @user = User.find_by(email:params[:trady][:email])

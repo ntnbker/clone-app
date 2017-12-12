@@ -4,7 +4,7 @@ class InvoiceOptionsController < ApplicationController
   before_action(only:[:show]) {allow("Trady")}
 
 
-  caches_action :show
+  #caches_action :show
   
   def show
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])

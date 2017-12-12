@@ -3,7 +3,7 @@ class AgentsController < ApplicationController
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   
   
-  caches_action :new, :edit
+  # caches_action :new, :edit
 
 
   def new
