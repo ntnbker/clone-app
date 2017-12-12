@@ -40,21 +40,20 @@ var PDFInvoices = React.createClass({
 										</p>
 									</div>
 								</div>
-								<div className="actions five columns content">
-									<p style={{ marginRight: 15 }}>
-										{
-											(['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid) &&
-												<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
-													Mark As Paid
-												</button>
-										}
-										<button
-											style={{ marginLeft: 10 }}
-											type="button" className="btn btn-default btn-view"
-											onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice.pdf_url)}>
-												View
+								<div className="actions-quote">
+									{
+										(['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid) &&
+											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
+												Mark As Paid
 											</button>
-									</p>
+									}
+									<button
+										type="button"
+										className="btn btn-view"
+										onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice.pdf_url)}
+									>
+											View
+									</button>
 								</div>
 							</div>
 						);
