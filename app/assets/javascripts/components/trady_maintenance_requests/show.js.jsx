@@ -1346,7 +1346,7 @@ var TradyMaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 						/>
 						{
-							trady && this.props.current_role &&
+							trady && trady.id === this.props.signed_in_trady.id && this.props.current_role &&
 								<AssignTrady
 									trady={trady}
 									current_role={this.props.current_role.role}
