@@ -136,6 +136,10 @@ class AppointmentsController < ApplicationController
     end
   end
 
+  def appointment_already_made
+    
+  end
+
   private
     
     def appointment_params

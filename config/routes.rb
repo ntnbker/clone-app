@@ -172,6 +172,7 @@ Rails.application.routes.draw do
     post "accept_appointment" =>"appointments#accept_appointment", :as =>:accept_appointment
     post "decline_appointment" => "appointments#decline_appointment"
     post "cancel_appointment" => "appointments#cancel_appointment"
+    post "appointment_already_made" => "apointments#appointment_already_made"
   ###################################################################
   ##########LANDLORD AND TENANT APPOINTMENTS RESOURCES/ROUTES########
   ###################################################################
