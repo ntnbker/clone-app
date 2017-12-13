@@ -365,7 +365,7 @@ var ActionQuote = React.createClass({
 								updateStatusQuote={self.updateStatusQuote}
 							/>
 					}
-					{ (quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved") &&
+					{ !self.hideRestore && (quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved") &&
 							<ButtonRestore
 								quote={quote}
 								updateStatusQuote={self.updateStatusQuote}
@@ -1028,6 +1028,7 @@ var ModalViewQuote = React.createClass({
 								{ !!self.current_user &&
 									<ActionQuote
 										quote={quote}
+										hideRestore={self.hideRestore}
 										isModal="true"
 										className="print"
 										landlord={self.landlord}
@@ -1283,6 +1284,7 @@ var ModalViewPhoto = React.createClass({
 								<ActionQuote
 									isModal="true"
 									className="print"
+									hideRestore={self.hideRestore}
 									quote={self.quote}
 									landlord={self.landlord}
 									quotes={self.quotes}

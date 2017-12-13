@@ -2198,6 +2198,7 @@ var MaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote={this.state.quote}
 							quotes={this.state.quote_requests}
+							hideRestore={!!this.state.trady}
 							agency={this.props.agency}
 							property={this.props.property}
 							landlord={this.state.landlord}
@@ -2455,6 +2456,7 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
+							hideRestore={!!this.state.trady}
 							gallery={this.state.quote_images}
 							updateStatusQuote={this.updateStatusQuote}
 							viewQuote={(quote) => this.viewQuote(quote)}
@@ -2631,6 +2633,7 @@ var MaintenanceRequest = React.createClass({
 						{
 							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
+									hideRestore={!!trady}
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
