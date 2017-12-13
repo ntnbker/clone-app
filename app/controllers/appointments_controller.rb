@@ -137,7 +137,12 @@ class AppointmentsController < ApplicationController
   end
 
   def appointment_already_made
-    
+    maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+    maintenance_request.action_status.update_columns(agent_status: "Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
+    log = Log.create(maintenance_request_id:maintenance_request.id, action:"Tradie organized appointment for work to be completed")
+    respond_to do |format|
+      format.json {render :json=>{note:"We will inform the agent that you have made an appointment outside the maintenance app system. Reminders to make an appointment for this maintenance request will now cease. Thank you for you time."}}
+    end
   end
 
   private
