@@ -1182,7 +1182,7 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({
 					notification: {
 						title: "Appointment Already Made",
-						content: "We will inform the agent that you have made an appointment with the tenant to complete the job. Thank you for your time",
+						content: res.note,
 						bgClass: "bg-success",
 					},
 				});
