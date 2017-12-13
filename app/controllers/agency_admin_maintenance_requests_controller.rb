@@ -54,7 +54,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")  
     @maintenance_scheduled_with_landlord_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled With Landlord")  
     @deferred_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Defer")  
-    @archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")  
+    #@archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")  
     @jobs_completed = MaintenanceRequest.find_maintenance_requests_total(current_user, "Jobs Completed")
     @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
     @send_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Send Work Order")    
