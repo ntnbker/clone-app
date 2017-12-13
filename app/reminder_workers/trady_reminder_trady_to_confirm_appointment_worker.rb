@@ -7,7 +7,8 @@ class TradyReminderTradyToConfirmAppointmentWorker
   def perform
     
 
-    #this is where we will do the reminders for the agency adminins
+    #WHAT WE NEED TODO HERE IS GRAB ALL THE QUOTE REQUESTS THAT BELONG TO THE MAINTENANCE REQUESTS
+    #That ebelong to the MR shown below. and then email those tradies 
     #we have to grab all of their MR with that particular type of status.
     #get the count and then send them an email for each agency admin on the system
     
