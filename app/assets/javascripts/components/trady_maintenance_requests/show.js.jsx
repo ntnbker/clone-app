@@ -1095,6 +1095,15 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					)
 
+					case 'confirmAppointmentAlreadyMade':
+						return (
+							<ModalConfirmAnyThing
+								close={this.isClose}
+								confirm={this.appointmentAlreadyMade}
+								title="Appointment Already Made"
+								content="Are you sure you have already made an appointment with the tenant?"
+							/>
+						);
 
 				default:
 					return null;
@@ -1147,6 +1156,42 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({notification: {
 					title: "Quote Already Sent",
 					content: "Quote Already Sent didn't confirm." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	appointmentAlreadyMade: function() {
+		const self = this;
+		const { maintenance_request } = this.state;
+
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/appointment_already_made',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Appointment Already Made",
+						content: "We will inform the agent that you have made an appointment with the tenant to complete the job. Thank you for your time",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Appointment Already Made",
+					content: "Appointment Already Made didn't confirm." ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
