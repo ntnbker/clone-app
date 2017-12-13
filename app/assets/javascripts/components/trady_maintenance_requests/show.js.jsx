@@ -1397,6 +1397,7 @@ var TradyMaintenanceRequest = React.createClass({
 									trady={trady}
 									current_role={this.props.current_role.role}
 									onModalWith={(modal) => this.onModalWith(modal)}
+									showAppointmentAlreadyMade={true}
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}

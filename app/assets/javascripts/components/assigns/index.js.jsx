@@ -33,13 +33,15 @@ var AssignTrady = React.createClass({
               <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
                 View
               </button>
-              <button
-                type="button"
-                className="btn btn-view appointment-already-made"
-                onClick={() => this.props.onModalWith('confirmAppointmentAlreadyMade')}
-              >
-                Appointment Already Made
-              </button>
+              { this.props.showAppointmentAlreadyMade &&
+                <button
+                  type="button"
+                  className="btn btn-view appointment-already-made"
+                  onClick={() => this.props.onModalWith('confirmAppointmentAlreadyMade')}
+                >
+                  Appointment Already Made
+                </button>
+              }
 							{
 								(current_role.role == 'Agent' || current_role.role == "AgencyAdmin") &&
 									<button type="button" className="btn btn-decline" onClick={(modal) => this.props.onModalWith('confirmCancelTrady')}>
