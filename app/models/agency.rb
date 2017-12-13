@@ -42,7 +42,7 @@ class Agency < ApplicationRecord
   end
 
   def capitalize_company_name
-  self.company_name.split.map(&:capitalize).join(' ')
+  self.business_name.split.map(&:capitalize).join(' ')
 end
 
 
