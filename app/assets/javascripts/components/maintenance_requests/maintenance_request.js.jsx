@@ -504,7 +504,7 @@ var ItemMaintenanceRequest = React.createClass({
 						<p className="m-b-n">Job Description:</p>
 						<p>{maintenance.maintenance_description}</p>
 					</div>
-					{ maintenance.preapproved_note
+					{ !this.props.hide_note && maintenance.preapproved_note
 						? <div className="vailability pre-approved-note">
 								<p className="header">Approval Note: </p>
 								<p className="description">{maintenance.preapproved_note}</p>

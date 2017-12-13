@@ -852,7 +852,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 						/>
 						{
-							quote_requests && quote_requests.length
+							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
 									keyLandlord="landlord"
 									quote_requests={quote_requests}

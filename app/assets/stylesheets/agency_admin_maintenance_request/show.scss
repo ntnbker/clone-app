@@ -2206,8 +2206,8 @@ span.index {
       .actions-quote {
         display: flex;
         flex-direction: column;
-        width: 50%;
-        margin-left: 25%;
+        width: 60%;
+        margin-left: 20%;
         margin-bottom: 10px;
         float: none;
         padding: 0px;
@@ -2219,7 +2219,7 @@ span.index {
       }
       .btn-mark-as-paid {
         margin-top: 20px;
-        margin-left: calc(50% - 125px);
+        margin-left: calc(60% - 125px);
         display: flex;
         flex-direction: column;
         float: none;
@@ -2248,14 +2248,14 @@ span.index {
   .summary-container-index {
     .quotes {
       .actions-quote {
-        width: 70%;
-        margin-left: 15%;
+        width: 90%;
+        margin-left: 5%;
       }
     }
     .item-quote .user .quote-request-button {
       margin-top: 110px;
-      margin-left: 15%;
-      width: 70%;
+      margin-left: 5%;
+      width: 90%;
       display: flex;
       flex-direction: column;
       float: none;
@@ -2270,13 +2270,13 @@ span.index {
   .summary-container-index {
     .quotes {
       .actions-quote {
-        width: 90%;
-        margin-left: 5%;
+        width: 98%;
+        margin-left: 1%;
       }
     }
     .item-quote .user .quote-request-button {
-      width: 90%;
-      margin-left: 5%;
+      width: 98%;
+      margin-left: 1%;
     }
   }
 }

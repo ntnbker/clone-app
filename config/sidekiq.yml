@@ -4,6 +4,7 @@ production:
   :concurrency: 6
 :queues:
   - default
+:enabled: true
 :schedule:
   reminder_queue:
     every: ['2d']

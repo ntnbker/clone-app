@@ -695,17 +695,6 @@ var ListMaintenanceRequest = React.createClass({
             (!!current_user_agent || !!current_user_agency_admin) &&
               <div className="dropdown-custom archived">
                 <span className="count">
-                  {this.props.archived_count}
-                </span>
-                <a onClick={() => this.getAction('Archive')}>
-                  Archived
-                </a>
-              </div>
-          }
-          {
-            (!!current_user_agent || !!current_user_agency_admin) &&
-              <div className="dropdown-custom archived">
-                <span className="count">
                   {this.props.deferred_count}
                 </span>
                 <a onClick={() => this.getAction('Defer')}>
@@ -720,7 +709,7 @@ var ListMaintenanceRequest = React.createClass({
                   {this.props.jobs_completed}
                 </span>
                 <a onClick={() => this.getAction('Jobs Completed')}>
-                  Completed
+                  Archived
                 </a>
               </div>
           }

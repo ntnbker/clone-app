@@ -13578,8 +13578,8 @@ span.index.index-invoice {
   .summary-container-index .quotes .actions-quote {
     display: flex;
     flex-direction: column;
-    width: 50%;
-    margin-left: 25%;
+    width: 60%;
+    margin-left: 20%;
     margin-bottom: 10px;
     float: none;
     padding: 0px;
@@ -13593,7 +13593,7 @@ span.index.index-invoice {
   /* line 2220, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .btn-mark-as-paid {
     margin-top: 20px;
-    margin-left: calc(50% - 125px);
+    margin-left: calc(60% - 125px);
     display: flex;
     flex-direction: column;
     float: none;
@@ -13623,14 +13623,14 @@ span.index.index-invoice {
 
   /* line 2250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .actions-quote {
-    width: 70%;
-    margin-left: 15%;
+    width: 90%;
+    margin-left: 5%;
   }
   /* line 2255, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .item-quote .user .quote-request-button {
     margin-top: 110px;
-    margin-left: 15%;
-    width: 70%;
+    margin-left: 5%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     float: none;
@@ -13644,13 +13644,13 @@ span.index.index-invoice {
 @media (max-width: 350px) {
   /* line 2272, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .actions-quote {
-    width: 90%;
-    margin-left: 5%;
+    width: 98%;
+    margin-left: 1%;
   }
   /* line 2277, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .item-quote .user .quote-request-button {
-    width: 90%;
-    margin-left: 5%;
+    width: 98%;
+    margin-left: 1%;
   }
 }
 /* line 6, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */

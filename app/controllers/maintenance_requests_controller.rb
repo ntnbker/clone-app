@@ -136,7 +136,7 @@ class MaintenanceRequestsController < ApplicationController
                     TenantMaintenanceRequest.create(tenant_id:@contact_tenant.id,maintenance_request_id:@maintenance_request.id)
                   elsif contact && existing_role == true
                     TenantMaintenanceRequest.create(tenant_id:contact.tenant.id,maintenance_request_id:@maintenance_request.id)
-                    contact.tenant.update_attribute(:property_id,@property.id)
+                    contact.tenant.update_columns(property_id: @property.id, mobile:params[:maintenance_request][:mobile])
                   else 
                     user = User.create(hash)
                     @contact_tenant = Tenant.new(hash)
@@ -159,7 +159,7 @@ class MaintenanceRequestsController < ApplicationController
       ###################################     
         @maintenance_request.perform_uniqueness_validation_of_email = false
           @tenant = Tenant.find_by(user_id:@user.id)
-          @tenant.update_attribute(:property_id, @property.id)
+          @tenant.update_columns(property_id: @property.id, mobile:params[:maintenance_request][:mobile])
           @maintenance_request.service_type = @customer_input.tradie
           @maintenance_request.save 
           @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
@@ -382,7 +382,7 @@ class MaintenanceRequestsController < ApplicationController
     
     if !params[:preapproved_note].empty? 
       maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
-
+      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord approves work order. Please send to tradie.")
       if current_user.logged_in_as("Landlord")
         AgentLandlordApprovedWorkOrderEmailWorker.perform_async(maintenance_request.id)
       end 
@@ -402,6 +402,7 @@ class MaintenanceRequestsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     maintenance_request.action_status.update_attribute(:agent_status, "Defer")
     AgentLandlordDeferredMaintenanceEmailWorker.perform_async(maintenance_request.id)
+    Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request deferred by landlord.")
   end
 
 
