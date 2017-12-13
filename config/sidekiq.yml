@@ -7,5 +7,5 @@ production:
 :enabled: true
 :schedule:
   reminder_queue:
-    every: ['2d']
+    every: ['2m']
     class: ReminderQueueWorker
