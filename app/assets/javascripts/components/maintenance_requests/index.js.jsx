@@ -358,7 +358,7 @@ var DropforSort = React.createClass({
   },
 
   render: function() {
-    return <form name="sort_by_date" action="/maintenance_requests" method="get" ref="select">
+    return <form name="sort_by_date" action="/maintenance_requests" method="get" ref={ref => this.select = ref}>
       <input type="hidden" name="page" value={this.props.page ? this.props.page : 1}/>
       <select className="select-custom" value={this.state.sort_by_date} name='sort_by_date' onChange={this.handleChange}>
         <option className="option-custom" value="Oldest to Newest">Oldest to Newest</option>
@@ -371,17 +371,20 @@ var DropforSort = React.createClass({
 
 var ListMaintenanceRequest = React.createClass({
   getInitialState: function() {
-    const {maintenance_requests} = this.props;
+    // const {maintenance_requests} = this.props;
     const page = 1;
-    const prePage = 3;
-    const dataShow = [...maintenance_requests].splice(0, prePage);
-
+    const prePage = 5;
+    // const dataShow = [...(maintenance_requests || [])].splice(0, prePage);
+    let valueDefault = 'Initiate Maintenance Request';
+    if (this.props.current_user_trady) {
+      valueDefault = 'Quote Requests';
+    }
     return {
       page: page,
-      valueAction: "",
+      valueAction: valueDefault,
       prePage: prePage,
-      dataShow: dataShow,
-      data: maintenance_requests,
+      dataShow: [],
+      data: [],
       sortByDate: "Newest to Oldest",
       filterDate: [
         {value: "Oldest to Newest", name: "Oldest to Newest"},
@@ -538,16 +541,20 @@ var ListMaintenanceRequest = React.createClass({
   },
 
   getData: function(link, page, params) {
+    params.page = page;
+
     const self = this;
     $.ajax({
       type: 'GET',
       url: link,
       data: params,
       success: function(res){
-        const dataShow = [...res].splice((page-1) * self.state.prePage, self.state.prePage);
+        const dataShow = res.entries;
         self.setState({
-          data: [...res],
+          data: new Array(res.total_entries).fill(1),
           dataShow: dataShow,
+          prePage: res.per_page,
+          page: res.current_page,
         });
       },
       error: function(err) {
@@ -561,6 +568,7 @@ var ListMaintenanceRequest = React.createClass({
 
   componentWillMount: function() {
     //this.getMaintenanceRequests();
+    this.setPage(1);
   },
 
   setPage: function(page){
@@ -568,15 +576,30 @@ var ListMaintenanceRequest = React.createClass({
       page: page
     });
     if(this.state.valueAction) {
-      if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-        this.getData("/maintenance_request_filter", page, {
+      if(!!this.props.current_user_agent) {
+        this.getData("/agent_maintenance_requests.json", this.state.page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction
+        });
+      }else if(!!this.props.current_user_agency_admin) {
+        this.getData("/agency_admin_maintenance_requests.json", page, {
           sort_by_date: this.state.sortByDate,
           maintenance_request_filter: this.state.valueAction,
         });
       }else if(!!this.props.current_user_trady) {
-        this.getData("/trady_maintenance_request_filter", page, {
+        this.getData("/trady_maintenance_requests.json", page, {
           sort_by_date: this.state.sortByDate,
           trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }else if(!!this.props.current_user_landlord) {
+        this.getData("/landlord_maintenance_requests.json", page, {
+          sort_by_date: this.state.sortByDate,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }else if(!!this.props.current_user_tenant) {
+        this.getData("/tenant_maintenance_requests.json", page, {
+          sort_by_date: this.state.sortByDate,
           maintenance_request_filter: this.state.valueAction,
         });
       }
@@ -591,15 +614,30 @@ var ListMaintenanceRequest = React.createClass({
     });
 
     if(this.state.valueAction) {
-      if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-        this.getData("/maintenance_request_filter", this.state.page, {
+      if(!!this.props.current_user_agent) {
+        this.getData("/agent_maintenance_requests.json", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction
+        });
+      }else if(!!this.props.current_user_agency_admin) {
+        this.getData("/agency_admin_maintenance_requests.json", this.state.page, {
           sort_by_date: value,
           maintenance_request_filter: this.state.valueAction
         });
       }else if(!!this.props.current_user_trady) {
-        this.getData("/trady_maintenance_request_filter", this.state.page, {
+        this.getData("/trady_maintenance_request.json", this.state.page, {
           sort_by_date: value,
           trady_id: this.props.current_user_trady.id,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }else if(!!this.props.current_user_landlord) {
+        this.getData("/landlord_maintenance_request.json", this.state.page, {
+          sort_by_date: value,
+          maintenance_request_filter: this.state.valueAction,
+        });
+      }else if(!!this.props.current_user_tenant) {
+        this.getData("/tenant_maintenance_request.json", this.state.page, {
+          sort_by_date: value,
           maintenance_request_filter: this.state.valueAction,
         });
       }
@@ -619,21 +657,29 @@ var ListMaintenanceRequest = React.createClass({
       valueAction: action,
     });
 
-    if(!!this.props.current_user_agent || !!this.props.current_user_agency_admin) {
-      this.getData("/maintenance_request_filter", 1, params);
-    } else if(!!this.props.current_user_trady) {
+    if(!!this.props.current_user_agent) {
+      this.getData("/agent_maintenance_requests.json", 1, params);
+    }else if(!!this.props.current_user_agency_admin) {
+      this.getData("/agency_admin_maintenance_requests.json", 1, params);
+    }else if(!!this.props.current_user_trady) {
       params.trady_id = this.props.current_user_trady.id;
-      this.getData("/trady_maintenance_request_filter", 1, params);
+      this.getData("/trady_maintenance_requests.json", 1, params);
+    }else if(!!this.props.current_user_landlord) {
+      this.getData("/landlord_maintenance_requests.json", 1, params);
+    }else if(!!this.props.current_user_tenant) {
+      this.getData("/tenant_maintenance_requests.json", 1, params);
     }
   },
 
   render: function() {
     const self = this;
-    const current_user_agent = this.props.current_user_agent;
-    const current_user_trady = this.props.current_user_trady;
-    const current_user_tenant = this.props.current_user_tenant;
-    const current_user_landlord = this.props.current_user_landlord;
-    const current_user_agency_admin = this.props.current_user_agency_admin;
+    const {
+      current_user_agent,
+      current_user_trady,
+      current_user_tenant,
+      current_user_landlord,
+      current_user_agency_admin,
+    } = this.props;
 
     return (
       <div className="maintenance-list">
@@ -644,17 +690,6 @@ var ListMaintenanceRequest = React.createClass({
               filterDate={this.state.filterDate}
               valueSelect={this.state.sortByDate}
             />
-          }
-          {
-            (!!current_user_agent || !!current_user_agency_admin) &&
-              <div className="dropdown-custom archived">
-                <span className="count">
-                  {this.props.archived_count}
-                </span>
-                <a onClick={() => this.getAction('Archive')}>
-                  Archived
-                </a>
-              </div>
           }
           {
             (!!current_user_agent || !!current_user_agency_admin) &&
@@ -674,7 +709,7 @@ var ListMaintenanceRequest = React.createClass({
                   {this.props.jobs_completed}
                 </span>
                 <a onClick={() => this.getAction('Jobs Completed')}>
-                  Completed
+                  Archived
                 </a>
               </div>
           }

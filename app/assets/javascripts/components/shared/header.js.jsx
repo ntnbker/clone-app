@@ -148,7 +148,7 @@ var Header = React.createClass({
 
     clickDocument: function(e) {
       if (this.props.expanded) {
-        var component = ReactDOM.findDOMNode(this.refs.showItems);
+        var component = ReactDOM.findDOMNode(this.showItemMenus);
         if (e.target == component || $(component).has(e.target).length) {
             // Inside of the component.
         } else {
@@ -296,7 +296,7 @@ var Header = React.createClass({
 
       return (
         <nav className="header-expanded">
-          <MobileMenu ref="Bar" id="bar" isShow={this.state.isShowBar}>
+          <MobileMenu ref={ref => this.Bar = ref} id="bar" isShow={this.state.isShowBar}>
             {
               logged_in ?
                 <ul className="menu-mobile">
@@ -347,7 +347,7 @@ var Header = React.createClass({
                             </button>
                             <ul className="dropdown-menu" id="menu-bar">
                               { this.menuBar() }
-                              <li  ref="Items">
+                              <li  ref={ref => this.Items = ref}>
                                 <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
                               </li>
                             </ul>
@@ -359,7 +359,7 @@ var Header = React.createClass({
                           <div
                             className="menu-button"
                             onClick={this.showItems}
-                            ref="showItems"
+                            ref={ref => this.showItemMenus = ref}
                           >
                             <span className="icon-user">
                               <AvatarImage className="fa fa-user" imageUri={profile} />
@@ -373,7 +373,7 @@ var Header = React.createClass({
                           this.state.isItems &&
                             <ul className="desktop-menu-items">
                               { this.menuBar() }
-                              <li  ref="Items">
+                              <li  ref={ref => this.Items = ref}>
                                 <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
                               </li>
                             </ul>

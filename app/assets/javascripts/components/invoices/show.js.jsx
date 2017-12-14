@@ -127,6 +127,16 @@ var ModalViewInvoice = React.createClass({
 		}
 	},
 
+	getImage: function(trady) {
+		if (!trady) return '';
+
+		const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
+
+		const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
+		return image_url;
+	},
+
 	printInvoice: function() {
 		window.print();
 		// $('.button-slider').toggle('hide');
@@ -199,13 +209,17 @@ var ModalViewInvoice = React.createClass({
 		const {invoice} = this.state;
 		let total = 0;
 
+		const image_url = this.getImage(invoice.trady);
+
 		return (
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
 					<div className="modal-content"  id="print-invoice">
 						<div className="modal-header">
 							<div className="logo">
-								<img src="/assets/logo.png" />
+                <span className="icon-user">
+                  <AvatarImage id="logo" imageUri={image_url} />
+                </span>
 							</div>
 							<div className="info-trady">
 								<p>

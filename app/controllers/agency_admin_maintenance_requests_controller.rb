@@ -7,14 +7,34 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
   before_action(only:[:show]) {belongs_to_agency_admin}
 
+  # caches_action :index
+  # # , unless: -> { request.format.json? }
+  # caches_action :show
+
+  # # caches_action :index, :cache_path => proc {|c|
+  # # { :tag => Post.maximum('updated_at') }
+  # # }
+
+  # cache_sweeper :action_status_sweeper
+
   def index
+    
+    if params[:page] == nil
+      params[:page] = 1 
+    end 
+    
+    if params[:maintenance_request_filter] == nil 
+      params[:maintenance_request_filter] = 'Initiate Maintenance Request'
+    end 
+
     if params[:sort_by_date] == "Oldest to Newest"
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at ASC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at ASC').paginate(:page => params[:page], :per_page => 10)
     else
-      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, "Initiate Maintenance Request").order('created_at DESC')
+      @maintenance_requests = MaintenanceRequest.find_maintenance_requests(current_user, params[:maintenance_request_filter]).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
     end
 
-    @page = params[:page]
+    
+    
     @sort_by_date = params[:sort_by_date]
     @new_maintenance_requests_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Initiate Maintenance Request")
     @quotes_received_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Quote Received")
@@ -34,17 +54,37 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @maintenance_scheduled_count =MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled - Awaiting Invoice")  
     @maintenance_scheduled_with_landlord_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Maintenance Scheduled With Landlord")  
     @deferred_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Defer")  
-    @archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")  
+    #@archived_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Archive")  
     @jobs_completed = MaintenanceRequest.find_maintenance_requests_total(current_user, "Jobs Completed")
     @cancelled_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Cancelled Work Order")    
     @send_work_order_count = MaintenanceRequest.find_maintenance_requests_total(current_user, "Send Work Order")    
     
-    @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    
+    # @maintenance_requests_json = @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)
+
+    #@maintenance_requests_json = @maintenance_requests.paginate(:page => params[:page], :per_page => 10)
+
+    # .as_json(:include=>{:property=>{}},methods: :get_image_urls)
+    # @posts =  Post.all.paginate(:page => params[:page], :per_page => 4)
+    # render :json => @posts.to_json(:methods => [:image_url])
+
+
+    # respond_to do |format|
+    #   # format.json {render json:@maintenance_requests_json.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+      
+    # end 
 
     respond_to do |format|
-      format.json {render json:@maintenance_requests_json}
+      format.json {
+        render :json => {
+          :current_page => @maintenance_requests.current_page,
+          :per_page => @maintenance_requests.per_page,
+          :total_entries => @maintenance_requests.total_entries,
+          :entries => @maintenance_requests.as_json(:include=>{:property=>{}},methods: :get_image_urls)}
+        }
+      
       format.html
-    end 
+    end
 
 
   end
@@ -54,10 +94,10 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @tenants = @maintenance_request.tenants
-    @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})
+    #@quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quote_items => {}, :conversation=>{:include=>:messages}})
     
     @agency = @current_user.agency_admin.agency
-    @quote_requests = @maintenance_request.quote_requests.as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
+    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image], quotes:[:quote_items, :quote_image],:conversation=>:messages).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}},:conversation=>{:include=>{:messages=>{}}} ,:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}} }})
     @quote_request_trady_list = QuoteRequest.tradies_with_quote_requests(@maintenance_request.id)
     @services = Service.all
     @email_quote_id = params[:email_quote_id]
@@ -68,18 +108,18 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     @invoices = @maintenance_request.delivered_invoices.as_json(:include => {:trady => {:include => :trady_company}, :invoice_items => {}})
     @open_message = params[:message]
     @open_quote_message = params[:quote_message_id]
-    @message = Message.new
+    # @message = Message.new
     
-    @tradie = Trady.new
+    # @tradie = Trady.new
     @assigned_trady = @maintenance_request.trady
     @hired_trady = @assigned_trady.as_json({:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}})
     if @assigned_trady
       @invoice_pdf_urls = @maintenance_request.get_pdf_url(@maintenance_request.id, @assigned_trady.id).as_json
     end 
     @status = @maintenance_request.action_status
-    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
-    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
-    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @work_order_appointments = @maintenance_request.appointments.where(appointment_type:"Work Order Appointment").includes(:comments).order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @quote_appointments = @maintenance_request.appointments.where(appointment_type:"Quote Appointment").includes(:comments).order('created_at DESC').as_json(:include=>{:comments=>{}})
+    @landlord_appointments = @maintenance_request.appointments.where(appointment_type:"Landlord Appointment").includes(:comments).order('created_at DESC').as_json(:include=>{:comments=>{}})
 
     @all_agents = @agency.agents
     @all_agency_admins = @agency.agency_admins
@@ -138,7 +178,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     
 
     respond_to do |format|
-      format.json { render :json=>{hired_trady:@hired_trady,agent:@agent,agency_admin:@agency_admin ,:gallery=>@gallery,:instruction=>@instruction ,:status=>@status,:quotes=> @quotes, :quote_requests=>@quote_requests,  :landlord=> @landlord,:services=>@services ,:assigned_trady=>@assigned_trady,:all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:trady_agent_conversation=>@trady_agent_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, :invoice_pdf_files=>@invoice_pdf_files,pdf_files:@pdf_files, :pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins,work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants, time_and_access:@maintenance_request.availability_and_access}}
+      format.json { render :json=>{hired_trady:@hired_trady,agent:@agent,agency_admin:@agency_admin ,:gallery=>@gallery,:instruction=>@instruction ,:status=>@status, :quote_requests=>@quote_requests,  :landlord=> @landlord,:services=>@services ,:assigned_trady=>@assigned_trady,:all_tradies=> @all_tradies, :tenants_conversation=> @tenants_conversation,:landlords_conversation=> @landlords_conversation,:trady_agent_conversation=>@trady_agent_conversation, :agency=>@agency,:property=>@maintenance_request.property, agent:@current_user.agency_admin, invoices:@invoices, :invoice_pdf_files=>@invoice_pdf_files,pdf_files:@pdf_files, :pdf_urls=> @invoice_pdf_urls, tradies_with_quote_requests:@quote_request_trady_list, logs:@logs, all_agents:@all_agents, all_agency_admins:@all_agency_admins,work_order_appointments:@work_order_appointments,quote_appointments:@quote_appointments,:landlord_appointments=>@landlord_appointments,:tenants=>@tenants, time_and_access:@maintenance_request.availability_and_access}}
       format.html{}
     end 
 

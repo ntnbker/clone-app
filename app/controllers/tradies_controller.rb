@@ -2,6 +2,8 @@ class TradiesController < ApplicationController
   before_action :require_login, only:[:create]
   
   # before_action(only:[:show,:index]) {allow("AgencyAdmin")}
+  
+  
   def create
     
     @user = User.find_by(email:params[:trady][:email])
