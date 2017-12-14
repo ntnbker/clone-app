@@ -48,7 +48,7 @@ class TradyCompany < ApplicationRecord
       self.perform_account_name_validation = false
       self.perform_bsb_number_validation = false
       self.perform_bank_account_validation = false
-    elsif system_plan = "Invoice"
+    elsif system_plan == "Invoice"
       self.perform_abn_validation = true
       self.perform_account_name_validation = true
       self.perform_bsb_number_validation = true
