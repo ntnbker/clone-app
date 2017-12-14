@@ -212,6 +212,8 @@ body {
 }
 
 .button-primary {
+	color: white;
+	text-decoration: none;
 	a {
 		color: white;
 		text-decoration: none;
@@ -220,6 +222,8 @@ body {
 .button-primary.green {
 	background-color: #7dc691 !important;
 	border-color: #7dc691 !important;
+	color: white;
+	text-decoration: none;
 	&:hover {
 		background-color: #2FA342 !important;
 		border-color: #2FA342 !important;
