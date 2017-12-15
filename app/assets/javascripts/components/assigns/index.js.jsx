@@ -207,44 +207,46 @@ var ModalViewTrady = React.createClass({
                   </div>
               </div>
             </div>
-						<div className="footer">
-							<div className="bank">
-								<div>
-									<i className="fa fa-bank" />
-									<p className="font-bold">Bank Deposit</p>
-								</div>
-								<p>
-									<span className="font-bold">BSB:</span>
-									<span>{trady.trady_company && trady.trady_company.bsb_number}</span>
-								</p>
-								<p>
-									<span className="font-bold">Account Number:</span>
-									<span>{trady.trady_company && trady.trady_company.bank_account_number}</span>
-								</p>
-								<p>
-									<span className="font-bold">Account Name:</span>
-									<span>{trady.trady_company && trady.trady_company.account_name}</span>
-								</p>
-							</div>
-              <div className="contact">
-                <div>
-                  <i className="fa fa-envelope-o" />
-                  <p className="font-bold">Mail</p>
+						{ false &&
+              <div className="footer">
+                <div className="bank">
+                  <div>
+                    <i className="fa fa-bank" />
+                    <p className="font-bold">Bank Deposit</p>
+                  </div>
+                  <p>
+                    <span className="font-bold">BSB:</span>
+                    <span>{trady.trady_company && trady.trady_company.bsb_number}</span>
+                  </p>
+                  <p>
+                    <span className="font-bold">Account Number:</span>
+                    <span>{trady.trady_company && trady.trady_company.bank_account_number}</span>
+                  </p>
+                  <p>
+                    <span className="font-bold">Account Name:</span>
+                    <span>{trady.trady_company && trady.trady_company.account_name}</span>
+                  </p>
                 </div>
-                <p className="font-bold">
-                  Make your cheque payable to:
-                </p>
-                <p>
-                  {trady.trady_company && trady.trady_company.account_name}
-                </p>
-                <p className="font-bold">
-                  Detach this section and mail with your cheque to:
-                </p>
-                <p>
-                  {trady.trady_company && trady.trady_company.address}
-                </p>
+                <div className="contact">
+                  <div>
+                    <i className="fa fa-envelope-o" />
+                    <p className="font-bold">Mail</p>
+                  </div>
+                  <p className="font-bold">
+                    Make your cheque payable to:
+                  </p>
+                  <p>
+                    {trady.trady_company && trady.trady_company.account_name}
+                  </p>
+                  <p className="font-bold">
+                    Detach this section and mail with your cheque to:
+                  </p>
+                  <p>
+                    {trady.trady_company && trady.trady_company.address}
+                  </p>
+                </div>
               </div>
-						</div>
+            }
             <div className="modal-body dontprint">
               <ButtonPrint printQuote={this.printWork} />
             </div>
