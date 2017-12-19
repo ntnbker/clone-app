@@ -1391,6 +1391,23 @@ var TradyMaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							hide_note={!trady || trady.user_id !== this.props.current_user.id}
 						/>
+						{	(invoices && invoices.length > 0) &&
+						 		<Invoices
+							 		invoices={invoices}
+							 		current_role={this.props.current_role}
+							 		viewInvoice={(key, item) => this.viewItem(key, item)}
+							 		paymentReminder={(item) => this.paymentReminder(item)}
+						 		/>
+					 	}
+						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
+							<PDFInvoices
+								trady={this.props.assigned_trady}
+								invoice_pdf_files={invoice_pdf_files}
+						 		current_role={this.props.current_role}
+						 		paymentReminder={(item) => this.paymentReminder(item)}
+								viewPDFInvoice={(key, item) => this.viewItem(key, item)}
+							/>
+						}
 						{
 							trady && trady.id === this.props.signed_in_trady.id && this.props.current_role &&
 								<AssignTrady
@@ -1401,7 +1418,6 @@ var TradyMaintenanceRequest = React.createClass({
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-
 						{ (!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length &&
 								<QuoteRequests
 									keyLandlord="trady"
@@ -1425,23 +1441,6 @@ var TradyMaintenanceRequest = React.createClass({
 									viewQuote={(key, item) => this.viewItem(key, item)}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
-						}
-						{	(invoices && invoices.length > 0) &&
-						 		<Invoices
-							 		invoices={invoices}
-							 		current_role={this.props.current_role}
-							 		viewInvoice={(key, item) => this.viewItem(key, item)}
-							 		paymentReminder={(item) => this.paymentReminder(item)}
-						 		/>
-					 	}
-						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
-							<PDFInvoices
-								trady={this.props.assigned_trady}
-								invoice_pdf_files={invoice_pdf_files}
-						 		current_role={this.props.current_role}
-						 		paymentReminder={(item) => this.paymentReminder(item)}
-								viewPDFInvoice={(key, item) => this.viewItem(key, item)}
-							/>
 						}
 					</div>
 					<div className="sidebar">
