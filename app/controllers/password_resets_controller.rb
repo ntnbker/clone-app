@@ -48,6 +48,7 @@ class PasswordResetsController < ApplicationController
     @user.password_confirmation = params[:user][:password_confirmation]
     # the next line clears the temporary token and updates the password
     if @user.change_password!(params[:user][:password])
+      @user.update_attribute(:password_set, true)
       flash[:success] = 'Password was successfully updated.'
       redirect_to root_path
     else

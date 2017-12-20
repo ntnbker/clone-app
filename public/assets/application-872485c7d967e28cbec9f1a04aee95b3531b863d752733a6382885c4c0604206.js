@@ -70139,6 +70139,17 @@ var AssignTrady = React.createClass({
                 } },
               'View'
             ),
+            this.props.showAppointmentAlreadyMade && React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-view appointment-already-made',
+                onClick: function () {
+                  return _this.props.onModalWith('confirmAppointmentAlreadyMade');
+                }
+              },
+              'Appointment Already Made'
+            ),
             (current_role.role == 'Agent' || current_role.role == "AgencyAdmin") && React.createElement(
               'button',
               { type: 'button', className: 'btn btn-decline', onClick: function (modal) {
@@ -70483,7 +70494,7 @@ var ModalViewTrady = React.createClass({
               )
             )
           ),
-          React.createElement(
+          false && React.createElement(
             'div',
             { className: 'footer' },
             React.createElement(
@@ -73069,6 +73080,17 @@ var ModalViewInvoice = React.createClass({
 		}
 	},
 
+	getImage: function (trady) {
+		if (!trady) return '';
+
+		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
+		var trady_profile_image = trady.trady_profile_image;
+
+		var image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
+		return image_url;
+	},
+
 	printInvoice: function () {
 		$('.button-slider').toggle('hide');
 		var contents = $('#print-invoice').html();
@@ -73099,6 +73121,8 @@ var ModalViewInvoice = React.createClass({
 
 		var total = 0;
 
+		var image_url = this.getImage(invoice.trady);
+
 		return React.createElement(
 			"div",
 			{ className: "modal-custom modal-quote fade" },
@@ -73114,7 +73138,11 @@ var ModalViewInvoice = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "logo" },
-							React.createElement("img", { src: "/assets/logo.png" })
+							React.createElement(
+								"span",
+								{ className: "icon-user" },
+								React.createElement(AvatarImage, { id: "logo", imageUri: image_url })
+							)
 						),
 						React.createElement(
 							"div",
@@ -73401,14 +73429,42 @@ var ModalViewInvoice = React.createClass({
 var PDFInvoices = React.createClass({
 	displayName: "PDFInvoices",
 
+	getInitialState: function () {
+		return {
+			invoices: this.props.invoice_pdf_files,
+			pictures: []
+		};
+	},
+
+	componentWillMount: function () {
+		this.getPictureImage(this.state.invoices);
+	},
+
+	getPictureImage: function (invoices) {
+		if (!invoices || invoices.length === 0) return this.setState({ pictures: [] });
+
+		var pictures = (invoices || []).map(function (invoice) {
+			var trady = invoice.trady || {};
+			var id = trady.id || '';
+			var trady_company = trady.trady_company || {};
+			var trady_profile_image = trady.trady_profile_image || {};
+			var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+
+			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+		});
+
+		this.setState({ pictures: pictures });
+	},
+
 	render: function () {
-		var _props = this.props;
-		var invoice_pdf_files = _props.invoice_pdf_files;
-		var current_role = _props.current_role;
+		var current_role = this.props.current_role;
+		var _state = this.state;
+		var invoices = _state.invoices;
+		var pictures = _state.pictures;
 
 		var self = this;
 		var role = current_role.role;
-		var notPaid = invoice_pdf_files.filter(function (i) {
+		var notPaid = invoices.filter(function (i) {
 			return !i.paid;
 		}).length !== 0;
 
@@ -73418,9 +73474,12 @@ var PDFInvoices = React.createClass({
 			React.createElement(
 				"p",
 				null,
-				"PDF Invoice (",
-				invoice_pdf_files.length,
-				")"
+				React.createElement(
+					"span",
+					{ className: "index index-invoice" },
+					invoices.length
+				),
+				"PDF Invoice"
 			),
 			role == 'Trady' && notPaid && React.createElement(
 				"p",
@@ -73436,7 +73495,7 @@ var PDFInvoices = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "list-quote" },
-				invoice_pdf_files.map(function (invoice, index) {
+				invoices.map(function (invoice, index) {
 					var _invoice$trady = invoice.trady;
 					var trady = _invoice$trady === undefined ? {} : _invoice$trady;
 					var _invoice$paid = invoice.paid;
@@ -73450,8 +73509,13 @@ var PDFInvoices = React.createClass({
 							{ className: "user seven columns" },
 							React.createElement(
 								"span",
+								{ className: "index quote index-invoice" },
+								index + 1
+							),
+							React.createElement(
+								"span",
 								{ className: "icon-user" },
-								React.createElement("i", { className: "fa fa-user" })
+								React.createElement(AvatarImage, { imageUri: pictures[index] })
 							),
 							React.createElement(
 								"div",
@@ -73494,27 +73558,24 @@ var PDFInvoices = React.createClass({
 						),
 						React.createElement(
 							"div",
-							{ className: "actions five columns content" },
+							{ className: "actions-quote" },
+							['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && React.createElement(
+								"button",
+								{ type: "button", className: "btn btn-mark-as-paid", onClick: function (item) {
+										return self.props.markAsPaid(invoice);
+									} },
+								"Mark As Paid"
+							),
 							React.createElement(
-								"p",
-								{ style: { marginRight: 15 } },
-								['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && React.createElement(
-									"button",
-									{ type: "button", className: "btn btn-mark-as-paid", onClick: function (item) {
-											return self.props.markAsPaid(invoice);
-										} },
-									"Mark As Paid"
-								),
-								React.createElement(
-									"button",
-									{
-										style: { marginLeft: 10 },
-										type: "button", className: "btn btn-default btn-view",
-										onClick: function (key, item) {
-											return self.props.viewPDFInvoice('viewPdfInvoice', invoice.pdf_url);
-										} },
-									"View"
-								)
+								"button",
+								{
+									type: "button",
+									className: "btn btn-view",
+									onClick: function (key, item) {
+										return self.props.viewPDFInvoice('viewPdfInvoice', invoice.pdf_url);
+									}
+								},
+								"View"
 							)
 						)
 					);
@@ -75374,7 +75435,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request
 					}),
-					quote_requests && quote_requests.length ? React.createElement(QuoteRequests, {
+					quote_requests && quote_requests.length > 0 ? React.createElement(QuoteRequests, {
 						keyLandlord: 'landlord',
 						quote_requests: quote_requests,
 						onModalWith: this.onModalWith,
@@ -78417,22 +78478,6 @@ var ListMaintenanceRequest = React.createClass({
           React.createElement(
             "span",
             { className: "count" },
-            this.props.archived_count
-          ),
-          React.createElement(
-            "a",
-            { onClick: function () {
-                return _this4.getAction('Archive');
-              } },
-            "Archived"
-          )
-        ),
-        (!!current_user_agent || !!current_user_agency_admin) && React.createElement(
-          "div",
-          { className: "dropdown-custom archived" },
-          React.createElement(
-            "span",
-            { className: "count" },
             this.props.deferred_count
           ),
           React.createElement(
@@ -78456,7 +78501,7 @@ var ListMaintenanceRequest = React.createClass({
             { onClick: function () {
                 return _this4.getAction('Jobs Completed');
               } },
-            "Completed"
+            "Archived"
           )
         )
       ),
@@ -79543,7 +79588,7 @@ var ItemMaintenanceRequest = React.createClass({
 						maintenance.maintenance_description
 					)
 				),
-				maintenance.preapproved_note ? React.createElement(
+				!this.props.hide_note && maintenance.preapproved_note ? React.createElement(
 					"div",
 					{ className: "vailability pre-approved-note" },
 					React.createElement(
@@ -82909,7 +82954,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Quote Request Sent",
-							content: 'Thank you, an email has been sent to ' + params.trady.company_name + ' requesting a quote for the job. We will notify you once the quote been received.',
+							content: 'Thank you, an email has been sent to ' + params.trady.company_name + ' requesting a quote for the job. We will notify you once the quote has been received.',
 							bgClass: "bg-success"
 						}
 					});
@@ -83514,6 +83559,7 @@ var MaintenanceRequest = React.createClass({
 							close: this.isClose,
 							quote: this.state.quote,
 							quotes: this.state.quote_requests,
+							hideRestore: !!this.state.trady,
 							agency: this.props.agency,
 							property: this.props.property,
 							landlord: this.state.landlord,
@@ -83752,6 +83798,7 @@ var MaintenanceRequest = React.createClass({
 						property: this.props.property,
 						landlord: this.state.landlord,
 						onModalWith: this.onModalWith,
+						hideRestore: !!this.state.trady,
 						gallery: this.state.quote_images,
 						updateStatusQuote: this.updateStatusQuote,
 						viewQuote: function (quote) {
@@ -83948,7 +83995,8 @@ var MaintenanceRequest = React.createClass({
 							return _this9.viewItem(key, item);
 						}
 					}),
-					quote_requests && quote_requests.length ? React.createElement(QuoteRequests, {
+					quote_requests && quote_requests.length > 0 ? React.createElement(QuoteRequests, {
+						hideRestore: !!trady,
 						quote_requests: quote_requests,
 						onModalWith: this.onModalWith,
 						landlord: this.state.landlord,
@@ -85291,7 +85339,7 @@ var ActionQuote = React.createClass({
 					quote: quote,
 					updateStatusQuote: self.updateStatusQuote
 				}),
-				quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved" && React.createElement(ButtonRestore, {
+				!self.hideRestore && quote.status != "Cancelled" && quote.status != "Active" && quote.status != "Approved" && React.createElement(ButtonRestore, {
 					quote: quote,
 					updateStatusQuote: self.updateStatusQuote
 				}),
@@ -86148,6 +86196,7 @@ var ModalViewQuote = React.createClass({
 							{ className: "modal-footer-quote quotes" },
 							!!self.current_user && React.createElement(ActionQuote, {
 								quote: quote,
+								hideRestore: self.hideRestore,
 								isModal: "true",
 								className: "print",
 								landlord: self.landlord,
@@ -86501,6 +86550,7 @@ var ModalViewPhoto = React.createClass({
 						!!self.current_user && React.createElement(ActionQuote, {
 							isModal: "true",
 							className: "print",
+							hideRestore: self.hideRestore,
 							quote: self.quote,
 							landlord: self.landlord,
 							quotes: self.quotes,
@@ -92254,6 +92304,14 @@ var TradyMaintenanceRequest = React.createClass({
 						}
 					});
 
+				case 'confirmAppointmentAlreadyMade':
+					return React.createElement(ModalConfirmAnyThing, {
+						close: this.isClose,
+						confirm: this.appointmentAlreadyMade,
+						title: 'Appointment Already Made',
+						content: 'Are you sure you have already made an appointment with the tenant?'
+					});
+
 				default:
 					return null;
 			}
@@ -92305,6 +92363,42 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({ notification: {
 						title: "Quote Already Sent",
 						content: "Quote Already Sent didn't confirm.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	appointmentAlreadyMade: function () {
+		var self = this;
+		var maintenance_request = this.state.maintenance_request;
+
+		var params = {
+			maintenance_request_id: maintenance_request.id
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/appointment_already_made',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					notification: {
+						title: "Appointment Already Made",
+						content: res.note,
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Appointment Already Made",
+						content: "Appointment Already Made didn't confirm.",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -92515,19 +92609,21 @@ var TradyMaintenanceRequest = React.createClass({
 					React.createElement(ItemMaintenanceRequest, {
 						gallery: this.state.gallery,
 						property: this.props.property,
-						maintenance_request: this.state.maintenance_request
+						maintenance_request: this.state.maintenance_request,
+						hide_note: !trady || trady.user_id !== this.props.current_user.id
 					}),
-					trady && this.props.current_role && React.createElement(AssignTrady, {
+					trady && trady.id === this.props.signed_in_trady.id && this.props.current_role && React.createElement(AssignTrady, {
 						trady: trady,
 						current_role: this.props.current_role.role,
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
 						},
+						showAppointmentAlreadyMade: true,
 						viewTrady: function (key, item) {
 							return _this3.viewItem(key, item);
 						}
 					}),
-					quote_requests && quote_requests.length && React.createElement(QuoteRequests, {
+					(!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length && React.createElement(QuoteRequests, {
 						keyLandlord: 'trady',
 						landlord: this.state.landlord,
 						quote_requests: quote_requests,
