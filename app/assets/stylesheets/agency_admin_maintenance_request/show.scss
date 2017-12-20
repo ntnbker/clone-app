@@ -1597,7 +1597,7 @@ span.index {
         font-size: 16px;
       }
       .info .actions {
-        width: 83%;
+        width: 98%;
         float: left;
         // overflow: hidden;
         margin-top: 10px;
@@ -1605,8 +1605,9 @@ span.index {
         button {
           height: 40px;
           padding: 0;
-          width: 110px;
+          width: 40vw;
           font-size: 12px;
+          margin-right: 2.5vw;
         }
       }
       .content .slider-custom .swiper-pagination .swiper-pagination-bullet {
@@ -1615,7 +1616,7 @@ span.index {
       }
       @media (max-width: 370px) {
         .info .actions {
-          width: 89%;
+          width: 98%;
         }
       }
     }
