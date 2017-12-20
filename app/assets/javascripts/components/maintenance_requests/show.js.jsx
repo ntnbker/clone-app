@@ -2621,6 +2621,23 @@ var MaintenanceRequest = React.createClass({
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
 						/>
+						{	(invoices && invoices.length > 0) &&
+								<Invoices
+									invoices={this.state.invoices}
+									current_role={this.props.current_user_role}
+									markAsPaid={(item) => this.markAsPaid(item)}
+									viewInvoice={(key, item) => this.viewItem(key, item)}
+								/>
+						}
+						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
+								<PDFInvoices
+									trady={this.props.assigned_trady}
+									invoice_pdf_files={invoice_pdf_files}
+									current_role={this.props.current_user_role}
+									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
+									markAsPaid={(item) => this.markAsPaid(item, true)}
+								/>
+						}
 						{
 							this.state.trady &&
 								<AssignTrady
@@ -2659,23 +2676,6 @@ var MaintenanceRequest = React.createClass({
 							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
 						 		/>
 					 	}
-						{	(invoices && invoices.length > 0) &&
-								<Invoices
-									invoices={this.state.invoices}
-									current_role={this.props.current_user_role}
-									markAsPaid={(item) => this.markAsPaid(item)}
-									viewInvoice={(key, item) => this.viewItem(key, item)}
-								/>
-						}
-						{	(invoice_pdf_files && invoice_pdf_files.length > 0) &&
-								<PDFInvoices
-									trady={this.props.assigned_trady}
-									invoice_pdf_files={invoice_pdf_files}
-									current_role={this.props.current_user_role}
-									viewPDFInvoice={(key, item) => this.viewItem(key, item)}
-									markAsPaid={(item) => this.markAsPaid(item, true)}
-								/>
-						}
 					</div>
 					<div className="sidebar">
 						<Contact
