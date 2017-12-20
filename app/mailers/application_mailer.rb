@@ -14,16 +14,18 @@ class ApplicationMailer < ActionMailer::Base
     @property = maintenance_request.property
     if @maintenance_request.agent 
       @user = @maintenance_request.agent.user
+      # @user = "Agent"
       email = @maintenance_request.agent.email
       @agent = maintenance_request.agent
     elsif @maintenance_request.agency_admin 
       @user = @maintenance_request.agency_admin.user
+      # @user = "Agency Admin"
       email = @maintenance_request.agency_admin.email
       @agent = maintenance_request.agency_admin
     end
 
-    track user: @user
-    track extra: {maintenance_request_id:maintenance_request.id}
+    #track user: @user
+    #track extra: {maintenance_request_id:maintenance_request.id}
     
     mail(to:email, subject:"Maintenance request from #{@tenant.name.capitalize} - #{@property.property_address}")
   end

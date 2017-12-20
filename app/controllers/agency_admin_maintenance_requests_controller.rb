@@ -1,7 +1,7 @@
 class AgencyAdminMaintenanceRequestsController < ApplicationController
   
-  before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
-  
+  # before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
+  before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
 
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
@@ -192,6 +192,42 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   
   private
 
+  def belongs_to_agency_admin
+    
+    maintenance_request = MaintenanceRequest.find_by(id:params[:id])
+    if current_user
+      if current_user.agency_admin.id == maintenance_request.agency_admin_id
+        #do nothing
+      else 
+        flash[:danger] = "Sorry you are not allowed to see that."
+        redirect_to root_path
+      end 
+    end
+  
+  end
+
+  def email_redirect
+
+    user = User.find_by(id:params[:user_id])
+    binding.pry
+
+
+    if user.password_set
+      if current_user
+        #do nothing 
+      else
+        flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+        redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+      end 
+
+    else
+      flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+      redirect_to new_password_reset_path
+    end 
+
+
+  end
+
   # def require_agency_admin
   #   if current_user.has_role("AgencyAdmin") && current_user.logged_in_as("AgencyAdmin")
   #     #do nothing 
@@ -203,58 +239,46 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   
   # end
 
-  def email_auto_login(id)
-    email_params= params[:user_id]
+  # def email_auto_login(id)
+  #   email_params= params[:user_id]
     
-    if email_params
-      user = User.find_by(id:id)
-      if user  
-        if current_user
-          if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
-            answer = true
-          else
-            answer = false
-          end 
+  #   if email_params
+  #     user = User.find_by(id:id)
+  #     if user  
+  #       if current_user
+  #         if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("Agent")
+  #           answer = true
+  #         else
+  #           answer = false
+  #         end 
           
-          if current_user  && answer && user.has_role("AgencyAdmin")
-            logout
-            auto_login(user)
-            user.current_role.update_attribute(:role, "AgencyAdmin")
-          elsif current_user == nil
-            auto_login(user)
-            user.current_role.update_attribute(:role, "AgencyAdmin")
-          elsif current_user && current_user.logged_in_as("AgencyAdmin")
-              #do nothing
-          end 
-        else 
+  #         if current_user  && answer && user.has_role("AgencyAdmin")
+  #           logout
+  #           auto_login(user)
+  #           user.current_role.update_attribute(:role, "AgencyAdmin")
+  #         elsif current_user == nil
+  #           auto_login(user)
+  #           user.current_role.update_attribute(:role, "AgencyAdmin")
+  #         elsif current_user && current_user.logged_in_as("AgencyAdmin")
+  #             #do nothing
+  #         end 
+  #       else 
           
-            auto_login(user)
-            user.current_role.update_attribute(:role, "AgencyAdmin")
+  #           auto_login(user)
+  #           user.current_role.update_attribute(:role, "AgencyAdmin")
            
-        end 
-      else 
-        flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
-        redirect_to root_path
-      end
-    else
-      #do nothing
-    end 
+  #       end 
+  #     else 
+  #       flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
+  #       redirect_to root_path
+  #     end
+  #   else
+  #     #do nothing
+  #   end 
 
-  end
+  # end
 
-  def belongs_to_agency_admin
-    
-    maintenance_request = MaintenanceRequest.find_by(id:params[:id])
-    if current_user
-      if current_user.agency_admin.id == maintenance_request.agency_admin_id
-        #do nothing
-      else 
-        flash[:notice] = "Sorry you can't see that."
-        redirect_to root_path
-      end 
-    end
   
-  end
 
 
 

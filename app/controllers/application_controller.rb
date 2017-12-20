@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
     if current_user.has_role(role) && current_user.logged_in_as(role)
       #do nothing 
     else
-      flash[:notice] = "You are not authorized to see that page"
+      flash[:danger] = "You are not authorized to see that page. Please sign into your own account."
       redirect_to root_path
     end 
   end
