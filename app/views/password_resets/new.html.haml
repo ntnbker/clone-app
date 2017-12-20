@@ -1,9 +1,9 @@
 %div.container.reset-password
 	%h1 Set Password
 	%div.form-reset
-		= bootstrap_form_tag url:password_resets_path do 
+		= bootstrap_form_tag url:password_resets_path do
 			%div.form-group
-				= label_tag :email, nil, class: 'form-control'
+				= label_tag :email, nil, class: 'form-control text-center'
 				= email_field_tag :email, nil, class: 'form-control', required: true, placeholder:"Email"
-			%div.form-group
+			%div.form-group.text-center
 				= button_tag "Reset Password", class: 'button-primary green'
