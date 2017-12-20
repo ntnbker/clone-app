@@ -1,7 +1,9 @@
 class AgencyAdminMaintenanceRequestsController < ApplicationController
   
   # before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
+  #before_action(only: [:show,:index]) { email_redirect(params[:email]) }
   before_action :email_redirect, only: [:show,:index]
+  
   before_action :require_login, only:[:show,:index]
 
   before_action(only:[:show,:index]) {allow("AgencyAdmin")}
@@ -206,27 +208,33 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
   
   end
 
-  def email_redirect
+  # def email_redirect
+    
+  #   if params[:user_id]
+  #     user = User.find_by(id:params[:user_id])
 
-    user = User.find_by(id:params[:user_id])
-    binding.pry
-
-
-    if user.password_set
-      if current_user
-        #do nothing 
-      else
-        flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
-        redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
-      end 
-
-    else
-      flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
-      redirect_to new_password_reset_path
-    end 
+  #   elsif params[:email]
+  #     user = User.find_by(email:params[:email])
+  #   else
+  #     user = current_user
+  #   end 
 
 
-  end
+  #   if user.password_set
+  #     if current_user
+  #       #do nothing 
+  #     else
+  #       flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+  #       redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+  #     end 
+
+  #   else
+  #     flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+  #     redirect_to new_password_reset_path
+  #   end 
+
+
+  # end
 
   # def require_agency_admin
   #   if current_user.has_role("AgencyAdmin") && current_user.logged_in_as("AgencyAdmin")

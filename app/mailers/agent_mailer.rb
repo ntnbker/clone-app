@@ -19,7 +19,7 @@ class AgentMailer < ActionMailer::Base
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail(to:email, subject:"Quote recieved from #{@quote.trady.name.capitalize} - #{@property.property_address}")
+    mail(to:email, subject:"Quote recieved from #{@quote.trady.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
     
   end
 
@@ -38,7 +38,7 @@ class AgentMailer < ActionMailer::Base
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail(to:@user.email, subject:"Invoice recieved from #{@trady.name.capitalize} - #{@property.property_address}")
+    mail(to:@user.email, subject:"Invoice recieved from #{@trady.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def request_quote_email(maintenance_request)
@@ -56,7 +56,7 @@ class AgentMailer < ActionMailer::Base
     # track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
 
-    mail(to:email, subject:"Quote requested by landlord #{@landlord.name.capitalize} - #{@property.property_address}")
+    mail(to:email, subject:"Quote requested by landlord #{@landlord.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def quote_has_been_approved_email(maintenance_request)
@@ -73,7 +73,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"Quote approved for - #{@property.property_address}.")
+    mail(to:email, subject:"Quote approved for - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def notify_agent_about_landlord_message(maintenance_request)
@@ -89,7 +89,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"New message from landlord #{@landlord.name.capitalize} - #{@property.property_address}.")
+    mail(to:email, subject:"New message from landlord #{@landlord.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def notify_agent_about_tenant_message(maintenance_request)
@@ -105,7 +105,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"New message from tenant #{@tenant.name.capitalize} - #{@property.property_address}.")
+    mail(to:email, subject:"New message from tenant #{@tenant.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def notify_agent_about_trady_message(maintenance_request)
@@ -121,7 +121,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"New message from trady #{@trady.name.capitalize} - #{@property.property_address}.")
+    mail(to:email, subject:"New message from trady #{@trady.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def notify_agent_about_trady_quote_message(maintenance_request, quote)
@@ -138,7 +138,7 @@ class AgentMailer < ActionMailer::Base
     end
     @quote = quote
     @trady = @quote.trady
-    mail(to:email, subject:"Quote comment from trady #{@quote.trady.name.capitalize} - #{@property.property_address}.")
+    mail(to:email, subject:"Quote comment from trady #{@quote.trady.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def agent_submitted_maintenance_request_email(maintenance_request)
@@ -154,7 +154,7 @@ class AgentMailer < ActionMailer::Base
       email = @maintenance_request.agency_admin.email 
     end
     
-    mail(to:email, subject:"Your maintenance request submitted on behalf of #{@tenant.name.capitalize} - #{@property.property_address}.")
+    mail(to:email, subject:"Your maintenance request submitted on behalf of #{@tenant.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def maintenance_request_reassigned_email(maintenance_request,user)
@@ -175,7 +175,7 @@ class AgentMailer < ActionMailer::Base
 
 
 
-    mail(to:user.email, subject:"A maintenance request has been reassiged to you for - #{@property.property_address}.")
+    mail(to:user.email, subject:"A maintenance request has been reassiged to you for - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def remind_agent_of_invoice_payment(maintenance_request)
@@ -191,7 +191,7 @@ class AgentMailer < ActionMailer::Base
       email = @maintenance_request.agency_admin.email 
     end 
 
-    mail(to:email, subject:"Invoice Payment Reminder")
+    mail(to:email, subject:"Invoice Payment Reminder, sent on #{Date.today}")
   end
 
   def agency_admin_outstanding_maintenance_requests(agency_admin, new_count, quote_requested_count, quote_recieved_count, new_invoice_count, cancelled_work_order_count, deferred_maintenance_request_count, send_work_order_count)
@@ -206,7 +206,7 @@ class AgentMailer < ActionMailer::Base
     email = agency_admin.email 
     
 
-    mail(to:email, subject:"Outstanding Work")
+    mail(to:email, subject:"Outstanding Work, sent on #{Date.today}")
     ###WHAT YOU NEED TO DO IS MAKE THE TEMPLATE FOR THE EMAIL
     ### THEN YOU HAVE TO ADD THE CODE FOR THE SCHEDULER AND THEN RUN IT.
     
@@ -225,7 +225,7 @@ class AgentMailer < ActionMailer::Base
     email = agent.email 
     
 
-    mail(to:email, subject:"Outstanding Work")
+    mail(to:email, subject:"Outstanding Work, sent on #{Date.today}")
     ###WHAT YOU NEED TO DO IS MAKE THE TEMPLATE FOR THE EMAIL
     ### THEN YOU HAVE TO ADD THE CODE FOR THE SCHEDULER AND THEN RUN IT.
   end
@@ -244,7 +244,7 @@ class AgentMailer < ActionMailer::Base
     end
     @quote_request = quote_request
     @trady = @quote_request.trady
-    mail(to:email, subject:"Quote comment from trady #{@quote_request.trady.capitalize_name} - #{@property.property_address}.")
+    mail(to:email, subject:"Quote comment from trady #{@quote_request.trady.capitalize_name} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def work_order_approved_by_landlord(maintenance_request)
@@ -261,7 +261,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"Work order approved for - #{@property.property_address}.")
+    mail(to:email, subject:"Work order approved for - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def notify_agent_about_landlord_deferring_maintenance(maintenance_request)
@@ -279,7 +279,7 @@ class AgentMailer < ActionMailer::Base
     end
 
     # track user: @user
-    mail(to:email, subject:"Landlord has deferred maintenance for - #{@property.property_address}.")
+    mail(to:email, subject:"Landlord has deferred maintenance for - #{@property.property_address}, sent on #{Date.today}")
   end
 
 end 

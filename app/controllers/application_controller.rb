@@ -69,6 +69,34 @@ class ApplicationController < ActionController::Base
     return array
   end
 
+  def email_redirect
+    
+    if params[:user_id]
+      user = User.find_by(id:params[:user_id])
+
+    elsif params[:email]
+      user = User.find_by(email:params[:email])
+    else
+      user = current_user
+    end 
+
+
+    if user.password_set
+      if current_user
+        #do nothing 
+      else
+        flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+        redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+      end 
+
+    else
+      flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+      redirect_to new_password_reset_path
+    end 
+
+
+  end
+
   
   private
     def not_authenticated

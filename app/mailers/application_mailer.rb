@@ -27,7 +27,7 @@ class ApplicationMailer < ActionMailer::Base
     #track user: @user
     #track extra: {maintenance_request_id:maintenance_request.id}
     
-    mail(to:email, subject:"Maintenance request from #{@tenant.name.capitalize} - #{@property.property_address}")
+    mail(to:email, subject:"Maintenance request from #{@tenant.name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
 
@@ -66,7 +66,7 @@ class ApplicationMailer < ActionMailer::Base
     
     track user: @user
     track extra: {maintenance_request_id:maintenance_request.id}
-    mail(to:@tenant.email, subject: "Receipt for maintenance request - #{@property.property_address}")
+    mail(to:@tenant.email, subject: "Receipt for maintenance request - #{@property.property_address}, sent on #{Date.today}")
   end
 
 
@@ -84,7 +84,7 @@ class ApplicationMailer < ActionMailer::Base
     end
     @tenant = user.tenant
     @user = user
-    mail(to:user.email, subject: "Message received from #{@agency.company_name.capitalize} - #{@property.property_address}")
+    mail(to:user.email, subject: "Message received from #{@agency.company_name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
   def message_notification_email(maintenance_request)

@@ -161,14 +161,14 @@ class AgentMaintenanceRequestsController < ApplicationController
 
   private
 
-  def email_redirect
-    if current_user
-      #do nothing 
-    else
-      flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
-      redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
-    end 
-  end
+  # def email_redirect
+  #   if current_user
+  #     #do nothing 
+  #   else
+  #     flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+  #     redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+  #   end 
+  # end
 
   # def email_auto_login(id)
   #  email_params= params[:user_id]

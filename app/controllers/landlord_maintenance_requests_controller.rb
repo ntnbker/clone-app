@@ -138,15 +138,15 @@ class LandlordMaintenanceRequestsController < ApplicationController
 
   private
 
-  def email_redirect
-    if current_user
-      #do nothing 
-    else
-      flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
-      binding.pry
-      redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id])
-    end 
-  end
+  # def email_redirect
+  #   if current_user
+  #     #do nothing 
+  #   else
+  #     flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+  #     binding.pry
+  #     redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id])
+  #   end 
+  # end
 
 
   # def email_auto_login(id)
@@ -193,7 +193,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
       if current_user.landlord.id == maintenance_request.property.landlord_id
         #do nothing
       else 
-        flash[:notice] = "Sorry you can't see that."
+        flash[:danger] = "Sorry you are not allowed to see that. Please log into your own account thank you."
         redirect_to root_path
       end 
     end 
