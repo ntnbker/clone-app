@@ -197,7 +197,7 @@ var QuoteFields = React.createClass({
         <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
         <input type="hidden" value={this.props.quote_type} name="quote[quote_type]" id="quote_type" />
         <input type="hidden" value={this.props.system_plan} name="quote[system_plan]" id="system_plan" />
-        <div className="alert alert-info">
+        <div className="alert alert-message">
           If you have more than one option on costs for the job to be completed, please create more than one quote with each variation. Doing so will allow the agent to pick the most appropriate quote.
         </div>
         <FieldList

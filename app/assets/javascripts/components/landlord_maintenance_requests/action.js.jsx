@@ -15,7 +15,7 @@ var ContentLandlordAction = React.createClass({
 	render: function() {
 		return (
 			<ul>
-				<li className="active">
+				<li>
 					<a onClick={!this.state.isClick && this.requestQuote}>
 						<i className="fa fa-file-text" aria-hidden="true" />
 						Request quote
