@@ -13680,20 +13680,22 @@ span.index.index-invoice {
   -ms-align-items: center;
   -ms-flex-align: center;
   align-items: center;
+  width: 90%;
   background: white;
   padding: 5px 5px 50px;
   border-color: #edf1f4;
   margin-top: 30px;
 }
-/* line 15, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
+/* line 16, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
 .reset-password .form-reset {
-  width: 350px;
+  width: 100%;
+  max-width: 350px;
 }
-/* line 17, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
+/* line 19, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
 .reset-password .form-reset input {
   width: 100%;
 }
-/* line 22, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
+/* line 24, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
 .reset-password .help-block {
   color: red;
   text-transform: capitalize;

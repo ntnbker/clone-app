@@ -70494,7 +70494,7 @@ var ModalViewTrady = React.createClass({
               )
             )
           ),
-          React.createElement(
+          false && React.createElement(
             'div',
             { className: 'footer' },
             React.createElement(
@@ -82954,7 +82954,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Quote Request Sent",
-							content: 'Thank you, an email has been sent to ' + params.trady.company_name + ' requesting a quote for the job. We will notify you once the quote been received.',
+							content: 'Thank you, an email has been sent to ' + params.trady.company_name + ' requesting a quote for the job. We will notify you once the quote has been received.',
 							bgClass: "bg-success"
 						}
 					});
