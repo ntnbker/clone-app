@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken do |exception|
     respond_to do |format|
       
-      format.html { redirect_to root_path, :alert => "Sorry something went wrong. Please try again." }
+      format.html { redirect_to root_path, :danger => "Sorry something went wrong. Please try again." }
     end
   end
 

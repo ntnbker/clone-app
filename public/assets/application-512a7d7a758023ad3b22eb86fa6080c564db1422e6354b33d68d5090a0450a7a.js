@@ -74029,7 +74029,7 @@ var ContentLandlordAction = React.createClass({
 			null,
 			React.createElement(
 				"li",
-				{ className: "active" },
+				null,
 				React.createElement(
 					"a",
 					{ onClick: !this.state.isClick && this.requestQuote },
@@ -84048,6 +84048,27 @@ var MaintenanceRequest = React.createClass({
 						maintenance_request: this.state.maintenance_request,
 						show_assign: this.props.current_user_show_quote_message
 					}),
+					invoices && invoices.length > 0 && React.createElement(Invoices, {
+						invoices: this.state.invoices,
+						current_role: this.props.current_user_role,
+						markAsPaid: function (item) {
+							return _this9.markAsPaid(item);
+						},
+						viewInvoice: function (key, item) {
+							return _this9.viewItem(key, item);
+						}
+					}),
+					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						trady: this.props.assigned_trady,
+						invoice_pdf_files: invoice_pdf_files,
+						current_role: this.props.current_user_role,
+						viewPDFInvoice: function (key, item) {
+							return _this9.viewItem(key, item);
+						},
+						markAsPaid: function (item) {
+							return _this9.markAsPaid(item, true);
+						}
+					}),
 					this.state.trady && React.createElement(AssignTrady, {
 						trady: this.state.trady,
 						current_role: this.props.current_user_role,
@@ -84084,27 +84105,6 @@ var MaintenanceRequest = React.createClass({
 							return _this9.viewItem(key, item);
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
-					}),
-					invoices && invoices.length > 0 && React.createElement(Invoices, {
-						invoices: this.state.invoices,
-						current_role: this.props.current_user_role,
-						markAsPaid: function (item) {
-							return _this9.markAsPaid(item);
-						},
-						viewInvoice: function (key, item) {
-							return _this9.viewItem(key, item);
-						}
-					}),
-					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
-						trady: this.props.assigned_trady,
-						invoice_pdf_files: invoice_pdf_files,
-						current_role: this.props.current_user_role,
-						viewPDFInvoice: function (key, item) {
-							return _this9.viewItem(key, item);
-						},
-						markAsPaid: function (item) {
-							return _this9.markAsPaid(item, true);
-						}
 					})
 				),
 				React.createElement(
@@ -87026,6 +87026,11 @@ var QuoteFields = React.createClass({
       React.createElement('input', { type: 'hidden', value: this.props.delivery_status, name: 'quote[delivery_status]', id: 'quote_delivery_status' }),
       React.createElement('input', { type: 'hidden', value: this.props.quote_type, name: 'quote[quote_type]', id: 'quote_type' }),
       React.createElement('input', { type: 'hidden', value: this.props.system_plan, name: 'quote[system_plan]', id: 'system_plan' }),
+      React.createElement(
+        'div',
+        { className: 'alert alert-message' },
+        'If you have more than one option on costs for the job to be completed, please create more than one quote with each variation. Doing so will allow the agent to pick the most appropriate quote.'
+      ),
       React.createElement(FieldList, {
         existingContent: this.props.quote_items,
         SampleField: QuoteField,
@@ -90484,7 +90489,7 @@ var CreactOrUploadQuote = React.createClass({
 	render: function () {
 		return React.createElement(
 			"li",
-			{ className: "active" },
+			null,
 			React.createElement(
 				"a",
 				{ href: this.props.link },
@@ -92659,6 +92664,27 @@ var TradyMaintenanceRequest = React.createClass({
 						maintenance_request: this.state.maintenance_request,
 						hide_note: !trady || trady.user_id !== this.props.current_user.id
 					}),
+					invoices && invoices.length > 0 && React.createElement(Invoices, {
+						invoices: invoices,
+						current_role: this.props.current_role,
+						viewInvoice: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						paymentReminder: function (item) {
+							return _this3.paymentReminder(item);
+						}
+					}),
+					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						trady: this.props.assigned_trady,
+						invoice_pdf_files: invoice_pdf_files,
+						current_role: this.props.current_role,
+						paymentReminder: function (item) {
+							return _this3.paymentReminder(item);
+						},
+						viewPDFInvoice: function (key, item) {
+							return _this3.viewItem(key, item);
+						}
+					}),
 					trady && trady.id === this.props.signed_in_trady.id && this.props.current_role && React.createElement(AssignTrady, {
 						trady: trady,
 						current_role: this.props.current_role.role,
@@ -92693,27 +92719,6 @@ var TradyMaintenanceRequest = React.createClass({
 							return _this3.viewItem(key, item);
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
-					}),
-					invoices && invoices.length > 0 && React.createElement(Invoices, {
-						invoices: invoices,
-						current_role: this.props.current_role,
-						viewInvoice: function (key, item) {
-							return _this3.viewItem(key, item);
-						},
-						paymentReminder: function (item) {
-							return _this3.paymentReminder(item);
-						}
-					}),
-					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
-						trady: this.props.assigned_trady,
-						invoice_pdf_files: invoice_pdf_files,
-						current_role: this.props.current_role,
-						paymentReminder: function (item) {
-							return _this3.paymentReminder(item);
-						},
-						viewPDFInvoice: function (key, item) {
-							return _this3.viewItem(key, item);
-						}
 					})
 				),
 				React.createElement(
