@@ -1,3 +1,8 @@
+-if logged_in?
+  -if current_user.logged_in_as("Tenant") 
+    =link_to "Edit Tenant Profile", edit_tenant_path(current_user.tenant)
+
+
 - edit_agency, edit_agency_admin, edit_trady, edit_agent, user_name = nil
 - expanded = local_assigns.has_key? :expanded
 - searchText = params[:query]
