@@ -70175,8 +70175,9 @@ var ModalViewTrady = React.createClass({
     var trady = _filterData.trady;
     var maintenance_request = _filterData.maintenance_request;
     var property = _filterData.property;
+    var hasApproved = _filterData.hasApproved;
 
-    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property };
+    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property, hasApproved: hasApproved };
   },
 
   filterData: function (props) {
@@ -70185,8 +70186,9 @@ var ModalViewTrady = React.createClass({
     var trady = props.trady || {};
     var property = props.property || {};
     var maintenance_request = props.maintenance_request || {};
+    var hasApproved = props.hasApproved || false;
 
-    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property };
+    return { agency: agency, agent: agent, trady: trady, maintenance_request: maintenance_request, property: property, hasApproved: hasApproved };
   },
 
   printWork: function () {
@@ -70200,6 +70202,7 @@ var ModalViewTrady = React.createClass({
     var trady = _state.trady;
     var maintenance_request = _state.maintenance_request;
     var property = _state.property;
+    var hasApproved = _state.hasApproved;
 
     trady['trady_company'] = trady['trady_company'] || {};
 
@@ -70471,7 +70474,12 @@ var ModalViewTrady = React.createClass({
                 React.createElement(
                   'p',
                   null,
-                  maintenance_request && maintenance_request.preapproved_note
+                  React.createElement(
+                    'span',
+                    { className: 'approval-note ' + (hasApproved ? 'strike' : '') },
+                    maintenance_request && maintenance_request.preapproved_note
+                  ),
+                  hasApproved && "As per quote approved"
                 )
               )
             ),
@@ -75466,6 +75474,12 @@ var LandlordMaintenanceRequest = React.createClass({
 		var appointments = _state2.appointments;
 		var quote_requests = _state2.quote_requests;
 
+		var hasApproved = quote_requests.some(function (quote_request) {
+			return quote_request.quotes.some(function (quote) {
+				return quote.status === 'Approved';
+			});
+		});
+
 		return React.createElement(
 			'div',
 			{ className: 'summary-container-index', id: 'summary-container-index' },
@@ -75478,7 +75492,8 @@ var LandlordMaintenanceRequest = React.createClass({
 					React.createElement(ItemMaintenanceRequest, {
 						gallery: this.props.gallery,
 						property: this.props.property,
-						maintenance_request: this.state.maintenance_request
+						maintenance_request: this.state.maintenance_request,
+						strike_approval: hasApproved
 					}),
 					quote_requests && quote_requests.length > 0 ? React.createElement(QuoteRequests, {
 						keyLandlord: 'landlord',
@@ -79560,7 +79575,9 @@ var ItemMaintenanceRequest = React.createClass({
 		var _this5 = this;
 
 		var maintenance = this.props.maintenance_request;
-		var status = this.props.status;
+		var _props2 = this.props;
+		var status = _props2.status;
+		var strike_approval = _props2.strike_approval;
 
 		var props = this.props;
 		var d = new Date();
@@ -79648,7 +79665,12 @@ var ItemMaintenanceRequest = React.createClass({
 					React.createElement(
 						"p",
 						{ className: "description" },
-						maintenance.preapproved_note
+						React.createElement(
+							"span",
+							{ className: 'approval-note ' + (strike_approval ? 'strike' : '') },
+							maintenance.preapproved_note
+						),
+						strike_approval && "As per quote approved"
 					)
 				) : '',
 				React.createElement(
@@ -79801,10 +79823,10 @@ var ModalEditMR = React.createClass({
 		var position = _state3.position;
 
 		var params = this.props.params || {};
-		var _props2 = this.props;
-		var _props2$x = _props2.x;
-		var x = _props2$x === undefined ? 0 : _props2$x;
-		var removeField = _props2.removeField;
+		var _props3 = this.props;
+		var _props3$x = _props3.x;
+		var x = _props3$x === undefined ? 0 : _props3$x;
+		var removeField = _props3.removeField;
 		var _params$maintenance_request = params.maintenance_request;
 		var maintenance_request = _params$maintenance_request === undefined ? {} : _params$maintenance_request;
 		var _params$services = params.services;
@@ -79896,7 +79918,6 @@ var ModalSplitMR = React.createClass({
 			if (errors) {
 				(function () {
 					//defined in header.js.jsx
-					debugger;
 					var indexRegex = /indexes%5B(\d+)%5D=(\d+)/i;
 					var indexes = $('#splitMRForm').serialize().split('&').filter(function (v) {
 						return indexRegex.test(v);
@@ -79916,9 +79937,9 @@ var ModalSplitMR = React.createClass({
 
 	render: function () {
 		var result = this.state.result;
-		var _props3 = this.props;
-		var maintenance_request = _props3.maintenance_request;
-		var services = _props3.services;
+		var _props4 = this.props;
+		var maintenance_request = _props4.maintenance_request;
+		var services = _props4.services;
 
 		return React.createElement(
 			"div",
@@ -80022,9 +80043,9 @@ var ModalConfirmUpdateStatus = React.createClass({
 	displayName: "ModalConfirmUpdateStatus",
 
 	render: function () {
-		var _props4 = this.props;
-		var content = _props4.content;
-		var title = _props4.title;
+		var _props5 = this.props;
+		var content = _props5.content;
+		var title = _props5.title;
 
 		return React.createElement(
 			"div",
@@ -83826,6 +83847,12 @@ var MaintenanceRequest = React.createClass({
 					});
 
 				case 'viewTrady':
+					var hasApproved = this.props.quote_requests.some(function (quote_request) {
+						return quote_request.quotes.some(function (quote) {
+							return quote.status === 'Approved';
+						});
+					});
+
 					return React.createElement(ModalViewTrady, {
 						close: this.isClose,
 						trady: this.state.trady,
@@ -83834,7 +83861,8 @@ var MaintenanceRequest = React.createClass({
 						maintenance_request: this.state.maintenance_request,
 						agency: this.props.agency,
 						agent: this.props.agent,
-						tenants: this.state.tenants
+						tenants: this.state.tenants,
+						hasApproved: hasApproved
 					});
 
 				case 'confirmCancelTrady':
@@ -84023,6 +84051,12 @@ var MaintenanceRequest = React.createClass({
 		var trady = _state8.trady;
 		var quote_requests = _state8.quote_requests;
 
+		var hasApproved = quote_requests.some(function (quote_request) {
+			return quote_request.quotes.some(function (quote) {
+				return quote.status === 'Approved';
+			});
+		});
+
 		return React.createElement(
 			"div",
 			{ className: "summary-container-index", id: "summary-container-index" },
@@ -84046,7 +84080,8 @@ var MaintenanceRequest = React.createClass({
 							return _this9.assignToUser(email);
 						},
 						maintenance_request: this.state.maintenance_request,
-						show_assign: this.props.current_user_show_quote_message
+						show_assign: this.props.current_user_show_quote_message,
+						strike_approval: hasApproved
 					}),
 					invoices && invoices.length > 0 && React.createElement(Invoices, {
 						invoices: this.state.invoices,
@@ -92319,6 +92354,12 @@ var TradyMaintenanceRequest = React.createClass({
 					});
 
 				case 'viewTrady':
+
+					var hasApproved = quote_requests.some(function (quote_request) {
+						return quote_request.quotes.some(function (quote) {
+							return quote.status === 'Approved';
+						});
+					});
 					return React.createElement(ModalViewTrady, {
 						close: this.isClose,
 						trady: this.state.trady,
@@ -92327,7 +92368,8 @@ var TradyMaintenanceRequest = React.createClass({
 						agency_admin: this.props.agency_admin,
 						agent: this.props.agent,
 						tenants: this.props.tenants,
-						property: this.props.property
+						property: this.props.property,
+						hasApproved: hasApproved
 					});
 
 				case 'confirmQuoteAlreadySent':
@@ -92644,6 +92686,12 @@ var TradyMaintenanceRequest = React.createClass({
 		var trady = _state5.trady;
 		var quote_requests = _state5.quote_requests;
 
+		var hasApproved = quote_requests.some(function (quote_request) {
+			return quote_request.quotes.some(function (quote) {
+				return quote.status === 'Approved';
+			});
+		});
+
 		return React.createElement(
 			'div',
 			{ className: 'summary-container-index', id: 'summary-container-index' },
@@ -92662,7 +92710,8 @@ var TradyMaintenanceRequest = React.createClass({
 						gallery: this.state.gallery,
 						property: this.props.property,
 						maintenance_request: this.state.maintenance_request,
-						hide_note: !trady || trady.user_id !== this.props.current_user.id
+						hide_note: !trady || trady.user_id !== this.props.current_user.id,
+						strike_approval: hasApproved, hasApproved: true
 					}),
 					invoices && invoices.length > 0 && React.createElement(Invoices, {
 						invoices: invoices,
