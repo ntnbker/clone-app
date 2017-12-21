@@ -9,19 +9,17 @@ body {
   height: 100%;
 
 }
-
 .flex {
-  @include flexbox;
-  &.flex-column {
-    @include flex-direction(column);
-  }
-  &.flex-row {
-    @include flex-direction(row);
-  }
-
+@include flexbox;
+&.flex-column {
+@include flex-direction(column);
+}
+&.flex-row {
+@include flex-direction(row);
+}
+}
 .strike {
-  text-decoration: line-through;
-
+text-decoration: line-through;
 }
 .show-message {
   button {
