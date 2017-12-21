@@ -153,6 +153,7 @@ var QuoteFields = React.createClass({
 
   handleSummit: function(e) {
     const self = this;
+    e.preventDefault();
     var FD = new FormData(document.getElementById('new_quote'));
 
     const quoteRegex = /quote_items_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i
@@ -179,7 +180,6 @@ var QuoteFields = React.createClass({
 
       }
     });
-    e.preventDefault();
     return false;
   },
 
