@@ -18,13 +18,14 @@ var TenantEdit = React.createClass({
 
     const getValidValue = obj => obj && obj.value;
     var tenant = {
-      name          : getValidValue(this.name),
-      last_name     : getValidValue(this.last_name),
-      mobile_phone  : getValidValue(this.mobile_phone),
-      license_number: getValidValue(this.license_number),
+      name      : getValidValue(this.name),
+      email     : getValidValue(this.email),
+      mobile    : getValidValue(this.mobile),
+      full_name : getValidValue(this.full_name),
     }
 
     var params = { tenant };
+
     const self = this;
     $.ajax({
       type: 'PUT',
@@ -98,14 +99,14 @@ var TenantEdit = React.createClass({
 
     return (
       <div className="edit_tenant_profile edit_profile">
-        <form role="form" className="form-horizontal right" id="edit_tenant" onSubmit={this.onSubmit} >
+        <form role="form" className="form-horizontal full" id="edit_tenant" onSubmit={this.onSubmit} >
           <h5 className="control-label col-sm-2 required title">
             Edit tenant Profile
           </h5>
           {renderTextField('name', 'Name')}
-          {renderTextField('last_name', 'Last Name')}
-          {renderTextField('mobile_phone', 'Mobile Phone')}
-          {renderTextField('license_number', 'License Number')}
+          {renderTextField('full_name', 'Full Name')}
+          {renderTextField('mobile', 'Mobile')}
+          {renderTextField('email', 'email')}
           <div className="text-center">
             <button type="submit" className="button-primary green option-button">
               Update Your Profile

@@ -8,8 +8,10 @@ class Tenant < ApplicationRecord
   has_many :action_statuses
   has_many :appointments
   has_many :comments
-
+  validates_presence_of :name
   
+  validates_presence_of :mobile
+  validates :mobile,:numericality => true, :length => {:minimum=>10, :maximum => 10 }
 
 
 def capitalize_name
