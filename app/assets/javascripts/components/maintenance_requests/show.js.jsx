@@ -2610,7 +2610,6 @@ var MaintenanceRequest = React.createClass({
 
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
-		debugger
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary dontprint">

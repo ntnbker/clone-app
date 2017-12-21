@@ -10,16 +10,20 @@ body {
 
 }
 .flex {
-@include flexbox;
-&.flex-column {
-@include flex-direction(column);
-}
-&.flex-row {
-@include flex-direction(row);
-}
+  @include flexbox;
+  &.flex-column {
+  @include flex-direction(column);
+  }
+  &.flex-row {
+  @include flex-direction(row);
+  }
 }
 .strike {
-text-decoration: line-through;
+  text-decoration: line-through;
+}
+span.approval-note {
+  display: inline-block;
+  padding-right: 5px;
 }
 .show-message {
   button {

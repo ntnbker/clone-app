@@ -461,8 +461,8 @@ var ModalConfirmMR = React.createClass({
 
 var ItemMaintenanceRequest = React.createClass({
 	render: function() {
-		const maintenance = this.props.maintenance_request;
-		const {status} = this.props;
+		const maintenance 								= this.props.maintenance_request;
+		const { status, strike_approval } = this.props;
 		const props = this.props;
 		const d = new Date();
 		const n = d.getTimezoneOffset();
@@ -507,7 +507,12 @@ var ItemMaintenanceRequest = React.createClass({
 					{ !this.props.hide_note && maintenance.preapproved_note
 						? <div className="vailability pre-approved-note">
 								<p className="header">Approval Note: </p>
-								<p className={"description " + (this.props.strike_approval ? 'strike' : '')}>{maintenance.preapproved_note}</p>
+								<p className="description">
+                  <span className={'approval-note ' + (strike_approval ? 'strike' : '')}>
+                    {maintenance.preapproved_note}
+                  </span>
+                  {strike_approval && "As per quote approved"}
+                </p>
 							</div>
 						: ''
 					}
@@ -690,7 +695,6 @@ var ModalSplitMR = React.createClass({
 		splitSubmit(FD, function({ errors, success }) {
 			if (errors) {
 				//defined in header.js.jsx
-				debugger
 				const indexRegex = /indexes%5B(\d+)%5D=(\d+)/i;
 				const indexes = $('#splitMRForm').serialize()
 													.split('&')
