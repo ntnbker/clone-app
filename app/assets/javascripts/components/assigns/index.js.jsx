@@ -198,10 +198,11 @@ var ModalViewTrady = React.createClass({
               <div className="approval-note rect-info">
                   <div className="title">Approval Note</div>
                   <div className="detail">
-                    <p> { !hasApproved
-                          ? maintenance_request && maintenance_request.preapproved_note
-                          : "As per quote approved"
-                        }
+                    <p>
+                      <span className={'approval-note ' + (hasApproved ? 'strike' : '')}>
+                        {maintenance_request && maintenance_request.preapproved_note}
+                      </span>
+                      {hasApproved && "As per quote approved"}
                     </p>
                   </div>
               </div>

@@ -507,7 +507,7 @@ var ItemMaintenanceRequest = React.createClass({
 					{ !this.props.hide_note && maintenance.preapproved_note
 						? <div className="vailability pre-approved-note">
 								<p className="header">Approval Note: </p>
-								<p className={"description " + this.props.strike_approval ? 'strike' : ''}>{maintenance.preapproved_note}</p>
+								<p className={"description " + (this.props.strike_approval ? 'strike' : '')}>{maintenance.preapproved_note}</p>
 							</div>
 						: ''
 					}
