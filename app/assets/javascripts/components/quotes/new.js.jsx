@@ -155,6 +155,11 @@ var QuoteFields = React.createClass({
     const self = this;
     var FD = new FormData(document.getElementById('new_quote'));
 
+    const quoteRegex = /quote_items_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i
+    let isExistQuote = quoteRegex.test($('#new_quote').serialize());
+
+    if (!isExistQuote) return;
+
     $.ajax({
       type: 'POST',
       url: self.props.id ? '/quotes/'+ self.props.id : '/quotes',
