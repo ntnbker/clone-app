@@ -1054,6 +1054,9 @@ var TradyMaintenanceRequest = React.createClass({
 
 
 				case 'viewTrady':
+
+
+					const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 					return (
 						<ModalViewTrady
 							close={this.isClose}
@@ -1064,6 +1067,7 @@ var TradyMaintenanceRequest = React.createClass({
 							agent={this.props.agent}
 							tenants={this.props.tenants}
 							property={this.props.property}
+							hasApproved={hasApproved}
 						/>
 					);
 
@@ -1375,6 +1379,8 @@ var TradyMaintenanceRequest = React.createClass({
 			appointments, quote_appointments, invoices, invoice_pdf_files, trady, quote_requests
 		} = this.state;
 
+		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary dontprint">
@@ -1390,6 +1396,7 @@ var TradyMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
 							hide_note={!trady || trady.user_id !== this.props.current_user.id}
+							strike_approval={hasApproved}hasApproved
 						/>
 						{	(invoices && invoices.length > 0) &&
 						 		<Invoices

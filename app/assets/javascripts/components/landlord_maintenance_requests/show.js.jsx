@@ -842,6 +842,9 @@ var LandlordMaintenanceRequest = React.createClass({
 
 	render: function() {
 		const {appointments, quote_requests} = this.state;
+
+		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary dontprint">
@@ -850,6 +853,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							gallery={this.props.gallery}
 							property={this.props.property}
 							maintenance_request={this.state.maintenance_request}
+							strike_approval={hasApproved}
 						/>
 						{
 							quote_requests && quote_requests.length > 0
