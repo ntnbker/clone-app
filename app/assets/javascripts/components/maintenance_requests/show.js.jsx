@@ -2414,6 +2414,8 @@ var MaintenanceRequest = React.createClass({
 					);
 
 				case 'viewTrady':
+					const hasApproved = this.props.quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+
 					return (
 						<ModalViewTrady
 							close={this.isClose}
@@ -2424,6 +2426,7 @@ var MaintenanceRequest = React.createClass({
 							agency={this.props.agency}
 							agent={this.props.agent}
 							tenants={this.state.tenants}
+							hasApproved={hasApproved}
 						/>
 					);
 
@@ -2605,6 +2608,8 @@ var MaintenanceRequest = React.createClass({
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, invoices} = this.props;
 		const {invoice_pdf_files, trady, quote_requests} = this.state;
 
+		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
+
 		return (
 			<div className="summary-container-index" id="summary-container-index">
 				<div className="main-summary dontprint">
@@ -2620,6 +2625,7 @@ var MaintenanceRequest = React.createClass({
 							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
 							show_assign={this.props.current_user_show_quote_message}
+							strike_approval={hasApproved}
 						/>
 						{	(invoices && invoices.length > 0) &&
 								<Invoices

@@ -9,6 +9,7 @@ body {
   height: 100%;
 
 }
+
 .flex {
   @include flexbox;
   &.flex-column {
@@ -17,6 +18,10 @@ body {
   &.flex-row {
     @include flex-direction(row);
   }
+
+.strike {
+  text-decoration: line-through;
+
 }
 .show-message {
   button {

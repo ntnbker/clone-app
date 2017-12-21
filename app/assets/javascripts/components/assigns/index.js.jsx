@@ -60,10 +60,10 @@ var AssignTrady = React.createClass({
 var ModalViewTrady = React.createClass({
   getInitialState: function() {
     const {
-      agency, agent, trady, maintenance_request, property,
+      agency, agent, trady, maintenance_request, property, hasApproved
     } = this.filterData(this.props);
 
-    return { agency, agent, trady, maintenance_request, property };
+    return { agency, agent, trady, maintenance_request, property, hasApproved };
   },
 
   filterData(props) {
@@ -72,8 +72,9 @@ var ModalViewTrady = React.createClass({
     const  trady               = props.trady || {};
     const  property            = props.property || {};
     const  maintenance_request = props.maintenance_request || {};
+    const  hasApproved         = props.hasApproved || false;
 
-    return { agency, agent, trady, maintenance_request, property };
+    return { agency, agent, trady, maintenance_request, property, hasApproved };
   },
 
   printWork() {
@@ -82,7 +83,7 @@ var ModalViewTrady = React.createClass({
 
 	render: function() {
     const {
-      agency, agent, trady, maintenance_request, property
+      agency, agent, trady, maintenance_request, property, hasApproved
     } = this.state;
 
     trady['trady_company'] = trady['trady_company'] || {};
@@ -197,7 +198,11 @@ var ModalViewTrady = React.createClass({
               <div className="approval-note rect-info">
                   <div className="title">Approval Note</div>
                   <div className="detail">
-                    <p>{maintenance_request && maintenance_request.preapproved_note}</p>
+                    <p> { !hasApproved
+                          ? maintenance_request && maintenance_request.preapproved_note
+                          : "As per quote approved"
+                        }
+                    </p>
                   </div>
               </div>
               <div className="job-description rect-info">
