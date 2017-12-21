@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken do |exception|
     respond_to do |format|
       
-      format.html { redirect_to root_path, :alert => "Sorry something went wrong. Please try again." }
+      format.html { redirect_to root_path, :danger => "Sorry something went wrong. Please try again." }
     end
   end
 
@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
     if current_user.has_role(role) && current_user.logged_in_as(role)
       #do nothing 
     else
-      flash[:notice] = "You are not authorized to see that page"
+      flash[:danger] = "You are not authorized to see that page. Please sign into your own account."
       redirect_to root_path
     end 
   end
@@ -67,6 +67,34 @@ class ApplicationController < ActionController::Base
     end 
     array = [profile:@profile_avatar, logo:@company_logo]
     return array
+  end
+
+  def email_redirect
+    
+    if params[:user_id]
+      user = User.find_by(id:params[:user_id])
+
+    elsif params[:email]
+      user = User.find_by(email:params[:email])
+    else
+      user = current_user
+    end 
+
+
+    if user.password_set
+      if current_user
+        #do nothing 
+      else
+        flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+        redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+      end 
+
+    else
+      flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+      redirect_to new_password_reset_path
+    end 
+
+
   end
 
   

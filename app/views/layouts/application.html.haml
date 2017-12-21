@@ -32,8 +32,9 @@
 
     =yield :head
   %body
-    = render 'shared/messages'
+    
     = render 'shared/spinner'
+    = render 'shared/messages'
     %div.layout
       %header
         - if content_for? :expanded

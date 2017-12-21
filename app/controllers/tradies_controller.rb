@@ -151,7 +151,7 @@ class TradiesController < ApplicationController
         @trady.roles << role
         @trady.save
         Skill.create(trady_id:@trady.id, skill:mr.service_type )
-        UserSetPasswordEmailWorker.perform_in(5.minutes, @user.id)
+        #UserSetPasswordEmailWorker.perform_in(5.minutes, @user.id)
        
             
         if params[:trady][:trady_request] == "Quote"

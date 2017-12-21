@@ -13,8 +13,6 @@ $color-blue-light: #7646FF;
 body{
   position: relative;
 }
-
-
 .file-pdf {
   text-align: center;
   i {
@@ -223,7 +221,7 @@ span.index {
       border-bottom: 1px solid #e5e5e5;
       background-color: $color-grey-dark;
       &.modal-quote-header {
-        flex-direction: column;
+        @include flex-direction(column);
       }
       .modal-title {
         margin-bottom: 0px;
@@ -301,7 +299,7 @@ span.index {
             @include flexbox;
             @include flex-direction(column);
             .job-address, .agent-contact {
-              @include flex(1);
+              @include flex(none);
             }
           }
           .right .invoice-detail {
@@ -1143,7 +1141,7 @@ span.index {
         }
         .info {
           margin-left: 5px;
-          flex: 1;
+          @include flex(1);
           text-align: left;
           span {
             display: block;
@@ -2209,8 +2207,8 @@ span.index {
   .summary-container-index {
     .quotes {
       .actions-quote {
-        display: flex;
-        flex-direction: column;
+        @include flexbox;
+        @include flex-direction(column);
         width: 60%;
         margin-left: 20%;
         margin-bottom: 10px;
@@ -2224,9 +2222,9 @@ span.index {
       }
       .btn-mark-as-paid {
         margin-top: 20px;
+        @include flexbox;
+        @include flex-direction(column);
         margin-left: calc(60% - 125px);
-        display: flex;
-        flex-direction: column;
         float: none;
       }
     }
@@ -2234,8 +2232,8 @@ span.index {
       margin-top: 110px;
       margin-left: 25%;
       width: 50%;
-      display: flex;
-      flex-direction: column;
+      @include flexbox;
+      @include flex-direction(column);
       float: none;
       button {
         margin-right: 0px;
@@ -2259,10 +2257,10 @@ span.index {
     }
     .item-quote .user .quote-request-button {
       margin-top: 110px;
+      @include flexbox;
+      @include flex-direction(column);
       margin-left: 5%;
       width: 90%;
-      display: flex;
-      flex-direction: column;
       float: none;
       button {
         margin-right: 0px;

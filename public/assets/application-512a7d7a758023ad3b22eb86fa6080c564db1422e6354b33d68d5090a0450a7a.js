@@ -70494,7 +70494,7 @@ var ModalViewTrady = React.createClass({
               )
             )
           ),
-          React.createElement(
+          false && React.createElement(
             'div',
             { className: 'footer' },
             React.createElement(
@@ -70741,7 +70741,11 @@ UploadImageComponent = React.createClass({
 
   getOrientation: function (result) {
     var view = new DataView(result);
-    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    try {
+      if (view.getUint16(0, false) != 0xFFD8) return -2;
+    } catch (e) {
+      return -2;
+    }
     var length = view.byteLength,
         offset = 2;
     while (offset < length) {
@@ -73092,25 +73096,70 @@ var ModalViewInvoice = React.createClass({
 	},
 
 	printInvoice: function () {
-		$('.button-slider').toggle('hide');
-		var contents = $('#print-invoice').html();
-		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" + ".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {flex: 1;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}" + "#print-invoice { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3;}" + ".font-bold { font-weight: bold;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}";
+		window.print();
+		// $('.button-slider').toggle('hide');
+		// var contents = $('#print-invoice').html();
+		// var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
+		// 						".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
+		// 						".info-trady p {margin-bottom: 0px;}" +
+		// 						".info-agency {flex: 1;}" +
+		// 						".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" +
+		// 						".detail-quote .info-maintenance {margin-top: 10px;}" +
+		// 						".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" +
+		// 						".detail-quote {margin-top: 15px;}" +
+		// 						".detail-quote .table {width: 100%;}" +
+		// 						".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" +
+		// 						".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}"+
+		// 						"#print-invoice { color: #404040;}" +
+		// 						".modal-dialog { width: 700px !important;}" +
+		// 						".modal-header {background-color: #fff !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
+		// 						".modal-header .logo img { width: 80px;}" +
+		// 						".modal-header .info-trady {margin-left: 15px;}" +
+		// 						".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
+		// 						".modal-header .info-trady p span:last-child {padding-left: 5px;}" +
+		// 						".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" +
+		// 						".modal-header .close span {color: #ccc !important;}" +
+		// 						".info-quote { font-size: 13px; clear: both; overflow: hidde}" +
+		// 						".info-quote .bill-to { font-size: 16px;}" +
+		// 						".info-quote .info-agency p { text-align: left !important;}" +
+		// 						".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" +
+		// 						".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" +
+		// 						".footer i { font-size: 36px;}" +
+		// 						".footer p { margin-bottom: 5px;}" +
+		// 						".footer .bank { margin-left: 5%; width: 45%; float: left;}" +
+		// 						".footer .bank span:first-child { width: 110px; display: inline-block;}" +
+		// 						".footer .contact { margin-left: 5%; width: 45%; float: left;}" +
+		// 						".border-none { border: none !important;}" +
+		// 						".color-grey { color: #b3b3b3;}" +
+		// 						".font-bold { font-weight: bold;}" +
+		// 						".m-t-md { margin-top: 10px;}" +
+		// 						".p-t-n { padding-top: 0 !important;}" +
+		// 						".p-b-n { padding-bottom: 0 !important;}" +
+		// 						".print {display: none;}" +
+		// 						".close {display: none;}";
 
-		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
-		var htmlContent = "<html>" + "<head>" + "<title> Invoice </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' + '<style type="text/css" media="print,screen">' + style + "</style>";
-		frame.open();
-		frame.write(htmlContent);
-		frame.write("</head><body>");
-		frame.write(contents);
-		frame.write("</body></html>");
-		frame.close();
+		// var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
+		// var htmlContent = "<html>" +
+		// 									"<head>" +
+		// 									"<title> Invoice </title>" +
+		// 									'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
+		// 									'<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' +
+		// 									'<style type="text/css" media="print,screen">' +
+		// 									style +
+		// 									"</style>";
+		// frame.open();
+		// frame.write(htmlContent);
+		// frame.write("</head><body>");
+		// frame.write(contents);
+		// frame.write("</body></html>");
+		// frame.close();
 
-		// print just the modal div
-		setTimeout(function () {
-			$('#printframe')[0].contentWindow.print();
-			$('#printframe')[0].contentWindow.close();
-			$('.button-slider').toggle('show');
-		}, 1000);
+		//   // print just the modal div
+		//   setTimeout(function() {
+		//   	$('#printframe')[0].contentWindow.print();
+		//     $('#printframe')[0].contentWindow.close();
+		//   	$('.button-slider').toggle('show');
+		//   }, 1000);
 	},
 
 	render: function () {
@@ -73197,7 +73246,7 @@ var ModalViewInvoice = React.createClass({
 							"button",
 							{
 								type: "button",
-								className: "close",
+								className: "close dontprint",
 								"data-dismiss": "modal",
 								"aria-label": "Close",
 								onClick: this.props.close
@@ -73408,13 +73457,9 @@ var ModalViewInvoice = React.createClass({
 						)
 					),
 					React.createElement(
-						"p",
-						{ className: "print" },
-						React.createElement(
-							"button",
-							{ className: "btn btn-default btn-print", onClick: this.printInvoice },
-							"Print"
-						)
+						"div",
+						{ className: "modal-body dontprint" },
+						React.createElement(ButtonPrint, { printQuote: this.printInvoice })
 					)
 				)
 			),
@@ -73984,7 +74029,7 @@ var ContentLandlordAction = React.createClass({
 			null,
 			React.createElement(
 				"li",
-				{ className: "active" },
+				null,
 				React.createElement(
 					"a",
 					{ onClick: !this.state.isClick && this.requestQuote },
@@ -74531,7 +74576,7 @@ var LandlordSideBarMobile = React.createClass({
 
 		return React.createElement(
 			'div',
-			null,
+			{ className: 'dontprint' },
 			React.createElement(
 				'div',
 				{ className: 'sidebar-mobile' },
@@ -76494,7 +76539,11 @@ var ModalAddPhoto = React.createClass({
 
   getOrientation: function (result) {
     var view = new DataView(result);
-    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    try {
+      if (view.getUint16(0, false) != 0xFFD8) return -2;
+    } catch (e) {
+      return -2;
+    }
     var length = view.byteLength,
         offset = 2;
     while (offset < length) {
@@ -79845,12 +79894,22 @@ var ModalSplitMR = React.createClass({
 			var success = _ref3.success;
 
 			if (errors) {
-				//defined in header.js.jsx
-				var convertedErrors = errors.reduce(function (result, obj) {
-					var fieldId = FD.get("indexes[" + obj.id + "]");
-					return _extends({}, result, _defineProperty({}, fieldId, obj));
-				}, {});
-				self.setState({ result: { errors: convertedErrors, success: success } });
+				(function () {
+					//defined in header.js.jsx
+					debugger;
+					var indexRegex = /indexes%5B(\d+)%5D=(\d+)/i;
+					var indexes = $('#splitMRForm').serialize().split('&').filter(function (v) {
+						return indexRegex.test(v);
+					}).reduce(function (r, v) {
+						return _extends({}, r, _defineProperty({}, v.replace(indexRegex, '$1'), v.replace(indexRegex, '$2')));
+					}, {});
+
+					var convertedErrors = errors.reduce(function (result, obj) {
+						var fieldId = indexes[obj.id];
+						return _extends({}, result, _defineProperty({}, fieldId, obj));
+					}, {});
+					self.setState({ result: { errors: convertedErrors, success: success } });
+				})();
 			}
 		});
 	},
@@ -80198,7 +80257,11 @@ var MaintenanceRequestsNew = React.createClass({
 
   getOrientation: function (result) {
     var view = new DataView(result);
-    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    try {
+      if (view.getUint16(0, false) != 0xFFD8) return -2;
+    } catch (e) {
+      return -2;
+    }
     var length = view.byteLength,
         offset = 2;
     while (offset < length) {
@@ -81434,7 +81497,7 @@ var SideBarMobile = React.createClass({
 
 		return React.createElement(
 			"div",
-			null,
+			{ className: "dontprint" },
 			React.createElement(
 				"div",
 				{ className: "sidebar-mobile" },
@@ -82954,7 +83017,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Quote Request Sent",
-							content: 'Thank you, an email has been sent to ' + params.trady.company_name + ' requesting a quote for the job. We will notify you once the quote been received.',
+							content: 'Thank you, an email has been sent to ' + params.trady.company_name + ' requesting a quote for the job. We will notify you once the quote has been received.',
 							bgClass: "bg-success"
 						}
 					});
@@ -83985,6 +84048,27 @@ var MaintenanceRequest = React.createClass({
 						maintenance_request: this.state.maintenance_request,
 						show_assign: this.props.current_user_show_quote_message
 					}),
+					invoices && invoices.length > 0 && React.createElement(Invoices, {
+						invoices: this.state.invoices,
+						current_role: this.props.current_user_role,
+						markAsPaid: function (item) {
+							return _this9.markAsPaid(item);
+						},
+						viewInvoice: function (key, item) {
+							return _this9.viewItem(key, item);
+						}
+					}),
+					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						trady: this.props.assigned_trady,
+						invoice_pdf_files: invoice_pdf_files,
+						current_role: this.props.current_user_role,
+						viewPDFInvoice: function (key, item) {
+							return _this9.viewItem(key, item);
+						},
+						markAsPaid: function (item) {
+							return _this9.markAsPaid(item, true);
+						}
+					}),
 					this.state.trady && React.createElement(AssignTrady, {
 						trady: this.state.trady,
 						current_role: this.props.current_user_role,
@@ -84021,27 +84105,6 @@ var MaintenanceRequest = React.createClass({
 							return _this9.viewItem(key, item);
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
-					}),
-					invoices && invoices.length > 0 && React.createElement(Invoices, {
-						invoices: this.state.invoices,
-						current_role: this.props.current_user_role,
-						markAsPaid: function (item) {
-							return _this9.markAsPaid(item);
-						},
-						viewInvoice: function (key, item) {
-							return _this9.viewItem(key, item);
-						}
-					}),
-					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
-						trady: this.props.assigned_trady,
-						invoice_pdf_files: invoice_pdf_files,
-						current_role: this.props.current_user_role,
-						viewPDFInvoice: function (key, item) {
-							return _this9.viewItem(key, item);
-						},
-						markAsPaid: function (item) {
-							return _this9.markAsPaid(item, true);
-						}
 					})
 				),
 				React.createElement(
@@ -85992,26 +86055,7 @@ var ModalViewQuote = React.createClass({
 	},
 
 	printQuote: function () {
-		$('#print-quote').printElement();
-		return;
-		var contents = $('#print-quote').html();
-		var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" + ".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" + ".info-trady p {margin-bottom: 0px;}" + ".info-agency {flex: 1;}" + ".slider-quote { border-top: 1px solid #e5e5e5 !important;}" + ".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" + ".detail-quote .info-maintenance {margin-top: 10px;}" + ".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" + ".detail-quote {margin-top: 15px;}" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "#print-quote { color: #404040;}" + ".modal-dialog { width: 700px !important;}" + ".modal-header {background-color: #fff !important; border-bottom: 1px solid #e5e5e5 !important; display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" + ".modal-header .logo img { width: 80px;}" + ".modal-header .info-trady {margin-left: 15px;}" + ".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" + ".modal-header .info-trady p span:last-child {padding-left: 5px;}" + ".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" + ".modal-header .close span {color: #ccc !important;}" + ".info-quote { font-size: 13px; clear: both; overflow: hidde}" + ".info-quote .bill-to { font-size: 16px;}" + ".info-quote .info-agency p { text-align: left !important;}" + ".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" + ".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" + ".footer i { font-size: 36px;}" + ".footer p { margin-bottom: 5px;}" + ".footer .bank { margin-left: 5%; width: 45%; float: left;}" + ".footer .bank span:first-child { width: 110px; display: inline-block;}" + ".footer .contact { margin-left: 5%; width: 45%; float: left;}" + ".border-none { border: none !important;}" + ".color-grey { color: #b3b3b3 !important;}" + ".font-bold { font-weight: bold !important;}" + ".m-t-md { margin-top: 10px;}" + ".p-t-n { padding-top: 0 !important;}" + ".p-b-n { padding-bottom: 0 !important;}" + ".print {display: none;}" + ".close {display: none;}" + "@media print {" + ".detail-quote .table {width: 100%;}" + ".detail-quote .table tr th {color: #b3b3b3 !important; padding-left: 0; font-size: 13px; text-transform: uppercase;}" + ".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1 !important;}" + "}";
-
-		var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
-		var htmlContent = "<html>" + "<head>" + "<title> Quote </title>" + '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' + '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' + '<style type="text/css">' + style + "</style>";
-		frame.open();
-		frame.write(htmlContent);
-		frame.write("</head><body>");
-		frame.write(contents);
-		frame.write("</body></html>");
-		frame.close();
-
-		// print just the modal div
-		setTimeout(function () {
-			$('#printframe')[0].contentWindow.print();
-			$('#printframe')[0].contentWindow.close();
-			$('.button-slider').toggle('show');
-		}, 1000);
+		window.print();
 	},
 
 	render: function () {
@@ -86097,7 +86141,7 @@ var ModalViewQuote = React.createClass({
 							"button",
 							{
 								type: "button",
-								className: "close",
+								className: "close dontprint",
 								"data-dismiss": "modal",
 								"aria-label": "Close",
 								onClick: this.props.close
@@ -86193,7 +86237,7 @@ var ModalViewQuote = React.createClass({
 						),
 						React.createElement(
 							"div",
-							{ className: "modal-footer-quote quotes" },
+							{ className: "modal-footer-quote quotes dontprint" },
 							!!self.current_user && React.createElement(ActionQuote, {
 								quote: quote,
 								hideRestore: self.hideRestore,
@@ -86936,7 +86980,6 @@ var QuoteFields = React.createClass({
   },
 
   handleSummit: function (e) {
-    e.preventDefault();
     var self = this;
     var FD = new FormData(document.getElementById('new_quote'));
 
@@ -86957,6 +87000,7 @@ var QuoteFields = React.createClass({
       },
       error: function (err) {}
     });
+    e.preventDefault();
     return false;
   },
 
@@ -86982,6 +87026,11 @@ var QuoteFields = React.createClass({
       React.createElement('input', { type: 'hidden', value: this.props.delivery_status, name: 'quote[delivery_status]', id: 'quote_delivery_status' }),
       React.createElement('input', { type: 'hidden', value: this.props.quote_type, name: 'quote[quote_type]', id: 'quote_type' }),
       React.createElement('input', { type: 'hidden', value: this.props.system_plan, name: 'quote[system_plan]', id: 'system_plan' }),
+      React.createElement(
+        'div',
+        { className: 'alert alert-message' },
+        'If you have more than one option on costs for the job to be completed, please create more than one quote with each variation. Doing so will allow the agent to pick the most appropriate quote.'
+      ),
       React.createElement(FieldList, {
         existingContent: this.props.quote_items,
         SampleField: QuoteField,
@@ -87509,17 +87558,17 @@ var Header = React.createClass({
     });
   },
 
-  search: function () {
+  search: function (hidden) {
     var _props2 = this.props;
     var role = _props2.role;
     var _props2$searchText = _props2.searchText;
     var searchText = _props2$searchText === undefined ? '' : _props2$searchText;
 
-    if (['AgencyAdmin', 'Agent'].indexOf(role) === -1) return null;
+    var style = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1 ? { visibility: 'hidden' } : {};
 
     return React.createElement(
       "div",
-      { className: "search" },
+      { className: "search", style: style },
       React.createElement(
         "form",
         { action: "/search", className: "form-search", acceptCharset: "UTF-8", method: "get" },
@@ -87669,6 +87718,7 @@ var Header = React.createClass({
           ) : React.createElement(
             "div",
             { className: "log_in" },
+            this.search(true),
             React.createElement(
               "div",
               {
@@ -87707,8 +87757,9 @@ var Header = React.createClass({
               )
             )
           ) : React.createElement(
-            "span",
-            { className: "desktop-menu-items" },
+            "div",
+            { className: "log_in desktop-menu-items" },
+            this.search(true),
             React.createElement(
               "a",
               { href: props.menu_login_path },
@@ -88036,7 +88087,7 @@ var TenantSideBarMobile = React.createClass({
 
 		return React.createElement(
 			'div',
-			null,
+			{ className: 'dontprint' },
 			React.createElement(
 				'div',
 				{ className: 'sidebar-mobile' },
@@ -90438,7 +90489,7 @@ var CreactOrUploadQuote = React.createClass({
 	render: function () {
 		return React.createElement(
 			"li",
-			{ className: "active" },
+			null,
 			React.createElement(
 				"a",
 				{ href: this.props.link },
@@ -91052,6 +91103,7 @@ var TradySideBarMobile = React.createClass({
 				$('#actions-full').css({ 'height': 400, 'border-width': 1 });
 			}
 		} else {
+			DMM;
 			this.setState({ showAction: false });
 			this.setState({ showContact: true });
 			if ($('#contacts-full').length > 0) {
@@ -91087,7 +91139,7 @@ var TradySideBarMobile = React.createClass({
 
 		return React.createElement(
 			'div',
-			null,
+			{ className: 'dontprint' },
 			React.createElement(
 				'div',
 				{ className: 'sidebar-mobile' },
@@ -92612,6 +92664,27 @@ var TradyMaintenanceRequest = React.createClass({
 						maintenance_request: this.state.maintenance_request,
 						hide_note: !trady || trady.user_id !== this.props.current_user.id
 					}),
+					invoices && invoices.length > 0 && React.createElement(Invoices, {
+						invoices: invoices,
+						current_role: this.props.current_role,
+						viewInvoice: function (key, item) {
+							return _this3.viewItem(key, item);
+						},
+						paymentReminder: function (item) {
+							return _this3.paymentReminder(item);
+						}
+					}),
+					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
+						trady: this.props.assigned_trady,
+						invoice_pdf_files: invoice_pdf_files,
+						current_role: this.props.current_role,
+						paymentReminder: function (item) {
+							return _this3.paymentReminder(item);
+						},
+						viewPDFInvoice: function (key, item) {
+							return _this3.viewItem(key, item);
+						}
+					}),
 					trady && trady.id === this.props.signed_in_trady.id && this.props.current_role && React.createElement(AssignTrady, {
 						trady: trady,
 						current_role: this.props.current_role.role,
@@ -92646,27 +92719,6 @@ var TradyMaintenanceRequest = React.createClass({
 							return _this3.viewItem(key, item);
 						},
 						current_user_show_quote_message: this.props.current_user_show_quote_message
-					}),
-					invoices && invoices.length > 0 && React.createElement(Invoices, {
-						invoices: invoices,
-						current_role: this.props.current_role,
-						viewInvoice: function (key, item) {
-							return _this3.viewItem(key, item);
-						},
-						paymentReminder: function (item) {
-							return _this3.paymentReminder(item);
-						}
-					}),
-					invoice_pdf_files && invoice_pdf_files.length > 0 && React.createElement(PDFInvoices, {
-						trady: this.props.assigned_trady,
-						invoice_pdf_files: invoice_pdf_files,
-						current_role: this.props.current_role,
-						paymentReminder: function (item) {
-							return _this3.paymentReminder(item);
-						},
-						viewPDFInvoice: function (key, item) {
-							return _this3.viewItem(key, item);
-						}
 					})
 				),
 				React.createElement(

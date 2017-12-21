@@ -9,13 +9,27 @@ body {
   height: 100%;
 
 }
+
+.flex {
+  @include flexbox;
+  &.flex-column {
+    @include flex-direction(column);
+  }
+  &.flex-row {
+    @include flex-direction(row);
+  }
+
 .strike {
   text-decoration: line-through;
+
 }
 .show-message {
   button {
     border-width: 0px;
   }
+}
+.relative-class {
+  position: relative !important;
 }
 .layout {
   margin: auto;
@@ -84,7 +98,7 @@ header {
       padding: 5px 0;
       .search {
         @include flex(1);
-        justify-content: center;
+        @include justify-content(center);
         .form-search {
           height: 100%;
           margin-bottom: 0px;
@@ -176,8 +190,10 @@ header {
           span {
             font-size: 20px;
             padding-left: 10px;
+            line-height: 55px;
             i {
-              display: flex;
+              // @include flexbox;
+              line-height: 55px;
               margin-left: 5px;
               align-items: center;
             }
@@ -266,7 +282,9 @@ header {
       left: 0;
       background-color: rgba(1,2,3,0.3);
       .log_in {
-        display: flex;
+        @include flexbox;
+        @include flex(1);
+        @include justify-content(flex-end);
         align-items: center;
         .desktop-menu-items {
           width: 300px;
@@ -313,10 +331,10 @@ header {
     .menu-button {
       // margin-top: 18px;
       float: right;
-      height: 40px;
+      // height: 40px;
       font-size: 20px;
       color: #fff;
-      line-height: 40px;
+      line-height: 55px;
       text-align: center;
       cursor: pointer;
       display: none;
@@ -337,13 +355,14 @@ header {
       }
       .fa-angle-down {
         font-size: 20px;
-        display: flex;
+        // @include flexbox;
         align-items: center;
+        line-height: 55px;
       }
     }
 
     .logo {
-      display: flex;
+      @include flexbox;
       // padding-top: 10px;
       // height: 60px;
       align-items: center;
@@ -361,13 +380,14 @@ header {
         font-size: 20px;
         color: white;
         margin: 0 5px;
+        line-height: 55px;
       }
     }
 
     .desktop-menu-items {
       display: none;
-      line-height: 65px;
-      padding-top: 10px;
+      line-height: 55px;
+      // padding-top: 10px;
       float: right;
       margin-bottom: 0px;
       list-style: none;
@@ -379,14 +399,14 @@ header {
       a {
         color: white;
         font-size: 16px;
-        padding: 15px 20px;
+        padding: 0 20px;
         text-decoration: none
       }
 
       .register {
         color: white;
         font-size: 16px;
-        padding: 15px 20px;
+        padding: 0 20px;
         border: 1px solid white;
         border-radius: 4px;
         text-decoration: none;
@@ -470,6 +490,11 @@ header {
     @media (min-width: 769px) {
       .desktop-menu-items {
         display: block;
+        &.log_in {
+          @include flex(1);
+          @include flexbox;
+          @include justify-content(flex-end);
+        }
       }
       .header-custom .menu-bar {
         @include flexbox;
@@ -484,7 +509,7 @@ header {
         @include flexbox;
       }
       .forhome .log_in .menu-button {
-        display: flex;
+        @include flexbox;
       }
     }
   }
@@ -776,13 +801,50 @@ footer {
 
 @media print {
   .dontprint {
+    // visibility: 'hidden';
     display: none !important;
   }
+  // body.modal-custom {
+  //   display: block;
+  // }
+  // body.modal-open {
+  //     visibility: visible;
+  // }
+
+  // body.modal-open .modal .modal-header,
+  // body.modal-open .modal .modal-body {
+  //     visibility: visible; /* make visible modal body and header */
+  // }
+
   .modal-custom .modal-dialog {
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     position: fixed;
+    left: 0;
     top: 0;
+  }
+
+  body.modal-dialog .modal-content .modal-header .modal-title,
+  body.modal-dialog .modal-content .modal-body,
+  body.modal-dialog .modal-content .modal-body * {
+    visibility: visible;
+  }
+
+  body.modal-dialog .modal-content .modal-header,
+  body.modal-dialog .modal-content .modal-body {
+    padding: 0;
+  }
+
+  body.modal-dialog .modal-content .modal-header .modal-title {
+    margin-bottom: 20px;
+  }
+}
+
+
+@media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS here */
+  .modal-custom .modal-dialog {
+    position: absolute;
   }
 }

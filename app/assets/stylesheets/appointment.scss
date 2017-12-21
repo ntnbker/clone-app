@@ -383,7 +383,7 @@
 		@include flexbox;
 		@include flex-direction(column);
 		@include align-items(flex-start);
-		flex: 1;
+		@include flex(1);
 		label {
 			text-align: left;
 			text-transform: capitalize;
@@ -393,7 +393,7 @@
 		@include flexbox;
 		@include flex-direction(column);
 		@include align-items(flex-start);
-		flex: 1;
+		@include flex(1);
 		label {
 			text-align: left;
 			text-transform: capitalize;

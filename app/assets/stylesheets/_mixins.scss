@@ -10,6 +10,9 @@
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  > div {
+    // @include flex(1 1 0%);
+  }
 }
 
 // The 'flex' shorthand

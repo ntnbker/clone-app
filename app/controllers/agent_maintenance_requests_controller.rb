@@ -1,6 +1,6 @@
 class AgentMaintenanceRequestsController < ApplicationController 
-  before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
-  
+  #before_action(only: [:show,:index]) { email_auto_login(params[:user_id]) }
+  before_action :email_redirect, only: [:show,:index]
   before_action :require_login, only:[:show,:index]
   before_action(only:[:show,:index]) {allow("Agent")}
   before_action(only:[:show]) {belong_to_agent}
@@ -161,43 +161,52 @@ class AgentMaintenanceRequestsController < ApplicationController
 
   private
 
-  def email_auto_login(id)
-   email_params= params[:user_id]
+  # def email_redirect
+  #   if current_user
+  #     #do nothing 
+  #   else
+  #     flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+  #     redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+  #   end 
+  # end
+
+  # def email_auto_login(id)
+  #  email_params= params[:user_id]
     
-    if email_params
-      user = User.find_by(id:id)
-      if user  
-        if current_user
-          if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("AgencyAdmin")
-            answer = true
-          else
-            answer = false
-          end 
+  #   if email_params
+  #     user = User.find_by(id:id)
+  #     if user  
+  #       if current_user
+  #         if current_user.logged_in_as("Tenant") || current_user.logged_in_as("Landlord") || current_user.logged_in_as("Trady") || current_user.logged_in_as("AgencyAdmin")
+  #           answer = true
+  #         else
+  #           answer = false
+  #         end 
 
 
 
-          if current_user  && answer && user.has_role("Agent")
-            logout
-            auto_login(user)
-            user.current_role.update_attribute(:role, "Agent")
-          elsif current_user == nil
-            auto_login(user)
-            user.current_role.update_attribute(:role, "Agent")
-          elsif current_user && current_user.logged_in_as("Agent")
-              #do nothing
-          end 
-        else
-          auto_login(user)
-          user.current_role.update_attribute(:role, "Agent")
-        end
-      else 
-        flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
-        redirect_to root_path
-      end
-    else
-      #do nothing
-    end   
-  end
+  #         if current_user  && answer && user.has_role("Agent")
+  #           logout
+  #           auto_login(user)
+  #           user.current_role.update_attribute(:role, "Agent")
+  #         elsif current_user == nil
+  #           auto_login(user)
+  #           user.current_role.update_attribute(:role, "Agent")
+  #         elsif current_user && current_user.logged_in_as("Agent")
+  #             #do nothing
+  #         end 
+  #       else
+  #         auto_login(user)
+  #         user.current_role.update_attribute(:role, "Agent")
+  #       end
+  #     else 
+  #       flash[:notice] = "You are not allowed to see that. Log in as an authorized user."
+  #       redirect_to root_path
+  #     end
+  #   else
+  #     #do nothing
+  #   end   
+  # end
 
   def belong_to_agent
     
@@ -207,7 +216,7 @@ class AgentMaintenanceRequestsController < ApplicationController
       if current_user.agent.id == maintenance_request.agent_id
         #do nothing
       else 
-        flash[:notice] = "Sorry you can't see that."
+        flash[:danger] = "Sorry you are not allowed to see that. Please log into your own account thank you."
         redirect_to root_path
       end 
     end 

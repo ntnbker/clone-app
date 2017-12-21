@@ -152,7 +152,6 @@ var QuoteFields = React.createClass({
   },
 
   handleSummit: function(e) {
-    e.preventDefault();
     const self = this;
     var FD = new FormData(document.getElementById('new_quote'));
 
@@ -175,6 +174,7 @@ var QuoteFields = React.createClass({
 
       }
     });
+    e.preventDefault();
     return false;
   },
 

@@ -365,7 +365,7 @@ var SideBarMobile = React.createClass({
 
 	render: function() {
 		return (
-			<div>
+			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
 						<button
@@ -1596,7 +1596,7 @@ var MaintenanceRequest = React.createClass({
 						tradies_with_quote_requests: tradies_with_quote_requests,
 						notification: {
 							title: "Quote Request Sent",
-							content: 'Thank you, an email has been sent to ' + params.trady.company_name +' requesting a quote for the job. We will notify you once the quote been received.',
+							content: 'Thank you, an email has been sent to ' + params.trady.company_name +' requesting a quote for the job. We will notify you once the quote has been received.',
 							bgClass: "bg-success",
 						},
 					});

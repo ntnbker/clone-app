@@ -43,7 +43,7 @@ var TenantSideBarMobile = React.createClass({
 
 	render: function() {
 		return (
-			<div>
+			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
 						<button

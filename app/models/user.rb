@@ -41,6 +41,8 @@ class User < ApplicationRecord
     self.id_token = SecureRandom.hex(10)
   end
 
+  
+
   def create_current_role
     CurrentRole.create(user_id:self.id)
   end

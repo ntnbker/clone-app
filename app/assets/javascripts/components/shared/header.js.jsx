@@ -254,12 +254,15 @@ var Header = React.createClass({
       );
     },
 
-    search: function() {
+    search: function(hidden) {
       const { role, searchText = '' } = this.props;
-      if (['AgencyAdmin', 'Agent'].indexOf(role) === -1) return null;
+
+      const style = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1
+                  ? { visibility: 'hidden' }
+                  : {};
 
       return (
-        <div className="search">
+        <div className="search" style={style}>
           <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
             <input
               id="query"
@@ -355,6 +358,7 @@ var Header = React.createClass({
                         </div>
                         :
                         <div className="log_in">
+                          { this.search(true) }
                           <div
                             className="menu-button"
                             onClick={this.showItems}
@@ -380,10 +384,11 @@ var Header = React.createClass({
                         </div>
                     )
                     :
-                    <span className="desktop-menu-items">
+                    <div className="log_in desktop-menu-items">
+                      { this.search(true) }
                       <a href={props.menu_login_path} > Login </a>
                       <a href={props.new_agency_path} className="register"> Register </a>
-                    </span>
+                    </div>
                 }
               <button className="menu-btn button" id="btn-menu-bar" onClick={this.showBar}> ☰ </button>
             </div>
