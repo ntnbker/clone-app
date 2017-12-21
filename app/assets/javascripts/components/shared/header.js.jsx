@@ -41,11 +41,15 @@ const MenuTrady = function(edit_trady) {
   ];
 }
 
-const MenuTenant = function() {
+const MenuTenant = function(edit_tenant) {
   return [
     {
       url: "/tenant_maintenance_requests",
       name: "My Maintenance Requests",
+    },
+    {
+      url: edit_tenant,
+      name: "Tenant Account Settings",
     },
   ];
 }
@@ -227,8 +231,9 @@ var Header = React.createClass({
 
     menuBar: function() {
       var {
-        edit_agency, edit_agency_admin, edit_agent, edit_trady, user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
+        edit_agency, edit_agency_admin, edit_agent, edit_trady, edit_tenant,  user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
       } = this.props;
+
       var dataMenu = [];
       if (user_agency_admin)
         dataMenu = [...MenuAgency(edit_agency, edit_agency_admin)];
@@ -237,7 +242,7 @@ var Header = React.createClass({
       else if (user_trady)
         dataMenu = [...MenuTrady(edit_trady)];
       else if (user_tenant)
-        dataMenu = [...MenuTenant()];
+        dataMenu = [...MenuTenant(edit_tenant)];
       else if (user_landlord)
         dataMenu = [...MenuLandlord()];
 

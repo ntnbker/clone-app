@@ -60,6 +60,12 @@
     width: 40%;
   }
 
+  .full {
+    width: 50%;
+    margin-left: 25%;
+    align-items: center;
+  }
+
   label {
     display: inline-block;
     font-weight: normal;
@@ -108,7 +114,7 @@
       }
     }
 
-    .right {
+    .right, .full {
       width: 80%;
       margin-left: 10%;
     }
