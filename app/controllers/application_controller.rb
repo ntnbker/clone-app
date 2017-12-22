@@ -73,14 +73,16 @@ class ApplicationController < ActionController::Base
     
     if params[:user_id]
       user = User.find_by(id:params[:user_id])
-
+      token = user.set_password_token
     elsif params[:email]
       user = User.find_by(email:params[:email])
+      token = user.set_password_token
     else
       user = current_user
+      token = user.set_password_token
     end 
 
-
+    
     if user.password_set
       if current_user
         #do nothing 
@@ -91,7 +93,7 @@ class ApplicationController < ActionController::Base
 
     else
       flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
-      redirect_to new_password_reset_path
+      redirect_to set_password_path(token:token)
     end 
 
 
