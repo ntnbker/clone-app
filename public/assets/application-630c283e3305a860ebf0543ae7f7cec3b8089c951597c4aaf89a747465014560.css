@@ -14721,7 +14721,7 @@ span.index.index-invoice {
 
 /* line 19, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/flash_message.scss */
 .alert {
-  padding: 15px;
+  padding: 5px 15px;
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -14733,23 +14733,25 @@ span.index.index-invoice {
   color: #31708f;
 }
 
-/* line 30, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/flash_message.scss */
-.alert-danger {
-  background-color: #F2DEDE;
-  color: #a94442;
+/* line 29, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/flash_message.scss */
+.alert-warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
 }
 
-/* line 35, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/flash_message.scss */
+/* line 34, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/flash_message.scss */
+.alert-danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+
+/* line 39, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/flash_message.scss */
 .alert-success {
   color: #3c763d;
   background-color: #dff0d8;
-}
-
-/* line 40, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/flash_message.scss */
-.alert-info {
-  background-color: #5bc0de;
-  border-color: #3db5d8;
-  color: #ffffff;
+  border-color: #d6e9c6;
 }
 
 /* line 1, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/edit_profiles.scss */

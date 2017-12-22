@@ -24,6 +24,8 @@ Rails.application.routes.draw do
     resources :passwords, only:[:edit, :update]
     get "change_password"=> "passwords#change_password",:as=> :change_password
     patch "update_password"=>"passwords#update_password"
+    get "set_password"=> "passwords#set_password",:as=> :set_password
+    patch "confirm_password"=>"passwords#confirm_password"
     resources :gods, only:[:show]
     resources :gods do 
       resources :services, only:[:new,:create, :update]

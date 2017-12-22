@@ -482,6 +482,7 @@ var InvoiceItemField = React.createClass({
     var invoice_item = this.props.content;
     var invoice_id   = this.props.params.x;
     var x            = this.props.x;
+    var position     = this.props.position;
     var errors       = this.state.errorsForm;
     var FieldId      = null;
     var {
@@ -563,7 +564,7 @@ var InvoiceItemField = React.createClass({
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
         {FieldId}
       </fieldset>
-      <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> X </button>
+      { position > 1 && <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> X </button>}
     </div>
   }
 });
@@ -829,10 +830,13 @@ var InvoiceFields = React.createClass({
     const id = (ledger && ledger.id) || '';
     const self = this;
 
-    const invRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i
-    let isExistInvoice = invRegex.test($('#new_invoice').serialize());
+    const invoiceRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/g;
+    const serialize = $('#new_invoice').serialize();
 
-    if (!isExistInvoice) return;
+    if (!invoiceRegex.test(serialize)) {
+      showFlash('There are currently no invoices', 'danger', 'create-invoice');
+      return;
+    }
 
     var FD = new FormData(document.getElementById('new_invoice'));
 
@@ -882,6 +886,7 @@ var InvoiceFields = React.createClass({
       <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
       <input type="hidden" value={id} name="ledger[ledger_id]" />
       <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
+      <ShowMessage position="create-invoice" />
       {
         hasQuotes &&
         <QuotesInInvoice

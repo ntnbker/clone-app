@@ -1054,9 +1054,8 @@ var TradyMaintenanceRequest = React.createClass({
 
 
 				case 'viewTrady':
+					const hasApproved = this.state.quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
-
-					const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 					return (
 						<ModalViewTrady
 							close={this.isClose}
