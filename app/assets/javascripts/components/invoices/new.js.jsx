@@ -834,7 +834,7 @@ var InvoiceFields = React.createClass({
     const serialize = $('#new_invoice').serialize();
 
     if (!invoiceRegex.test(serialize)) {
-      alert('There are currently no invoices');
+      showFlash('There are currently no invoices', 'danger', 'create-invoice');
       return;
     }
 
@@ -886,6 +886,7 @@ var InvoiceFields = React.createClass({
       <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
       <input type="hidden" value={id} name="ledger[ledger_id]" />
       <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
+      <ShowMessage position="create-invoice" />
       {
         hasQuotes &&
         <QuotesInInvoice

@@ -94,7 +94,7 @@ var ShowMessage = React.createClass({
             <div id={`flash_${status}`}>
               {message}
             </div>
-            <button><i className="fa fa-times" aria-hidden="true" onClick={this.close}></i></button>
+            <button type="button" style={{margin: '0px'}} onClick={this.close}><i className="fa fa-times" aria-hidden="true"></i></button>
           </div>
         </div>
       : <div></div>
