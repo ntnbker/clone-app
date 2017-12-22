@@ -26,19 +26,18 @@
   background: #D6EAF9;
   color: #31708f;
 }
-
-.alert-danger {
-  background-color: #F2DEDE;
-  color: #a94442;
+.alert-warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
 }
-
+.alert-danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
 .alert-success {
   color: #3c763d;
   background-color: #dff0d8;
-}
-
-.alert-info {
-  background-color: #5bc0de;
-  border-color: #3db5d8;
-  color: #ffffff;
+  border-color: #d6e9c6;
 }
