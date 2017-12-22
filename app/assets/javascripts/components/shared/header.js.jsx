@@ -204,44 +204,39 @@ var Header = React.createClass({
     });
   },
 
-<<<<<<< Updated upstream
-      return false;
-    },
+  menuBar: function() {
+    var {
+      edit_agency, edit_agency_admin, edit_agent, edit_trady, edit_tenant,  user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
+    } = this.props;
 
-    menuBar: function() {
-      var {
-        edit_agency, edit_agency_admin, edit_agent, edit_trady, edit_tenant,  user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
-      } = this.props;
+    var dataMenu = [];
+    if (user_agency_admin)
+      dataMenu = [...MenuAgency(edit_agency, edit_agency_admin)];
+    else if (user_agent)
+      dataMenu = [...MenuAgent(edit_agent)];
+    else if (user_trady)
+      dataMenu = [...MenuTrady(edit_trady)];
+    else if (user_tenant)
+      dataMenu = [...MenuTenant(edit_tenant)];
+    else if (user_landlord)
+      dataMenu = [...MenuLandlord()];
 
-      var dataMenu = [];
-      if (user_agency_admin)
-        dataMenu = [...MenuAgency(edit_agency, edit_agency_admin)];
-      else if (user_agent)
-        dataMenu = [...MenuAgent(edit_agent)];
-      else if (user_trady)
-        dataMenu = [...MenuTrady(edit_trady)];
-      else if (user_tenant)
-        dataMenu = [...MenuTenant(edit_tenant)];
-      else if (user_landlord)
-        dataMenu = [...MenuLandlord()];
+    return(
+      dataMenu.map((item, key) => {
+      return (
+          <li key={key}>
+            <a href={item.url} className="click">
+              {item.name}
+            </a>
+          </li>
+        )
+      })
+    );
+  },
 
-      return(
-        dataMenu.map((item, key) => {
-        return (
-            <li key={key}>
-              <a href={item.url} className="click">
-                {item.name}
-              </a>
-            </li>
-          )
-        })
-      );
-    },
-=======
   componentWillUnmount: function() {
     $(document).unbind('click', this.clickDocument);
   },
->>>>>>> Stashed changes
 
   iOS: function() {
     const iDevices = [
@@ -262,35 +257,6 @@ var Header = React.createClass({
     }
 
     return false;
-  },
-
-  menuBar: function() {
-    var {
-      edit_agency, edit_agency_admin, edit_agent, edit_trady, user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
-    } = this.props;
-    var dataMenu = [];
-    if (user_agency_admin)
-      dataMenu = [...MenuAgency(edit_agency, edit_agency_admin)];
-    else if (user_agent)
-      dataMenu = [...MenuAgent(edit_agent)];
-    else if (user_trady)
-      dataMenu = [...MenuTrady(edit_trady)];
-    else if (user_tenant)
-      dataMenu = [...MenuTenant()];
-    else if (user_landlord)
-      dataMenu = [...MenuLandlord()];
-
-    return(
-      dataMenu.map((item, key) => {
-      return (
-          <li key={key}>
-            <a href={item.url} className="click">
-              {item.name}
-            </a>
-          </li>
-        )
-      })
-    );
   },
 
   search: function(hidden) {
