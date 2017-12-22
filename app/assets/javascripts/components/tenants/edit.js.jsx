@@ -21,7 +21,6 @@ var TenantEdit = React.createClass({
       name      : getValidValue(this.name),
       email     : getValidValue(this.email),
       mobile    : getValidValue(this.mobile),
-      full_name : getValidValue(this.full_name),
     }
 
     var params = { tenant };
@@ -104,7 +103,6 @@ var TenantEdit = React.createClass({
             Edit tenant Profile
           </h5>
           {renderTextField('name', 'Name')}
-          {renderTextField('full_name', 'Full Name')}
           {renderTextField('mobile', 'Mobile')}
           {renderTextField('email', 'email')}
           <div className="text-center">
