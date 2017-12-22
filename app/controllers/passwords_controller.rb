@@ -83,7 +83,8 @@ class PasswordsController < ApplicationController
     @user.password_confirmation = params[:user][:password_confirmation]
     # the next line clears the temporary token and updates the password
     if @user.change_password!(params[:user][:password])
-      @user.update_attribute(:set_password_token, SecureRandom.hex(10))
+      
+      @user.update_columns(set_password_token:SecureRandom.hex(10), password_set:true)
       flash[:success] = 'Your password was successfully set. Please continue to your maintenance request.'
       redirect_to root_path
     else
