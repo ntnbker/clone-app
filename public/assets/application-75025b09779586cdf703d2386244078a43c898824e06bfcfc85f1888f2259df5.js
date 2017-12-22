@@ -72257,6 +72257,7 @@ var InvoiceItemField = React.createClass({
     var invoice_item = this.props.content;
     var invoice_id = this.props.params.x;
     var x = this.props.x;
+    var position = this.props.position;
     var errors = this.state.errorsForm;
     var FieldId = null;
     var _state5 = this.state;
@@ -72358,7 +72359,7 @@ var InvoiceItemField = React.createClass({
         React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
         FieldId
       ),
-      React.createElement(
+      position > 1 && React.createElement(
         "button",
         { type: "button", className: "button-remove button-primary red", onClick: function () {
             return _this3.removeField(_this3.props.x);
@@ -72700,10 +72701,13 @@ var InvoiceFields = React.createClass({
     var id = ledger && ledger.id || '';
     var self = this;
 
-    var invRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i;
-    var isExistInvoice = invRegex.test($('#new_invoice').serialize());
+    var invoiceRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/g;
+    var serialize = $('#new_invoice').serialize();
 
-    if (!isExistInvoice) return;
+    if (!invoiceRegex.test(serialize)) {
+      showFlash('There are currently no invoices', 'danger', 'create-invoice');
+      return;
+    }
 
     var FD = new FormData(document.getElementById('new_invoice'));
 
@@ -72762,6 +72766,7 @@ var InvoiceFields = React.createClass({
       React.createElement("input", { type: "hidden", value: this.props.quote_id, name: "ledger[quote_id]" }),
       React.createElement("input", { type: "hidden", value: id, name: "ledger[ledger_id]" }),
       React.createElement("input", { type: "hidden", value: this.props.invoice_type, name: "ledger[invoice_type]" }),
+      React.createElement(ShowMessage, { position: "create-invoice" }),
       hasQuotes && React.createElement(QuotesInInvoice, {
         quotes: quotes,
         trady: trady,
@@ -87016,7 +87021,16 @@ var QuoteFields = React.createClass({
 
   handleSummit: function (e) {
     var self = this;
+    e.preventDefault();
     var FD = new FormData(document.getElementById('new_quote'));
+
+    var quoteRegex = /quote_items_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i;
+    var isExistQuote = quoteRegex.test($('#new_quote').serialize());
+
+    if (!isExistQuote) {
+      showFlash('There are currently no quote items', 'danger', 'create-invoice');
+      return;
+    }
 
     $.ajax({
       type: 'POST',
@@ -87035,7 +87049,6 @@ var QuoteFields = React.createClass({
       },
       error: function (err) {}
     });
-    e.preventDefault();
     return false;
   },
 
@@ -87061,6 +87074,7 @@ var QuoteFields = React.createClass({
       React.createElement('input', { type: 'hidden', value: this.props.delivery_status, name: 'quote[delivery_status]', id: 'quote_delivery_status' }),
       React.createElement('input', { type: 'hidden', value: this.props.quote_type, name: 'quote[quote_type]', id: 'quote_type' }),
       React.createElement('input', { type: 'hidden', value: this.props.system_plan, name: 'quote[system_plan]', id: 'system_plan' }),
+      React.createElement(ShowMessage, { position: 'create-invoice' }),
       React.createElement(
         'div',
         { className: 'alert alert-message' },
@@ -87430,8 +87444,8 @@ var ShowMessage = React.createClass({
         ),
         React.createElement(
           "button",
-          null,
-          React.createElement("i", { className: "fa fa-times", "aria-hidden": "true", onClick: this.close })
+          { type: "button", style: { margin: '0px' }, onClick: this.close },
+          React.createElement("i", { className: "fa fa-times", "aria-hidden": "true" })
         )
       )
     ) : React.createElement("div", null);
@@ -92354,12 +92368,12 @@ var TradyMaintenanceRequest = React.createClass({
 					});
 
 				case 'viewTrady':
-
-					var hasApproved = quote_requests.some(function (quote_request) {
+					var hasApproved = this.state.quote_requests.some(function (quote_request) {
 						return quote_request.quotes.some(function (quote) {
 							return quote.status === 'Approved';
 						});
 					});
+
 					return React.createElement(ModalViewTrady, {
 						close: this.isClose,
 						trady: this.state.trady,
