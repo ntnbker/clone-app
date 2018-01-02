@@ -256,13 +256,13 @@ var Header = React.createClass({
 
     search: function(hidden) {
       const { role, searchText = '' } = this.props;
-
-      const style = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1
+      const hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
+      const style =  hiddenSearch
                   ? { visibility: 'hidden' }
                   : {};
 
       return (
-        <div className="search" style={style}>
+        <div className={"search " + (hiddenSearch && "hidden-search")} style={style}>
           <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
             <input
               id="query"
