@@ -81,50 +81,8 @@ var DetailInvoice = React.createClass({
 var ModalViewInvoice = React.createClass({
 	getInitialState: function() {
 		return {
-			index: null,
 			invoice: this.props.invoice,
-			invoices: this.props.invoices,
 		};
-	},
-
-	switchSlider: function(key, index) {
-		let position = 0;
-		let invoice = "";
-		if(key == "prev") {
-			position = index - 1 < 0 ? this.state.invoices.length - 1 : index-1;
-		}else {
-			position = index + 1 > this.state.invoices.length - 1 ? 0 : index+1;
-		}
-
-		invoice = this.state.invoices[position];
-		this.setState({
-			index: position,
-			invoice: invoice
-		});
-	},
-
-	componentWillMount: function() {
-		this.filterQuote(this.state.invoices);
-	},
-
-	componentWillReceiveProps: function(nextProps) {
-		this.filterQuote(nextProps.invoices);
-		this.setState({
-			invoices: nextProps.invoices
-		});
-	},
-
-	filterQuote: function(invoices) {
-		for(var i = 0; i < invoices.length; i++) {
-			var item = invoices[i];
-			if(item.id == this.state.invoice.id) {
-				this.setState({
-					index: i+1,
-					invoice: item
-				});
-				break;
-			}
-		}
 	},
 
 	getImage: function(trady) {
@@ -137,71 +95,14 @@ var ModalViewInvoice = React.createClass({
 		return image_url;
 	},
 
+	capitalizeText(text) {
+		return text
+			? text.split('\s+').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
+			: '';
+	},
+
 	printInvoice: function() {
 		window.print();
-		// $('.button-slider').toggle('hide');
-		// var contents = $('#print-invoice').html();
-		// var style = ".info-quote {display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex; flex-direction: row; justify-content: space-between;}" +
-		// 						".info-trady {flex: 1; margin-bottom: 15px; overflow: hidden;}" +
-		// 						".info-trady p {margin-bottom: 0px;}" +
-		// 						".info-agency {flex: 1;}" +
-		// 						".info-agency p {text-align: right; overflow: hidden; margin-bottom: 0px;}" +
-		// 						".detail-quote .info-maintenance {margin-top: 10px;}" +
-		// 						".detail-quote .info-maintenance p {text-align: center; margin-bottom: 0;}" +
-		// 						".detail-quote {margin-top: 15px;}" +
-		// 						".detail-quote .table {width: 100%;}" +
-		// 						".detail-quote .table tr th {color: #b3b3b3; padding-left: 0; font-size: 13px; text-transform: uppercase;}" +
-		// 						".detail-quote .table tr td {padding-left: 0; padding: 10px 3px; border-bottom: 1px solid #E1E1E1;}"+
-		// 						"#print-invoice { color: #404040;}" +
-		// 						".modal-dialog { width: 700px !important;}" +
-		// 						".modal-header {background-color: #fff !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: flex;}" +
-		// 						".modal-header .logo img { width: 80px;}" +
-		// 						".modal-header .info-trady {margin-left: 15px;}" +
-		// 						".modal-header .info-trady p {margin-bottom: 0px;font-size: 12px;}" +
-		// 						".modal-header .info-trady p span:last-child {padding-left: 5px;}" +
-		// 						".modal-header .close {border: 1px solid #ccc !important;border-radius: 50% !important;position: absolute; top: 5px;right: 5px;}" +
-		// 						".modal-header .close span {color: #ccc !important;}" +
-		// 						".info-quote { font-size: 13px; clear: both; overflow: hidde}" +
-		// 						".info-quote .bill-to { font-size: 16px;}" +
-		// 						".info-quote .info-agency p { text-align: left !important;}" +
-		// 						".info-quote .info-agency p span:first-child { width: 120px; display: inline-block; text-align: right;}" +
-		// 						".footer { font-size: 12px; border-top: 1px solid #ccc; padding-top: 15px; width: 100%; display: inline-block;}" +
-		// 						".footer i { font-size: 36px;}" +
-		// 						".footer p { margin-bottom: 5px;}" +
-		// 						".footer .bank { margin-left: 5%; width: 45%; float: left;}" +
-		// 						".footer .bank span:first-child { width: 110px; display: inline-block;}" +
-		// 						".footer .contact { margin-left: 5%; width: 45%; float: left;}" +
-		// 						".border-none { border: none !important;}" +
-		// 						".color-grey { color: #b3b3b3;}" +
-		// 						".font-bold { font-weight: bold;}" +
-		// 						".m-t-md { margin-top: 10px;}" +
-		// 						".p-t-n { padding-top: 0 !important;}" +
-		// 						".p-b-n { padding-bottom: 0 !important;}" +
-		// 						".print {display: none;}" +
-		// 						".close {display: none;}";
-
-		// var frame = $('#printframe')[0].contentWindow.document.open("text/html", "replace");
-		// var htmlContent = "<html>" +
-		// 									"<head>" +
-		// 									"<title> Invoice </title>" +
-		// 									'<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />' +
-		// 									'<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />' +
-		// 									'<style type="text/css" media="print,screen">' +
-		// 									style +
-		// 									"</style>";
-		// frame.open();
-		// frame.write(htmlContent);
-		// frame.write("</head><body>");
-		// frame.write(contents);
-		// frame.write("</body></html>");
-		// frame.close();
-
-  //   // print just the modal div
-  //   setTimeout(function() {
-  //   	$('#printframe')[0].contentWindow.print();
-  //     $('#printframe')[0].contentWindow.close();
-  //   	$('.button-slider').toggle('show');
-  //   }, 1000);
 	},
 
 	render: function() {
@@ -218,28 +119,40 @@ var ModalViewInvoice = React.createClass({
 						<div className="modal-header">
 							<div className="logo">
                 <span className="icon-user">
-                  <AvatarImage id="logo" imageUri={image_url} />
+                  <AvatarImage
+                  	id="logo"
+                  	imageUri={image_url}
+                  	defaultImage="/grey_rect.png"
+                  />
                 </span>
 							</div>
 							<div className="info-trady">
 								<p>
 									<span>
-										{invoice.trady.company_name}
+										{this.capitalizeText(invoice.trady.company_name)}
 									</span>
 								</p>
 								<p>
 									<span>
-										{invoice.trady.trady_company.abn}
+										{
+											invoice.trady.trady_company.abn
+											? `ABN: ${invoice.trady.trady_company.abn}`
+											: ''
+										}
 									</span>
 								</p>
 								<p>
 									<span>
-										{invoice.trady.trady_company.address}
+										{this.capitalizeText(invoice.trady.trady_company.address)}
 									</span>
 								</p>
 								<p>
 									<span>
-										{invoice.trady.trady_company.mobile_number}
+										{
+											invoice.trady.trady_company.mobile_number
+											? `mobile: ${invoice.trady.trady_company.mobile_number}`
+											: ''
+										}
 									</span>
 								</p>
 								<p>
@@ -264,10 +177,12 @@ var ModalViewInvoice = React.createClass({
 									<div className="info-quote">
 										<div className="info-trady">
 											<div>
-												<p className="color-grey bill-to">Bill To</p>
-												<p>{self.landlord && self.landlord.name}</p>
-												<p>{self.agency && self.agency.company_name}</p>
-												<p>{self.agency && self.agency.address}</p>
+												<p className="font-bold bill-to">Bill To</p>
+												<p>
+													<span className="font-bold">C/- </span>
+													{self.agency && self.agency.company_name}
+												</p>
+												<p>{self.agency && this.capitalizeText(self.agency.address)}</p>
 											</div>
 										</div>
 										<div className="info-agency">
@@ -276,11 +191,11 @@ var ModalViewInvoice = React.createClass({
 												<span> {invoice.invoice_number}</span>
 											</p>
 											<p>
-												<span className="font-bold">Invoice Date: </span>
+												<span className="font-bold">Invoice Created: </span>
 												<span> { moment(invoice.created_at).format("LL") }</span>
 											</p>
 											<p>
-												<span className="font-bold">Payment Date: </span>
+												<span className="font-bold">Invoice Due By: </span>
 												<span> { moment(invoice.due_date).format("LL") }</span>
 											</p>
 										</div>
@@ -300,36 +215,38 @@ var ModalViewInvoice = React.createClass({
 									<p className="font-bold">Bank Deposit</p>
 								</div>
 								<p>
-									<span className="font-bold">BSB:</span>
+									<span className="font-bold">BSB: </span>
 									<span>{invoice.trady.trady_company.bsb_number}</span>
 								</p>
 								<p>
-									<span className="font-bold">Account Number:</span>
+									<span className="font-bold">Account Number: </span>
 									<span>{invoice.trady.trady_company.bank_account_number}</span>
 								</p>
 								<p>
-									<span className="font-bold">Account Name:</span>
+									<span className="font-bold">Account Name: </span>
 									<span>{invoice.trady.trady_company.account_name}</span>
 								</p>
 							</div>
-							<div className="contact">
-								<div>
-									<i className="fa fa-envelope-o" />
-									<p className="font-bold">Mail</p>
+							{
+								false && <div className="contact">
+									<div>
+										<i className="fa fa-envelope-o" />
+										<p className="font-bold">Mail</p>
+									</div>
+									<p className="font-bold">
+										Make your cheque payable to:
+									</p>
+									<p>
+										{invoice.trady.trady_company.account_name}
+									</p>
+									<p className="font-bold">
+										Detach this section and mail with your cheque to:
+									</p>
+									<p>
+										{invoice.trady.trady_company.address}
+									</p>
 								</div>
-								<p className="font-bold">
-									Make your cheque payable to:
-								</p>
-								<p>
-									{invoice.trady.trady_company.account_name}
-								</p>
-								<p className="font-bold">
-									Detach this section and mail with your cheque to:
-								</p>
-								<p>
-									{invoice.trady.trady_company.address}
-								</p>
-							</div>
+							}
 						</div>
             <div className="modal-body dontprint">
               <ButtonPrint printQuote={this.printInvoice} />

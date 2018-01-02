@@ -244,12 +244,6 @@ form#new_quote {
 		.bank {
 			margin-left: 25px;
 			@include flex(1);
-			span {
-				&:first-child {
-					width: 110px;
-					display: inline-block;
-				};
-			}
 		}
 		.contact {
 			margin-left: 15px;
