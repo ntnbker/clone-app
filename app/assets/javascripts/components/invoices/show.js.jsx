@@ -157,7 +157,11 @@ var ModalViewInvoice = React.createClass({
 								</p>
 								<p>
 									<span>
-										{invoice.trady.trady_company.email}
+										{
+											invoice.trady.trady_company.email
+											? `email: ${invoice.trady.trady_company.email}`
+											: ''
+										}
 									</span>
 								</p>
 							</div>
@@ -173,14 +177,17 @@ var ModalViewInvoice = React.createClass({
 						</div>
 						<div className="slider-quote">
 							<div className="modal-body">
-								<div className="show-quote" onTouchEnd={(key, index) => this.switchSlider('prev', this.state.index)}>
+								<div className="show-quote">
+									<p className="text-center font-bold">
+										Maintenance For: {self.property.property_address}
+									</p>
 									<div className="info-quote">
 										<div className="info-trady">
 											<div>
 												<p className="font-bold bill-to">Bill To</p>
 												<p>
 													<span className="font-bold">C/- </span>
-													{self.agency && self.agency.company_name}
+													{self.agency && this.capitalizeText(self.agency.business_name)}
 												</p>
 												<p>{self.agency && this.capitalizeText(self.agency.address)}</p>
 											</div>
