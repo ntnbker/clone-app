@@ -1,4 +1,6 @@
 class Landlord < ApplicationRecord
+  before_save :format_name
+
 has_many :roles, as: :roleable
 belongs_to :user
 has_many :properties
@@ -36,7 +38,11 @@ def order_maintenance_request_by_ascending
   return maintenance_requests
 end
 
+def format_name
+  self.name = self.name.split.map(&:capitalize).join(' ')
+end
 
 
+  
 
 end 

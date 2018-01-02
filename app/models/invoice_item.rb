@@ -5,4 +5,7 @@ class InvoiceItem < ApplicationRecord
   
   validates :amount, :numericality => true
 
+
+  
+
 end 

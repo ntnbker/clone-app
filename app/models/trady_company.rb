@@ -1,5 +1,5 @@
 class TradyCompany < ApplicationRecord
-  
+  before_save :format_company_name, :format_trading_name, :format_address, :format_mailing_address
   has_many :tradies
   has_one :trady_company_profile_image
 
@@ -24,6 +24,7 @@ class TradyCompany < ApplicationRecord
   validates_presence_of :company_name,:trading_name,:address,:mailing_address ,:mobile_number,:email
   
   #
+  before_save :format_account_name, if: :perform_account_name_validation
   
   validates_uniqueness_of :email, if: :perform_uniqueness_validation_of_company_email
   validates_presence_of :abn, if: :perform_abn_validation
@@ -55,5 +56,27 @@ class TradyCompany < ApplicationRecord
       self.perform_bank_account_validation = true
     end 
   end
+
+  def format_company_name
+    self.company_name = self.company_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_trading_name
+    self.trading_name = self.trading_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_address
+    self.address = self.address.split.map(&:capitalize).join(' ')
+  end
+
+  def format_mailing_address
+    self.mailing_address = self.mailing_address.split.map(&:capitalize).join(' ')
+  end
+
+  def format_account_name
+    self.account_name = self.account_name.split.map(&:capitalize).join(' ')
+  end
+
+
 
 end 

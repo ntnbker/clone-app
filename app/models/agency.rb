@@ -1,5 +1,6 @@
 class Agency < ApplicationRecord
-  
+  before_save :format_company_name, :format_business_name, :format_address, :format_mailing_address
+
   has_many :agency_admins
   has_many :agents
   has_many :agency_tradies
@@ -42,8 +43,26 @@ class Agency < ApplicationRecord
   end
 
   def capitalize_company_name
-  self.business_name.split.map(&:capitalize).join(' ')
-end
+    self.business_name = self.business_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_company_name
+    self.company_name = self.company_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_business_name
+    self.business_name = self.business_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_address
+   self.address = self.address.split.map(&:capitalize).join(' ')
+  end
+
+  def format_mailing_address
+    self.mailing_address = self.mailing_address.split.map(&:capitalize).join(' ')
+  end
+
+
 
 
 
