@@ -40,7 +40,7 @@ var Invoices = React.createClass({
 				<p>
 					<span className="index index-invoice">{invoices.length}</span>Invoice
 					{
-						// (current_role.role == 'Trady' && notPaid) &&
+						(current_role.role === 'Trady' && notPaid) &&
 						<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
 											Remind Agent of Payment
 						</button>
@@ -88,7 +88,7 @@ var Invoices = React.createClass({
 									{
 										(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false) &&
 											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
-												Mark As Paid
+												Payment Scheduled
 											</button>
 									}
 									<button type="button" className="btn btn-view" onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}>
