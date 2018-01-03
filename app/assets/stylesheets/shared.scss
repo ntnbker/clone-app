@@ -806,20 +806,10 @@ footer {
     // visibility: 'hidden';
     display: none !important;
   }
-  // body.modal-custom {
-  //   display: block;
-  // }
-  // body.modal-open {
-  //     visibility: visible;
-  // }
-
-  // body.modal-open .modal .modal-header,
-  // body.modal-open .modal .modal-body {
-  //     visibility: visible; /* make visible modal body and header */
-  // }
 
   .modal-custom .modal-dialog {
     width: 100% !important;
+    height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     position: fixed;
@@ -833,6 +823,10 @@ footer {
     visibility: visible;
   }
 
+  body.moda-dialog .modal-content {
+    border: none;
+  }
+
   body.modal-dialog .modal-content .modal-header,
   body.modal-dialog .modal-content .modal-body {
     padding: 0;
@@ -840,6 +834,18 @@ footer {
 
   body.modal-dialog .modal-content .modal-header .modal-title {
     margin-bottom: 20px;
+  }
+
+  .modal-dialog .modal-content .modal-footer {
+    position: fixed;
+    bottom: 0;
+  }
+
+  #print-invoice {
+    .modal-header {
+      padding-left: 30%;
+      font-size: 16px;
+    }
   }
 }
 

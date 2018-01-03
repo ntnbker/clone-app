@@ -8,19 +8,19 @@ var DetailInvoice = React.createClass({
 				<table className="table">
 				<thead>
 					<tr>
-						<th>
+						<th className="invoice-description">
 							Description
 						</th>
-						<th>
+						<th className="invoice-price">
 							Pricing
 						</th>
-						<th>
+						<th className="invoice-hour">
 							Hours
 						</th>
-						<th className="text-right rate">
+						<th className="invoice-rate">
 							Rate
 						</th>
-						<th className="text-right amount">
+						<th className="invoice-amount">
 							Amount
 						</th>
 					</tr>
@@ -35,11 +35,11 @@ var DetailInvoice = React.createClass({
 							}
 							return (
 								<tr key={key}>
-									<td>{item.item_description}</td>
-									<td>{item.pricing_type}</td>
-									<td>${item.amount.toFixed(2)}</td>
-									<td className="text-right rate">{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
-									<td className="text-right amount">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
+									<td className="invoice-description">{item.item_description}</td>
+									<td className="invoice-price">{item.pricing_type}</td>
+									<td className="invoice-hour">{item.amount.toFixed(2)}</td>
+									<td className="invoice-rate">{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.hours ? item.hours : 'N/A' }</td>
+									<td className="invoice-amount">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
 								</tr>
 							);
 						})
@@ -215,45 +215,41 @@ var ModalViewInvoice = React.createClass({
 								</div>
 							</div>
 						</div>
-						<div className="footer">
-							<div className="bank">
-								<div>
-									<i className="fa fa-bank" />
-									<p className="font-bold">Bank Deposit</p>
+						<div className="modal-footer">
+							<div className="footer">
+								<div className="bank">
+									<div>
+										<i className="fa fa-bank" />
+										<p className="font-bold">Bank Deposit</p>
+									</div>
+									<p>
+										<span className="font-bold">BSB: </span>
+										<span>{invoice.trady.trady_company.bsb_number}</span>
+									</p>
+									<p>
+										<span className="font-bold">Account Number: </span>
+										<span>{invoice.trady.trady_company.bank_account_number}</span>
+									</p>
+									<p>
+										<span className="font-bold">Account Name: </span>
+										<span>{invoice.trady.trady_company.account_name}</span>
+									</p>
 								</div>
-								<p>
-									<span className="font-bold">BSB: </span>
-									<span>{invoice.trady.trady_company.bsb_number}</span>
-								</p>
-								<p>
-									<span className="font-bold">Account Number: </span>
-									<span>{invoice.trady.trady_company.bank_account_number}</span>
-								</p>
-								<p>
-									<span className="font-bold">Account Name: </span>
-									<span>{invoice.trady.trady_company.account_name}</span>
-								</p>
-							</div>
-							{
-								false && <div className="contact">
+								<div className="contact">
 									<div>
 										<i className="fa fa-envelope-o" />
 										<p className="font-bold">Mail</p>
 									</div>
-									<p className="font-bold">
-										Make your cheque payable to:
+									<p>
+										<span className="font-bold">Make your cheque payable to: </span>
+										<span>{invoice.trady.trady_company.account_name}</span>
 									</p>
 									<p>
-										{invoice.trady.trady_company.account_name}
-									</p>
-									<p className="font-bold">
-										Detach this section and mail with your cheque to:
-									</p>
-									<p>
-										{invoice.trady.trady_company.address}
+										<span className="font-bold">Detach this section and mail with your cheque to: </span>
+										<span>{invoice.trady.trady_company.address}</span>
 									</p>
 								</div>
-							}
+							</div>
 						</div>
             <div className="modal-body dontprint">
               <ButtonPrint printQuote={this.printInvoice} />
