@@ -242,11 +242,11 @@ var ModalViewInvoice = React.createClass({
 									</div>
 									<p>
 										<span className="font-bold">Make your cheque payable to: </span>
-										<span>{invoice.trady.trady_company.account_name}</span>
+										<span>{this.capitalizeText(invoice.trady.trady_company.account_name)}</span>
 									</p>
 									<p>
 										<span className="font-bold">Detach this section and mail with your cheque to: </span>
-										<span>{invoice.trady.trady_company.address}</span>
+										<span>{this.capitalizeText(invoice.trady.trady_company.address)}</span>
 									</p>
 								</div>
 							</div>
