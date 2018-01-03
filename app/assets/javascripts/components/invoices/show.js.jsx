@@ -49,25 +49,25 @@ var DetailInvoice = React.createClass({
 						<td className="text-right border-none font-bold p-b-n">
 							Subtotal:
 						</td>
-						<td className="border-none text-right p-b-n">
+						<td className="border-none p-b-n">
 							${(subTotal - invoice.gst_amount).toFixed(2)}
 						</td>
 					</tr>
 					<tr>
 						<td colSpan="3" className="border-none p-t-n"></td>
-						<td className="text-right p-t-n">
+						<td className="text-right font-bold p-t-n">
 							GST 10%:
 						</td>
-						<td className="text-right p-t-n">
+						<td className="p-t-n">
 							${invoice.gst_amount.toFixed(2)}
 						</td>
 					</tr>
 					<tr>
 						<td colSpan="3" className="border-none"></td>
 						<td className="text-right font-bold border-none">
-							Amount Due (AUD):
+							Amount Due: (AUD)
 						</td>
-						<td className="text-right font-bold border-none">
+						<td className="font-bold border-none">
 							${subTotal.toFixed(2)}
 						</td>
 					</tr>
@@ -90,7 +90,7 @@ var ModalViewInvoice = React.createClass({
 
 		const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
 
-		const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+		const image_url = trady_company_profile_image && trady_company_profile_image.image_url;
 
 		return image_url;
 	},
@@ -122,7 +122,7 @@ var ModalViewInvoice = React.createClass({
                   <AvatarImage
                   	id="logo"
                   	imageUri={image_url}
-                  	defaultImage="/grey_rect.png"
+                  	defaultImage="/empty.png"
                   />
                 </span>
 							</div>
