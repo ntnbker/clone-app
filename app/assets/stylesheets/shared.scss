@@ -327,9 +327,6 @@ header {
             }
           }
         }
-        &.desktop-menu-items {
-          display: none;
-        }
       }
     }
 
@@ -535,6 +532,10 @@ header {
       // @include justify-content(center);
       .menu-btn {
         margin-right: 7.5%;
+      }
+
+      .log_in.desktop-menu-items {
+        display: none;
       }
     }
     .header-custom .header-right {

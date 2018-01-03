@@ -1,7 +1,7 @@
 <% if local_assigns.has_key? :expanded %>
-    <%= react_component('Footer', expanded: true) %>
+    <%= react_component('Footer', expanded: true, new_agency_path: new_agency_path) %>
 <%end %>
 
 <% if !local_assigns.has_key? :expanded %>
-    <%= react_component('Footer') %>
+    <%= react_component('Footer', new_agency_path: new_agency_path) %>
 <%end %>

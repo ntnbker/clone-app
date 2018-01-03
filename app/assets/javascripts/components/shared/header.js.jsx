@@ -321,7 +321,6 @@ var Header = React.createClass({
                 :
                 <span className="mobile-menu-items">
                   <a href={props.menu_login_path} className="click" > Login </a>
-                  <a href={props.new_agency_path} className="register click"> Register </a>
                 </span>
             }
           </MobileMenu>
@@ -387,7 +386,6 @@ var Header = React.createClass({
                     <div className="log_in desktop-menu-items">
                       { this.search(true) }
                       <a href={props.menu_login_path} > Login </a>
-                      <a href={props.new_agency_path} className="register"> Register </a>
                     </div>
                 }
               <button className="menu-btn button" id="btn-menu-bar" onClick={this.showBar}> ☰ </button>
