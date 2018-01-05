@@ -588,10 +588,12 @@ var InvoiceField = React.createClass({
   },
 
   componentWillReceiveProps({ errors, ...rest }) {
+    const { errorDate, errorReference } = this.filterError(errors);
     this.setState({
-      remove: rest.params.remove,
-      errorDate: this.filterError(errors),
+      errorDate,
+      errorReference,
       errors: errors || {},
+      remove: rest.params.remove,
     });
   },
 
@@ -606,12 +608,19 @@ var InvoiceField = React.createClass({
 
   filterError: function(errors) {
     var errorDate = errors && errors['invoices.due_date'];
-    var error = '';
+    var errorReference = errors && errors['trady_invoice_reference'];
+
     if (errorDate) {
-      if (!this.date.value)                      error = errorDate[0];
-      else if (!this.validDate(this.date.value)) error = errorDate.reverse()[0];
+      if (!this.date.value)                      errorDate = errorDate[0];
+      else if (!this.validDate(this.date.value)) errorDate = errorDate.reverse()[0];
+      else errorDate = '';
     }
-    return error;
+
+    if (errorReference) {
+      if (!this.reference.value) errorReference = errorReference[0];
+      else errorReference = '';
+    }
+    return { errorDate, errorReference };
   },
 
   nowDate: function(nextDay = 1) {
@@ -649,7 +658,7 @@ var InvoiceField = React.createClass({
   render: function() {
     var { content, x, params: { invoiceInfo = {} } } = this.props;
     var {
-      errorDate, remove, errors, tax, invoice_total, tax_total, items_total
+      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
@@ -692,11 +701,13 @@ var InvoiceField = React.createClass({
             <input
             type="text"
             className="text-center"
+            ref={elem => this.reference = elem}
             placeholder="Invoice Reference Number"
             defaultValue={invoice && invoice.trady_invoice_reference}
             name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
             />
           </div>
+          <p id="errorbox" className="error">{errorReference || ''}</p>
           <label>
             <input type="checkbox" value={tax} checked={tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
             Total Includes GST
