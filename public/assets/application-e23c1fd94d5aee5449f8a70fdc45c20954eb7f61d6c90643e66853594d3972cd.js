@@ -91152,7 +91152,6 @@ var TradySideBarMobile = React.createClass({
 				$('#actions-full').css({ 'height': 400, 'border-width': 1 });
 			}
 		} else {
-			DMM;
 			this.setState({ showAction: false });
 			this.setState({ showContact: true });
 			if ($('#contacts-full').length > 0) {
