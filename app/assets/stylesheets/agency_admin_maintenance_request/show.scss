@@ -13,6 +13,9 @@ $color-blue-light: #7646FF;
 body{
   position: relative;
 }
+.display-block {
+  display: block;
+}
 .file-pdf {
   text-align: center;
   i {
@@ -1044,7 +1047,7 @@ span.index {
       }
       li {
         margin-left: 20px;
-        height: 50px;
+        height: 35px;
         margin-bottom: 0px;
         cursor: pointer;
         a {
@@ -1183,11 +1186,15 @@ span.index {
         border-width: 5px;
       }
       &.actions {
-        margin-left: 20px;
         background-color: #ff5a5f;
         border: #f58285;
         border-style: solid;
         border-width: 5px;
+        height: auto;
+      }
+      &.trady-actions {
+        width: 100%;
+        max-width: 640px;
       }
       &.active {
         background-color: $color-grey-dark;
@@ -1260,7 +1267,12 @@ span.index {
       border-radius: 0;
       height: 100%;
       .content {
-        height: 85%;
+        margin-left: 15px;
+        margin-right: 15px;
+
+        &.contact {
+          border-top: gainsboro solid 2px;
+        }
       }
     }
   }
@@ -1578,6 +1590,7 @@ span.index {
       .section {
         padding: 20px 5px 25px;
         width: calc(100% - 10px);
+        margin-bottom: 50px;
       }
     }
     .post {
@@ -1621,10 +1634,9 @@ span.index {
     .sidebar {
       display: none;
     }
-    .actions-full{
-      bottom: 55px;
-      width: 320px;
-      left: calc((100% - 320px) / 2);
+    .actions-full {
+      bottom: 76px;
+      width: 100%;
     }
     .sidebar-mobile {
       display: block;
@@ -1634,7 +1646,6 @@ span.index {
       }
       button {
         height: 82px;
-        width: auto;
         width: 50%;
         color: $color-white;
         font-weight: 600;
@@ -1793,21 +1804,22 @@ span.index {
       display: none;
     }
     .actions-full {
-      width: 355px;
-      bottom: 55px;
-      left: calc((100% - 355px) / 2);
+      width: 100%;
+      bottom: 76px;
     }
     .sidebar-mobile {
-      @include flexbox;
-      bottom: 0px;
-      @include justify-content(center);
+      display: block;
+      .fixed {
+        @include flexbox;
+        @include justify-content(center);
+      }
       button {
-        height: 50px;
+        height: 82px;
         width: auto;
-        width: initial;
-        padding: 0 18px;
-        border-radius: 5px;
-        font-size: 16px;
+        width: 50%;
+        color: $color-white;
+        font-weight: 600;
+        font-size: 14px;
       }
     }
     .activity-mobile {
@@ -1885,8 +1897,9 @@ span.index {
       display: none;
     }
     .actions-full {
-      width: 320px;
-      left: calc((100% - 320px) / 2);
+      width: 640px;
+      bottom: 82px;
+      left: calc(50% - 320px);
     }
     .sidebar-mobile {
       display: block;
@@ -1895,10 +1908,10 @@ span.index {
         @include justify-content(center);
       }
       button {
-        height: 50px;
+        height: 82px;
         width: auto;
         width: initial;
-        font-size: 20px;
+        font-size: 16px;
         padding-left: 0.5em;
         padding-right: 0.5em;
       }
@@ -1978,9 +1991,9 @@ span.index {
       display: none;
     }
     .actions-full {
-      width: 375px;
-      bottom: 100px;
-      left: calc((100% - 375px) / 2);
+      width: 640px;
+      bottom: 82px;
+      left: calc(50% - 320px);
     }
     .sidebar-mobile {
       display: block;
