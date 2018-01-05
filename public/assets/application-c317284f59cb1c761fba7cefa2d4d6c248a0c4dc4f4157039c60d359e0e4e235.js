@@ -90812,11 +90812,11 @@ var TradyActionMobile = React.createClass({
 				{ className: "item" },
 				React.createElement(
 					"div",
-					{ className: "header action" },
+					{ className: "header action text-center" },
 					React.createElement(
 						"a",
 						null,
-						"Actions:"
+						"Actions"
 					),
 					React.createElement("i", {
 						"aria-hidden": "true",
@@ -90833,6 +90833,20 @@ var TradyActionMobile = React.createClass({
 						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
 						signed_in_trady: this.props.signed_in_trady,
+						maintenance_request: this.props.maintenance_request,
+						onModalWith: function (modal) {
+							return _this9.props.onModalWith(modal);
+						}
+					})
+				),
+				React.createElement(
+					"div",
+					{ className: "content contact" },
+					React.createElement(ContentTradyContact, {
+						agent: this.props.agent,
+						tenants: this.props.tenants,
+						landlord: this.props.landlord,
+						assigned_trady: this.props.assigned_trady,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
 							return _this9.props.onModalWith(modal);
@@ -91139,40 +91153,18 @@ var TradySideBarMobile = React.createClass({
 
 	getInitialState: function () {
 		return {
-			showAction: false,
-			showContact: false
+			showAction: false
 		};
 	},
 
 	show: function (key) {
-		if (key == 'action') {
-			this.setState({ showAction: true });
-			this.setState({ showContact: false });
-			if ($('#actions-full').length > 0) {
-				$('#actions-full').css({ 'height': 400, 'border-width': 1 });
-			}
-		} else {
-			this.setState({ showAction: false });
-			this.setState({ showContact: true });
-			if ($('#contacts-full').length > 0) {
-				$('#contacts-full').css({ 'height': this.props.tenants.length * 50 + 200, 'border-width': 1 });
-			}
-		}
+		$('#actions-full').css({ 'height': 350 + (this.props.tenants.length || 0) * 40 });
+		this.setState({ showAction: true });
 	},
 
 	close: function () {
-		if (!!this.state.showAction) {
-			this.setState({ showAction: false });
-		}
-		if (!!this.state.showContact) {
-			this.setState({ showContact: false });
-		}
-		if ($('#actions-full').length > 0) {
-			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
-		}
-		if ($('#contacts-full').length > 0) {
-			$('#contacts-full').css({ 'height': 0, 'border-width': 0 });
-		}
+		$('#actions-full').css({ 'height': 0 });
+		this.setState({ showAction: false });
 	},
 
 	componentDidMount: function () {
@@ -91184,6 +91176,10 @@ var TradySideBarMobile = React.createClass({
 
 	render: function () {
 		var _this = this;
+
+		var trady = this.state.trady;
+
+		var isAssignedTrady = trady && trady.id === this.props.signed_in_trady.id;
 
 		return React.createElement(
 			'div',
@@ -91197,24 +91193,26 @@ var TradySideBarMobile = React.createClass({
 					React.createElement(
 						'button',
 						{
-							'data-intro': 'Select \'Contact\' to call or message.', 'data-position': 'top',
-							className: "contact button-default " + (!!this.state.showContact && 'active'),
-							onClick: function (key) {
-								return _this.show('contact');
-							}
-						},
-						'CONTACT MENU'
-					),
-					React.createElement(
-						'button',
-						{
-							'data-intro': 'Select \'Action\' to action the maintenance request.', 'data-position': 'top',
-							className: "actions button-default " + (!!this.state.showAction && 'active'),
+							className: "actions trady-actions button-default " + (!!this.state.showAction && 'active'),
 							onClick: function (key) {
 								return _this.show('action');
 							}
 						},
-						'ACTIONS MENU'
+						React.createElement(
+							'span',
+							{ className: 'display-block' },
+							'CREATE QUOTE'
+						),
+						React.createElement(
+							'span',
+							{ className: 'display-block' },
+							'OR'
+						),
+						React.createElement(
+							'span',
+							{ className: 'display-block' },
+							isAssignedTrady ? "CREATE INVOICE" : "CONTACT AGENT"
+						)
 					)
 				)
 			),
@@ -91224,23 +91222,14 @@ var TradySideBarMobile = React.createClass({
 				React.createElement(TradyActionMobile, {
 					close: this.close,
 					trady: this.props.trady,
-					landlord: this.props.landlord,
-					invoices: this.props.invoices,
-					assigned_trady: this.props.assigned_trady,
-					signed_in_trady: this.props.signed_in_trady,
-					invoice_pdf_files: this.props.invoice_pdf_files,
-					maintenance_request: this.props.maintenance_request,
-					onModalWith: function (modal) {
-						return _this.props.onModalWith(modal);
-					}
-				}),
-				React.createElement(TradyContactMobile, {
-					close: this.close,
 					agent: this.props.agent,
 					tenants: this.props.tenants,
 					landlord: this.props.landlord,
+					invoices: this.props.invoices,
 					current_user: this.props.current_user,
 					assigned_trady: this.props.assigned_trady,
+					signed_in_trady: this.props.signed_in_trady,
+					invoice_pdf_files: this.props.invoice_pdf_files,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
 						return _this.props.onModalWith(modal);
@@ -92758,7 +92747,7 @@ var TradyMaintenanceRequest = React.createClass({
 							return _this3.viewItem(key, item);
 						}
 					}),
-					(!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length && React.createElement(QuoteRequests, {
+					(!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length > 0 && React.createElement(QuoteRequests, {
 						keyLandlord: 'trady',
 						landlord: this.state.landlord,
 						quote_requests: quote_requests,
