@@ -31,7 +31,7 @@ var TradySideBarMobile = React.createClass({
 				<div className="sidebar-mobile">
 					<div className="fixed">
 						<button
-							className={"actions button-default " + (!!this.state.showAction && 'active')}
+							className={"actions trady-actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
 							<span className="display-block">CREATE QUOTE</span>
