@@ -745,16 +745,16 @@ var DetailQuote = React.createClass({
 				<table  className="table">
 				<thead>
 					<tr>
-						<th className="description">
+						<th className="quote-description">
 							Description
 						</th>
-						<th className="price">
+						<th className="quote-price">
 							Pricing
 						</th>
-						<th className="text-right rate">
+						<th className="text-right quote-rate">
 							Rate
 						</th>
-						<th className="text-right amount">
+						<th className="text-right quote-amount">
 							Amount
 						</th>
 					</tr>
@@ -769,10 +769,10 @@ var DetailQuote = React.createClass({
 							}
 							return (
 								<tr key={key}>
-									<td className="description">{item.item_description}</td>
-									<td className="price">{item.pricing_type}</td>
-									<td className="text-right rate">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
-									<td className="text-right amount">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
+									<td className="quote-description">{item.item_description}</td>
+									<td className="quote-price">{item.pricing_type}</td>
+									<td className="text-right quote-rate">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
+									<td className="text-right quote-amount">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
 								</tr>
 							);
 						})
