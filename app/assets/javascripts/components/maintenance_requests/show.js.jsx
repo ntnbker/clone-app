@@ -884,7 +884,7 @@ var ModalRequestModal = React.createClass({
 														ref={e => this.company = e}
 														readOnly={!this.state.isAdd}
 														onChange={this.removeError}
-														placeholder="Enter Company Name"
+														placeholder="Enter Business Name"
 														value={trady.company_name || ""}
 														className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")}
 													/>
