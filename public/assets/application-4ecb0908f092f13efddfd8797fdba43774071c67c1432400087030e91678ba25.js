@@ -72386,6 +72386,7 @@ var InvoiceField = React.createClass({
       tax_total: tax ? tax_total : 0,
       remove: false,
       errorDate: '',
+      errorReference: '',
       errors: {}
     };
   },
@@ -72395,10 +72396,16 @@ var InvoiceField = React.createClass({
 
     var rest = _objectWithoutProperties(_ref6, ["errors"]);
 
+    var _filterError = this.filterError(errors);
+
+    var errorDate = _filterError.errorDate;
+    var errorReference = _filterError.errorReference;
+
     this.setState({
-      remove: rest.params.remove,
-      errorDate: this.filterError(errors),
-      errors: errors || {}
+      errorDate: errorDate,
+      errorReference: errorReference,
+      errors: errors || {},
+      remove: rest.params.remove
     });
   },
 
@@ -72413,11 +72420,16 @@ var InvoiceField = React.createClass({
 
   filterError: function (errors) {
     var errorDate = errors && errors['invoices.due_date'];
-    var error = '';
+    var errorReference = errors && errors['invoices.trady_invoice_reference'];
+
     if (errorDate) {
-      if (!this.date.value) error = errorDate[0];else if (!this.validDate(this.date.value)) error = errorDate.reverse()[0];
+      if (!this.date.value) errorDate = errorDate[0];else if (!this.validDate(this.date.value)) errorDate = errorDate.reverse()[0];else errorDate = '';
     }
-    return error;
+
+    if (errorReference) {
+      if (!this.reference.value) errorReference = errorReference[0];else errorReference = '';
+    }
+    return { errorDate: errorDate, errorReference: errorReference };
   },
 
   nowDate: function () {
@@ -72464,6 +72476,7 @@ var InvoiceField = React.createClass({
     var invoiceInfo = _props6$params$invoiceInfo === undefined ? {} : _props6$params$invoiceInfo;
     var _state6 = this.state;
     var errorDate = _state6.errorDate;
+    var errorReference = _state6.errorReference;
     var remove = _state6.remove;
     var errors = _state6.errors;
     var tax = _state6.tax;
@@ -72518,10 +72531,22 @@ var InvoiceField = React.createClass({
             React.createElement("input", {
               type: "text",
               className: "text-center",
+              ref: function (elem) {
+                return _this4.reference = elem;
+              },
               placeholder: "Invoice Reference Number",
               defaultValue: invoice && invoice.trady_invoice_reference,
-              name: 'ledger[invoices_attributes][' + x + '][trady_invoice_reference]'
+              onChange: function () {
+                return _this4.setState({ errorReference: '' });
+              },
+              name: 'ledger[invoices_attributes][' + x + '][trady_invoice_reference]',
+              style: errorReference ? { borderColor: 'red' } : {}
             })
+          ),
+          React.createElement(
+            "p",
+            { id: "errorbox", className: "error" },
+            errorReference || ''
           ),
           React.createElement(
             "label",
@@ -85931,22 +85956,22 @@ var DetailQuote = React.createClass({
 						null,
 						React.createElement(
 							"th",
-							{ className: "description" },
+							{ className: "quote-description" },
 							"Description"
 						),
 						React.createElement(
 							"th",
-							{ className: "price" },
+							{ className: "quote-price" },
 							"Pricing"
 						),
 						React.createElement(
 							"th",
-							{ className: "text-right rate" },
+							{ className: "text-right quote-rate" },
 							"Rate"
 						),
 						React.createElement(
 							"th",
-							{ className: "text-right amount" },
+							{ className: "text-right quote-amount" },
 							"Amount"
 						)
 					)
@@ -85965,22 +85990,22 @@ var DetailQuote = React.createClass({
 							{ key: key },
 							React.createElement(
 								"td",
-								{ className: "description" },
+								{ className: "quote-description" },
 								item.item_description
 							),
 							React.createElement(
 								"td",
-								{ className: "price" },
+								{ className: "quote-price" },
 								item.pricing_type
 							),
 							React.createElement(
 								"td",
-								{ className: "text-right rate" },
+								{ className: "text-right quote-rate" },
 								item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2)
 							),
 							React.createElement(
 								"td",
-								{ className: "text-right amount" },
+								{ className: "text-right quote-amount" },
 								item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2)
 							)
 						);
@@ -87163,6 +87188,11 @@ var Footer = React.createClass({
                                 "a",
                                 { href: "/" },
                                 "Feedback"
+                            ),
+                            React.createElement(
+                                "a",
+                                { href: this.props.new_agency_path },
+                                "Register Agent"
                             )
                         ),
                         React.createElement(
@@ -87210,6 +87240,11 @@ var Footer = React.createClass({
                         React.createElement(
                             "div",
                             { className: "footer-social_hp" },
+                            React.createElement(
+                                "a",
+                                { className: "show-on-mobile", href: this.props.new_agency_path },
+                                "Register Agent"
+                            ),
                             React.createElement(
                                 "p",
                                 null,
@@ -87613,11 +87648,12 @@ var Header = React.createClass({
     var _props2$searchText = _props2.searchText;
     var searchText = _props2$searchText === undefined ? '' : _props2$searchText;
 
-    var style = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1 ? { visibility: 'hidden' } : {};
+    var hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
+    var style = hiddenSearch ? { visibility: 'hidden' } : {};
 
     return React.createElement(
       "div",
-      { className: "search", style: style },
+      { className: "search " + (hiddenSearch && "hidden-search"), style: style },
       React.createElement(
         "form",
         { action: "/search", className: "form-search", acceptCharset: "UTF-8", method: "get" },
@@ -87701,11 +87737,6 @@ var Header = React.createClass({
             "a",
             { href: props.menu_login_path, className: "click" },
             " Login "
-          ),
-          React.createElement(
-            "a",
-            { href: props.new_agency_path, className: "register click" },
-            " Register "
           )
         )
       ),
@@ -87813,11 +87844,6 @@ var Header = React.createClass({
               "a",
               { href: props.menu_login_path },
               " Login "
-            ),
-            React.createElement(
-              "a",
-              { href: props.new_agency_path, className: "register" },
-              " Register "
             )
           ),
           React.createElement(
