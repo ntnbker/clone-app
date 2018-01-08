@@ -75,7 +75,7 @@ var PDFInvoices = React.createClass({
 									{
 										(['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid) &&
 											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
-												Mark As Paid
+												Payment Scheduled
 											</button>
 									}
 									<button

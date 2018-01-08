@@ -310,6 +310,21 @@ $color-blue-light: #7646FF;
           padding-left: 0;
           padding: 10px 3px;
         }
+        .invoice-description {
+          width: 40%;
+        }
+        .invoice-price {
+          width: 15%;
+        }
+        .invoice-hour {
+          width: 15%;
+        }
+        .invoice-rate {
+          width: 15%;
+        }
+        .invoice-amount {
+          width: 15%;
+        }
       }
     }
   }

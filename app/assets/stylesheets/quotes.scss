@@ -235,6 +235,7 @@ form#new_quote {
 		font-size: 12px;
 		border-top: 1px solid #ccc;
 		padding-top: 15px;
+		text-align: left;
 		i{
 			font-size: 36px;
 		}
@@ -244,12 +245,6 @@ form#new_quote {
 		.bank {
 			margin-left: 25px;
 			@include flex(1);
-			span {
-				&:first-child {
-					width: 110px;
-					display: inline-block;
-				};
-			}
 		}
 		.contact {
 			margin-left: 15px;

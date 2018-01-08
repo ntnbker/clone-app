@@ -858,12 +858,18 @@ var ModalViewQuote = React.createClass({
 		}
 	},
 
+	capitalizeText(text) {
+		return text
+			? text.split('\s+').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
+			: '';
+	},
+
 	getImage: function(trady) {
 		if (!trady) return '';
 
 		const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
 
-		const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+		const image_url = trady_company_profile_image && trady_company_profile_image.image_url;
 
 		return image_url;
 	},
@@ -887,33 +893,49 @@ var ModalViewQuote = React.createClass({
 						<div className="modal-header">
 							<div className="logo">
 	              <span className="icon-user">
-	                <AvatarImage id="logo" imageUri={image_url} />
+	                <AvatarImage
+	                	id="logo"
+	                	imageUri={image_url}
+	                	defaultValue="/empty.png"
+	                />
 	              </span>
 							</div>
 							<div className="info-trady">
 								<p>
 									<span>
-										{quote.trady.company_name}
+										{this.capitalizeText(quote.trady.company_name)}
 									</span>
 								</p>
 								<p>
 									<span>
-										{quote.trady.trady_company.abn}
+										{
+											quote.trady.trady_company.abn
+											? `ABN: ${quote.trady.trady_company.abn}`
+											: ''
+										}
 									</span>
 								</p>
 								<p>
 									<span>
-										{quote.trady.trady_company.address}
+										{this.capitalizeText(quote.trady.trady_company.address)}
 									</span>
 								</p>
 								<p>
 									<span>
-										{quote.trady.trady_company.mobile_number}
+										{
+											quote.trady.trady_company.mobile_number
+											? `mobile: ${quote.trady.trady_company.mobile_number}`
+											: ''
+										}
 									</span>
 								</p>
 								<p>
 									<span>
-										{quote.trady.trady_company.email}
+										{
+											quote.trady.trady_company.email
+											? `email: ${quote.trady.trady_company.email}`
+											: ''
+										}
 									</span>
 								</p>
 							</div>
@@ -933,10 +955,12 @@ var ModalViewQuote = React.createClass({
 									<div className="info-quote">
 										<div className="info-trady">
 											<div>
-												<p className="color-grey bill-to">Bill To</p>
-												<p>{self.landlord && self.landlord.name}</p>
-												<p>{self.agency && 'C/-' + self.agency.company_name}</p>
-												<p>{self.agency && self.agency.address}</p>
+												<p className="font-bold bill-to">Bill To</p>
+												<p>
+													<span className="font-bold">C/- </span>
+													{self.agency && this.capitalizeText(self.agency.business_name)}
+												</p>
+												<p>{self.agency && this.capitalizeText(self.agency.address)}</p>
 											</div>
 										</div>
 										<div className="info-agency">

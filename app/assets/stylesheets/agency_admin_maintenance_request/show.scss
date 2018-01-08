@@ -188,11 +188,11 @@ span.index {
       background-color: #fff;
       -webkit-background-clip: padding-box;
       background-clip: padding-box;
-      border: 1px solid #999;
-      border: 1px solid rgba(0,0,0,.2);
-      outline: 0;
-      -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
-      box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      // border: 1px solid #999;
+      // border: 1px solid rgba(0,0,0,.2);
+      // outline: 0;
+      // -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      // box-shadow: 0 3px 9px rgba(0,0,0,0.5);
       font-weight: 400;
       font-size: 14px;
       .due {
@@ -225,6 +225,12 @@ span.index {
       background-color: $color-grey-dark;
       &.modal-quote-header {
         @include flex-direction(column);
+      }
+      &.invoice, &.quote {
+        @include flexbox;
+        @include flex-direction(column);
+        @include justify-content(center);
+        align-items: center;
       }
       .modal-title {
         margin-bottom: 0px;
@@ -457,10 +463,10 @@ span.index {
       }
     }
     .modal-footer {
-      padding: 15px;
       text-align: center;
       border-top: none;
       overflow: hidden;
+      width: 100%;
       button {
         border: none;
         color: $color-white;
@@ -1348,13 +1354,28 @@ span.index {
         font-size: 13px;
         overflow: auto;
         th {
-          color: #b3b3b3;
-          font-size: 13px;
+          color: #404040;
+          font-size: 16px;
           text-transform: uppercase;
         }
         tr td {
           padding-left: 0;
           padding: 10px 3px;
+        }
+        .invoice-description {
+          width: 40%;
+        }
+        .invoice-price {
+          width: 15%;
+        }
+        .invoice-hour {
+          width: 15%;
+        }
+        .invoice-rate {
+          width: 15%;
+        }
+        .invoice-amount {
+          width: 15%;
         }
       }
     }
