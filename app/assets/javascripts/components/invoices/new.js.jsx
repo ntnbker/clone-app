@@ -583,6 +583,7 @@ var InvoiceField = React.createClass({
       tax_total: tax ? tax_total : 0,
       remove : false,
       errorDate: '',
+      errorReference: '',
       errors: {},
     }
   },
@@ -608,7 +609,7 @@ var InvoiceField = React.createClass({
 
   filterError: function(errors) {
     var errorDate = errors && errors['invoices.due_date'];
-    var errorReference = errors && errors['trady_invoice_reference'];
+    var errorReference = errors && errors['invoices.trady_invoice_reference'];
 
     if (errorDate) {
       if (!this.date.value)                      errorDate = errorDate[0];
@@ -704,7 +705,9 @@ var InvoiceField = React.createClass({
             ref={elem => this.reference = elem}
             placeholder="Invoice Reference Number"
             defaultValue={invoice && invoice.trady_invoice_reference}
+            onChange={() => this.setState({errorReference: ''})}
             name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
+            style={errorReference ? {borderColor: 'red'} : {}}
             />
           </div>
           <p id="errorbox" className="error">{errorReference || ''}</p>
