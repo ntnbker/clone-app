@@ -270,6 +270,12 @@ var ModalViewInvoice = React.createClass({
 										<span className="font-bold">ACC no. </span>
 										<span>{this.formatACC(invoice.trady.trady_company.bank_account_number)}</span>
 									</p>
+									{ !!invoice.invoice_items &&
+										<p>
+											<span className="font-bold">Invoice Amount: </span>
+											<span> { subTotal.toFixed(2) }</span>
+										</p>
+									}
 								</div>
 								<div className="contact">
 									<div>
@@ -285,16 +291,10 @@ var ModalViewInvoice = React.createClass({
 										<span>{this.capitalizeText(invoice.trady.trady_company.address)}</span>
 									</p>
 									{ !!invoice.invoice_items &&
-										<div className="info-trady">
-											<p>
-												<span className="font-bold">Invoice no: </span>
-												<span> {invoice.invoice_number}</span>
-											</p>
-											<p>
-												<span className="font-bold">Invoice Amount: </span>
-												<span> { subTotal.toFixed(2) }</span>
-											</p>
-										</div>
+										<p>
+											<span className="font-bold">Invoice no: </span>
+											<span> {invoice.invoice_number}</span>
+										</p>
 									}
 								</div>
 							</div>
