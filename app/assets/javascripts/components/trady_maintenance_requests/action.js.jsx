@@ -187,8 +187,8 @@ var TradyActionMobile = React.createClass({
 		return (
 			<div className="actions-full" id="actions-full">
 				<div className="item">
-					<div className="header action">
-						<a>Actions:</a>
+					<div className="header action text-center">
+						<a>Actions</a>
 						<i
 							aria-hidden="true"
 							className="fa fa-close"
@@ -205,6 +205,18 @@ var TradyActionMobile = React.createClass({
 					 		maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
+					</div>
+					<div className="content contact">
+						{
+							<ContentTradyContact
+								agent={this.props.agent}
+								tenants={this.props.tenants}
+								landlord={this.props.landlord}
+								assigned_trady={this.props.assigned_trady}
+								maintenance_request={this.props.maintenance_request}
+								onModalWith={(modal) => this.props.onModalWith(modal)}
+							/>
+						}
 					</div>
 				</div>
 			</div>
