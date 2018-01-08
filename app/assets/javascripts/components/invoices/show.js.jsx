@@ -133,6 +133,17 @@ var ModalViewInvoice = React.createClass({
 		const {invoice} = this.state;
 		let total = 0;
 
+		const subTotal = !invoice.invoice_items
+											? 0
+											: invoice.invoice_items.reduce((total, item) => {
+												if(item.pricing_type == "Fixed Cost") {
+													total += item.amount;
+												}else {
+													total += (item.amount*item.hours);
+												}
+												return total;
+											}, 0);
+
 		const image_url = this.getImage(invoice.trady);
 
 		return (
@@ -240,7 +251,7 @@ var ModalViewInvoice = React.createClass({
 								</div>
 							</div>
 						</div>
-						<div className="modal-footer">
+						<div className="modal-footer border-top">
 							<div className="footer">
 								<div className="bank">
 									<div>
@@ -259,6 +270,12 @@ var ModalViewInvoice = React.createClass({
 										<span className="font-bold">ACC no. </span>
 										<span>{this.formatACC(invoice.trady.trady_company.bank_account_number)}</span>
 									</p>
+									{ !!invoice.invoice_items &&
+										<p>
+											<span className="font-bold">Invoice Amount: </span>
+											<span> { subTotal.toFixed(2) }</span>
+										</p>
+									}
 								</div>
 								<div className="contact">
 									<div>
@@ -273,6 +290,12 @@ var ModalViewInvoice = React.createClass({
 										<span className="font-bold">Detach this section and mail with your cheque to: </span>
 										<span>{this.capitalizeText(invoice.trady.trady_company.address)}</span>
 									</p>
+									{ !!invoice.invoice_items &&
+										<p>
+											<span className="font-bold">Invoice no: </span>
+											<span> {invoice.invoice_number}</span>
+										</p>
+									}
 								</div>
 							</div>
 						</div>
