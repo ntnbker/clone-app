@@ -1,4 +1,6 @@
 class Trady < ApplicationRecord
+  before_save :format_name, :format_company_name
+
   has_many :roles, as: :roleable
   belongs_to :user 
   
@@ -45,6 +47,21 @@ class Trady < ApplicationRecord
     end 
     "#{name.capitalize} the #{skill} #{company_name}"
   end
+
+  private
+
+  def format_name
+    
+    self.name = self.name.split.map(&:capitalize).join(' ')
+
+  end
+
+  def format_company_name
+    self.company_name = self.company_name.split.map(&:capitalize).join(' ')
+  end
+
+
+
 
   # def self.skills_needed(trady_id,skill)
   #   skills = Skill.where(trady_id:trady_id).pluck()

@@ -10,6 +10,7 @@ class Invoice < ApplicationRecord
   
   validates_associated :invoice_items
   validates_presence_of :due_date
+  validates_presence_of :trady_invoice_reference, :length => {:minimum=>3, :maximum => 10 }
   validate :future_date
     
 

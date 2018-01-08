@@ -533,6 +533,10 @@ header {
       .menu-btn {
         margin-right: 7.5%;
       }
+
+      .log_in.desktop-menu-items {
+        display: none;
+      }
     }
     .header-custom .header-right {
       margin-right: 70px;
@@ -558,6 +562,9 @@ header {
           margin-right: 0;
           margin-top: 5px;
         }
+        .hidden-search {
+          display: none;
+        }
         .search {
           .form-search {
             padding-bottom: 10px;
@@ -570,13 +577,13 @@ header {
         }
       }
       .menu-btn {
-        top: 15%;
+        top: 25%;
         right: 10px;
       }
       .forhome {
         width: 100%;
         .menu-btn {
-          top: 27%;
+          top: 28%;
         }
       }
     }
@@ -614,6 +621,9 @@ footer {
 
     .footer-links_hp {
       display: none;
+    }
+    .show-on-mobile {
+      display: block;
     }
 
     .footer-logo {
@@ -669,6 +679,9 @@ footer {
     @media (min-width: 550px) {
       .footer-links_hp {
         display: block;
+      }
+      .show-on-mobile {
+        display: none;
       }
       .footer-social_hp {
         text-align: left;
@@ -818,7 +831,10 @@ footer {
   }
 
   body.modal-dialog .modal-content .modal-header .modal-title,
-  body.modal-dialog .modal-content .modal-body,
+  body.modal-dialo
+  .show-on-mobile {
+
+  } display: none;g .modal-content .modal-body,
   body.modal-dialog .modal-content .modal-body * {
     visibility: visible;
   }
