@@ -223,6 +223,12 @@ span.index {
       &.modal-quote-header {
         @include flex-direction(column);
       }
+      &.invoice, &.quote {
+        @include flexbox;
+        @include flex-direction(column);
+        @include justify-content(center);
+        align-items: center;
+      }
       .modal-title {
         margin-bottom: 0px;
         color: $color-white;

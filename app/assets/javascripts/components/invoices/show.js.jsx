@@ -96,9 +96,32 @@ var ModalViewInvoice = React.createClass({
 	},
 
 	capitalizeText(text) {
-		return text
-			? text.split('\s+').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
-			: '';
+		return !text
+			? ''
+			: text.trim().replace(/((^\w)|((\.|\,|\s)\w))/g, newWord => newWord.length === 1
+				? newWord.toUpperCase()
+				: (newWord[0] + newWord[1].toUpperCase())
+			)
+	},
+
+	formatABN(text) {
+		return text.match(/.{1,3}/g).join(' ');
+	},
+
+	formatMobile(text) {
+		return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
+	},
+
+	formatPhone(text) {
+		return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
+	},
+
+	formatBSB(text) {
+		return this.formatABN(text);
+	},
+
+	formatACC(text) {
+		return this.formatABN(text);
 	},
 
 	printInvoice: function() {
@@ -116,14 +139,15 @@ var ModalViewInvoice = React.createClass({
 			<div className="modal-custom modal-quote fade">
 				<div className="modal-dialog">
 					<div className="modal-content"  id="print-invoice">
-						<div className="modal-header">
+						<div className="modal-header invoice">
 							<div className="logo">
                 <span className="icon-user">
-                  <AvatarImage
-                  	id="logo"
-                  	imageUri={image_url}
-                  	defaultImage="/empty.png"
-                  />
+                  { !!image_url && <AvatarImage
+	                  	id="logo"
+	                  	imageUri={image_url}
+	                  	defaultImage="/empty.png"
+	                  />
+	                }
                 </span>
 							</div>
 							<div className="info-trady">
@@ -136,7 +160,7 @@ var ModalViewInvoice = React.createClass({
 									<span>
 										{
 											invoice.trady.trady_company.abn
-											? `ABN: ${invoice.trady.trady_company.abn}`
+											? `ABN ${this.formatABN(invoice.trady.trady_company.abn)}`
 											: ''
 										}
 									</span>
@@ -150,7 +174,7 @@ var ModalViewInvoice = React.createClass({
 									<span>
 										{
 											invoice.trady.trady_company.mobile_number
-											? `mobile: ${invoice.trady.trady_company.mobile_number}`
+											? `mobile: ${this.formatMobile(invoice.trady.trady_company.mobile_number)}`
 											: ''
 										}
 									</span>
@@ -178,13 +202,11 @@ var ModalViewInvoice = React.createClass({
 						<div className="slider-quote">
 							<div className="modal-body">
 								<div className="show-quote">
-									<p className="text-center font-bold">
-										Maintenance For: {self.property.property_address}
-									</p>
 									<div className="info-quote">
 										<div className="info-trady">
 											<div>
 												<p className="font-bold bill-to">Bill To</p>
+												<p>{self.landlord && this.capitalizeText(self.landlord.name)}</p>
 												<p>
 													<span className="font-bold">C/- </span>
 													{self.agency && this.capitalizeText(self.agency.business_name)}
@@ -194,15 +216,15 @@ var ModalViewInvoice = React.createClass({
 										</div>
 										<div className="info-agency">
 											<p>
-												<span className="font-bold">Invoice Number: </span>
+												<span className="font-bold">Invoice no: </span>
 												<span> {invoice.invoice_number}</span>
 											</p>
 											<p>
-												<span className="font-bold">Invoice Created: </span>
+												<span className="font-bold">Issue date: </span>
 												<span> { moment(invoice.created_at).format("LL") }</span>
 											</p>
 											<p>
-												<span className="font-bold">Invoice Due By: </span>
+												<span className="font-bold">Due date: </span>
 												<span> { moment(invoice.due_date).format("LL") }</span>
 											</p>
 										</div>
@@ -212,6 +234,9 @@ var ModalViewInvoice = React.createClass({
 											{!!invoice.invoice_items && <DetailInvoice invoice={invoice} />}
 										</div>
 									</div>
+									<p className="font-bold">
+										Service Address: {this.capitalizeText(self.property.property_address)}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -223,16 +248,16 @@ var ModalViewInvoice = React.createClass({
 										<p className="font-bold">Bank Deposit</p>
 									</div>
 									<p>
-										<span className="font-bold">BSB: </span>
-										<span>{invoice.trady.trady_company.bsb_number}</span>
-									</p>
-									<p>
-										<span className="font-bold">Account Number: </span>
-										<span>{invoice.trady.trady_company.bank_account_number}</span>
-									</p>
-									<p>
 										<span className="font-bold">Account Name: </span>
-										<span>{invoice.trady.trady_company.account_name}</span>
+										<span>{this.capitalizeText(invoice.trady.trady_company.account_name)}</span>
+									</p>
+									<p>
+										<span className="font-bold">BSB no. </span>
+										<span>{this.formatBSB(invoice.trady.trady_company.bsb_number)}</span>
+									</p>
+									<p>
+										<span className="font-bold">ACC no. </span>
+										<span>{this.formatACC(invoice.trady.trady_company.bank_account_number)}</span>
 									</p>
 								</div>
 								<div className="contact">
