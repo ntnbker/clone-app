@@ -1109,6 +1109,9 @@ span.index {
         &:last-child {
           padding-bottom: 10px;
         }
+        &.user {
+          height: 50px;
+        }
       }
       .view-more {
         background-color: $color-grey;
