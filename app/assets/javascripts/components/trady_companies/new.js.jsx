@@ -185,13 +185,13 @@ var AddTradycompany = React.createClass({
       <form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.onSubmit} >
 
         <div className="form-group">
-          <label className="control-label col-sm-2 required">Company name</label>
+          <label className="control-label col-sm-2 required">Company Name / Sole Trader Name</label>
           <div className="col-sm-10">
             <input
 
               type="text"
               id="company_name"
-              placeholder="Company Name"
+              placeholder="Company Name / Sole Trader Name"
               defaultValue={this.props.company_name}
               ref={(ref) => this.company_name = ref}
               className={"form-control " + (errors['company_name'] ? "has-error" : "")}
@@ -255,25 +255,6 @@ var AddTradycompany = React.createClass({
             </div>
           </div>
         }
-        { isInvoice &&
-          <div className="form-group">
-            <label className="control-label col-sm-2 required">Landline</label>
-            <div className="col-sm-10">
-              <input
-
-                id="landline"
-                type="text"
-                placeholder="Landline"
-                defaultValue={this.props.landline}
-                ref={(ref) => this.landline = ref}
-                className={"form-control " + (errors['landline'] ? "has-error" : "")}
-                onChange={removeErrorFunc}
-              />
-              {renderErrorFunc(errors['landline'])}
-            </div>
-          </div>
-        }
-
         { isInvoice &&
           <div className="form-group">
             <div className="col-sm-10 col-sm-offset-2">
@@ -349,6 +330,24 @@ var AddTradycompany = React.createClass({
             {this.renderError(errors['mobile_number'])}
           </div>
         </div>
+        { isInvoice &&
+          <div className="form-group">
+            <label className="control-label col-sm-2 required">Landline Number</label>
+            <div className="col-sm-10">
+              <input
+
+                id="landline"
+                type="text"
+                placeholder="Landline Number"
+                defaultValue={this.props.landline}
+                ref={(ref) => this.landline = ref}
+                className={"form-control " + (errors['landline'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['landline'])}
+            </div>
+          </div>
+        }
 
         <div className="form-group">
           <label className="control-label col-sm-2 required">Company Email</label>
