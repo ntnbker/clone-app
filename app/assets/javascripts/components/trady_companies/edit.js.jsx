@@ -228,6 +228,44 @@ var EditTradyCompany = React.createClass({
           </div>
         }
         { isInvoice &&
+          <div className="form-group">
+            <label className="control-label col-sm-2 required">
+              Profession License Number
+            </label>
+            <div className="col-sm-10">
+              <input
+
+                id="profession_license_number"
+                type="text"
+                placeholder="Profession License Number"
+                defaultValue={this.props.profession_license_number}
+                ref={(ref) => this.profession_license_number = ref}
+                className={"form-control " + (errors['profession_license_number'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['profession_license_number'])}
+            </div>
+          </div>
+        }
+        { isInvoice &&
+          <div className="form-group">
+            <label className="control-label col-sm-2 required">Landline</label>
+            <div className="col-sm-10">
+              <input
+
+                id="landline"
+                type="text"
+                placeholder="Landline"
+                defaultValue={this.props.landline}
+                ref={(ref) => this.landline = ref}
+                className={"form-control " + (errors['landline'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['landline'])}
+            </div>
+          </div>
+        }
+        { isInvoice &&
   				<div className="form-group">
   					<div className="col-sm-10 col-sm-offset-2">
   						<input

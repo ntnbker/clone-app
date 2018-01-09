@@ -111,10 +111,12 @@ var AddTradycompany = React.createClass({
 
     if (isInvoice) {
       trady_company.abn =                 getValidValue(this.abn);
-      trady_company.gst_registration =    this.state.gst_registration,
+      trady_company.gst_registration =    this.state.gst_registration;
+      trady_company.landline =            getValidValue(this.landline);
       trady_company.bsb_number =          getValidValue(this.bsb_number);
       trady_company.account_name =        getValidValue(this.account_name);
       trady_company.bank_account_number = getValidValue(this.bank_account_number);
+      trady_company.profession_license_number = getValidValue(this.profession_license_number);
     }
 
     var params = { trady_company };
@@ -230,6 +232,44 @@ var AddTradycompany = React.createClass({
                 onChange={removeErrorFunc}
               />
               {renderErrorFunc(errors['abn'])}
+            </div>
+          </div>
+        }
+        { isInvoice &&
+          <div className="form-group">
+            <label className="control-label col-sm-2 required">
+              Profession License Number
+            </label>
+            <div className="col-sm-10">
+              <input
+
+                id="profession_license_number"
+                type="text"
+                placeholder="Profession License Number"
+                defaultValue={this.props.profession_license_number}
+                ref={(ref) => this.profession_license_number = ref}
+                className={"form-control " + (errors['profession_license_number'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['profession_license_number'])}
+            </div>
+          </div>
+        }
+        { isInvoice &&
+          <div className="form-group">
+            <label className="control-label col-sm-2 required">Landline</label>
+            <div className="col-sm-10">
+              <input
+
+                id="landline"
+                type="text"
+                placeholder="Landline"
+                defaultValue={this.props.landline}
+                ref={(ref) => this.landline = ref}
+                className={"form-control " + (errors['landline'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['landline'])}
             </div>
           </div>
         }
