@@ -1070,7 +1070,8 @@ var MaintenanceRequest = React.createClass({
 		switch(key) {
 			case 'viewQuote':
 			case 'viewConfirmQuote':
-			case 'viewQuoteMessage': {
+			case 'viewQuoteMessage':
+			case 'confirmForwardLanlord': {
 				this.setState({
 					quote: item
 				});
@@ -1519,6 +1520,7 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
+				debugger
 				quote.forwarded_to_landlord = res.forwarded_to_landlord;
 				self.setState({
 					quote: quote,
@@ -2477,6 +2479,20 @@ var MaintenanceRequest = React.createClass({
 							confirmText="Send"
 							approveJob={this.approveJob}
 							maintenance_request={this.state.maintenance_request}
+						/>
+					)
+
+				case 'confirmForwardLanlord':
+					const params = {
+						quote_id: this.state.quote.id,
+						maintenance_request_id: this.state.quote.maintenance_request_id,
+					};
+
+					return (
+						<ModalConfirmAnyThing
+							title="Forward To Landlord"
+							content="You have already forwarded this quote to the landlord. Are you sure you want to send it again to the landlord?"
+							confirm={() => this.sendEmailLandlord(params, this.state.quote)}
 						/>
 					)
 

@@ -43,6 +43,72 @@ var DropList = React.createClass({
 	}
 });
 
+var DropDownContentMobile = React.createClass({
+  getInitialState: function() {
+    return {
+      valueAction: this.props.valueAction
+    };
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if(nextProps.isHide === true || nextProps.isHide === false) {
+      this.setHeight(nextProps.isHide);
+    }
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
+  setHeight: function(flag) {
+    if(!flag) {
+      var dropdown = $('.show .content-action');
+      dropdown.css({
+        "height": 400,
+        "overflow-y": "scroll"
+      });
+    }else {
+      $('.content-mobile .dropcontent').css('height', 0);
+    }
+  },
+
+  render: function() {
+    const {action = [], awaiting} = this.props;
+    const props = this.props;
+    const state = this.state;
+    return (
+      <ul className="dropcontent content-action">
+          <div className="text-center title">
+            <a>{props.title}</a>
+          </div>
+        {
+          action.map((item, index) => {
+            return (
+              <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+                <a onClick={(value) => props.getAction(item.value)}>
+                  <span>{item.count}</span>
+                  <b className="name">{item.title}</b>
+                </a>
+              </li>
+            );
+          })
+        }
+        { awaiting && <div className="line-hr" /> }
+        { awaiting && awaiting.map((item, index) => {
+            return (
+              <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+                <a onClick={(value) => props.getAction(item.value)}>
+                  <span>{item.count}</span>
+                  <b className="name">{item.title}</b>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    );
+  }
+});
+
 var DropDownContent = React.createClass({
   getInitialState: function() {
     return {
@@ -230,7 +296,6 @@ var P = React.createClass({
     );
   }
 });
-
 
 var ImgSlider = React.createClass({
   getInitialState: function() {

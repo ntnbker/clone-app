@@ -7,6 +7,9 @@ var ButtonForwardLandlord = React.createClass({
 
 	sendEmail: function() {
 		if(!!this.props.landlord){
+			if (this.state.isSend) {
+				return this.props.viewQuote('confirmForwardLandlord', this.props.quote);
+			}
 			const params = {
 				quote_id: this.props.quote.id,
 				maintenance_request_id: this.props.quote.maintenance_request_id,
@@ -35,7 +38,7 @@ var ButtonForwardLandlord = React.createClass({
 			<button
 				type="button"
 				style={style}
-				onClick={!this.state.isSend && this.sendEmail}
+				onClick={this.sendEmail}
 				className="btn btn-trans"
 			>
 				{!!this.state.isSend ? 'Sent to Landlord' : 'Forward to LandLord'}
