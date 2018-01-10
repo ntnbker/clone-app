@@ -43,7 +43,7 @@ var DropList = React.createClass({
 	}
 });
 
-var DropDownContent = React.createClass({
+var DropDownContentMobile = React.createClass({
   getInitialState: function() {
     return {
       valueAction: this.props.valueAction
@@ -67,7 +67,7 @@ var DropDownContent = React.createClass({
         "overflow-y": "scroll"
       });
     }else {
-      $('.dropcontent').css('height', 0);
+      $('.content-mobile .dropcontent').css('height', 0);
     }
   },
 
@@ -94,6 +94,63 @@ var DropDownContent = React.createClass({
         }
         { awaiting && <div className="line-hr" /> }
         { awaiting && awaiting.map((item, index) => {
+            return (
+              <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+                <a onClick={(value) => props.getAction(item.value)}>
+                  <span>{item.count}</span>
+                  <b className="name">{item.title}</b>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    );
+  }
+});
+
+
+var DropDownContent = React.createClass({
+  getInitialState: function() {
+    return {
+      valueAction: this.props.valueAction
+    };
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if(nextProps.isHide === true || nextProps.isHide === false) {
+      this.setHeight(nextProps.isHide);
+    }
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
+  setHeight: function(flag) {
+    if(!flag) {
+      var dropdown = $('.show .content-action');
+      var heightScreen = $(window).height() - 90;
+      if(heightScreen < 450) {
+        dropdown.css({
+          "height": heightScreen,
+          "overflow-y": "scroll"
+        });
+      }else {
+        dropdown.css("height", 450);
+      }
+    }else {
+      $('.content-mobile .dropcontent').css('height', 0);
+    }
+  },
+
+  render: function() {
+    const {content} = this.props;
+    const props = this.props;
+    const state = this.state;
+    return (
+      <ul className="dropcontent content-action">
+        {
+          content.map((item, index) => {
             return (
               <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
                 <a onClick={(value) => props.getAction(item.value)}>
@@ -192,7 +249,7 @@ var DropDownMobileList = React.createClass({
           {this.props.title}
         </button>
         <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
-          <DropDownContent
+          <DropDownContentMobile
             isHide={state.hidden}
             action={request || tradyFilter}
             awaiting={awaiting}
