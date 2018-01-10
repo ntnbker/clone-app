@@ -1071,7 +1071,7 @@ var MaintenanceRequest = React.createClass({
 			case 'viewQuote':
 			case 'viewConfirmQuote':
 			case 'viewQuoteMessage':
-			case 'confirmForwardLanlord': {
+			case 'confirmForwardLandlord': {
 				this.setState({
 					quote: item
 				});
@@ -2482,7 +2482,7 @@ var MaintenanceRequest = React.createClass({
 						/>
 					)
 
-				case 'confirmForwardLanlord':
+				case 'confirmForwardLandlord':
 					const params = {
 						quote_id: this.state.quote.id,
 						maintenance_request_id: this.state.quote.maintenance_request_id,
@@ -2493,6 +2493,7 @@ var MaintenanceRequest = React.createClass({
 							title="Forward To Landlord"
 							content="You have already forwarded this quote to the landlord. Are you sure you want to send it again to the landlord?"
 							confirm={() => this.sendEmailLandlord(params, this.state.quote)}
+							close={this.isClose}
 						/>
 					)
 

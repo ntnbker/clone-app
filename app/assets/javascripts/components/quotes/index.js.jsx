@@ -31,13 +31,13 @@ var ButtonForwardLandlord = React.createClass({
 	},
 
 	render: function() {
-		const style = {
-			opacity: this.state.isSend ? 0.5 : 1
-		};
+		// const style = {
+		// 	opacity: this.state.isSend ? 0.5 : 1
+		// };
 		return (
 			<button
 				type="button"
-				style={style}
+				// style={style}
 				onClick={this.sendEmail}
 				className="btn btn-trans"
 			>
@@ -352,6 +352,7 @@ var ActionQuote = React.createClass({
 							<ButtonForwardLandlord
 								quote={quote}
 								landlord={self.landlord}
+								viewQuote={self.viewQuote}
 								onModalWith={self.onModalWith}
 								sendEmailLandlord={self.sendEmailLandlord}
 							/>
