@@ -286,7 +286,7 @@ var ModalEditAskLandlord = React.createClass({
 										<p className="landlord-email font-bold">
 											{landlord.email}
 											<span>
-												<button className="btn btn-link" onClick={() => this.props.onModalWith('addLandlord')}>
+												<button type="button" className="btn btn-link" onClick={() => this.props.onModalWith('addLandlord')}>
 													Edit Email
 												</button>
 											</span>
@@ -535,7 +535,7 @@ var ModalEditLandlord = React.createClass({
 	getInitialState: function() {
 		return {
 			errorName: false,
-			errorEmail: false,
+			// errorEmail: false,
 			errorMobile: false,
 		};
 	},
@@ -544,7 +544,7 @@ var ModalEditLandlord = React.createClass({
 		var key = e.target.id;
 		var errorField = {
 			'name'  : 'errorName',
-			'email' : 'errorEmail',
+			// 'email' : 'errorEmail',
 			'mobile': 'errorMobile',
 		}[key];
 
@@ -558,10 +558,10 @@ var ModalEditLandlord = React.createClass({
 		var params = {
 			authenticity_token: this.props.authToken,
 			landlord: {
-				name: this.name && this.name.value,
-				email: this.email && this.email.value,
-				mobile: this.mobile && this.mobile.value,
 				id: this.props.landlord.id,
+				email: this.props.landlord.email,
+				name: this.name && this.name.value,
+				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id,
 			},
 		}
@@ -630,19 +630,14 @@ var ModalEditLandlord = React.createClass({
 									<div className="row m-t-lg">
 										<div>
 											<label>Email <strong>*</strong>:</label>
-											<input
-												id="email"
-												type="text"
-												autoCapitalize="off"
-												autoCorrect="off"
-												autoComplete="off"
-												name="landlord[email]"
-												placeholder="Enter Email"
-												ref={e => this.email = e}
-												onChange={this.removeError}
-												defaultValue={this.props.landlord.email}
-												className={"u-full-width " + (this.state.errorEmail && "has-error")}
-											/>
+											<p className="landlord-email font-bold">
+												{this.props.landlord.email}
+												<span>
+													<button type="button" className="btn btn-link" onClick={() => this.props.onModalWith('addLandlord')}>
+														Edit Email
+													</button>
+												</span>
+											</p>
 										</div>
 										{renderError(this.state['errorEmail'])}
 									</div>
@@ -2135,6 +2130,7 @@ var MaintenanceRequest = React.createClass({
 								landlord={this.state.landlord}
 								editLandlord={this.editLandlord}
 								authToken={this.props.authenticity_token}
+								onModalWith={this.onModalWith}
 								maintenance_request_id={this.state.maintenance_request.id}
 							/>
 						);
