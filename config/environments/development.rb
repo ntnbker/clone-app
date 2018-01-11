@@ -58,6 +58,9 @@ Rails.application.configure do
 
 
 
+  config.time_zone = 'Sydney'
+  config.active_record.default_timezone = :local
+
 
   config.after_initialize do
     Bullet.enable = true
