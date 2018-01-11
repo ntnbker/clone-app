@@ -396,6 +396,15 @@ span.index {
       .input-custom {
         width: 80%;
       }
+      .landlord-email {
+        width: 80%;
+        margin-left: 10%;
+        text-align: left;
+        padding: 6px 10px;
+        span {
+          padding-left: 10px;
+        }
+      }
       .message {
         list-style: none;
         max-height: 300px;
