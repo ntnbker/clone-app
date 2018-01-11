@@ -286,9 +286,9 @@ var ModalEditAskLandlord = React.createClass({
 										<p className="landlord-email font-bold">
 											{landlord.email}
 											<span>
-												<a href="" onClick={() => this.props.onModalWith('addLandlord')}>
+												<button className="btn btn-link" onClick={() => this.props.onModalWith('addLandlord')}>
 													Edit Email
-												</a>
+												</button>
 											</span>
 										</p>
 									</div>
