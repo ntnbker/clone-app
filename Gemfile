@@ -51,6 +51,8 @@ gem 'twilio-ruby', '~> 4.11.1'
 gem 'rails_12factor', group: :production
 gem 'actionpack-action_caching'
 gem 'rails-observers'
+gem "tod"
+gem "chronic"
 
 group :development, :test do
   gem 'byebug', platform: :mri

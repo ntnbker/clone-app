@@ -98,6 +98,7 @@ GEM
       thor (~> 0.14)
     childprocess (0.6.3)
       ffi (~> 1.0, >= 1.0.11)
+    chronic (0.10.2)
     cocoon (1.2.9)
     coderay (1.1.1)
     coffee-rails (4.2.1)
@@ -365,6 +366,7 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.7)
+    tod (2.1.1)
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.2)
@@ -415,6 +417,7 @@ DEPENDENCIES
   capybara
   capybara-email
   chardinjs-rails
+  chronic
   cocoon
   coffee-rails (~> 4.2)
   database_cleaner
@@ -467,6 +470,7 @@ DEPENDENCIES
   stackprof
   stripe
   thin
+  tod
   turbolinks (~> 5)
   twilio-ruby (~> 4.11.1)
   tzinfo-data
