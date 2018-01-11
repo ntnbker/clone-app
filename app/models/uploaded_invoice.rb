@@ -4,5 +4,6 @@ class UploadedInvoice < ApplicationRecord
   belongs_to :maintenance_request
   belongs_to :trady
 
+  validates :total_invoice_amount, presence: true, numericality: true,
 
 end 
