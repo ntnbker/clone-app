@@ -229,7 +229,16 @@ form#new_maintenance_request {
         width: 50%;
     }
 }
-
+.line-hr {
+    border-top: gainsboro 2px solid;
+    margin: 15px;
+}
+h5.title-mobile {
+    margin: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: slategray;
+}
 .droplist {
     position: relative;
     margin-bottom: 15px;
@@ -346,6 +355,18 @@ form#new_maintenance_request {
                 color: white;
                 border-radius: 3px;
             }
+        }
+    }
+    .title {
+        @include flexbox;
+        @include justify-content(center);
+        align-items: center;
+        height: 40px;
+        background-color: #7dc691;
+        a {
+            color: white;
+            font-size: 18px;
+            font-weight: 400;
         }
     }
 }
@@ -497,16 +518,10 @@ form#new_maintenance_request {
         z-index: 100;
         left: 0;
         .drop-mobile-list {
-            &:first-child {
-                padding-right: 10px;
-            }
-            &:last-child {
-                padding-left: 10px;
-            }
             .btn-drop-mobile {
                 float: left;
                 height: 60px;
-                width: 180px;
+                width: 480px;
                 color: $color-white;
                 background-color: #ff5a5f;
                 font-weight: 400;
@@ -525,7 +540,7 @@ form#new_maintenance_request {
             }
             .action-mobile {
                 position: fixed;
-                bottom: 55px;
+                bottom: 60px;
                 z-index: 100;
                 @include flexbox;
                 left: 0;
@@ -622,6 +637,7 @@ form#new_maintenance_request {
     }
     @media (max-width: 1366px) {
         width: 95%;
+        margin-bottom: 140px;
     }
     @media (max-width: 1200px) {
         .main-column {
@@ -646,11 +662,20 @@ form#new_maintenance_request {
         }
         .action-mobile .drop-mobile-list {
             .content-mobile .dropcontent{
-                width: 435px;
+                width: 480px;
             }
             .btn-drop-mobile {
 
             }
+        }
+        .btn-drop-mobile {
+            padding: 0 15px;
+            width: 480px;
+            margin-left: calc(50% - 240px);
+            height: 82px;
+            color: $color-white;
+            font-weight: 600;
+            font-size: 16px;
         }
     }
     @media (max-width: 480px) {
@@ -663,17 +688,11 @@ form#new_maintenance_request {
         }
         .action-mobile .drop-mobile-list {
             width: 100%;
-            .content-mobile .dropcontent{
-                width: 335px;
-            }
             .btn-drop-mobile {
-                &.trady-filter {
-                    width: 50%;
-                    margin-left: 25%;
-                }
                 padding: 0 15px;
                 width: 100%;
-                height: 82px;
+                margin-left: 0;
+                height: 60px;
                 color: $color-white;
                 font-weight: 600;
                 font-size: 16px;
@@ -683,7 +702,7 @@ form#new_maintenance_request {
     @media (max-width: 360px) {
         .action-mobile .drop-mobile-list {
             .content-mobile .dropcontent{
-                width: 300px;
+                width: 100%;
             }
             .btn-drop-mobile {
                 padding: 0 5px;

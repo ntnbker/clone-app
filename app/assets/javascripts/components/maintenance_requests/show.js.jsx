@@ -2256,7 +2256,6 @@ var MaintenanceRequest = React.createClass({
 							agency={this.props.agency}
 						 	invoice={this.state.invoice}
 						 	invoices={this.state.invoices}
-						 	landlord={this.state.landlord}
 							property={this.props.property}
 						/>
 					);

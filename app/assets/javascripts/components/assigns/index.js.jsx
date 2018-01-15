@@ -77,6 +77,35 @@ var ModalViewTrady = React.createClass({
     return { agency, agent, trady, maintenance_request, property, hasApproved };
   },
 
+  capitalizeText(text) {
+    return !text
+      ? ''
+      : text.trim().replace(/((^\w)|((\.|\,|\s)\w))/g, newWord => newWord.length === 1
+        ? newWord.toUpperCase()
+        : (newWord[0] + newWord[1].toUpperCase())
+      )
+  },
+
+  formatABN(text) {
+    return text.match(/.{1,3}/g).join(' ');
+  },
+
+  formatMobile(text) {
+    return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
+  },
+
+  formatPhone(text) {
+    return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
+  },
+
+  formatBSB(text) {
+    return this.formatABN(text);
+  },
+
+  formatACC(text) {
+    return this.formatABN(text);
+  },
+
   printWork() {
     window.print();
   },
@@ -106,20 +135,44 @@ var ModalViewTrady = React.createClass({
                   </div>
                   <div className="info-trady">
                     <p>
-                        {trady.company_name}
+                      <span>
+                        {this.capitalizeText(trady.company_name || '')}
+                      </span>
                     </p>
+                    { trady.trady_company.abn &&
+                      <p>
+                        <span>
+                          ABN {this.formatABN(trady.trady_company.abn || '')}
+                        </span>
+                      </p>
+                    }
                     <p>
-                        {trady.trady_company && trady.trady_company.abn}
+                      <span>
+                        {this.capitalizeText(trady.trady_company.address || '')}
+                      </span>
                     </p>
-                    <p>
-                        {trady.trady_company && trady.trady_company.address}
-                    </p>
-                    <p>
-                        {trady.trady_company && trady.trady_company.mobile_number || trady.mobile}
-                    </p>
-                    <p>
-                        {trady.trady_company && trady.trady_company.email || trady.email}
-                    </p>
+                    { trady.trady_company.mobile_number &&
+                      <p>
+                        <span>
+                          mobile: {this.formatMobile(trady.trady_company.mobile_number || '')}
+                        </span>
+                      </p>
+                    }
+
+                    { trady.trady_company.landline &&
+                      <p>
+                        <span>
+                         landline: {this.formatPhone(trady.trady_company.landline || '')}
+                        </span>
+                      </p>
+                    }
+                    { trady.trady_company.email &&
+                      <p>
+                        <span>
+                          email: {trady.trady_company.email}
+                        </span>
+                      </p>
+                    }
                   </div>
                 </div>
                 <div className="work-order-for right">
@@ -130,16 +183,33 @@ var ModalViewTrady = React.createClass({
                   </div>
                   <div className="info-trady">
                     <p>
-                      {agency && agency.company_name}
+                      <span className="font-bold">C/- </span>
+                      {agency && this.capitalizeText(agency.business_name)}
+                    </p>
+
+                    <p>
+                      <span>
+                        {
+                          agency && agency.abn
+                          ? `ABN ${this.formatABN(agency.abn || '')}`
+                          : ''
+                        }
+                      </span>
+                    </p>
+
+                    <p>
+                      <span>
+                        {
+                          agency && agency.phone
+                          ? `phone: ${this.formatMobile(agency.phone || '')}`
+                          : ''
+                        }
+                      </span>
                     </p>
                     <p>
-                      {agency && agency.abn}
-                    </p>
-                    <p>
-                      {agency && agency.phone}
-                    </p>
-                    <p>
-                      {agency && agency.address}
+                      <span>
+                        {agency && this.capitalizeText(agency.address || '')}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -181,8 +251,12 @@ var ModalViewTrady = React.createClass({
               <div className="access-contact rect-info">
                   <div className="title">Access Contacts</div>
                   <div className="detail">
-                    <p><span className="heading">Name:</span>{maintenance_request.name}</p>
-                    <p><span className="heading">Phone:</span>{maintenance_request.mobile}</p>
+                    <p><span className="heading">Name:</span>
+                      {this.capitalizeText(maintenance_request.name || '')}
+                    </p>
+                    <p><span className="heading">Phone:</span>
+                      {this.formatMobile(maintenance_request.mobile || '')}
+                    </p>
                     <p><span className="heading">Email:</span>{maintenance_request.email}</p>
                   </div>
               </div>
@@ -212,16 +286,16 @@ var ModalViewTrady = React.createClass({
                     <p className="font-bold">Bank Deposit</p>
                   </div>
                   <p>
-                    <span className="font-bold">BSB:</span>
-                    <span>{trady.trady_company && trady.trady_company.bsb_number}</span>
+                    <span className="font-bold">Account Name: </span>
+                    <span>{this.capitalizeText(trady.trady_company.account_name)}</span>
                   </p>
                   <p>
-                    <span className="font-bold">Account Number:</span>
-                    <span>{trady.trady_company && trady.trady_company.bank_account_number}</span>
+                    <span className="font-bold">BSB no. </span>
+                    <span>{this.formatBSB(trady.trady_company.bsb_number)}</span>
                   </p>
                   <p>
-                    <span className="font-bold">Account Name:</span>
-                    <span>{trady.trady_company && trady.trady_company.account_name}</span>
+                    <span className="font-bold">ACC no. </span>
+                    <span>{this.formatACC(trady.trady_company.bank_account_number)}</span>
                   </p>
                 </div>
                 <div className="contact">
@@ -229,17 +303,13 @@ var ModalViewTrady = React.createClass({
                     <i className="fa fa-envelope-o" />
                     <p className="font-bold">Mail</p>
                   </div>
-                  <p className="font-bold">
-                    Make your cheque payable to:
+                  <p>
+                    <span className="font-bold">Make your cheque payable to: </span>
+                    <span>{this.capitalizeText(trady.trady_company.account_name)}</span>
                   </p>
                   <p>
-                    {trady.trady_company && trady.trady_company.account_name}
-                  </p>
-                  <p className="font-bold">
-                    Detach this section and mail with your cheque to:
-                  </p>
-                  <p>
-                    {trady.trady_company && trady.trady_company.address}
+                    <span className="font-bold">Detach this section and mail with your cheque to: </span>
+                    <span>{this.capitalizeText(trady.trady_company.address)}</span>
                   </p>
                 </div>
               </div>
