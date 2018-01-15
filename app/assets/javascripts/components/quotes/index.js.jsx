@@ -475,7 +475,7 @@ var Quotes = React.createClass({
 									</span>
 									<div className="info">
 										<div className="name">
-											<span>{quote.trady.name}</span>
+											<span>{quote.trady.company_name}</span>
 											{showStatus &&
 												<button
 													className={'button-default status ' + status}>
@@ -594,7 +594,7 @@ var QuoteRequests = React.createClass({
 									</span>
 									<div className="info">
 										<div className="name">
-											<span>{quote_request.trady && quote_request.trady.name}</span>
+											<span>{quote_request.trady && quote_request.trady.company_name}</span>
 										</div>
 										<div className="description">
 											{quote_request.trady && quote_request.trady.name}
