@@ -75,11 +75,13 @@ var DropDownContentMobile = React.createClass({
     const {action = [], awaiting} = this.props;
     const props = this.props;
     const state = this.state;
+    const {actionTitle, awaitingTitle} = props;
     return (
       <ul className="dropcontent content-action">
-          <div className="text-center title">
-            <a>{props.title}</a>
-          </div>
+        <div className="text-center title">
+          <a>{props.title}</a>
+        </div>
+        <h5 className="title-mobile">{actionTitle}</h5>
         {
           action.map((item, index) => {
             return (
@@ -93,6 +95,7 @@ var DropDownContentMobile = React.createClass({
           })
         }
         { awaiting && <div className="line-hr" /> }
+        <h5 className="title-mobile">{awaitingTitle}</h5>
         { awaiting && awaiting.map((item, index) => {
             return (
               <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
@@ -253,6 +256,8 @@ var DropDownMobileList = React.createClass({
             isHide={state.hidden}
             action={request || tradyFilter}
             awaiting={awaiting}
+            actionTitle={request ? 'Action Required' : ''}
+            awaitingTitle={awaiting ? 'Awaiting Action' : ''}
             title={this.props.title}
             valueAction={state.valueAction}
             getAction={(value) => props.getAction(value)}
@@ -463,7 +468,7 @@ var ListMaintenanceRequest = React.createClass({
       ],
       actionRequests: [
         {
-          title: "Maintenance Request",
+          title: "New Maintenance Request",
           value: "Initiate Maintenance Request",
           count: this.props.new_maintenance_requests_count,
         },
@@ -845,7 +850,7 @@ var ListMaintenanceRequest = React.createClass({
               <DropDownMobileList
                 class="action"
                 id="action-required"
-                title="Agent Filter"
+                title="Agent Filters"
                 request={this.state.actionRequests}
                 awaiting={this.state.awaitingAction}
                 valueAction={this.state.valueAction}
@@ -857,7 +862,7 @@ var ListMaintenanceRequest = React.createClass({
               <DropDownMobileList
                 class="trady"
                 id="trady-filter"
-                title="Trady Filter"
+                title="Trady Filters"
                 tradyFilter={this.state.tradyFilter}
                 valueAction={this.state.valueAction}
                 getAction={(value) => this.getAction(value)}
