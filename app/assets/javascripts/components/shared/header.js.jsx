@@ -1,6 +1,10 @@
 const MenuAgency = function(edit_agency, edit_agency_admin) {
   return [
     {
+      url: "/",
+      name: "Create Maintenance Request",
+    },
+    {
       url: "/agency_admin_maintenance_requests",
       name: "My Maintenance Requests",
     },
@@ -17,6 +21,10 @@ const MenuAgency = function(edit_agency, edit_agency_admin) {
 
 const MenuAgent = function(edit_agent) {
   return [
+    {
+      url: "/",
+      name: "Create Maintenance Request",
+    },
     {
       url: "/agent_maintenance_requests",
       name: "My Maintenance Requests",
