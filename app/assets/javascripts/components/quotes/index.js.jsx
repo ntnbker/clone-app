@@ -994,6 +994,7 @@ var ModalViewQuote = React.createClass({
 										quotes={this.state.quotes}
 										printQuote={this.printQuote}
 										onModalWith={self.onModalWith}
+										viewQuote={this.props.viewQuote}
 										keyLandlord={this.props.keyLandlord}
 										updateStatusQuote={self.updateStatusQuote}
 										sendEmailLandlord={self.sendEmailLandlord}
@@ -1249,6 +1250,7 @@ var ModalViewPhoto = React.createClass({
 									quotes={self.quotes}
 									onModalWith={self.onModalWith}
 									keyLandlord={self.keyLandlord}
+									viewQuote={this.props.viewQuote}
 									updateStatusQuote={self.updateStatusQuote}
 									sendEmailLandlord={self.sendEmailLandlord}
 								/>

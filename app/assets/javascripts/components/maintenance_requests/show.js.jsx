@@ -1520,7 +1520,6 @@ var MaintenanceRequest = React.createClass({
 			},
 			data: params,
 			success: function(res){
-				debugger
 				quote.forwarded_to_landlord = res.forwarded_to_landlord;
 				self.setState({
 					quote: quote,
@@ -2206,7 +2205,7 @@ var MaintenanceRequest = React.createClass({
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
 							updateStatusQuote={this.updateStatusQuote}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
 						/>
 					);
@@ -2465,7 +2464,7 @@ var MaintenanceRequest = React.createClass({
 							hideRestore={!!this.state.trady}
 							gallery={this.state.quote_images}
 							updateStatusQuote={this.updateStatusQuote}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 							sendEmailLandlord={this.sendEmailLandlord}
 							current_user={this.props.current_user}
 						/>
@@ -2683,7 +2682,7 @@ var MaintenanceRequest = React.createClass({
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}
 									chooseQuoteRequest={this.chooseQuoteRequest}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 							: ''
@@ -2696,7 +2695,7 @@ var MaintenanceRequest = React.createClass({
 							 		current_user={this.props.current_user}
 							 		updateStatusQuote={this.updateStatusQuote}
 							 		sendEmailLandlord={this.sendEmailLandlord}
-							 		viewQuote={(key, item) => this.viewItem(key, item)}
+							 		viewQuote={this.viewItem}
 							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
 						 		/>
 					 	}
