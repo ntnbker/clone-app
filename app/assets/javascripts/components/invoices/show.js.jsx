@@ -193,6 +193,15 @@ var ModalViewInvoice = React.createClass({
 								<p>
 									<span>
 										{
+											invoice.trady.trady_company.landline
+											? `landline: ${this.formatPhone(invoice.trady.trady_company.landline)}`
+											: ''
+										}
+									</span>
+								</p>
+								<p>
+									<span>
+										{
 											invoice.trady.trady_company.email
 											? `email: ${invoice.trady.trady_company.email}`
 											: ''
