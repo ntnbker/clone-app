@@ -1058,7 +1058,8 @@ var MaintenanceRequest = React.createClass({
 		switch(key) {
 			case 'viewQuote':
 			case 'viewConfirmQuote':
-			case 'viewQuoteMessage': {
+			case 'viewQuoteMessage':
+			case 'confirmForwardLandlord': {
 				this.setState({
 					quote: item
 				});
@@ -2194,7 +2195,7 @@ var MaintenanceRequest = React.createClass({
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
 							updateStatusQuote={this.updateStatusQuote}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
 						/>
 					);
@@ -2452,7 +2453,7 @@ var MaintenanceRequest = React.createClass({
 							hideRestore={!!this.state.trady}
 							gallery={this.state.quote_images}
 							updateStatusQuote={this.updateStatusQuote}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 							sendEmailLandlord={this.sendEmailLandlord}
 							current_user={this.props.current_user}
 						/>
@@ -2466,6 +2467,21 @@ var MaintenanceRequest = React.createClass({
 							confirmText="Send"
 							approveJob={this.approveJob}
 							maintenance_request={this.state.maintenance_request}
+						/>
+					)
+
+				case 'confirmForwardLandlord':
+					const params = {
+						quote_id: this.state.quote.id,
+						maintenance_request_id: this.state.quote.maintenance_request_id,
+					};
+
+					return (
+						<ModalConfirmAnyThing
+							title="Forward To Landlord"
+							content="You have already forwarded this quote to the landlord. Are you sure you want to send it again to the landlord?"
+							confirm={() => this.sendEmailLandlord(params, this.state.quote)}
+							close={this.isClose}
 						/>
 					)
 
@@ -2655,7 +2671,7 @@ var MaintenanceRequest = React.createClass({
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}
 									chooseQuoteRequest={this.chooseQuoteRequest}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 							: ''
@@ -2668,7 +2684,7 @@ var MaintenanceRequest = React.createClass({
 							 		current_user={this.props.current_user}
 							 		updateStatusQuote={this.updateStatusQuote}
 							 		sendEmailLandlord={this.sendEmailLandlord}
-							 		viewQuote={(key, item) => this.viewItem(key, item)}
+							 		viewQuote={this.viewItem}
 							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
 						 		/>
 					 	}

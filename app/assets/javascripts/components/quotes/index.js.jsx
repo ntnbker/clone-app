@@ -7,6 +7,9 @@ var ButtonForwardLandlord = React.createClass({
 
 	sendEmail: function() {
 		if(!!this.props.landlord){
+			if (this.state.isSend) {
+				return this.props.viewQuote('confirmForwardLandlord', this.props.quote);
+			}
 			const params = {
 				quote_id: this.props.quote.id,
 				maintenance_request_id: this.props.quote.maintenance_request_id,
@@ -28,14 +31,14 @@ var ButtonForwardLandlord = React.createClass({
 	},
 
 	render: function() {
-		const style = {
-			opacity: this.state.isSend ? 0.5 : 1
-		};
+		// const style = {
+		// 	opacity: this.state.isSend ? 0.5 : 1
+		// };
 		return (
 			<button
 				type="button"
-				style={style}
-				onClick={!this.state.isSend && this.sendEmail}
+				// style={style}
+				onClick={this.sendEmail}
 				className="btn btn-trans"
 			>
 				{!!this.state.isSend ? 'Sent to Landlord' : 'Forward to LandLord'}
@@ -349,6 +352,7 @@ var ActionQuote = React.createClass({
 							<ButtonForwardLandlord
 								quote={quote}
 								landlord={self.landlord}
+								viewQuote={self.viewQuote}
 								onModalWith={self.onModalWith}
 								sendEmailLandlord={self.sendEmailLandlord}
 							/>
@@ -990,6 +994,7 @@ var ModalViewQuote = React.createClass({
 										quotes={this.state.quotes}
 										printQuote={this.printQuote}
 										onModalWith={self.onModalWith}
+										viewQuote={this.props.viewQuote}
 										keyLandlord={this.props.keyLandlord}
 										updateStatusQuote={self.updateStatusQuote}
 										sendEmailLandlord={self.sendEmailLandlord}
@@ -1245,6 +1250,7 @@ var ModalViewPhoto = React.createClass({
 									quotes={self.quotes}
 									onModalWith={self.onModalWith}
 									keyLandlord={self.keyLandlord}
+									viewQuote={this.props.viewQuote}
 									updateStatusQuote={self.updateStatusQuote}
 									sendEmailLandlord={self.sendEmailLandlord}
 								/>

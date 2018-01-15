@@ -71,7 +71,7 @@ var DropDownContentMobile = React.createClass({
     }
   },
 
-  render: function() {
+ render: function() {
     const {action = [], awaiting} = this.props;
     const props = this.props;
     const state = this.state;
@@ -111,7 +111,6 @@ var DropDownContentMobile = React.createClass({
     );
   }
 });
-
 
 var DropDownContent = React.createClass({
   getInitialState: function() {
@@ -306,7 +305,6 @@ var P = React.createClass({
     );
   }
 });
-
 
 var ImgSlider = React.createClass({
   getInitialState: function() {
