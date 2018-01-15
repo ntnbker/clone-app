@@ -81272,7 +81272,7 @@ var ModalEditAskLandlord = React.createClass({
 		return {
 			isEdit: false,
 			errorName: false,
-			errorEmail: false,
+			// errorEmail: false,
 			errorMobile: false
 		};
 	},
@@ -81285,7 +81285,7 @@ var ModalEditAskLandlord = React.createClass({
 		var key = e.target.id;
 		var errorField = ({
 			'name': 'errorName',
-			'email': 'errorEmail',
+			// 'email' : 'errorEmail',
 			'mobile': 'errorMobile'
 		})[key];
 		if (!errorField || !this.state[errorField]) return;
@@ -81299,8 +81299,8 @@ var ModalEditAskLandlord = React.createClass({
 			authenticity_token: this.props.authToken,
 			landlord: {
 				id: this.props.landlord.id,
+				email: this.props.landlord.email,
 				name: this.name && this.name.value,
-				email: this.email && this.email.value,
 				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id
 			}
@@ -81324,7 +81324,6 @@ var ModalEditAskLandlord = React.createClass({
 		var isEdit = _state.isEdit;
 		var errorName = _state.errorName;
 		var errorMobile = _state.errorMobile;
-		var errorEmail = _state.errorEmail;
 		var landlord = this.props.landlord;
 
 		return React.createElement(
@@ -81430,24 +81429,23 @@ var ModalEditAskLandlord = React.createClass({
 								React.createElement(
 									"div",
 									null,
-									React.createElement("input", {
-										type: "text",
-										autoCorrect: "off",
-										autoComplete: "off",
-										autoCapitalize: "off",
-										name: "landlord[email]",
-										placeholder: "Landlord Email",
-										id: "email",
-										readOnly: !isEdit,
-										defaultValue: landlord.email,
-										ref: function (e) {
-											return _this3.email = e;
-										},
-										onChange: this.removeError,
-										className: (errorEmail && "has-error") + (!isEdit && " readonly")
-									})
-								),
-								renderError(errorEmail)
+									React.createElement(
+										"p",
+										{ className: "landlord-email font-bold" },
+										landlord.email,
+										React.createElement(
+											"span",
+											null,
+											React.createElement(
+												"button",
+												{ type: "button", className: "btn btn-link", onClick: function () {
+														return _this3.props.onModalWith('addLandlord');
+													} },
+												"Edit Email"
+											)
+										)
+									)
+								)
 							)
 						),
 						React.createElement(
@@ -81813,7 +81811,7 @@ var ModalEditLandlord = React.createClass({
 	getInitialState: function () {
 		return {
 			errorName: false,
-			errorEmail: false,
+			// errorEmail: false,
 			errorMobile: false
 		};
 	},
@@ -81822,7 +81820,7 @@ var ModalEditLandlord = React.createClass({
 		var key = e.target.id;
 		var errorField = ({
 			'name': 'errorName',
-			'email': 'errorEmail',
+			// 'email' : 'errorEmail',
 			'mobile': 'errorMobile'
 		})[key];
 
@@ -81836,10 +81834,10 @@ var ModalEditLandlord = React.createClass({
 		var params = {
 			authenticity_token: this.props.authToken,
 			landlord: {
-				name: this.name && this.name.value,
-				email: this.email && this.email.value,
-				mobile: this.mobile && this.mobile.value,
 				id: this.props.landlord.id,
+				email: this.props.landlord.email,
+				name: this.name && this.name.value,
+				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id
 			}
 		};
@@ -81977,21 +81975,22 @@ var ModalEditLandlord = React.createClass({
 										),
 										":"
 									),
-									React.createElement("input", {
-										id: "email",
-										type: "text",
-										autoCapitalize: "off",
-										autoCorrect: "off",
-										autoComplete: "off",
-										name: "landlord[email]",
-										placeholder: "Enter Email",
-										ref: function (e) {
-											return _this6.email = e;
-										},
-										onChange: this.removeError,
-										defaultValue: this.props.landlord.email,
-										className: "u-full-width " + (this.state.errorEmail && "has-error")
-									})
+									React.createElement(
+										"p",
+										{ className: "landlord-email font-bold" },
+										this.props.landlord.email,
+										React.createElement(
+											"span",
+											null,
+											React.createElement(
+												"button",
+												{ type: "button", className: "btn btn-link", onClick: function () {
+														return _this6.props.onModalWith('addLandlord');
+													} },
+												"Edit Email"
+											)
+										)
+									)
 								),
 								renderError(this.state['errorEmail'])
 							)
@@ -83565,7 +83564,8 @@ var MaintenanceRequest = React.createClass({
 						landlord: this.state.landlord,
 						editAskLandlord: this.editAskLandlord,
 						authToken: this.props.authenticity_token,
-						maintenance_request_id: this.state.maintenance_request.id
+						maintenance_request_id: this.state.maintenance_request.id,
+						onModalWith: this.onModalWith
 					});
 
 				case 'notification':
@@ -83602,6 +83602,7 @@ var MaintenanceRequest = React.createClass({
 								landlord: this.state.landlord,
 								editLandlord: this.editLandlord,
 								authToken: this.props.authenticity_token,
+								onModalWith: this.onModalWith,
 								maintenance_request_id: this.state.maintenance_request.id
 							});
 						} else {
