@@ -1,7 +1,9 @@
 var AddInvoicePDF = React.createClass({
 	getInitialState: function () {
+		let { pdf_file } = this.props;
 		return {
-			file: {}
+			file: {},
+			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
 		};
 	},
 
@@ -137,7 +139,7 @@ var AddInvoicePDF = React.createClass({
 	render: function () {
 		const { maintenance_request_id, trady_id, quote_id, trady_company, trady_company_id } = this.props;
 		const { errorFile, errorAmount } = this.state;
-		console.log(this.state.file);
+
 		return (
 			<div className="container invoice-form">
 				<h5 className="text-center">
@@ -174,6 +176,7 @@ var AddInvoicePDF = React.createClass({
 							type="text"
 							className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
 							placeholder="Total Invoice Amount"
+							defaultValue={this.state.file ? this.state.total_invoice_amount : ''}
 							ref={amount => this.amount = amount}
 							onChange={() => this.setState({errorAmount: ''})}
 							id="uploaded_invoice_maintenance_request_id"
