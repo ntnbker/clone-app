@@ -1,12 +1,15 @@
 var AddInvoicePDF = React.createClass({
 	getInitialState: function () {
+		let { pdf_file } = this.props;
 		return {
-			file: {}
+			file: {},
+			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
 		};
 	},
 
 	_handleChangeFile: function (e) {
 		const self = this;
+		this.setState({errorFile: ''});
 		const files = e.target.files;
 		let file = files[0];
 
@@ -101,6 +104,9 @@ var AddInvoicePDF = React.createClass({
 		e.preventDefault();
 		const self = this;
 
+		if (!this.state.file.id) {
+			return this.setState({ errorFile: ['Please upload a file'] });
+		}
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
 		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
 
@@ -117,7 +123,10 @@ var AddInvoicePDF = React.createClass({
 			data: FD,
 			success: function (res) {
 				if (res.error) {
-					self.setState({ error: res.error.pdf });
+					self.setState({
+						errorFile: res.error.pdf,
+						errorAmount: res.error.total_invoice_amount
+					});
 				}
 			},
 			error: function (err) {
@@ -129,7 +138,8 @@ var AddInvoicePDF = React.createClass({
 
 	render: function () {
 		const { maintenance_request_id, trady_id, quote_id, trady_company, trady_company_id } = this.props;
-		const { error } = this.state;
+		const { errorFile, errorAmount } = this.state;
+
 		return (
 			<div className="container invoice-form">
 				<h5 className="text-center">
@@ -140,6 +150,9 @@ var AddInvoicePDF = React.createClass({
 						{
 							this.state.file.id ?
 								<div className="file-pdf">
+									<span>
+										{this.state.file.metadata.filename}
+									</span>
 									<i className="fa fa-file" />
 									<span onClick={this.removeFile}>Remove</span>
 								</div>
@@ -153,12 +166,23 @@ var AddInvoicePDF = React.createClass({
 										type="file"
 										id="input-file"
 										className="upload inputfile"
-										accept="application/pdf"
+										accept="image/jpeg, image/png, application/pdf"
 										onChange={(e) => this._handleChangeFile(e)}
 									/>
 								</div>
 						}
-    				<p id="errorbox" className="error">{error ? error : ''}</p>
+    				<p id="errorbox" className="error">{errorFile ? errorFile[0] : ''}</p>
+						<input
+							type="text"
+							className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
+							placeholder="Total Invoice Amount"
+							defaultValue={this.state.file ? this.state.total_invoice_amount : ''}
+							ref={amount => this.amount = amount}
+							onChange={() => this.setState({errorAmount: ''})}
+							id="uploaded_invoice_maintenance_request_id"
+							name="uploaded_invoice[total_invoice_amount]"
+						/>
+    				<p id="errorbox" className="error">{errorAmount ? errorAmount[0] : ''}</p>
 						<input
 							type="hidden"
 							defaultValue={maintenance_request_id}

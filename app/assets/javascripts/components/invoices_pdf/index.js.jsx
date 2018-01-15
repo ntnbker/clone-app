@@ -71,6 +71,11 @@ var PDFInvoices = React.createClass({
 										</p>
 									</div>
 								</div>
+								<div className="actions five columns content">
+									<p>
+										Total: <span>{invoice.total_invoice_amount}</span>
+									</p>
+								</div>
 								<div className="actions-quote">
 									{
 										(['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid) &&
@@ -81,7 +86,7 @@ var PDFInvoices = React.createClass({
 									<button
 										type="button"
 										className="btn btn-view"
-										onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice.pdf_url)}
+										onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice)}
 									>
 											View
 									</button>

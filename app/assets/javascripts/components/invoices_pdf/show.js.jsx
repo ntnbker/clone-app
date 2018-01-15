@@ -6,10 +6,17 @@ var ModalViewPDFInvoice = React.createClass({
 		};
 	},
 
+	printInvoice: function() {
+		window.print();
+	},
+
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
+		const {pdf_url} = invoice;
 		const {trady} = this.props;
+
+		const isPdf = /store\/\w+\.pdf/.test(pdf_url);
 		let total = 0;
 		return (
 			<div className="modal-custom fade">
@@ -44,16 +51,33 @@ var ModalViewPDFInvoice = React.createClass({
 									</div>
 									<div className="detail-quote">
 										<div className="detail-quote">
-											{!!invoice &&
-												<object width="100%" height="400" type="application/pdf" data={invoice}>
-													<iframe width="100%" height="400" src={`https://docs.google.com/gview?url=${invoice.replace(/.pdf\?.*/, '')}.pdf&embedded=true`} className="scroll-custom" width='100%' height='400' />
-												</object>}
+											{!!pdf_url &&
+												<object
+													width="100%"
+													height={isPdf ? '350px' : "100%"}
+													data={pdf_url}
+												>
+													<iframe
+														width="100%"
+														height={isPdf ? '350px' : "100%"}
+														src={`https://docs.google.com/gview?url=${pdf_url.replace(/.pdf\?.*/g, '')}.pdf&embedded=true`}
+														className="scroll-custom" />
+												</object>
+											}
 										</div>
+									</div>
+									<div className="text-center">
+										Total Amount Invoice: {invoice.total_invoice_amount || 0}
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+            { !isPdf &&
+            	<div className="modal-body dontprint">
+	              <ButtonPrint printQuote={this.printInvoice} />
+	            </div>
+          	}
+          </div>
 				</div>
 			</div>
 		);
