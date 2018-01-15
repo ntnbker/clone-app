@@ -52,6 +52,10 @@ const MenuTrady = function(edit_trady) {
 const MenuTenant = function() {
   return [
     {
+      url: "/",
+      name: "Create Maintenance Request",
+    },
+    {
       url: "/tenant_maintenance_requests",
       name: "My Maintenance Requests",
     },
