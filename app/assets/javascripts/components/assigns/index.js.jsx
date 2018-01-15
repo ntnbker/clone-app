@@ -233,31 +233,18 @@ var ModalViewTrady = React.createClass({
 
             <div className="modal-body work-order-detail">
               <div className="job-contact">
-                <div className="left">
-                  <div className="job-address rect-info">
-                    <div className="title">Job Address</div>
-                    <div className="detail">
-                      <p>{this.capitalizeText(property && property.property_address || '')}</p>
-                    </div>
-                  </div>
-                  <div className="agent-contact rect-info">
-                    <div className="title">Agent Contact</div>
-                    <div className="detail">
-                      <p><span className="heading">Name:</span>
-                        {this.capitalizeText(`${agent.first_name || agent.name || ''} ${agent.last_name || ''}`.trim())}
-                      </p>
-                      <p><span className="heading">Phone:</span>
-                        {this.formatPhone(agent.phone || agent.mobile_phone || '')}
-                      </p>
-                      <p><span className="heading">Email:</span>{agent.email}</p>
-                    </div>
+                <div className="left job-address rect-info">
+                  <div className="title">Job Address</div>
+                  <div className="detail">
+                    <p>{property && property.property_address}</p>
                   </div>
                 </div>
-                <div className="right">
-                  <div className="invoice-detail rect-info">
-                    <div className="title">Invoice</div>
-                    <div className="detail">
-                    </div>
+                <div className="right agent-contact rect-info">
+                  <div className="title">Agent Contact</div>
+                  <div className="detail">
+                    <p><span className="heading">Name:</span>{`${agent.first_name || agent.name || ''} ${agent.last_name || ''}`.trim()}</p>
+                    <p><span className="heading">Phone:</span>{agent.phone || agent.mobile_phone}</p>
+                    <p><span className="heading">Email:</span>{agent.email}</p>
                   </div>
                 </div>
               </div>
