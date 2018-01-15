@@ -9,7 +9,9 @@ var ModalViewPDFInvoice = React.createClass({
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
+		const {pdf_url} = invoice;
 		const {trady} = this.props;
+
 		let total = 0;
 		return (
 			<div className="modal-custom fade">
@@ -44,11 +46,14 @@ var ModalViewPDFInvoice = React.createClass({
 									</div>
 									<div className="detail-quote">
 										<div className="detail-quote">
-											{!!invoice &&
-												<object width="100%" height="400" type="application/pdf" data={invoice}>
-													<iframe width="100%" height="400" src={`https://docs.google.com/gview?url=${invoice.replace(/.pdf\?.*/, '')}.pdf&embedded=true`} className="scroll-custom" width='100%' height='400' />
+											{!!pdf_url &&
+												<object width="100%" height="400" type="image/jpeg, image/png, application/pdf" data={pdf_url}>
+													<iframe width="100%" height="400" src={`https://docs.google.com/gview?url=${pdf_url.replace(/.pdf\?.*/g, '')}.pdf&embedded=true`} className="scroll-custom" width='100%' height='400' />
 												</object>}
 										</div>
+									</div>
+									<div className="text-center">
+										Total Amount Invoice: {invoice.total_invoice_amount || 0}
 									</div>
 								</div>
 							</div>
