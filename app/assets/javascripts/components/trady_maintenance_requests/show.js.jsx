@@ -796,7 +796,7 @@ var TradyMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							onModalWith={this.onModalWith}
 							current_user={this.props.current_user}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 						/>
 					);
 				}
@@ -1062,7 +1062,7 @@ var TradyMaintenanceRequest = React.createClass({
 							gallery={this.state.quote_images}
 							quotes={this.state.quote_requests}
 							current_user={this.props.current_user}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 						/>
 					)
 
@@ -1401,7 +1401,7 @@ var TradyMaintenanceRequest = React.createClass({
 									uploadImage={this.uploadImage}
 									current_user={this.props.current_user}
 									chooseQuoteRequest={this.chooseQuoteRequest}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}
@@ -1412,7 +1412,7 @@ var TradyMaintenanceRequest = React.createClass({
 									landlord={this.state.landlord}
 									onModalWith={this.onModalWith}
 									current_user={this.props.current_user}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}

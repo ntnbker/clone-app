@@ -173,7 +173,7 @@ var ModalEditAskLandlord = React.createClass({
 		return {
 			isEdit: false,
 			errorName: false,
-			errorEmail: false,
+			// errorEmail: false,
 			errorMobile: false,
 		};
 	},
@@ -186,7 +186,7 @@ var ModalEditAskLandlord = React.createClass({
 		var key = e.target.id;
 		var errorField = {
 			'name'  : 'errorName',
-			'email' : 'errorEmail',
+			// 'email' : 'errorEmail',
 			'mobile': 'errorMobile',
 		}[key];
 		if (!errorField || !this.state[errorField]) return;
@@ -200,8 +200,8 @@ var ModalEditAskLandlord = React.createClass({
 			authenticity_token: this.props.authToken,
 			landlord: {
 				id: this.props.landlord.id,
+				email: this.props.landlord.email,
 				name: this.name && this.name.value,
-				email: this.email && this.email.value,
 				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id,
 			},
@@ -219,7 +219,7 @@ var ModalEditAskLandlord = React.createClass({
 	},
 
 	render: function() {
-		const { isEdit, errorName, errorMobile, errorEmail } = this.state;
+		const { isEdit, errorName, errorMobile } = this.state;
 		const { landlord } = this.props;
 		return (
 			<div className="modal-custom fade">
@@ -283,22 +283,15 @@ var ModalEditAskLandlord = React.createClass({
 								</div>
 								<div className="row m-t-lg">
 									<div>
-										<input
-											type="text"
-											autoCorrect="off"
-											autoComplete="off"
-											autoCapitalize="off"
-											name="landlord[email]"
-											placeholder="Landlord Email"
-											id="email"
-											readOnly={!isEdit}
-											defaultValue={landlord.email}
-											ref={e => this.email = e}
-											onChange={this.removeError}
-											className={(errorEmail && "has-error") + (!isEdit && " readonly")}
-										/>
+										<p className="landlord-email font-bold">
+											{landlord.email}
+											<span>
+												<button type="button" className="btn btn-link" onClick={() => this.props.onModalWith('addLandlord')}>
+													Edit Email
+												</button>
+											</span>
+										</p>
 									</div>
-									{renderError(errorEmail)}
 								</div>
 							</div>
 							<div className="modal-footer">
@@ -542,7 +535,7 @@ var ModalEditLandlord = React.createClass({
 	getInitialState: function() {
 		return {
 			errorName: false,
-			errorEmail: false,
+			// errorEmail: false,
 			errorMobile: false,
 		};
 	},
@@ -551,7 +544,7 @@ var ModalEditLandlord = React.createClass({
 		var key = e.target.id;
 		var errorField = {
 			'name'  : 'errorName',
-			'email' : 'errorEmail',
+			// 'email' : 'errorEmail',
 			'mobile': 'errorMobile',
 		}[key];
 
@@ -565,10 +558,10 @@ var ModalEditLandlord = React.createClass({
 		var params = {
 			authenticity_token: this.props.authToken,
 			landlord: {
-				name: this.name && this.name.value,
-				email: this.email && this.email.value,
-				mobile: this.mobile && this.mobile.value,
 				id: this.props.landlord.id,
+				email: this.props.landlord.email,
+				name: this.name && this.name.value,
+				mobile: this.mobile && this.mobile.value,
 				maintenance_request_id: this.props.maintenance_request_id,
 			},
 		}
@@ -637,19 +630,14 @@ var ModalEditLandlord = React.createClass({
 									<div className="row m-t-lg">
 										<div>
 											<label>Email <strong>*</strong>:</label>
-											<input
-												id="email"
-												type="text"
-												autoCapitalize="off"
-												autoCorrect="off"
-												autoComplete="off"
-												name="landlord[email]"
-												placeholder="Enter Email"
-												ref={e => this.email = e}
-												onChange={this.removeError}
-												defaultValue={this.props.landlord.email}
-												className={"u-full-width " + (this.state.errorEmail && "has-error")}
-											/>
+											<p className="landlord-email font-bold">
+												{this.props.landlord.email}
+												<span>
+													<button type="button" className="btn btn-link" onClick={() => this.props.onModalWith('addLandlord')}>
+														Edit Email
+													</button>
+												</span>
+											</p>
 										</div>
 										{renderError(this.state['errorEmail'])}
 									</div>
@@ -884,7 +872,7 @@ var ModalRequestModal = React.createClass({
 														ref={e => this.company = e}
 														readOnly={!this.state.isAdd}
 														onChange={this.removeError}
-														placeholder="Enter Company Name"
+														placeholder="Enter Business Name"
 														value={trady.company_name || ""}
 														className={"input-custom u-full-width " + (this.state.errorCompany && "has-error")}
 													/>
@@ -1070,7 +1058,8 @@ var MaintenanceRequest = React.createClass({
 		switch(key) {
 			case 'viewQuote':
 			case 'viewConfirmQuote':
-			case 'viewQuoteMessage': {
+			case 'viewQuoteMessage':
+			case 'confirmForwardLandlord': {
 				this.setState({
 					quote: item
 				});
@@ -2098,6 +2087,7 @@ var MaintenanceRequest = React.createClass({
 							editAskLandlord={this.editAskLandlord}
 							authToken={this.props.authenticity_token}
 							maintenance_request_id={this.state.maintenance_request.id}
+							onModalWith={this.onModalWith}
 						/>
 					);
 
@@ -2141,6 +2131,7 @@ var MaintenanceRequest = React.createClass({
 								landlord={this.state.landlord}
 								editLandlord={this.editLandlord}
 								authToken={this.props.authenticity_token}
+								onModalWith={this.onModalWith}
 								maintenance_request_id={this.state.maintenance_request.id}
 							/>
 						);
@@ -2204,7 +2195,7 @@ var MaintenanceRequest = React.createClass({
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
 							updateStatusQuote={this.updateStatusQuote}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 							sendEmailLandlord={this.sendEmailLandlord} current_user={this.props.current_user}
 						/>
 					);
@@ -2266,7 +2257,6 @@ var MaintenanceRequest = React.createClass({
 							agency={this.props.agency}
 						 	invoice={this.state.invoice}
 						 	invoices={this.state.invoices}
-						 	landlord={this.state.landlord}
 							property={this.props.property}
 						/>
 					);
@@ -2463,7 +2453,7 @@ var MaintenanceRequest = React.createClass({
 							hideRestore={!!this.state.trady}
 							gallery={this.state.quote_images}
 							updateStatusQuote={this.updateStatusQuote}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 							sendEmailLandlord={this.sendEmailLandlord}
 							current_user={this.props.current_user}
 						/>
@@ -2477,6 +2467,21 @@ var MaintenanceRequest = React.createClass({
 							confirmText="Send"
 							approveJob={this.approveJob}
 							maintenance_request={this.state.maintenance_request}
+						/>
+					)
+
+				case 'confirmForwardLandlord':
+					const params = {
+						quote_id: this.state.quote.id,
+						maintenance_request_id: this.state.quote.maintenance_request_id,
+					};
+
+					return (
+						<ModalConfirmAnyThing
+							title="Forward To Landlord"
+							content="You have already forwarded this quote to the landlord. Are you sure you want to send it again to the landlord?"
+							confirm={() => this.sendEmailLandlord(params, this.state.quote)}
+							close={this.isClose}
 						/>
 					)
 
@@ -2666,7 +2671,7 @@ var MaintenanceRequest = React.createClass({
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}
 									chooseQuoteRequest={this.chooseQuoteRequest}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 							: ''
@@ -2679,7 +2684,7 @@ var MaintenanceRequest = React.createClass({
 							 		current_user={this.props.current_user}
 							 		updateStatusQuote={this.updateStatusQuote}
 							 		sendEmailLandlord={this.sendEmailLandlord}
-							 		viewQuote={(key, item) => this.viewItem(key, item)}
+							 		viewQuote={this.viewItem}
 							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
 						 		/>
 					 	}

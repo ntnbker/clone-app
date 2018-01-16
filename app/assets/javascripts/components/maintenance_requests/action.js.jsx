@@ -112,6 +112,14 @@ var ActionMobile = React.createClass({
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
 					</div>
+					<div className="content contact">
+						<ContentContact
+							tenants={this.props.tenants}
+							landlord={this.props.landlord}
+							assigned_trady={this.props.assigned_trady}
+							onModalWith={(modal) => this.props.onModalWith(modal)}
+						/>
+					</div>
 				</div>
 			</div>
 		);
