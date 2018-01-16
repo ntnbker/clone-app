@@ -949,4 +949,8 @@ $color-blue-light: #7646FF;
   		text-decoration: blink;
   	}
   }
+  input[type="text"] {
+    max-width: 300px;
+    margin: auto;
+  }
 }

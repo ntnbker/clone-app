@@ -650,7 +650,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							current_user={this.props.current_user}
 							updateStatusQuote={this.updateStatusQuote}
 							sendEmailLandlord={this.sendEmailLandlord}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 						/>
 					);
 				}
@@ -726,7 +726,7 @@ var LandlordMaintenanceRequest = React.createClass({
 							onModalWith={this.onModalWith}
 							gallery={this.state.quote_images}
 							updateStatusQuote={this.updateStatusQuote}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 							sendEmailLandlord={this.sendEmailLandlord}
 							current_user={this.props.current_user}
 						/>
@@ -867,7 +867,7 @@ var LandlordMaintenanceRequest = React.createClass({
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}
 									chooseQuoteRequest={this.chooseQuoteRequest}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 								/>
 							: ''
 						}
@@ -880,7 +880,7 @@ var LandlordMaintenanceRequest = React.createClass({
 									current_user={this.props.current_user}
 									updateStatusQuote={this.updateStatusQuote}
 									sendEmailLandlord={this.sendEmailLandlord}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 								/>
 						}
 					</div>
