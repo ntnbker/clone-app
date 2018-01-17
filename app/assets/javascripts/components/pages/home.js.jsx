@@ -10,12 +10,85 @@ var HomeComponent = React.createClass({
     }
   },
 
-  howItWorkForAgent() {
+  howItWorkForLandlord() {
+    return (
+      <div className="row how-it-works">
+        <div className="three columns">
+          <img src="/assets/key1.png" alt=""/>
+          <h4>Maintenance requested</h4>
+          <p>Fill in the Maintenance form and submit the request</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key2.png" alt=""/>
+          <h4>Maintenance actioned</h4>
+          <p>Sit back, and let us sort out the maintenance for you!</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key3.png" alt=""/>
+          <h4>Track Maintenance Status</h4>
+          <p>Get updates on your maintenance request is up or check online</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key4.png" alt=""/>
+          <h4>Maintenance complete</h4>
+          <p>Enjoy a stress free process to maintain your home</p>
+        </div>
+      </div>
+    )
+  },
 
+  howItWorkForAgent() {
+    return (
+      <div className="row how-it-works">
+        <div className="three columns">
+          <img src="/assets/key1.png" alt=""/>
+          <h4>Maintenance requested</h4>
+          <p>Fill in the Maintenance form and submit the request</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key2.png" alt=""/>
+          <h4>Maintenance actioned</h4>
+          <p>Sit back, and let us sort out the maintenance for you!</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key3.png" alt=""/>
+          <h4>Track Maintenance Status</h4>
+          <p>Get updates on your maintenance request is up or check online</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key4.png" alt=""/>
+          <h4>Maintenance complete</h4>
+          <p>Enjoy a stress free process to maintain your home</p>
+        </div>
+      </div>
+    )
   },
 
   howItWorkForTrady() {
-
+    return (
+      <div className="row how-it-works">
+        <div className="three columns">
+          <img src="/assets/key1.png" alt=""/>
+          <h4>Maintenance requested</h4>
+          <p>Fill in the Maintenance form and submit the request</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key2.png" alt=""/>
+          <h4>Maintenance actioned</h4>
+          <p>Sit back, and let us sort out the maintenance for you!</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key3.png" alt=""/>
+          <h4>Track Maintenance Status</h4>
+          <p>Get updates on your maintenance request is up or check online</p>
+        </div>
+        <div className="three columns">
+          <img src="/assets/key4.png" alt=""/>
+          <h4>Maintenance complete</h4>
+          <p>Enjoy a stress free process to maintain your home</p>
+        </div>
+      </div>
+    )
   },
 
   howItWorkForTenant() {
@@ -46,11 +119,21 @@ var HomeComponent = React.createClass({
   },
 
   login() {
-    <div className="login">
-      <div className="main-login">
-        {this.howItWorkForTenant()}
+    const { active } = this.state;
+    let showHowItWork = null;
+    switch (active) {
+      case 'tenant': showHowItWork = this.howItWorkForTenant; break;
+      case 'agent': showHowItWork = this.howItWorkForAgent; break;
+      case 'trady': showHowItWork = this.howItWorkForTrady; break;
+      case 'landlord': showHowItWork = this.howItWorkForLandlord; break;
+    }
+    return (
+      <div className="login">
+        <div className="main-login">
+          {showHowItWork()}
+        </div>
       </div>
-    </div>
+    )
   },
 
   homeActionForAgent() {
