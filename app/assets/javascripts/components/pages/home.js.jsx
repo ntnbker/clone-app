@@ -1,6 +1,7 @@
 var HomeComponent = React.createClass({
   getInitialState: function() {
     return {
+      active: 'tenant',
     };
   },
 
