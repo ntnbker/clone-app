@@ -1,95 +1,231 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+@-webkit-keyframes autofill {
+    to {
+        color: white;
+        background: transparent;
+    }
+}
 
 .pages {
 	background-color: white;
+	position: relative;
 
-	.header {
-		background-image: url(/assets/family-pic-3.jpg);
+	.background-image {
+		left: 0;
+		right: 0;
+		z-index: -1;
+		height: 1000px;
+		background-image: url(/assets/background.png);
+		// background-color: saddlebrown;
 		background-size: cover;
 		background-position: center center;
-		height: 764px;
-		@include flexbox;
-		@include justify-content(center);
-		@include align-items(center);
+	}
 
-		.form-address {
-			width: 450px;
+	.home-content {
+		position: absolute;
+		top: 25px;
+		margin-top: 10px;
+		width: 100%;
+		.header {
 			@include flexbox;
-			@include flex-wrap(wrap);
-			@include flex-direction(column);
 			@include justify-content(center);
+			@include align-items(center);
+			@include flex-direction(column);
+			@include filter(blur(0.5));
 
-			.select {
+			.home-logo {
+				text-align: center;
+				color: white;
+			}
+
+			.form-address {
+				width: 450px;
 				@include flexbox;
-				@include justify-content(space-between);
+				@include flex-wrap(wrap);
+				@include flex-direction(column);
+				@include justify-content(center);
 
-				select {
-					height: 50px;
-					width: 49%;
-					border: none;
-					border-radius: 4px;
-					font-size: 16px;
-					&:required:invalid {
-						color: #7D7D7D;
+				.select {
+					@include flexbox;
+					@include justify-content(space-between);
+
+					select {
+						height: 50px;
+						width: 49%;
+						border: none;
+						border-radius: 4px;
+						font-size: 16px;
+						&:required:invalid {
+							color: #7D7D7D;
+						}
+						&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+						  color: #7D7D7D;
+						  text-align: center;
+						}
+						&::-moz-placeholder { /* Firefox 19+ */
+						  color: #7D7D7D;
+						  text-align: center;
+						}
+						&:-ms-input-placeholder { /* IE 10+ */
+						  color: #7D7D7D;
+						  text-align: center;
+						}
+						&:-moz-placeholder { /* Firefox 18- */
+						  color: #7D7D7D;
+						  text-align: center;
+						}
 					}
+				}
+				.input-address {
+					margin-top: 20px;
+					textarea {
+						font-size: 16px;
+						text-align: center;
+						border: none;
+						border-radius: 4px;
+						width: 100%;
+					}
+				}
+				.btn-submit {
+					margin-top: 20px;
+					text-align: center;
+					button {
+						font-size: 16px;
+						height: 50px;
+						width: 150px;
+						border: none;
+						border-radius: 4px;
+						text-transform: uppercase;
+					}
+				}
+				.has-error {
+					border: 1px solid red !important;
 					&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-					  color: #7D7D7D;
-					  text-align: center;
+					  color: red;
 					}
 					&::-moz-placeholder { /* Firefox 19+ */
-					  color: #7D7D7D;
-					  text-align: center;
+					  color: red;
 					}
 					&:-ms-input-placeholder { /* IE 10+ */
-					  color: #7D7D7D;
-					  text-align: center;
+					  color: red;
 					}
 					&:-moz-placeholder { /* Firefox 18- */
-					  color: #7D7D7D;
-					  text-align: center;
+					  color: red;
 					}
 				}
-			}
-			.input-address {
-				margin-top: 20px;
-				textarea {
-					font-size: 16px;
-					text-align: center;
-					border: none;
-					border-radius: 4px;
-					width: 100%;
-				}
-			}
-			.btn-submit {
-				margin-top: 20px;
-				text-align: center;
-				button {
-					font-size: 16px;
-					height: 50px;
-					width: 150px;
-					border: none;
-					border-radius: 4px;
-					text-transform: uppercase;
-				}
-			}
-			.has-error {
-				border: 1px solid red !important;
-				&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-				  color: red;
-				}
-				&::-moz-placeholder { /* Firefox 19+ */
-				  color: red;
-				}
-				&:-ms-input-placeholder { /* IE 10+ */
-				  color: red;
-				}
-				&:-moz-placeholder { /* Firefox 18- */
-				  color: red;
-				}
-			}
-	  }
+		  }
+
+		  .home-action {
+		  	width: 50%;
+		  	.home-action-title {
+		  		@include flexbox;
+		  		align-items: center;
+		  		border-bottom: 4px solid #5CC993;
+		  		button {
+		  			@include flex(1);
+		  			text-align: center;
+				    font-size: 1.5em;
+				    background-color: white;
+				    padding: 10px 0;
+				    color: #5CC993;
+				    border: none;
+				    border-radius: 0;
+				    height: 56px;
+						border-left: 1px solid rgba(0, 0, 0, 0.2);
+				    &:first-child {
+				    	border: none;
+				    }
+				    &.active {
+				    	background-color: #5CC993;
+				    	color: white;
+				    	border-left:none;
+				    }
+		  		}
+		  	}
+		  	.home-action-content {
+		  		@include flexbox;
+		  		@include justify-content(center);
+		  		align-items: center;
+		  		border: 3px solid rgba(255, 255, 255, 0.5);
+		  		border-radius: 0 0 12px 12px;
+		  		border-top: none;
+		  		width: calc(100% - 6px);
+		  		position: relative;
+
+					.content-frame {
+			  		background-color: grey;
+			  		position: absolute;
+			  		opacity: 0.6;
+			  		z-index: 3;
+			  		height: 100%;
+			  		width: 100%;
+			  		border-radius: 0 0 12px 12px;
+					}
+
+		  		.action-content {
+		  			margin: 0 25%;
+		  			width: 50%;
+		  			z-index: 4;
+		  			.login-info {
+		  				margin-top: 30px;
+							.login-input {
+								margin: 30px 0;
+								padding: 0 10px;
+								border: 2px solid white;
+								border-radius: 4px;
+								@include flexbox;
+							}
+		  				span {
+		  					display: inline-block;
+		  					width: 80px;
+		  					color: white;
+		  					margin: auto;
+		  					font-weight: 600;
+		  					text-align: right;
+		  				}
+		  				input {
+		  					@include flex(1);
+			  				margin-top: auto;
+			  				color: white;
+			  				background: transparent;
+			  				border: none;
+			  				&:-webkit-autofill {
+							    -webkit-animation-name: autofill;
+							    -webkit-animation-fill-mode: both;
+								}
+			  			}
+			  		}
+		  			.button-group {
+
+		  			}
+		  			.tenant-buttons {
+		  				@include flexbox;
+		  				@include justify-content(space-between);
+		  				.btn {
+								background-color: #5CC993;
+								color: white;
+								border: 1px solid #5CC993;
+								border-radius: 5px;
+								padding: 5px 0;
+								height: 50px;
+								font-weight: 600;
+								width: calc(45% - 2px);
+		  				}
+		  			}
+		  			.forget-password {
+  				    text-align: center;
+					    margin: 20px 0 10px 0;
+		  				a {
+						    color: #5CC993;
+						    text-decoration-line: none;
+		  				}
+		  			}
+		  		}
+		  	}
+		  }
+		}
 	}
 
 	.main {
@@ -100,25 +236,31 @@
 		}
 
 		.how-it-works {
-			margin: 80px;
+			margin: 30px 15%;
+			.three.columns {
+				width: 24%;
+				margin-left: 1%;
+			}
 
 			img {
 				display: block;
 				margin: 30px auto 0;
 			}
 			h4 {
-				color: #7dc691;
-				font-size: 14px;
+				color: white;
+				font-size: 13px;
+				font-weight: 500;
 				text-align: center;
 				text-transform: uppercase;
-				width: 100px;
+				width: 140px;
 				margin: 15px auto;
 			}
 			p {
-				color: #849aaa;
-				font-size: 14px;
+				color: white;
+				font-size: 12px;
 				text-align: center;
 				max-width: 300px;
+				font-weight: 600;
 				margin: auto;
 			}
 		}
