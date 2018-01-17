@@ -1,5 +1,5 @@
 class Tenant < ApplicationRecord
-  before_save :format_name
+  before_save :format_name, :format_email
   
   has_many :roles, as: :roleable
   belongs_to :user
@@ -13,15 +13,17 @@ class Tenant < ApplicationRecord
   
 
 
-def capitalize_name
-  self.name.split.map(&:capitalize).join(' ')
-end
+  def capitalize_name
+    self.name.split.map(&:capitalize).join(' ')
+  end
 
-def format_name
-  self.name = self.name.split.map(&:capitalize).join(' ')
-end
+  def format_name
+    self.name = self.name.split.map(&:capitalize).join(' ')
+  end
 
-
+  def format_email
+    self.email = self.email.downcase
+  end
 
 
 

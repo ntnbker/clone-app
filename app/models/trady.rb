@@ -1,5 +1,5 @@
 class Trady < ApplicationRecord
-  before_save :format_name, :format_company_name
+  before_save :format_name, :format_company_name, :format_email
 
   has_many :roles, as: :roleable
   belongs_to :user 
@@ -58,6 +58,10 @@ class Trady < ApplicationRecord
 
   def format_company_name
     self.company_name = self.company_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_email
+    self.email = self.email.downcase
   end
 
 
