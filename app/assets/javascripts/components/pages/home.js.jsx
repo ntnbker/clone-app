@@ -119,21 +119,6 @@ var HomeComponent = React.createClass({
   },
 
   login() {
-    const { active } = this.state;
-    let showHowItWork = null;
-    switch (active) {
-      case 'tenant': showHowItWork = this.howItWorkForTenant; break;
-      case 'agent': showHowItWork = this.howItWorkForAgent; break;
-      case 'trady': showHowItWork = this.howItWorkForTrady; break;
-      case 'landlord': showHowItWork = this.howItWorkForLandlord; break;
-    }
-    return (
-      <div className="login">
-        <div className="main-login">
-          {showHowItWork()}
-        </div>
-      </div>
-    )
   },
 
   homeActionForAgent() {
@@ -216,9 +201,18 @@ var HomeComponent = React.createClass({
   },
 
   renderHowItWork() {
-    const { role } = this.props;
+    const { active } = this.state;
+    let showHowItWork = null;
+    switch (active) {
+      case 'tenant': showHowItWork = this.howItWorkForTenant; break;
+      case 'agent': showHowItWork = this.howItWorkForAgent; break;
+      case 'trady': showHowItWork = this.howItWorkForTrady; break;
+      case 'landlord': showHowItWork = this.howItWorkForLandlord; break;
+    }
+
     return (
       <div className="main">
+        {showHowItWork()}
       </div>
     )
   },
