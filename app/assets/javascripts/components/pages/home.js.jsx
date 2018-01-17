@@ -48,7 +48,7 @@ var HomeComponent = React.createClass({
   login() {
     <div className="login">
       <div className="main-login">
-
+        {this.howItWorkForTenant()}
       </div>
     </div>
   },
