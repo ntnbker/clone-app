@@ -19,7 +19,7 @@ class QuotesController < ApplicationController
   end
 
   def create
-    
+    binding.pry
     @quote = Quote.new(quote_params)
     @quote_type = params[:quote][:quote_type]
     @system_plan = params[:quote][:system_plan]

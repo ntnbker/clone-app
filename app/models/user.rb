@@ -1,8 +1,11 @@
 class User < ApplicationRecord
+  before_save :format_email
+
   authenticates_with_sorcery!
   #VALIDATIONS
     # validates :email, uniqueness: true
     validates :email, presence: true
+    
     validates :password, length: { minimum: 3 }, if: -> { new_record? || changes[:crypted_password] }
     validates :password, presence: true
     validates_confirmation_of :password, if: -> { new_record? || changes[:crypted_password] }
@@ -122,209 +125,11 @@ class User < ApplicationRecord
     self.roles.where(user_id:self.id,roleable_type:the_role).first
   end
 
+  def format_email
+    self.email = self.email.downcase
+  end
 
-  # def is_god?
-  #   answer = false
-  #   roles = self.roles
-
-  #     roles.each do |role|
-  #       if role.roleable_type == "God"
-  #         answer = true 
-  #       end 
-  #     end 
-  #   return answer
-
-  # end
   
-  # def is_agent?
-  #   answer = false
-  #   roles = self.roles
-
-  #     roles.each do |role|
-  #       if role.roleable_type == "Agent"
-  #         answer = true 
-  #       end 
-  #     end 
-  #   return answer
-  # end
-
-  # def is_agency_admin?
-  #   answer = false
-  #   roles = self.roles
-
-  #     roles.each do |role|
-  #       if role.roleable_type == "AgencyAdmin"
-  #         answer = true 
-  #       end 
-  #     end 
-  #   return answer
-  # end
-
-  # def is_tenant?
-  #   answer = false
-  #   roles = self.roles
-
-  #     roles.each do |role|
-  #       if role.roleable_type == "Tenant"
-  #         answer = true 
-  #       end 
-  #     end 
-  #   return answer
-  # end
-
-  # def is_landlord?
-  #   answer = false
-  #   roles = self.roles
-
-  #     roles.each do |role|
-  #       if role.roleable_type == "Landlord"
-  #         answer = true 
-  #       end 
-  #     end 
-  #   return answer
-  # end
-
-  # def is_trady?
-  #   answer = false
-  #   roles = self.roles
-
-  #     roles.each do |role|
-  #       if role.roleable_type == "Trady"
-  #         answer = true 
-  #       end 
-  #     end 
-  #   return answer
-  # end
-
-
-
-
-
-  # def logged_in_as_god?
-  #   if self.current_role.role == "God"
-  #     return true 
-  #   else
-  #     return false
-  #   end
-  # end
-
-  # def logged_in_as_agency_admin?
-  #   if self.current_role.role == "AgencyAdmin"
-  #     return true 
-  #   else
-  #     return false
-  #   end
-  # end
-
-  # def logged_in_as_agent?
-  #   if self.current_role.role == "Agent"
-  #     return true 
-  #   else
-  #     return false
-  #   end
-  # end
-
-  # def logged_in_as_tenant?
-  #   if self.current_role.role == "Tenant"
-  #     return true 
-  #   else
-  #     return false
-  #   end
-  # end
-
-  # def logged_in_as_landlord?
-  #   if self.current_role.role == "Landlord"
-  #     return true 
-  #   else
-  #     return false
-  #   end
-  # end
-
-  # def logged_in_as_trady?
-  #   if self.current_role.role == "Trady"
-  #     return true 
-  #   else
-  #     return false
-  #   end
-  # end
-
-  # def logged_in_as_nobody?
-  #   if self.current_role.role == nil
-  #     return true 
-  #   else
-  #     return false
-  #   end
-  # end
-
-  # def get_role(the_role)
-  #   self.roles.where(user_id:self.id,roleable_type:the_role).first
-  # end
-
-
-
-
-
-
-  # OLD AUTHORIZATION SYSTEM
-
-    
-  
-  #here we ask what type of role the user is then we use it to 
-  #define the abilities is has in the Ability model
-  # def god?
-  #   user = self.role
-    
-  #   if user == nil
-  #     return false
-  #   elsif user.roleable_type == "God"
-  #     return true 
-  #   end 
-  # end
-  
-  # def agent?
-  #   user = self.role
-  #   if user == nil
-  #     return false
-  #   elsif user.roleable_type == "Agent"
-  #     return true
-  #   end 
-  # end
-
-  # def agency_admin?
-  #   user = self.role
-  #   if user == nil
-  #     return false
-  #   elsif user.roleable_type == "AgencyAdmin"
-  #     return true
-  #   end 
-  # end
-
-  # def tenant?
-  #   user = self.role
-  #   if user == nil
-  #     return false
-  #   elsif user.roleable_type == "Tenant"
-  #     return true
-  #   end
-  # end
-
-  # def landlord?
-  #   user = self.role
-  #   if user == nil
-  #     return false
-  #   elsif user.roleable_type == "Landlord"
-  #     return true
-  #   end
-  # end
-
-  # def trady?
-  #   user = self.role
-  #   if user == nil
-  #     return false
-  #   elsif user.roleable_type == "Trady"
-  #     return true
-  #   end
-  # end
 
 
 
