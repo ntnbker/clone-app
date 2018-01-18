@@ -1,5 +1,5 @@
 - content_for :expanded, true
-= react_component 'HomeComponent', {:link => "/landlord_maintenance_requests", :current_user_landlord => @current_user.landlord, :maintenance_requests => @maintenance_requests_json}
+= react_component 'HomeComponent', {:link => "/landlord_maintenance_requests", :current_user_landlord => @current_user.landlord, :maintenance_requests => @maintenance_requests_json, :services => @service}
 
 / .pages
 /   .header
