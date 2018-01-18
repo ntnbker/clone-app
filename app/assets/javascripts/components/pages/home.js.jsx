@@ -1,14 +1,15 @@
 var HomeComponent = React.createClass({
   getInitialState: function() {
     return {
-      active: 'tenant',
-      step: 'newMR',
+      active: 'agent',
+      step: 'login',
     };
   },
 
   chooseUser(user) {
     if (this.state.active !== user) {
-      this.setState({active: user});
+      const step = user === 'tenant' || user === 'trady' ? 'home' : 'login';
+      this.setState({active: user, step });
     }
   },
 
@@ -124,18 +125,85 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForAgent() {
-
-  },
-
-  homeActionForTrady() {
-
-  },
-
-  homeActionForTenantLogin() {
     const { signed = false } = this.props;
 
     return (
-      <div className="tenant-content">
+      <div className="agent-content">
+        {this.loginRender()}
+      </div>
+    )
+  },
+
+  homeActionForLandlord() {
+    const { signed = false } = this.props;
+
+    return (
+      <div className="landlord-content">
+        {this.loginRender()}
+      </div>
+    )
+  },
+
+  homeActionForTradyLogin() {
+    const { signed = false } = this.props;
+
+    return (
+      <div className="trady-content">
+        {this.loginRender()}
+      </div>
+    )
+  },
+
+  homeActionForTrady() {
+    return (
+      <div className="button-group trady-home-button">
+        <button
+          type="button text-center"
+          className="btn"
+          onClick={() => this.setState({step: 'login'})}
+        >
+          Login
+        </button>
+        <p className="text-center">Or</p>
+        <button
+          type="button text-center"
+          className="btn"
+          onClick={() => this.setState({step: 'home'})}
+        >
+          Join our network
+        </button>
+      </div>
+    )
+  },
+
+  loginRender() {
+    const { active } = this.state;
+    const showBackButton = active === 'tenant' || active === 'trady';
+    const showChooseRole = active === 'agent';
+
+    return (
+      <div>
+        { showChooseRole &&
+          <div className="choose-role">
+            <label className="radio-option">Agent
+              <input
+                type="radio"
+                name="role"
+                value="agent"
+                defaultChecked
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+            <label className="radio-option">Agency Administrator
+              <input
+                type="radio"
+                name="role"
+                value="agency_admin"
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+          </div>
+        }
         <div className="login-info">
           <div className="login-input email-input">
             <span className="email">
@@ -151,17 +219,19 @@ var HomeComponent = React.createClass({
           </div>
         </div>
         <div className="button-group login-button">
-          <button
-            type="button"
-            className="btn btn-back"
-            onClick={() => this.setState({step: 'home'})}
-          >
-            Back
-          </button>
+          { showBackButton &&
+            <button
+              type="button"
+              className="btn btn-back"
+              onClick={() => this.setState({step: 'home'})}
+            >
+              Back
+            </button>
+          }
           <button
             type="button"
             className="btn btn-login"
-            onClick={() => this.setState({step: 'home'})}
+            // onClick={() => this.setState({step: 'login'})}
           >
             Login
           </button>
@@ -173,12 +243,26 @@ var HomeComponent = React.createClass({
     )
   },
 
+  homeActionForTenantLogin() {
+    const { signed = false } = this.props;
+
+    return (
+      <div className="tenant-content">
+        {this.loginRender()}
+      </div>
+    )
+  },
+
   homeActionForTenant() {
     const { signed = false } = this.props;
 
     return (
       <div className="button-group tenant-home-button">
-        <button type="button text-center" className="btn">
+        <button
+          type="button text-center"
+          className="btn"
+          onClick={() => this.setState({step: 'login'})}
+        >
           Check My Maintenance Requests
         </button>
         <p className="text-center">Or</p>
@@ -288,13 +372,18 @@ var HomeComponent = React.createClass({
         }
         break;
       case 'trady':
-        render = this.homeActionForTenantLogin;
+        if (step === 'login') {
+          render = this.homeActionForTradyLogin;
+        }
+        if (step === 'home') {
+          render = this.homeActionForTrady;
+        }
         break;
       case 'landlord':
-        render = this.homeActionForTenantLogin;
+        render = this.homeActionForLandlord;
         break;
       case 'agent':
-        render = this.homeActionForTenantLogin;
+        render = this.homeActionForAgent;
         break;
     }
     return (
