@@ -15,9 +15,9 @@
 	.background-image {
 		left: 0;
 		right: 0;
-		z-index: -99999;
+		z-index: -1;
 		height: 1000px;
-		background-image: url(/assets/background.png);
+		background-image: url(/assets/cooking-family.png);
 		// background-color: saddlebrown;
 		background-size: cover;
 		background-position: center center;
@@ -231,7 +231,7 @@
 							}
 		  			}
 		  			.login-info {
-		  				margin-top: 30px;
+		  				margin-top: 40px;
 							.login-input {
 								margin: 30px 0;
 								padding: 0 10px;
@@ -311,7 +311,7 @@
 		  				.type-service {
 		  					position: relative;
 		  					color: white;
-								margin: 15px -10%;
+								margin: 20px -10%;
 			  				select {
 			  					width: 100%;
 			  					padding: 0 20px;
@@ -445,9 +445,48 @@
 		width: 100%;
 	}
 
+	@media (max-width: 1024px) {
+		.home-content .header .home-action {
+			.home-action-title button {
+				font-size: 1.1em;
+				height: 51px;
+			}
+			.home-action-content .action-content {
+				.submit-new-mr {
+					.type-service {
+						select {
+							font-size: 15px;
+						}
+						span {
+							top: 31px;
+							font-size: 27px;
+						}
+					}
+					.input-address {
+						textarea {
+							font-size: 15px;
+						}
+					}
+				}
+				.tenant-home-button, .trady-home-button {
+					font-size: 13px;
+					button.btn {
+						padding: 0px 5px;
+					}
+				}
+			}
+		}
+		.main .how-it-works {
+			p {
+				height: 70px;
+			}
+		}
+	}
+
 	@media (max-width: 992px) {
 		.home-content .header .home-action .home-action-title button {
-			font-size: 1.2em;
+			font-size: 0.9em;
+			height: 46px;
 		}
 		.main .how-it-works p {
 
@@ -455,16 +494,212 @@
 	}
 
 	@media (max-width: 768px) {
-		.home-content .header .home-action .home-action-title button {
-			font-size: 1em;
-		}
-		.main .how-it-works p {
+		.home-content .header .home-action {
+			width: 60%;
 
+			.home-action-title button {
+			  font-size: 1em;
+			  height: 40px;
+			  padding: 0 5px;
+			}
+
+			.home-action-content .action-content {
+		    margin: 0 10%;
+		    width: 80%;
+
+				.submit-new-mr {
+					.type-service {
+						margin: 15px 0;
+						select {
+							font-size: 19px;
+							padding: 0 15px;
+						}
+					}
+					.input-address {
+						margin: 10px 0 30px 0;
+						textarea {
+							font-size: 19px;
+						}
+					}
+				}
+				.login-button.new-mr-button {
+					margin: 30px 0 50px 0;
+				}
+
+		    .tenant-home-button, .trady-home-button {
+			    button.btn {
+			    	font-size: 17px;
+			    	height: 40px;
+		    	}
+		    }
+	    }
+		}
+		.main .how-it-works {
+			margin: 30px 10%;
+
+			img {
+				height: 30px;
+			}
+
+			h4 {
+				font-size: 13px;
+				height: 50px;
+				width: 90%;
+			}
+
+			p {
+				font-size: 11px;
+				height: 60px;
+			}
 		}
 	}
 
-	/* For Desktop Nav */
-	@media (max-width: 550px) {
+	@media (max-width: 420px) {
+		.background-image {
+	    height: 850px;
+		}
+		.home-content .header .home-action {
+			width: 90%;
+
+			.home-action-title button {
+			  font-size: 0.8em;
+			  height: 30px;
+			  padding: 0 5px;
+			}
+
+			.home-action-content .action-content {
+		    margin: 0 10%;
+		    width: 80%;
+
+				.submit-new-mr {
+					.type-service select {
+						font-size: 17px;
+					}
+					.input-address textarea {
+						font-size: 17px;
+					}
+				}
+
+		    .tenant-home-button, .trady-home-button {
+			    button.btn {
+			    	font-size: 14px;
+			    	height: 40px;
+		    	}
+		    }
+	    }
+		}
+		.main .how-it-works {
+			margin: 30px 5%;
+
+			img {
+				height: 24px;
+			}
+
+			h4 {
+				font-size: 10px;
+				height: 30px;
+				width: 90%;
+			}
+
+			p {
+				font-size: 7px;
+				height: 40px;
+			}
+		}
+		.header form {
+			select {
+				width: 10%;
+				min-width: 120px;
+			}
+			input[type="text"] {
+				width: 15%;
+				min-width: 170px;
+			}
+		}
+	}
+
+	@media (max-width: 380px) {
+		.home-content .header .home-action {
+
+			.home-action-title button {
+			  font-size: 0.6em;
+			}
+
+			.home-action-content .action-content {
+				.submit-new-mr {
+					.type-service select {
+						font-size: 15px;
+					}
+					.input-address textarea {
+						font-size: 15px;
+					}
+				}
+
+		    .tenant-home-button, .trady-home-button {
+			    button.btn {
+			    	font-size: 12px;
+		    	}
+		    }
+	    }
+		}
+		.main .how-it-works {
+			img {
+				height: 20px;
+			}
+
+			h4 {
+				font-size: 9px;
+				height: 35px;
+			}
+
+			p {
+				font-size: 7px;
+				height: 50px;
+			}
+		}
+	}
+
+	@media (max-width: 320px) {
+		.background-image {
+	    height: 900px;
+		}
+		.home-content .header .home-action .home-action-content .action-content {
+			.submit-new-mr {
+				.type-service select {
+					font-size: 13px;
+				}
+
+				.input-address textarea {
+					font-size: 13px;
+				}
+			}
+
+			.login-button {
+				.btn {
+					height: 40px;
+					line-height: 0px;
+				}
+			}
+
+	    .tenant-home-button, .trady-home-button {
+		    button.btn {
+		    	font-size: 11px;
+		    	padding: 5px 0;
+		    	height: 40px;
+	    	}
+	    }
+    }
+		.main .how-it-works {
+
+			h4 {
+				height: 50px;
+			}
+
+			p {
+				font-size: 7px;
+				height: 50px;
+			}
+		}
 		.header form {
 			select {
 				width: 10%;
