@@ -521,6 +521,9 @@ header {
           @include justify-content(flex-end);
         }
       }
+      .log_in:not(.desktop-menu-items) {
+        z-index: 1;
+      }
       .header-custom .menu-bar {
         @include flexbox;
       }

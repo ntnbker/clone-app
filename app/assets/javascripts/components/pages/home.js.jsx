@@ -1,38 +1,107 @@
 var HomeComponent = React.createClass({
   getInitialState: function() {
+    const { current_user, role } = this.props;
+    const step = this.detectStepFromRole(role);
+
     return {
-      active: 'agent',
-      step: 'login',
+      active: !role ? 'Tenant' : role === 'AgencyAdmin' ? 'Agent' : role,
+      step,
+      signed: !!current_user,
+      rolePicked: role || 'Tenant',
+      user: current_user,
     };
   },
 
+  detectStepFromRole(role) {
+    return !role
+              ? 'home'
+              : role === 'Landlord' || role === 'Trady'
+                ? 'mobile-button'
+                : 'newMR';
+  },
+
   chooseUser(user) {
-    if (this.state.active !== user) {
-      const step = user === 'tenant' || user === 'trady' ? 'home' : 'login';
-      this.setState({active: user, step });
+    if (this.state.active !== user && !this.state.signed) {
+      const step = user === 'Tenant' || user === 'Trady' ? 'home' : 'login';
+      this.setState({active: user, step, rolePicked: user});
     }
+  },
+
+  redirectNewPath(path) {
+    location.href = path;
+  },
+
+  login(e) {
+    e.preventDefault();
+    const { rolePicked } = this.state;
+    const email          = this.email && this.email.value;
+    const password       = this.password && this.password.value;
+
+    $.ajax({
+      type: 'POST',
+      url: '/menulogin',
+      data: {
+        email, password, role_picked: rolePicked
+      },
+      success: function(res) {
+
+      },
+      error: function(err) {
+
+      },
+    })
+  },
+
+  submitNewMR(e) {
+    e.preventDefault();
+    const { rolePicked } = this.state;
+    const tradie         = this.service && this.service.value;
+    const address        = this.address && this.address.value;
+
+    $.ajax({
+      type: 'POST',
+      url: '/route_user_type',
+      data: { form_fields:
+        {tradie, address, user_role: rolePicked}
+      },
+      success: function(res) {
+
+      },
+      error: function(err) {
+
+      },
+    })
+  },
+
+  handleLandlordCheckMR() {
+    const { signed } = this.state;
+
+    if (!signed) {
+      return this.setState({step: 'login'});
+    }
+    this.redirectNewPath('/tenant_maintenance_requests');
   },
 
   howItWorkForLandlord() {
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/assets/key1.png" alt=""/>
+          <img src="/icons/pen.png" alt=""/>
           <h4>Maintenance Requested</h4>
           <p>Receive Maintenance Requests in a centralized app</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key2.png" alt=""/>
-          <h4>Easily action property <br /> maintenance requests</h4>
+          <img src="/icons/letter.png" alt=""/>
+          <h4>Easily action property maintenance requests</h4>
           <p>Quickly communicate with your agent on how maintenance should be handled</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key3.png" alt=""/>
+          <img src="/icons/notepad-3.png" alt=""/>
           <h4>Receive multiple competative quotes</h4>
           <p>Quickly request quotes from multiple tradies to receive competative prices</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key4.png" alt=""/>
+          <img src="/icons/enjoy.png" alt=""/>
           <h4>Maintenance Complete</h4>
           <p>Enjoy a stress free process to maintain your property</p>
         </div>
@@ -44,22 +113,22 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/assets/key1.png" alt=""/>
+          <img src="/icons/pen.png" alt=""/>
           <h4>Quickly organize maintenance requests</h4>
           <p>Instantly deal with maintenance requests submitted by tenants</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key2.png" alt=""/>
-          <h4>Time is money easily <br /> increase your productivity</h4>
+          <img src="/icons/time-is-money.png" alt=""/>
+          <h4>Time is money easily increase your productivity</h4>
           <p>With a just few clicks you can make sure the job is completed</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key3.png" alt=""/>
+          <img src="/icons/location.png" alt=""/>
           <h4>Track maintenance status</h4>
           <p>Automated reminders unsure jobs are progressing</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key4.png" alt=""/>
+          <img src="/icons/notes.png" alt=""/>
           <h4>Increase revenue</h4>
           <p>Increase revenue through our rebate program and increased productivity</p>
         </div>
@@ -71,22 +140,22 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/assets/key1.png" alt=""/>
-          <h4>Receive High Quality <br /> Job Leads</h4>
+          <img src="/icons/pen.png" alt=""/>
+          <h4>Receive High Quality Job Leads</h4>
           <p>Receive maintenance work from property and strata managers</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key2.png" alt=""/>
-          <h4>Easily track job information <br /> and schedule jobs</h4>
+          <img src="/icons/notepad-12.png" alt=""/>
+          <h4>Easily track job information and schedule jobs</h4>
           <p>Easily organize job communications and appointments</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key3.png" alt=""/>
-          <h4>Easily create invoices <br /> or upload your own</h4>
+          <img src="/icons/receipt.png" alt=""/>
+          <h4>Easily create invoices or upload your own</h4>
           <p>Easily submit invoices. With Automated invoice reminders. We help make sure you get paid</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key4.png" alt=""/>
+          <img src="/icons/notes.png" alt=""/>
           <h4>Increase your revenue</h4>
           <p>Join our network to grow your business</p>
         </div>
@@ -98,30 +167,27 @@ var HomeComponent = React.createClass({
     return (
       <div className="row how-it-works">
         <div className="three columns">
-          <img src="/assets/key1.png" alt=""/>
+          <img src="/icons/pen.png" alt=""/>
           <h4>Maintenance requested</h4>
           <p>Fill in the Maintenance form and submit the request</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key2.png" alt=""/>
+          <img src="/icons/letter.png" alt=""/>
           <h4>Maintenance actioned</h4>
           <p>Sit back, and let us sort out the maintenance for you!</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key3.png" alt=""/>
+          <img src="/icons/location.png" alt=""/>
           <h4>Track Maintenance Status</h4>
           <p>Get updates on your maintenance request is up or check online</p>
         </div>
         <div className="three columns">
-          <img src="/assets/key4.png" alt=""/>
+          <img src="/icons/enjoy.png" alt=""/>
           <h4>Maintenance complete</h4>
           <p>Enjoy a stress free process to maintain your home</p>
         </div>
       </div>
     )
-  },
-
-  login() {
   },
 
   homeActionForAgent() {
@@ -130,6 +196,22 @@ var HomeComponent = React.createClass({
     return (
       <div className="agent-content">
         {this.loginRender()}
+      </div>
+    )
+  },
+
+  homeActionForLandlordMobile() {
+    const { signed = false } = this.props;
+
+    return (
+      <div className="button-group landlord-home-button">
+        <button
+          type="button text-center"
+          className="btn"
+          onClick={() => this.redirectNewPath('/landlord_maintenance_requests')}
+        >
+          My Maintenance Requests
+        </button>
       </div>
     )
   },
@@ -150,6 +232,27 @@ var HomeComponent = React.createClass({
     return (
       <div className="trady-content">
         {this.loginRender()}
+      </div>
+    )
+  },
+
+  homeActionForTradyMobile() {
+    return (
+      <div className="button-group trady-home-button">
+        <button
+          type="button text-center"
+          className="btn"
+          onClick={() => this.redirectNewPath('/trady_maintenance_requests')}
+        >
+          Trady Maintenance Requests
+        </button>
+        <button
+          type="button text-center"
+          className="btn"
+          onClick={() => this.redirectNewPath(this.props.edit_trady)}
+        >
+          Trady Account Settings
+        </button>
       </div>
     )
   },
@@ -178,18 +281,20 @@ var HomeComponent = React.createClass({
 
   loginRender() {
     const { active } = this.state;
-    const showBackButton = active === 'tenant' || active === 'trady';
-    const showChooseRole = active === 'agent';
+    const { new_password_reset_path } = this.props;
+    const showBackButton = active === 'Tenant' || active === 'Trady';
+    const showChooseRole = active === 'Agent';
 
     return (
-      <div>
+      <form id="login" onSubmit={this.login}>
         { showChooseRole &&
           <div className="choose-role">
             <label className="radio-option">Agent
               <input
                 type="radio"
-                name="role"
-                value="agent"
+                name="role-picked"
+                value="Agent"
+                onChange={() => this.setState({rolePicked: 'Agent'})}
                 defaultChecked
               />
               <span className="radio-checkmark"></span>
@@ -197,8 +302,9 @@ var HomeComponent = React.createClass({
             <label className="radio-option">Agency Administrator
               <input
                 type="radio"
-                name="role"
-                value="agency_admin"
+                name="role-picked"
+                onChange={() => this.setState({rolePicked: 'AgencyAdmin'})}
+                value="AgencyAdmin"
               />
               <span className="radio-checkmark"></span>
             </label>
@@ -209,13 +315,21 @@ var HomeComponent = React.createClass({
             <span className="email">
               Email:
             </span>
-            <input type="text" />
+            <input
+              type="text"
+              name="email"
+              ref={(elem) => this.email = elem}
+            />
           </div>
           <div className="login-input password-input">
             <span className="password">
               Password:
             </span>
-            <input type="password" />
+            <input
+              type="password"
+              name="password"
+              ref={(elem) => this.password = elem}
+            />
           </div>
         </div>
         <div className="button-group login-button">
@@ -229,17 +343,16 @@ var HomeComponent = React.createClass({
             </button>
           }
           <button
-            type="button"
+            type="submit"
             className="btn btn-login"
-            // onClick={() => this.setState({step: 'login'})}
           >
             Login
           </button>
         </div>
         <div className="forget-password">
-          <a href="#" className="link-forget-password">Forgot Password</a>
+          <a href={new_password_reset_path} className="link-forget-password">Forgot Password</a>
         </div>
-      </div>
+      </form>
     )
   },
 
@@ -261,7 +374,7 @@ var HomeComponent = React.createClass({
         <button
           type="button text-center"
           className="btn"
-          onClick={() => this.setState({step: 'login'})}
+          onClick={this.handleLandlordCheckMR}
         >
           Check My Maintenance Requests
         </button>
@@ -278,12 +391,21 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForSubmitNewMR() {
-    const { signed = false, services } = this.props;
+    const { signed = false, active } = this.state;
+    const { services } = this.props;
 
     return (
-      <div className="submit-new-mr">
+      <form
+        className={`submit-new-mr ${active.toLowerCase()}-content`}
+        id="submit-new-mr"
+        onSubmit={this.submitNewMR}
+      >
         <div className="type-service">
-          <select className="type-service" id="select-type-service">
+          <select
+            className="type-service"
+            id="select-type-service"
+            ref={(elem) => this.service = elem}
+          >
             <option value={null}>What type of service do you require?</option>
             {
               services.map(({service, id}) => {
@@ -300,54 +422,69 @@ var HomeComponent = React.createClass({
             type="text"
             id="pac-input"
             placeholder="Where do need the service done? Please tell us the address."
+            ref={(elem) => this.address = elem}
             onChange={getAddressOfGoogleMap}
+
           />
         </div>
         <div className="button-group login-button new-mr-button">
+          { active !== 'Agent' &&
+            <button
+              type="button"
+              className="btn btn-back"
+              onClick={() => this.setState({step: 'home'})}
+            >
+              Back
+            </button>
+          }
           <button
-            type="button"
-            className="btn btn-back"
-            onClick={() => this.setState({step: 'home'})}
-          >
-            Back
-          </button>
-          <button
-            type="button"
+            type="submit"
             className="btn btn-summit"
-            onClick={() => this.setState({step: 'home'})}
           >
             Submit
           </button>
         </div>
-      </div>
+      </form>
     )
   },
 
   homeActionTitle() {
-    const {active = 'tenant'} = this.state;
+    const {active = 'tenant', signed} = this.state;
     return (
       <div className="home-action-title">
         <button
-          className={"tanent-title " + (active === 'tenant' ? 'active' : '')}
-          onClick={() => this.chooseUser('tenant')}
+          className={
+            "tenant-title "
+            + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden')
+          }
+          onClick={() => this.chooseUser('Tenant')}
         >
           For Tenants
         </button>
         <button
-          className={"trady-title " + (active === 'trady' ? 'active' : '')}
-          onClick={() => this.chooseUser('trady')}
+          className={
+            "trady-title "
+            + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden')
+          }
+          onClick={() => this.chooseUser('Trady')}
         >
           For Tradies
         </button>
         <button
-          className={"landlord-title " + (active === 'landlord' ? 'active' : '')}
-          onClick={() => this.chooseUser('landlord')}
+          className={
+            "landlord-title "
+            + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden')
+          }
+          onClick={() => this.chooseUser('Landlord')}
         >
           For Landlords
         </button>
         <button
-          className={"agent-title " + (active === 'agent' ? 'active' : '')}
-          onClick={() => this.chooseUser('agent')}
+          className={
+            "agent-title "
+            + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden')
+          }
+          onClick={() => this.chooseUser('Agent')}
         >
           For Agents
         </button>
@@ -360,7 +497,7 @@ var HomeComponent = React.createClass({
     let render = null;
 
     switch (active) {
-      case 'tenant':
+      case 'Tenant':
         if (step === 'login') {
           render = this.homeActionForTenantLogin;
         }
@@ -371,19 +508,32 @@ var HomeComponent = React.createClass({
           render = this.homeActionForSubmitNewMR;
         }
         break;
-      case 'trady':
+      case 'Trady':
         if (step === 'login') {
           render = this.homeActionForTradyLogin;
         }
         if (step === 'home') {
           render = this.homeActionForTrady;
         }
+        if (step === 'mobile-button') {
+          render = this.homeActionForTradyMobile;
+        }
         break;
-      case 'landlord':
-        render = this.homeActionForLandlord;
+      case 'Landlord':
+        if (step === 'home' || step ==='login') {
+          render = this.homeActionForLandlord;
+        }
+        if (step === 'mobile-button') {
+          render = this.homeActionForLandlordMobile;
+        }
         break;
-      case 'agent':
-        render = this.homeActionForAgent;
+      case 'Agent':
+        if (step === 'home' || step ==='login') {
+          render = this.homeActionForAgent;
+        }
+        if (step === 'newMR') {
+          render = this.homeActionForSubmitNewMR;
+        }
         break;
     }
     return (
@@ -398,10 +548,10 @@ var HomeComponent = React.createClass({
     const { active } = this.state;
     let showHowItWork = null;
     switch (active) {
-      case 'tenant': showHowItWork = this.howItWorkForTenant; break;
-      case 'agent': showHowItWork = this.howItWorkForAgent; break;
-      case 'trady': showHowItWork = this.howItWorkForTrady; break;
-      case 'landlord': showHowItWork = this.howItWorkForLandlord; break;
+      case 'Tenant': showHowItWork = this.howItWorkForTenant; break;
+      case 'Agent': showHowItWork = this.howItWorkForAgent; break;
+      case 'Trady': showHowItWork = this.howItWorkForTrady; break;
+      case 'Landlord': showHowItWork = this.howItWorkForLandlord; break;
     }
 
     return (
