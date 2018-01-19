@@ -255,7 +255,7 @@
                             </tr>
 
                             <tr>
-                                <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
+                                <td style="padding: 0 40px 70px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
                                     <!-- Button : BEGIN -->
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
                                         <tr>
@@ -269,6 +269,40 @@
                                     <!-- Button : END -->
                                 </td>
                               </tr>
+
+
+                              <%if @trady.jfmo_participant == nil || @trady.jfmo_participant == false%>
+                                <tr>
+                                    <td style="padding: 0px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #849aaa; text-align: leftt;">
+                                        <p style="margin: 0;">
+                                        
+                                          If you have already made an appointment with the tenant through a text message or a phone call please click the "Stop Appointment Reminder" button below.  
+                                          <br/>
+                                          <br/> 
+                                          
+                                        
+                                        </p>
+                                        
+
+                                    </td>
+                                </tr> 
+
+                                <tr>
+                                  <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
+                                      <!-- Button : BEGIN -->
+                                      <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
+                                          <tr>
+                                              <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
+                                                  <%=link_to "Stop Appointment Reminder", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id, stop_reminder:"appointment"), :style=>"background-color: #e34f4f; border: 15px solid #e34f4f; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+                                                      
+                                                  
+                                              </td>
+                                          </tr>
+                                      </table>
+                                      <!-- Button : END -->
+                                  </td>
+                                </tr>         
+                              <%end %>     
                               
                                         
                                         
