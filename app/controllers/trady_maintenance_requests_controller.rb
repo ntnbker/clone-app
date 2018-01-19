@@ -61,6 +61,7 @@ class TradyMaintenanceRequestsController < ApplicationController
     @instruction = @current_user.instruction
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @logs = @maintenance_request.logs
+    @stop_reminder = params[:stop_reminder]
     if @maintenance_request.agency_admin 
       
       @agency = @maintenance_request.agency_admin.agency

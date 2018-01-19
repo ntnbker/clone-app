@@ -234,16 +234,12 @@
                                         This is a friendly reminder from <%= @maintenance_request.agent.name.capitalize%> from <%=@agency.capitalize_company_name%>. We require a quote for a job we have recieved. 
                                         <br/>
                                         <br/>
-                                        If you have already sent a quote by email or text message to the agent, please click the button below so you may update the maintenance request by clicking the "Quote Already Sent" button and stop the reminder email. 
                                       <%elsif @maintenance_request.agency_admin %>
                                         This is a friendly reminder from <%= @maintenance_request.agency_admin.first_name.capitalize %> from <%=@agency.capitalize_company_name%>. We require a quote for a job we have recieved. 
                                         <br/>
                                         <br/>
-                                        If you have already sent a quote by email or text message to the agent, please click the button below so you may update the maintenance request by clicking the "Quote Already Sent" button and stop the reminder email.  
                                       <%end%> 
-                                      <br/>
-                                      <br/>
-                                      To view the job details, create a quote, make an appointment with the tenant(s), contact agent/tenants or stop the email reminder, please click on the button below. Thank you for your time.
+                                        To view the job details, create a quote, make an appointment with the tenant(s), or contact agent/tenants please click on the "View Maintenance Request" button below. 
                                     </p>
                                     
 
@@ -251,28 +247,60 @@
                             </tr>
 
                             <tr>
-                                <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
-                                    <!-- Button : BEGIN -->
-                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
-                                        <tr>
-                                            <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
-                                                <%=link_to "View Maintenance Request", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
-                                                    
-                                                
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <!-- Button : END -->
-                                </td>
-                              </tr>
-                              
+                              <td style="padding: 0 40px 70px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
+                                  <!-- Button : BEGIN -->
+                                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
+                                      <tr>
+                                          <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
+                                              <%=link_to "View Maintenance Request", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id), :style=>"background: #7dc691; border: 15px solid #7dc691; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+                                                  
+                                              
+                                          </td>
+                                      </tr>
+                                  </table>
+                                  <!-- Button : END -->
+                              </td>
+                            </tr>
+                            <%if @trady.jfmo_participant == nil || @trady.jfmo_participant == false%>
+                              <tr>
+                                  <td style="padding: 0px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #849aaa; text-align: leftt;">
+                                      <p style="margin: 0;">
                                         
+                                          If you have already sent a quote by email or text message to the agent for this job, please click the "Stop Quote Request Reminder" button below.  
+                                          <br/>
+                                          <br/> 
+                                          Please Note that submitting the quote through maintenance app is viewed more favourably as it helps you and the agent organize work much quicker, thank you. 
                                         
+                                      </p>
+                                      
+
+                                  </td>
+                              </tr> 
+
+                               <tr>
+                              <td style="padding: 0 40px 133px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #7dc691;">
+                                  <!-- Button : BEGIN -->
+                                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
+                                      <tr>
+                                          <td style="border-radius: 3px; background: #7dc691; text-align: center;" class="button-td">
+                                              <%=link_to "Stop Quote Request Reminder", trady_maintenance_request_url(id:@maintenance_request.id,user_id:@trady.user.id, stop_reminder:"quote"), :style=>"background-color: #e34f4f; border: 15px solid #e34f4f; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold; color:#ffffff;"%>
+                                                  
+                                              
+                                          </td>
+                                      </tr>
+                                  </table>
+                                  <!-- Button : END -->
+                              </td>
+                            </tr>         
+                            <%end %>         
                                           
                                           
                             
                             
 
+
+
+                            
                         </table>
                     </td>
                 </tr>
