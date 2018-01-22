@@ -1,6 +1,6 @@
 class User < ApplicationRecord
+  
   before_save :format_email
-
   authenticates_with_sorcery!
   #VALIDATIONS
     
@@ -126,7 +126,9 @@ class User < ApplicationRecord
   end
 
   def format_email
-    self.email = self.email.downcase
+    
+    self.email = self.email.gsub(/\s+/, "").downcase!
+    # self.update_column(:email, self.email)
   end
 
   
