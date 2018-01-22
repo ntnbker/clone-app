@@ -506,6 +506,12 @@
 			  font-size: 1em;
 			  height: 40px;
 			  padding: 0 5px;
+
+			  &:hover {
+			  	color: white;
+			  	background-color: #5CC993;
+			  	border-color: #5CC993;
+			  }
 			}
 
 			.home-action-content .action-content {
@@ -670,12 +676,20 @@
 		}
 		.home-content .header .home-action .home-action-content .action-content {
 			.submit-new-mr {
-				.type-service select {
-					font-size: 13px;
+				.type-service {
+					select {
+						font-size: 11px;
+					}
+					span {
+						top: 28px;
+						font-size: 24px;
+					}
 				}
 
 				.input-address textarea {
-					font-size: 13px;
+					font-size: 11px;
+					height: 65px;
+					line-height: 20px;
 				}
 			}
 

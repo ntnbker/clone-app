@@ -400,7 +400,7 @@ var Header = React.createClass({
                       <a href={props.menu_login_path} > Login </a>
                     </div>
                 }
-              <button className="menu-btn button" id="btn-menu-bar" onClick={this.showBar}> ☰ </button>
+              <button className="menu-btn button" id="btn-menu-bar" onClick={this.showBar}> MENU </button>
             </div>
           </div>
         </nav>
