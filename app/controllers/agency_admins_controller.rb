@@ -14,7 +14,7 @@ class AgencyAdminsController < ApplicationController
     @agency_admin = AgencyAdmin.new(agency_admin_params)
     @agency_admin.perform_add_agency_admin_validations = true
     
-    existing_user = User.find_by(email:params[:agency_admin][:email])
+    existing_user = User.find_by(email:params[:agency_admin][:email].gsub(/\s+/, "").downcase!)
     if existing_user
       existing_role = existing_user.get_role("AgencyAdmin").present?
     end 

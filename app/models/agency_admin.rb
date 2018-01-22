@@ -37,7 +37,7 @@ attr_accessor :perform_add_agency_admin_validations
   end
 
   def format_email
-    self.email = self.email.downcase
+    self.email = self.email.gsub(/\s+/, "").downcase!
   end
 
 

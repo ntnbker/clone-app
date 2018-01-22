@@ -9,7 +9,7 @@ class TradiesController < ApplicationController
     @user = User.find_by(email:params[:trady][:email].gsub(/\s+/, "").downcase!)
     #params[:trady][:email].gsub(/\s+/, "").downcase!
     @trady = Trady.new(trady_params)
-    binding.pry
+    
     mr = MaintenanceRequest.find_by(id:params[:trady][:maintenance_request_id])
     
     if mr.agent == nil  
