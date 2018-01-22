@@ -145,6 +145,11 @@
 				    &.hidden {
 				    	visibility: hidden;
 				    }
+				    &:hover {
+				    	color: white;
+				    	background-color: #4aa576;
+				    	border-color: #4aa576;
+				    }
 		  		}
 		  	}
 		  	.home-action-content {
@@ -387,7 +392,7 @@
 		h3.title {
 			color: #3e4b54;
 			text-align: center;
-			margin: 80px 0;
+			padding: 20px;
 		}
 
 		.how-it-works {
@@ -424,7 +429,7 @@
 		}
 
 		.app-for {
-			margin: 80px;
+			padding: 20px;
 
 			div {
 				height: 100px;

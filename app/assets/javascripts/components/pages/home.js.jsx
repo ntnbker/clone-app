@@ -13,7 +13,7 @@ var HomeComponent = React.createClass({
   },
 
   detectStepFromRole(role) {
-    return !role
+    return !role || role === 'Tenant'
               ? 'home'
               : role === 'Landlord' || role === 'Trady'
                 ? 'mobile-button'
@@ -62,7 +62,7 @@ var HomeComponent = React.createClass({
       type: 'POST',
       url: '/route_user_type',
       data: { form_fields:
-        {tradie, address, user_role: rolePicked}
+        {tradie, address, user_role: rolePicked === 'Tenant' ? rolePicked : 'Agent'}
       },
       success: function(res) {
 
@@ -267,14 +267,16 @@ var HomeComponent = React.createClass({
         >
           Login
         </button>
-        <p className="text-center">Or</p>
-        <button
-          type="button text-center"
-          className="btn"
-          onClick={() => this.setState({step: 'home'})}
-        >
-          Join our network
-        </button>
+        { false && <p className="text-center">Or</p> }
+        { false &&
+          <button
+            type="button text-center"
+            className="btn"
+            onClick={() => this.setState({step: 'home'})}
+          >
+            Join our network
+          </button>
+        }
       </div>
     )
   },
