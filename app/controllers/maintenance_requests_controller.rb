@@ -39,8 +39,8 @@ class MaintenanceRequestsController < ApplicationController
     if current_user == nil || current_user.logged_in_as("Tenant")
       @maintenance_request.perform_realestate_validations = true
       ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
-      the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email].gsub(/\s+/, "").downcase!) 
-      the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email].gsub(/\s+/, "").downcase!) 
+      the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email].gsub(/\s+/, "").downcase) 
+      the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email].gsub(/\s+/, "").downcase) 
 
         if the_agency_admin
           @agency_admin = the_agency_admin
@@ -76,8 +76,11 @@ class MaintenanceRequestsController < ApplicationController
     
     
     if @maintenance_request.valid?
+      email = params[:maintenance_request][:email].gsub(/\s+/, "").downcase
 
-      @user = User.find_by(email: params[:maintenance_request][:email].gsub(/\s+/, "").downcase!)
+      @user = User.find_by(email:email)
+
+      binding.pry
       if @user
         existing_role = @user.get_role("Tenant").present?
       end

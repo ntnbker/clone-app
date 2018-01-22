@@ -9,7 +9,7 @@ class LandlordsController < ApplicationController
     maintenance_request = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id])
     property = maintenance_request.property
     
-    existing_user = User.find_by(email:params[:landlord][:email].gsub(/\s+/, "").downcase!)
+    existing_user = User.find_by(email:params[:landlord][:email].gsub(/\s+/, "").downcase)
     if existing_user
       existing_role = existing_user.get_role("Landlord").present?
     end 

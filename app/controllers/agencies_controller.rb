@@ -21,7 +21,7 @@ class AgenciesController < ApplicationController
     
     @user = User.new(user_params)
 
-    existing_user = User.find_by(email:params[:user][:email].gsub(/\s+/, "").downcase!)
+    existing_user = User.find_by(email:params[:user][:email].gsub(/\s+/, "").downcase)
     if existing_user
       existing_role = existing_user.get_role("AgencyAdmin").present?
     end
