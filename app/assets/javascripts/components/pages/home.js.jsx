@@ -461,7 +461,7 @@ var HomeComponent = React.createClass({
           }
           onClick={() => this.chooseUser('Tenant')}
         >
-          For Tenants
+          {!signed && For }Tenants
         </button>
         <button
           className={
@@ -470,7 +470,7 @@ var HomeComponent = React.createClass({
           }
           onClick={() => this.chooseUser('Trady')}
         >
-          For Tradies
+          {!signed && For }Tradies
         </button>
         <button
           className={
@@ -479,7 +479,7 @@ var HomeComponent = React.createClass({
           }
           onClick={() => this.chooseUser('Landlord')}
         >
-          For Landlords
+          {!signed && For }Landlords
         </button>
         <button
           className={
@@ -488,7 +488,7 @@ var HomeComponent = React.createClass({
           }
           onClick={() => this.chooseUser('Agent')}
         >
-          For Agents
+          {!signed && For }Agents
         </button>
       </div>
     )
