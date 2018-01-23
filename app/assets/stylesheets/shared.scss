@@ -220,7 +220,7 @@ header {
               // @include flexbox;
               line-height: 55px;
               margin-left: 5px;
-              align-items: center;
+              @include align-items(center);
             }
           }
         }
@@ -310,7 +310,8 @@ header {
         @include flexbox;
         @include flex(1);
         @include justify-content(flex-end);
-        align-items: center;
+        @include align-items(center);
+        position: relative;
         .desktop-menu-items {
           width: 300px;
           background-color: white;
@@ -354,6 +355,7 @@ header {
     }
 
     .menu-button {
+      z-index: 1;
       // margin-top: 18px;
       float: right;
       // height: 40px;
@@ -381,7 +383,7 @@ header {
       .fa-angle-down {
         font-size: 20px;
         // @include flexbox;
-        align-items: center;
+        @include align-items(center);
         line-height: 55px;
       }
     }
@@ -390,7 +392,7 @@ header {
       @include flexbox;
       // padding-top: 10px;
       // height: 60px;
-      align-items: center;
+      @include align-items(center);
       // @include flex(1);
 
       img {

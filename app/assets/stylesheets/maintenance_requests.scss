@@ -360,7 +360,7 @@ h5.title-mobile {
     .title {
         @include flexbox;
         @include justify-content(center);
-        align-items: center;
+        @include align-items(center);
         height: 40px;
         background-color: #7dc691;
         a {
