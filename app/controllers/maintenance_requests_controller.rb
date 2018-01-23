@@ -384,11 +384,20 @@ class MaintenanceRequestsController < ApplicationController
 
     
     if !params[:preapproved_note].empty? 
-      maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord approves work order. Please send to tradie.")
+      if maintenance_request.action_status.agent_status == "Quote Approved Tradie To Organise Appointment"
+        #do nothing
+      else 
+        maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
+      end 
+      
+      
       if current_user.logged_in_as("Landlord")
         AgentLandlordApprovedWorkOrderEmailWorker.perform_async(maintenance_request.id)
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord approves work order. Please send to tradie.")
+      elsif current_user.logged_in_as("Agent") || current_user.logged_in_as("AgencyAdmin")
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Agent wrote approval note. Please send work order to tradie.") 
       end 
+      
       maintenance_request.update_attribute(:preapproved_note, params[:preapproved_note])
       respond_to do |format|
         format.json {render :json=>{:preapproved_note=>params[:preapproved_note]}}
