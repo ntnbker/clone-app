@@ -243,6 +243,9 @@
 								border: 2px solid white;
 								border-radius: 4px;
 								@include flexbox;
+								&:focus-within {
+									border-color: #5CC993;
+								}
 							}
 							span {
 								@include flexbox;
@@ -280,6 +283,12 @@
 								height: 50px;
 								font-weight: 600;
 								width: calc(45% - 2px);
+
+								&:hover {
+									color: white;
+									background-color: #4aa576;
+									border-color: #4aa576;
+								}
 							}
 							&.new-mr-button {
 								margin: 30px -10% 50px -10%;
@@ -304,6 +313,7 @@
 								height: 50px;
 								&:hover {
 									color: #5CC993;
+									border-color: #5CC993;
 								}
 							}
 							p {
@@ -329,8 +339,10 @@
 									font-size: 20px;
 									background: transparent;
 									border: 2px white solid;
+									&:focus-within {
+										border-color: #5CC993;
+									}
 									option {
-										color: black;
 										background: white;
 										color: #5CC993;
 										text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
@@ -341,11 +353,13 @@
 										}
 										&:checked {
 											color: white;
+											border-color: #5CC993;
 											background-color: #5CC993;
 										}
 										&:focus::-ms-value {
-											background-color: transparent;
 											color: white;
+											border-color: #5CC993;
+											background-color: transparent;
 										}
 									}
 									appearance: none;
@@ -387,6 +401,9 @@
 									@include input-placeholder {
 										color: white;
 									}
+									&:focus {
+										border-color: #5CC993;
+									}
 								}
 							}
 						}
@@ -397,6 +414,10 @@
 								color: #5CC993;
 								text-decoration-line: none;
 								text-decoration: none;
+								&:hover {
+									color: #4aa576;
+								}
+
 							}
 						}
 					}
