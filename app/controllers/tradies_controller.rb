@@ -6,7 +6,7 @@ class TradiesController < ApplicationController
   
   def create
     
-    @user = User.find_by(email:params[:trady][:email].gsub(/\s+/, "").downcase!)
+    @user = User.find_by(email:params[:trady][:email].gsub(/\s+/, "").downcase)
     #params[:trady][:email].gsub(/\s+/, "").downcase!
     @trady = Trady.new(trady_params)
     
