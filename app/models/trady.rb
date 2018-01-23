@@ -1,6 +1,5 @@
 class Trady < ApplicationRecord
   before_save :format_name, :format_company_name, :format_email
-
   has_many :roles, as: :roleable
   belongs_to :user 
   
@@ -61,7 +60,8 @@ class Trady < ApplicationRecord
   end
 
   def format_email
-    self.email = self.email.downcase
+    self.email = self.email.gsub(/\s+/, "").downcase
+    
   end
 
 

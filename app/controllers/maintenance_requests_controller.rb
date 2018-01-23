@@ -39,8 +39,8 @@ class MaintenanceRequestsController < ApplicationController
     if current_user == nil || current_user.logged_in_as("Tenant")
       @maintenance_request.perform_realestate_validations = true
       ####IM CHANGING THE REALESTATE VALIDATIONS TO FALSE ORGINALLY TRUE> FOR THE FRONT END VALIDATIONS #######
-      the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email]) 
-      the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email]) 
+      the_agency_admin = AgencyAdmin.find_by(email:params[:maintenance_request][:agent_email].gsub(/\s+/, "").downcase) 
+      the_agent = Agent.find_by(email:params[:maintenance_request][:agent_email].gsub(/\s+/, "").downcase) 
 
         if the_agency_admin
           @agency_admin = the_agency_admin
@@ -76,8 +76,11 @@ class MaintenanceRequestsController < ApplicationController
     
     
     if @maintenance_request.valid?
+      email = params[:maintenance_request][:email].gsub(/\s+/, "").downcase
 
-      @user = User.find_by(email: params[:maintenance_request][:email])
+      @user = User.find_by(email:email)
+
+      
       if @user
         existing_role = @user.get_role("Tenant").present?
       end
@@ -381,11 +384,20 @@ class MaintenanceRequestsController < ApplicationController
 
     
     if !params[:preapproved_note].empty? 
-      maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord approves work order. Please send to tradie.")
+      if maintenance_request.action_status.agent_status == "Quote Approved Tradie To Organise Appointment"
+        #do nothing
+      else 
+        maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
+      end 
+      
+      
       if current_user.logged_in_as("Landlord")
         AgentLandlordApprovedWorkOrderEmailWorker.perform_async(maintenance_request.id)
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord approves work order. Please send to tradie.")
+      elsif current_user.logged_in_as("Agent") || current_user.logged_in_as("AgencyAdmin")
+        Log.create(maintenance_request_id:maintenance_request.id, action:"Agent wrote approval note. Please send work order to tradie.") 
       end 
+      
       maintenance_request.update_attribute(:preapproved_note, params[:preapproved_note])
       respond_to do |format|
         format.json {render :json=>{:preapproved_note=>params[:preapproved_note]}}
