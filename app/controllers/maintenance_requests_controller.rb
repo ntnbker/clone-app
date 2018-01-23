@@ -389,7 +389,7 @@ class MaintenanceRequestsController < ApplicationController
       else 
         maintenance_request.action_status.update_attribute(:agent_status, "Send Work Order")
       end 
-      Log.create(maintenance_request_id:maintenance_request.id, action:"Landlord approves work order. Please send to tradie.")
+      
       
       if current_user.logged_in_as("Landlord")
         AgentLandlordApprovedWorkOrderEmailWorker.perform_async(maintenance_request.id)
