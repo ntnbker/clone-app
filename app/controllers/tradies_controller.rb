@@ -6,8 +6,10 @@ class TradiesController < ApplicationController
   
   def create
     
-    @user = User.find_by(email:params[:trady][:email])
+    @user = User.find_by(email:params[:trady][:email].gsub(/\s+/, "").downcase!)
+    #params[:trady][:email].gsub(/\s+/, "").downcase!
     @trady = Trady.new(trady_params)
+    
     mr = MaintenanceRequest.find_by(id:params[:trady][:maintenance_request_id])
     
     if mr.agent == nil  
