@@ -80,7 +80,7 @@ class MaintenanceRequestsController < ApplicationController
 
       @user = User.find_by(email:email)
 
-      binding.pry
+      
       if @user
         existing_role = @user.get_role("Tenant").present?
       end

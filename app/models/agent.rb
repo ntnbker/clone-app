@@ -25,7 +25,7 @@ class Agent < ApplicationRecord
   end
 
   def format_email
-    self.email = self.email.gsub(/\s+/, "").downcase!
+    self.email = self.email.gsub(/\s+/, "").downcase
   end
 
 end 

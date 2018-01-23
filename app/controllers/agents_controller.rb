@@ -12,6 +12,7 @@ class AgentsController < ApplicationController
   end
 
   def create
+    
     @agent = Agent.new(agent_params)
     existing_user = User.find_by(email:params[:agent][:email].gsub(/\s+/, "").downcase)
     if existing_user
