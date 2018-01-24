@@ -33,8 +33,8 @@
   /           = h.select :user_role, options_for_select({ "Agent" => "Agent", "Tenant" => "Tenant" }, @role ), {:include_blank => "I`m a.."}
   /         -elsif current_user.current_role.role == "Landlord" || current_user.current_role.role == "Trady"
   /           = h.select :user_role, options_for_select({"Tenant" => "Tenant" }), {:include_blank => "I`m a.."}
-  /         / = h.select :user_role, options_for_select({ "Agent" => "Agent", "Tenant" => "Tenant" }, @role ), {:include_blank => "I`m a.."}, {required: true}
-  /         = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), {:include_blank => "I need a.."}
+  /           = h.select :user_role, options_for_select({ "Agent" => "Agent", "Tenant" => "Tenant" }, @role ), {:include_blank => "I`m a.."}, {required: true}
+  /        = h.select :tradie, options_for_select(@service.map{|j|[j.service, j.service] }), {:include_blank => "I need a.."}
   /       .input-address
   /         = h.text_area :address, id:'pac-input', :placeholder => 'For my place at..', disable:true,  hide_label: true, :onKeyup => "getAddressOfGoogleMap()"
   /       .btn-submit

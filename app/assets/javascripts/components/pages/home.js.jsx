@@ -55,7 +55,7 @@ var HomeComponent = React.createClass({
   submitNewMR(e) {
     e.preventDefault();
     const { rolePicked } = this.state;
-    const tradie         = this.service && this.service.value;
+    const tradie         = this.service && this.service.value || '';
     const address        = this.address && this.address.value;
 
     $.ajax({
@@ -408,7 +408,7 @@ var HomeComponent = React.createClass({
             id="select-type-service"
             ref={(elem) => this.service = elem}
           >
-            <option value={null}>What type of service do you require?</option>
+            <option value={''}>What type of service do you require?</option>
             {
               services.map(({service, id}) => {
                 return (
@@ -589,6 +589,7 @@ var HomeComponent = React.createClass({
             </div>
             {this.renderHowItWork()}
             {this.renderHomeAction()}
+            <input type="hidden" id="refresh" value="no" />
           </div>
         </div>
       </div>
