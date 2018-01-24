@@ -23,7 +23,7 @@ class TradyAwaitingQuoteRequestAssignedMaintenanceRequestWorker
           trady = quote_request.trady
           property = quote_request.maintenance_request.property
           maintenance_request = quote_request.maintenance_request
-          TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property).deliver
+          TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request).deliver
 
         else
          #do nothing
