@@ -37,4 +37,18 @@ class ReminderKillersController < ApplicationController
     end 
   end
 
+  def stop_invoice_reminder
+    
+    
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
+
+    @maintenance_request.action_status.update_columns(agent_status:"Jobs Completed", trady_status:"Job Complete")
+  
+
+
+    respond_to do |format|
+      format.json{ render :json=>{message:"Thank you for letting us know an invoice has been submitted."}}
+    end 
+  end
+
 end 
