@@ -73,7 +73,7 @@ class UserSessionsController < ApplicationController
           elsif @user.logged_in_as("Trady")
             flash[:success] = "You are now signed in"
             if maintenance_request
-              redirect_to trady_maintenance_request_path(maintenance_request, anchor: params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id]) 
+              redirect_to trady_maintenance_request_path(maintenance_request, anchor: params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder]) 
             else
               redirect_to trady_maintenance_requests_path(email:@user.email)
             end 

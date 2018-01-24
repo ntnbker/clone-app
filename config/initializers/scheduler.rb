@@ -14,7 +14,7 @@ scheduler = Rufus::Scheduler.new(:lockfile => ".rufus-scheduler.lock")
 
 unless scheduler.down?
 
-  scheduler.every("2d") do
+  scheduler.every("2m") do
     # ...
     ReminderQueueWorker.perform_async
   end
