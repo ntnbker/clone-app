@@ -36,12 +36,18 @@ var HomeComponent = React.createClass({
     const { rolePicked } = this.state;
     const email          = this.email && this.email.value;
     const password       = this.password && this.password.value;
+    const {
+      query_id, user_type, maintenance_request_id, anchor, message, quote_request_id, appointment_id, stop_reminder, quote_message_id
+    } = this.props;
 
     $.ajax({
       type: 'POST',
       url: '/menulogin',
       data: {
-        email, password, role_picked: rolePicked
+        email, password, role_picked: rolePicked,
+        query_id, user_type, maintenance_request_id, anchor,
+        message, quote_request_id, appointment_id,
+        stop_reminder, quote_message_id
       },
       success: function(res) {
 
