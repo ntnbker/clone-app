@@ -1078,7 +1078,7 @@ var MaintenanceRequest = React.createClass({
 			}
 
 			case 'viewQuoteRequestMessage':
-			case 'confirmQuoteAlreadySent': {
+			case 'confirmStopQuoteReminder': {
 				this.setState({
 					quote_request: item,
 				});
@@ -1914,6 +1914,47 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	stopQuoteReminder: function() {
+		const self = this;
+		const { maintenance_request, quote_request } = this.state;
+		const { current_user_role } = this.props;
+
+		const params = {
+			trady_id: quote_request.trady_id,
+			quote_request_id: quote_request.id,
+			maintenance_request_id: maintenance_request.id,
+			role: 'Agent' ,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_quote_reminder',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Stop Quote Reminder",
+						content: "Thank you!",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Stop Quote Reminder",
+					content: "Something wrong" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		})
+	},
+
 	uploadImage: function(images, callback) {
 		if (images.length == 0) {
 		  return;
@@ -2429,12 +2470,12 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
-				case 'confirmQuoteAlreadySent':
+				case 'confirmStopQuoteReminder':
 					return (
 						<ModalConfirmAnyThing
 							close={this.isClose}
-							confirm={this.quoteAlreadySent}
-							title="Quote Already Sent"
+							confirm={this.stopQuoteReminder}
+							title="Stop Quote Request Reminder"
 							content="Are you sure that the tradie has already submitted a quote?"
 						/>
 					);

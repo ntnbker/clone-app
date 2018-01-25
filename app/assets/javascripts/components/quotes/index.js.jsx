@@ -148,10 +148,10 @@ var ButtonQuoteAlreadySent = React.createClass({
 		return (
 			<button
 				type="button"
-				className="btn btn-default"
-				onClick={() => viewQuote('confirmQuoteAlreadySent', quote_request)}
+				className="btn btn-default stop-reminder"
+				onClick={() => viewQuote('confirmStopQuoteReminder', quote_request)}
 			>
-				Quote Already Sent
+				Stop Quote Request Reminder
 			</button>
 		);
 	}
@@ -628,6 +628,7 @@ var QuoteRequests = React.createClass({
 													className="btn btn-default"
 													{...self}
 													chooseImageText="Choose Image or PDF to upload"
+													text="Upload Quote"
 													onClick={() => self.chooseQuoteRequest(quote_request)}
 												/>
 											: ''

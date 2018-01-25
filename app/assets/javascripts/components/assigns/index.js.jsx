@@ -1,6 +1,6 @@
 var AssignTrady = React.createClass({
 	render: function() {
-		const { current_role } = this.props;
+		const { current_role, stop_appointment, stop_invoice } = this.props;
     const trady            = this.props.trady || {};
     trady['trady_company'] = trady['trady_company'] || {};
 
@@ -12,6 +12,15 @@ var AssignTrady = React.createClass({
 			<div className="quotes invoices m-t-xl assign" id="invoices">
 				<p>
 					{current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"}
+          <button
+            type="button"
+            className="btn btn-mark-as-paid stop-reminder"
+            onClick={() => {
+              if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
+            }}
+          >
+              {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+          </button>
 				</p>
 				<div className="list-quote">
 					<div className="item-quote row">
@@ -36,10 +45,18 @@ var AssignTrady = React.createClass({
               { this.props.showAppointmentAlreadyMade &&
                 <button
                   type="button"
-                  className="btn btn-view appointment-already-made"
-                  onClick={() => this.props.onModalWith('confirmAppointmentAlreadyMade')}
+                  className="btn btn-view appointment-already-made stop-reminder"
+                  onClick={() => {
+                    if (!stop_appointment) {
+                      this.props.onModalWith('confirmAppointmentAlreadyMade');
+                    }
+                  }}
                 >
-                  Appointment Already Made
+                {
+                  !stop_appointment
+                    ? "Stop Appointment Reminder"
+                    : "Appointment Reminder Stopped"
+                }
                 </button>
               }
 							{
