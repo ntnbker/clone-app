@@ -9,6 +9,9 @@ class UserSessionsController < ApplicationController
     @message = params[:message]
     @quote_message_id = params[:quote_message_id]
     @appointment_id = params[:appointment_id]
+    @stop_reminder = params[:stop_reminder]
+    @quote_request_id = params[:quote_request_id] 
+    
     if current_user
       flash[:danger] = "You are already logged in"
       redirect_to root_path
