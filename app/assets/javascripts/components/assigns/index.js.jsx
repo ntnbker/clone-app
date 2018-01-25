@@ -12,15 +12,17 @@ var AssignTrady = React.createClass({
 			<div className="quotes invoices m-t-xl assign" id="invoices">
 				<p>
 					{current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"}
-          <button
-            type="button"
-            className="btn btn-mark-as-paid stop-reminder"
-            onClick={() => {
-              if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
-            }}
-          >
-              {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
-          </button>
+          {this.props.showAppointmentAlreadyMade &&
+            <button
+              type="button"
+              className="btn btn-mark-as-paid stop-reminder"
+              onClick={() => {
+                if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
+              }}
+            >
+                {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+            </button>
+          }
 				</p>
 				<div className="list-quote">
 					<div className="item-quote row">
