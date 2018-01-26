@@ -23,24 +23,24 @@ class TenantsController < ApplicationController
       ############################    
       if @user && existing_role == false
         role = Role.new(user_id:@user.id)
-        @tenant = Tenant.create(user_id:@user.id,name:params[:maintenance_request][:name],email:params[:maintenance_request][:email],mobile:params[:maintenance_request][:mobile])
+        @tenant = Tenant.create(user_id:@user.id,name:params[:tenant][:name],email:params[:tenant][:email],mobile:params[:tenant][:mobile], property_id:@property.id)
         @tenant.roles << role
         role.save
         
         
-        @tenant.update_attribute(:property_id, @property.id)
+        #@tenant.update_attribute(:property_id, @property.id)
          
-        @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
+        @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:params[:tenant][:maintenance_request_id])
 
         
       elsif @user && existing_role == true
       ###################################     
         # @maintenance_request.perform_uniqueness_validation_of_email = false
           @tenant = Tenant.find_by(user_id:@user.id)
-          @tenant.update_columns(property_id: @property.id, mobile:params[:maintenance_request][:mobile])
+          @tenant.update_columns(property_id: @property.id, mobile:params[:tenant][:mobile])
           @maintenance_request.service_type = @customer_input.tradie
           @maintenance_request.save 
-          @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
+          @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:params[:tenant][:maintenance_request_id])
 
           
 
@@ -48,14 +48,12 @@ class TenantsController < ApplicationController
       else #This user does not exist
           #CREATE USER
           #@maintenance_request.perform_uniqueness_validation_of_email = true
-          @user = User.create(email:params[:maintenance_request][:email], password:SecureRandom.hex(5))
+          @user = User.create(email:params[:tenant][:email], password:SecureRandom.hex(5))
           role = Role.create(user_id:@user.id)
-          @tenant = Tenant.create(property_id:@property.id,user_id:@user.id, name:params[:maintenance_request][:name],email:params[:maintenance_request][:email], mobile:params[:maintenance_request][:mobile] )
+          @tenant = Tenant.create(property_id:@property.id,user_id:@user.id, name:params[:tenant][:name],email:params[:tenant][:email], mobile:params[:tenant][:mobile] )
           @tenant.roles << role
-          @maintenance_request.tenant_id = @tenant.id
-          @maintenance_request.service_type = @customer_input.tradie
-          @maintenance_request.save
-          @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:@maintenance_request.id)
+          
+          @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:params[:tenant][:maintenance_request_id])
           #UserSetPasswordEmailWorker.perform_async(@user.id)
           
         
@@ -70,14 +68,18 @@ class TenantsController < ApplicationController
       #AgencyAdminOrAgentNewMaintenanceRequestNotificationTextingWorker.perform_async(@maintenance_request.id,the_url)
 
       
-      Log.create(maintenance_request_id:@maintenance_request.id, action:"Maintenance request created.")
+      
     
       respond_to do |format|
-        format.json {render :json=>{errors:@maintenance_request.errors.to_hash(true).as_json}}
+        format.json {render :json=>{errors:@tenant.errors.to_hash(true).as_json}}
         format.html
       end 
       
 
+    
+  end
+
+  def update
     
   end
   
