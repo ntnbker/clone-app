@@ -80,10 +80,40 @@ class TenantsController < ApplicationController
   end
 
   def update
+    tenant = Tenant.find_by(id:params[:tenant][:id])  
     
+    
+
+    if tenant.update(tenant_params)
+        
+      
+      respond_to do |format|
+        format.json {render :json=>{tenant: tenant, :notice=>"Tenant successfully edited" }}
+      end 
+    else
+      respond_to do |format|
+        format.json{render :json=>{errors:tenant.errors.to_hash(true).as_json}}
+      end 
+    end 
   end
   
   def delete
     
   end
+
+
+
+  def tenant_params
+    params.require(:trady).permit(:name, :email, :mobile, :property_id, :maintenance_request_id)
+  end
+
+
+
+
+
+
+
+
+
+
 end 
