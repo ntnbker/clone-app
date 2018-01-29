@@ -380,6 +380,7 @@ var SideBarMobile = React.createClass({
 				<div className="action-mobile">
 					<ActionMobile
 						close={this.close}
+						hasTenant={this.props.hasTenant}
 						landlord={this.props.landlord}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/>
@@ -387,8 +388,6 @@ var SideBarMobile = React.createClass({
 						close={this.close}
 						tenants={this.props.tenants}
 						landlord={this.props.landlord}
-						current_user={this.props.current_user}
-						assigned_trady={this.props.assigned_trady}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/>
 				</div>
@@ -524,6 +523,214 @@ var ModalAddLandlord = React.createClass({
 								<button type="submit" className="btn btn-default success">Submit</button>
 							</div>
 						</form>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalAddTenant = React.createClass({
+	getInitialState: function() {
+		return {
+			errorName: '',
+			errorEmail: '',
+			errorMobile: '',
+		};
+	},
+
+	removeError: function(e) {
+		var key = e.target.id;
+		var errorField = {
+			'name'  : 'errorName',
+			'email' : 'errorEmail',
+			'mobile': 'errorMobile',
+		}[key];
+		if (!errorField || !this.state[errorField]) return;
+		this.setState({ [errorField]: '' });
+	},
+
+	submit: function(e) {
+		e.preventDefault();
+		const self = this;
+		const {tenant = {}} = this.props;
+		var params = {
+			authenticity_token: this.props.authToken,
+			tenant: {
+				id: tenant.id,
+				name: this.name && this.name.value,
+				email: this.email && this.email.value,
+				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id,
+				property_id: this.props.property.id,
+			},
+		}
+		this.props.addTenant(params, function(err) {
+			if (err) {
+				self.setState({
+					errorEmail: err.email,
+					errorName: err.name,
+					errorMobile: err.mobile,
+				})
+			}
+		});
+		return
+	},
+
+	render: function() {
+		const tenant = this.props.tenant;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<form role="form" id="addForm" onSubmit={this.submit}>
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									aria-label="Close"
+									data-dismiss="modal"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Add Tenant</h4>
+							</div>
+							<div className="modal-body">
+									<div className="row">
+										<div>
+											<label>Name <strong>*</strong>:</label>
+											<input
+												id="name"
+												type="text"
+												name="landlord[name]"
+												placeholder="Enter Name"
+												defaultValue={tenant && tenant.name}
+												ref={e => this.name = e}
+												onChange={this.removeError}
+												className={"u-full-width " + (this.state.errorName && "has-error")}
+											/>
+										</div>
+										{renderError(this.state['errorName'])}
+									</div>
+									<div className="row m-t-lg">
+										<div>
+											<label>Mobile <strong>*</strong>:</label>
+											<input
+												id="mobile"
+												type="text"
+												name="landlord[mobile]"
+												placeholder="Enter Mobile"
+												defaultValue={tenant && tenant.mobile}
+												ref={e => this.mobile = e}
+												onChange={this.removeError}
+												className={"u-full-width " + (this.state.errorMobile && "has-error")}
+											/>
+										</div>
+										{renderError(this.state['errorMobile'])}
+									</div>
+									<div className="row m-t-lg">
+										<div>
+											<label>Email <strong>*</strong>:</label>
+											<input
+												id="email"
+												type="text"
+												autoCapitalize="off"
+												autoCorrect="off"
+												autoComplete="off"
+												name="landlord[email]"
+												placeholder="Enter Email"
+												defaultValue={tenant && tenant.email}
+												disabled={!!tenant}
+												ref={e => this.email = e}
+												onChange={this.removeError}
+												className={"u-full-width " + (this.state.errorEmail && "has-error")}
+											/>
+										</div>
+										{renderError(this.state['errorEmail'])}
+									</div>
+							</div>
+							<div className="modal-footer">
+								<button
+									type="button"
+									onClick={() => {
+										if (tenant) {
+											this.props.viewItem('showTenants');
+										} else {
+											this.props.close();
+										}
+									}}
+									className="btn btn-primary cancel"
+								>Cancel</button>
+								<button type="submit" className="btn btn-default success">Submit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		);
+	}
+});
+
+var ModalShowTenants = React.createClass({
+	render: function() {
+		const {tenants = []} = this.props;
+		const canRemove = tenants.length > 1;
+		return (
+			<div className="modal-custom fade">
+				<div className="modal-dialog">
+					<div className="modal-content">
+							<div className="modal-header">
+								<button
+									type="button"
+									className="close"
+									aria-label="Close"
+									data-dismiss="modal"
+									onClick={this.props.close}
+								>
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 className="modal-title text-center">Tenants</h4>
+							</div>
+							<div className="modal-body">
+								{
+									tenants.map((tenant) => (
+										<div className="row tenant-detail" key={tenant.id}>
+											<span className="tenant-name">{tenant.name}</span>
+						          <div className="view-tenant-button">
+							          <span
+							          	title="Edit Information"
+							          	className="edit-tenant fa fa-pencil-square-o"
+							            onClick={() => this.props.viewItem('editTenant', tenant)}
+							          />
+							          { canRemove &&
+							          	<span
+								          	title="Remove Tenant"
+								            className="remove-tenant fa fa-times"
+								            onClick={() => this.props.viewItem('removeTenant', tenant)}
+								          />
+								        }
+						          </div>
+										</div>
+									))
+								}
+							</div>
+							<div className="modal-footer">
+								<button
+									type="button"
+									onClick={this.props.close}
+									className="btn btn-primary cancel"
+								>
+									Cancel
+								</button>
+								<button
+									type="button"
+									className="btn btn-default success"
+									onClick={() => this.props.viewItem('addTenant')}
+								>
+									Add Tenant
+								</button>
+							</div>
 					</div>
 				</div>
 			</div>
@@ -1007,7 +1214,7 @@ var MaintenanceRequest = React.createClass({
 			invoice_pdf_file  	 	 		 : null,
 			agency 										 : this.props.agency,
 			status  	 	 		 					 : this.props.status,
-			tenants 									 : this.props.tenants,
+			tenants 									 : this.props.tenants || [],
 			tradies  	 	 		 					 : this.props.tradies,
 			gallery  	 	 		 					 : this.props.gallery,
 			quoteComments  	 	 		 		 : quoteComments,
@@ -1130,6 +1337,7 @@ var MaintenanceRequest = React.createClass({
 			}
 
 			case 'splitMR':
+			case 'addTenant':
 			case 'approveJob':
 			case 'duplicateMR':
 			case 'confirmcancelTrady':
@@ -1146,11 +1354,27 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'removeTenant':
+			case 'editTenant': {
+				this.setState({
+					tenant: item
+				})
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'showTenants': {
+				this.setState({
+					tenant: null
+				})
+				this.onModalWith(key);
+				break;
+			}
+
 			default: {
 				break;
 			}
 		}
-
 	},
 
 	addAskLandlord: function(params, callback){
@@ -1255,6 +1479,72 @@ var MaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					title: "Add Lanlord",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	addTenant: function(params, callback) {
+		const {tenant = {}} = this.state;
+		var self = this;
+		$.ajax({
+			type: tenant.id ? 'PUT' : 'POST',
+			url: '/tenants' + (tenant.id ? '/' + tenant.id : ''),
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				self.setState({
+					tenant: res,
+					notification: {
+						title: tenant.id ? "Change Tenant" : "Add Tenant",
+						content: tenant.id ? 'You have successfully changed the tenant for the property "Address".' : "Your Tenant has been added successfully!",
+						bgClass: "bg-success",
+					},
+				});
+				self.isClose();
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Add Tenant",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	removeTenant: function(callback) {
+		var self = this;
+		const {tenant} = this.state;
+		const filterTenant = self.state.tenants.filter(te => te.id !== tenant.id);
+		self.setState({tenants: filterTenant}, () => self.viewItem('showTenants'));
+		return;
+		$.ajax({
+			type: 'DELETE',
+			url: '/tenants/' + tenant.id,
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+			},
+			success: function(res){
+				if (res.errors) {
+					return callback(res.errors);
+				}
+				const filterTenant = self.state.tenants.filter(te => te.id !== tenant.id);
+				self.setState({tenants: filterTenant}, () => self.viewItem('showTenants'));
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Add Tenant",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});
@@ -2123,6 +2413,20 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'addTenant':
+				case 'editTenant':
+					return (
+						<ModalAddTenant
+							close={this.isClose}
+							property={this.props.property}
+							tenant={this.state.tenant}
+							addTenant={this.addTenant}
+							authToken={this.props.authenticity_token}
+							viewItem={this.viewItem}
+							maintenance_request_id={this.state.maintenance_request.id}
+						/>
+					);
+
 				case 'editLandlord':{
 					if(!!this.state.landlord) {
 						return (
@@ -2485,6 +2789,29 @@ var MaintenanceRequest = React.createClass({
 						/>
 					)
 
+				case 'showTenants':
+					return (
+						<ModalShowTenants
+							close={this.isClose}
+							property={this.property}
+							tenants={this.state.tenants}
+							addTenant={this.addTenant}
+							authToken={this.props.authenticity_token}
+							viewItem={this.viewItem}
+							maintenance_request_id={this.state.maintenance_request.id}
+						/>
+					)
+
+				case 'removeTenant':
+					return (
+						<ModalConfirmAnyThing
+							title="Remove Tenant"
+							content={`Are you sure you want to remove ${this.state.tenant.name} from this maintenance request`}
+							confirm={this.removeTenant}
+							close={() => this.viewItem('showTenants')}
+						/>
+					)
+
 				default:
 					return null;
 			}
@@ -2611,8 +2938,8 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	summary(e) {
-		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, tenants, invoices} = this.props;
-		const {invoice_pdf_files, trady, quote_requests} = this.state;
+		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, invoices} = this.props;
+		const {invoice_pdf_files, trady, quote_requests, tenants} = this.state;
 
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
@@ -2667,6 +2994,7 @@ var MaintenanceRequest = React.createClass({
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
 									current_user={this.props.current_user}
+									current_user_role={this.props.current_user_role}
 									updateStatusQuote={this.updateStatusQuote}
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}
@@ -2699,6 +3027,7 @@ var MaintenanceRequest = React.createClass({
 						/>
 						<Action
 							landlord={this.state.landlord}
+							hasTenant={!!this.state.tenants.length}
 							onModalWith={(modal) => this.onModalWith(modal)}
 							assigned_trady={trady || this.props.assigned_trady}
 						/>
@@ -2762,6 +3091,7 @@ var MaintenanceRequest = React.createClass({
 				</div>
 				<SideBarMobile
 					tenants={tenants}
+					hasTenant={!!this.state.tenants.length}
 					landlord={this.state.landlord}
 					current_user={this.props.current_user}
 					onModalWith={(modal) => this.onModalWith(modal)}

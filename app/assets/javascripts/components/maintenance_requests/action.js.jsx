@@ -1,6 +1,7 @@
 var ContentAction = React.createClass({
 	render: function() {
 		const hasLandlord = !!this.props.landlord;
+		const hasTenant = this.props.hasTenant;
 		const isNotAssigned = !this.props.assigned_trady;
 
 		return (
@@ -51,6 +52,16 @@ var ContentAction = React.createClass({
 							</a>
 						</li>
 				}
+				<li>
+					<a
+						onClick={() => {
+							this.props.onModalWith(hasTenant ? 'showTenants' : 'addTenant');
+						}}
+					>
+						<i aria-hidden="true" className="fa fa-user-plus" />
+						{hasTenant ? "Change Tenant" : "Add Tenant"}
+					</a>
+				</li>
 			</ul>
 		);
 	}
@@ -82,6 +93,7 @@ var Action = React.createClass({
 					{ this.state.show &&
 							<ContentAction
 								landlord={this.props.landlord}
+								hasTenant={this.props.hasTenant}
 								assigned_trady={this.props.assigned_trady}
 								onModalWith={(modal) => this.props.onModalWith(modal)}
 							/>
@@ -108,14 +120,7 @@ var ActionMobile = React.createClass({
 					<div className="content">
 						<ContentAction
 							landlord={this.props.landlord}
-							assigned_trady={this.props.assigned_trady}
-							onModalWith={(modal) => this.props.onModalWith(modal)}
-						/>
-					</div>
-					<div className="content contact">
-						<ContentContact
-							tenants={this.props.tenants}
-							landlord={this.props.landlord}
+							hasTenant={this.props.hasTenant}
 							assigned_trady={this.props.assigned_trady}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
