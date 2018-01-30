@@ -142,7 +142,7 @@ class TenantsController < ApplicationController
         
       
       respond_to do |format|
-        format.json {render :json=>{tenant: tenant, :notice=>"Tenant successfully edited" }}
+        format.json {render :json=>{tenant: tenant, :message=>"Tenant successfully edited." }}
       end 
     else
       respond_to do |format|
@@ -152,7 +152,11 @@ class TenantsController < ApplicationController
   end
   
   def delete
+
     
+    tenant_maintenance_request = TenantMaintenanceRequest.where(tenant_id:params[:tenant][:id], maintenance_request_id:params[:tenant][:maintenance_request_id])
+
+    te
   end
 
 
