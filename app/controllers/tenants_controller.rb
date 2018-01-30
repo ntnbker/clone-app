@@ -154,9 +154,14 @@ class TenantsController < ApplicationController
   def delete
 
     
-    tenant_maintenance_request = TenantMaintenanceRequest.where(tenant_id:params[:tenant][:id], maintenance_request_id:params[:tenant][:maintenance_request_id])
+    tenant_maintenance_request = TenantMaintenanceRequest.where(tenant_id:params[:tenant][:id], maintenance_request_id:params[:tenant][:maintenance_request_id]).first
 
-    te
+    tenant_maintenance_request.destroy
+
+    respond_to do |format|
+      format.json{render :json=>{:message=>"The tenant has been removed from this maintenance request."}}
+    end
+    
   end
 
 
