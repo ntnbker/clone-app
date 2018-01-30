@@ -124,10 +124,10 @@ class TenantsController < ApplicationController
       
       
     
-      respond_to do |format|
-        format.json {render :json=>{errors:@tenant.errors.to_hash(true).as_json}}
-        format.html
-      end 
+      # respond_to do |format|
+      #   format.json {render :json=>{errors:@tenant.errors.to_hash(true).as_json}}
+      #   format.html
+      # end 
       
 
     
@@ -137,7 +137,7 @@ class TenantsController < ApplicationController
     tenant = Tenant.find_by(id:params[:tenant][:id])  
     
     
-
+    binding.pry
     if tenant.update(tenant_params)
         
       
