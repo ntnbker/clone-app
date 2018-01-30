@@ -5,7 +5,7 @@ class TradiesController < ApplicationController
   
   
   def create
-    
+    binding.pry
     @user = User.find_by(email:params[:trady][:email].gsub(/\s+/, "").downcase)
     #params[:trady][:email].gsub(/\s+/, "").downcase!
     @trady = Trady.new(trady_params)
