@@ -164,7 +164,7 @@ class AgencyAdminMaintenanceRequestsController < ApplicationController
     
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
-      @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
+      @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages.as_json(:include => {:user=>{:include =>{:tenant => {}, :agency_admin=>{}, :agent=>{} }}})
     end 
 
     if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
