@@ -17,7 +17,7 @@ class TenantsController < ApplicationController
       #look up property 
       @property = Property.find_by(id:params[:tenant][:property_id])
       
-      binding.pry
+      
 
     # if params[:tenant][:name].empty? ,email:params[:tenant][:email],mobile:params[:tenant][:mobile]
 
@@ -102,15 +102,6 @@ class TenantsController < ApplicationController
 
 
 
-
-
-
-
-
-
-
-          
-        
       end 
       
       
@@ -137,12 +128,12 @@ class TenantsController < ApplicationController
     tenant = Tenant.find_by(id:params[:tenant][:id])  
     
     
-    binding.pry
+    
     if tenant.update(tenant_params)
         
       
       respond_to do |format|
-        format.json {render :json=>{tenant: tenant, :notice=>"Tenant successfully edited" }}
+        format.json {render :json=>{tenant: tenant, :message=>"Tenant successfully edited." }}
       end 
     else
       respond_to do |format|
@@ -152,6 +143,15 @@ class TenantsController < ApplicationController
   end
   
   def delete
+
+    
+    tenant_maintenance_request = TenantMaintenanceRequest.where(tenant_id:params[:tenant][:id], maintenance_request_id:params[:tenant][:maintenance_request_id]).first
+
+    tenant_maintenance_request.destroy
+
+    respond_to do |format|
+      format.json{render :json=>{:message=>"The tenant has been removed from this maintenance request."}}
+    end
     
   end
 
