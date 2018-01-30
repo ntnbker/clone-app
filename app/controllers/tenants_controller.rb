@@ -158,7 +158,7 @@ class TenantsController < ApplicationController
 
 
   def tenant_params
-    params.require(:trady).permit(:name, :email, :mobile, :property_id, :maintenance_request_id)
+    params.require(:tenant).permit(:name, :email, :mobile, :property_id, :maintenance_request_id)
   end
 
 
