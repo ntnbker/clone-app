@@ -17,7 +17,7 @@ class TenantsController < ApplicationController
       #look up property 
       @property = Property.find_by(id:params[:tenant][:property_id])
       
-      binding.pry
+      
 
     # if params[:tenant][:name].empty? ,email:params[:tenant][:email],mobile:params[:tenant][:mobile]
 
@@ -102,15 +102,6 @@ class TenantsController < ApplicationController
 
 
 
-
-
-
-
-
-
-
-          
-        
       end 
       
       
