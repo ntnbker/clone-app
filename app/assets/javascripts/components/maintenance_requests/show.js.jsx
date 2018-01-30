@@ -1489,11 +1489,11 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	addTenant: function(params, callback) {
-		const {tenant = {}} = this.state;
+		const {tenant} = this.state;
 		var self = this;
 		$.ajax({
-			type: tenant.id ? 'PUT' : 'POST',
-			url: '/tenants' + (tenant.id ? '/' + tenant.id : ''),
+			type: tenant ? 'PUT' : 'POST',
+			url: '/tenants' + (tenant ? '/' + tenant.id : ''),
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
 			},
@@ -1505,8 +1505,8 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					tenant: res,
 					notification: {
-						title: tenant.id ? "Change Tenant" : "Add Tenant",
-						content: tenant.id ? 'You have successfully changed the tenant for the property "Address".' : "Your Tenant has been added successfully!",
+						title: tenant ? "Change Tenant" : "Add Tenant",
+						content: tenant ? 'You have successfully changed the tenant for the property "Address".' : "Your Tenant has been added successfully!",
 						bgClass: "bg-success",
 					},
 				});
