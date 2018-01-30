@@ -561,7 +561,6 @@ var ModalAddTenant = React.createClass({
 				name: this.name && this.name.value,
 				email: this.email && this.email.value,
 				mobile: this.mobile && this.mobile.value,
-				maintenance_request_id: this.props.maintenance_request_id,
 				property_id: this.props.property.id,
 			},
 		}
@@ -595,7 +594,7 @@ var ModalAddTenant = React.createClass({
 								>
 									<span aria-hidden="true">&times;</span>
 								</button>
-								<h4 className="modal-title text-center">Add Tenant</h4>
+								<h4 className="modal-title text-center">{tenant ? 'Edit' : 'Add'} Tenant</h4>
 							</div>
 							<div className="modal-body">
 									<div className="row">
@@ -1235,6 +1234,7 @@ var MaintenanceRequest = React.createClass({
 				title: "",
 				content: "",
 				bgClass: "",
+				reopenModal: '',
 			},
 		};
 	},
@@ -1243,7 +1243,7 @@ var MaintenanceRequest = React.createClass({
 		if(this.state.isModal == true) {
 			this.setState({
 				isModal: false,
-				modal: ""
+				modal: "",
 			});
 		}
 
@@ -1513,19 +1513,19 @@ var MaintenanceRequest = React.createClass({
 				}
 
 				self.setState({
-					tenants,
+					tenants: updatedTenants,
 					notification: {
-						title: tenant ? "Change Tenant" : "Add Tenant",
+						title: tenant ? "Edit Tenant" : "Add Tenant",
 						content: res.message,
 						bgClass: "bg-success",
+						reopenModal: 'showTenants',
 					},
 				});
-				self.isClose();
 				self.onModalWith('notification');
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Add Tenant",
+					title: (tenant ? "Edit" : "Add") + " Tenant",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});
@@ -1536,26 +1536,35 @@ var MaintenanceRequest = React.createClass({
 
 	removeTenant: function(callback) {
 		var self = this;
-		const {tenant} = this.state;
-		const filterTenant = self.state.tenants.filter(te => te.id !== tenant.id);
-		self.setState({tenants: filterTenant}, () => self.viewItem('showTenants'));
-		return;
+		const {tenant, maintenance_request, tenants} = this.state;
 		$.ajax({
 			type: 'DELETE',
 			url: '/tenants/' + tenant.id,
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader('X-CSRF-Token', params.authenticity_token);
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: {
+				tenant: {
+					id: tenant.id,
+					maintenance_request_id: maintenance_request.id,
+				}
 			},
 			success: function(res){
-				if (res.errors) {
-					return callback(res.errors);
-				}
-				const filterTenant = self.state.tenants.filter(te => te.id !== tenant.id);
-				self.setState({tenants: filterTenant}, () => self.viewItem('showTenants'));
+				const filterTenant = tenants.filter(te => te.id !== tenant.id);
+				self.setState({
+					tenants: filterTenant,
+					notification: {
+						title: "Remove Tenant",
+						content: res.message,
+						bgClass: "bg-success",
+						reopenModal: 'showTenants',
+					},
+				});
+				self.onModalWith('notification');
 			},
 			error: function(err) {
 				self.setState({notification: {
-					title: "Add Tenant",
+					title: "Remove Tenant",
 					content: err.responseText,
 					bgClass: "bg-error",
 				}});
@@ -2393,9 +2402,11 @@ var MaintenanceRequest = React.createClass({
 					);
 
 				case 'notification':
+					const {notification} = this.state;
+					const {reopenModal} = notification;
 					return (
 						<ModalNotification
-							close={this.isClose}
+							close={reopenModal ? this.viewItem.bind(this, reopenModal) : this.isClose}
 							bgClass={this.state.notification.bgClass}
 							title={this.state.notification.title}
 							content={this.state.notification.content}
