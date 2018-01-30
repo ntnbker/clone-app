@@ -1489,7 +1489,7 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	addTenant: function(params, callback) {
-		const {tenant} = this.state;
+		const {tenant, tenants} = this.state;
 		var self = this;
 		$.ajax({
 			type: tenant ? 'PUT' : 'POST',
@@ -1502,11 +1502,21 @@ var MaintenanceRequest = React.createClass({
 				if (res.errors) {
 					return callback(res.errors);
 				}
+				let updatedTenants = tenants;
+
+				if (!tenant) {
+					updatedTenants.push(res.tenant);
+				} else {
+					updatedTenants = tenants.map((tenantState) => {
+						return tenantState.id === res.tenant.id ? res.tenant : tenantState;
+					});
+				}
+
 				self.setState({
-					tenant: res,
+					tenants,
 					notification: {
 						title: tenant ? "Change Tenant" : "Add Tenant",
-						content: tenant ? 'You have successfully changed the tenant for the property "Address".' : "Your Tenant has been added successfully!",
+						content: res.message,
 						bgClass: "bg-success",
 					},
 				});
