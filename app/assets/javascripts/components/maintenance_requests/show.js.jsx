@@ -561,10 +561,12 @@ var ModalAddTenant = React.createClass({
 				name: this.name && this.name.value,
 				email: this.email && this.email.value,
 				mobile: this.mobile && this.mobile.value,
+				maintenance_request_id: this.props.maintenance_request_id,
 				property_id: this.props.property.id,
 			},
 		}
 		if (tenant) params.tenant.id = tenant.id;
+
 		this.props.addTenant(params, function(err) {
 			if (err) {
 				self.setState({
