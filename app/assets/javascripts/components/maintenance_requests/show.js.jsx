@@ -554,11 +554,10 @@ var ModalAddTenant = React.createClass({
 	submit: function(e) {
 		e.preventDefault();
 		const self = this;
-		const {tenant = {}} = this.props;
+		const {tenant} = this.props;
 		var params = {
 			authenticity_token: this.props.authToken,
 			tenant: {
-				id: tenant.id,
 				name: this.name && this.name.value,
 				email: this.email && this.email.value,
 				mobile: this.mobile && this.mobile.value,
@@ -566,6 +565,7 @@ var ModalAddTenant = React.createClass({
 				property_id: this.props.property.id,
 			},
 		}
+		if (tenant) params.tenant.id = tenant.id;
 		this.props.addTenant(params, function(err) {
 			if (err) {
 				self.setState({
