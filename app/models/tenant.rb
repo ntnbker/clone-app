@@ -32,7 +32,7 @@ class Tenant < ApplicationRecord
     self.email = self.email.gsub(/\s+/, "").downcase
   end
 
-
+  attr_accessor :maintenance_request_id
 
 
 

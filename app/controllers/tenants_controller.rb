@@ -137,7 +137,7 @@ class TenantsController < ApplicationController
     tenant = Tenant.find_by(id:params[:tenant][:id])  
     
     
-    binding.pry
+    
     if tenant.update(tenant_params)
         
       
