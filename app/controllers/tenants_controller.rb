@@ -142,7 +142,7 @@ class TenantsController < ApplicationController
     end 
   end
   
-  def delete
+  def destroy
 
     
     tenant_maintenance_request = TenantMaintenanceRequest.where(tenant_id:params[:tenant][:id], maintenance_request_id:params[:tenant][:maintenance_request_id]).first
