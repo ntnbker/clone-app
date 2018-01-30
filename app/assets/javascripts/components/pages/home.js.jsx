@@ -9,6 +9,8 @@ var HomeComponent = React.createClass({
       signed: !!current_user,
       rolePicked: role || 'Tenant',
       user: current_user,
+      focusEmail: false,
+      focusPassword: false,
     };
   },
 
@@ -288,7 +290,7 @@ var HomeComponent = React.createClass({
   },
 
   loginRender() {
-    const { active } = this.state;
+    const { active, focusEmail, focusPassword } = this.state;
     const { new_password_reset_path } = this.props;
     const showBackButton = active === 'Tenant' || active === 'Trady';
     const showChooseRole = active === 'Agent';
@@ -319,23 +321,27 @@ var HomeComponent = React.createClass({
           </div>
         }
         <div className="login-info">
-          <div className="login-input email-input">
-            <span className="email">
+          <div className={"login-input email-input " + (focusEmail && 'focus')}>
+            <span className="email" onClick={() => this.email.focus()}>
               Email:
             </span>
             <input
               type="text"
               name="email"
+              onFocus={() => this.setState({focusEmail: true})}
+              onBlur={() => this.setState({focusEmail: false})}
               ref={(elem) => this.email = elem}
             />
           </div>
-          <div className="login-input password-input">
-            <span className="password">
+          <div className={"login-input password-input " + (focusPassword && 'focus')}>
+            <span className="password"  onClick={() => this.password.focus()}>
               Password:
             </span>
             <input
               type="password"
               name="password"
+              onFocus={() => this.setState({focusPassword: true})}
+              onBlur={() => this.setState({focusPassword: false})}
               ref={(elem) => this.password = elem}
             />
           </div>
@@ -414,7 +420,7 @@ var HomeComponent = React.createClass({
             id="select-type-service"
             ref={(elem) => this.service = elem}
           >
-            <option value={''}>What type of service do you require?</option>
+            <option value=''>What type of service do you require?</option>
             {
               services.map(({service, id}) => {
                 return (
