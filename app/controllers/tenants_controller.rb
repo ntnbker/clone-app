@@ -32,6 +32,11 @@ class TenantsController < ApplicationController
           @tenant.roles << role
           role.save
           @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:params[:tenant][:maintenance_request_id])
+
+          respond_to do |format|
+            format.json {render :json=>{message:"You have added a tenant to this maintenance request. Thank you for your time.", tenant:@tenant}}
+            
+          end
         else
           respond_to do |format|
             format.json {render :json=>{errors:@tenant.errors.to_hash(true).as_json}}
@@ -53,7 +58,7 @@ class TenantsController < ApplicationController
           @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:params[:tenant][:maintenance_request_id])
 
           respond_to do |format|
-            format.json {render :json=>{tenant:@tenant}}
+            format.json {render :json=>{message:"You have added a tenant to this maintenance request. Thank you for your time.", tenant:@tenant}}
             
           end
           
@@ -85,7 +90,7 @@ class TenantsController < ApplicationController
             @tenant.update_attribute(:user_id, @user.id)
             @tenant_maintenance_request = TenantMaintenanceRequest.create(tenant_id:@tenant.id,maintenance_request_id:params[:tenant][:maintenance_request_id])
             respond_to do |format|
-              format.json {render :json=>{message:"You have added a tenant to this maintenance request. Thank you for your time."}}
+              format.json {render :json=>{message:"You have added a tenant to this maintenance request. Thank you for your time.", tenant:@tenant}}
               
             end
           else
