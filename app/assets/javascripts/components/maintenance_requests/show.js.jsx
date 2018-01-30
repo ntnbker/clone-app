@@ -383,6 +383,7 @@ var SideBarMobile = React.createClass({
 						hasTenant={this.props.hasTenant}
 						landlord={this.props.landlord}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
+						viewItem={this.props.viewItem}
 					/>
 					<ContactMobile
 						close={this.close}
@@ -3029,6 +3030,7 @@ var MaintenanceRequest = React.createClass({
 							landlord={this.state.landlord}
 							hasTenant={!!this.state.tenants.length}
 							onModalWith={(modal) => this.onModalWith(modal)}
+							viewItem={this.viewItem}
 							assigned_trady={trady || this.props.assigned_trady}
 						/>
 						{

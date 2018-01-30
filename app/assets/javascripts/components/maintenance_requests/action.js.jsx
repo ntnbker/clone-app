@@ -55,7 +55,7 @@ var ContentAction = React.createClass({
 				<li>
 					<a
 						onClick={() => {
-							this.props.onModalWith(hasTenant ? 'showTenants' : 'addTenant');
+							this.props.viewItem(hasTenant ? 'showTenants' : 'addTenant');
 						}}
 					>
 						<i aria-hidden="true" className="fa fa-user-plus" />
@@ -95,6 +95,7 @@ var Action = React.createClass({
 								landlord={this.props.landlord}
 								hasTenant={this.props.hasTenant}
 								assigned_trady={this.props.assigned_trady}
+								viewItem={this.props.viewItem}
 								onModalWith={(modal) => this.props.onModalWith(modal)}
 							/>
 					}
@@ -120,6 +121,7 @@ var ActionMobile = React.createClass({
 					<div className="content">
 						<ContentAction
 							landlord={this.props.landlord}
+							viewItem={this.props.viewItem}
 							hasTenant={this.props.hasTenant}
 							assigned_trady={this.props.assigned_trady}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
