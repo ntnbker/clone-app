@@ -83,7 +83,9 @@ class TenantsController < ApplicationController
 
 
           if @tenant.save
+
             @user = User.create(email:params[:tenant][:email], password:SecureRandom.hex(5))
+            
             role = Role.new(user_id:@user.id)
             @tenant.roles << role
             role.save
