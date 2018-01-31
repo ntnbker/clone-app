@@ -1,130 +1,474 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+@-webkit-keyframes autofill {
+	to {
+		color: white;
+		background: transparent;
+	}
+}
 
 .pages {
 	background-color: white;
+	position: relative;
 
-	.header {
-		background-image: url(/assets/family-pic-3.jpg);
+	.background-image {
+		left: 0;
+		right: 0;
+		z-index: -1000;
+		height: 1000px;
+		background-image: url(/assets/cooking-family.png);
+		// background-color: saddlebrown;
 		background-size: cover;
 		background-position: center center;
-		height: 764px;
-		@include flexbox;
-		@include justify-content(center);
-		@include align-items(center);
+	}
 
-		.form-address {
-			width: 450px;
+	.home-content {
+		position: absolute;
+		top: 25px;
+		margin-top: 10px;
+		width: 100%;
+		.header {
 			@include flexbox;
-			@include flex-wrap(wrap);
-			@include flex-direction(column);
 			@include justify-content(center);
+			@include align-items(center);
+			@include flex-direction(column);
+			@include filter(blur(0.5));
 
-			.select {
+			.home-logo {
+				text-align: center;
+				color: white;
+			}
+
+			.form-address {
+				width: 450px;
 				@include flexbox;
-				@include justify-content(space-between);
+				@include flex-wrap(wrap);
+				@include flex-direction(column);
+				@include justify-content(center);
 
-				select {
-					height: 50px;
-					width: 49%;
-					border: none;
-					border-radius: 4px;
-					font-size: 16px;
-					&:required:invalid {
-						color: #7D7D7D;
+				.select {
+					@include flexbox;
+					@include justify-content(space-between);
+					@include justify-content(justify);
+
+					select {
+						height: 50px;
+						width: 49%;
+						border: none;
+						border-radius: 4px;
+						font-size: 16px;
+						&:required:invalid {
+							color: #7D7D7D;
+						}
+						&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+							color: #7D7D7D;
+							text-align: center;
+						}
+						&::-moz-placeholder { /* Firefox 19+ */
+							color: #7D7D7D;
+							text-align: center;
+						}
+						&:-ms-input-placeholder { /* IE 10+ */
+							color: #7D7D7D;
+							text-align: center;
+						}
+						&:-moz-placeholder { /* Firefox 18- */
+							color: #7D7D7D;
+							text-align: center;
+						}
 					}
+				}
+				.input-address {
+					margin-top: 20px;
+					textarea {
+						font-size: 16px;
+						text-align: center;
+						border: none;
+						border-radius: 4px;
+						width: 100%;
+					}
+				}
+				.btn-submit {
+					margin-top: 20px;
+					text-align: center;
+					button {
+						font-size: 16px;
+						height: 50px;
+						width: 150px;
+						border: none;
+						border-radius: 4px;
+						text-transform: uppercase;
+					}
+				}
+				.has-error {
+					border: 1px solid red !important;
 					&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-					  color: #7D7D7D;
-					  text-align: center;
+						color: red;
 					}
 					&::-moz-placeholder { /* Firefox 19+ */
-					  color: #7D7D7D;
-					  text-align: center;
+						color: red;
 					}
 					&:-ms-input-placeholder { /* IE 10+ */
-					  color: #7D7D7D;
-					  text-align: center;
+						color: red;
 					}
 					&:-moz-placeholder { /* Firefox 18- */
-					  color: #7D7D7D;
-					  text-align: center;
+						color: red;
 					}
 				}
 			}
-			.input-address {
-				margin-top: 20px;
-				textarea {
-					font-size: 16px;
-					text-align: center;
-					border: none;
-					border-radius: 4px;
-					width: 100%;
+
+			.home-action {
+				width: 50%;
+				.home-action-title {
+					@include flexbox;
+					@include align-items(center);
+					border-bottom: 4px solid #5CC993;
+					button {
+						@include flex(1);
+						text-align: center;
+						font-size: 1.3em;
+						background-color: white;
+						padding: 10px 0;
+						color: #5CC993;
+						border: none;
+						border-radius: 0;
+						height: 56px;
+						border-left: 1px solid rgba(0, 0, 0, 0.2);
+						&:first-child {
+							border: none;
+						}
+						&.active {
+							background-color: #5CC993;
+							color: white;
+							border-left:none;
+						}
+						&.hidden {
+							display: none;
+						}
+						&:hover {
+							color: white;
+							background-color: #4aa576;
+							border-color: #4aa576;
+						}
+					}
+				}
+				.home-action-content {
+					@include flexbox;
+					@include justify-content(center);
+					@include align-items(center);
+					border: 3px solid rgba(255, 255, 255, 0.5);
+					border-radius: 0 0 12px 12px;
+					border-top: none;
+					width: calc(100% - 6px);
+					position: relative;
+
+					.content-frame {
+						background-color: grey;
+						position: absolute;
+						opacity: 0.6;
+						z-index: -1;
+						height: 100%;
+						width: 100%;
+						border-radius: 0 0 12px 12px;
+					}
+
+					.action-content {
+						margin: 0 25%;
+						width: 50%;
+						.choose-role {
+							margin: 40px 30px 0 20px;
+							color: white;
+							.radio-option {
+								position: relative;
+								padding-left: 45px;
+								margin-bottom: 20px;
+								cursor: pointer;
+
+								-webkit-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+						    // Hide the radio default
+						    input {
+						    	position: absolute;
+						    	opacity: 0;
+						    	cursor: pointer;
+						    }
+						    .radio-checkmark {
+						    	position: absolute;
+						    	top: -3px;
+						    	left: 0;
+						    	height: 25px;
+						    	width: 25px;
+						    	background-color: transparent;
+						    	border-radius: 50%;
+						    	border: 2px solid white;
+						    }
+						    &:hover input ~ .radio-checkmark {
+						    	background-color: #ccc;
+						    }
+
+						    /* When the radio button is checked, add a blue background */
+						    input:checked ~ .radio-checkmark {
+						    }
+						    /* Create the indicator (the dot/circle - hidden when not checked) */
+						    .radio-checkmark:after {
+						    	content: "";
+						    	position: absolute;
+						    	display: none;
+						    }
+
+						    /* Show the indicator (dot/circle) when checked */
+						    input:checked ~ .radio-checkmark:after {
+						    	display: block;
+						    }
+
+						    /* Style the indicator (dot/circle) */
+						    .radio-checkmark:after {
+						    	top: 13%;
+						    	left: 13%;
+						    	width: 74%;
+						    	height: 74%;
+						    	border-radius: 50%;
+						    	background: #5CC993;
+						    }
+						  }
+						}
+						.login-info {
+							margin-top: 40px;
+							.login-input {
+								margin: 30px 0;
+								padding: 0 10px;
+								border: 2px solid white;
+								border-radius: 4px;
+								@include flexbox;
+								&.focus {
+									border-color: #5CC993;
+								}
+							}
+							span {
+								@include flexbox;
+								width: 80px;
+								color: white;
+								font-weight: 600;
+								@include justify-content(end);
+								@include justify-content(flex-end);
+								@include align-items(center);
+							}
+							input {
+								@include flex(1);
+								margin-top: auto;
+								color: white;
+								background: transparent;
+								border: none;
+								min-width: 0px;
+								&:-webkit-autofill {
+									-webkit-animation-name: autofill;
+									-webkit-animation-fill-mode: both;
+								}
+							}
+						}
+						.login-button {
+							@include flexbox;
+							@include justify-content(space-between);
+							@include justify-content(justify);
+
+							.btn {
+								background-color: #5CC993;
+								color: white;
+								border: 1px solid #5CC993;
+								border-radius: 5px;
+								padding: 5px 0;
+								height: 50px;
+								font-weight: 600;
+								width: calc(45% - 2px);
+
+								&:hover {
+									color: white;
+									background-color: #4aa576;
+									border-color: #4aa576;
+								}
+							}
+							&.new-mr-button {
+								margin: 30px -10% 50px -10%;
+								.btn {
+									width: calc(42% - 2px);
+								}
+							}
+						}
+						.tenant-home-button, .trady-home-button, .landlord-home-button {
+							margin-top: 20px;
+							@include flexbox;
+							@include flex-direction(column);
+							color: white;
+							font-size: 17px;
+							.btn {
+								@include flex(1 1 auto);
+								background-color: transparent;
+								border: 2px solid white;
+								border-radius: 5px;
+								margin: 20px 0;
+								padding: 0 15px;
+								height: 50px;
+								&:hover {
+									color: #5CC993;
+									border-color: #5CC993;
+								}
+							}
+							p {
+								margin: 0;
+							}
+						}
+						.landlord-content .login-button,
+						.agent-content .login-button, {
+							@include justify-content(center);
+							@include align-items(center);
+						}
+						.submit-new-mr {
+							text-align: center;
+							.type-service {
+								position: relative;
+								color: white;
+								margin: 20px -10%;
+								select {
+									z-index: 2;
+									width: 100%;
+									padding: 0 20px;
+									height: 50px;
+									font-size: 20px;
+									background: transparent;
+									border: 2px white solid;
+									&:focus {
+										border-color: #5CC993;
+									}
+									option {
+										background: white;
+										color: #5CC993;
+										text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+
+										&:hover {
+											color: #000;
+											box-shadow: inset 20px 20px #00f;
+										}
+										&:checked {
+											color: white;
+											border-color: #5CC993;
+											background-color: #5CC993;
+										}
+										&:focus::-ms-value {
+											color: white;
+											border-color: #5CC993;
+											background-color: transparent;
+										}
+									}
+									appearance: none;
+									-moz-appearance: none;
+									-webkit-appearance: none;
+								}
+								select::-ms-value {
+									background: none;
+									color: value;
+								}
+								select::-ms-expand {
+									display: none;
+								}
+
+								span {
+									position: absolute;
+									top: 27px;
+									right: 11px;
+									font-size: 33px;
+									z-index: 1;
+								}
+							}
+							.input-address {
+								margin: 10px -10% 30px -10%;
+								color: white;
+
+								textarea {
+									width: 100%;
+									padding: 10px 20px 0 20px;
+									text-align: center;
+									color: white;
+									height: 80px;
+									line-height: 27px;
+									background: transparent;
+									resize: none;
+									border: 2px white solid;
+									font-size: 20px;
+									overflow: hidden;
+									@include input-placeholder {
+										color: white;
+									}
+									&:focus {
+										border-color: #5CC993;
+									}
+								}
+							}
+						}
+						.forget-password {
+							text-align: center;
+							margin: 20px 0 10px 0;
+							a {
+								color: #5CC993;
+								text-decoration-line: none;
+								text-decoration: none;
+								&:hover {
+									color: #4aa576;
+								}
+
+							}
+						}
+					}
 				}
 			}
-			.btn-submit {
-				margin-top: 20px;
-				text-align: center;
-				button {
-					font-size: 16px;
-					height: 50px;
-					width: 150px;
-					border: none;
-					border-radius: 4px;
-					text-transform: uppercase;
-				}
-			}
-			.has-error {
-				border: 1px solid red !important;
-				&::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-				  color: red;
-				}
-				&::-moz-placeholder { /* Firefox 19+ */
-				  color: red;
-				}
-				&:-ms-input-placeholder { /* IE 10+ */
-				  color: red;
-				}
-				&:-moz-placeholder { /* Firefox 18- */
-				  color: red;
-				}
-			}
-	  }
+		}
 	}
 
 	.main {
+		width: 100%;
 		h3.title {
 			color: #3e4b54;
 			text-align: center;
-			margin: 80px 0;
+			padding: 20px;
 		}
 
 		.how-it-works {
-			margin: 80px;
+			margin: 30px 15%;
+			.three.columns {
+				width: 24%;
+				margin-left: 1%;
+			}
 
 			img {
 				display: block;
 				margin: 30px auto 0;
+				height: 42px;
 			}
 			h4 {
-				color: #7dc691;
-				font-size: 14px;
+				color: white;
+				font-size: 13px;
+				font-weight: 500;
 				text-align: center;
-				text-transform: uppercase;
-				width: 100px;
+				height: 34px;
+				width: 80%;
 				margin: 15px auto;
 			}
 			p {
-				color: #849aaa;
-				font-size: 14px;
+				color: white;
+				font-size: 12px;
 				text-align: center;
 				max-width: 300px;
+				font-weight: 600;
+				width: 90%;
 				margin: auto;
+				height: 60px;
 			}
 		}
 
 		.app-for {
-			margin: 80px;
+			padding: 20px;
 
 			div {
 				height: 100px;
@@ -145,8 +489,259 @@
 		width: 100%;
 	}
 
-	/* For Desktop Nav */
-	@media (min-width: 550px) {
+	@media (max-width: 1200px) {
+		.home-content .header .home-action {
+			.home-action-content .action-content {
+				.submit-new-mr {
+					.type-service {
+						select {
+							font-size: 17px;
+						}
+						span {
+							top: 30px;
+							font-size: 29px;
+						}
+					}
+					.input-address {
+						textarea {
+							font-size: 17px;
+						}
+					}
+				}
+				.tenant-home-button, .trady-home-button {
+					font-size: 14px;
+					.btn {
+						padding: 0px 5px;
+					}
+				}
+			}
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.home-content .header .home-action {
+			.home-action-title button {
+				font-size: 1.1em;
+				height: 51px;
+			}
+			.home-action-content .action-content {
+				.submit-new-mr {
+					.type-service {
+						select {
+							font-size: 15px;
+						}
+						span {
+							top: 31px;
+							font-size: 27px;
+						}
+					}
+					.input-address {
+						textarea {
+							font-size: 15px;
+						}
+					}
+				}
+				.tenant-home-button, .trady-home-button {
+					font-size: 13px;
+					.btn {
+						padding: 0px 5px;
+					}
+				}
+			}
+		}
+		.main .how-it-works {
+			p {
+				height: 70px;
+			}
+		}
+	}
+
+	@media (max-width: 992px) {
+		.home-content .header .home-action {
+			.home-action-title button {
+				font-size: 0.9em;
+				height: 46px;
+			}
+			.submit-new-mr {
+				.type-service {
+					select {
+						font-size: 14px;
+					}
+					span {
+						top: 31px;
+						font-size: 27px;
+					}
+				}
+				.input-address {
+					textarea {
+						font-size: 14px;
+					}
+				}
+			}
+			.tenant-home-button, .trady-home-button {
+				font-size: 13px;
+				.btn {
+					padding: 0px 5px;
+				}
+			}
+		}
+		.main .how-it-works p {
+
+		}
+	}
+
+	@media (max-width: 768px) {
+		.home-content .header .home-action {
+			width: 60%;
+
+			.home-action-title button {
+				font-size: 1em;
+				height: 40px;
+				padding: 0 5px;
+
+				&:hover {
+					color: white;
+					background-color: #5CC993;
+					border-color: #5CC993;
+				}
+			}
+
+			.home-action-content .action-content {
+				margin: 0 10%;
+				width: 80%;
+
+				.submit-new-mr {
+					.type-service {
+						margin: 15px 0;
+						select {
+							font-size: 19px;
+							padding: 0 15px;
+						}
+					}
+					.input-address {
+						margin: 10px 0 30px 0;
+						textarea {
+							font-size: 19px;
+						}
+					}
+				}
+				.login-button.new-mr-button {
+					margin: 30px 0 50px 0;
+				}
+
+				.tenant-home-button, .trady-home-button {
+					.btn {
+						font-size: 17px;
+						height: 40px;
+					}
+				}
+			}
+		}
+		.main .how-it-works {
+			margin: 30px 10%;
+
+			img {
+				height: 30px;
+			}
+
+			h4 {
+				font-size: 13px;
+				height: 50px;
+				width: 90%;
+			}
+
+			p {
+				font-size: 11px;
+				height: 60px;
+			}
+		}
+	}
+
+	@media (max-width: 420px) {
+		.background-image {
+			height: 850px;
+		}
+		.home-content .header .home-action {
+			width: 90%;
+
+			.home-action-title button {
+				font-size: 0.8em;
+				height: 30px;
+				padding: 0 5px;
+			}
+
+			.home-action-content .action-content {
+				margin: 0 10%;
+				width: 80%;
+
+				.login-info {
+					margin-top: 40px;
+					.login-input {
+						margin: 30px 0;
+						padding: 0 10px;
+						border: 2px solid white;
+						border-radius: 4px;
+						font-size: 13px;
+						@include flexbox;
+					}
+					span {
+						@include flexbox;
+						width: 60px;
+						color: white;
+						font-weight: 600;
+						@include justify-content(end);
+						@include justify-content(flex-end);
+						@include align-items(center);
+					}
+					input {
+						@include flex(1);
+						margin-top: auto;
+						color: white;
+						background: transparent;
+						border: none;
+						min-width: 0px;
+						&:-webkit-autofill {
+							-webkit-animation-name: autofill;
+							-webkit-animation-fill-mode: both;
+						}
+					}
+				}
+
+				.submit-new-mr {
+					.type-service select {
+						font-size: 17px;
+					}
+					.input-address textarea {
+						font-size: 17px;
+					}
+				}
+
+				.tenant-home-button, .trady-home-button {
+					.btn {
+						font-size: 14px;
+						height: 40px;
+					}
+				}
+			}
+		}
+		.main .how-it-works {
+			margin: 30px 5%;
+
+			img {
+				height: 24px;
+			}
+
+			h4 {
+				font-size: 10px;
+				height: 30px;
+				width: 90%;
+			}
+
+			p {
+				font-size: 7px;
+				height: 40px;
+			}
+		}
 		.header form {
 			select {
 				width: 10%;
@@ -159,86 +754,110 @@
 		}
 	}
 
-	@media (max-width: 768px) {
-		.header .form-address .select select {
-			text-align: center;
-  		text-align-last: center;
-			&:required:invalid{
-				text-align: center;
+	@media (max-width: 380px) {
+		.home-content .header .home-action {
+
+			.home-action-title button {
+				font-size: 0.6em;
+			}
+
+			.home-action-content .action-content {
+				.submit-new-mr {
+					.type-service select {
+						font-size: 15px;
+					}
+					.input-address textarea {
+						font-size: 15px;
+					}
+				}
+
+				.tenant-home-button, .trady-home-button {
+					.btn {
+						font-size: 12px;
+					}
+				}
 			}
 		}
-		.header .form-address .input-address input {
-			text-align: center;
+		.main .how-it-works {
+			img {
+				height: 20px;
+			}
+
+			h4 {
+				font-size: 9px;
+				height: 35px;
+			}
+
+			p {
+				font-size: 7px;
+				height: 50px;
+			}
 		}
 	}
 
-	@media (max-width: 480px) {
-		.header {
-			.form-address {
-				width: 300px;
-				.select {
-					@include flex-direction(column);
-					select {
-						width: 100%;
-						&:last-child {
-							margin-top: 20px;
+	@media (max-width: 320px) {
+		.background-image {
+			height: 900px;
+		}
+		.home-content .header .home-action {
+			.home-action-title button {
+				font-size: 0.5em;
+			}
+			.home-action-content .action-content {
+				.submit-new-mr {
+					.type-service {
+						select {
+							font-size: 11px;
+						}
+						span {
+							top: 28px;
+							font-size: 24px;
 						}
 					}
+
+					.input-address textarea {
+						font-size: 11px;
+						height: 65px;
+						line-height: 20px;
+					}
 				}
-				.btn-submit {
-					button {
-						width: 100%;
+
+				.login-button {
+					.btn {
+						height: 40px;
+						line-height: 0px;
+					}
+				}
+
+				.tenant-home-button, .trady-home-button {
+					.btn {
+						font-size: 11px;
+						padding: 5px 0;
+						height: 40px;
 					}
 				}
 			}
 		}
-	}
-}
+		.main .how-it-works {
 
-body {
-	background: #f4f8fb;
-}
+			h4 {
+				height: 50px;
+			}
 
-.well {
-	background: white;
-	padding: 5px;
-	/*border-radius: 4px;*/
-	border-color: #edf1f4;
-	/*box-shadow: 0 1px 10px #888888;*/
-
-
-	margin-top: 30px;
-	min-height: calc(100vh - 210px);
-}
-
-.button-primary {
-	color: white;
-	text-decoration: none;
-	a {
-		color: white;
-		text-decoration: none;
-	}
-}
-.button-primary.green {
-	background-color: #7dc691 !important;
-	border-color: #7dc691 !important;
-	color: white;
-	text-decoration: none;
-	&:hover {
-		background-color: #2FA342 !important;
-		border-color: #2FA342 !important;
-	}
-	a {
-		color: white;
-		text-decoration: none;
-	}
-}
-
-.button-primary.red {
-	background-color: #E77B40 !important;
-	border-color: #E77B40 !important;
-	&:hover {
-		background-color: #B94D13 !important;
-		border-color: #B94D13 !important;
+			p {
+				font-size: 7px;
+				height: 50px;
+			}
+		}
+		.header form {
+			select {
+				width: 10%;
+				min-width: 120px;
+			}
+			input[type="text"] {
+				width: 15%;
+				min-width: 170px;
+			}
+		}
 	}
 }

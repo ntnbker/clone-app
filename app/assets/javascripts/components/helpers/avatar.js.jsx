@@ -21,10 +21,10 @@ AvatarImage = React.createClass({
     return (
       <img
         id="avatar"
+        alt="Avatar Image"
         {...this.props}
         src={imageUri}
         onError={this.handleError}
-        alt="Avatar Image"
       />
     )
   }

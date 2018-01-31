@@ -82,7 +82,7 @@ var AgentNew = React.createClass({
       <div className="new_agent new_profile">
         <form role="form" className="form-horizontal" id="new_agent" onSubmit={this.onSubmit} >
           <h5 className="control-label col-sm-2 required title">
-            Add Another Agency Admin to this agency
+            Add Another Agent To Agency
           </h5>
           {renderTextField('email', 'Email')}
           {renderTextField('name', 'Name')}

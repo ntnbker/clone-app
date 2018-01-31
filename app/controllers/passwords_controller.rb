@@ -80,7 +80,7 @@ class PasswordsController < ApplicationController
 
   def confirm_password
     
-    @user = User.find_by(email: params[:user][:email].downcase)
+    @user = User.find_by(email: params[:user][:email].gsub(/\s+/, "").downcase)
     @user.password_confirmation = params[:user][:password_confirmation]
     # the next line clears the temporary token and updates the password
     if @user.change_password!(params[:user][:password])

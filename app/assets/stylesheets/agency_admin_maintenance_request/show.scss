@@ -230,7 +230,7 @@ span.index {
         @include flexbox;
         @include flex-direction(column);
         @include justify-content(center);
-        align-items: center;
+        @include align-items(center);
       }
       .modal-title {
         margin-bottom: 0px;
@@ -301,7 +301,7 @@ span.index {
         .job-contact {
           @include flexbox;
           @include flex-direction(row);
-          align-items: strech;
+          @include align-items(strech);
           .left, .right {
             @include flex(1);
           }
@@ -2261,7 +2261,7 @@ span.index {
         float: none;
         padding: 0px;
         button {
-          align-items: center;
+          @include align-items(center);
           padding: 0px;
           margin: 0px 0px 10px 0px;
         }

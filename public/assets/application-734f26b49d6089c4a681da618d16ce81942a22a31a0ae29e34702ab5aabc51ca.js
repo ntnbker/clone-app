@@ -69055,7 +69055,7 @@ var AgentNew = React.createClass({
         React.createElement(
           'h5',
           { className: 'control-label col-sm-2 required title' },
-          'Add Another Agency Admin to this agency'
+          'Add Another Agent To Agency'
         ),
         renderTextField('email', 'Email'),
         renderTextField('name', 'Name'),
@@ -70773,11 +70773,11 @@ AvatarImage = React.createClass({
     var imageUri = this.state.imageUri;
 
     return React.createElement('img', _extends({
-      id: 'avatar'
+      id: 'avatar',
+      alt: 'Avatar Image'
     }, this.props, {
       src: imageUri,
-      onError: this.handleError,
-      alt: 'Avatar Image'
+      onError: this.handleError
     }));
   }
 });
@@ -85320,6 +85320,906 @@ var ModalNotification = React.createClass({
 		);
 	}
 });
+var HomeComponent = React.createClass({
+  displayName: 'HomeComponent',
+
+  getInitialState: function () {
+    var _props = this.props;
+    var current_user = _props.current_user;
+    var role = _props.role;
+
+    var step = this.detectStepFromRole(role);
+
+    return {
+      active: !role ? 'Tenant' : role === 'AgencyAdmin' ? 'Agent' : role,
+      step: step,
+      signed: !!current_user,
+      rolePicked: role || 'Tenant',
+      user: current_user
+    };
+  },
+
+  detectStepFromRole: function (role) {
+    return !role || role === 'Tenant' ? 'home' : role === 'Landlord' || role === 'Trady' ? 'mobile-button' : 'newMR';
+  },
+
+  chooseUser: function (user) {
+    if (this.state.active !== user && !this.state.signed) {
+      var step = user === 'Tenant' || user === 'Trady' ? 'home' : 'login';
+      this.setState({ active: user, step: step, rolePicked: user });
+    }
+  },
+
+  redirectNewPath: function (path) {
+    location.href = path;
+  },
+
+  login: function (e) {
+    e.preventDefault();
+    var rolePicked = this.state.rolePicked;
+
+    var email = this.email && this.email.value;
+    var password = this.password && this.password.value;
+
+    $.ajax({
+      type: 'POST',
+      url: '/menulogin',
+      data: {
+        email: email, password: password, role_picked: rolePicked
+      },
+      success: function (res) {},
+      error: function (err) {}
+    });
+  },
+
+  submitNewMR: function (e) {
+    e.preventDefault();
+    var rolePicked = this.state.rolePicked;
+
+    var tradie = this.service && this.service.value;
+    var address = this.address && this.address.value;
+
+    $.ajax({
+      type: 'POST',
+      url: '/route_user_type',
+      data: { form_fields: { tradie: tradie, address: address, user_role: rolePicked === 'Tenant' ? rolePicked : 'Agent' }
+      },
+      success: function (res) {},
+      error: function (err) {}
+    });
+  },
+
+  handleLandlordCheckMR: function () {
+    var signed = this.state.signed;
+
+    if (!signed) {
+      return this.setState({ step: 'login' });
+    }
+    this.redirectNewPath('/tenant_maintenance_requests');
+  },
+
+  howItWorkForLandlord: function () {
+    return React.createElement(
+      'div',
+      { className: 'row how-it-works' },
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Maintenance Requested'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Receive Maintenance Requests in a centralized app'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/letter.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Easily action property maintenance requests'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Quickly communicate with your agent on how maintenance should be handled'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/notepad-3.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Receive multiple competative quotes'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Quickly request quotes from multiple tradies to receive competative prices'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/enjoy.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Maintenance Complete'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Enjoy a stress free process to maintain your property'
+        )
+      )
+    );
+  },
+
+  howItWorkForAgent: function () {
+    return React.createElement(
+      'div',
+      { className: 'row how-it-works' },
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Quickly organize maintenance requests'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Instantly deal with maintenance requests submitted by tenants'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/time-is-money.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Time is money easily increase your productivity'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'With a just few clicks you can make sure the job is completed'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/location.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Track maintenance status'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Automated reminders unsure jobs are progressing'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/notes.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Increase revenue'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Increase revenue through our rebate program and increased productivity'
+        )
+      )
+    );
+  },
+
+  howItWorkForTrady: function () {
+    return React.createElement(
+      'div',
+      { className: 'row how-it-works' },
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Receive High Quality Job Leads'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Receive maintenance work from property and strata managers'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/notepad-12.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Easily track job information and schedule jobs'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Easily organize job communications and appointments'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/receipt.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Easily create invoices or upload your own'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Easily submit invoices. With Automated invoice reminders. We help make sure you get paid'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/notes.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Increase your revenue'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Join our network to grow your business'
+        )
+      )
+    );
+  },
+
+  howItWorkForTenant: function () {
+    return React.createElement(
+      'div',
+      { className: 'row how-it-works' },
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/pen.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Maintenance requested'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Fill in the Maintenance form and submit the request'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/letter.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Maintenance actioned'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Sit back, and let us sort out the maintenance for you!'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/location.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Track Maintenance Status'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Get updates on your maintenance request is up or check online'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/enjoy.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Maintenance complete'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Enjoy a stress free process to maintain your home'
+        )
+      )
+    );
+  },
+
+  homeActionForAgent: function () {
+    var _props$signed = this.props.signed;
+    var signed = _props$signed === undefined ? false : _props$signed;
+
+    return React.createElement(
+      'div',
+      { className: 'agent-content' },
+      this.loginRender()
+    );
+  },
+
+  homeActionForLandlordMobile: function () {
+    var _this = this;
+
+    var _props$signed2 = this.props.signed;
+    var signed = _props$signed2 === undefined ? false : _props$signed2;
+
+    return React.createElement(
+      'div',
+      { className: 'button-group landlord-home-button' },
+      React.createElement(
+        'button',
+        {
+          type: 'button text-center',
+          className: 'btn',
+          onClick: function () {
+            return _this.redirectNewPath('/landlord_maintenance_requests');
+          }
+        },
+        'My Maintenance Requests'
+      )
+    );
+  },
+
+  homeActionForLandlord: function () {
+    var _props$signed3 = this.props.signed;
+    var signed = _props$signed3 === undefined ? false : _props$signed3;
+
+    return React.createElement(
+      'div',
+      { className: 'landlord-content' },
+      this.loginRender()
+    );
+  },
+
+  homeActionForTradyLogin: function () {
+    var _props$signed4 = this.props.signed;
+    var signed = _props$signed4 === undefined ? false : _props$signed4;
+
+    return React.createElement(
+      'div',
+      { className: 'trady-content' },
+      this.loginRender()
+    );
+  },
+
+  homeActionForTradyMobile: function () {
+    var _this2 = this;
+
+    return React.createElement(
+      'div',
+      { className: 'button-group trady-home-button' },
+      React.createElement(
+        'button',
+        {
+          type: 'button text-center',
+          className: 'btn',
+          onClick: function () {
+            return _this2.redirectNewPath('/trady_maintenance_requests');
+          }
+        },
+        'Trady Maintenance Requests'
+      ),
+      React.createElement(
+        'button',
+        {
+          type: 'button text-center',
+          className: 'btn',
+          onClick: function () {
+            return _this2.redirectNewPath(_this2.props.edit_trady);
+          }
+        },
+        'Trady Account Settings'
+      )
+    );
+  },
+
+  homeActionForTrady: function () {
+    var _this3 = this;
+
+    return React.createElement(
+      'div',
+      { className: 'button-group trady-home-button' },
+      React.createElement(
+        'button',
+        {
+          type: 'button text-center',
+          className: 'btn',
+          onClick: function () {
+            return _this3.setState({ step: 'login' });
+          }
+        },
+        'Login'
+      ),
+      false && React.createElement(
+        'p',
+        { className: 'text-center' },
+        'Or'
+      ),
+      false && React.createElement(
+        'button',
+        {
+          type: 'button text-center',
+          className: 'btn',
+          onClick: function () {
+            return _this3.setState({ step: 'home' });
+          }
+        },
+        'Join our network'
+      )
+    );
+  },
+
+  loginRender: function () {
+    var _this4 = this;
+
+    var active = this.state.active;
+    var new_password_reset_path = this.props.new_password_reset_path;
+
+    var showBackButton = active === 'Tenant' || active === 'Trady';
+    var showChooseRole = active === 'Agent';
+
+    return React.createElement(
+      'form',
+      { id: 'login', onSubmit: this.login },
+      showChooseRole && React.createElement(
+        'div',
+        { className: 'choose-role' },
+        React.createElement(
+          'label',
+          { className: 'radio-option' },
+          'Agent',
+          React.createElement('input', {
+            type: 'radio',
+            name: 'role-picked',
+            value: 'Agent',
+            onChange: function () {
+              return _this4.setState({ rolePicked: 'Agent' });
+            },
+            defaultChecked: true
+          }),
+          React.createElement('span', { className: 'radio-checkmark' })
+        ),
+        React.createElement(
+          'label',
+          { className: 'radio-option' },
+          'Agency Administrator',
+          React.createElement('input', {
+            type: 'radio',
+            name: 'role-picked',
+            onChange: function () {
+              return _this4.setState({ rolePicked: 'AgencyAdmin' });
+            },
+            value: 'AgencyAdmin'
+          }),
+          React.createElement('span', { className: 'radio-checkmark' })
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'login-info' },
+        React.createElement(
+          'div',
+          { className: 'login-input email-input' },
+          React.createElement(
+            'span',
+            { className: 'email' },
+            'Email:'
+          ),
+          React.createElement('input', {
+            type: 'text',
+            name: 'email',
+            ref: function (elem) {
+              return _this4.email = elem;
+            }
+          })
+        ),
+        React.createElement(
+          'div',
+          { className: 'login-input password-input' },
+          React.createElement(
+            'span',
+            { className: 'password' },
+            'Password:'
+          ),
+          React.createElement('input', {
+            type: 'password',
+            name: 'password',
+            ref: function (elem) {
+              return _this4.password = elem;
+            }
+          })
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'button-group login-button' },
+        showBackButton && React.createElement(
+          'button',
+          {
+            type: 'button',
+            className: 'btn btn-back',
+            onClick: function () {
+              return _this4.setState({ step: 'home' });
+            }
+          },
+          'Back'
+        ),
+        React.createElement(
+          'button',
+          {
+            type: 'submit',
+            className: 'btn btn-login'
+          },
+          'Login'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'forget-password' },
+        React.createElement(
+          'a',
+          { href: new_password_reset_path, className: 'link-forget-password' },
+          'Forgot Password'
+        )
+      )
+    );
+  },
+
+  homeActionForTenantLogin: function () {
+    var _props$signed5 = this.props.signed;
+    var signed = _props$signed5 === undefined ? false : _props$signed5;
+
+    return React.createElement(
+      'div',
+      { className: 'tenant-content' },
+      this.loginRender()
+    );
+  },
+
+  homeActionForTenant: function () {
+    var _this5 = this;
+
+    var _props$signed6 = this.props.signed;
+    var signed = _props$signed6 === undefined ? false : _props$signed6;
+
+    return React.createElement(
+      'div',
+      { className: 'button-group tenant-home-button' },
+      React.createElement(
+        'button',
+        {
+          type: 'button text-center',
+          className: 'btn',
+          onClick: this.handleLandlordCheckMR
+        },
+        'Check My Maintenance Requests'
+      ),
+      React.createElement(
+        'p',
+        { className: 'text-center' },
+        'Or'
+      ),
+      React.createElement(
+        'button',
+        {
+          type: 'button text-center',
+          className: 'btn',
+          onClick: function () {
+            return _this5.setState({ step: 'newMR' });
+          }
+        },
+        'Submit New Maintenance Request'
+      )
+    );
+  },
+
+  homeActionForSubmitNewMR: function () {
+    var _this6 = this;
+
+    var _state = this.state;
+    var _state$signed = _state.signed;
+    var signed = _state$signed === undefined ? false : _state$signed;
+    var active = _state.active;
+    var services = this.props.services;
+
+    return React.createElement(
+      'form',
+      {
+        className: 'submit-new-mr ' + active.toLowerCase() + '-content',
+        id: 'submit-new-mr',
+        onSubmit: this.submitNewMR
+      },
+      React.createElement(
+        'div',
+        { className: 'type-service' },
+        React.createElement(
+          'select',
+          {
+            className: 'type-service',
+            id: 'select-type-service',
+            ref: function (elem) {
+              return _this6.service = elem;
+            }
+          },
+          React.createElement(
+            'option',
+            { value: null },
+            'What type of service do you require?'
+          ),
+          services.map(function (_ref) {
+            var service = _ref.service;
+            var id = _ref.id;
+
+            return React.createElement(
+              'option',
+              { value: service, key: id },
+              service
+            );
+          })
+        ),
+        React.createElement('span', { className: 'dropdown-arrow fa fa-caret-down' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'input-address' },
+        React.createElement('textarea', {
+          type: 'text',
+          id: 'pac-input',
+          placeholder: 'Where do need the service done? Please tell us the address.',
+          ref: function (elem) {
+            return _this6.address = elem;
+          },
+          onChange: getAddressOfGoogleMap
+
+        })
+      ),
+      React.createElement(
+        'div',
+        { className: 'button-group login-button new-mr-button' },
+        active !== 'Agent' && React.createElement(
+          'button',
+          {
+            type: 'button',
+            className: 'btn btn-back',
+            onClick: function () {
+              return _this6.setState({ step: 'home' });
+            }
+          },
+          'Back'
+        ),
+        React.createElement(
+          'button',
+          {
+            type: 'submit',
+            className: 'btn btn-summit'
+          },
+          'Submit'
+        )
+      )
+    );
+  },
+
+  homeActionTitle: function () {
+    var _this7 = this;
+
+    var _state2 = this.state;
+    var _state2$active = _state2.active;
+    var active = _state2$active === undefined ? 'tenant' : _state2$active;
+    var signed = _state2.signed;
+
+    return React.createElement(
+      'div',
+      { className: 'home-action-title' },
+      React.createElement(
+        'button',
+        {
+          className: "tenant-title " + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden'),
+          onClick: function () {
+            return _this7.chooseUser('Tenant');
+          }
+        },
+        !signed && "For ",
+        'Tenants'
+      ),
+      React.createElement(
+        'button',
+        {
+          className: "trady-title " + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden'),
+          onClick: function () {
+            return _this7.chooseUser('Trady');
+          }
+        },
+        !signed && "For ",
+        'Tradies'
+      ),
+      React.createElement(
+        'button',
+        {
+          className: "landlord-title " + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden'),
+          onClick: function () {
+            return _this7.chooseUser('Landlord');
+          }
+        },
+        !signed && "For ",
+        'Landlords'
+      ),
+      React.createElement(
+        'button',
+        {
+          className: "agent-title " + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden'),
+          onClick: function () {
+            return _this7.chooseUser('Agent');
+          }
+        },
+        !signed && "For ",
+        'Agents'
+      )
+    );
+  },
+
+  homeActionContent: function () {
+    var _state3 = this.state;
+    var active = _state3.active;
+    var step = _state3.step;
+
+    var render = null;
+
+    switch (active) {
+      case 'Tenant':
+        if (step === 'login') {
+          render = this.homeActionForTenantLogin;
+        }
+        if (step === 'home') {
+          render = this.homeActionForTenant;
+        }
+        if (step === 'newMR') {
+          render = this.homeActionForSubmitNewMR;
+        }
+        break;
+      case 'Trady':
+        if (step === 'login') {
+          render = this.homeActionForTradyLogin;
+        }
+        if (step === 'home') {
+          render = this.homeActionForTrady;
+        }
+        if (step === 'mobile-button') {
+          render = this.homeActionForTradyMobile;
+        }
+        break;
+      case 'Landlord':
+        if (step === 'home' || step === 'login') {
+          render = this.homeActionForLandlord;
+        }
+        if (step === 'mobile-button') {
+          render = this.homeActionForLandlordMobile;
+        }
+        break;
+      case 'Agent':
+        if (step === 'home' || step === 'login') {
+          render = this.homeActionForAgent;
+        }
+        if (step === 'newMR') {
+          render = this.homeActionForSubmitNewMR;
+        }
+        break;
+    }
+    return React.createElement(
+      'div',
+      { className: 'home-action-content' },
+      React.createElement('div', { className: 'content-frame' }),
+      React.createElement(
+        'div',
+        { className: 'action-content' },
+        render && render()
+      )
+    );
+  },
+
+  renderHowItWork: function () {
+    var active = this.state.active;
+
+    var showHowItWork = null;
+    switch (active) {
+      case 'Tenant':
+        showHowItWork = this.howItWorkForTenant;break;
+      case 'Agent':
+        showHowItWork = this.howItWorkForAgent;break;
+      case 'Trady':
+        showHowItWork = this.howItWorkForTrady;break;
+      case 'Landlord':
+        showHowItWork = this.howItWorkForLandlord;break;
+    }
+
+    return React.createElement(
+      'div',
+      { className: 'main' },
+      showHowItWork()
+    );
+  },
+
+  renderHomeAction: function () {
+    return React.createElement(
+      'div',
+      { className: 'home-action' },
+      this.homeActionTitle(),
+      this.homeActionContent()
+    );
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'pages' },
+      React.createElement('div', { className: 'background-image' }),
+      React.createElement(
+        'div',
+        { className: 'home-content' },
+        React.createElement(
+          'div',
+          { className: 'header' },
+          React.createElement(
+            'div',
+            { className: 'home-logo' },
+            React.createElement(AvatarImage, {
+              className: 'home-logo',
+              imageUri: '/assets/logo.png',
+              defaultImage: '/assets/logo.png',
+              alt: 'logo'
+            }),
+            React.createElement(
+              'h3',
+              null,
+              'MaintenanceApp'
+            )
+          ),
+          this.renderHowItWork(),
+          this.renderHomeAction()
+        )
+      )
+    );
+  }
+});
 // var quotes = React.createClass({
 
 //   render() {
@@ -88166,8 +89066,12 @@ var Header = React.createClass({
           ),
           React.createElement(
             "button",
-            { className: "menu-btn button", id: "btn-menu-bar", onClick: this.showBar },
-            " ☰ "
+            {
+              className: "menu-btn button " + (logged_in ? 'signed' : ''),
+              id: "btn-menu-bar",
+              onClick: this.showBar },
+            " ",
+            !expanded ? "☰" : "MENU"
           )
         )
       )

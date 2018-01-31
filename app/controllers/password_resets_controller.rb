@@ -11,7 +11,7 @@ class PasswordResetsController < ApplicationController
   # you get here when the user entered his email in the reset password form and submitted it.
   def create 
     
-    @user = User.find_by_email(params[:email].downcase)
+    @user = User.find_by_email(params[:email].gsub(/\s+/, "").downcase)
 
     # This line sends an email to the user with instructions on how to reset their password (a url with a random token)
     if @user 
@@ -24,12 +24,18 @@ class PasswordResetsController < ApplicationController
       # to the home page where they can try again. We also need to check to make sure that they didnt already change the password. If they did then we need to make sure that we redirect them
 
       ResetPasswordEmailWorker.perform_async(@user.id)
-    end
+    
 
     # Tell the user instructions have been sent whether or not email was found.
     # This is to not leak information to attackers about which emails exist in the system.
     flash[:success] = 'Instructions have been sent to your email.'
     redirect_to root_path
+
+    else
+      flash[:danger] = 'Please make sure you have correctly typed in the email.'
+      render :new
+
+    end
   end
 
   # This is the reset password form.
