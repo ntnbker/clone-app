@@ -7,6 +7,25 @@ class PagesController < ApplicationController
     @query = Query.new
     @main_users = MainUser.all
     @service = Service.all
+    
+    @user_type = params[:user_type] 
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:id]) 
+    @anchor = params[:anchor] 
+    @message = params[:message] 
+    @quote_message_id = params[:quote_message_id]
+    @appointment_id = params[:appointment_id] 
+    @stop_reminder = params[:stop_reminder] 
+    @quote_request_id = params[:quote_request_id] 
+
+
+
+
+
+
+
+
+
+
     if current_user
       if current_user.current_role.role == "AgencyAdmin" || current_user.current_role.role == "Agent"
         @role = "Agent"
