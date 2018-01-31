@@ -9,7 +9,7 @@ class PagesController < ApplicationController
     @service = Service.all
     
     @user_type = params[:user_type] 
-    @maintenance_request = MaintenanceRequest.find_by(id:params[:id]) 
+    @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id]) 
     @anchor = params[:anchor] 
     @message = params[:message] 
     @quote_message_id = params[:quote_message_id]
@@ -18,7 +18,7 @@ class PagesController < ApplicationController
     @quote_request_id = params[:quote_request_id] 
 
 
-
+    
 
 
 

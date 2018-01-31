@@ -2,6 +2,7 @@ class UserSessionsController < ApplicationController
   #before_action :is_signed_in, only:[:new]
   before_action :is_logged_out, only:[:destroy]
   def new
+    
     @query = params[:query_id]
     @user_type = params[:user_type]
     @maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
