@@ -27,7 +27,7 @@ class PasswordsController < ApplicationController
     # the next line clears the temporary token and updates the password
     if @user.change_password!(params[:user][:password])
       @user.update_attribute(:set_password_token, SecureRandom.hex(10))
-      flash[:success] = 'Password was successfully set.'
+      flash[:success] = 'Password was successfully updated.'
       redirect_to menu_login_path
     else
       render :action => "edit"
@@ -64,6 +64,7 @@ class PasswordsController < ApplicationController
     if current_user
       @user = current_user
     elsif params[:token]
+      
       user = User.find_by(set_password_token:params[:token])
       if user
         @user = user
@@ -79,7 +80,7 @@ class PasswordsController < ApplicationController
 
   def confirm_password
     
-    @user = User.find_by(email: params[:user][:email])
+    @user = User.find_by(email: params[:user][:email].gsub(/\s+/, "").downcase)
     @user.password_confirmation = params[:user][:password_confirmation]
     # the next line clears the temporary token and updates the password
     if @user.change_password!(params[:user][:password])

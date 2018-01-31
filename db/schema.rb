@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180109053142) do
+=======
+ActiveRecord::Schema.define(version: 20180111080142) do
+>>>>>>> staging
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -500,6 +504,7 @@ ActiveRecord::Schema.define(version: 20180109053142) do
     t.boolean  "delivery_status"
     t.text     "pdf_data"
     t.boolean  "paid",                   default: false
+    t.float    "total_invoice_amount"
   end
 
   create_table "uploaded_quotes", force: :cascade do |t|

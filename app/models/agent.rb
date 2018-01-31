@@ -1,5 +1,5 @@
 class Agent < ApplicationRecord
-  before_save :format_name, :format_last_name
+  before_save :format_name, :format_last_name, :format_email
   has_many :roles, as: :roleable
   has_many :maintenance_requests
   has_many :action_statuses
@@ -22,6 +22,10 @@ class Agent < ApplicationRecord
 
   def format_last_name
     self.last_name = self.last_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_email
+    self.email = self.email.gsub(/\s+/, "").downcase
   end
 
 end 

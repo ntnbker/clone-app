@@ -230,7 +230,7 @@ span.index {
         @include flexbox;
         @include flex-direction(column);
         @include justify-content(center);
-        align-items: center;
+        @include align-items(center);
       }
       .modal-title {
         margin-bottom: 0px;
@@ -301,18 +301,9 @@ span.index {
         .job-contact {
           @include flexbox;
           @include flex-direction(row);
+          @include align-items(strech);
           .left, .right {
             @include flex(1);
-          }
-          .left {
-            @include flexbox;
-            @include flex-direction(column);
-            .job-address, .agent-contact {
-              @include flex(none);
-            }
-          }
-          .right .invoice-detail {
-            height: calc(100% - 21px);
           }
         }
         .rect-info {
@@ -334,7 +325,7 @@ span.index {
               margin: 5px 0;
             }
             .heading {
-              width: 70px;
+              padding-right: 5px;
               display: inline-block;
               font-weight: 600;
             }
@@ -395,6 +386,15 @@ span.index {
       }
       .input-custom {
         width: 80%;
+      }
+      .landlord-email {
+        width: 80%;
+        text-align: left;
+        display: inline-block;
+        padding-left: 10px;
+        span {
+          padding-left: 10px;
+        }
       }
       .message {
         list-style: none;
@@ -1109,6 +1109,9 @@ span.index {
         &:last-child {
           padding-bottom: 10px;
         }
+        &.user {
+          height: 50px;
+        }
       }
       .view-more {
         background-color: $color-grey;
@@ -1299,6 +1302,7 @@ span.index {
   .btn-edit {
     float: right;
     height: 25px;
+    margin-bottom: 10px;
     padding: 0 10px;
     font-size: 12px;
     font-weight: 400;
@@ -2245,7 +2249,7 @@ span.index {
         float: none;
         padding: 0px;
         button {
-          align-items: center;
+          @include align-items(center);
           padding: 0px;
           margin: 0px 0px 10px 0px;
         }
