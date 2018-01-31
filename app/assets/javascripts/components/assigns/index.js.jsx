@@ -12,17 +12,6 @@ var AssignTrady = React.createClass({
 			<div className="quotes invoices m-t-xl assign" id="invoices">
 				<p>
 					{current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"}
-          {this.props.showAppointmentAlreadyMade &&
-            <button
-              type="button"
-              className="btn btn-mark-as-paid stop-reminder"
-              onClick={() => {
-                if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
-              }}
-            >
-                {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
-            </button>
-          }
 				</p>
 				<div className="list-quote">
 					<div className="item-quote row">
@@ -44,6 +33,17 @@ var AssignTrady = React.createClass({
               <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
                 View
               </button>
+              {this.props.showAppointmentAlreadyMade &&
+                <button
+                  type="button"
+                  className="btn btn-view appointment-already-made stop-reminder"
+                  onClick={() => {
+                    if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
+                  }}
+                >
+                    {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+                </button>
+              }
               { this.props.showAppointmentAlreadyMade &&
                 <button
                   type="button"
