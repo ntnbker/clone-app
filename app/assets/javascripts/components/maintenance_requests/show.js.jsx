@@ -323,13 +323,13 @@ var SideBarMobile = React.createClass({
 			this.setState({showAction: true});
 			this.setState({showContact: false});
 			if($('#actions-full')) {
-				$('#actions-full').css({'height': 350, 'border-width': 1});
+				$('#actions-full').css({'height': 300, 'border-width': 1});
 			}
 		}else {
 			this.setState({showAction: false});
 			this.setState({showContact: true});
 			if($('#contacts-full')) {
-				$('#contacts-full').css({'height': 350, 'border-width': 1});
+				$('#contacts-full').css({'height': 300, 'border-width': 1});
 			}
 		}
 	},
@@ -357,20 +357,21 @@ var SideBarMobile = React.createClass({
 	},
 
 	render: function() {
+		const {showContact, showAction} = this.state;
 		return (
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
 						<button
 							id="contact" data-intro="Select 'Contact' to call or message." data-position="top"
-							className={"contact button-default " + (!!this.state.showContact && 'active')}
+							className={"contact button-default " + (showContact && 'active')}
 							onClick={(key) => this.show('contact')}
 						>
 							CONTACT MENU
 						</button>
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
-							className={"actions button-default " + (!!this.state.showAction && 'active')}
+							className={"actions button-default " + (showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
 							ACTIONS MENU
