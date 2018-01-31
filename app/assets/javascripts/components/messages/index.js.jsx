@@ -51,7 +51,7 @@ var ContentMessage = React.createClass({
 		const {messages, current_user} = this.props;
 		const generateKey = this.generateKey;
 		const getSenderName = this.getSenderName;
-
+		debugger
 		if(!!messages) {
 			return (
 				<ul className="message scroll-custom" id="message">
