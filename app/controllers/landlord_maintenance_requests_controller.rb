@@ -101,11 +101,11 @@ class LandlordMaintenanceRequestsController < ApplicationController
     # end 
 
     if @maintenance_request.conversations.where(:conversation_type=>"Tenant").present?
-      @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages
+      @tenants_conversation = @maintenance_request.conversations.where(:conversation_type=>"Tenant").first.messages.as_json(:include => {:user=>{:include =>{:tenant => {}, :agency_admin=>{}, :agent=>{}, :landlord=>{} }}})
     end 
 
     if @maintenance_request.conversations.where(:conversation_type=>"Landlord").present?
-      @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages
+      @landlords_conversation = @maintenance_request.conversations.where(:conversation_type=>"Landlord").first.messages.as_json(:include => {:user=>{:include =>{:tenant => {}, :agency_admin=>{}, :agent=>{}, :landlord=>{} }}})
     end
 
     @tenants = @maintenance_request.tenants 
