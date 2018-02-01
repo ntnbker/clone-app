@@ -171,7 +171,7 @@ var ButtonCallTrady = React.createClass({
 					style={{display: 'none'}}
 					ref={(elem) => this.phone = elem}
 				/>
-				Call {trady.name}
+				<i className="fa fa-phone"></i> Call {trady.name}
 			</button>
 		);
 	}

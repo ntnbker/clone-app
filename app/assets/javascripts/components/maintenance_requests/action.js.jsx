@@ -59,7 +59,7 @@ var ContentAction = React.createClass({
 						}}
 					>
 						<i aria-hidden="true" className="fa fa-user-plus" />
-						{hasTenant ? "Change Tenant" : "Add Tenant"}
+						Add/Edit/Remove Tenant
 					</a>
 				</li>
 			</ul>
