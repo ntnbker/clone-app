@@ -429,11 +429,11 @@ span.index {
       .item-message {
         width: 100%;
         position: relative;
-        margin-top: 20px;
+        margin-top: 10px;
         text-align: left;
         &:after {
           bottom: 98%;
-          left: 12px;
+          left: 20px;
           border: solid transparent;
           content: " ";
           height: 0;
@@ -444,25 +444,44 @@ span.index {
           border-width: 8px;
           margin-left: -8px;
         }
-        span {
+        div {
           background-color: $color-grey;
           color: $color-black;
+          margin-right: 10px;
+          display: inline-block;
+          border-radius: 5px;
+          max-width: calc(100% - 10px);
+        }
+        span {
           display: inline-block;
           text-transform: capitalize;
-          border-radius: 5px;
           padding: 5px 20px;
-          display: inline-block;
-          margin-right: 5px;
+          display: block;
+          word-wrap: break-word;
+          word-break: break-word;
+          &.item-date {
+            font-size: 9px;
+            font-style: italic;
+            padding-top: 0px;
+          }
         }
+      }
+      .item-name {
+        font-weight: 600;
+        text-transform: capitalize;
+        margin-right: 10px;
+        margin-top: 10px;
+        text-align: left;
+        color: $color-grey;
       }
       .current-message {
         text-align: right;
         &:after {
           border-bottom-color: $color-green;
-          right: 12px;
+          right: 20px;
           left: inherit;
         }
-        span {
+        div {
           background-color: $color-green;
           color: $color-white;
         }
@@ -497,7 +516,8 @@ span.index {
         margin-bottom: 10px;
       }
       .textarea-message {
-        width: 100%;
+        width: calc(100% - 40px);
+        resize: none;
         margin-bottom: 1px;
       }
       .success {
@@ -2323,6 +2343,12 @@ span.index {
         margin-right: 0px;
         margin-bottom: 20px;
       }
+    }
+  }
+  .modal-custom .modal-body .message {
+    font-size: 12px;
+    .item-date {
+      font-size: 8px;
     }
   }
 }
