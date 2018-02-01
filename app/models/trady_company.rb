@@ -21,7 +21,7 @@ class TradyCompany < ApplicationRecord
   attr_accessor :system_plan
   attr_accessor :quote_type
 
-  validates_presence_of :company_name,:trading_name,:address,:mailing_address ,:mobile_number,:email
+  validates_presence_of :company_name,:trading_name,:address,:mailing_address ,:mobile_number,:email, :landline
   
   #
   before_save :format_account_name, if: :perform_account_name_validation
@@ -33,7 +33,7 @@ class TradyCompany < ApplicationRecord
   validates_presence_of :bank_account_number, if: :perform_bank_account_validation
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
   validates :mobile_number, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
-  
+  validates :landline, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
 
   def capitalize_company_name
     self.company_name.split.map(&:capitalize).join(' ')

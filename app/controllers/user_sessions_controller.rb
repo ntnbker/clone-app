@@ -92,7 +92,7 @@ class UserSessionsController < ApplicationController
       end 
       logout
       flash[:danger] = "Please use your correct email, password and role you have access to."
-      redirect_to menu_login_path
+      redirect_to root_path
       
     end 
   end
