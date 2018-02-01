@@ -85335,7 +85335,9 @@ var HomeComponent = React.createClass({
       step: step,
       signed: !!current_user,
       rolePicked: role || 'Tenant',
-      user: current_user
+      user: current_user,
+      focusEmail: false,
+      focusPassword: false
     };
   },
 
@@ -85360,12 +85362,25 @@ var HomeComponent = React.createClass({
 
     var email = this.email && this.email.value;
     var password = this.password && this.password.value;
+    var _props2 = this.props;
+    var query_id = _props2.query_id;
+    var user_type = _props2.user_type;
+    var maintenance_request_id = _props2.maintenance_request_id;
+    var anchor = _props2.anchor;
+    var message = _props2.message;
+    var quote_request_id = _props2.quote_request_id;
+    var appointment_id = _props2.appointment_id;
+    var stop_reminder = _props2.stop_reminder;
+    var quote_message_id = _props2.quote_message_id;
 
     $.ajax({
       type: 'POST',
       url: '/menulogin',
       data: {
-        email: email, password: password, role_picked: rolePicked
+        email: email, password: password, role_picked: rolePicked,
+        query_id: query_id, user_type: user_type, maintenance_request_id: maintenance_request_id, anchor: anchor,
+        message: message, quote_request_id: quote_request_id, appointment_id: appointment_id,
+        stop_reminder: stop_reminder, quote_message_id: quote_message_id
       },
       success: function (res) {},
       error: function (err) {}
@@ -85376,7 +85391,7 @@ var HomeComponent = React.createClass({
     e.preventDefault();
     var rolePicked = this.state.rolePicked;
 
-    var tradie = this.service && this.service.value;
+    var tradie = this.service && this.service.value || '';
     var address = this.address && this.address.value;
 
     $.ajax({
@@ -85792,7 +85807,10 @@ var HomeComponent = React.createClass({
   loginRender: function () {
     var _this4 = this;
 
-    var active = this.state.active;
+    var _state = this.state;
+    var active = _state.active;
+    var focusEmail = _state.focusEmail;
+    var focusPassword = _state.focusPassword;
     var new_password_reset_path = this.props.new_password_reset_path;
 
     var showBackButton = active === 'Tenant' || active === 'Trady';
@@ -85839,15 +85857,23 @@ var HomeComponent = React.createClass({
         { className: 'login-info' },
         React.createElement(
           'div',
-          { className: 'login-input email-input' },
+          { className: "login-input email-input " + (focusEmail && 'focus') },
           React.createElement(
             'span',
-            { className: 'email' },
+            { className: 'email', onClick: function () {
+                return _this4.email.focus();
+              } },
             'Email:'
           ),
           React.createElement('input', {
             type: 'text',
             name: 'email',
+            onFocus: function () {
+              return _this4.setState({ focusEmail: true });
+            },
+            onBlur: function () {
+              return _this4.setState({ focusEmail: false });
+            },
             ref: function (elem) {
               return _this4.email = elem;
             }
@@ -85855,15 +85881,23 @@ var HomeComponent = React.createClass({
         ),
         React.createElement(
           'div',
-          { className: 'login-input password-input' },
+          { className: "login-input password-input " + (focusPassword && 'focus') },
           React.createElement(
             'span',
-            { className: 'password' },
+            { className: 'password', onClick: function () {
+                return _this4.password.focus();
+              } },
             'Password:'
           ),
           React.createElement('input', {
             type: 'password',
             name: 'password',
+            onFocus: function () {
+              return _this4.setState({ focusPassword: true });
+            },
+            onBlur: function () {
+              return _this4.setState({ focusPassword: false });
+            },
             ref: function (elem) {
               return _this4.password = elem;
             }
@@ -85956,10 +85990,10 @@ var HomeComponent = React.createClass({
   homeActionForSubmitNewMR: function () {
     var _this6 = this;
 
-    var _state = this.state;
-    var _state$signed = _state.signed;
-    var signed = _state$signed === undefined ? false : _state$signed;
-    var active = _state.active;
+    var _state2 = this.state;
+    var _state2$signed = _state2.signed;
+    var signed = _state2$signed === undefined ? false : _state2$signed;
+    var active = _state2.active;
     var services = this.props.services;
 
     return React.createElement(
@@ -85983,7 +86017,7 @@ var HomeComponent = React.createClass({
           },
           React.createElement(
             'option',
-            { value: null },
+            { value: '' },
             'What type of service do you require?'
           ),
           services.map(function (_ref) {
@@ -86042,10 +86076,10 @@ var HomeComponent = React.createClass({
   homeActionTitle: function () {
     var _this7 = this;
 
-    var _state2 = this.state;
-    var _state2$active = _state2.active;
-    var active = _state2$active === undefined ? 'tenant' : _state2$active;
-    var signed = _state2.signed;
+    var _state3 = this.state;
+    var _state3$active = _state3.active;
+    var active = _state3$active === undefined ? 'tenant' : _state3$active;
+    var signed = _state3.signed;
 
     return React.createElement(
       'div',
@@ -86098,9 +86132,9 @@ var HomeComponent = React.createClass({
   },
 
   homeActionContent: function () {
-    var _state3 = this.state;
-    var active = _state3.active;
-    var step = _state3.step;
+    var _state4 = this.state;
+    var active = _state4.active;
+    var step = _state4.step;
 
     var render = null;
 
@@ -86214,7 +86248,8 @@ var HomeComponent = React.createClass({
             )
           ),
           this.renderHowItWork(),
-          this.renderHomeAction()
+          this.renderHomeAction(),
+          React.createElement('input', { type: 'hidden', id: 'refresh', value: 'no' })
         )
       )
     );
