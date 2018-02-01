@@ -645,7 +645,7 @@ var QuoteRequests = React.createClass({
 												/>
 											: ''
 										}
-										{ needAlreadySentButton
+										{ !quote_request.trady.jfmo_participant && needAlreadySentButton
 											? <ButtonQuoteAlreadySent
 													{...self}
 													quote_request={quote_request}
