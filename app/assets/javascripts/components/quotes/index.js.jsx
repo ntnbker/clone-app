@@ -157,6 +157,26 @@ var ButtonQuoteAlreadySent = React.createClass({
 	}
 });
 
+var ButtonCallTrady = React.createClass({
+	render: function() {
+		const { trady } = this.props;
+		return (
+			<button
+				type="button"
+				className="btn btn-default"
+				onClick={() => this.phone.click()}
+			>
+				<a
+					href={`tel:${trady.mobile}`}
+					style={{display: 'none'}}
+					ref={(elem) => this.phone = elem}
+				/>
+				<i className="fa fa-phone"></i> Call {trady.name}
+			</button>
+		);
+	}
+});
+
 var ButtonViewPhoto = React.createClass({
 	render: function() {
 		const { chooseQuoteRequest, quote, viewQuote, gallery } = this.props;
@@ -560,6 +580,8 @@ var QuoteRequests = React.createClass({
 	render: function() {
 		const {quote_requests, pictures} = this.state;
 		const self = this.props;
+		const role = self.current_user_role && self.current_user_role.role;
+		const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
 		return (
 			<div className="quotes m-t-lg" id="quote_requests">
@@ -607,6 +629,13 @@ var QuoteRequests = React.createClass({
 										</div>
 									</div>
 									<div className="quote-request-button">
+										{
+											isCallTrady
+											? <ButtonCallTrady
+													trady={quote_request.trady}
+												/>
+											: ''
+										}
 										{
 											needMessageButton
 											? <ButtonQuoteRequestMessage
