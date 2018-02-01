@@ -243,7 +243,7 @@
 								border: 2px solid white;
 								border-radius: 4px;
 								@include flexbox;
-								&:focus-within {
+								&.focus {
 									border-color: #5CC993;
 								}
 							}
@@ -339,7 +339,7 @@
 									font-size: 20px;
 									background: transparent;
 									border: 2px white solid;
-									&:focus-within {
+									&:focus {
 										border-color: #5CC993;
 									}
 									option {
@@ -487,6 +487,35 @@
 	.line {
 		border: 1px solid #e6ecf1;
 		width: 100%;
+	}
+
+	@media (max-width: 1200px) {
+		.home-content .header .home-action {
+			.home-action-content .action-content {
+				.submit-new-mr {
+					.type-service {
+						select {
+							font-size: 17px;
+						}
+						span {
+							top: 30px;
+							font-size: 29px;
+						}
+					}
+					.input-address {
+						textarea {
+							font-size: 17px;
+						}
+					}
+				}
+				.tenant-home-button, .trady-home-button {
+					font-size: 14px;
+					.btn {
+						padding: 0px 5px;
+					}
+				}
+			}
+		}
 	}
 
 	@media (max-width: 1024px) {
