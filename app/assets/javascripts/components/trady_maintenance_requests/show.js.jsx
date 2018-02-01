@@ -1543,6 +1543,7 @@ var TradyMaintenanceRequest = React.createClass({
 									onModalWith={this.onModalWith}
 									uploadImage={this.uploadImage}
 									current_user={this.props.current_user}
+									current_role={this.props.current_role}
 									chooseQuoteRequest={this.chooseQuoteRequest}
 									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}

@@ -47,6 +47,25 @@ var ButtonForwardLandlord = React.createClass({
 	}
 });
 
+var ButtonCreateQuote = React.createClass({
+	render: function() {
+		return (
+			<button
+			type="button"
+			className="btn btn-accept"
+			onClick={() => this.link.click()}
+			>
+				<a
+					href={this.props.linkCreateQuote}
+					style={{display: 'none'}}
+					ref={(elem) => this.link = elem}
+				/>
+				Create Quote
+			</button>
+		);
+	}
+});
+
 var ButtonAccept = React.createClass({
 	updateStatus: function() {
 		const params = {
@@ -580,7 +599,9 @@ var QuoteRequests = React.createClass({
 	render: function() {
 		const {quote_requests, pictures} = this.state;
 		const self = this.props;
-		const role = self.current_user_role && self.current_user_role.role;
+		const role = self.current_user_role && self.current_user_role.role
+							|| self.current_role && self.current_role.role;
+
 		const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
 		return (
@@ -591,6 +612,7 @@ var QuoteRequests = React.createClass({
 				<div className="list-quote">
 				{
 					quote_requests.map(function(quote_request, index) {
+						const {maintenance_request_id, trady_id} = quote_request;
 						const quotes 				= quote_request.quotes || [];
 						const quoteAlready  = quotes.filter(quote => !quote.quote_items
 																											 || quote.quote_items.length === 0);
@@ -610,6 +632,7 @@ var QuoteRequests = React.createClass({
 																				: quote_request.trady
 																					? quote_request.trady.name
 																					: '';
+						const linkCreateQuote = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
 
 						return (
 							<div className="item-quote row item-quote-request" key={index}>
@@ -633,6 +656,12 @@ var QuoteRequests = React.createClass({
 											isCallTrady
 											? <ButtonCallTrady
 													trady={quote_request.trady}
+												/>
+											: ''
+										}
+										{ role === 'Trady'
+											? <ButtonCreateQuote
+													linkCreateQuote={linkCreateQuote}
 												/>
 											: ''
 										}
