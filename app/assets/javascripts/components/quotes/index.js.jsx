@@ -628,7 +628,7 @@ var QuoteRequests = React.createClass({
 													className="btn btn-default"
 													{...self}
 													chooseImageText="Choose Image or PDF to upload"
-													text="Upload Quote"
+													text="Upload Quote PDF/Image"
 													onClick={() => self.chooseQuoteRequest(quote_request)}
 												/>
 											: ''
