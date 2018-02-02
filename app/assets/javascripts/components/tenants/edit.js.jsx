@@ -2,6 +2,8 @@ var TenantEdit = React.createClass({
   getInitialState: function () {
     return {
       errors: {},
+      hideMessage: true,
+      message: 'deafult message'
     };
   },
 
@@ -11,8 +13,9 @@ var TenantEdit = React.createClass({
     const getValidValue = obj => obj && obj.value;
 
     var tenant = {
-      name        : getValidValue(this.name),
-      mobile      : getValidValue(this.mobile),
+      id    : this.props.tenant.id,
+      name  : getValidValue(this.name),
+      mobile: getValidValue(this.mobile),
     }
 
     var params = { tenant };
@@ -20,15 +23,16 @@ var TenantEdit = React.createClass({
     const self = this;
     $.ajax({
       type: 'PUT',
-      url: `/tradies/${(this.props.tenant || {}).id}`,
+      url: `/tenants/${(this.props.tenant || {}).id}`,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
       data: params,
       success: function(res){
         if (res.errors) {
-          self.setState({errors: res.errors || {}});
+          return self.setState({errors: res.errors || {}});
         }
+        self.setState({message: res.message, tenant: res.tenant, hideMessage: false});;
       },
       error: function(err) {
       }
@@ -38,11 +42,23 @@ var TenantEdit = React.createClass({
   },
 
   removeError: function({ target: { id } }) {
-      this.setState({ errors: {...this.state.errors, [id]: ''} });
+      this.setState({ errors: {...this.state.errors, [id]: ''}, hideMessage: true });
   },
 
   renderError: function(error) {
     return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+  },
+
+  renderMessage: function() {
+    const {message, hideMessage} = this.state;
+    return (
+      <p
+        id="message"
+        className={"message " + (hideMessage && 'hide-message')}
+      >
+        {message}
+      </p>
+    )
   },
 
   renderButton: function(text, link) {
@@ -77,22 +93,24 @@ var TenantEdit = React.createClass({
   },
 
   render: function() {
-    let tenant             = this.props.tenant || {};
-    let { errors = {}}     = this.state;
-    const renderTextField  = this.renderTextField;
-    const renderButtonFunc = this.renderButton;
+    let tenant                 = this.props.tenant || {};
+    let {errors = {}, message} = this.state;
+    const renderTextField      = this.renderTextField;
+    const renderButtonFunc     = this.renderButton;
+    const renderMessage        = this.renderMessage;
 
     return (
-      <div className="edit_profile edit_trady_profile">
+      <div className="edit_profile edit_tenant_profile">
         <form
           role="form"
-          className={"form-horizontal right " + haveCompanyClass}
+          className="form-horizontal right "
           id="edit_trady"
           onSubmit={this.onSubmit}
         >
           <h5 className="control-label col-sm-2 required title" >
-            Edit Trady Profile
+            Edit Tenant Profile
           </h5>
+          {renderMessage()}
           {renderTextField('name', 'Name')}
           {renderTextField('mobile', 'Mobile')}
           <div className="text-center">
