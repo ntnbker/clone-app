@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20180109053142) do
-=======
-ActiveRecord::Schema.define(version: 20180111080142) do
->>>>>>> staging
+ActiveRecord::Schema.define(version: 20180202074111) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -364,6 +360,8 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.string  "pricing_type"
     t.float   "hours"
     t.float   "total_per_hour"
+    t.float   "min_price"
+    t.float   "max_price"
   end
 
   create_table "quote_requests", force: :cascade do |t|
@@ -453,6 +451,7 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.datetime "updated_at",       null: false
     t.integer  "trady_company_id"
     t.string   "company_name"
+    t.boolean  "jfmo_participant"
   end
 
   create_table "trady_companies", force: :cascade do |t|
