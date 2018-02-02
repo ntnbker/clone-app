@@ -171,12 +171,14 @@ var TradyCompanyEdit = React.createClass({
           <h5 className="control-label col-sm-2 required title">
             Edit Trady Company Profile
           </h5>
-          {renderTextField('company_name', 'Company Name')}
+          {renderTextField('company_name', 'Company Name / Sole Trader Name')}
           {renderTextField('trading_name', 'Business Name')}
           {renderTextField('abn', 'ABN')}
+          {renderTextField('profession_license_number', 'Profession License Number')}
           {renderTextField('address', 'Address')}
           {renderTextField('mailing_address', 'Mailing Address')}
           {renderTextField('mobile_number', 'Mobile Number')}
+          {renderTextField('landline', 'Landline Number')}
           <div className="form-group">
             <div className="col-sm-10">
               <input

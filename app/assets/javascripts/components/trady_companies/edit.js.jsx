@@ -11,7 +11,7 @@ var EditTradyCompany = React.createClass({
       	title: "",
       	bgClass: "",
       	contnet: "",
-      }
+      },
     };
 	},
 
