@@ -128,6 +128,13 @@ class TenantsController < ApplicationController
     
   end
 
+
+  def edit
+    @tenant = Tenant.find_by(id:params[:tenant][:id]) 
+  end
+
+
+
   def update
     tenant = Tenant.find_by(id:params[:tenant][:id])  
     
