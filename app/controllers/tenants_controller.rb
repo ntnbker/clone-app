@@ -130,7 +130,8 @@ class TenantsController < ApplicationController
 
 
   def edit
-    @tenant = Tenant.find_by(id:params[:tenant][:id]) 
+
+    @tenant = Tenant.find_by(id:params[:id]) 
   end
 
 
