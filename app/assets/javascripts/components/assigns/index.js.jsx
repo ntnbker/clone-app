@@ -8,6 +8,9 @@ var AssignTrady = React.createClass({
 
     const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 
+    const showStopReminder = this.props.showAppointmentAlreadyMade
+                          && !trady.jfmo_participant;
+
 		return (
 			<div className="quotes invoices m-t-xl assign" id="invoices">
 				<p>
@@ -33,7 +36,7 @@ var AssignTrady = React.createClass({
               <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
                 View
               </button>
-              {this.props.showAppointmentAlreadyMade &&
+              { showStopReminder &&
                 <button
                   type="button"
                   className="btn btn-view appointment-already-made stop-reminder"
@@ -41,10 +44,10 @@ var AssignTrady = React.createClass({
                     if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
                   }}
                 >
-                    {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+                  {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
                 </button>
               }
-              { this.props.showAppointmentAlreadyMade &&
+              { showStopReminder &&
                 <button
                   type="button"
                   className="btn btn-view appointment-already-made stop-reminder"
