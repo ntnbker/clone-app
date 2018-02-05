@@ -11,6 +11,9 @@ var QuoteField = React.createClass({
       amount_error: '',
       min_price_error: '',
       max_price_error: '',
+      amount: 0,
+      min_price: 0,
+      max_price: 0,
     }
   },
 
@@ -73,15 +76,20 @@ var QuoteField = React.createClass({
     if (pricing_type === 'Fixed Variable') {
       update.amount = 0;
     }
+    else {
+      update.min_price = 0;
+      update.max_price = 0;
+    }
     this.setState(update);
   },
 
-  removeError: function({ target: { id } }) {
+  removeError: function({ target: { id, value } }) {
     const field = id.match(/\d+_(\w+)$/);
     if (!field) return;
 
     this.setState({
       [`${field[1]}_error`]: '',
+      [field[1]]: value,
     })
   },
 
@@ -130,43 +138,48 @@ var QuoteField = React.createClass({
               <option value="Fixed Variable">Fixed Variable</option>
             </select>
             <div className="amount-input">
-              {!needToShowTo &&
+              <input
+                type="text"
+                placeholder="Amount"
+                defaultValue={quote ? quote.amount : ''}
+                value={this.state.amount}
+                ref={value => this.amount = value}
+                className={"text-center price" + (currentState['amount_error'] ? ' has-error' : '')}
+                id={'quote_quote_items_attributes_' + x + '_amount'}
+                name={'quote[quote_items_attributes][' + x + '][amount]'}
+                onChange={removeErrorFunc}
+                style={needToShowTo ? {display: 'none'} : {}}
+              />
                 <input
-                  type="text"
-                  placeholder="Amount"
-                  defaultValue={quote ? quote.amount : ''}
-                  ref={value => this.amount = value}
-                  className={"text-center price" + (currentState['amount_error'] ? ' has-error' : '')}
-                  id={'quote_quote_items_attributes_' + x + '_amount'}
-                  name={'quote[quote_items_attributes][' + x + '][amount]'}
-                  onChange={removeErrorFunc}
-                />
-              }
-              {needToShowTo &&
-                  <input
-                  type="text"
-                  placeholder="Min Price"
-                  defaultValue={quote ? quote.min_price : ''}
-                  ref={value => this.min_price = value}
-                  className={"text-center price" + (currentState['min_price_error'] ? ' has-error' : '')}
-                  id={'quote_quote_items_attributes_' + x + '_min_price'}
-                  name={'quote[quote_items_attributes][' + x + '][min_price]'}
-                  onChange={removeErrorFunc}
-                />
-              }
-              {needToShowTo && <span className="to">To</span>}
-              {needToShowTo &&
-                <input
-                  type="text"
-                  placeholder="Max Price"
-                  defaultValue={quote ? quote.max_price : ''}
-                  ref={value => this.max_price = value}
-                  className={"text-center price" + (currentState['max_price_error'] ? ' has-error' : '')}
-                  id={'quote_quote_items_attributes_' + x + '_max_price'}
-                  name={'quote[quote_items_attributes][' + x + '][max_price]'}
-                  onChange={removeErrorFunc}
-                />
-              }
+                type="text"
+                placeholder="Min Price"
+                defaultValue={quote ? quote.min_price : ''}
+                value={this.state.min_price}
+                ref={value => this.min_price = value}
+                className={"text-center price" + (currentState['min_price_error'] ? ' has-error' : '')}
+                id={'quote_quote_items_attributes_' + x + '_min_price'}
+                name={'quote[quote_items_attributes][' + x + '][min_price]'}
+                onChange={removeErrorFunc}
+                style={!needToShowTo ? {display: 'none'} : {}}
+              />
+              <span
+                className="to"
+                style={!needToShowTo ? {display: 'none'} : {}}
+              >
+                To
+              </span>
+              <input
+                type="text"
+                placeholder="Max Price"
+                defaultValue={quote ? quote.max_price : ''}
+                value={this.state.max_price}
+                ref={value => this.max_price = value}
+                className={"text-center price" + (currentState['max_price_error'] ? ' has-error' : '')}
+                id={'quote_quote_items_attributes_' + x + '_max_price'}
+                name={'quote[quote_items_attributes][' + x + '][max_price]'}
+                onChange={removeErrorFunc}
+                style={!needToShowTo ? {display: 'none'} : {}}
+              />
             </div>
             <input
               type="hidden"
