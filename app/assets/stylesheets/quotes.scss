@@ -114,8 +114,18 @@ form#new_quote {
 	}
 
 	/* For Desktop */
-	@media (min-width: 550px) {
+	@media (min-width: 700px) {
 		width: 50%;
+	}
+	/* For Desktop */
+	@media (max-width: 700px) {
+		.amount {
+			@include flex-direction(column);
+			.amount-input {
+				margin-top: 10px;
+				margin-left: 0;
+			}
+		}
 	}
 }
 

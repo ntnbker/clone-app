@@ -73,7 +73,7 @@ var QuoteField = React.createClass({
       pricing_type,
       hours_input: pricing_type === 'Hourly',
     }
-    if (pricing_type === 'Fixed Variable') {
+    if (pricing_type === 'Range') {
       update.amount = 0;
     }
     else {
@@ -103,7 +103,7 @@ var QuoteField = React.createClass({
     const currentState    = this.state;
     const removeErrorFunc = this.removeError;
     const renderErrorFunc = this.renderError;
-    const needToShowTo    = currentState.pricing_type === 'Fixed Variable';
+    const needToShowTo    = currentState.pricing_type === 'Range';
 
     if (quote) {
       x = quote.id;
@@ -135,7 +135,7 @@ var QuoteField = React.createClass({
             >
               <option value="Fixed Cost">Fixed Cost</option>
               <option value="Hourly">Hourly</option>
-              <option value="Fixed Variable">Fixed Variable</option>
+              <option value="Range">Range</option>
             </select>
             <div className="amount-input">
               <input

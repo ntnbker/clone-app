@@ -801,7 +801,7 @@ var DetailQuote = React.createClass({
 								subTotal += (item.amount*item.hours);
 							}
 							let amount = item.amount;
-							if(item.pricing_type === 'Fixed Variable') {
+							if(item.pricing_type === 'Range') {
 								amount = `$${item.min_price.toFixed(2)}-$${item.max_price.toFixed(2)}`;
 							}
 							else {

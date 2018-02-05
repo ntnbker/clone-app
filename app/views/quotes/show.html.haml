@@ -63,7 +63,7 @@
             %td.text-right
               -if f.pricing_type == 'Fixed Cost'
                 = "$#{f.amount.round(2)}"
-              -if f.pricing_type == 'Fixed Variable'
+              -if f.pricing_type == 'Range'
                 = "$#{f.min_price.round(2)}-$#{f.max_price.round(2)}"
 
 
