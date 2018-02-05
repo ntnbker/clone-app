@@ -82,12 +82,22 @@ form#new_quote {
 		@include flexbox;
 		margin-top: 10px;
 		select {
-			width: 49%;
-			margin-right: 1%;
+			@include flex(1);
 		}
-		input {
-			width: 49%;
-			margin-left: 1%;
+		.amount-input {
+			margin-left: 10px;
+			@include flex(2);
+			@include flexbox;
+			input {
+				@include flex(4);
+			}
+			span.to {
+				@include flex(1);
+				@include flexbox;
+				@include justify-content(center);
+				@include align-items(center);
+				margin: 0 5px;
+			}
 		}
 		.hour {
 			width: 32% !important;
