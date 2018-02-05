@@ -590,7 +590,7 @@
 		}
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 820px) {
 		.home-content .header .home-action {
 			width: 60%;
 
@@ -616,6 +616,9 @@
 						select {
 							font-size: 19px;
 							padding: 0 15px;
+						}
+						span {
+							top: 26px;
 						}
 					}
 					.input-address {
