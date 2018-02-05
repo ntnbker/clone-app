@@ -800,12 +800,24 @@ var DetailQuote = React.createClass({
 							}else {
 								subTotal += (item.amount*item.hours);
 							}
+							let amount = item.amount;
+							if(item.pricing_type === 'Fixed Variable') {
+								amount = `$${item.min_price.toFixed(2)}-$${item.max_price.toFixed(2)}`;
+							}
+							else {
+								amount = `$${amount.toFixed(2)}`;
+							}
+
 							return (
 								<tr key={key}>
 									<td className="quote-description">{item.item_description}</td>
 									<td className="quote-price">{item.pricing_type}</td>
-									<td className="text-right quote-rate">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
-									<td className="text-right quote-amount">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
+									<td className="text-right quote-rate">
+										{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }
+									</td>
+									<td className="text-right quote-amount">
+										{ item.pricing_type !== "Hourly" && amount }
+									</td>
 								</tr>
 							);
 						})

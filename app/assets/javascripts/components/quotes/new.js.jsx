@@ -11,9 +11,9 @@ var QuoteField = React.createClass({
       amount_error: '',
       min_price_error: '',
       max_price_error: '',
-      amount: 0,
-      min_price: 0,
-      max_price: 0,
+      amount: quote ? quote.amount : 0,
+      min_price: quote ? quote.min_price : 0,
+      max_price: quote ? quote.max_price : 0,
     }
   },
 

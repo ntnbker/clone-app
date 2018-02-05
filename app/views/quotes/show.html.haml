@@ -49,8 +49,6 @@
           %th Pricing
           %th.text-right Rate
           %th.text-right Amount
-          %th.text-right Min Price
-          %th.text-right Max Price
         -@quote.quote_items.each do |f|
 
           %tr
@@ -65,12 +63,8 @@
             %td.text-right
               -if f.pricing_type == 'Fixed Cost'
                 = "$#{f.amount.round(2)}"
-            %td.text-right
               -if f.pricing_type == 'Fixed Variable'
-                = "$#{f.min_price.round(2)}"
-            %td.text-right
-              -if f.pricing_type == 'Fixed Variable'
-                = "$#{f.max_price.round(2)}"
+                = "$#{f.min_price.round(2)}-$#{f.max_price.round(2)}"
 
 
       %div.button-quote
