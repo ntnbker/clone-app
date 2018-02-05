@@ -23,7 +23,7 @@ class QuotesController < ApplicationController
     @quote = Quote.new(quote_params)
     @quote_type = params[:quote][:quote_type]
     @system_plan = params[:quote][:system_plan]
-    binding.pry
+    
     # @total = @quote.calculate_total(params[:quote][:quote_items_attributes])
     # quote_request = QuoteRequest.where(:trady_id=>params[:quote][:trady_id], :maintenance_request_id=>params[:quote][:maintenance_request_id]).first
     
@@ -387,7 +387,7 @@ class QuotesController < ApplicationController
   private
   
   def quote_params
-    params.require(:quote).permit(:id,:trady_quote_reference ,:trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type, :min_price, :max_price])
+    params.require(:quote).permit(:id,:trady_quote_reference, :trady_id,:status, :delivery_status, :tax,:maintenance_request_id,quote_items_attributes:[:id,:amount,:item_description, :_destroy, :hours, :pricing_type, :min_price, :max_price])
   end
 
   def email_auto_login(id)
