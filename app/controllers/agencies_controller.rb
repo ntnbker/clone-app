@@ -59,6 +59,8 @@ class AgenciesController < ApplicationController
         flash[:danger] = "Sorry something went wrong"
         render :new
       end 
+
+      binding.pry
     end 
 
 
