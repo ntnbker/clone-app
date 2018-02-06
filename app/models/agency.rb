@@ -21,8 +21,8 @@ class Agency < ApplicationRecord
   validates_presence_of :address
   validates_presence_of :mobile_phone
   validates_presence_of :phone
-  validates_presence_of :license_type
-  validates_presence_of :license_number
+  # validates_presence_of :license_type
+  # validates_presence_of :license_number
   
   #validates_associated :agency_admins
 
