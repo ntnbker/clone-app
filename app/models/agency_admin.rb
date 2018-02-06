@@ -11,7 +11,7 @@ class AgencyAdmin <ApplicationRecord
   
   
   validates_presence_of :email, :license_number,:first_name, :mobile_phone, :last_name, if: :perform_add_agency_admin_validations
-  validates_presence_of :email, :first_name, :mobile_phone, :last_name, if: :perform_agency_validations
+  #validates_presence_of :email, :first_name, :mobile_phone, :last_name, if: :perform_agency_validations
   
 
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/, if: :perform_add_agency_admin_validations
