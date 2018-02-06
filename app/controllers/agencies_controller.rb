@@ -55,13 +55,13 @@ class AgenciesController < ApplicationController
         flash[:success] = "Thank you for signing up."
         redirect_to root_path
       else
-        binding.pry
-        @user = User.new(user_params)  
+        
+         
         flash[:danger] = "Sorry something went wrong"
           respond_to do |format|
-          format.json {render :json=>{errors: @user.errors.to_hash(true).as_json}}
-          format.html {render :new}
-        end
+            format.json {render :json=>{errors: @user.errors.to_hash(true).as_json}}
+            format.html {render :new}
+          end
         
       end 
 
