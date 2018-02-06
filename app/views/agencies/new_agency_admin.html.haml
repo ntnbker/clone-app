@@ -1,0 +1,18 @@
+Here is the agency admin form
+
+
+=bootstrap_nested_form_for(@user, url:"/register_agency_admin", layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+    =f.email_field :email, hide_label: false 
+    =f.password_field :password, hide_label: false 
+    =f.password_field :password_confirmation
+
+      
+    =f.fields_for :agency_admin do |admin|
+      =admin.text_field :first_name
+      =admin.text_field :last_name
+      =admin.phone_field :mobile_phone
+      =admin.hideen_field :agency_id , value: @agency.id
+      
+    
+    =f.submit "Sign Up"
+    
