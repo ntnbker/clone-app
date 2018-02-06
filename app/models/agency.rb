@@ -17,7 +17,7 @@ class Agency < ApplicationRecord
   
   validates_presence_of :company_name
   validates_presence_of :business_name
-  validates_presence_of :abn
+  #validates_presence_of :abn
   validates_presence_of :address
   validates_presence_of :mobile_phone
   validates_presence_of :phone
