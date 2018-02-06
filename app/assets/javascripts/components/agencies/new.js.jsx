@@ -1,24 +1,10 @@
-var BDM = React.createClass({
-    render: function(){
-      return <div>
-        <p> Bdm verification </p>
-        <input
-          type="text"
-          placeholder="Bdm verification"
-          id="user_agency_admin_attributes_agency_attributes_bdm_verification_id"
-          name="user[agency_admin_attributes][agency_attributes][bdm_verification_id]"
-        />
-      </div>
-    }
-});
-
 var AgencyAttributes = React.createClass({
     getInitialState: function () {
       return {
-        showBDM: false,
-        same_Address: false,
+        same_address: false,
         address: '',
-        mailing: ''
+        mailing: '',
+        errors: this.props.errors,
       };
     },
 
@@ -27,13 +13,19 @@ var AgencyAttributes = React.createClass({
           return "user[agency_admin_attributes][agency_attributes][" + type + "]";
       }
       else if (name_id == "id") {
-          return "user_agency_admin_attributes_agency_attributes_" + type;
+          return "agency_admin.agency." + type;
       }
     },
 
     handleChange: function(event) {
       this.setState({address: event.target.value});
-      if (this.state.same_Address) {
+      this.props.removeError(event);
+      if (this.state.same_address) {
+        this.props.removeError({
+          target: {
+            id: this.generateAtt('id', 'mailing_address'),
+          }
+        });
         this.setState({
           mailing: event.target.value,
           address: event.target.value
@@ -41,14 +33,15 @@ var AgencyAttributes = React.createClass({
       }
     },
 
-    onBDM: function() {
-      this.setState({showBDM: !this.state.showBDM});
-    },
-
     onSame: function() {
       this.setState({
-        same_Address: !this.state.same_Address,
+        same_address: !this.state.same_address,
         mailing: ''
+      });
+      this.props.removeError({
+        target: {
+          id: this.generateAtt('id', 'mailing_address')
+        }
       });
     },
 
@@ -56,43 +49,52 @@ var AgencyAttributes = React.createClass({
       this.setState({
         mailing: e.target.value
       });
+      this.props.removeError(e);
+    },
+
+    renderError: function(error) {
+        return <p id="errorbox" className="error">{error && error[0] || ''}</p>;
     },
 
     render: function(){
+      const {removeError, errors} = this.props;
+      const renderError = this.renderError;
+      const generateAtt = this.generateAtt;
+
       return <div className="fields">
         <h4> Agency Information </h4>
         <p> Company Name </p>
         <input
           type="text"
           placeholder="Company Name"
-          id={this.generateAtt("id", "company_name")}
-          name={this.generateAtt("name", "company_name")}
+          id={generateAtt("id", "company_name")}
+          name={generateAtt("name", "company_name")}
+          className={errors[generateAtt("id", "company_name")] ? ' has-error' : ''}
+          onChange={removeError}
         />
+        {renderError(errors[generateAtt("id", "company_name")])}
 
         <p> Business name </p>
         <input
           type="text"
           placeholder="Business name"
-          id={this.generateAtt("id", "business_name")}
-          name={this.generateAtt("name", "business_name")}
+          id={generateAtt("id", "business_name")}
+          name={generateAtt("name", "business_name")}
+          className={errors[generateAtt("id", "business_name")] ? ' has-error' : ''}
+          onChange={removeError}
         />
-
-        <p> Abn </p>
-        <input
-          type="text"
-          placeholder="Abn"
-          id={this.generateAtt("id", "abn")}
-          name={this.generateAtt("name", "abn")}
-        />
+        {renderError(errors[generateAtt("id", "business_name")])}
 
         <p> Address </p>
         <input
           type="text"
           placeholder="Address"
           onChange={this.handleChange}
-          id={this.generateAtt("id", "address")}
-          name={this.generateAtt("name", "address")}
+          id={generateAtt("id", "address")}
+          name={generateAtt("name", "address")}
+          className={errors[generateAtt("id", "address")] ? ' has-error' : ''}
         />
+        {renderError(errors[generateAtt("id", "address")])}
 
         <div className="field">
           <label>
@@ -100,8 +102,8 @@ var AgencyAttributes = React.createClass({
               value="1"
               type="checkbox"
               onChange={this.onSame}
-              id={this.generateAtt("id", "mailing_same_address")}
-              name={this.generateAtt("name", "mailing_same_address")}
+              id={generateAtt("id", "mailing_same_address")}
+              name={generateAtt("name", "mailing_same_address")}
             />
             Mailing address same as billing address
           </label>
@@ -110,157 +112,174 @@ var AgencyAttributes = React.createClass({
           <input
             type="text"
             placeholder="Mailing address"
-            id={this.generateAtt("id", "mailing_address")}
-            name={this.generateAtt("name", "mailing_address")}
+            readonly={this.state.same_address}
+            id={generateAtt("id", "mailing_address")}
+            name={generateAtt("name", "mailing_address")}
+            className={errors[generateAtt("id", "mailing_address")] ? ' has-error' : ''}
             onChange={this.onChangeMailing}
-            value={!!this.state.same_Address ? this.state.address : this.state.mailing}
+            value={!!this.state.same_address ? this.state.address : this.state.mailing}
           />
+          {renderError(errors[generateAtt("id", "mailing_address")])}
         </div>
 
         <p> Phone </p>
         <input
           type="text"
           placeholder="Phone"
-          id={this.generateAtt("id", "phone")}
-          name={this.generateAtt("name", "phone")}
+          id={generateAtt("id", "phone")}
+          name={generateAtt("name", "phone")}
+          className={errors[generateAtt("id", "phone")] ? ' has-error' : ''}
+          onChange={removeError}
         />
+        {renderError(errors[generateAtt("id", "phone")])}
 
         <p> Mobile phone </p>
         <input
           type="text"
           placeholder="Mobile phone"
-          id={this.generateAtt("id", "mobile_phone")}
-          name={this.generateAtt("name", "mobile_phone")}
+          id={generateAtt("id", "mobile_phone")}
+          name={generateAtt("name", "mobile_phone")}
+          className={errors[generateAtt("id", "mobile_phone")] ? ' has-error' : ''}
+          onChange={removeError}
         />
-
-        <div className="license-type">
-          <p> License Type </p>
-          <label className="one-half column">
-              <input
-                type="radio"
-                value="Individual License"
-                name={this.generateAtt("name", "license_type")}
-                id={this.generateAtt("id", "license_type_individual_license")}
-              />
-              Individual License
-          </label>
-          <label className="one-half column">
-            <input
-              type="radio"
-              value="Corporate License"
-              name={this.generateAtt("name", "license_type")}
-              id={this.generateAtt("id", "license_type_corporate_license")}
-            />
-            Corporate License
-          </label>
-        </div>
-
-        <p> License number </p>
-        <input
-          type="text"
-          placeholder="License number"
-          id={this.generateAtt("id", "license_number")}
-          name={this.generateAtt("name", "license_number")}
-        />
-
-        <p> Corporation license number </p>
-        <input
-          type="text"
-          placeholder="Corporation license number"
-          id={this.generateAtt("id", "corporation_license_number")}
-          name={this.generateAtt("name", "corporation_license_number")}
-        />
-
-        <div className="field">
-            <label>
-                <input
-                  type="checkbox"
-                  value="1"
-                  onChange={this.onBDM}
-                  id={this.generateAtt("id", "bdm_verification_status")}
-                  name={this.generateAtt("name", "bdm_verification_status")}
-                />
-                I Have BDM verfication status
-            </label>
-            {
-              this.state.showBDM &&
-                <BDM />
-            }
-        </div>
+        {renderError(errors[generateAtt("id", "mobile_phone")])}
       </div>
     }
 });
 
 var Agency = React.createClass({
+  getInitialState : function() {
+    return {
+      errors: {}
+    }
+  },
+
+  removeError: function({ target: { id } }) {
+    const {errors} = this.state;
+    errors[id] = '';
+    this.setState({ errors });
+  },
+
+  renderError: function(error) {
+      return <p id="errorbox" className="error">{error && error[0] || ''}</p>;
+  },
+
+  onSubmit(e) {
+    const self = this;
+    e.preventDefault();
+    var FD = new FormData(document.getElementById('new_user'));
+
+    $.ajax({
+      type: 'POST',
+      url: '/agencies',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({errors: res.errors});
+        }
+      },
+      error: function (err) {
+
+      }
+    });
+  },
+
   render: function(){
-    return <form role="form" className="agencies" id="new_user" action="/agencies" acceptCharset="UTF-8" method="post">
+    const renderError = this.renderError;
+    const removeError = this.removeError;
+    const {errors} = this.state;
+
+    return <form role="form" className="agencies" id="new_user" onSubmit={this.onSubmit}>
       <input name="utf8" type="hidden" value="✓"/>
       <input type="hidden" name="authenticity_token" value={this.props.authenticity_token}/>
 
       <p> Email </p>
       <input
         type="text"
-        id="user_email"
+        id="email"
         name="user[email]"
         placeholder="Email"
         autoCapitalize="off"
         autoCorrect="off"
         autoComplete="off"
+        onChange={removeError}
+        className={errors['email'] ? 'has-error' : ''}
       />
+      {renderError(errors['email'])}
 
       <p> Password </p>
       <input
         type="password"
-        id="user_password"
+        id="password"
         name="user[password]"
         placeholder="Password"
+        onChange={removeError}
+        className={errors['password'] ? 'has-error' : ''}
       />
+      {renderError(errors['password'])}
 
       <p> Password confirmation </p>
       <input
         type="password"
         placeholder="Password"
-        id="user_password_confirmation"
+        id="password_confirmation"
         name="user[password_confirmation]"
+        onChange={removeError}
+        className={errors['password_confirmation'] ? 'has-error' : ''}
       />
+      {renderError(errors['password_confirmation'])}
 
       <p> First name </p>
       <input
         type="text"
         placeholder="First name"
-        id="user_agency_admin_attributes_first_name"
+        id="agency_admin_attributes.first_name"
         name="user[agency_admin_attributes][first_name]"
+        onChange={removeError}
+        className={errors['agency_admin_attributes.first_name'] ? 'has-error' : ''}
       />
+      {renderError(errors['agency_admin_attributes.first_name'])}
 
       <p> Last name </p>
       <input
         type="text"
         placeholder="Last name"
-        id="user_agency_admin_attributes_last_name"
+        id="agency_admin_attributes.last_name"
         name="user[agency_admin_attributes][last_name]"
+        onChange={removeError}
+        className={errors['agency_admin_attributes.last_name'] ? 'has-error' : ''}
       />
+      {renderError(errors['agency_admin_attributes.last_name'])}
 
       <p> Mobile phone </p>
       <input
         type="text"
         placeholder="Mobile phone"
-        id="user_agency_admin_attributes_mobile_phone"
+        id="agency_admin_attributes.mobile_phone"
         name="user[agency_admin_attributes][mobile_phone]"
+        onChange={removeError}
+        className={errors['agency_admin_attributes.mobile_phone'] ? 'has-error' : ''}
       />
+      {renderError(errors['agency_admin_attributes.mobile_phone'])}
 
       <hr/>
 
-      <AgencyAttributes />
+      <AgencyAttributes removeError={this.removeError} errors={this.state.errors} />
 
       <input
         type="submit"
         name="commit"
         value="Sign Up"
-        data-disable-with="Sign Up"
         className="button-primary green"
       />
 
-      <div className="have-account">
+      <div className="have-account text-center">
           <p>Already have an Account?</p>
           <a href="/login">Login</a>
       </div>
