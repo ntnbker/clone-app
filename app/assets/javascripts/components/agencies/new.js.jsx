@@ -1,10 +1,9 @@
 var BDM = React.createClass({
-    render: function(){    
+    render: function(){
       return <div>
         <p> Bdm verification </p>
-        <input 
-          required
-          type="text" 
+        <input
+          type="text"
           placeholder="Bdm verification"
           id="user_agency_admin_attributes_agency_attributes_bdm_verification_id"
           name="user[agency_admin_attributes][agency_attributes][bdm_verification_id]"
@@ -15,11 +14,11 @@ var BDM = React.createClass({
 
 var AgencyAttributes = React.createClass({
     getInitialState: function () {
-      return { 
+      return {
         showBDM: false,
         same_Address: false,
         address: '',
-        mailing: '' 
+        mailing: ''
       };
     },
 
@@ -63,17 +62,15 @@ var AgencyAttributes = React.createClass({
       return <div className="fields">
         <h4> Agency Information </h4>
         <p> Company Name </p>
-        <input 
-          required
-          type="text" 
+        <input
+          type="text"
           placeholder="Company Name"
-          id={this.generateAtt("id", "company_name")} 
+          id={this.generateAtt("id", "company_name")}
           name={this.generateAtt("name", "company_name")}
         />
 
         <p> Business name </p>
         <input
-          required
           type="text"
           placeholder="Business name"
           id={this.generateAtt("id", "business_name")}
@@ -81,19 +78,17 @@ var AgencyAttributes = React.createClass({
         />
 
         <p> Abn </p>
-        <input 
-          required
-          type="text" 
+        <input
+          type="text"
           placeholder="Abn"
           id={this.generateAtt("id", "abn")}
           name={this.generateAtt("name", "abn")}
         />
 
         <p> Address </p>
-        <input 
-          required
-          type="text" 
-          placeholder="Address" 
+        <input
+          type="text"
+          placeholder="Address"
           onChange={this.handleChange}
           id={this.generateAtt("id", "address")}
           name={this.generateAtt("name", "address")}
@@ -101,11 +96,11 @@ var AgencyAttributes = React.createClass({
 
         <div className="field">
           <label>
-            <input 
+            <input
               value="1"
-              type="checkbox" 
+              type="checkbox"
               onChange={this.onSame}
-              id={this.generateAtt("id", "mailing_same_address")} 
+              id={this.generateAtt("id", "mailing_same_address")}
               name={this.generateAtt("name", "mailing_same_address")}
             />
             Mailing address same as billing address
@@ -113,7 +108,6 @@ var AgencyAttributes = React.createClass({
 
           <p> Mailing address </p>
           <input
-            required
             type="text"
             placeholder="Mailing address"
             id={this.generateAtt("id", "mailing_address")}
@@ -125,8 +119,7 @@ var AgencyAttributes = React.createClass({
 
         <p> Phone </p>
         <input
-          required
-          type="tel"
+          type="text"
           placeholder="Phone"
           id={this.generateAtt("id", "phone")}
           name={this.generateAtt("name", "phone")}
@@ -134,19 +127,17 @@ var AgencyAttributes = React.createClass({
 
         <p> Mobile phone </p>
         <input
-          required
-          type="tel" 
+          type="text"
           placeholder="Mobile phone"
           id={this.generateAtt("id", "mobile_phone")}
           name={this.generateAtt("name", "mobile_phone")}
         />
-            
+
         <div className="license-type">
           <p> License Type </p>
           <label className="one-half column">
-              <input 
-                required
-                type="radio" 
+              <input
+                type="radio"
                 value="Individual License"
                 name={this.generateAtt("name", "license_type")}
                 id={this.generateAtt("id", "license_type_individual_license")}
@@ -155,7 +146,6 @@ var AgencyAttributes = React.createClass({
           </label>
           <label className="one-half column">
             <input
-              required
               type="radio"
               value="Corporate License"
               name={this.generateAtt("name", "license_type")}
@@ -167,7 +157,6 @@ var AgencyAttributes = React.createClass({
 
         <p> License number </p>
         <input
-          required
           type="text"
           placeholder="License number"
           id={this.generateAtt("id", "license_number")}
@@ -176,26 +165,25 @@ var AgencyAttributes = React.createClass({
 
         <p> Corporation license number </p>
         <input
-          required
           type="text"
           placeholder="Corporation license number"
           id={this.generateAtt("id", "corporation_license_number")}
           name={this.generateAtt("name", "corporation_license_number")}
         />
-            
+
         <div className="field">
             <label>
                 <input
-                  type="checkbox" 
-                  value="1" 
+                  type="checkbox"
+                  value="1"
                   onChange={this.onBDM}
-                  id={this.generateAtt("id", "bdm_verification_status")} 
+                  id={this.generateAtt("id", "bdm_verification_status")}
                   name={this.generateAtt("name", "bdm_verification_status")}
                 />
                 I Have BDM verfication status
             </label>
             {
-              this.state.showBDM && 
+              this.state.showBDM &&
                 <BDM />
             }
         </div>
@@ -204,16 +192,15 @@ var AgencyAttributes = React.createClass({
 });
 
 var Agency = React.createClass({
-  render: function(){    
+  render: function(){
     return <form role="form" className="agencies" id="new_user" action="/agencies" acceptCharset="UTF-8" method="post">
       <input name="utf8" type="hidden" value="✓"/>
       <input type="hidden" name="authenticity_token" value={this.props.authenticity_token}/>
 
       <p> Email </p>
-      <input 
-        required
-        type="email" 
-        id="user_email" 
+      <input
+        type="text"
+        id="user_email"
         name="user[email]"
         placeholder="Email"
         autoCapitalize="off"
@@ -222,17 +209,15 @@ var Agency = React.createClass({
       />
 
       <p> Password </p>
-      <input 
-        required
-        type="password" 
-        id="user_password" 
+      <input
+        type="password"
+        id="user_password"
         name="user[password]"
         placeholder="Password"
       />
 
       <p> Password confirmation </p>
-      <input 
-        required
+      <input
         type="password"
         placeholder="Password"
         id="user_password_confirmation"
@@ -240,18 +225,16 @@ var Agency = React.createClass({
       />
 
       <p> First name </p>
-      <input 
-        required
-        type="text" 
+      <input
+        type="text"
         placeholder="First name"
         id="user_agency_admin_attributes_first_name"
         name="user[agency_admin_attributes][first_name]"
       />
 
       <p> Last name </p>
-      <input 
-        required
-        type="text" 
+      <input
+        type="text"
         placeholder="Last name"
         id="user_agency_admin_attributes_last_name"
         name="user[agency_admin_attributes][last_name]"
@@ -259,23 +242,22 @@ var Agency = React.createClass({
 
       <p> Mobile phone </p>
       <input
-        required
-        type="tel" 
+        type="text"
         placeholder="Mobile phone"
         id="user_agency_admin_attributes_mobile_phone"
         name="user[agency_admin_attributes][mobile_phone]"
       />
 
       <hr/>
-      
+
       <AgencyAttributes />
 
-      <input 
-        type="submit" 
-        name="commit" 
-        value="Sign Up" 
+      <input
+        type="submit"
+        name="commit"
+        value="Sign Up"
         data-disable-with="Sign Up"
-        className="button-primary green" 
+        className="button-primary green"
       />
 
       <div className="have-account">
