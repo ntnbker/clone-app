@@ -32,9 +32,9 @@ class AgenciesController < ApplicationController
       agency_params= params[:user][:agency_admin_attributes][:agency_attributes]
       
       @agency = Agency.create(company_name:agency_params[:company_name],business_name:agency_params[:business_name],abn:agency_params[:abn],address:agency_params[:address],mailing_address:agency_params[:mailing_address],mailing_same_address:agency_params[:mailing_same_address],phone:agency_params[:phone],mobile_phone:agency_params[:mobile_phone],license_type:agency_params[:license_type],license_number:agency_params[:license_number],corporation_license_number:agency_params[:corporation_license_number],bdm_verification_status:agency_params[:bdm_verification_status],bdm_verification_id:agency_params[:bdm_verification_id])
-      @agency_admin = AgencyAdmin.create(user_id:existing_user.id,agency_id:@agency.id,first_name:params[:user][:agency_admin_attributes][:first_name],last_name:params[:user][:agency_admin_attributes][:last_name],email:params[:user][:email],mobile_phone:params[:user][:agency_admin_attributes][:mobile_phone])
-      
-      
+      @agency_admin = AgencyAdmin.new(user_id:existing_user.id,agency_id:@agency.id,first_name:params[:user][:agency_admin_attributes][:first_name],last_name:params[:user][:agency_admin_attributes][:last_name],email:params[:user][:email],mobile_phone:params[:user][:agency_admin_attributes][:mobile_phone])
+      @agency_admin.perform_agency_validations = true
+      @agency_admin.save
       @agency_admin.roles << role
       role.save
       flash[:success] = "Thank you for also signing up as an Agency."
@@ -55,12 +55,17 @@ class AgenciesController < ApplicationController
         flash[:success] = "Thank you for signing up."
         redirect_to root_path
       else
+        
         @user = User.new(user_params)  
         flash[:danger] = "Sorry something went wrong"
-        render :new
+          respond_to do |format|
+          format.json {render :json=>{errors: @user.errors.to_hash(true).as_json}}
+          format.html {render :new}
+        end
+        
       end 
 
-      binding.pry
+      
     end 
 
 
