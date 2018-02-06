@@ -53,6 +53,19 @@ class AgenciesController < ApplicationController
   def update_agency_registration
     
     @agency = Agency.find_by(id:params[:agency_id])
+
+    @agency = Agency.find_by(id:params[:id])
+    if @agency.update(agency_params)
+      flash[:success] = "Thank you, have updated the agencie's information."
+      redirect_to edit_agency_path(@agency)
+    else
+      flash[:danger] = "Sorry something went wrong. Please fix the errors to succesfully submit"
+      
+      respond_to do |format|
+        format.json {render :json=>{errors: @agency.errors.to_hash(true).as_json}}
+        format.html {render :edit}
+      end 
+    end 
   
   end
 
