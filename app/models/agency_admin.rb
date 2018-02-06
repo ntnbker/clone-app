@@ -1,7 +1,7 @@
 class AgencyAdmin <ApplicationRecord
   before_save :format_first_name, if: :perform_add_agency_admin_validations
   before_save :format_last_name, if: :perform_add_agency_admin_validations
-  before_save :format_email
+  before_save :format_email, if: :perform_add_agency_admin_validations
   has_many :roles, as: :roleable
   has_many :maintenance_requests
   belongs_to :user, inverse_of: :agency_admin
