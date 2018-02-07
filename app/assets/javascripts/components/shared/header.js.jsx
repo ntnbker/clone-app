@@ -1,6 +1,10 @@
 const MenuAgency = function(edit_agency, edit_agency_admin) {
   return [
     {
+      url: "/",
+      name: "Create Maintenance Request",
+    },
+    {
       url: "/agency_admin_maintenance_requests",
       name: "My Maintenance Requests",
     },
@@ -14,9 +18,12 @@ const MenuAgency = function(edit_agency, edit_agency_admin) {
     },
   ];
 }
-
 const MenuAgent = function(edit_agent) {
   return [
+    {
+      url: "/",
+      name: "Create Maintenance Request",
+    },
     {
       url: "/agent_maintenance_requests",
       name: "My Maintenance Requests",
@@ -27,7 +34,6 @@ const MenuAgent = function(edit_agent) {
     },
   ];
 }
-
 const MenuTrady = function(edit_trady) {
   return [
     {
@@ -40,9 +46,12 @@ const MenuTrady = function(edit_trady) {
     },
   ];
 }
-
 const MenuTenant = function(edit_tenant) {
   return [
+    {
+      url: "/",
+      name: "Create Maintenance Request",
+    },
     {
       url: "/tenant_maintenance_requests",
       name: "My Maintenance Requests",
@@ -53,7 +62,6 @@ const MenuTenant = function(edit_tenant) {
     },
   ];
 }
-
 const MenuLandlord = function() {
   return [
     {
@@ -62,13 +70,10 @@ const MenuLandlord = function() {
     },
   ];
 }
-
 var showFlash = function(message, status, positionShow) {
   flashFunctions.forEach(flashFunc => flashFunc(message, status, positionShow));
 };
-
 var flashFunctions = [];
-
 var ShowMessage = React.createClass({
   getInitialState: function() {
     flashFunctions.push(this.showMessage.bind(this));
@@ -80,51 +85,43 @@ var ShowMessage = React.createClass({
       position: this.props.position,
     }
   },
-
   showMessage(message, status, position) {
     this.setState({ message, status, positionShow: position, isShow: true });
   },
-
   close() {
     this.setState({ isShow: false });
   },
-
   render() {
     const { message, status, isShow, position, positionShow } = this.state;
-
     return isShow && positionShow === position
       ? <div className={`alert alert-${status} show-message`}>
           <div className="content-message">
             <div id={`flash_${status}`}>
               {message}
             </div>
-            <button><i className="fa fa-times" aria-hidden="true" onClick={this.close}></i></button>
+            <button type="button" style={{margin: '0px'}} onClick={this.close}><i className="fa fa-times" aria-hidden="true"></i></button>
           </div>
         </div>
       : <div></div>
   }
 });
-
 var MobileMenu = React.createClass({
   getInitialState: function() {
     return {
       visible: this.props.isShow
     };
   },
-
   componentWillReceiveProps: function(nextProps) {
     this.setState({
       visible: nextProps.isShow
     });
   },
-
   render: function() {
     return <div className="slide-menu">
       <div className={this.state.visible ? "visible " : ""}>{this.props.children}</div>
     </div>;
   }
 });
-
 var Header = React.createClass({
   getInitialState: function() {
     return {
@@ -134,22 +131,18 @@ var Header = React.createClass({
       isItems: !this.props.expanded,
     };
   },
-
   showBar: function() {
     this.setState({ isShowBar: !this.state.isShowBar });
   },
-
   hideBar: function() {
     if(this.state.isShowBar) {
       this.setState({ isShowBar: false });
     }
   },
-
   showItems: function() {
     this.setState({ isItems: !this.state.isItems,
                     isClicked: !this.state.isClicked });
   },
-
   clickDocument: function(e) {
     if (this.props.expanded) {
       var component = ReactDOM.findDOMNode(this.showItemMenus);
@@ -163,7 +156,6 @@ var Header = React.createClass({
       }
     }
   },
-
   showMenu: function() {
     let myDropdown = document.getElementById("menu-bar");
     if(myDropdown && !this.state.isShow) {
@@ -173,7 +165,6 @@ var Header = React.createClass({
       });
     }
   },
-
   closeMenu: function() {
     let myDropdown = document.getElementById("menu-bar");
     if(myDropdown && this.state.isShow) {
@@ -183,14 +174,12 @@ var Header = React.createClass({
       });
     }
   },
-
   componentDidMount: function(e) {
     const self = this;
     var event = "click";
     if(this.iOS()) {
       event += " touchstart";
     }
-
     $(document).bind(event, function(e) {
       self.clickDocument(e);
       self.closeMenu();
@@ -208,7 +197,6 @@ var Header = React.createClass({
     var {
       edit_agency, edit_agency_admin, edit_agent, edit_trady, edit_tenant,  user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
     } = this.props;
-
     var dataMenu = [];
     if (user_agency_admin)
       dataMenu = [...MenuAgency(edit_agency, edit_agency_admin)];
@@ -220,7 +208,6 @@ var Header = React.createClass({
       dataMenu = [...MenuTenant(edit_tenant)];
     else if (user_landlord)
       dataMenu = [...MenuLandlord()];
-
     return(
       dataMenu.map((item, key) => {
       return (
@@ -233,41 +220,14 @@ var Header = React.createClass({
       })
     );
   },
-
-  componentWillUnmount: function() {
-    $(document).unbind('click', this.clickDocument);
-  },
-
-  iOS: function() {
-    const iDevices = [
-      'iPad Simulator',
-      'iPhone Simulator',
-      'iPod Simulator',
-      'iPad',
-      'iPhone',
-      'iPod'
-    ];
-
-    if (!!navigator.platform) {
-      while (iDevices.length) {
-        if (navigator.platform === iDevices.pop()){
-          return true;
-        }
-      }
-    }
-
-    return false;
-  },
-
   search: function(hidden) {
     const { role, searchText = '' } = this.props;
-
-    const style = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1
+    const hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
+    const style =  hiddenSearch
                 ? { visibility: 'hidden' }
                 : {};
-
     return (
-      <div className="search" style={style}>
+      <div className={"search " + (hiddenSearch && "hidden-search")} style={style}>
         <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
           <input
             id="query"
@@ -285,23 +245,41 @@ var Header = React.createClass({
     );
   },
 
+  componentWillUnmount: function() {
+    $(document).unbind('click', this.clickDocument);
+  },
+  iOS: function() {
+    const iDevices = [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ];
+    if (!!navigator.platform) {
+      while (iDevices.length) {
+        if (navigator.platform === iDevices.pop()){
+          return true;
+        }
+      }
+    }
+    return false;
+  },
+
   header: function(e) {
     const props = this.props;
     const { expanded, logged_in, current_user, role, images } = props;
     const user_name = (props.user_name ||  '').trim() || role || '';
-
     const user_name_show_pc = user_name.length > 12
         ? (user_name.trim() && user_name || role).replace(/(.{0,12}).+/, '$1...')
         : user_name;
-
     const user_name_show_mobile = user_name.length > 20
         ? (user_name.trim() && user_name || role).replace(/(.{0,20}).*/, '$1...')
         : user_name;
-
     const {
       profile = '',
     } = images && images.length && images[0] || {};
-
     return (
       <nav className="header-expanded">
         <MobileMenu ref={ref => this.Bar = ref} id="bar" isShow={this.state.isShowBar}>
@@ -326,82 +304,83 @@ var Header = React.createClass({
               :
               <span className="mobile-menu-items">
                 <a href={props.menu_login_path} className="click" > Login </a>
-                <a href={props.new_agency_path} className="register click"> Register </a>
               </span>
           }
         </MobileMenu>
-
         <div className={"container " + (expanded ? 'full-header' : '')} >
           <div className={"column header-custom " + (e && "forhome")}>
-              <div className="logo">
-                <img src="/assets/logo.png" alt="logo" />
-                <a href={props.root_path}> MaintenanceApp </a>
-              </div>
-              {
-                logged_in?
-                  (
-                    !expanded ?
-                      <div className="header-right">
-                        { ['AgencyAdmin', 'Agent'].indexOf(props.role) > -1 && this.search() }
-                        <div className="menu-bar dropdown-custom">
-                          <button type="button" className="btn-menu" onClick={this.showMenu}>
-                            <span className="icon-user">
-                              <AvatarImage className="fa fa-user" imageUri={profile} />
-                            </span>
-                            <span title={user_name}>
-                              {user_name_show_pc}
-                              <i className="fa fa-angle-down"/>
-                            </span>
-                          </button>
-                          <ul className="dropdown-menu" id="menu-bar">
-                            { this.menuBar() }
-                            <li  ref={ref => this.Items = ref}>
-                              <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      :
-                      <div className="log_in">
-                        { this.search(true) }
-                        <div
-                          className="menu-button"
-                          onClick={this.showItems}
-                          ref={ref => this.showItemMenus = ref}
-                        >
+            <div className="logo">
+              <img src="/assets/logo.png" alt="logo" />
+              <a href={props.root_path}> MaintenanceApp </a>
+            </div>
+            {
+              logged_in?
+                (
+                  !expanded 
+                  ?
+                    <div className="header-right">
+                      { this.search() }
+                      <div className="menu-bar dropdown-custom">
+                        <button type="button" className="btn-menu" onClick={this.showMenu}>
                           <span className="icon-user">
                             <AvatarImage className="fa fa-user" imageUri={profile} />
                           </span>
                           <span title={user_name}>
                             {user_name_show_pc}
+                            <i className="fa fa-angle-down"/>
                           </span>
-                          <i className="fa fa-angle-down"/>
-                        </div>
-                        {
-                        this.state.isItems &&
-                          <ul className="desktop-menu-items">
-                            { this.menuBar() }
-                            <li  ref={ref => this.Items = ref}>
-                              <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
-                            </li>
-                          </ul>
-                        }
+                        </button>
+                        <ul className="dropdown-menu" id="menu-bar">
+                          { this.menuBar() }
+                          <li  ref={ref => this.Items = ref}>
+                            <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                          </li>
+                        </ul>
                       </div>
-                  )
+                    </div>
+                    :
+                    <div className="log_in">
+                      { this.search(true) }
+                      <div
+                        className="menu-button"
+                        onClick={this.showItems}
+                        ref={ref => this.showItemMenus = ref}
+                      >
+                        <span className="icon-user">
+                          <AvatarImage className="fa fa-user" imageUri={profile} />
+                        </span>
+                        <span title={user_name}>
+                          {user_name_show_pc}
+                        </span>
+                        <i className="fa fa-angle-down"/>
+                      </div>
+                      {
+                      this.state.isItems &&
+                        <ul className="desktop-menu-items">
+                          { this.menuBar() }
+                          <li  ref={ref => this.Items = ref}>
+                            <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
+                          </li>
+                        </ul>
+                      }
+                    </div>
                   :
                   <div className="log_in desktop-menu-items">
                     { this.search(true) }
                     <a href={props.menu_login_path} > Login </a>
-                    <a href={props.new_agency_path} className="register"> Register </a>
                   </div>
-              }
-            <button className="menu-btn button" id="btn-menu-bar" onClick={this.showBar}> ☰ </button>
+                )
+            }
+            <button
+              className={"menu-btn button " + (logged_in ? 'signed' : '')}
+              id="btn-menu-bar"
+              onClick={this.showBar}> {!expanded ? "☰" : "MENU"}
+            </button>
           </div>
         </div>
       </nav>
     );
   },
-
   render: function() {
     return (
       <div className="dontprint">
@@ -413,6 +392,5 @@ var Header = React.createClass({
         }
       </div>
     );
-
   }
 });

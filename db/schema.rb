@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171220030721) do
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20180109053142) do
+=======
+ActiveRecord::Schema.define(version: 20180111080142) do
+>>>>>>> staging
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -461,12 +465,14 @@ ActiveRecord::Schema.define(version: 20171220030721) do
     t.string   "mailing_address"
     t.string   "mobile_number"
     t.string   "email"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.string   "account_name"
     t.string   "bsb_number"
     t.string   "bank_account_number"
     t.integer  "trady_id"
+    t.string   "profession_license_number"
+    t.string   "landline"
   end
 
   create_table "trady_company_profile_images", force: :cascade do |t|
@@ -498,6 +504,7 @@ ActiveRecord::Schema.define(version: 20171220030721) do
     t.boolean  "delivery_status"
     t.text     "pdf_data"
     t.boolean  "paid",                   default: false
+    t.float    "total_invoice_amount"
   end
 
   create_table "uploaded_quotes", force: :cascade do |t|

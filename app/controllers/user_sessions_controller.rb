@@ -18,7 +18,7 @@ class UserSessionsController < ApplicationController
   def create
     
     @role = params[:role_picked]
-    @user = login(params[:email], params[:password])
+    @user = login(params[:email].gsub(/\s+/, "").downcase, params[:password].gsub(/\s+/, ""))
     @query = Query.find_by(id:params[:query_id])
     email_user_type = params[:user_type]
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
@@ -88,7 +88,7 @@ class UserSessionsController < ApplicationController
       end 
       logout
       flash[:danger] = "Please use your correct email, password and role you have access to."
-      redirect_to menu_login_path
+      redirect_to root_path
       
     end 
   end

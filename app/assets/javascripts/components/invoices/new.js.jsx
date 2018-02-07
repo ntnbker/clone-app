@@ -482,6 +482,7 @@ var InvoiceItemField = React.createClass({
     var invoice_item = this.props.content;
     var invoice_id   = this.props.params.x;
     var x            = this.props.x;
+    var position     = this.props.position;
     var errors       = this.state.errorsForm;
     var FieldId      = null;
     var {
@@ -563,7 +564,7 @@ var InvoiceItemField = React.createClass({
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
         {FieldId}
       </fieldset>
-      <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> X </button>
+      { position > 1 && <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> X </button>}
     </div>
   }
 });
@@ -582,15 +583,18 @@ var InvoiceField = React.createClass({
       tax_total: tax ? tax_total : 0,
       remove : false,
       errorDate: '',
+      errorReference: '',
       errors: {},
     }
   },
 
   componentWillReceiveProps({ errors, ...rest }) {
+    const { errorDate, errorReference } = this.filterError(errors);
     this.setState({
-      remove: rest.params.remove,
-      errorDate: this.filterError(errors),
+      errorDate,
+      errorReference,
       errors: errors || {},
+      remove: rest.params.remove,
     });
   },
 
@@ -605,12 +609,19 @@ var InvoiceField = React.createClass({
 
   filterError: function(errors) {
     var errorDate = errors && errors['invoices.due_date'];
-    var error = '';
+    var errorReference = errors && errors['invoices.trady_invoice_reference'];
+
     if (errorDate) {
-      if (!this.date.value)                      error = errorDate[0];
-      else if (!this.validDate(this.date.value)) error = errorDate.reverse()[0];
+      if (!this.date.value)                      errorDate = errorDate[0];
+      else if (!this.validDate(this.date.value)) errorDate = errorDate.reverse()[0];
+      else errorDate = '';
     }
-    return error;
+
+    if (errorReference) {
+      if (!this.reference.value) errorReference = errorReference[0];
+      else errorReference = '';
+    }
+    return { errorDate, errorReference };
   },
 
   nowDate: function(nextDay = 1) {
@@ -648,7 +659,7 @@ var InvoiceField = React.createClass({
   render: function() {
     var { content, x, params: { invoiceInfo = {} } } = this.props;
     var {
-      errorDate, remove, errors, tax, invoice_total, tax_total, items_total
+      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
@@ -691,11 +702,15 @@ var InvoiceField = React.createClass({
             <input
             type="text"
             className="text-center"
+            ref={elem => this.reference = elem}
             placeholder="Invoice Reference Number"
             defaultValue={invoice && invoice.trady_invoice_reference}
+            onChange={() => this.setState({errorReference: ''})}
             name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }
+            style={errorReference ? {borderColor: 'red'} : {}}
             />
           </div>
+          <p id="errorbox" className="error">{errorReference || ''}</p>
           <label>
             <input type="checkbox" value={tax} checked={tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
             Total Includes GST
@@ -829,10 +844,13 @@ var InvoiceFields = React.createClass({
     const id = (ledger && ledger.id) || '';
     const self = this;
 
-    const invRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i
-    let isExistInvoice = invRegex.test($('#new_invoice').serialize());
+    const invoiceRegex = /ledger%5Binvoices_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/g;
+    const serialize = $('#new_invoice').serialize();
 
-    if (!isExistInvoice) return;
+    if (!invoiceRegex.test(serialize)) {
+      showFlash('There are currently no invoices', 'danger', 'create-invoice');
+      return;
+    }
 
     var FD = new FormData(document.getElementById('new_invoice'));
 
@@ -882,6 +900,7 @@ var InvoiceFields = React.createClass({
       <input type="hidden" value={this.props.quote_id} name="ledger[quote_id]"/>
       <input type="hidden" value={id} name="ledger[ledger_id]" />
       <input type= "hidden" value={this.props.invoice_type} name="ledger[invoice_type]"/>
+      <ShowMessage position="create-invoice" />
       {
         hasQuotes &&
         <QuotesInInvoice

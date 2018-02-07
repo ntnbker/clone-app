@@ -1,4 +1,5 @@
 class Tenant < ApplicationRecord
+  before_save :format_name, :format_email
   
   has_many :roles, as: :roleable
   belongs_to :user
@@ -8,19 +9,30 @@ class Tenant < ApplicationRecord
   has_many :action_statuses
   has_many :appointments
   has_many :comments
-  validates_presence_of :name
+
+
+  validates_presence_of :name,:email, :mobile
+  # validates_uniqueness_of :email
+
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
+  validates :mobile, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
+
   
-  validates_presence_of :mobile
-  validates :mobile,:numericality => true, :length => {:minimum=>10, :maximum => 10 }
 
 
-def capitalize_name
-  self.name.split.map(&:capitalize).join(' ')
-end
+  def capitalize_name
+    self.name.split.map(&:capitalize).join(' ')
+  end
 
+  def format_name
+    self.name = self.name.split.map(&:capitalize).join(' ')
+  end
 
+  def format_email
+    self.email = self.email.gsub(/\s+/, "").downcase
+  end
 
-
+  attr_accessor :maintenance_request_id
 
 
 

@@ -13,6 +13,9 @@ $color-blue-light: #7646FF;
 body{
   position: relative;
 }
+.display-block {
+  display: block;
+}
 .file-pdf {
   text-align: center;
   i {
@@ -185,11 +188,11 @@ span.index {
       background-color: #fff;
       -webkit-background-clip: padding-box;
       background-clip: padding-box;
-      border: 1px solid #999;
-      border: 1px solid rgba(0,0,0,.2);
-      outline: 0;
-      -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
-      box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      // border: 1px solid #999;
+      // border: 1px solid rgba(0,0,0,.2);
+      // outline: 0;
+      // -webkit-box-shadow: 0 3px 9px rgba(0,0,0,0.5);
+      // box-shadow: 0 3px 9px rgba(0,0,0,0.5);
       font-weight: 400;
       font-size: 14px;
       .due {
@@ -222,6 +225,12 @@ span.index {
       background-color: $color-grey-dark;
       &.modal-quote-header {
         @include flex-direction(column);
+      }
+      &.invoice, &.quote {
+        @include flexbox;
+        @include flex-direction(column);
+        @include justify-content(center);
+        @include align-items(center);
       }
       .modal-title {
         margin-bottom: 0px;
@@ -286,24 +295,38 @@ span.index {
       padding: 13px;
       overflow: hidden;
       text-align: center;
+      .tenant-detail {
+        margin: 15px;
+        padding: 10px;
+        border: 2px solid gainsboro;
+        font-size: 20px;
+        @include flexbox;
+        @include justify-content(space-between);
+        @include justify-content(justify);
+
+        .tenant-name {
+          @include flex(1);
+          text-align: left;
+        }
+        .view-tenant-button {
+          span {
+            margin-left: 15px;
+            cursor: pointer;
+            &.remove-tenant {
+              color: red;
+            }
+          }
+        }
+      }
       &.work-order-detail {
         @include flexbox;
         @include flex-direction(column);
         .job-contact {
           @include flexbox;
           @include flex-direction(row);
+          @include align-items(strech);
           .left, .right {
             @include flex(1);
-          }
-          .left {
-            @include flexbox;
-            @include flex-direction(column);
-            .job-address, .agent-contact {
-              @include flex(none);
-            }
-          }
-          .right .invoice-detail {
-            height: calc(100% - 21px);
           }
         }
         .rect-info {
@@ -325,7 +348,7 @@ span.index {
               margin: 5px 0;
             }
             .heading {
-              width: 70px;
+              padding-right: 5px;
               display: inline-block;
               font-weight: 600;
             }
@@ -387,6 +410,15 @@ span.index {
       .input-custom {
         width: 80%;
       }
+      .landlord-email {
+        width: 80%;
+        text-align: left;
+        display: inline-block;
+        padding-left: 10px;
+        span {
+          padding-left: 10px;
+        }
+      }
       .message {
         list-style: none;
         max-height: 300px;
@@ -397,11 +429,11 @@ span.index {
       .item-message {
         width: 100%;
         position: relative;
-        margin-top: 20px;
+        margin-top: 10px;
         text-align: left;
         &:after {
           bottom: 98%;
-          left: 12px;
+          left: 20px;
           border: solid transparent;
           content: " ";
           height: 0;
@@ -412,25 +444,44 @@ span.index {
           border-width: 8px;
           margin-left: -8px;
         }
-        span {
+        div {
           background-color: $color-grey;
           color: $color-black;
+          margin-right: 10px;
+          display: inline-block;
+          border-radius: 5px;
+          max-width: calc(100% - 10px);
+        }
+        span {
           display: inline-block;
           text-transform: capitalize;
-          border-radius: 5px;
           padding: 5px 20px;
-          display: inline-block;
-          margin-right: 5px;
+          display: block;
+          word-wrap: break-word;
+          word-break: break-word;
+          &.item-date {
+            font-size: 9px;
+            font-style: italic;
+            padding-top: 0px;
+          }
         }
+      }
+      .item-name {
+        font-weight: 600;
+        text-transform: capitalize;
+        margin-right: 10px;
+        margin-top: 10px;
+        text-align: left;
+        color: $color-grey-dark;
       }
       .current-message {
         text-align: right;
         &:after {
           border-bottom-color: $color-green;
-          right: 12px;
+          right: 20px;
           left: inherit;
         }
-        span {
+        div {
           background-color: $color-green;
           color: $color-white;
         }
@@ -454,10 +505,10 @@ span.index {
       }
     }
     .modal-footer {
-      padding: 15px;
       text-align: center;
       border-top: none;
       overflow: hidden;
+      width: 100%;
       button {
         border: none;
         color: $color-white;
@@ -465,7 +516,8 @@ span.index {
         margin-bottom: 10px;
       }
       .textarea-message {
-        width: 100%;
+        width: calc(100% - 40px);
+        resize: none;
         margin-bottom: 1px;
       }
       .success {
@@ -1044,7 +1096,7 @@ span.index {
       }
       li {
         margin-left: 20px;
-        height: 50px;
+        height: 35px;
         margin-bottom: 0px;
         cursor: pointer;
         a {
@@ -1099,6 +1151,9 @@ span.index {
         }
         &:last-child {
           padding-bottom: 10px;
+        }
+        &.user {
+          height: 50px;
         }
       }
       .view-more {
@@ -1183,11 +1238,15 @@ span.index {
         border-width: 5px;
       }
       &.actions {
-        margin-left: 20px;
         background-color: #ff5a5f;
         border: #f58285;
         border-style: solid;
         border-width: 5px;
+        height: auto;
+      }
+      &.trady-actions {
+        width: 100%;
+        max-width: 640px;
       }
       &.active {
         background-color: $color-grey-dark;
@@ -1260,7 +1319,12 @@ span.index {
       border-radius: 0;
       height: 100%;
       .content {
-        height: 85%;
+        margin-left: 15px;
+        margin-right: 15px;
+
+        &.contact {
+          border-top: gainsboro solid 2px;
+        }
       }
     }
   }
@@ -1281,6 +1345,7 @@ span.index {
   .btn-edit {
     float: right;
     height: 25px;
+    margin-bottom: 10px;
     padding: 0 10px;
     font-size: 12px;
     font-weight: 400;
@@ -1336,13 +1401,28 @@ span.index {
         font-size: 13px;
         overflow: auto;
         th {
-          color: #b3b3b3;
-          font-size: 13px;
+          color: #404040;
+          font-size: 16px;
           text-transform: uppercase;
         }
         tr td {
           padding-left: 0;
           padding: 10px 3px;
+        }
+        .invoice-description {
+          width: 40%;
+        }
+        .invoice-price {
+          width: 15%;
+        }
+        .invoice-hour {
+          width: 15%;
+        }
+        .invoice-rate {
+          width: 15%;
+        }
+        .invoice-amount {
+          width: 15%;
         }
       }
     }
@@ -1578,6 +1658,7 @@ span.index {
       .section {
         padding: 20px 5px 25px;
         width: calc(100% - 10px);
+        margin-bottom: 50px;
       }
     }
     .post {
@@ -1621,10 +1702,9 @@ span.index {
     .sidebar {
       display: none;
     }
-    .actions-full{
-      bottom: 55px;
-      width: 320px;
-      left: calc((100% - 320px) / 2);
+    .actions-full {
+      bottom: 76px;
+      width: 100%;
     }
     .sidebar-mobile {
       display: block;
@@ -1634,7 +1714,6 @@ span.index {
       }
       button {
         height: 82px;
-        width: auto;
         width: 50%;
         color: $color-white;
         font-weight: 600;
@@ -1704,17 +1783,17 @@ span.index {
       td {
         font-size: 9px;
       }
-      .description {
+      .quote-description {
         width: 40%;
       }
-      .price {
+      .quote-price {
         width: 20%;
       }
-      .rate {
+      .quote-rate {
         width: 10%;
         word-break: break-all;
       }
-      .amount {
+      .quote-amount {
         width: 30%;
         word-break: break-all;
       }
@@ -1793,21 +1872,22 @@ span.index {
       display: none;
     }
     .actions-full {
-      width: 355px;
-      bottom: 55px;
-      left: calc((100% - 355px) / 2);
+      width: 100%;
+      bottom: 76px;
     }
     .sidebar-mobile {
-      @include flexbox;
-      bottom: 0px;
-      @include justify-content(center);
+      display: block;
+      .fixed {
+        @include flexbox;
+        @include justify-content(center);
+      }
       button {
-        height: 50px;
+        height: 82px;
         width: auto;
-        width: initial;
-        padding: 0 18px;
-        border-radius: 5px;
-        font-size: 16px;
+        width: 50%;
+        color: $color-white;
+        font-weight: 600;
+        font-size: 14px;
       }
     }
     .activity-mobile {
@@ -1885,8 +1965,9 @@ span.index {
       display: none;
     }
     .actions-full {
-      width: 320px;
-      left: calc((100% - 320px) / 2);
+      width: 640px;
+      bottom: 82px;
+      left: calc(50% - 320px);
     }
     .sidebar-mobile {
       display: block;
@@ -1895,10 +1976,10 @@ span.index {
         @include justify-content(center);
       }
       button {
-        height: 50px;
+        height: 82px;
         width: auto;
         width: initial;
-        font-size: 20px;
+        font-size: 16px;
         padding-left: 0.5em;
         padding-right: 0.5em;
       }
@@ -1978,9 +2059,9 @@ span.index {
       display: none;
     }
     .actions-full {
-      width: 375px;
-      bottom: 100px;
-      left: calc((100% - 375px) / 2);
+      width: 640px;
+      bottom: 82px;
+      left: calc(50% - 320px);
     }
     .sidebar-mobile {
       display: block;
@@ -2211,7 +2292,7 @@ span.index {
         float: none;
         padding: 0px;
         button {
-          align-items: center;
+          @include align-items(center);
           padding: 0px;
           margin: 0px 0px 10px 0px;
         }
@@ -2262,6 +2343,12 @@ span.index {
         margin-right: 0px;
         margin-bottom: 20px;
       }
+    }
+  }
+  .modal-custom .modal-body .message {
+    font-size: 12px;
+    .item-date {
+      font-size: 8px;
     }
   }
 }

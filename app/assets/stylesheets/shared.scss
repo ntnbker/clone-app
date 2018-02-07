@@ -9,6 +9,39 @@ body {
   height: 100%;
 
 }
+
+.btn-link,
+.btn-link:active,
+.btn-link.active,
+.btn-link[disabled],
+fieldset[disabled] .btn-link {
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.btn.btn-link {
+  font-weight: 400;
+  color: #337ab7;
+  border-radius: 0;
+  border-color: transparent;
+  &:hover, &:focus {
+    color: #23527c;
+    text-decoration: underline;
+    background-color: transparent;
+  }
+}
+
+.button-primary {
+  background-color: #7dc691;
+  border-color: #7dc691;
+  color: white;
+  text-decoration: none;
+  &:hover {
+    color: cyan;
+  }
+}
+
 .flex {
   @include flexbox;
   &.flex-column {
@@ -197,7 +230,7 @@ header {
               // @include flexbox;
               line-height: 55px;
               margin-left: 5px;
-              align-items: center;
+              @include align-items(center);
             }
           }
         }
@@ -287,7 +320,8 @@ header {
         @include flexbox;
         @include flex(1);
         @include justify-content(flex-end);
-        align-items: center;
+        @include align-items(center);
+        position: relative;
         .desktop-menu-items {
           width: 300px;
           background-color: white;
@@ -331,6 +365,7 @@ header {
     }
 
     .menu-button {
+      z-index: 1;
       // margin-top: 18px;
       float: right;
       // height: 40px;
@@ -358,7 +393,7 @@ header {
       .fa-angle-down {
         font-size: 20px;
         // @include flexbox;
-        align-items: center;
+        @include align-items(center);
         line-height: 55px;
       }
     }
@@ -367,7 +402,7 @@ header {
       @include flexbox;
       // padding-top: 10px;
       // height: 60px;
-      align-items: center;
+      @include align-items(center);
       // @include flex(1);
 
       img {
@@ -428,6 +463,7 @@ header {
     }
 
     .menu-btn {
+      z-index: -1;
       color: #f2f2f2;
       padding: 0 5px;
       font-size: 15px;
@@ -437,6 +473,9 @@ header {
       margin: 28px 0;
       height: 30px;
       line-height: 25px;
+      &.signed {
+        z-index: 1;
+      }
     }
 
     .menu-mobile {
@@ -498,6 +537,9 @@ header {
           @include justify-content(flex-end);
         }
       }
+      .log_in:not(.desktop-menu-items) {
+        z-index: 1;
+      }
       .header-custom .menu-bar {
         @include flexbox;
       }
@@ -533,6 +575,10 @@ header {
       .menu-btn {
         margin-right: 7.5%;
       }
+
+      .log_in.desktop-menu-items {
+        display: none;
+      }
     }
     .header-custom .header-right {
       margin-right: 70px;
@@ -558,6 +604,9 @@ header {
           margin-right: 0;
           margin-top: 5px;
         }
+        .hidden-search {
+          display: none;
+        }
         .search {
           .form-search {
             padding-bottom: 10px;
@@ -570,13 +619,13 @@ header {
         }
       }
       .menu-btn {
-        top: 15%;
+        top: 25%;
         right: 10px;
       }
       .forhome {
         width: 100%;
         .menu-btn {
-          top: 27%;
+          top: 28%;
         }
       }
     }
@@ -614,6 +663,9 @@ footer {
 
     .footer-links_hp {
       display: none;
+    }
+    .show-on-mobile {
+      display: block;
     }
 
     .footer-logo {
@@ -669,6 +721,9 @@ footer {
     @media (min-width: 550px) {
       .footer-links_hp {
         display: block;
+      }
+      .show-on-mobile {
+        display: none;
       }
       .footer-social_hp {
         text-align: left;
@@ -806,20 +861,10 @@ footer {
     // visibility: 'hidden';
     display: none !important;
   }
-  // body.modal-custom {
-  //   display: block;
-  // }
-  // body.modal-open {
-  //     visibility: visible;
-  // }
-
-  // body.modal-open .modal .modal-header,
-  // body.modal-open .modal .modal-body {
-  //     visibility: visible; /* make visible modal body and header */
-  // }
 
   .modal-custom .modal-dialog {
     width: 100% !important;
+    height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     position: fixed;
@@ -833,6 +878,10 @@ footer {
     visibility: visible;
   }
 
+  body.moda-dialog .modal-content {
+    border: none;
+  }
+
   body.modal-dialog .modal-content .modal-header,
   body.modal-dialog .modal-content .modal-body {
     padding: 0;
@@ -840,6 +889,18 @@ footer {
 
   body.modal-dialog .modal-content .modal-header .modal-title {
     margin-bottom: 20px;
+  }
+
+  .modal-dialog .modal-content .modal-footer {
+    position: fixed;
+    bottom: 0;
+  }
+
+  #print-invoice, #print-quote {
+    .modal-header {
+      padding-left: 25%;
+      font-size: 16px;
+    }
   }
 }
 

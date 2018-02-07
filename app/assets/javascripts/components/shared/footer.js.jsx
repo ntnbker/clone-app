@@ -16,6 +16,7 @@ var Footer = React.createClass({
                             <a href="/">About us</a>
                             <a href="/">Blog</a>
                             <a href="/">Feedback</a>
+                            <a href={this.props.new_agency_path}>Register Agent</a>
                         </div>
                         <div className="one-third column">
                             <a href="/">Community</a>
@@ -30,6 +31,7 @@ var Footer = React.createClass({
                     </div>
                     <div className="two columns">
                         <div className="footer-social_hp">
+                            <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>
                             <p>Follow us</p>
                             <div className="social-circle"> <img src="/assets/ico-twitter.png" /> </div>
                             <div className="social-circle"> <img src="/assets/ico-facebook.png" /> </div>

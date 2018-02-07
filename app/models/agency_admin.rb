@@ -1,4 +1,7 @@
 class AgencyAdmin <ApplicationRecord
+  before_save :format_first_name, if: :perform_add_agency_admin_validations
+  before_save :format_last_name, if: :perform_add_agency_admin_validations
+  before_save :format_email
   has_many :roles, as: :roleable
   has_many :maintenance_requests
   belongs_to :user, inverse_of: :agency_admin
@@ -23,6 +26,19 @@ class AgencyAdmin <ApplicationRecord
 
 
 attr_accessor :perform_add_agency_admin_validations
+
+
+  def format_first_name
+    self.first_name = self.first_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_last_name
+    self.last_name = self.last_name.split.map(&:capitalize).join(' ')
+  end
+
+  def format_email
+    self.email = self.email.gsub(/\s+/, "").downcase
+  end
 
 
 # #########################

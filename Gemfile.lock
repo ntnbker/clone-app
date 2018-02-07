@@ -452,6 +452,7 @@ DEPENDENCIES
   roda
   rspec-rails (~> 3.5)
   ruby-growl
+  rufus-scheduler
   sass-rails (~> 5.0)
   scout_apm
   searchkick

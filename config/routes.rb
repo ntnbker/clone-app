@@ -24,6 +24,8 @@ Rails.application.routes.draw do
     resources :passwords, only:[:edit, :update]
     get "change_password"=> "passwords#change_password",:as=> :change_password
     patch "update_password"=>"passwords#update_password"
+    get "set_password"=> "passwords#set_password",:as=> :set_password
+    patch "confirm_password"=>"passwords#confirm_password"
     resources :gods, only:[:show]
     resources :gods do 
       resources :services, only:[:new,:create, :update]
@@ -52,8 +54,9 @@ Rails.application.routes.draw do
   ###################################################
   ##########TENANT ROLE RESOURCES/ROUTES###########
   ###################################################
-    resources :tenants, only:[:show, :index]
+    resources :tenants, only:[:show, :index, :update, :create, :destroy, :edit]
     resources :tenant_maintenance_requests, only:[:index, :show]
+    post "edit_tenant" => "tenants#update_tenant"
   ###################################################
   ##########MR RESOURCES/ROUTES######################
   ###################################################

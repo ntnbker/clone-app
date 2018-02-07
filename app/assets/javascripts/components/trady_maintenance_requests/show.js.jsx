@@ -1,40 +1,18 @@
 var TradySideBarMobile = React.createClass({
 	getInitialState: function() {
 		return {
-			showAction: false,
-			showContact: false
+			showAction: false
 		};
 	},
 
 	show: function(key) {
-		if(key == 'action') {
-			this.setState({showAction: true});
-			this.setState({showContact: false});
-			if($('#actions-full').length > 0) {
-				$('#actions-full').css({'height': 400, 'border-width': 1});
-			}
-		}else {DMM
-			this.setState({showAction: false});
-			this.setState({showContact: true});
-			if($('#contacts-full').length > 0) {
-				$('#contacts-full').css({'height': this.props.tenants.length * 50 + 200, 'border-width': 1});
-			}
-		}
+		$('#actions-full').css({'height': 350 + (this.props.tenants.length || 0) * 40});
+		this.setState({showAction: true});
 	},
 
 	close: function() {
-		if(!!this.state.showAction) {
-			this.setState({showAction: false});
-		}
-		if(!!this.state.showContact) {
-			this.setState({showContact: false});
-		}
-		if($('#actions-full').length > 0) {
-			$('#actions-full').css({'height': 0, 'border-width': 0});
-		}
-		if($('#contacts-full').length > 0) {
-			$('#contacts-full').css({'height': 0, 'border-width': 0});
-		}
+		$('#actions-full').css({'height': 0});
+		this.setState({showAction: false});
 	},
 
 	componentDidMount: function() {
@@ -45,23 +23,22 @@ var TradySideBarMobile = React.createClass({
 	},
 
 	render: function() {
+		const { trady } = this.state;
+		const isAssignedTrady = trady && trady.id === this.props.signed_in_trady.id;
+
 		return (
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
 						<button
-							data-intro="Select 'Contact' to call or message." data-position="top"
-							className={"contact button-default " + (!!this.state.showContact && 'active')}
-							onClick={(key) => this.show('contact')}
-						>
-							CONTACT MENU
-						</button>
-						<button
-							data-intro="Select 'Action' to action the maintenance request." data-position="top"
-							className={"actions button-default " + (!!this.state.showAction && 'active')}
+							className={"actions trady-actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
-							ACTIONS MENU
+							<span className="display-block">CREATE QUOTE</span>
+							<span className="display-block">OR</span>
+							<span className="display-block">
+								{isAssignedTrady ? "CREATE INVOICE" : "CONTACT AGENT"}
+							</span>
 						</button>
 					</div>
 				</div>
@@ -70,23 +47,14 @@ var TradySideBarMobile = React.createClass({
 						<TradyActionMobile
 							close={this.close}
 							trady={this.props.trady}
-							landlord={this.props.landlord}
-							invoices={this.props.invoices}
-							assigned_trady={this.props.assigned_trady}
-							signed_in_trady={this.props.signed_in_trady}
-							invoice_pdf_files={this.props.invoice_pdf_files}
-							maintenance_request={this.props.maintenance_request}
-							onModalWith={(modal) => this.props.onModalWith(modal)}
-						/>
-					}
-					{
-						<TradyContactMobile
-							close={this.close}
 							agent={this.props.agent}
 							tenants={this.props.tenants}
 							landlord={this.props.landlord}
+							invoices={this.props.invoices}
 							current_user={this.props.current_user}
 							assigned_trady={this.props.assigned_trady}
+							signed_in_trady={this.props.signed_in_trady}
+							invoice_pdf_files={this.props.invoice_pdf_files}
 							maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
@@ -828,7 +796,7 @@ var TradyMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							onModalWith={this.onModalWith}
 							current_user={this.props.current_user}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 						/>
 					);
 				}
@@ -1054,9 +1022,8 @@ var TradyMaintenanceRequest = React.createClass({
 
 
 				case 'viewTrady':
+					const hasApproved = this.state.quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
-
-					const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 					return (
 						<ModalViewTrady
 							close={this.isClose}
@@ -1095,7 +1062,7 @@ var TradyMaintenanceRequest = React.createClass({
 							gallery={this.state.quote_images}
 							quotes={this.state.quote_requests}
 							current_user={this.props.current_user}
-							viewQuote={(quote) => this.viewQuote(quote)}
+							viewQuote={this.viewItem}
 						/>
 					)
 
@@ -1425,7 +1392,7 @@ var TradyMaintenanceRequest = React.createClass({
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
 						}
-						{ (!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length &&
+						{ (!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length > 0 &&
 								<QuoteRequests
 									keyLandlord="trady"
 									landlord={this.state.landlord}
@@ -1434,7 +1401,7 @@ var TradyMaintenanceRequest = React.createClass({
 									uploadImage={this.uploadImage}
 									current_user={this.props.current_user}
 									chooseQuoteRequest={this.chooseQuoteRequest}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}
@@ -1445,7 +1412,7 @@ var TradyMaintenanceRequest = React.createClass({
 									landlord={this.state.landlord}
 									onModalWith={this.onModalWith}
 									current_user={this.props.current_user}
-									viewQuote={(key, item) => this.viewItem(key, item)}
+									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
 								/>
 						}

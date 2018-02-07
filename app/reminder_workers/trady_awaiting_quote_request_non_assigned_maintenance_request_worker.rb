@@ -9,7 +9,7 @@ class TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker
     #we have to grab all of their MR with that particular type of status.
     #get the count and then send them an email for each agency admin on the system
 
-    ######WE HAVE TO DO THIS AGAIN IT SHOULD NOT BE BASED OF OF THE STATUS OF MR BUT
+    ######WE HAVE TO DO THIS AGAIN IT SHOULD NOT BE BASED OFF OF THE STATUS OF MR BUT
     ###ON WHETHER A QUOTE REQUEST WAS SUBMITTED AND THAT THE MR IS ALSO STILL OPEN FOR QUOTES
     ## TO BE SUBMITTED. WE HAVE 
 
@@ -18,9 +18,13 @@ class TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker
     
 
     
-     maintenance_requests = MaintenanceRequest.all.where(trady_id:nil).joins(:action_status).where(:action_statuses => { :agent_status =>"Awaiting Quote" }).pluck(:id)
-     quote_requests = QuoteRequest.all.includes(:trady, maintenance_request:[:property]).where(maintenance_request_id:maintenance_requests).distinct
-
+     # maintenance_requests = MaintenanceRequest.all.where(trady_id:nil).joins(:action_status).where(:action_statuses => { :agent_status =>"Awaiting Quote" }).pluck(:id)
+     maintenance_requests = MaintenanceRequest.all.where(trady_id:nil).pluck(:id)
+     quote_requests = QuoteRequest.all.includes(:trady, maintenance_request:[:property]).where(maintenance_request_id:maintenance_requests).where(quote_id:nil).distinct
+     # quote_requests = QuoteRequest.all.includes(:trady, maintenance_request:[:property]).where(maintenance_request_id:maintenance_requests).joins(:quotes).where(quotes=>{}quote_request_id:nil)).distinct
+     # joins(:action_status).where(:action_statuses => { :agent_status => params}).distinct
+     # User.joins(:account).merge(Account.where(:active => true))
+     
       quote_requests.each do |quote_request|
 
         if quote_request.quote_id

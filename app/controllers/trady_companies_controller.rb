@@ -232,7 +232,7 @@ class TradyCompaniesController < ApplicationController
   private
 
     def trady_company_params
-      params.require(:trady_company).permit(:trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow, :trady_company_id, :system_plan, :invoice_type, :quote_type, :pdf_file_id, :ledger_id, :quote_id)
+      params.require(:trady_company).permit(:profession_license_number,:landline, :trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow, :trady_company_id, :system_plan, :invoice_type, :quote_type, :pdf_file_id, :ledger_id, :quote_id)
     end
 
     def email_auto_login(id)

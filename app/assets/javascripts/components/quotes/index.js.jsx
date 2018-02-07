@@ -7,6 +7,9 @@ var ButtonForwardLandlord = React.createClass({
 
 	sendEmail: function() {
 		if(!!this.props.landlord){
+			if (this.state.isSend) {
+				return this.props.viewQuote('confirmForwardLandlord', this.props.quote);
+			}
 			const params = {
 				quote_id: this.props.quote.id,
 				maintenance_request_id: this.props.quote.maintenance_request_id,
@@ -28,14 +31,14 @@ var ButtonForwardLandlord = React.createClass({
 	},
 
 	render: function() {
-		const style = {
-			opacity: this.state.isSend ? 0.5 : 1
-		};
+		// const style = {
+		// 	opacity: this.state.isSend ? 0.5 : 1
+		// };
 		return (
 			<button
 				type="button"
-				style={style}
-				onClick={!this.state.isSend && this.sendEmail}
+				// style={style}
+				onClick={this.sendEmail}
 				className="btn btn-trans"
 			>
 				{!!this.state.isSend ? 'Sent to Landlord' : 'Forward to LandLord'}
@@ -149,6 +152,26 @@ var ButtonQuoteAlreadySent = React.createClass({
 				onClick={() => viewQuote('confirmQuoteAlreadySent', quote_request)}
 			>
 				Quote Already Sent
+			</button>
+		);
+	}
+});
+
+var ButtonCallTrady = React.createClass({
+	render: function() {
+		const { trady } = this.props;
+		return (
+			<button
+				type="button"
+				className="btn btn-default"
+				onClick={() => this.phone.click()}
+			>
+				<a
+					href={`tel:${trady.mobile}`}
+					style={{display: 'none'}}
+					ref={(elem) => this.phone = elem}
+				/>
+				<i className="fa fa-phone"></i> Call {trady.name}
 			</button>
 		);
 	}
@@ -349,6 +372,7 @@ var ActionQuote = React.createClass({
 							<ButtonForwardLandlord
 								quote={quote}
 								landlord={self.landlord}
+								viewQuote={self.viewQuote}
 								onModalWith={self.onModalWith}
 								sendEmailLandlord={self.sendEmailLandlord}
 							/>
@@ -475,7 +499,7 @@ var Quotes = React.createClass({
 									</span>
 									<div className="info">
 										<div className="name">
-											<span>{quote.trady.name}</span>
+											<span>{quote.trady.company_name}</span>
 											{showStatus &&
 												<button
 													className={'button-default status ' + status}>
@@ -556,6 +580,8 @@ var QuoteRequests = React.createClass({
 	render: function() {
 		const {quote_requests, pictures} = this.state;
 		const self = this.props;
+		const role = self.current_user_role && self.current_user_role.role;
+		const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
 		return (
 			<div className="quotes m-t-lg" id="quote_requests">
@@ -594,7 +620,7 @@ var QuoteRequests = React.createClass({
 									</span>
 									<div className="info">
 										<div className="name">
-											<span>{quote_request.trady && quote_request.trady.name}</span>
+											<span>{quote_request.trady && quote_request.trady.company_name}</span>
 										</div>
 										<div className="description">
 											{quote_request.trady && quote_request.trady.name}
@@ -603,6 +629,13 @@ var QuoteRequests = React.createClass({
 										</div>
 									</div>
 									<div className="quote-request-button">
+										{
+											isCallTrady
+											? <ButtonCallTrady
+													trady={quote_request.trady}
+												/>
+											: ''
+										}
 										{
 											needMessageButton
 											? <ButtonQuoteRequestMessage
@@ -745,16 +778,16 @@ var DetailQuote = React.createClass({
 				<table  className="table">
 				<thead>
 					<tr>
-						<th className="description">
+						<th className="quote-description">
 							Description
 						</th>
-						<th className="price">
+						<th className="quote-price">
 							Pricing
 						</th>
-						<th className="text-right rate">
+						<th className="text-right quote-rate">
 							Rate
 						</th>
-						<th className="text-right amount">
+						<th className="text-right quote-amount">
 							Amount
 						</th>
 					</tr>
@@ -769,10 +802,10 @@ var DetailQuote = React.createClass({
 							}
 							return (
 								<tr key={key}>
-									<td className="description">{item.item_description}</td>
-									<td className="price">{item.pricing_type}</td>
-									<td className="text-right rate">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
-									<td className="text-right amount">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
+									<td className="quote-description">{item.item_description}</td>
+									<td className="quote-price">{item.pricing_type}</td>
+									<td className="text-right quote-rate">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
+									<td className="text-right quote-amount">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
 								</tr>
 							);
 						})
@@ -858,12 +891,41 @@ var ModalViewQuote = React.createClass({
 		}
 	},
 
+  capitalizeText(text) {
+    return !text
+      ? ''
+      : text.trim().replace(/((^\w)|((\.|\,|\s)\w))/g, newWord => newWord.length === 1
+        ? newWord.toUpperCase()
+        : (newWord[0] + newWord[1].toUpperCase())
+      )
+  },
+
+  formatABN(text) {
+    return text.match(/.{1,3}/g).join(' ');
+  },
+
+  formatMobile(text) {
+    return text.replace(/(.{2})(.{4})(.{4})(.*)/, '$1 $2 $3 $4').trim();
+  },
+
+  formatPhone(text) {
+    return text.replace(/(.{4})(.{3})(.{3})(.*)/, '$1 $2 $3 $4').trim();
+  },
+
+  formatBSB(text) {
+    return this.formatABN(text);
+  },
+
+  formatACC(text) {
+    return this.formatABN(text);
+  },
+
 	getImage: function(trady) {
 		if (!trady) return '';
 
 		const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
 
-		const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+		const image_url = trady_company_profile_image && trady_company_profile_image.image_url;
 
 		return image_url;
 	},
@@ -887,35 +949,53 @@ var ModalViewQuote = React.createClass({
 						<div className="modal-header">
 							<div className="logo">
 	              <span className="icon-user">
-	                <AvatarImage id="logo" imageUri={image_url} />
+	                <AvatarImage
+	                	id="logo"
+	                	imageUri={image_url}
+	                	defaultValue="/empty.png"
+	                />
 	              </span>
 							</div>
 							<div className="info-trady">
 								<p>
 									<span>
-										{quote.trady.company_name}
+										{this.capitalizeText(quote.trady.company_name)}
 									</span>
 								</p>
+								{ quote.trady.trady_company.abn &&
+									<p>
+										<span>
+											ABN: {this.formatABN(quote.trady.trady_company.abn)}
+										</span>
+									</p>
+								}
 								<p>
 									<span>
-										{quote.trady.trady_company.abn}
+										{this.capitalizeText(quote.trady.trady_company.address)}
 									</span>
 								</p>
-								<p>
-									<span>
-										{quote.trady.trady_company.address}
-									</span>
-								</p>
-								<p>
-									<span>
-										{quote.trady.trady_company.mobile_number}
-									</span>
-								</p>
-								<p>
-									<span>
-										{quote.trady.trady_company.email}
-									</span>
-								</p>
+								{
+									quote.trady.trady_company.mobile_number &&
+									<p>
+										<span>
+											mobile: {this.formatMobile(quote.trady.trady_company.mobile_number)}
+										</span>
+									</p>
+								}
+								{ quote.trady.trady_company.landline &&
+									<p>
+										<span>
+											landline: {this.formatPhone(quote.trady.trady_company.landline)}
+										</span>
+									</p>
+								}
+								{ quote.trady.trady_company.email &&
+									<p>
+										<span>
+											email: {quote.trady.trady_company.email}
+										</span>
+									</p>
+								}
 							</div>
 							<button
 								type="button"
@@ -933,10 +1013,13 @@ var ModalViewQuote = React.createClass({
 									<div className="info-quote">
 										<div className="info-trady">
 											<div>
-												<p className="color-grey bill-to">Bill To</p>
-												<p>{self.landlord && self.landlord.name}</p>
-												<p>{self.agency && 'C/-' + self.agency.company_name}</p>
-												<p>{self.agency && self.agency.address}</p>
+												<p className="font-bold bill-to">Bill To</p>
+												<p>{self.landlord && this.capitalizeText(self.landlord.name)}</p>
+												<p>
+													<span className="font-bold">C/- </span>
+													{self.agency && this.capitalizeText(self.agency.business_name)}
+												</p>
+												<p>{self.agency && this.capitalizeText(self.agency.address)}</p>
 											</div>
 										</div>
 										<div className="info-agency">
@@ -966,6 +1049,7 @@ var ModalViewQuote = React.createClass({
 										quotes={this.state.quotes}
 										printQuote={this.printQuote}
 										onModalWith={self.onModalWith}
+										viewQuote={this.props.viewQuote}
 										keyLandlord={this.props.keyLandlord}
 										updateStatusQuote={self.updateStatusQuote}
 										sendEmailLandlord={self.sendEmailLandlord}
@@ -1221,6 +1305,7 @@ var ModalViewPhoto = React.createClass({
 									quotes={self.quotes}
 									onModalWith={self.onModalWith}
 									keyLandlord={self.keyLandlord}
+									viewQuote={this.props.viewQuote}
 									updateStatusQuote={self.updateStatusQuote}
 									sendEmailLandlord={self.sendEmailLandlord}
 								/>

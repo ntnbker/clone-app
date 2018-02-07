@@ -2,7 +2,7 @@ AvatarImage = React.createClass({
 
   getInitialState: function() {
     return {
-      imageUri: this.props.imageUri || '/default-avatar.png',
+      imageUri: this.props.imageUri || this.props.defaultImage || '/default-avatar.png',
     }
   },
 
@@ -21,10 +21,10 @@ AvatarImage = React.createClass({
     return (
       <img
         id="avatar"
+        alt="Avatar Image"
         {...this.props}
         src={imageUri}
         onError={this.handleError}
-        alt="Avatar Image"
       />
     )
   }

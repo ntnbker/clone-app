@@ -43,6 +43,75 @@ var DropList = React.createClass({
 	}
 });
 
+var DropDownContentMobile = React.createClass({
+  getInitialState: function() {
+    return {
+      valueAction: this.props.valueAction
+    };
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if(nextProps.isHide === true || nextProps.isHide === false) {
+      this.setHeight(nextProps.isHide);
+    }
+    this.setState({
+      valueAction: nextProps.valueAction
+    });
+  },
+
+  setHeight: function(flag) {
+    if(!flag) {
+      var dropdown = $('.show .content-action');
+      dropdown.css({
+        "height": 400,
+        "overflow-y": "scroll"
+      });
+    }else {
+      $('.content-mobile .dropcontent').css('height', 0);
+    }
+  },
+
+ render: function() {
+    const {action = [], awaiting} = this.props;
+    const props = this.props;
+    const state = this.state;
+    const {actionTitle, awaitingTitle} = props;
+    return (
+      <ul className="dropcontent content-action">
+        <div className="text-center title">
+          <a>{props.title}</a>
+        </div>
+        <h5 className="title-mobile">{actionTitle}</h5>
+        {
+          action.map((item, index) => {
+            return (
+              <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+                <a onClick={(value) => props.getAction(item.value)}>
+                  <span>{item.count}</span>
+                  <b className="name">{item.title}</b>
+                </a>
+              </li>
+            );
+          })
+        }
+        { awaiting && <div className="line-hr" /> }
+        <h5 className="title-mobile">{awaitingTitle}</h5>
+        { awaiting && awaiting.map((item, index) => {
+            return (
+              <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+                <a onClick={(value) => props.getAction(item.value)}>
+                  <span>{item.count}</span>
+                  <b className="name">{item.title}</b>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    );
+  }
+});
+
 var DropDownContent = React.createClass({
   getInitialState: function() {
     return {
@@ -77,23 +146,23 @@ var DropDownContent = React.createClass({
   },
 
   render: function() {
-    var content = this.props.content;
+    const {content} = this.props;
     const props = this.props;
     const state = this.state;
     return (
       <ul className="dropcontent content-action">
-      {
-        content.map((item, index) => {
-          return (
-            <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
-              <a onClick={(value) => props.getAction(item.value)}>
-                <span>{item.count}</span>
-                <b className="name">{item.title}</b>
-              </a>
-            </li>
-          );
-        })
-      }
+        {
+          content.map((item, index) => {
+            return (
+              <li key={index} className={state.valueAction == item.value ? 'active' : ''}>
+                <a onClick={(value) => props.getAction(item.value)}>
+                  <span>{item.count}</span>
+                  <b className="name">{item.title}</b>
+                </a>
+              </li>
+            );
+          })
+        }
       </ul>
     );
   }
@@ -121,11 +190,11 @@ var DropDownList = React.createClass({
           {this.props.title}
         </div>
         <div className="content" style={{display: this.state.hidden ? 'none' : 'block' }}>
-            <DropDownContent
-              content={this.props.content}
-              valueAction={this.state.valueAction}
-              getAction={(value) => this.props.getAction(value)}
-            />
+          <DropDownContent
+            content={this.props.content}
+            valueAction={this.state.valueAction}
+            getAction={(value) => this.props.getAction(value)}
+          />
         </div>
       </div>
     );
@@ -170,6 +239,8 @@ var DropDownMobileList = React.createClass({
   render: function() {
     const props = this.props;
     const state = this.state;
+    const { request, awaiting, tradyFilter } = props;
+
     return (
       <div className="drop-mobile-list">
         <button
@@ -180,9 +251,13 @@ var DropDownMobileList = React.createClass({
           {this.props.title}
         </button>
         <div className={"content-mobile action-mobile " + (!state.hidden && 'show')}>
-          <DropDownContent
+          <DropDownContentMobile
             isHide={state.hidden}
-            content={props.content}
+            action={request || tradyFilter}
+            awaiting={awaiting}
+            actionTitle={request ? 'Action Required' : ''}
+            awaitingTitle={awaiting ? 'Awaiting Action' : ''}
+            title={this.props.title}
             valueAction={state.valueAction}
             getAction={(value) => props.getAction(value)}
           />
@@ -230,7 +305,6 @@ var P = React.createClass({
     );
   }
 });
-
 
 var ImgSlider = React.createClass({
   getInitialState: function() {
@@ -392,7 +466,7 @@ var ListMaintenanceRequest = React.createClass({
       ],
       actionRequests: [
         {
-          title: "Maintenance Request",
+          title: "New Maintenance Request",
           value: "Initiate Maintenance Request",
           count: this.props.new_maintenance_requests_count,
         },
@@ -774,19 +848,9 @@ var ListMaintenanceRequest = React.createClass({
               <DropDownMobileList
                 class="action"
                 id="action-required"
-                title="Action Required"
-                content={this.state.actionRequests}
-                valueAction={this.state.valueAction}
-                getAction={(value) => this.getAction(value)}
-              />
-          }
-          {
-            (!!current_user_agent || !!current_user_agency_admin) &&
-              <DropDownMobileList
-                class="awaiting"
-                id="awaiting-action"
-                title="Awaiting Action"
-                content={this.state.awaitingAction}
+                title="Agent Filters"
+                request={this.state.actionRequests}
+                awaiting={this.state.awaitingAction}
                 valueAction={this.state.valueAction}
                 getAction={(value) => this.getAction(value)}
               />
@@ -796,8 +860,8 @@ var ListMaintenanceRequest = React.createClass({
               <DropDownMobileList
                 class="trady"
                 id="trady-filter"
-                title="Trady Filter"
-                content={this.state.tradyFilter}
+                title="Trady Filters"
+                tradyFilter={this.state.tradyFilter}
                 valueAction={this.state.valueAction}
                 getAction={(value) => this.getAction(value)}
               />

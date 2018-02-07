@@ -153,7 +153,16 @@ var QuoteFields = React.createClass({
 
   handleSummit: function(e) {
     const self = this;
+    e.preventDefault();
     var FD = new FormData(document.getElementById('new_quote'));
+
+    const quoteRegex = /quote_items_attributes%5D%5B(\d+)%5D%5B_destroy%5D=false/i
+    let isExistQuote = quoteRegex.test($('#new_quote').serialize());
+
+    if (!isExistQuote) {
+      showFlash('There are currently no quote items', 'danger', 'create-invoice');
+      return;
+    }
 
     $.ajax({
       type: 'POST',
@@ -174,7 +183,6 @@ var QuoteFields = React.createClass({
 
       }
     });
-    e.preventDefault();
     return false;
   },
 
@@ -197,6 +205,7 @@ var QuoteFields = React.createClass({
         <input type="hidden" value={this.props.delivery_status} name="quote[delivery_status]" id="quote_delivery_status" />
         <input type="hidden" value={this.props.quote_type} name="quote[quote_type]" id="quote_type" />
         <input type="hidden" value={this.props.system_plan} name="quote[system_plan]" id="system_plan" />
+        <ShowMessage position="create-invoice" />
         <div className="alert alert-message">
           If you have more than one option on costs for the job to be completed, please create more than one quote with each variation. Doing so will allow the agent to pick the most appropriate quote.
         </div>
