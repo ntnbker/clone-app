@@ -18,17 +18,18 @@ var TenantEdit = React.createClass({
 
     const getValidValue = obj => obj && obj.value;
     var tenant = {
-      name      : getValidValue(this.name),
-      email     : getValidValue(this.email),
-      mobile    : getValidValue(this.mobile),
+      id    : this.props.tenant.id,
+      name  : getValidValue(this.name),
+      // email     : getValidValue(this.email),
+      mobile: getValidValue(this.mobile),
     }
 
-    var params = { tenant };
+    var params = { tenant, id: this.props.tenant.id };
 
     const self = this;
     $.ajax({
-      type: 'PUT',
-      url: `/tenants/${(this.props.tenant || {}).id}`,
+      type: 'POST',
+      url: `/edit_tenant`,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -75,6 +76,7 @@ var TenantEdit = React.createClass({
             id={field}
             placeholder={textHolder}
             defaultValue={tenant[field]}
+            readOnly={field === 'email'}
             ref={(ref) => this[field] = ref}
             className={"form-control " + (errors[field] ? "has-error" : "")}
             onChange={this.removeError}
@@ -87,7 +89,7 @@ var TenantEdit = React.createClass({
 
   render: function() {
     let isInvoice          = this.props.system_plan === "Invoice";
-    let tenant              = this.props.tenant || {};
+    let tenant             = this.props.tenant || {};
     let {
       company_name, business_name, abn, address, mailing_address, phone, mobile_phone, corporation_license_number
     } = tenant;
