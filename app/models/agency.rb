@@ -33,7 +33,7 @@ class Agency < ApplicationRecord
   validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
   validates :phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
   #validates :abn, :numericality => true, :length => {:minimum=>11, :maximum => 11 }
-  
+  attr_accessor :agency_id
 
   
   def skilled_tradies_required(skill_params)

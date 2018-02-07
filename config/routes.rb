@@ -236,5 +236,9 @@ Rails.application.routes.draw do
   ##########WORK ORDER RESOURCES/ROUTES#########
   ################################################### 
     post "cancel_work_order"=> "work_orders#cancel_work_order"
-    
+
+  ###################################################
+  ##########PAYMENT RESOURCES/ROUTES#########
+  ################################################### 
+    resources :payments, only:[:new, :create]
  end
