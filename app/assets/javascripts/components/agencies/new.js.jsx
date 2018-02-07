@@ -252,6 +252,7 @@ var Agency = React.createClass({
     const renderError = this.renderError;
     const removeError = this.removeError;
     const {errors} = this.state;
+    const {edit_agency_registration_path} = this.props;
 
     return <form role="form" className="agencies" id="new_user" onSubmit={this.onSubmit}>
       <input name="utf8" type="hidden" value="✓"/>
@@ -339,6 +340,9 @@ var Agency = React.createClass({
           type="button"
           name="commit"
           value="Back"
+          onClick={() => {
+            location.href = edit_agency_registration_path;
+          }}
           className="button-primary button-user-back green"
         />
         <input
