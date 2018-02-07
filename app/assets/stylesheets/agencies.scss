@@ -9,6 +9,59 @@
   width: 100%;
   margin: 20px auto;
 
+  .agency-name, .agency-contact {
+    @include flexbox;
+    @include justify-content(space-between);
+    @include justify-content(justify);
+
+    .company-name, .business-name, .agency-mobile, .agency-phone {
+      @include flex(1);
+      max-width: 48%;
+    }
+  }
+  .error {
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+  .user-name {
+    @include flexbox;
+    @include justify-content(space-between);
+    @include justify-content(justify);
+
+    .user-first-name, .user-last-name  {
+      @include flex(1);
+      max-width: 48%;
+    }
+  }
+  .agency-button {
+    @include flexbox;
+    @include justify-content(center);
+    margin-top: 20px;
+
+    .agency-button-submit  {
+      width: 30%;
+      padding: 0;
+      text-align: center;
+    }
+  }
+
+  .user-button {
+    @include flexbox;
+    @include justify-content(space-between);
+    @include justify-content(justify);
+    margin: 0 15px;
+
+    .button-user-back, .button-user-submit {
+      @include flex(1);
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+    .button-user-back {
+      color: black;
+      background-color: white;
+    }
+  }
+
   p {
     margin: 20px 0 5px;
   }
@@ -22,6 +75,7 @@
 
   input {
     display: block;
+    margin-top: 10px;
     width: 100%;
   }
 
@@ -34,10 +88,6 @@
 
   .field {
     margin: 20px 0;
-
-   label {
-     margin: 0;
-   }
 
    p {
      margin: 5px 0;
@@ -52,12 +102,6 @@
   }
   /* For Desktop */
   @media (min-width: 550px) {
-    width: 50%;
-  }
-}
-
-#new_user {
-  input[type="submit"] {
-    margin-top: 10px;
+    width: 70%;
   }
 }
