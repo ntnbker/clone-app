@@ -92,6 +92,7 @@ var AddTradycompany = React.createClass({
     var trady_company = {
       email:           getValidValue(this.email),
       address:         getValidValue(this.address),
+      landline:        getValidValue(this.landline),
       company_name:    getValidValue(this.company_name),
       trading_name:    getValidValue(this.trading_name),
       mobile_number:   getValidValue(this.mobile_number),
@@ -111,10 +112,11 @@ var AddTradycompany = React.createClass({
 
     if (isInvoice) {
       trady_company.abn =                 getValidValue(this.abn);
-      trady_company.gst_registration =    this.state.gst_registration,
+      trady_company.gst_registration =    this.state.gst_registration;
       trady_company.bsb_number =          getValidValue(this.bsb_number);
       trady_company.account_name =        getValidValue(this.account_name);
       trady_company.bank_account_number = getValidValue(this.bank_account_number);
+      trady_company.profession_license_number = getValidValue(this.profession_license_number);
     }
 
     var params = { trady_company };
@@ -183,13 +185,13 @@ var AddTradycompany = React.createClass({
       <form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.onSubmit} >
 
         <div className="form-group">
-          <label className="control-label col-sm-2 required">Company name</label>
+          <label className="control-label col-sm-2 required">Company Name / Sole Trader Name</label>
           <div className="col-sm-10">
             <input
 
               type="text"
               id="company_name"
-              placeholder="Company Name"
+              placeholder="Company Name / Sole Trader Name"
               defaultValue={this.props.company_name}
               ref={(ref) => this.company_name = ref}
               className={"form-control " + (errors['company_name'] ? "has-error" : "")}
@@ -233,7 +235,26 @@ var AddTradycompany = React.createClass({
             </div>
           </div>
         }
+        { isInvoice &&
+          <div className="form-group">
+            <label className="control-label col-sm-2 required">
+              Profession License Number
+            </label>
+            <div className="col-sm-10">
+              <input
 
+                id="profession_license_number"
+                type="text"
+                placeholder="Profession License Number"
+                defaultValue={this.props.profession_license_number}
+                ref={(ref) => this.profession_license_number = ref}
+                className={"form-control " + (errors['profession_license_number'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['profession_license_number'])}
+            </div>
+          </div>
+        }
         { isInvoice &&
           <div className="form-group">
             <div className="col-sm-10 col-sm-offset-2">
@@ -309,7 +330,22 @@ var AddTradycompany = React.createClass({
             {this.renderError(errors['mobile_number'])}
           </div>
         </div>
+        <div className="form-group">
+          <label className="control-label col-sm-2 required">Landline Number</label>
+          <div className="col-sm-10">
+            <input
 
+              id="landline"
+              type="text"
+              placeholder="Landline Number"
+              defaultValue={this.props.landline}
+              ref={(ref) => this.landline = ref}
+              className={"form-control " + (errors['landline'] ? "has-error" : "")}
+              onChange={removeErrorFunc}
+            />
+            {renderErrorFunc(errors['landline'])}
+          </div>
+        </div>
         <div className="form-group">
           <label className="control-label col-sm-2 required">Company Email</label>
           <div className="col-sm-10">
