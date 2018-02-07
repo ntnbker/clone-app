@@ -314,9 +314,9 @@ var Header = React.createClass({
               <a href={props.root_path}> MaintenanceApp </a>
             </div>
             {
-              logged_in?
-                (
-                  !expanded 
+              logged_in
+              ? (
+                  !expanded
                   ?
                     <div className="header-right">
                       { this.search() }
@@ -364,12 +364,11 @@ var Header = React.createClass({
                         </ul>
                       }
                     </div>
-                  :
-                  <div className="log_in desktop-menu-items">
-                    { this.search(true) }
-                    <a href={props.menu_login_path} > Login </a>
-                  </div>
                 )
+              : <div className="log_in desktop-menu-items">
+                  { this.search(true) }
+                  <a href={props.menu_login_path} > Login </a>
+                </div>
             }
             <button
               className={"menu-btn button " + (logged_in ? 'signed' : '')}
