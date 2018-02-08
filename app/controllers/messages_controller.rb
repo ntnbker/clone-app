@@ -26,7 +26,7 @@ class MessagesController < ApplicationController
           UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
         end
 
-        format.json{render json:@message}
+        format.json{render json:@message.as_json(:include => {:user=>{:include =>{:tenant => {}, :agency_admin=>{}, :agent=>{}, :trady=>{}, :landlord=>{} }}})}
         
       else
         
@@ -133,7 +133,7 @@ class MessagesController < ApplicationController
           UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
         end
 
-        format.json{render json:@message}
+        format.json{render json:@message.as_json(:include => {:user=>{:include =>{:trady => {}, :agency_admin=>{}, :agent=>{} }}})}
         
       else
         format.json{render :json=>{errors:@message.errors.to_hash(true).as_json}}
@@ -177,7 +177,7 @@ class MessagesController < ApplicationController
           UserConversation.create(user_id:current_user.id,conversation_id:@conversation.id)
         end
 
-        format.json{render json:@message}
+        format.json{render json:@message.as_json(:include => {:user=>{:include =>{:trady => {}, :agency_admin=>{}, :agent=>{} }}})}
         
       else
         format.json{render :json=>{errors:@message.errors.to_hash(true).as_json}}

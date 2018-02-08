@@ -182,7 +182,21 @@ var DropDownStatus = React.createClass({
 
 var ButtonHeaderMR = React.createClass({
 	getInitialState: function() {
-		const actionRequests = [
+		const {standBy, actionRequired, awaitingAction} = this.filterHideField(this.props);
+
+		return {
+			isShow: false,
+			isShowStatus: false,
+			standBy,
+			actionRequired,
+			awaitingAction,
+		};
+	},
+
+	filterHideField(props) {
+		const {existLandlord, existQuoteRequest, existTradyAssigned} = this.props;
+
+		const actionRequired = [
       {
         title: "Maintenance Request",
         value: "Initiate Maintenance Request",
@@ -218,11 +232,11 @@ var ButtonHeaderMR = React.createClass({
     ];
 
     const awaitingAction = [
-      {
+      existLandlord && {
         title: "Awaiting Owner Initiation",
         value: "Awaiting Owner Initiation",
       },
-      {
+      existLandlord && {
         title: "Awaiting Owner Instruction",
         value: "Awaiting Owner Instruction",
       },
@@ -230,15 +244,15 @@ var ButtonHeaderMR = React.createClass({
       //   title: "Awaiting Tradie Initiation",
       //   value: "Awaiting Tradie Initiation",
       // },
-      {
+      existQuoteRequest && {
         title: "Awaiting Quote Approval",
         value: "Quote Received Awaiting Approval",
       },
-      {
+      existTradyAssigned && {
         title: "Quote Approved Tradie To Organise Appointment",
         value: "Quote Approved Tradie To Organise Appointment",
       },
-      {
+      existTradyAssigned && {
         title: "Tradie To Confirm Appointment",
         value: "Tradie To Confirm Appointment",
       },
@@ -246,15 +260,15 @@ var ButtonHeaderMR = React.createClass({
         title: "Tenant To Confirm Appointment",
         value: "Tenant To Confirm Appointment",
       },
-      {
+      existLandlord && {
         title: "Landlord To Confirm Appointment",
         value: "Landlord To Confirm Appointment",
       },
-      {
+      existTradyAssigned && {
         title: "Maintenance Scheduled - Awaiting Invoice",
         value: "Maintenance Scheduled - Awaiting Invoice",
       },
-      {
+      existLandlord && {
         title: "Maintenance Scheduled With Landlord",
         value: "Maintenance Scheduled With Landlord",
       }
@@ -271,13 +285,21 @@ var ButtonHeaderMR = React.createClass({
     	}
     ];
 
-		return {
-			isShow: false,
-			standBy: standBy,
-			isShowStatus: false,
-			actionRequests: actionRequests,
-			awaitingAction: awaitingAction,
-		};
+    return {
+			standBy: standBy.filter(v => !!v),
+			actionRequired: actionRequired.filter(v => !!v),
+			awaitingAction: awaitingAction.filter(v => !!v),
+    }
+	},
+
+	componentWillReceiveProps(props) {
+		const {standBy, actionRequired, awaitingAction} = this.filterHideField(props);
+
+		this.setState({
+			standBy,
+			actionRequired,
+			awaitingAction,
+		})
 	},
 
 	show: function(key) {
@@ -328,7 +350,7 @@ var ButtonHeaderMR = React.createClass({
 	render: function() {
 		const all_agents = this.props.all_agents;
 		const all_agency_admins = this.props.all_agency_admins;
-		const {standBy, actionRequests, awaitingAction} = this.state;
+		const {standBy, actionRequired, awaitingAction} = this.state;
 		return (
 			<div className="actions">
 				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
@@ -362,8 +384,8 @@ var ButtonHeaderMR = React.createClass({
 							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
 						</div>
 						<div>
-							<p className="awaiting">Action Request</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequests}/>
+							<p className="awaiting">Action Required</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
 						</div>
 						<div>
 							<p className="awaiting">Awaiting Action</p>
@@ -495,6 +517,9 @@ var ItemMaintenanceRequest = React.createClass({
 							<ButtonHeaderMR
 								all_agents={props.all_agents}
 								all_agency_admins={props.all_agency_admins}
+								existLandlord={props.existLandlord}
+								existQuoteRequest={props.existQuoteRequest}
+								existTradyAssigned={props.existTradyAssigned}
 								viewItem={(key, item) => this.props.viewItem(key, item)}
 							/>
 					}
