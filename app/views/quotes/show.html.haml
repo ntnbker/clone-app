@@ -63,6 +63,9 @@
             %td.text-right
               -if f.pricing_type == 'Fixed Cost'
                 = "$#{f.amount.round(2)}"
+              -if f.pricing_type == 'Range'
+                = "$#{f.min_price.round(2)}-$#{f.max_price.round(2)}"
+
 
       %div.button-quote
         =link_to "Back", edit_quote_path(@quote, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_type:@quote_type, system_plan:@system_plan), class: 'button button-primary'
