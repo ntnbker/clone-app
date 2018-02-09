@@ -30,7 +30,7 @@ Sidekiq.configure_server do |config|
   config.on(:startup) do
     if ENV['SCHEDULER'] == 'yes'
       Sidekiq.schedule = YAML.load_file(schedule_file)
-
+      #Sidekiq.set_schedule('reminder_queue', { 'every' => ['2m'], 'class' => 'ReminderQueueWorker' })
       Sidekiq::Scheduler.listened_queues_only = false
       Sidekiq::Scheduler.load_schedule!
     end
@@ -39,6 +39,17 @@ end
 
 
 
+ 
 
 
 
+
+# require 'sidekiq'
+# require 'sidekiq-scheduler'
+
+# Sidekiq.configure_server do |config|
+#   config.on(:startup) do
+#     Sidekiq.schedule = YAML.load_file(File.expand_path('../../schedule.yml', __FILE__))
+#     Sidekiq::Scheduler.reload_schedule!
+#   end
+# end
