@@ -3,7 +3,7 @@ class PagesController < ApplicationController
   # caches_action :home
   
   def home
-    binding.pry
+    
     session[:customer_input] = nil
     @query = Query.new
     @main_users = MainUser.all
