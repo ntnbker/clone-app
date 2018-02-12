@@ -8,6 +8,41 @@
 	}
 }
 
+.button-primary {
+	color: white;
+	text-decoration: none;
+	a {
+		color: white;
+		text-decoration: none;
+	}
+	&:hover {
+		color: white;
+	}
+}
+.button-primary.green {
+	background-color: #7dc691 !important;
+	border-color: #7dc691 !important;
+	color: white;
+	text-decoration: none;
+	&:hover {
+		background-color: #2FA342 !important;
+		border-color: #2FA342 !important;
+	}
+	a {
+		color: white;
+		text-decoration: none;
+	}
+}
+
+.button-primary.red {
+	background-color: #E77B40 !important;
+	border-color: #E77B40 !important;
+	&:hover {
+		background-color: #B94D13 !important;
+		border-color: #B94D13 !important;
+	}
+}
+
 .pages {
 	background-color: white;
 	position: relative;
@@ -142,6 +177,9 @@
 							background-color: #5CC993;
 							color: white;
 							border-left:none;
+						}
+						&.signed {
+							font-size: 1.3em;
 						}
 						&.hidden {
 							display: none;
@@ -767,10 +805,10 @@
 			.home-action-content .action-content {
 				.submit-new-mr {
 					.type-service select {
-						font-size: 15px;
+						font-size: 12.5px;
 					}
 					.input-address textarea {
-						font-size: 15px;
+						font-size: 12.5px;
 					}
 				}
 

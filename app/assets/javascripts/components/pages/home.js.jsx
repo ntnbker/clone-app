@@ -469,7 +469,8 @@ var HomeComponent = React.createClass({
         <button
           className={
             "tenant-title "
-            + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden')
+            + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden ')
+            + (signed ? 'signed ' : '')
           }
           onClick={() => this.chooseUser('Tenant')}
         >
@@ -478,7 +479,8 @@ var HomeComponent = React.createClass({
         <button
           className={
             "trady-title "
-            + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden')
+            + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden ')
+            + (signed ? 'signed ' : '')
           }
           onClick={() => this.chooseUser('Trady')}
         >
@@ -487,7 +489,8 @@ var HomeComponent = React.createClass({
         <button
           className={
             "landlord-title "
-            + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden')
+            + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden ')
+            + (signed ? 'signed ' : '')
           }
           onClick={() => this.chooseUser('Landlord')}
         >
@@ -496,7 +499,8 @@ var HomeComponent = React.createClass({
         <button
           className={
             "agent-title "
-            + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden')
+            + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden ')
+            + (signed ? 'signed ' : '')
           }
           onClick={() => this.chooseUser('Agent')}
         >
