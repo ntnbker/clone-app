@@ -20,6 +20,7 @@ LANDLINE PHONE
     =tradie.phone_field :mobile
     =tradie.hidden_field :email
     =tradie.hidden_field :maintenance_request_reference_id , value:"#{@maintenance_request_reference_id.nil? ? '' : @maintenance_request_reference_id}"
+    = tradie.hidden_field :jfmo_participant, value:true
     
 
 
