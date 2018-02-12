@@ -1,8 +1,8 @@
 class Trady < ApplicationRecord
   before_save :format_name, :format_company_name, :format_email
   has_many :roles, as: :roleable
-  belongs_to :user 
-  
+  #belongs_to :user 
+  belongs_to :user, inverse_of: :trady
   belongs_to :trady_company
 
   has_many :agency_tradies
