@@ -232,5 +232,11 @@ Rails.application.routes.draw do
   ##########WORK ORDER RESOURCES/ROUTES#########
   ################################################### 
     post "cancel_work_order"=> "work_orders#cancel_work_order"
+
+  ###################################################
+  ##########JFMO REGISTER TRADIE RESOURCES/ROUTES#########
+  ################################################### 
+  resources :tradie_registrations, only:[:new, :create, :edit, :update]
+
     
  end
