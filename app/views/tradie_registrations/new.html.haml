@@ -1,26 +1,29 @@
-Register A tradie 
+%div.well.container
+  =react_component('Trady', {:authenticity_token => form_authenticity_token})
 
-EMAIL 
-NAME
-COMPANY 
-MOBILE PHONE
-LANDLINE PHONE
+/ Register A tradie
 
-
-
-=bootstrap_nested_form_for(@user) do |f|
-  =f.email_field :email, hide_label: false
-  =f.password_field :password, hide_label: false
-  =f.password_field :password_confirmation
+/ EMAIL
+/ NAME
+/ COMPANY
+/ MOBILE PHONE
+/ LANDLINE PHONE
 
 
-  =f.fields_for :trady do |tradie|
-    =tradie.text_field :name
-    =tradie.text_field :company_name
-    =tradie.phone_field :mobile
-    / =admin.hidden_field :maintenance_request_reference_id , value: @maintenance_request_reference_id
+
+/ =bootstrap_nested_form_for(@user) do |f|
+/   =f.email_field :email, hide_label: false
+/   =f.password_field :password, hide_label: false
+/   =f.password_field :password_confirmation
 
 
-  =f.submit "Sign Up"
+/   =f.fields_for :trady do |tradie|
+/     =tradie.text_field :name
+/     =tradie.text_field :company_name
+/     =tradie.phone_field :mobile
+/     / =admin.hidden_field :maintenance_request_reference_id , value: @maintenance_request_reference_id
 
-  / =link_to "Back", edit_agency_registration_path(agency_id:@agency.id)
+
+/   =f.submit "Sign Up"
+
+/   / =link_to "Back", edit_agency_registration_path(agency_id:@agency.id)

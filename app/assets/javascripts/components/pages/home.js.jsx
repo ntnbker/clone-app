@@ -275,16 +275,14 @@ var HomeComponent = React.createClass({
         >
           Login
         </button>
-        { false && <p className="text-center">Or</p> }
-        { false &&
-          <button
-            type="button text-center"
-            className="btn"
-            onClick={() => this.setState({step: 'home'})}
-          >
-            Join our network
-          </button>
-        }
+        <p className="text-center">Or</p>
+        <button
+          type="button text-center"
+          className="btn"
+          onClick={() => this.setState({step: 'home'})}
+        >
+          Join Network & Get Free Leads
+        </button>
       </div>
     )
   },
