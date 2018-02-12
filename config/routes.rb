@@ -237,8 +237,8 @@ Rails.application.routes.draw do
   ##########JFMO REGISTER TRADIE RESOURCES/ROUTES#########
   ################################################### 
   resources :tradie_registrations, only:[:new, :create, :edit, :update]
-  get "register_tradie_company" => "tradie_registration#new_tradie_company", :as=> "register_trady_company"
-  post "create_tradie_company" => "tradie_registration#create_tradie_company" 
-  get "edit_tradie_company" => "tradie_registration#edit_tradie_company", :as=> "edit_register_tradie_company"
-  put "update_tradie_company" => "tradie_registration#update_tradie_company"
+  get "register_tradie_company" => "tradie_registrations#new_tradie_company", :as=> "register_trady_company"
+  post "create_tradie_company" => "tradie_registrations#create_tradie_company" 
+  get "edit_tradie_company" => "tradie_registrations#edit_tradie_company", :as=> "edit_register_tradie_company"
+  put "update_tradie_company" => "tradie_registrations#update_tradie_company"
  end
