@@ -264,6 +264,12 @@ var Trady = React.createClass({
     return <form role="form" className="agencies" id="new_user" onSubmit={this.onSubmit}>
       <input name="utf8" type="hidden" value="✓"/>
       <input type="hidden" name="authenticity_token" value={this.props.authenticity_token}/>
+      <input type="hidden" name="user[trady_attributes][jfmo_participant]" value={true}/>
+      <input
+        type="hidden"
+        name="user[trady_attributes][maintenance_request_reference_id]"
+        value={this.props.maintenance_request_reference_id || ''}
+      />
       <div className="user-email">
         <input
           type="text"
@@ -307,7 +313,7 @@ var Trady = React.createClass({
           type="text"
           placeholder="Name"
           id="trady.name"
-          name="user[trady][name]"
+          name="user[trady_attributes][name]"
           onChange={removeError}
           className={errors['trady.name'] ? 'has-error' : ''}
         />
@@ -318,7 +324,7 @@ var Trady = React.createClass({
         <input
           type="text"
           value={email}
-          name="user[trady][email]"
+          name="user[trady_attributes][email]"
           style={{display: 'none'}}
         />
       </div>
@@ -328,7 +334,7 @@ var Trady = React.createClass({
           type="text"
           placeholder="Company Name"
           id="trady.company_name"
-          name="user[trady][company_name]"
+          name="user[trady_attributes][company_name]"
           onChange={removeError}
           className={errors['trady.company_name'] ? 'has-error' : ''}
         />
@@ -340,7 +346,7 @@ var Trady = React.createClass({
           type="text"
           placeholder="Mobile phone"
           id="trady.mobile"
-          name="user[trady][mobile]"
+          name="user[trady_attributes][mobile]"
           onChange={removeError}
           className={errors['trady.mobile'] ? 'has-error' : ''}
         />
