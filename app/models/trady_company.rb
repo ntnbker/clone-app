@@ -13,6 +13,7 @@ class TradyCompany < ApplicationRecord
   attr_accessor :perform_account_name_validation
   attr_accessor :perform_bsb_number_validation
   attr_accessor :perform_bank_account_validation
+  attr_accessor :perform_professional_license_validation
   attr_accessor :trady_company_id 
   attr_accessor :quote_id 
   attr_accessor :invoice_type
@@ -54,6 +55,8 @@ class TradyCompany < ApplicationRecord
       self.perform_account_name_validation = true
       self.perform_bsb_number_validation = true
       self.perform_bank_account_validation = true
+      self.perform_bank_account_validation = true
+      self.perform_professional_license_validation = true
     end 
   end
 
