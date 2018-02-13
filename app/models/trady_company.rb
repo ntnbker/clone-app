@@ -32,6 +32,7 @@ class TradyCompany < ApplicationRecord
   validates_presence_of :account_name, if: :perform_account_name_validation
   validates_presence_of :bsb_number, if: :perform_bsb_number_validation
   validates_presence_of :bank_account_number, if: :perform_bank_account_validation
+  validates_presence_of :profession_license_number, if: :perform_professional_license_validation
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
   validates :mobile_number, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
   validates :landline, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
