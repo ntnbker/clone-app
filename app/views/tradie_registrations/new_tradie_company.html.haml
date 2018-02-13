@@ -20,7 +20,7 @@ This is where we add a new trady company
   = a.text_field :bank_account_number
   = a.text_field :account_name
   = a.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id.nil? ? '' : @maintenance_request_id}"
-  
+  = a.hidden_field :trady_id, value:"#{@trady_id.nil? ? '' : @trady_id}"
  
   %br
   = a.submit 'Next'

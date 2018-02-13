@@ -33,24 +33,37 @@ class TradieRegistrationsController < ApplicationController
   end
 
   def create_tradie_company
+    @trady_company = TradyCompany.new(trady_company_params)
+    
     if @trady_company.save
       flash[:success] = "PLease continue below"
-      redirect_to register_trady_payment_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+      redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id, trady_company_id:@trady_company.id)
     else
 
       respond_to do |format|
-        format.json {render :json=>{errors: @user.errors.to_hash(true).as_json}}
-        format.html {render :new}
+        format.json {render :json=>{errors: @trady_company.errors.to_hash(true).as_json}}
+        format.html {render :new_tradie_company}
       end
-    end 
+    end
+
   end
 
   def edit_tradie_company
-    
+    @trady_company = TradyCompany.find_by(id:params[:trady_company_id])
   end
 
   def update_tradie_company
-    
+    @trady_company = TradyCompany.find_by(id:params[:trady_company_id])
+
+    if @trady_company.update(trady_company_params)
+      flash[:success] = "You have updated the trady company information"
+      redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_company_id:@trady_company.id)
+    else 
+      respond_to do |format|
+        format.json {render :json=>{errors: @trady_company.errors.to_hash(true).as_json}}
+        format.html {render :edit_tradie_company}
+      end
+    end 
   end
 
   
@@ -58,6 +71,10 @@ class TradieRegistrationsController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email,:password, :password_confirmation, trady_attributes: [:user_id, :company_name,:mobile, :email, :name])
+  end
+
+  def trady_company_params
+    params.require(:trady_company).permit(:profession_license_number,:landline, :trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow, :trady_company_id )
   end
 
 end 

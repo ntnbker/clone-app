@@ -241,4 +241,12 @@ Rails.application.routes.draw do
   post "create_tradie_company" => "tradie_registrations#create_tradie_company" 
   get "edit_tradie_company" => "tradie_registrations#edit_tradie_company", :as=> "edit_register_tradie_company"
   put "update_tradie_company" => "tradie_registrations#update_tradie_company"
+ 
+
+  ###################################################
+  ##########TRADIE PAYMENTS RESOURCES/ROUTES#########
+  ################################################### 
+    resources :tradie_payments, only:[:new, :create]
+
+
  end
