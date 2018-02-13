@@ -35,12 +35,12 @@ class TradieRegistrationsController < ApplicationController
   def create_tradie_company
     @trady_company = TradyCompany.new(trady_company_params)
     binding.pry
-    if params[:trady_company][:maintenance_request_id]
+    if params[:trady_company][:maintenance_request_id] != ''
       maintenance_request_id = params[:trady_company][:maintenance_request_id]
     end 
     if @trady_company.save
       flash[:success] = "PLease continue below"
-      redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id, trady_company_id:@trady_company.id)
+      redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
     else
 
       respond_to do |format|
