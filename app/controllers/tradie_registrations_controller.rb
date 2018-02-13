@@ -34,7 +34,8 @@ class TradieRegistrationsController < ApplicationController
 
   def create_tradie_company
     @trady_company = TradyCompany.new(trady_company_params)
-    binding.pry
+    @trady_company.perform_bank_validation("Invoice")
+    
     if params[:trady_company][:maintenance_request_id] != ''
       maintenance_request_id = params[:trady_company][:maintenance_request_id]
     end 
