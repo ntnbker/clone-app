@@ -1,0 +1,28 @@
+
+
+=bootstrap_nested_form_for(@trady_company,url:"/update_tradie_company", method: :put) do |a|
+  = a.text_field :trading_name
+  = a.text_field :company_name
+  = a.text_field :profession_license_number
+  = a.text_field :abn
+  = a.form_group :gst_registration do
+    = a.check_box :gst_registration, label: "GST  registration"
+  = a.text_field :address
+  = a.form_group :mailing_address_same do
+    = a.check_box :mailing_address_same, label: "Mailing Address same as Above"
+  = a.text_field :mailing_address
+  = a.text_field :mobile_number
+  = a.text_field :landline
+
+  = a.text_field :email
+  = a.text_field :bsb_number
+  = a.text_field :bank_account_number
+  = a.text_field :account_name
+  = a.hidden_field :maintenance_request_id, value:"#{@maintenance_request_id.nil? ? '' : @maintenance_request_id}"
+  = a.hidden_field :id, value: @trady_company.id
+  = a.hidden_field :trady_id,  value: @trady_id.nil? ? '' : @trady_id
+  %br
+  = a.submit 'Next'
+  
+%button.button-primary.green.option-button
+  =link_to "Back", new_tradie_registration_path(maintenance_request_id:"#{@maintenance_request_id.nil? ? '' : @maintenance_request_id}", trady_company_id:@trady_company.id)

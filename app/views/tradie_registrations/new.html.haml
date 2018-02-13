@@ -1,16 +1,17 @@
-%div.well.container
-  =react_component('Trady', {:authenticity_token => form_authenticity_token, :maintenance_request_reference_id => @maintenance_request_reference_id})
+/ %div.well.container
+/   =react_component('Trady', {:authenticity_token => form_authenticity_token, :maintenance_request_id => @maintenance_request_id})
 
-/ =bootstrap_nested_form_for @user, url:"/tradie_registrations" do |f|
-/   =f.email_field :email, hide_label: false
-/   =f.password_field :password, hide_label: false
-/   =f.password_field :password_confirmation
+=bootstrap_nested_form_for @user, url:"/tradie_registrations" do |f|
+  =f.email_field :email, hide_label: false
+  =f.password_field :password, hide_label: false
+  =f.password_field :password_confirmation
 
-/   =f.fields_for :trady do |tradie|
-/     =tradie.text_field :name
-/     =tradie.text_field :company_name
-/     =tradie.phone_field :mobile
-/     =tradie.hidden_field :email
-/     =tradie.hidden_field :maintenance_request_reference_id , value:"#{@maintenance_request_reference_id.nil? ? '' : @maintenance_request_reference_id}"
-/     = tradie.hidden_field :jfmo_participant, value:true
-
+  =f.fields_for :trady do |tradie|
+    =tradie.text_field :name
+    =tradie.text_field :company_name
+    =tradie.phone_field :mobile
+    =tradie.hidden_field :email
+    =tradie.hidden_field :maintenance_request_id , value:"#{@maintenance_request_id.nil? ? '' : @maintenance_request_id}"
+    =tradie.hidden_field :trady_company_id , value:"#{@trady_company_id.nil? ? '' : @trady_company_id}"
+    = tradie.hidden_field :jfmo_participant, value:true
+  =f.submit "Create Login"

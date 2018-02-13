@@ -267,8 +267,8 @@ var Trady = React.createClass({
       <input type="hidden" name="user[trady_attributes][jfmo_participant]" value={true}/>
       <input
         type="hidden"
-        name="user[trady_attributes][maintenance_request_reference_id]"
-        value={this.props.maintenance_request_reference_id || ''}
+        name="user[trady_attributes][maintenance_request_id]"
+        value={this.props.maintenance_request_id || ''}
       />
       <div className="user-email">
         <input
