@@ -65,10 +65,12 @@ var NewTradyCompany = React.createClass({
 
     trady_company.abn =                 getValidValue(this.abn);
     trady_company.landline =            getValidValue(this.landline);
+    trady_company.mailing_address_same = this.state.same_address;
     trady_company.gst_registration =    this.state.gst_registration;
     trady_company.bsb_number =          getValidValue(this.bsb_number);
     trady_company.account_name =        getValidValue(this.account_name);
     trady_company.bank_account_number = getValidValue(this.bank_account_number);
+    trady_company.profession_license_number = getValidValue(this.profession_license_number);
 
     var params = { trady_company };
 
@@ -168,6 +170,21 @@ var NewTradyCompany = React.createClass({
             {renderErrorFunc(errors['abn'])}
           </div>
         </div>
+          <div className="form-group">
+            <div className="col-sm-10">
+              <input
+
+                id="profession_license_number"
+                type="text"
+                placeholder="Profession License Number"
+                defaultValue={this.props.profession_license_number}
+                ref={(ref) => this.profession_license_number = ref}
+                className={"form-control " + (errors['profession_license_number'] ? "has-error" : "")}
+                onChange={removeErrorFunc}
+              />
+              {renderErrorFunc(errors['profession_license_number'])}
+            </div>
+          </div>
         <div className="form-group">
           <div className="col-sm-10 col-sm-offset-2 text-center">
             <input
