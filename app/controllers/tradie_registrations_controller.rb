@@ -41,6 +41,8 @@ class TradieRegistrationsController < ApplicationController
   end
 
   def create_tradie_company
+    
+
     @trady_company = TradyCompany.new(trady_company_params)
     @trady_company.perform_bank_validation("Invoice")
     #@existing_company = TradyCompany.find_by(email:params[:trady_company][:email])
@@ -53,6 +55,8 @@ class TradieRegistrationsController < ApplicationController
 
 
     if @trady_company.save
+      trady = Trady.find_by(id:params[:trady_company][:trady_id])
+      trady.update_attribute(:trady_company_id, @trady_company.id)
       flash[:success] = "PLease continue below"
       redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
     else
@@ -74,6 +78,7 @@ class TradieRegistrationsController < ApplicationController
   def update_tradie_company
     @trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
     maintenance_request_id = params[:trady_company][:maintenance_request_id]
+
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have updated the trady company information"
       redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_company_id:@trady_company.id)
