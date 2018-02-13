@@ -78,22 +78,29 @@ class ApplicationController < ActionController::Base
       user = User.find_by(email:params[:email])
       token = user.set_password_token
     else
-      user = current_user
-      token = user.set_password_token
+      if current_user
+        user = current_user
+        token = user.set_password_token
+      end 
     end 
 
-    
-    if user.password_set
-      if current_user
-        #do nothing 
+    if user 
+      if user.password_set
+        if current_user
+          #do nothing 
+        else
+          flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
+          redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+        end 
+
       else
-        flash[:message] = "To view the maintenance request please login. Once logged in you will be directed towards the maintenance request of interest."
-        redirect_to menu_login_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id])
+        flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
+        redirect_to set_password_path(token:token)
       end 
 
     else
-      flash[:message] = "Notice: You must first setup a password before you can access any maintenance request. Thank you for your time."
-      redirect_to set_password_path(token:token)
+      flash[:danger] = "Sorry you dont have access to that. Please login in to see that."
+      redirect_to root_path
     end 
 
 
