@@ -39,8 +39,12 @@ form#new_trady_company {
 
 	input {
 		display: block;
-		width: 100%;
+    width: 100%;
 	}
+
+  button[type="submit"] {
+    margin-bottom: 20px;
+  }
 
 	input[type="radio"],
 	input[type="checkbox"] {
@@ -63,7 +67,8 @@ form#new_trady_company {
 
   /* For Mobile */
   @media (max-width: 768px) {
-    width: 100%;
+    width: 80%;
+    margin-left: 10%;
     #avatar {
       width: 35vw;
       height: 35vw;

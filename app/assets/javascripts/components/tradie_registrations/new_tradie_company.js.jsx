@@ -1,10 +1,13 @@
 var NewTradyCompany = React.createClass({
   getInitialState: function () {
+    const {trady_company} = this.props;
     return {
       errors: {},
-      address: this.props.address,
-      mailing_address: this.props.mailing_address,
-      gst_registration: !!this.props.gst_registration ? true : false,
+      address: trady_company && trady_company.address,
+      same_address: trady_company && trady_company.mailing_address_same,
+      mailing_address: trady_company && trady_company.mailing_address,
+      gst_registration: trady_company && trady_company.gst_registration ? true : false,
+      trady_company: trady_company || {},
       notification: {
         title: "",
         bgClass: "",
@@ -72,12 +75,16 @@ var NewTradyCompany = React.createClass({
     trady_company.bank_account_number = getValidValue(this.bank_account_number);
     trady_company.profession_license_number = getValidValue(this.profession_license_number);
 
+    if (this.props.trady_company) {
+      trady_company.id = this.props.trady_company.id;
+    }
+
     var params = { trady_company };
 
     const self = this;
     $.ajax({
-      type: 'POST',
-      url: '/create_tradie_company',
+      type: trady_company.id ? 'PUT' : 'POST',
+      url: trady_company.id ? '/update_tradie_company' : '/create_tradie_company',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -131,7 +138,7 @@ var NewTradyCompany = React.createClass({
               type="text"
               id="company_name"
               placeholder="Company Name"
-              defaultValue={this.props.company_name}
+              defaultValue={this.state.trady_company.company_name}
               ref={(ref) => this.company_name = ref}
               className={"form-control " + (errors['company_name'] ? "has-error" : "")}
               onChange={removeErrorFunc}
@@ -146,7 +153,7 @@ var NewTradyCompany = React.createClass({
               type="text"
               id="trading_name"
               placeholder="Trading Name"
-              defaultValue={this.props.trading_name}
+              defaultValue={this.state.trady_company.trading_name}
               ref={(ref) => this.trading_name = ref}
               className={"form-control " + (errors['trading_name'] ? "has-error" : "")}
               onChange={removeErrorFunc}
@@ -162,7 +169,7 @@ var NewTradyCompany = React.createClass({
               id="abn"
               type="text"
               placeholder="Abn"
-              defaultValue={this.props.abn}
+              defaultValue={this.state.trady_company.abn}
               ref={(ref) => this.abn = ref}
               className={"form-control " + (errors['abn'] ? "has-error" : "")}
               onChange={removeErrorFunc}
@@ -177,7 +184,7 @@ var NewTradyCompany = React.createClass({
                 id="profession_license_number"
                 type="text"
                 placeholder="Profession License Number"
-                defaultValue={this.props.profession_license_number}
+                defaultValue={this.state.trady_company.profession_license_number}
                 ref={(ref) => this.profession_license_number = ref}
                 className={"form-control " + (errors['profession_license_number'] ? "has-error" : "")}
                 onChange={removeErrorFunc}
@@ -222,6 +229,7 @@ var NewTradyCompany = React.createClass({
             type="checkbox"
             onChange={this.onSame}
             id="mailing_address_same"
+            checked={!!this.state.same_address ? "checked" : false}
           />
           Mailing Address same as Above
         </div>
@@ -247,7 +255,7 @@ var NewTradyCompany = React.createClass({
               type="text"
               id="mobile_number"
               placeholder="Mobile Number"
-              defaultValue={this.props.mobile_number}
+              defaultValue={this.state.trady_company.mobile_number}
               ref={(ref) => this.mobile_number = ref}
               className={"form-control " + (!!this.state.errors['mobile_number'] && "has-error")}
               onChange={removeErrorFunc}
@@ -261,7 +269,7 @@ var NewTradyCompany = React.createClass({
               id="landline"
               type="text"
               placeholder="Landline Number"
-              defaultValue={this.props.landline}
+              defaultValue={this.state.trady_company.landline}
               ref={(ref) => this.landline = ref}
               className={"form-control " + (errors['landline'] ? "has-error" : "")}
               onChange={removeErrorFunc}
@@ -276,7 +284,7 @@ var NewTradyCompany = React.createClass({
               type="text"
               id="email"
               placeholder="Email"
-              defaultValue={this.props.email}
+              defaultValue={this.state.trady_company.email}
               ref={(ref) => this.email = ref}
               className={"form-control " + (!!this.state.errors['email'] && "has-error")}
               onChange={removeErrorFunc}
@@ -292,7 +300,7 @@ var NewTradyCompany = React.createClass({
               id="bsb_number"
               placeholder="BSB Number"
               // onChange={this.checkValidate}
-              defaultValue={this.props.bsb_number}
+              defaultValue={this.state.trady_company.bsb_number}
               ref={(ref) => this.bsb_number = ref}
               className={"form-control " + (errors['bsb_number'] ? "has-error" : "")}
               onChange={removeErrorFunc}
@@ -307,7 +315,7 @@ var NewTradyCompany = React.createClass({
               type="text"
               id="bank_account_number"
               placeholder="Bank Account Number"
-              defaultValue={this.props.bank_account_number}
+              defaultValue={this.state.trady_company.bank_account_number}
               ref={(ref) => this.bank_account_number = ref}
               className={"form-control " + (errors['bank_account_number'] ? "has-error" : "")}
               onChange={removeErrorFunc}
@@ -323,7 +331,7 @@ var NewTradyCompany = React.createClass({
               id="account_name"
               placeholder="Account Name"
               // onChange={this.checkValidate}
-              defaultValue={this.props.account_name}
+              defaultValue={this.state.trady_company.account_name}
               ref={(ref) => this.account_name = ref}
               className={"form-control " + (errors['account_name'] ? "has-error" : "")}
               onChange={removeErrorFunc}
