@@ -10,9 +10,9 @@ class Tenant < ApplicationRecord
   has_many :appointments
   has_many :comments
 
+
   validates_presence_of :name,:email, :mobile
   # validates_uniqueness_of :email
-
 
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
   validates :mobile, :numericality => true, :length => {:minimum=>10, :maximum => 10 }

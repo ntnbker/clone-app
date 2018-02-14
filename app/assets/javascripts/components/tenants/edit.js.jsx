@@ -6,24 +6,21 @@ var TenantEdit = React.createClass({
       message: 'deafult message'
     };
   },
-
   onSubmit: function(e){
     e.preventDefault();
-
+    let isInvoice = this.props.system_plan === 'Invoice';
     const getValidValue = obj => obj && obj.value;
-
     var tenant = {
       id    : this.props.tenant.id,
       name  : getValidValue(this.name),
+      // email     : getValidValue(this.email),
       mobile: getValidValue(this.mobile),
     }
-
-    var params = { tenant };
-
+    var params = { tenant, id: this.props.tenant.id };
     const self = this;
     $.ajax({
-      type: 'PUT',
-      url: `/tenants/${(this.props.tenant || {}).id}`,
+      type: 'POST',
+      url: `/edit_tenant`,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -32,23 +29,19 @@ var TenantEdit = React.createClass({
         if (res.errors) {
           return self.setState({errors: res.errors || {}});
         }
-        self.setState({message: res.message, tenant: res.tenant, hideMessage: false});;
+        self.setState({message: res.message, tenant: res.tenant, hideMessage: false});
       },
       error: function(err) {
       }
     });
-
     return;
   },
-
   removeError: function({ target: { id } }) {
       this.setState({ errors: {...this.state.errors, [id]: ''}, hideMessage: true });
   },
-
   renderError: function(error) {
     return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
   },
-
   renderMessage: function() {
     const {message, hideMessage} = this.state;
     return (
@@ -60,7 +53,6 @@ var TenantEdit = React.createClass({
       </p>
     )
   },
-
   renderButton: function(text, link) {
     return (
       <button className="btn button-primary option-button" onClick={() => location.href = link} title={text}>
@@ -68,12 +60,9 @@ var TenantEdit = React.createClass({
       </button>
     );
   },
-
   renderTextField: function(field, textHolder) {
     const { errors }      = this.state;
     const { tenant = {} } = this.props;
-    const value           = tenant[field];
-
     return (
       <div className="form-group">
         <div className="col-sm-10">
@@ -81,7 +70,8 @@ var TenantEdit = React.createClass({
             type="text"
             id={field}
             placeholder={textHolder}
-            defaultValue={value}
+            defaultValue={tenant[field]}
+            readOnly={field === 'email'}
             ref={(ref) => this[field] = ref}
             className={"form-control " + (errors[field] ? "has-error" : "")}
             onChange={this.removeError}
@@ -91,14 +81,12 @@ var TenantEdit = React.createClass({
       </div>
     )
   },
-
   render: function() {
     let tenant                 = this.props.tenant || {};
     let {errors = {}, message} = this.state;
     const renderTextField      = this.renderTextField;
     const renderButtonFunc     = this.renderButton;
     const renderMessage        = this.renderMessage;
-
     return (
       <div className="edit_profile edit_tenant_profile">
         <form
@@ -111,6 +99,7 @@ var TenantEdit = React.createClass({
             Edit Tenant Profile
           </h5>
           {renderMessage()}
+          {renderTextField('email', 'email')}
           {renderTextField('name', 'Name')}
           {renderTextField('mobile', 'Mobile')}
           <div className="text-center">

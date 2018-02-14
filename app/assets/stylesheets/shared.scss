@@ -906,6 +906,13 @@ footer {
       font-size: 16px;
     }
   }
+
+  @supports (-ms-ime-align:auto) {
+    /* All Edge CSS here */
+    .modal-custom .modal-dialog {
+      position: absolute;
+    }
+  }
 }
 
 
@@ -915,3 +922,5 @@ footer {
     position: absolute;
   }
 }
+
+

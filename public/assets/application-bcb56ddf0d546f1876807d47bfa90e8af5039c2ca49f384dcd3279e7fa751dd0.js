@@ -79458,7 +79458,28 @@ var ButtonHeaderMR = React.createClass({
 	displayName: "ButtonHeaderMR",
 
 	getInitialState: function () {
-		var actionRequests = [{
+		var _filterHideField = this.filterHideField(this.props);
+
+		var standBy = _filterHideField.standBy;
+		var actionRequired = _filterHideField.actionRequired;
+		var awaitingAction = _filterHideField.awaitingAction;
+
+		return {
+			isShow: false,
+			isShowStatus: false,
+			standBy: standBy,
+			actionRequired: actionRequired,
+			awaitingAction: awaitingAction
+		};
+	},
+
+	filterHideField: function (props) {
+		var _props = this.props;
+		var existLandlord = _props.existLandlord;
+		var existQuoteRequest = _props.existQuoteRequest;
+		var existTradyAssigned = _props.existTradyAssigned;
+
+		var actionRequired = [{
 			title: "Maintenance Request",
 			value: "Initiate Maintenance Request"
 		}, {
@@ -79485,10 +79506,10 @@ var ButtonHeaderMR = React.createClass({
 		//   title: "Pending Payment",
 		//   value: "Pending Payment",
 		// }
-		var awaitingAction = [{
+		var awaitingAction = [existLandlord && {
 			title: "Awaiting Owner Initiation",
 			value: "Awaiting Owner Initiation"
-		}, {
+		}, existLandlord && {
 			title: "Awaiting Owner Instruction",
 			value: "Awaiting Owner Instruction"
 		},
@@ -79496,25 +79517,25 @@ var ButtonHeaderMR = React.createClass({
 		//   title: "Awaiting Tradie Initiation",
 		//   value: "Awaiting Tradie Initiation",
 		// },
-		{
+		existQuoteRequest && {
 			title: "Awaiting Quote Approval",
 			value: "Quote Received Awaiting Approval"
-		}, {
+		}, existTradyAssigned && {
 			title: "Quote Approved Tradie To Organise Appointment",
 			value: "Quote Approved Tradie To Organise Appointment"
-		}, {
+		}, existTradyAssigned && {
 			title: "Tradie To Confirm Appointment",
 			value: "Tradie To Confirm Appointment"
 		}, {
 			title: "Tenant To Confirm Appointment",
 			value: "Tenant To Confirm Appointment"
-		}, {
+		}, existLandlord && {
 			title: "Landlord To Confirm Appointment",
 			value: "Landlord To Confirm Appointment"
-		}, {
+		}, existTradyAssigned && {
 			title: "Maintenance Scheduled - Awaiting Invoice",
 			value: "Maintenance Scheduled - Awaiting Invoice"
-		}, {
+		}, existLandlord && {
 			title: "Maintenance Scheduled With Landlord",
 			value: "Maintenance Scheduled With Landlord"
 		}];
@@ -79528,12 +79549,30 @@ var ButtonHeaderMR = React.createClass({
 		}];
 
 		return {
-			isShow: false,
-			standBy: standBy,
-			isShowStatus: false,
-			actionRequests: actionRequests,
-			awaitingAction: awaitingAction
+			standBy: standBy.filter(function (v) {
+				return !!v;
+			}),
+			actionRequired: actionRequired.filter(function (v) {
+				return !!v;
+			}),
+			awaitingAction: awaitingAction.filter(function (v) {
+				return !!v;
+			})
 		};
+	},
+
+	componentWillReceiveProps: function (props) {
+		var _filterHideField2 = this.filterHideField(props);
+
+		var standBy = _filterHideField2.standBy;
+		var actionRequired = _filterHideField2.actionRequired;
+		var awaitingAction = _filterHideField2.awaitingAction;
+
+		this.setState({
+			standBy: standBy,
+			actionRequired: actionRequired,
+			awaitingAction: awaitingAction
+		});
 	},
 
 	show: function (key) {
@@ -79589,7 +79628,7 @@ var ButtonHeaderMR = React.createClass({
 		var all_agency_admins = this.props.all_agency_admins;
 		var _state = this.state;
 		var standBy = _state.standBy;
-		var actionRequests = _state.actionRequests;
+		var actionRequired = _state.actionRequired;
 		var awaitingAction = _state.awaitingAction;
 
 		return React.createElement(
@@ -79669,11 +79708,11 @@ var ButtonHeaderMR = React.createClass({
 						React.createElement(
 							"p",
 							{ className: "awaiting" },
-							"Action Request"
+							"Action Required"
 						),
 						React.createElement(DropDownStatus, { viewItem: function (key, item) {
 								return _this4.props.viewItem(key, item);
-							}, data: actionRequests })
+							}, data: actionRequired })
 					),
 					React.createElement(
 						"div",
@@ -79776,9 +79815,9 @@ var ModalConfirmMR = React.createClass({
 	},
 
 	render: function () {
-		var _props = this.props;
-		var title = _props.title;
-		var content = _props.content;
+		var _props2 = this.props;
+		var title = _props2.title;
+		var content = _props2.content;
 
 		return React.createElement(
 			"div",
@@ -79858,9 +79897,9 @@ var ItemMaintenanceRequest = React.createClass({
 		var _this5 = this;
 
 		var maintenance = this.props.maintenance_request;
-		var _props2 = this.props;
-		var status = _props2.status;
-		var strike_approval = _props2.strike_approval;
+		var _props3 = this.props;
+		var status = _props3.status;
+		var strike_approval = _props3.strike_approval;
 
 		var props = this.props;
 		var d = new Date();
@@ -79915,6 +79954,9 @@ var ItemMaintenanceRequest = React.createClass({
 				props.show_assign && React.createElement(ButtonHeaderMR, {
 					all_agents: props.all_agents,
 					all_agency_admins: props.all_agency_admins,
+					existLandlord: props.existLandlord,
+					existQuoteRequest: props.existQuoteRequest,
+					existTradyAssigned: props.existTradyAssigned,
 					viewItem: function (key, item) {
 						return _this5.props.viewItem(key, item);
 					}
@@ -80106,10 +80148,10 @@ var ModalEditMR = React.createClass({
 		var position = _state3.position;
 
 		var params = this.props.params || {};
-		var _props3 = this.props;
-		var _props3$x = _props3.x;
-		var x = _props3$x === undefined ? 0 : _props3$x;
-		var removeField = _props3.removeField;
+		var _props4 = this.props;
+		var _props4$x = _props4.x;
+		var x = _props4$x === undefined ? 0 : _props4$x;
+		var removeField = _props4.removeField;
 		var _params$maintenance_request = params.maintenance_request;
 		var maintenance_request = _params$maintenance_request === undefined ? {} : _params$maintenance_request;
 		var _params$services = params.services;
@@ -80220,9 +80262,9 @@ var ModalSplitMR = React.createClass({
 
 	render: function () {
 		var result = this.state.result;
-		var _props4 = this.props;
-		var maintenance_request = _props4.maintenance_request;
-		var services = _props4.services;
+		var _props5 = this.props;
+		var maintenance_request = _props5.maintenance_request;
+		var services = _props5.services;
 
 		return React.createElement(
 			"div",
@@ -80326,9 +80368,9 @@ var ModalConfirmUpdateStatus = React.createClass({
 	displayName: "ModalConfirmUpdateStatus",
 
 	render: function () {
-		var _props5 = this.props;
-		var content = _props5.content;
-		var title = _props5.title;
+		var _props6 = this.props;
+		var content = _props6.content;
+		var title = _props6.title;
 
 		return React.createElement(
 			"div",
@@ -84834,6 +84876,7 @@ var MaintenanceRequest = React.createClass({
 		var trady = _state11.trady;
 		var quote_requests = _state11.quote_requests;
 		var tenants = _state11.tenants;
+		var landlord = _state11.landlord;
 
 		var hasApproved = quote_requests.some(function (quote_request) {
 			return quote_request.quotes.some(function (quote) {
@@ -84856,6 +84899,9 @@ var MaintenanceRequest = React.createClass({
 						property: this.props.property,
 						all_agents: this.props.all_agents,
 						updateStatusMR: this.updateStatusMR,
+						existLandlord: !!landlord,
+						existQuoteRequest: !!quote_requests.length,
+						existTradyAssigned: !!trady,
 						all_agency_admins: this.props.all_agency_admins,
 						viewItem: function (key, item) {
 							return _this11.viewItem(key, item);
@@ -87776,6 +87822,13 @@ var DetailQuote = React.createClass({
 						} else {
 							subTotal += item.amount * item.hours;
 						}
+						var amount = item.amount;
+						if (item.pricing_type === 'Range') {
+							amount = "$" + item.min_price.toFixed(2) + "-$" + item.max_price.toFixed(2);
+						} else {
+							amount = "$" + amount.toFixed(2);
+						}
+
 						return React.createElement(
 							"tr",
 							{ key: key },
@@ -87797,7 +87850,7 @@ var DetailQuote = React.createClass({
 							React.createElement(
 								"td",
 								{ className: "text-right quote-amount" },
-								item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2)
+								item.pricing_type !== "Hourly" && amount
 							)
 						);
 					})
@@ -88704,7 +88757,12 @@ var QuoteField = React.createClass({
       pricing_type: pricing_type,
       hours_input: hours_input,
       item_description_error: '',
-      amount_error: ''
+      amount_error: '',
+      min_price_error: '',
+      max_price_error: '',
+      amount: quote ? quote.amount : 0,
+      min_price: quote ? quote.min_price : 0,
+      max_price: quote ? quote.max_price : 0
     };
   },
 
@@ -88716,12 +88774,36 @@ var QuoteField = React.createClass({
   validateAmount: function (errors) {
     var error = errors['quote_items.amount'];
     if (!error || error.length === 0) return '';
-    var amount = this.amount.value;
+    var amount = this.amount && this.amount.value || '';
 
     if (amount === '') return error.filter(function (e) {
       return e.includes('blank');
     })[0];
     if (!/^\d+$/.test(amount)) return error.filter(function (e) {
+      return e.includes('number');
+    })[0];
+    return '';
+  },
+
+  validateMinPrice: function (errors) {
+    var error = errors['quote_items.min_price'];
+    if (!error || error.length === 0) return '';
+    var min_price = this.min_price && this.min_price.value || '';
+
+    if (min_price === '') return error[0];
+    if (!/^\d+$/.test(min_price)) return error.filter(function (e) {
+      return e.includes('number');
+    })[0];
+    return '';
+  },
+
+  validateMaxPrice: function (errors) {
+    var error = errors['quote_items.max_price'];
+    if (!error || error.length === 0) return '';
+    var max_price = this.max_price && this.max_price.value || '';
+
+    if (max_price === '') return error[0];
+    if (!/^\d+$/.test(max_price)) return error.filter(function (e) {
       return e.includes('number');
     })[0];
     return '';
@@ -88733,7 +88815,9 @@ var QuoteField = React.createClass({
 
     this.setState({
       item_description_error: this.validateDescription(errorsForm),
-      amount_error: this.validateAmount(errorsForm)
+      amount_error: this.validateAmount(errorsForm),
+      min_price_error: this.validateMinPrice(errorsForm),
+      max_price_error: this.validateMaxPrice(errorsForm)
     });
   },
 
@@ -88743,17 +88827,30 @@ var QuoteField = React.createClass({
 
   onPricing: function (event) {
     var pricing_type = event.target.value;
-    var hours_input = pricing_type === 'Hourly';
-    this.setState({ pricing_type: pricing_type, hours_input: hours_input });
+    var update = {
+      pricing_type: pricing_type,
+      hours_input: pricing_type === 'Hourly'
+    };
+    if (pricing_type === 'Range') {
+      update.amount = 0;
+    } else {
+      update.min_price = 0;
+      update.max_price = 0;
+    }
+    this.setState(update);
   },
 
   removeError: function (_ref) {
-    var id = _ref.target.id;
+    var _setState;
+
+    var _ref$target = _ref.target;
+    var id = _ref$target.id;
+    var value = _ref$target.value;
 
     var field = id.match(/\d+_(\w+)$/);
     if (!field) return;
 
-    this.setState(_defineProperty({}, field[1] + '_error', ''));
+    this.setState((_setState = {}, _defineProperty(_setState, field[1] + '_error', ''), _defineProperty(_setState, field[1], value), _setState));
   },
 
   renderError: function (error) {
@@ -88772,6 +88869,7 @@ var QuoteField = React.createClass({
     var currentState = this.state;
     var removeErrorFunc = this.removeError;
     var renderErrorFunc = this.renderError;
+    var needToShowTo = currentState.pricing_type === 'Range';
 
     if (quote) {
       x = quote.id;
@@ -88821,20 +88919,67 @@ var QuoteField = React.createClass({
               'option',
               { value: 'Hourly' },
               'Hourly'
+            ),
+            React.createElement(
+              'option',
+              { value: 'Range' },
+              'Range'
             )
           ),
-          React.createElement('input', {
-            type: 'text',
-            placeholder: 'Amount',
-            defaultValue: quote ? quote.amount : '',
-            ref: function (value) {
-              return _this.amount = value;
-            },
-            className: "text-center price" + (currentState['amount_error'] ? ' has-error' : ''),
-            id: 'quote_quote_items_attributes_' + x + '_amount',
-            name: 'quote[quote_items_attributes][' + x + '][amount]',
-            onChange: removeErrorFunc
-          }),
+          React.createElement(
+            'div',
+            { className: 'amount-input' },
+            React.createElement('input', {
+              type: 'text',
+              placeholder: 'Amount',
+              defaultValue: quote ? quote.amount : '',
+              value: this.state.amount,
+              ref: function (value) {
+                return _this.amount = value;
+              },
+              className: "text-center price" + (currentState['amount_error'] ? ' has-error' : ''),
+              id: 'quote_quote_items_attributes_' + x + '_amount',
+              name: 'quote[quote_items_attributes][' + x + '][amount]',
+              onChange: removeErrorFunc,
+              style: needToShowTo ? { display: 'none' } : {}
+            }),
+            React.createElement('input', {
+              type: 'text',
+              placeholder: 'Min Price',
+              defaultValue: quote ? quote.min_price : '',
+              value: this.state.min_price,
+              ref: function (value) {
+                return _this.min_price = value;
+              },
+              className: "text-center price" + (currentState['min_price_error'] ? ' has-error' : ''),
+              id: 'quote_quote_items_attributes_' + x + '_min_price',
+              name: 'quote[quote_items_attributes][' + x + '][min_price]',
+              onChange: removeErrorFunc,
+              style: !needToShowTo ? { display: 'none' } : {}
+            }),
+            React.createElement(
+              'span',
+              {
+                className: 'to',
+                style: !needToShowTo ? { display: 'none' } : {}
+              },
+              'To'
+            ),
+            React.createElement('input', {
+              type: 'text',
+              placeholder: 'Max Price',
+              defaultValue: quote ? quote.max_price : '',
+              value: this.state.max_price,
+              ref: function (value) {
+                return _this.max_price = value;
+              },
+              className: "text-center price" + (currentState['max_price_error'] ? ' has-error' : ''),
+              id: 'quote_quote_items_attributes_' + x + '_max_price',
+              name: 'quote[quote_items_attributes][' + x + '][max_price]',
+              onChange: removeErrorFunc,
+              style: !needToShowTo ? { display: 'none' } : {}
+            })
+          ),
           React.createElement('input', {
             type: 'hidden',
             id: 'quote_quote_items_attributes_' + x + '_hours',
@@ -88856,7 +89001,9 @@ var QuoteField = React.createClass({
         React.createElement(
           'div',
           null,
-          renderErrorFunc(currentState['amount_error'])
+          !needToShowTo && renderErrorFunc(currentState['amount_error']),
+          needToShowTo && renderErrorFunc(currentState['min_price_error']),
+          needToShowTo && renderErrorFunc(currentState['max_price_error'])
         )
       ),
       React.createElement(
@@ -89237,7 +89384,6 @@ var MenuAgency = function (edit_agency, edit_agency_admin) {
     name: "Agency Admin Account Settings"
   }];
 };
-
 var MenuAgent = function (edit_agent) {
   return [{
     url: "/",
@@ -89250,7 +89396,6 @@ var MenuAgent = function (edit_agent) {
     name: "Agent Account Settings"
   }];
 };
-
 var MenuTrady = function (edit_trady) {
   return [{
     url: "/trady_maintenance_requests",
@@ -89260,32 +89405,30 @@ var MenuTrady = function (edit_trady) {
     name: "Trady Account Settings"
   }];
 };
-
-var MenuTenant = function () {
+var MenuTenant = function (edit_tenant) {
   return [{
     url: "/",
     name: "Create Maintenance Request"
   }, {
     url: "/tenant_maintenance_requests",
     name: "My Maintenance Requests"
+  }, {
+    url: edit_tenant,
+    name: "Tenant Account Settings"
   }];
 };
-
 var MenuLandlord = function () {
   return [{
     url: "/landlord_maintenance_requests",
     name: "My Maintenance Requests"
   }];
 };
-
 var showFlash = function (message, status, positionShow) {
   flashFunctions.forEach(function (flashFunc) {
     return flashFunc(message, status, positionShow);
   });
 };
-
 var flashFunctions = [];
-
 var ShowMessage = React.createClass({
   displayName: "ShowMessage",
 
@@ -89299,15 +89442,12 @@ var ShowMessage = React.createClass({
       position: this.props.position
     };
   },
-
   showMessage: function (message, status, position) {
     this.setState({ message: message, status: status, positionShow: position, isShow: true });
   },
-
   close: function () {
     this.setState({ isShow: false });
   },
-
   render: function () {
     var _state = this.state;
     var message = _state.message;
@@ -89336,7 +89476,6 @@ var ShowMessage = React.createClass({
     ) : React.createElement("div", null);
   }
 });
-
 var MobileMenu = React.createClass({
   displayName: "MobileMenu",
 
@@ -89345,13 +89484,11 @@ var MobileMenu = React.createClass({
       visible: this.props.isShow
     };
   },
-
   componentWillReceiveProps: function (nextProps) {
     this.setState({
       visible: nextProps.isShow
     });
   },
-
   render: function () {
     return React.createElement(
       "div",
@@ -89364,7 +89501,6 @@ var MobileMenu = React.createClass({
     );
   }
 });
-
 var Header = React.createClass({
   displayName: "Header",
 
@@ -89376,22 +89512,18 @@ var Header = React.createClass({
       isItems: !this.props.expanded
     };
   },
-
   showBar: function () {
     this.setState({ isShowBar: !this.state.isShowBar });
   },
-
   hideBar: function () {
     if (this.state.isShowBar) {
       this.setState({ isShowBar: false });
     }
   },
-
   showItems: function () {
     this.setState({ isItems: !this.state.isItems,
       isClicked: !this.state.isClicked });
   },
-
   clickDocument: function (e) {
     if (this.props.expanded) {
       var component = ReactDOM.findDOMNode(this.showItemMenus);
@@ -89405,7 +89537,6 @@ var Header = React.createClass({
         }
     }
   },
-
   showMenu: function () {
     var myDropdown = document.getElementById("menu-bar");
     if (myDropdown && !this.state.isShow) {
@@ -89415,7 +89546,6 @@ var Header = React.createClass({
       });
     }
   },
-
   closeMenu: function () {
     var myDropdown = document.getElementById("menu-bar");
     if (myDropdown && this.state.isShow) {
@@ -89425,14 +89555,12 @@ var Header = React.createClass({
       });
     }
   },
-
   componentDidMount: function (e) {
     var self = this;
     var event = "click";
     if (this.iOS()) {
       event += " touchstart";
     }
-
     $(document).bind(event, function (e) {
       self.clickDocument(e);
       self.closeMenu();
@@ -89446,30 +89574,13 @@ var Header = React.createClass({
     });
   },
 
-  componentWillUnmount: function () {
-    $(document).unbind('click', this.clickDocument);
-  },
-
-  iOS: function () {
-    var iDevices = ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'];
-
-    if (!!navigator.platform) {
-      while (iDevices.length) {
-        if (navigator.platform === iDevices.pop()) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  },
-
   menuBar: function () {
     var _props = this.props;
     var edit_agency = _props.edit_agency;
     var edit_agency_admin = _props.edit_agency_admin;
     var edit_agent = _props.edit_agent;
     var edit_trady = _props.edit_trady;
+    var edit_tenant = _props.edit_tenant;
     var user_agency_admin = _props.user_agency_admin;
     var user_agent = _props.user_agent;
     var user_trady = _props.user_trady;
@@ -89477,8 +89588,7 @@ var Header = React.createClass({
     var user_landlord = _props.user_landlord;
 
     var dataMenu = [];
-    if (user_agency_admin) dataMenu = [].concat(_toConsumableArray(MenuAgency(edit_agency, edit_agency_admin)));else if (user_agent) dataMenu = [].concat(_toConsumableArray(MenuAgent(edit_agent)));else if (user_trady) dataMenu = [].concat(_toConsumableArray(MenuTrady(edit_trady)));else if (user_tenant) dataMenu = [].concat(_toConsumableArray(MenuTenant()));else if (user_landlord) dataMenu = [].concat(_toConsumableArray(MenuLandlord()));
-
+    if (user_agency_admin) dataMenu = [].concat(_toConsumableArray(MenuAgency(edit_agency, edit_agency_admin)));else if (user_agent) dataMenu = [].concat(_toConsumableArray(MenuAgent(edit_agent)));else if (user_trady) dataMenu = [].concat(_toConsumableArray(MenuTrady(edit_trady)));else if (user_tenant) dataMenu = [].concat(_toConsumableArray(MenuTenant(edit_tenant)));else if (user_landlord) dataMenu = [].concat(_toConsumableArray(MenuLandlord()));
     return dataMenu.map(function (item, key) {
       return React.createElement(
         "li",
@@ -89491,7 +89601,6 @@ var Header = React.createClass({
       );
     });
   },
-
   search: function (hidden) {
     var _props2 = this.props;
     var role = _props2.role;
@@ -89500,7 +89609,6 @@ var Header = React.createClass({
 
     var hiddenSearch = hidden || ['AgencyAdmin', 'Agent'].indexOf(role) === -1;
     var style = hiddenSearch ? { visibility: 'hidden' } : {};
-
     return React.createElement(
       "div",
       { className: "search " + (hiddenSearch && "hidden-search"), style: style },
@@ -89524,6 +89632,21 @@ var Header = React.createClass({
     );
   },
 
+  componentWillUnmount: function () {
+    $(document).unbind('click', this.clickDocument);
+  },
+  iOS: function () {
+    var iDevices = ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'];
+    if (!!navigator.platform) {
+      while (iDevices.length) {
+        if (navigator.platform === iDevices.pop()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  },
+
   header: function (e) {
     var _this = this;
 
@@ -89535,9 +89658,7 @@ var Header = React.createClass({
     var images = props.images;
 
     var user_name = (props.user_name || '').trim() || role || '';
-
     var user_name_show_pc = user_name.length > 12 ? (user_name.trim() && user_name || role).replace(/(.{0,12}).+/, '$1...') : user_name;
-
     var user_name_show_mobile = user_name.length > 20 ? (user_name.trim() && user_name || role).replace(/(.{0,20}).*/, '$1...') : user_name;
 
     var _ref = images && images.length && images[0] || {};
@@ -89709,7 +89830,6 @@ var Header = React.createClass({
       )
     );
   },
-
   render: function () {
     return React.createElement(
       "div",
@@ -90966,6 +91086,166 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var TenantEdit = React.createClass({
+  displayName: 'TenantEdit',
+
+  getInitialState: function () {
+
+    return {
+      errors: {}
+    };
+  },
+
+  changeLicenseType: function (_ref) {
+    var value = _ref.target.value;
+
+    this.setState({
+      license_type: value,
+      errors: _extends({}, this.state.errors, { license_type: '' })
+    });
+  },
+
+  onSubmit: function (e) {
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+    var tenant = {
+      id: this.props.tenant.id,
+      name: getValidValue(this.name),
+      // email     : getValidValue(this.email),
+      mobile: getValidValue(this.mobile)
+    };
+
+    var params = { tenant: tenant, id: this.props.tenant.id };
+
+    var self = this;
+    $.ajax({
+      type: 'POST',
+      url: '/edit_tenant',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    e.preventDefault();
+
+    return;
+  },
+
+  removeError: function (_ref2) {
+    var id = _ref2.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButton: function (text, link) {
+    return React.createElement(
+      'button',
+      { className: 'btn button-primary option-button', onClick: function () {
+          return location.href = link;
+        }, title: text },
+      text
+    );
+  },
+
+  renderTextField: function (field, textHolder) {
+    var _this = this;
+
+    var errors = this.state.errors;
+    var _props$tenant = this.props.tenant;
+    var tenant = _props$tenant === undefined ? {} : _props$tenant;
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'div',
+        { className: 'col-sm-10' },
+        React.createElement('input', {
+          type: 'text',
+          id: field,
+          placeholder: textHolder,
+          defaultValue: tenant[field],
+          readOnly: field === 'email',
+          ref: function (ref) {
+            return _this[field] = ref;
+          },
+          className: "form-control " + (errors[field] ? "has-error" : ""),
+          onChange: this.removeError
+        }),
+        this.renderError(errors[field])
+      )
+    );
+  },
+
+  render: function () {
+    var isInvoice = this.props.system_plan === "Invoice";
+    var tenant = this.props.tenant || {};
+    var company_name = tenant.company_name;
+    var business_name = tenant.business_name;
+    var abn = tenant.abn;
+    var address = tenant.address;
+    var mailing_address = tenant.mailing_address;
+    var phone = tenant.phone;
+    var mobile_phone = tenant.mobile_phone;
+    var corporation_license_number = tenant.corporation_license_number;
+    var _state = this.state;
+    var _state$errors = _state.errors;
+    var errors = _state$errors === undefined ? {} : _state$errors;
+    var license_type = _state.license_type;
+    var gallery = _state.gallery;
+
+    var renderTextField = this.renderTextField;
+    var renderButtonFunc = this.renderButton;
+
+    return React.createElement(
+      'div',
+      { className: 'edit_tenant_profile edit_profile' },
+      React.createElement(
+        'form',
+        { role: 'form', className: 'form-horizontal full', id: 'edit_tenant', onSubmit: this.onSubmit },
+        React.createElement(
+          'h5',
+          { className: 'control-label col-sm-2 required title' },
+          'Edit tenant Profile'
+        ),
+        renderTextField('name', 'Name'),
+        renderTextField('mobile', 'Mobile'),
+        renderTextField('email', 'email'),
+        React.createElement(
+          'div',
+          { className: 'text-center' },
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button-primary green option-button' },
+            'Update Your Profile'
+          )
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var TradyEdit = React.createClass({
   displayName: 'TradyEdit',
 
@@ -91268,6 +91548,7 @@ var EditTradyCompany = React.createClass({
     var trady_company = {
       email: getValidValue(this.email),
       address: getValidValue(this.address),
+      landline: getValidValue(this.landline),
       company_name: getValidValue(this.company_name),
       trading_name: getValidValue(this.trading_name),
       mobile_number: getValidValue(this.mobile_number),
@@ -91288,7 +91569,6 @@ var EditTradyCompany = React.createClass({
     if (isInvoice) {
       trady_company.gst_registration = this.state.gst_registration;
       trady_company.abn = getValidValue(this.abn);
-      trady_company.landline = getValidValue(this.landline);
       trady_company.bsb_number = getValidValue(this.bsb_number);
       trady_company.account_name = getValidValue(this.account_name);
       trady_company.bank_account_number = getValidValue(this.bank_account_number);
@@ -91572,7 +91852,7 @@ var EditTradyCompany = React.createClass({
           this.renderError(errors['mobile_number'])
         )
       ),
-      isInvoice && React.createElement(
+      React.createElement(
         "div",
         { className: "form-group" },
         React.createElement(
@@ -92059,6 +92339,7 @@ var AddTradycompany = React.createClass({
     var trady_company = {
       email: getValidValue(this.email),
       address: getValidValue(this.address),
+      landline: getValidValue(this.landline),
       company_name: getValidValue(this.company_name),
       trading_name: getValidValue(this.trading_name),
       mobile_number: getValidValue(this.mobile_number),
@@ -92079,7 +92360,6 @@ var AddTradycompany = React.createClass({
     if (isInvoice) {
       trady_company.abn = getValidValue(this.abn);
       trady_company.gst_registration = this.state.gst_registration;
-      trady_company.landline = getValidValue(this.landline);
       trady_company.bsb_number = getValidValue(this.bsb_number);
       trady_company.account_name = getValidValue(this.account_name);
       trady_company.bank_account_number = getValidValue(this.bank_account_number);
@@ -92374,7 +92654,7 @@ var AddTradycompany = React.createClass({
             this.renderError(errors['mobile_number'])
           )
         ),
-        isInvoice && React.createElement(
+        React.createElement(
           "div",
           { className: "form-group" },
           React.createElement(

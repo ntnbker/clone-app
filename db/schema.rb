@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 
-ActiveRecord::Schema.define(version: 20180119043332) do
+ActiveRecord::Schema.define(version: 20180202074111) do
 
 
   # These are extensions that must be enabled in order to support this database
@@ -362,6 +362,8 @@ ActiveRecord::Schema.define(version: 20180119043332) do
     t.string  "pricing_type"
     t.float   "hours"
     t.float   "total_per_hour"
+    t.float   "min_price"
+    t.float   "max_price"
   end
 
   create_table "quote_requests", force: :cascade do |t|
