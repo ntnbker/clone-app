@@ -1,4 +1,4 @@
-require 'rufus-scheduler'
+# require 'rufus-scheduler'
 
 # #scheduler = Rufus::Scheduler::singleton
 
@@ -10,38 +10,32 @@ require 'rufus-scheduler'
 # # end
 
 
-scheduler = Rufus::Scheduler.new(:lockfile => ".rufus-scheduler.lock")
+# scheduler = Rufus::Scheduler.new(:lockfile => ".rufus-scheduler.lock")
 
-unless scheduler.down?
+# unless scheduler.down?
 
-  scheduler.every("2m") do
-    # ...
-    ReminderQueueWorker.perform_async
-  end
-end
-
-
-
-
-
-
-
-#THIS IS FOR SIDEKIQ SCHEDULER
-# require 'sidekiq'
-# require 'sidekiq-scheduler'
-
-# Sidekiq.configure_server do |config|
-#   schedule_file = 'config/schedule.yml'
-
-#   config.on(:startup) do
-#     if ENV['SCHEDULER'] == 'yes'
-#       Sidekiq.schedule = YAML.load_file(schedule_file)
-#       #Sidekiq.set_schedule('reminder_queue', { 'every' => ['2m'], 'class' => 'ReminderQueueWorker' })
-#       Sidekiq::Scheduler.listened_queues_only = false
-#       Sidekiq::Scheduler.load_schedule!
-#     end
+#   scheduler.every("2d") do
+#     # ...
+#     ReminderQueueWorker.perform_async
 #   end
 # end
+
+
+require 'sidekiq'
+require 'sidekiq-scheduler'
+
+Sidekiq.configure_server do |config|
+  schedule_file = 'config/schedule.yml'
+
+  config.on(:startup) do
+    if ENV['SCHEDULER'] == 'yes'
+      Sidekiq.schedule = YAML.load_file(schedule_file)
+      #Sidekiq.set_schedule('reminder_queue', { 'every' => ['2m'], 'class' => 'ReminderQueueWorker' })
+      Sidekiq::Scheduler.listened_queues_only = false
+      Sidekiq::Scheduler.load_schedule!
+    end
+  end
+end
 
 
 
