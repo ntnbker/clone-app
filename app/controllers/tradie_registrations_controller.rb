@@ -71,7 +71,7 @@ class TradieRegistrationsController < ApplicationController
   end
 
   def edit_tradie_company
-    @trady_company = TradyCompany.find_by(id:params[:id])
+    @trady_company = TradyCompany.find_by(id:params[:trady_company_id])
     @trady_id = params[:trady_id]
     @maintenance_request_id = params[:maintenance_request_id]
   end

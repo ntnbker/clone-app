@@ -1,7 +1,10 @@
+this is where we edit the services
+
+
 Here he list all the services that they can be listed as. 
 
-= bootstrap_form_for @skill, url:"/add_services" do |f| 
-  = f.collection_check_boxes :skill, Service.all, :service, :service
+= bootstrap_form_for @skill, url:"/remove_services", method: :delete do |f| 
+  = f.collection_check_boxes :skill, @services, :service, :service
   = f.hidden_field :trady_id, value:@trady_id
   = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
   = f.hidden_field :trady_company_id, value:@trady_company_id

@@ -250,4 +250,7 @@ Rails.application.routes.draw do
   ################################################### 
     resources :services, only:[:new,:create, :update, :index]
     post "add_services"=>"services#add_services"
+    get "edit_services"=>"services#edit_services", :as => "edit_services"
+    delete "remove_services" => "services#delete_services"
+
  end

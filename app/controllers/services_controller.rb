@@ -39,11 +39,34 @@ class ServicesController < ApplicationController
 
     service_array = params[:skill][:skill]
     trady_id = params[:skill][:trady_id]
-    service_array.each do |skill|
-      if skill != ''
-        Skill.create(skill:skill, trady_id:trady_id)
-      end 
-    end 
+    
+    if service_array[0] == '' && service_array.count == 1 
+      flash[:danger] = "Please choose at least one service from the list below, thank you."
+      redirect_to services_path
+    else
+      service_array.each do |skill|
+        if skill != ''
+          Skill.create(skill:skill, trady_id:trady_id)
+        end 
+      end
+      redirect_to new_tradie_payment_path(maintenance_request_id:params[:skill][:maintenance_request_id], trady_company_id:params[:skill][:trady_company_id], trady_id:params[:skill][:trady_id])
+    end  
+  end
+
+
+  def edit_services
+    #old_array - new_array = array of elements that are gone. We can then delete these. 
+    @maintenance_request_id = params[:maintenance_request_id] 
+    @trady_id = params[:trady_id] 
+    @trady_company_id = params[:trady_company_id]
+    
+
+    @services = Trady.find_by(id:params[:trady_id]).skills
+
+  end
+
+
+  def delete_services
     
   end
 
