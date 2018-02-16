@@ -12,7 +12,7 @@ class TradieRegistrationsController < ApplicationController
     
     maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
     existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
-    binding.pry
+    
       if @user.save
         flash[:success] = "PLease continue below"
         if existing_company
@@ -58,7 +58,8 @@ class TradieRegistrationsController < ApplicationController
       trady = Trady.find_by(id:params[:trady_company][:trady_id])
       trady.update_attribute(:trady_company_id, @trady_company.id)
       flash[:success] = "PLease continue below"
-      redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
+      redirect_to services_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
+      #redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
     else
 
       respond_to do |format|

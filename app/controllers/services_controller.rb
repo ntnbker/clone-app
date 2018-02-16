@@ -1,5 +1,5 @@
 class ServicesController < ApplicationController 
-  before_action :require_login
+  before_action :require_login, only:[:new]
   
   def new
     @service = Service.new 
@@ -23,6 +23,28 @@ class ServicesController < ApplicationController
       flash[:danger] = "Oops something went wrong!"
     end 
 
+  end
+
+  def index
+    @maintenance_request_id = params[:maintenance_request_id] 
+    @trady_id = params[:trady_id] 
+    
+    @trady_company_id = params[:trady_company_id]
+    
+    @skill = Skill.new
+  end
+
+  def add_services
+    Trady.find_by(id: params[:trady_id])
+
+    service_array = params[:skill][:skill]
+    trady_id = params[:skill][:trady_id]
+    service_array.each do |skill|
+      if skill != ''
+        Skill.create(skill:skill, trady_id:trady_id)
+      end 
+    end 
+    
   end
 
 

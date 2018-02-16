@@ -26,10 +26,7 @@ Rails.application.routes.draw do
     patch "update_password"=>"passwords#update_password"
     get "set_password"=> "passwords#set_password",:as=> :set_password
     patch "confirm_password"=>"passwords#confirm_password"
-    resources :gods, only:[:show]
-    resources :gods do 
-      resources :services, only:[:new,:create, :update]
-    end 
+     
   
   ###################################################
   ##########AGENT ROLE RESOURCES/ROUTES##############
@@ -248,5 +245,9 @@ Rails.application.routes.draw do
   ################################################### 
     resources :tradie_payments, only:[:new, :create]
 
-
+  ###################################################
+  ##########SERVICES PAYMENTS RESOURCES/ROUTES#######
+  ################################################### 
+    resources :services, only:[:new,:create, :update, :index]
+    post "add_services"=>"services#add_services"
  end

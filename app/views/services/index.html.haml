@@ -1,0 +1,6 @@
+Here he list all the services that they can be listed as. 
+
+= bootstrap_form_for @skill, url:"/add_services" do |f| 
+  = f.collection_check_boxes :skill, Service.all, :service, :service
+  = f.hidden_field :trady_id, value:@trady_id
+  = f.submit
