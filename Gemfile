@@ -55,6 +55,7 @@ gem 'rails-observers'
 # gem "chronic"
 gem 'rufus-scheduler'
 
+
 group :development, :test do
   gem 'byebug', platform: :mri
   gem 'rspec-rails', '~> 3.5'

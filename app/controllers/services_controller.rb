@@ -59,15 +59,16 @@ class ServicesController < ApplicationController
     @maintenance_request_id = params[:maintenance_request_id] 
     @trady_id = params[:trady_id] 
     @trady_company_id = params[:trady_company_id]
-    
-
-    @services = Trady.find_by(id:params[:trady_id]).skills
+    @service = Service.new
+    @services = Service.all
+    @skill = Trady.find_by(id:params[:trady_id]).skills
 
   end
 
 
   def delete_services
-    
+
+    binding.pry
   end
 
 

@@ -1,14 +1,28 @@
 this is where we edit the services
 
 
-Here he list all the services that they can be listed as. 
 
-= bootstrap_form_for @skill, url:"/remove_services", method: :delete do |f| 
-  = f.collection_check_boxes :skill, @services, :service, :service
+
+/ = bootstrap_form_for @services, url:"/remove_services", method: :delete do |f| 
+/   = f.collection_check_boxes :service, @services, :service, :service
+/   = f.hidden_field :trady_id, value:@trady_id
+/   = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+/   = f.hidden_field :trady_company_id, value:@trady_company_id
+/   = f.submit
+
+
+=link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
+
+
+
+
+
+= bootstrap_form_for @service, url:"/remove_services", method: :delete do |f| 
+  = f.collection_check_boxes :service, Service.all, :service, :service
   = f.hidden_field :trady_id, value:@trady_id
   = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
   = f.hidden_field :trady_company_id, value:@trady_company_id
   = f.submit
 
 
-=link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
+/ =link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
