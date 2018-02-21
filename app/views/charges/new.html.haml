@@ -1,31 +1,112 @@
 
 
 
-:javascript
-  Stripe('#{Rails.configuration.stripe[:publishable_key]}');
+
 = javascript_include_tag "https://js.stripe.com/v3/"
 
-= form_tag(charges_path, { id:"new_registration" }) do
-  = label_tag "Card Number", nil, required: true
-  .control-group
-    .controls
-      = text_field_tag :card_number, nil, class: "input-block-level", "data-stripe" => "number"
+/ = form_tag(charges_path, { id:"payment-form" }) do
+/   %div.form-row
+/     
+/     = text_field_tag :card_number, nil, class: "input-block-level", "data-stripe" => "number"
 
-  = label_tag "Card Verification", nil, required: true
-  .control-group
-    .controls
-      = text_field_tag :card_verification, nil, class: "input-block-level", "data-stripe" => "cvv"
+/     = label_tag "Card Verification", nil, required: true
+/     = text_field_tag :card_verification, nil, class: "input-block-level", "data-stripe" => "cvv"
 
-  = label_tag "Card Expires", nil, required: true
-  = select_tag :exp_month, options_for_select(@dates), include_blank: false, "data-stripe" => "exp-month", class: "span2"
-  = select_tag :exp_year, options_for_select((Date.today.year..(Date.today.year+10)).to_a), include_blank: false, "data-stripe" => "exp-year", class: "span1"
+/     = label_tag "Card Expires", nil, required: true
+/     = select_tag :exp_month, options_for_select(@dates), include_blank: false, "data-stripe" => "exp-month"
+/     = select_tag :exp_year, options_for_select((Date.today.year..(Date.today.year+10)).to_a), include_blank: false, "data-stripe" => "exp-year"
 
-  .actions
-    = submit_tag "Registration Payment", class: "btn", style: "color: white; background: rgb(242, 118, 73);"
+/   .actions
+/     = submit_tag "Registration Payment", class: "btn", style: "color: white; background: rgb(242, 118, 73);"
 
 
+/ = form_tag(charges_path, { id:"payment-form" }) do
+/   = label_tag "card number", nil, required: true 
+/   %div#card-element
+/   %div.card-errors{"role"=>"alert"}   
+  
+/   .actions
+/     = submit_tag "Registration Payment", class: "btn", style: "color: white; background: rgb(242, 118, 73);"
+
+
+%form{"action"=>"/charges", "method"=>"post", "id"=>"payment-form"}
+  %div{"class"=>"form-row"}
+    %label{"for"=>"card-element"}
+    %div#card-element
+    %div.card-errors{"role"=>"alert"}   
+  
+
+  %button
+    Submit
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+:javascript
+  stripe = Stripe('#{Rails.configuration.stripe[:publishable_key]}');
+  var elements = stripe.elements();
+  var style = {
+    base: {
+      // Add your base input styles here. For example:
+      fontSize: '16px',
+      color: "#32325d",
+    }
+  };
+
+  // Create an instance of the card Element.
+  var card = elements.create('card', {style: style});
+
+  // Add an instance of the card Element into the `card-element` <div>.
+  card.mount('#card-element');
+
+
+  card.addEventListener('change', function(event) {
+  var displayError = document.getElementById('card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+  });
+
+    // Create a token or display an error when the form is submitted.
+  var form = document.getElementById('payment-form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    stripe.createToken(card).then(function(result) {
+      if (result.error) {
+        // Inform the customer that there was an error.
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+      } else {
+        // Send the token to your server.
+        stripeTokenHandler(result.token);
+      }
+    });
+  });
+
+  function stripeTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('payment-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+  }
