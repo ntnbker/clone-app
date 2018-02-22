@@ -243,7 +243,7 @@ Rails.application.routes.draw do
   ###################################################
   ##########TRADIE PAYMENTS RESOURCES/ROUTES#########
   ################################################### 
-    resources :charges, only:[:new, :create]
+    resources :trady_payment_registration, only:[:new, :create]
 
   ###################################################
   ##########SERVICES PAYMENTS RESOURCES/ROUTES#######

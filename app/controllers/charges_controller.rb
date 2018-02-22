@@ -1,4 +1,4 @@
-class ChargesController < ApplicationController 
+class TradyPaymentRegistrationController < ApplicationController 
 
   def new
     @dates = Date::MONTHNAMES.compact.each_with_index.map{ |name, index| ["#{index+1} - #{name}", index+1] }
@@ -13,7 +13,7 @@ class ChargesController < ApplicationController
     :source  => params[:stripeToken]
   )
 
-  binding.pry
+  
 
 rescue Stripe::CardError => e
   flash[:error] = e.message
