@@ -10,11 +10,22 @@
       margin-top: 10px;
       font-size: 20px;
       font-weight: bold;
+      width: 150px;
+
+      input {
+        width: 15px;
+        height: 15px;
+        margin-right: 10px;
+      }
     }
-    .service-buttons {
-      @include flexbox;
-      @include justify-content(space-between);
-      @include justify-content(justify);
+  }
+  .service-buttons {
+    text-align: center;
+
+    button {
+      margin: 10px;
+      width: 150px;
+      padding: 0px;
     }
   }
 }

@@ -2,6 +2,7 @@ var Payment = React.createClass({
   getInitialState: function () {
     return {
       card: null,
+      errors: {},
     };
   },
 
@@ -9,12 +10,16 @@ var Payment = React.createClass({
     // Insert the token ID into the form so it gets submitted to the server
     const self = this;
     const params = {
-      stripeToken: token.id
+      stripeToken: token.id,
+      terms_and_conditions: this.elem && this.elem.value,
+      trady_id: this.props.trady_id,
+      trady_company_id: this.props.trady_company_id,
+      maintenance_request_id: this.props.maintenance_request_id,
     }
 
     $.ajax({
       type: 'POST',
-      url: '/charges',
+      url: '/trady_payment_registrations',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -24,6 +29,14 @@ var Payment = React.createClass({
       error: function(err) {
       }
     })
+  },
+
+  termsAndConditionsText() {
+    return (
+      <div className="terms_and_conditions">
+        <TermsAndConditions />
+      </div>
+    )
   },
 
   componentDidMount() {
@@ -67,6 +80,14 @@ var Payment = React.createClass({
     this.setState({ card });
   },
 
+  removeError: function({ target: { id } }) {
+      this.setState({ errors: {...this.state.errors, [id]: ''} });
+  },
+
+  renderError: function(error) {
+    return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
+  },
+
   submit(e) {
     e.preventDefault();
     debugger
@@ -91,16 +112,30 @@ var Payment = React.createClass({
   render() {
     return (
       <form id="payment-form" onSubmit={this.submit}>
+        {this.termsAndConditionsText()}
+        <div className="agree_checkbox">
+          <label>
+            <input
+              type="checkbox"
+              id="terms_and_conditions"
+              ref={elem => this.terms_and_conditions = elem}
+              onChange={this.removeError}
+            />
+            Agree To Terms and Conditions
+          </label>
+        </div>
+        {this.renderError(this.state.errors.terms_and_conditions)}
         <div class="form-row">
-          <label for="card-element">
+          <label for="card-element" className="text-center card-title">
             Credit or debit card
           </label>
           <div id="card-element">
           </div>
           <div id="card-errors" role="alert"></div>
         </div>
-
-        <button>Submit Payment</button>
+        <div className="buttons text-center">
+          <button>Submit Payment</button>
+        </div>
       </form>
     )
   }

@@ -1,11 +1,14 @@
-Here he list all the services that they can be listed as. 
+/ Here he list all the services that they can be listed as.
+%div.container.well
 
-= bootstrap_form_for @skill, url:"/add_services" do |f| 
-  = f.collection_check_boxes :skill, Service.all, :service, :service
-  = f.hidden_field :trady_id, value:@trady_id
-  = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
-  = f.hidden_field :trady_company_id, value:@trady_company_id
-  = f.submit
+  =react_component('ServiceList', {:authenticity_token => form_authenticity_token, :services => Service.all, :trady_skills => Service.all, :is_edit => false, :trady_id => @trady_id, :trady_company_id => @trady_company_id, :maintenance_request_id => @maintenance_request_id, :edit_register_tradie_company_path => edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)})
+
+/ = bootstrap_form_for @skill, url:"/add_services" do |f|
+/   = f.collection_check_boxes :skill, Service.all, :service, :service
+/   = f.hidden_field :trady_id, value:@trady_id
+/   = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+/   = f.hidden_field :trady_company_id, value:@trady_company_id
+/   = f.submit
 
 
-=link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
+/ =link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)

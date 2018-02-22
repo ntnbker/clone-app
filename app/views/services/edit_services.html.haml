@@ -1,9 +1,11 @@
 this is where we edit the services
+%div.container.well
+
+  =react_component('ServiceList', {:authenticity_token => form_authenticity_token, :is_edit => true, :trady_skill => @skills, :services => Service.all, :edit_register_tradie_company_path => edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id), :trady_company_id => @trady_company_id, :trady_id => @trady_id, :maintenance_request_id => @maintenance_request_id})
 
 
 
-
-/ = bootstrap_form_for @services, url:"/remove_services", method: :delete do |f| 
+/ = bootstrap_form_for @services, url:"/remove_services", method: :delete do |f|
 /   = f.collection_check_boxes :service, @services, :service, :service
 /   = f.hidden_field :trady_id, value:@trady_id
 /   = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
@@ -11,18 +13,18 @@ this is where we edit the services
 /   = f.submit
 
 
-=link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
+/ =link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
 
 
 
 
 
-= bootstrap_form_for @service, url:"/remove_services", method: :delete do |f| 
-  = f.collection_check_boxes :service, Service.all, :service, :service
-  = f.hidden_field :trady_id, value:@trady_id
-  = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
-  = f.hidden_field :trady_company_id, value:@trady_company_id
-  = f.submit
+/ = bootstrap_form_for @service, url:"/remove_services", method: :delete do |f|
+/   = f.collection_check_boxes :service, Service.all, :service, :service
+/   = f.hidden_field :trady_id, value:@trady_id
+/   = f.hidden_field :maintenance_request_id, value:@maintenance_request_id
+/   = f.hidden_field :trady_company_id, value:@trady_company_id
+/   = f.submit
 
 
 / =link_to "Back", edit_register_tradie_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id)
