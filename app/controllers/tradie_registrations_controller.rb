@@ -77,12 +77,12 @@ class TradieRegistrationsController < ApplicationController
   end
 
   def update_tradie_company
-    @trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
+    trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
     maintenance_request_id = params[:trady_company][:maintenance_request_id]
-
+    trady_id = params[:trady_company][:trady_id]
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have updated the trady company information"
-      redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_company_id:@trady_company.id)
+      redirect_to new_trady_payment_registration_path(maintenance_request_id:maintenance_request_id, trady_company_id:trady_company.id, trady_id:trady_id)
     else 
       respond_to do |format|
         format.json {render :json=>{errors: @trady_company.errors.to_hash(true).as_json}}

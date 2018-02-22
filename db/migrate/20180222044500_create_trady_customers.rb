@@ -5,6 +5,7 @@ class CreateTradyCustomers < ActiveRecord::Migration[5.0]
       t.integer :trady_id
       t.integer :agency_id
       t.string :customer_id
+      t.boolean :terms_and_conditions
       t.timestamps
     end
   end

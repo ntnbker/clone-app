@@ -195,8 +195,9 @@ ActiveRecord::Schema.define(version: 20180222044500) do
     t.integer  "trady_id"
     t.integer  "agency_id"
     t.string   "customer_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.boolean  "terms_and_conditions"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   create_table "gods", force: :cascade do |t|
