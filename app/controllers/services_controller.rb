@@ -61,7 +61,7 @@ class ServicesController < ApplicationController
     @trady_company_id = params[:trady_company_id]
     @service = Service.new
     @services = Service.all
-    @skill = Trady.find_by(id:params[:trady_id]).skills
+    @skills = Trady.find_by(id:params[:trady_id]).skills
 
   end
 
