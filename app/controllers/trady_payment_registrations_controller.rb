@@ -1,4 +1,4 @@
-class TradyPaymentRegistrationController < ApplicationController 
+class TradyPaymentRegistrationsController < ApplicationController 
 
   def new
     @dates = Date::MONTHNAMES.compact.each_with_index.map{ |name, index| ["#{index+1} - #{name}", index+1] }

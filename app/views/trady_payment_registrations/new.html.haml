@@ -2,4 +2,21 @@
   stripe = Stripe('#{Rails.configuration.stripe[:publishable_key]}');
 
 %div.container
+  %h4
+    Tradesmen Terms and Conditions
+  
+  %h5
+    1. Tradesmen Terms and General Terms
+  %p
+    1. This website, app, platform and any service offered under the name “Maintenance App” (“Platform”) is operated and owned by Lab Developed Pty Ltd (ACN 608 599 293) and its related entities or body corporates (“us”, “we” and “our”). 
+  %p  
+    2. All use of this Platform is subject to the General Terms of Use (“General Terms”) [CREATE LINK]. In addition, if you have registered to Platform as a Tradesmen, you also agree to be bound by these Tradesmen Term (“Tradesmen Terms”). Your continued use of the Platform constitutes acceptance of these Tradesmen Terms and is strictly conditional on full compliance with these Tradesmen Terms.
+  %p
+    3. All capitalised words used in these Tradesmen Terms have the same meaning as in the General Terms unless the context requires otherwise. 
+  %p
+    4. We may amend or modify the Platform or the Tradesmen Terms at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the General Terms as modified.
+  %p
+    5. These Tradesmen Terms will prevail over any other terms or agreement between you and us.
+
+
   =react_component('Payment', {:authenticity_token => form_authenticity_token})
