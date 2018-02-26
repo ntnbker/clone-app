@@ -12,23 +12,12 @@ var Payment = React.createClass({
     const params = {
       stripeToken: token.id,
       terms_and_conditions: this.elem && this.elem.value,
-      trady_id: this.props.trady_id,
-      trady_company_id: this.props.trady_company_id,
-      maintenance_request_id: this.props.maintenance_request_id,
     }
 
-    $.ajax({
-      type: 'POST',
-      url: '/trady_payment_registrations',
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-      },
-      data: params,
-      success: function(res){
-      },
-      error: function(err) {
-      }
-    })
+    this.props.submit(params, (errors) => {
+      // Do something
+      this.setState({errors});
+    });
   },
 
   termsAndConditionsText() {
