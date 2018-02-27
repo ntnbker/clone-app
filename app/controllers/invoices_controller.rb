@@ -44,7 +44,7 @@ class InvoicesController < ApplicationController
     
 
     @ledger = Ledger.new(ledger_params)
-    #@maintenance_request = MaintenanceRequest.find_by(id:params[:ledger][:maintenance_request_id])
+    trady = Trady.find_by(id:params[:ledger][:trady_id])
     @invoice_type = params[:ledger][:invoice_type]
     
     if @ledger.save
@@ -59,10 +59,19 @@ class InvoicesController < ApplicationController
 
       # @invoice.update_attribute(:amount,@total)
 
-          
+         
+      if trady.customer_profile
+
+        redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
+      else
+        new_trady_payment_registration_path(ledger_id:@ledger.id,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_company_id:trady.trady_company.id, trady_id:trady.id, quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type, system_plan:"Invoice" )
+      end 
 
 
-      redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
+
+
+
+
     else
       
       @trady_id = params[:ledger][:trady_id]
@@ -100,7 +109,7 @@ class InvoicesController < ApplicationController
 
   def edit
     
-    @ledger = Ledger.find_by(id:params[:id])
+    @ledger = Ledger.find_by(id:params[:ledger_id])
     @maintenance_request_id = params[:maintenance_request_id]
 
     @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)

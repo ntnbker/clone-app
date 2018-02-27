@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180222044500) do
+ActiveRecord::Schema.define(version: 20180227115203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -196,8 +196,9 @@ ActiveRecord::Schema.define(version: 20180222044500) do
     t.integer  "agency_id"
     t.string   "customer_id"
     t.boolean  "terms_and_conditions"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.string   "payment_status",       default: "Outstanding"
   end
 
   create_table "gods", force: :cascade do |t|
