@@ -109,7 +109,7 @@ class InvoicesController < ApplicationController
 
   def edit
     
-    @ledger = Ledger.find_by(id:params[:ledger_id])
+    @ledger = Ledger.find_by(id:params[:id])
     @maintenance_request_id = params[:maintenance_request_id]
 
     @maintenance_request = MaintenanceRequest.find_by(id:@maintenance_request_id)

@@ -253,4 +253,10 @@ Rails.application.routes.draw do
     get "edit_services"=>"services#edit_services", :as => "edit_services"
     delete "remove_services" => "services#delete_services"
 
+  ###########################################################
+  ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
+  ###########################################################
+  resources :tradie_term_agreements, only:[:new, :create]
+
+
  end
