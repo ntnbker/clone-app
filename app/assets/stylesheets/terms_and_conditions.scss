@@ -1,5 +1,6 @@
 $color-green-submit: #71C796;
 $color-blue: #4CC6EE;
+$color-text: #83878C;
 
 form#terms-and-conditions {
   .how-it-works-note {
@@ -12,7 +13,7 @@ form#terms-and-conditions {
     font-size: 15px;
     margin: 0 30%;
     position: relative;
-    color: rgba(0, 0, 0, 0.5);
+    color: $color-text;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -105,7 +106,7 @@ form#terms-and-conditions {
   height: 250px;
   margin: 10px 0px;
   background-color: white;
-  color: rgba(0, 0, 0, 0.5);
+  color: $color-text;
 
   .title {
 

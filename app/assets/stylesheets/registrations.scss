@@ -1,5 +1,6 @@
 $color-green-submit: #71C796;
 $color-blue: #4CC6EE;
+$color-text: #83878C;
 
 #registration {
   box-shadow: 2px 2px 12px 0px #cacaca, -2px -2px 12px 0px #cacaca;
@@ -13,13 +14,13 @@ $color-blue: #4CC6EE;
 
     .registration-label-title {
       text-align: center;
-      color: rgb(220, 220, 220);
+      color: $color-text;
       @include flex(1);
 
       .step-status {
         height: 6px;
         margin-bottom: 20px;
-        background-color: rgb(220, 220, 220);
+        background-color: $color-text;
         &.pass {
           background-color: $color-green-submit;
         }

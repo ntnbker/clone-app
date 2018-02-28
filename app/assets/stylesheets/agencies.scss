@@ -1,3 +1,5 @@
+$color-text: #83878C;
+
 .edit_agency_profile {
   .left {
     margin: 22px 5%;
@@ -9,6 +11,7 @@
   width: 100%;
   margin: 20px auto;
   padding-bottom: 10px;
+  color: $color-text;
 
   p {
     margin: 20px 0 5px;
