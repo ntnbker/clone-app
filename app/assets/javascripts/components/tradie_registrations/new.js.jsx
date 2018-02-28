@@ -78,9 +78,9 @@ var Trady = React.createClass({
           autoCorrect="off"
           autoComplete="off"
           onChange={fillEmail}
-          className={errors['email'] ? 'has-error' : ''}
+          className={errors['trady.email'] ? 'has-error' : ''}
         />
-        {renderError(errors['email'])}
+        {renderError(errors['trady.email'])}
       </div>
       <div className="user-password">
         <input
