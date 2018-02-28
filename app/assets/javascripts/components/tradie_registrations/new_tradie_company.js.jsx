@@ -30,6 +30,7 @@ var NewTradyCompany = React.createClass({
   onSame: function(isSame) {
     if(!this.state.same_address) {
       this.removeError({ target: {id: 'mailing_address' }});
+      this.setState({mailing_address: this.state.address});
     }
 
     this.setState({
