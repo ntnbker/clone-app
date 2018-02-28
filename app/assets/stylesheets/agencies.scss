@@ -8,6 +8,7 @@
 
   width: 100%;
   margin: 20px auto;
+  padding-bottom: 10px;
 
   p {
     margin: 20px 0 5px;
@@ -42,7 +43,7 @@
    p {
      margin: 5px 0;
    }
- }
+  }
 
   .have-account {
     p, a {
@@ -50,8 +51,18 @@
       margin-right: 10px;
     }
   }
+  button.button-submit {
+    background-color: $color-green-submit;
+    color: white;
+    width: 100%;
+    border: none;
+
+    &:hover {
+      background-color: #619970;
+    }
+  }
   /* For Desktop */
   @media (min-width: 550px) {
-    width: 50%;
+    width: 80%;
   }
 }

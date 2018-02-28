@@ -22,9 +22,7 @@ var Payment = React.createClass({
 
   termsAndConditionsText() {
     return (
-      <div className="terms_and_conditions">
-        <TermsAndConditions />
-      </div>
+      <TermsAndConditions />
     )
   },
 

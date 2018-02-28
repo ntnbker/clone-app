@@ -1,5 +1,5 @@
 %div.well.container
-=react_component('NewTradyCompany', {:authenticity_token => form_authenticity_token, :maintenance_request_id => @maintenance_request_id, :trady_company => @trady_company, :new_tradie_registration_path => new_tradie_registration_path(maintenance_request_id:"#{@maintenance_request_id.nil? ? '' : @maintenance_request_id}", trady_company_id:@trady_company.id), trady_id: @trady_id.nil? ? '' : @trady_id})
+=react_component('TradyRegistrationForm', {:authenticity_token => form_authenticity_token, :maintenance_request_id => @maintenance_request_id, :trady_company => @trady_company, :new_tradie_registration_path => new_tradie_registration_path(maintenance_request_id:"#{@maintenance_request_id.nil? ? '' : @maintenance_request_id}", trady_company_id:@trady_company.id), trady_id: @trady_id.nil? ? '' : @trady_id, :step => "trady-company"})
 
 
 / =bootstrap_nested_form_for(@trady_company,url:"/update_tradie_company", method: :put) do |a|

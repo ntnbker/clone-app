@@ -152,12 +152,12 @@ var Trady = React.createClass({
       </div>
 
       <div className="agency-button">
-        <input
+        <button
           type="submit"
-          name="commit"
-          value="Sign Up"
-          className="button-primary agency-button-submit green"
-        />
+          className="button-primary button-submit green"
+        >
+          Next
+        </button>
       </div>
 
       {false &&

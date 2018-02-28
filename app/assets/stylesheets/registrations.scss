@@ -1,0 +1,52 @@
+$color-green-submit: #71C796;
+$color-blue: #4CC6EE;
+
+#registration {
+  box-shadow: 2px 2px 12px 0px #cacaca, -2px -2px 12px 0px #cacaca;
+  margin: 20px 0;
+  width: 80%;
+  padding-bottom: 20px;
+  margin-left: 10%;
+
+  .registration-title {
+    @include flexbox;
+
+    .registration-label-title {
+      text-align: center;
+      color: rgb(220, 220, 220);
+      @include flex(1);
+
+      .step-status {
+        height: 6px;
+        margin-bottom: 20px;
+        background-color: rgb(220, 220, 220);
+        &.pass {
+          background-color: $color-green-submit;
+        }
+        .separate-line {
+          width: 3px;
+          height: 6px;
+          background-color: white;
+        }
+      }
+      .step-number {
+        border: 2px solid;
+        border-radius: 50%;
+        width: 36px;
+        margin-left: calc(50% - 18px);
+        font-weight: 600;
+        font-size: 20px;
+      }
+      &.pass {
+        color: $color-green-submit;
+      }
+    }
+  }
+  .step-title {
+    color: $color-green-submit;
+  }
+  form {
+    width: 80%;
+    margin-left: 10%;
+  }
+}

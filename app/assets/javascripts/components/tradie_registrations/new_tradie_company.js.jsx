@@ -27,16 +27,13 @@ var NewTradyCompany = React.createClass({
     this.removeError(event);
   },
 
-  onSame: function() {
+  onSame: function(isSame) {
     if(!this.state.same_address) {
-      this.setState({
-        mailing_address: this.state.address
-      });
       this.removeError({ target: {id: 'mailing_address' }});
     }
 
     this.setState({
-      same_address: !this.state.same_address
+      same_address: isSame
     });
   },
 
@@ -115,9 +112,19 @@ var NewTradyCompany = React.createClass({
 
   renderButtonBack: function() {
     return (
-      <a className="btn btn-default btn-back m-r-lg" href={this.props.new_tradie_registration_path}>
+      <button
+        type="button"
+        className="button-back"
+        onClick={() => this.backButton.click()}
+      >
+        <a
+          style={{ display: 'none' }}
+          href={this.props.new_tradie_registration_path}
+          ref={(elem) => this.backButton = elem}
+        >
+        </a>
         Back
-      </a>
+      </button>
     );
   },
 
@@ -168,7 +175,7 @@ var NewTradyCompany = React.createClass({
 
               id="abn"
               type="text"
-              placeholder="Abn"
+              placeholder="Australian Business Number"
               defaultValue={this.state.trady_company.abn}
               ref={(ref) => this.abn = ref}
               className={"form-control " + (errors['abn'] ? "has-error" : "")}
@@ -192,19 +199,29 @@ var NewTradyCompany = React.createClass({
               {renderErrorFunc(errors['profession_license_number'])}
             </div>
           </div>
-        <div className="form-group">
-          <div className="col-sm-10 col-sm-offset-2 text-center">
-            <input
-              type="checkbox"
-              id="gst_registration"
-              onChange={() => {
-                this.setState({
-                  gst_registration: !this.state.gst_registration
-                });
-              }}
-              checked={!!this.state.gst_registration ? "checked" : false}
-            />
-            GST  Registration
+        <div className="form-group text-center">
+          Is your business registered for GST?
+          <div className="radio-same-address">
+            <label className="radio-option">Yes
+              <input
+                type="radio"
+                name="gst_registration"
+                value={true}
+                onChange={() => this.setState({gst_registration: true})}
+                defaultChecked={!!this.state.gst_registration}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+            <label className="radio-option">No
+              <input
+                type="radio"
+                name="gst_registration"
+                value={false}
+                onChange={() => this.setState({gst_registration: false})}
+                defaultChecked={!this.state.gst_registration}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
           </div>
         </div>
         <div className="form-group">
@@ -225,13 +242,29 @@ var NewTradyCompany = React.createClass({
         </div>
 
         <div className="form-group text-center">
-          <input
-            type="checkbox"
-            onChange={this.onSame}
-            id="mailing_address_same"
-            checked={!!this.state.same_address ? "checked" : false}
-          />
-          Mailing Address same as Above
+          Is your mailing address the same as the address above?
+          <div className="radio-same-address">
+            <label className="radio-option">Yes
+              <input
+                type="radio"
+                name="same-address"
+                value={true}
+                onChange={() => this.onSame(true)}
+                defaultChecked={!!this.state.same_address}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+            <label className="radio-option">No
+              <input
+                type="radio"
+                name="same-address"
+                onChange={() => this.onSame(false)}
+                value={false}
+                defaultChecked={!this.state.same_address}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+          </div>
         </div>
         <div className="form-group">
           <div className="col-sm-10">
@@ -339,9 +372,9 @@ var NewTradyCompany = React.createClass({
             {renderErrorFunc(errors['account_name'])}
           </div>
         </div>
-        <div className="text-center">
+        <div className="text-center buttons">
           { this.renderButtonBack() }
-          <button type="submit" className="button-primary green option-button">
+          <button type="submit" className="button-submit green option-button">
             Next
           </button>
         </div>

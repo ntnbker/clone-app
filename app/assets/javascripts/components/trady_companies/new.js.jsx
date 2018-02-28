@@ -225,7 +225,7 @@ var AddTradycompany = React.createClass({
 
                 id="abn"
                 type="text"
-                placeholder="Abn"
+                placeholder="Australian Business Number"
                 defaultValue={this.props.abn}
                 ref={(ref) => this.abn = ref}
                 className={"form-control " + (errors['abn'] ? "has-error" : "")}

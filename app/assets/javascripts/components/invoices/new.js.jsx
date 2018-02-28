@@ -865,7 +865,7 @@ var InvoiceFields = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.errors) {
+        if (res && res.errors) {
           self.setState({errors: res.errors});
         }
       },
@@ -963,7 +963,7 @@ var TradyCompanyInvoice = React.createClass({
             name="trady_company[trading_name]"
             id="trady_company_trading_name" required />
 
-        <input type="text" placeholder="Abn" defaultValue={this.props.abn}
+        <input type="text" placeholder="Australian Business Number" defaultValue={this.props.abn}
             name="trady_company[abn]"
             id="trady_company_abn" required />
 
