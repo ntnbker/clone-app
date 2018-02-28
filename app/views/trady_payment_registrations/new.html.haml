@@ -3,3 +3,13 @@
 
 %div.container
   =react_component('TradyPayment', {:authenticity_token => form_authenticity_token, :trady_company_id => @trady_company_id, :trady_id => @trady_id, :maintenance_request_id => @maintenance_request_id})
+
+
+
+
+=link_to "Back", edit_invoice_path(id:@ledger_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type)
+
+
+
+
+=link_to "Back original", edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan)

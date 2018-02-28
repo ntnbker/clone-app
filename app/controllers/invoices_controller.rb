@@ -64,7 +64,7 @@ class InvoicesController < ApplicationController
 
         redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
       else
-        new_trady_payment_registration_path(ledger_id:@ledger.id,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_company_id:trady.trady_company.id, trady_id:trady.id, quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type, system_plan:"Invoice" )
+        redirect_to new_trady_payment_registration_path(ledger_id:@ledger.id, maintenance_request_id:params[:ledger][:maintenance_request_id], trady_company_id:trady.trady_company.id, trady_id:trady.id, quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type, system_plan:"Invoice" )
       end 
 
 
@@ -158,7 +158,7 @@ class InvoicesController < ApplicationController
 
         redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type )
       else
-        new_trady_payment_registration_path(ledger_id:@ledger.id,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_company_id:@trady.trady_company.id, trady_id:@trady.id, quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type, system_plan:"Invoice" )
+        redirect_to new_trady_payment_registration_path(ledger_id:@ledger.id,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_company_id:@trady.trady_company.id, trady_id:@trady.id, quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type, system_plan:"Invoice" )
       end 
     else
       respond_to do |format|
