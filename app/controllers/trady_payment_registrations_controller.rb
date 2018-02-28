@@ -17,13 +17,32 @@ class TradyPaymentRegistrationsController < ApplicationController
   end
 
   def create
-    
-    customer = Stripe::Customer.create(
-      :email => params[:stripeEmail],
-      :source  => params[:stripeToken]
-    )
+    trady = Trady.find_by(id:params[:trady_id])
 
-    binding.pry
-  end
+
+
+    if trady.customer_profile.customer_id
+
+      customer = Stripe::Customer.create(
+        :email => params[:stripeEmail],
+        :source  => params[:stripeToken]
+      )
+      trady.customer_profile.update_attribute(:customer_id, customer.id)
+
+    else
+
+      customer = Stripe::Customer.create(
+        :email => params[:stripeEmail],
+        :source  => params[:stripeToken]
+      )
+
+      CustomerProfile.create(customer_id:customer.id, trady_id:trady.id)
+
+    end 
+
+    redirect_to 
+
+  end 
+    
 
 end 
