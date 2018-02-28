@@ -14,7 +14,7 @@ class TradieRegistrationsController < ApplicationController
     existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
     
       if @user.save
-        flash[:success] = "PLease continue below"
+        flash[:success] = "Please continue below"
         if existing_company
           redirect_to edit_register_tradie_company_path(id:existing_company.id, maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
         else
@@ -57,7 +57,7 @@ class TradieRegistrationsController < ApplicationController
     if @trady_company.save
       trady = Trady.find_by(id:params[:trady_company][:trady_id])
       trady.update_attribute(:trady_company_id, @trady_company.id)
-      flash[:success] = "PLease continue below"
+      flash[:success] = "Please continue below"
       redirect_to services_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
       #redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
     else
@@ -77,12 +77,19 @@ class TradieRegistrationsController < ApplicationController
   end
 
   def update_tradie_company
-    trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
-    maintenance_request_id = params[:trady_company][:maintenance_request_id]
-    trady_id = params[:trady_company][:trady_id]
+    
+    @trady_company = TradyCompany.find_by(id:params[:trady_company][:id])
+    @maintenance_request_id = params[:trady_company][:maintenance_request_id]
+    @trady_id = params[:trady_company][:trady_id]
+    trady = Trady.find_by(id:@trady_id)
     if @trady_company.update(trady_company_params)
       flash[:success] = "You have updated the trady company information"
-      redirect_to new_trady_payment_registration_path(maintenance_request_id:maintenance_request_id, trady_company_id:trady_company.id, trady_id:trady_id)
+      #if trady has skills that equal to more that 0 then do to edit path if not then go to new path
+      if trady.skills.count > 0
+        redirect_to edit_services_path(trady_id:@trady_id, trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id)
+      else 
+        redirect_to services_path(maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, trady_company_id:@trady_company.id)
+      end 
     else 
       respond_to do |format|
         format.json {render :json=>{errors: @trady_company.errors.to_hash(true).as_json}}
@@ -99,7 +106,7 @@ class TradieRegistrationsController < ApplicationController
   end
 
   def trady_company_params
-    params.require(:trady_company).permit(:profession_license_number,:landline, :trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow, :trady_company_id )
+    params.require(:trady_company).permit(:id,:profession_license_number,:landline, :trady_id,:maintenance_request_id,:company_name,:trading_name,:abn,:gst_registration,:mailing_address_same,:address,:mailing_address ,:mobile_number,:email, :account_name, :bsb_number, :bank_account_number, :work_flow, :trady_company_id )
   end
 
 end 
