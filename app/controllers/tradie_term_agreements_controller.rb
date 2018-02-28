@@ -1,4 +1,4 @@
-class TradieTermAgreements < ApplicationController
+class TradieTermAgreementsController < ApplicationController
   def new
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_company_id = params[:trady_company_id]
