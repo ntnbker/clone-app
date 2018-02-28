@@ -35,6 +35,8 @@ class ServicesController < ApplicationController
   end
 
   def add_services
+
+    
     Trady.find_by(id: params[:trady_id])
 
     service_array = params[:skill][:skill]
@@ -49,7 +51,7 @@ class ServicesController < ApplicationController
           Skill.create(skill:skill, trady_id:trady_id)
         end 
       end
-      redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:skill][:maintenance_request_id], trady_company_id:params[:skill][:trady_company_id], trady_id:params[:skill][:trady_id])
+      redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
     end  
   end
 
