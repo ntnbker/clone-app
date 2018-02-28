@@ -49,7 +49,7 @@ class ServicesController < ApplicationController
           Skill.create(skill:skill, trady_id:trady_id)
         end 
       end
-      redirect_to tradie_term_agreements_path(maintenance_request_id:params[:skill][:maintenance_request_id], trady_company_id:params[:skill][:trady_company_id], trady_id:params[:skill][:trady_id])
+      redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:skill][:maintenance_request_id], trady_company_id:params[:skill][:trady_company_id], trady_id:params[:skill][:trady_id])
     end  
   end
 
