@@ -93,6 +93,7 @@ class InvoicesController < ApplicationController
     end
     # @ledger = @maintenance_request.ledger
     @trady = Trady.find_by(id:params[:trady_id])
+    @customer = @trady.customer
     @trady_id = params[:trady_id]
     @quote_id = params[:quote_id]
     if @maintenance_request.agency_admin == nil
