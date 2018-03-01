@@ -4,23 +4,23 @@ var ServiceList = React.createClass({
 
     return {
       services: services || [],
-      skills: trady_skills || [],
+      skills: (trady_skills || []).map(({skill}) => skill),
       isEdit: !!is_edit,
     };
   },
 
   checkSkill(service) {
     const {skills} = this.state;
-    const isChecked = skills.some(({id}) => id === service.id);
+    const isChecked = skills.some(skill => skill === service.service);
 
     if (isChecked) {
       this.setState({
-        skills: skills.filter(({id}) => id !== service.id),
+        skills: skills.filter(skill => skill !== service.service),
       })
     }
     else {
       this.setState({
-        skills: skills.concat([service]),
+        skills: skills.concat([service.service]),
       })
     }
   },
@@ -28,7 +28,7 @@ var ServiceList = React.createClass({
   isChecked(value) {
     const {skills} = this.state;
 
-    return skills.some(({service}) => service === value);
+    return skills.some(skill => skill === value);
   },
 
   onBack() {
@@ -100,8 +100,8 @@ var ServiceList = React.createClass({
         </label>
         <div className="horizontal-line"></div>
         <div className="list-choosed-services">
-          {skills.map((service, index) => (
-            <div className="choosed-service-item" key={index}>{service.service}</div>
+          {skills.map((skill, index) => (
+            <div className="choosed-service-item" key={index}>{skill}</div>
           ))}
         </div>
         <div className="service-buttons">
