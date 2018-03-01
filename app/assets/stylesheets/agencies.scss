@@ -14,7 +14,7 @@ $color-text: #83878C;
   color: $color-text;
 
   p {
-    margin: 20px 0 5px;
+    margin: 5px 0 10px;
   }
 
   label {
@@ -67,5 +67,10 @@ $color-text: #83878C;
   /* For Desktop */
   @media (min-width: 550px) {
     width: 80%;
+  }
+  @media (max-width: 550px) {
+    input {
+      font-size: 0.9em;
+    }
   }
 }
