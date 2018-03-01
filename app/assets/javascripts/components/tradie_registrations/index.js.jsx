@@ -10,6 +10,10 @@ var TradyRegistrationForm = React.createClass({
     }
   },
 
+  componentDidMount() {
+    $('body > div.layout').css('background-color', 'white');
+  },
+
   labelTitle(number, text, isPass) {
     return (
       <div className={"registration-label-title " + (isPass && 'pass' || '')}>
@@ -62,6 +66,10 @@ var TradyRegistrationForm = React.createClass({
       case 'terms-and-conditions':
         return <TradyTermsAndConditions {...this.props} />;
     }
+  },
+
+  componentWillUnmount() {
+    $('body > div.layout').css('background-color', '#F4F8FB');
   },
 
   render() {

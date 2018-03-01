@@ -9,7 +9,7 @@ form#new_trady_company {
   color: $color-text;
 
 	p {
-		margin: 20px 0 5px;
+		margin: 5px 0 10px;
 	}
 
 	#avatar {
@@ -171,6 +171,24 @@ form#new_trady_company {
     #avatar {
       width: 35vw;
       height: 35vw;
+    }
+  }
+  @media (max-width: 550px) {
+    .radio-same-address {
+      margin: 10px 0 20px 0;
+      width: 100%;
+
+      .radio-option {
+        padding-left: 40px;
+        margin: 0 10px;
+
+        &:hover input ~ .radio-checkmark {
+          background-color: transparent;
+        }
+      }
+    }
+    input {
+      font-size: 0.9em;
     }
   }
 }
