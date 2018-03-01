@@ -38,10 +38,10 @@ class ServicesController < ApplicationController
 
     
     Trady.find_by(id: params[:trady_id])
-
-    service_array = params[:skill][:skill]
-    trady_id = params[:skill][:trady_id]
     
+    service_array = params[:skill][:skill]
+    trady_id = params[:trady_id]
+    binding.pry
     if service_array[0] == '' && service_array.count == 1 
       flash[:danger] = "Please choose at least one service from the list below, thank you."
       redirect_to services_path
@@ -63,8 +63,8 @@ class ServicesController < ApplicationController
     @trady_company_id = params[:trady_company_id]
     @service = Service.new
     @services = Service.all
-    @skills = Trady.find_by(id:params[:trady_id]).skills
-
+    @skills = Trady.find_by(id:params[:trady_id]).skills.as_json
+    
   end
 
 
