@@ -59,13 +59,8 @@ class InvoicesController < ApplicationController
 
       # @invoice.update_attribute(:amount,@total)
 
-         
-      if trady.customer_profile
-
-        redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
-      else
-        redirect_to new_trady_payment_registration_path(ledger_id:@ledger.id, maintenance_request_id:params[:ledger][:maintenance_request_id], trady_company_id:trady.trady_company.id, trady_id:trady.id, quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type, system_plan:"Invoice" )
-      end 
+      redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type, system_plan:"Invoice" )
+      
 
 
 
@@ -149,17 +144,8 @@ class InvoicesController < ApplicationController
       #must be after invoices method because all invoices calculated first then add them up for grandtotal
       @ledger.save_grand_total
       flash[:success] = "Your Invoice has been updated"
-      #redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type)
+      redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type)
 
-
-
-
-      if @trady.customer_profile
-
-        redirect_to invoice_path(id:@ledger,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_id:params[:ledger][:trady_id], quote_id:params[:ledger][:quote_id],invoice_type:@invoice_type )
-      else
-        redirect_to new_trady_payment_registration_path(ledger_id:@ledger.id,maintenance_request_id:params[:ledger][:maintenance_request_id], trady_company_id:@trady.trady_company.id, trady_id:@trady.id, quote_id:params[:ledger][:quote_id], invoice_type:@invoice_type, system_plan:"Invoice" )
-      end 
     else
       respond_to do |format|
           format.json{render :json=>{errors:@ledger.errors.to_hash(true).as_json}}
