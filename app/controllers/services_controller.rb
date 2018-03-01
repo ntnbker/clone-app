@@ -68,7 +68,7 @@ class ServicesController < ApplicationController
   end
 
 
-  def delete_services
+  def update
 
     binding.pry
   end
