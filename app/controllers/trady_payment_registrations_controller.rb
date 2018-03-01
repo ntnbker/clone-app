@@ -21,7 +21,8 @@ class TradyPaymentRegistrationsController < ApplicationController
 
 
 
-    if trady.customer_profile.customer_id
+    if trady.customer_profile && trady.customer_profile.customer_id == nil
+      
 
       customer = Stripe::Customer.create(
         :email => params[:stripeEmail],
@@ -29,7 +30,7 @@ class TradyPaymentRegistrationsController < ApplicationController
       )
       trady.customer_profile.update_attribute(:customer_id, customer.id)
 
-    else
+    elsif trady.customer_profile == nil
 
       customer = Stripe::Customer.create(
         :email => params[:stripeEmail],
@@ -40,9 +41,20 @@ class TradyPaymentRegistrationsController < ApplicationController
 
     end 
 
-    redirect_to invoice_path(id:params[:ledger_id],maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], quote_id:params[:quote_id],invoice_type:params[:invoice_type])
+    respond_to do |format|
+          format.json{render :json=>{message:"Thank you for signing up. "}}
+          
+      end
 
   end 
     
 
 end 
+
+
+
+# if they dont have a customer profile 
+#   then create one for them
+
+# if they do have a customer profile and they dont have a customer_id
+#   then update it 
