@@ -41,7 +41,7 @@ class ServicesController < ApplicationController
     
     service_array = params[:skill][:skill]
     trady_id = params[:trady_id]
-    binding.pry
+    
     if service_array[0] == '' && service_array.count == 1 
       flash[:danger] = "Please choose at least one service from the list below, thank you."
       redirect_to services_path
@@ -69,7 +69,7 @@ class ServicesController < ApplicationController
 
 
   def update
-
+    #the id in the params is the same ID as the trady so dont get confused
     binding.pry
   end
 
