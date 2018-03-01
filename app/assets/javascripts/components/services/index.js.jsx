@@ -39,13 +39,14 @@ var ServiceList = React.createClass({
 
   onSubmit(e) {
     e.preventDefault();
-    const {isEdit} = this.state;
+    const {isEdit}   = this.state;
+    const {trady_id} = this.props;
     const self = this;
     var FD = new FormData(document.getElementById('services'));
 
     $.ajax({
-      type: isEdit ? 'DELETE' : 'POST',
-      url: isEdit ? '/remove_services' : '/add_services',
+      type: isEdit ? 'PUT' : 'POST',
+      url: isEdit ? ('/services/' + trady_id) : '/add_services',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
