@@ -71,6 +71,32 @@ class ServicesController < ApplicationController
   def update
     #the id in the params is the same ID as the trady so dont get confused
     binding.pry
+    trady = Trady.find_by(id:params[:trady_id])
+    if params[:skill]
+      new_skills= params[:skill][:skill]
+    end 
+    if new_skills 
+      current_skills = trady.services_provided
+      #what was removed?
+      removed_skills = current_skills - new_skills
+      #what was added?
+      added_skills = new_skills - current_skills
+
+      removed_skills.each do |skill|
+        Skill.where(trady_id: trady.id, skill: skill).destroy_all
+      end 
+
+      added_skills.each do |skill|
+       Skill.create(trady_id:trady.id, skill:skill)
+      end 
+      redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
+
+    else
+      @skills = Trady.find_by(id:params[:trady_id]).skills.as_json
+      flash[:danger] = "Please choose at least one service from the list below, thank you."
+      redirect_to edit_services_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id]) 
+    end 
+
   end
 
 

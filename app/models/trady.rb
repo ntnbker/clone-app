@@ -47,7 +47,6 @@ class Trady < ApplicationRecord
     "#{name.capitalize} the #{skill} #{company_name}"
   end
 
-  private
 
   def format_name
     
@@ -63,6 +62,16 @@ class Trady < ApplicationRecord
     self.email = self.email.gsub(/\s+/, "").downcase
     
   end
+
+  def services_provided
+    trady_skills_array = []
+
+      self.skills.each do |skill|
+        trady_skills_array.push(skill.skill)
+      end 
+      return trady_skills_array
+  end
+
 
 
 
