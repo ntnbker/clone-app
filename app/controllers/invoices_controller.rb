@@ -101,6 +101,14 @@ class InvoicesController < ApplicationController
     else
       @agency = @maintenance_request.agency_admin.agency
     end
+
+    respond_to do |format|
+        format.json{render :json=>{ledger:@ledger, invoice_type:@invoice_type, system_plan:@system_plan, invoice:@invoice, trady:@trady, maintenance_request:@maintenance_request, customer:@customer, trady_id:@trady_id, quote_id:@quote_id, agency:@agency}}
+        format.html{render :edit}
+    end
+
+
+
   end
 
   def edit
