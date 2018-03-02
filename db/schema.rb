@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180227115203) do
+ActiveRecord::Schema.define(version: 20180301083353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -250,8 +250,8 @@ ActiveRecord::Schema.define(version: 20180227115203) do
     t.integer  "trady_id"
     t.integer  "maintenance_request_id"
     t.float    "amount"
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.boolean  "tax"
     t.integer  "ledger_id"
     t.float    "gst_amount"
@@ -262,6 +262,7 @@ ActiveRecord::Schema.define(version: 20180227115203) do
     t.text     "trady_invoice_reference"
     t.boolean  "paid",                    default: false
     t.integer  "quote_id"
+    t.string   "mapp_payment_status",     default: "Outstanding"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -515,6 +516,7 @@ ActiveRecord::Schema.define(version: 20180227115203) do
     t.text     "pdf_data"
     t.boolean  "paid",                   default: false
     t.float    "total_invoice_amount"
+    t.date     "due_date"
   end
 
   create_table "uploaded_quotes", force: :cascade do |t|

@@ -82,7 +82,7 @@ class InvoicesController < ApplicationController
   end
 
   def show
-    @ledger = Ledger.find_by(id:params[:id])
+    @ledger = Ledger.find_by(id:params[:id]).as_json(:include => {:invoices => {:include => :invoice_items}})
     @invoice_type = params[:invoice_type]
     @system_plan = params[:system_plan]
     @invoice = Invoice.find_by(id:params[:id])
