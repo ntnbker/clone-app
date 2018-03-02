@@ -42,7 +42,7 @@ class TradyPaymentRegistrationsController < ApplicationController
     end 
 
     respond_to do |format|
-          format.json{render :json=>{message:"Thank you for adding your payment information. We will charge you one month after the due date of the invoice. You can now submit the invoice, thank you.", customer_profile:trady.customer_profile}}
+          format.json{render :json=>{message:"Thank you for adding your payment information. We will charge you one month after the due date of the invoice. You can now submit the invoice, thank you.", customer:trady.customer_profile}}
           
       end
 
