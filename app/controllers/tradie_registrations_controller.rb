@@ -14,6 +14,15 @@ class TradieRegistrationsController < ApplicationController
     existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
     
       if @user.save
+
+        role = Role.new(user_id:@user.id)
+        trady = @user.trady
+        trady.roles << role
+        role.save
+
+
+
+
         flash[:success] = "Please continue below"
         if existing_company
           redirect_to edit_register_tradie_company_path(id:existing_company.id, maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
