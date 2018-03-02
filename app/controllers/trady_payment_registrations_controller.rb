@@ -42,7 +42,7 @@ class TradyPaymentRegistrationsController < ApplicationController
     end 
 
     respond_to do |format|
-          format.json{render :json=>{message:"Thank you for signing up. "}}
+          format.json{render :json=>{message:"Thank you for signing up.", customer_profile:trady.customer_profile}}
           
       end
 
