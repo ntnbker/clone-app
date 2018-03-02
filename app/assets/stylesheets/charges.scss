@@ -1,3 +1,7 @@
+$color-green-submit: #71C796;
+$color-blue: #4CC6EE;
+$color-text: #83878C;
+
 #payment-form {
   .StripeElement {
     height: initial;
@@ -26,7 +30,7 @@
   .buttons {
     margin-top: 20px;
     button {
-      background-color: #5cc712;
+      background-color: $color-green-submit;
       color: white;
       border: 0;
 

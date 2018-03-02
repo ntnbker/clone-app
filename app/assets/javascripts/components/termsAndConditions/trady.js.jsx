@@ -77,8 +77,7 @@ var TradyTermsAndConditions = React.createClass({
           return self.setState({errors: res.errors});
         }
       },
-      error: function(error) {
-        return self.setState({errors});
+      error: function(errors) {
       }
     })
 
