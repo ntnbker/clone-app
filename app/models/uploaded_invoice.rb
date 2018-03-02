@@ -6,4 +6,17 @@ class UploadedInvoice < ApplicationRecord
 
   validates :total_invoice_amount, presence: true, numericality: true
 
+  validates_presence_of :due_date
+  validate :future_date
+    
+
+  def future_date
+    if self.due_date == nil
+      
+    else
+      errors.add(:due_date, "can't be in the past") if
+        self.due_date <= DateTime.now
+    end 
+  end
+
 end 
