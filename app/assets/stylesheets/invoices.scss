@@ -9,6 +9,10 @@ $color-gray-dark: #baccd8;
 $color-red: #e34f4f;
 $color-black: #000000;
 $color-blue-light: #7646FF;
+$color-green-submit: #71C796;
+$color-blue: #4CC6EE;
+$color-text: #83878C;
+
 .invoice-form {
   margin-bottom: 150px;
 	width: 98%;
@@ -704,6 +708,81 @@ $color-blue-light: #7646FF;
 			@include flex-direction(column);
 		}
 	}
+}
+
+#submit-invoice {
+  color: $color-text;
+
+  .quote-items {
+    @include flexbox;
+    font-weight: 600;
+    margin: 10px 0;
+
+    > div {
+      @include flex(1);
+    }
+  }
+
+  .invoices-data {
+    margin: 20px 0px;
+
+    span.font-bold {
+      display: inline-block;
+      width: 120px;
+    }
+  }
+
+  .date-quote {
+    margin-top: 20px;
+  }
+
+  .invoice-item, .invoice-tax, .amount-due {
+    @include flexbox;
+    margin: 5px 0px;
+
+    > div {
+      @include flex(1);
+    }
+    .flex-4 {
+      @include flex(4);
+    }
+    .flex-2 {
+      @include flex(2);
+    }
+    .flex-1 {
+      @include flex(1);
+    }
+  }
+
+  .qf-button {
+    @include flexbox;
+
+    button {
+      @include flex(1);
+      margin: 20px 5%;
+    }
+
+    .button-submit {
+      background-color: $color-green-submit;
+      color: white;
+      border-color: $color-green-submit;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #619970;
+      }
+    }
+    .button-back {
+      background-color: $color-blue;
+      color: white;
+      border-color: $color-blue;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #619970;
+      }
+    }
+  }
 }
 
 .progress {
