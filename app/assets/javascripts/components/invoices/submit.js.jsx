@@ -135,7 +135,7 @@ var InvoiceSubmit = React.createClass({
     return {
       invoices: [],
       trady: this.props.trady || {},
-      customer_profile: null,
+      customer: this.props.customer,
     }
   },
 
@@ -242,7 +242,7 @@ var InvoiceSubmit = React.createClass({
         self.setState({
           isModal: true,
           modal: 'message',
-          customer_profile: res.customer_profile,
+          customer: res.customer,
           notification: {
             title: "Credit or debit card",
             content: res.message,
@@ -265,8 +265,8 @@ var InvoiceSubmit = React.createClass({
   },
 
   submitInvoice() {
-    const {customer_profile, trady} = this.state;
-    if (!customer_profile  && trady.jfmo_participant) {
+    const {customer, trady} = this.state;
+    if (!customer && trady.jfmo_participant) {
       return this.openModal('payment');
     }
 
