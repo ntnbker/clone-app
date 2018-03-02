@@ -1,3 +1,3 @@
 reminder_queue:
-  every: ['2d', first_at: "2018-03-01 17:07"]
+  every: ['2d']
   class: ReminderQueueWorker
