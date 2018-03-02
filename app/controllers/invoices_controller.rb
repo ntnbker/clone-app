@@ -82,7 +82,8 @@ class InvoicesController < ApplicationController
   end
 
   def show
-    @ledger = Ledger.find_by(id:params[:id]).as_json(:include => {:invoices => {:include => :invoice_items}})
+    @ledger = Ledger.find_by(id:params[:id])
+    ledger_json = @ledger.as_json(:include => {:invoices => {:include => :invoice_items}})
     @invoice_type = params[:invoice_type]
     @system_plan = params[:system_plan]
     @invoice = Invoice.find_by(id:params[:id])
@@ -103,7 +104,7 @@ class InvoicesController < ApplicationController
     end
 
     respond_to do |format|
-        format.json{render :json=>{ledger:@ledger, invoice_type:@invoice_type, system_plan:@system_plan, invoice:@invoice, trady:@trady, maintenance_request:@maintenance_request, customer:@customer, trady_id:@trady_id, quote_id:@quote_id, agency:@agency}}
+        format.json{render :json=>{ledger:ledger_json, invoice_type:@invoice_type, system_plan:@system_plan, invoice:@invoice, trady:@trady, maintenance_request:@maintenance_request, customer:@customer, trady_id:@trady_id, quote_id:@quote_id, agency:@agency}}
         format.html{render :show}
     end
 
