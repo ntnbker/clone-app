@@ -1,9 +1,14 @@
 var AddInvoicePDF = React.createClass({
 	getInitialState: function () {
-		let { pdf_file } = this.props;
+		const {trady_company_id, maintenance_request_id, trady_id, pdf_file} = this.props;
+
+		const backPath = `/trady_companies/${trady_company_id}/edit?invoice_type=pdf_file&maintenance_request_id=${maintenance_request_id}&system_plan=Invoice&trady_company_id=${trady_company_id}&trady_id=${trady_id}`;
+
 		return {
 			file: {},
 			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
+			due_date: (pdf_file || {}).due_date || this.nowDate(),
+			backPath,
 		};
 	},
 
@@ -100,6 +105,15 @@ var AddInvoicePDF = React.createClass({
 		});
 	},
 
+  nowDate: function(nextDay = 1) {
+    var oneDay = 24 * 60 * 60 * 1000;
+    var now    = new Date(Date.now() + oneDay*nextDay);
+    var month  = now.getMonth() + 1;
+    var date   = now.getDate();
+    var year   = now.getFullYear();
+    return `${year}-${month < 10 ? '0' : ''}${month}-${date < 10 ? '0' : ''}${date}`;
+  },
+
 	handelSubmit: function (e) {
 		e.preventDefault();
 		const self = this;
@@ -125,7 +139,8 @@ var AddInvoicePDF = React.createClass({
 				if (res.error) {
 					self.setState({
 						errorFile: res.error.pdf,
-						errorAmount: res.error.total_invoice_amount
+						errorAmount: res.error.total_invoice_amount,
+						errorDate: res.error.due_date
 					});
 				}
 			},
@@ -138,7 +153,7 @@ var AddInvoicePDF = React.createClass({
 
 	render: function () {
 		const { maintenance_request_id, trady_id, quote_id, trady_company, trady_company_id } = this.props;
-		const { errorFile, errorAmount } = this.state;
+		const { errorFile, errorAmount, errorDate, backPath } = this.state;
 
 		return (
 			<div className="container invoice-form">
@@ -183,6 +198,19 @@ var AddInvoicePDF = React.createClass({
 							name="uploaded_invoice[total_invoice_amount]"
 						/>
     				<p id="errorbox" className="error">{errorAmount ? errorAmount[0] : ''}</p>
+
+	          <div className="text-center">
+	            <p> Invoice Due On : </p>
+	            <input
+	              type="date"
+	              defaultValue={this.state.due_date}
+	              ref={e => this.date = e}
+	              onChange={() => this.setState({errorDate: ''})}
+	              name="uploaded_invoice[due_date]"
+	              className={`text-center ${errorDate ? 'border_on_error' : ''}`}
+	            />
+	          </div>
+		        <p id="errorbox" className="error">{errorDate || ''}</p>
 						<input
 							type="hidden"
 							defaultValue={maintenance_request_id}
@@ -214,12 +242,13 @@ var AddInvoicePDF = React.createClass({
 							id="uploaded_invoice_system_plan"
 						/>
 						<div className="text-center">
-							<a
+							<button
 								className="btn btn-default btn-back m-r-lg"
-								href={"/trady_companies/" + trady_company_id + "/edit?invoice_type=pdf_file&maintenance_request_id=" + maintenance_request_id + "&system_plan=Invoice&trady_company_id=" + trady_company_id + "&trady_id=" + trady_id}
+								onClick={() => this.backButton.click()}
 							>
+								<a href={backPath} ref={(elem) => this.backButton = elem} />
 								Back
-							</a>
+							</button>
 							<button
 								type="submit"
 								className="button-primary green"

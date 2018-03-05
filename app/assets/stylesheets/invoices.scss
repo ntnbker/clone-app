@@ -1028,7 +1028,7 @@ $color-text: #83878C;
   		text-decoration: blink;
   	}
   }
-  input[type="text"] {
+  input[type="text"], input[type="date"] {
     max-width: 300px;
     margin: auto;
   }
