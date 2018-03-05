@@ -266,7 +266,7 @@ var InvoiceSubmit = React.createClass({
 
   submitInvoice() {
     const {customer, trady} = this.state;
-    if (!customer && trady.jfmo_participant) {
+    if (customer && !customer.customer_id && trady.jfmo_participant) {
       return this.openModal('payment');
     }
 
