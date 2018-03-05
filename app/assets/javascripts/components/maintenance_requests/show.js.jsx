@@ -2964,7 +2964,7 @@ var MaintenanceRequest = React.createClass({
 
 	summary(e) {
 		const {work_order_appointments, landlord_appointments, quote_appointments, current_user_role, invoices} = this.props;
-		const {invoice_pdf_files, trady, quote_requests, tenants} = this.state;
+		const {invoice_pdf_files, trady, quote_requests, tenants, landlord} = this.state;
 
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
@@ -2978,6 +2978,9 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							all_agents={this.props.all_agents}
 							updateStatusMR={this.updateStatusMR}
+							existLandlord={!!landlord}
+							existQuoteRequest={!!quote_requests.length}
+							existTradyAssigned={!!trady}
 							all_agency_admins={this.props.all_agency_admins}
 							viewItem={(key, item) => this.viewItem(key, item)}
 							assignToUser={(email) => this.assignToUser(email)}
