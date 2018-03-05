@@ -1,2 +1,14 @@
 %div.well.container
-  =react_component('Agency', {:authenticity_token => form_authenticity_token})
+  =react_component('AgencyAttributes', {:authenticity_token => form_authenticity_token})
+
+
+/ = bootstrap_form_for @agency do |f|
+/   = f.text_field :business_name
+/   = f.text_field :company_name
+/   = f.text_field :address
+/   = f.check_box :mailing_same_address
+/   = f.text_field :mailing_address
+/   = f.phone_field :phone
+/   = f.phone_field :mobile_phone
+
+/   = f.submit

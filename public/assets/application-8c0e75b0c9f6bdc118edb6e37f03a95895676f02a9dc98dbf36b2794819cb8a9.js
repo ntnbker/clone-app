@@ -86135,21 +86135,6 @@ var HomeComponent = React.createClass({
           null,
           'Automated reminders unsure jobs are progressing'
         )
-      ),
-      React.createElement(
-        'div',
-        { className: 'three columns' },
-        React.createElement('img', { src: '/icons/notes.png', alt: '' }),
-        React.createElement(
-          'h4',
-          null,
-          'Increase revenue'
-        ),
-        React.createElement(
-          'p',
-          null,
-          'Increase revenue through our rebate program and increased productivity'
-        )
       )
     );
   },
