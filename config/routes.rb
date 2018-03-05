@@ -271,9 +271,14 @@ Rails.application.routes.draw do
 
 
   ###########################################################
-  ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
+  ##########AGENCY TERMS AND CONDITIONS RESOURCES/ROUTES#####
   ###########################################################
-  resources :agency_term_agreements, only:[:new, :create]
+  resources :agency_term_agreements, only:[:new, :create, :edit, :update]
+
+  ###########################################################
+  ##########AGENCY PAYMENT REGISTRATION RESOURCES/ROUTES#####
+  ###########################################################
+  resources :agency_payment_registrations, only:[:new, :create]
 
 
  end
