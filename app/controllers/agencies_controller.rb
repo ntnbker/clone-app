@@ -60,7 +60,7 @@ class AgenciesController < ApplicationController
       @agency_admin.roles << role
       role.save
       flash[:success] = "Thank you for also signing up as an Agency."
-      redirect_to new_agency_term_agreement(agency_id:params[:user][:agency_admin_attributes][:agency_id])
+      redirect_to new_agency_term_agreement(agency_id:params[:user][:agency_admin_attributes][:agency_id], agency_admin_id:@agency_admin.id)
     elsif existing_user && existing_role == true
       #@user = User.new(user_params)
       @agency = Agency.find_by(id:params[:user][:agency_admin_attributes][:agency_id])  
@@ -76,7 +76,7 @@ class AgenciesController < ApplicationController
         role.save
         
         flash[:success] = "Thank you for signing up."
-        redirect_to new_agency_term_agreement(agency_id:params[:user][:agency_admin_attributes][:agency_id])
+        redirect_to new_agency_term_agreement(agency_id:params[:user][:agency_admin_attributes][:agency_id], agency_admin_id:@agency_admin.id)
       else
         #@user = User.new(user_params)
         @agency = Agency.find_by(id:params[:user][:agency_admin_attributes][:agency_id]) 
