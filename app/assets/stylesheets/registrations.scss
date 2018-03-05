@@ -46,6 +46,7 @@ $color-text: #83878C;
   }
   .step-title {
     color: $color-green-submit;
+    border-bottom: 4px solid $color-green-submit;
   }
   form {
     width: 80%;

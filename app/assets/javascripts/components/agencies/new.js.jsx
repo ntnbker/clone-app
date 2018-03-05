@@ -27,29 +27,28 @@ var AgencyAttributes = React.createClass({
         }
       });
       this.setState({
-        mailing: event.target.value,
+        mailing_address: event.target.value,
         address: event.target.value
       });
     }
   },
 
-  onSame: function() {
+  onSame: function(isSame) {
+    if(!this.state.same_address) {
+      this.removeError({ target: {id: 'mailing_address' }});
+      this.setState({mailing_address: this.state.address});
+    }
+
     this.setState({
-      same_address: !this.state.same_address,
-      mailing: ''
-    });
-    this.removeError({
-      target: {
-        id: this.generateAtt('id', 'mailing_address')
-      }
+      same_address: isSame
     });
   },
 
   onChangeMailing: function(e) {
     this.setState({
-      mailing: e.target.value
+      mailing_address: e.target.value
     });
-    this.props.removeError(e);
+    this.removeError(e);
   },
 
   removeError: function({ target: { id } }) {
@@ -70,7 +69,7 @@ var AgencyAttributes = React.createClass({
 
     $.ajax({
       type: agency ? 'PUT' : 'POST',
-      url: agency ? ('/agencies/' + agency.id) : '/agencies',
+      url: agency ? '/update_agency_registration' : '/agencies',
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -98,8 +97,8 @@ var AgencyAttributes = React.createClass({
 
     return (
       <form className="fields agencies" id="agencies" onSubmit={this.onSubmit}>
-        <h4 className="text-center"> Agency Information </h4>
         <div className="agency-name">
+          {agency ? <input  type="hidden" name="agency[id]" value={agency.id} /> : ''}
           <div className="company-name">
             <input
               type="text"
@@ -139,32 +138,50 @@ var AgencyAttributes = React.createClass({
           />
           {renderError(errors[generateAtt("id", "address")])}
         </div>
-        <div className="field text-center">
-          <label>
-            <input
-              value="1"
-              type="checkbox"
-              onChange={this.onSame}
-              id={generateAtt("id", "mailing_same_address")}
-              name={generateAtt("name", "mailing_same_address")}
-            />
-            Mailing address same as billing address
-          </label>
 
-          <input
-            type="text"
-            placeholder="Mailing address"
-            defaultValue={agency && agency.mailing_address}
-            readonly={this.state.same_address}
-            id={generateAtt("id", "mailing_address")}
-            name={generateAtt("name", "mailing_address")}
-            className={errors[generateAtt("id", "mailing_address")] ? ' has-error' : ''}
-            onChange={this.onChangeMailing}
-            value={!!this.state.same_address ? this.state.address : this.state.mailing}
-          />
-          {renderError(errors[generateAtt("id", "mailing_address")])}
+        <div className="form-group text-center">
+          Is your mailing address the same as the address above?
+          <div className="radio-same-address">
+            <label className="radio-option">Yes
+              <input
+                type="radio"
+                name="same-address"
+                value={true}
+                onChange={() => this.onSame(true)}
+                defaultChecked={!!this.state.same_address}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+            <label className="radio-option">No
+              <input
+                type="radio"
+                name="same-address"
+                onChange={() => this.onSame(false)}
+                value={false}
+                defaultChecked={!this.state.same_address}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+          </div>
         </div>
-
+        <div className="form-group">
+          <div className="col-sm-10">
+            <input
+              type="text"
+              id="mailing_address"
+              placeholder="Mailing Address"
+              readOnly={this.state.same_address}
+              defaultValue={agency && agency.mailing_address}
+              value={this.state.mailing_address}
+              onChange={this.onChangeMailing}
+              id={generateAtt("id", "mailing_address")}
+              name={generateAtt("name", "mailing_address")}
+              ref={(ref) => this.mailing_address = ref}
+              className={errors[generateAtt("id", "mailing_address")] ? ' has-error' : ''}
+            />
+            {renderError(errors[generateAtt("id", "mailing_address")])}
+          </div>
+        </div>
         <div className="agency-contact">
           <div className="agency-phone">
             <input
@@ -192,13 +209,14 @@ var AgencyAttributes = React.createClass({
             {renderError(errors[generateAtt("id", "mobile_phone")])}
           </div>
         </div>
-        <div className="agency-button">
-          <input
+        <div className="user-button">
+          <button
             type="submit"
-            name="commit"
-            value="Sign Up"
-            className="button-primary agency-button-submit green"
-          />
+            className="button-submit green"
+          >
+            Next
+          </button>
+
         </div>
       </form>
     )
@@ -336,21 +354,23 @@ var Agency = React.createClass({
       </div>
 
       <div className="user-button">
-        <input
-          type="button"
-          name="commit"
-          value="Back"
-          onClick={() => {
-            location.href = edit_agency_registration_path;
-          }}
-          className="button-primary button-user-back green"
-        />
-        <input
+        { false &&
+          <button
+            type="button"
+            onClick={() => {
+              location.href = edit_agency_registration_path;
+            }}
+            className="button-back green"
+          >
+            Back
+          </button>
+        }
+        <button
           type="submit"
-          name="commit"
-          value="Sign Up"
-          className="button-primary button-user-submit green"
-        />
+          className="button-submit green"
+        >
+          Next
+        </button>
       </div>
 
       {false &&

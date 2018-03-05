@@ -10,6 +10,33 @@ $color-text: #83878C;
     color: red;
     text-align: center;
   }
+  .plan {
+    @include flexbox;
+    color: $color-text;
+    margin-bottom: 40px;
+
+    > div {
+      @include flex(1);
+    }
+
+    .plan-name {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    .plan-price {
+      font-size: 24px;
+      font-weight: 600;
+      margin-top: 30px;
+    }
+    .plan-note {
+      font-size: 17px;
+
+      .row {
+        margin-bottom: 0px;
+      }
+    }
+  }
   .agree_checkbox {
     position: relative;
     label {
@@ -23,13 +50,25 @@ $color-text: #83878C;
       position: absolute;
     }
   }
+  .your-name {
+    @include flexbox;
+    margin-bottom: 15px;
+
+    .name {
+      @include flex(1);
+    }
+  }
   .card-title {
     margin: 20px 0px 10px 0;
     font-size: 20px;
   }
   .buttons {
+    @include flexbox;
     margin-top: 20px;
+
     button {
+      @include flex(1);
+      margin: 0 15px;
       background-color: $color-green-submit;
       color: white;
       border: 0;
@@ -39,10 +78,41 @@ $color-text: #83878C;
       }
     }
   }
-  @media (max-width: 550px) {
-    .terms-and-conditions {
-      .scroll-bar {
-        height: 180px;
+  @media (max-width: 380px) {
+    .your-name {
+      .name {
+        font-size: 14px;
+      }
+    }
+    .plan {
+      @include flexbox;
+      color: $color-text;
+
+      > div {
+        @include flex(1);
+      }
+
+      .plan-name {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 0;
+      }
+      .plan-price {
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 30px;
+      }
+      .plan-note {
+        font-size: 11px;
+
+        .row {
+          margin-bottom: 0px;
+        }
+      }
+    }
+    .buttons {
+      button {
+        margin: 0;
       }
     }
   }

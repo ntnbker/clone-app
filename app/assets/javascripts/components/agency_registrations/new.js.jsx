@@ -1,7 +1,7 @@
-var TradyRegistrationForm = React.createClass({
+var AgencyRegistrationForm = React.createClass({
   getInitialState : function() {
     const {step} = this.props;
-    const level = ['trady', 'trady-company', 'service', 'terms-and-conditions'];
+    const level = ['agency-company', 'agency-admin', 'terms-and-conditions', 'payment'];
 
     return {
       errors: {},
@@ -30,10 +30,10 @@ var TradyRegistrationForm = React.createClass({
     const {level} = this.state;
     return (
       <div className="registration-title">
-        {this.labelTitle(1, <p>User<br />Registration</p>, level > 0)}
-        {this.labelTitle(2, <p>Company<br />Registration</p>, level > 1)}
-        {this.labelTitle(3, <p>Services<br />Available</p>, level > 2)}
-        {this.labelTitle(4, <p>Terms<br />&<br />Conditions</p>, level > 3)}
+        {this.labelTitle(1, <p>Company<br />Registration</p>, level > 0)}
+        {this.labelTitle(2, <p>Agency Admin<br />Registration</p>, level > 1)}
+        {this.labelTitle(4, <p>Terms<br />&<br />Conditions</p>, level > 2)}
+        {this.labelTitle(3, <p>Payment<br />Information</p>, level > 3)}
       </div>
     )
   },
@@ -42,14 +42,14 @@ var TradyRegistrationForm = React.createClass({
     const {step} = this.state;
 
     switch (step) {
-      case 'trady':
-        return <h5 className="step-title text-center">User Registration</h5>
-      case 'trady-company':
+      case 'agency-company':
         return <h5 className="step-title text-center">Company Registration</h5>
-      case 'service':
-        return <h5 className="step-title text-center">Services Registration</h5>
+      case 'agency-admin':
+        return <h5 className="step-title text-center">Agency Admin Registration</h5>
       case 'terms-and-conditions':
         return <h5 className="step-title text-center">Terms And Conditions</h5>
+      case 'payment':
+        return <h5 className="step-title text-center">Payment Information</h5>
     }
   },
 
@@ -57,14 +57,14 @@ var TradyRegistrationForm = React.createClass({
     const {step} = this.state;
 
     switch (step) {
-      case 'trady':
-        return <Trady {...this.props} />;
-      case 'trady-company':
-        return <NewTradyCompany {...this.props} />;
-      case 'service':
-        return <ServiceList {...this.props} />;
+      case 'agency-company':
+        return <AgencyAttributes {...this.props} />;
+      case 'agency-admin':
+        return <Agency {...this.props} />;
       case 'terms-and-conditions':
-        return <TradyTermsAndConditions {...this.props} />;
+        return <AgencyTermsAndConditions {...this.props} />;
+      case 'payment':
+        return <AgencyPayment {...this.props} />;
     }
   },
 
@@ -74,7 +74,7 @@ var TradyRegistrationForm = React.createClass({
 
   render() {
     return (
-      <div id="registration" className="trady-registration">
+      <div id="registration" className="agency-registration">
         {this.generateStepTitle()}
         {this.generateTitle()}
         {this.generateForm()}

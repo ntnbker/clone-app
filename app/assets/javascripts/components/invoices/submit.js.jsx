@@ -11,6 +11,7 @@ var ModalAddPayment = React.createClass({
     const self = this;
     const params = {
       stripeToken: token.id,
+      name: this.name.value,
     }
 
     this.props.submit(params, (errors) => {
@@ -40,6 +41,10 @@ var ModalAddPayment = React.createClass({
         iconColor: '#fa755a'
       }
     };
+
+    if ($(window).width() <= 380) {
+      style.base.fontSize = '13px';
+    }
 
     // Create an instance of the card Element.
     var card = elements.create('card', {style: style});
@@ -105,10 +110,25 @@ var ModalAddPayment = React.createClass({
                 <span aria-hidden="true">&times;</span>
               </button>
               <h4 className="modal-title text-center">
-                Credit or debit card
+                MaintenanceApp Payment Setup
               </h4>
             </div>
             <div className="modal-body">
+              <div className="description-data">
+                <p className="row">
+                  Please note that you will not be charged now. When you have received payment MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.
+                </p>
+                <p className="row">
+                  Please note of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.
+                </p>
+              </div>
+              <div className="your-name">
+                <input type="text"
+                  className="name"
+                  placeholder="Name as it appears on the card"
+                  ref={elem => this.name = elem}
+                />
+              </div>
               <form id="payment-form" onSubmit={this.submit}>
                 <div class="form-row">
                   <label for="card-element" className="text-center card-title">
@@ -118,7 +138,7 @@ var ModalAddPayment = React.createClass({
                   <div id="card-errors" role="alert"></div>
                 </div>
                 <div className="buttons text-center">
-                  <button>Submit Payment</button>
+                  <button>Submit Payment Information</button>
                 </div>
               </form>
             </div>
@@ -266,7 +286,7 @@ var InvoiceSubmit = React.createClass({
 
   submitInvoice() {
     const {customer, trady} = this.state;
-    if (customer && !customer.customer_id && trady.jfmo_participant) {
+    if (true || customer && !customer.customer_id && trady.jfmo_participant) {
       return this.openModal('payment');
     }
 
@@ -302,13 +322,6 @@ var InvoiceSubmit = React.createClass({
       }
     })
   },
-            /*<a
-              href={send_invoice_path}
-              style={{ display: 'none'}}
-              ref={elem => this.submitButton = elem}
-            />
-            /*
-            */
 
   render() {
     const {trady_company, ledger, landlord, agency, edit_invoice_path} = this.props;
@@ -397,13 +410,13 @@ var InvoiceSubmit = React.createClass({
               </div>
               <div className="quote-items">
                 <div className="title">
-                   Description
+                  Description
                  </div>
                 <div className="title">
-                   Pricing
+                  Pricing
                  </div>
                 <div className="title">
-                   Hours
+                  Hours
                  </div>
                 <div className="title text-right">
                   Rate
@@ -412,11 +425,11 @@ var InvoiceSubmit = React.createClass({
                   Amount
                 </div>
               </div>
-              <div>
+              <div className="quote-item-data">
                 {invoice.invoice_items.map((invoiceItem) => (
                   <div className="invoice-item">
                     <div>
-                      {invoiceItem.item_description.capitalize}
+                      {invoiceItem.item_description}
                     </div>
                     <div>
                       {invoiceItem.pricing_type}
