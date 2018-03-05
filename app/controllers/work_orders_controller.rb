@@ -1,5 +1,6 @@
 class WorkOrdersController < ApplicationController
   def cancel_work_order
+    binding.pry
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     TradyJobCancelledEmailWorker.perform_async(maintenance_request.trady.id, maintenance_request.id)
     maintenance_request.update_attribute(:trady_id, nil)

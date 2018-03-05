@@ -269,4 +269,11 @@ Rails.application.routes.draw do
   ############################################
     resources :payments, only:[:new, :create]
 
+
+  ###########################################################
+  ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
+  ###########################################################
+  resources :agency_term_agreements, only:[:new, :create]
+
+
  end
