@@ -116,10 +116,10 @@ var ModalAddPayment = React.createClass({
             <div className="modal-body">
               <div className="description-data">
                 <p className="row">
-                  Please note that you will not be charged now. When you have received payment MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.
+                  Please note that you will not be charged now. MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.
                 </p>
                 <p className="row">
-                  Please note of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.
+                  Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.
                 </p>
               </div>
               <div className="your-name">
