@@ -67961,52 +67961,35 @@ var AgencyEdit = React.createClass({
     );
   }
 });
-var BDM = React.createClass({
-  displayName: "BDM",
-
-  render: function () {
-    return React.createElement(
-      "div",
-      null,
-      React.createElement(
-        "p",
-        null,
-        " Bdm verification "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "Bdm verification",
-        id: "user_agency_admin_attributes_agency_attributes_bdm_verification_id",
-        name: "user[agency_admin_attributes][agency_attributes][bdm_verification_id]"
-      })
-    );
-  }
-});
-
 var AgencyAttributes = React.createClass({
-  displayName: "AgencyAttributes",
+  displayName: 'AgencyAttributes',
 
   getInitialState: function () {
     return {
-      showBDM: false,
-      same_Address: false,
+      same_address: false,
       address: '',
-      mailing: ''
+      mailing: '',
+      errors: {}
     };
   },
 
   generateAtt: function (name_id, type) {
     if (name_id == "name") {
-      return "user[agency_admin_attributes][agency_attributes][" + type + "]";
+      return "agency[" + type + "]";
     } else if (name_id == "id") {
-      return "user_agency_admin_attributes_agency_attributes_" + type;
+      return type;
     }
   },
 
   handleChange: function (event) {
     this.setState({ address: event.target.value });
-    if (this.state.same_Address) {
+    this.removeError(event);
+    if (this.state.same_address) {
+      this.removeError({
+        target: {
+          id: this.generateAtt('id', 'mailing_address')
+        }
+      });
       this.setState({
         mailing: event.target.value,
         address: event.target.value
@@ -68014,14 +67997,15 @@ var AgencyAttributes = React.createClass({
     }
   },
 
-  onBDM: function () {
-    this.setState({ showBDM: !this.state.showBDM });
-  },
-
   onSame: function () {
     this.setState({
-      same_Address: !this.state.same_Address,
+      same_address: !this.state.same_address,
       mailing: ''
+    });
+    this.removeError({
+      target: {
+        id: this.generateAtt('id', 'mailing_address')
+      }
     });
   },
 
@@ -68029,303 +68013,364 @@ var AgencyAttributes = React.createClass({
     this.setState({
       mailing: e.target.value
     });
+    this.props.removeError(e);
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+    var errors = this.state.errors;
+
+    errors[id] = '';
+    this.setState({ errors: errors });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] || ''
+    );
+  },
+
+  onSubmit: function (e) {
+    var self = this;
+    var agency = this.props.agency;
+
+    e.preventDefault();
+    var FD = new FormData(document.getElementById('agencies'));
+
+    $.ajax({
+      type: agency ? 'PUT' : 'POST',
+      url: agency ? '/agencies/' + agency.id : '/agencies',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
   },
 
   render: function () {
+    var agency = this.props.agency;
+    var errors = this.state.errors;
+
+    var renderError = this.renderError;
+    var generateAtt = this.generateAtt;
+    var removeError = this.removeError;
+
     return React.createElement(
-      "div",
-      { className: "fields" },
+      'form',
+      { className: 'fields agencies', id: 'agencies', onSubmit: this.onSubmit },
       React.createElement(
-        "h4",
-        null,
-        " Agency Information "
+        'h4',
+        { className: 'text-center' },
+        ' Agency Information '
       ),
       React.createElement(
-        "p",
-        null,
-        " Company Name "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "Company Name",
-        id: this.generateAtt("id", "company_name"),
-        name: this.generateAtt("name", "company_name")
-      }),
-      React.createElement(
-        "p",
-        null,
-        " Business name "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "Business name",
-        id: this.generateAtt("id", "business_name"),
-        name: this.generateAtt("name", "business_name")
-      }),
-      React.createElement(
-        "p",
-        null,
-        " Abn "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "Abn",
-        id: this.generateAtt("id", "abn"),
-        name: this.generateAtt("name", "abn")
-      }),
-      React.createElement(
-        "p",
-        null,
-        " Address "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "Address",
-        onChange: this.handleChange,
-        id: this.generateAtt("id", "address"),
-        name: this.generateAtt("name", "address")
-      }),
-      React.createElement(
-        "div",
-        { className: "field" },
+        'div',
+        { className: 'agency-name' },
         React.createElement(
-          "label",
-          null,
-          React.createElement("input", {
-            value: "1",
-            type: "checkbox",
-            onChange: this.onSame,
-            id: this.generateAtt("id", "mailing_same_address"),
-            name: this.generateAtt("name", "mailing_same_address")
+          'div',
+          { className: 'company-name' },
+          React.createElement('input', {
+            type: 'text',
+            placeholder: 'Company Name',
+            defaultValue: agency && agency.company_name,
+            id: generateAtt("id", "company_name"),
+            name: generateAtt("name", "company_name"),
+            className: errors[generateAtt("id", "company_name")] ? ' has-error' : '',
+            onChange: removeError
           }),
-          "Mailing address same as billing address"
+          renderError(errors[generateAtt("id", "company_name")])
         ),
         React.createElement(
-          "p",
-          null,
-          " Mailing address "
-        ),
-        React.createElement("input", {
-          required: true,
-          type: "text",
-          placeholder: "Mailing address",
-          id: this.generateAtt("id", "mailing_address"),
-          name: this.generateAtt("name", "mailing_address"),
-          onChange: this.onChangeMailing,
-          value: !!this.state.same_Address ? this.state.address : this.state.mailing
-        })
-      ),
-      React.createElement(
-        "p",
-        null,
-        " Phone "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "tel",
-        placeholder: "Phone",
-        id: this.generateAtt("id", "phone"),
-        name: this.generateAtt("name", "phone")
-      }),
-      React.createElement(
-        "p",
-        null,
-        " Mobile phone "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "tel",
-        placeholder: "Mobile phone",
-        id: this.generateAtt("id", "mobile_phone"),
-        name: this.generateAtt("name", "mobile_phone")
-      }),
-      React.createElement(
-        "div",
-        { className: "license-type" },
-        React.createElement(
-          "p",
-          null,
-          " License Type "
-        ),
-        React.createElement(
-          "label",
-          { className: "one-half column" },
-          React.createElement("input", {
-            required: true,
-            type: "radio",
-            value: "Individual License",
-            name: this.generateAtt("name", "license_type"),
-            id: this.generateAtt("id", "license_type_individual_license")
+          'div',
+          { className: 'business-name' },
+          React.createElement('input', {
+            type: 'text',
+            placeholder: 'Business name',
+            defaultValue: agency && agency.business_name,
+            id: generateAtt("id", "business_name"),
+            name: generateAtt("name", "business_name"),
+            className: errors[generateAtt("id", "business_name")] ? ' has-error' : '',
+            onChange: removeError
           }),
-          "Individual License"
-        ),
-        React.createElement(
-          "label",
-          { className: "one-half column" },
-          React.createElement("input", {
-            required: true,
-            type: "radio",
-            value: "Corporate License",
-            name: this.generateAtt("name", "license_type"),
-            id: this.generateAtt("id", "license_type_corporate_license")
-          }),
-          "Corporate License"
+          renderError(errors[generateAtt("id", "business_name")])
         )
       ),
       React.createElement(
-        "p",
-        null,
-        " License number "
+        'div',
+        { className: 'address' },
+        React.createElement('input', {
+          type: 'text',
+          placeholder: 'Address',
+          defaultValue: agency && agency.address,
+          onChange: this.handleChange,
+          id: generateAtt("id", "address"),
+          name: generateAtt("name", "address"),
+          className: errors[generateAtt("id", "address")] ? ' has-error' : ''
+        }),
+        renderError(errors[generateAtt("id", "address")])
       ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "License number",
-        id: this.generateAtt("id", "license_number"),
-        name: this.generateAtt("name", "license_number")
-      }),
       React.createElement(
-        "p",
-        null,
-        " Corporation license number "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "Corporation license number",
-        id: this.generateAtt("id", "corporation_license_number"),
-        name: this.generateAtt("name", "corporation_license_number")
-      }),
-      React.createElement(
-        "div",
-        { className: "field" },
+        'div',
+        { className: 'field text-center' },
         React.createElement(
-          "label",
+          'label',
           null,
-          React.createElement("input", {
-            type: "checkbox",
-            value: "1",
-            onChange: this.onBDM,
-            id: this.generateAtt("id", "bdm_verification_status"),
-            name: this.generateAtt("name", "bdm_verification_status")
+          React.createElement('input', {
+            value: '1',
+            type: 'checkbox',
+            onChange: this.onSame,
+            id: generateAtt("id", "mailing_same_address"),
+            name: generateAtt("name", "mailing_same_address")
           }),
-          "I Have BDM verfication status"
+          'Mailing address same as billing address'
         ),
-        this.state.showBDM && React.createElement(BDM, null)
+        React.createElement('input', {
+          type: 'text',
+          placeholder: 'Mailing address',
+          defaultValue: agency && agency.mailing_address,
+          readonly: this.state.same_address,
+          id: generateAtt("id", "mailing_address"),
+          name: generateAtt("name", "mailing_address"),
+          className: errors[generateAtt("id", "mailing_address")] ? ' has-error' : '',
+          onChange: this.onChangeMailing,
+          value: !!this.state.same_address ? this.state.address : this.state.mailing
+        }),
+        renderError(errors[generateAtt("id", "mailing_address")])
+      ),
+      React.createElement(
+        'div',
+        { className: 'agency-contact' },
+        React.createElement(
+          'div',
+          { className: 'agency-phone' },
+          React.createElement('input', {
+            type: 'text',
+            placeholder: 'Phone',
+            defaultValue: agency && agency.phone,
+            id: generateAtt("id", "phone"),
+            name: generateAtt("name", "phone"),
+            className: errors[generateAtt("id", "phone")] ? ' has-error' : '',
+            onChange: removeError
+          }),
+          renderError(errors[generateAtt("id", "phone")])
+        ),
+        React.createElement(
+          'div',
+          { className: 'agency-mobile' },
+          React.createElement('input', {
+            type: 'text',
+            placeholder: 'Mobile phone',
+            defaultValue: agency && agency.mobile_phone,
+            id: generateAtt("id", "mobile_phone"),
+            name: generateAtt("name", "mobile_phone"),
+            className: errors[generateAtt("id", "mobile_phone")] ? ' has-error' : '',
+            onChange: removeError
+          }),
+          renderError(errors[generateAtt("id", "mobile_phone")])
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'agency-button' },
+        React.createElement('input', {
+          type: 'submit',
+          name: 'commit',
+          value: 'Sign Up',
+          className: 'button-primary agency-button-submit green'
+        })
       )
     );
   }
 });
 
 var Agency = React.createClass({
-  displayName: "Agency",
+  displayName: 'Agency',
+
+  getInitialState: function () {
+    return {
+      errors: {}
+    };
+  },
+
+  removeError: function (_ref2) {
+    var id = _ref2.target.id;
+    var errors = this.state.errors;
+
+    errors[id] = '';
+    this.setState({ errors: errors });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] || ''
+    );
+  },
+
+  onSubmit: function (e) {
+    var self = this;
+    e.preventDefault();
+    var FD = new FormData(document.getElementById('new_user'));
+
+    $.ajax({
+      type: 'POST',
+      url: '/register_agency_admin',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+  },
 
   render: function () {
+    var renderError = this.renderError;
+    var removeError = this.removeError;
+    var errors = this.state.errors;
+    var edit_agency_registration_path = this.props.edit_agency_registration_path;
+
     return React.createElement(
-      "form",
-      { role: "form", className: "agencies", id: "new_user", action: "/agencies", acceptCharset: "UTF-8", method: "post" },
-      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
-      React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+      'form',
+      { role: 'form', className: 'agencies', id: 'new_user', onSubmit: this.onSubmit },
+      React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
+      React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: this.props.authenticity_token }),
+      React.createElement('input', { type: 'hidden', name: 'user[agency_admin_attributes][agency_id]', value: this.props.agency_id }),
       React.createElement(
-        "p",
-        null,
-        " Email "
+        'div',
+        { className: 'user-email' },
+        React.createElement('input', {
+          type: 'text',
+          id: 'email',
+          name: 'user[email]',
+          placeholder: 'Email',
+          autoCapitalize: 'off',
+          autoCorrect: 'off',
+          autoComplete: 'off',
+          onChange: removeError,
+          className: errors['email'] ? 'has-error' : ''
+        }),
+        renderError(errors['email'])
       ),
-      React.createElement("input", {
-        required: true,
-        type: "email",
-        id: "user_email",
-        name: "user[email]",
-        placeholder: "Email",
-        autoCapitalize: "off",
-        autoCorrect: "off",
-        autoComplete: "off"
-      }),
       React.createElement(
-        "p",
-        null,
-        " Password "
+        'div',
+        { className: 'user-password' },
+        React.createElement('input', {
+          type: 'password',
+          id: 'password',
+          name: 'user[password]',
+          placeholder: 'Password',
+          onChange: removeError,
+          className: errors['password'] ? 'has-error' : ''
+        }),
+        renderError(errors['password'])
       ),
-      React.createElement("input", {
-        required: true,
-        type: "password",
-        id: "user_password",
-        name: "user[password]",
-        placeholder: "Password"
-      }),
       React.createElement(
-        "p",
-        null,
-        " Password confirmation "
+        'div',
+        { className: 'user-password-confirmation' },
+        React.createElement('input', {
+          type: 'password',
+          placeholder: 'Password Confirmation',
+          id: 'password_confirmation',
+          name: 'user[password_confirmation]',
+          onChange: removeError,
+          className: errors['password_confirmation'] ? 'has-error' : ''
+        }),
+        renderError(errors['password_confirmation'])
       ),
-      React.createElement("input", {
-        required: true,
-        type: "password",
-        placeholder: "Password",
-        id: "user_password_confirmation",
-        name: "user[password_confirmation]"
-      }),
       React.createElement(
-        "p",
-        null,
-        " First name "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "First name",
-        id: "user_agency_admin_attributes_first_name",
-        name: "user[agency_admin_attributes][first_name]"
-      }),
-      React.createElement(
-        "p",
-        null,
-        " Last name "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "text",
-        placeholder: "Last name",
-        id: "user_agency_admin_attributes_last_name",
-        name: "user[agency_admin_attributes][last_name]"
-      }),
-      React.createElement(
-        "p",
-        null,
-        " Mobile phone "
-      ),
-      React.createElement("input", {
-        required: true,
-        type: "tel",
-        placeholder: "Mobile phone",
-        id: "user_agency_admin_attributes_mobile_phone",
-        name: "user[agency_admin_attributes][mobile_phone]"
-      }),
-      React.createElement("hr", null),
-      React.createElement(AgencyAttributes, null),
-      React.createElement("input", {
-        type: "submit",
-        name: "commit",
-        value: "Sign Up",
-        "data-disable-with": "Sign Up",
-        className: "button-primary green"
-      }),
-      React.createElement(
-        "div",
-        { className: "have-account" },
+        'div',
+        { className: 'user-name' },
         React.createElement(
-          "p",
-          null,
-          "Already have an Account?"
+          'div',
+          { className: 'user-first-name' },
+          React.createElement('input', {
+            type: 'text',
+            placeholder: 'First name',
+            id: 'agency_admin_attributes.first_name',
+            name: 'user[agency_admin_attributes][first_name]',
+            onChange: removeError,
+            className: errors['agency_admin_attributes.first_name'] ? 'has-error' : ''
+          }),
+          renderError(errors['agency_admin_attributes.first_name'])
         ),
         React.createElement(
-          "a",
-          { href: "/login" },
-          "Login"
+          'div',
+          { className: 'user-last-name' },
+          React.createElement('input', {
+            type: 'text',
+            placeholder: 'Last name',
+            id: 'agency_admin_attributes.last_name',
+            name: 'user[agency_admin_attributes][last_name]',
+            onChange: removeError,
+            className: errors['agency_admin_attributes.last_name'] ? 'has-error' : ''
+          }),
+          renderError(errors['agency_admin_attributes.last_name'])
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'user-mobile' },
+        React.createElement('input', {
+          type: 'text',
+          placeholder: 'Mobile phone',
+          id: 'agency_admin_attributes.mobile_phone',
+          name: 'user[agency_admin_attributes][mobile_phone]',
+          onChange: removeError,
+          className: errors['agency_admin_attributes.mobile_phone'] ? 'has-error' : ''
+        }),
+        renderError(errors['agency_admin_attributes.mobile_phone'])
+      ),
+      React.createElement(
+        'div',
+        { className: 'user-button' },
+        React.createElement('input', {
+          type: 'button',
+          name: 'commit',
+          value: 'Back',
+          onClick: function () {
+            location.href = edit_agency_registration_path;
+          },
+          className: 'button-primary button-user-back green'
+        }),
+        React.createElement('input', {
+          type: 'submit',
+          name: 'commit',
+          value: 'Sign Up',
+          className: 'button-primary button-user-submit green'
+        })
+      ),
+      false && React.createElement(
+        'div',
+        { className: 'have-account text-center' },
+        React.createElement(
+          'p',
+          null,
+          'Already have an Account?'
+        ),
+        React.createElement(
+          'a',
+          { href: '/login' },
+          'Login'
         )
       )
     );
@@ -70076,7 +70121,10 @@ var AssignTrady = React.createClass({
   render: function () {
     var _this = this;
 
-    var current_role = this.props.current_role;
+    var _props = this.props;
+    var current_role = _props.current_role;
+    var stop_appointment = _props.stop_appointment;
+    var stop_invoice = _props.stop_invoice;
 
     var trady = this.props.trady || {};
     trady['trady_company'] = trady['trady_company'] || {};
@@ -70085,6 +70133,8 @@ var AssignTrady = React.createClass({
     var trady_profile_image = trady.trady_profile_image;
 
     var image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
+    var showStopReminder = this.props.showAppointmentAlreadyMade && !trady.jfmo_participant;
 
     return React.createElement(
       'div',
@@ -70139,16 +70189,29 @@ var AssignTrady = React.createClass({
                 } },
               'View'
             ),
-            this.props.showAppointmentAlreadyMade && React.createElement(
+            showStopReminder && React.createElement(
               'button',
               {
                 type: 'button',
-                className: 'btn btn-view appointment-already-made',
+                className: 'btn btn-view appointment-already-made stop-reminder',
                 onClick: function () {
-                  return _this.props.onModalWith('confirmAppointmentAlreadyMade');
+                  if (!stop_invoice) _this.props.viewTrady('confirmInvoiceAlreadyMade');
                 }
               },
-              'Appointment Already Made'
+              !stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"
+            ),
+            showStopReminder && React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-view appointment-already-made stop-reminder',
+                onClick: function () {
+                  if (!stop_appointment) {
+                    _this.props.onModalWith('confirmAppointmentAlreadyMade');
+                  }
+                }
+              },
+              !stop_appointment ? "Stop Appointment Reminder" : "Appointment Reminder Stopped"
             ),
             (current_role.role == 'Agent' || current_role.role == "AgencyAdmin") && React.createElement(
               'button',
@@ -71562,7 +71625,7 @@ var Invoices = React.createClass({
 					invoices.length
 				),
 				"Invoice",
-				current_role.role === 'Trady' && notPaid && React.createElement(
+				React.createElement(
 					"button",
 					{ type: "button", className: "btn btn-mark-as-paid", onClick: function (item) {
 							return self.props.paymentReminder({});
@@ -83179,7 +83242,7 @@ var MaintenanceRequest = React.createClass({
 				}
 
 			case 'viewQuoteRequestMessage':
-			case 'confirmQuoteAlreadySent':
+			case 'confirmStopQuoteReminder':
 				{
 					this.setState({
 						quote_request: item
@@ -84157,6 +84220,49 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	stopQuoteReminder: function () {
+		var self = this;
+		var _state9 = this.state;
+		var maintenance_request = _state9.maintenance_request;
+		var quote_request = _state9.quote_request;
+		var current_user_role = this.props.current_user_role;
+
+		var params = {
+			trady_id: quote_request.trady_id,
+			quote_request_id: quote_request.id,
+			maintenance_request_id: maintenance_request.id,
+			role: 'Agent'
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_quote_reminder',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Stop Quote Reminder",
+						content: "Thank you!",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Stop Quote Reminder",
+						content: "Something wrong",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	uploadImage: function (images, callback) {
 		if (images.length == 0) {
 			return;
@@ -84254,9 +84360,9 @@ var MaintenanceRequest = React.createClass({
 
 	cancelWorkOrder: function () {
 		var self = this;
-		var _state9 = this.state;
-		var maintenance_request = _state9.maintenance_request;
-		var logs = _state9.logs;
+		var _state10 = this.state;
+		var maintenance_request = _state10.maintenance_request;
+		var logs = _state10.logs;
 
 		var params = {
 			maintenance_request_id: maintenance_request.id
@@ -84549,11 +84655,11 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state10 = this.state;
-						var comments = _state10.comments;
-						var quoteComments = _state10.quoteComments;
-						var landlordComments = _state10.landlordComments;
-						var appointment = _state10.appointment;
+						var _state11 = this.state;
+						var comments = _state11.comments;
+						var quoteComments = _state11.quoteComments;
+						var landlordComments = _state11.landlordComments;
+						var appointment = _state11.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -84663,11 +84769,11 @@ var MaintenanceRequest = React.createClass({
 						cancelWorkOrder: this.cancelWorkOrder
 					});
 
-				case 'confirmQuoteAlreadySent':
+				case 'confirmStopQuoteReminder':
 					return React.createElement(ModalConfirmAnyThing, {
 						close: this.isClose,
-						confirm: this.quoteAlreadySent,
-						title: "Quote Already Sent",
+						confirm: this.stopQuoteReminder,
+						title: "Stop Quote Request Reminder",
 						content: "Are you sure that the tradie has already submitted a quote?"
 					});
 
@@ -84871,12 +84977,12 @@ var MaintenanceRequest = React.createClass({
 		var quote_appointments = _props5.quote_appointments;
 		var current_user_role = _props5.current_user_role;
 		var invoices = _props5.invoices;
-		var _state11 = this.state;
-		var invoice_pdf_files = _state11.invoice_pdf_files;
-		var trady = _state11.trady;
-		var quote_requests = _state11.quote_requests;
-		var tenants = _state11.tenants;
-		var landlord = _state11.landlord;
+		var _state12 = this.state;
+		var invoice_pdf_files = _state12.invoice_pdf_files;
+		var trady = _state12.trady;
+		var quote_requests = _state12.quote_requests;
+		var tenants = _state12.tenants;
+		var landlord = _state12.landlord;
 
 		var hasApproved = quote_requests.some(function (quote_request) {
 			return quote_request.quotes.some(function (quote) {
@@ -86909,6 +87015,33 @@ var ButtonForwardLandlord = React.createClass({
 	}
 });
 
+var ButtonCreateQuote = React.createClass({
+	displayName: "ButtonCreateQuote",
+
+	render: function () {
+		var _this = this;
+
+		return React.createElement(
+			"button",
+			{
+				type: "button",
+				className: "btn btn-accept",
+				onClick: function () {
+					return _this.link.click();
+				}
+			},
+			React.createElement("a", {
+				href: this.props.linkCreateQuote,
+				style: { display: 'none' },
+				ref: function (elem) {
+					return _this.link = elem;
+				}
+			}),
+			"Create Quote"
+		);
+	}
+});
+
 var ButtonAccept = React.createClass({
 	displayName: "ButtonAccept",
 
@@ -86986,7 +87119,7 @@ var ButtonCancle = React.createClass({
 	displayName: "ButtonCancle",
 
 	render: function () {
-		var _this = this;
+		var _this2 = this;
 
 		return React.createElement(
 			"button",
@@ -86994,7 +87127,7 @@ var ButtonCancle = React.createClass({
 				type: "button",
 				className: "btn btn-cancel",
 				onClick: function (key, item) {
-					return _this.props.viewQuote('viewConfirmQuote', _this.props.quote);
+					return _this2.props.viewQuote('viewConfirmQuote', _this2.props.quote);
 				}
 			},
 			"Cancel"
@@ -87006,7 +87139,7 @@ var ButtonView = React.createClass({
 	displayName: "ButtonView",
 
 	render: function () {
-		var _this2 = this;
+		var _this3 = this;
 
 		return React.createElement(
 			"button",
@@ -87014,7 +87147,7 @@ var ButtonView = React.createClass({
 				type: "button",
 				className: "btn btn-trans",
 				onClick: function (key, item) {
-					return _this2.props.viewQuote('viewQuote', _this2.props.quote);
+					return _this3.props.viewQuote('viewQuote', _this3.props.quote);
 				}
 			},
 			"View"
@@ -87034,12 +87167,12 @@ var ButtonQuoteAlreadySent = React.createClass({
 			"button",
 			{
 				type: "button",
-				className: "btn btn-default",
+				className: "btn btn-default stop-reminder",
 				onClick: function () {
-					return viewQuote('confirmQuoteAlreadySent', quote_request);
+					return viewQuote('confirmStopQuoteReminder', quote_request);
 				}
 			},
-			"Quote Already Sent"
+			"Stop Quote Request Reminder"
 		);
 	}
 });
@@ -87048,7 +87181,7 @@ var ButtonCallTrady = React.createClass({
 	displayName: "ButtonCallTrady",
 
 	render: function () {
-		var _this3 = this;
+		var _this4 = this;
 
 		var trady = this.props.trady;
 
@@ -87058,14 +87191,14 @@ var ButtonCallTrady = React.createClass({
 				type: "button",
 				className: "btn btn-default",
 				onClick: function () {
-					return _this3.phone.click();
+					return _this4.phone.click();
 				}
 			},
 			React.createElement("a", {
 				href: "tel:" + trady.mobile,
 				style: { display: 'none' },
 				ref: function (elem) {
-					return _this3.phone = elem;
+					return _this4.phone = elem;
 				}
 			}),
 			React.createElement("i", { className: "fa fa-phone" }),
@@ -87124,12 +87257,12 @@ var ButtonQuoteMessage = React.createClass({
 	displayName: "ButtonQuoteMessage",
 
 	render: function () {
-		var _this4 = this;
+		var _this5 = this;
 
 		return React.createElement(
 			"button",
 			{ type: "button", className: "btn btn-message", onClick: function (key, item) {
-					return _this4.props.viewQuoteMessage('viewQuoteMessage', _this4.props.quote);
+					return _this5.props.viewQuoteMessage('viewQuoteMessage', _this5.props.quote);
 				} },
 			"Message"
 		);
@@ -87509,7 +87642,8 @@ var QuoteRequests = React.createClass({
 		var pictures = _state2.pictures;
 
 		var self = this.props;
-		var role = self.current_user_role && self.current_user_role.role;
+		var role = self.current_user_role && self.current_user_role.role || self.current_role && self.current_role.role;
+
 		var isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
 		return React.createElement(
@@ -87529,6 +87663,9 @@ var QuoteRequests = React.createClass({
 				"div",
 				{ className: "list-quote" },
 				quote_requests.map(function (quote_request, index) {
+					var maintenance_request_id = quote_request.maintenance_request_id;
+					var trady_id = quote_request.trady_id;
+
 					var quotes = quote_request.quotes || [];
 					var quoteAlready = quotes.filter(function (quote) {
 						return !quote.quote_items || quote.quote_items.length === 0;
@@ -87542,6 +87679,7 @@ var QuoteRequests = React.createClass({
 					var needMessageButton = !isLandlord && !!self.current_user_show_quote_message;
 
 					var messageTo = self.keyLandlord === 'trady' ? 'Agent' : quote_request.trady ? quote_request.trady.name : '';
+					var linkCreateQuote = "/quote_options?maintenance_request_id=" + maintenance_request_id + "&trady_id=" + trady_id;
 
 					return React.createElement(
 						"div",
@@ -87585,18 +87723,22 @@ var QuoteRequests = React.createClass({
 								isCallTrady ? React.createElement(ButtonCallTrady, {
 									trady: quote_request.trady
 								}) : '',
+								role === 'Trady' ? React.createElement(ButtonCreateQuote, {
+									linkCreateQuote: linkCreateQuote
+								}) : '',
 								needMessageButton ? React.createElement(ButtonQuoteRequestMessage, {
 									quote_request: quote_request,
 									name: messageTo,
 									viewQuote: self.viewQuote
 								}) : '',
-								needAlreadySentButton ? React.createElement(ButtonQuoteAlreadySent, _extends({}, self, {
+								!quote_request.trady.jfmo_participant && needAlreadySentButton ? React.createElement(ButtonQuoteAlreadySent, _extends({}, self, {
 									quote_request: quote_request
 								})) : '',
 								needPhotoButton ? React.createElement(ModalImageUpload, _extends({
 									className: "btn btn-default"
 								}, self, {
 									chooseImageText: "Choose Image or PDF to upload",
+									text: "Upload Quote PDF/Image",
 									onClick: function () {
 										return self.chooseQuoteRequest(quote_request);
 									}
@@ -88250,7 +88392,7 @@ var ModalViewQuoteMessage = React.createClass({
 	},
 
 	render: function () {
-		var _this5 = this;
+		var _this6 = this;
 
 		var current_user = this.props.current_user;
 		var quote = this.props.quote;
@@ -88307,7 +88449,7 @@ var ModalViewQuoteMessage = React.createClass({
 									placeholder: "Message",
 									readOnly: !current_user,
 									ref: function (rel) {
-										return _this5.message = rel;
+										return _this6.message = rel;
 									},
 									onChange: this.removeError,
 									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
@@ -88375,7 +88517,7 @@ var ModalViewQuoteRequestMessage = React.createClass({
 	},
 
 	render: function () {
-		var _this6 = this;
+		var _this7 = this;
 
 		var current_user = this.props.current_user;
 		var quote_request = this.props.quote_request;
@@ -88435,7 +88577,7 @@ var ModalViewQuoteRequestMessage = React.createClass({
 									placeholder: "Message",
 									readOnly: !current_user,
 									ref: function (rel) {
-										return _this6.message = rel;
+										return _this7.message = rel;
 									},
 									onChange: this.removeError,
 									className: 'textarea-message ' + (!current_user ? 'readonly ' : '') + (errorMessage ? ' has-error' : '')
@@ -89558,7 +89700,6 @@ var Header = React.createClass({
       }
     });
   },
-
   menuBar: function () {
     var _props = this.props;
     var edit_agency = _props.edit_agency;
@@ -89616,7 +89757,6 @@ var Header = React.createClass({
       )
     );
   },
-
   componentWillUnmount: function () {
     $(document).unbind('click', this.clickDocument);
   },
@@ -89631,7 +89771,6 @@ var Header = React.createClass({
     }
     return false;
   },
-
   header: function (e) {
     var _this = this;
 
@@ -91075,24 +91214,15 @@ var TenantEdit = React.createClass({
   displayName: 'TenantEdit',
 
   getInitialState: function () {
-
     return {
-      errors: {}
+      errors: {},
+      hideMessage: true,
+      message: 'deafult message'
     };
   },
-
-  changeLicenseType: function (_ref) {
-    var value = _ref.target.value;
-
-    this.setState({
-      license_type: value,
-      errors: _extends({}, this.state.errors, { license_type: '' })
-    });
-  },
-
   onSubmit: function (e) {
+    e.preventDefault();
     var isInvoice = this.props.system_plan === 'Invoice';
-
     var getValidValue = function (obj) {
       return obj && obj.value;
     };
@@ -91102,9 +91232,7 @@ var TenantEdit = React.createClass({
       // email     : getValidValue(this.email),
       mobile: getValidValue(this.mobile)
     };
-
     var params = { tenant: tenant, id: this.props.tenant.id };
-
     var self = this;
     $.ajax({
       type: 'POST',
@@ -91115,23 +91243,19 @@ var TenantEdit = React.createClass({
       data: params,
       success: function (res) {
         if (res.errors) {
-          self.setState({ errors: res.errors || {} });
+          return self.setState({ errors: res.errors || {} });
         }
+        self.setState({ message: res.message, tenant: res.tenant, hideMessage: false });
       },
       error: function (err) {}
     });
-
-    e.preventDefault();
-
     return;
   },
+  removeError: function (_ref) {
+    var id = _ref.target.id;
 
-  removeError: function (_ref2) {
-    var id = _ref2.target.id;
-
-    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')), hideMessage: true });
   },
-
   renderError: function (error) {
     return React.createElement(
       'p',
@@ -91139,7 +91263,20 @@ var TenantEdit = React.createClass({
       error && error[0] ? error[0] : ''
     );
   },
+  renderMessage: function () {
+    var _state = this.state;
+    var message = _state.message;
+    var hideMessage = _state.hideMessage;
 
+    return React.createElement(
+      'p',
+      {
+        id: 'message',
+        className: "message " + (hideMessage && 'hide-message')
+      },
+      message
+    );
+  },
   renderButton: function (text, link) {
     return React.createElement(
       'button',
@@ -91149,7 +91286,6 @@ var TenantEdit = React.createClass({
       text
     );
   },
-
   renderTextField: function (field, textHolder) {
     var _this = this;
 
@@ -91179,41 +91315,36 @@ var TenantEdit = React.createClass({
       )
     );
   },
-
   render: function () {
-    var isInvoice = this.props.system_plan === "Invoice";
     var tenant = this.props.tenant || {};
-    var company_name = tenant.company_name;
-    var business_name = tenant.business_name;
-    var abn = tenant.abn;
-    var address = tenant.address;
-    var mailing_address = tenant.mailing_address;
-    var phone = tenant.phone;
-    var mobile_phone = tenant.mobile_phone;
-    var corporation_license_number = tenant.corporation_license_number;
-    var _state = this.state;
-    var _state$errors = _state.errors;
-    var errors = _state$errors === undefined ? {} : _state$errors;
-    var license_type = _state.license_type;
-    var gallery = _state.gallery;
+    var _state2 = this.state;
+    var _state2$errors = _state2.errors;
+    var errors = _state2$errors === undefined ? {} : _state2$errors;
+    var message = _state2.message;
 
     var renderTextField = this.renderTextField;
     var renderButtonFunc = this.renderButton;
-
+    var renderMessage = this.renderMessage;
     return React.createElement(
       'div',
-      { className: 'edit_tenant_profile edit_profile' },
+      { className: 'edit_profile edit_tenant_profile' },
       React.createElement(
         'form',
-        { role: 'form', className: 'form-horizontal full', id: 'edit_tenant', onSubmit: this.onSubmit },
+        {
+          role: 'form',
+          className: 'form-horizontal right ',
+          id: 'edit_trady',
+          onSubmit: this.onSubmit
+        },
         React.createElement(
           'h5',
           { className: 'control-label col-sm-2 required title' },
-          'Edit tenant Profile'
+          'Edit Tenant Profile'
         ),
+        renderMessage(),
+        renderTextField('email', 'email'),
         renderTextField('name', 'Name'),
         renderTextField('mobile', 'Mobile'),
-        renderTextField('email', 'email'),
         React.createElement(
           'div',
           { className: 'text-center' },
@@ -91222,7 +91353,8 @@ var TenantEdit = React.createClass({
             { type: 'submit', className: 'button-primary green option-button' },
             'Update Your Profile'
           )
-        )
+        ),
+        renderButtonFunc('Reset Password', this.props.change_password_path)
       )
     );
   }
@@ -93769,6 +93901,7 @@ var TradyMaintenanceRequest = React.createClass({
 				quoteComments.unshift(appointment.comments[0]);
 			}
 		});
+
 		return {
 			modal: "",
 			isModal: false,
@@ -93792,6 +93925,7 @@ var TradyMaintenanceRequest = React.createClass({
 			tenants_conversation: tenants_conversation,
 			landlords_conversation: landlords_conversation,
 			trady_agent_conversation: trady_agent_conversation,
+			stop_reminder: this.props.stop_reminder,
 			quote_requests: this.props.quote_requests,
 			trady: this.props.assigned_trady,
 			instruction: this.props.instruction ? this.props.instruction : {},
@@ -94068,7 +94202,7 @@ var TradyMaintenanceRequest = React.createClass({
 				}
 
 			case 'viewQuoteRequestMessage':
-			case 'confirmQuoteAlreadySent':
+			case 'confirmStopQuoteReminder':
 				{
 					this.setState({
 						quote_request: item
@@ -94101,6 +94235,7 @@ var TradyMaintenanceRequest = React.createClass({
 			case 'viewConfirm':
 			case 'viewMarkJob':
 			case 'createAppointment':
+			case 'confirmInvoiceAlreadyMade':
 			case 'createAppointmentForQuote':
 				{
 					this.onModalWith(key);
@@ -94626,12 +94761,12 @@ var TradyMaintenanceRequest = React.createClass({
 						hasApproved: hasApproved
 					});
 
-				case 'confirmQuoteAlreadySent':
+				case 'confirmStopQuoteReminder':
 					return React.createElement(ModalConfirmAnyThing, {
 						close: this.isClose,
-						confirm: this.quoteAlreadySent,
-						title: 'Quote Already Sent',
-						content: 'Are you sure you have already submitted a quote? If you want the quote request reminder emails to stop because you have already submitted a quote please click the YES button. You also have the option to quickly upload a photo of the quote that you have submitted to help out the agent. Thank you.'
+						confirm: this.stopQuoteReminder,
+						title: 'Stop Quote Request Reminder',
+						content: 'Are you sure you have already submitted a quote?'
 					});
 
 				case 'viewPhoto':
@@ -94653,9 +94788,17 @@ var TradyMaintenanceRequest = React.createClass({
 				case 'confirmAppointmentAlreadyMade':
 					return React.createElement(ModalConfirmAnyThing, {
 						close: this.isClose,
-						confirm: this.appointmentAlreadyMade,
-						title: 'Appointment Already Made',
-						content: 'Are you sure you have already made an appointment with the tenant?'
+						confirm: this.stopAppointmentReminder,
+						title: 'Stop Appointment Reminder',
+						content: 'Are you sure you have already made an appointment with the tenant AND you want to stop the appointment reminder?'
+					});
+
+				case 'confirmInvoiceAlreadyMade':
+					return React.createElement(ModalConfirmAnyThing, {
+						close: this.isClose,
+						confirm: this.stopInvoiceReminder,
+						title: 'Stop Invoice Reminder',
+						content: 'Are you sure you have already made an invoice AND you want to stop the invoice reminder?'
 					});
 
 				default:
@@ -94716,6 +94859,49 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	stopQuoteReminder: function () {
+		var self = this;
+		var _props7 = this.props;
+		var maintenance_request = _props7.maintenance_request;
+		var signed_in_trady = _props7.signed_in_trady;
+		var quote_request = this.state.quote_request;
+
+		var params = {
+			trady_id: signed_in_trady.id,
+			maintenance_request_id: maintenance_request.id,
+			quote_request_id: quote_request.id,
+			role: 'Trady'
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_quote_reminder',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Stop Quote Reminder",
+						content: "Thank you!",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Stop Quote Reminder",
+						content: "Something wrong",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	appointmentAlreadyMade: function () {
 		var self = this;
 		var maintenance_request = this.state.maintenance_request;
@@ -94745,6 +94931,80 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({ notification: {
 						title: "Appointment Already Made",
 						content: "Appointment Already Made didn't confirm.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	stopAppointmentReminder: function () {
+		var self = this;
+		var maintenance_request = this.state.maintenance_request;
+
+		var params = {
+			maintenance_request_id: maintenance_request.id
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_appointment_reminder',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					notification: {
+						title: "Stop Appointment Reminder",
+						content: res.message,
+						bgClass: "bg-success"
+					},
+					stop_appointment: true
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Stop Appointment Reminder",
+						content: "Stop Appointment Reminder didn't confirm.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	stopInvoiceReminder: function () {
+		var self = this;
+		var maintenance_request = this.state.maintenance_request;
+
+		var params = {
+			maintenance_request_id: maintenance_request.id
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_invoice_reminder',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				self.setState({
+					notification: {
+						title: "Appointment Reminder stopped",
+						content: res.message,
+						bgClass: "bg-success"
+					},
+					stop_invoice: true
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Stop Appointment Reminder",
+						content: "Stop Appointment Reminder didn't confirm.",
 						bgClass: "bg-error"
 					} });
 				self.onModalWith('notification');
@@ -94898,6 +95158,22 @@ var TradyMaintenanceRequest = React.createClass({
 					break;
 			}
 		}
+
+		var _props8 = this.props;
+		var stop_reminder = _props8.stop_reminder;
+		var stop_quote_reminder_id = _props8.stop_quote_reminder_id;
+
+		switch (stop_reminder) {
+			case 'quote':
+				self.viewItem('confirmStopQuoteReminder', { id: stop_quote_reminder_id });
+				break;
+			case 'appointment':
+				self.onModalWith('confirmAppointmentAlreadyMade');
+				break;
+			case 'invoice':
+				self.onModalWith('confirmInvoiceAlreadyMade');
+				break;
+		}
 	},
 
 	updateInsruction: function (data) {
@@ -94937,6 +95213,8 @@ var TradyMaintenanceRequest = React.createClass({
 		var invoice_pdf_files = _state5.invoice_pdf_files;
 		var trady = _state5.trady;
 		var quote_requests = _state5.quote_requests;
+		var stop_invoice = _state5.stop_invoice;
+		var stop_appointment = _state5.stop_appointment;
 
 		var hasApproved = quote_requests.some(function (quote_request) {
 			return quote_request.quotes.some(function (quote) {
@@ -94992,6 +95270,8 @@ var TradyMaintenanceRequest = React.createClass({
 						onModalWith: function (modal) {
 							return _this3.onModalWith(modal);
 						},
+						stop_invoice: stop_invoice,
+						stop_appointment: stop_appointment,
 						showAppointmentAlreadyMade: true,
 						viewTrady: function (key, item) {
 							return _this3.viewItem(key, item);
@@ -95004,6 +95284,7 @@ var TradyMaintenanceRequest = React.createClass({
 						onModalWith: this.onModalWith,
 						uploadImage: this.uploadImage,
 						current_user: this.props.current_user,
+						current_role: this.props.current_role,
 						chooseQuoteRequest: this.chooseQuoteRequest,
 						viewQuote: this.viewItem,
 						current_user_show_quote_message: this.props.current_user_show_quote_message
