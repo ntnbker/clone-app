@@ -86135,21 +86135,6 @@ var HomeComponent = React.createClass({
           null,
           'Automated reminders unsure jobs are progressing'
         )
-      ),
-      React.createElement(
-        'div',
-        { className: 'three columns' },
-        React.createElement('img', { src: '/icons/notes.png', alt: '' }),
-        React.createElement(
-          'h4',
-          null,
-          'Increase revenue'
-        ),
-        React.createElement(
-          'p',
-          null,
-          'Increase revenue through our rebate program and increased productivity'
-        )
       )
     );
   },
@@ -86646,7 +86631,7 @@ var HomeComponent = React.createClass({
         React.createElement('textarea', {
           type: 'text',
           id: 'pac-input',
-          placeholder: 'Where do need the service done? Please tell us the address.',
+          placeholder: 'Please tell us the address.',
           ref: function (elem) {
             return _this6.address = elem;
           },

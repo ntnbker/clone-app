@@ -41,6 +41,11 @@ Rails.application.routes.draw do
     resources :agent_profile_images, only:[:create, :update]
     resources :agency_profile_images, only:[:create, :update]
     resources :agencies, only:[:new, :create, :edit, :update]
+    get "register_agency_admin" => "agencies#new_agency_admin", :as=> "new_agency_admin_for_agency"
+    post "register_agency_admin" => "agencies#register_agency_admin"
+    get "edit_agency_registration" => "agencies#edit_agency_registration", :as=>"edit_agency_registration" 
+    put 'update_agency_registration' => "agencies#update_agency_registration"
+    
     get "agency_settings" => 'agencies#settings', :as => "agency_settings"
     resources :agency_admin_maintenance_requests, only:[:index, :show] 
   ###################################################
@@ -242,4 +247,9 @@ Rails.application.routes.draw do
   post "/stop_appointment_reminder" => "reminder_killers#stop_appointment_reminder", :as => :stop_appointment_reminder
   post "/stop_invoice_reminder" => "reminder_killers#stop_invoice_reminder", :as => :stop_invoice_reminder
     
+
+  ##########PAYMENT RESOURCES/ROUTES#########
+  ################################################### 
+    resources :payments, only:[:new, :create]
+
  end
