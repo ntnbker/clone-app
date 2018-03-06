@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180301083353) do
+ActiveRecord::Schema.define(version: 20180306045055) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -246,12 +246,18 @@ ActiveRecord::Schema.define(version: 20180301083353) do
     t.date     "date"
   end
 
+  create_table "invoice_schedulers", force: :cascade do |t|
+    t.date     "run_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.integer  "trady_id"
     t.integer  "maintenance_request_id"
     t.float    "amount"
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.boolean  "tax"
     t.integer  "ledger_id"
     t.float    "gst_amount"
@@ -260,9 +266,10 @@ ActiveRecord::Schema.define(version: 20180301083353) do
     t.boolean  "print_status"
     t.string   "invoice_number"
     t.text     "trady_invoice_reference"
-    t.boolean  "paid",                    default: false
+    t.boolean  "paid",                                            default: false
     t.integer  "quote_id"
-    t.string   "mapp_payment_status",     default: "Outstanding"
+    t.string   "mapp_payment_status",                             default: "Outstanding"
+    t.decimal  "service_fee",             precision: 8, scale: 2
   end
 
   create_table "landlords", force: :cascade do |t|
