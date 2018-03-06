@@ -1,6 +1,8 @@
 var AddInvoicePDF = React.createClass({
 	getInitialState: function () {
-		const {trady_company_id, maintenance_request_id, trady_id, pdf_file} = this.props;
+		const {
+			trady_company_id, maintenance_request_id, trady_id, pdf_file
+		} = this.props;
 
 		const backPath = `/trady_companies/${trady_company_id}/edit?invoice_type=pdf_file&maintenance_request_id=${maintenance_request_id}&system_plan=Invoice&trady_company_id=${trady_company_id}&trady_id=${trady_id}`;
 
@@ -114,6 +116,108 @@ var AddInvoicePDF = React.createClass({
     return `${year}-${month < 10 ? '0' : ''}${month}-${date < 10 ? '0' : ''}${date}`;
   },
 
+  isClose: function() {
+    if(this.state.isModal == true) {
+      this.setState({
+        isModal: false,
+        modal: "",
+      });
+    }
+
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    if(div){
+      div.parentNode.removeChild(div);
+    }
+  },
+
+  openModal(modal) {
+    this.setState({
+      isModal: true,
+      modal,
+    })
+  },
+
+  renderModal() {
+    if (this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if(div.length === 0) {
+        div = document.createElement('div')
+        div.className  = "modal-backdrop in";
+        body.appendChild(div);
+      }
+
+      switch (this.state.modal) {
+        case 'payment':
+          return (
+            <ModalAddPayment
+              close={this.isClose}
+              submit={this.submitPayment}
+            />
+          )
+
+        case 'message':
+          return (
+            <ModalNotification
+              close={this.isClose}
+              bgClass={this.state.notification.bgClass}
+              title={this.state.notification.title}
+              content={this.state.notification.content}
+            />
+          )
+
+        default:
+        return '';
+      }
+    }
+  },
+
+  submitPayment(params, callback) {
+    const self = this;
+    params.trady_id               = this.props.trady_id;
+    params.trady_company_id       = this.props.trady_company_id;
+    params.maintenance_request_id = this.props.maintenance_request_id;
+
+    $.ajax({
+      type: 'POST',
+      url: '/trady_payment_registrations',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function(res){
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          customer: res.customer,
+          notification: {
+            title: "Credit or debit card",
+            content: res.message,
+            bgClass: "bg-success",
+          }
+        })
+      },
+      error: function(err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Credit or debit card",
+            content: err.responseText,
+            bgClass: "bg-error",
+          }
+        })
+      }
+    })
+  },
+
 	handelSubmit: function (e) {
 		e.preventDefault();
 		const self = this;
@@ -121,6 +225,7 @@ var AddInvoicePDF = React.createClass({
 		if (!this.state.file.id) {
 			return this.setState({ errorFile: ['Please upload a file'] });
 		}
+
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
 		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
 
@@ -198,7 +303,6 @@ var AddInvoicePDF = React.createClass({
 							name="uploaded_invoice[total_invoice_amount]"
 						/>
     				<p id="errorbox" className="error">{errorAmount ? errorAmount[0] : ''}</p>
-
 	          <div className="text-center">
 	            <p> Invoice Due On : </p>
 	            <input
@@ -258,6 +362,7 @@ var AddInvoicePDF = React.createClass({
 						</div>
 					</form>
 				</div>
+        { this.renderModal() }
 			</div>
 		);
 	}
