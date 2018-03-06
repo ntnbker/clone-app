@@ -313,7 +313,7 @@ var InvoiceSubmit = React.createClass({
           isModal: true,
           modal: 'message',
           notification: {
-            title: "Credit or debit card",
+            title: "Submit Invoice",
             content: err.responseText,
             bgClass: "bg-error",
           }
