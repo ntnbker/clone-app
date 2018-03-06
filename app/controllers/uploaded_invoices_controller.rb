@@ -81,8 +81,8 @@ class UploadedInvoicesController < ApplicationController
     @quote_id = params[:quote_id]
     @invoice_type = params[:invoice_type]
     @system_plan = params[:system_plan]
-    trady = Trady.find_by(id:@trady_id)
-    @customer = trady.customer_profile.as_json
+    @trady = Trady.find_by(id:@trady_id)
+    @customer = @trady.customer_profile.as_json
 
   end
 
