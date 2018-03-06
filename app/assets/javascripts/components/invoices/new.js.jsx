@@ -1,3 +1,5 @@
+const SERVICE_FEE = 0.15;
+
 var StepProgress = React.createClass({
   matchClass(nth, step) {
     if (nth < step)
@@ -573,13 +575,15 @@ var InvoiceField = React.createClass({
   getInitialState : function() {
     const invoice = this.props.content;
     var invoice_total = (invoice && invoice.amount) ? invoice.amount : 0;
+    var service_fee = (invoice && invoice.amount) ? (invoice.amount * SERVICE_FEE) : 0;
     var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
     var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
     const tax = (invoice && invoice.tax) ? invoice.tax : false;
     return {
-      invoice_total: invoice_total,
+      invoice_total,
+      service_fee: service_fee || 0,
+      tax,
       items_total : tax ? items_total : invoice_total,
-      tax: tax,
       tax_total: tax ? tax_total : 0,
       remove : false,
       errorDate: '',
@@ -644,6 +648,7 @@ var InvoiceField = React.createClass({
       items_total: this.state.tax ? invoice_total/1.1 : invoice_total,
       invoice_total: invoice_total,
       tax_total: this.state.tax ? invoice_total - invoice_total/(1.1) : 0,
+      service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0,
     });
   },
   onTax() {
@@ -651,7 +656,6 @@ var InvoiceField = React.createClass({
     const tax = this.state.tax;
     this.setState({
       tax: !tax,
-      invoice_total: invoice_total,
       items_total: !tax ? invoice_total/1.1 : invoice_total,
       tax_total: !tax ? invoice_total - invoice_total/(1.1) : 0,
     });
@@ -659,7 +663,7 @@ var InvoiceField = React.createClass({
   render: function() {
     var { content, x, params: { invoiceInfo = {} } } = this.props;
     var {
-      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total
+      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
@@ -719,19 +723,19 @@ var InvoiceField = React.createClass({
         <hr />
         <div className="field">
           <div>
-            <p> Invoice Total : </p>
+            <p> Invoice Total: </p>
             <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
           </div>
           <div>
-            <p> Tax Total : </p>
+            <p> Tax Total: </p>
             <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
           </div>
           <div>
-            <p> Items Total : </p>
+            <p> Items Total: </p>
             <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
           </div>
           <div>
-            <p> Invoice Due On : </p>
+            <p> Invoice Due On: </p>
             <input
               type="date"
               defaultValue={invoice && invoice.due_date || this.nowDate()}
@@ -741,8 +745,12 @@ var InvoiceField = React.createClass({
               style={errorDate ? {borderColor: 'red'} : {}}
             />
           </div>
+          <div>
+            <p> Service Fee: </p>
+            <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+          </div>
+          <p id="errorbox" className="text-center error">{errorDate || ''}</p>
         </div>
-        <p id="errorbox" className="error">{errorDate || ''}</p>
 
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + x + '][_destroy]'}/>
         {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}

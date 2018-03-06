@@ -67,10 +67,13 @@ var ModalViewPDFInvoice = React.createClass({
 										</div>
 									</div>
 									<div className="text-center">
-										Total Amount Invoice: {invoice.total_invoice_amount || 0}
+										Invoice Total: {invoice.total_invoice_amount || 0}
 									</div>
 					        <div className="text-center">
-					          Invoice Due On : {invoice.due_date}
+					          Invoice Due On: {invoice.due_date}
+					        </div>
+					        <div className="text-center">
+					          Service Fee: {invoice.service_fee}
 					        </div>
 								</div>
 							</div>
@@ -258,11 +261,14 @@ var SubmitInvoicePDF = React.createClass({
 			    </div>
 	      </div>
 			  <div className="text-center m-b-lg">
-			    Total Amount Invoice: {pdf.total_invoice_amount}
+			    Invoice Total: {pdf.total_invoice_amount}
 			  </div>
         <div className="text-center m-b-lg">
           Invoice Due On : {pdf.due_date}
         </div>
+			  <div className="text-center m-b-lg">
+			    Service Fee: {pdf.service_fee}
+			  </div>
 			  <div className="text-center m-b-lg qf-button">
 		      <button
 		      	type="button"

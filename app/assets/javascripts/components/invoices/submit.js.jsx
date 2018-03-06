@@ -465,7 +465,7 @@ var InvoiceSubmit = React.createClass({
                        Subtotal:
                        </div>
                       <div className="border-none text-right p-b-n font-bold flex-1">
-                        {`$ ${Math.round((invoice.amount - invoice.gst_amount)*100)/100}`}
+                        {`$ ${(invoice.amount - invoice.gst_amount).toFixed(2)}`}
                       </div>
                     </div>
                   )
@@ -481,7 +481,7 @@ var InvoiceSubmit = React.createClass({
                         GST 10:
                       </div>
                       <div className="text-right p-t-n">
-                        {`$ ${Math.round(invoice.gst_amount*100)/100}`}
+                        {`$ ${invoice.gst_amount.toFixed(2)}`}
                       </div>
                     </div>
                   )
@@ -497,7 +497,7 @@ var InvoiceSubmit = React.createClass({
                         Subtotal:
                       </div>
                       <div className="border-none text-right p-b-n">
-                        {`$ ${Math.round(invoice.amount*100)/100}`}
+                        {`$ ${invoice.amount.toFixed(2)}`}
                       </div>
                     </div>
                   )
@@ -526,7 +526,18 @@ var InvoiceSubmit = React.createClass({
                     Amount Due (AUD):
                   </div>
                   <div className="border-none text-right font-bold flex-1">
-                    {`$ ${Math.round(invoice.amount*100)/100}`}
+                    {`$ ${invoice.amount.toFixed(2)}`}
+                  </div>
+                </div>
+                <div className="amount-due">
+                  <div className="border-none flex-5">
+
+                  </div>
+                  <div className="border-none text-right font-bold flex-2">
+                    Service Fee (AUD):
+                  </div>
+                  <div className="border-none text-right font-bold flex-1">
+                    {`$ ${invoice.service_fee}`}
                   </div>
                 </div>
               </div>
