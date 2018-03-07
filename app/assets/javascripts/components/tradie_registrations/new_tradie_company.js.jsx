@@ -21,7 +21,7 @@ var NewTradyCompany = React.createClass({
     if (!!this.state.same_address) {
       this.removeError({ target: {id: 'mailing_address' }});
       this.setState({
-        mailing_address: this.address.value,
+        mailing_address: event.target.value,
       });
     }
     this.removeError(event);

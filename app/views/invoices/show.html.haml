@@ -1,5 +1,5 @@
 :javascript
   stripe = Stripe('#{Rails.configuration.stripe[:publishable_key]}');
 
-=react_component('StepProgress', {:step => 3})
-=react_component('InvoiceSubmit', {:authenticity_token => form_authenticity_token, :trady_company => @trady.trady_company, :landlord => @landlord, :customer => @customer, :ledger => @ledger, :agency => @agency, :trady_id => @trady_id, :trady_company_id => @trady_company_id, :maintenance_request_id => @maintenance_request.id, :trady => @trady, :edit_invoice_path => edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan), :send_invoice_path => send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, ledger_id:@ledger.id)})
+/ =react_component('StepProgress', {:step => 3})
+=react_component('CreateInvoiceForm', {:authenticity_token => form_authenticity_token, :trady_company => @trady.trady_company, :landlord => @landlord, :customer => @customer, :ledger => @ledger, :agency => @agency, :trady_id => @trady_id, :trady_company_id => @trady_company_id, :maintenance_request_id => @maintenance_request.id, :trady => @trady, :edit_invoice_path => edit_invoice_path(@ledger, maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan), :send_invoice_path => send_invoice_path(maintenance_request_id:@maintenance_request.id, trady_id:@trady_id, ledger_id:@ledger.id), :step => "submit-invoice", :is_upload => false})

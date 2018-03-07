@@ -1,7 +1,7 @@
-=react_component('StepProgress', {:step => 2})
+/ =react_component('StepProgress', {:step => 2})
 
 %div.container.invoice-form
-  =react_component('InvoiceFields', {:authenticity_token => form_authenticity_token,
+  =react_component('CreateInvoiceForm', {:authenticity_token => form_authenticity_token,
                                     :maintenance_request_id => @maintenance_request_id,
                                     :property => @property,
                                     :trady => @trady,
@@ -9,7 +9,8 @@
                                     :trady_id => @trady.id,
                                     :quote_id => @quote ? @quote.id : '',
                                     :invoice_type=>@invoice_type,
-                                    :backlink => edit_trady_company_path(id:@trady_company,trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady.id, quote_id:@quote ? @quote.id : '', invoice_type:@invoice_type, system_plan:"Invoice")})
+                                    :backlink => edit_trady_company_path(id:@trady_company,trady_company_id:@trady_company.id, maintenance_request_id:@maintenance_request_id,trady_id:@trady.id, quote_id:@quote ? @quote.id : '', invoice_type:@invoice_type, system_plan:"Invoice"),
+                                    :step => "make-invoice", :is_upload => false})
 
 
 

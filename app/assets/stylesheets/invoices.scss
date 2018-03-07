@@ -15,18 +15,18 @@ $color-text: #83878C;
 
 .invoice-form {
   margin-bottom: 150px;
-	width: 98%;
-	min-height: 500px;
+	// width: 98%;
+	// min-height: 500px;
 	padding: 30px;
-	background: white;
-	border-radius: 4px;
-	border: 1px solid #edf1f4;
+	// background: white;
+	// border-radius: 4px;
+	// border: 1px solid #edf1f4;
 	/*box-shadow: 0 1px 10px #888888;*/
 	color: #aab8c3;
   @include flexbox;
   @include flex-direction(column);
 
-  @media (max-width: 330px) {
+  @media (max-width: 550px) {
     .invoicefield {
       fieldset {
         .field {
@@ -49,15 +49,118 @@ $color-text: #83878C;
     }
   }
 
+  @media (max-width: 400px) {
+    input {
+      font-size: 0.9em;
+    }
+  }
 	p{
 		margin-bottom: 0;
 		font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
+  .upload-invoice-button {
+    @include flexbox;
+
+    button {
+      @include flex(1);
+      margin-left: 5px;
+      margin-right: 5px;
+      padding: 0 10px;
+    }
+    .button-submit {
+      background-color: $color-green-submit;
+      color: white;
+      border-color: $color-green-submit;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #619970;
+      }
+    }
+    .button-back {
+      background-color: $color-blue;
+      color: white;
+      border-color: $color-blue;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #619970;
+      }
+    }
+  }
+
+  .create-invoice-button {
+    @media (max-width: 800px) {
+      @include flex-direction(column-reverse);
+    }
+  }
+
 	.send-email {
 		margin-top: 20px;
 	}
 
+  .radio-same-address {
+    margin: 10px 25% 20px 25%;
+    width: 50%;
+    color: $color-text;
+
+    .radio-option {
+      position: relative;
+      padding-left: 45px;
+      margin: 0 20px;
+      cursor: pointer;
+
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      // Hide the radio default
+      input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .radio-checkmark {
+        position: absolute;
+        top: -3px;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: transparent;
+        border-radius: 50%;
+        border: 2px solid $color-text;
+      }
+      &:hover input ~ .radio-checkmark {
+        background-color: $color-green-submit;
+      }
+
+      /* When the radio button is checked, add a blue background */
+      input:checked ~ .radio-checkmark {
+      }
+      /* Create the indicator (the dot/circle - hidden when not checked) */
+      .radio-checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+
+      /* Show the indicator (dot/circle) when checked */
+      input:checked ~ .radio-checkmark:after {
+        display: block;
+      }
+
+      /* Style the indicator (dot/circle) */
+      .radio-checkmark:after {
+        top: 13%;
+        left: 13%;
+        width: 74%;
+        height: 74%;
+        border-radius: 50%;
+        background: $color-green-submit;
+      }
+    }
+  }
 
   .border_on_error {
       border-color: red;
@@ -700,7 +803,7 @@ $color-text: #83878C;
 
 	/* For Desktop */
 	@media (min-width: 786px) {
-		width: 700px;
+		// width: 700px;
 	}
 
 	@media (max-width: 640px) {

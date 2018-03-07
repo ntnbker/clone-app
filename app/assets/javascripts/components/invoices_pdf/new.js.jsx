@@ -1,16 +1,14 @@
 var AddInvoicePDF = React.createClass({
 	getInitialState: function () {
 		const {
-			trady_company_id, maintenance_request_id, trady_id, pdf_file
+			trady_company_id, maintenance_request_id, trady_id, pdf_file, edit_trady_company_path
 		} = this.props;
-
-		const backPath = `/trady_companies/${trady_company_id}/edit?invoice_type=pdf_file&maintenance_request_id=${maintenance_request_id}&system_plan=Invoice&trady_company_id=${trady_company_id}&trady_id=${trady_id}`;
 
 		return {
 			file: {},
 			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
 			due_date: (pdf_file || {}).due_date || this.nowDate(),
-			backPath,
+			backPath: edit_trady_company_path,
       service_fee: (pdf_file || {}).service_fee || 0,
 		};
 	},
@@ -270,9 +268,10 @@ var AddInvoicePDF = React.createClass({
 							name="uploaded_invoice[system_plan]"
 							id="uploaded_invoice_system_plan"
 						/>
-						<div className="text-center">
+						<div className="upload-invoice-button">
 							<button
-								className="btn btn-default btn-back m-r-lg"
+								className="button-back"
+								type="button"
 								onClick={() => this.backButton.click()}
 							>
 								<a href={backPath} ref={(elem) => this.backButton = elem} />
@@ -280,7 +279,7 @@ var AddInvoicePDF = React.createClass({
 							</button>
 							<button
 								type="submit"
-								className="button-primary green"
+								className="button-submit"
 							>
 								Attach PDF
 							</button>

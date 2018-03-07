@@ -1,30 +1,39 @@
-%div.container.invoice-form
-  %h1.text-center Invoices
-  %h4 Please Choose One
-  %div
-    %h5.optionheader Option 1
-    %p.optiondescription
-      If you use your own app to make invoices such as Xero.
-      Please Click
-      %b Upload Invoice
-      to upload a PDF of your invoice.
+- create_invoice, upload_invoice_pdf = nil
+- if current_user.trady.nil? || current_user.trady.trady_company.nil?
+  - upload_invoice_pdf = new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id )
+  - create_invoice = new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id )
+- else
+  - upload_invoice_pdf = edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id)
+  - create_invoice = edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id)
 
-      %div.text-center.m-t-lg
-        -if current_user.trady.nil? || current_user.trady.trady_company.nil?
-          =link_to "Upload Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id ), class: "button-type button-primary green option-button"
-        -else
-          =link_to "Upload Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id),class: "button-type button-primary green option-button"
+=react_component('CreateInvoiceForm', {:authenticity_token => form_authenticity_token, :create_invoice => create_invoice, :upload_invoice_pdf => upload_invoice_pdf, :trady_maintenance_request_path => trady_maintenance_request_path(@maintenance_request_id), :step => "invoice-option"})
+/ %div.container.invoice-form
+/   %h1.text-center Invoices
+/   %h4 Please Choose One
+/   %div
+/     %h5.optionheader Option 1
+/     %p.optiondescription
+/       If you use your own app to make invoices such as Xero.
+/       Please Click
+/       %b Upload Invoice
+/       to upload a PDF of your invoice.
 
-  %hr
-  %div
-    %h5.optionheader Option 2
-    %p.optiondescription
-      Easily make invoices using our platform by clicking the
-      %b Create Invoice
-      button below.
-    %div.text-center.m-t-lg
-      -if current_user.trady.nil? || current_user.trady.trady_company.nil?
-        =link_to "Create Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id ),class: "button-type button-primary green option-button"
-      -else
-        =link_to "Create Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id), class: "button-type button-primary green option-button"
-      =link_to "Back To Maintenance Request", trady_maintenance_request_path(@maintenance_request_id), class: "button-type button-primary padding"
+/       %div.text-center.m-t-lg
+/         -if current_user.trady.nil? || current_user.trady.trady_company.nil?
+/           =link_to "Upload Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id ), class: "button-type button-primary green option-button"
+/         -else
+/           =link_to "Upload Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"pdf_file", system_plan:"Invoice",quote_id:@quote_id),class: "button-type button-primary green option-button"
+
+/   %hr
+/   %div
+/     %h5.optionheader Option 2
+/     %p.optiondescription
+/       Easily make invoices using our platform by clicking the
+/       %b Create Invoice
+/       button below.
+/     %div.text-center.m-t-lg
+/       -if current_user.trady.nil? || current_user.trady.trady_company.nil?
+/         =link_to "Create Invoice", new_trady_company_path(trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id ),class: "button-type button-primary green option-button"
+/       -else
+/         =link_to "Create Invoice", edit_trady_company_path(id:current_user.trady.trady_company,pdf_file_id: nil,trady_company_id:@trady_company_id, maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, invoice_type:"system_invoice", system_plan:"Invoice",quote_id:@quote_id), class: "button-type button-primary green option-button"
+/       =link_to "Back To Maintenance Request", trady_maintenance_request_path(@maintenance_request_id), class: "button-type button-primary padding"

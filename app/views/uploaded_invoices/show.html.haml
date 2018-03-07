@@ -1,7 +1,7 @@
 :javascript
   stripe = Stripe('#{Rails.configuration.stripe[:publishable_key]}');
 
-= react_component 'SubmitInvoicePDF', {:authenticity_token => form_authenticity_token, :pdf_url => @pdf.pdf_url, :maintenance_request_id => @maintenance_request_id, :trady_id => @trady_id, :trady_company_id => @trady_company_id, :pdf_path => "https://docs.google.com/gview?url=#{@pdf.pdf_url.try(:gsub, /.pdf\?.*/, '')}.pdf&embedded=true", :pdf => @pdf, :edit_uploaded_invoice_path => edit_uploaded_invoice_path(pdf:@pdf,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan), :send_pdf_invoice_path => send_pdf_invoice_path(pdf_invoice_id:@pdf.id,maintenance_request_id:@maintenance_request_id), :customer => @customer, :trady => @trady}
+= react_component 'CreateInvoiceForm', {:authenticity_token => form_authenticity_token, :pdf_url => @pdf.pdf_url, :maintenance_request_id => @maintenance_request_id, :trady_id => @trady_id, :trady_company_id => @trady_company_id, :pdf_path => "https://docs.google.com/gview?url=#{@pdf.pdf_url.try(:gsub, /.pdf\?.*/, '')}.pdf&embedded=true", :pdf => @pdf, :edit_uploaded_invoice_path => edit_uploaded_invoice_path(pdf:@pdf,maintenance_request_id:@maintenance_request_id,trady_id:@trady_id, quote_id:@quote_id, invoice_type:@invoice_type, system_plan:@system_plan), :send_pdf_invoice_path => send_pdf_invoice_path(pdf_invoice_id:@pdf.id,maintenance_request_id:@maintenance_request_id), :customer => @customer, :trady => @trady, :step => "submit-invoice", :is_upload => true}
 
 / -@pdf.invoices.each do |pdf|
 

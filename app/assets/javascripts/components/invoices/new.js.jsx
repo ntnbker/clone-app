@@ -723,16 +723,16 @@ var InvoiceField = React.createClass({
         <hr />
         <div className="field">
           <div>
-            <p> Invoice Total: </p>
-            <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
+            <p> Items Total: </p>
+            <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
           </div>
           <div>
             <p> Tax Total: </p>
             <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
           </div>
           <div>
-            <p> Items Total: </p>
-            <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+            <p> Invoice Total: </p>
+            <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
           </div>
           <div>
             <p> Invoice Due On: </p>

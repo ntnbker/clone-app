@@ -1,10 +1,11 @@
 var EditTradyCompany = React.createClass({
 	getInitialState: function() {
-    const { image_url, profile_image = {}, trady_company = {} } = this.props;
+    const { image_url, profile_image = {}, trady_company = {}, mailing_address_same } = this.props;
 		return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
+      same_address: !!mailing_address_same,
       gst_registration: !!this.props.gst_registration ? true : false,
       gallery: {...profile_image, image_url},
       notification: {
@@ -17,25 +18,23 @@ var EditTradyCompany = React.createClass({
 
 	handleChange: function(event) {
     this.setState({address: event.target.value});
-    if (!!this.state.same_Address) {
+    if (!!this.state.same_address) {
       this.removeError({ target: {id: 'mailing_address' }});
       this.setState({
-        mailing_address: this.address.value,
+        mailing_address: event.target.value,
       });
     }
     this.removeError(event);
   },
 
-  onSame: function() {
-    if(!this.state.same_Address) {
-      this.setState({
-        mailing_address: this.state.address
-      });
+  onSame: function(isSame) {
+    if(!this.state.same_address) {
       this.removeError({ target: {id: 'mailing_address' }});
+      this.setState({mailing_address: this.state.address});
     }
 
     this.setState({
-      same_Address: !this.state.same_Address
+      same_address: isSame
     });
   },
 
@@ -98,6 +97,7 @@ var EditTradyCompany = React.createClass({
       mobile_number:   getValidValue(this.mobile_number),
       mailing_address: getValidValue(this.mailing_address),
       trady_company_id:       this.props.id,
+      mailing_address_same:   this.state.same_address,
       trady_id:               this.props.trady_id,
       quote_id:               this.props.quote_id,
       work_flow:              this.props.work_flow,
@@ -153,19 +153,23 @@ var EditTradyCompany = React.createClass({
   },
 
   renderButtonBack: function() {
+    let backPath = '';
     if(this.props.system_plan == "Invoice") {
-      return (
-        <a className="btn btn-default btn-back m-r-lg" href={"/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.id}>
-          Back
-        </a>
-      );
-    }else if(this.props.system_plan == "Quote") {
-      return (
-        <a className="btn btn-default btn-back m-r-lg" href={"/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id}>
-          Back
-        </a>
-      );
+      backPath = "/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.id;
+    } else if(this.props.system_plan == "Quote") {
+      backPath = "/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id;
     }
+
+    return (
+      <button
+        type="button"
+        className="back-button"
+        onClick={() => this.backButton.click()}
+      >
+        <a href={backPath} style={{display: 'none'}} ref={e => this.backButton = e}/>
+        Back
+      </button>
+    )
   },
 
 	render: function() {
@@ -179,9 +183,9 @@ var EditTradyCompany = React.createClass({
 		return (
 			<form role="form" className="form-horizontal" id="new_trady_company" onSubmit={this.edit}>
 				<div className="form-group">
-          <label className="control-label col-sm-2 required">
+          {/*<label className="control-label col-sm-2 required">
             Company Name / Sole Trader Name
-          </label>
+          </label>*/}
           <div className="col-sm-10">
             <input
 
@@ -197,7 +201,7 @@ var EditTradyCompany = React.createClass({
           </div>
         </div>
         <div className="form-group">
-          <label className="control-label col-sm-2 required">Trading name</label>
+          {/*<label className="control-label col-sm-2 required">Trading name</label>*/}
           <div className="col-sm-10">
             <input
 
@@ -215,7 +219,7 @@ var EditTradyCompany = React.createClass({
 
         { isInvoice &&
           <div className="form-group">
-            <label className="control-label col-sm-2 required">Abn</label>
+            {/*<label className="control-label col-sm-2 required">Abn</label>*/}
             <div className="col-sm-10">
               <input
 
@@ -233,9 +237,9 @@ var EditTradyCompany = React.createClass({
         }
         { isInvoice &&
           <div className="form-group">
-            <label className="control-label col-sm-2 required">
-              Profession License Number
-            </label>
+            {/*<label className="control-label col-sm-2 required">
+                          Profession License Number
+                        </label>*/}
             <div className="col-sm-10">
               <input
 
@@ -252,24 +256,34 @@ var EditTradyCompany = React.createClass({
           </div>
         }
         { isInvoice &&
-  				<div className="form-group">
-  					<div className="col-sm-10 col-sm-offset-2">
-  						<input
-  		          type="checkbox"
-  		          id="gst_registration"
-  		          onChange={() => {
-  		          	this.setState({
-  		          		gst_registration: !this.state.gst_registration
-  		          	});
-  		          }}
-  		          checked={!!this.state.gst_registration ? "checked" : false}
-  	          />
-  	          GST  Registration
-  					</div>
-  				</div>
+          <div className="form-group text-center">
+            Is your business registered for GST?
+            <div className="radio-same-address">
+              <label className="radio-option">Yes
+                <input
+                  type="radio"
+                  name="gst_registration"
+                  value={true}
+                  onChange={() => this.setState({gst_registration: true})}
+                  defaultChecked={!!this.state.gst_registration}
+                />
+                <span className="radio-checkmark"></span>
+              </label>
+              <label className="radio-option">No
+                <input
+                  type="radio"
+                  name="gst_registration"
+                  value={false}
+                  onChange={() => this.setState({gst_registration: false})}
+                  defaultChecked={!this.state.gst_registration}
+                />
+                <span className="radio-checkmark"></span>
+              </label>
+            </div>
+          </div>
         }
 				<div className="form-group">
-          <label className="control-label col-sm-2 required">Address</label>
+          {/*<label className="control-label col-sm-2 required">Address</label>*/}
           <div className="col-sm-10">
             <input
 
@@ -285,22 +299,39 @@ var EditTradyCompany = React.createClass({
             {renderErrorFunc(errors['address'])}
           </div>
         </div>
-				<div className="form-group">
-          <input
-          	type="checkbox"
-            onChange={this.onSame}
-            id="mailing_address_same"
-          />
-          Mailing Address same as Above
+        <div className="form-group text-center">
+          Is your mailing address the same as the address above?
+          <div className="radio-same-address">
+            <label className="radio-option">Yes
+              <input
+                type="radio"
+                name="same-address"
+                value={true}
+                onChange={() => this.onSame(true)}
+                defaultChecked={!!this.state.same_address}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+            <label className="radio-option">No
+              <input
+                type="radio"
+                name="same-address"
+                onChange={() => this.onSame(false)}
+                value={false}
+                defaultChecked={!this.state.same_address}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+          </div>
         </div>
         <div className="form-group">
-          <label className="control-label col-sm-2 required">Mailing address</label>
           <div className="col-sm-10">
             <input
 
               type="text"
               id="mailing_address"
               placeholder="Mailing Address"
+              readOnly={this.state.same_address}
               value={this.state.mailing_address}
               onChange={this.changeMailingAddress}
               ref={(ref) => this.mailing_address = ref}
@@ -310,7 +341,7 @@ var EditTradyCompany = React.createClass({
           </div>
         </div>
         <div className="form-group">
-          <label className="control-label col-sm-2 required">Mobile number</label>
+          {/*<label className="control-label col-sm-2 required">Mobile number</label>*/}
           <div className="col-sm-10">
             <input
 
@@ -326,7 +357,7 @@ var EditTradyCompany = React.createClass({
           </div>
         </div>
         <div className="form-group">
-          <label className="control-label col-sm-2 required">Landline Number</label>
+          {/*<label className="control-label col-sm-2 required">Landline Number</label>*/}
           <div className="col-sm-10">
             <input
 
@@ -342,7 +373,7 @@ var EditTradyCompany = React.createClass({
           </div>
         </div>
         <div className="form-group">
-          <label className="control-label col-sm-2 required">Company Email</label>
+          {/*<label className="control-label col-sm-2 required">Company Email</label>*/}
           <div className="col-sm-10">
             <input
 
@@ -360,7 +391,7 @@ var EditTradyCompany = React.createClass({
 
         { isInvoice && [
           <div className="form-group">
-            <label className="control-label col-sm-2 required">Account name</label>
+            {/*<label className="control-label col-sm-2 required">Account name</label>*/}
             <div className="col-sm-10">
               <input
                 type="text"
@@ -377,7 +408,7 @@ var EditTradyCompany = React.createClass({
           </div>,
 
           <div className="form-group">
-            <label className="control-label col-sm-2 required">Bsb number</label>
+            {/*<label className="control-label col-sm-2 required">Bsb number</label>*/}
             <div className="col-sm-10">
               <input
                 type="text"
@@ -393,7 +424,7 @@ var EditTradyCompany = React.createClass({
           </div>,
 
           <div className="form-group">
-            <label className="control-label col-sm-2 required">Bank account number</label>
+            {/*<label className="control-label col-sm-2 required">Bank account number</label>*/}
             <div className="col-sm-10">
               <input
                 type="text"
@@ -408,7 +439,7 @@ var EditTradyCompany = React.createClass({
             </div>
           </div>
         ]}
-        <div className="text-center">
+        <div className="buttons">
           { this.renderButtonBack() }
           <button type="submit" className="button-primary green option-button">
             Next
