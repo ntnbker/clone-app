@@ -1,0 +1,4 @@
+class ReminderScheduler < ApplicationRecord
+
+
+end 

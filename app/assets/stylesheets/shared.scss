@@ -40,6 +40,10 @@ fieldset[disabled] .btn-link {
   &:hover {
     color: cyan;
   }
+  a {
+    color: white;
+    text-decoration: none;
+  }
 }
 
 .flex {

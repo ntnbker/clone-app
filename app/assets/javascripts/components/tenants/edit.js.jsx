@@ -1,21 +1,14 @@
 var TenantEdit = React.createClass({
   getInitialState: function () {
-
     return {
       errors: {},
+      hideMessage: true,
+      message: 'deafult message'
     };
   },
-
-  changeLicenseType: function({ target: {value} }) {
-    this.setState({
-      license_type: value,
-      errors: {...this.state.errors, license_type: ''}
-    });
-  },
-
   onSubmit: function(e){
+    e.preventDefault();
     let isInvoice = this.props.system_plan === 'Invoice';
-
     const getValidValue = obj => obj && obj.value;
     var tenant = {
       id    : this.props.tenant.id,
@@ -23,9 +16,7 @@ var TenantEdit = React.createClass({
       // email     : getValidValue(this.email),
       mobile: getValidValue(this.mobile),
     }
-
     var params = { tenant, id: this.props.tenant.id };
-
     const self = this;
     $.ajax({
       type: 'POST',
@@ -36,26 +27,32 @@ var TenantEdit = React.createClass({
       data: params,
       success: function(res){
         if (res.errors) {
-          self.setState({errors: res.errors || {}});
+          return self.setState({errors: res.errors || {}});
         }
+        self.setState({message: res.message, tenant: res.tenant, hideMessage: false});
       },
       error: function(err) {
       }
     });
-
-    e.preventDefault();
-
     return;
   },
-
   removeError: function({ target: { id } }) {
-      this.setState({ errors: {...this.state.errors, [id]: ''} });
+      this.setState({ errors: {...this.state.errors, [id]: ''}, hideMessage: true });
   },
-
   renderError: function(error) {
     return <p id="errorbox" className="error">{error && error[0] ? error[0] : ''}</p>;
   },
-
+  renderMessage: function() {
+    const {message, hideMessage} = this.state;
+    return (
+      <p
+        id="message"
+        className={"message " + (hideMessage && 'hide-message')}
+      >
+        {message}
+      </p>
+    )
+  },
   renderButton: function(text, link) {
     return (
       <button className="btn button-primary option-button" onClick={() => location.href = link} title={text}>
@@ -63,11 +60,9 @@ var TenantEdit = React.createClass({
       </button>
     );
   },
-
   renderTextField: function(field, textHolder) {
     const { errors }      = this.state;
-    const { tenant = {} }  = this.props;
-
+    const { tenant = {} } = this.props;
     return (
       <div className="form-group">
         <div className="col-sm-10">
@@ -86,32 +81,33 @@ var TenantEdit = React.createClass({
       </div>
     )
   },
-
   render: function() {
-    let isInvoice          = this.props.system_plan === "Invoice";
-    let tenant             = this.props.tenant || {};
-    let {
-      company_name, business_name, abn, address, mailing_address, phone, mobile_phone, corporation_license_number
-    } = tenant;
-
-    let { errors = {}, license_type, gallery } = this.state;
-    const renderTextField                      = this.renderTextField;
-    const renderButtonFunc                     = this.renderButton;
-
+    let tenant                 = this.props.tenant || {};
+    let {errors = {}, message} = this.state;
+    const renderTextField      = this.renderTextField;
+    const renderButtonFunc     = this.renderButton;
+    const renderMessage        = this.renderMessage;
     return (
-      <div className="edit_tenant_profile edit_profile">
-        <form role="form" className="form-horizontal full" id="edit_tenant" onSubmit={this.onSubmit} >
-          <h5 className="control-label col-sm-2 required title">
-            Edit tenant Profile
+      <div className="edit_profile edit_tenant_profile">
+        <form
+          role="form"
+          className="form-horizontal right "
+          id="edit_trady"
+          onSubmit={this.onSubmit}
+        >
+          <h5 className="control-label col-sm-2 required title" >
+            Edit Tenant Profile
           </h5>
+          {renderMessage()}
+          {renderTextField('email', 'email')}
           {renderTextField('name', 'Name')}
           {renderTextField('mobile', 'Mobile')}
-          {renderTextField('email', 'email')}
           <div className="text-center">
             <button type="submit" className="button-primary green option-button">
               Update Your Profile
             </button>
           </div>
+          {renderButtonFunc('Reset Password', this.props.change_password_path)}
         </form>
       </div>
     );

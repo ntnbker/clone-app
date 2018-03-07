@@ -192,10 +192,9 @@ var Header = React.createClass({
       }
     });
   },
-
   menuBar: function() {
     var {
-      edit_agency, edit_agency_admin, edit_agent, edit_trady, edit_tenant,  user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
+      edit_agency, edit_agency_admin, edit_agent, edit_trady, edit_tenant, user_agency_admin, user_agent, user_trady, user_tenant, user_landlord
     } = this.props;
     var dataMenu = [];
     if (user_agency_admin)
@@ -244,7 +243,6 @@ var Header = React.createClass({
       </div>
     );
   },
-
   componentWillUnmount: function() {
     $(document).unbind('click', this.clickDocument);
   },
@@ -266,7 +264,6 @@ var Header = React.createClass({
     }
     return false;
   },
-
   header: function(e) {
     const props = this.props;
     const { expanded, logged_in, current_user, role, images } = props;

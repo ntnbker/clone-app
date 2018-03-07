@@ -141,9 +141,9 @@ class TradyMailer < ActionMailer::Base
     mail(to:@trady.email, subject:"Question about quote from #{@agency.company_name.capitalize} - #{@property.property_address}, sent on #{Date.today}")
   end
 
-  def reminder_awaiting_quote_request(maintenance_request, trady, property)
+  def reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request)
     @maintenance_request = maintenance_request
-    
+    @quote_request = quote_request
     @trady = trady
     @property = property
     if @maintenance_request.agent

@@ -1,12 +1,15 @@
 var AssignTrady = React.createClass({
 	render: function() {
-		const { current_role } = this.props;
+		const { current_role, stop_appointment, stop_invoice } = this.props;
     const trady            = this.props.trady || {};
     trady['trady_company'] = trady['trady_company'] || {};
 
     const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
 
     const image_url = trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+
+    const showStopReminder = this.props.showAppointmentAlreadyMade
+                          && !trady.jfmo_participant;
 
 		return (
 			<div className="quotes invoices m-t-xl assign" id="invoices">
@@ -33,13 +36,32 @@ var AssignTrady = React.createClass({
               <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
                 View
               </button>
-              { this.props.showAppointmentAlreadyMade &&
+              { showStopReminder &&
                 <button
                   type="button"
-                  className="btn btn-view appointment-already-made"
-                  onClick={() => this.props.onModalWith('confirmAppointmentAlreadyMade')}
+                  className="btn btn-view appointment-already-made stop-reminder"
+                  onClick={() => {
+                    if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
+                  }}
                 >
-                  Appointment Already Made
+                  {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+                </button>
+              }
+              { showStopReminder &&
+                <button
+                  type="button"
+                  className="btn btn-view appointment-already-made stop-reminder"
+                  onClick={() => {
+                    if (!stop_appointment) {
+                      this.props.onModalWith('confirmAppointmentAlreadyMade');
+                    }
+                  }}
+                >
+                {
+                  !stop_appointment
+                    ? "Stop Appointment Reminder"
+                    : "Appointment Reminder Stopped"
+                }
                 </button>
               }
 							{
