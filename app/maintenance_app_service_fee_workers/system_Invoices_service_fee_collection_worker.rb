@@ -13,25 +13,28 @@ class SystemInvoicesServiceFeeCollectionWorker
     # Grab all invoices that have delivery_status = true and mapp_payment_status = Outstanding
     # and come from trady that are customers with customer profiles
 
-
+     Stripe.api_key = ENV["SECRET_KEY"]
     customers_profiles_trady_ids  = CustomerProfile.where.not(trady_id:nil, customer_id:nil).pluck(:trady_id)
     
     
     invoices = Invoice.where(delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile])
-
+    a = 5
+    b = 6
+    
     invoices.each do |invoice|
 
-        if Date.today > invoice.due_date + 30.days
-
+        #if Date.today > invoice.due_date + 30.days
+        if b > a
           customer_id = invoice.trady.customer_profile.customer_id
           amount_in_pennies = invoice.service_fee.to_f * 100
-
+          amount  = amount_in_pennies.to_i
           begin
             # Use Stripe's library to make requests...
+            
               Stripe::Charge.create(
-                :amount => amount_in_pennies.to_i,
+                :amount => amount,
                 :currency => "aud",
-                :customer => customer_id, # obtained with Stripe.js
+                :customer => customer_id, 
                 :description => "MaintenanceApp service fee charge."
               )
               invoice.update_attribute(:mapp_payment_status, "Paid")
@@ -68,4 +71,5 @@ class SystemInvoicesServiceFeeCollectionWorker
 
 
   
+  end 
 end 
