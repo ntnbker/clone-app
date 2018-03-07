@@ -1,0 +1,3 @@
+class InvoiceScheduler < ApplicationRecord
+  
+end 
