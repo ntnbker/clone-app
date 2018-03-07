@@ -38,7 +38,7 @@ var DetailInvoice = React.createClass({
 									<td className="invoice-description">{item.item_description}</td>
 									<td className="invoice-price">{item.pricing_type}</td>
 									<td className="invoice-hour">{item.pricing_type === 'Fixed Cost' ? 'N/A' : item.hours.toFixed(2)}</td>
-									<td className="invoice-rate">{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.amount ? `$${item.amount}` : 'N/A' }</td>
+									<td className="invoice-rate">{ item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.amount ? `$ ${item.amount}` : 'N/A' }</td>
 									<td className="invoice-amount">${ item.pricing_type == "Fixed Cost" ? item.amount.toFixed(2) : (item.amount * item.hours).toFixed(2) }</td>
 								</tr>
 							);
@@ -50,7 +50,7 @@ var DetailInvoice = React.createClass({
 							Subtotal:
 						</td>
 						<td className="border-none p-b-n">
-							${(subTotal - invoice.gst_amount).toFixed(2)}
+							$ {(subTotal - invoice.gst_amount).toFixed(2)}
 						</td>
 					</tr>
 					<tr>
@@ -59,7 +59,7 @@ var DetailInvoice = React.createClass({
 							GST 10%:
 						</td>
 						<td className="p-t-n">
-							${invoice.gst_amount.toFixed(2)}
+							$ {invoice.gst_amount.toFixed(2)}
 						</td>
 					</tr>
 					<tr>
@@ -68,7 +68,16 @@ var DetailInvoice = React.createClass({
 							Amount Due: (AUD)
 						</td>
 						<td className="font-bold border-none">
-							${subTotal.toFixed(2)}
+							$ {subTotal.toFixed(2)}
+						</td>
+					</tr>
+					<tr>
+						<td colSpan="3" className="border-none"></td>
+						<td className="text-right font-bold border-none">
+							Service Fee: (AUD)
+						</td>
+						<td className="font-bold border-none">
+							$ {invoice.service_fee}
 						</td>
 					</tr>
 					</tbody>

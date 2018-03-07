@@ -11,6 +11,7 @@ var AddInvoicePDF = React.createClass({
 			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
 			due_date: (pdf_file || {}).due_date || this.nowDate(),
 			backPath,
+      service_fee: (pdf_file || {}).service_fee || 0,
 		};
 	},
 
@@ -107,6 +108,21 @@ var AddInvoicePDF = React.createClass({
 		});
 	},
 
+  changeTotalAmount({target: {value}}) {
+    if (value === '') {
+      return this.setState({
+        errorAmount: '',
+        total_invoice_amount: value,
+        service_fee: 0
+      })
+    }
+    this.setState({
+      errorAmount: '',
+      service_fee: (value * SERVICE_FEE).toFixed(2) || 0,
+      total_invoice_amount: value,
+    })
+  },
+
   nowDate: function(nextDay = 1) {
     var oneDay = 24 * 60 * 60 * 1000;
     var now    = new Date(Date.now() + oneDay*nextDay);
@@ -114,108 +130,6 @@ var AddInvoicePDF = React.createClass({
     var date   = now.getDate();
     var year   = now.getFullYear();
     return `${year}-${month < 10 ? '0' : ''}${month}-${date < 10 ? '0' : ''}${date}`;
-  },
-
-  isClose: function() {
-    if(this.state.isModal == true) {
-      this.setState({
-        isModal: false,
-        modal: "",
-      });
-    }
-
-    var body = document.getElementsByTagName('body')[0];
-    body.classList.remove("modal-open");
-    var div = document.getElementsByClassName('modal-backdrop in')[0];
-    if(div){
-      div.parentNode.removeChild(div);
-    }
-  },
-
-  openModal(modal) {
-    this.setState({
-      isModal: true,
-      modal,
-    })
-  },
-
-  renderModal() {
-    if (this.state.isModal) {
-      var body = document.getElementsByTagName('body')[0];
-      body.className += " modal-open";
-      var div = document.getElementsByClassName('modal-backdrop in');
-
-      if(div.length === 0) {
-        div = document.createElement('div')
-        div.className  = "modal-backdrop in";
-        body.appendChild(div);
-      }
-
-      switch (this.state.modal) {
-        case 'payment':
-          return (
-            <ModalAddPayment
-              close={this.isClose}
-              submit={this.submitPayment}
-            />
-          )
-
-        case 'message':
-          return (
-            <ModalNotification
-              close={this.isClose}
-              bgClass={this.state.notification.bgClass}
-              title={this.state.notification.title}
-              content={this.state.notification.content}
-            />
-          )
-
-        default:
-        return '';
-      }
-    }
-  },
-
-  submitPayment(params, callback) {
-    const self = this;
-    params.trady_id               = this.props.trady_id;
-    params.trady_company_id       = this.props.trady_company_id;
-    params.maintenance_request_id = this.props.maintenance_request_id;
-
-    $.ajax({
-      type: 'POST',
-      url: '/trady_payment_registrations',
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-      },
-      data: params,
-      success: function(res){
-        if (res && res.errors) {
-          return callback(res.errors);
-        }
-        self.setState({
-          isModal: true,
-          modal: 'message',
-          customer: res.customer,
-          notification: {
-            title: "Credit or debit card",
-            content: res.message,
-            bgClass: "bg-success",
-          }
-        })
-      },
-      error: function(err) {
-        self.setState({
-          isModal: true,
-          modal: 'message',
-          notification: {
-            title: "Credit or debit card",
-            content: err.responseText,
-            bgClass: "bg-error",
-          }
-        })
-      }
-    })
   },
 
 	handelSubmit: function (e) {
@@ -293,18 +207,18 @@ var AddInvoicePDF = React.createClass({
 						}
     				<p id="errorbox" className="error">{errorFile ? errorFile[0] : ''}</p>
 						<input
-							type="text"
-							className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
-							placeholder="Total Invoice Amount"
-							defaultValue={this.state.file ? this.state.total_invoice_amount : ''}
-							ref={amount => this.amount = amount}
-							onChange={() => this.setState({errorAmount: ''})}
-							id="uploaded_invoice_maintenance_request_id"
-							name="uploaded_invoice[total_invoice_amount]"
-						/>
+              type="text"
+              className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
+              placeholder="Total Invoice Amount"
+              value={this.state.total_invoice_amount}
+              ref={amount => this.amount = amount}
+              onChange={this.changeTotalAmount}
+              id="uploaded_invoice_maintenance_request_id"
+              name="uploaded_invoice[total_invoice_amount]"
+            />
     				<p id="errorbox" className="error">{errorAmount ? errorAmount[0] : ''}</p>
 	          <div className="text-center">
-	            <p> Invoice Due On : </p>
+	            <p> Invoice Due On: </p>
 	            <input
 	              type="date"
 	              defaultValue={this.state.due_date}
@@ -315,6 +229,17 @@ var AddInvoicePDF = React.createClass({
 	            />
 	          </div>
 		        <p id="errorbox" className="error">{errorDate || ''}</p>
+            <div className="text-center">
+              <p> Service Fee: </p>
+              <input
+                type="text"
+                readOnly="readonly"
+                value={this.state.service_fee}
+                ref={e => this.date = e}
+                name="uploaded_invoice[service_fee]"
+                className="text-center"
+              />
+            </div>
 						<input
 							type="hidden"
 							defaultValue={maintenance_request_id}
@@ -362,7 +287,6 @@ var AddInvoicePDF = React.createClass({
 						</div>
 					</form>
 				</div>
-        { this.renderModal() }
 			</div>
 		);
 	}
