@@ -24,7 +24,7 @@ class Trady < ApplicationRecord
   validates_presence_of :mobile
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
   validates :mobile,:numericality => true, :length => {:minimum=>10, :maximum => 10 }
-  
+  has_many :trady_payment_errors
 
 
   attr_accessor :maintenance_request_id

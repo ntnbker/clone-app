@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180306070730) do
+ActiveRecord::Schema.define(version: 20180307062733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -504,6 +504,14 @@ ActiveRecord::Schema.define(version: 20180306070730) do
     t.text     "image_data"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+  end
+
+  create_table "trady_payment_errors", force: :cascade do |t|
+    t.text   "message"
+    t.string "http_status"
+    t.string "error_type"
+    t.string "error_code"
+    t.string "charge_id"
   end
 
   create_table "trady_profile_images", force: :cascade do |t|

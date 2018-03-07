@@ -234,6 +234,7 @@ var TradyMaintenanceRequest = React.createClass({
 				quoteComments.unshift(appointment.comments[0]);
 			}
 		});
+
 		return {
 			modal   								: "",
 			isModal   							: false,
@@ -257,6 +258,7 @@ var TradyMaintenanceRequest = React.createClass({
 			tenants_conversation  	: tenants_conversation,
 			landlords_conversation  : landlords_conversation,
 			trady_agent_conversation: trady_agent_conversation,
+			stop_reminder  	 	 		: this.props.stop_reminder,
 			quote_requests  				: this.props.quote_requests,
 			trady  									: this.props.assigned_trady,
 			instruction 						: this.props.instruction ? this.props.instruction : {},
@@ -516,7 +518,7 @@ var TradyMaintenanceRequest = React.createClass({
 			}
 
 			case 'viewQuoteRequestMessage':
-			case 'confirmQuoteAlreadySent': {
+			case 'confirmStopQuoteReminder': {
 				this.setState({
 					quote_request: item,
 				});
@@ -546,6 +548,7 @@ var TradyMaintenanceRequest = React.createClass({
 			case 'viewConfirm':
 			case 'viewMarkJob':
 			case 'createAppointment':
+			case 'confirmInvoiceAlreadyMade':
 			case 'createAppointmentForQuote': {
 				this.onModalWith(key);
 				break;
@@ -1038,13 +1041,13 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					);
 
-				case 'confirmQuoteAlreadySent':
+				case 'confirmStopQuoteReminder':
 					return (
 						<ModalConfirmAnyThing
 							close={this.isClose}
-							confirm={this.quoteAlreadySent}
-							title="Quote Already Sent"
-							content="Are you sure you have already submitted a quote? If you want the quote request reminder emails to stop because you have already submitted a quote please click the YES button. You also have the option to quickly upload a photo of the quote that you have submitted to help out the agent. Thank you."
+							confirm={this.stopQuoteReminder}
+							title="Stop Quote Request Reminder"
+							content="Are you sure you have already submitted a quote?"
 						/>
 					);
 
@@ -1066,15 +1069,25 @@ var TradyMaintenanceRequest = React.createClass({
 						/>
 					)
 
-					case 'confirmAppointmentAlreadyMade':
-						return (
-							<ModalConfirmAnyThing
-								close={this.isClose}
-								confirm={this.appointmentAlreadyMade}
-								title="Appointment Already Made"
-								content="Are you sure you have already made an appointment with the tenant?"
-							/>
-						);
+				case 'confirmAppointmentAlreadyMade':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={this.stopAppointmentReminder}
+							title="Stop Appointment Reminder"
+							content="Are you sure you have already made an appointment with the tenant AND you want to stop the appointment reminder?"
+						/>
+					);
+
+				case 'confirmInvoiceAlreadyMade':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={this.stopInvoiceReminder}
+							title="Stop Invoice Reminder"
+							content="Are you sure you have already made an invoice AND you want to stop the invoice reminder?"
+						/>
+					);
 
 				default:
 					return null;
@@ -1134,6 +1147,47 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	stopQuoteReminder: function() {
+		const self = this;
+		const { maintenance_request, signed_in_trady } = this.props;
+		const { quote_request } = this.state;
+
+		const params = {
+			trady_id: signed_in_trady.id,
+			maintenance_request_id: maintenance_request.id,
+			quote_request_id: quote_request.id,
+			role: 'Trady'
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_quote_reminder',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					quote_requests: res.quote_requests,
+					notification: {
+						title: "Stop Quote Reminder",
+						content: "Thank you!",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Stop Quote Reminder",
+					content: "Something wrong" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	appointmentAlreadyMade: function() {
 		const self = this;
 		const { maintenance_request } = this.state;
@@ -1163,6 +1217,80 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({notification: {
 					title: "Appointment Already Made",
 					content: "Appointment Already Made didn't confirm." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	stopAppointmentReminder: function() {
+		const self = this;
+		const { maintenance_request } = this.state;
+
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_appointment_reminder',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Stop Appointment Reminder",
+						content: res.message,
+						bgClass: "bg-success",
+					},
+					stop_appointment: true,
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Stop Appointment Reminder",
+					content: "Stop Appointment Reminder didn't confirm." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	stopInvoiceReminder: function() {
+		const self = this;
+		const { maintenance_request } = this.state;
+
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/stop_invoice_reminder',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Appointment Reminder stopped",
+						content: res.message,
+						bgClass: "bg-success",
+					},
+					stop_invoice: true,
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Stop Appointment Reminder",
+					content: "Stop Appointment Reminder didn't confirm." ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1312,6 +1440,19 @@ var TradyMaintenanceRequest = React.createClass({
 					break;
 			}
 		}
+
+		const {stop_reminder, stop_quote_reminder_id} = this.props;
+		switch (stop_reminder) {
+			case 'quote':
+				self.viewItem('confirmStopQuoteReminder', {id: stop_quote_reminder_id});
+				break;
+			case 'appointment':
+				self.onModalWith('confirmAppointmentAlreadyMade');
+				break;
+			case 'invoice':
+				self.onModalWith('confirmInvoiceAlreadyMade');
+				break;
+		}
 	},
 
 	updateInsruction: function(data) {
@@ -1343,7 +1484,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 	render: function() {
 		const {
-			appointments, quote_appointments, invoices, invoice_pdf_files, trady, quote_requests
+			appointments, quote_appointments, invoices, invoice_pdf_files, trady, quote_requests, stop_invoice, stop_appointment
 		} = this.state;
 
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
@@ -1388,6 +1529,8 @@ var TradyMaintenanceRequest = React.createClass({
 									trady={trady}
 									current_role={this.props.current_role.role}
 									onModalWith={(modal) => this.onModalWith(modal)}
+									stop_invoice={stop_invoice}
+									stop_appointment={stop_appointment}
 									showAppointmentAlreadyMade={true}
 									viewTrady={(key, item) => this.viewItem(key, item)}
 								/>
@@ -1400,6 +1543,7 @@ var TradyMaintenanceRequest = React.createClass({
 									onModalWith={this.onModalWith}
 									uploadImage={this.uploadImage}
 									current_user={this.props.current_user}
+									current_role={this.props.current_role}
 									chooseQuoteRequest={this.chooseQuoteRequest}
 									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}

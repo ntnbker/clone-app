@@ -2,16 +2,8 @@ class TenantsController < ApplicationController
 
   before_action :require_login
 
-   def edit
-    @tenant = Tenant.find_by(id:params[:id])
-    # @agency_admin.perform_add_agency_admin_validations = true
-    # if @agency_admin.agency_admin_profile_image
-    #   @profile_image = @agency_admin.agency_admin_profile_image.image_url
-    #   @agency_admin_profile_image = @agency_admin.agency_admin_profile_image
-    # else
-    #   @profile_image = nil
-    # end
-  end
+
+   
 
   def update_tenant
     @tenant = Tenant.find_by(id:params[:id])
@@ -31,8 +23,7 @@ class TenantsController < ApplicationController
   end 
 
 
- 
-  
+
 
   def create
     
@@ -159,6 +150,14 @@ class TenantsController < ApplicationController
     
   end
 
+
+  def edit
+
+    @tenant = Tenant.find_by(id:params[:id]) 
+  end
+
+
+
   def update
     tenant = Tenant.find_by(id:params[:tenant][:id])  
     
@@ -195,10 +194,6 @@ class TenantsController < ApplicationController
   def tenant_params
     params.require(:tenant).permit(:name, :email, :mobile, :property_id, :maintenance_request_id)
   end
-
-
-
-
 
 
 

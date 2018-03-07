@@ -56,7 +56,9 @@ Rails.application.routes.draw do
   ###################################################
   ##########TENANT ROLE RESOURCES/ROUTES###########
   ###################################################
-    resources :tenants, only:[:show, :index, :update, :create, :destroy, :edit]
+
+    resources :tenants, only:[:show, :index, :edit ,:update, :create, :destroy]
+
     resources :tenant_maintenance_requests, only:[:index, :show]
     post "edit_tenant" => "tenants#update_tenant"
   ###################################################
@@ -236,8 +238,19 @@ Rails.application.routes.draw do
     post "cancel_work_order"=> "work_orders#cancel_work_order"
 
   ###################################################
-  ##########JFMO REGISTER TRADIE RESOURCES/ROUTES#########
+  ##########JFMO REGISTER TRADIE RESOURCES/ROUTES####
+  ###################################################
+  ###################################################
+  ##########REMINDER KILLER RESOURCES/ROUTES#########
   ################################################### 
+  post "/stop_quote_reminder" => "reminder_killers#stop_quote_request_reminder", :as => :stop_quote_reminder
+  post "/stop_appointment_reminder" => "reminder_killers#stop_appointment_reminder", :as => :stop_appointment_reminder
+  post "/stop_invoice_reminder" => "reminder_killers#stop_invoice_reminder", :as => :stop_invoice_reminder
+    
+
+  ###################################################
+  ##########JFMO REGISTER TRADIE RESOURCES/ROUTES####
+  ###################################################
   resources :tradie_registrations, only:[:new, :create, :edit, :update]
   get "register_tradie_company" => "tradie_registrations#new_tradie_company", :as=> "register_trady_company"
   post "create_tradie_company" => "tradie_registrations#create_tradie_company" 
@@ -279,6 +292,7 @@ Rails.application.routes.draw do
   ##########AGENCY PAYMENT REGISTRATION RESOURCES/ROUTES#####
   ###########################################################
   resources :agency_payment_registrations, only:[:new, :create]
+
 
 
  end
