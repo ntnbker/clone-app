@@ -1,16 +1,16 @@
-=react_component('StepProgress', {:step => 4})
-
-%div.container.invoice-form.success
-  %h5
-    Your invoice has been sent
-  %div.mark
-    %i.fa.fa-check
-  %p
-    Congratulations!
-  %p
-    Your invoice has been successfully created and sent to the Agent.
-  %div.row.text-center
-    %p
-      To Head Home click the button below.
-    %button.button-primary.green
-      =link_to "Home", trady_maintenance_requests_path
+/ =react_component('StepProgress', {:step => 4})
+=react_component('CreateInvoiceForm', {:trady_maintenance_requests_path => trady_maintenance_requests_path, :step => 'success'})
+/ %div.invoice-form.success
+/   %h5
+/     Your invoice has been sent
+/   %div.mark
+/     %i.fa.fa-check
+/   %p
+/     Congratulations!
+/   %p
+/     Your invoice has been successfully created and sent to the Agent.
+/   %div.row.text-center
+/     %p
+/       To Head Home click the button below.
+/     %button.button-primary.green
+/       =link_to "Home", trady_maintenance_requests_path

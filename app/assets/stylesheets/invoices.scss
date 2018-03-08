@@ -62,6 +62,7 @@ $color-text: #83878C;
   .create-invoice-button {
     @include flexbox;
     margin-bottom: 20px;
+    margin-top: 20px;
     padding-bottom: 20px;
 
     button {
@@ -79,6 +80,7 @@ $color-text: #83878C;
 
       &:hover {
         background-color: #619970;
+        border-color: #619970;
       }
     }
     .button-back {
@@ -89,6 +91,7 @@ $color-text: #83878C;
 
       &:hover {
         background-color: #619970;
+        border-color: #619970;
       }
     }
     @media (max-width: 550px) {
@@ -572,10 +575,20 @@ $color-text: #83878C;
 
     &:hover {
       background-color: #619970;
+      border-color: #619970;
     }
     &.button-remove {
       background-color: $color-red;
       border-color: $color-red;
+
+      &:hover {
+        background-color: #d60000;
+        border-color: #d60000;
+      }
+    }
+    &:focus {
+      background-color: $color-green-submit;
+      border-color: $color-green-submit;
     }
   }
   .button-back {
@@ -586,6 +599,7 @@ $color-text: #83878C;
 
     &:hover {
       background-color: #619970;
+      border-color: #619970;
     }
   }
 
@@ -779,7 +793,7 @@ $color-text: #83878C;
 		}
 		h5 {
 			text-align: center;
-			margin-top: 110px;
+			margin-top: 30px;
 		}
 		p {
 			text-align: center;
@@ -920,6 +934,7 @@ $color-text: #83878C;
 
       &:hover {
         background-color: #619970;
+        border-color: #619970;
       }
     }
     .button-back {
@@ -930,6 +945,7 @@ $color-text: #83878C;
 
       &:hover {
         background-color: #619970;
+        border-color: #619970;
       }
     }
   }
@@ -1093,6 +1109,10 @@ $color-text: #83878C;
 	text-align: center;
 }
 .new_uploaded_invoice {
+  p {
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
 	.browse-wrap {
 		top: 0;
 		left: 0;

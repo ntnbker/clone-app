@@ -1,7 +1,9 @@
 var CreateInvoiceForm = React.createClass({
   getInitialState : function() {
     const {step} = this.props;
-    const level = ['invoice-option', 'trady-company', 'make-invoice', 'submit-invoice'];
+    const level = [
+	    'invoice-option', 'trady-company', 'make-invoice', 'submit-invoice', 'success'
+    ];
 
     return {
       errors: {},
@@ -50,6 +52,8 @@ var CreateInvoiceForm = React.createClass({
         return <h5 className="step-title text-center">Create/Upload Invoice</h5>
       case 'submit-invoice':
         return <h5 className="step-title text-center">Submit Invoice</h5>
+      case 'success':
+        return <h5 className="step-title text-center">Success</h5>
     }
   },
 
@@ -71,6 +75,8 @@ var CreateInvoiceForm = React.createClass({
         return isUpload
         ? <SubmitInvoicePDF {...this.props} />
         : <InvoiceSubmit {...this.props} />;
+      case 'success':
+        return <InvoiceSentSuccess {...this.props} />;
     }
   },
 

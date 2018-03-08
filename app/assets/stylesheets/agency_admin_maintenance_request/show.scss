@@ -959,6 +959,7 @@ span.index {
         color: $color-white;
         &:hover {
           background-color: #619970;
+          border-color: #619970;
         }
       }
       .btn-decline {
@@ -967,6 +968,7 @@ span.index {
         color: $color-white;
         &:hover {
           background-color: #c14343;
+          border-color: #c14343;
         }
       }
       .btn-cancel {
@@ -975,6 +977,7 @@ span.index {
         color: $color-white;
         &:hover {
           background-color: #deeaf3;
+          border-color: #deeaf3;
         }
       }
     }

@@ -272,7 +272,7 @@ var SubmitInvoicePDF = React.createClass({
 			  <div className="text-center m-b-lg qf-button">
 		      <button
 		      	type="button"
-			      className="back-button"
+			      className="button-back"
 						onClick={() => location.href = edit_uploaded_invoice_path}
 			    >
 			      Back
