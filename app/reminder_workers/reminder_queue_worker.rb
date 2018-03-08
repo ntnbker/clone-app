@@ -11,9 +11,8 @@ class ReminderQueueWorker
     schedule = ReminderScheduler.first
     run_date = ReminderScheduler.first.run_date
 
-    if Date.today < run_date
-      #do nothing 
-    else
+    if Date.today >= run_date
+       
       AgencyAdminOutstandingMaintenanceRequestReminderWorker.perform_async
       # AgentOutstandingMaintenanceRequestReminderWorker.perform_async
       # LandlordReminderAwaitingOwnerInitiationWorker.perform_async
@@ -27,6 +26,8 @@ class ReminderQueueWorker
       # LandlordReminderLandlordToConfirmAppointmentWorker.perform_async
       #TradyReminderAwaitingInvoiceWorker.perform_async
       schedule.update_attribute(:run_date, run_date + 2.days)
+    else
+      #do nothing
 
     end 
   end
