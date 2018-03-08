@@ -1,7 +1,7 @@
 require 'sidekiq-scheduler'
 require "stripe"
 
-class SystemInvoicesServiceFeeCollectionWorker
+class UploadedInvoicesServiceFeeCollectionWorker
   include Sidekiq::Worker
 
   def perform
@@ -12,13 +12,13 @@ class SystemInvoicesServiceFeeCollectionWorker
     # Grab all invoices that have delivery_status = true and mapp_payment_status = Outstanding
     # and come from trady that are customers with customer profiles
 
-     Stripe.api_key = ENV["SECRET_KEY"]
+    Stripe.api_key = ENV["SECRET_KEY"]
     customers_profiles_trady_ids  = CustomerProfile.where.not(trady_id:nil, customer_id:nil).pluck(:trady_id)
     
     
-    invoices = Invoice.where(delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile])
+    uploaded_invoices = UploadedInvoice.where(delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile])
     
-    invoices.each do |invoice|
+    uploaded_invoices.each do |invoice|
 
         if Date.today > invoice.due_date + 30.days
         
@@ -27,7 +27,7 @@ class SystemInvoicesServiceFeeCollectionWorker
           amount  = amount_in_pennies.to_i
           begin
             # Use Stripe's library to make requests...
-
+            
               Stripe::Charge.create(
                 :amount => amount,
                 :currency => "aud",
