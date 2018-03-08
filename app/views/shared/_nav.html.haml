@@ -13,7 +13,9 @@
     -edit_agent = edit_agent_path(current_user.agent.id)
     -user_name = current_user.agent.name || ''
   -elsif current_user.logged_in_as("Tenant")
+
     -edit_tenant = edit_tenant_path(current_user.tenant)
+
     -user_name = current_user.tenant.name || ''
   -elsif current_user.logged_in_as("Landlord")
     -user_name = current_user.landlord.name || ''

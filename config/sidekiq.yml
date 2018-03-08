@@ -1,11 +1,6 @@
 development:  
   :concurrency: 5
 production:  
-  :concurrency: 6
+  :concurrency: 61
 :queues:
   - default
-# :enabled: true
-# :schedule:
-#   reminder_queue:
-#     every: ['3d', first_in: '120s']
-#     class: ReminderQueueWorker

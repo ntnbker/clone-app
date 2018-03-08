@@ -796,7 +796,7 @@ span.index {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          max-width: 250px;
+          max-width: 300px;
           padding: 0 10px;
           border: none;
           background-color: #f4f8fb;
@@ -808,6 +808,10 @@ span.index {
           }
           &:hover {
             background-color: #deeaf3;
+          }
+          &.stop-reminder {
+            background-color: #e34f4f;
+            color: white;
           }
         }
       }
@@ -943,6 +947,10 @@ span.index {
         &:hover {
           background-color: #deeaf3;
         }
+        &.stop-reminder {
+          background-color: #e34f4f;
+          color: white;
+        }
       }
       .btn-accept {
         background-color: $color-green;
@@ -1001,6 +1009,10 @@ span.index {
       float: right;
       &:hover {
         background-color: #75bed6;
+      }
+      &.stop-reminder {
+        background-color: #e34f4f;
+        color: white;
       }
     }
   }

@@ -10,19 +10,19 @@ class Agency < ApplicationRecord
   
   validates :company_name, uniqueness: true
   validates :business_name, uniqueness: true
-  validates :abn, uniqueness: true
+  #validates :abn, uniqueness: true
   
-  validates :license_number, uniqueness:true 
+  #validates :license_number, uniqueness:true 
   
   
   validates_presence_of :company_name
   validates_presence_of :business_name
-  validates_presence_of :abn
+  #validates_presence_of :abn
   validates_presence_of :address
   validates_presence_of :mobile_phone
   validates_presence_of :phone
-  validates_presence_of :license_type
-  validates_presence_of :license_number
+  # validates_presence_of :license_type
+  # validates_presence_of :license_number
   
   #validates_associated :agency_admins
 
@@ -32,8 +32,8 @@ class Agency < ApplicationRecord
   
   validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
   validates :phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
-  validates :abn, :numericality => true, :length => {:minimum=>11, :maximum => 11 }
-  
+  #validates :abn, :numericality => true, :length => {:minimum=>11, :maximum => 11 }
+  attr_accessor :agency_id
 
   
   def skilled_tradies_required(skill_params)

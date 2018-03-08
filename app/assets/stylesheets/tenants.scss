@@ -1,0 +1,24 @@
+.edit_tenant_profile {
+  margin-bottom: 40px;
+  .button-primary {
+    margin-bottom: 15px;
+  }
+  .message {
+    color: green;
+    margin: 10px 0;
+    &.hide-message {
+      color: #F4F8FB;
+    }
+  }
+  .right {
+    margin-left: 25%;
+    width: 50%;
+  }
+
+  @media (max-width: 768px) {
+    .right {
+      margin-left: initial;
+      width: initial;
+    }
+  }
+}
