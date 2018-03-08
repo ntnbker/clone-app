@@ -41,6 +41,11 @@ Rails.application.routes.draw do
     resources :agent_profile_images, only:[:create, :update]
     resources :agency_profile_images, only:[:create, :update]
     resources :agencies, only:[:new, :create, :edit, :update]
+    get "register_agency_admin" => "agencies#new_agency_admin", :as=> "new_agency_admin_for_agency"
+    post "register_agency_admin" => "agencies#register_agency_admin"
+    get "edit_agency_registration" => "agencies#edit_agency_registration", :as=>"edit_agency_registration" 
+    put 'update_agency_registration' => "agencies#update_agency_registration"
+    
     get "agency_settings" => 'agencies#settings', :as => "agency_settings"
     resources :agency_admin_maintenance_requests, only:[:index, :show] 
   ###################################################
@@ -54,8 +59,11 @@ Rails.application.routes.draw do
   ###################################################
   ##########TENANT ROLE RESOURCES/ROUTES###########
   ###################################################
-    resources :tenants, only:[:show, :index]
+
+    resources :tenants, only:[:show, :index, :edit ,:update, :create, :destroy]
+
     resources :tenant_maintenance_requests, only:[:index, :show]
+    post "edit_tenant" => "tenants#update_tenant"
   ###################################################
   ##########MR RESOURCES/ROUTES######################
   ###################################################
@@ -231,5 +239,17 @@ Rails.application.routes.draw do
   ##########WORK ORDER RESOURCES/ROUTES#########
   ################################################### 
     post "cancel_work_order"=> "work_orders#cancel_work_order"
+
+  ###################################################
+  ##########REMINDER KILLER RESOURCES/ROUTES#########
+  ################################################### 
+  post "/stop_quote_reminder" => "reminder_killers#stop_quote_request_reminder", :as => :stop_quote_reminder
+  post "/stop_appointment_reminder" => "reminder_killers#stop_appointment_reminder", :as => :stop_appointment_reminder
+  post "/stop_invoice_reminder" => "reminder_killers#stop_invoice_reminder", :as => :stop_invoice_reminder
     
+
+  ##########PAYMENT RESOURCES/ROUTES#########
+  ################################################### 
+    resources :payments, only:[:new, :create]
+
  end

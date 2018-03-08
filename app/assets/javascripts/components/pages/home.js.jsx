@@ -135,11 +135,7 @@ var HomeComponent = React.createClass({
           <h4>Track maintenance status</h4>
           <p>Automated reminders unsure jobs are progressing</p>
         </div>
-        <div className="three columns">
-          <img src="/icons/notes.png" alt=""/>
-          <h4>Increase revenue</h4>
-          <p>Increase revenue through our rebate program and increased productivity</p>
-        </div>
+       
       </div>
     )
   },
@@ -435,7 +431,7 @@ var HomeComponent = React.createClass({
           <textarea
             type="text"
             id="pac-input"
-            placeholder="Where do need the service done? Please tell us the address."
+            placeholder="Please tell us the address."
             ref={(elem) => this.address = elem}
             onChange={getAddressOfGoogleMap}
 

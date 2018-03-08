@@ -9,6 +9,11 @@ var QuoteField = React.createClass({
       hours_input: hours_input,
       item_description_error: '',
       amount_error: '',
+      min_price_error: '',
+      max_price_error: '',
+      amount: quote ? quote.amount : 0,
+      min_price: quote ? quote.min_price : 0,
+      max_price: quote ? quote.max_price : 0,
     }
   },
 
@@ -20,10 +25,30 @@ var QuoteField = React.createClass({
   validateAmount: function(errors) {
     const error = errors['quote_items.amount'];
     if (!error || error.length === 0) return '';
-    const amount = this.amount.value;
+    const amount = this.amount && this.amount.value || '';
 
     if (amount === '') return error.filter(e => e.includes('blank'))[0];
     if (!/^\d+$/.test(amount)) return error.filter(e => e.includes('number'))[0];
+    return '';
+  },
+
+  validateMinPrice: function(errors) {
+    const error = errors['quote_items.min_price'];
+    if (!error || error.length === 0) return '';
+    const min_price = this.min_price && this.min_price.value || '';
+
+    if (min_price === '') return error[0];
+    if (!/^\d+$/.test(min_price)) return error.filter(e => e.includes('number'))[0];
+    return '';
+  },
+
+  validateMaxPrice: function(errors) {
+    const error = errors['quote_items.max_price'];
+    if (!error || error.length === 0) return '';
+    const max_price = this.max_price && this.max_price.value || '';
+
+    if (max_price === '') return error[0];
+    if (!/^\d+$/.test(max_price)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 
@@ -33,6 +58,8 @@ var QuoteField = React.createClass({
     this.setState({
       item_description_error: this.validateDescription(errorsForm),
       amount_error: this.validateAmount(errorsForm),
+      min_price_error: this.validateMinPrice(errorsForm),
+      max_price_error: this.validateMaxPrice(errorsForm),
     });
   },
 
@@ -42,16 +69,27 @@ var QuoteField = React.createClass({
 
   onPricing(event) {
     var pricing_type = event.target.value;
-    var hours_input = pricing_type === 'Hourly';
-    this.setState({ pricing_type, hours_input });
+    const update = {
+      pricing_type,
+      hours_input: pricing_type === 'Hourly',
+    }
+    if (pricing_type === 'Range') {
+      update.amount = 0;
+    }
+    else {
+      update.min_price = 0;
+      update.max_price = 0;
+    }
+    this.setState(update);
   },
 
-  removeError: function({ target: { id } }) {
+  removeError: function({ target: { id, value } }) {
     const field = id.match(/\d+_(\w+)$/);
     if (!field) return;
 
     this.setState({
       [`${field[1]}_error`]: '',
+      [field[1]]: value,
     })
   },
 
@@ -65,6 +103,7 @@ var QuoteField = React.createClass({
     const currentState    = this.state;
     const removeErrorFunc = this.removeError;
     const renderErrorFunc = this.renderError;
+    const needToShowTo    = currentState.pricing_type === 'Range';
 
     if (quote) {
       x = quote.id;
@@ -96,17 +135,52 @@ var QuoteField = React.createClass({
             >
               <option value="Fixed Cost">Fixed Cost</option>
               <option value="Hourly">Hourly</option>
+              <option value="Range">Range</option>
             </select>
-            <input
-              type="text"
-              placeholder="Amount"
-              defaultValue={quote ? quote.amount : ''}
-              ref={value => this.amount = value}
-              className={"text-center price" + (currentState['amount_error'] ? ' has-error' : '')}
-              id={'quote_quote_items_attributes_' + x + '_amount'}
-              name={'quote[quote_items_attributes][' + x + '][amount]'}
-              onChange={removeErrorFunc}
-            />
+            <div className="amount-input">
+              <input
+                type="text"
+                placeholder="Amount"
+                defaultValue={quote ? quote.amount : ''}
+                value={this.state.amount}
+                ref={value => this.amount = value}
+                className={"text-center price" + (currentState['amount_error'] ? ' has-error' : '')}
+                id={'quote_quote_items_attributes_' + x + '_amount'}
+                name={'quote[quote_items_attributes][' + x + '][amount]'}
+                onChange={removeErrorFunc}
+                style={needToShowTo ? {display: 'none'} : {}}
+              />
+                <input
+                type="text"
+                placeholder="Min Price"
+                defaultValue={quote ? quote.min_price : ''}
+                value={this.state.min_price}
+                ref={value => this.min_price = value}
+                className={"text-center price" + (currentState['min_price_error'] ? ' has-error' : '')}
+                id={'quote_quote_items_attributes_' + x + '_min_price'}
+                name={'quote[quote_items_attributes][' + x + '][min_price]'}
+                onChange={removeErrorFunc}
+                style={!needToShowTo ? {display: 'none'} : {}}
+              />
+              <span
+                className="to"
+                style={!needToShowTo ? {display: 'none'} : {}}
+              >
+                To
+              </span>
+              <input
+                type="text"
+                placeholder="Max Price"
+                defaultValue={quote ? quote.max_price : ''}
+                value={this.state.max_price}
+                ref={value => this.max_price = value}
+                className={"text-center price" + (currentState['max_price_error'] ? ' has-error' : '')}
+                id={'quote_quote_items_attributes_' + x + '_max_price'}
+                name={'quote[quote_items_attributes][' + x + '][max_price]'}
+                onChange={removeErrorFunc}
+                style={!needToShowTo ? {display: 'none'} : {}}
+              />
+            </div>
             <input
               type="hidden"
               id={'quote_quote_items_attributes_' + x + '_hours'}
@@ -128,7 +202,9 @@ var QuoteField = React.createClass({
             }
           </div>
           <div>
-            {renderErrorFunc(currentState['amount_error'])}
+            {!needToShowTo && renderErrorFunc(currentState['amount_error'])}
+            {needToShowTo && renderErrorFunc(currentState['min_price_error'])}
+            {needToShowTo && renderErrorFunc(currentState['max_price_error'])}
           </div>
         </fieldset>
         <div className="text-center">

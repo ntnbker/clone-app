@@ -32,6 +32,20 @@ fieldset[disabled] .btn-link {
   }
 }
 
+.button-primary {
+  background-color: #7dc691;
+  border-color: #7dc691;
+  color: white;
+  text-decoration: none;
+  &:hover {
+    color: cyan;
+  }
+  a {
+    color: white;
+    text-decoration: none;
+  }
+}
+
 .flex {
   @include flexbox;
   &.flex-column {
@@ -892,6 +906,13 @@ footer {
       font-size: 16px;
     }
   }
+
+  @supports (-ms-ime-align:auto) {
+    /* All Edge CSS here */
+    .modal-custom .modal-dialog {
+      position: absolute;
+    }
+  }
 }
 
 
@@ -901,3 +922,5 @@ footer {
     position: absolute;
   }
 }
+
+

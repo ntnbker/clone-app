@@ -47,6 +47,25 @@ var ButtonForwardLandlord = React.createClass({
 	}
 });
 
+var ButtonCreateQuote = React.createClass({
+	render: function() {
+		return (
+			<button
+			type="button"
+			className="btn btn-accept"
+			onClick={() => this.link.click()}
+			>
+				<a
+					href={this.props.linkCreateQuote}
+					style={{display: 'none'}}
+					ref={(elem) => this.link = elem}
+				/>
+				Create Quote
+			</button>
+		);
+	}
+});
+
 var ButtonAccept = React.createClass({
 	updateStatus: function() {
 		const params = {
@@ -148,10 +167,30 @@ var ButtonQuoteAlreadySent = React.createClass({
 		return (
 			<button
 				type="button"
-				className="btn btn-default"
-				onClick={() => viewQuote('confirmQuoteAlreadySent', quote_request)}
+				className="btn btn-default stop-reminder"
+				onClick={() => viewQuote('confirmStopQuoteReminder', quote_request)}
 			>
-				Quote Already Sent
+				Stop Quote Request Reminder
+			</button>
+		);
+	}
+});
+
+var ButtonCallTrady = React.createClass({
+	render: function() {
+		const { trady } = this.props;
+		return (
+			<button
+				type="button"
+				className="btn btn-default"
+				onClick={() => this.phone.click()}
+			>
+				<a
+					href={`tel:${trady.mobile}`}
+					style={{display: 'none'}}
+					ref={(elem) => this.phone = elem}
+				/>
+				<i className="fa fa-phone"></i> Call {trady.name}
 			</button>
 		);
 	}
@@ -560,6 +599,10 @@ var QuoteRequests = React.createClass({
 	render: function() {
 		const {quote_requests, pictures} = this.state;
 		const self = this.props;
+		const role = self.current_user_role && self.current_user_role.role
+							|| self.current_role && self.current_role.role;
+
+		const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
 		return (
 			<div className="quotes m-t-lg" id="quote_requests">
@@ -569,6 +612,7 @@ var QuoteRequests = React.createClass({
 				<div className="list-quote">
 				{
 					quote_requests.map(function(quote_request, index) {
+						const {maintenance_request_id, trady_id} = quote_request;
 						const quotes 				= quote_request.quotes || [];
 						const quoteAlready  = quotes.filter(quote => !quote.quote_items
 																											 || quote.quote_items.length === 0);
@@ -588,6 +632,7 @@ var QuoteRequests = React.createClass({
 																				: quote_request.trady
 																					? quote_request.trady.name
 																					: '';
+						const linkCreateQuote = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
 
 						return (
 							<div className="item-quote row item-quote-request" key={index}>
@@ -608,6 +653,19 @@ var QuoteRequests = React.createClass({
 									</div>
 									<div className="quote-request-button">
 										{
+											isCallTrady
+											? <ButtonCallTrady
+													trady={quote_request.trady}
+												/>
+											: ''
+										}
+										{ role === 'Trady'
+											? <ButtonCreateQuote
+													linkCreateQuote={linkCreateQuote}
+												/>
+											: ''
+										}
+										{
 											needMessageButton
 											? <ButtonQuoteRequestMessage
 													quote_request={quote_request}
@@ -616,7 +674,7 @@ var QuoteRequests = React.createClass({
 												/>
 											: ''
 										}
-										{ needAlreadySentButton
+										{ !quote_request.trady.jfmo_participant && needAlreadySentButton
 											? <ButtonQuoteAlreadySent
 													{...self}
 													quote_request={quote_request}
@@ -628,6 +686,7 @@ var QuoteRequests = React.createClass({
 													className="btn btn-default"
 													{...self}
 													chooseImageText="Choose Image or PDF to upload"
+													text="Upload Quote PDF/Image"
 													onClick={() => self.chooseQuoteRequest(quote_request)}
 												/>
 											: ''
@@ -771,12 +830,24 @@ var DetailQuote = React.createClass({
 							}else {
 								subTotal += (item.amount*item.hours);
 							}
+							let amount = item.amount;
+							if(item.pricing_type === 'Range') {
+								amount = `$${item.min_price.toFixed(2)}-$${item.max_price.toFixed(2)}`;
+							}
+							else {
+								amount = `$${amount.toFixed(2)}`;
+							}
+
 							return (
 								<tr key={key}>
 									<td className="quote-description">{item.item_description}</td>
 									<td className="quote-price">{item.pricing_type}</td>
-									<td className="text-right quote-rate">{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }</td>
-									<td className="text-right quote-amount">{ item.pricing_type == "Fixed Cost" && "$" + item.amount.toFixed(2) }</td>
+									<td className="text-right quote-rate">
+										{ item.pricing_type == "Hourly" && "$" + item.amount.toFixed(2) }
+									</td>
+									<td className="text-right quote-amount">
+										{ item.pricing_type !== "Hourly" && amount }
+									</td>
 								</tr>
 							);
 						})

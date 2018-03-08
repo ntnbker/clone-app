@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180111080142) do
+ActiveRecord::Schema.define(version: 20180306045845) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,6 +191,16 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "customer_profiles", force: :cascade do |t|
+    t.integer  "trady_id"
+    t.integer  "agency_id"
+    t.string   "customer_id"
+    t.boolean  "terms_and_conditions"
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.string   "payment_status",       default: "Outstanding"
+  end
+
   create_table "gods", force: :cascade do |t|
     t.string   "full_name"
     t.datetime "created_at", null: false
@@ -236,12 +246,18 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.date     "date"
   end
 
+  create_table "invoice_schedulers", force: :cascade do |t|
+    t.date     "run_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.integer  "trady_id"
     t.integer  "maintenance_request_id"
     t.float    "amount"
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.boolean  "tax"
     t.integer  "ledger_id"
     t.float    "gst_amount"
@@ -250,8 +266,10 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.boolean  "print_status"
     t.string   "invoice_number"
     t.text     "trady_invoice_reference"
-    t.boolean  "paid",                    default: false
+    t.boolean  "paid",                                            default: false
     t.integer  "quote_id"
+    t.string   "mapp_payment_status",                             default: "Outstanding"
+    t.decimal  "service_fee",             precision: 8, scale: 2
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -360,6 +378,8 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.string  "pricing_type"
     t.float   "hours"
     t.float   "total_per_hour"
+    t.float   "min_price"
+    t.float   "max_price"
   end
 
   create_table "quote_requests", force: :cascade do |t|
@@ -386,6 +406,12 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.text     "trady_quote_reference"
     t.boolean  "trady_fee"
     t.integer  "quote_request_id"
+  end
+
+  create_table "reminder_schedulers", force: :cascade do |t|
+    t.date     "run_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "roles", force: :cascade do |t|
@@ -445,10 +471,12 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.string   "email"
     t.integer  "user_id"
     t.string   "skill"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.integer  "trady_company_id"
     t.string   "company_name"
+    t.boolean  "jfmo_participant"
+    t.boolean  "payment_registration", default: false
   end
 
   create_table "trady_companies", force: :cascade do |t|
@@ -501,6 +529,7 @@ ActiveRecord::Schema.define(version: 20180111080142) do
     t.text     "pdf_data"
     t.boolean  "paid",                   default: false
     t.float    "total_invoice_amount"
+    t.date     "due_date"
   end
 
   create_table "uploaded_quotes", force: :cascade do |t|

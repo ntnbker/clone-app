@@ -1,7 +1,7 @@
 class AgencyAdmin <ApplicationRecord
   before_save :format_first_name, if: :perform_add_agency_admin_validations
   before_save :format_last_name, if: :perform_add_agency_admin_validations
-  before_save :format_email
+  before_save :format_email, if: :perform_add_agency_admin_validations
   has_many :roles, as: :roleable
   has_many :maintenance_requests
   belongs_to :user, inverse_of: :agency_admin
@@ -11,7 +11,7 @@ class AgencyAdmin <ApplicationRecord
   
   
   validates_presence_of :email, :license_number,:first_name, :mobile_phone, :last_name, if: :perform_add_agency_admin_validations
-  
+  #validates_presence_of :email, :first_name, :mobile_phone, :last_name, if: :perform_agency_validations
   
 
   validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/, if: :perform_add_agency_admin_validations
@@ -26,7 +26,7 @@ class AgencyAdmin <ApplicationRecord
 
 
 attr_accessor :perform_add_agency_admin_validations
-
+attr_accessor :perform_agency_validations
 
   def format_first_name
     self.first_name = self.first_name.split.map(&:capitalize).join(' ')
