@@ -59,7 +59,7 @@ $color-text: #83878C;
 		// font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
-  .create-invoice-button {
+  .invoice-button {
     @include flexbox;
     margin-bottom: 20px;
     margin-top: 20px;
@@ -99,7 +99,7 @@ $color-text: #83878C;
     }
   }
 
-  .upload-invoice-button {
+  .center-invoice-button {
     @include justify-content(center);
     @include align-items(center);
 
@@ -177,6 +177,31 @@ $color-text: #83878C;
 
   .border_on_error {
       border-color: red;
+  }
+
+  .invoice-options {
+    @include flexbox;
+    @include flex-direction(row);
+    margin-top: 10px;
+    margin-bottom: 20px;
+
+    .invoice-option {
+      @include flexbox;
+      @include flex(1);
+      @include flex-direction(column);
+      @include justify-content(space-between);
+      @include justify-content(justify);
+      padding: 0 20px;
+
+      .invoice-button {
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      &:first-child {
+        border-right: 2px solid $color-green-submit;
+      }
+    }
   }
 
 	.quotes {
@@ -605,10 +630,13 @@ $color-text: #83878C;
 
   .qf-button {
     @include flexbox;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
 
     button {
       @include flex(1);
-      margin: 20px 5%;
+      margin: 0 15px;
     }
   }
 
@@ -916,37 +944,6 @@ $color-text: #83878C;
     .name {
       @include flex(1);
       width: 100%;
-    }
-  }
-  .qf-button {
-    @include flexbox;
-
-    button {
-      @include flex(1);
-      margin: 20px 5%;
-    }
-
-    .button-submit {
-      background-color: $color-green-submit;
-      color: white;
-      border-color: $color-green-submit;
-      border-radius: 5px;
-
-      &:hover {
-        background-color: #619970;
-        border-color: #619970;
-      }
-    }
-    .button-back {
-      background-color: $color-blue;
-      color: white;
-      border-color: $color-blue;
-      border-radius: 5px;
-
-      &:hover {
-        background-color: #619970;
-        border-color: #619970;
-      }
     }
   }
   @media (max-width: 380px) {

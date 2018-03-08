@@ -1,5 +1,5 @@
 %div.container.well
-  =react_component('QuoteFields', {:authenticity_token => form_authenticity_token,
+  =react_component('CreateQuoteForm', {:authenticity_token => form_authenticity_token,
                                    :maintenance_request_id => @maintenance_request_id,
                                    :trady_id => @trady.id,
                                    :trady_company => @trady_company,
@@ -7,7 +7,8 @@
                                    :delivery_status => "false",
                                    :quote_type => @quote_type,
                                    :system_plan=> @system_plan,
-                                   :backlink => edit_trady_company_path(@trady_company,maintenance_request_id:@maintenance_request_id, quote_type:@quote_type, quote_id: @quote_id, system_plan:@system_plan, trady_id:@trady.id)})
+                                   :backlink => edit_trady_company_path(@trady_company,maintenance_request_id:@maintenance_request_id, quote_type:@quote_type, quote_id: @quote_id, system_plan:@system_plan, trady_id:@trady.id),
+                                   :step => "make-quote", :is_edit => false})
 
 
 

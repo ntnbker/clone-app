@@ -23,7 +23,7 @@ var InvoiceSentSuccess = React.createClass({
         <p className="text-center">
           To Head Home click the button below.
         </p>
-        <div className="create-invoice-button upload-invoice-button">
+        <div className="center-invoice-button invoice-button">
           <button
             type="button"
             className="button-primary green"
