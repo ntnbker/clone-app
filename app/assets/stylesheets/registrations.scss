@@ -37,6 +37,7 @@ $color-text: #83878C;
         margin-left: calc(50% - 18px);
         font-weight: 600;
         font-size: 20px;
+        margin-bottom: 10px;
       }
       &.pass {
         color: $color-green-submit;
@@ -46,6 +47,7 @@ $color-text: #83878C;
   .step-title {
     color: $color-green-submit;
     border-bottom: 4px solid $color-green-submit;
+    padding-bottom: 20px;
   }
   form {
     width: 80%;

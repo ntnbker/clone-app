@@ -651,13 +651,12 @@ var InvoiceField = React.createClass({
       service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0,
     });
   },
-  onTax() {
+  onTax(isTax) {
     const invoice_total = this.state.invoice_total;
-    const tax = this.state.tax;
     this.setState({
-      tax: !tax,
-      items_total: !tax ? invoice_total/1.1 : invoice_total,
-      tax_total: !tax ? invoice_total - invoice_total/(1.1) : 0,
+      tax: isTax,
+      items_total: isTax ? invoice_total/1.1 : invoice_total,
+      tax_total: isTax ? invoice_total - invoice_total/(1.1) : 0,
     });
   },
   render: function() {
@@ -715,10 +714,35 @@ var InvoiceField = React.createClass({
             />
           </div>
           <p id="errorbox" className="error">{errorReference || ''}</p>
-          <label>
+          {/*<label>
             <input type="checkbox" value={tax} checked={tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
             Total Includes GST
-           </label>
+           </label>*/}
+          <div className="form-group text-center">
+            Total Includes GST
+            <div className="radio-same-address">
+              <label className="radio-option">Yes
+                <input
+                  type="radio"
+                  name={'ledger[invoices_attributes][' + x + '][tax]'}
+                  value={true}
+                  onChange={() => this.onTax(true)}
+                  defaultChecked={!!tax}
+                />
+                <span className="radio-checkmark"></span>
+              </label>
+              <label className="radio-option">No
+                <input
+                  type="radio"
+                  name={'ledger[invoices_attributes][' + x + '][tax]'}
+                  value={false}
+                  onChange={() => this.onTax(false)}
+                  defaultChecked={!tax}
+                />
+                <span className="radio-checkmark"></span>
+              </label>
+            </div>
+          </div>
         </div>
         <hr />
         <div className="field">
@@ -932,8 +956,14 @@ var InvoiceFields = React.createClass({
         removeQuote={(quote) => this.quotesInInvoice.removeConvert(quote.id)}
       />
 
-      <div className="qf-button text-center" style={{marginBottom: '50px'}}>
-        <a className="button button-primary left" href={this.props.backlink}> Back </a>
+      <div className="qf-button text-center">
+        <button
+          type="button"
+          className="button button-back"
+          onClick={() => location.href = this.props.backlink}
+        >
+          Back
+        </button>
         <button type="submit" name="commit" value="Next" className="button button-primary green">Next</button>
       </div>
       { this.renderModal() }

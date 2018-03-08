@@ -163,7 +163,7 @@ var EditTradyCompany = React.createClass({
     return (
       <button
         type="button"
-        className="back-button"
+        className="button-back"
         onClick={() => this.backButton.click()}
       >
         <a href={backPath} style={{display: 'none'}} ref={e => this.backButton = e}/>
@@ -441,7 +441,7 @@ var EditTradyCompany = React.createClass({
         ]}
         <div className="buttons">
           { this.renderButtonBack() }
-          <button type="submit" className="button-primary green option-button">
+          <button type="submit" className="button-submit">
             Next
           </button>
         </div>

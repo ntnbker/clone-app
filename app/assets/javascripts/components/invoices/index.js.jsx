@@ -30,9 +30,9 @@ var CreateInvoiceForm = React.createClass({
     const {level} = this.state;
     return (
       <div className="registration-title">
-        {this.labelTitle(1, <p>Choose<br />Option</p>, level > 0)}
-        {this.labelTitle(2, <p>Trady<br />Company</p>, level > 1)}
-        {this.labelTitle(4, <p>Make<br />Invoice</p>, level > 2)}
+        {this.labelTitle(1, <p>Invoice<br />Option</p>, level > 0)}
+        {this.labelTitle(2, <p>Trady<br />Company<br />Infomation</p>, level > 1)}
+        {this.labelTitle(4, <p>Create/Upload<br />Invoice</p>, level > 2)}
         {this.labelTitle(3, <p>Submit<br />Invoice</p>, level > 3)}
       </div>
     )
@@ -43,11 +43,11 @@ var CreateInvoiceForm = React.createClass({
 
     switch (step) {
       case 'invoice-option':
-        return <h5 className="step-title text-center">Choose Option</h5>
+        return <h5 className="step-title text-center">Invoice Option</h5>
       case 'trady-company':
-        return <h5 className="step-title text-center">Trady Company</h5>
+        return <h5 className="step-title text-center">Trady Company Information</h5>
       case 'make-invoice':
-        return <h5 className="step-title text-center">Make Invoice</h5>
+        return <h5 className="step-title text-center">Create/Upload Invoice</h5>
       case 'submit-invoice':
         return <h5 className="step-title text-center">Submit Invoice</h5>
     }

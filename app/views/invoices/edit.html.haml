@@ -1,6 +1,6 @@
 / =react_component('StepProgress', {:step => 2})
 
-%div.container.invoice-form
+%div.invoice-form
   =react_component('CreateInvoiceForm', {:authenticity_token => form_authenticity_token,
                                      :ledger => @ledger.as_json(:include => {:invoices => {:include => :invoice_items}}),
                                      :_method => "put",

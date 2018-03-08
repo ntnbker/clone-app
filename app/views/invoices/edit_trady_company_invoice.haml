@@ -1,7 +1,7 @@
 =react_component('StepProgress', {:step => 1})
 
-%div.container.invoice-form
-  =react_component('TradyCompanyInvoice', {:authenticity_token => form_authenticity_token,
+/ %div.container.invoice-form
+=react_component('TradyCompanyInvoice', {:authenticity_token => form_authenticity_token,
                                            :company_name => @trady_company.company_name,
                                            :trading_name => @trady_company.trading_name,
                                            :abn => @trady_company.abn,
@@ -18,7 +18,7 @@
                                            :trady_id => @trady_id,
                                            :trady_company_id => @trady_company.id,
                                            :quote_id => @quote_id,
-                                           :invoice_type=>@invoice_type, 
+                                           :invoice_type=>@invoice_type,
                                            :pdf_file_id=>@pdf_file_id,
                                            :ledger_id=>@ledger_id})
 
