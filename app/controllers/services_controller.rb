@@ -38,21 +38,43 @@ class ServicesController < ApplicationController
 
     
     Trady.find_by(id: params[:trady_id])
+     
+     
+    #service_array = params[:skill][:skill]
     
-    service_array = params[:skill][:skill]
+
+
     trady_id = params[:trady_id]
+   
+    # if service_array[0] == '' && service_array.count == 1 
+    #   flash[:danger] = "Please choose at least one service from the list below, thank you."
+    #   redirect_to services_path
+    # else
+    #   service_array.each do |skill|
+    #     if skill != ''
+    #       Skill.create(skill:skill, trady_id:trady_id)
+    #     end 
+    #   end
+    #   redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
+    # end  
+
     
-    if service_array[0] == '' && service_array.count == 1 
-      flash[:danger] = "Please choose at least one service from the list below, thank you."
-      redirect_to services_path
-    else
+
+    if params[:skill]
+      service_array = params[:skill][:skill]
+
       service_array.each do |skill|
-        if skill != ''
-          Skill.create(skill:skill, trady_id:trady_id)
-        end 
+        Skill.create(skill:skill, trady_id:trady_id)
       end
       redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
-    end  
+    else
+      flash[:danger] = "Please choose at least one service from the list below, thank you."
+      redirect_to services_path(maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], trady_company_id:params[:trady_company_id])
+    end 
+
+
+
+
   end
 
 

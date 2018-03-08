@@ -10,14 +10,11 @@ class AgencyAdmin <ApplicationRecord
   has_one :agency_admin_profile_image
   
   
-  validates_presence_of :email, :license_number,:first_name, :mobile_phone, :last_name, if: :perform_add_agency_admin_validations
-  #validates_presence_of :email, :first_name, :mobile_phone, :last_name, if: :perform_agency_validations
   
+  validates_presence_of :email, :first_name, :mobile_phone, :last_name
 
-  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/, if: :perform_add_agency_admin_validations
-  validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }, if: :perform_add_agency_admin_validations
-
-
+  validates_format_of :email, :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/
+  validates :mobile_phone, :numericality => true, :length => {:minimum=>10, :maximum => 10 }
   accepts_nested_attributes_for :agency
   #validates_associated :user
 
