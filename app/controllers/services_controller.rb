@@ -92,7 +92,7 @@ class ServicesController < ApplicationController
 
   def update
     #the id in the params is the same ID as the trady so dont get confused
-    binding.pry
+    
     trady = Trady.find_by(id:params[:trady_id])
     if params[:skill]
       new_skills= params[:skill][:skill]
