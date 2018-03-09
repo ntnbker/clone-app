@@ -133,8 +133,7 @@ class ServicesController < ApplicationController
         format.html{render :edit_services}
       end
     end 
-      #redirect_to edit_services_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id]) 
-    end 
+     
 
   end
 
