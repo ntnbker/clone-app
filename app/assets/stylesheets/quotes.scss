@@ -25,9 +25,9 @@ form#new_quote {
 		}
 
 		.button-remove {
-		    margin-top: 15px;
-		    font-size: 12px;
-		    height: 20px;
+	    margin-top: 15px;
+	    font-size: 12px;
+	    height: 20px;
 		}
 	}
 
@@ -52,6 +52,77 @@ form#new_quote {
 		}
 	}
 
+	.button-primary {
+    background-color: $color-green-submit;
+    color: white;
+    border-color: $color-green-submit;
+    border-radius: 5px;
+
+    &:hover {
+      background-color: #619970;
+      border-color: #619970;
+    }
+    &.button-remove {
+      background-color: $color-red;
+      border-color: $color-red;
+
+      &:hover {
+        background-color: #d60000;
+        border-color: #d60000;
+      }
+    }
+    &:focus {
+      background-color: $color-green-submit;
+      border-color: $color-green-submit;
+    }
+  }
+
+
+
+  .qf-button {
+    @include flexbox;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+
+    button {
+      @include flex(1);
+      margin: 0 15px;
+    }
+
+	  .button-submit {
+	    background-color: $color-green-submit;
+	    color: white;
+	    border-color: $color-green-submit;
+	    border-radius: 5px;
+
+	    &:hover {
+	      background-color: #619970;
+	      border-color: #619970;
+	    }
+	    &:focus {
+	      background-color: $color-green-submit;
+	      border-color: $color-green-submit;
+	    }
+	  }
+
+	  .button-back {
+	    background-color: $color-blue;
+	    color: white;
+	    border-color: $color-blue;
+	    border-radius: 5px;
+
+	    &:hover {
+	      background-color: #619970;
+	      border-color: #619970;
+	    }
+	    &:focus {
+	      background-color: $color-blue;
+	      border-color: $color-blue;
+	    }
+	  }
+  }
+
 	.quote_tax {
 		display: inline-block;
 		font-weight: normal;
@@ -62,17 +133,6 @@ form#new_quote {
 			margin-right: 8px;
 			display: inline-block;
 			width: auto;
-		}
-	}
-
-	.qf-button {
-		float: right;
-
-		button {
-			margin-right: 30px;
-		}
-		a {
-			text-decoration: none;
 		}
 	}
 	input[type="text"] {

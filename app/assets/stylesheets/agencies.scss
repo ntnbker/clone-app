@@ -38,10 +38,19 @@ $color-text: #83878C;
     @include flexbox;
     @include justify-content(center);
     margin-top: 20px;
-    .agency-button-submit  {
-      width: 30%;
-      padding: 0;
-      text-align: center;
+
+    .button-submit {
+      @include flex(1);
+      max-width: 300px;
+      background-color: $color-green-submit;
+      color: white;
+      border-color: $color-green-submit;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #619970;
+        border-color: #619970;
+      }
     }
   }
   .user-button {

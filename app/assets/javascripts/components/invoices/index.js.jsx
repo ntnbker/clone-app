@@ -34,8 +34,8 @@ var CreateInvoiceForm = React.createClass({
       <div className="registration-title">
         {this.labelTitle(1, <p>Invoice<br />Option</p>, level > 0)}
         {this.labelTitle(2, <p>Trady<br />Company<br />Infomation</p>, level > 1)}
-        {this.labelTitle(4, <p>Create/Upload<br />Invoice</p>, level > 2)}
-        {this.labelTitle(3, <p>Submit<br />Invoice</p>, level > 3)}
+        {this.labelTitle(3, <p>Create/Upload<br />Invoice</p>, level > 2)}
+        {this.labelTitle(4, <p>Submit<br />Invoice</p>, level > 3)}
       </div>
     )
   },

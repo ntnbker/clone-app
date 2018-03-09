@@ -14,7 +14,7 @@ var QuoteOption = React.createClass({
           <p className="optiondescription text-center">
             Easily make quotes using our platform by clicking the <b>Create Quotes</b> button below.
           </p>
-          <div className="create-invoice-button">
+          <div className="invoice-button">
             <button
               type="button"
               className="button-back"

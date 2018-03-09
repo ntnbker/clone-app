@@ -39,10 +39,15 @@ var ServiceList = React.createClass({
 
   onSubmit(e) {
     e.preventDefault();
-    const {isEdit}   = this.state;
-    const {trady_id} = this.props;
+    const {isEdit, skills}   = this.state;
+    const {trady_id, trady_company_id, maintenance_request_id} = this.props;
     const self = this;
-    var FD = new FormData(document.getElementById('services'));
+    const params = {
+      trady_id, trady_company_id, maintenance_request_id,
+      skill: {
+        skill: skills
+      }
+    }
 
     $.ajax({
       type: isEdit ? 'PUT' : 'POST',
@@ -50,10 +55,7 @@ var ServiceList = React.createClass({
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
-      enctype: 'multipart/form-data',
-      processData: false,
-      contentType: false,
-      data: FD,
+      data: params,
       success(res) {
 
       },
@@ -110,7 +112,7 @@ var ServiceList = React.createClass({
             Back
           </button>
           <button type="submit" className="btn button-submit">
-            {this.state.isEdit ? 'Submit' : 'Create Skill'}
+            Add Service(s)
           </button>
         </div>
       </form>

@@ -9,9 +9,10 @@ form#terms-and-conditions {
     font-weight: 600;
   }
   .agree_checkbox {
-    width: 40%;
+    width: 90%;
     font-size: 15px;
-    margin: 0 30%;
+    padding-left: 5px;
+    margin: 0 5%;
     position: relative;
     color: $color-text;
     cursor: pointer;
@@ -78,6 +79,7 @@ form#terms-and-conditions {
   .TAC-buttons {
     text-align: center;
     margin-top: 20px;
+    padding-bottom: 20px;
     @include flexbox;
 
     button {
@@ -156,6 +158,7 @@ form#terms-and-conditions {
     font-size: 18px;
   }
   .how-it-works-item {
+    min-height: 50px;
     .number {
       display: block;
       border: 3px solid $color-green-submit;
@@ -245,6 +248,7 @@ form#terms-and-conditions {
       font-size: 13px;
     }
     .how-it-works-item {
+      min-height: 40px;
       .number {
         width: 26px;
         height: 26px;

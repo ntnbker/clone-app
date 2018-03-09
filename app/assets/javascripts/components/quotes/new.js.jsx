@@ -301,12 +301,16 @@ var QuoteFields = React.createClass({
         <input type="checkbox" value="1" defaultChecked={trady_company.gst_registration ? trady_company.gst_registration : false} name="quote[tax]" id="quote_tax" />
         Check box when price includes GST.
         </label>
-
         <hr />
-
-        <div className="text-center">
-        <a className="button m-r-lg" href={this.props.backlink}> Back </a>
-        <input type="submit" name="commit" value="Next" className="button-primary green" />
+        <div className="qf-button">
+          <button
+            type="button"
+            className="button-back"
+            onClick={() => location.href = this.props.backlink}
+          >
+            Back
+          </button>
+          <button type="submit" className="button-submit">Next</button>
         </div>
       </form>
     )

@@ -64,7 +64,7 @@ var AgencyTermsAndConditions = React.createClass({
     return (
       <form id="terms-and-conditions" onSubmit={this.submit}>
         {this.termsAndConditionsText()}
-        <label className="agree_checkbox text-center">
+        <label className="agree_checkbox">
           Agree To Terms and Conditions
           <input
             type="checkbox"

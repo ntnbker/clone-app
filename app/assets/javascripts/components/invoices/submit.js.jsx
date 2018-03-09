@@ -442,7 +442,7 @@ var InvoiceSubmit = React.createClass({
                       }
                     </div>
                     <div className="text-right">
-                      {invoiceItem.amount.to_f}
+                      {invoiceItem.amount}
                     </div>
                     <div className="text-right">
                       {invoiceItem.pricing_type == 'Fixed Cost'

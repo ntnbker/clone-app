@@ -47,7 +47,7 @@ var AgencyRegistrationForm = React.createClass({
       case 'agency-admin':
         return <h5 className="step-title text-center">Agency Admin Registration</h5>
       case 'terms-and-conditions':
-        return <h5 className="step-title text-center">Terms And Conditions</h5>
+        return <h5 className="step-title text-center">Terms & Conditions</h5>
       case 'payment':
         return <h5 className="step-title text-center">Payment Information</h5>
     }

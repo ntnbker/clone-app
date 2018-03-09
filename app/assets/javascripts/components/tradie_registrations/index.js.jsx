@@ -49,7 +49,7 @@ var TradyRegistrationForm = React.createClass({
       case 'service':
         return <h5 className="step-title text-center">Services Registration</h5>
       case 'terms-and-conditions':
-        return <h5 className="step-title text-center">Terms And Conditions</h5>
+        return <h5 className="step-title text-center">Terms & Conditions</h5>
     }
   },
 

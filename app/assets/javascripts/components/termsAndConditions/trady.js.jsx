@@ -94,7 +94,7 @@ var TradyTermsAndConditions = React.createClass({
           We believe that by using our system you will greatly increase your business revenue and take your business to the next level.
         </div>
         {this.termsAndConditionsText()}
-        <label className="agree_checkbox text-center">
+        <label className="agree_checkbox">
           Agree To Terms and Conditions
           <input
             type="checkbox"

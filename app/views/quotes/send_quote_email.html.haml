@@ -1,19 +1,20 @@
-%div.container.invoice-form.success
-  %h5
-    Your Quote has been sent
-  %div.mark
-    %i.fa.fa-check
-  %p
-    Congratulations!
-  %p
-    Your quote has been successfully created and sent to the Agent.
-  %div.row.text-center
-    %p
-      To Head Home click the button below.
-    %button.button-primary.green
-      =link_to "Home", trady_maintenance_requests_path
+=react_component('CreateQuoteForm', {:trady_maintenance_requests_path => trady_maintenance_requests_path, :quote_options_path => quote_options_path(trady_id:@trady.id, maintenance_request_id:@maintenance_request)})
+/ %div.container.invoice-form.success
+/   %h5
+/     Your Quote has been sent
+/   %div.mark
+/     %i.fa.fa-check
+/   %p
+/     Congratulations!
+/   %p
+/     Your quote has been successfully created and sent to the Agent.
+/   %div.row.text-center
+/     %p
+/       To Head Home click the button below.
+/     %button.button-primary.green
+/       =link_to "Home", trady_maintenance_requests_path
 
-    %p.send-email
-      If you would like to create a different variation of you quote please "Create Another Quote" below
-    %button.button-primary.green
-      =link_to "Create Another Quote", quote_options_path(trady_id:@trady.id, maintenance_request_id:@maintenance_request)
+/     %p.send-email
+/       If you would like to create a different variation of you quote please "Create Another Quote" below
+/     %button.button-primary.green
+/       =link_to "Create Another Quote", quote_options_path(trady_id:@trady.id, maintenance_request_id:@maintenance_request)
