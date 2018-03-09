@@ -6,6 +6,7 @@ var ServiceList = React.createClass({
       services: services || [],
       skills: (trady_skills || []).map(({skill}) => skill),
       isEdit: !!is_edit,
+      errors: '',
     };
   },
 
@@ -16,11 +17,13 @@ var ServiceList = React.createClass({
     if (isChecked) {
       this.setState({
         skills: skills.filter(skill => skill !== service.service),
+        errors: '',
       })
     }
     else {
       this.setState({
         skills: skills.concat([service.service]),
+        errors: ''
       })
     }
   },
@@ -35,6 +38,11 @@ var ServiceList = React.createClass({
     const {edit_register_tradie_company_path} = this.props;
 
     location.href = edit_register_tradie_company_path;
+  },
+
+  renderError: function() {
+    const {errors} = this.state;
+    return <p id="errorbox" className="error">{errors || ''}</p>;
   },
 
   onSubmit(e) {
@@ -57,7 +65,9 @@ var ServiceList = React.createClass({
       },
       data: params,
       success(res) {
-
+        if (res && res.errors) {
+          self.setState({errors: res.errors})
+        }
       },
       error(err) {
 
@@ -104,9 +114,13 @@ var ServiceList = React.createClass({
         <div className="horizontal-line"></div>
         <div className="list-choosed-services">
           {skills.map((skill, index) => (
-            <div className="choosed-service-item" key={index}>{skill}</div>
+            <div
+              className="choosed-service-item"
+              key={index}
+            >{skill}</div>
           ))}
         </div>
+        {this.renderError()}
         <div className="service-buttons">
           <button type="button" className="btn button-back" onClick={this.onBack}>
             Back
