@@ -1145,7 +1145,7 @@ var ModalRequestModal = React.createClass({
 								}
 							</div>
 							<div className="modal-footer">
-								{ false && this.props.keyTitle === 'request-quote' &&
+								{ this.props.keyTitle === 'request-quote' &&
 									<div className="row">
 										<button
 											className="btn btn-primary cancel"
@@ -2611,7 +2611,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalRequestModal
 							close={this.isClose}
-							keyTitle="sen-work-order"
+							keyTitle="sent-work-order"
 							tradies={this.state.tradies}
 							requestQuote={this.sendWorkOrder}
 							maintenance_request={this.state.maintenance_request}

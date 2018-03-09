@@ -34,11 +34,9 @@ $color-text: #83878C;
             margin-bottom: 5px;
           }
           p {
-            display: inline-block;
             width: 100% !important;
           }
-          input {
-            display: inline-block;
+          .input-dolar {
             width: 100% !important;
           }
         }
@@ -711,11 +709,21 @@ $color-text: #83878C;
 				p {
 					display: inline-block;
 					width: 45%;
+          margin-bottom: 5px;
 				}
-				input {
-					display: inline-block;
-					width: 55%;
-				}
+        .input-dolar {
+          display: inline-block;
+          width: 55%;
+
+          .dolar {
+            width: 20px;
+            display: inline-block;
+          }
+          input {
+            width: calc(100% - 20px);
+            display: inline-block;
+          }
+        }
 				input[type="date"] {
 					height: 38px;
 					padding: 6px 10px;
@@ -828,15 +836,6 @@ $color-text: #83878C;
 		}
 	}
 
-	@media (min-width: 550px) {
-		h4 {
-			font-size: 2.4rem;
-		}
-		h5 {
-			font-size: 1.8rem;
-		}
-	}
-
 	.amount {
 		@include flexbox;
 		margin-top: 10px;
@@ -931,6 +930,16 @@ $color-text: #83878C;
 
   .date-quote {
     margin-top: 20px;
+  }
+
+  .heading {
+    @include flexbox;
+    @include flex-wrap(wrap);
+
+    > div {
+      @include flex(1);
+      margin: 20px 10px;
+    }
   }
 
   .invoice-item, .invoice-tax, .amount-due {

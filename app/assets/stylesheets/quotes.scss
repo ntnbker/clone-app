@@ -451,7 +451,7 @@ form#new_quote {
 		border: none !important;
 	}
 	.color-grey {
-		color: #b3b3b3;
+		color: $color-text;
 	}
 	.font-bold {
 		font-weight: bold;
@@ -468,7 +468,7 @@ form#new_quote {
 }
 
 .send-email-quote {
-	color: #404040;
+	color: $color-text;
 	font-size: 14px;
 	p {
 		margin-bottom: 0;
