@@ -10,14 +10,12 @@ class ServiceFeeWorker
     run_date = InvoiceScheduler.first.run_date
 
     # Run code if the date is 3 days more than when the last time this code ran 
-    a = 5
-    b = 6
-    if a > b
+    
+    if Date.today < run_date
       #do nothing 
     else
-      
       SystemInvoicesServiceFeeCollectionWorker.perform_async
-      #UploadedInvoicesServiceFeeCollectionWorker.perform_async
+      UploadedInvoicesServiceFeeCollectionWorker.perform_async
       schedule.update_attribute(:run_date, run_date + 7.days)
     end 
   end
@@ -25,3 +23,6 @@ class ServiceFeeWorker
 
   
 end 
+
+
+

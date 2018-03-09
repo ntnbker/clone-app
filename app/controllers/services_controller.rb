@@ -38,21 +38,51 @@ class ServicesController < ApplicationController
 
     
     Trady.find_by(id: params[:trady_id])
+     
+     
+    #service_array = params[:skill][:skill]
     
-    service_array = params[:skill][:skill]
+
+
     trady_id = params[:trady_id]
+   
+    # if service_array[0] == '' && service_array.count == 1 
+    #   flash[:danger] = "Please choose at least one service from the list below, thank you."
+    #   redirect_to services_path
+    # else
+    #   service_array.each do |skill|
+    #     if skill != ''
+    #       Skill.create(skill:skill, trady_id:trady_id)
+    #     end 
+    #   end
+    #   redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
+    # end  
+
     
-    if service_array[0] == '' && service_array.count == 1 
-      flash[:danger] = "Please choose at least one service from the list below, thank you."
-      redirect_to services_path
-    else
+
+    if params[:skill]
+      service_array = params[:skill][:skill]
+
       service_array.each do |skill|
-        if skill != ''
-          Skill.create(skill:skill, trady_id:trady_id)
-        end 
+        Skill.create(skill:skill, trady_id:trady_id)
       end
       redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
-    end  
+    else
+      # flash[:danger] = "Please choose at least one service from the list below, thank you."
+      # redirect_to services_path(maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], trady_company_id:params[:trady_company_id])
+      @maintenance_request_id = params[:maintenance_request_id] 
+      @trady_id = params[:trady_id] 
+      @trady_company_id = params[:trady_company_id]
+
+      respond_to do |format|
+        format.json {render :json=>{errors:"Please choose at least one service from the list below, thank you."}}
+        format.html{render :index}
+      end
+    end 
+
+
+
+
   end
 
 
@@ -70,7 +100,7 @@ class ServicesController < ApplicationController
 
   def update
     #the id in the params is the same ID as the trady so dont get confused
-    binding.pry
+    
     trady = Trady.find_by(id:params[:trady_id])
     if params[:skill]
       new_skills= params[:skill][:skill]
@@ -89,12 +119,21 @@ class ServicesController < ApplicationController
       added_skills.each do |skill|
        Skill.create(trady_id:trady.id, skill:skill)
       end 
+      
       redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
 
     else
       @skills = Trady.find_by(id:params[:trady_id]).skills.as_json
-      flash[:danger] = "Please choose at least one service from the list below, thank you."
-      redirect_to edit_services_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id]) 
+      @maintenance_request_id = params[:maintenance_request_id] 
+      @trady_id = params[:trady_id] 
+      @trady_company_id = params[:trady_company_id]
+      
+      respond_to do |format|
+        format.json {render :json=>{errors:"Please choose at least one service from the list below, thank you."}}
+        format.html{render :edit_services}
+      end
+    end 
+      #redirect_to edit_services_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id]) 
     end 
 
   end
