@@ -157,7 +157,7 @@ var QuoteSubmit = React.createClass({
 
   render() {
     const {
-      trady_company, landlord, agency, edit_quote_path, quote, quote_items, quote_email_path
+      trady_company, landlord, agency, edit_quote_path, quote, quote_items, quote_email_path, property
     } = this.props;
     const {invoices} = this.state;
 
