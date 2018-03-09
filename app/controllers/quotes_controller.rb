@@ -254,6 +254,7 @@ class QuotesController < ApplicationController
       #   @maintenance_request.action_status.update_columns(agent_status:"Quote Received", action_category: "Awaiting Action")
       # end 
     elsif @quote.delivery_status ==true
+      flash[:success] = "You have already submitted that quote, thank you for your time."
       redirect_to trady_maintenance_requests_path
     end 
       

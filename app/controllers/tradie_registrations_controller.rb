@@ -8,10 +8,39 @@ class TradieRegistrationsController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+
+
+    @user = User.find_by(email:params[:user][:trady_attributes][:email].gsub(/\s+/, "").downcase)
+    #params[:trady][:email].gsub(/\s+/, "").downcase!
     
-    maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
-    existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
+    
+    
+
+
+    if @user
+      existing_role = @user.get_role("Trady").present?
+    end 
+    
+    if @user && existing_role == false
+      
+      role = Role.new(user_id:@user.id)
+      @trady = Trady.create(trady_params)
+      @trady.update_attribute(:user_id, @user.id)
+      @trady.roles << role
+      role.save
+     
+     
+    elsif @user && existing_role == true
+
+      flash[:error] = "Sorry you are already a tradie on the system. Please log in"
+      redirect_to root_path
+
+    ####NEW USER STARTS HERE
+    else 
+      @user = User.new(user_params)
+    
+      maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
+      existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
     
       if @user.save
 
@@ -36,7 +65,53 @@ class TradieRegistrationsController < ApplicationController
           format.html {render :new}
         end
       end   
+    end 
+ 
+    #TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id)
+
+
+
+
+
+
+
+
+
+
+
+    # @user = User.new(user_params)
+    
+    # maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
+    # existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
+    
+    #   if @user.save
+
+    #     role = Role.new(user_id:@user.id)
+    #     trady = @user.trady
+    #     trady.roles << role
+    #     role.save
+
+
+
+
+    #     flash[:success] = "Please continue below"
+    #     if existing_company
+    #       redirect_to edit_register_tradie_company_path(id:existing_company.id, maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+    #     else
+    #       redirect_to register_trady_company_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+    #     end 
+    #   else
+
+    #     respond_to do |format|
+    #       format.json {render :json=>{errors: @user.errors.to_hash(true).as_json}}
+    #       format.html {render :new}
+    #     end
+    #   end   
      
+
+
+
+
         
   end
 
@@ -119,3 +194,104 @@ class TradieRegistrationsController < ApplicationController
   end
 
 end 
+
+
+
+
+
+
+
+
+#     @user = User.find_by(email:params[:user][:trady_attributes][:email].gsub(/\s+/, "").downcase)
+#     #params[:trady][:email].gsub(/\s+/, "").downcase!
+    
+    
+    
+
+
+#     if @user
+#       existing_role = @user.get_role("Trady").present?
+#     end 
+    
+#     if @user && existing_role == false
+      
+#       role = Role.new(user_id:@user.id)
+#       @trady = Trady.create(trady_params)
+#       @trady.update_attribute(:user_id, @user.id)
+#       @trady.roles << role
+#       role.save
+     
+     
+#     elsif @user && existing_role == true
+
+#       flash[:error] = "Sorry you are already a tradie on the system. Please log in"
+#       redirect_to root_path
+
+# ####NEW USER STARTS HERE
+#     else 
+#       @user = User.new(user_params)
+    
+#       maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
+#       existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
+    
+#       if @user.save
+
+#         role = Role.new(user_id:@user.id)
+#         trady = @user.trady
+#         trady.roles << role
+#         role.save
+
+
+
+
+#         flash[:success] = "Please continue below"
+#         if existing_company
+#           redirect_to edit_register_tradie_company_path(id:existing_company.id, maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+#         else
+#           redirect_to register_trady_company_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+#         end 
+#       else
+
+#         respond_to do |format|
+#           format.json {render :json=>{errors: @user.errors.to_hash(true).as_json}}
+#           format.html {render :new}
+#         end
+#       end   
+#     end 
+ 
+#     #TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
