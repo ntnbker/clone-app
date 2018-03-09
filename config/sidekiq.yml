@@ -4,7 +4,3 @@ production:
   :concurrency: 61
 :queues:
   - default
-:schedule:
-  service_fee_queue:
-    every: ['2m', first_in: '120s']
-    class: ServiceFeeWorker
