@@ -294,5 +294,8 @@ Rails.application.routes.draw do
   resources :agency_payment_registrations, only:[:new, :create]
 
 
+  post "just_find_me_one" => "jfmo_tradies#find_tradies"
+
+
 
  end
