@@ -296,11 +296,35 @@ var QuoteFields = React.createClass({
         <input type="text" className="m-t-lg text-center" defaultValue={quote && quote.trady_quote_reference} name="quote[trady_quote_reference]" placeholder="Quote Reference Number"/>
         </div>
 
-        <label className="quote_tax">
+        {/*<label className="quote_tax">
         <input type="hidden" value="0" name="quote[tax]" />
         <input type="checkbox" value="1" defaultChecked={trady_company.gst_registration ? trady_company.gst_registration : false} name="quote[tax]" id="quote_tax" />
         Check box when price includes GST.
         </label>
+        */}
+        <div className="quote-tax text-center">
+          Does price include GST?
+          <div className="radio-same-address">
+            <label className="radio-option">Yes
+              <input
+                type="radio"
+                name="quote[tax]"
+                value="1"
+                defaultChecked={!!trady_company.gst_registration}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+            <label className="radio-option">No
+              <input
+                type="radio"
+                name="quote[tax]"
+                value="0"
+                defaultChecked={!trady_company.gst_registration}
+              />
+              <span className="radio-checkmark"></span>
+            </label>
+          </div>
+        </div>
         <hr />
         <div className="qf-button">
           <button

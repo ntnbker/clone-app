@@ -100,7 +100,7 @@ var QuoteSentSuccess = React.createClass({
     const {trady_maintenance_requests_path, quote_options_path} = this.props;
 
     return (
-      <div className="invoice-form success">
+      <form className="invoice-form success">
         <h5>
           Your Quote has been sent
         </h5>
@@ -135,7 +135,7 @@ var QuoteSentSuccess = React.createClass({
             Create Another Quote
           </button>
         </div>
-      </div>
+      </form>
     )
   }
 })
@@ -236,7 +236,7 @@ var QuoteSubmit = React.createClass({
               </p>
             </div>
           </div>
-          <div className="invoices-data">
+          <div className="quote-data">
             <div className="quote-items">
               <div className="title">
                 Description
