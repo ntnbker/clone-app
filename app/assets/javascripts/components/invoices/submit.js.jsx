@@ -329,56 +329,58 @@ var InvoiceSubmit = React.createClass({
     return (
       <div id="submit-invoice" className="container invoice-form well">
         <div className="send-email-quote">
-          <div className="header-quote">
-            <div className="logo">
-              <a href="/"></a>
-                <img src="/assets/logo.png" class="img" alt="logo"/>
+          <div className="heading">
+            <div className="header-quote">
+              <div className="logo">
+                <a href="/"></a>
+                  <img src="/assets/logo.png" class="img" alt="logo"/>
+              </div>
+              <div className="info-quote">
+                <p>
+                  <span>
+                    {trady_company.company_name}
+                  </span>
+                </p>
+                <p>
+                  <span>
+                    {trady_company.abn}
+                  </span>
+                </p>
+                <p>
+                  <span>
+                    {trady_company.address}
+                  </span>
+                </p>
+                <p>
+                  <span>
+                    {trady_company.mobile_number}
+                  </span>
+                </p>
+                <p>
+                  <span>
+                    {trady_company.email}
+                  </span>
+                </p>
+              </div>
             </div>
-            <div className="info-quote">
-              <p>
-                <span>
-                  {trady_company.company_name}
-                </span>
-              </p>
-              <p>
-                <span>
-                  {trady_company.abn}
-                </span>
-              </p>
-              <p>
-                <span>
-                  {trady_company.address}
-                </span>
-              </p>
-              <p>
-                <span>
-                  {trady_company.mobile_number}
-                </span>
-              </p>
-              <p>
-                <span>
-                  {trady_company.email}
-                </span>
-              </p>
+            <div className="quote">
+              <div className="info-agency">
+                <p className="color-grey bill-to">
+                  Bill To
+                </p>
+                <p className="text-capitalize">
+                  {landlord ? landlord.name : null}
+                </p>
+                <p>
+                  {agency ? "C/-" + agency.company_name : null}
+                </p>
+                <p>
+                  {agency ? agency.address : null}
+                </p>
+              </div>
             </div>
           </div>
           <hr/>
-          <div className="quote">
-            <div className="info-agency">
-              <p className="color-grey bill-to">
-                Bill To
-              </p>
-              <p className="text-capitalize">
-                {landlord ? landlord.name : null}
-              </p>
-              <p>
-                {agency ? "C/-" + agency.company_name : null}
-              </p>
-              <p>
-                {agency ? agency.address : null}
-              </p>
-            </div>
-          </div>
           {invoices.map((invoice) => (
             <div className="invoices-data">
               <div className="date-quote">

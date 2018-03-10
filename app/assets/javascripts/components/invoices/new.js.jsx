@@ -578,7 +578,7 @@ var InvoiceField = React.createClass({
     var service_fee = (invoice && invoice.amount) ? (invoice.amount * SERVICE_FEE) : 0;
     var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
     var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
-    const tax = (invoice && invoice.tax) ? invoice.tax : false;
+    const tax = (invoice && invoice.tax != null) ? invoice.tax : true;
     return {
       invoice_total,
       service_fee: service_fee || 0,
@@ -748,30 +748,45 @@ var InvoiceField = React.createClass({
         <div className="field">
           <div>
             <p> Items Total: </p>
-            <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+            </div>
           </div>
           <div>
             <p> Tax Total: </p>
-            <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
+            </div>
           </div>
           <div>
             <p> Invoice Total: </p>
-            <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
-          </div>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
+            </div>
+        </div>
           <div>
             <p> Invoice Due On: </p>
-            <input
-              type="date"
-              defaultValue={invoice && invoice.due_date || this.nowDate()}
-              ref={e => this.date = e}
-              onChange={() => this.setState({errorDate: ''})}
-              name={'ledger[invoices_attributes][' + x + '][due_date]'}
-              style={errorDate ? {borderColor: 'red'} : {}}
-            />
+            <div className="input-dolar">
+              <span className="dolar"></span>
+              <input
+                type="date"
+                defaultValue={invoice && invoice.due_date || this.nowDate()}
+                ref={e => this.date = e}
+                onChange={() => this.setState({errorDate: ''})}
+                name={'ledger[invoices_attributes][' + x + '][due_date]'}
+                style={errorDate ? {borderColor: 'red'} : {}}
+              />
+            </div>
           </div>
           <div>
             <p> Service Fee: </p>
-            <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+            </div>
           </div>
           <p id="errorbox" className="text-center error">{errorDate || ''}</p>
         </div>

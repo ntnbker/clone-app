@@ -1145,13 +1145,13 @@ var ModalRequestModal = React.createClass({
 								}
 							</div>
 							<div className="modal-footer">
-								{ false && this.props.keyTitle === 'request-quote' &&
+								{ this.props.keyTitle === 'request-quote' &&
 									<div className="row">
 										<button
 											className="btn btn-primary cancel"
-											onClick={() => this.props.viewQuote('justSendMeOne')}
+											onClick={() => this.props.viewItem('justFindMeOne')}
 										>
-											JUST SEND ME ONE!
+											JUST FIND ME ONE!
 										</button>
 									</div>
 								}
@@ -1344,6 +1344,7 @@ var MaintenanceRequest = React.createClass({
 			case 'addTenant':
 			case 'approveJob':
 			case 'duplicateMR':
+			case 'justFindMeOne':
 			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest': {
 				this.onModalWith(key);
@@ -2400,6 +2401,46 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	justFindMeOne: function() {
+		const self = this;
+		const {maintenance_request} = this.state;
+		const params = {
+			maintenance_request_id: maintenance_request.id,
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/just_find_me_one',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				if (res.message) {
+					self.setState({
+						notification: {
+							title: "Just Find Me One",
+							content: res.message,
+							bgClass: "bg-success",
+						},
+					});
+					self.onModalWith('notification');
+				}
+				else {
+					self.isClose();
+				}
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Just Find Me One",
+					content: err.responseText,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -2611,7 +2652,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalRequestModal
 							close={this.isClose}
-							keyTitle="sen-work-order"
+							keyTitle="sent-work-order"
 							tradies={this.state.tradies}
 							requestQuote={this.sendWorkOrder}
 							maintenance_request={this.state.maintenance_request}
@@ -2875,6 +2916,16 @@ var MaintenanceRequest = React.createClass({
 							content={`Are you sure you want to remove ${this.state.tenant.name} from this maintenance request`}
 							confirm={this.removeTenant}
 							close={() => this.viewItem('showTenants')}
+						/>
+					)
+
+				case 'justFindMeOne':
+					return (
+						<ModalConfirmAnyThing
+							title="Just Find Me One"
+							content={'Our network of qualified tradies will send in for your job as soon as possible'}
+							confirm={this.justFindMeOne}
+							close={() => this.onModalWith('requestQuote')}
 						/>
 					)
 
