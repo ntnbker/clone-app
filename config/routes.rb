@@ -293,9 +293,11 @@ Rails.application.routes.draw do
   ###########################################################
   resources :agency_payment_registrations, only:[:new, :create]
 
-
+  ###########################################################
+  ##########JFMO RESOURCES/ROUTES#####
+  ###########################################################
   post "just_find_me_one" => "jfmo_tradies#find_tradies"
-
+  resources :recruits, only: [:new, :create, :index, :show]
 
 
  end

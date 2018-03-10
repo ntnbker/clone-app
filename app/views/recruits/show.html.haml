@@ -1,0 +1,9 @@
+
+Maintenance Description:
+=@maintenance_request.maintenance_description
+
+= bootstrap_form_tag url: '/recruits', method: :post do |f| 
+  = f.email_field :email, placeholder: 'name@example.com'
+  =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+  =f.hidden_field :jfmo_request_id, value:@jfmo_request.id 
+  = f.submit "Send To Tradie" 

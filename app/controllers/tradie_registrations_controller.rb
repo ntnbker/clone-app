@@ -12,10 +12,12 @@ class TradieRegistrationsController < ApplicationController
 
     @user = User.find_by(email:params[:user][:trady_attributes][:email].gsub(/\s+/, "").downcase)
     #params[:trady][:email].gsub(/\s+/, "").downcase!
+    maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
+    existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
     
     
     
-
+    
 
     if @user
       existing_role = @user.get_role("Trady").present?
@@ -24,26 +26,31 @@ class TradieRegistrationsController < ApplicationController
     if @user && existing_role == false
       
       role = Role.new(user_id:@user.id)
-      @trady = Trady.create(trady_params)
+      @trady = Trady.create(user_id:@user.id, email:params[:user][:trady_attributes][:email], mobile:params[:user][:trady_attributes][:mobile], name:params[:user][:trady_attributes][:name], company_name:params[:user][:trady_attributes][:company_name], jfmo_participant:params[:user][:trady_attributes][:jfmo_participant])
       @trady.update_attribute(:user_id, @user.id)
       @trady.roles << role
       role.save
-     
+      flash[:success] = "Please continue below"
+        if existing_company
+          redirect_to edit_register_tradie_company_path(id:existing_company.id, maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+        else
+          redirect_to register_trady_company_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+        end
      
     elsif @user && existing_role == true
 
-      flash[:error] = "Sorry you are already a tradie on the system. Please log in"
-      redirect_to root_path
+      flash[:success] = "It looks like you are already a tradie on the system. Please continue with the sign up process to be part of the MaintenanceApp network and grow your business."
+      redirect_to register_trady_company_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
 
     ####NEW USER STARTS HERE
     else 
       @user = User.new(user_params)
     
-      maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
-      existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
+      # maintenance_request_id = params[:user][:trady_attributes][:maintenance_request_id]
+      # existing_company = TradyCompany.find_by(id:params[:user][:trady_attributes][:trady_company_id])
     
       if @user.save
-
+        @user.update_attribute(:password_set, true)
         role = Role.new(user_id:@user.id)
         trady = @user.trady
         trady.roles << role
@@ -140,7 +147,12 @@ class TradieRegistrationsController < ApplicationController
 
     if @trady_company.save
       trady = Trady.find_by(id:params[:trady_company][:trady_id])
-      trady.update_attribute(:trady_company_id, @trady_company.id)
+
+      if trady.trady_company
+        #do nothing
+      else 
+        trady.update_attribute(:trady_company_id, @trady_company.id)
+      end 
       flash[:success] = "Please continue below"
       redirect_to services_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)
       #redirect_to new_tradie_payment_path(maintenance_request_id:maintenance_request_id, trady_id:params[:trady_company][:trady_id], trady_company_id:@trady_company.id)

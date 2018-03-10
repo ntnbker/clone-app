@@ -1,0 +1,10 @@
+
+%br
+-@jfmo_requests.each do |request|
+  %div
+    Just Find Me One Request Number:
+    =request.id
+    %br
+    Maintenance Description:
+    =request.maintenance_request.maintenance_description
+    =link_to "Show", recruit_path(request)

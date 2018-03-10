@@ -1,8 +1,6 @@
 class JfmoTradiesController < ApplicationController
   def find_tradies
     
-
-  
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
     
     service = maintenance_request.service_type
@@ -37,10 +35,16 @@ class JfmoTradiesController < ApplicationController
         end 
 
       else
-        FindTradieEmailWorker.perform_async(maintenance_request.id)
-        JfmoRequest.create(maintenance_request_id:maintenance_request.id)
-        Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
-        message = "Thank you, we will find qualified tradies from our network."
+        jfmo_request = JfmoRequest.find_by(maintenance_request_id:maintenance_request.id)
+        if jfmo_request
+          #do nothing
+          message = "Thank you, we will find qualified tradies from our network."
+        else
+          FindTradieEmailWorker.perform_async(maintenance_request.id)
+          JfmoRequest.create(maintenance_request_id:maintenance_request.id)
+          Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
+          message = "Thank you, we will find qualified tradies from our network."
+        end 
       end 
       maintenance_request.update_attribute(:jfmo_status, "Active")
       
@@ -51,4 +55,7 @@ class JfmoTradiesController < ApplicationController
     end 
 
   end
+
+
+
 end 

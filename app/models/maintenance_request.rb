@@ -35,6 +35,7 @@ class MaintenanceRequest < ApplicationRecord
   has_many :quote_requests
   has_many :logs
   has_many :images, inverse_of: :maintenance_request
+  has_one :jfmo_request
   validates_presence_of :name,:email, :mobile, if: :perform_contact_maintenance_request_validation
   validates_presence_of :maintenance_description, :service_type 
   # validates_presence_of :real_estate_office, :agent_email, :agent_name, :agent_mobile, :person_in_charge, if: :perform_realestate_validations
