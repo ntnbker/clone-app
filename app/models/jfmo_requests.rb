@@ -1,0 +1,4 @@
+class JfmoRequest < ApplicationRecord
+  
+
+end 

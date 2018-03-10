@@ -2923,7 +2923,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalConfirmAnyThing
 							title="Just Find Me One"
-							content={'Our network of qualified tradies will send in for your job as soon as possible'}
+							content={'Would you like us to find a competative quote from a qualified tradie to complete the work? and recieve compensation from our rebate program once the work has been done?'}
 							confirm={this.justFindMeOne}
 							close={() => this.onModalWith('requestQuote')}
 						/>

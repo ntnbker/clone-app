@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180307062733) do
+ActiveRecord::Schema.define(version: 20180310090928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -272,6 +272,11 @@ ActiveRecord::Schema.define(version: 20180307062733) do
     t.decimal  "service_fee",             precision: 8, scale: 2
   end
 
+  create_table "jfmo_requests", force: :cascade do |t|
+    t.integer "maintenance_request_id"
+    t.integer "tradie_participation_amount", default: 0
+  end
+
   create_table "landlords", force: :cascade do |t|
     t.string   "name"
     t.string   "email"
@@ -321,8 +326,8 @@ ActiveRecord::Schema.define(version: 20180307062733) do
     t.text     "maintenance_description"
     t.integer  "image"
     t.text     "availability"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.integer  "agent_id"
     t.integer  "tenant_id"
     t.string   "person_in_charge"
@@ -339,6 +344,7 @@ ActiveRecord::Schema.define(version: 20180307062733) do
     t.string   "work_order_number"
     t.string   "agency_business_name"
     t.text     "preapproved_note"
+    t.string   "jfmo_status",             default: "Passive"
   end
 
   create_table "messages", force: :cascade do |t|
