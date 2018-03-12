@@ -159,6 +159,7 @@ $color-red: #e34f4f;
 					@include justify-content(center);
 					@include align-items(center);
 					border: 3px solid rgba(255, 255, 255, 0.5);
+					background-color: rgba(90, 86, 86, 0.4);
 					border-radius: 0 0 12px 12px;
 					border-top: none;
 					width: calc(100% - 6px);
@@ -250,7 +251,11 @@ $color-red: #e34f4f;
 							}
 							.login-error {
 								margin-bottom: 20px;
-								color: $color-red;
+							  color: #a94442;
+							  border-color: #ebccd1;
+							  border-radius: 4px;
+							  padding: 5px 10px;
+							  background-color: #f2dede;
 							}
 							span {
 								@include flexbox;

@@ -25,7 +25,7 @@ var HomeComponent = React.createClass({
   chooseUser(user) {
     if (this.state.active !== user && !this.state.signed) {
       const step = user === 'Tenant' || user === 'Trady' ? 'home' : 'login';
-      this.setState({active: user, step, rolePicked: user});
+      this.setState({active: user, step, rolePicked: user, error: ''});
     }
   },
 
@@ -56,6 +56,8 @@ var HomeComponent = React.createClass({
       success: function(res) {
         if (res && res.error) {
           self.setState({ error: res.error });
+          // Need to remove the password if there is an error
+          self.password.value = '';
         }
       },
       error: function(err) {
@@ -138,6 +140,11 @@ var HomeComponent = React.createClass({
           <img src="/icons/location.png" alt=""/>
           <h4>Track maintenance status</h4>
           <p>Automated reminders unsure jobs are progressing</p>
+        </div>
+        <div className="three columns">
+          <img src="/icons/notes.png" alt=""/>
+          <h4>Increase revenue</h4>
+          <p>Increase renvenue through out rebate program and Increased productivity</p>
         </div>
 
       </div>
@@ -345,7 +352,7 @@ var HomeComponent = React.createClass({
               ref={(elem) => this.password = elem}
             />
           </div>
-          <div className="login-error">{error}</div>
+          { error && <div className="login-error">{error}</div> }
         </div>
         <div className="button-group login-button">
           { showBackButton &&
