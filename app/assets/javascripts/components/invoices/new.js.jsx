@@ -328,7 +328,7 @@ var AdditionalInvoice = React.createClass({
         }
       </fieldset>
       <div className="text-center">
-        <button type="button" className="button-remove button-primary red" onClick={this.removeField}> Remove </button>
+        <button type="button" className="button-remove button-primary" onClick={this.removeField}> Remove </button>
       </div>
     </div>
   }
@@ -404,7 +404,7 @@ var InvoiceItemField = React.createClass({
         if (!this.amount.value) {
           filterError['amount'] = amountError[0];
         }
-        else if (!/^\d+$/.test(this.amount.value)) {
+        else if (!/^\d+$/.test(this.amount.value) || this.amount.value === '0') {
           filterError['amount'] = amountError.reverse()[0];
         }
       }
@@ -414,7 +414,7 @@ var InvoiceItemField = React.createClass({
         if (!this.hours.value) {
           filterError['hours'] = hoursError[0];
         }
-        else if (!/^\d+$/.test(this.hours.value)) {
+        else if (!/^\d+$/.test(this.hours.value) || this.hours.value === '0') {
           filterError['hours'] = hoursError.reverse()[0];
         }
       }
@@ -491,7 +491,7 @@ var InvoiceItemField = React.createClass({
   },
 
   renderError: function(error) {
-      return <p id="errorbox" className="error">{error || ''}</p>;
+      return <div id="errorbox" className="error">{error || ''}</div>;
   },
 
   render: function() {
@@ -566,7 +566,7 @@ var InvoiceItemField = React.createClass({
                 ref={e => this.hours = e}
                 placeholder="Number of Hours"
                 defaultValue={numofhours > 0 ? numofhours : 0}
-                className={"text-center " + (hours_input && 'hour') + (errors['hours'] ? 'border_on_error ' : '')}
+                className={"text-center " + (hours_input && 'hour ') + (errors['hours'] ? 'border_on_error ' : '')}
                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
               />
               :
@@ -583,7 +583,7 @@ var InvoiceItemField = React.createClass({
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
         {FieldId}
       </fieldset>
-      { position > 1 && <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> X </button>}
+      { position > 1 && <button type="button" className="button-remove button-primary" onClick={() => this.removeField(this.props.x)}> X </button>}
     </div>
   }
 });
@@ -812,7 +812,7 @@ var InvoiceField = React.createClass({
         {hasInvoice && <input type="hidden" value={x} name={'ledger[invoices_attributes][' + x + '][id]'}/>}
       </fieldset>
       <div className="text-center">
-        <button type="button" className="button-remove button-primary red" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
+        <button type="button" className="button-remove button-primary" onClick={() => this.removeField(this.props.x)}> Remove Invoice </button>
       </div>
     </div>
   }
