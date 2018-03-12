@@ -67991,29 +67991,28 @@ var AgencyAttributes = React.createClass({
         }
       });
       this.setState({
-        mailing: event.target.value,
+        mailing_address: event.target.value,
         address: event.target.value
       });
     }
   },
 
-  onSame: function () {
+  onSame: function (isSame) {
+    if (!this.state.same_address) {
+      this.removeError({ target: { id: 'mailing_address' } });
+      this.setState({ mailing_address: this.state.address });
+    }
+
     this.setState({
-      same_address: !this.state.same_address,
-      mailing: ''
-    });
-    this.removeError({
-      target: {
-        id: this.generateAtt('id', 'mailing_address')
-      }
+      same_address: isSame
     });
   },
 
   onChangeMailing: function (e) {
     this.setState({
-      mailing: e.target.value
+      mailing_address: e.target.value
     });
-    this.props.removeError(e);
+    this.removeError(e);
   },
 
   removeError: function (_ref) {
@@ -68041,7 +68040,7 @@ var AgencyAttributes = React.createClass({
 
     $.ajax({
       type: agency ? 'PUT' : 'POST',
-      url: agency ? '/agencies/' + agency.id : '/agencies',
+      url: agency ? '/update_agency_registration' : '/agencies',
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -68059,6 +68058,8 @@ var AgencyAttributes = React.createClass({
   },
 
   render: function () {
+    var _this = this;
+
     var agency = this.props.agency;
     var errors = this.state.errors;
 
@@ -68070,13 +68071,9 @@ var AgencyAttributes = React.createClass({
       'form',
       { className: 'fields agencies', id: 'agencies', onSubmit: this.onSubmit },
       React.createElement(
-        'h4',
-        { className: 'text-center' },
-        ' Agency Information '
-      ),
-      React.createElement(
         'div',
         { className: 'agency-name' },
+        agency ? React.createElement('input', { type: 'hidden', name: 'agency[id]', value: agency.id }) : '',
         React.createElement(
           'div',
           { className: 'company-name' },
@@ -68122,31 +68119,66 @@ var AgencyAttributes = React.createClass({
       ),
       React.createElement(
         'div',
-        { className: 'field text-center' },
+        { className: 'form-group text-center' },
+        'Is your mailing address the same as the address above?',
         React.createElement(
-          'label',
-          null,
+          'div',
+          { className: 'radio-same-address' },
+          React.createElement(
+            'label',
+            { className: 'radio-option' },
+            'Yes',
+            React.createElement('input', {
+              type: 'radio',
+              name: 'same-address',
+              value: true,
+              onChange: function () {
+                return _this.onSame(true);
+              },
+              defaultChecked: !!this.state.same_address
+            }),
+            React.createElement('span', { className: 'radio-checkmark' })
+          ),
+          React.createElement(
+            'label',
+            { className: 'radio-option' },
+            'No',
+            React.createElement('input', {
+              type: 'radio',
+              name: 'same-address',
+              onChange: function () {
+                return _this.onSame(false);
+              },
+              value: false,
+              defaultChecked: !this.state.same_address
+            }),
+            React.createElement('span', { className: 'radio-checkmark' })
+          )
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'form-group' },
+        React.createElement(
+          'div',
+          { className: 'col-sm-10' },
           React.createElement('input', {
-            value: '1',
-            type: 'checkbox',
-            onChange: this.onSame,
-            id: generateAtt("id", "mailing_same_address"),
-            name: generateAtt("name", "mailing_same_address")
+            type: 'text',
+            id: 'mailing_address',
+            placeholder: 'Mailing Address',
+            readOnly: this.state.same_address,
+            defaultValue: agency && agency.mailing_address,
+            value: this.state.mailing_address,
+            onChange: this.onChangeMailing,
+            id: generateAtt("id", "mailing_address"),
+            name: generateAtt("name", "mailing_address"),
+            ref: function (ref) {
+              return _this.mailing_address = ref;
+            },
+            className: errors[generateAtt("id", "mailing_address")] ? ' has-error' : ''
           }),
-          'Mailing address same as billing address'
-        ),
-        React.createElement('input', {
-          type: 'text',
-          placeholder: 'Mailing address',
-          defaultValue: agency && agency.mailing_address,
-          readonly: this.state.same_address,
-          id: generateAtt("id", "mailing_address"),
-          name: generateAtt("name", "mailing_address"),
-          className: errors[generateAtt("id", "mailing_address")] ? ' has-error' : '',
-          onChange: this.onChangeMailing,
-          value: !!this.state.same_address ? this.state.address : this.state.mailing
-        }),
-        renderError(errors[generateAtt("id", "mailing_address")])
+          renderError(errors[generateAtt("id", "mailing_address")])
+        )
       ),
       React.createElement(
         'div',
@@ -68182,13 +68214,15 @@ var AgencyAttributes = React.createClass({
       ),
       React.createElement(
         'div',
-        { className: 'agency-button' },
-        React.createElement('input', {
-          type: 'submit',
-          name: 'commit',
-          value: 'Sign Up',
-          className: 'button-primary agency-button-submit green'
-        })
+        { className: 'user-button' },
+        React.createElement(
+          'button',
+          {
+            type: 'submit',
+            className: 'button-submit green'
+          },
+          'Next'
+        )
       )
     );
   }
@@ -68343,21 +68377,25 @@ var Agency = React.createClass({
       React.createElement(
         'div',
         { className: 'user-button' },
-        React.createElement('input', {
-          type: 'button',
-          name: 'commit',
-          value: 'Back',
-          onClick: function () {
-            location.href = edit_agency_registration_path;
+        false && React.createElement(
+          'button',
+          {
+            type: 'button',
+            onClick: function () {
+              location.href = edit_agency_registration_path;
+            },
+            className: 'button-back green'
           },
-          className: 'button-primary button-user-back green'
-        }),
-        React.createElement('input', {
-          type: 'submit',
-          name: 'commit',
-          value: 'Sign Up',
-          className: 'button-primary button-user-submit green'
-        })
+          'Back'
+        ),
+        React.createElement(
+          'button',
+          {
+            type: 'submit',
+            className: 'button-submit green'
+          },
+          'Next'
+        )
       ),
       false && React.createElement(
         'div',
@@ -68771,6 +68809,348 @@ var AgencyAdminNew = React.createClass({
           )
         )
       )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AgencyPayment = React.createClass({
+  displayName: 'AgencyPayment',
+
+  getInitialState: function () {
+    return {
+      card: null,
+      errors: {}
+    };
+  },
+
+  stripeTokenHandler: function (token) {
+    // Insert the token ID into the form so it gets submitted to the server
+    var self = this;
+    var params = {
+      stripeToken: token.id,
+      name: this.name.value,
+      agency_id: this.props.agency_id
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/agency_payment_registrations',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {
+        return self.setState({ errors: err });
+      }
+    });
+  },
+
+  componentDidMount: function () {
+    var elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    // (Note that this demo uses a wider set of styles than the guide below.)
+    var style = {
+      base: {
+        color: '#32325d',
+        lineHeight: '18px',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#aab7c4'
+        }
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
+      }
+    };
+
+    if ($(window).width() <= 380) {
+      style.base.fontSize = '13px';
+    }
+
+    // Create an instance of the card Element.
+    var card = elements.create('card', { style: style });
+
+    // Add an instance of the card Element into the `card-element` <div>.
+    card.mount('#card-element');
+
+    // Handle real-time validation errors from the card Element.
+    card.addEventListener('change', function (event) {
+      var displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }
+    });
+
+    this.setState({ card: card });
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+
+    var card = this.state.card;
+
+    var self = this;
+
+    stripe.createToken(card).then(function (result) {
+      if (result.error) {
+        // Inform the user if there was an error.
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+      } else {
+        // Send the token to your server.
+        self.stripeTokenHandler(result.token);
+      }
+    });
+
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    return React.createElement(
+      'form',
+      { id: 'payment-form', onSubmit: this.submit },
+      React.createElement(
+        'div',
+        { className: 'plan' },
+        React.createElement(
+          'div',
+          { className: 'plan-title' },
+          React.createElement(
+            'p',
+            { className: 'plan-name' },
+            'Business Plan'
+          ),
+          React.createElement(
+            'p',
+            { className: 'plan-price' },
+            '$49.99/month'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'plan-description' },
+          React.createElement(
+            'p',
+            { className: 'plan-name' },
+            'Features'
+          ),
+          React.createElement(
+            'div',
+            { className: 'plan-note' },
+            React.createElement(
+              'p',
+              { className: 'row' },
+              '- Unlimited maintenance request logging'
+            ),
+            React.createElement(
+              'p',
+              { className: 'row' },
+              '- Unlimited agents'
+            ),
+            React.createElement(
+              'p',
+              { className: 'row' },
+              '- Access to rebate program'
+            )
+          )
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'your-name' },
+        React.createElement('input', { type: 'text',
+          className: 'name',
+          placeholder: 'Name as it appears on the card',
+          ref: function (elem) {
+            return _this.name = elem;
+          }
+        })
+      ),
+      React.createElement(
+        'div',
+        { 'class': 'form-row' },
+        React.createElement('div', { id: 'card-element' }),
+        React.createElement('div', { id: 'card-errors', role: 'alert' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'buttons text-center' },
+        React.createElement(
+          'button',
+          null,
+          'Submit'
+        )
+      )
+    );
+  }
+});
+var AgencyRegistrationForm = React.createClass({
+  displayName: 'AgencyRegistrationForm',
+
+  getInitialState: function () {
+    var step = this.props.step;
+
+    var level = ['agency-company', 'agency-admin', 'terms-and-conditions', 'payment'];
+
+    return {
+      errors: {},
+      step: step,
+      level: (level.indexOf(step) || 0) + 1
+    };
+  },
+
+  componentDidMount: function () {
+    $('body > div.layout').css('background-color', 'white');
+  },
+
+  labelTitle: function (number, text, isPass) {
+    return React.createElement(
+      'div',
+      { className: "registration-label-title " + (isPass && 'pass' || '') },
+      React.createElement(
+        'div',
+        { className: "step-status " + (isPass && 'pass' || '') },
+        number > 1 && React.createElement('div', { className: 'separate-line ' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-number' },
+        number
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-text' },
+        text
+      )
+    );
+  },
+
+  generateStepTitle: function () {
+    var level = this.state.level;
+
+    return React.createElement(
+      'div',
+      { className: 'registration-title' },
+      this.labelTitle(1, React.createElement(
+        'p',
+        null,
+        'Company',
+        React.createElement('br', null),
+        'Registration'
+      ), level > 0),
+      this.labelTitle(2, React.createElement(
+        'p',
+        null,
+        'Agency Admin',
+        React.createElement('br', null),
+        'Registration'
+      ), level > 1),
+      this.labelTitle(4, React.createElement(
+        'p',
+        null,
+        'Terms',
+        React.createElement('br', null),
+        '&',
+        React.createElement('br', null),
+        'Conditions'
+      ), level > 2),
+      this.labelTitle(3, React.createElement(
+        'p',
+        null,
+        'Payment',
+        React.createElement('br', null),
+        'Information'
+      ), level > 3)
+    );
+  },
+
+  generateTitle: function () {
+    var step = this.state.step;
+
+    switch (step) {
+      case 'agency-company':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Company Registration'
+        );
+      case 'agency-admin':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Agency Admin Registration'
+        );
+      case 'terms-and-conditions':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Terms & Conditions'
+        );
+      case 'payment':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Payment Information'
+        );
+    }
+  },
+
+  generateForm: function () {
+    var step = this.state.step;
+
+    switch (step) {
+      case 'agency-company':
+        return React.createElement(AgencyAttributes, this.props);
+      case 'agency-admin':
+        return React.createElement(Agency, this.props);
+      case 'terms-and-conditions':
+        return React.createElement(AgencyTermsAndConditions, this.props);
+      case 'payment':
+        return React.createElement(AgencyPayment, this.props);
+    }
+  },
+
+  componentWillUnmount: function () {
+    $('body > div.layout').css('background-color', '#F4F8FB');
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'registration', className: 'agency-registration' },
+      this.generateStepTitle(),
+      this.generateTitle(),
+      this.generateForm()
     );
   }
 });
@@ -70813,6 +71193,164 @@ var ModalConfirmCancelTrady = React.createClass({
 });
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Payment = React.createClass({
+  displayName: 'Payment',
+
+  getInitialState: function () {
+    return {
+      card: null,
+      errors: {}
+    };
+  },
+
+  stripeTokenHandler: function (token) {
+    var _this = this;
+
+    // Insert the token ID into the form so it gets submitted to the server
+    var self = this;
+    var params = {
+      stripeToken: token.id,
+      terms_and_conditions: this.elem && this.elem.value
+    };
+
+    this.props.submit(params, function (errors) {
+      // Do something
+      _this.setState({ errors: errors });
+    });
+  },
+
+  termsAndConditionsText: function () {
+    return React.createElement(TermsAndConditions, null);
+  },
+
+  componentDidMount: function () {
+    var elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    // (Note that this demo uses a wider set of styles than the guide below.)
+    var style = {
+      base: {
+        color: '#32325d',
+        lineHeight: '18px',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#aab7c4'
+        }
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
+      }
+    };
+
+    // Create an instance of the card Element.
+    var card = elements.create('card', { style: style });
+
+    // Add an instance of the card Element into the `card-element` <div>.
+    card.mount('#card-element');
+
+    // Handle real-time validation errors from the card Element.
+    card.addEventListener('change', function (event) {
+      var displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }
+    });
+
+    this.setState({ card: card });
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    debugger;
+    var card = this.state.card;
+
+    var self = this;
+
+    stripe.createToken(card).then(function (result) {
+      if (result.error) {
+        // Inform the user if there was an error.
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+      } else {
+        // Send the token to your server.
+        self.stripeTokenHandler(result.token);
+      }
+    });
+
+    return false;
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    return React.createElement(
+      'form',
+      { id: 'payment-form', onSubmit: this.submit },
+      this.termsAndConditionsText(),
+      React.createElement(
+        'div',
+        { className: 'agree_checkbox' },
+        React.createElement(
+          'label',
+          null,
+          React.createElement('input', {
+            type: 'checkbox',
+            id: 'terms_and_conditions',
+            ref: function (elem) {
+              return _this2.terms_and_conditions = elem;
+            },
+            onChange: this.removeError
+          }),
+          'Agree To Terms and Conditions'
+        )
+      ),
+      this.renderError(this.state.errors.terms_and_conditions),
+      React.createElement(
+        'div',
+        { 'class': 'form-row' },
+        React.createElement(
+          'label',
+          { 'for': 'card-element', className: 'text-center card-title' },
+          'Credit or debit card'
+        ),
+        React.createElement('div', { id: 'card-element' }),
+        React.createElement('div', { id: 'card-errors', role: 'alert' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'buttons text-center' },
+        React.createElement(
+          'button',
+          null,
+          'Submit Payment'
+        )
+      )
+    );
+  }
+});
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 AvatarImage = React.createClass({
   displayName: 'AvatarImage',
 
@@ -71572,8 +72110,285 @@ var ModalInstruction = React.createClass({
 		);
 	}
 });
+var InvoiceOption = React.createClass({
+  displayName: "InvoiceOption",
+
+  getInitialState: function () {
+    return {};
+  },
+
+  render: function () {
+    var _props = this.props;
+    var upload_invoice_pdf = _props.upload_invoice_pdf;
+    var create_invoice = _props.create_invoice;
+    var trady_maintenance_request_path = _props.trady_maintenance_request_path;
+
+    return React.createElement(
+      "div",
+      { className: "container invoice-form" },
+      React.createElement(
+        "h4",
+        { className: "text-center" },
+        " Please Choose One"
+      ),
+      React.createElement(
+        "div",
+        { className: "invoice-options" },
+        React.createElement(
+          "div",
+          { className: "invoice-option" },
+          React.createElement(
+            "div",
+            { className: "option-content" },
+            React.createElement(
+              "h4",
+              { className: "optionheader text-center" },
+              "Option 1"
+            ),
+            React.createElement(
+              "p",
+              { className: "optiondescription" },
+              "If you use your own app to make invoices such as Xero. Please Click ",
+              React.createElement(
+                "b",
+                null,
+                "Upload Invoice"
+              ),
+              " to upload a PDF of your invoice."
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "invoice-button center-invoice-button" },
+            React.createElement(
+              "button",
+              {
+                type: "button",
+                className: "button-submit",
+                onClick: function () {
+                  return location.href = upload_invoice_pdf;
+                }
+              },
+              "Upload Invoice"
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "invoice-option" },
+          React.createElement(
+            "div",
+            { className: "option-content" },
+            React.createElement(
+              "h4",
+              { className: "optionheader text-center" },
+              "Option 2"
+            ),
+            React.createElement(
+              "p",
+              { className: "optiondescription" },
+              "Easily make invoices using our platform by clicking the ",
+              React.createElement(
+                "b",
+                null,
+                "Create Invoice"
+              ),
+              " button below."
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "invoice-button center-invoice-button" },
+            React.createElement(
+              "button",
+              {
+                type: "button",
+                className: "button-submit",
+                onClick: function () {
+                  return location.href = create_invoice;
+                }
+              },
+              "Create Invoice"
+            )
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "invoice-button center-invoice-button" },
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "button-back",
+            onClick: function () {
+              return location.href = trady_maintenance_request_path;
+            }
+          },
+          "Back"
+        )
+      )
+    );
+  }
+});
+/*<h1 className="text-center">
+ Invoices
+</h1>*/;
+var CreateInvoiceForm = React.createClass({
+	displayName: 'CreateInvoiceForm',
+
+	getInitialState: function () {
+		var step = this.props.step;
+
+		var level = ['invoice-option', 'trady-company', 'make-invoice', 'submit-invoice', 'success'];
+
+		return {
+			errors: {},
+			step: step,
+			level: (level.indexOf(step) || 0) + 1
+		};
+	},
+
+	componentDidMount: function () {
+		$('body > div.layout').css('background-color', 'white');
+	},
+
+	labelTitle: function (number, text, isPass) {
+		return React.createElement(
+			'div',
+			{ className: "registration-label-title " + (isPass && 'pass' || '') },
+			React.createElement(
+				'div',
+				{ className: "step-status " + (isPass && 'pass' || '') },
+				number > 1 && React.createElement('div', { className: 'separate-line ' })
+			),
+			React.createElement(
+				'div',
+				{ className: 'step-number' },
+				number
+			),
+			React.createElement(
+				'div',
+				{ className: 'step-text' },
+				text
+			)
+		);
+	},
+
+	generateStepTitle: function () {
+		var level = this.state.level;
+
+		return React.createElement(
+			'div',
+			{ className: 'registration-title' },
+			this.labelTitle(1, React.createElement(
+				'p',
+				null,
+				'Invoice',
+				React.createElement('br', null),
+				'Option'
+			), level > 0),
+			this.labelTitle(2, React.createElement(
+				'p',
+				null,
+				'Trady',
+				React.createElement('br', null),
+				'Company',
+				React.createElement('br', null),
+				'Infomation'
+			), level > 1),
+			this.labelTitle(3, React.createElement(
+				'p',
+				null,
+				'Create/Upload',
+				React.createElement('br', null),
+				'Invoice'
+			), level > 2),
+			this.labelTitle(4, React.createElement(
+				'p',
+				null,
+				'Submit',
+				React.createElement('br', null),
+				'Invoice'
+			), level > 3)
+		);
+	},
+
+	generateTitle: function () {
+		var step = this.state.step;
+
+		switch (step) {
+			case 'invoice-option':
+				return React.createElement(
+					'h5',
+					{ className: 'step-title text-center' },
+					'Invoice Option'
+				);
+			case 'trady-company':
+				return React.createElement(
+					'h5',
+					{ className: 'step-title text-center' },
+					'Trady Company Information'
+				);
+			case 'make-invoice':
+				return React.createElement(
+					'h5',
+					{ className: 'step-title text-center' },
+					'Create/Upload Invoice'
+				);
+			case 'submit-invoice':
+				return React.createElement(
+					'h5',
+					{ className: 'step-title text-center' },
+					'Submit Invoice'
+				);
+			case 'success':
+				return React.createElement(
+					'h5',
+					{ className: 'step-title text-center' },
+					'Success'
+				);
+		}
+	},
+
+	generateForm: function () {
+		var step = this.state.step;
+		var _props = this.props;
+		var isEdit = _props.is_edit;
+		var isUpload = _props.is_upload;
+
+		switch (step) {
+			case 'invoice-option':
+				return React.createElement(InvoiceOption, this.props);
+			case 'trady-company':
+				return isEdit ? React.createElement(EditTradyCompany, this.props) : React.createElement(AddTradycompany, this.props);
+			case 'make-invoice':
+				return isUpload ? React.createElement(AddInvoicePDF, this.props) : React.createElement(InvoiceFields, this.props);
+			case 'submit-invoice':
+				return isUpload ? React.createElement(SubmitInvoicePDF, this.props) : React.createElement(InvoiceSubmit, this.props);
+			case 'success':
+				return React.createElement(InvoiceSentSuccess, this.props);
+		}
+	},
+
+	componentWillUnmount: function () {
+		$('body > div.layout').css('background-color', '#F4F8FB');
+	},
+
+	render: function () {
+		return React.createElement(
+			'div',
+			{ id: 'registration', className: 'agency-registration' },
+			this.generateStepTitle(),
+			this.generateTitle(),
+			this.generateForm()
+		);
+	}
+
+});
+
 var Invoices = React.createClass({
-	displayName: "Invoices",
+	displayName: 'Invoices',
 
 	getInitialState: function () {
 		return {
@@ -71614,124 +72429,124 @@ var Invoices = React.createClass({
 		}).length !== 0;
 
 		return React.createElement(
-			"div",
-			{ className: "quotes invoices m-t-xl", id: "invoices" },
+			'div',
+			{ className: 'quotes invoices m-t-xl', id: 'invoices' },
 			React.createElement(
-				"p",
+				'p',
 				null,
 				React.createElement(
-					"span",
-					{ className: "index index-invoice" },
+					'span',
+					{ className: 'index index-invoice' },
 					invoices.length
 				),
-				"Invoice",
+				'Invoice',
 				React.createElement(
-					"button",
-					{ type: "button", className: "btn btn-mark-as-paid", onClick: function (item) {
+					'button',
+					{ type: 'button', className: 'btn btn-mark-as-paid', onClick: function (item) {
 							return self.props.paymentReminder({});
 						} },
-					"Remind Agent of Payment"
+					'Remind Agent of Payment'
 				)
 			),
 			React.createElement(
-				"div",
-				{ className: "list-quote" },
+				'div',
+				{ className: 'list-quote' },
 				invoices.map(function (invoice, index) {
 					return React.createElement(
-						"div",
-						{ className: "item-quote row", key: index },
+						'div',
+						{ className: 'item-quote row', key: index },
 						React.createElement(
-							"div",
-							{ className: "user seven columns" },
+							'div',
+							{ className: 'user seven columns' },
 							React.createElement(
-								"span",
-								{ className: "index quote index-invoice" },
+								'span',
+								{ className: 'index quote index-invoice' },
 								index + 1
 							),
 							React.createElement(
-								"span",
-								{ className: "icon-user" },
+								'span',
+								{ className: 'icon-user' },
 								React.createElement(AvatarImage, { imageUri: pictures[index] })
 							),
 							React.createElement(
-								"div",
-								{ className: "info" },
+								'div',
+								{ className: 'info' },
 								React.createElement(
-									"div",
-									{ className: "name" },
+									'div',
+									{ className: 'name' },
 									React.createElement(
-										"span",
+										'span',
 										null,
 										invoice.trady.name
 									),
 									invoice.paid == false ? React.createElement(
-										"button",
+										'button',
 										{ className: 'button-default status Declined' },
 										React.createElement(
-											"span",
+											'span',
 											null,
-											"Outstanding Payment"
+											'Outstanding Payment'
 										)
 									) : React.createElement(
-										"button",
+										'button',
 										{ className: 'button-default status Approved' },
 										React.createElement(
-											"span",
+											'span',
 											null,
-											"Paid"
+											'Paid'
 										)
 									)
 								),
 								React.createElement(
-									"p",
-									{ className: "description" },
+									'p',
+									{ className: 'description' },
 									invoice.trady && invoice.trady.company_name,
-									React.createElement("br", null),
+									React.createElement('br', null),
 									invoice.trady && invoice.trady.trady_company ? invoice.trady.trady_company.trading_name : null
 								)
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "actions five columns content" },
+							'div',
+							{ className: 'actions five columns content' },
 							React.createElement(
-								"p",
+								'p',
 								null,
-								"Total: ",
+								'Total: ',
 								React.createElement(
-									"span",
+									'span',
 									null,
-									"$",
+									'$',
 									invoice.amount
 								)
 							),
 							React.createElement(
-								"p",
+								'p',
 								null,
-								"DUE: ",
+								'DUE: ',
 								React.createElement(
-									"span",
+									'span',
 									null,
 									moment(invoice.due_date).format('LL')
 								)
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "actions-quote" },
+							'div',
+							{ className: 'actions-quote' },
 							(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false) && React.createElement(
-								"button",
-								{ type: "button", className: "btn btn-mark-as-paid", onClick: function (item) {
+								'button',
+								{ type: 'button', className: 'btn btn-mark-as-paid', onClick: function (item) {
 										return self.props.markAsPaid(invoice);
 									} },
-								"Payment Scheduled"
+								'Payment Scheduled'
 							),
 							React.createElement(
-								"button",
-								{ type: "button", className: "btn btn-view", onClick: function (key, item) {
+								'button',
+								{ type: 'button', className: 'btn btn-view', onClick: function (key, item) {
 										return self.props.viewInvoice('viewInvoice', invoice);
 									} },
-								"View Invoice"
+								'View Invoice'
 							)
 						)
 					);
@@ -71740,11 +72555,69 @@ var Invoices = React.createClass({
 		);
 	}
 });
+var InvoiceSentSuccess = React.createClass({
+  displayName: "InvoiceSentSuccess",
+
+  getInitialState: function () {
+    return {};
+  },
+
+  render: function () {
+    var trady_maintenance_requests_path = this.props.trady_maintenance_requests_path;
+
+    return React.createElement(
+      "div",
+      { className: "invoice-form success" },
+      React.createElement(
+        "h5",
+        null,
+        "Your invoice has been sent"
+      ),
+      React.createElement(
+        "div",
+        { className: "mark" },
+        React.createElement("i", { className: "fa fa-check" })
+      ),
+      React.createElement(
+        "p",
+        { className: "text-center" },
+        "Congratulations!"
+      ),
+      React.createElement(
+        "p",
+        { className: "text-center" },
+        "Your invoice has been successfully created and sent to the Agent."
+      ),
+      React.createElement(
+        "p",
+        { className: "text-center" },
+        "To Head Home click the button below."
+      ),
+      React.createElement(
+        "div",
+        { className: "center-invoice-button invoice-button" },
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "button-primary green",
+            onClick: function () {
+              return location.href = trady_maintenance_requests_path;
+            }
+          },
+          "Home"
+        )
+      )
+    );
+  }
+});
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var SERVICE_FEE = 0.15;
 
 var StepProgress = React.createClass({
   displayName: "StepProgress",
@@ -72503,13 +73376,15 @@ var InvoiceField = React.createClass({
   getInitialState: function () {
     var invoice = this.props.content;
     var invoice_total = invoice && invoice.amount ? invoice.amount : 0;
+    var service_fee = invoice && invoice.amount ? invoice.amount * SERVICE_FEE : 0;
     var items_total = invoice && invoice.amount ? invoice_total / 1.1 : 0;
     var tax_total = invoice && invoice.amount ? invoice_total - invoice_total / 1.1 : 0;
-    var tax = invoice && invoice.tax ? invoice.tax : false;
+    var tax = invoice && invoice.tax != null ? invoice.tax : true;
     return {
       invoice_total: invoice_total,
-      items_total: tax ? items_total : invoice_total,
+      service_fee: service_fee || 0,
       tax: tax,
+      items_total: tax ? items_total : invoice_total,
       tax_total: tax ? tax_total : 0,
       remove: false,
       errorDate: '',
@@ -72580,17 +73455,16 @@ var InvoiceField = React.createClass({
     this.setState({
       items_total: this.state.tax ? invoice_total / 1.1 : invoice_total,
       invoice_total: invoice_total,
-      tax_total: this.state.tax ? invoice_total - invoice_total / 1.1 : 0
+      tax_total: this.state.tax ? invoice_total - invoice_total / 1.1 : 0,
+      service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0
     });
   },
-  onTax: function () {
+  onTax: function (isTax) {
     var invoice_total = this.state.invoice_total;
-    var tax = this.state.tax;
     this.setState({
-      tax: !tax,
-      invoice_total: invoice_total,
-      items_total: !tax ? invoice_total / 1.1 : invoice_total,
-      tax_total: !tax ? invoice_total - invoice_total / 1.1 : 0
+      tax: isTax,
+      items_total: isTax ? invoice_total / 1.1 : invoice_total,
+      tax_total: isTax ? invoice_total - invoice_total / 1.1 : 0
     });
   },
   render: function () {
@@ -72610,6 +73484,7 @@ var InvoiceField = React.createClass({
     var invoice_total = _state6.invoice_total;
     var tax_total = _state6.tax_total;
     var items_total = _state6.items_total;
+    var service_fee = _state6.service_fee;
 
     var invoice_items = content && content.invoice_items || null;
     var hasInvoice = content && Object.keys(content).length > 0 && !content.isCoppy;
@@ -72676,10 +73551,43 @@ var InvoiceField = React.createClass({
             errorReference || ''
           ),
           React.createElement(
-            "label",
-            null,
-            React.createElement("input", { type: "checkbox", value: tax, checked: tax, name: 'ledger[invoices_attributes][' + x + '][tax]', onChange: this.onTax }),
-            "Total Includes GST"
+            "div",
+            { className: "form-group text-center" },
+            "Total Includes GST",
+            React.createElement(
+              "div",
+              { className: "radio-same-address" },
+              React.createElement(
+                "label",
+                { className: "radio-option" },
+                "Yes",
+                React.createElement("input", {
+                  type: "radio",
+                  name: 'ledger[invoices_attributes][' + x + '][tax]',
+                  value: true,
+                  onChange: function () {
+                    return _this4.onTax(true);
+                  },
+                  defaultChecked: !!tax
+                }),
+                React.createElement("span", { className: "radio-checkmark" })
+              ),
+              React.createElement(
+                "label",
+                { className: "radio-option" },
+                "No",
+                React.createElement("input", {
+                  type: "radio",
+                  name: 'ledger[invoices_attributes][' + x + '][tax]',
+                  value: false,
+                  onChange: function () {
+                    return _this4.onTax(false);
+                  },
+                  defaultChecked: !tax
+                }),
+                React.createElement("span", { className: "radio-checkmark" })
+              )
+            )
           )
         ),
         React.createElement("hr", null),
@@ -72692,9 +73600,18 @@ var InvoiceField = React.createClass({
             React.createElement(
               "p",
               null,
-              " Invoice Total : "
+              " Items Total: "
             ),
-            React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: invoice_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][invoice_total]' })
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: items_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
+            )
           ),
           React.createElement(
             "div",
@@ -72702,9 +73619,18 @@ var InvoiceField = React.createClass({
             React.createElement(
               "p",
               null,
-              " Tax Total : "
+              " Tax Total: "
             ),
-            React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: tax_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][tax_total]' })
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: tax_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][tax_total]' })
+            )
           ),
           React.createElement(
             "div",
@@ -72712,9 +73638,18 @@ var InvoiceField = React.createClass({
             React.createElement(
               "p",
               null,
-              " Items Total : "
+              " Invoice Total: "
             ),
-            React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: items_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: invoice_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][invoice_total]' })
+            )
           ),
           React.createElement(
             "div",
@@ -72722,26 +73657,50 @@ var InvoiceField = React.createClass({
             React.createElement(
               "p",
               null,
-              " Invoice Due On : "
+              " Invoice Due On: "
             ),
-            React.createElement("input", {
-              type: "date",
-              defaultValue: invoice && invoice.due_date || this.nowDate(),
-              ref: function (e) {
-                return _this4.date = e;
-              },
-              onChange: function () {
-                return _this4.setState({ errorDate: '' });
-              },
-              name: 'ledger[invoices_attributes][' + x + '][due_date]',
-              style: errorDate ? { borderColor: 'red' } : {}
-            })
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement("span", { className: "dolar" }),
+              React.createElement("input", {
+                type: "date",
+                defaultValue: invoice && invoice.due_date || this.nowDate(),
+                ref: function (e) {
+                  return _this4.date = e;
+                },
+                onChange: function () {
+                  return _this4.setState({ errorDate: '' });
+                },
+                name: 'ledger[invoices_attributes][' + x + '][due_date]',
+                style: errorDate ? { borderColor: 'red' } : {}
+              })
+            )
+          ),
+          React.createElement(
+            "div",
+            null,
+            React.createElement(
+              "p",
+              null,
+              " Service Fee: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "Service Fee", value: service_fee, name: 'ledger[invoices_attributes][' + x + '][service_fee]' })
+            )
+          ),
+          React.createElement(
+            "p",
+            { id: "errorbox", className: "text-center error" },
+            errorDate || ''
           )
-        ),
-        React.createElement(
-          "p",
-          { id: "errorbox", className: "error" },
-          errorDate || ''
         ),
         React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + x + '][_destroy]' }),
         hasInvoice && React.createElement("input", { type: "hidden", value: x, name: 'ledger[invoices_attributes][' + x + '][id]' })
@@ -72874,7 +73833,7 @@ var InvoiceFields = React.createClass({
       contentType: false,
       data: FD,
       success: function (res) {
-        if (res.errors) {
+        if (res && res.errors) {
           self.setState({ errors: res.errors });
         }
       },
@@ -72949,11 +73908,17 @@ var InvoiceFields = React.createClass({
       }),
       React.createElement(
         "div",
-        { className: "qf-button text-center", style: { marginBottom: '50px' } },
+        { className: "qf-button text-center" },
         React.createElement(
-          "a",
-          { className: "button button-primary left", href: this.props.backlink },
-          " Back "
+          "button",
+          {
+            type: "button",
+            className: "button button-back",
+            onClick: function () {
+              return location.href = _this5.props.backlink;
+            }
+          },
+          "Back"
         ),
         React.createElement(
           "button",
@@ -72996,7 +73961,7 @@ var TradyCompanyInvoice = React.createClass({
       React.createElement("input", { type: "text", placeholder: "Trading Name", defaultValue: this.props.trading_name,
         name: "trady_company[trading_name]",
         id: "trady_company_trading_name", required: true }),
-      React.createElement("input", { type: "text", placeholder: "Abn", defaultValue: this.props.abn,
+      React.createElement("input", { type: "text", placeholder: "Australian Business Number", defaultValue: this.props.abn,
         name: "trady_company[abn]",
         id: "trady_company_abn", required: true }),
       React.createElement(
@@ -73058,6 +74023,10 @@ var TradyCompanyInvoice = React.createClass({
       mailing: this.state.address });
   }
 });
+/*<label>
+ <input type="checkbox" value={tax} checked={tax} name={'ledger[invoices_attributes][' + x + '][tax]'} onChange={this.onTax}/>
+ Total Includes GST
+</label>*/;
 var DetailInvoice = React.createClass({
 	displayName: "DetailInvoice",
 
@@ -73133,7 +74102,7 @@ var DetailInvoice = React.createClass({
 							React.createElement(
 								"td",
 								{ className: "invoice-rate" },
-								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.amount ? "$" + item.amount : 'N/A'
+								item.pricing_type == "Fixed Cost" ? 'N/A' : !!item.amount ? "$ " + item.amount : 'N/A'
 							),
 							React.createElement(
 								"td",
@@ -73155,7 +74124,7 @@ var DetailInvoice = React.createClass({
 						React.createElement(
 							"td",
 							{ className: "border-none p-b-n" },
-							"$",
+							"$ ",
 							(subTotal - invoice.gst_amount).toFixed(2)
 						)
 					),
@@ -73171,7 +74140,7 @@ var DetailInvoice = React.createClass({
 						React.createElement(
 							"td",
 							{ className: "p-t-n" },
-							"$",
+							"$ ",
 							invoice.gst_amount.toFixed(2)
 						)
 					),
@@ -73187,8 +74156,24 @@ var DetailInvoice = React.createClass({
 						React.createElement(
 							"td",
 							{ className: "font-bold border-none" },
-							"$",
+							"$ ",
 							subTotal.toFixed(2)
+						)
+					),
+					React.createElement(
+						"tr",
+						null,
+						React.createElement("td", { colSpan: "3", className: "border-none" }),
+						React.createElement(
+							"td",
+							{ className: "text-right font-bold border-none" },
+							"Service Fee: (AUD)"
+						),
+						React.createElement(
+							"td",
+							{ className: "font-bold border-none" },
+							"$ ",
+							invoice.service_fee
 						)
 					)
 				)
@@ -73627,6 +74612,733 @@ var ModalViewInvoice = React.createClass({
 		);
 	}
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var ModalAddPayment = React.createClass({
+  displayName: 'ModalAddPayment',
+
+  getInitialState: function () {
+    return {
+      card: null,
+      errors: {}
+    };
+  },
+
+  stripeTokenHandler: function (token) {
+    var _this = this;
+
+    // Insert the token ID into the form so it gets submitted to the server
+    var self = this;
+    var params = {
+      stripeToken: token.id,
+      name: this.name.value
+    };
+
+    this.props.submit(params, function (errors) {
+      // Do something
+      _this.setState({ errors: errors });
+    });
+  },
+
+  componentDidMount: function () {
+    var elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    // (Note that this demo uses a wider set of styles than the guide below.)
+    var style = {
+      base: {
+        color: '#32325d',
+        lineHeight: '18px',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#aab7c4'
+        }
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
+      }
+    };
+
+    if ($(window).width() <= 380) {
+      style.base.fontSize = '13px';
+    }
+
+    // Create an instance of the card Element.
+    var card = elements.create('card', { style: style });
+
+    // Add an instance of the card Element into the `card-element` <div>.
+    card.mount('#card-element');
+
+    // Handle real-time validation errors from the card Element.
+    card.addEventListener('change', function (event) {
+      var displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }
+    });
+
+    this.setState({ card: card });
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+
+    var card = this.state.card;
+
+    var self = this;
+
+    stripe.createToken(card).then(function (result) {
+      if (result.error) {
+        // Inform the user if there was an error.
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+      } else {
+        // Send the token to your server.
+        self.stripeTokenHandler(result.token);
+      }
+    });
+
+    return false;
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'close',
+                'data-dismiss': 'modal',
+                'aria-label': 'Close',
+                onClick: this.props.close
+              },
+              React.createElement(
+                'span',
+                { 'aria-hidden': 'true' },
+                '×'
+              )
+            ),
+            React.createElement(
+              'h4',
+              { className: 'modal-title text-center' },
+              'MaintenanceApp Payment Setup'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'div',
+              { className: 'description-data' },
+              React.createElement(
+                'p',
+                { className: 'row' },
+                'Please note that you will not be charged now. MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.'
+              ),
+              React.createElement(
+                'p',
+                { className: 'row' },
+                'Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'your-name' },
+              React.createElement('input', { type: 'text',
+                className: 'name',
+                placeholder: 'Name as it appears on the card',
+                ref: function (elem) {
+                  return _this2.name = elem;
+                }
+              })
+            ),
+            React.createElement(
+              'form',
+              { id: 'payment-form', onSubmit: this.submit },
+              React.createElement(
+                'div',
+                { 'class': 'form-row' },
+                React.createElement('label', { 'for': 'card-element', className: 'text-center card-title' }),
+                React.createElement('div', { id: 'card-element' }),
+                React.createElement('div', { id: 'card-errors', role: 'alert' })
+              ),
+              React.createElement(
+                'div',
+                { className: 'buttons text-center' },
+                React.createElement(
+                  'button',
+                  null,
+                  'Submit Payment Information'
+                )
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+var InvoiceSubmit = React.createClass({
+  displayName: 'InvoiceSubmit',
+
+  getInitialState: function () {
+    this.getInvoices(this.props);
+    return {
+      invoices: [],
+      trady: this.props.trady || {},
+      customer: this.props.customer
+    };
+  },
+
+  getInvoices: function (props) {
+    var authenticity_token = props.authenticity_token;
+
+    var path = '/invoices.json?' + location.href.replace(/.*\/invoices\?/, '');
+    var self = this;
+
+    $.ajax({
+      type: 'GET',
+      url: path,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+      },
+      success: function (res) {
+        if (res) {
+          return self.setState({ invoices: res.ledger.invoices });
+        }
+      },
+      error: function (error) {
+        return self.setState({ errors: errors });
+      }
+    });
+  },
+
+  isClose: function () {
+    if (this.state.isModal == true) {
+      this.setState({
+        isModal: false,
+        modal: ""
+      });
+    }
+
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    if (div) {
+      div.parentNode.removeChild(div);
+    }
+  },
+
+  openModal: function (modal) {
+    this.setState({
+      isModal: true,
+      modal: modal
+    });
+  },
+
+  renderModal: function () {
+    if (this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if (div.length === 0) {
+        div = document.createElement('div');
+        div.className = "modal-backdrop in";
+        body.appendChild(div);
+      }
+
+      switch (this.state.modal) {
+        case 'payment':
+          return React.createElement(ModalAddPayment, {
+            close: this.isClose,
+            submit: this.submitPayment
+          });
+
+        case 'message':
+          return React.createElement(ModalNotification, {
+            close: this.isClose,
+            bgClass: this.state.notification.bgClass,
+            title: this.state.notification.title,
+            content: this.state.notification.content
+          });
+
+        default:
+          return '';
+      }
+    }
+  },
+
+  submitPayment: function (params, callback) {
+    var self = this;
+    params.trady_id = this.props.trady_id;
+    params.trady_company_id = this.props.trady_company_id;
+    params.maintenance_request_id = this.props.maintenance_request_id;
+
+    $.ajax({
+      type: 'POST',
+      url: '/trady_payment_registrations',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          customer: res.customer,
+          notification: {
+            title: "Credit or debit card",
+            content: res.message,
+            bgClass: "bg-success"
+          }
+        });
+      },
+      error: function (err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Credit or debit card",
+            content: err.responseText,
+            bgClass: "bg-error"
+          }
+        });
+      }
+    });
+  },
+
+  submitInvoice: function () {
+    var _state = this.state;
+    var customer = _state.customer;
+    var trady = _state.trady;
+
+    if (customer && !customer.customer_id && trady.jfmo_participant) {
+      return this.openModal('payment');
+    }
+
+    var self = this;
+    var params = {
+      trady_id: this.props.trady_id,
+      maintenance_request_id: this.props.maintenance_request_id,
+      ledger_id: this.props.ledger.id
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/send_invoice',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+      },
+      error: function (err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Submit Invoice",
+            content: err.responseText,
+            bgClass: "bg-error"
+          }
+        });
+      }
+    });
+  },
+
+  render: function () {
+    var _this3 = this;
+
+    var _props = this.props;
+    var trady_company = _props.trady_company;
+    var ledger = _props.ledger;
+    var landlord = _props.landlord;
+    var agency = _props.agency;
+    var edit_invoice_path = _props.edit_invoice_path;
+    var invoices = this.state.invoices;
+
+    return React.createElement(
+      'div',
+      { id: 'submit-invoice', className: 'container invoice-form well' },
+      React.createElement(
+        'div',
+        { className: 'send-email-quote' },
+        React.createElement(
+          'div',
+          { className: 'heading' },
+          React.createElement(
+            'div',
+            { className: 'header-quote' },
+            React.createElement(
+              'div',
+              { className: 'logo' },
+              React.createElement('a', { href: '/' }),
+              React.createElement('img', { src: '/assets/logo.png', 'class': 'img', alt: 'logo' })
+            ),
+            React.createElement(
+              'div',
+              { className: 'info-quote' },
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  null,
+                  trady_company.company_name
+                )
+              ),
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  null,
+                  trady_company.abn
+                )
+              ),
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  null,
+                  trady_company.address
+                )
+              ),
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  null,
+                  trady_company.mobile_number
+                )
+              ),
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  null,
+                  trady_company.email
+                )
+              )
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'quote' },
+            React.createElement(
+              'div',
+              { className: 'info-agency' },
+              React.createElement(
+                'p',
+                { className: 'color-grey bill-to' },
+                'Bill To'
+              ),
+              React.createElement(
+                'p',
+                { className: 'text-capitalize' },
+                landlord ? landlord.name : null
+              ),
+              React.createElement(
+                'p',
+                null,
+                agency ? "C/-" + agency.company_name : null
+              ),
+              React.createElement(
+                'p',
+                null,
+                agency ? agency.address : null
+              )
+            )
+          )
+        ),
+        React.createElement('hr', null),
+        invoices.map(function (invoice) {
+          return React.createElement(
+            'div',
+            { className: 'invoices-data' },
+            React.createElement(
+              'div',
+              { className: 'date-quote' },
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  { className: 'font-bold ' },
+                  'Invoice Number:'
+                ),
+                React.createElement(
+                  'span',
+                  null,
+                  invoice.invoice_number
+                )
+              ),
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  { className: 'font-bold' },
+                  'Invoice Date:'
+                ),
+                React.createElement(
+                  'span',
+                  null,
+                  moment(invoice.created_at).format('lll')
+                )
+              ),
+              React.createElement(
+                'p',
+                null,
+                React.createElement(
+                  'span',
+                  { className: 'font-bold' },
+                  'Payment Date:'
+                ),
+                React.createElement(
+                  'span',
+                  null,
+                  moment(invoice.due_date).format('lll')
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'quote-items' },
+              React.createElement(
+                'div',
+                { className: 'title' },
+                'Description'
+              ),
+              React.createElement(
+                'div',
+                { className: 'title' },
+                'Pricing'
+              ),
+              React.createElement(
+                'div',
+                { className: 'title' },
+                'Hours'
+              ),
+              React.createElement(
+                'div',
+                { className: 'title text-right' },
+                'Rate'
+              ),
+              React.createElement(
+                'div',
+                { className: 'title text-right' },
+                'Amount'
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'quote-item-data' },
+              invoice.invoice_items.map(function (invoiceItem) {
+                return React.createElement(
+                  'div',
+                  { className: 'invoice-item' },
+                  React.createElement(
+                    'div',
+                    null,
+                    invoiceItem.item_description
+                  ),
+                  React.createElement(
+                    'div',
+                    null,
+                    invoiceItem.pricing_type
+                  ),
+                  React.createElement(
+                    'div',
+                    null,
+                    invoiceItem.pricing_type == 'Fixed Cost' ? "N/A" : invoiceItem.pricing_type == 'Hourly' ? invoiceItem.hours : ''
+                  ),
+                  React.createElement(
+                    'div',
+                    { className: 'text-right' },
+                    invoiceItem.amount
+                  ),
+                  React.createElement(
+                    'div',
+                    { className: 'text-right' },
+                    invoiceItem.pricing_type == 'Fixed Cost' ? '$ ' + invoiceItem.amount : invoiceItem.pricing_type == 'Hourly' ? '$ ' + invoiceItem.amount * invoiceItem.hours : ''
+                  )
+                );
+              }),
+              invoice.tax == true && React.createElement(
+                'div',
+                { className: 'invoice-tax' },
+                React.createElement('div', { className: 'border-none p-b-n flex-5' }),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right font-bold p-b-n flex-2' },
+                  'Subtotal:'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right p-b-n font-bold flex-1' },
+                  '$ ' + (invoice.amount - invoice.gst_amount).toFixed(2)
+                )
+              ),
+              invoice.tax == true && React.createElement(
+                'div',
+                { className: 'invoice-tax' },
+                React.createElement('div', { className: 'p-t-n flex-5' }),
+                React.createElement(
+                  'div',
+                  { className: 'text-right p-t-n flex-2' },
+                  'GST 10:'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'text-right p-t-n' },
+                  '$ ' + invoice.gst_amount.toFixed(2)
+                )
+              ),
+              invoice.tax == false && React.createElement(
+                'div',
+                { className: 'invoice-tax' },
+                React.createElement('div', { className: 'border-none p-b-n flex-5' }),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right font-bold p-b-n flex-2' },
+                  'Subtotal:'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right p-b-n' },
+                  '$ ' + invoice.amount.toFixed(2)
+                )
+              ),
+              invoice.tax == false && React.createElement(
+                'div',
+                { className: 'invoice-tax' },
+                React.createElement('div', { className: 'p-t-n flex-5' }),
+                React.createElement(
+                  'div',
+                  { className: 'text-right p-t-n flex-2' },
+                  'GST 10:'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'text-right p-t-n' },
+                  '$ 0.00'
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'amount-due' },
+                React.createElement('div', { className: 'border-none flex-5' }),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right font-bold flex-2' },
+                  'Amount Due (AUD):'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right font-bold flex-1' },
+                  '$ ' + invoice.amount.toFixed(2)
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'amount-due' },
+                React.createElement('div', { className: 'border-none flex-5' }),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right font-bold flex-2' },
+                  'Service Fee (AUD):'
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'border-none text-right font-bold flex-1' },
+                  '$ ' + invoice.service_fee
+                )
+              )
+            )
+          );
+        })
+      ),
+      React.createElement(
+        'div',
+        { className: 'qf-button text-center' },
+        React.createElement(
+          'button',
+          {
+            className: 'button-back button-primary',
+            type: 'button',
+            onClick: function () {
+              return _this3.backButton.click();
+            }
+          },
+          React.createElement('a', {
+            href: edit_invoice_path,
+            style: { display: 'none' },
+            ref: function (elem) {
+              return _this3.backButton = elem;
+            }
+          }),
+          'Back'
+        ),
+        React.createElement(
+          'button',
+          {
+            className: 'button-submit button-primary green',
+            type: 'button',
+            onClick: this.submitInvoice
+          },
+          'Submit'
+        )
+      ),
+      this.renderModal()
+    );
+  }
+});
 var PDFInvoices = React.createClass({
 	displayName: "PDFInvoices",
 
@@ -73803,11 +75515,19 @@ var AddInvoicePDF = React.createClass({
 	displayName: 'AddInvoicePDF',
 
 	getInitialState: function () {
-		var pdf_file = this.props.pdf_file;
+		var _props = this.props;
+		var trady_company_id = _props.trady_company_id;
+		var maintenance_request_id = _props.maintenance_request_id;
+		var trady_id = _props.trady_id;
+		var pdf_file = _props.pdf_file;
+		var edit_trady_company_path = _props.edit_trady_company_path;
 
 		return {
 			file: {},
-			total_invoice_amount: (pdf_file || {}).total_invoice_amount || ''
+			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
+			due_date: (pdf_file || {}).due_date || this.nowDate(),
+			backPath: edit_trady_company_path,
+			service_fee: (pdf_file || {}).service_fee || 0
 		};
 	},
 
@@ -73910,6 +75630,34 @@ var AddInvoicePDF = React.createClass({
 		});
 	},
 
+	changeTotalAmount: function (_ref) {
+		var value = _ref.target.value;
+
+		if (value === '') {
+			return this.setState({
+				errorAmount: '',
+				total_invoice_amount: value,
+				service_fee: 0
+			});
+		}
+		this.setState({
+			errorAmount: '',
+			service_fee: (value * SERVICE_FEE).toFixed(2) || 0,
+			total_invoice_amount: value
+		});
+	},
+
+	nowDate: function () {
+		var nextDay = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+
+		var oneDay = 24 * 60 * 60 * 1000;
+		var now = new Date(Date.now() + oneDay * nextDay);
+		var month = now.getMonth() + 1;
+		var date = now.getDate();
+		var year = now.getFullYear();
+		return year + '-' + (month < 10 ? '0' : '') + month + '-' + (date < 10 ? '0' : '') + date;
+	},
+
 	handelSubmit: function (e) {
 		e.preventDefault();
 		var self = this;
@@ -73917,6 +75665,7 @@ var AddInvoicePDF = React.createClass({
 		if (!this.state.file.id) {
 			return this.setState({ errorFile: ['Please upload a file'] });
 		}
+
 		var FD = new FormData(document.getElementById('new_uploaded_invoice'));
 		FD.append('uploaded_invoice[pdf]', JSON.stringify(this.state.file));
 
@@ -73935,7 +75684,8 @@ var AddInvoicePDF = React.createClass({
 				if (res.error) {
 					self.setState({
 						errorFile: res.error.pdf,
-						errorAmount: res.error.total_invoice_amount
+						errorAmount: res.error.total_invoice_amount,
+						errorDate: res.error.due_date
 					});
 				}
 			},
@@ -73947,15 +75697,17 @@ var AddInvoicePDF = React.createClass({
 	render: function () {
 		var _this = this;
 
-		var _props = this.props;
-		var maintenance_request_id = _props.maintenance_request_id;
-		var trady_id = _props.trady_id;
-		var quote_id = _props.quote_id;
-		var trady_company = _props.trady_company;
-		var trady_company_id = _props.trady_company_id;
+		var _props2 = this.props;
+		var maintenance_request_id = _props2.maintenance_request_id;
+		var trady_id = _props2.trady_id;
+		var quote_id = _props2.quote_id;
+		var trady_company = _props2.trady_company;
+		var trady_company_id = _props2.trady_company_id;
 		var _state = this.state;
 		var errorFile = _state.errorFile;
 		var errorAmount = _state.errorAmount;
+		var errorDate = _state.errorDate;
+		var backPath = _state.backPath;
 
 		return React.createElement(
 			'div',
@@ -74015,13 +75767,11 @@ var AddInvoicePDF = React.createClass({
 						type: 'text',
 						className: 'text-center ' + (errorAmount ? 'border_on_error' : ''),
 						placeholder: 'Total Invoice Amount',
-						defaultValue: this.state.file ? this.state.total_invoice_amount : '',
+						value: this.state.total_invoice_amount,
 						ref: function (amount) {
 							return _this.amount = amount;
 						},
-						onChange: function () {
-							return _this.setState({ errorAmount: '' });
-						},
+						onChange: this.changeTotalAmount,
 						id: 'uploaded_invoice_maintenance_request_id',
 						name: 'uploaded_invoice[total_invoice_amount]'
 					}),
@@ -74029,6 +75779,51 @@ var AddInvoicePDF = React.createClass({
 						'p',
 						{ id: 'errorbox', className: 'error' },
 						errorAmount ? errorAmount[0] : ''
+					),
+					React.createElement(
+						'div',
+						{ className: 'text-center' },
+						React.createElement(
+							'p',
+							null,
+							' Invoice Due On: '
+						),
+						React.createElement('input', {
+							type: 'date',
+							defaultValue: this.state.due_date,
+							ref: function (e) {
+								return _this.date = e;
+							},
+							onChange: function () {
+								return _this.setState({ errorDate: '' });
+							},
+							name: 'uploaded_invoice[due_date]',
+							className: 'text-center ' + (errorDate ? 'border_on_error' : '')
+						})
+					),
+					React.createElement(
+						'p',
+						{ id: 'errorbox', className: 'error' },
+						errorDate || ''
+					),
+					React.createElement(
+						'div',
+						{ className: 'text-center' },
+						React.createElement(
+							'p',
+							null,
+							' Service Fee: '
+						),
+						React.createElement('input', {
+							type: 'text',
+							readOnly: 'readonly',
+							value: this.state.service_fee,
+							ref: function (e) {
+								return _this.date = e;
+							},
+							name: 'uploaded_invoice[service_fee]',
+							className: 'text-center'
+						})
 					),
 					React.createElement('input', {
 						type: 'hidden',
@@ -74062,20 +75857,26 @@ var AddInvoicePDF = React.createClass({
 					}),
 					React.createElement(
 						'div',
-						{ className: 'text-center' },
+						{ className: 'create-invoice-button' },
 						React.createElement(
-							'a',
+							'button',
 							{
-								className: 'btn btn-default btn-back m-r-lg',
-								href: "/trady_companies/" + trady_company_id + "/edit?invoice_type=pdf_file&maintenance_request_id=" + maintenance_request_id + "&system_plan=Invoice&trady_company_id=" + trady_company_id + "&trady_id=" + trady_id
+								className: 'button-back',
+								type: 'button',
+								onClick: function () {
+									return _this.backButton.click();
+								}
 							},
+							React.createElement('a', { href: backPath, ref: function (elem) {
+									return _this.backButton = elem;
+								} }),
 							'Back'
 						),
 						React.createElement(
 							'button',
 							{
 								type: 'submit',
-								className: 'button-primary green'
+								className: 'button-submit'
 							},
 							'Attach PDF'
 						)
@@ -74086,155 +75887,398 @@ var AddInvoicePDF = React.createClass({
 	}
 });
 var ModalViewPDFInvoice = React.createClass({
-	displayName: "ModalViewPDFInvoice",
+		displayName: "ModalViewPDFInvoice",
 
-	getInitialState: function () {
-		return {
-			index: null,
-			invoice: this.props.invoice_pdf_file
-		};
-	},
+		getInitialState: function () {
+				return {
+						index: null,
+						invoice: this.props.invoice_pdf_file
+				};
+		},
 
-	printInvoice: function () {
-		window.print();
-	},
+		printInvoice: function () {
+				window.print();
+		},
 
-	render: function () {
-		var _this = this;
+		render: function () {
+				var _this = this;
 
-		var self = this.props;
-		var invoice = this.state.invoice;
-		var pdf_url = invoice.pdf_url;
-		var trady = this.props.trady;
+				var self = this.props;
+				var invoice = this.state.invoice;
+				var pdf_url = invoice.pdf_url;
+				var trady = this.props.trady;
 
-		var isPdf = /store\/\w+\.pdf/.test(pdf_url);
-		var total = 0;
-		return React.createElement(
-			"div",
-			{ className: "modal-custom fade" },
-			React.createElement(
-				"div",
-				{ className: "modal-dialog" },
-				React.createElement(
-					"div",
-					{ className: "modal-content" },
-					React.createElement(
+				var isPdf = /store\/\w+\.pdf/.test(pdf_url);
+				var total = 0;
+				return React.createElement(
 						"div",
-						{ className: "modal-header" },
+						{ className: "modal-custom fade" },
 						React.createElement(
-							"button",
-							{
-								type: "button",
-								className: "close",
-								"data-dismiss": "modal",
-								"aria-label": "Close",
-								onClick: this.props.close
-							},
-							React.createElement(
-								"span",
-								{ "aria-hidden": "true" },
-								"×"
-							)
+								"div",
+								{ className: "modal-dialog" },
+								React.createElement(
+										"div",
+										{ className: "modal-content" },
+										React.createElement(
+												"div",
+												{ className: "modal-header" },
+												React.createElement(
+														"button",
+														{
+																type: "button",
+																className: "close",
+																"data-dismiss": "modal",
+																"aria-label": "Close",
+																onClick: this.props.close
+														},
+														React.createElement(
+																"span",
+																{ "aria-hidden": "true" },
+																"×"
+														)
+												),
+												React.createElement(
+														"h4",
+														{ className: "modal-title text-center" },
+														"PDF VIEWER"
+												)
+										),
+										React.createElement(
+												"div",
+												{ className: "slider-quote" },
+												React.createElement(
+														"div",
+														{ className: "modal-body" },
+														React.createElement(
+																"div",
+																{ className: "show-quote", onTouchEnd: function (key, index) {
+																				return _this.switchSlider('prev', _this.state.index);
+																		} },
+																React.createElement(
+																		"div",
+																		{ className: "info-quote" },
+																		React.createElement(
+																				"div",
+																				{ className: "info-trady" },
+																				React.createElement(
+																						"p",
+																						null,
+																						trady.name
+																				),
+																				React.createElement(
+																						"p",
+																						{ className: "" },
+																						!!trady.trady_company && trady.trady_company.address
+																				),
+																				React.createElement(
+																						"p",
+																						{ className: "" },
+																						!!trady.trady_company && trady.trady_company.email
+																				),
+																				React.createElement(
+																						"p",
+																						{ className: "" },
+																						"Abn: ",
+																						!!trady.trady_company && trady.trady_company.abn
+																				)
+																		),
+																		React.createElement(
+																				"div",
+																				{ className: "info-agency" },
+																				React.createElement(
+																						"p",
+																						null,
+																						self.agency.company_name
+																				),
+																				React.createElement(
+																						"p",
+																						null,
+																						self.agency.address
+																				)
+																		)
+																),
+																React.createElement(
+																		"div",
+																		{ className: "detail-quote" },
+																		React.createElement(
+																				"div",
+																				{ className: "detail-quote" },
+																				!!pdf_url && React.createElement(
+																						"object",
+																						{
+																								width: "100%",
+																								height: isPdf ? '350px' : "100%",
+																								data: pdf_url
+																						},
+																						React.createElement("iframe", {
+																								width: "100%",
+																								height: isPdf ? '350px' : "100%",
+																								src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
+																								className: "scroll-custom" })
+																				)
+																		)
+																),
+																React.createElement(
+																		"div",
+																		{ className: "text-center" },
+																		"Invoice Total: ",
+																		invoice.total_invoice_amount || 0
+																),
+																React.createElement(
+																		"div",
+																		{ className: "text-center" },
+																		"Invoice Due On: ",
+																		invoice.due_date
+																),
+																React.createElement(
+																		"div",
+																		{ className: "text-center" },
+																		"Service Fee: ",
+																		invoice.service_fee
+																)
+														)
+												)
+										),
+										!isPdf && React.createElement(
+												"div",
+												{ className: "modal-body dontprint" },
+												React.createElement(ButtonPrint, { printQuote: this.printInvoice })
+										)
+								)
+						)
+				);
+		}
+});
+
+var SubmitInvoicePDF = React.createClass({
+		displayName: "SubmitInvoicePDF",
+
+		getInitialState: function () {
+				var _props = this.props;
+				var customer = _props.customer;
+				var trady = _props.trady;
+
+				return {
+						customer: customer, trady: trady
+				};
+		},
+
+		isClose: function () {
+				if (this.state.isModal == true) {
+						this.setState({
+								isModal: false,
+								modal: ""
+						});
+				}
+
+				var body = document.getElementsByTagName('body')[0];
+				body.classList.remove("modal-open");
+				var div = document.getElementsByClassName('modal-backdrop in')[0];
+				if (div) {
+						div.parentNode.removeChild(div);
+				}
+		},
+
+		openModal: function (modal) {
+				this.setState({
+						isModal: true,
+						modal: modal
+				});
+		},
+
+		renderModal: function () {
+				if (this.state.isModal) {
+						var body = document.getElementsByTagName('body')[0];
+						body.className += " modal-open";
+						var div = document.getElementsByClassName('modal-backdrop in');
+
+						if (div.length === 0) {
+								div = document.createElement('div');
+								div.className = "modal-backdrop in";
+								body.appendChild(div);
+						}
+
+						switch (this.state.modal) {
+								case 'payment':
+										return React.createElement(ModalAddPayment, {
+												close: this.isClose,
+												submit: this.submitPayment
+										});
+
+								case 'message':
+										return React.createElement(ModalNotification, {
+												close: this.isClose,
+												bgClass: this.state.notification.bgClass,
+												title: this.state.notification.title,
+												content: this.state.notification.content
+										});
+
+								default:
+										return '';
+						}
+				}
+		},
+
+		submitPayment: function (params, callback) {
+				var self = this;
+				params.trady_id = this.props.trady_id;
+				params.trady_company_id = this.props.trady_company_id;
+				params.maintenance_request_id = this.props.maintenance_request_id;
+
+				$.ajax({
+						type: 'POST',
+						url: '/trady_payment_registrations',
+						beforeSend: function (xhr) {
+								xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+						},
+						data: params,
+						success: function (res) {
+								if (res && res.errors) {
+										return callback(res.errors);
+								}
+								self.setState({
+										isModal: true,
+										modal: 'message',
+										customer: res.customer,
+										notification: {
+												title: "Credit or debit card",
+												content: res.message,
+												bgClass: "bg-success"
+										}
+								});
+						},
+						error: function (err) {
+								self.setState({
+										isModal: true,
+										modal: 'message',
+										notification: {
+												title: "Credit or debit card",
+												content: err.responseText,
+												bgClass: "bg-error"
+										}
+								});
+						}
+				});
+		},
+
+		submitInvoicePdf: function (e) {
+				var _state = this.state;
+				var customer = _state.customer;
+				var trady = _state.trady;
+				var send_pdf_invoice_path = this.props.send_pdf_invoice_path;
+
+				if (customer && !customer.customer_id && trady.jfmo_participant) {
+						return this.openModal('payment');
+				}
+
+				var self = this;
+
+				$.ajax({
+						type: 'POST',
+						url: send_pdf_invoice_path,
+						beforeSend: function (xhr) {
+								xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+						},
+						success: function (res) {
+								if (res && res.errors) {
+										return callback(res.errors);
+								}
+						},
+						error: function (err) {
+								self.setState({
+										isModal: true,
+										modal: 'message',
+										notification: {
+												title: "Submit Invoice PDF",
+												content: err.responseText,
+												bgClass: "bg-error"
+										}
+								});
+						}
+				});
+		},
+
+		render: function () {
+				var _props2 = this.props;
+				var pdf_url = _props2.pdf_url;
+				var pdf = _props2.pdf;
+				var edit_uploaded_invoice_path = _props2.edit_uploaded_invoice_path;
+				var pdf_path = _props2.pdf_path;
+
+				var isPdf = /store\/\w+\.pdf/.test(pdf_url);
+
+				return React.createElement(
+						"div",
+						{ className: "container well", id: "submit-invoice" },
+						React.createElement(
+								"div",
+								{ id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
+								React.createElement(
+										"div",
+										{
+												className: "responsive-wrapper responsive-wrapper-wxh-572x612"
+										},
+										React.createElement(
+												"object",
+												{
+														width: "100%",
+														height: isPdf ? '500px' : "100%",
+														data: pdf_url
+												},
+												React.createElement("iframe", {
+														width: "100%",
+														height: isPdf ? '500px' : "100%",
+														src: pdf_path,
+														className: "scroll-custom"
+												})
+										)
+								)
 						),
 						React.createElement(
-							"h4",
-							{ className: "modal-title text-center" },
-							"PDF VIEWER"
-						)
-					),
-					React.createElement(
-						"div",
-						{ className: "slider-quote" },
-						React.createElement(
-							"div",
-							{ className: "modal-body" },
-							React.createElement(
 								"div",
-								{ className: "show-quote", onTouchEnd: function (key, index) {
-										return _this.switchSlider('prev', _this.state.index);
-									} },
+								{ className: "text-center m-b-lg" },
+								"Invoice Total: ",
+								pdf.total_invoice_amount
+						),
+						React.createElement(
+								"div",
+								{ className: "text-center m-b-lg" },
+								"Invoice Due On : ",
+								pdf.due_date
+						),
+						React.createElement(
+								"div",
+								{ className: "text-center m-b-lg" },
+								"Service Fee: ",
+								pdf.service_fee
+						),
+						React.createElement(
+								"div",
+								{ className: "text-center m-b-lg qf-button" },
 								React.createElement(
-									"div",
-									{ className: "info-quote" },
-									React.createElement(
-										"div",
-										{ className: "info-trady" },
-										React.createElement(
-											"p",
-											null,
-											trady.name
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!trady.trady_company && trady.trady_company.address
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											!!trady.trady_company && trady.trady_company.email
-										),
-										React.createElement(
-											"p",
-											{ className: "" },
-											"Abn: ",
-											!!trady.trady_company && trady.trady_company.abn
-										)
-									),
-									React.createElement(
-										"div",
-										{ className: "info-agency" },
-										React.createElement(
-											"p",
-											null,
-											self.agency.company_name
-										),
-										React.createElement(
-											"p",
-											null,
-											self.agency.address
-										)
-									)
+										"button",
+										{
+												type: "button",
+												className: "button-back",
+												onClick: function () {
+														return location.href = edit_uploaded_invoice_path;
+												}
+										},
+										"Back"
 								),
 								React.createElement(
-									"div",
-									{ className: "detail-quote" },
-									React.createElement(
-										"div",
-										{ className: "detail-quote" },
-										!!pdf_url && React.createElement(
-											"object",
-											{
-												width: "100%",
-												height: isPdf ? '350px' : "100%",
-												data: pdf_url
-											},
-											React.createElement("iframe", {
-												width: "100%",
-												height: isPdf ? '350px' : "100%",
-												src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
-												className: "scroll-custom" })
-										)
-									)
-								),
-								React.createElement(
-									"div",
-									{ className: "text-center" },
-									"Total Amount Invoice: ",
-									invoice.total_invoice_amount || 0
+										"button",
+										{
+												type: "button",
+												className: "button-type button-submit green right",
+												onClick: this.submitInvoicePdf
+										},
+										"Submit"
 								)
-							)
-						)
-					),
-					!isPdf && React.createElement(
-						"div",
-						{ className: "modal-body dontprint" },
-						React.createElement(ButtonPrint, { printQuote: this.printInvoice })
-					)
-				)
-			)
-		);
-	}
+						),
+						this.renderModal()
+				);
+		}
 });
 var ContentLandlordAction = React.createClass({
 	displayName: "ContentLandlordAction",
@@ -79543,13 +81587,13 @@ var ButtonHeaderMR = React.createClass({
 		var existTradyAssigned = _props.existTradyAssigned;
 
 		var actionRequired = [{
-			title: "Maintenance Request",
+			title: "New Maintenance Request",
 			value: "Initiate Maintenance Request"
 		}, {
 			title: "Send Work Order",
 			value: "Send Work Order"
 		}, {
-			title: "Awaiting Tradie`s Quote",
+			title: "Awaiting Tradie's Quote",
 			value: "Awaiting Quote"
 		}, {
 			title: "Quote Requested",
@@ -79581,6 +81625,9 @@ var ButtonHeaderMR = React.createClass({
 		//   value: "Awaiting Tradie Initiation",
 		// },
 		existQuoteRequest && {
+			title: "Awaiting Tradie`s Quote",
+			value: "Awaiting Quote"
+		}, existQuoteRequest && {
 			title: "Awaiting Quote Approval",
 			value: "Quote Received Awaiting Approval"
 		}, existTradyAssigned && {
@@ -83086,7 +85133,7 @@ var ModalRequestModal = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "modal-footer" },
-							false && this.props.keyTitle === 'request-quote' && React.createElement(
+							this.props.keyTitle === 'request-quote' && React.createElement(
 								"div",
 								{ className: "row" },
 								React.createElement(
@@ -83094,10 +85141,10 @@ var ModalRequestModal = React.createClass({
 									{
 										className: "btn btn-primary cancel",
 										onClick: function () {
-											return _this9.props.viewQuote('justSendMeOne');
+											return _this9.props.viewItem('justFindMeOne');
 										}
 									},
-									"JUST SEND ME ONE!"
+									"JUST FIND ME ONE!"
 								)
 							),
 							React.createElement(
@@ -83303,6 +85350,7 @@ var MaintenanceRequest = React.createClass({
 			case 'addTenant':
 			case 'approveJob':
 			case 'duplicateMR':
+			case 'justFindMeOne':
 			case 'confirmcancelTrady':
 			case 'editMaintenanceRequest':
 				{
@@ -84399,6 +86447,46 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	justFindMeOne: function () {
+		var self = this;
+		var maintenance_request = this.state.maintenance_request;
+
+		var params = {
+			maintenance_request_id: maintenance_request.id
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: '/just_find_me_one',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (res.message) {
+					self.setState({
+						notification: {
+							title: "Just Find Me One",
+							content: res.message,
+							bgClass: "bg-success"
+						}
+					});
+					self.onModalWith('notification');
+				} else {
+					self.isClose();
+				}
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Just Find Me One",
+						content: err.responseText,
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function () {
 		var _this10 = this;
 
@@ -84591,7 +86679,7 @@ var MaintenanceRequest = React.createClass({
 					{
 						return React.createElement(ModalRequestModal, {
 							close: this.isClose,
-							keyTitle: "sen-work-order",
+							keyTitle: "sent-work-order",
 							tradies: this.state.tradies,
 							requestQuote: this.sendWorkOrder,
 							maintenance_request: this.state.maintenance_request,
@@ -84837,6 +86925,16 @@ var MaintenanceRequest = React.createClass({
 						confirm: this.removeTenant,
 						close: function () {
 							return _this10.viewItem('showTenants');
+						}
+					});
+
+				case 'justFindMeOne':
+					return React.createElement(ModalConfirmAnyThing, {
+						title: "Just Find Me One",
+						content: 'Would you like us to find a competative quote from a qualified tradie to complete the work? and recieve compensation from our rebate program once the work has been done?',
+						confirm: this.justFindMeOne,
+						close: function () {
+							return _this10.onModalWith('requestQuote');
 						}
 					});
 
@@ -86061,7 +88159,7 @@ var HomeComponent = React.createClass({
   chooseUser: function (user) {
     if (this.state.active !== user && !this.state.signed) {
       var step = user === 'Tenant' || user === 'Trady' ? 'home' : 'login';
-      this.setState({ active: user, step: step, rolePicked: user });
+      this.setState({ active: user, step: step, rolePicked: user, error: '' });
     }
   },
 
@@ -86086,6 +88184,8 @@ var HomeComponent = React.createClass({
     var stop_reminder = _props2.stop_reminder;
     var quote_message_id = _props2.quote_message_id;
 
+    var self = this;
+
     $.ajax({
       type: 'POST',
       url: '/menulogin',
@@ -86095,7 +88195,13 @@ var HomeComponent = React.createClass({
         message: message, quote_request_id: quote_request_id, appointment_id: appointment_id,
         stop_reminder: stop_reminder, quote_message_id: quote_message_id
       },
-      success: function (res) {},
+      success: function (res) {
+        if (res && res.error) {
+          self.setState({ error: res.error });
+          // Need to remove the password if there is an error
+          self.password.value = '';
+        }
+      },
       error: function (err) {}
     });
   },
@@ -86240,6 +88346,21 @@ var HomeComponent = React.createClass({
           'p',
           null,
           'Automated reminders unsure jobs are progressing'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'three columns' },
+        React.createElement('img', { src: '/icons/notes.png', alt: '' }),
+        React.createElement(
+          'h4',
+          null,
+          'Increase revenue'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Increase renvenue through out rebate program and Increased productivity'
         )
       )
     );
@@ -86483,21 +88604,21 @@ var HomeComponent = React.createClass({
         },
         'Login'
       ),
-      false && React.createElement(
+      React.createElement(
         'p',
         { className: 'text-center' },
         'Or'
       ),
-      false && React.createElement(
+      React.createElement(
         'button',
         {
           type: 'button text-center',
           className: 'btn',
           onClick: function () {
-            return _this3.setState({ step: 'home' });
+            return _this3.redirectNewPath('/tradie_registrations/new');
           }
         },
-        'Join our network'
+        'Join Network & Get Free Leads'
       )
     );
   },
@@ -86509,6 +88630,7 @@ var HomeComponent = React.createClass({
     var active = _state.active;
     var focusEmail = _state.focusEmail;
     var focusPassword = _state.focusPassword;
+    var error = _state.error;
     var new_password_reset_path = this.props.new_password_reset_path;
 
     var showBackButton = active === 'Tenant' || active === 'Trady';
@@ -86529,7 +88651,7 @@ var HomeComponent = React.createClass({
             name: 'role-picked',
             value: 'Agent',
             onChange: function () {
-              return _this4.setState({ rolePicked: 'Agent' });
+              return _this4.setState({ rolePicked: 'Agent', error: '' });
             },
             defaultChecked: true
           }),
@@ -86543,7 +88665,7 @@ var HomeComponent = React.createClass({
             type: 'radio',
             name: 'role-picked',
             onChange: function () {
-              return _this4.setState({ rolePicked: 'AgencyAdmin' });
+              return _this4.setState({ rolePicked: 'AgencyAdmin', error: '' });
             },
             value: 'AgencyAdmin'
           }),
@@ -86572,6 +88694,9 @@ var HomeComponent = React.createClass({
             onBlur: function () {
               return _this4.setState({ focusEmail: false });
             },
+            onChange: function () {
+              return _this4.setState({ error: '' });
+            },
             ref: function (elem) {
               return _this4.email = elem;
             }
@@ -86596,10 +88721,18 @@ var HomeComponent = React.createClass({
             onBlur: function () {
               return _this4.setState({ focusPassword: false });
             },
+            onChange: function () {
+              return _this4.setState({ error: '' });
+            },
             ref: function (elem) {
               return _this4.password = elem;
             }
           })
+        ),
+        error && React.createElement(
+          'div',
+          { className: 'login-error' },
+          error
         )
       ),
       React.createElement(
@@ -86611,7 +88744,7 @@ var HomeComponent = React.createClass({
             type: 'button',
             className: 'btn btn-back',
             onClick: function () {
-              return _this4.setState({ step: 'home' });
+              return _this4.setState({ step: 'home', error: '' });
             }
           },
           'Back'
@@ -86785,7 +88918,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'button',
         {
-          className: "tenant-title " + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden'),
+          className: "tenant-title " + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
           onClick: function () {
             return _this7.chooseUser('Tenant');
           }
@@ -86796,7 +88929,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'button',
         {
-          className: "trady-title " + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden'),
+          className: "trady-title " + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
           onClick: function () {
             return _this7.chooseUser('Trady');
           }
@@ -86807,7 +88940,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'button',
         {
-          className: "landlord-title " + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden'),
+          className: "landlord-title " + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
           onClick: function () {
             return _this7.chooseUser('Landlord');
           }
@@ -86818,7 +88951,7 @@ var HomeComponent = React.createClass({
       React.createElement(
         'button',
         {
-          className: "agent-title " + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden'),
+          className: "agent-title " + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
           onClick: function () {
             return _this7.chooseUser('Agent');
           }
@@ -86960,6 +89093,61 @@ var HomeComponent = React.createClass({
 //     return <ul>{this.props.quotes.map(function(quote) {<li>{quote.amount}</li>})}</ul>;
 //   }
 // });
+var QuoteOption = React.createClass({
+  displayName: "QuoteOption",
+
+  getInitialState: function () {
+    return {};
+  },
+
+  render: function () {
+    var _props = this.props;
+    var trady_company_path = _props.trady_company_path;
+    var trady_maintenance_request_path = _props.trady_maintenance_request_path;
+
+    return React.createElement(
+      "form",
+      { className: "invoice-form quote-form" },
+      React.createElement(
+        "p",
+        { className: "optiondescription text-center" },
+        "Easily make quotes using our platform by clicking the ",
+        React.createElement(
+          "b",
+          null,
+          "Create Quotes"
+        ),
+        " button below."
+      ),
+      React.createElement(
+        "div",
+        { className: "quote-button" },
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "button-back",
+            onClick: function () {
+              return location.href = trady_maintenance_request_path;
+            }
+          },
+          "Back"
+        ),
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "button-submit",
+            onClick: function () {
+              return location.href = trady_company_path;
+            }
+          },
+          "Create Quote"
+        )
+      )
+    );
+  }
+});
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -89193,6 +91381,8 @@ var QuoteFields = React.createClass({
   },
 
   render: function () {
+    var _this2 = this;
+
     var _props = this.props;
     var trady_company = _props.trady_company;
     var quote = _props.quote;
@@ -89232,22 +91422,554 @@ var QuoteFields = React.createClass({
         React.createElement('input', { type: 'text', className: 'm-t-lg text-center', defaultValue: quote && quote.trady_quote_reference, name: 'quote[trady_quote_reference]', placeholder: 'Quote Reference Number' })
       ),
       React.createElement(
-        'label',
-        { className: 'quote_tax' },
-        React.createElement('input', { type: 'hidden', value: '0', name: 'quote[tax]' }),
-        React.createElement('input', { type: 'checkbox', value: '1', defaultChecked: trady_company.gst_registration ? trady_company.gst_registration : false, name: 'quote[tax]', id: 'quote_tax' }),
-        'Check box when price includes GST.'
+        'div',
+        { className: 'quote-tax text-center' },
+        'Does price include GST?',
+        React.createElement(
+          'div',
+          { className: 'radio-same-address' },
+          React.createElement(
+            'label',
+            { className: 'radio-option' },
+            'Yes',
+            React.createElement('input', {
+              type: 'radio',
+              name: 'quote[tax]',
+              value: '1',
+              defaultChecked: !!trady_company.gst_registration
+            }),
+            React.createElement('span', { className: 'radio-checkmark' })
+          ),
+          React.createElement(
+            'label',
+            { className: 'radio-option' },
+            'No',
+            React.createElement('input', {
+              type: 'radio',
+              name: 'quote[tax]',
+              value: '0',
+              defaultChecked: !trady_company.gst_registration
+            }),
+            React.createElement('span', { className: 'radio-checkmark' })
+          )
+        )
       ),
       React.createElement('hr', null),
       React.createElement(
         'div',
-        { className: 'text-center' },
+        { className: 'qf-button' },
         React.createElement(
-          'a',
-          { className: 'button m-r-lg', href: this.props.backlink },
-          ' Back '
+          'button',
+          {
+            type: 'button',
+            className: 'button-back',
+            onClick: function () {
+              return location.href = _this2.props.backlink;
+            }
+          },
+          'Back'
         ),
-        React.createElement('input', { type: 'submit', name: 'commit', value: 'Next', className: 'button-primary green' })
+        React.createElement(
+          'button',
+          { type: 'submit', className: 'button-submit' },
+          'Next'
+        )
+      )
+    );
+  }
+});
+/*<label className="quote_tax">
+<input type="hidden" value="0" name="quote[tax]" />
+<input type="checkbox" value="1" defaultChecked={trady_company.gst_registration ? trady_company.gst_registration : false} name="quote[tax]" id="quote_tax" />
+Check box when price includes GST.
+</label>
+*/;
+var CreateQuoteForm = React.createClass({
+  displayName: 'CreateQuoteForm',
+
+  getInitialState: function () {
+    var step = this.props.step;
+
+    var level = ['quote-option', 'trady-company', 'make-quote', 'submit-quote', 'success'];
+
+    return {
+      errors: {},
+      step: step,
+      level: (level.indexOf(step) || 0) + 1
+    };
+  },
+
+  componentDidMount: function () {
+    $('body > div.layout').css('background-color', 'white');
+  },
+
+  labelTitle: function (number, text, isPass) {
+    return React.createElement(
+      'div',
+      { className: "registration-label-title " + (isPass && 'pass' || '') },
+      React.createElement(
+        'div',
+        { className: "step-status " + (isPass && 'pass' || '') },
+        number > 1 && React.createElement('div', { className: 'separate-line ' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-number' },
+        number
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-text' },
+        text
+      )
+    );
+  },
+
+  generateStepTitle: function () {
+    var level = this.state.level;
+
+    return React.createElement(
+      'div',
+      { className: 'registration-title' },
+      this.labelTitle(1, React.createElement(
+        'p',
+        null,
+        'Quote',
+        React.createElement('br', null),
+        'Option'
+      ), level > 0),
+      this.labelTitle(2, React.createElement(
+        'p',
+        null,
+        'Trady',
+        React.createElement('br', null),
+        'Company',
+        React.createElement('br', null),
+        'Infomation'
+      ), level > 1),
+      this.labelTitle(3, React.createElement(
+        'p',
+        null,
+        'Create',
+        React.createElement('br', null),
+        'Quote'
+      ), level > 2),
+      this.labelTitle(4, React.createElement(
+        'p',
+        null,
+        'Submit',
+        React.createElement('br', null),
+        'Quote'
+      ), level > 3)
+    );
+  },
+
+  generateTitle: function () {
+    var step = this.state.step;
+
+    switch (step) {
+      case 'quote-option':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Quote Option'
+        );
+      case 'trady-company':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Trady Company Information'
+        );
+      case 'make-quote':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Create Quote'
+        );
+      case 'submit-quote':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Submit Quote'
+        );
+      case 'success':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Success'
+        );
+    }
+  },
+
+  generateForm: function () {
+    var step = this.state.step;
+    var isEdit = this.props.is_edit;
+
+    switch (step) {
+      case 'quote-option':
+        return React.createElement(QuoteOption, this.props);
+      case 'trady-company':
+        return isEdit ? React.createElement(EditTradyCompany, this.props) : React.createElement(AddTradycompany, this.props);
+      case 'make-quote':
+        return React.createElement(QuoteFields, this.props);
+      case 'submit-quote':
+        return React.createElement(QuoteSubmit, this.props);
+      case 'success':
+        return React.createElement(QuoteSentSuccess, this.props);
+    }
+  },
+
+  componentWillUnmount: function () {
+    $('body > div.layout').css('background-color', '#F4F8FB');
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'registration', className: 'create-quote-form' },
+      this.generateStepTitle(),
+      this.generateTitle(),
+      this.generateForm()
+    );
+  }
+});
+
+var QuoteSentSuccess = React.createClass({
+  displayName: 'QuoteSentSuccess',
+
+  getInitialState: function () {
+    return {};
+  },
+
+  render: function () {
+    var _props = this.props;
+    var trady_maintenance_requests_path = _props.trady_maintenance_requests_path;
+    var quote_options_path = _props.quote_options_path;
+
+    return React.createElement(
+      'form',
+      { className: 'invoice-form success' },
+      React.createElement(
+        'h5',
+        null,
+        'Your Quote has been sent'
+      ),
+      React.createElement(
+        'div',
+        { className: 'mark' },
+        React.createElement('i', { className: 'fa fa-check' })
+      ),
+      React.createElement(
+        'p',
+        { className: 'text-center' },
+        'Congratulations!'
+      ),
+      React.createElement(
+        'p',
+        { className: 'text-center' },
+        'Your quote has been successfully created and sent to the Agent.'
+      ),
+      React.createElement(
+        'p',
+        { className: 'text-center' },
+        'To Head ',
+        React.createElement(
+          'b',
+          null,
+          'Home'
+        ),
+        ' click the button below.'
+      ),
+      React.createElement(
+        'p',
+        { className: 'text-center' },
+        'If you would like to create a different variation of you quote please ',
+        React.createElement(
+          'b',
+          null,
+          'Create Another Quote'
+        ),
+        ' below'
+      ),
+      React.createElement(
+        'div',
+        { className: 'invoice-button' },
+        React.createElement(
+          'button',
+          {
+            type: 'button',
+            className: 'button-primary green',
+            onClick: function () {
+              return location.href = trady_maintenance_requests_path;
+            }
+          },
+          'Home'
+        ),
+        React.createElement(
+          'button',
+          {
+            type: 'button',
+            className: 'button-primary green',
+            onClick: function () {
+              return location.href = quote_options_path;
+            }
+          },
+          'Create Another Quote'
+        )
+      )
+    );
+  }
+});
+
+var QuoteSubmit = React.createClass({
+  displayName: 'QuoteSubmit',
+
+  getInitialState: function () {
+    return {
+      quote: [],
+      trady: this.props.trady || {}
+    };
+  },
+
+  submitQuote: function (e) {
+    e.preventDefault();
+    var quote_email_path = this.props.quote_email_path;
+
+    location.href = quote_email_path;
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    var _props2 = this.props;
+    var trady_company = _props2.trady_company;
+    var landlord = _props2.landlord;
+    var agency = _props2.agency;
+    var edit_quote_path = _props2.edit_quote_path;
+    var quote = _props2.quote;
+    var quote_items = _props2.quote_items;
+    var quote_email_path = _props2.quote_email_path;
+    var property = _props2.property;
+    var invoices = this.state.invoices;
+
+    return React.createElement(
+      'div',
+      { id: 'submit-invoice', className: 'container invoice-form well' },
+      React.createElement(
+        'div',
+        { className: 'send-email-quote' },
+        React.createElement(
+          'div',
+          { className: 'header-quote' },
+          React.createElement(
+            'div',
+            { className: 'logo' },
+            React.createElement('a', { href: '/' }),
+            React.createElement('img', { src: '/assets/logo.png', 'class': 'img', alt: 'logo' })
+          ),
+          React.createElement(
+            'div',
+            { className: 'info-quote' },
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'span',
+                null,
+                trady_company.company_name
+              )
+            ),
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'span',
+                null,
+                trady_company.abn
+              )
+            ),
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'span',
+                null,
+                trady_company.address
+              )
+            ),
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'span',
+                null,
+                trady_company.mobile_number
+              )
+            ),
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'span',
+                null,
+                trady_company.email
+              )
+            )
+          )
+        ),
+        React.createElement('hr', null),
+        React.createElement(
+          'div',
+          { className: 'quote' },
+          React.createElement(
+            'div',
+            { className: 'info-agency' },
+            React.createElement(
+              'p',
+              { className: 'color-grey bill-to' },
+              'Bill To'
+            ),
+            React.createElement(
+              'p',
+              { className: 'text-capitalize' },
+              landlord ? landlord.name : null
+            ),
+            React.createElement(
+              'p',
+              null,
+              agency ? "C/-" + agency.company_name : null
+            ),
+            React.createElement(
+              'p',
+              null,
+              agency ? agency.address : null
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'date-quote' },
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'span',
+                { className: 'font-bold' },
+                'Quote Reference:'
+              ),
+              React.createElement(
+                'span',
+                null,
+                quote.trady_quote_reference !== "" ? quote.trady_quote_reference : property.property_address
+              )
+            ),
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'span',
+                { className: 'font-bold' },
+                'Quote Date:'
+              ),
+              React.createElement(
+                'span',
+                null,
+                moment(quote.created_at).format('lll')
+              )
+            )
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'quote-data' },
+          React.createElement(
+            'div',
+            { className: 'quote-items' },
+            React.createElement(
+              'div',
+              { className: 'title' },
+              'Description'
+            ),
+            React.createElement(
+              'div',
+              { className: 'title' },
+              'Pricing'
+            ),
+            React.createElement(
+              'div',
+              { className: 'title text-right' },
+              'Rate'
+            ),
+            React.createElement(
+              'div',
+              { className: 'title text-right' },
+              'Amount'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'quote-item-data' },
+            quote_items.map(function (quoteItem) {
+              return React.createElement(
+                'div',
+                { className: 'invoice-item' },
+                React.createElement(
+                  'div',
+                  { className: 'text-capitalize' },
+                  quoteItem.item_description
+                ),
+                React.createElement(
+                  'div',
+                  null,
+                  quoteItem.pricing_type
+                ),
+                React.createElement(
+                  'div',
+                  null,
+                  quoteItem.pricing_type == 'Hourly' ? quoteItem.amount : ''
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'text-right' },
+                  quoteItem.pricing_type == 'Fixed Cost' ? '$ ' + quoteItem.amount.toFixed(2) : quoteItem.pricing_type == 'Range' ? '$ ' + quoteItem.min_price.toFixed(2) + ' - $ ' + quoteItem.max_price.toFixed(2) : ''
+                )
+              );
+            })
+          )
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'qf-button text-center' },
+        React.createElement(
+          'button',
+          {
+            className: 'button-back button-primary',
+            type: 'button',
+            onClick: function () {
+              return _this.backButton.click();
+            }
+          },
+          React.createElement('a', {
+            href: edit_quote_path,
+            style: { display: 'none' },
+            ref: function (elem) {
+              return _this.backButton = elem;
+            }
+          }),
+          'Back'
+        ),
+        React.createElement(
+          'button',
+          {
+            className: 'button-submit button-primary green',
+            type: 'button',
+            onClick: function () {
+              return location.href = quote_email_path;
+            }
+          },
+          'Submit'
+        )
       )
     );
   }
@@ -89255,6 +91977,303 @@ var QuoteFields = React.createClass({
 var EMAIL_REGEXP = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
 var PHONE_REGEXP = new RegExp('^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$', 'i');
 var NUMBER_REGEXP = new RegExp('^[0-9]*$', 'i');
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var ServiceEdit = React.createClass({
+  displayName: 'ServiceEdit',
+
+  getInitialState: function () {
+    var services = this.props.services;
+
+    return {
+      services: services || []
+    };
+  },
+
+  onBack: function () {
+    var edit_register_tradie_company_path = this.props.edit_register_tradie_company_path;
+
+    location.href = edit_register_tradie_company_path;
+  },
+
+  isChecked: function (value) {},
+
+  onSubmit: function (e) {
+    e.preventDefault();
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var trady = {
+      name: getValidValue(this.name),
+      company_name: getValidValue(this.company_name),
+      mobile: getValidValue(this.mobile)
+    };
+
+    var params = { trady: trady };
+
+    var self = this;
+    $.ajax({
+      type: 'PUT',
+      url: '/tradies/' + (this.props.trady || {}).id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors || {} });
+        }
+      },
+      error: function (err) {}
+    });
+
+    return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    this.setState({ errors: _extends({}, this.state.errors, _defineProperty({}, id, '')) });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  render: function () {
+    var services = this.state.services;
+
+    return React.createElement(
+      'div',
+      { id: 'services' },
+      React.createElement(
+        'div',
+        { className: 'list-services' },
+        services.map(function (service) {
+          return React.createElement(
+            'div',
+            { className: 'service-item', key: service.id },
+            React.createElement(
+              'label',
+              null,
+              React.createElement('input', { type: 'checkbox', value: service.service }),
+              service.service
+            )
+          );
+        })
+      ),
+      React.createElement(
+        'div',
+        { className: 'service-buttons' },
+        React.createElement(
+          'button',
+          { type: 'button', className: 'btn btn-back', onClick: this.onBack },
+          'BACK'
+        ),
+        React.createElement(
+          'button',
+          { type: 'button', className: 'btn btn-submit', onClick: this.createSkill },
+          'SUBMIT SKILL'
+        )
+      )
+    );
+  }
+});
+var ServiceList = React.createClass({
+  displayName: 'ServiceList',
+
+  getInitialState: function () {
+    var _props = this.props;
+    var services = _props.services;
+    var is_edit = _props.is_edit;
+    var trady_skills = _props.trady_skills;
+
+    return {
+      services: services || [],
+      skills: (trady_skills || []).map(function (_ref) {
+        var skill = _ref.skill;
+        return skill;
+      }),
+      isEdit: !!is_edit,
+      errors: ''
+    };
+  },
+
+  checkSkill: function (service) {
+    var skills = this.state.skills;
+
+    var isChecked = skills.some(function (skill) {
+      return skill === service.service;
+    });
+
+    if (isChecked) {
+      this.setState({
+        skills: skills.filter(function (skill) {
+          return skill !== service.service;
+        }),
+        errors: ''
+      });
+    } else {
+      this.setState({
+        skills: skills.concat([service.service]),
+        errors: ''
+      });
+    }
+  },
+
+  isChecked: function (value) {
+    var skills = this.state.skills;
+
+    return skills.some(function (skill) {
+      return skill === value;
+    });
+  },
+
+  onBack: function () {
+    var edit_register_tradie_company_path = this.props.edit_register_tradie_company_path;
+
+    location.href = edit_register_tradie_company_path;
+  },
+
+  renderError: function () {
+    var errors = this.state.errors;
+
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      errors || ''
+    );
+  },
+
+  onSubmit: function (e) {
+    e.preventDefault();
+    var _state = this.state;
+    var isEdit = _state.isEdit;
+    var skills = _state.skills;
+    var _props2 = this.props;
+    var trady_id = _props2.trady_id;
+    var trady_company_id = _props2.trady_company_id;
+    var maintenance_request_id = _props2.maintenance_request_id;
+
+    var self = this;
+    var params = {
+      trady_id: trady_id, trady_company_id: trady_company_id, maintenance_request_id: maintenance_request_id,
+      skill: {
+        skill: skills
+      }
+    };
+
+    $.ajax({
+      type: isEdit ? 'PUT' : 'POST',
+      url: isEdit ? '/services/' + trady_id : '/add_services',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+  },
+
+  render: function () {
+    var _this = this;
+
+    var _state2 = this.state;
+    var services = _state2.services;
+    var skills = _state2.skills;
+
+    return React.createElement(
+      'form',
+      { id: 'services', onSubmit: this.onSubmit },
+      React.createElement(
+        'label',
+        { className: 'service-placeholder text-center' },
+        'What service(s) will you be providing? Please pick from the services list below.'
+      ),
+      React.createElement('input', { type: 'hidden', name: 'trady_id', value: this.props.trady_id }),
+      React.createElement('input', {
+        type: 'hidden',
+        name: 'trady_company_id',
+        value: this.props.trady_company_id
+      }),
+      React.createElement('input', {
+        type: 'hidden',
+        name: 'maintenance_request_id',
+        value: this.props.maintenance_request_id
+      }),
+      React.createElement(
+        'div',
+        { className: 'list-services scroll-bar' },
+        services.map(function (service) {
+          return React.createElement(
+            'label',
+            { className: 'service-item', key: service.id },
+            service.service,
+            React.createElement('input', {
+              type: 'checkbox',
+              name: 'skill[skill][]',
+              defaultChecked: _this.isChecked(service.service),
+              onChange: function () {
+                return _this.checkSkill(service);
+              },
+              value: service.service
+            }),
+            React.createElement('span', { className: 'checkmark' })
+          );
+        })
+      ),
+      React.createElement(
+        'label',
+        { className: 'service-placeholder text-center' },
+        'Services you will be providing'
+      ),
+      React.createElement('div', { className: 'horizontal-line' }),
+      React.createElement(
+        'div',
+        { className: 'list-choosed-services' },
+        skills.map(function (skill, index) {
+          return React.createElement(
+            'div',
+            {
+              className: 'choosed-service-item',
+              key: index
+            },
+            skill
+          );
+        })
+      ),
+      this.renderError(),
+      React.createElement(
+        'div',
+        { className: 'service-buttons' },
+        React.createElement(
+          'button',
+          { type: 'button', className: 'btn button-back', onClick: this.onBack },
+          'Back'
+        ),
+        React.createElement(
+          'button',
+          { type: 'submit', className: 'btn button-submit' },
+          'Add Service(s)'
+        )
+      )
+    );
+  }
+});
 var Footer = React.createClass({
     displayName: "Footer",
 
@@ -89355,11 +92374,6 @@ var Footer = React.createClass({
                         React.createElement(
                             "div",
                             { className: "footer-social_hp" },
-                            React.createElement(
-                                "a",
-                                { className: "show-on-mobile", href: this.props.new_agency_path },
-                                "Register Agent"
-                            ),
                             React.createElement(
                                 "p",
                                 null,
@@ -89494,6 +92508,7 @@ var Footer = React.createClass({
         );
     }
 });
+/* <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>*/;
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
 var MenuAgency = function (edit_agency, edit_agency_admin) {
@@ -91359,6 +94374,1510 @@ var TenantEdit = React.createClass({
     );
   }
 });
+var AgencyTermsAndConditions = React.createClass({
+  displayName: 'AgencyTermsAndConditions',
+
+  getInitialState: function () {
+    return {
+      card: null,
+      isAgree: false,
+      errors: ''
+    };
+  },
+
+  termsAndConditionsText: function () {
+    return React.createElement(TermsAndConditions, null);
+  },
+
+  checkOffAgree: function () {
+    var isAgree = this.state.isAgree;
+
+    this.setState({
+      errors: '',
+      isAgree: !isAgree
+    });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error ? error : ''
+    );
+  },
+
+  onBack: function () {
+    location.href = this.props.edit_agency_admin;
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    var isAgree = this.state.isAgree;
+
+    var self = this;
+
+    var params = {
+      terms_and_conditions: isAgree,
+      agency_id: this.props.agency_id
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/agency_term_agreements',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return self.setState({ errors: res.errors });
+        }
+      },
+      error: function (errors) {}
+    });
+
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    var isAgree = this.state.isAgree;
+
+    return React.createElement(
+      'form',
+      { id: 'terms-and-conditions', onSubmit: this.submit },
+      this.termsAndConditionsText(),
+      React.createElement(
+        'label',
+        { className: 'agree_checkbox' },
+        'Agree To Terms and Conditions',
+        React.createElement('input', {
+          type: 'checkbox',
+          id: 'terms_and_conditions',
+          ref: function (elem) {
+            return _this.terms_and_conditions = elem;
+          },
+          onChange: this.checkOffAgree
+        }),
+        React.createElement('span', { className: 'checkmark' })
+      ),
+      this.renderError(this.state.errors),
+      React.createElement(
+        'div',
+        { className: 'TAC-buttons' },
+        false && React.createElement(
+          'button',
+          { type: 'button', className: 'btn button-back', onClick: this.onBack },
+          'Back'
+        ),
+        React.createElement(
+          'button',
+          { type: 'submit', className: 'btn button-submit' },
+          'Submit'
+        )
+      )
+    );
+  }
+});
+var TermsAndConditions = React.createClass({
+  displayName: "TermsAndConditions",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "terms-and-conditions" },
+      React.createElement(
+        "div",
+        { className: "scroll-bar" },
+        React.createElement(
+          "h4",
+          { className: "text-center title" },
+          "Tradesmen Terms"
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "1. Tradesmen Terms and General Terms"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1. This website, app, platform and any service offered under the name “Maintenance App” (“Platform”) is operated and owned by Lab Developed Pty Ltd (ACN 608 599 293) and its related entities or body corporates (“us”, “we” and “our”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "2. All use of this Platform is subject to the General Terms of Use (“General Terms”) [CREATE LINK]. In addition, if you have registered to Platform as a Tradesmen, you also agree to be bound by these Tradesmen Term (“Tradesmen Terms”). Your continued use of the Platform constitutes acceptance of these Tradesmen Terms and is strictly conditional on full compliance with these Tradesmen Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "3. All capitalised words used in these Tradesmen Terms have the same meaning as in the General Terms unless the context requires otherwise."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "4. We may amend or modify the Platform or the Tradesmen Terms at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the General Terms as modified."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "5. These Tradesmen Terms will prevail over any other terms or agreement between you and us."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "2. Your use of the Platform"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1. These Tradesmen Terms apply to you because you have registered as a Tradesmen wishing to provide various maintenance services (“Services”) to property owners (“Owners”) who use the Platform. Owners may be represented by their managing agent (“Agents”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "2. This Platform only operates as a venue for you to receive job requests, to provide Services to various Owners. Each time an Owner (through an Agent or otherwise) books you to provide Services, you enter into an independent and separate agreement for the provision of the Services with that Owner (each a “Service Agreement”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "3. The terms of each Service Agreement will be negotiated between you and the Owner (through their Agent). These terms must include the Services to be provided and your remuneration (“Service Fee”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "4. You are solely responsible for the collection for your Service Fee from the Owner or Agent, and you are solely responsible for the performance of the Services. We are not liable for the Services or the Service Fee in any way. Any claims or demands must be brought against the Owner or the Agent as applicable."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "5. Each Service Agreement is a separate agreement between the you and the Owner. We are not a party to the Service Agreement in any way, and its formation will not, under any circumstance, create an employment between us and you. Nothing in these Tradesmen Terms or otherwise will or is intended to establish a relationship of partnership, agency or employment between us and you, and it is the intention of the parties that any such relationship is expressly denied."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "6. You agree that may refer Owners to you through our special “Just Find Me One” function (“JFMO Function”)."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "3. Your Warranties"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1. You make the following warranties to us on registration, each time you sign in and each time you agree a new Service Agreement. You also acknowledge that the warranties are essential terms of these Tradesmen Terms and that your registration as Tradesmen is strictly conditional on full compliance with all warranties."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "2. Qualifications:"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(a) You warrant and acknowledge that you hold, and will continue to hold for the term of this agreement, all certificates, licences, memberships and qualifications required to perform the Services under any Service Agreement you enter into."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(b) You may be required to provide evidence that you hold current certificates, licences, memberships and qualifications."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(c)If you not (or cease to) hold any such certificate, licence, membership or qualification at any time for whatever reason (including if it is suspended or cancelled), you must immediately notify us."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "3. Services:"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(a)You must perform the Services under any Service Agreement the standard of professional skill, care and competence expected of a skilled technical or professional person or consultant experienced in performing the same or similar services;"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(b)You must not charge an Owner any additional fee in relation to a Service Agreement on top of the disclosed Service Fee;"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(c)You must not collect or request payments in relation to a Service Agreement outside of the Platform;"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(d)You must comply with all the requirements of each relevant law, regulation, Authorisation, ruling, judgment, order or decree of any governmental agency relevant to the performance of the Services under any Service Agreement, including complying with the Privacy Act 1988 (Cth); and"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "4.You warrant that you will comply with any of our reasonable directions."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "5. These warranties are in addition to any warranties and obligations you have under the General Terms."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "4. Referral Fee"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1. In consideration for being able to use the Platform as a Tradesmen, and us letting you participate in the JFMO Function, you agree that you must pay to us a referral fee for each Service Agreement you enter into as a result of the JFMO Function (“Referral Fee”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "2. The Referral Fee is currently 15% of the Service Fee. You must provide us evidence of the Service Fee by way of a valid tax invoice agreed between you and the Owner."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "3. We will issue you an invoice for the Referral Fee. You must complete payment of the invoice within 14 days to the bank account nominated in the invoice."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "4. We reserve the right to amend the Referral Fee at any time by amending these Tradesmen Terms on our website. The amended Referral Fee will apply to any new Service Agreements entered into subsequent to the amendment, but not to any Service Agreements entered into before the amendment of the Tradesmen Terms."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "5. Other Agreements"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1. You acknowledge that we may enter into separate agreements with other users of the Platform, including but not limited to the Owners, Agents and Tenants. Those agreements are separate agreements and you are not entitled to rely on the terms of those agreements in any way."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "6. Disclaimer and limitation of liability"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1. We exclude all warranties, conditions, terms, representations, statements and promises of whatever nature, whether express or implied (“Warranties”) other than those expressly set out in these General Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "2. We exclude any Warranties in relation to the accuracy, suitability, completeness, fitness for purpose, quality or anything else in relation to any Owner or Agent."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "3. You acknowledge that you must only rely on your own enquiries in relation to such Owner or Agent or any other information or material contained on the Platform. You should not rely solely on any information on the Platform to make business or personal medical decisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "4. We provide the Platform on an “as is” and on an “as available” basis without any Warranties as to continuous, uninterrupted or secure access to the Platform, that its servers are free of computer viruses, bugs or other harmful components, that defects will be corrected, or that you will not have disruption or other difficulties in using the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "5. We are not responsible for any action of any third-party, user, Owner, Agent or other Tradesmen. Any dealings you have with such parties are exclusively entered into between you and them."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "6. We are not party to any Service Agreement and any claim in relation to a Service Agreement must be brought against the relevant Owner or Agent as applicable."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "7. In the event that we terminate the Platform or your access to the Platform, you release us from all liability, loss or claims suffered by you as result of or arising out of such termination."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "8. To the extent that legislation or other law restricts our right to exclude Warranties under these General Terms, these General Terms must be read subject to those provisions and nothing in these General Terms is intended to alter or restrict the operation of such provisions. If those statutory provisions apply, notwithstanding any other provision of these General Terms, to the extent that we are entitled to do so, we limit our liability pursuant to such provisions:",
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(a)in the case of goods:"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-3" },
+            "(i)the replacement of the goods or the supply of equivalent goods;"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-3" },
+            "(ii)the payment of the cost of replacing the goods or of acquiring equivalent goods; and"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(b)in the case of services:"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-3" },
+            "(i)the supply of the services again; or"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-3" },
+            "(ii)the payment of the cost of having the services supplied again."
+          )
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "9. Our liability arising in connection with these General Terms or the Platform is limited as follows:",
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(a) we are not liable for any consequential, special, indirect or remote loss;"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(b) our total maximum total liability arising in connection with these Tradesmen Terms is capped to the total Service Fee of the relevant Service Agreement or if this is not enforceable, the total net Service Fees recovered by you over the last 12 month period;"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(c) our liability is limited to the extent that you contributed to the liability;"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(d) we will not be liable to any claim commenced later than 6 months after you had become aware of the facts giving rise to it; and"
+          ),
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(e) our liability is subject to your duty to mitigate your loss."
+          )
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "10. All of the above subclauses are cumulative to one another."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "7. Release"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "To the maximum extent permitted by law, you agree to release us and our officers, directors, shareholders, agents, employees, consultants, affiliates, subsidiaries, sponsors, and other third-party partners (“Released Parties”) from claims, demands, and damages (direct and consequential) of every kind and nature, known and unknown, now and in the future (“Claims”), arising out of or in any way connected with any Service Agreement, Owner or Agent, Tradesmen, transaction with a third party, your interactions with other members, or in connection with the Platform. You further waive any and all rights and benefits otherwise conferred by any statutory or non-statutory law of any jurisdiction that would purport to limit the scope of a release or waiver. This clause survives termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "8. Indemnity"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "You agree to indemnify, defend and hold all the Released Parties harmless from any Claims, made by any third party (including an Owner or Agent, or Tradesmen) made in relation to any Service Agreement or your breach of these Tradesmen Terms. You agree to promptly notify us of any third-party Claims, cooperate with all Released Parties in defending such Claims and pay all fees, costs and expenses associated with defending such Claims (including, but not limited to, legal fees). You agree not to settle any Claim without our prior written consent. This clause survives termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "9. Termination"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1.These Tradesmen Terms terminate automatically if we cease to operate the Platform for any reason."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "You acknowledge and agree that:",
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(a) we may terminate your access to the Platform at any time without giving any explanation."
+          ),
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(b) we may terminate these General Terms immediately by notice to you in writing if you are deemed to breach these General Terms or associated policies in any way, in our sole discretion."
+          ),
+          React.createElement(
+            "p",
+            { className: "level-2" },
+            "(c) Termination of these General Terms or your access to the Platform does not release you from any of your obligations and liabilities that may have arisen or been incurred prior to the date of such termination, or any provisions which are intended to survive termination."
+          )
+        ),
+        React.createElement(
+          "h5",
+          { className: "level-0" },
+          "10. General"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "1.You must not assign, sublicense or otherwise deal in any other way with any of your rights under these General Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "2.If a provision of these General Terms is invalid or unenforceable it is to be read down or severed to the extent necessary without affecting the validity or enforceability of the remaining provisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "3.These General Terms are governed by the laws of NSW, Australia and each party submits to the jurisdiction of the courts of that State and all courts of appeal therefrom."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "4.Any waiver of any term on these General Terms by us can only be done in express writing. Any failure on our part to enforce a term does not constitute a waiver and we reserve the right in relation to all breaches unless expressly stated otherwise."
+        )
+      )
+    );
+  }
+});
+var TradyTermsAndConditions = React.createClass({
+  displayName: "TradyTermsAndConditions",
+
+  getInitialState: function () {
+    return {
+      card: null,
+      isAgree: false,
+      errors: ''
+    };
+  },
+
+  termsAndConditionsText: function () {
+    return React.createElement(TermsAndConditions, null);
+  },
+
+  generateHowItWorks: function () {
+    return React.createElement(
+      "div",
+      { className: "how-it-works" },
+      React.createElement(
+        "label",
+        { className: "how-it-works-title text-center" },
+        "HOW IT WORKS"
+      ),
+      React.createElement(
+        "div",
+        { className: "how-it-works-item" },
+        React.createElement(
+          "label",
+          { className: "number" },
+          "1"
+        ),
+        React.createElement(
+          "label",
+          { className: "text" },
+          "We provide you with free high quality leads from strata and property managers"
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "how-it-works-item" },
+        React.createElement(
+          "label",
+          { className: "number" },
+          "2"
+        ),
+        React.createElement(
+          "label",
+          { className: "text" },
+          "You submit a quote for the job. If your quote is accepted, you will be sent a work order from the property management agency."
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "how-it-works-item" },
+        React.createElement(
+          "label",
+          { className: "number" },
+          "3"
+        ),
+        React.createElement(
+          "label",
+          { className: "text" },
+          "Once the job is complete, you must submit an invoice using our system for payment."
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "how-it-works-item" },
+        React.createElement(
+          "label",
+          { className: "number" },
+          "4"
+        ),
+        React.createElement(
+          "label",
+          { className: "text" },
+          "When you have recieved payment MaintenanceApp will process a service fee totaling 15% of the total invoices you have submitted in the previouse month. Please note MaintenanceApp shares 33% of this service fee with the agency. So everybody wins :)"
+        )
+      )
+    );
+  },
+
+  checkOffAgree: function () {
+    var isAgree = this.state.isAgree;
+
+    this.setState({
+      errors: '',
+      isAgree: !isAgree
+    });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      "p",
+      { id: "errorbox", className: "error" },
+      error ? error : ''
+    );
+  },
+
+  onBack: function () {
+    location.href = this.props.edit_services_path;
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    var isAgree = this.state.isAgree;
+
+    var self = this;
+
+    var params = {
+      terms_and_conditions: isAgree,
+      trady_id: this.props.trady_id,
+      trady_company_id: this.props.trady_company_id,
+      maintenance_request_id: this.props.maintenance_request_id
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/tradie_term_agreements',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return self.setState({ errors: res.errors });
+        }
+      },
+      error: function (errors) {}
+    });
+
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    var isAgree = this.state.isAgree;
+
+    return React.createElement(
+      "form",
+      { id: "terms-and-conditions", onSubmit: this.submit },
+      this.generateHowItWorks(),
+      React.createElement(
+        "div",
+        { className: "how-it-works-note text-center" },
+        "We believe that by using our system you will greatly increase your business revenue and take your business to the next level."
+      ),
+      this.termsAndConditionsText(),
+      React.createElement(
+        "label",
+        { className: "agree_checkbox" },
+        "Agree To Terms and Conditions",
+        React.createElement("input", {
+          type: "checkbox",
+          id: "terms_and_conditions",
+          ref: function (elem) {
+            return _this.terms_and_conditions = elem;
+          },
+          onChange: this.checkOffAgree
+        }),
+        React.createElement("span", { className: "checkmark" })
+      ),
+      this.renderError(this.state.errors),
+      React.createElement(
+        "div",
+        { className: "TAC-buttons" },
+        React.createElement(
+          "button",
+          { type: "button", className: "btn button-back", onClick: this.onBack },
+          "Back"
+        ),
+        React.createElement(
+          "button",
+          { type: "submit", className: "btn button-submit" },
+          "Submit"
+        )
+      )
+    );
+  }
+});
+var TradyRegistrationForm = React.createClass({
+  displayName: 'TradyRegistrationForm',
+
+  getInitialState: function () {
+    var step = this.props.step;
+
+    var level = ['trady', 'trady-company', 'service', 'terms-and-conditions'];
+
+    return {
+      errors: {},
+      step: step,
+      level: (level.indexOf(step) || 0) + 1
+    };
+  },
+
+  componentDidMount: function () {
+    $('body > div.layout').css('background-color', 'white');
+  },
+
+  labelTitle: function (number, text, isPass) {
+    return React.createElement(
+      'div',
+      { className: "registration-label-title " + (isPass && 'pass' || '') },
+      React.createElement(
+        'div',
+        { className: "step-status " + (isPass && 'pass' || '') },
+        number > 1 && React.createElement('div', { className: 'separate-line ' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-number' },
+        number
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-text' },
+        text
+      )
+    );
+  },
+
+  generateStepTitle: function () {
+    var level = this.state.level;
+
+    return React.createElement(
+      'div',
+      { className: 'registration-title' },
+      this.labelTitle(1, React.createElement(
+        'p',
+        null,
+        'User',
+        React.createElement('br', null),
+        'Registration'
+      ), level > 0),
+      this.labelTitle(2, React.createElement(
+        'p',
+        null,
+        'Company',
+        React.createElement('br', null),
+        'Registration'
+      ), level > 1),
+      this.labelTitle(3, React.createElement(
+        'p',
+        null,
+        'Services',
+        React.createElement('br', null),
+        'Available'
+      ), level > 2),
+      this.labelTitle(4, React.createElement(
+        'p',
+        null,
+        'Terms',
+        React.createElement('br', null),
+        '&',
+        React.createElement('br', null),
+        'Conditions'
+      ), level > 3)
+    );
+  },
+
+  generateTitle: function () {
+    var step = this.state.step;
+
+    switch (step) {
+      case 'trady':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'User Registration'
+        );
+      case 'trady-company':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Company Registration'
+        );
+      case 'service':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Services Registration'
+        );
+      case 'terms-and-conditions':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Terms & Conditions'
+        );
+    }
+  },
+
+  generateForm: function () {
+    var step = this.state.step;
+
+    switch (step) {
+      case 'trady':
+        return React.createElement(Trady, this.props);
+      case 'trady-company':
+        return React.createElement(NewTradyCompany, this.props);
+      case 'service':
+        return React.createElement(ServiceList, this.props);
+      case 'terms-and-conditions':
+        return React.createElement(TradyTermsAndConditions, this.props);
+    }
+  },
+
+  componentWillUnmount: function () {
+    $('body > div.layout').css('background-color', '#F4F8FB');
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'registration', className: 'trady-registration' },
+      this.generateStepTitle(),
+      this.generateTitle(),
+      this.generateForm()
+    );
+  }
+});
+var Trady = React.createClass({
+  displayName: "Trady",
+
+  getInitialState: function () {
+    return {
+      errors: {}
+    };
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+    var errors = this.state.errors;
+
+    errors[id] = '';
+    this.setState({ errors: errors });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      "p",
+      { id: "errorbox", className: "error" },
+      error && error[0] || ''
+    );
+  },
+
+  fillEmail: function (_ref2) {
+    var _ref2$target = _ref2.target;
+    var value = _ref2$target.value;
+    var id = _ref2$target.id;
+
+    this.removeError({ target: { id: id } });
+    this.setState({
+      email: value
+    });
+  },
+
+  onSubmit: function (e) {
+    var self = this;
+    e.preventDefault();
+    var FD = new FormData(document.getElementById('new_user'));
+
+    $.ajax({
+      type: 'POST',
+      url: '/tradie_registrations',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: FD,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+  },
+
+  render: function () {
+    var renderError = this.renderError;
+    var removeError = this.removeError;
+    var fillEmail = this.fillEmail;
+    var _state = this.state;
+    var errors = _state.errors;
+    var email = _state.email;
+
+    return React.createElement(
+      "form",
+      { role: "form", className: "agencies", id: "new_user", onSubmit: this.onSubmit },
+      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+      React.createElement("input", { type: "hidden", name: "authenticity_token", value: this.props.authenticity_token }),
+      React.createElement("input", { type: "hidden", name: "user[trady_attributes][jfmo_participant]", value: true }),
+      React.createElement("input", {
+        type: "hidden",
+        name: "user[trady_attributes][trady_company_id]",
+        value: this.props.trady_company_id || ''
+      }),
+      React.createElement("input", {
+        type: "hidden",
+        name: "user[trady_attributes][maintenance_request_id]",
+        value: this.props.maintenance_request_id || ''
+      }),
+      React.createElement(
+        "div",
+        { className: "user-email" },
+        React.createElement("input", {
+          type: "text",
+          id: "email",
+          name: "user[email]",
+          placeholder: "Email",
+          autoCapitalize: "off",
+          autoCorrect: "off",
+          autoComplete: "off",
+          onChange: fillEmail,
+          className: errors['trady.email'] ? 'has-error' : ''
+        }),
+        renderError(errors['trady.email'])
+      ),
+      React.createElement(
+        "div",
+        { className: "user-password" },
+        React.createElement("input", {
+          type: "password",
+          id: "password",
+          name: "user[password]",
+          placeholder: "Password",
+          onChange: removeError,
+          className: errors['password'] ? 'has-error' : ''
+        }),
+        renderError(errors['password'])
+      ),
+      React.createElement(
+        "div",
+        { className: "user-password-confirmation" },
+        React.createElement("input", {
+          type: "password",
+          placeholder: "Password Confirmation",
+          id: "password_confirmation",
+          name: "user[password_confirmation]",
+          onChange: removeError,
+          className: errors['password_confirmation'] ? 'has-error' : ''
+        }),
+        renderError(errors['password_confirmation'])
+      ),
+      React.createElement(
+        "div",
+        { className: "agency-name trady-name" },
+        React.createElement("input", {
+          type: "text",
+          placeholder: "Name",
+          id: "trady.name",
+          name: "user[trady_attributes][name]",
+          onChange: removeError,
+          className: errors['trady.name'] ? 'has-error' : ''
+        }),
+        renderError(errors['trady.name'])
+      ),
+      React.createElement(
+        "div",
+        { className: "agency-name trady-name" },
+        React.createElement("input", {
+          type: "text",
+          value: email,
+          name: "user[trady_attributes][email]",
+          style: { display: 'none' }
+        })
+      ),
+      React.createElement(
+        "div",
+        { className: "agency-name trady-company-name" },
+        React.createElement("input", {
+          type: "text",
+          placeholder: "Company Name",
+          id: "trady.company_name",
+          name: "user[trady_attributes][company_name]",
+          onChange: removeError,
+          className: errors['trady.company_name'] ? 'has-error' : ''
+        }),
+        renderError(errors['trady.company_name'])
+      ),
+      React.createElement(
+        "div",
+        { className: "user-mobile" },
+        React.createElement("input", {
+          type: "text",
+          placeholder: "Mobile phone",
+          id: "trady.mobile",
+          name: "user[trady_attributes][mobile]",
+          onChange: removeError,
+          className: errors['trady.mobile'] ? 'has-error' : ''
+        }),
+        renderError(errors['trady.mobile'])
+      ),
+      React.createElement(
+        "div",
+        { className: "agency-button" },
+        React.createElement(
+          "button",
+          {
+            type: "submit",
+            className: "button-primary button-submit green"
+          },
+          "Next"
+        )
+      ),
+      false && React.createElement(
+        "div",
+        { className: "have-account text-center" },
+        React.createElement(
+          "p",
+          null,
+          "Already have an Account?"
+        ),
+        React.createElement(
+          "a",
+          { href: "/login" },
+          "Login"
+        )
+      )
+    );
+  }
+});
+var NewTradyCompany = React.createClass({
+  displayName: "NewTradyCompany",
+
+  getInitialState: function () {
+    var trady_company = this.props.trady_company;
+
+    return {
+      errors: {},
+      address: trady_company && trady_company.address,
+      same_address: trady_company && trady_company.mailing_address_same,
+      mailing_address: trady_company && trady_company.mailing_address,
+      gst_registration: trady_company && trady_company.gst_registration ? true : false,
+      trady_company: trady_company || {},
+      notification: {
+        title: "",
+        bgClass: "",
+        contnet: ""
+      }
+    };
+  },
+
+  handleChange: function (event) {
+    this.setState({ address: event.target.value });
+    if (!!this.state.same_address) {
+      this.removeError({ target: { id: 'mailing_address' } });
+      this.setState({
+        mailing_address: event.target.value
+      });
+    }
+    this.removeError(event);
+  },
+
+  onSame: function (isSame) {
+    if (!this.state.same_address) {
+      this.removeError({ target: { id: 'mailing_address' } });
+      this.setState({ mailing_address: this.state.address });
+    }
+
+    this.setState({
+      same_address: isSame
+    });
+  },
+
+  changeMailingAddress: function (e) {
+    this.setState({
+      mailing_address: e.target.value
+    });
+    this.removeError(e);
+  },
+
+  onSubmit: function (e) {
+
+    var flag = false;
+    var isInvoice = this.props.system_plan === 'Invoice';
+
+    var getValidValue = function (obj) {
+      return obj && obj.value;
+    };
+
+    var trady_company = {
+      trady_id: this.props.trady_id || '',
+      email: getValidValue(this.email),
+      address: getValidValue(this.address),
+      company_name: getValidValue(this.company_name),
+      trading_name: getValidValue(this.trading_name),
+      mobile_number: getValidValue(this.mobile_number),
+      mailing_address: getValidValue(this.mailing_address),
+      maintenance_request_id: this.props.maintenance_request_id || ''
+    };
+
+    trady_company.abn = getValidValue(this.abn);
+    trady_company.landline = getValidValue(this.landline);
+    trady_company.mailing_address_same = this.state.same_address;
+    trady_company.gst_registration = this.state.gst_registration;
+    trady_company.bsb_number = getValidValue(this.bsb_number);
+    trady_company.account_name = getValidValue(this.account_name);
+    trady_company.bank_account_number = getValidValue(this.bank_account_number);
+    trady_company.profession_license_number = getValidValue(this.profession_license_number);
+
+    if (this.props.trady_company) {
+      trady_company.id = this.props.trady_company.id;
+    }
+
+    var params = { trady_company: trady_company };
+
+    var self = this;
+    $.ajax({
+      type: trady_company.id ? 'PUT' : 'POST',
+      url: trady_company.id ? '/update_tradie_company' : '/create_tradie_company',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        self.setState({ errors: res.errors || {} });
+      },
+      error: function (err) {}
+    });
+
+    e.preventDefault();
+
+    return;
+  },
+
+  removeError: function (_ref) {
+    var id = _ref.target.id;
+
+    var errors = Object.assign({}, this.state.errors);
+    if (errors[id]) {
+      errors[id] = false;
+      this.setState({ errors: errors });
+    }
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      "p",
+      { id: "errorbox", className: "error" },
+      error && error[0] ? error[0] : ''
+    );
+  },
+
+  renderButtonBack: function () {
+    var _this = this;
+
+    return React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "button-back",
+        onClick: function () {
+          return _this.backButton.click();
+        }
+      },
+      React.createElement("a", {
+        style: { display: 'none' },
+        href: this.props.new_tradie_registration_path,
+        ref: function (elem) {
+          return _this.backButton = elem;
+        }
+      }),
+      "Back"
+    );
+  },
+
+  render: function () {
+    var _this2 = this;
+
+    var isInvoice = this.props.system_plan === "Invoice";
+    var errors = this.state.errors;
+
+    var renderErrorFunc = this.renderError;
+    var removeErrorFunc = this.removeError;
+
+    return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "form",
+        { role: "form", className: "form-horizontal", id: "new_trady_company", onSubmit: this.onSubmit },
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+
+              type: "text",
+              id: "company_name",
+              placeholder: "Company Name",
+              defaultValue: this.state.trady_company.company_name,
+              ref: function (ref) {
+                return _this2.company_name = ref;
+              },
+              className: "form-control " + (errors['company_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['company_name'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+
+              type: "text",
+              id: "trading_name",
+              placeholder: "Trading Name",
+              defaultValue: this.state.trady_company.trading_name,
+              ref: function (ref) {
+                return _this2.trading_name = ref;
+              },
+              className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['trading_name'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+
+              id: "abn",
+              type: "text",
+              placeholder: "Australian Business Number",
+              defaultValue: this.state.trady_company.abn,
+              ref: function (ref) {
+                return _this2.abn = ref;
+              },
+              className: "form-control " + (errors['abn'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['abn'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+
+              id: "profession_license_number",
+              type: "text",
+              placeholder: "Profession License Number",
+              defaultValue: this.state.trady_company.profession_license_number,
+              ref: function (ref) {
+                return _this2.profession_license_number = ref;
+              },
+              className: "form-control " + (errors['profession_license_number'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['profession_license_number'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group text-center" },
+          "Is your business registered for GST?",
+          React.createElement(
+            "div",
+            { className: "radio-same-address" },
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "Yes",
+              React.createElement("input", {
+                type: "radio",
+                name: "gst_registration",
+                value: true,
+                onChange: function () {
+                  return _this2.setState({ gst_registration: true });
+                },
+                defaultChecked: !!this.state.gst_registration
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            ),
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "No",
+              React.createElement("input", {
+                type: "radio",
+                name: "gst_registration",
+                value: false,
+                onChange: function () {
+                  return _this2.setState({ gst_registration: false });
+                },
+                defaultChecked: !this.state.gst_registration
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+
+              type: "text",
+              id: "address",
+              placeholder: "Address",
+              defaultValue: this.state.address,
+              onChange: this.handleChange,
+              ref: function (ref) {
+                return _this2.address = ref;
+              },
+              className: "form-control " + (errors['address'] ? "has-error" : "")
+              // onChange={removeErrorFunc}
+            }),
+            renderErrorFunc(errors['address'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group text-center" },
+          "Is your mailing address the same as the address above?",
+          React.createElement(
+            "div",
+            { className: "radio-same-address" },
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "Yes",
+              React.createElement("input", {
+                type: "radio",
+                name: "same-address",
+                value: true,
+                onChange: function () {
+                  return _this2.onSame(true);
+                },
+                defaultChecked: !!this.state.same_address
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            ),
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "No",
+              React.createElement("input", {
+                type: "radio",
+                name: "same-address",
+                onChange: function () {
+                  return _this2.onSame(false);
+                },
+                value: false,
+                defaultChecked: !this.state.same_address
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+
+              type: "text",
+              id: "mailing_address",
+              placeholder: "Mailing Address",
+              readOnly: this.state.same_address,
+              value: this.state.mailing_address,
+              onChange: this.changeMailingAddress,
+              ref: function (ref) {
+                return _this2.mailing_address = ref;
+              },
+              className: "form-control " + (errors['mailing_address'] ? "has-error" : "")
+            }),
+            renderErrorFunc(errors['mailing_address'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              type: "text",
+              id: "mobile_number",
+              placeholder: "Mobile Number",
+              defaultValue: this.state.trady_company.mobile_number,
+              ref: function (ref) {
+                return _this2.mobile_number = ref;
+              },
+              className: "form-control " + (!!this.state.errors['mobile_number'] && "has-error"),
+              onChange: removeErrorFunc
+            }),
+            this.renderError(errors['mobile_number'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              id: "landline",
+              type: "text",
+              placeholder: "Landline Number",
+              defaultValue: this.state.trady_company.landline,
+              ref: function (ref) {
+                return _this2.landline = ref;
+              },
+              className: "form-control " + (errors['landline'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['landline'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+
+              type: "text",
+              id: "email",
+              placeholder: "Email",
+              defaultValue: this.state.trady_company.email,
+              ref: function (ref) {
+                return _this2.email = ref;
+              },
+              className: "form-control " + (!!this.state.errors['email'] && "has-error"),
+              onChange: removeErrorFunc
+            }),
+            this.renderError(errors['email'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              type: "text",
+              id: "bsb_number",
+              placeholder: "BSB Number",
+              // onChange={this.checkValidate}
+              defaultValue: this.state.trady_company.bsb_number,
+              ref: function (ref) {
+                return _this2.bsb_number = ref;
+              },
+              className: "form-control " + (errors['bsb_number'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['bsb_number'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              type: "text",
+              id: "bank_account_number",
+              placeholder: "Bank Account Number",
+              defaultValue: this.state.trady_company.bank_account_number,
+              ref: function (ref) {
+                return _this2.bank_account_number = ref;
+              },
+              className: "form-control " + (errors['bank_account_number'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['bank_account_number'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "form-group" },
+          React.createElement(
+            "div",
+            { className: "col-sm-10" },
+            React.createElement("input", {
+              type: "text",
+              id: "account_name",
+              placeholder: "Account Name",
+              // onChange={this.checkValidate}
+              defaultValue: this.state.trady_company.account_name,
+              ref: function (ref) {
+                return _this2.account_name = ref;
+              },
+              className: "form-control " + (errors['account_name'] ? "has-error" : ""),
+              onChange: removeErrorFunc
+            }),
+            renderErrorFunc(errors['account_name'])
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "text-center buttons" },
+          this.renderButtonBack(),
+          React.createElement(
+            "button",
+            { type: "submit", className: "button-submit green option-button" },
+            "Next"
+          )
+        )
+      )
+    );
+  }
+});
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -91577,11 +96096,13 @@ var EditTradyCompany = React.createClass({
     var profile_image = _props$profile_image === undefined ? {} : _props$profile_image;
     var _props$trady_company = _props.trady_company;
     var trady_company = _props$trady_company === undefined ? {} : _props$trady_company;
+    var mailing_address_same = _props.mailing_address_same;
 
     return {
       errors: {},
       address: this.props.address,
       mailing_address: this.props.mailing_address,
+      same_address: !!mailing_address_same,
       gst_registration: !!this.props.gst_registration ? true : false,
       gallery: _extends({}, profile_image, { image_url: image_url }),
       notification: {
@@ -91594,25 +96115,23 @@ var EditTradyCompany = React.createClass({
 
   handleChange: function (event) {
     this.setState({ address: event.target.value });
-    if (!!this.state.same_Address) {
+    if (!!this.state.same_address) {
       this.removeError({ target: { id: 'mailing_address' } });
       this.setState({
-        mailing_address: this.address.value
+        mailing_address: event.target.value
       });
     }
     this.removeError(event);
   },
 
-  onSame: function () {
-    if (!this.state.same_Address) {
-      this.setState({
-        mailing_address: this.state.address
-      });
+  onSame: function (isSame) {
+    if (!this.state.same_address) {
       this.removeError({ target: { id: 'mailing_address' } });
+      this.setState({ mailing_address: this.state.address });
     }
 
     this.setState({
-      same_Address: !this.state.same_Address
+      same_address: isSame
     });
   },
 
@@ -91671,6 +96190,7 @@ var EditTradyCompany = React.createClass({
       mobile_number: getValidValue(this.mobile_number),
       mailing_address: getValidValue(this.mailing_address),
       trady_company_id: this.props.id,
+      mailing_address_same: this.state.same_address,
       trady_id: this.props.trady_id,
       quote_id: this.props.quote_id,
       work_flow: this.props.work_flow,
@@ -91730,23 +96250,33 @@ var EditTradyCompany = React.createClass({
   },
 
   renderButtonBack: function () {
+    var _this = this;
+
+    var backPath = '';
     if (this.props.system_plan == "Invoice") {
-      return React.createElement(
-        "a",
-        { className: "btn btn-default btn-back m-r-lg", href: "/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.id },
-        "Back"
-      );
+      backPath = "/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.id;
     } else if (this.props.system_plan == "Quote") {
-      return React.createElement(
-        "a",
-        { className: "btn btn-default btn-back m-r-lg", href: "/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id },
-        "Back"
-      );
+      backPath = "/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id;
     }
+
+    return React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "button-back",
+        onClick: function () {
+          return _this.backButton.click();
+        }
+      },
+      React.createElement("a", { href: backPath, style: { display: 'none' }, ref: function (e) {
+          return _this.backButton = e;
+        } }),
+      "Back"
+    );
   },
 
   render: function () {
-    var _this = this;
+    var _this2 = this;
 
     var isInvoice = this.props.system_plan === "Invoice";
     var errors = this.state.errors;
@@ -91761,11 +96291,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Company Name / Sole Trader Name"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -91775,7 +96300,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "Company Name / Sole Trader Name",
             defaultValue: this.props.company_name,
             ref: function (ref) {
-              return _this.company_name = ref;
+              return _this2.company_name = ref;
             },
             className: "form-control " + (errors['company_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -91787,11 +96312,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Trading name"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -91801,7 +96321,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "Trading Name",
             defaultValue: this.props.trading_name,
             ref: function (ref) {
-              return _this.trading_name = ref;
+              return _this2.trading_name = ref;
             },
             className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -91813,21 +96333,16 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Abn"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
 
             id: "abn",
             type: "text",
-            placeholder: "Abn",
+            placeholder: "Australian Business Number",
             defaultValue: this.props.abn,
             ref: function (ref) {
-              return _this.abn = ref;
+              return _this2.abn = ref;
             },
             className: "form-control " + (errors['abn'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -91839,11 +96354,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Profession License Number"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -91853,7 +96363,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "Profession License Number",
             defaultValue: this.props.profession_license_number,
             ref: function (ref) {
-              return _this.profession_license_number = ref;
+              return _this2.profession_license_number = ref;
             },
             className: "form-control " + (errors['profession_license_number'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -91863,31 +96373,46 @@ var EditTradyCompany = React.createClass({
       ),
       isInvoice && React.createElement(
         "div",
-        { className: "form-group" },
+        { className: "form-group text-center" },
+        "Is your business registered for GST?",
         React.createElement(
           "div",
-          { className: "col-sm-10 col-sm-offset-2" },
-          React.createElement("input", {
-            type: "checkbox",
-            id: "gst_registration",
-            onChange: function () {
-              _this.setState({
-                gst_registration: !_this.state.gst_registration
-              });
-            },
-            checked: !!this.state.gst_registration ? "checked" : false
-          }),
-          "GST  Registration"
+          { className: "radio-same-address" },
+          React.createElement(
+            "label",
+            { className: "radio-option" },
+            "Yes",
+            React.createElement("input", {
+              type: "radio",
+              name: "gst_registration",
+              value: true,
+              onChange: function () {
+                return _this2.setState({ gst_registration: true });
+              },
+              defaultChecked: !!this.state.gst_registration
+            }),
+            React.createElement("span", { className: "radio-checkmark" })
+          ),
+          React.createElement(
+            "label",
+            { className: "radio-option" },
+            "No",
+            React.createElement("input", {
+              type: "radio",
+              name: "gst_registration",
+              value: false,
+              onChange: function () {
+                return _this2.setState({ gst_registration: false });
+              },
+              defaultChecked: !this.state.gst_registration
+            }),
+            React.createElement("span", { className: "radio-checkmark" })
+          )
         )
       ),
       React.createElement(
         "div",
         { className: "form-group" },
-        React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Address"
-        ),
         React.createElement(
           "div",
           { className: "col-sm-10" },
@@ -91899,7 +96424,7 @@ var EditTradyCompany = React.createClass({
             defaultValue: this.state.address,
             onChange: this.handleChange,
             ref: function (ref) {
-              return _this.address = ref;
+              return _this2.address = ref;
             },
             className: "form-control " + (errors['address'] ? "has-error" : "")
             // onChange={removeErrorFunc}
@@ -91909,22 +96434,46 @@ var EditTradyCompany = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "form-group" },
-        React.createElement("input", {
-          type: "checkbox",
-          onChange: this.onSame,
-          id: "mailing_address_same"
-        }),
-        "Mailing Address same as Above"
+        { className: "form-group text-center" },
+        "Is your mailing address the same as the address above?",
+        React.createElement(
+          "div",
+          { className: "radio-same-address" },
+          React.createElement(
+            "label",
+            { className: "radio-option" },
+            "Yes",
+            React.createElement("input", {
+              type: "radio",
+              name: "same-address",
+              value: true,
+              onChange: function () {
+                return _this2.onSame(true);
+              },
+              defaultChecked: !!this.state.same_address
+            }),
+            React.createElement("span", { className: "radio-checkmark" })
+          ),
+          React.createElement(
+            "label",
+            { className: "radio-option" },
+            "No",
+            React.createElement("input", {
+              type: "radio",
+              name: "same-address",
+              onChange: function () {
+                return _this2.onSame(false);
+              },
+              value: false,
+              defaultChecked: !this.state.same_address
+            }),
+            React.createElement("span", { className: "radio-checkmark" })
+          )
+        )
       ),
       React.createElement(
         "div",
         { className: "form-group" },
-        React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Mailing address"
-        ),
         React.createElement(
           "div",
           { className: "col-sm-10" },
@@ -91933,10 +96482,11 @@ var EditTradyCompany = React.createClass({
             type: "text",
             id: "mailing_address",
             placeholder: "Mailing Address",
+            readOnly: this.state.same_address,
             value: this.state.mailing_address,
             onChange: this.changeMailingAddress,
             ref: function (ref) {
-              return _this.mailing_address = ref;
+              return _this2.mailing_address = ref;
             },
             className: "form-control " + (errors['mailing_address'] ? "has-error" : "")
           }),
@@ -91947,11 +96497,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Mobile number"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -91961,7 +96506,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "Mobile Number",
             defaultValue: this.props.mobile_number,
             ref: function (ref) {
-              return _this.mobile_number = ref;
+              return _this2.mobile_number = ref;
             },
             className: "form-control " + (!!this.state.errors['mobile_number'] && "has-error"),
             onChange: removeErrorFunc
@@ -91973,11 +96518,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Landline Number"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -91987,7 +96527,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "Landline Number",
             defaultValue: this.props.landline,
             ref: function (ref) {
-              return _this.landline = ref;
+              return _this2.landline = ref;
             },
             className: "form-control " + (errors['landline'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -91999,11 +96539,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Company Email"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -92013,7 +96548,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "Email",
             defaultValue: this.props.email,
             ref: function (ref) {
-              return _this.email = ref;
+              return _this2.email = ref;
             },
             className: "form-control " + (errors['email'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -92025,11 +96560,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Account name"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -92039,7 +96569,7 @@ var EditTradyCompany = React.createClass({
             // onChange={this.checkValidate}
             defaultValue: this.props.account_name,
             ref: function (ref) {
-              return _this.account_name = ref;
+              return _this2.account_name = ref;
             },
             className: "form-control " + (errors['account_name'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -92050,11 +96580,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Bsb number"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -92063,7 +96588,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "BSB Number",
             defaultValue: this.props.bsb_number,
             ref: function (ref) {
-              return _this.bsb_number = ref;
+              return _this2.bsb_number = ref;
             },
             className: "form-control " + (errors['bsb_number'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -92074,11 +96599,6 @@ var EditTradyCompany = React.createClass({
         "div",
         { className: "form-group" },
         React.createElement(
-          "label",
-          { className: "control-label col-sm-2 required" },
-          "Bank account number"
-        ),
-        React.createElement(
           "div",
           { className: "col-sm-10" },
           React.createElement("input", {
@@ -92087,7 +96607,7 @@ var EditTradyCompany = React.createClass({
             placeholder: "Bank Account Number",
             defaultValue: this.props.bank_account_number,
             ref: function (ref) {
-              return _this.bank_account_number = ref;
+              return _this2.bank_account_number = ref;
             },
             className: "form-control " + (errors['bank_account_number'] ? "has-error" : ""),
             onChange: removeErrorFunc
@@ -92097,17 +96617,22 @@ var EditTradyCompany = React.createClass({
       )],
       React.createElement(
         "div",
-        { className: "text-center" },
+        { className: "buttons" },
         this.renderButtonBack(),
         React.createElement(
           "button",
-          { type: "submit", className: "button-primary green option-button" },
+          { type: "submit", className: "button-submit" },
           "Next"
         )
       )
     );
   }
 });
+/*<label className="control-label col-sm-2 required">
+ Company Name / Sole Trader Name
+</label>*/ /*<label className="control-label col-sm-2 required">Trading name</label>*/ /*<label className="control-label col-sm-2 required">Abn</label>*/ /*<label className="control-label col-sm-2 required">
+                                                                                                                                                                       Profession License Number
+                                                                                                                                                                     </label>*/ /*<label className="control-label col-sm-2 required">Address</label>*/ /*<label className="control-label col-sm-2 required">Mobile number</label>*/ /*<label className="control-label col-sm-2 required">Landline Number</label>*/ /*<label className="control-label col-sm-2 required">Company Email</label>*/ /*<label className="control-label col-sm-2 required">Account name</label>*/ /*<label className="control-label col-sm-2 required">Bsb number</label>*/ /*<label className="control-label col-sm-2 required">Bank account number</label>*/;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError('Cannot destructure undefined'); }
@@ -92378,25 +96903,23 @@ var AddTradycompany = React.createClass({
 
   handleChange: function (event) {
     this.setState({ address: event.target.value });
-    if (!!this.state.same_Address) {
+    if (!!this.state.same_address) {
       this.removeError({ target: { id: 'mailing_address' } });
       this.setState({
-        mailing_address: this.address.value
+        mailing_address: event.target.value
       });
     }
     this.removeError(event);
   },
 
-  onSame: function () {
-    if (!this.state.same_Address) {
-      this.setState({
-        mailing_address: this.state.address
-      });
+  onSame: function (isSame) {
+    if (!this.state.same_address) {
       this.removeError({ target: { id: 'mailing_address' } });
+      this.setState({ mailing_address: this.state.address });
     }
 
     this.setState({
-      same_Address: !this.state.same_Address
+      same_address: isSame
     });
   },
 
@@ -92529,23 +97052,33 @@ var AddTradycompany = React.createClass({
   },
 
   renderButtonBack: function () {
+    var _this = this;
+
+    var backPath = '';
     if (this.props.system_plan == "Invoice") {
-      return React.createElement(
-        "a",
-        { className: "btn btn-default btn-back m-r-lg", href: "/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.trady_company_id },
-        "Back"
-      );
+      backPath = "/invoice_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id + "&quote_id=" + this.props.quote_id + "&trady_company_id=" + this.props.id;
     } else if (this.props.system_plan == "Quote") {
-      return React.createElement(
-        "a",
-        { className: "btn btn-default btn-back m-r-lg", href: "/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id },
-        "Back"
-      );
+      backPath = "/quote_options?maintenance_request_id=" + this.props.maintenance_request_id + "&trady_id=" + this.props.trady_id;
     }
+
+    return React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "back-button",
+        onClick: function () {
+          return _this.backButton.click();
+        }
+      },
+      React.createElement("a", { href: backPath, style: { display: 'none' }, ref: function (e) {
+          return _this.backButton = e;
+        } }),
+      "Back"
+    );
   },
 
   render: function () {
-    var _this = this;
+    var _this2 = this;
 
     var isInvoice = this.props.system_plan === "Invoice";
     var errors = this.state.errors;
@@ -92563,21 +97096,15 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Company Name / Sole Trader Name"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
-
               type: "text",
               id: "company_name",
               placeholder: "Company Name / Sole Trader Name",
               defaultValue: this.props.company_name,
               ref: function (ref) {
-                return _this.company_name = ref;
+                return _this2.company_name = ref;
               },
               className: "form-control " + (errors['company_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92589,11 +97116,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Trading name"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92603,7 +97125,7 @@ var AddTradycompany = React.createClass({
               placeholder: "Trading Name",
               defaultValue: this.props.trading_name,
               ref: function (ref) {
-                return _this.trading_name = ref;
+                return _this2.trading_name = ref;
               },
               className: "form-control " + (errors['trading_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92615,21 +97137,16 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Abn"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
 
               id: "abn",
               type: "text",
-              placeholder: "Abn",
+              placeholder: "Australian Business Number",
               defaultValue: this.props.abn,
               ref: function (ref) {
-                return _this.abn = ref;
+                return _this2.abn = ref;
               },
               className: "form-control " + (errors['abn'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92641,11 +97158,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Profession License Number"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92655,7 +97167,7 @@ var AddTradycompany = React.createClass({
               placeholder: "Profession License Number",
               defaultValue: this.props.profession_license_number,
               ref: function (ref) {
-                return _this.profession_license_number = ref;
+                return _this2.profession_license_number = ref;
               },
               className: "form-control " + (errors['profession_license_number'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92665,31 +97177,46 @@ var AddTradycompany = React.createClass({
         ),
         isInvoice && React.createElement(
           "div",
-          { className: "form-group" },
+          { className: "form-group text-center" },
+          "Is your business registered for GST?",
           React.createElement(
             "div",
-            { className: "col-sm-10 col-sm-offset-2" },
-            React.createElement("input", {
-              type: "checkbox",
-              id: "gst_registration",
-              onChange: function () {
-                _this.setState({
-                  gst_registration: !_this.state.gst_registration
-                });
-              },
-              checked: !!this.state.gst_registration ? "checked" : false
-            }),
-            "GST  Registration"
+            { className: "radio-same-address" },
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "Yes",
+              React.createElement("input", {
+                type: "radio",
+                name: "gst_registration",
+                value: true,
+                onChange: function () {
+                  return _this2.setState({ gst_registration: true });
+                },
+                defaultChecked: !!this.state.gst_registration
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            ),
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "No",
+              React.createElement("input", {
+                type: "radio",
+                name: "gst_registration",
+                value: false,
+                onChange: function () {
+                  return _this2.setState({ gst_registration: false });
+                },
+                defaultChecked: !this.state.gst_registration
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            )
           )
         ),
         React.createElement(
           "div",
           { className: "form-group" },
-          React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Address"
-          ),
           React.createElement(
             "div",
             { className: "col-sm-10" },
@@ -92701,7 +97228,7 @@ var AddTradycompany = React.createClass({
               defaultValue: this.state.address,
               onChange: this.handleChange,
               ref: function (ref) {
-                return _this.address = ref;
+                return _this2.address = ref;
               },
               className: "form-control " + (errors['address'] ? "has-error" : "")
               // onChange={removeErrorFunc}
@@ -92711,22 +97238,46 @@ var AddTradycompany = React.createClass({
         ),
         React.createElement(
           "div",
-          { className: "form-group" },
-          React.createElement("input", {
-            type: "checkbox",
-            onChange: this.onSame,
-            id: "mailing_address_same"
-          }),
-          "Mailing Address same as Above"
+          { className: "form-group text-center" },
+          "Is your mailing address the same as the address above?",
+          React.createElement(
+            "div",
+            { className: "radio-same-address" },
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "Yes",
+              React.createElement("input", {
+                type: "radio",
+                name: "same-address",
+                value: true,
+                onChange: function () {
+                  return _this2.onSame(true);
+                },
+                defaultChecked: !!this.state.same_address
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            ),
+            React.createElement(
+              "label",
+              { className: "radio-option" },
+              "No",
+              React.createElement("input", {
+                type: "radio",
+                name: "same-address",
+                onChange: function () {
+                  return _this2.onSame(false);
+                },
+                value: false,
+                defaultChecked: !this.state.same_address
+              }),
+              React.createElement("span", { className: "radio-checkmark" })
+            )
+          )
         ),
         React.createElement(
           "div",
           { className: "form-group" },
-          React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Mailing address"
-          ),
           React.createElement(
             "div",
             { className: "col-sm-10" },
@@ -92735,10 +97286,11 @@ var AddTradycompany = React.createClass({
               type: "text",
               id: "mailing_address",
               placeholder: "Mailing Address",
+              readOnly: this.state.same_address,
               value: this.state.mailing_address,
               onChange: this.changeMailingAddress,
               ref: function (ref) {
-                return _this.mailing_address = ref;
+                return _this2.mailing_address = ref;
               },
               className: "form-control " + (errors['mailing_address'] ? "has-error" : "")
             }),
@@ -92749,11 +97301,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Mobile number"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92763,7 +97310,7 @@ var AddTradycompany = React.createClass({
               placeholder: "Mobile Number",
               defaultValue: this.props.mobile_number,
               ref: function (ref) {
-                return _this.mobile_number = ref;
+                return _this2.mobile_number = ref;
               },
               className: "form-control " + (!!this.state.errors['mobile_number'] && "has-error"),
               onChange: removeErrorFunc
@@ -92775,11 +97322,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Landline Number"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92789,7 +97331,7 @@ var AddTradycompany = React.createClass({
               placeholder: "Landline Number",
               defaultValue: this.props.landline,
               ref: function (ref) {
-                return _this.landline = ref;
+                return _this2.landline = ref;
               },
               className: "form-control " + (errors['landline'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92801,11 +97343,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Company Email"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92815,7 +97352,7 @@ var AddTradycompany = React.createClass({
               placeholder: "Email",
               defaultValue: this.props.email,
               ref: function (ref) {
-                return _this.email = ref;
+                return _this2.email = ref;
               },
               className: "form-control " + (errors['email'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92827,11 +97364,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Account name"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92841,7 +97373,7 @@ var AddTradycompany = React.createClass({
               // onChange={this.checkValidate}
               defaultValue: this.props.account_name,
               ref: function (ref) {
-                return _this.account_name = ref;
+                return _this2.account_name = ref;
               },
               className: "form-control " + (errors['account_name'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92852,11 +97384,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Bsb number"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92866,7 +97393,7 @@ var AddTradycompany = React.createClass({
               // onChange={this.checkValidate}
               defaultValue: this.props.bsb_number,
               ref: function (ref) {
-                return _this.bsb_number = ref;
+                return _this2.bsb_number = ref;
               },
               className: "form-control " + (errors['bsb_number'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92877,11 +97404,6 @@ var AddTradycompany = React.createClass({
           "div",
           { className: "form-group" },
           React.createElement(
-            "label",
-            { className: "control-label col-sm-2 required" },
-            "Bank account number"
-          ),
-          React.createElement(
             "div",
             { className: "col-sm-10" },
             React.createElement("input", {
@@ -92890,7 +97412,7 @@ var AddTradycompany = React.createClass({
               placeholder: "Bank Account Number",
               defaultValue: this.props.bank_account_number,
               ref: function (ref) {
-                return _this.bank_account_number = ref;
+                return _this2.bank_account_number = ref;
               },
               className: "form-control " + (errors['bank_account_number'] ? "has-error" : ""),
               onChange: removeErrorFunc
@@ -92900,7 +97422,7 @@ var AddTradycompany = React.createClass({
         )],
         React.createElement(
           "div",
-          { className: "text-center" },
+          { className: "buttons" },
           this.renderButtonBack(),
           React.createElement(
             "button",
@@ -92918,6 +97440,9 @@ var AddTradycompany = React.createClass({
     );
   }
 });
+/*<label className="control-label col-sm-2 required">Company Name / Sole Trader Name</label>*/ /*<label className="control-label col-sm-2 required">Trading name</label>*/ /*<label className="control-label col-sm-2 required">Abn</label>*/ /*<label className="control-label col-sm-2 required">
+                                                                                                                                                                                                                                                           Profession License Number
+                                                                                                                                                                                                                                                         </label>*/ /*<label className="control-label col-sm-2 required">Address</label>*/ /*<label className="control-label col-sm-2 required">Mobile number</label>*/ /*<label className="control-label col-sm-2 required">Landline Number</label>*/ /*<label className="control-label col-sm-2 required">Company Email</label>*/ /*<label className="control-label col-sm-2 required">Account name</label>*/ /*<label className="control-label col-sm-2 required">Bsb number</label>*/ /*<label className="control-label col-sm-2 required">Bank account number</label>*/;
 var CreactOrUploadQuote = React.createClass({
 	displayName: "CreactOrUploadQuote",
 
@@ -95421,6 +99946,41 @@ var TradyMaintenanceRequest = React.createClass({
 		);
 	}
 });
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var TradyPayment = React.createClass({
+  displayName: 'TradyPayment',
+
+  submit: function (params, callback) {
+    var self = this;
+    param.trady_id = this.props.trady_id;
+    param.trady_company_id = this.props.trady_company_id;
+    param.maintenance_request_id = this.props.maintenance_request_id;
+
+    $.ajax({
+      type: 'POST',
+      url: '/trady_payment_registrations',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+      },
+      error: function (err) {
+        return callback(err);
+      }
+    });
+  },
+
+  render: function () {
+    return React.createElement(Payment, _extends({}, this.props, {
+      submit: this.submit
+    }));
+  }
+});
 $(function() {
   $('button').on('click', function(e) {
     var $a = $(this).find('a');
@@ -96040,6 +100600,50 @@ $(function() {
   App.cable = ActionCable.createConsumer();
 
 }).call(this);
+jQuery(function ($) {
+  var show_error, stripeResponseHandler;
+  
+
+
+  $("#new_registration").submit(function (event) {
+    var $form;
+    $form = $(this);
+    $form.find("input[type=submit]").prop("disabled", true);
+    stripe.createToken($form, stripeResponseHandler);
+    return false;
+  });
+
+
+
+  stripeResponseHandler = function (status, response) {
+    var $form, token;
+    $form = $("#new_registration");
+    
+    if (response.error) {
+      show_error(response.error.message);
+      $form.find("input[type=submit]").prop("disabled", false);
+    } else {
+      token = response.id;
+      $form.append($("<input type=\"hidden\" name=\"registration[card_token]\" />").val(token));
+      $("[data-stripe=number]").remove();
+      $("[data-stripe=cvv]").remove();
+      $("[data-stripe=exp-year]").remove();
+      $("[data-stripe=exp-month]").remove();
+      $form.get(0).submit();
+    }
+    return false;
+  };
+
+  show_error = function (message) {
+    $("#flash-messages").html('<div class="alert alert-warning"><a class="close" data-dismiss="alert">×</a><div id="flash_alert">' + message + '</div></div>');
+    $('.alert').delay(5000).fadeOut(3000);
+    return false;
+  };
+});
+
+
+
+
 (function() {
 
 

@@ -3,4 +3,4 @@ reminder_queue:
   class: ReminderQueueWorker
 payment_queue:
   every: ['1d', first_in: '120s']
-  class: ReminderQueueWorker
+  class: ServiceFeeWorker

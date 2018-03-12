@@ -31,7 +31,7 @@ var Footer = React.createClass({
                     </div>
                     <div className="two columns">
                         <div className="footer-social_hp">
-                            <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>
+                            {/* <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>*/}
                             <p>Follow us</p>
                             <div className="social-circle"> <img src="/assets/ico-twitter.png" /> </div>
                             <div className="social-circle"> <img src="/assets/ico-facebook.png" /> </div>
