@@ -424,7 +424,9 @@ var InvoiceItemField = React.createClass({
   },
 
   updatePrice(amount) {
-    this.props.params.updatePrice(amount - this.state.totalamount);
+    if (!isNaN(amount)) {
+      this.props.params.updatePrice(amount - this.state.totalamount);
+    }
   },
 
   onPricing(event) {
@@ -452,22 +454,19 @@ var InvoiceItemField = React.createClass({
     this.updatePrice(totalamount);
     this.setState({
       amount: amount,
-      totalamount: totalamount
+      totalamount: !isNaN(totalamount) ? totalamount : this.state.totalamount,
     });
     this.removeError(event);
   },
 
   onHours({ target: { value } }) {
     const hours = value;
-    if (hours > 0)
-      this.setState({numofhours: hours});
-    else
-      this.setState({numofhours: 0});
+    this.setState({numofhours: hours});
 
     const totalamount = this.state.amount * hours;
     this.updatePrice(totalamount);
     this.setState({
-      totalamount: totalamount
+      totalamount: !isNaN(totalamount) ? totalamount : this.state.totalamount,
     });
   },
 
