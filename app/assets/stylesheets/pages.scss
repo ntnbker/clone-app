@@ -9,6 +9,41 @@ $color-red: #e34f4f;
 	}
 }
 
+.button-primary {
+	color: white;
+	text-decoration: none;
+	a {
+		color: white;
+		text-decoration: none;
+	}
+	&:hover {
+		color: white;
+	}
+}
+.button-primary.green {
+	background-color: #7dc691 !important;
+	border-color: #7dc691 !important;
+	color: white;
+	text-decoration: none;
+	&:hover {
+		background-color: #2FA342 !important;
+		border-color: #2FA342 !important;
+	}
+	a {
+		color: white;
+		text-decoration: none;
+	}
+}
+
+.button-primary.red {
+	background-color: #E77B40 !important;
+	border-color: #E77B40 !important;
+	&:hover {
+		background-color: #B94D13 !important;
+		border-color: #B94D13 !important;
+	}
+}
+
 .pages {
 	background-color: white;
 	position: relative;
@@ -143,6 +178,9 @@ $color-red: #e34f4f;
 							background-color: #5CC993;
 							color: white;
 							border-left:none;
+						}
+						&.signed {
+							font-size: 1.3em;
 						}
 						&.hidden {
 							display: none;
@@ -600,7 +638,7 @@ $color-red: #e34f4f;
 		}
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 820px) {
 		.home-content .header .home-action {
 			width: 60%;
 
@@ -626,6 +664,9 @@ $color-red: #e34f4f;
 						select {
 							font-size: 19px;
 							padding: 0 15px;
+						}
+						span {
+							top: 26px;
 						}
 					}
 					.input-address {
@@ -667,7 +708,7 @@ $color-red: #e34f4f;
 		}
 	}
 
-	@media (max-width: 420px) {
+	@media (max-width: 500px) {
 		.background-image {
 			height: 850px;
 		}
@@ -774,10 +815,10 @@ $color-red: #e34f4f;
 			.home-action-content .action-content {
 				.submit-new-mr {
 					.type-service select {
-						font-size: 15px;
+						font-size: 12.5px;
 					}
 					.input-address textarea {
-						font-size: 15px;
+						font-size: 12.5px;
 					}
 				}
 
