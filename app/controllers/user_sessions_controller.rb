@@ -89,10 +89,19 @@ class UserSessionsController < ApplicationController
     else
       if current_user
         current_user.current_role.update_attribute(:role,nil)
-      end 
+      end
+      @role = params[:role]
+      @maintenance_request = maintenance_request.id 
       logout
-      flash[:danger] = "Please use your correct email, password and role you have access to."
-      redirect_to root_path
+      
+      respond_to do |format|
+        format.json {render :json=>{error:"Please use your correct email, password. Also make sure you have selected your correct role, thank you.",role:@role }}
+        format.html {render "pages/home" }
+      end 
+
+
+      # flash[:danger] = "Please use your correct email, password and role you have access to."
+      # redirect_to root_path
       
     end 
   end

@@ -17,7 +17,7 @@ class PagesController < ApplicationController
     @appointment_id = params[:appointment_id] 
     @stop_reminder = params[:stop_reminder] 
     @quote_request_id = params[:quote_request_id] 
-
+    @role = params[:role]
 
     
 
