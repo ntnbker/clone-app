@@ -391,6 +391,7 @@ var InvoiceItemField = React.createClass({
     const filterError      = { item_description: '', amount: ''};
     const descriptionError = errors['invoices.invoice_items.item_description'] || [];
     const amountError      = (errors['invoices.invoice_items.amount'] || []).slice();
+    const hoursError      = (errors['invoices.invoice_items.hours'] || []).slice();
     if (descriptionError.length) {
       if (this.description) {
         if (!this.description.value) {
@@ -405,6 +406,16 @@ var InvoiceItemField = React.createClass({
         }
         else if (!/^\d+$/.test(this.amount.value)) {
           filterError['amount'] = amountError.reverse()[0];
+        }
+      }
+    }
+    if (hoursError.length) {
+      if (this.hours) {
+        if (!this.hours.value) {
+          filterError['hours'] = hoursError[0];
+        }
+        else if (!/^\d+$/.test(this.hours.value)) {
+          filterError['hours'] = hoursError.reverse()[0];
         }
       }
     }
@@ -552,20 +563,23 @@ var InvoiceItemField = React.createClass({
               <input
                 type="text"
                 onChange={this.onHours}
+                ref={e => this.hours = e}
                 placeholder="Number of Hours"
                 defaultValue={numofhours > 0 ? numofhours : 0}
-                className={"text-center " + (hours_input && 'hour')}
+                className={"text-center " + (hours_input && 'hour') + (errors['hours'] ? 'border_on_error ' : '')}
                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
               />
               :
               <input
                 type="hidden"
                 value={1}
+                ref={e => this.hours = e}
                 name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'}
               />
           }
         </div>
         {this.renderError(errors['amount'])}
+        {this.renderError(errors['hours'])}
         <input type="hidden" value={remove} name={'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]'} />
         {FieldId}
       </fieldset>
