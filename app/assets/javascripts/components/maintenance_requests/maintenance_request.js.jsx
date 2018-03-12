@@ -198,7 +198,7 @@ var ButtonHeaderMR = React.createClass({
 
 		const actionRequired = [
       {
-        title: "Maintenance Request",
+        title: "New Maintenance Request",
         value: "Initiate Maintenance Request",
       },
       {
@@ -206,7 +206,7 @@ var ButtonHeaderMR = React.createClass({
       	value: "Send Work Order",
       },
       {
-        title: "Awaiting Tradie`s Quote",
+        title: "Awaiting Tradie's Quote",
         value: "Awaiting Quote",
       },
       {
@@ -244,6 +244,10 @@ var ButtonHeaderMR = React.createClass({
       //   title: "Awaiting Tradie Initiation",
       //   value: "Awaiting Tradie Initiation",
       // },
+			existQuoteRequest && {
+        title: "Awaiting Tradie`s Quote",
+        value: "Awaiting Quote",
+      },
       existQuoteRequest && {
         title: "Awaiting Quote Approval",
         value: "Quote Received Awaiting Approval",
