@@ -11,7 +11,7 @@ class InvoiceItem < ApplicationRecord
 
 
   validate :positive_number_hours
-  validate :
+  validate :positive_number_amount
 
   def positive_number_hours
     if self.hours >= 1
