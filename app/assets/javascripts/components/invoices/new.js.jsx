@@ -317,6 +317,7 @@ var AdditionalInvoice = React.createClass({
                 className={"text-center " + (this.state.hours_input && 'hour')}
               />
               : <input type="hidden"
+                value={1}
                 name={'invoice[invoice_items_attributes][' + x + '][hours]'}
               />
           }
@@ -428,6 +429,8 @@ var InvoiceItemField = React.createClass({
 
   onPricing(event) {
     var pricing_type = event.target.value;
+    const self = this;
+
     this.setState({pricing_type: pricing_type});
 
     if (pricing_type == "Hourly") {
@@ -436,7 +439,8 @@ var InvoiceItemField = React.createClass({
       this.setState({
         hours_input: false,
         numofhours: 1,
-        totalamount: this.state.amount
+      }, () => {
+        self.onHours({target: {value: 1}});
       });
     }
   },
