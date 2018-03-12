@@ -91,11 +91,11 @@ class UserSessionsController < ApplicationController
         current_user.current_role.update_attribute(:role,nil)
       end
       @role = params[:role]
-      @maintenance_request = maintenance_request.id 
+      @maintenance_request = maintenance_request 
       logout
       
       respond_to do |format|
-        format.json {render :json=>{error:"Please use your correct email, password. Also make sure you have selected your correct role, thank you.",role:@role }}
+        format.json {render :json=>{error:"Please use your correct email, password. Also make sure you have selected your correct role, thank you.",role:@role, maintenance_request:@maintenance_request }}
         format.html {render "pages/home" }
       end 
 
