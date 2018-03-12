@@ -268,7 +268,7 @@ var AddInvoicePDF = React.createClass({
 							name="uploaded_invoice[system_plan]"
 							id="uploaded_invoice_system_plan"
 						/>
-						<div className="create-invoice-button">
+						<div className="invoice-button">
 							<button
 								className="button-back"
 								type="button"
