@@ -4,7 +4,7 @@ class InvoiceItem < ApplicationRecord
 
   
   validates :amount, :numericality => true
-  validates :hours, , :numericality => true
+  validates :hours, :numericality => true
 
 
 
