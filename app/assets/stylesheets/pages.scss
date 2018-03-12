@@ -1,6 +1,7 @@
 // Place all the styles related to the Pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+$color-red: #e34f4f;
 @-webkit-keyframes autofill {
 	to {
 		color: white;
@@ -246,6 +247,10 @@
 								&.focus {
 									border-color: #5CC993;
 								}
+							}
+							.login-error {
+								margin-bottom: 20px;
+								color: $color-red;
 							}
 							span {
 								@include flexbox;

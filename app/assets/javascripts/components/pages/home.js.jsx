@@ -42,6 +42,8 @@ var HomeComponent = React.createClass({
       query_id, user_type, maintenance_request_id, anchor, message, quote_request_id, appointment_id, stop_reminder, quote_message_id
     } = this.props;
 
+    const self = this;
+
     $.ajax({
       type: 'POST',
       url: '/menulogin',
@@ -52,7 +54,9 @@ var HomeComponent = React.createClass({
         stop_reminder, quote_message_id
       },
       success: function(res) {
-
+        if (res && res.error) {
+          self.setState({ error: res.error });
+        }
       },
       error: function(err) {
 
@@ -135,7 +139,7 @@ var HomeComponent = React.createClass({
           <h4>Track maintenance status</h4>
           <p>Automated reminders unsure jobs are progressing</p>
         </div>
-       
+
       </div>
     )
   },
@@ -284,7 +288,7 @@ var HomeComponent = React.createClass({
   },
 
   loginRender() {
-    const { active, focusEmail, focusPassword } = this.state;
+    const { active, focusEmail, focusPassword, error } = this.state;
     const { new_password_reset_path } = this.props;
     const showBackButton = active === 'Tenant' || active === 'Trady';
     const showChooseRole = active === 'Agent';
@@ -298,7 +302,7 @@ var HomeComponent = React.createClass({
                 type="radio"
                 name="role-picked"
                 value="Agent"
-                onChange={() => this.setState({rolePicked: 'Agent'})}
+                onChange={() => this.setState({rolePicked: 'Agent', error: ''})}
                 defaultChecked
               />
               <span className="radio-checkmark"></span>
@@ -307,7 +311,7 @@ var HomeComponent = React.createClass({
               <input
                 type="radio"
                 name="role-picked"
-                onChange={() => this.setState({rolePicked: 'AgencyAdmin'})}
+                onChange={() => this.setState({rolePicked: 'AgencyAdmin', error: ''})}
                 value="AgencyAdmin"
               />
               <span className="radio-checkmark"></span>
@@ -324,6 +328,7 @@ var HomeComponent = React.createClass({
               name="email"
               onFocus={() => this.setState({focusEmail: true})}
               onBlur={() => this.setState({focusEmail: false})}
+              onChange={() => this.setState({error: ''})}
               ref={(elem) => this.email = elem}
             />
           </div>
@@ -336,16 +341,18 @@ var HomeComponent = React.createClass({
               name="password"
               onFocus={() => this.setState({focusPassword: true})}
               onBlur={() => this.setState({focusPassword: false})}
+              onChange={() => this.setState({error: ''})}
               ref={(elem) => this.password = elem}
             />
           </div>
+          <div className="login-error">{error}</div>
         </div>
         <div className="button-group login-button">
           { showBackButton &&
             <button
               type="button"
               className="btn btn-back"
-              onClick={() => this.setState({step: 'home'})}
+              onClick={() => this.setState({step: 'home', error: ''})}
             >
               Back
             </button>
