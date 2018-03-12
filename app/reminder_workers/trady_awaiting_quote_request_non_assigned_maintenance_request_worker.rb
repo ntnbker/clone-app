@@ -26,7 +26,7 @@ class TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker
      # User.joins(:account).merge(Account.where(:active => true))
      
       quote_requests.each do |quote_request|
-
+        #check to see if trady created a quote for that quote request. If he already did then dont reminder them.
         if quote_request.quote_id
 
           #do nothing
