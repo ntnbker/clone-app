@@ -1,9 +1,39 @@
+=link_to "JFMO request list", recruits_path
 
+%br
+%br
+%br
+id :
+=@maintenance_request.maintenance_description
+%br
 Maintenance Description:
 =@maintenance_request.maintenance_description
+%br
+Service Needed:
+=@maintenance_request.service_type
 
+%br
+%br
+%br
+Form for Sending Tradie Invitation
 = bootstrap_form_tag url: '/recruits', method: :post do |f| 
   = f.email_field :email, placeholder: 'name@example.com'
   =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
   =f.hidden_field :jfmo_request_id, value:@jfmo_request.id 
-  = f.submit "Send To Tradie" 
+  = f.submit "Send Network Invite Tradie" 
+
+
+
+
+
+%br
+%br
+
+
+
+Form for Sending Quote Request
+= bootstrap_form_tag url: '/quote_request_for_recruit', method: :post do |f| 
+  = f.email_field :email, placeholder: 'name@example.com'
+  =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+  =f.hidden_field :jfmo_request_id, value:@jfmo_request.id 
+  = f.submit "Send Quote Request Email" 

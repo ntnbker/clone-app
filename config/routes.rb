@@ -298,6 +298,6 @@ Rails.application.routes.draw do
   ###########################################################
   post "just_find_me_one" => "jfmo_tradies#find_tradies"
   resources :recruits, only: [:new, :create, :index, :show]
-
+  post "quote_request_for_recruit" => "recruits#quote_request"
 
  end

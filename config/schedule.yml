@@ -1,3 +1,6 @@
 reminder_queue:
   every: ['1d', first_in: '120s']
   class: ReminderQueueWorker
+payment_queue:
+  every: ['1d', first_in: '120s']
+  class: ReminderQueueWorker

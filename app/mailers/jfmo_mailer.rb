@@ -5,10 +5,9 @@ class JfmoMailer < ActionMailer::Base
    default from: 'info@sm.maintenanceapp.com.au'
 
 
-  def tradie_quote_request(maintenance_request)
-    @maintenance_request = maintenance_request
+  def tradie_quote_request
     
-    mail(to:"martin@email.com", subject:"JFMO request from agency, sent on #{Date.today}")
+    mail(to:"martin@email.com", subject:"Quote request and MaintenanceApp network invitation.")
   end
 
 
