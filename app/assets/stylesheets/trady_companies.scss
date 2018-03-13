@@ -140,7 +140,8 @@ form#new_trady_company {
     margin-top: 20px;
     margin-bottom: 20px;
     padding-bottom: 20px;
-
+    @include justify-content(center);
+    
     button {
       @include flex(1);
       margin: 0 15px;
@@ -195,6 +196,13 @@ form#new_trady_company {
     }
     input {
       font-size: 0.9em;
+    }
+
+    .buttons .button {
+      &-submit,
+      &-back {
+        padding: 0 15px;
+      }
     }
   }
 }
