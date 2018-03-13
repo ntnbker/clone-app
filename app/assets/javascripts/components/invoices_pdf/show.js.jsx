@@ -241,7 +241,7 @@ var SubmitInvoicePDF = React.createClass({
 		const isPdf = /store\/\w+\.pdf/.test(pdf_url);
 
 		return (
-			<div className="container well" id="submit-invoice">
+			<div className="container well invoice-form" id="submit-invoice">
 			  <div id="Iframe-Master-CC-and-Rs" className="set-margin set-padding set-border set-box-shadow center-block-horiz">
 			    <div
 			    	className="responsive-wrapper responsive-wrapper-wxh-572x612"

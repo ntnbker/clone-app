@@ -1,3 +1,39 @@
+var ModalEditService = React.createClass({
+getInitialState: function () {
+    return {
+      errors: {},
+    };
+  },
+
+  render() {
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={this.props.close}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 className="modal-title text-center">
+                Services
+              </h4>
+            </div>
+            <div className="modal-body">
+              <ServiceList {...this.props} onBack={this.props.close} />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+})
+
 var TradyEdit = React.createClass({
   getInitialState: function () {
     const trady         = this.props.trady || {};
@@ -7,6 +43,7 @@ var TradyEdit = React.createClass({
 
     return {
       errors: {},
+      trady_skills: this.props.trady_skills || [],
       gallery: {...profile_image, image_url },
     };
   },
@@ -87,8 +124,87 @@ var TradyEdit = React.createClass({
     return;
   },
 
+  submitPayment(params, callback) {
+    const self = this;
+    params.trady_id = this.props.trady.id;
+
+    $.ajax({
+      type: 'PUT',
+      url: '/trady_payment_registrations/' + this.props.trady.id,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function(res){
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          customer: res.customer,
+          notification: {
+            title: "Credit or debit card",
+            content: res.message,
+            bgClass: "bg-success",
+          }
+        })
+      },
+      error: function(err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Credit or debit card",
+            content: err.responseText,
+            bgClass: "bg-error",
+          }
+        })
+      }
+    })
+  },
+
+  editServices(params, callback) {
+    const self = this;
+
+    $.ajax({
+      type: 'POST',
+      url: '/update_services',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function(res){
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          trady_skills: params.skill.skill.map(skill => ({skill})),
+          notification: {
+            title: "Services",
+            content: res.message,
+            bgClass: "bg-success",
+          }
+        })
+      },
+      error: function(err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Services",
+            content: err.responseText,
+            bgClass: "bg-error",
+          }
+        })
+      }
+    })
+  },
+
   removeError: function({ target: { id } }) {
-      this.setState({ errors: {...this.state.errors, [id]: ''} });
+    this.setState({ errors: {...this.state.errors, [id]: ''} });
   },
 
   renderError: function(error) {
@@ -96,11 +212,84 @@ var TradyEdit = React.createClass({
   },
 
   renderButton: function(text, link) {
+    const onClickFunc = typeof link === 'function' ? link : () => location.href = link;
     return (
-      <button className="btn button-primary option-button" onClick={() => location.href = link} title={text}>
+      <button type="button" className="btn button-primary option-button" onClick={onClickFunc} title={text}>
         {text}
       </button>
     );
+  },
+
+  isClose: function() {
+    if(this.state.isModal == true) {
+      this.setState({
+        isModal: false,
+        modal: "",
+      });
+    }
+
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    if(div){
+      div.parentNode.removeChild(div);
+    }
+  },
+
+  openModal(modal) {
+    this.setState({
+      isModal: true,
+      modal,
+    })
+  },
+
+  renderModal: function() {
+    if (this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if(div.length === 0) {
+        div = document.createElement('div')
+        div.className  = "modal-backdrop in";
+        body.appendChild(div);
+      }
+
+      switch (this.state.modal) {
+        case 'payment':
+          return (
+            <ModalAddPayment
+              close={this.isClose}
+              submit={this.submitPayment}
+            />
+          )
+
+        case 'service':
+          return (
+            <ModalEditService
+              close={this.isClose}
+              editServices={this.editServices}
+              services={this.props.services}
+              trady_skills={this.state.trady_skills}
+              trady_id={this.props.trady.id}
+            />
+          )
+
+        case 'message':
+          return (
+            <ModalNotification
+              close={this.isClose}
+              bgClass={this.state.notification.bgClass}
+              title={this.state.notification.title}
+              content={this.state.notification.content}
+            />
+          )
+
+
+        default:
+        return '';
+      }
+    }
   },
 
   renderTextField: function(field, textHolder) {
@@ -127,12 +316,13 @@ var TradyEdit = React.createClass({
   },
 
   render: function() {
-    let trady                              = this.props.trady || {};
-    let trady_company                      = this.props.trady_company || {};
-    let { errors = {}, gallery }           = this.state;
-    const renderTextField                  = this.renderTextField;
-    const renderButtonFunc                 = this.renderButton;
-    const haveCompanyClass                 = !trady_company.id ? 'no-company' : '';
+    let trady                    = this.props.trady || {};
+    let trady_company            = this.props.trady_company || {};
+    let customer                 = this.props.customer || {};
+    let { errors = {}, gallery } = this.state;
+    const renderTextField        = this.renderTextField;
+    const renderButtonFunc       = this.renderButton;
+    const haveCompanyClass       = !trady_company.id ? 'no-company' : '';
 
     return (
       <div className="edit_profile edit_trady_profile">
@@ -147,6 +337,9 @@ var TradyEdit = React.createClass({
             className="btn button-primary option-button"
           />
           {renderButtonFunc('Reset Password', this.props.change_password_path)}
+          {renderButtonFunc('Edit Services Provided', () => this.openModal('service'))}
+          { customer && customer.customer_id &&
+            renderButtonFunc('Edit Payment Details', () => this.openModal('payment'))}
           {!haveCompanyClass && renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '?id=' + trady_company.id)}
         </div>
         <form
@@ -167,6 +360,7 @@ var TradyEdit = React.createClass({
             </button>
           </div>
         </form>
+        { this.renderModal() }
       </div>
     );
   }

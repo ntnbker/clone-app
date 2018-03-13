@@ -7,6 +7,11 @@ $color-text: #83878C;
   .service-placeholder {
     color: $color-green-submit;
     margin-bottom: 20px;
+    width: 90%;
+    float: none;
+    line-height: unset;
+    font-weight: 600;
+    text-transform: none;
   }
   .horizontal-line {
     border-top: 1px solid $color-green-submit;
@@ -25,12 +30,16 @@ $color-text: #83878C;
       position: relative;
       padding-left: 25px;
       margin-bottom: 10px;
+      font-weight: 600;
       color: $color-text;
       cursor: pointer;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
+      text-align: left;
+      line-height: unset;
+      text-transform: none;
     }
 
     /* Hide the browser's default checkbox */
