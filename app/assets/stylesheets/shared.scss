@@ -10,6 +10,23 @@ body {
 
 }
 
+.description-data {
+  background-color: #71C796;
+  color: white;
+  border-radius: 5px;
+  text-align: left;
+  padding: 15px;
+  margin-bottom: 30px;
+}
+.your-name {
+  @include flexbox;
+  margin: 20px 0;
+
+  .name {
+    @include flex(1);
+    width: 100%;
+  }
+}
 .btn-link,
 .btn-link:active,
 .btn-link.active,

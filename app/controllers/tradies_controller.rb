@@ -206,7 +206,7 @@ class TradiesController < ApplicationController
   def edit
     @trady = Trady.find_by(id:params[:id])
     @skills = @trady.skills
-
+    @customer = @trady.customer_profile
     if @trady.trady_company
       @trady_company = @trady.trady_company
     else
@@ -262,7 +262,7 @@ class TradiesController < ApplicationController
       end 
       
       respond_to do |format|
-        format.json {render :json=>{message:"Your services have been updated, thank you."}}
+        format.json {render :json=>{message:"Your services have been updated, thank you.", skills:trady.skills}}
         format.html{render :edit}
       end
 

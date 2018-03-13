@@ -35,8 +35,10 @@ var ServiceList = React.createClass({
   },
 
   onBack() {
-    const {edit_register_tradie_company_path} = this.props;
-
+    const {edit_register_tradie_company_path, onBack} = this.props;
+    if (typeof onBack === 'function') {
+      return onBack();
+    }
     location.href = edit_register_tradie_company_path;
   },
 
@@ -55,6 +57,10 @@ var ServiceList = React.createClass({
       skill: {
         skill: skills
       }
+    }
+
+    if (this.props.editServices) {
+      return this.props.editServices(params, errors => self.setState({errors: err}));
     }
 
     $.ajax({
