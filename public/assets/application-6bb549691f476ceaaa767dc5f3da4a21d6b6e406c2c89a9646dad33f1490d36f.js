@@ -68876,7 +68876,7 @@ var AgencyPayment = React.createClass({
     };
 
     if ($(window).width() <= 380) {
-      style.base.fontSize = '13px';
+      style.base.fontSize = '12px';
     }
 
     // Create an instance of the card Element.
@@ -69075,7 +69075,7 @@ var AgencyRegistrationForm = React.createClass({
         React.createElement('br', null),
         'Registration'
       ), level > 1),
-      this.labelTitle(4, React.createElement(
+      this.labelTitle(3, React.createElement(
         'p',
         null,
         'Terms',
@@ -69084,7 +69084,7 @@ var AgencyRegistrationForm = React.createClass({
         React.createElement('br', null),
         'Conditions'
       ), level > 2),
-      this.labelTitle(3, React.createElement(
+      this.labelTitle(4, React.createElement(
         'p',
         null,
         'Payment',
@@ -73078,6 +73078,7 @@ var AdditionalInvoice = React.createClass({
             name: 'invoice[invoice_items_attributes][' + x + '][hours]',
             className: "text-center " + (this.state.hours_input && 'hour')
           }) : React.createElement("input", { type: "hidden",
+            value: 1,
             name: 'invoice[invoice_items_attributes][' + x + '][hours]'
           })
         ),
@@ -73089,7 +73090,7 @@ var AdditionalInvoice = React.createClass({
         { className: "text-center" },
         React.createElement(
           "button",
-          { type: "button", className: "button-remove button-primary red", onClick: this.removeField },
+          { type: "button", className: "button-remove button-primary", onClick: this.removeField },
           " Remove "
         )
       )
@@ -73158,6 +73159,7 @@ var InvoiceItemField = React.createClass({
     var filterError = { item_description: '', amount: '' };
     var descriptionError = errors['invoices.invoice_items.item_description'] || [];
     var amountError = (errors['invoices.invoice_items.amount'] || []).slice();
+    var hoursError = (errors['invoices.invoice_items.hours'] || []).slice();
     if (descriptionError.length) {
       if (this.description) {
         if (!this.description.value) {
@@ -73169,8 +73171,17 @@ var InvoiceItemField = React.createClass({
       if (this.amount) {
         if (!this.amount.value) {
           filterError['amount'] = amountError[0];
-        } else if (!/^\d+$/.test(this.amount.value)) {
+        } else if (!/^\d+$/.test(this.amount.value) || this.amount.value === '0') {
           filterError['amount'] = amountError.reverse()[0];
+        }
+      }
+    }
+    if (hoursError.length) {
+      if (this.hours) {
+        if (!this.hours.value) {
+          filterError['hours'] = hoursError[0];
+        } else if (!/^\d+$/.test(this.hours.value) || this.hours.value === '0') {
+          filterError['hours'] = hoursError.reverse()[0];
         }
       }
     }
@@ -73192,11 +73203,15 @@ var InvoiceItemField = React.createClass({
   },
 
   updatePrice: function (amount) {
-    this.props.params.updatePrice(amount - this.state.totalamount);
+    if (!isNaN(amount)) {
+      this.props.params.updatePrice(amount - this.state.totalamount);
+    }
   },
 
   onPricing: function (event) {
     var pricing_type = event.target.value;
+    var self = this;
+
     this.setState({ pricing_type: pricing_type });
 
     if (pricing_type == "Hourly") {
@@ -73204,8 +73219,9 @@ var InvoiceItemField = React.createClass({
     } else {
       this.setState({
         hours_input: false,
-        numofhours: 1,
-        totalamount: this.state.amount
+        numofhours: 1
+      }, function () {
+        self.onHours({ target: { value: 1 } });
       });
     }
   },
@@ -73217,7 +73233,7 @@ var InvoiceItemField = React.createClass({
     this.updatePrice(totalamount);
     this.setState({
       amount: amount,
-      totalamount: totalamount
+      totalamount: !isNaN(totalamount) ? totalamount : this.state.totalamount
     });
     this.removeError(event);
   },
@@ -73226,12 +73242,12 @@ var InvoiceItemField = React.createClass({
     var value = _ref4.target.value;
 
     var hours = value;
-    if (hours > 0) this.setState({ numofhours: hours });else this.setState({ numofhours: 0 });
+    this.setState({ numofhours: hours });
 
     var totalamount = this.state.amount * hours;
     this.updatePrice(totalamount);
     this.setState({
-      totalamount: totalamount
+      totalamount: !isNaN(totalamount) ? totalamount : this.state.totalamount
     });
   },
 
@@ -73245,7 +73261,7 @@ var InvoiceItemField = React.createClass({
 
   renderError: function (error) {
     return React.createElement(
-      "p",
+      "div",
       { id: "errorbox", className: "error" },
       error || ''
     );
@@ -73345,23 +73361,30 @@ var InvoiceItemField = React.createClass({
           hours_input ? React.createElement("input", {
             type: "text",
             onChange: this.onHours,
+            ref: function (e) {
+              return _this3.hours = e;
+            },
             placeholder: "Number of Hours",
             defaultValue: numofhours > 0 ? numofhours : 0,
-            className: "text-center " + (hours_input && 'hour'),
+            className: "text-center " + (hours_input && 'hour ') + (errors['hours'] ? 'border_on_error ' : ''),
             name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
           }) : React.createElement("input", {
             type: "hidden",
             value: 1,
+            ref: function (e) {
+              return _this3.hours = e;
+            },
             name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][hours]'
           })
         ),
         this.renderError(errors['amount']),
+        this.renderError(errors['hours']),
         React.createElement("input", { type: "hidden", value: remove, name: 'ledger[invoices_attributes][' + invoice_id + '][invoice_items_attributes][' + x + '][_destroy]' }),
         FieldId
       ),
       position > 1 && React.createElement(
         "button",
-        { type: "button", className: "button-remove button-primary red", onClick: function () {
+        { type: "button", className: "button-remove button-primary", onClick: function () {
             return _this3.removeField(_this3.props.x);
           } },
         " X "
@@ -73473,8 +73496,10 @@ var InvoiceField = React.createClass({
     var _props6 = this.props;
     var content = _props6.content;
     var x = _props6.x;
-    var _props6$params$invoiceInfo = _props6.params.invoiceInfo;
+    var _props6$params = _props6.params;
+    var _props6$params$invoiceInfo = _props6$params.invoiceInfo;
     var invoiceInfo = _props6$params$invoiceInfo === undefined ? {} : _props6$params$invoiceInfo;
+    var trady = _props6$params.trady;
     var _state6 = this.state;
     var errorDate = _state6.errorDate;
     var errorReference = _state6.errorReference;
@@ -73677,7 +73702,7 @@ var InvoiceField = React.createClass({
               })
             )
           ),
-          React.createElement(
+          trady && trady.jfmo_participant && React.createElement(
             "div",
             null,
             React.createElement(
@@ -73710,7 +73735,7 @@ var InvoiceField = React.createClass({
         { className: "text-center" },
         React.createElement(
           "button",
-          { type: "button", className: "button-remove button-primary red", onClick: function () {
+          { type: "button", className: "button-remove button-primary", onClick: function () {
               return _this4.removeField(_this4.props.x);
             } },
           " Remove Invoice "
@@ -73895,7 +73920,7 @@ var InvoiceFields = React.createClass({
       }),
       React.createElement(FieldListForInvoice, {
         errors: errors,
-        params: { invoiceInfo: invoiceInfo },
+        params: { invoiceInfo: invoiceInfo, trady: trady },
         noQuotes: !hasQuotes,
         existingContent: invoices,
         SampleField: InvoiceField,
@@ -74031,7 +74056,9 @@ var DetailInvoice = React.createClass({
 	displayName: "DetailInvoice",
 
 	render: function () {
-		var invoice = this.props.invoice;
+		var _props = this.props;
+		var invoice = _props.invoice;
+		var trady = _props.invoice.trady;
 
 		var subTotal = 0;
 		var gst = 0;
@@ -74160,7 +74187,7 @@ var DetailInvoice = React.createClass({
 							subTotal.toFixed(2)
 						)
 					),
-					React.createElement(
+					trady && trady.jfmo_participant && React.createElement(
 						"tr",
 						null,
 						React.createElement("td", { colSpan: "3", className: "border-none" }),
@@ -74725,6 +74752,9 @@ var ModalAddPayment = React.createClass({
   render: function () {
     var _this2 = this;
 
+    var defaultPaymentNotes = ['Please note that you will not be charged now. MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.', 'Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.'];
+    var paymentNotes = this.props.paymentNotes;
+
     return React.createElement(
       'div',
       { className: 'modal-custom fade' },
@@ -74764,16 +74794,13 @@ var ModalAddPayment = React.createClass({
             React.createElement(
               'div',
               { className: 'description-data' },
-              React.createElement(
-                'p',
-                { className: 'row' },
-                'Please note that you will not be charged now. MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.'
-              ),
-              React.createElement(
-                'p',
-                { className: 'row' },
-                'Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.'
-              )
+              (paymentNotes || defaultPaymentNotes).map(function (note) {
+                return React.createElement(
+                  'p',
+                  { className: 'row' },
+                  note
+                );
+              })
             ),
             React.createElement(
               'div',
@@ -74997,6 +75024,7 @@ var InvoiceSubmit = React.createClass({
     var landlord = _props.landlord;
     var agency = _props.agency;
     var edit_invoice_path = _props.edit_invoice_path;
+    var trady = _props.trady;
     var invoices = this.state.invoices;
 
     return React.createElement(
@@ -75285,7 +75313,7 @@ var InvoiceSubmit = React.createClass({
                   '$ ' + invoice.amount.toFixed(2)
                 )
               ),
-              React.createElement(
+              trady && trady.jfmo_participant && React.createElement(
                 'div',
                 { className: 'amount-due' },
                 React.createElement('div', { className: 'border-none flex-5' }),
@@ -75857,7 +75885,7 @@ var AddInvoicePDF = React.createClass({
 					}),
 					React.createElement(
 						'div',
-						{ className: 'create-invoice-button' },
+						{ className: 'invoice-button' },
 						React.createElement(
 							'button',
 							{
@@ -76209,7 +76237,7 @@ var SubmitInvoicePDF = React.createClass({
 
 				return React.createElement(
 						"div",
-						{ className: "container well", id: "submit-invoice" },
+						{ className: "container well invoice-form", id: "submit-invoice" },
 						React.createElement(
 								"div",
 								{ id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
@@ -92140,8 +92168,13 @@ var ServiceList = React.createClass({
   },
 
   onBack: function () {
-    var edit_register_tradie_company_path = this.props.edit_register_tradie_company_path;
+    var _props2 = this.props;
+    var edit_register_tradie_company_path = _props2.edit_register_tradie_company_path;
+    var onBack = _props2.onBack;
 
+    if (typeof onBack === 'function') {
+      return onBack();
+    }
     location.href = edit_register_tradie_company_path;
   },
 
@@ -92160,10 +92193,10 @@ var ServiceList = React.createClass({
     var _state = this.state;
     var isEdit = _state.isEdit;
     var skills = _state.skills;
-    var _props2 = this.props;
-    var trady_id = _props2.trady_id;
-    var trady_company_id = _props2.trady_company_id;
-    var maintenance_request_id = _props2.maintenance_request_id;
+    var _props3 = this.props;
+    var trady_id = _props3.trady_id;
+    var trady_company_id = _props3.trady_company_id;
+    var maintenance_request_id = _props3.maintenance_request_id;
 
     var self = this;
     var params = {
@@ -92172,6 +92205,12 @@ var ServiceList = React.createClass({
         skill: skills
       }
     };
+
+    if (this.props.editServices) {
+      return this.props.editServices(params, function (errors) {
+        return self.setState({ errors: err });
+      });
+    }
 
     $.ajax({
       type: isEdit ? 'PUT' : 'POST',
@@ -92195,6 +92234,7 @@ var ServiceList = React.createClass({
     var _state2 = this.state;
     var services = _state2.services;
     var skills = _state2.skills;
+    var isEdit = _state2.isEdit;
 
     return React.createElement(
       'form',
@@ -92268,7 +92308,7 @@ var ServiceList = React.createClass({
         React.createElement(
           'button',
           { type: 'submit', className: 'btn button-submit' },
-          'Add Service(s)'
+          isEdit ? "Submit" : "Add Service(s)"
         )
       )
     );
@@ -92322,11 +92362,6 @@ var Footer = React.createClass({
                                 "a",
                                 { href: "/" },
                                 "Feedback"
-                            ),
-                            React.createElement(
-                                "a",
-                                { href: this.props.new_agency_path },
-                                "Register Agent"
                             )
                         ),
                         React.createElement(
@@ -92508,7 +92543,7 @@ var Footer = React.createClass({
         );
     }
 });
-/* <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>*/;
+/*<a href={this.props.new_agency_path}>Register Agent</a>*/ /* <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>*/;
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
 var MenuAgency = function (edit_agency, edit_agency_admin) {
@@ -95260,7 +95295,7 @@ var Trady = React.createClass({
         { className: "user-email" },
         React.createElement("input", {
           type: "text",
-          id: "email",
+          id: "trady.email",
           name: "user[email]",
           placeholder: "Email",
           autoCapitalize: "off",
@@ -95299,7 +95334,7 @@ var Trady = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "agency-name trady-name" },
+        { className: "user-email trady-name" },
         React.createElement("input", {
           type: "text",
           placeholder: "Name",
@@ -95312,17 +95347,16 @@ var Trady = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "agency-name trady-name" },
+        { className: "user-email trady-name" },
         React.createElement("input", {
-          type: "text",
+          type: "hidden",
           value: email,
-          name: "user[trady_attributes][email]",
-          style: { display: 'none' }
+          name: "user[trady_attributes][email]"
         })
       ),
       React.createElement(
         "div",
-        { className: "agency-name trady-company-name" },
+        { className: "user-email trady-company-name" },
         React.createElement("input", {
           type: "text",
           placeholder: "Company Name",
@@ -95882,8 +95916,62 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var ModalEditService = React.createClass({
+  displayName: "ModalEditService",
+
+  getInitialState: function () {
+    return {
+      errors: {}
+    };
+  },
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "modal-custom fade" },
+      React.createElement(
+        "div",
+        { className: "modal-dialog" },
+        React.createElement(
+          "div",
+          { className: "modal-content" },
+          React.createElement(
+            "div",
+            { className: "modal-header" },
+            React.createElement(
+              "button",
+              {
+                type: "button",
+                className: "close",
+                "data-dismiss": "modal",
+                "aria-label": "Close",
+                onClick: this.props.close
+              },
+              React.createElement(
+                "span",
+                { "aria-hidden": "true" },
+                "×"
+              )
+            ),
+            React.createElement(
+              "h4",
+              { className: "modal-title text-center" },
+              "Services"
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "modal-body" },
+            React.createElement(ServiceList, _extends({}, this.props, { onBack: this.props.close }))
+          )
+        )
+      )
+    );
+  }
+});
+
 var TradyEdit = React.createClass({
-  displayName: 'TradyEdit',
+  displayName: "TradyEdit",
 
   getInitialState: function () {
     var trady = this.props.trady || {};
@@ -95892,6 +95980,7 @@ var TradyEdit = React.createClass({
 
     return {
       errors: {},
+      trady_skills: this.props.trady_skills || [],
       gallery: _extends({}, profile_image, { image_url: image_url })
     };
   },
@@ -95916,7 +96005,7 @@ var TradyEdit = React.createClass({
     var self = this;
     $.ajax({
       type: id ? 'PUT' : 'POST',
-      url: '/trady_profile_images' + (id ? '/' + id : ''),
+      url: "/trady_profile_images" + (id ? '/' + id : ''),
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -95956,7 +96045,7 @@ var TradyEdit = React.createClass({
     var self = this;
     $.ajax({
       type: 'PUT',
-      url: '/tradies/' + (this.props.trady || {}).id,
+      url: "/tradies/" + (this.props.trady || {}).id,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -95972,6 +96061,87 @@ var TradyEdit = React.createClass({
     return;
   },
 
+  submitPayment: function (params, callback) {
+    var self = this;
+    params.trady_id = this.props.trady.id;
+
+    $.ajax({
+      type: 'PUT',
+      url: '/trady_payment_registrations/' + this.props.trady.id,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          customer: res.customer,
+          notification: {
+            title: "Credit or debit card",
+            content: res.message,
+            bgClass: "bg-success"
+          }
+        });
+      },
+      error: function (err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Credit or debit card",
+            content: err.responseText,
+            bgClass: "bg-error"
+          }
+        });
+      }
+    });
+  },
+
+  editServices: function (params, callback) {
+    var self = this;
+
+    $.ajax({
+      type: 'POST',
+      url: '/update_services',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          trady_skills: params.skill.skill.map(function (skill) {
+            return { skill: skill };
+          }),
+          notification: {
+            title: "Services",
+            content: res.message,
+            bgClass: "bg-success"
+          }
+        });
+      },
+      error: function (err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Services",
+            content: err.responseText,
+            bgClass: "bg-error"
+          }
+        });
+      }
+    });
+  },
+
   removeError: function (_ref) {
     var id = _ref.target.id;
 
@@ -95980,20 +96150,90 @@ var TradyEdit = React.createClass({
 
   renderError: function (error) {
     return React.createElement(
-      'p',
-      { id: 'errorbox', className: 'error' },
+      "p",
+      { id: "errorbox", className: "error" },
       error && error[0] ? error[0] : ''
     );
   },
 
   renderButton: function (text, link) {
+    var onClickFunc = typeof link === 'function' ? link : function () {
+      return location.href = link;
+    };
     return React.createElement(
-      'button',
-      { className: 'btn button-primary option-button', onClick: function () {
-          return location.href = link;
-        }, title: text },
+      "button",
+      { type: "button", className: "btn button-primary option-button", onClick: onClickFunc, title: text },
       text
     );
+  },
+
+  isClose: function () {
+    if (this.state.isModal == true) {
+      this.setState({
+        isModal: false,
+        modal: ""
+      });
+    }
+
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    if (div) {
+      div.parentNode.removeChild(div);
+    }
+  },
+
+  openModal: function (modal) {
+    this.setState({
+      isModal: true,
+      modal: modal
+    });
+  },
+
+  renderModal: function () {
+    if (this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
+
+      if (div.length === 0) {
+        div = document.createElement('div');
+        div.className = "modal-backdrop in";
+        body.appendChild(div);
+      }
+
+      switch (this.state.modal) {
+        case 'payment':
+          var paymentNotes = ['Maintenance App does not save your credit card information. Maintenance App uses Stripe to process credit cards. Stripe offers the highest security to keep your credit card information safe.', 'MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.', 'Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform'];
+
+          return React.createElement(ModalAddPayment, {
+            close: this.isClose,
+            submit: this.submitPayment,
+            paymentNotes: paymentNotes
+          });
+
+        case 'service':
+          return React.createElement(ModalEditService, {
+            close: this.isClose,
+            editServices: this.editServices,
+            services: this.props.services,
+            trady_skills: this.state.trady_skills,
+            trady_id: this.props.trady.id,
+            is_edit: true
+          });
+
+        case 'message':
+          return React.createElement(ModalNotification, {
+            close: this.isClose,
+            bgClass: this.state.notification.bgClass,
+            title: this.state.notification.title,
+            content: this.state.notification.content
+          });
+
+        default:
+          return '';
+      }
+    }
   },
 
   renderTextField: function (field, textHolder) {
@@ -96006,13 +96246,13 @@ var TradyEdit = React.createClass({
     var value = trady[field];
 
     return React.createElement(
-      'div',
-      { className: 'form-group' },
+      "div",
+      { className: "form-group" },
       React.createElement(
-        'div',
-        { className: 'col-sm-10' },
-        React.createElement('input', {
-          type: 'text',
+        "div",
+        { className: "col-sm-10" },
+        React.createElement("input", {
+          type: "text",
           id: field,
           placeholder: textHolder,
           defaultValue: value,
@@ -96028,8 +96268,11 @@ var TradyEdit = React.createClass({
   },
 
   render: function () {
+    var _this2 = this;
+
     var trady = this.props.trady || {};
     var trady_company = this.props.trady_company || {};
+    var customer = this.props.customer || {};
     var _state = this.state;
     var _state$errors = _state.errors;
     var errors = _state$errors === undefined ? {} : _state$errors;
@@ -96040,47 +96283,54 @@ var TradyEdit = React.createClass({
     var haveCompanyClass = !trady_company.id ? 'no-company' : '';
 
     return React.createElement(
-      'div',
-      { className: 'edit_profile edit_trady_profile' },
+      "div",
+      { className: "edit_profile edit_trady_profile" },
       React.createElement(
-        'div',
-        { className: 'left' },
-        gallery && React.createElement(AvatarImage, { imageUri: gallery.image_url, alt: 'Avatar Image' }),
+        "div",
+        { className: "left" },
+        gallery && React.createElement(AvatarImage, { imageUri: gallery.image_url, alt: "Avatar Image" }),
         React.createElement(ModalImageUpload, {
           uploadImage: this.uploadImage,
           gallery: gallery && [gallery] || [],
-          text: 'Add/Change Photo',
-          className: 'btn button-primary option-button'
+          text: "Add/Change Photo",
+          className: "btn button-primary option-button"
         }),
         renderButtonFunc('Reset Password', this.props.change_password_path),
+        renderButtonFunc('Edit Services Provided', function () {
+          return _this2.openModal('service');
+        }),
+        customer && customer.customer_id && renderButtonFunc('Edit Payment Details', function () {
+          return _this2.openModal('payment');
+        }),
         !haveCompanyClass && renderButtonFunc('Edit Tradie Company Details', this.props.change_trady_company_information_path + '?id=' + trady_company.id)
       ),
       React.createElement(
-        'form',
+        "form",
         {
-          role: 'form',
+          role: "form",
           className: "form-horizontal right " + haveCompanyClass,
-          id: 'edit_trady',
+          id: "edit_trady",
           onSubmit: this.onSubmit
         },
         React.createElement(
-          'h5',
-          { className: 'control-label col-sm-2 required title' },
-          'Edit Trady Profile'
+          "h5",
+          { className: "control-label col-sm-2 required title" },
+          "Edit Trady Profile"
         ),
         renderTextField('name', 'Name'),
         renderTextField('company_name', 'Company Name'),
         renderTextField('mobile', 'Mobile'),
         React.createElement(
-          'div',
-          { className: 'text-center' },
+          "div",
+          { className: "text-center" },
           React.createElement(
-            'button',
-            { type: 'submit', className: 'button-primary green option-button' },
-            'Update Your Profile'
+            "button",
+            { type: "submit", className: "button-primary green option-button" },
+            "Update Your Profile"
           )
         )
-      )
+      ),
+      this.renderModal()
     );
   }
 });
@@ -97604,7 +97854,7 @@ var ContentTradyAction = React.createClass({
 			return React.createElement(
 				"ul",
 				null,
-				React.createElement(CreactOrUploadQuote, { link: link }),
+				this.props.needShowCreateQuote && React.createElement(CreactOrUploadQuote, { link: link }),
 				React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
 						return _this7.props.onModalWith(modal);
 					} }),
@@ -97636,7 +97886,7 @@ var ContentTradyAction = React.createClass({
 			return React.createElement(
 				"ul",
 				null,
-				React.createElement(CreactOrUploadQuote, { link: link }),
+				this.props.needShowCreateQuote && React.createElement(CreactOrUploadQuote, { link: link }),
 				!!this.props.assigned_trady && React.createElement(CreateOrUploadInvoice, { onModalWith: function (modal) {
 						return _this7.props.onModalWith(modal);
 					} }),
@@ -97699,6 +97949,7 @@ var TradyAction = React.createClass({
 					invoices: this.props.invoices,
 					assigned_trady: this.props.assigned_trady,
 					signed_in_trady: this.props.signed_in_trady,
+					needShowCreateQuote: this.props.needShowCreateQuote,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
 						return _this8.props.onModalWith(modal);
@@ -97744,6 +97995,7 @@ var TradyActionMobile = React.createClass({
 						invoices: this.props.invoices,
 						assigned_trady: this.props.assigned_trady,
 						signed_in_trady: this.props.signed_in_trady,
+						needShowCreateQuote: this.props.needShowCreateQuote,
 						maintenance_request: this.props.maintenance_request,
 						onModalWith: function (modal) {
 							return _this9.props.onModalWith(modal);
@@ -98141,6 +98393,7 @@ var TradySideBarMobile = React.createClass({
 					assigned_trady: this.props.assigned_trady,
 					signed_in_trady: this.props.signed_in_trady,
 					invoice_pdf_files: this.props.invoice_pdf_files,
+					needShowCreateQuote: this.props.needShowCreateQuote,
 					maintenance_request: this.props.maintenance_request,
 					onModalWith: function (modal) {
 						return _this.props.onModalWith(modal);
@@ -99847,6 +100100,7 @@ var TradyMaintenanceRequest = React.createClass({
 							invoices: this.props.invoices,
 							assigned_trady: this.props.assigned_trady,
 							signed_in_trady: this.props.signed_in_trady,
+							needShowCreateQuote: !!quote_requests.length,
 							onModalWith: function (modal) {
 								return _this3.onModalWith(modal);
 							},
@@ -99933,6 +100187,7 @@ var TradyMaintenanceRequest = React.createClass({
 				current_user: this.props.current_user,
 				assigned_trady: this.props.assigned_trady,
 				signed_in_trady: this.props.signed_in_trady,
+				needShowCreateQuote: !!quote_requests.length,
 				invoice_pdf_files: this.props.invoice_pdf_files,
 				onModalWith: function (modal) {
 					return _this3.onModalWith(modal);
