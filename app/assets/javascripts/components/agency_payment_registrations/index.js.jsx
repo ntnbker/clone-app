@@ -56,7 +56,7 @@ var AgencyPayment = React.createClass({
     };
 
     if ($(window).width() <= 380) {
-      style.base.fontSize = '13px';
+      style.base.fontSize = '12px';
     }
 
     // Create an instance of the card Element.
