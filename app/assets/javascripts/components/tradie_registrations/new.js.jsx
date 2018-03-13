@@ -120,10 +120,9 @@ var Trady = React.createClass({
 
       <div className="agency-name trady-name">
         <input
-          type="text"
+          type="hidden"
           value={email}
           name="user[trady_attributes][email]"
-          style={{display: 'none'}}
         />
       </div>
 
