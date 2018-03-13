@@ -239,6 +239,44 @@ class TradiesController < ApplicationController
     end 
   end
 
+
+
+  def update_skills
+    trady = Trady.find_by(id:params[:trady_id])
+    if params[:skill]
+      new_skills= params[:skill][:skill]
+    end 
+    if new_skills 
+      current_skills = trady.services_provided
+      #what was removed?
+      removed_skills = current_skills - new_skills
+      #what was added?
+      added_skills = new_skills - current_skills
+
+      removed_skills.each do |skill|
+        Skill.where(trady_id: trady.id, skill: skill).destroy_all
+      end 
+
+      added_skills.each do |skill|
+       Skill.create(trady_id:trady.id, skill:skill)
+      end 
+      
+      respond_to do |format|
+        format.json {render :json=>{message:"Your services have been updated, thank you."}}
+        format.html{render :edit}
+      end
+
+    else
+      @skills = Trady.find_by(id:params[:trady_id]).skills.as_json
+      
+      
+      respond_to do |format|
+        format.json {render :json=>{errors:"Please choose at least one service from the list below, thank you."}}
+        format.html{render :edit}
+      end
+    end 
+  end
+
       
  
 

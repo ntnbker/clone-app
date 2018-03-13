@@ -138,6 +138,7 @@ Rails.application.routes.draw do
   ###################################################
     get "trady_information" => 'tradies#trady_information', :as=>:trady_information
     resources :tradies, only:[:create, :edit, :update]
+    post "update_services" => "tradies#update_skills"
     resources :trady_companies, only:[:new, :create, :edit, :update]
     resources :trady_maintenance_requests, only:[:index, :show]
     resources :trady_company_profile_images, only:[:create, :update]
@@ -261,7 +262,7 @@ Rails.application.routes.draw do
   ###################################################
   ##########TRADIE PAYMENTS RESOURCES/ROUTES#########
   ################################################### 
-    resources :trady_payment_registrations, only:[:new, :create]
+    resources :trady_payment_registrations, only:[:new, :create, :update]
 
   ###################################################
   ##########SERVICES PAYMENTS RESOURCES/ROUTES#######

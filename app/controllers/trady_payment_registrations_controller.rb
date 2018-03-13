@@ -46,6 +46,24 @@ class TradyPaymentRegistrationsController < ApplicationController
           
       end
 
+  end
+
+
+
+
+
+  def update
+    trady = Trady.find_by(id:params[:trady_id])
+    cu = Stripe::Customer.retrieve(trady.customer_profile.customer_id)
+    cu.description = "Tradie Customer credit card sign up"
+    cu.source = params[:stripeToken] # obtained with Stripe.js
+    cu.save
+
+    respond_to do |format|
+        format.json{render :json=>{message:"Thank you for updating your payment information."}}
+        
+    end
+
   end 
     
 
