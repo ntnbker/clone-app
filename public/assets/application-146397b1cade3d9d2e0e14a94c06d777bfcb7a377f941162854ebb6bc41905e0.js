@@ -88376,6 +88376,7 @@ var HomeComponent = React.createClass({
           'Automated reminders unsure jobs are progressing'
         )
       ),
+      '/*',
       React.createElement(
         'div',
         { className: 'three columns' },
@@ -88390,7 +88391,8 @@ var HomeComponent = React.createClass({
           null,
           'Increase renvenue through out rebate program and Increased productivity'
         )
-      )
+      ),
+      '*/'
     );
   },
 
