@@ -262,7 +262,7 @@ class TradiesController < ApplicationController
       end 
       
       respond_to do |format|
-        format.json {render :json=>{message:"Your services have been updated, thank you."}}
+        format.json {render :json=>{message:"Your services have been updated, thank you.", skills:trady.skills}}
         format.html{render :edit}
       end
 
