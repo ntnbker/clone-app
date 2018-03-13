@@ -948,6 +948,9 @@ $color-text: #83878C;
 
     > div {
       @include flex(1);
+      word-wrap: break-word;
+      word-break: break-all;
+      padding: 3px;
       text-transform: capitalize;
     }
     .flex-4 {

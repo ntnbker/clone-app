@@ -71,7 +71,7 @@ var Trady = React.createClass({
       <div className="user-email">
         <input
           type="text"
-          id="email"
+          id="trady.email"
           name="user[email]"
           placeholder="Email"
           autoCapitalize="off"
@@ -106,7 +106,7 @@ var Trady = React.createClass({
         {renderError(errors['password_confirmation'])}
       </div>
 
-      <div className="agency-name trady-name">
+      <div className="user-email trady-name">
         <input
           type="text"
           placeholder="Name"
@@ -118,16 +118,15 @@ var Trady = React.createClass({
         {renderError(errors['trady.name'])}
       </div>
 
-      <div className="agency-name trady-name">
+      <div className="user-email trady-name">
         <input
-          type="text"
+          type="hidden"
           value={email}
           name="user[trady_attributes][email]"
-          style={{display: 'none'}}
         />
       </div>
 
-      <div className="agency-name trady-company-name">
+      <div className="user-email trady-company-name">
         <input
           type="text"
           placeholder="Company Name"
