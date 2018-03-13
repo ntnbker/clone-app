@@ -53,6 +53,7 @@ class TradyPaymentRegistrationsController < ApplicationController
 
 
   def update
+    
     trady = Trady.find_by(id:params[:trady_id])
     cu = Stripe::Customer.retrieve(trady.customer_profile.customer_id)
     cu.description = "Tradie Customer credit card sign up"

@@ -16,7 +16,7 @@ var Footer = React.createClass({
                             <a href="/">About us</a>
                             <a href="/">Blog</a>
                             <a href="/">Feedback</a>
-                            <a href={this.props.new_agency_path}>Register Agent</a>
+                            {/*<a href={this.props.new_agency_path}>Register Agent</a>*/}
                         </div>
                         <div className="one-third column">
                             <a href="/">Community</a>
