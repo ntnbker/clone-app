@@ -32,8 +32,8 @@ var AgencyRegistrationForm = React.createClass({
       <div className="registration-title">
         {this.labelTitle(1, <p>Company<br />Registration</p>, level > 0)}
         {this.labelTitle(2, <p>Agency Admin<br />Registration</p>, level > 1)}
-        {this.labelTitle(4, <p>Terms<br />&<br />Conditions</p>, level > 2)}
-        {this.labelTitle(3, <p>Payment<br />Information</p>, level > 3)}
+        {this.labelTitle(3, <p>Terms<br />&<br />Conditions</p>, level > 2)}
+        {this.labelTitle(4, <p>Payment<br />Information</p>, level > 3)}
       </div>
     )
   },
