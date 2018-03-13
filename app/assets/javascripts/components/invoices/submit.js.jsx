@@ -323,7 +323,7 @@ var InvoiceSubmit = React.createClass({
   },
 
   render() {
-    const {trady_company, ledger, landlord, agency, edit_invoice_path} = this.props;
+    const {trady_company, ledger, landlord, agency, edit_invoice_path, trady} = this.props;
     const {invoices} = this.state;
 
     return (
@@ -531,17 +531,19 @@ var InvoiceSubmit = React.createClass({
                     {`$ ${invoice.amount.toFixed(2)}`}
                   </div>
                 </div>
-                <div className="amount-due">
-                  <div className="border-none flex-5">
+                { trady && trady.jfmo_participant &&
+                  <div className="amount-due">
+                    <div className="border-none flex-5">
 
+                    </div>
+                    <div className="border-none text-right font-bold flex-2">
+                      Service Fee (AUD):
+                    </div>
+                    <div className="border-none text-right font-bold flex-1">
+                      {`$ ${invoice.service_fee}`}
+                    </div>
                   </div>
-                  <div className="border-none text-right font-bold flex-2">
-                    Service Fee (AUD):
-                  </div>
-                  <div className="border-none text-right font-bold flex-1">
-                    {`$ ${invoice.service_fee}`}
-                  </div>
-                </div>
+                }
               </div>
             </div>
           ))}

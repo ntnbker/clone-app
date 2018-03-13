@@ -677,7 +677,7 @@ var InvoiceField = React.createClass({
     });
   },
   render: function() {
-    var { content, x, params: { invoiceInfo = {} } } = this.props;
+    var { content, x, params: { invoiceInfo = {}, trady } } = this.props;
     var {
       errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee
     } = this.state;
@@ -798,13 +798,15 @@ var InvoiceField = React.createClass({
               />
             </div>
           </div>
-          <div>
-            <p> Service Fee: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+          { trady && trady.jfmo_participant &&
+            <div>
+              <p> Service Fee: </p>
+              <div className="input-dolar">
+                <span className="dolar">$</span>
+                <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+              </div>
             </div>
-          </div>
+          }
           <p id="errorbox" className="text-center error">{errorDate || ''}</p>
         </div>
 
@@ -980,7 +982,7 @@ var InvoiceFields = React.createClass({
 
       <FieldListForInvoice
         errors={errors}
-        params={{invoiceInfo}}
+        params={{invoiceInfo, trady}}
         noQuotes={!hasQuotes}
         existingContent={invoices}
         SampleField={InvoiceField}

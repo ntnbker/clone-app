@@ -1,6 +1,6 @@
 var DetailInvoice = React.createClass({
 	render: function() {
-		const {invoice} = this.props;
+		const {invoice, invoice: {trady}} = this.props;
 		let subTotal = 0;
 		let gst = 0;
 		if(!!invoice) {
@@ -71,15 +71,18 @@ var DetailInvoice = React.createClass({
 							$ {subTotal.toFixed(2)}
 						</td>
 					</tr>
-					<tr>
-						<td colSpan="3" className="border-none"></td>
-						<td className="text-right font-bold border-none">
-							Service Fee: (AUD)
-						</td>
-						<td className="font-bold border-none">
-							$ {invoice.service_fee}
-						</td>
-					</tr>
+					{
+						trady && trady.jfmo_participant &&
+						<tr>
+							<td colSpan="3" className="border-none"></td>
+							<td className="text-right font-bold border-none">
+								Service Fee: (AUD)
+							</td>
+							<td className="font-bold border-none">
+								$ {invoice.service_fee}
+							</td>
+						</tr>
+					}
 					</tbody>
 				</table>
 			);
