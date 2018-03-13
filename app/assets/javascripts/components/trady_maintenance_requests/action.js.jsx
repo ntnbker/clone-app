@@ -102,7 +102,7 @@ var ContentTradyAction = React.createClass({
 		if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id == this.props.assigned_trady.id) {
 			return (
 				<ul>
-					<CreactOrUploadQuote link={link} />
+					{this.props.needShowCreateQuote && <CreactOrUploadQuote link={link} />}
 					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					{/*<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />*/}
 					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
@@ -121,8 +121,7 @@ var ContentTradyAction = React.createClass({
 		}else {
 			return(
 				<ul>
-
-					<CreactOrUploadQuote link={link} />
+					{this.props.needShowCreateQuote && <CreactOrUploadQuote link={link} />}
 					{ !!this.props.assigned_trady &&
 							<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
@@ -172,6 +171,7 @@ var TradyAction = React.createClass({
 					  		invoices={this.props.invoices}
 						 		assigned_trady={this.props.assigned_trady}
 						 		signed_in_trady={this.props.signed_in_trady}
+						 		needShowCreateQuote={this.props.needShowCreateQuote}
 						 		maintenance_request={this.props.maintenance_request}
 					  		onModalWith={(modal) => this.props.onModalWith(modal)}
 						  />
@@ -202,6 +202,7 @@ var TradyActionMobile = React.createClass({
 							invoices={this.props.invoices}
 					 		assigned_trady={this.props.assigned_trady}
 							signed_in_trady={this.props.signed_in_trady}
+							needShowCreateQuote={this.props.needShowCreateQuote}
 					 		maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>

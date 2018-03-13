@@ -55,6 +55,7 @@ var TradySideBarMobile = React.createClass({
 							assigned_trady={this.props.assigned_trady}
 							signed_in_trady={this.props.signed_in_trady}
 							invoice_pdf_files={this.props.invoice_pdf_files}
+							needShowCreateQuote={this.props.needShowCreateQuote}
 							maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
@@ -1582,6 +1583,7 @@ var TradyMaintenanceRequest = React.createClass({
 									invoices={this.props.invoices}
 									assigned_trady={this.props.assigned_trady}
 									signed_in_trady={this.props.signed_in_trady}
+									needShowCreateQuote={!!quote_requests.length}
 									onModalWith={(modal) => this.onModalWith(modal)}
 									invoice_pdf_files={this.props.invoice_pdf_files}
 									maintenance_request={this.state.maintenance_request}
@@ -1652,6 +1654,7 @@ var TradyMaintenanceRequest = React.createClass({
 							current_user={this.props.current_user}
 							assigned_trady={this.props.assigned_trady}
 							signed_in_trady={this.props.signed_in_trady}
+							needShowCreateQuote={!!quote_requests.length}
 							invoice_pdf_files={this.props.invoice_pdf_files}
 							onModalWith={(modal) => this.onModalWith(modal)}
 							viewModal={(key, item) => this.viewItem(key, item)}
