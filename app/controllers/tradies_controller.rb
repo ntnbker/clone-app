@@ -206,7 +206,7 @@ class TradiesController < ApplicationController
   def edit
     @trady = Trady.find_by(id:params[:id])
     @skills = @trady.skills
-
+    @customer = @trady.customer_profile
     if @trady.trady_company
       @trady_company = @trady.trady_company
     else
