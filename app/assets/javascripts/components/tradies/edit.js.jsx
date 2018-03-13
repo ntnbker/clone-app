@@ -257,10 +257,17 @@ var TradyEdit = React.createClass({
 
       switch (this.state.modal) {
         case 'payment':
+          const paymentNotes = [
+            'Maintenance App does not save your credit card information. Maintenance App uses Stripe to process credit cards. Stripe offers the highest security to keep your credit card information safe.',
+            'MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.',
+            'Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform'
+          ]
+
           return (
             <ModalAddPayment
               close={this.isClose}
               submit={this.submitPayment}
+              paymentNotes={paymentNotes}
             />
           )
 
@@ -272,6 +279,7 @@ var TradyEdit = React.createClass({
               services={this.props.services}
               trady_skills={this.state.trady_skills}
               trady_id={this.props.trady.id}
+              is_edit={true}
             />
           )
 

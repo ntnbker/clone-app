@@ -82,7 +82,7 @@ var ServiceList = React.createClass({
   },
 
   render: function() {
-    const { services, skills } = this.state;
+    const { services, skills, isEdit } = this.state;
     return (
       <form id="services" onSubmit={this.onSubmit}>
         <label className="service-placeholder text-center">
@@ -132,7 +132,7 @@ var ServiceList = React.createClass({
             Back
           </button>
           <button type="submit" className="btn button-submit">
-            Add Service(s)
+            {isEdit ? "Submit" : "Add Service(s)"}
           </button>
         </div>
       </form>

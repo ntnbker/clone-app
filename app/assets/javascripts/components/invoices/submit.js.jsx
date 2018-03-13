@@ -95,6 +95,12 @@ var ModalAddPayment = React.createClass({
   },
 
   render() {
+    let defaultPaymentNotes = [
+      'Please note that you will not be charged now. MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.',
+      'Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.'
+    ]
+    const {paymentNotes} = this.props;
+
     return (
       <div className="modal-custom fade">
         <div className="modal-dialog">
@@ -115,12 +121,9 @@ var ModalAddPayment = React.createClass({
             </div>
             <div className="modal-body">
               <div className="description-data">
-                <p className="row">
-                  Please note that you will not be charged now. MaintenanceApp only processes our service fee 30 days after the due date of the invoice you have created.
-                </p>
-                <p className="row">
-                  Out of the 15% service fee MaintenanceApp charges, 5% goes to the agency that you did the job for. This will encourage them to use you again rather than tradies outside of our platform.
-                </p>
+                {(paymentNotes || defaultPaymentNotes).map((note) => (
+                  <p className="row">{note}</p>
+                ))}
               </div>
               <div className="your-name">
                 <input type="text"
