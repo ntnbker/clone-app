@@ -65,6 +65,7 @@ $color-text: #83878C;
   .buttons {
     @include flexbox;
     margin-top: 20px;
+    padding-bottom: 20px;
 
     button {
       @include flex(1);
