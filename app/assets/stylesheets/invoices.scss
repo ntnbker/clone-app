@@ -905,6 +905,15 @@ $color-text: #83878C;
       }
     }
   }
+
+  @media (max-width: 380px) {
+    .invoice-button {
+      button {
+        height: auto;
+        white-space: normal;
+      }
+    }
+  }
 }
 
 #submit-invoice {
@@ -934,7 +943,7 @@ $color-text: #83878C;
 
   .heading {
     @include flexbox;
-    @include flex-wrap(wrap);
+    @include flex-direction(column);
 
     > div {
       @include flex(1);
@@ -986,10 +995,14 @@ $color-text: #83878C;
     .qf-button {
       button {
         font-size: 13px;
-        height: 20px;
+        height: 25px;
         padding: 0;
         margin: 0 5px;
       }
+    }
+    .invoice-button {
+      flex: auto;
+      padding: 0 5px;
     }
   }
 }

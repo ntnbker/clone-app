@@ -1806,8 +1806,7 @@ span.index {
         width: 20%;
       }
       .quote-rate {
-        width: 10%;
-        word-break: break-all;
+        width: 15%;
       }
       .quote-amount {
         width: 30%;
@@ -2379,6 +2378,10 @@ span.index {
     .item-quote .user .quote-request-button {
       width: 98%;
       margin-left: 1%;
+    }
+    .post .info .title button {
+      height: auto;
+      white-space: normal;
     }
   }
 }
