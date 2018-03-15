@@ -96,6 +96,13 @@ var EditMaintenanceRequest = React.createClass({
 								<div className="row">
 									<button
 										type="button"
+										className="btn-edit btn-address"
+										onClick={() => this.props.onModalWith('editAddress')}
+									>
+										Edit Address
+									</button>
+									<button
+										type="button"
 										className="btn-edit"
 										onClick={() => this.props.onModalWith('addPhoto')}
 									>

@@ -936,3 +936,7 @@ $color-red: #e34f4f;
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
 }
+
+.pac-container {
+	z-index: 9999;
+}
