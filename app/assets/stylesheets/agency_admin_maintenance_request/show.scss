@@ -1355,6 +1355,18 @@ span.index {
   form {
     margin-bottom: 0px;
   }
+
+  form#edit_address {
+    @include flexbox;
+    @include align-items(center);
+    @include justify-content(center);
+    @include flex-direction(column);
+    
+    input {
+      margin-bottom: 10px;
+    }
+  }
+
   .m-t-lg {
     margin-top: 15px;
   }
