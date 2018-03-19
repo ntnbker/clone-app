@@ -34,4 +34,32 @@ class TradieTermAgreementsController < ApplicationController
    
   end
 
+
+  def new_terms_and_conditions_onboarding
+    @maintenance_request_id = params[:maintenance_request_id]
+    @trady_id = params[:trady_id]
+  end
+
+  def create_terms_and_conditions_onboarding
+    @maintenance_request_id = params[:maintenance_request_id]
+    @trady = params[:trady_id]
+    if  params[:terms_and_conditions] == "true" 
+      
+      customer_profile = CustomerProfile.find_by(trady_id:params[:trady_id])
+      customer_profile.update_attribute(:terms_and_conditions, true)
+      
+      
+    elsif params[:terms_and_conditions] == "false"
+      @maintenance_request_id = params[:maintenance_request_id]
+      
+       respond_to do |format|
+          format.json{render :json=>{errors:"You must agree to the terms and conditions to join the maintenance app network."}}
+          format.html{render :new_terms_and_conditions_onboarding}
+      end
+    end 
+
+  end
+
+
+
 end 
