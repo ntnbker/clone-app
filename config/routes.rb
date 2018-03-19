@@ -277,7 +277,7 @@ Rails.application.routes.draw do
   ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
   ###########################################################
   resources :tradie_term_agreements, only:[:new, :create]
-  get "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#new_terms_and_conditions_onboarding"
+  get "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#new_terms_and_conditions_onboarding", :as => :onboarding_tradie_terms_and_conditions
   post "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#create_terms_and_conditions_onboarding"
   ############################################
   ##########PAYMENT RESOURCES/ROUTES#########
