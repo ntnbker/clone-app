@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     patch "update_password"=>"passwords#update_password"
     get "set_password"=> "passwords#set_password",:as=> :set_password
     patch "confirm_password"=>"passwords#confirm_password"
-    get "new_onboarding_password" =>"passwords#new_onboarding_password", :as => new_onboarding_password
+    get "new_onboarding_password" =>"passwords#new_onboarding_password", :as => "new_onboarding_password"
     post "create_onboarding_password"=>"passwords#create_onboarding_password"
   
   ###################################################
