@@ -26,7 +26,8 @@ Rails.application.routes.draw do
     patch "update_password"=>"passwords#update_password"
     get "set_password"=> "passwords#set_password",:as=> :set_password
     patch "confirm_password"=>"passwords#confirm_password"
-     
+    get "new_onboarding_password" =>"passwords#new_onboarding_password", :as => new_onboarding_password
+    post "create_onboarding_password"=>"passwords#create_onboarding_password"
   
   ###################################################
   ##########AGENT ROLE RESOURCES/ROUTES##############
@@ -276,8 +277,8 @@ Rails.application.routes.draw do
   ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
   ###########################################################
   resources :tradie_term_agreements, only:[:new, :create]
-  get "onboarding_tradie_terms_and_condtions" => "tradie_term_agreements#new_terms_and_conditions_onboarding"
-  post "onboarding_tradie_terms_and_condtions" => "tradie_term_agreements#create_terms_and_conditions_onboarding"
+  get "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#new_terms_and_conditions_onboarding"
+  post "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#create_terms_and_conditions_onboarding"
   ############################################
   ##########PAYMENT RESOURCES/ROUTES#########
   ############################################
