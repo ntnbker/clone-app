@@ -1,14 +1,13 @@
 var SetPassword = React.createClass({
   render: function() {
-    const { authenticity_token, current_user } = this.props;
-
+    const { authenticity_token, user } = this.props;
     return (
       <form role="form" className="edit_user" id="edit_user_5" action="/confirm_password" acceptCharset="UTF-8" method="post">
         <input name="utf8" type="hidden" value="✓" />
         <input type="hidden" name="_method" value="patch" />
         <input type="hidden" name="authenticity_token" value={ authenticity_token }/>
-        <p>{ current_user.email }</p>
-        <input value={ current_user.email } type="hidden" name="user[email]" id="user_email" />
+        <p>{ user.email }</p>
+        <input value={ user.email } type="hidden" name="user[email]" id="user_email" />
         <div className="form-group">
           <label
             className="control-label required"
