@@ -56,7 +56,7 @@ class RecruitsController < ApplicationController
 
         if quote_request
           flash[:danger] = "You have already sent this tradie this quote request"
-          redirect_to recruit_path(id:params[:trady_id][:jfmo_request_id])
+          redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
         else
           QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
           
@@ -68,7 +68,7 @@ class RecruitsController < ApplicationController
         Skill.create(trady_id:trady.id, skill: maintenance_request.service_type)
         if quote_request
           flash[:danger] = "You have already sent this tradie this quote request"
-          redirect_to recruit_path(id:params[:trady_id][:jfmo_request_id])
+          redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
         else
           QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
           TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
@@ -87,7 +87,7 @@ class RecruitsController < ApplicationController
         role.save
         QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
         JfmoEmailWorker.perform_async(maintenance_request_id, @trady.id)
-        redirect_to recruit_path(id:params[:trady_id][:jfmo_request_id])
+        redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
 
       else
         flash[:danger] = "Sorry you missed some information below, make sure all fields are completed."
