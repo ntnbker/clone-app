@@ -94,4 +94,41 @@ class PasswordsController < ApplicationController
     end
   end
 
+
+  def new_onboarding_password
+    if params[:token]
+      user = User.find_by(set_password_token:params[:token])
+      if user
+        @user = user
+      else
+        flash[:danger] = "Sorry that password token has expired."
+        redirect_to root_path
+      end 
+    else 
+      flash[:danger] = "Sorry you need an eligible token to see that page. Please use the forgot my password link under the login screen to setup your password. Thank you."
+      redirect_to root_path
+    end 
+  end
+
+  def create_onboarding_password
+    @user = User.find_by(email: params[:user][:email].gsub(/\s+/, "").downcase)
+    @user.password_confirmation = params[:user][:password_confirmation]
+    # the next line clears the temporary token and updates the password
+    if @user.change_password!(params[:user][:password])
+      
+      @user.update_columns(set_password_token:SecureRandom.hex(10), password_set:true)
+      flash[:success] = 'Your password was successfully set. Please continue to your maintenance request.'
+
+
+
+      login(@user.email, params[:user][:password].gsub(/\s+/, ""))
+      @user.current_role.update_attribute(:role, "Trady")
+      redirect_to trady_maintenance_request_path(maintenance_request)
+    else
+      flash[:danger] = "Sorry something is wrong. Please fix the fields to change the password."
+      render :new_onboarding_password
+    end
+  end
+
+
 end 
