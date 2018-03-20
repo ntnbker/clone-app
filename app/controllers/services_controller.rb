@@ -137,7 +137,7 @@ class ServicesController < ApplicationController
       service_array.each do |skill|
         Skill.create(skill:skill, trady_id:trady_id)
       end
-      
+      flash[:success] = "Thank you for signing up with Maintenance App. We will strive to help your business grow :)"
       redirect_to root_path(maintenance_request_id:params[:maintenance_request_id], role:"Trady")
     else
       # flash[:danger] = "Please choose at least one service from the list below, thank you."

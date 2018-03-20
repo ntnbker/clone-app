@@ -119,6 +119,7 @@ class PasswordsController < ApplicationController
     if @user.change_password!(params[:user][:password])
       
       @user.update_columns(set_password_token:SecureRandom.hex(10), password_set:true)
+      @user.trady.update_attribute(:jfmo_participant, true)
       flash[:success] = 'Your password was successfully set. Please pick the services you will be providing to your customers.'
 
 

@@ -26,7 +26,7 @@ class TradieRegistrationsController < ApplicationController
     if @user && existing_role == false
       
       role = Role.new(user_id:@user.id)
-      @trady = Trady.create(user_id:@user.id, email:params[:user][:trady_attributes][:email], mobile:params[:user][:trady_attributes][:mobile], name:params[:user][:trady_attributes][:name], company_name:params[:user][:trady_attributes][:company_name], jfmo_participant:params[:user][:trady_attributes][:jfmo_participant])
+      @trady = Trady.create(user_id:@user.id, email:params[:user][:trady_attributes][:email], mobile:params[:user][:trady_attributes][:mobile], name:params[:user][:trady_attributes][:name], company_name:params[:user][:trady_attributes][:company_name], jfmo_participant:true)
       @trady.update_attribute(:user_id, @user.id)
       @trady.roles << role
       role.save
@@ -40,8 +40,12 @@ class TradieRegistrationsController < ApplicationController
      
     elsif @user && existing_role == true
 
-      flash[:success] = "It looks like you are already a tradie in the system. Please log in as a tradie."
-      redirect_to root_path
+      flash[:success] = "It looks like you are already a tradie in the system. Please continue the registration process."
+      if @user.trady.trady_company
+        redirect_to edit_register_tradie_company_path(id:@user.trady.trady_company.id, maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id, trady_company_id:@user.trady.trady_company.id)
+      else
+        redirect_to register_trady_company_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+      end
 
     ####NEW USER STARTS HERE
     else 
@@ -57,7 +61,7 @@ class TradieRegistrationsController < ApplicationController
         trady.roles << role
         role.save
         CustomerProfile.create(trady_id:trady.id, terms_and_conditions: true)
-
+        trady.update_attribute(:jfmo_participant,true)
 
 
         flash[:success] = "Please continue below"

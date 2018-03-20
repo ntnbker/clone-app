@@ -11,7 +11,7 @@ class TradieTermAgreementsController < ApplicationController
     
     if  params[:terms_and_conditions] == "true" 
       
-      flash[:success] = "Thank you for joining the maintenance app network. We will email you with free leads as they come in. Thank you for your time."
+      flash[:success] = "Thank you for accepting the terms and conditions. Please continue the registration below."
       redirect_to new_tradie_registration_path
       
       
