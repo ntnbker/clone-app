@@ -50,7 +50,7 @@ var ServiceList = React.createClass({
   onSubmit(e) {
     e.preventDefault();
     const {isEdit, skills}   = this.state;
-    const {trady_id, trady_company_id, maintenance_request_id} = this.props;
+    const {trady_id, trady_company_id, maintenance_request_id, submit_url} = this.props;
     const self = this;
     const params = {
       trady_id, trady_company_id, maintenance_request_id,
@@ -58,14 +58,14 @@ var ServiceList = React.createClass({
         skill: skills
       }
     }
-
+    
     if (this.props.editServices) {
       return this.props.editServices(params, errors => self.setState({errors: err}));
     }
 
     $.ajax({
       type: isEdit ? 'PUT' : 'POST',
-      url: isEdit ? ('/services/' + trady_id) : '/add_services',
+      url: submit_url || (isEdit ? ('/services/' + trady_id) : '/add_services'),
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },

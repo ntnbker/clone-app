@@ -57,7 +57,7 @@ var TradyOnboardingRegistrationForm = React.createClass({
       case 'terms-and-conditions':
         return <TradyTermsAndConditions {...this.props} />;
       case 'setup-password':
-        return <SetPassword {...this.props} />;
+        return <NewOnboardingPassword {...this.props} />;
       case 'service':
         return <ServiceList {...this.props} />;
     }

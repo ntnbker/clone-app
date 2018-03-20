@@ -15,7 +15,6 @@ var SetPassword = React.createClass({
             Password
           </label>
           <input
-            required="required"
             minLength="3"
             className="form-control"
             type="password"
@@ -29,7 +28,6 @@ var SetPassword = React.createClass({
             Password confirmation
           </label>
           <input
-            required="required"
             autoComplete="off"
             minLength="3"
             className="form-control"
