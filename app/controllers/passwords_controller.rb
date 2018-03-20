@@ -128,7 +128,11 @@ class PasswordsController < ApplicationController
       redirect_to new_service_onboarding_path(maintenance_request_id:params[:user][:maintenance_request_id], trady_id:params[:user][:trady_id])
     else
       flash[:danger] = "Sorry something is wrong. Please fix the fields to change the password."
-      render :new_onboarding_password
+      
+      respond_to do |format|
+        format.json {render :json=>{errors:@user.errors.to_hash(true).as_json}}
+        format.html {render :new_onboarding_password}
+      end 
     end
   end
 
