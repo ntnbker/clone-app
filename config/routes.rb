@@ -271,8 +271,8 @@ Rails.application.routes.draw do
     resources :services, only:[:new,:create, :update, :index]
     post "add_services"=>"services#add_services"
     get "edit_services"=>"services#edit_services", :as => "edit_services"
-    
-
+    get "new_service_onboarding" => "serves#new_service_onboarding", :as=> "new_service_onboarding"
+    post "new_service_onboarding" => "serves#create_service_onboarding"
   ###########################################################
   ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
   ###########################################################

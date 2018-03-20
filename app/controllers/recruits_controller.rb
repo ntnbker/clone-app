@@ -90,6 +90,9 @@ class RecruitsController < ApplicationController
         redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
 
       else
+        @maintenance_request = maintenance_request
+        @jfmo_request = jfmo
+        
         flash[:danger] = "Sorry you missed some information below, make sure all fields are completed."
         render :show
       end 

@@ -37,7 +37,7 @@ class ServicesController < ApplicationController
   def add_services
 
     
-    Trady.find_by(id: params[:trady_id])
+    #Trady.find_by(id: params[:trady_id])
      
      
     #service_array = params[:skill][:skill]
@@ -134,6 +134,42 @@ class ServicesController < ApplicationController
       end
     end 
      
+
+  end
+
+
+  def new_service_onboarding
+    @maintenance_request_id = params[:maintenance_request_id] 
+    @trady_id = params[:trady_id] 
+    @skill = Skill.new
+  end
+
+  def create_service_onboarding
+    
+    user = Trady.find_by(id:params[:trady_id]).user
+    trady_id = params[:trady_id]
+   
+    if params[:skill]
+      service_array = params[:skill][:skill]
+
+      service_array.each do |skill|
+        Skill.create(skill:skill, trady_id:trady_id)
+      end
+      
+      redirect_to root_path(maintenance_request_id:params[:maintenance_request_id], role:"Trady")
+    else
+      # flash[:danger] = "Please choose at least one service from the list below, thank you."
+      # redirect_to services_path(maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], trady_company_id:params[:trady_company_id])
+      @maintenance_request_id = params[:maintenance_request_id] 
+      @trady_id = params[:trady_id] 
+      @skill = Skill.new
+
+      respond_to do |format|
+        format.json {render :json=>{errors:"Please choose at least one service from the list below, thank you."}}
+        format.html{render :new_service_onboarding}
+      end
+    end 
+
 
   end
 

@@ -101,7 +101,7 @@ class PasswordsController < ApplicationController
       if user
         @user = user
       else
-        flash[:danger] = "Sorry that password token has expired."
+        flash[:danger] = "Sorry that password token has expired. This means that you have already setup your password. If you have forgotten your password please us the Forget Password link."
         redirect_to root_path
       end 
     else 
@@ -117,12 +117,12 @@ class PasswordsController < ApplicationController
     if @user.change_password!(params[:user][:password])
       
       @user.update_columns(set_password_token:SecureRandom.hex(10), password_set:true)
-      flash[:success] = 'Your password was successfully set. Please continue to your maintenance request.'
+      flash[:success] = 'Your password was successfully set. Please pick the services you will be providing to your customers.'
 
 
 
-      login(@user.email, params[:user][:password].gsub(/\s+/, ""))
-      @user.current_role.update_attribute(:role, "Trady")
+      # login(@user.email, params[:user][:password].gsub(/\s+/, ""))
+      # @user.current_role.update_attribute(:role, "Trady")
       redirect_to trady_maintenance_request_path(maintenance_request)
     else
       flash[:danger] = "Sorry something is wrong. Please fix the fields to change the password."

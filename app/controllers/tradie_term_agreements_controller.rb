@@ -42,12 +42,12 @@ class TradieTermAgreementsController < ApplicationController
   end
 
   def create_terms_and_conditions_onboarding
+    binding.pry
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_id = params[:trady_id]
     @token = params[:token]
     if  params[:terms_and_conditions] == "true" 
-      customer_profile = CustomerProfile.find_by(trady_id:@trady_id)
-      customer_profile.update_attribute(:terms_and_conditions, true)
+       CustomerProfile.create(trady_id:@trady_id, terms_and_conditions: true)
       flash[:success] = "Thank you for accepting the terms and conditions. Please setup you password below."
       redirect_to new_onboarding_password_path(maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, token:@token)
     elsif params[:terms_and_conditions] == "false"
