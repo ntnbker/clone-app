@@ -42,7 +42,7 @@ class TradieTermAgreementsController < ApplicationController
   end
 
   def create_terms_and_conditions_onboarding
-    binding.pry
+    
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_id = params[:trady_id]
     @token = params[:token]
