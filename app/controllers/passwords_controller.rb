@@ -96,6 +96,8 @@ class PasswordsController < ApplicationController
 
 
   def new_onboarding_password
+    @maintenance_request_id = params[:maintenance_request_id]
+    @trady_id = params[:trady_id]
     if params[:token]
       user = User.find_by(set_password_token:params[:token])
       if user
@@ -123,7 +125,7 @@ class PasswordsController < ApplicationController
 
       # login(@user.email, params[:user][:password].gsub(/\s+/, ""))
       # @user.current_role.update_attribute(:role, "Trady")
-      redirect_to trady_maintenance_request_path(maintenance_request)
+      redirect_to new_service_onboarding_path(maintenance_request_id:params[:user][:maintenance_request_id], trady_id:params[:user][:trady_id])
     else
       flash[:danger] = "Sorry something is wrong. Please fix the fields to change the password."
       render :new_onboarding_password
