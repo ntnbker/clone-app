@@ -30,6 +30,7 @@ class TradieRegistrationsController < ApplicationController
       @trady.update_attribute(:user_id, @user.id)
       @trady.roles << role
       role.save
+      CustomerProfile.create(trady_id:@trady.id, terms_and_conditions: true)
       flash[:success] = "Please continue below"
         if existing_company
           redirect_to edit_register_tradie_company_path(id:existing_company.id, maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
@@ -39,8 +40,8 @@ class TradieRegistrationsController < ApplicationController
      
     elsif @user && existing_role == true
 
-      flash[:success] = "It looks like you are already a tradie on the system. Please continue with the sign up process to be part of the MaintenanceApp network and grow your business."
-      redirect_to register_trady_company_path(maintenance_request_id:maintenance_request_id, trady_id:@user.trady.id)
+      flash[:success] = "It looks like you are already a tradie in the system. Please log in as a tradie."
+      redirect_to root_path
 
     ####NEW USER STARTS HERE
     else 
@@ -55,7 +56,7 @@ class TradieRegistrationsController < ApplicationController
         trady = @user.trady
         trady.roles << role
         role.save
-
+        CustomerProfile.create(trady_id:trady.id, terms_and_conditions: true)
 
 
 
