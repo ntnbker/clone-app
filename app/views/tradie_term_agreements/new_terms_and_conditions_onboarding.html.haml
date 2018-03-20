@@ -1,1 +1,2 @@
-This is where the terms and conditions goes
+%div.well.container
+  =react_component('TradyRegistrationForm', {:authenticity_token => form_authenticity_token, :maintenance_request_id => @maintenance_request_id, :trady_company_id => @trady_company_id, :trady_id => @trady_id, :token => @token, :step => "terms-and-conditions", :submit_url => "/onboarding_tradie_terms_and_conditions", :edit_services_path => edit_services_path(maintenance_request_id:@maintenance_request_id, trady_company_id:@trady_company_id, trady_id:@trady_id)})

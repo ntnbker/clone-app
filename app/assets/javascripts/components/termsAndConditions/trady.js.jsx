@@ -63,11 +63,12 @@ var TradyTermsAndConditions = React.createClass({
       trady_id: this.props.trady_id,
       trady_company_id: this.props.trady_company_id,
       maintenance_request_id: this.props.maintenance_request_id,
+      token: this.props.token,
     }
 
     $.ajax({
       type: 'POST',
-      url: '/tradie_term_agreements',
+      url: this.props.submit_url || '/tradie_term_agreements',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
