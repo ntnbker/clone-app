@@ -49,10 +49,6 @@ var TradyTermsAndConditions = React.createClass({
     return <p id="errorbox" className="error">{error ? error : ''}</p>;
   },
 
-  onBack() {
-    location.href = this.props.edit_services_path;
-  },
-
   submit(e) {
     e.preventDefault();
     const {isAgree} = this.state;
@@ -87,6 +83,7 @@ var TradyTermsAndConditions = React.createClass({
 
   render() {
     const {isAgree} = this.state;
+    const {edit_services_path} = this.props;
 
     return (
       <form id="terms-and-conditions" onSubmit={this.submit}>
@@ -107,11 +104,17 @@ var TradyTermsAndConditions = React.createClass({
         </label>
         {this.renderError(this.state.errors)}
         <div className="TAC-buttons">
-          <button type="button" className="btn button-back" onClick={this.onBack}>
-            Back
-          </button>
+          { edit_services_path &&
+            <button
+              type="button"
+              className="btn button-back"
+              onClick={() => location.href = edit_services_path}
+            >
+              Back
+            </button>
+        }
           <button type="submit" className="btn button-submit">
-            Submit
+            {edit_services_path ? "Submit" : "Next"}
           </button>
         </div>
       </form>
