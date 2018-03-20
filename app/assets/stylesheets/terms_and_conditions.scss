@@ -77,30 +77,23 @@ form#terms-and-conditions {
   }
 
   .TAC-buttons {
-    text-align: center;
     margin-top: 20px;
     padding-bottom: 20px;
     @include flexbox;
+    @include justify-content(center);
 
-    button {
+    .button-submit {
       @include flex(1);
-      margin: 0 20px;
+      max-width: 300px;
+      background-color: $color-green-submit;
+      color: white;
+      border-color: $color-green-submit;
+      border-radius: 5px;
 
       &:hover {
         background-color: #619970;
         border-color: #619970;
       }
-    }
-
-    .button-submit {
-      color: white;
-      border-color: $color-green-submit;
-      background-color: $color-green-submit;
-    }
-    .button-back {
-      color: white;
-      border-color: $color-blue;
-      background-color: $color-blue;
     }
   }
 }

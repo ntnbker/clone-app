@@ -83,7 +83,6 @@ var TradyTermsAndConditions = React.createClass({
 
   render() {
     const {isAgree} = this.state;
-    const {edit_services_path} = this.props;
 
     return (
       <form id="terms-and-conditions" onSubmit={this.submit}>
@@ -104,17 +103,8 @@ var TradyTermsAndConditions = React.createClass({
         </label>
         {this.renderError(this.state.errors)}
         <div className="TAC-buttons">
-          { edit_services_path &&
-            <button
-              type="button"
-              className="btn button-back"
-              onClick={() => location.href = edit_services_path}
-            >
-              Back
-            </button>
-        }
           <button type="submit" className="btn button-submit">
-            {edit_services_path ? "Submit" : "Next"}
+            Next
           </button>
         </div>
       </form>
