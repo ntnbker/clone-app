@@ -1,20 +1,24 @@
 var HomeComponent = React.createClass({
   getInitialState: function() {
-    const { current_user, role } = this.props;
-    const step = this.detectStepFromRole(role);
+    const { current_user, role, email_role } = this.props;
+    const roleUsed = role || email_role;
+    const step = this.detectStepFromRole(role, email_role);
 
     return {
-      active: !role ? 'Tenant' : role === 'AgencyAdmin' ? 'Agent' : role,
+      active: !roleUsed ? 'Tenant' : roleUsed === 'AgencyAdmin' ? 'Agent' : roleUsed,
       step,
       signed: !!current_user,
-      rolePicked: role || 'Tenant',
+      rolePicked: roleUsed || 'Tenant',
       user: current_user,
       focusEmail: false,
       focusPassword: false,
     };
   },
 
-  detectStepFromRole(role) {
+  detectStepFromRole(role, email_role) {
+    if (!role && email_role) {
+      return 'login';
+    }
     return !role || role === 'Tenant'
               ? 'home'
               : role === 'Landlord' || role === 'Trady'
@@ -206,8 +210,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForAgent() {
-    const { signed = false } = this.props;
-
     return (
       <div className="agent-content">
         {this.loginRender()}
@@ -216,8 +218,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForLandlordMobile() {
-    const { signed = false } = this.props;
-
     return (
       <div className="button-group landlord-home-button">
         <button
@@ -232,8 +232,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForLandlord() {
-    const { signed = false } = this.props;
-
     return (
       <div className="landlord-content">
         {this.loginRender()}
@@ -242,8 +240,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForTradyLogin() {
-    const { signed = false } = this.props;
-
     return (
       <div className="trady-content">
         {this.loginRender()}
@@ -295,7 +291,7 @@ var HomeComponent = React.createClass({
   },
 
   loginRender() {
-    const { active, focusEmail, focusPassword, error } = this.state;
+    const { active, focusEmail, focusPassword, error, rolePicked } = this.state;
     const { new_password_reset_path } = this.props;
     const showBackButton = active === 'Tenant' || active === 'Trady';
     const showChooseRole = active === 'Agent';
@@ -310,7 +306,7 @@ var HomeComponent = React.createClass({
                 name="role-picked"
                 value="Agent"
                 onChange={() => this.setState({rolePicked: 'Agent', error: ''})}
-                defaultChecked
+                defaultChecked={rolePicked !== 'AgencyAdmin'}
               />
               <span className="radio-checkmark"></span>
             </label>
@@ -320,6 +316,7 @@ var HomeComponent = React.createClass({
                 name="role-picked"
                 onChange={() => this.setState({rolePicked: 'AgencyAdmin', error: ''})}
                 value="AgencyAdmin"
+                defaultChecked={rolePicked === 'AgencyAdmin'}
               />
               <span className="radio-checkmark"></span>
             </label>
@@ -379,8 +376,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForTenantLogin() {
-    const { signed = false } = this.props;
-
     return (
       <div className="tenant-content">
         {this.loginRender()}
