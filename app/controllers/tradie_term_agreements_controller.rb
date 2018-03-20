@@ -42,14 +42,21 @@ class TradieTermAgreementsController < ApplicationController
   end
 
   def create_terms_and_conditions_onboarding
-    
+
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_id = params[:trady_id]
     @token = params[:token]
+    customer_profile = CustomerProfile.find_by(trady_id:@trady_id)
     if  params[:terms_and_conditions] == "true" 
-       CustomerProfile.create(trady_id:@trady_id, terms_and_conditions: true)
-      flash[:success] = "Thank you for accepting the terms and conditions. Please setup you password below."
-      redirect_to new_onboarding_password_path(maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, token:@token)
+      if customer_profile
+        flash[:success] = "Thank you for accepting the terms and conditions. Please setup you password below."
+        redirect_to new_onboarding_password_path(maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, token:@token)
+      else
+        CustomerProfile.create(trady_id:@trady_id, terms_and_conditions: true)
+        flash[:success] = "Thank you for accepting the terms and conditions. Please setup you password below."
+        redirect_to new_onboarding_password_path(maintenance_request_id:@maintenance_request_id, trady_id:@trady_id, token:@token)
+      end 
+       
     elsif params[:terms_and_conditions] == "false"
       respond_to do |format|
           format.json{render :json=>{errors:"You must agree to the terms and conditions to join the maintenance app network."}}
