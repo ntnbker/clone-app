@@ -286,7 +286,7 @@ var HomeComponent = React.createClass({
         <button
           type="button text-center"
           className="btn"
-          onClick={() => this.redirectNewPath('/tradie_registrations/new')}
+          onClick={() => this.redirectNewPath('/tradie_term_agreements/new')}
         >
           Join Network & Get Free Leads
         </button>
