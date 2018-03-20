@@ -20,7 +20,6 @@ var NewOnboardingPassword = React.createClass({
       contentType: false,
       data: formData,
       success: function (res) {
-        console.log(res);
         if (res.errors) {
           self.setState({errors: res.errors});
         }
@@ -37,17 +36,15 @@ var NewOnboardingPassword = React.createClass({
     const { user, authenticity_token, trady_id, maintenance_request_id } = this.props;
     const { errors } = this.state;
     return (
-      <div className="container reset-password">
-        <h1>Please Set Password Below</h1>
-        <div className="form-reset">
+      <div className="container reset-password onboarding-form">
           <form role="form" className="edit_user onboarding-password" id="onboarding-password" acceptCharset="UTF-8" onSubmit={this.onSubmit}>
             <input name="utf8" type="hidden" value="✓" />
             <input type="hidden" name="authenticity_token" value={authenticity_token} />
             <p>{user.email}</p>
             <input value={user.email} type="hidden" name="user[email]" id="user_email" />
             <div className="form-group">
-              <label className="control-label required" htmlFor="user_password">Password</label>
               <input
+                placeholder="Password"
                 minLength="3"
                 className={`form-control ${errors.password ? 'has-error' : ''}`}
                 type="password"
@@ -57,8 +54,8 @@ var NewOnboardingPassword = React.createClass({
               {errors.password && <span className="help-block">{errors.password[0]}</span>}
             </div>
             <div className="form-group">
-              <label className="control-label" htmlFor="user_password_confirmation">Password confirmation</label>
               <input
+                placeholder="Password confirmation"
                 autoComplete="off"
                 minLength="3"
                 className={`form-control ${errors.password_confirmation ? 'has-error' : ''}`}
@@ -80,7 +77,6 @@ var NewOnboardingPassword = React.createClass({
               id="user_trady_id" />
             <button name="button" type="submit" className="button-primary green">Submit</button>
           </form>
-        </div>
       </div>
     );
   }

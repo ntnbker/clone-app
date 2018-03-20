@@ -8,8 +8,14 @@ form#terms-and-conditions {
     color: $color-green-submit;
     font-weight: 600;
   }
+
+  .agree-wrapper {
+    @include flexbox;
+    @include justify-content(center);
+    @include align-items(center);
+  }
+
   .agree_checkbox {
-    width: 90%;
     font-size: 15px;
     padding-left: 5px;
     margin: 0 5%;
@@ -178,7 +184,6 @@ form#terms-and-conditions {
       font-size: 11px;
     }
     .agree_checkbox {
-      width: 80%;
       font-size: 11px;
       margin: 0 10%;
     }

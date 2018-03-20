@@ -91,16 +91,18 @@ var TradyTermsAndConditions = React.createClass({
           We believe that by using our system you will greatly increase your business revenue and take your business to the next level.
         </div>
         {this.termsAndConditionsText()}
-        <label className="agree_checkbox">
-          Agree To Terms and Conditions
-          <input
-            type="checkbox"
-            id="terms_and_conditions"
-            ref={elem => this.terms_and_conditions = elem}
-            onChange={this.checkOffAgree}
-          />
-          <span className="checkmark"></span>
-        </label>
+        <div className="agree-wrapper">
+          <label className="agree_checkbox">
+            Agree To Terms and Conditions
+            <input
+              type="checkbox"
+              id="terms_and_conditions"
+              ref={elem => this.terms_and_conditions = elem}
+              onChange={this.checkOffAgree}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
         {this.renderError(this.state.errors)}
         <div className="TAC-buttons">
           <button type="submit" className="btn button-submit">

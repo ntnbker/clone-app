@@ -1,2 +1,2 @@
 %div.well.container
-  = react_component('TradyOnboardingRegistrationForm', {:authenticity_token => form_authenticity_token, :services => Service.all, :user => @user, :maintenance_request_id => @maintenance_request_id, :trady_company_id => @trady_company_id, :trady_id => @trady_id, :token => @token, :step => "service", :submit_url => "/new_service_onboarding"})
+  = react_component('TradyOnboardingRegistrationForm', {:authenticity_token => form_authenticity_token, :services => Service.all, :user => @user, :maintenance_request_id => @maintenance_request_id, :trady_company_id => @trady_company_id, :trady_id => @trady_id, :token => @token, :step => "service", :submit_url => "/new_service_onboarding", :remove_back_btn => true})

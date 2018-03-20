@@ -128,9 +128,12 @@ var ServiceList = React.createClass({
         </div>
         {this.renderError()}
         <div className="service-buttons">
-          <button type="button" className="btn button-back" onClick={this.onBack}>
-            Back
-          </button>
+          {
+            !this.props.remove_back_btn && 
+            <button type="button" className="btn button-back" onClick={this.onBack}>
+              Back
+            </button>
+          }
           <button type="submit" className="btn button-submit">
             {isEdit ? "Submit" : "Add Service(s)"}
           </button>
