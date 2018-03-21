@@ -55,11 +55,10 @@ class RecruitsController < ApplicationController
         
 
         if quote_request
-          flash[:danger] = "You have already sent this tradie this quote request"
+          flash[:danger] = "This tradie has a quote request request already for this maintenance request. Either you have already sent it or someone else did."
           redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
         else
           QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
-          
           TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
         end 
         
