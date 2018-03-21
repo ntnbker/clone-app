@@ -86,6 +86,7 @@ class RecruitsController < ApplicationController
         role.save
         QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
         JfmoEmailWorker.perform_async(maintenance_request_id, @trady.id)
+        flash[:success] = "We have sent and email to #{@trady.email}"
         redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
 
       else
