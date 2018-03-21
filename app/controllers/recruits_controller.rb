@@ -82,7 +82,7 @@ class RecruitsController < ApplicationController
         user = User.create(email:params[:trady][:email],password:SecureRandom.hex(5))
         role = Role.new(user_id:user.id)
         Skill.create(trady_id:@trady.id, skill: maintenance_request.service_type)
-        @trady.update_attribute(:user_id, user.id)
+        @trady.update_columns(user_id: user.id, jfmo_participant:true)
         @trady.roles << role
         role.save
         QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
