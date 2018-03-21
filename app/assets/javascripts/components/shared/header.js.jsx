@@ -228,6 +228,9 @@ var Header = React.createClass({
     return (
       <div className={"search " + (hiddenSearch && "hidden-search")} style={style}>
         <form action="/search" className="form-search" acceptCharset="UTF-8" method="get">
+          <button type="button" type="submit" className="btn-search">
+            <i className="fa fa-search"></i>
+          </button>
           <input
             id="query"
             name="query"
@@ -236,9 +239,6 @@ var Header = React.createClass({
             placeholder="Search..."
             defaultValue={searchText}
           />
-          <button type="button" type="submit" className="btn-search">
-            <i className="fa fa-search"></i>
-          </button>
         </form>
       </div>
     );
@@ -277,6 +277,7 @@ var Header = React.createClass({
     const {
       profile = '',
     } = images && images.length && images[0] || {};
+
     return (
       <nav className="header-expanded">
         <MobileMenu ref={ref => this.Bar = ref} id="bar" isShow={this.state.isShowBar}>
@@ -329,7 +330,7 @@ var Header = React.createClass({
                         </button>
                         <ul className="dropdown-menu" id="menu-bar">
                           { this.menuBar() }
-                          <li  ref={ref => this.Items = ref}>
+                          <li ref={ref => this.Items = ref}>
                             <a href={props.logout_path} data-method="delete" rel="nofollow"> Sign Out</a>
                           </li>
                         </ul>

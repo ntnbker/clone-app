@@ -16,24 +16,27 @@ Service Needed:
 %br
 %br
 Form for Sending Tradie Invitation
-= bootstrap_form_tag url: '/recruits', method: :post do |f| 
+= bootstrap_form_for @trady, url: '/quote_request_for_recruit', method: :post do |f| 
+  = f.text_field :name, placeholder: 'name@example.com'
+  = f.text_field :company_name, placeholder: 'Business Name', label: "Business Name"
   = f.email_field :email, placeholder: 'name@example.com'
-  =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-  =f.hidden_field :jfmo_request_id, value:@jfmo_request.id 
-  = f.submit "Send Network Invite Tradie" 
+  = f.phone_field :mobile, placeholder: 'Mobile Phone Number'
+  = f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+  = f.hidden_field :jfmo_request_id, value:@jfmo_request.id 
+  = f.submit "Send Quote Request" 
 
 
 
 
 
-%br
-%br
+/ %br
+/ %br
 
 
 
-Form for Sending Quote Request
-= bootstrap_form_tag url: '/quote_request_for_recruit', method: :post do |f| 
-  = f.email_field :email, placeholder: 'name@example.com'
-  =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
-  =f.hidden_field :jfmo_request_id, value:@jfmo_request.id 
-  = f.submit "Send Quote Request Email" 
+/ Form for Sending Quote Request
+/ = bootstrap_form_tag url: '/quote_request_for_recruit', method: :post do |f| 
+/   = f.email_field :email, placeholder: 'name@example.com'
+/   =f.hidden_field :maintenance_request_id, value:@maintenance_request.id
+/   =f.hidden_field :jfmo_request_id, value:@jfmo_request.id 
+/   = f.submit "Send Quote Request Email" 

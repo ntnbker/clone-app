@@ -2796,6 +2796,13 @@ var MaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'editAddress':
+					return (
+						<ModalEditAddress
+							close={this.isClose}
+						/>
+					);
+
 				case 'addPhoto':
 					return (
 						<ModalAddPhoto

@@ -26,7 +26,8 @@ $( document ).ready(function() {
 });
 
 function getAddressOfGoogleMap() {
-	var input = document.getElementById('pac-input');
+  $('.pac-container').not(':last').remove();
+  var input = document.getElementById('pac-input');
   var options = {types: ['address'], componentRestrictions: {country: 'au'}};
   var autocomplete = new google.maps.places.Autocomplete(input,options);
 }

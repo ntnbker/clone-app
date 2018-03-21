@@ -8,11 +8,11 @@ var TenantSideBarMobile = React.createClass({
 
 	show: function(key) {
 		const height = $( window ).height();
-		if(key == 'detail') {
+		if (key == 'detail') {
 			this.setState({showContact: false});
 			this.setState({showDetail: true});
 			$('#actions-full').css({'height': 200, 'border-width': 1});
-		}else{
+		} else {
 			this.setState({showContact: true});
 			this.setState({showDetail: false});
 			$('#contacts-full').css({'height': 150, 'border-width': 1});
@@ -20,14 +20,14 @@ var TenantSideBarMobile = React.createClass({
 	},
 
 	close: function() {
-		if($('#actions-full').length > 0) {
-			if(!!this.showDetail) {
+		if ($('#actions-full').length > 0) {
+			if (this.state.showDetail) {
 				this.setState({showDetail: false});
 			}
 			$('#actions-full').css({'height': 0, 'border-width': 0});
 		}
-		if($('#contacts-full').length > 0) {
-			if(this.state.showContact) {
+		if ($('#contacts-full').length > 0) {
+			if (this.state.showContact) {
 				this.setState({showContact: false});
 			}
 			$('#contacts-full').css({'height': 0, 'border-width': 0});

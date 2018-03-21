@@ -1,7 +1,7 @@
 var TradyRegistrationForm = React.createClass({
   getInitialState : function() {
     const {step} = this.props;
-    const level = ['trady', 'trady-company', 'service', 'terms-and-conditions'];
+    const level = ['terms-and-conditions', 'trady', 'trady-company', 'service'];
 
     return {
       errors: {},
@@ -30,10 +30,10 @@ var TradyRegistrationForm = React.createClass({
     const {level} = this.state;
     return (
       <div className="registration-title">
-        {this.labelTitle(1, <p>User<br />Registration</p>, level > 0)}
-        {this.labelTitle(2, <p>Company<br />Registration</p>, level > 1)}
-        {this.labelTitle(3, <p>Services<br />Available</p>, level > 2)}
-        {this.labelTitle(4, <p>Terms<br />&<br />Conditions</p>, level > 3)}
+        {this.labelTitle(1, <p>Terms<br />&<br />Conditions</p>, level > 0)}
+        {this.labelTitle(2, <p>User<br />Registration</p>, level > 1)}
+        {this.labelTitle(3, <p>Company<br />Registration</p>, level > 2)}
+        {this.labelTitle(4, <p>Services<br />Available</p>, level > 3)}
       </div>
     )
   },
@@ -42,14 +42,14 @@ var TradyRegistrationForm = React.createClass({
     const {step} = this.state;
 
     switch (step) {
+      case 'terms-and-conditions':
+        return <h5 className="step-title text-center">Terms & Conditions</h5>
       case 'trady':
         return <h5 className="step-title text-center">User Registration</h5>
       case 'trady-company':
         return <h5 className="step-title text-center">Company Registration</h5>
       case 'service':
         return <h5 className="step-title text-center">Services Registration</h5>
-      case 'terms-and-conditions':
-        return <h5 className="step-title text-center">Terms & Conditions</h5>
     }
   },
 
@@ -57,14 +57,14 @@ var TradyRegistrationForm = React.createClass({
     const {step} = this.state;
 
     switch (step) {
+      case 'terms-and-conditions':
+        return <TradyTermsAndConditions {...this.props} />;
       case 'trady':
         return <Trady {...this.props} />;
       case 'trady-company':
         return <NewTradyCompany {...this.props} />;
       case 'service':
         return <ServiceList {...this.props} />;
-      case 'terms-and-conditions':
-        return <TradyTermsAndConditions {...this.props} />;
     }
   },
 

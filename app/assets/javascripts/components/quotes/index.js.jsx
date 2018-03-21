@@ -612,6 +612,11 @@ var QuoteRequests = React.createClass({
 				<div className="list-quote">
 				{
 					quote_requests.map(function(quote_request, index) {
+						const trady = quote_request.trady || {};
+
+						if (trady.jfmo_participant && !trady.customer_profile) {
+							return '';
+						}
 						const {maintenance_request_id, trady_id} = quote_request;
 						const quotes 				= quote_request.quotes || [];
 						const quoteAlready  = quotes.filter(quote => !quote.quote_items
@@ -643,19 +648,19 @@ var QuoteRequests = React.createClass({
 									</span>
 									<div className="info">
 										<div className="name">
-											<span>{quote_request.trady && quote_request.trady.company_name}</span>
+											<span>{trady.company_name}</span>
 										</div>
 										<div className="description">
-											{quote_request.trady && quote_request.trady.name}
+											{trady.name}
 											<br />
-											{(quote_request.trady && quote_request.trady.trady_company) && quote_request.trady.trady_company.trading_name}
+											{(trady.trady_company) && trady.trady_company.trading_name}
 										</div>
 									</div>
 									<div className="quote-request-button">
 										{
 											isCallTrady
 											? <ButtonCallTrady
-													trady={quote_request.trady}
+													trady={trady}
 												/>
 											: ''
 										}

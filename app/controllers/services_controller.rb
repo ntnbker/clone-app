@@ -36,37 +36,18 @@ class ServicesController < ApplicationController
 
   def add_services
 
-    
-    Trady.find_by(id: params[:trady_id])
-     
-     
-    #service_array = params[:skill][:skill]
-    
-
-
     trady_id = params[:trady_id]
    
-    # if service_array[0] == '' && service_array.count == 1 
-    #   flash[:danger] = "Please choose at least one service from the list below, thank you."
-    #   redirect_to services_path
-    # else
-    #   service_array.each do |skill|
-    #     if skill != ''
-    #       Skill.create(skill:skill, trady_id:trady_id)
-    #     end 
-    #   end
-    #   redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
-    # end  
-
-    
-
+   
     if params[:skill]
       service_array = params[:skill][:skill]
 
       service_array.each do |skill|
         Skill.create(skill:skill, trady_id:trady_id)
       end
-      redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
+      # redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
+      flash[:success] = "Thank you for signing up with Maintenance App. We will strive to help your business grow :)"
+      redirect_to root_path
     else
       # flash[:danger] = "Please choose at least one service from the list below, thank you."
       # redirect_to services_path(maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], trady_company_id:params[:trady_company_id])
@@ -120,8 +101,9 @@ class ServicesController < ApplicationController
        Skill.create(trady_id:trady.id, skill:skill)
       end 
       
-      redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
-
+      #redirect_to new_tradie_term_agreement_path(maintenance_request_id:params[:maintenance_request_id], trady_company_id:params[:trady_company_id], trady_id:params[:trady_id])
+      flash[:success] = "Thank you for signing up with Maintenance App. We will strive to help your business grow :)"
+      redirect_to root_path
     else
       @skills = Trady.find_by(id:params[:trady_id]).skills.as_json
       @maintenance_request_id = params[:maintenance_request_id] 
@@ -134,6 +116,42 @@ class ServicesController < ApplicationController
       end
     end 
      
+
+  end
+
+
+  def new_service_onboarding
+    @maintenance_request_id = params[:maintenance_request_id] 
+    @trady_id = params[:trady_id] 
+    @skill = Skill.new
+  end
+
+  def create_service_onboarding
+    
+    user = Trady.find_by(id:params[:trady_id]).user
+    trady_id = params[:trady_id]
+   
+    if params[:skill]
+      service_array = params[:skill][:skill]
+
+      service_array.each do |skill|
+        Skill.create(skill:skill, trady_id:trady_id)
+      end
+      flash[:success] = "Thank you for signing up with Maintenance App. We will strive to help your business grow :)"
+      redirect_to root_path(maintenance_request_id:params[:maintenance_request_id], role:"Trady")
+    else
+      # flash[:danger] = "Please choose at least one service from the list below, thank you."
+      # redirect_to services_path(maintenance_request_id:params[:maintenance_request_id], trady_id:params[:trady_id], trady_company_id:params[:trady_company_id])
+      @maintenance_request_id = params[:maintenance_request_id] 
+      @trady_id = params[:trady_id] 
+      @skill = Skill.new
+
+      respond_to do |format|
+        format.json {render :json=>{errors:"Please choose at least one service from the list below, thank you."}}
+        format.html{render :new_service_onboarding}
+      end
+    end 
+
 
   end
 

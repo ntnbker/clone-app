@@ -33804,7 +33804,8 @@ $( document ).ready(function() {
 });
 
 function getAddressOfGoogleMap() {
-	var input = document.getElementById('pac-input');
+  $('.pac-container').not(':last').remove();
+  var input = document.getElementById('pac-input');
   var options = {types: ['address'], componentRestrictions: {country: 'au'}};
   var autocomplete = new google.maps.places.Autocomplete(input,options);
 }
@@ -79956,6 +79957,17 @@ var EditMaintenanceRequest = React.createClass({
 									"button",
 									{
 										type: "button",
+										className: "btn-edit btn-address",
+										onClick: function () {
+											return _this2.props.onModalWith('editAddress');
+										}
+									},
+									"Edit Address"
+								),
+								React.createElement(
+									"button",
+									{
+										type: "button",
 										className: "btn-edit",
 										onClick: function () {
 											return _this2.props.onModalWith('addPhoto');
@@ -80083,6 +80095,67 @@ var ModalEditDescription = React.createClass({
 			)
 		);
 	}
+});
+var ModalEditAddress = React.createClass({
+  displayName: 'ModalEditAddress',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'close',
+                'data-dismiss': 'modal',
+                'aria-label': 'Close',
+                onClick: this.props.close
+              },
+              React.createElement(
+                'span',
+                { 'aria-hidden': 'true' },
+                '×'
+              )
+            ),
+            React.createElement(
+              'h4',
+              { className: 'modal-title text-center' },
+              'Edit Address'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'form',
+              { role: 'form', id: 'edit_address', action: '/edit_address', acceptCharset: 'UTF-8', method: 'post' },
+              React.createElement('input', {
+                id: 'pac-input',
+                type: 'text',
+                name: 'address',
+                placeholder: 'Please tell us the address.',
+                onChange: getAddressOfGoogleMap }),
+              React.createElement(
+                'button',
+                { name: 'button', type: 'submit', className: 'button-primary green' },
+                'Update'
+              )
+            )
+          )
+        )
+      )
+    );
+  }
 });
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
@@ -82043,7 +82116,8 @@ var ItemMaintenanceRequest = React.createClass({
 		var d = new Date();
 		var n = d.getTimezoneOffset();
 		var date = new Date(maintenance.created_at);
-		var created_at = moment(date + -n / 60).fromNow();
+		var created_at = moment(date).add(-n / 60).fromNow();
+
 		return React.createElement(
 			"div",
 			{ className: "post" },
@@ -86843,6 +86917,11 @@ var MaintenanceRequest = React.createClass({
 						updateInsruction: this.updateInsruction
 					});
 
+				case 'editAddress':
+					return React.createElement(ModalEditAddress, {
+						close: this.isClose
+					});
+
 				case 'addPhoto':
 					return React.createElement(ModalAddPhoto, {
 						close: this.isClose,
@@ -88166,21 +88245,26 @@ var HomeComponent = React.createClass({
     var _props = this.props;
     var current_user = _props.current_user;
     var role = _props.role;
+    var email_role = _props.email_role;
 
-    var step = this.detectStepFromRole(role);
+    var roleUsed = role || email_role;
+    var step = this.detectStepFromRole(role, email_role);
 
     return {
-      active: !role ? 'Tenant' : role === 'AgencyAdmin' ? 'Agent' : role,
+      active: !roleUsed ? 'Tenant' : roleUsed === 'AgencyAdmin' ? 'Agent' : roleUsed,
       step: step,
       signed: !!current_user,
-      rolePicked: role || 'Tenant',
+      rolePicked: roleUsed || 'Tenant',
       user: current_user,
       focusEmail: false,
       focusPassword: false
     };
   },
 
-  detectStepFromRole: function (role) {
+  detectStepFromRole: function (role, email_role) {
+    if (!role && email_role) {
+      return 'login';
+    }
     return !role || role === 'Tenant' ? 'home' : role === 'Landlord' || role === 'Trady' ? 'mobile-button' : 'newMR';
   },
 
@@ -88514,9 +88598,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForAgent: function () {
-    var _props$signed = this.props.signed;
-    var signed = _props$signed === undefined ? false : _props$signed;
-
     return React.createElement(
       'div',
       { className: 'agent-content' },
@@ -88526,9 +88607,6 @@ var HomeComponent = React.createClass({
 
   homeActionForLandlordMobile: function () {
     var _this = this;
-
-    var _props$signed2 = this.props.signed;
-    var signed = _props$signed2 === undefined ? false : _props$signed2;
 
     return React.createElement(
       'div',
@@ -88548,9 +88626,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForLandlord: function () {
-    var _props$signed3 = this.props.signed;
-    var signed = _props$signed3 === undefined ? false : _props$signed3;
-
     return React.createElement(
       'div',
       { className: 'landlord-content' },
@@ -88559,9 +88634,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForTradyLogin: function () {
-    var _props$signed4 = this.props.signed;
-    var signed = _props$signed4 === undefined ? false : _props$signed4;
-
     return React.createElement(
       'div',
       { className: 'trady-content' },
@@ -88628,7 +88700,7 @@ var HomeComponent = React.createClass({
           type: 'button text-center',
           className: 'btn',
           onClick: function () {
-            return _this3.redirectNewPath('/tradie_registrations/new');
+            return _this3.redirectNewPath('/tradie_term_agreements/new');
           }
         },
         'Join Network & Get Free Leads'
@@ -88644,6 +88716,7 @@ var HomeComponent = React.createClass({
     var focusEmail = _state.focusEmail;
     var focusPassword = _state.focusPassword;
     var error = _state.error;
+    var rolePicked = _state.rolePicked;
     var new_password_reset_path = this.props.new_password_reset_path;
 
     var showBackButton = active === 'Tenant' || active === 'Trady';
@@ -88666,7 +88739,7 @@ var HomeComponent = React.createClass({
             onChange: function () {
               return _this4.setState({ rolePicked: 'Agent', error: '' });
             },
-            defaultChecked: true
+            defaultChecked: rolePicked !== 'AgencyAdmin'
           }),
           React.createElement('span', { className: 'radio-checkmark' })
         ),
@@ -88680,7 +88753,8 @@ var HomeComponent = React.createClass({
             onChange: function () {
               return _this4.setState({ rolePicked: 'AgencyAdmin', error: '' });
             },
-            value: 'AgencyAdmin'
+            value: 'AgencyAdmin',
+            defaultChecked: rolePicked === 'AgencyAdmin'
           }),
           React.createElement('span', { className: 'radio-checkmark' })
         )
@@ -88784,9 +88858,6 @@ var HomeComponent = React.createClass({
   },
 
   homeActionForTenantLogin: function () {
-    var _props$signed5 = this.props.signed;
-    var signed = _props$signed5 === undefined ? false : _props$signed5;
-
     return React.createElement(
       'div',
       { className: 'tenant-content' },
@@ -88797,8 +88868,8 @@ var HomeComponent = React.createClass({
   homeActionForTenant: function () {
     var _this5 = this;
 
-    var _props$signed6 = this.props.signed;
-    var signed = _props$signed6 === undefined ? false : _props$signed6;
+    var _props$signed = this.props.signed;
+    var signed = _props$signed === undefined ? false : _props$signed;
 
     return React.createElement(
       'div',
@@ -89104,6 +89175,244 @@ var HomeComponent = React.createClass({
  <h4>Increase revenue</h4>
  <p>Increase renvenue through out rebate program and Increased productivity</p>
 </div>*/;
+var ChangePassword = React.createClass({
+  displayName: "ChangePassword",
+
+  render: function () {
+    var _props = this.props;
+    var authenticity_token = _props.authenticity_token;
+    var user = _props.user;
+
+    return React.createElement(
+      "form",
+      { role: "form", className: "edit_user", id: "edit_user_2", action: "/update_password", acceptCharset: "UTF-8", method: "post" },
+      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+      React.createElement("input", { type: "hidden", name: "_method", value: "patch" }),
+      React.createElement("input", { type: "hidden", name: "authenticity_token", value: authenticity_token }),
+      React.createElement(
+        "p",
+        null,
+        user.email
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          {
+            className: "control-label required",
+            htmlFor: "user_password" },
+          "Password"
+        ),
+        React.createElement("input", {
+          minLength: "3",
+          className: "form-control",
+          type: "password",
+          name: "user[password]",
+          id: "user_password" })
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          {
+            className: "control-label",
+            htmlFor: "user_password_confirmation" },
+          "Password confirmation"
+        ),
+        React.createElement("input", {
+          autoComplete: "off",
+          minLength: "3",
+          className: "form-control",
+          type: "password",
+          name: "user[password_confirmation]",
+          id: "user_password_confirmation" })
+      ),
+      React.createElement(
+        "button",
+        { name: "button", type: "submit", className: "button-primary green" },
+        "Update"
+      )
+    );
+  }
+});
+var NewOnboardingPassword = React.createClass({
+  displayName: 'NewOnboardingPassword',
+
+  getInitialState: function () {
+    return {
+      errors: ''
+    };
+  },
+
+  onSubmit: function (e) {
+    var self = this,
+        formData = new FormData(document.getElementById('onboarding-password'));
+    e.preventDefault();
+
+    $.ajax({
+      type: 'POST',
+      url: '/create_onboarding_password',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      enctype: 'multipart/form-data',
+      processData: false,
+      contentType: false,
+      data: formData,
+      success: function (res) {
+        if (res.errors) {
+          self.setState({ errors: res.errors });
+        }
+      },
+      error: function (err) {}
+    });
+  },
+
+  removeError: function () {
+    this.setState({ errors: '' });
+  },
+
+  render: function () {
+    var _props = this.props;
+    var user = _props.user;
+    var authenticity_token = _props.authenticity_token;
+    var trady_id = _props.trady_id;
+    var maintenance_request_id = _props.maintenance_request_id;
+    var errors = this.state.errors;
+
+    return React.createElement(
+      'div',
+      { className: 'container reset-password onboarding-form' },
+      React.createElement(
+        'form',
+        { role: 'form', className: 'edit_user onboarding-password', id: 'onboarding-password', acceptCharset: 'UTF-8', onSubmit: this.onSubmit },
+        React.createElement('input', { name: 'utf8', type: 'hidden', value: '✓' }),
+        React.createElement('input', { type: 'hidden', name: 'authenticity_token', value: authenticity_token }),
+        React.createElement(
+          'p',
+          null,
+          user.email
+        ),
+        React.createElement('input', { value: user.email, type: 'hidden', name: 'user[email]', id: 'user_email' }),
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement('input', {
+            placeholder: 'Password',
+            minLength: '3',
+            className: 'form-control ' + (errors.password ? 'has-error' : ''),
+            type: 'password',
+            name: 'user[password]',
+            id: 'user_password',
+            onChange: this.removeError }),
+          errors.password && React.createElement(
+            'span',
+            { className: 'help-block' },
+            errors.password[0]
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement('input', {
+            placeholder: 'Password confirmation',
+            autoComplete: 'off',
+            minLength: '3',
+            className: 'form-control ' + (errors.password_confirmation ? 'has-error' : ''),
+            type: 'password',
+            name: 'user[password_confirmation]',
+            id: 'user_password_confirmation',
+            onChange: this.removeError }),
+          errors.password_confirmation && React.createElement(
+            'span',
+            { className: 'help-block' },
+            errors.password_confirmation[0]
+          )
+        ),
+        React.createElement('input', {
+          value: maintenance_request_id,
+          type: 'hidden',
+          name: 'user[maintenance_request_id]',
+          id: 'user_maintenance_request_id' }),
+        React.createElement('input', {
+          value: trady_id,
+          type: 'hidden',
+          name: 'user[trady_id]',
+          id: 'user_trady_id' }),
+        React.createElement(
+          'button',
+          { name: 'button', type: 'submit', className: 'button-primary green' },
+          'Submit'
+        )
+      )
+    );
+  }
+});
+var SetPassword = React.createClass({
+  displayName: "SetPassword",
+
+  render: function () {
+    var _props = this.props;
+    var authenticity_token = _props.authenticity_token;
+    var user = _props.user;
+
+    return React.createElement(
+      "form",
+      { role: "form", className: "edit_user", id: "edit_user_5", action: "/confirm_password", acceptCharset: "UTF-8", method: "post" },
+      React.createElement("input", { name: "utf8", type: "hidden", value: "✓" }),
+      React.createElement("input", { type: "hidden", name: "_method", value: "patch" }),
+      React.createElement("input", { type: "hidden", name: "authenticity_token", value: authenticity_token }),
+      React.createElement(
+        "p",
+        null,
+        user.email
+      ),
+      React.createElement("input", { value: user.email, type: "hidden", name: "user[email]", id: "user_email" }),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          {
+            className: "control-label required",
+            htmlFor: "user_password" },
+          "Password"
+        ),
+        React.createElement("input", {
+          minLength: "3",
+          className: "form-control",
+          type: "password",
+          name: "user[password]",
+          id: "user_password" })
+      ),
+      React.createElement(
+        "div",
+        { className: "form-group" },
+        React.createElement(
+          "label",
+          {
+            className: "control-label",
+            htmlFor: "user_password_confirmation" },
+          "Password confirmation"
+        ),
+        React.createElement("input", {
+          autoComplete: "off",
+          minLength: "3",
+          className: "form-control",
+          type: "password",
+          name: "user[password_confirmation]",
+          id: "user_password_confirmation" })
+      ),
+      React.createElement(
+        "button",
+        { name: "button", type: "submit", className: "button-primary green" },
+        "Update"
+      )
+    );
+  }
+});
 // var quotes = React.createClass({
 
 //   render() {
@@ -89869,6 +90178,11 @@ var QuoteRequests = React.createClass({
 				"div",
 				{ className: "list-quote" },
 				quote_requests.map(function (quote_request, index) {
+					var trady = quote_request.trady || {};
+
+					if (trady.jfmo_participant && !trady.customer_profile) {
+						return '';
+					}
 					var maintenance_request_id = quote_request.maintenance_request_id;
 					var trady_id = quote_request.trady_id;
 
@@ -89912,22 +90226,22 @@ var QuoteRequests = React.createClass({
 									React.createElement(
 										"span",
 										null,
-										quote_request.trady && quote_request.trady.company_name
+										trady.company_name
 									)
 								),
 								React.createElement(
 									"div",
 									{ className: "description" },
-									quote_request.trady && quote_request.trady.name,
+									trady.name,
 									React.createElement("br", null),
-									quote_request.trady && quote_request.trady.trady_company && quote_request.trady.trady_company.trading_name
+									trady.trady_company && trady.trady_company.trading_name
 								)
 							),
 							React.createElement(
 								"div",
 								{ className: "quote-request-button" },
 								isCallTrady ? React.createElement(ButtonCallTrady, {
-									trady: quote_request.trady
+									trady: trady
 								}) : '',
 								role === 'Trady' ? React.createElement(ButtonCreateQuote, {
 									linkCreateQuote: linkCreateQuote
@@ -92187,6 +92501,7 @@ var ServiceList = React.createClass({
     var trady_id = _props3.trady_id;
     var trady_company_id = _props3.trady_company_id;
     var maintenance_request_id = _props3.maintenance_request_id;
+    var submit_url = _props3.submit_url;
 
     var self = this;
     var params = {
@@ -92204,7 +92519,7 @@ var ServiceList = React.createClass({
 
     $.ajax({
       type: isEdit ? 'PUT' : 'POST',
-      url: isEdit ? '/services/' + trady_id : '/add_services',
+      url: submit_url || (isEdit ? '/services/' + trady_id : '/add_services'),
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -92290,7 +92605,7 @@ var ServiceList = React.createClass({
       React.createElement(
         'div',
         { className: 'service-buttons' },
-        React.createElement(
+        !this.props.remove_back_btn && React.createElement(
           'button',
           { type: 'button', className: 'btn button-back', onClick: this.onBack },
           'Back'
@@ -92781,6 +93096,11 @@ var Header = React.createClass({
       React.createElement(
         "form",
         { action: "/search", className: "form-search", acceptCharset: "UTF-8", method: "get" },
+        React.createElement(
+          "button",
+          { type: "button", type: "submit", className: "btn-search" },
+          React.createElement("i", { className: "fa fa-search" })
+        ),
         React.createElement("input", {
           id: "query",
           name: "query",
@@ -92788,12 +93108,7 @@ var Header = React.createClass({
           className: "input-search",
           placeholder: "Search...",
           defaultValue: searchText
-        }),
-        React.createElement(
-          "button",
-          { type: "button", type: "submit", className: "btn-search" },
-          React.createElement("i", { className: "fa fa-search" })
-        )
+        })
       )
     );
   },
@@ -93275,7 +93590,7 @@ var TenantSideBarMobile = React.createClass({
 
 	close: function () {
 		if ($('#actions-full').length > 0) {
-			if (!!this.showDetail) {
+			if (this.state.showDetail) {
 				this.setState({ showDetail: false });
 			}
 			$('#actions-full').css({ 'height': 0, 'border-width': 0 });
@@ -94974,10 +95289,6 @@ var TradyTermsAndConditions = React.createClass({
     );
   },
 
-  onBack: function () {
-    location.href = this.props.edit_services_path;
-  },
-
   submit: function (e) {
     e.preventDefault();
     var isAgree = this.state.isAgree;
@@ -94988,12 +95299,13 @@ var TradyTermsAndConditions = React.createClass({
       terms_and_conditions: isAgree,
       trady_id: this.props.trady_id,
       trady_company_id: this.props.trady_company_id,
-      maintenance_request_id: this.props.maintenance_request_id
+      maintenance_request_id: this.props.maintenance_request_id,
+      token: this.props.token
     };
 
     $.ajax({
       type: 'POST',
-      url: '/tradie_term_agreements',
+      url: this.props.submit_url || '/tradie_term_agreements',
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -95025,18 +95337,22 @@ var TradyTermsAndConditions = React.createClass({
       ),
       this.termsAndConditionsText(),
       React.createElement(
-        "label",
-        { className: "agree_checkbox" },
-        "Agree To Terms and Conditions",
-        React.createElement("input", {
-          type: "checkbox",
-          id: "terms_and_conditions",
-          ref: function (elem) {
-            return _this.terms_and_conditions = elem;
-          },
-          onChange: this.checkOffAgree
-        }),
-        React.createElement("span", { className: "checkmark" })
+        "div",
+        { className: "agree-wrapper" },
+        React.createElement(
+          "label",
+          { className: "agree_checkbox" },
+          "Agree To Terms and Conditions",
+          React.createElement("input", {
+            type: "checkbox",
+            id: "terms_and_conditions",
+            ref: function (elem) {
+              return _this.terms_and_conditions = elem;
+            },
+            onChange: this.checkOffAgree
+          }),
+          React.createElement("span", { className: "checkmark" })
+        )
       ),
       this.renderError(this.state.errors),
       React.createElement(
@@ -95044,13 +95360,8 @@ var TradyTermsAndConditions = React.createClass({
         { className: "TAC-buttons" },
         React.createElement(
           "button",
-          { type: "button", className: "btn button-back", onClick: this.onBack },
-          "Back"
-        ),
-        React.createElement(
-          "button",
           { type: "submit", className: "btn button-submit" },
-          "Submit"
+          "Next"
         )
       )
     );
@@ -95062,7 +95373,7 @@ var TradyRegistrationForm = React.createClass({
   getInitialState: function () {
     var step = this.props.step;
 
-    var level = ['trady', 'trady-company', 'service', 'terms-and-conditions'];
+    var level = ['terms-and-conditions', 'trady', 'trady-company', 'service'];
 
     return {
       errors: {},
@@ -95106,32 +95417,32 @@ var TradyRegistrationForm = React.createClass({
       this.labelTitle(1, React.createElement(
         'p',
         null,
-        'User',
+        'Terms',
         React.createElement('br', null),
-        'Registration'
+        '&',
+        React.createElement('br', null),
+        'Conditions'
       ), level > 0),
       this.labelTitle(2, React.createElement(
         'p',
         null,
-        'Company',
+        'User',
         React.createElement('br', null),
         'Registration'
       ), level > 1),
       this.labelTitle(3, React.createElement(
         'p',
         null,
-        'Services',
+        'Company',
         React.createElement('br', null),
-        'Available'
+        'Registration'
       ), level > 2),
       this.labelTitle(4, React.createElement(
         'p',
         null,
-        'Terms',
+        'Services',
         React.createElement('br', null),
-        '&',
-        React.createElement('br', null),
-        'Conditions'
+        'Available'
       ), level > 3)
     );
   },
@@ -95140,6 +95451,12 @@ var TradyRegistrationForm = React.createClass({
     var step = this.state.step;
 
     switch (step) {
+      case 'terms-and-conditions':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Terms & Conditions'
+        );
       case 'trady':
         return React.createElement(
           'h5',
@@ -95158,12 +95475,6 @@ var TradyRegistrationForm = React.createClass({
           { className: 'step-title text-center' },
           'Services Registration'
         );
-      case 'terms-and-conditions':
-        return React.createElement(
-          'h5',
-          { className: 'step-title text-center' },
-          'Terms & Conditions'
-        );
     }
   },
 
@@ -95171,14 +95482,14 @@ var TradyRegistrationForm = React.createClass({
     var step = this.state.step;
 
     switch (step) {
+      case 'terms-and-conditions':
+        return React.createElement(TradyTermsAndConditions, this.props);
       case 'trady':
         return React.createElement(Trady, this.props);
       case 'trady-company':
         return React.createElement(NewTradyCompany, this.props);
       case 'service':
         return React.createElement(ServiceList, this.props);
-      case 'terms-and-conditions':
-        return React.createElement(TradyTermsAndConditions, this.props);
     }
   },
 
@@ -95396,6 +95707,131 @@ var Trady = React.createClass({
           "Login"
         )
       )
+    );
+  }
+});
+var TradyOnboardingRegistrationForm = React.createClass({
+  displayName: 'TradyOnboardingRegistrationForm',
+
+  getInitialState: function () {
+    var step = this.props.step;
+
+    var level = ['terms-and-conditions', 'setup-password', 'service'];
+
+    return {
+      errors: {},
+      step: step,
+      level: (level.indexOf(step) || 0) + 1
+    };
+  },
+
+  componentDidMount: function () {
+    $('body > div.layout').css('background-color', 'white');
+  },
+
+  labelTitle: function (number, text, isPass) {
+    return React.createElement(
+      'div',
+      { className: "registration-label-title " + (isPass && 'pass' || '') },
+      React.createElement(
+        'div',
+        { className: "step-status " + (isPass && 'pass' || '') },
+        number > 1 && React.createElement('div', { className: 'separate-line ' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-number' },
+        number
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-text' },
+        text
+      )
+    );
+  },
+
+  generateStepTitle: function () {
+    var level = this.state.level;
+
+    return React.createElement(
+      'div',
+      { className: 'registration-title' },
+      this.labelTitle(1, React.createElement(
+        'p',
+        null,
+        'Terms',
+        React.createElement('br', null),
+        '&',
+        React.createElement('br', null),
+        'Conditions'
+      ), level > 0),
+      this.labelTitle(2, React.createElement(
+        'p',
+        null,
+        'Setup',
+        React.createElement('br', null),
+        'Password'
+      ), level > 1),
+      this.labelTitle(3, React.createElement(
+        'p',
+        null,
+        'Services',
+        React.createElement('br', null),
+        'Available'
+      ), level > 2)
+    );
+  },
+
+  generateTitle: function () {
+    var step = this.state.step;
+
+    switch (step) {
+      case 'terms-and-conditions':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Terms & Conditions'
+        );
+      case 'setup-password':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Setup Password'
+        );
+      case 'service':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Services Registration'
+        );
+    }
+  },
+
+  generateForm: function () {
+    var step = this.state.step;
+
+    switch (step) {
+      case 'terms-and-conditions':
+        return React.createElement(TradyTermsAndConditions, this.props);
+      case 'setup-password':
+        return React.createElement(NewOnboardingPassword, this.props);
+      case 'service':
+        return React.createElement(ServiceList, this.props);
+    }
+  },
+
+  componentWillUnmount: function () {
+    $('body > div.layout').css('background-color', '#F4F8FB');
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'registration', className: 'trady-registration' },
+      this.generateStepTitle(),
+      this.generateTitle(),
+      this.generateForm()
     );
   }
 });

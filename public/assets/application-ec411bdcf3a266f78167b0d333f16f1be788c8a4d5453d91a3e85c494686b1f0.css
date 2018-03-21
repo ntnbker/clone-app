@@ -7756,6 +7756,11 @@ a.ui-button:active,
   background-color: #fefde5 !important;
 }
 
+/* line 940, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/pages.scss */
+.pac-container {
+  z-index: 9999;
+}
+
 /* line 16, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/maintenance_requests.scss */
 form#new_maintenance_request {
   width: 100%;
@@ -9393,68 +9398,50 @@ header .header-expanded .header-custom .search .form-search {
   position: relative;
   margin: auto;
   max-width: 300px;
-}
-/* line 168, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .input-search {
-  padding: 0;
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  background: #313E46;
-  color: #fff;
+  height: 35px;
   border-radius: 20px;
-  padding-left: 40px;
+  background: #313E46;
   font-size: 12px;
-  max-width: 350px;
-  width: 100%;
-  line-height: 36px;
 }
-/* line 182, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .input-search::placeholder {
+/* line 172, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+header .header-expanded .header-custom .search .btn-search {
+  border: none;
+  width: 35px;
+  height: 100%;
+  padding: 0;
+  padding-left: 5px;
   color: #fff;
 }
-/* line 185, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .input-search ::-webkit-input-placeholder {
-  /* Chrome/Opera/Safari */
+/* line 181, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+header .header-expanded .header-custom .search .input-search {
+  height: 100%;
+  width: 80%;
+  background: transparent;
+  padding: 0;
+  border: none;
   color: #fff;
 }
-/* line 188, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .input-search ::-moz-placeholder {
-  /* Firefox 19+ */
-  color: #fff;
+/* line 141, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+header .header-expanded .header-custom .search .input-search.placeholder {
+  color: white;
 }
-/* line 191, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .input-search :-ms-input-placeholder {
-  /* IE 10+ */
-  color: #fff;
+/* line 142, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+header .header-expanded .header-custom .search .input-search:-moz-placeholder {
+  color: white;
+}
+/* line 143, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+header .header-expanded .header-custom .search .input-search::-moz-placeholder {
+  color: white;
+}
+/* line 144, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+header .header-expanded .header-custom .search .input-search:-ms-input-placeholder {
+  color: white;
+}
+/* line 145, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+header .header-expanded .header-custom .search .input-search::-webkit-input-placeholder {
+  color: white;
 }
 /* line 194, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .input-search :-moz-placeholder {
-  /* Firefox 18- */
-  color: #fff;
-}
-/* line 199, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .btn-search {
-  top: 0;
-  width: 35px;
-  height: 35px;
-  background-color: #fff;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  position: absolute;
-  left: 5px;
-}
-/* line 212, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-header .header-expanded .header-custom .search .btn-search i {
-  color: #fff;
-  font-size: 12px;
-  line-height: 35px;
-  display: inline-block;
-}
-/* line 221, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar {
   display: none;
   height: auto;
@@ -9469,7 +9456,7 @@ header .header-expanded .header-custom .menu-bar {
   position: relative;
   width: auto;
 }
-/* line 230, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 203, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .btn-menu {
   margin-left: 0px;
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -9486,22 +9473,22 @@ header .header-expanded .header-custom .menu-bar .btn-menu {
   align-items: center;
   height: 100%;
 }
-/* line 237, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 210, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .btn-menu img {
   width: 35px;
   height: 35px;
 }
-/* line 242, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 215, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .btn-menu .icon-user i {
   font-size: 30px;
 }
-/* line 246, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 219, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .btn-menu span {
   font-size: 20px;
   padding-left: 10px;
   line-height: 55px;
 }
-/* line 250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 223, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .btn-menu span i {
   line-height: 55px;
   margin-left: 5px;
@@ -9511,7 +9498,7 @@ header .header-expanded .header-custom .menu-bar .btn-menu span i {
   -ms-flex-align: center;
   align-items: center;
 }
-/* line 258, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 231, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -9519,7 +9506,7 @@ header .header-expanded .header-custom .menu-bar .dropdown-menu {
   right: 0;
   border: 1px solid #D1D1D1;
 }
-/* line 264, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 237, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .dropdown-menu:after {
   border: solid transparent;
   border-width: 10px;
@@ -9532,18 +9519,18 @@ header .header-expanded .header-custom .menu-bar .dropdown-menu:after {
   width: 0;
   height: 0;
 }
-/* line 277, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .dropdown-menu li a {
   color: #000;
   text-decoration: none;
   width: 100%;
   display: inline-block;
 }
-/* line 283, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 256, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .menu-bar .dropdown-menu li:hover {
   background-color: #7DC691;
 }
-/* line 289, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 262, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .header-right {
   display: -webkit-box;
   display: -moz-box;
@@ -9569,7 +9556,7 @@ header .header-expanded .header-custom .header-right {
   margin: auto 0;
   height: 100%;
 }
-/* line 300, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 273, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .question {
   height: 100%;
   margin: 0 10px 0 30px;
@@ -9581,11 +9568,11 @@ header .header-expanded .header-custom .question {
   align-items: center;
   -ms-flex-align: center;
 }
-/* line 307, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 280, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .question i {
   color: #fff;
 }
-/* line 311, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 284, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .notification {
   height: 100%;
   margin: 0 30px 0 10px;
@@ -9597,31 +9584,31 @@ header .header-expanded .header-custom .notification {
   align-items: center;
   -ms-flex-align: center;
 }
-/* line 318, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 291, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .header-custom .notification i {
   color: #fff;
 }
-/* line 324, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 297, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .full-header {
   width: 100%;
   max-width: 1366px;
 }
-/* line 327, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 300, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .full-header .logo {
   margin-left: 7.5%;
 }
-/* line 330, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 303, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .full-header .desktop-menu-items, header .header-expanded .full-header .log_in {
   margin-right: 7.5%;
   letter-spacing: .1rem;
 }
-/* line 336, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 309, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .forhome {
   position: absolute;
   left: 0;
   background-color: rgba(1, 2, 3, 0.3);
 }
-/* line 340, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 313, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .forhome .log_in {
   display: -webkit-box;
   display: -moz-box;
@@ -9645,7 +9632,7 @@ header .header-expanded .forhome .log_in {
   align-items: center;
   position: relative;
 }
-/* line 346, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 319, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .forhome .log_in .desktop-menu-items {
   width: 300px;
   background-color: white;
@@ -9660,7 +9647,7 @@ header .header-expanded .forhome .log_in .desktop-menu-items {
   list-style: none;
   padding: 0;
 }
-/* line 360, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 333, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .forhome .log_in .desktop-menu-items:before {
   content: "\A";
   border-style: solid;
@@ -9670,13 +9657,13 @@ header .header-expanded .forhome .log_in .desktop-menu-items:before {
   top: -10px;
   right: 13px;
 }
-/* line 369, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 342, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .forhome .log_in .desktop-menu-items li {
   margin-bottom: 0;
   height: 40px;
   border-top: 1px solid #ddd;
 }
-/* line 373, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 346, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .forhome .log_in .desktop-menu-items li a {
   display: block;
   padding: 0;
@@ -9684,11 +9671,11 @@ header .header-expanded .forhome .log_in .desktop-menu-items li a {
   color: black;
   line-height: 40px;
 }
-/* line 380, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 353, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .forhome .log_in .desktop-menu-items li:hover {
   background-color: #7DC691;
 }
-/* line 388, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 361, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-button {
   z-index: 1;
   float: right;
@@ -9699,23 +9686,23 @@ header .header-expanded .menu-button {
   cursor: pointer;
   display: none;
 }
-/* line 400, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 373, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-button span {
   margin-left: 5px;
   margin-right: 5px;
 }
-/* line 405, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 378, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-button .icon-user {
   font-size: 30px;
 }
-/* line 407, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 380, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-button .icon-user img {
   position: relative;
   top: 4px;
   width: 35px;
   height: 35px;
 }
-/* line 414, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 387, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-button .fa-angle-down {
   font-size: 20px;
   -webkit-align-items: center;
@@ -9725,7 +9712,7 @@ header .header-expanded .menu-button .fa-angle-down {
   align-items: center;
   line-height: 55px;
 }
-/* line 422, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 395, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .logo {
   display: -webkit-box;
   display: -moz-box;
@@ -9738,13 +9725,13 @@ header .header-expanded .logo {
   -ms-flex-align: center;
   align-items: center;
 }
-/* line 429, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 402, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .logo img {
   vertical-align: middle;
   max-width: 55px;
   height: 55px;
 }
-/* line 436, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 409, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .logo a {
   text-decoration: none;
   font-size: 20px;
@@ -9752,7 +9739,7 @@ header .header-expanded .logo a {
   margin: 0 5px;
   line-height: 55px;
 }
-/* line 445, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 418, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .desktop-menu-items {
   display: none;
   line-height: 55px;
@@ -9761,18 +9748,18 @@ header .header-expanded .desktop-menu-items {
   list-style: none;
   letter-spacing: .1rem;
 }
-/* line 454, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 427, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .desktop-menu-items li {
   margin-bottom: 0;
 }
-/* line 457, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 430, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .desktop-menu-items a {
   color: white;
   font-size: 16px;
   padding: 0 20px;
   text-decoration: none;
 }
-/* line 464, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 437, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .desktop-menu-items .register {
   color: white;
   font-size: 16px;
@@ -9781,11 +9768,11 @@ header .header-expanded .desktop-menu-items .register {
   border-radius: 4px;
   text-decoration: none;
 }
-/* line 474, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 447, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .mobile-menu-items {
   margin: 20px;
 }
-/* line 477, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 450, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .mobile-menu-items a {
   display: block;
   text-decoration: none;
@@ -9793,7 +9780,7 @@ header .header-expanded .mobile-menu-items a {
   font-size: 20px;
   padding: 10px;
 }
-/* line 486, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 459, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-btn {
   z-index: -1;
   color: #f2f2f2;
@@ -9806,24 +9793,24 @@ header .header-expanded .menu-btn {
   height: 30px;
   line-height: 25px;
 }
-/* line 497, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 470, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-btn.signed {
   z-index: 1;
 }
-/* line 502, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 475, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile {
   margin-bottom: 0;
   padding-top: 30px;
   list-style: none;
 }
-/* line 506, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 479, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li {
   height: 40px;
   border-bottom: 1px solid #ddd;
   padding-left: 15px;
   margin: 0;
 }
-/* line 511, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 484, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li a {
   line-height: 40px;
   margin: 0;
@@ -9832,47 +9819,47 @@ header .header-expanded .menu-mobile li a {
   display: inline-block;
   width: 100%;
 }
-/* line 519, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 492, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li:active, header .header-expanded .menu-mobile li:hover {
   background: #ddd;
 }
-/* line 521, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 494, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li:active a, header .header-expanded .menu-mobile li:hover a {
   color: #000;
 }
-/* line 525, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 498, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li:first-child {
   display: inline-block;
   width: 100%;
   padding-bottom: 10px;
 }
-/* line 529, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 502, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li:first-child img {
   position: relative;
   top: 4px;
   width: 35px;
   height: 35px;
 }
-/* line 535, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 508, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li:first-child span {
   padding-left: 20px;
   color: #fff;
 }
-/* line 539, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 512, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li:first-child:hover {
   background: transparent;
 }
-/* line 544, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 517, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 header .header-expanded .menu-mobile li .icon-user i {
   font-size: 30px;
   color: #fff;
 }
 @media (min-width: 769px) {
-  /* line 553, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 526, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .desktop-menu-items {
     display: block;
   }
-  /* line 555, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 528, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .desktop-menu-items.log_in {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
@@ -9890,11 +9877,11 @@ header .header-expanded .menu-mobile li .icon-user i {
     justify-content: flex-end;
     -ms-flex-pack: flex-end;
   }
-  /* line 561, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 534, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .log_in:not(.desktop-menu-items) {
     z-index: 1;
   }
-  /* line 564, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 537, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom .menu-bar {
     display: -webkit-box;
     display: -moz-box;
@@ -9902,11 +9889,11 @@ header .header-expanded .menu-mobile li .icon-user i {
     display: -webkit-flex;
     display: flex;
   }
-  /* line 567, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 540, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .menu-btn {
     display: none;
   }
-  /* line 570, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 543, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom .notification {
     display: -webkit-box;
     display: -moz-box;
@@ -9914,7 +9901,7 @@ header .header-expanded .menu-mobile li .icon-user i {
     display: -webkit-flex;
     display: flex;
   }
-  /* line 573, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 546, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom .question {
     display: -webkit-box;
     display: -moz-box;
@@ -9922,7 +9909,7 @@ header .header-expanded .menu-mobile li .icon-user i {
     display: -webkit-flex;
     display: flex;
   }
-  /* line 576, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 549, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .forhome .log_in .menu-button {
     display: -webkit-box;
     display: -moz-box;
@@ -9933,13 +9920,13 @@ header .header-expanded .menu-mobile li .icon-user i {
 }
 
 @media (max-width: 1024px) {
-  /* line 585, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 558, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .header-expanded .container-custom {
     width: 97% !important;
   }
 }
 @media (max-width: 768px) {
-  /* line 593, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 566, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .forhome {
     display: -webkit-box;
     display: -moz-box;
@@ -9947,30 +9934,34 @@ header .header-expanded .menu-mobile li .icon-user i {
     display: -webkit-flex;
     display: flex;
   }
-  /* line 596, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 569, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .forhome .menu-btn {
     margin-right: 7.5%;
   }
-  /* line 600, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 573, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .forhome .log_in.desktop-menu-items {
     display: none;
   }
-  /* line 604, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 577, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom .header-right {
     margin-right: 70px;
   }
-  /* line 608, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
-  header .header-expanded .header-custom .search .input-search {
+  /* line 581, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  header .header-expanded .header-custom .search .form-search {
     width: 180px;
   }
-  /* line 611, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 584, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  header .header-expanded .header-custom .search .input-search {
+    width: 75%;
+  }
+  /* line 587, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .menu-btn {
     top: 25%;
     margin: 0;
   }
 }
 @media (max-width: 640px) {
-  /* line 621, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 597, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom {
     -webkit-flex-direction: column;
     -moz-flex-direction: column;
@@ -9982,73 +9973,73 @@ header .header-expanded .menu-mobile li .icon-user i {
     -ms-flex-align: center;
     align-items: center;
   }
-  /* line 624, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 600, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom .header-right {
     margin-right: 0;
     margin-top: 5px;
   }
-  /* line 628, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 604, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom .hidden-search {
     display: none;
   }
-  /* line 632, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 608, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .header-custom .search .form-search {
-    padding-bottom: 10px;
+    margin-bottom: 10px;
   }
-  /* line 638, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 614, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .full-header .logo {
     margin-left: 0;
   }
-  /* line 642, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 618, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .menu-btn {
     top: 25%;
     right: 10px;
   }
-  /* line 646, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 622, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .forhome {
     width: 100%;
   }
-  /* line 648, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 624, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .forhome .menu-btn {
     top: 28%;
   }
 }
 @media (max-width: 400px) {
-  /* line 660, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 636, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   header .header-expanded .forhome .menu-btn {
     margin-right: 0px;
   }
 }
-/* line 668, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 644, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
 }
-/* line 673, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 649, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded {
   background-color: #3e4b54;
   color: white;
   padding: 60px 0;
   /* For Desktop footer */
 }
-/* line 678, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 654, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded a {
   color: white;
   display: block;
   padding-bottom: 15px;
   text-decoration: none;
 }
-/* line 685, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 661, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .footer-links_hp {
   display: none;
 }
-/* line 688, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 664, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .show-on-mobile {
   display: block;
 }
-/* line 692, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 668, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .footer-logo {
   color: white;
   font-size: 20px;
@@ -10057,24 +10048,24 @@ footer .footer-expanded .footer-logo {
   text-align: center;
   width: 100%;
 }
-/* line 700, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 676, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .footer-logo img {
   padding: 0 10px 10px 0;
   vertical-align: middle;
 }
-/* line 705, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 681, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .footer-logo p {
   color: #8ea1ae;
   font-size: 14px;
   line-height: 20px;
   margin-bottom: 50px;
 }
-/* line 713, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 689, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .footer-social_hp {
   width: 100%;
   text-align: center;
 }
-/* line 717, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 693, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .footer-social_hp .social-circle {
   background: white;
   position: relative;
@@ -10088,7 +10079,7 @@ footer .footer-expanded .footer-social_hp .social-circle {
   -webkit-border-radius: 35px;
   -moz-border-radius: 35px;
 }
-/* line 731, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 707, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-expanded .footer-social_hp img {
   position: absolute;
   left: 50%;
@@ -10098,20 +10089,20 @@ footer .footer-expanded .footer-social_hp img {
   -webkit-transform: translate(-50%, -50%);
 }
 @media (min-width: 550px) {
-  /* line 743, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 719, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   footer .footer-expanded .footer-links_hp {
     display: block;
   }
-  /* line 746, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 722, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   footer .footer-expanded .show-on-mobile {
     display: none;
   }
-  /* line 749, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 725, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   footer .footer-expanded .footer-social_hp {
     text-align: left;
   }
 }
-/* line 755, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 731, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other {
   text-align: center;
   background-color: #3d4b54;
@@ -10119,24 +10110,24 @@ footer .footer-other {
   color: #fff;
   /* For Desktop footer */
 }
-/* line 761, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 737, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other .footer-custom {
   margin: auto;
   max-width: 960px;
 }
-/* line 766, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 742, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other .footer-social {
   float: none;
   display: block;
   margin-bottom: 7px;
 }
-/* line 771, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 747, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other .footer-social div {
   display: inline-block;
   text-align: center;
   width: 30px;
 }
-/* line 779, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 755, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other .footer-links a {
   text-decoration: none;
   display: inline-block;
@@ -10144,35 +10135,35 @@ footer .footer-other .footer-links a {
   color: #fff;
   padding: 0 10px;
 }
-/* line 786, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 762, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other .footer-links a:last-child {
   border-right: none;
 }
-/* line 790, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 766, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other .footer-links a:hover {
   text-decoration: underline;
 }
-/* line 796, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 772, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 footer .footer-other p {
   margin: 10px;
   color: #fff;
 }
 @media (min-width: 550px) {
-  /* line 755, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 731, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   footer .footer-other {
     text-align: left;
   }
-  /* line 804, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 780, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   footer .footer-other .footer-social {
     float: right;
   }
 }
 
-/* line 812, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 788, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .slide-menu {
   display: block;
 }
-/* line 815, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 791, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .slide-menu > div {
   position: fixed;
   z-index: 999;
@@ -10185,11 +10176,11 @@ footer .footer-other p {
   left: -300px;
   overflow: hidden;
 }
-/* line 827, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 803, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .slide-menu > div.visible {
   transform: translate3d(300px, 0, 0);
 }
-/* line 831, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 807, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .slide-menu > div > a {
   float: left;
   width: 100%;
@@ -10199,12 +10190,12 @@ footer .footer-other p {
   cursor: pointer;
   color: #b3b3b1;
 }
-/* line 840, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 816, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .slide-menu > div > a:hover {
   color: #F0F0F0;
 }
 
-/* line 847, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 823, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .button-type {
   cursor: pointer;
   border-radius: 4px;
@@ -10218,34 +10209,34 @@ footer .footer-other p {
   background-color: #33C3F0;
   border-color: #33C3F0;
 }
-/* line 860, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 836, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .button-type.green {
   background-color: #7dc691;
   border-color: #7dc691;
 }
-/* line 865, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 841, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .button-type:hover {
   background-color: #1EAEDB;
   border-color: #1EAEDB;
 }
-/* line 870, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 846, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .button-type a {
   width: 100%;
   height: 100%;
   padding: 0 30px;
 }
-/* line 875, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+/* line 851, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
 .button-type.padding {
   padding: 0 30px;
 }
 
 @media print {
-  /* line 881, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 857, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .dontprint {
     display: none !important;
   }
 
-  /* line 886, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 862, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .modal-custom .modal-dialog {
     width: 100% !important;
     height: 100% !important;
@@ -10256,36 +10247,36 @@ footer .footer-other p {
     top: 0;
   }
 
-  /* line 896, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 872, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   body.modal-dialog .modal-content .modal-header .modal-title,
   body.modal-dialog .modal-content .modal-body,
   body.modal-dialog .modal-content .modal-body * {
     visibility: visible;
   }
 
-  /* line 902, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 878, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   body.moda-dialog .modal-content {
     border: none;
   }
 
-  /* line 906, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 882, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   body.modal-dialog .modal-content .modal-header,
   body.modal-dialog .modal-content .modal-body {
     padding: 0;
   }
 
-  /* line 911, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 887, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   body.modal-dialog .modal-content .modal-header .modal-title {
     margin-bottom: 20px;
   }
 
-  /* line 915, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 891, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .modal-dialog .modal-content .modal-footer {
     position: fixed;
     bottom: 0;
   }
 
-  /* line 921, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 897, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   #print-invoice .modal-header, #print-quote .modal-header {
     padding-left: 25%;
     font-size: 16px;
@@ -10293,7 +10284,7 @@ footer .footer-other p {
 
   @supports (-ms-ime-align: auto) {
     /* All Edge CSS here */
-    /* line 929, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+    /* line 905, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
     .modal-custom .modal-dialog {
       position: absolute;
     }
@@ -10301,7 +10292,7 @@ footer .footer-other p {
 }
 @media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   /* IE10+ CSS here */
-  /* line 938, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
+  /* line 914, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .modal-custom .modal-dialog {
     position: absolute;
   }
@@ -10847,83 +10838,86 @@ form#new_quote .amount .hour.price {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
   margin: 40px 0;
   padding-bottom: 20px;
 }
-/* line 276, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 277, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-form .quote-button button {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  margin-left: 15px;
-  margin-right: 15px;
-  margin-top: 10px;
+  margin: 10px 15px 0;
   padding: 0 15px;
 }
-/* line 283, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 282, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-form .quote-button .button-submit {
   background-color: #71C796;
   color: white;
   border-color: #71C796;
   border-radius: 5px;
 }
-/* line 289, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 288, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-form .quote-button .button-submit:hover {
   background-color: #619970;
   border-color: #619970;
 }
-/* line 294, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 293, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-form .quote-button .button-back {
   background-color: #4CC6EE;
   color: white;
   border-color: #4CC6EE;
   border-radius: 5px;
 }
-/* line 300, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 299, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-form .quote-button .button-back:hover {
   background-color: #619970;
   border-color: #619970;
 }
 
-/* line 308, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 307, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-quote {
   display: table;
   margin: 30px auto;
   text-align: center;
 }
-/* line 312, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 311, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-quote div {
   text-align: right;
   font-size: 18px;
   margin: 10px 0;
 }
-/* line 317, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 316, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-quote div p {
   display: inline-block;
   margin: 0;
 }
-/* line 322, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 321, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-quote div span {
   display: inline-block;
   width: 50px;
 }
-/* line 328, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 327, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-quote hr {
   margin: 10px 0;
 }
-/* line 331, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 330, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-quote button {
   margin: 10px;
 }
-/* line 333, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 332, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-quote button a {
   text-decoration: none;
   color: white;
 }
 
-/* line 340, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 339, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote {
   display: -webkit-box;
   display: -moz-box;
@@ -10935,7 +10929,7 @@ form#new_quote .amount .hour.price {
   -ms-flex-direction: row;
   flex-direction: row;
 }
-/* line 343, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 342, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote .info-quote {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -10944,35 +10938,35 @@ form#new_quote .amount .hour.price {
   flex: 1;
   margin: 0 30px;
 }
-/* line 347, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 346, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote .info-quote .title {
   font-weight: bold;
 }
 
-/* line 353, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 352, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-items {
   margin: 0 30px;
 }
-/* line 355, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 354, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-items table {
   width: 100%;
 }
-/* line 359, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 358, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .quote-items .button-quote {
   margin-top: 30px;
   text-align: center;
 }
 
-/* line 365, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 364, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote {
   color: #404040;
   position: relative;
 }
-/* line 368, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 367, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-dialog {
   width: 700px !important;
 }
-/* line 371, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 370, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-header {
   background-color: #fff !important;
   display: -webkit-box;
@@ -10981,26 +10975,26 @@ form#new_quote .amount .hour.price {
   display: -webkit-flex;
   display: flex;
 }
-/* line 376, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 375, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-header .logo img {
   width: 80px;
   height: auto;
 }
-/* line 381, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 380, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-header .info-trady {
   margin-left: 15px;
 }
-/* line 383, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 382, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-header .info-trady p {
   margin-bottom: 0px;
   font-size: 12px;
   text-transform: inherit;
 }
-/* line 388, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 387, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-header .info-trady p span:last-child {
   padding-left: 5px;
 }
-/* line 394, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 393, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-header .close {
   border: 1px solid #ccc !important;
   border-radius: 50% !important;
@@ -11008,34 +11002,34 @@ form#new_quote .amount .hour.price {
   top: 5px;
   right: 5px;
 }
-/* line 400, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 399, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .modal-header .close span {
   color: #ccc !important;
 }
-/* line 405, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 404, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .quote-height {
   min-height: 800px;
 }
-/* line 408, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 407, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .info-quote {
   font-size: 13px;
 }
-/* line 410, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 409, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .info-quote .bill-to {
   font-size: 16px;
 }
-/* line 414, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 413, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .info-quote .info-agency p {
   text-align: left !important;
 }
-/* line 417, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 416, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .info-quote .info-agency p span:first-child {
   width: 120px;
   display: inline-block;
   text-align: right;
   text-transform: capitalize;
 }
-/* line 427, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 426, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .footer {
   display: -webkit-box;
   display: -moz-box;
@@ -11056,15 +11050,15 @@ form#new_quote .amount .hour.price {
   padding-top: 15px;
   text-align: left;
 }
-/* line 435, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 434, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .footer i {
   font-size: 36px;
 }
-/* line 438, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 437, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .footer p {
   margin-bottom: 5px;
 }
-/* line 441, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 440, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .footer .bank {
   margin-left: 25px;
   -webkit-box-flex: 1;
@@ -11073,7 +11067,7 @@ form#new_quote .amount .hour.price {
   -ms-flex: 1;
   flex: 1;
 }
-/* line 445, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 444, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .footer .contact {
   margin-left: 15px;
   -webkit-box-flex: 1;
@@ -11082,41 +11076,41 @@ form#new_quote .amount .hour.price {
   -ms-flex: 1;
   flex: 1;
 }
-/* line 450, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 449, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .border-none {
   border: none !important;
 }
-/* line 453, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 452, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .color-grey {
   color: #83878C;
 }
-/* line 456, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 455, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .font-bold {
   font-weight: bold;
 }
-/* line 459, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 458, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .m-t-md {
   margin-top: 10px;
 }
-/* line 462, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 461, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .p-t-n {
   padding-top: 0 !important;
 }
-/* line 465, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 464, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .modal-quote .p-b-n {
   padding-bottom: 0 !important;
 }
 
-/* line 470, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 469, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote {
   color: #83878C;
   font-size: 14px;
 }
-/* line 473, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 472, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote p {
   margin-bottom: 0;
 }
-/* line 476, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 475, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .header-quote {
   display: -webkit-box;
   display: -moz-box;
@@ -11129,19 +11123,19 @@ form#new_quote .amount .hour.price {
   -ms-flex-align: center;
   align-items: center;
 }
-/* line 479, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 478, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .header-quote .logo {
   margin-left: 15px;
 }
-/* line 481, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 480, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .header-quote .logo img {
   width: 80px;
 }
-/* line 485, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 484, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .header-quote .info-quote {
   margin-left: 15px;
 }
-/* line 489, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 488, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .quote {
   margin-left: 15px;
   margin-right: 15px;
@@ -11157,7 +11151,7 @@ form#new_quote .amount .hour.price {
   justify-content: flex-start;
   -ms-flex-pack: flex-start;
 }
-/* line 495, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 494, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .quote .info-agency {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -11165,7 +11159,7 @@ form#new_quote .amount .hour.price {
   -ms-flex: 1;
   flex: 1;
 }
-/* line 498, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 497, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .quote .date-quote {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -11173,83 +11167,83 @@ form#new_quote .amount .hour.price {
   -ms-flex: 1;
   flex: 1;
 }
-/* line 504, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 503, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .quote-items table td {
   padding: 5px 3px;
 }
-/* line 508, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 507, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .quote-items .p-b-n {
   padding-bottom: 0px;
 }
-/* line 511, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 510, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .quote-items .p-t-n {
   padding-top: 0px;
 }
-/* line 515, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 514, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .color-grey {
   color: #b3b3b3;
 }
-/* line 518, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 517, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .send-email-quote .bill-to {
   font-size: 20px;
 }
 
-/* line 523, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 522, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .font-bold {
   font-weight: bold;
 }
 
-/* line 527, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 526, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .text-right {
   text-align: right;
 }
 
-/* line 531, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 530, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .border-none {
   border: none;
 }
 
-/* line 535, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+/* line 534, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
 .text-capitalize {
   text-transform: capitalize;
 }
 
 @media (max-width: 768px) {
-  /* line 541, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 540, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .quote .info-quote {
     margin: 0 15px;
   }
 
-  /* line 545, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 544, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .quote-items {
     margin: 0 15px;
   }
 
-  /* line 549, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 548, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .modal-quote .modal-dialog {
     width: 95% !important;
   }
 }
 @media (max-width: 640px) {
-  /* line 555, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 554, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .quote {
     -webkit-flex-direction: column;
     -moz-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;
   }
-  /* line 557, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 556, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .quote .info-quote {
     margin: 0 10px;
   }
 
-  /* line 561, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 560, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .quote-items {
     margin: 0 10px;
   }
 }
 @media (max-width: 480px) {
-  /* line 567, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 566, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .summary-container-index .show-quote .info-agency p {
     -webkit-flex-direction: column;
     -moz-flex-direction: column;
@@ -11266,16 +11260,16 @@ form#new_quote .amount .hour.price {
     display: -webkit-flex;
     display: flex;
   }
-  /* line 571, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 570, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .summary-container-index .show-quote .info-agency p span:first-child {
     text-align: left;
   }
 
-  /* line 575, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 574, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .show-quote .detail-quote {
     overflow: auto !important;
   }
-  /* line 577, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 576, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .show-quote .detail-quote::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 15px;
@@ -11283,7 +11277,7 @@ form#new_quote .amount .hour.price {
     margin-right: 0px;
     padding: 0 10px;
   }
-  /* line 584, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 583, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .show-quote .detail-quote::-webkit-scrollbar {
     width: 5px;
     background-color: #F5F5F5;
@@ -11292,7 +11286,7 @@ form#new_quote .amount .hour.price {
     height: 5px;
     display: none;
   }
-  /* line 592, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 591, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .show-quote .detail-quote::-webkit-scrollbar-thumb {
     border-radius: 15px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -11300,9 +11294,15 @@ form#new_quote .amount .hour.price {
     margin-right: 0px;
     padding: 0 10px;
   }
-  /* line 599, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  /* line 598, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
   .show-quote .detail-quote .table {
     width: 450px;
+  }
+
+  /* line 603, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/quotes.scss */
+  .quote-form .quote-button .button-back, .quote-form .quote-button .button-submit {
+    flex: auto;
+    padding: 0 5px;
   }
 }
 /* line 16, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
@@ -12330,12 +12330,19 @@ form#new_quote .amount .hour.price {
     padding: 0 5px;
   }
 }
+@media (max-width: 380px) {
+  /* line 911, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  .invoice-form .invoice-button button {
+    height: auto;
+    white-space: normal;
+  }
+}
 
-/* line 910, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 919, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice {
   color: #83878C;
 }
-/* line 912, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 921, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .quote-items {
   display: -webkit-box;
   display: -moz-box;
@@ -12345,7 +12352,7 @@ form#new_quote .amount .hour.price {
   font-weight: 600;
   margin: 10px 0;
 }
-/* line 917, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 926, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .quote-items > div {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -12353,32 +12360,32 @@ form#new_quote .amount .hour.price {
   -ms-flex: 1;
   flex: 1;
 }
-/* line 922, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 931, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .invoices-data {
   margin: 20px 0px;
 }
-/* line 925, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 934, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .invoices-data span.font-bold {
   display: inline-block;
   width: 120px;
 }
-/* line 931, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 940, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .date-quote {
   margin-top: 20px;
 }
-/* line 935, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 944, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .heading {
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  -webkit-flex-wrap: wrap;
-  -moz-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
-/* line 939, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 948, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .heading > div {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -12387,7 +12394,7 @@ form#new_quote .amount .hour.price {
   flex: 1;
   margin: 20px 10px;
 }
-/* line 945, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 954, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .invoice-item, #submit-invoice .invoice-tax, #submit-invoice .amount-due {
   display: -webkit-box;
   display: -moz-box;
@@ -12396,7 +12403,7 @@ form#new_quote .amount .hour.price {
   display: flex;
   margin: 5px 0px;
 }
-/* line 949, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 958, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .invoice-item > div, #submit-invoice .invoice-tax > div, #submit-invoice .amount-due > div {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -12408,7 +12415,7 @@ form#new_quote .amount .hour.price {
   padding: 3px;
   text-transform: capitalize;
 }
-/* line 956, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 965, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .invoice-item .flex-4, #submit-invoice .invoice-tax .flex-4, #submit-invoice .amount-due .flex-4 {
   -webkit-box-flex: 4;
   -moz-box-flex: 4;
@@ -12416,7 +12423,7 @@ form#new_quote .amount .hour.price {
   -ms-flex: 4;
   flex: 4;
 }
-/* line 959, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 968, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .invoice-item .flex-2, #submit-invoice .invoice-tax .flex-2, #submit-invoice .amount-due .flex-2 {
   -webkit-box-flex: 2;
   -moz-box-flex: 2;
@@ -12424,7 +12431,7 @@ form#new_quote .amount .hour.price {
   -ms-flex: 2;
   flex: 2;
 }
-/* line 962, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 971, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #submit-invoice .invoice-item .flex-1, #submit-invoice .invoice-tax .flex-1, #submit-invoice .amount-due .flex-1 {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -12433,47 +12440,52 @@ form#new_quote .amount .hour.price {
   flex: 1;
 }
 @media (max-width: 380px) {
-  /* line 967, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 976, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   #submit-invoice .date-quote {
     font-size: 13px;
   }
-  /* line 970, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 979, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   #submit-invoice .quote-items .title {
     font-size: 8px;
   }
-  /* line 973, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 982, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   #submit-invoice .quote-item-data {
     font-size: 8px;
   }
-  /* line 977, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 986, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   #submit-invoice .quote-data .quote-items .title, #submit-invoice .quote-data .quote-item-data {
     font-size: 10px;
   }
-  /* line 982, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 991, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   #submit-invoice .header-quote .info-quote {
     font-size: 12px;
   }
-  /* line 987, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 996, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   #submit-invoice .qf-button button {
     font-size: 13px;
-    height: 20px;
+    height: 25px;
     padding: 0;
     margin: 0 5px;
   }
+  /* line 1003, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  #submit-invoice .invoice-button {
+    flex: auto;
+    padding: 0 5px;
+  }
 }
 
-/* line 997, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1010, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress {
   margin: 20px auto;
   text-align: center;
   padding-bottom: 50px;
   /* For Desktop */
 }
-/* line 998, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1011, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress h4 {
   color: #3d4b54;
 }
-/* line 1005, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1018, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle {
   display: inline-block;
   background: #296781;
@@ -12485,7 +12497,7 @@ form#new_quote .amount .hour.price {
   position: relative;
   z-index: 2;
 }
-/* line 1016, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1029, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle .label {
   display: inline-block;
   width: 40px;
@@ -12496,7 +12508,7 @@ form#new_quote .amount .hour.price {
   color: white;
   font-size: 17px;
 }
-/* line 1027, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1040, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle .title {
   color: #b5b5ba;
   font-size: 13px;
@@ -12506,25 +12518,25 @@ form#new_quote .amount .hour.price {
   width: 100px;
   margin-top: 5px;
 }
-/* line 1037, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1050, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle.active {
   background: white;
 }
-/* line 1039, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1052, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle.active .label {
   color: #FFF;
   background: linear-gradient(to bottom, #4ee7cd 0%, #00cdab 50%, #4ee7cd 100%);
   box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
 }
-/* line 1044, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1057, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle.active .title {
   color: #0c95be;
 }
-/* line 1049, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1062, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle.done {
   background: #296781;
 }
-/* line 1051, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1064, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle.done .label {
   color: #FFF;
   background: linear-gradient(to bottom, #4ee7cd 0%, #00cdab 50%, #4ee7cd 100%);
@@ -12534,11 +12546,11 @@ form#new_quote .amount .hour.price {
   line-height: 25px;
   margin: 8px;
 }
-/* line 1060, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1073, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .circle.done .title {
   color: #444;
 }
-/* line 1066, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1079, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .bar {
   display: inline-block;
   background: #296781;
@@ -12554,39 +12566,39 @@ form#new_quote .amount .hour.price {
   vertical-align: top;
   z-index: 0;
 }
-/* line 1081, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1094, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .progress .bar.active, .progress .bar.done {
   background: linear-gradient(to bottom, #4ee7cd 0%, #00cdab 50%, #4ee7cd 100%);
 }
 @media (min-width: 550px) {
-  /* line 1088, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 1101, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   .progress .bar {
     width: 200px;
   }
-  /* line 1091, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 1104, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   .progress h4 {
     font-size: 2.4rem;
   }
-  /* line 1094, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+  /* line 1107, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
   .progress h5 {
     font-size: 1.8rem;
   }
 }
 
-/* line 1100, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1113, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 #Iframe-Master-CC-and-Rs {
   max-width: 100%;
   max-height: 100%;
   overflow: hidden;
 }
 
-/* line 1106, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1119, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .responsive-wrapper {
   position: relative;
   height: 0;
 }
 
-/* line 1111, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1124, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .responsive-wrapper iframe {
   position: absolute;
   top: 0;
@@ -12598,35 +12610,35 @@ form#new_quote .amount .hour.price {
   border: none;
 }
 
-/* line 1123, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1136, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .responsive-wrapper-wxh-572x612 {
   overflow: hidden;
   width: 100%;
   height: 100%;
 }
 
-/* line 1128, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1141, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .set-margin {
   margin: 30px;
 }
 
-/* line 1131, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1144, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .center-block-horiz {
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-/* line 1135, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1148, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .text-center {
   text-align: center;
 }
 
-/* line 1139, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1152, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice p {
   margin-top: 15px;
   margin-bottom: 5px;
 }
-/* line 1143, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1156, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .browse-wrap {
   top: 0;
   left: 0;
@@ -12655,7 +12667,7 @@ form#new_quote .amount .hour.price {
   width: 90px;
   margin: 0 auto;
 }
-/* line 1160, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1173, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .title {
   width: 100%;
   color: #3b5998;
@@ -12664,12 +12676,12 @@ form#new_quote .amount .hour.price {
   font-family: tahoma, arial, sans-serif;
   cursor: pointer;
 }
-/* line 1167, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1180, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .title i {
   display: inline-block;
   margin-right: 5px;
 }
-/* line 1172, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1185, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .upload {
   right: 0;
   margin: 0;
@@ -12683,7 +12695,7 @@ form#new_quote .amount .hour.price {
   position: absolute;
   font-size: 1000px !important;
 }
-/* line 1185, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1198, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .progress {
   background: #DCE0E3;
   border-radius: 10px;
@@ -12693,7 +12705,7 @@ form#new_quote .amount .hour.price {
   overflow: hidden;
   position: relative;
 }
-/* line 1194, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1207, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .progress .progress-bar {
   background-color: #6BB438;
   color: #fff;
@@ -12704,7 +12716,7 @@ form#new_quote .amount .hour.price {
   transition: all 1s linear 0s;
   height: 100%;
 }
-/* line 1203, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1216, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .progress .progress-bar:after {
   position: absolute;
   top: 0;
@@ -12731,21 +12743,21 @@ form#new_quote .amount .hour.price {
   border-bottom-left-radius: 20px;
   overflow: hidden;
 }
-/* line 1233, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1246, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .file-pdf {
   text-align: center;
 }
-/* line 1235, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1248, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .file-pdf i {
   font-size: 80px;
   display: block;
 }
-/* line 1239, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1252, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice .file-pdf span {
   cursor: pointer;
   text-decoration: blink;
 }
-/* line 1244, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
+/* line 1257, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/invoices.scss */
 .new_uploaded_invoice input[type="text"], .new_uploaded_invoice input[type="date"] {
   max-width: 300px;
   margin: auto;
@@ -14510,11 +14522,37 @@ span.index.index-invoice {
 .summary-container-index form {
   margin-bottom: 0px;
 }
-/* line 1358, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1359, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+.summary-container-index form#edit_address {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+/* line 1365, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+.summary-container-index form#edit_address input {
+  margin-bottom: 10px;
+}
+/* line 1370, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .m-t-lg {
   margin-top: 15px;
 }
-/* line 1361, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1373, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .btn-edit {
   float: right;
   height: 25px;
@@ -14529,16 +14567,20 @@ span.index.index-invoice {
   cursor: pointer;
   color: #849aaa;
 }
-/* line 1375, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1387, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+.summary-container-index .btn-address {
+  float: left;
+}
+/* line 1390, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote {
   text-transform: initial;
 }
-/* line 1377, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1392, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .info-quote {
   clear: both;
   overflow: hidden;
 }
-/* line 1381, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1396, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .info-trady {
   width: calc(50% - 10px);
   float: left;
@@ -14547,75 +14589,75 @@ span.index.index-invoice {
   word-wrap: break-word;
   overflow: hidden;
 }
-/* line 1388, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1403, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .info-trady p {
   margin-bottom: 0px;
   text-align: left;
   text-transform: none;
 }
-/* line 1394, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1409, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .info-agency {
   width: 50%;
   overflow: hidden;
   word-wrap: break-word;
 }
-/* line 1398, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1413, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .info-agency p {
   text-align: right;
   overflow: hidden;
   margin-bottom: 0px;
 }
-/* line 1405, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1420, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .info-maintenance {
   margin-top: 10px;
 }
-/* line 1407, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1422, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .info-maintenance p {
   text-align: center;
   margin-bottom: 0;
 }
-/* line 1413, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1428, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote {
   margin-top: 15px;
 }
-/* line 1415, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1430, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table {
   width: 100%;
   font-size: 13px;
   overflow: auto;
 }
-/* line 1419, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1434, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table th {
   color: #404040;
   font-size: 16px;
   text-transform: uppercase;
 }
-/* line 1424, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1439, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table tr td {
   padding-left: 0;
   padding: 10px 3px;
 }
-/* line 1428, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1443, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table .invoice-description {
   width: 40%;
 }
-/* line 1431, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1446, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table .invoice-price {
   width: 15%;
 }
-/* line 1434, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1449, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table .invoice-hour {
   width: 15%;
 }
-/* line 1437, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1452, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table .invoice-rate {
   width: 15%;
 }
-/* line 1440, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1455, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .show-quote .detail-quote .table .invoice-amount {
   width: 15%;
 }
-/* line 1446, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1461, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote {
   overflow: hidden;
   clear: both;
@@ -14623,7 +14665,7 @@ span.index.index-invoice {
   margin-bottom: 20px;
   text-align: right;
 }
-/* line 1452, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1467, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote button {
   padding: 0 20px;
   height: 33px;
@@ -14633,50 +14675,50 @@ span.index.index-invoice {
   color: #000000;
   text-transform: capitalize !important;
 }
-/* line 1460, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1475, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote button.btn-trans {
   background-color: #f4f8fb;
   color: #849aaa;
   border: none;
 }
-/* line 1466, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1481, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote .btn-accept {
   background-color: #7dc691;
   border-color: #7dc691;
   color: #FFFFFF;
 }
-/* line 1471, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1486, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote .btn-decline {
   background-color: #e34f4f;
   border-color: #e34f4f;
   color: #FFFFFF;
 }
-/* line 1476, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1491, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote .btn-cancel {
   background-color: #3e4b54;
   border-color: #3e4b54;
   color: #FFFFFF;
 }
-/* line 1481, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1496, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote .btn-default {
   border: 1px solid #3e4b54 !important;
   color: #000000 !important;
 }
-/* line 1485, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1500, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .actions-quote .btn-message {
   border: 1px solid #e34f4f;
   color: #e34f4f;
 }
-/* line 1490, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1505, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .modal-custom .modal-footer-quote {
   overflow: hidden;
   text-align: left;
 }
-/* line 1494, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1509, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .slider-quote {
   position: relative;
 }
-/* line 1497, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1512, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .slider-quote .button-slider button {
   line-height: 30px;
   width: 30px;
@@ -14685,21 +14727,21 @@ span.index.index-invoice {
   position: absolute;
   padding: 0px;
 }
-/* line 1505, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1520, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .slider-quote .button-slider .btn-prev {
   top: 34%;
   left: 5px;
 }
-/* line 1509, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1524, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .slider-quote .button-slider .btn-next {
   top: 34%;
   right: 5px;
 }
-/* line 1515, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1530, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .tenant-content {
   left: 35% !important;
 }
-/* line 1521, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1536, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .invoices .content p {
   display: -webkit-box;
   display: -moz-box;
@@ -14714,11 +14756,11 @@ span.index.index-invoice {
   -ms-flex-pack: end;
   margin-right: 20px;
 }
-/* line 1528, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1543, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .invoices .content p span {
   margin-left: 5px;
 }
-/* line 1531, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1546, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign {
   position: absolute;
   z-index: 100;
@@ -14730,7 +14772,7 @@ span.index.index-invoice {
   color: #849aaa;
   outline: none;
 }
-/* line 1541, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1556, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign:after {
   bottom: 100%;
   left: 6%;
@@ -14743,16 +14785,16 @@ span.index.index-invoice {
   border-bottom-color: #879FBB;
   border-width: 10px;
 }
-/* line 1553, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1568, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign ul {
   list-style: none;
   margin-bottom: 0px;
 }
-/* line 1556, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1571, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign ul li {
   width: 100%;
 }
-/* line 1558, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1573, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign ul li a {
   width: 100%;
   display: inline-block;
@@ -14762,12 +14804,12 @@ span.index.index-invoice {
   color: #849aaa;
   text-transform: capitalize;
 }
-/* line 1566, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1581, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign ul li a:hover, .summary-container-index .dropdown-assign ul li a:active {
   color: #7DC691;
   font-weight: bold;
 }
-/* line 1573, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1588, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign p {
   width: 100%;
   margin-bottom: 0px;
@@ -14777,11 +14819,11 @@ span.index.index-invoice {
   text-align: center;
   border-bottom: 1px solid #879FBB;
 }
-/* line 1581, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1596, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-assign p.agent {
   border-top: 1px solid #879FBB;
 }
-/* line 1586, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1601, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status {
   position: absolute;
   z-index: 200;
@@ -14795,7 +14837,7 @@ span.index.index-invoice {
   color: #849aaa;
   outline: none;
 }
-/* line 1598, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1613, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 15px;
@@ -14803,14 +14845,14 @@ span.index.index-invoice {
   margin-right: 0px;
   padding: 0 10px;
 }
-/* line 1605, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1620, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status::-webkit-scrollbar {
   width: 5px;
   background-color: #F5F5F5;
   margin-right: 0px;
   padding: 0 10px;
 }
-/* line 1611, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1626, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status::-webkit-scrollbar-thumb {
   border-radius: 15px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -14818,7 +14860,7 @@ span.index.index-invoice {
   margin-right: 0px;
   padding: 0 10px;
 }
-/* line 1618, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1633, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status:after {
   bottom: 100%;
   right: 6%;
@@ -14831,13 +14873,13 @@ span.index.index-invoice {
   border-bottom-color: #849aaa;
   border-width: 10px;
 }
-/* line 1630, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1645, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status ul {
   list-style: none;
   margin-bottom: 0;
   width: 100%;
 }
-/* line 1634, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1649, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status ul li {
   width: 100%;
   min-height: 40px;
@@ -14867,16 +14909,16 @@ span.index.index-invoice {
   cursor: pointer;
   font-size: 14px;
 }
-/* line 1647, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1662, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status ul li:last-child {
   border-bottom: none;
 }
-/* line 1650, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1665, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status ul li:hover, .summary-container-index .dropdown-status ul li:active {
   color: #7DC691;
   font-weight: bold;
 }
-/* line 1656, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1671, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status p {
   width: 100%;
   margin-bottom: 0px;
@@ -14888,46 +14930,46 @@ span.index.index-invoice {
   font-weight: bold;
   border-bottom: 1px solid #849aaa;
 }
-/* line 1666, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 1681, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .dropdown-status p.awaiting {
   border-top: 1px solid #849aaa;
 }
 @media (min-width: 320px) and (max-width: 480px) {
-  /* line 1672, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1687, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 10px;
   }
-  /* line 1674, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1689, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary .section {
     padding: 20px 5px 25px;
     width: calc(100% - 10px);
     margin-bottom: 50px;
   }
-  /* line 1681, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1696, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     width: 100%;
     float: none;
   }
-  /* line 1685, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1700, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 12px;
   }
-  /* line 1687, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1702, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author a {
     font-size: 11px;
   }
-  /* line 1691, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1706, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 16px;
   }
-  /* line 1694, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1709, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions {
     width: 98%;
     float: left;
     margin-top: 10px;
     margin-bottom: 5px;
   }
-  /* line 1700, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1715, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions button {
     height: 40px;
     padding: 0;
@@ -14935,33 +14977,33 @@ span.index.index-invoice {
     font-size: 12px;
     margin-right: 2.5vw;
   }
-  /* line 1708, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1723, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .content .slider-custom .swiper-pagination .swiper-pagination-bullet {
     width: 20px;
     height: 5px;
   }
 }
 @media (min-width: 320px) and (max-width: 480px) and (max-width: 370px) {
-  /* line 1713, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1728, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions {
     width: 98%;
   }
 }
 @media (min-width: 320px) and (max-width: 480px) {
-  /* line 1718, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1733, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: none;
   }
-  /* line 1721, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1736, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .actions-full {
     bottom: 76px;
     width: 100%;
   }
-  /* line 1725, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1740, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: block;
   }
-  /* line 1727, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1742, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile .fixed {
     display: -webkit-box;
     display: -moz-box;
@@ -14974,7 +15016,7 @@ span.index.index-invoice {
     justify-content: center;
     -ms-flex-pack: center;
   }
-  /* line 1731, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1746, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile button {
     height: 82px;
     width: 50%;
@@ -14982,35 +15024,35 @@ span.index.index-invoice {
     font-weight: 600;
     font-size: 14px;
   }
-  /* line 1739, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1754, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
-  /* line 1742, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1757, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
-  /* line 1746, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1761, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .item-quote .actions {
     margin-top: 0px;
   }
-  /* line 1748, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1763, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .item-quote .actions .price {
     float: left;
     margin-left: 20px;
   }
-  /* line 1754, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1769, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-dialog {
     width: 95%;
   }
-  /* line 1758, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1773, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-dialog .modal-header .top-part {
     -webkit-flex-direction: column;
     -moz-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;
   }
-  /* line 1760, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1775, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-dialog .modal-header .top-part .right {
     -webkit-justify-content: flex-start;
     -moz-justify-content: flex-start;
@@ -15019,57 +15061,56 @@ span.index.index-invoice {
     -ms-flex-pack: flex-start;
     margin-top: 10px;
   }
-  /* line 1767, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1782, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-dialog .modal-body input {
     width: 100%;
   }
-  /* line 1773, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1788, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-dialog .modal-body.work-order-detail .job-contact .right .invoice-detail {
     height: calc(100% - 6px);
   }
-  /* line 1778, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1793, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-dialog .modal-body.work-order-detail .rect-info {
     text-size: 9px;
     margin: 2px;
   }
-  /* line 1785, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1800, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-body .input-custom {
     width: 100%;
   }
-  /* line 1791, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1806, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .show-quote .detail-quote .table tr {
     word-wrap: break-word;
     padding: 5px;
     padding-left: 0px;
   }
-  /* line 1795, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1810, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .show-quote .detail-quote .table tr th {
     font-size: 9px;
     padding: 3px;
   }
-  /* line 1799, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1814, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .show-quote .detail-quote .table tr td {
     font-size: 9px;
   }
-  /* line 1802, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1817, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .show-quote .detail-quote .table tr .quote-description {
     width: 40%;
   }
-  /* line 1805, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1820, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .show-quote .detail-quote .table tr .quote-price {
     width: 20%;
   }
-  /* line 1808, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1823, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .show-quote .detail-quote .table tr .quote-rate {
-    width: 10%;
-    word-break: break-all;
+    width: 15%;
   }
-  /* line 1812, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1826, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .show-quote .detail-quote .table tr .quote-amount {
     width: 30%;
     word-break: break-all;
   }
-  /* line 1817, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1831, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .invoices .content p {
     -webkit-justify-content: flex-start;
     -moz-justify-content: flex-start;
@@ -15079,7 +15120,7 @@ span.index.index-invoice {
     margin-right: 0px;
     margin-left: 20px;
   }
-  /* line 1823, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1837, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .invoices .content .btn-view {
     width: 100px;
     -webkit-justify-content: flex-start;
@@ -15088,87 +15129,87 @@ span.index.index-invoice {
     justify-content: flex-start;
     -ms-flex-pack: flex-start;
   }
-  /* line 1827, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1841, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .dropdown-status {
     width: 290px;
     margin-top: 90px;
   }
 }
 @media (min-width: 481px) and (max-width: 640px) {
-  /* line 1833, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1847, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .swiper-pagination {
     left: 0%;
     bottom: -100px;
   }
-  /* line 1837, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1851, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 15px;
   }
-  /* line 1839, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1853, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary .section {
     padding: 20px 15px 25px;
     width: calc(100% - 30px);
   }
-  /* line 1845, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1859, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     width: 100%;
     float: none;
   }
-  /* line 1849, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1863, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 14px;
   }
-  /* line 1851, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1865, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author a {
     font-size: 13px;
   }
-  /* line 1855, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1869, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 18px;
   }
-  /* line 1858, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1872, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions {
     width: 100%;
     float: left;
     margin-top: 10px;
   }
-  /* line 1863, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1877, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .content .slider-custom .swiper-pagination .swiper-pagination-bullet {
     width: 25px;
     height: 8px;
   }
-  /* line 1869, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1883, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes > p {
     margin-top: 20px;
   }
-  /* line 1873, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1887, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .item-quote .actions {
     margin-top: 0px;
     margin-bottom: 10px;
   }
-  /* line 1876, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1890, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .item-quote .actions button {
     font-size: 12px;
   }
-  /* line 1880, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1894, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .item-quote .actions .price {
     float: left;
     margin-left: 20px;
   }
-  /* line 1887, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1901, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: none;
   }
-  /* line 1890, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1904, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .actions-full {
     width: 100%;
     bottom: 76px;
   }
-  /* line 1894, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1908, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: block;
   }
-  /* line 1896, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1910, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile .fixed {
     display: -webkit-box;
     display: -moz-box;
@@ -15181,7 +15222,7 @@ span.index.index-invoice {
     justify-content: center;
     -ms-flex-pack: center;
   }
-  /* line 1900, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1914, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile button {
     height: 82px;
     width: auto;
@@ -15190,98 +15231,98 @@ span.index.index-invoice {
     font-weight: 600;
     font-size: 14px;
   }
-  /* line 1909, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1923, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
-  /* line 1912, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1926, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
-  /* line 1915, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1929, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .modal-custom .modal-dialog {
     width: 80%;
   }
 }
 @media (min-width: 641px) and (max-width: 768px) {
-  /* line 1920, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1934, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 30px;
   }
-  /* line 1923, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1937, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .section {
     padding: 20px 15px 25px;
     width: calc(100% - 30px);
   }
-  /* line 1928, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1942, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     width: 100%;
     float: none;
   }
-  /* line 1932, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1946, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions {
     width: 100%;
     float: left;
     margin-top: 20px;
     margin-bottom: 10px;
   }
-  /* line 1938, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1952, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions button {
     height: 40px;
   }
-  /* line 1943, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1957, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 20px;
   }
-  /* line 1945, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1959, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title button {
     font-size: 12px;
   }
-  /* line 1950, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1964, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .swiper-pagination {
     left: 0%;
     bottom: 200px;
   }
-  /* line 1954, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1968, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 14px;
   }
-  /* line 1956, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1970, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author a {
     font-size: 12px;
   }
-  /* line 1961, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1975, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions button {
     font-size: 14px;
   }
-  /* line 1967, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1981, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes > p {
     margin-top: 20px;
   }
-  /* line 1971, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1985, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .item-quote .actions {
     margin-top: 20px;
     margin-bottom: 20px;
   }
-  /* line 1974, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1988, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .item-quote .actions button {
     font-size: 12px;
   }
-  /* line 1980, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1994, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: none;
   }
-  /* line 1983, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 1997, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .actions-full {
     width: 640px;
     bottom: 82px;
     left: calc(50% - 320px);
   }
-  /* line 1988, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2002, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: block;
   }
-  /* line 1990, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2004, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile .fixed {
     display: -webkit-box;
     display: -moz-box;
@@ -15294,7 +15335,7 @@ span.index.index-invoice {
     justify-content: center;
     -ms-flex-pack: center;
   }
-  /* line 1994, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2008, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile button {
     height: 82px;
     width: auto;
@@ -15303,32 +15344,32 @@ span.index.index-invoice {
     padding-left: 0.5em;
     padding-right: 0.5em;
   }
-  /* line 2003, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2017, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
-  /* line 2006, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2020, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
 }
 @media (min-width: 776px) and (max-width: 900px) {
-  /* line 2011, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2025, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .dropdown-assign {
     right: 76px;
   }
-  /* line 2013, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2027, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .dropdown-assign:after {
     right: 6%;
     left: unset;
   }
 }
 @media (min-width: 769px) and (max-width: 1024px) {
-  /* line 2020, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2034, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 50px;
   }
-  /* line 2023, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2037, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .section {
     float: left;
     margin-right: 0px;
@@ -15336,65 +15377,65 @@ span.index.index-invoice {
     padding: 25px 23px 30px;
     width: calc(100% - 46px);
   }
-  /* line 2031, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2045, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     float: left;
     width: 100%;
   }
-  /* line 2035, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2049, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions {
     width: 100%;
     float: left;
     margin-top: 25px;
     margin-bottom: 15px;
   }
-  /* line 2041, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2055, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .actions button {
     height: 40px;
   }
-  /* line 2047, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2061, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 20px;
   }
-  /* line 2049, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2063, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title button {
     font-size: 12px;
   }
-  /* line 2055, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2069, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .item-quote .user {
     width: 50%;
   }
-  /* line 2058, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2072, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .item-quote .actions {
     width: 50%;
   }
-  /* line 2062, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2076, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 13px;
   }
-  /* line 2064, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2078, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author a {
     font-size: 12px;
   }
-  /* line 2069, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2083, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions button {
     font-size: 14px;
   }
-  /* line 2074, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2088, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: none;
   }
-  /* line 2077, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2091, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .actions-full {
     width: 640px;
     bottom: 82px;
     left: calc(50% - 320px);
   }
-  /* line 2082, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2096, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: block;
   }
-  /* line 2084, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2098, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile .fixed {
     display: -webkit-box;
     display: -moz-box;
@@ -15407,7 +15448,7 @@ span.index.index-invoice {
     justify-content: center;
     -ms-flex-pack: center;
   }
-  /* line 2089, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2103, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile button {
     width: auto;
     width: initial;
@@ -15415,249 +15456,249 @@ span.index.index-invoice {
     padding-left: 0.5em;
     padding-right: 0.5em;
   }
-  /* line 2097, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2111, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
-  /* line 2100, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2114, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: block;
   }
 }
 @media (min-width: 1025px) and (max-width: 1280px) {
-  /* line 2105, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2119, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 20px;
   }
-  /* line 2108, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2122, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .section {
     float: left;
     margin-right: 10px;
     width: calc(100% - 310px);
     padding: 40px 15px 50px;
   }
-  /* line 2115, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2129, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     width: 50%;
   }
-  /* line 2119, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2133, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 16px;
   }
-  /* line 2121, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2135, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title button {
     font-size: 12px;
   }
-  /* line 2126, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2140, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions {
     width: 100%;
     margin: 10px 0;
   }
-  /* line 2129, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2143, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions button {
     font-size: 12px;
   }
-  /* line 2133, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2147, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 12px;
   }
-  /* line 2135, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2149, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author a {
     font-size: 12px;
   }
-  /* line 2140, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2154, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: block;
   }
-  /* line 2143, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2157, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: none;
   }
-  /* line 2146, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2160, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: none;
   }
 }
 @media (min-width: 1281px) {
-  /* line 2151, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2165, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 30px;
   }
-  /* line 2154, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2168, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .section {
     float: left;
     margin-right: 20px;
     width: calc(100% - 340px);
     padding: 40px 25px 50px;
   }
-  /* line 2161, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2175, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     float: left;
     width: 50%;
   }
-  /* line 2166, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2180, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 18px;
   }
-  /* line 2168, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2182, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title button {
     font-size: 12px;
   }
-  /* line 2173, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2187, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions {
     width: 50%;
     float: right;
   }
-  /* line 2176, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2190, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions button {
     font-size: 14px;
   }
-  /* line 2180, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2194, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 12px;
   }
-  /* line 2182, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2196, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author i {
     font-size: 12px;
   }
-  /* line 2185, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2199, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author a {
     font-size: 12px;
   }
-  /* line 2190, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2204, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: block;
   }
-  /* line 2193, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2207, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: none;
   }
-  /* line 2196, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2210, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: none;
   }
 }
 @media (min-width: 1366px) {
-  /* line 2201, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2215, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 30px;
   }
-  /* line 2204, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2218, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .section {
     float: left;
     margin-right: 25px;
     width: calc(100% - 365px);
     padding: 40px 30px 50px;
   }
-  /* line 2211, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2225, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     float: left;
     width: 50%;
   }
-  /* line 2216, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2230, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 14px;
   }
-  /* line 2218, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2232, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title button {
     font-size: 12px;
   }
-  /* line 2223, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2237, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions {
     width: 50%;
   }
-  /* line 2225, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2239, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions button {
     font-size: 14px;
   }
-  /* line 2229, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2243, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 12px;
   }
-  /* line 2233, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2247, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: block;
   }
-  /* line 2236, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: none;
   }
-  /* line 2239, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2253, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: none;
   }
 }
 @media (min-width: 1680px) {
-  /* line 2244, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2258, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .main-summary {
     margin: auto 80px;
   }
-  /* line 2248, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2262, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info-title {
     float: left;
     width: 50%;
   }
-  /* line 2253, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2267, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title {
     font-size: 20px;
   }
-  /* line 2255, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2269, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .info .title button {
     font-size: 14px;
   }
-  /* line 2260, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2274, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author {
     font-size: 16px;
   }
-  /* line 2262, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2276, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .author a {
     font-size: 14px;
   }
-  /* line 2266, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2280, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions {
     width: 50%;
   }
-  /* line 2268, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2282, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .post .actions button {
     font-size: 14px;
   }
-  /* line 2273, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2287, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar {
     display: block;
   }
-  /* line 2276, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2290, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .sidebar-mobile {
     display: none;
   }
-  /* line 2279, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2293, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .activity-mobile {
     display: none;
   }
 }
-/* line 2283, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 2297, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .m-t-xl {
   margin-top: 30px;
 }
-/* line 2286, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 2300, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .text-center {
   text-align: center;
 }
-/* line 2289, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 2303, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .text-right {
   text-align: right;
 }
-/* line 2292, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 2306, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .summary-container-index .text-left {
   text-align: left;
 }
 
-/* line 2296, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+/* line 2310, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
 .m-b-n {
   margin-bottom: 0;
 }
 
 @media (max-width: 820px) {
-  /* line 2302, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2316, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .actions-quote {
     display: -webkit-box;
     display: -moz-box;
@@ -15674,7 +15715,7 @@ span.index.index-invoice {
     float: none;
     padding: 0px;
   }
-  /* line 2310, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2324, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .actions-quote button {
     -webkit-align-items: center;
     -moz-align-items: center;
@@ -15684,7 +15725,7 @@ span.index.index-invoice {
     padding: 0px;
     margin: 0px 0px 10px 0px;
   }
-  /* line 2316, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2330, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .btn-mark-as-paid {
     margin-top: 20px;
     display: -webkit-box;
@@ -15699,7 +15740,7 @@ span.index.index-invoice {
     margin-left: calc(60% - 125px);
     float: none;
   }
-  /* line 2324, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2338, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .item-quote .user .quote-request-button {
     margin-top: 110px;
     margin-left: 25%;
@@ -15715,7 +15756,7 @@ span.index.index-invoice {
     flex-direction: column;
     float: none;
   }
-  /* line 2331, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2345, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .item-quote .user .quote-request-button button {
     margin-right: 0px;
     margin-bottom: 20px;
@@ -15724,17 +15765,17 @@ span.index.index-invoice {
   }
 }
 @media (max-width: 550px) {
-  /* line 2341, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2355, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .modal-custom .modal-footer .cancel {
     margin-top: 10px;
   }
 
-  /* line 2346, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2360, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .actions-quote {
     width: 90%;
     margin-left: 5%;
   }
-  /* line 2351, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2365, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .item-quote .user .quote-request-button {
     margin-top: 110px;
     display: -webkit-box;
@@ -15750,31 +15791,36 @@ span.index.index-invoice {
     width: 90%;
     float: none;
   }
-  /* line 2358, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2372, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .item-quote .user .quote-request-button button {
     margin-right: 0px;
     margin-bottom: 20px;
   }
 
-  /* line 2364, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2378, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .modal-custom .modal-body .message {
     font-size: 12px;
   }
-  /* line 2366, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2380, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .modal-custom .modal-body .message .item-date {
     font-size: 8px;
   }
 }
 @media (max-width: 350px) {
-  /* line 2374, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2388, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .quotes .actions-quote {
     width: 98%;
     margin-left: 1%;
   }
-  /* line 2379, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  /* line 2393, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
   .summary-container-index .item-quote .user .quote-request-button {
     width: 98%;
     margin-left: 1%;
+  }
+  /* line 2397, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/agency_admin_maintenance_request/show.scss */
+  .summary-container-index .post .info .title button {
+    height: auto;
+    white-space: normal;
   }
 }
 /* line 6, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
@@ -15808,7 +15854,11 @@ span.index.index-invoice {
 .reset-password .form-reset input {
   width: 100%;
 }
-/* line 24, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
+/* line 22, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
+.reset-password .form-reset p {
+  margin: 0;
+}
+/* line 27, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/password_resets.scss */
 .reset-password .help-block {
   color: red;
   text-transform: capitalize;
@@ -17664,6 +17714,51 @@ span.index.index-invoice {
   width: 80%;
   margin-left: 10%;
 }
+/* line 57, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+#registration .onboarding-form {
+  background: transparent;
+}
+/* line 61, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+#registration .onboarding-password {
+  margin: 0;
+  text-align: center;
+}
+/* line 65, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+#registration .onboarding-password p {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #83878C;
+}
+/* line 71, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+#registration .onboarding-password input {
+  width: 100%;
+  color: #83878C;
+}
+/* line 141, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#registration .onboarding-password input.placeholder {
+  color: #83878C;
+}
+/* line 142, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#registration .onboarding-password input:-moz-placeholder {
+  color: #83878C;
+}
+/* line 143, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#registration .onboarding-password input::-moz-placeholder {
+  color: #83878C;
+}
+/* line 144, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#registration .onboarding-password input:-ms-input-placeholder {
+  color: #83878C;
+}
+/* line 145, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/_mixins.scss */
+#registration .onboarding-password input::-webkit-input-placeholder {
+  color: #83878C;
+}
+/* line 79, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+#registration .onboarding-password button {
+  width: 300px;
+  background-color: #71C796;
+}
 @media (max-width: 550px) {
   /* line 5, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
   #registration {
@@ -17671,17 +17766,17 @@ span.index.index-invoice {
     margin-left: 2%;
     margin-bottom: 170px;
   }
-  /* line 62, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+  /* line 90, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
   #registration .registration-title .registration-label-title .step-status {
     margin-bottom: 10px;
   }
-  /* line 65, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+  /* line 93, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
   #registration .registration-title .registration-label-title .step-number {
     width: 26px;
     margin-left: calc(50% - 13px);
     font-size: 14px;
   }
-  /* line 70, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
+  /* line 98, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/registrations.scss */
   #registration .registration-title .registration-label-title .step-text {
     font-size: 10px;
   }
@@ -17703,9 +17798,26 @@ form#terms-and-conditions .how-it-works-note {
   color: #71C796;
   font-weight: 600;
 }
-/* line 11, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 12, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+form#terms-and-conditions .agree-wrapper {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+/* line 18, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .agree_checkbox {
-  width: 90%;
   font-size: 15px;
   padding-left: 5px;
   margin: 0 5%;
@@ -17717,13 +17829,13 @@ form#terms-and-conditions .agree_checkbox {
   -ms-user-select: none;
   user-select: none;
 }
-/* line 26, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 32, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .agree_checkbox input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
 }
-/* line 33, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 39, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .checkmark {
   position: absolute;
   top: 1px;
@@ -17734,25 +17846,25 @@ form#terms-and-conditions .checkmark {
   border: 2px solid rgba(0, 0, 0, 0.3);
   border-radius: 7px;
 }
-/* line 45, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 51, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .agree_checkbox:hover input ~ .checkmark {
   background-color: #ccc;
 }
-/* line 50, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 56, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .agree_checkbox input:checked ~ .checkmark {
   background-color: #71C796;
 }
-/* line 55, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 61, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
-/* line 62, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 68, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .agree_checkbox input:checked ~ .checkmark:after {
   display: block;
 }
-/* line 67, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 73, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .agree_checkbox .checkmark:after {
   left: 5px;
   top: 1px;
@@ -17764,9 +17876,8 @@ form#terms-and-conditions .agree_checkbox .checkmark:after {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 79, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 85, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 form#terms-and-conditions .TAC-buttons {
-  text-align: center;
   margin-top: 20px;
   padding-bottom: 20px;
   display: -webkit-box;
@@ -17774,93 +17885,90 @@ form#terms-and-conditions .TAC-buttons {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
 }
-/* line 85, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
-form#terms-and-conditions .TAC-buttons button {
+/* line 91, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+form#terms-and-conditions .TAC-buttons .button-submit {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  margin: 0 20px;
+  max-width: 300px;
+  background-color: #71C796;
+  color: white;
+  border-color: #71C796;
+  border-radius: 5px;
 }
-/* line 89, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
-form#terms-and-conditions .TAC-buttons button:hover {
+/* line 99, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+form#terms-and-conditions .TAC-buttons .button-submit:hover {
   background-color: #619970;
   border-color: #619970;
 }
-/* line 95, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
-form#terms-and-conditions .TAC-buttons .button-submit {
-  color: white;
-  border-color: #71C796;
-  background-color: #71C796;
-}
-/* line 100, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
-form#terms-and-conditions .TAC-buttons .button-back {
-  color: white;
-  border-color: #4CC6EE;
-  background-color: #4CC6EE;
-}
 
-/* line 107, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 106, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions {
   height: 250px;
   margin: 10px 0px;
   background-color: white;
   color: #83878C;
 }
-/* line 116, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 115, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .level-0 {
   margin-top: 20px;
   line-height: 1.3;
 }
-/* line 121, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 120, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .level-1 {
   margin-left: 15px;
   margin-bottom: 10px;
   line-height: 1.3;
 }
-/* line 126, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 125, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .level-2 {
   margin-left: 25px;
   margin-bottom: 10px;
   line-height: 1.3;
 }
-/* line 131, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 130, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .level-3 {
   margin-left: 35px;
   margin-bottom: 10px;
   line-height: 1.3;
 }
-/* line 136, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 135, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .scroll-bar {
   overflow-y: scroll;
   padding: 20px;
   height: 200px;
 }
-/* line 142, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 141, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .scroll-bar::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0.05);
 }
-/* line 146, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 145, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .scroll-bar::-webkit-scrollbar {
   width: 6px;
 }
-/* line 150, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 149, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .terms-and-conditions .scroll-bar::-webkit-scrollbar-thumb {
   background-color: #71C796;
 }
 
-/* line 156, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 155, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .how-it-works .how-it-works-title {
   color: #71C796;
   font-size: 18px;
 }
-/* line 160, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 159, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .how-it-works .how-it-works-item {
   min-height: 50px;
 }
-/* line 162, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 161, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .how-it-works .how-it-works-item .number {
   display: block;
   border: 3px solid #71C796;
@@ -17872,7 +17980,7 @@ form#terms-and-conditions .TAC-buttons .button-back {
   font-size: 30px;
   color: #71C796;
 }
-/* line 173, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+/* line 172, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
 .how-it-works .how-it-works-item .text {
   margin-left: 70px;
   margin-bottom: 20px;
@@ -17881,22 +17989,21 @@ form#terms-and-conditions .TAC-buttons .button-back {
 }
 
 @media (max-width: 550px) {
-  /* line 183, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 182, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions {
     /* Create a custom checkbox */
     /* Style the checkmark/indicator */
   }
-  /* line 184, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 183, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .how-it-works-note {
     font-size: 11px;
   }
-  /* line 187, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 186, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .agree_checkbox {
-    width: 80%;
     font-size: 11px;
     margin: 0 10%;
   }
-  /* line 194, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 192, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .checkmark {
     top: 0px;
     left: -17px;
@@ -17904,7 +18011,7 @@ form#terms-and-conditions .TAC-buttons .button-back {
     width: 14px;
     border-radius: 5px;
   }
-  /* line 203, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 201, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .agree_checkbox .checkmark:after {
     left: 5px;
     top: 1px;
@@ -17912,58 +18019,58 @@ form#terms-and-conditions .TAC-buttons .button-back {
     height: 8px;
     border-width: 0 2px 2px 0;
   }
-  /* line 214, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 212, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .TAC-buttons button {
     margin: 0 5px;
     padding: 0;
   }
-  /* line 219, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 217, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .TAC-buttons .button-submit:hover {
     background-color: #71C796;
   }
-  /* line 222, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 220, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .TAC-buttons .button-back:hover {
     background-color: #4CC6EE;
   }
 
-  /* line 228, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 226, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .title {
     font-size: 22px;
   }
-  /* line 231, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 229, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-0 {
     font-size: 15px;
     margin-bottom: 10px;
   }
-  /* line 235, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 233, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-1 {
     font-size: 13px;
   }
-  /* line 238, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 236, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-2 {
     font-size: 11px;
   }
-  /* line 241, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 239, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-3 {
     margin-bottom: 5px;
     font-size: 9px;
   }
 
-  /* line 247, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 245, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-title {
     font-size: 13px;
   }
-  /* line 250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 248, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-item {
     min-height: 40px;
   }
-  /* line 252, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-item .number {
     width: 26px;
     height: 26px;
     font-size: 18px;
   }
-  /* line 257, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 255, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-item .text {
     margin-left: 40px;
     margin-bottom: 15px;

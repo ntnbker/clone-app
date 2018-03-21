@@ -49,10 +49,6 @@ var TradyTermsAndConditions = React.createClass({
     return <p id="errorbox" className="error">{error ? error : ''}</p>;
   },
 
-  onBack() {
-    location.href = this.props.edit_services_path;
-  },
-
   submit(e) {
     e.preventDefault();
     const {isAgree} = this.state;
@@ -63,11 +59,12 @@ var TradyTermsAndConditions = React.createClass({
       trady_id: this.props.trady_id,
       trady_company_id: this.props.trady_company_id,
       maintenance_request_id: this.props.maintenance_request_id,
+      token: this.props.token,
     }
 
     $.ajax({
       type: 'POST',
-      url: '/tradie_term_agreements',
+      url: this.props.submit_url || '/tradie_term_agreements',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
       },
@@ -94,23 +91,22 @@ var TradyTermsAndConditions = React.createClass({
           We believe that by using our system you will greatly increase your business revenue and take your business to the next level.
         </div>
         {this.termsAndConditionsText()}
-        <label className="agree_checkbox">
-          Agree To Terms and Conditions
-          <input
-            type="checkbox"
-            id="terms_and_conditions"
-            ref={elem => this.terms_and_conditions = elem}
-            onChange={this.checkOffAgree}
-          />
-          <span className="checkmark"></span>
-        </label>
+        <div className="agree-wrapper">
+          <label className="agree_checkbox">
+            Agree To Terms and Conditions
+            <input
+              type="checkbox"
+              id="terms_and_conditions"
+              ref={elem => this.terms_and_conditions = elem}
+              onChange={this.checkOffAgree}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
         {this.renderError(this.state.errors)}
         <div className="TAC-buttons">
-          <button type="button" className="btn button-back" onClick={this.onBack}>
-            Back
-          </button>
           <button type="submit" className="btn button-submit">
-            Submit
+            Next
           </button>
         </div>
       </form>

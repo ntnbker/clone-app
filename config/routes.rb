@@ -26,7 +26,8 @@ Rails.application.routes.draw do
     patch "update_password"=>"passwords#update_password"
     get "set_password"=> "passwords#set_password",:as=> :set_password
     patch "confirm_password"=>"passwords#confirm_password"
-     
+    get "new_onboarding_password" =>"passwords#new_onboarding_password", :as => "new_onboarding_password"
+    post "create_onboarding_password"=>"passwords#create_onboarding_password"
   
   ###################################################
   ##########AGENT ROLE RESOURCES/ROUTES##############
@@ -270,14 +271,14 @@ Rails.application.routes.draw do
     resources :services, only:[:new,:create, :update, :index]
     post "add_services"=>"services#add_services"
     get "edit_services"=>"services#edit_services", :as => "edit_services"
-    
-
+    get "new_service_onboarding" => "services#new_service_onboarding", :as=> "new_service_onboarding"
+    post "new_service_onboarding" => "services#create_service_onboarding"
   ###########################################################
   ##########TRADY TERMS AND CONDITIONS RESOURCES/ROUTES######
   ###########################################################
   resources :tradie_term_agreements, only:[:new, :create]
-
-
+  get "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#new_terms_and_conditions_onboarding", :as => :onboarding_tradie_terms_and_conditions
+  post "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#create_terms_and_conditions_onboarding"
   ############################################
   ##########PAYMENT RESOURCES/ROUTES#########
   ############################################
