@@ -8,7 +8,7 @@ class MaintenanceAppMailer < ActionMailer::Base
   def find_me_a_tradie(maintenance_request)
     @maintenance_request = maintenance_request
     
-    mail(to:"martin@email.com", subject:"JFMO request from agency, sent on #{Date.today}")
+    mail(to:"leon@leadersestateagents.com", subject:"JFMO request from agency, sent on #{Date.today}")
   end
 
 
