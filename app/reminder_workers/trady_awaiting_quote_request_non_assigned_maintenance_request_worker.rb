@@ -34,7 +34,15 @@ class TradyAwaitingQuoteRequestNonAssignedMaintenanceRequestWorker
           trady = quote_request.trady
           property = quote_request.maintenance_request.property
           maintenance_request = quote_request.maintenance_request
-          TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request).deliver
+          #TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request).deliver
+
+          if trady.jfmo_participant == true && trady.customer_profile
+            TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request).deliver
+          elsif trady.jfmo_participant.nil?
+            TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request).deliver
+          end 
+          #the trady that did not finish signing up should not get an email reminder. If they are JFMO == true and customer_profile is there then remind them.
+          #if the JFMO is nil then reminde them.  or else we will send them the wrong email to them. 
         end 
      end 
     

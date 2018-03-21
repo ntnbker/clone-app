@@ -17,7 +17,7 @@ class JfmoTradiesController < ApplicationController
             quote_request = QuoteRequest.where(:trady_id=>trady.id, :maintenance_request_id=>maintenance_request.id).first
             if quote_request
               #do nothing
-              message = "You have already requested that we find you some tradies for competative quotes. Please wait while we work hard to find you the best people we can. Thank you :)"
+              message = "Please wait while we work hard to find you the best people we can. Thank you :)"
             else
               if maintenance_request.jfmo_status == "Passive"
                 QuoteRequest.create(trady_id:trady.id, maintenance_request_id:maintenance_request.id)
