@@ -216,7 +216,7 @@ var FieldListForInvoice = React.createClass({
     const { Fields = {}, removed = {} } = this.state;
     const { errors } = this.props;
     let indexInvoice = 0;
-
+    
     return <div className="fieldlist" style={{ paddingBottom: '30px' }}>
       <ul>
         {Object.values(Fields).map(({SampleField, quote, key, x, params, ...rest}, fieldIndex) => {
@@ -252,7 +252,7 @@ var AdditionalInvoice = React.createClass({
   getInitialState : function() {
     var quote = this.props.content;
     var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
-    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    var hours_input = pricing_type !== 'Hourly' ? false : true;
     return {
       remove : false,
       pricing_type: pricing_type,
@@ -365,8 +365,8 @@ var InvoiceItemField = React.createClass({
   getInitialState : function() {
     var invoice_item = this.props.content;
     var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
-    var hours_input  = pricing_type == 'Fixed Cost'         ? false               : true;
-    var amount       = invoice_item                         ? invoice_item.amount : 0;
+    var hours_input  = pricing_type !== 'Hourly'         ? false               : true;
+    var amount       = invoice_item                         ? invoice_item.amount || invoice_item.min_price : 0;
     var numofhours   = (invoice_item && invoice_item.hours) ? invoice_item.hours  : 1;
 
     return {
@@ -435,8 +435,10 @@ var InvoiceItemField = React.createClass({
   },
 
   updatePrice(amount) {
+    const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${this.props.x}][pricing_type]`}'`).val();
+    
     if (!isNaN(amount)) {
-      this.props.params.updatePrice(amount - this.state.totalamount);
+      this.props.params.updatePrice(amount - this.state.totalamount, selectedValue === 'Hourly');
     }
   },
 
@@ -504,6 +506,7 @@ var InvoiceItemField = React.createClass({
     var {
       pricing_type, hours_input, remove, amount, numofhours
     } = this.state;
+    
     if (invoice_item) {
       x = invoice_item.id || x;
       invoice_id = invoice_item.invoice_id || invoice_id;
@@ -596,10 +599,23 @@ var InvoiceField = React.createClass({
     var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
     var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
     const tax = (invoice && invoice.tax != null) ? invoice.tax : true;
+    var hourly_total = 0;
+
+    invoice && invoice.invoice_items && invoice.invoice_items.forEach(function(item) {
+      if (item.pricing_type === 'Range') {
+        invoice_total += item.min_price;
+      }
+
+      if (item.pricing_type === 'Hourly') {
+        hourly_total+= item.amount;
+      }
+    });
+
     return {
       invoice_total,
       service_fee: service_fee || 0,
       tax,
+      hourly_total,
       items_total : tax ? items_total : invoice_total,
       tax_total: tax ? tax_total : 0,
       remove : false,
@@ -659,13 +675,16 @@ var InvoiceField = React.createClass({
     this.props.removeField(x);
   },
 
-  calcInvoiceTotal(price) {
+  calcInvoiceTotal(price, isHourly) {
     const invoice_total = this.state.invoice_total + price;
+    const { hourly_total } = this.state;
+    
     this.setState({
       items_total: this.state.tax ? invoice_total/1.1 : invoice_total,
       invoice_total: invoice_total,
       tax_total: this.state.tax ? invoice_total - invoice_total/(1.1) : 0,
       service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0,
+      hourly_total: isHourly ? hourly_total + price : hourly_total,
     });
   },
   onTax(isTax) {
@@ -679,7 +698,7 @@ var InvoiceField = React.createClass({
   render: function() {
     var { content, x, params: { invoiceInfo = {}, trady } } = this.props;
     var {
-      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee
+      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee, hourly_total
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
@@ -768,6 +787,13 @@ var InvoiceField = React.createClass({
             <div className="input-dolar">
               <span className="dolar">$</span>
               <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+            </div>
+          </div>
+          <div>
+            <p> Hourly Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={hourly_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][hourly_total]'} />
             </div>
           </div>
           <div>
