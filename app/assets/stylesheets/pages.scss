@@ -80,7 +80,7 @@ $color-red: #e34f4f;
 			}
 
 			.home-title {
-				margin: 30px;
+				margin: 30px 0;
 				font-size: 3.6em;
 				color: white;
 			}
@@ -179,12 +179,12 @@ $color-red: #e34f4f;
 					@include flexbox;
 					@include align-items(center);
 					@include justify-content(center);
-					margin: 20px;
 
 					button {
 						@include flex(1);
 						text-align: center;
-						font-size: 1.3em;
+						font-size: 1.5em;
+						font-weight: bold;
 						background-color: #5CC993;
 						padding: 10px 0;
 						color: white;
@@ -505,7 +505,7 @@ $color-red: #e34f4f;
 		}
 
 		.how-it-works {
-			margin: 30px 15%;
+			margin: 0px 15% 20px 15%;
 			.three.columns {
 				width: 24%;
 				margin-left: 1%;
@@ -591,8 +591,8 @@ $color-red: #e34f4f;
 	@media (max-width: 1024px) {
 		.home-content .header .home-action {
 			.home-action-title button {
-				font-size: 1.1em;
-				height: 51px;
+				// font-size: 1.1em;
+				// height: 51px;
 			}
 			.home-action-content .action-content {
 				.submit-new-mr {
@@ -629,8 +629,8 @@ $color-red: #e34f4f;
 	@media (max-width: 992px) {
 		.home-content .header .home-action {
 			.home-action-title button {
-				font-size: 0.9em;
-				height: 46px;
+				// font-size: 0.9em;
+				// height: 46px;
 			}
 			.submit-new-mr {
 				.type-service {
@@ -661,55 +661,57 @@ $color-red: #e34f4f;
 	}
 
 	@media (max-width: 870px) {
-		.home-content .header .home-action {
-
-			.home-action-title {
-				@include flex-direction(column);
-
-				button {
-					font-size: 1em;
-					height: 40px;
-					padding: 0 5px;
-					min-width: 250px;
-
-					&:hover {
-						color: white;
-						background-color: #5CC993;
-						border-color: #5CC993;
-					}
-				}
+		.home-content .header {
+			.home-title {
+				font-size: 2.4em;
 			}
+			.home-action {
 
-			.home-action-content .action-content {
-				margin: 0 10%;
-				width: 80%;
+				.home-action-title {
+					@include flex-direction(column);
 
-				.submit-new-mr {
-					.type-service {
-						margin: 15px 0;
-						select {
-							font-size: 19px;
-							padding: 0 15px;
-						}
-						span {
-							top: 26px;
-						}
-					}
-					.input-address {
-						margin: 10px 0 30px 0;
-						textarea {
-							font-size: 19px;
+					button {
+						min-width: 250px;
+
+						&:hover {
+							color: white;
+							background-color: #5CC993;
+							border-color: #5CC993;
 						}
 					}
 				}
-				.login-button.new-mr-button {
-					margin: 30px 0 50px 0;
-				}
 
-				.tenant-home-button, .trady-home-button {
-					.btn {
-						font-size: 17px;
-						height: 40px;
+				.home-action-content .action-content {
+					margin: 0 10%;
+					width: 80%;
+
+					.submit-new-mr {
+						.type-service {
+							margin: 15px 0;
+							select {
+								font-size: 19px;
+								padding: 0 15px;
+							}
+							span {
+								top: 26px;
+							}
+						}
+						.input-address {
+							margin: 10px 0 30px 0;
+							textarea {
+								font-size: 19px;
+							}
+						}
+					}
+					.login-button.new-mr-button {
+						margin: 30px 0 50px 0;
+					}
+
+					.tenant-home-button, .trady-home-button {
+						.btn {
+							font-size: 17px;
+							height: 40px;
+						}
 					}
 				}
 			}
@@ -736,67 +738,75 @@ $color-red: #e34f4f;
 
 	@media (max-width: 500px) {
 		.background-image {
-			height: 850px;
+			height: 1000px;
 		}
-		.home-content .header .home-action {
-			width: 90%;
-
-			.home-action-title button {
-				font-size: 0.8em;
-				height: 30px;
-				padding: 0 5px;
+		.home-content .header {
+			.home-title {
+				font-size: 1.8em;
 			}
+			.home-action {
+				width: 90%;
 
-			.home-action-content .action-content {
-				margin: 0 10%;
-				width: 80%;
+				.choose-role-title {
+					font-size: 1.6em;
+				}
 
-				.login-info {
-					margin-top: 40px;
-					.login-input {
-						margin: 30px 0;
-						padding: 0 10px;
-						border: 2px solid white;
-						border-radius: 4px;
-						font-size: 13px;
-						@include flexbox;
-					}
-					span {
-						@include flexbox;
-						width: 60px;
-						color: white;
-						font-weight: 600;
-						@include justify-content(end);
-						@include justify-content(flex-end);
-						@include align-items(center);
-					}
-					input {
-						@include flex(1);
-						margin-top: auto;
-						color: white;
-						background: transparent;
-						border: none;
-						min-width: 0px;
-						&:-webkit-autofill {
-							-webkit-animation-name: autofill;
-							-webkit-animation-fill-mode: both;
+				.home-action-title button {
+					font-size: 1.2em;
+					height: 45px;
+				}
+
+				.home-action-content .action-content {
+					margin: 0 10%;
+					width: 80%;
+
+					.login-info {
+						margin-top: 40px;
+						.login-input {
+							margin: 30px 0;
+							padding: 0 10px;
+							border: 2px solid white;
+							border-radius: 4px;
+							font-size: 13px;
+							@include flexbox;
+						}
+						span {
+							@include flexbox;
+							width: 60px;
+							color: white;
+							font-weight: 600;
+							@include justify-content(end);
+							@include justify-content(flex-end);
+							@include align-items(center);
+						}
+						input {
+							@include flex(1);
+							margin-top: auto;
+							color: white;
+							background: transparent;
+							border: none;
+							min-width: 0px;
+							&:-webkit-autofill {
+								-webkit-animation-name: autofill;
+								-webkit-animation-fill-mode: both;
+							}
 						}
 					}
-				}
 
-				.submit-new-mr {
-					.type-service select {
-						font-size: 17px;
+					.submit-new-mr {
+						.type-service select {
+							font-size: 17px;
+						}
+						.input-address textarea {
+							font-size: 17px;
+						}
 					}
-					.input-address textarea {
-						font-size: 17px;
-					}
-				}
 
-				.tenant-home-button, .trady-home-button {
-					.btn {
-						font-size: 14px;
-						height: 40px;
+					.tenant-home-button, .trady-home-button {
+						.btn {
+							font-size: 14px;
+							height: 40px;
+						}
 					}
 				}
 			}
@@ -832,25 +842,35 @@ $color-red: #e34f4f;
 	}
 
 	@media (max-width: 380px) {
-		.home-content .header .home-action {
-
-			.home-action-title button {
-				font-size: 0.6em;
+		.home-content .header {
+			.home-title {
+				font-size: 1.4em;
 			}
+			.home-action {
 
-			.home-action-content .action-content {
-				.submit-new-mr {
-					.type-service select {
-						font-size: 12.5px;
-					}
-					.input-address textarea {
-						font-size: 12.5px;
-					}
+				.home-action-title button {
+					font-size: 1.1em;
 				}
 
-				.tenant-home-button, .trady-home-button {
-					.btn {
-						font-size: 12px;
+
+				.choose-role-title {
+					font-size: 1.3em;
+				}
+
+				.home-action-content .action-content {
+					.submit-new-mr {
+						.type-service select {
+							font-size: 12.5px;
+						}
+						.input-address textarea {
+							font-size: 12.5px;
+						}
+					}
+
+					.tenant-home-button, .trady-home-button {
+						.btn {
+							font-size: 12px;
+						}
 					}
 				}
 			}
