@@ -64,28 +64,45 @@ var QuoteField = React.createClass({
   },
 
   removeField() {
+    const {params: {changeFee}, x} = this.props;
+    const {pricing_type} = this.state;
+    // Reset value to 0 when remove the quote item
+    const defaultValue = pricing_type !== 'Range' ? 0 : {min: 0, max: 0};
+
+    changeFee(defaultValue, pricing_type, this.props.x);
     this.setState({remove: true});
   },
 
   onPricing(event) {
-    var pricing_type = event.target.value;
+    const {params: {changeFee}, x} = this.props;
+    const {pricing_type} = this.state;
+    // Reset value to 0 when change to other price type
+    const defaultValue = pricing_type !== 'Range' ? 0 : {min: 0, max: 0};
+    changeFee(defaultValue, pricing_type, x);
+
+    var new_pricing_type = event.target.value;
     const update = {
-      pricing_type,
-      hours_input: pricing_type === 'Hourly',
+      pricing_type: new_pricing_type,
+      hours_input: new_pricing_type === 'Hourly',
     }
-    if (pricing_type === 'Range') {
-      update.amount = 0;
-    }
-    else {
-      update.min_price = 0;
-      update.max_price = 0;
-    }
+    update.min_price = 0;
+    update.max_price = 0;
+    update.amount = 0;
+
     this.setState(update);
   },
 
   removeError: function({ target: { id, value } }) {
     const field = id.match(/\d+_(\w+)$/);
     if (!field) return;
+    const { pricing_type } = this.state;
+    const { params: { changeFee }, x } = this.props;
+
+    let valueFee = pricing_type !== 'Range' ? value : {
+      min: this.min_price.value,
+      max: this.max_price.value
+    }
+    changeFee(valueFee, pricing_type, x);
 
     this.setState({
       [`${field[1]}_error`]: '',
@@ -121,7 +138,7 @@ var QuoteField = React.createClass({
               ref={value => this.item_description = value}
               id={'quote_quote_items_attributes_' + x + '_item_description'}
               name={'quote[quote_items_attributes][' + x + '][item_description]'}
-              onChange={removeErrorFunc}
+              onChange={() => removeErrorFunc()}
             />
             {renderErrorFunc(currentState['item_description_error'])}
           </div>
@@ -159,6 +176,7 @@ var QuoteField = React.createClass({
                 className={"text-center price" + (currentState['min_price_error'] ? ' has-error' : '')}
                 id={'quote_quote_items_attributes_' + x + '_min_price'}
                 name={'quote[quote_items_attributes][' + x + '][min_price]'}
+                isMin={true}
                 onChange={removeErrorFunc}
                 style={!needToShowTo ? {display: 'none'} : {}}
               />
@@ -224,6 +242,12 @@ var QuoteFields = React.createClass({
   getInitialState : function() {
     return {
       errors: {},
+      cost: {
+        ['Fixed Cost']: [],
+        Hourly: [],
+        Range: [],
+      },
+      maxCost: 500,
     }
   },
 
@@ -262,6 +286,80 @@ var QuoteFields = React.createClass({
     return false;
   },
 
+  changeFee(value, type, index) {
+    const {cost} = this.state;
+    if (type === 'Range') {
+      if (!/^\d+$/.test(value.min) || !/^\d+$/.test(value.max)) return;
+    }
+    else {
+      if (!/^\d+$/.test(value)) return;
+    }
+    if (cost[type]) {
+      cost[type][index] = typeof value !== 'object'
+                        ? parseFloat(value)
+                        : {min: parseFloat(value.min), max: parseFloat(value.max)};
+    }
+    this.setState({ cost });
+  },
+
+  renderServiceFee() {
+    const {cost: {['Fixed Cost']: Fixed, Hourly, Range}, maxCost} = this.state;
+    const fixedCost  = Fixed .reduce((total, cost) => total + cost || 0, 0);
+    const hourlyCost = Hourly.reduce((total, cost) => total + cost || 0, 0);
+    const rangeCost  = Range .reduce((total, cost) => ({
+      min: total.min + (cost && cost.min || 0),
+      max: total.max + (cost && cost.max || 0),
+    }), {min: 0, max: 0});
+
+    const greater    = fixedCost > maxCost || hourlyCost > maxCost;
+    const feePercent = greater ? 0.10 : 0.15;
+
+    return (
+      <div className="service-fee-group">
+        <div className="service-fee text-center">
+          <div className="service-fee-title">
+            Service fee estimate if
+            {greater ? ' greater than ' : ' less than or equal to '}
+            ${maxCost.toFixed(2)}
+          </div>
+          <div className="service-fee-item">
+            <div className="fixed-fee">
+              Fixed Fee: ${(fixedCost*feePercent).toFixed(2)}
+            </div>
+            <div className="hourly-fee">
+              Hourly Fee: ${(hourlyCost*feePercent).toFixed(2)}
+            </div>
+            <div className="range-fee">
+              Range Fee: ${(rangeCost.min*feePercent).toFixed(2)}
+              -
+              ${(rangeCost.max*feePercent).toFixed(2)}
+            </div>
+          </div>
+        </div>
+        { !greater && rangeCost.max > maxCost &&
+          <div className="service-fee text-center">
+            <div className="service-fee-title">
+              Service fee estimate if greater than ${maxCost.toFixed(2)}
+            </div>
+            <div className="service-fee-item">
+              <div className="fixed-fee">
+                Fixed Fee: ${(fixedCost*0.10).toFixed(2)}
+              </div>
+              <div className="hourly-fee">
+                Hourly Fee: ${(hourlyCost*0.10).toFixed(2)}
+              </div>
+              <div className="range-fee">
+              Range Fee: ${(rangeCost.min*0.10).toFixed(2)}
+              -
+              ${(rangeCost.max*0.10).toFixed(2)}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    )
+  },
+
   render: function() {
     const {trady_company, quote} = this.props;
     return (
@@ -287,6 +385,7 @@ var QuoteFields = React.createClass({
         </div>
         <FieldList
           existingContent={this.props.quote_items}
+          params={{changeFee: this.changeFee}}
           SampleField={QuoteField}
           errors={this.state.errors}
           flag="quote"
@@ -325,6 +424,7 @@ var QuoteFields = React.createClass({
             </label>
           </div>
         </div>
+        {this.renderServiceFee()}
         <hr />
         <div className="qf-button">
           <button

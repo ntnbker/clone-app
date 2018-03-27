@@ -149,8 +149,6 @@ form#new_quote {
     }
   }
 
-
-
   .qf-button {
     @include flexbox;
     margin-top: 20px;
@@ -234,6 +232,20 @@ form#new_quote {
 		}
 	}
 
+  .service-fee-group {
+    @include flexbox;
+
+    .service-fee {
+      @include flex(1);
+      margin: 5px;
+
+      .service-fee-title {
+        font-size: 15px;
+        font-weight: bold;
+      }
+    }
+  }
+
 	/* For Desktop */
 	@media (min-width: 700px) {
 		width: 50%;
@@ -260,6 +272,9 @@ form#new_quote {
           background-color: transparent;
         }
       }
+    }
+    .service-fee-group {
+      @include flex-direction(column);
     }
 	}
 }
