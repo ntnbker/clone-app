@@ -814,7 +814,7 @@ var InvoiceField = React.createClass({
               <p> Service Fee: </p>
               <div className="input-dolar">
                 <span className="dolar">$</span>
-                <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+                <input type="text" readOnly="readonly" placeholder="Service Fee" value={(service_fee - 0).toFixed(2)} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
               </div>
             </div>
           }
@@ -832,7 +832,7 @@ var InvoiceField = React.createClass({
               <p> Agency Receives: </p>
               <div className="input-dolar">
                 <span className="dolar">$</span>
-                <input type="text" readOnly="readonly" placeholder="Agency Receives" value={agency_fee.toFixed(2)} />
+                <input type="text" readOnly="readonly" placeholder="Agency Receives" value={(agency_fee - 0).toFixed(2)} />
               </div>
             </div>
           }
