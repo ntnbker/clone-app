@@ -57,6 +57,23 @@ $color-text: #83878C;
 		// font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
+  .alert {
+    input {
+      border: none;
+      background: none;
+    }
+    &.alert-message {
+      input {
+        color: #31708f;
+      }
+    }
+    &.alert-success {
+      input {
+        color: #3c763d;
+      }
+    }
+  }
+
   .invoice-button {
     @include flexbox;
     margin-bottom: 20px;
