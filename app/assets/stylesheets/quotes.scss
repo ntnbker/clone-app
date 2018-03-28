@@ -79,6 +79,7 @@ form#new_quote {
     }
   }
 
+
 	.error {
     margin-top: 10px;
     color: red;
@@ -97,10 +98,17 @@ form#new_quote {
 		}
 
 		.button-remove {
-	    margin-top: 15px;
-	    font-size: 12px;
-	    height: 20px;
+      position: absolute;
+      top: -13px;
+      right: -12px;
+      padding: 0;
+      width: 23px;
+      border-radius: 23px;
+      line-height: 20px;
+      font-size: 13px;
+      height: 24px;
 		}
+
 	}
 
 	.fieldlist {
@@ -243,6 +251,10 @@ form#new_quote {
         font-size: 15px;
         font-weight: bold;
       }
+    }
+    .service-fee-split {
+      border-left: 2px solid;
+      border-bottom: 2px solid;
     }
   }
 

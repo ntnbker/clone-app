@@ -225,15 +225,13 @@ var QuoteField = React.createClass({
             {needToShowTo && renderErrorFunc(currentState['max_price_error'])}
           </div>
         </fieldset>
-        <div className="text-center">
           <button
             type="button"
-            className="button-remove button-primary red"
+            className="button-remove button-primary"
             onClick={this.removeField}
           >
-            Remove
+            X
           </button>
-        </div>
       </div>
   )}
 });
@@ -338,6 +336,9 @@ var QuoteFields = React.createClass({
             </div>
           </div>
         </div>
+        { !greater && rangeCost.max > maxCost &&
+          <div className="service-fee-split"></div>
+        }
         { !greater && rangeCost.max > maxCost &&
           <div className="service-fee text-center">
             <div className="service-fee-title">
