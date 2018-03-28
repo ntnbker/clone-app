@@ -315,7 +315,7 @@ var QuoteFields = React.createClass({
     const feePercent = greater ? 0.10 : 0.15;
 
     return (
-      <div className="service-fee-group">
+      <div className="service-fee-group alert alert-danger">
         <div className="service-fee text-center">
           <div className="service-fee-title">
             Summary of app service fee,
