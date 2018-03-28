@@ -1,4 +1,7 @@
-const SERVICE_FEE = 0.15;
+const OVER_SERVICE_FEE = 0.10;
+const UNDER_SERVICE_FEE = 0.15;
+const ANGECY_SERVICE_FEE = 0.05;
+const OVER_AMOUNT = 500;
 
 var StepProgress = React.createClass({
   matchClass(nth, step) {
@@ -592,13 +595,17 @@ var InvoiceField = React.createClass({
   getInitialState : function() {
     const invoice = this.props.content;
     var invoice_total = (invoice && invoice.amount) ? invoice.amount : 0;
-    var service_fee = (invoice && invoice.amount) ? (invoice.amount * SERVICE_FEE) : 0;
-    var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
-    var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
+    var service_fee = invoice_total > OVER_AMOUNT
+                        ? invoice_total * OVER_SERVICE_FEE
+                        : invoice_total * UNDER_SERVICE_FEE;
+
+    var items_total = invoice_total/1.1;
+    var tax_total = invoice_total - invoice_total/1.1;
     const tax = (invoice && invoice.tax != null) ? invoice.tax : true;
     return {
       invoice_total,
       service_fee: service_fee || 0,
+      agency_fee: invoice_total * ANGECY_SERVICE_FEE,
       tax,
       items_total : tax ? items_total : invoice_total,
       tax_total: tax ? tax_total : 0,
@@ -661,11 +668,15 @@ var InvoiceField = React.createClass({
 
   calcInvoiceTotal(price) {
     const invoice_total = this.state.invoice_total + price;
+    const SERVICE_FEE = invoice_total > OVER_AMOUNT
+                        ? OVER_SERVICE_FEE
+                        : UNDER_SERVICE_FEE;
     this.setState({
       items_total: this.state.tax ? invoice_total/1.1 : invoice_total,
       invoice_total: invoice_total,
       tax_total: this.state.tax ? invoice_total - invoice_total/(1.1) : 0,
       service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0,
+      agency_fee: (invoice_total * ANGECY_SERVICE_FEE).toFixed(2) || 0,
     });
   },
   onTax(isTax) {
@@ -679,7 +690,7 @@ var InvoiceField = React.createClass({
   render: function() {
     var { content, x, params: { invoiceInfo = {}, trady } } = this.props;
     var {
-      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee
+      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee, agency_fee
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
@@ -803,7 +814,34 @@ var InvoiceField = React.createClass({
               <p> Service Fee: </p>
               <div className="input-dolar">
                 <span className="dolar">$</span>
-                <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+                <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+              </div>
+            </div>
+          }
+          { trady && trady.jfmo_participant &&
+            <div>
+              <p> You Receive: </p>
+              <div className="input-dolar">
+                <span className="dolar">$</span>
+                <input type="text" readOnly="readonly" placeholder="You Receive" value={(invoice_total - service_fee).toFixed(2)} />
+              </div>
+            </div>
+          }
+          { trady && trady.jfmo_participant &&
+            <div>
+              <p> Agency Receives: </p>
+              <div className="input-dolar">
+                <span className="dolar">$</span>
+                <input type="text" readOnly="readonly" placeholder="Agency Receives" value={agency_fee.toFixed(2)} />
+              </div>
+            </div>
+          }
+          { trady && trady.jfmo_participant &&
+            <div>
+              <p> Maintenance App Receives: </p>
+              <div className="input-dolar">
+                <span className="dolar">$</span>
+                <input type="text" readOnly="readonly" placeholder="Maintenance App Receives" value={(service_fee - agency_fee).toFixed(2)} />
               </div>
             </div>
           }
