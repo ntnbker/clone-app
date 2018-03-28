@@ -318,7 +318,9 @@ var QuoteFields = React.createClass({
       <div className="service-fee-group">
         <div className="service-fee text-center">
           <div className="service-fee-title">
-            Service fee estimate if
+            Maintenance app
+            {greater ? ' 10% ' : ' 15% '}
+            service fee if
             {greater ? ' greater than ' : ' less than or equal to '}
             ${maxCost.toFixed(2)}
           </div>
@@ -327,7 +329,7 @@ var QuoteFields = React.createClass({
               Fixed Fee: ${(fixedCost*feePercent).toFixed(2)}
             </div>
             <div className="hourly-fee">
-              Hourly Fee: ${(hourlyCost*feePercent).toFixed(2)}
+              Hourly Fee: ${(hourlyCost*feePercent).toFixed(2)}/hr
             </div>
             <div className="range-fee">
               Range Fee: ${(rangeCost.min*feePercent).toFixed(2)}
@@ -339,14 +341,14 @@ var QuoteFields = React.createClass({
         { !greater && rangeCost.max > maxCost &&
           <div className="service-fee text-center">
             <div className="service-fee-title">
-              Service fee estimate if greater than ${maxCost.toFixed(2)}
+              Maintenance app 10% service fee if greater than ${maxCost.toFixed(2)}
             </div>
             <div className="service-fee-item">
               <div className="fixed-fee">
                 Fixed Fee: ${(fixedCost*0.10).toFixed(2)}
               </div>
               <div className="hourly-fee">
-                Hourly Fee: ${(hourlyCost*0.10).toFixed(2)}
+                Hourly Fee: ${(hourlyCost*0.10).toFixed(2)}/hr
               </div>
               <div className="range-fee">
               Range Fee: ${(rangeCost.min*0.10).toFixed(2)}
