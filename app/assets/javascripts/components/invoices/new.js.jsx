@@ -872,7 +872,7 @@ var InvoiceField = React.createClass({
             </div>
           }
           { trady && trady.jfmo_participant &&
-            <div className="alert alert-danger">
+            <div className="alert alert-message">
               <p> Agency Receives: </p>
               <div className="input-dolar">
                 <span className="dolar">$</span>
@@ -881,7 +881,7 @@ var InvoiceField = React.createClass({
             </div>
           }
           { trady && trady.jfmo_participant &&
-            <div className="alert alert-danger">
+            <div className="alert alert-message">
               <p> Maintenance App Receives: </p>
               <div className="input-dolar">
                 <span className="dolar">$</span>
