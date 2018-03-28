@@ -318,10 +318,10 @@ var QuoteFields = React.createClass({
       <div className="service-fee-group">
         <div className="service-fee text-center">
           <div className="service-fee-title">
-            Maintenance app
+            Summary of app service fee,
             {greater ? ' 10% ' : ' 15% '}
-            service fee if
-            {greater ? ' greater than ' : ' less than or equal to '}
+            of invoice total if
+            {greater ? ' greater than ' : ' less than '}
             ${maxCost.toFixed(2)}
           </div>
           <div className="service-fee-item">
@@ -341,7 +341,7 @@ var QuoteFields = React.createClass({
         { !greater && rangeCost.max > maxCost &&
           <div className="service-fee text-center">
             <div className="service-fee-title">
-              Maintenance app 10% service fee if greater than ${maxCost.toFixed(2)}
+              Summary of app service fee, 10% of invoice total if greater than ${maxCost.toFixed(2)}
             </div>
             <div className="service-fee-item">
               <div className="fixed-fee">
