@@ -754,6 +754,14 @@ var QuotesInInvoice = React.createClass({
 				<div className="list-quote">
 				{
 					quotes.map(function(quote, index) {
+						let amount = quote.amount;
+						
+						quote && quote.quote_items && quote.quote_items.forEach(function(item) {
+							if (item.pricing_type === 'Range') {
+								amount += item.min_price;
+							}
+						});
+						
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
@@ -774,7 +782,7 @@ var QuotesInInvoice = React.createClass({
 									</div>
 								</div>
 								<div className="actions five columns">
-									<p className="price">Amount: {quote.amount}AUD</p>
+									<p className="price">Amount: {amount}AUD</p>
 								</div>
 								<div className="actions-quote">
 									<button
