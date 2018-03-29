@@ -604,19 +604,23 @@ var QuoteRequests = React.createClass({
 
 		const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
+		// Check if quote request was created by a real trady
+		const filteredQuoteRequest = quote_requests.filter(({trady}) => {
+			return !trady.jfmo_participant || !!trady.customer_profile
+		})
+
 		return (
 			<div className="quotes m-t-lg" id="quote_requests">
-				<p>
-					<span className="index">{quote_requests.length}</span>Quote Requests
-				</p>
+				{ !!filteredQuoteRequest.length &&
+					<p>
+						<span className="index">{filteredQuoteRequest.length}</span>Quote Requests
+					</p>
+				}
 				<div className="list-quote">
 				{
-					quote_requests.map(function(quote_request, index) {
+					filteredQuoteRequest.map(function(quote_request, index) {
 						const trady = quote_request.trady || {};
 
-						if (trady.jfmo_participant && !trady.customer_profile) {
-							return '';
-						}
 						const {maintenance_request_id, trady_id} = quote_request;
 						const quotes 				= quote_request.quotes || [];
 						const quoteAlready  = quotes.filter(quote => !quote.quote_items
@@ -755,13 +759,13 @@ var QuotesInInvoice = React.createClass({
 				{
 					quotes.map(function(quote, index) {
 						let amount = quote.amount;
-						
+
 						quote && quote.quote_items && quote.quote_items.forEach(function(item) {
 							if (item.pricing_type === 'Range') {
 								amount += item.min_price;
 							}
 						});
-						
+
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
