@@ -92041,9 +92041,9 @@ var QuoteFields = React.createClass({
     var cost = this.state.cost;
 
     if (type === 'Range') {
-      if (AMOUNT_REGEX.test(value.min) || AMOUNT_REGEX.test(value.max)) return;
+      if (!AMOUNT_REGEX.test(value.min) || !AMOUNT_REGEX.test(value.max)) return;
     } else {
-      if (AMOUNT_REGEX.test(value)) return;
+      if (!AMOUNT_REGEX.test(value)) return;
     }
     if (cost[type]) {
       cost[type][index] = typeof value !== 'object' ? parseFloat(value) : { min: parseFloat(value.min), max: parseFloat(value.max) };
