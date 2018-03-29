@@ -137,9 +137,11 @@ var Invoices = React.createClass({
 			<div className="quotes invoices m-t-xl" id="invoices">
 				<p>
 					<span className="index index-invoice">{invoices.length}</span>Invoice
-					<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
-										Remind Agent of Payment
-					</button>
+					{ current_role && current_role.role === 'Trady' && notPaid &&
+            <button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
+  										Remind Agent of Payment
+  					</button>
+          }
 				</p>
 				<div className="list-quote">
 				{

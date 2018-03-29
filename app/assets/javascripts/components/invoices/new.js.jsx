@@ -1,5 +1,3 @@
-const SERVICE_FEE = 0.15;
-
 var StepProgress = React.createClass({
   matchClass(nth, step) {
     if (nth < step)
@@ -252,7 +250,7 @@ var AdditionalInvoice = React.createClass({
   getInitialState : function() {
     var quote = this.props.content;
     var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
-    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    var hours_input = pricing_type !== 'Hourly' ? false : true;
     return {
       remove : false,
       pricing_type: pricing_type,
@@ -365,8 +363,8 @@ var InvoiceItemField = React.createClass({
   getInitialState : function() {
     var invoice_item = this.props.content;
     var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
-    var hours_input  = pricing_type == 'Fixed Cost'         ? false               : true;
-    var amount       = invoice_item                         ? invoice_item.amount : 0;
+    var hours_input  = pricing_type !== 'Hourly'         ? false               : true;
+    var amount       = invoice_item                         ? invoice_item.amount || invoice_item.min_price : 0;
     var numofhours   = (invoice_item && invoice_item.hours) ? invoice_item.hours  : 1;
 
     return {
@@ -404,7 +402,7 @@ var InvoiceItemField = React.createClass({
         if (!this.amount.value) {
           filterError['amount'] = amountError[0];
         }
-        else if (!/^\d+$/.test(this.amount.value) || this.amount.value === '0') {
+        else if (AMOUNT_REGEX.test(this.amount.value) || this.amount.value === '0') {
           filterError['amount'] = amountError.reverse()[0];
         }
       }
@@ -414,7 +412,7 @@ var InvoiceItemField = React.createClass({
         if (!this.hours.value) {
           filterError['hours'] = hoursError[0];
         }
-        else if (!/^\d+$/.test(this.hours.value) || this.hours.value === '0') {
+        else if (AMOUNT_REGEX.test(this.hours.value) || this.hours.value === '0') {
           filterError['hours'] = hoursError.reverse()[0];
         }
       }
@@ -424,7 +422,10 @@ var InvoiceItemField = React.createClass({
 
   removeField(x) {
     const { totalamount = 0 } = this.state;
+    const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${x}][pricing_type]`}'`).val();
+
     this.props.params.updatePrice(-totalamount);
+    this.props.params.updateHourly(true, totalamount, selectedValue === 'Hourly');
     this.props.removeField(x, this.props.content);
 
     this.setState({
@@ -435,8 +436,10 @@ var InvoiceItemField = React.createClass({
   },
 
   updatePrice(amount) {
+    const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${this.props.x}][pricing_type]`}'`).val();
+
     if (!isNaN(amount)) {
-      this.props.params.updatePrice(amount - this.state.totalamount);
+      this.props.params.updatePrice(amount - this.state.totalamount, selectedValue === 'Hourly');
     }
   },
 
@@ -456,6 +459,8 @@ var InvoiceItemField = React.createClass({
         self.onHours({target: {value: 1}});
       });
     }
+
+    self.props.params.updateHourly(false, self.state.totalamount, pricing_type === 'Hourly');
   },
 
   onAmount(event) {
@@ -504,6 +509,7 @@ var InvoiceItemField = React.createClass({
     var {
       pricing_type, hours_input, remove, amount, numofhours
     } = this.state;
+
     if (invoice_item) {
       x = invoice_item.id || x;
       invoice_id = invoice_item.invoice_id || invoice_id;
@@ -592,14 +598,33 @@ var InvoiceField = React.createClass({
   getInitialState : function() {
     const invoice = this.props.content;
     var invoice_total = (invoice && invoice.amount) ? invoice.amount : 0;
-    var service_fee = (invoice && invoice.amount) ? (invoice.amount * SERVICE_FEE) : 0;
-    var items_total = (invoice && invoice.amount) ? invoice_total/1.1 : 0;
-    var tax_total = (invoice && invoice.amount) ? invoice_total - invoice_total/1.1 : 0;
+    var hourly_total = 0;
+
+    invoice && invoice.invoice_items && invoice.invoice_items.forEach(function(item) {
+      if (item.pricing_type === 'Range') {
+        invoice_total += item.min_price;
+      }
+
+      if (item.pricing_type === 'Hourly') {
+        hourly_total+= item.amount;
+      }
+    });
+
+    var service_fee = invoice_total > OVER_AMOUNT
+                    ? invoice_total * OVER_SERVICE_FEE
+                    : invoice_total * UNDER_SERVICE_FEE;
+
+    var items_total = invoice_total/1.1;
+    var tax_total = invoice_total - items_total;
+
     const tax = (invoice && invoice.tax != null) ? invoice.tax : true;
+
     return {
       invoice_total,
       service_fee: service_fee || 0,
+      agency_fee: invoice_total * AGENCY_SERVICE_FEE,
       tax,
+      hourly_total,
       items_total : tax ? items_total : invoice_total,
       tax_total: tax ? tax_total : 0,
       remove : false,
@@ -659,15 +684,33 @@ var InvoiceField = React.createClass({
     this.props.removeField(x);
   },
 
-  calcInvoiceTotal(price) {
+  calcInvoiceTotal(price, isHourly) {
     const invoice_total = this.state.invoice_total + price;
+    const SERVICE_FEE = invoice_total > OVER_AMOUNT
+                        ? OVER_SERVICE_FEE
+                        : UNDER_SERVICE_FEE;
+    const { hourly_total } = this.state;
+
     this.setState({
       items_total: this.state.tax ? invoice_total/1.1 : invoice_total,
       invoice_total: invoice_total,
       tax_total: this.state.tax ? invoice_total - invoice_total/(1.1) : 0,
       service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0,
+      agency_fee: (invoice_total * AGENCY_SERVICE_FEE).toFixed(2) || 0,
+      hourly_total: isHourly ? hourly_total + price : hourly_total,
     });
   },
+
+  calcHourlyTotal(isRemove, price, isHourly) {
+    let { hourly_total } = this.state;
+    if (isRemove) {
+      hourly_total = isHourly ? hourly_total - price : hourly_total;
+    } else {
+      hourly_total = isHourly ? hourly_total + price : hourly_total - price;
+    }
+    this.setState({ hourly_total });
+  },
+
   onTax(isTax) {
     const invoice_total = this.state.invoice_total;
     this.setState({
@@ -679,7 +722,7 @@ var InvoiceField = React.createClass({
   render: function() {
     var { content, x, params: { invoiceInfo = {}, trady } } = this.props;
     var {
-      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee
+      errorDate, errorReference, remove, errors, tax, invoice_total, tax_total, items_total, service_fee, hourly_total, agency_fee
     } = this.state;
 
     var invoice_items = content && content.invoice_items || null;
@@ -717,7 +760,7 @@ var InvoiceField = React.createClass({
       />
       <fieldset>
         <div>
-          <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, remove:remove}} flag="invoice" errors={errors} />
+          <FieldList existingContent={invoice_items} SampleField={InvoiceItemField} params={{x:x, updatePrice:this.calcInvoiceTotal, updateHourly: this.calcHourlyTotal, remove:remove}} flag="invoice" errors={errors} />
           <div className="text-center m-t-lg">
             <input
             type="text"
@@ -761,29 +804,7 @@ var InvoiceField = React.createClass({
             </div>
           </div>
         </div>
-        <hr />
         <div className="field">
-          <div>
-            <p> Items Total: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
-            </div>
-          </div>
-          <div>
-            <p> Tax Total: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
-            </div>
-          </div>
-          <div>
-            <p> Invoice Total: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
-            </div>
-        </div>
           <div>
             <p> Invoice Due On: </p>
             <div className="input-dolar">
@@ -798,12 +819,70 @@ var InvoiceField = React.createClass({
               />
             </div>
           </div>
+        </div>
+        <hr />
+        <div className="field">
+          <div className="alert">
+            <p> Items Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+            </div>
+          </div>
+          <div className="alert">
+            <p> Hourly Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={hourly_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][hourly_total]'} />
+            </div>
+          </div>
+          <div className="alert">
+            <p> Tax Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
+            </div>
+          </div>
+          <div className="alert">
+            <p> Invoice Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
+            </div>
+          </div>
           { trady && trady.jfmo_participant &&
-            <div>
+            <div className="alert">
               <p> Service Fee: </p>
               <div className="input-dolar">
                 <span className="dolar">$</span>
-                <input type="text" readOnly="readonly" placeholder="Service Fee" value={service_fee} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+                <input type="text" readOnly="readonly" placeholder="Service Fee" value={(service_fee - 0).toFixed(2)} name={'ledger[invoices_attributes][' + x + '][service_fee]'} />
+              </div>
+            </div>
+          }
+          { trady && trady.jfmo_participant &&
+            <div className="alert alert-success">
+              <p> You Receive: </p>
+              <div className="input-dolar">
+                <span className="dolar">$</span>
+                <input type="text" readOnly="readonly" placeholder="You Receive" value={(invoice_total - service_fee).toFixed(2)} />
+              </div>
+            </div>
+          }
+          { trady && trady.jfmo_participant &&
+            <div className="alert alert-message">
+              <p> Agency Receives: </p>
+              <div className="input-dolar">
+                <span className="dolar">$</span>
+                <input type="text" readOnly="readonly" placeholder="Agency Receives" value={(agency_fee - 0).toFixed(2)} />
+              </div>
+            </div>
+          }
+          { trady && trady.jfmo_participant &&
+            <div className="alert alert-message">
+              <p> Maintenance App Receives: </p>
+              <div className="input-dolar">
+                <span className="dolar">$</span>
+                <input type="text" readOnly="readonly" placeholder="Maintenance App Receives" value={(service_fee - agency_fee).toFixed(2)} />
               </div>
             </div>
           }

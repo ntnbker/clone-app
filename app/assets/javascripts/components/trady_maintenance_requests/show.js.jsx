@@ -899,6 +899,7 @@ var TradyMaintenanceRequest = React.createClass({
 					 			landlord={this.state.landlord}
 							 	invoices={this.state.invoices}
 								property={this.props.property}
+								role={this.props.current_role ? this.props.current_role.role : ''}
 							/>
 					);
 				}
@@ -911,6 +912,7 @@ var TradyMaintenanceRequest = React.createClass({
 								property={this.props.property}
 								trady={this.props.assigned_trady}
 							 	invoice_pdf_file={this.state.invoice_pdf_file}
+								role={this.props.current_user_role}
 							/>
 					);
 				}
@@ -1496,7 +1498,7 @@ var TradyMaintenanceRequest = React.createClass({
 					{
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
 							<div className="section show-waring">
-								We are sorry to inform you that the job has been awarded to another company. Thank you for your quote, we will contact you for other future jobs.
+								We are sorry to inform you that this job has been awarded to another company. We will contact you about future jobs, thank you for your time.
 							</div>
 					}
 					<div className="section">

@@ -79,6 +79,7 @@ form#new_quote {
     }
   }
 
+
 	.error {
     margin-top: 10px;
     color: red;
@@ -97,10 +98,17 @@ form#new_quote {
 		}
 
 		.button-remove {
-	    margin-top: 15px;
-	    font-size: 12px;
-	    height: 20px;
+      position: absolute;
+      top: -13px;
+      right: -12px;
+      padding: 0;
+      width: 23px;
+      border-radius: 23px;
+      line-height: 20px;
+      font-size: 13px;
+      height: 24px;
 		}
+
 	}
 
 	.fieldlist {
@@ -148,8 +156,6 @@ form#new_quote {
       border-color: $color-green-submit;
     }
   }
-
-
 
   .qf-button {
     @include flexbox;
@@ -234,6 +240,24 @@ form#new_quote {
 		}
 	}
 
+  .service-fee-group {
+    @include flexbox;
+
+    .service-fee {
+      @include flex(1);
+      margin: 5px;
+
+      .service-fee-title {
+        font-size: 15px;
+        font-weight: bold;
+      }
+    }
+    .service-fee-split {
+      border-left: 2px solid;
+      border-bottom: 2px solid;
+    }
+  }
+
 	/* For Desktop */
 	@media (min-width: 700px) {
 		width: 50%;
@@ -260,6 +284,9 @@ form#new_quote {
           background-color: transparent;
         }
       }
+    }
+    .service-fee-group {
+      @include flex-direction(column);
     }
 	}
 }

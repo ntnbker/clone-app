@@ -3,13 +3,14 @@ var AddInvoicePDF = React.createClass({
 		const {
 			trady_company_id, maintenance_request_id, trady_id, pdf_file, edit_trady_company_path
 		} = this.props;
-
+		const total_invoice_amount = (pdf_file || {}).total_invoice_amount || 0;
 		return {
 			file: {},
-			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
+			total_invoice_amount,
 			due_date: (pdf_file || {}).due_date || this.nowDate(),
 			backPath: edit_trady_company_path,
       service_fee: (pdf_file || {}).service_fee || 0,
+      agency_fee: total_invoice_amount * AGENCY_SERVICE_FEE
 		};
 	},
 
@@ -111,12 +112,25 @@ var AddInvoicePDF = React.createClass({
       return this.setState({
         errorAmount: '',
         total_invoice_amount: value,
-        service_fee: 0
+        service_fee: 0,
+        agency_fee: 0,
       })
     }
+    if (!AMOUNT_REGEX.test(value)) {
+      return this.setState({
+        errorAmount: '',
+        total_invoice_amount: value,
+      })
+    }
+
+    const SERVICE_FEE = value > OVER_AMOUNT
+                        ? OVER_SERVICE_FEE
+                        : UNDER_SERVICE_FEE;
+
     this.setState({
       errorAmount: '',
       service_fee: (value * SERVICE_FEE).toFixed(2) || 0,
+      agency_fee: (value * AGENCY_SERVICE_FEE).toFixed(2) || 0,
       total_invoice_amount: value,
     })
   },
@@ -169,8 +183,10 @@ var AddInvoicePDF = React.createClass({
 	},
 
 	render: function () {
-		const { maintenance_request_id, trady_id, quote_id, trady_company, trady_company_id } = this.props;
-		const { errorFile, errorAmount, errorDate, backPath } = this.state;
+		const { maintenance_request_id, trady_id, quote_id, trady_company, trady_company_id, trady } = this.props;
+		const {
+			errorFile, errorAmount, errorDate, backPath, total_invoice_amount, service_fee, agency_fee
+		} = this.state;
 
 		return (
 			<div className="container invoice-form">
@@ -204,16 +220,19 @@ var AddInvoicePDF = React.createClass({
 								</div>
 						}
     				<p id="errorbox" className="error">{errorFile ? errorFile[0] : ''}</p>
-						<input
-              type="text"
-              className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
-              placeholder="Total Invoice Amount"
-              value={this.state.total_invoice_amount}
-              ref={amount => this.amount = amount}
-              onChange={this.changeTotalAmount}
-              id="uploaded_invoice_maintenance_request_id"
-              name="uploaded_invoice[total_invoice_amount]"
-            />
+    				<div className="text-center">
+	            <p> Total Invoice Amount: </p>
+							<input
+	              type="text"
+	              className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
+	              placeholder="Total Invoice Amount"
+	              value={total_invoice_amount}
+	              ref={amount => this.amount = amount}
+	              onChange={this.changeTotalAmount}
+	              id="uploaded_invoice_maintenance_request_id"
+	              name="uploaded_invoice[total_invoice_amount]"
+	            />
+            </div>
     				<p id="errorbox" className="error">{errorAmount ? errorAmount[0] : ''}</p>
 	          <div className="text-center">
 	            <p> Invoice Due On: </p>
@@ -227,17 +246,43 @@ var AddInvoicePDF = React.createClass({
 	            />
 	          </div>
 		        <p id="errorbox" className="error">{errorDate || ''}</p>
-            <div className="text-center">
-              <p> Service Fee: </p>
-              <input
-                type="text"
-                readOnly="readonly"
-                value={this.state.service_fee}
-                ref={e => this.date = e}
-                name="uploaded_invoice[service_fee]"
-                className="text-center"
-              />
-            </div>
+	          { trady && trady.jfmo_participant &&
+	            <div className="text-center">
+	              <p> Service Fee ($): </p>
+	              <input
+	                type="text"
+	                readOnly="readonly"
+	                value={this.state.service_fee}
+	                ref={e => this.date = e}
+	                name="uploaded_invoice[service_fee]"
+	                className="text-center"
+	              />
+	            </div>
+	          }
+	          { trady && trady.jfmo_participant &&
+	            <div className="service-fee">
+	              <div className="alert alert-success">
+	              	<span className="service-fee-title text-center">You Receive:</span>
+	              	<span className="text-center">${(total_invoice_amount - service_fee).toFixed(2)}</span>
+	              </div>
+	            </div>
+	          }
+	          { trady && trady.jfmo_participant &&
+	            <div className="service-fee">
+	              <div className="alert alert-message">
+	              	<span className="service-fee-title text-center">Agency Receives:</span>
+	              	<span className="text-center">${(agency_fee - 0).toFixed(2)}</span>
+	              </div>
+	            </div>
+	          }
+	          { trady && trady.jfmo_participant &&
+	            <div className="service-fee">
+	              <div className="alert alert-message">
+	              	<span className="service-fee-title text-center">Maintenance App Receives:</span>
+	              	<span className="text-center">${(service_fee - agency_fee).toFixed(2)}</span>
+	              </div>
+	            </div>
+	          }
 						<input
 							type="hidden"
 							defaultValue={maintenance_request_id}

@@ -559,10 +559,15 @@ var Quotes = React.createClass({
 
 var QuoteRequests = React.createClass({
 	getInitialState: function() {
-
+		const role = self.current_user_role && self.current_user_role.role
+							|| self.current_role && self.current_role.role;
+		const quote_requests = role === 'Landlord'
+												? this.filterQuoteRequestForLandlord(this.props.quote_requests)
+												: this.filterQuoteRequest(this.props.quote_requests);
 		return {
-			quote_requests: this.props.quote_requests,
+			quote_requests,
 			pictures: [],
+			role,
 		};
 	},
 
@@ -571,10 +576,42 @@ var QuoteRequests = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		this.getPictureImage(nextProps.quote_requests);
+		const {role} = this.state;
+		const quote_requests = role === 'Landlord'
+												? this.filterQuoteRequestForLandlord(nextProps.quote_requests)
+												: this.filterQuoteRequest(nextProps.quote_requests);
+
+		this.getPictureImage(quote_requests);
 		this.setState({
-			quote_requests: nextProps.quote_requests,
+			quote_requests: quote_requests,
 		});
+	},
+
+	filterQuoteRequest(quote_requests) {
+		const filteredQuoteRequest = quote_requests.filter(({trady}) => {
+			return !trady.jfmo_participant || !!trady.customer_profile
+		})
+
+		return filteredQuoteRequest;
+	},
+
+	filterQuoteRequestForLandlord(quote_requests) {
+		const filtered = this.filterQuoteRequest(quote_requests);
+
+		const filteredQuotesForQuoteRequest = filtered.map((quote_request) => {
+			// filter quote inside quote_request
+			const quotes = quote_request.quotes.filter((quote) => {
+				return quote.delivery_status && quote.forwarded_to_landlord;
+			});
+			quote_request.quotes = quotes;
+
+			return quote_request;
+		})
+
+		// Filter quote_request have empty quotes
+		return filteredQuotesForQuoteRequest.filter((qr) => {
+			return qr.quotes.length;
+		})
 	},
 
 	getPictureImage(quote_requests) {
@@ -597,26 +634,25 @@ var QuoteRequests = React.createClass({
 	},
 
 	render: function() {
-		const {quote_requests, pictures} = this.state;
+		const {quote_requests, pictures, role} = this.state;
 		const self = this.props;
-		const role = self.current_user_role && self.current_user_role.role
-							|| self.current_role && self.current_role.role;
 
 		const isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
 
+		// Check if quote request was created by a real trady
+
 		return (
 			<div className="quotes m-t-lg" id="quote_requests">
-				<p>
-					<span className="index">{quote_requests.length}</span>Quote Requests
-				</p>
+				{ !!quote_requests.length &&
+					<p>
+						<span className="index">{quote_requests.length}</span>Quote Requests
+					</p>
+				}
 				<div className="list-quote">
 				{
 					quote_requests.map(function(quote_request, index) {
 						const trady = quote_request.trady || {};
 
-						if (trady.jfmo_participant && !trady.customer_profile) {
-							return '';
-						}
 						const {maintenance_request_id, trady_id} = quote_request;
 						const quotes 				= quote_request.quotes || [];
 						const quoteAlready  = quotes.filter(quote => !quote.quote_items
@@ -754,6 +790,14 @@ var QuotesInInvoice = React.createClass({
 				<div className="list-quote">
 				{
 					quotes.map(function(quote, index) {
+						let amount = quote.amount;
+
+						quote && quote.quote_items && quote.quote_items.forEach(function(item) {
+							if (item.pricing_type === 'Range') {
+								amount += item.min_price;
+							}
+						});
+
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
@@ -774,7 +818,7 @@ var QuotesInInvoice = React.createClass({
 									</div>
 								</div>
 								<div className="actions five columns">
-									<p className="price">Amount: {quote.amount}AUD</p>
+									<p className="price">Amount: {amount}AUD</p>
 								</div>
 								<div className="actions-quote">
 									<button
