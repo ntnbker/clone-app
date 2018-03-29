@@ -899,6 +899,7 @@ var TradyMaintenanceRequest = React.createClass({
 					 			landlord={this.state.landlord}
 							 	invoices={this.state.invoices}
 								property={this.props.property}
+								role={this.props.current_role ? this.props.current_role.role : ''}
 							/>
 					);
 				}
@@ -911,6 +912,7 @@ var TradyMaintenanceRequest = React.createClass({
 								property={this.props.property}
 								trady={this.props.assigned_trady}
 							 	invoice_pdf_file={this.state.invoice_pdf_file}
+								role={this.props.current_user_role}
 							/>
 					);
 				}

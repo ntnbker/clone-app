@@ -2669,6 +2669,7 @@ var MaintenanceRequest = React.createClass({
 						 	invoice={this.state.invoice}
 						 	invoices={this.state.invoices}
 							property={this.props.property}
+							role={this.props.current_user_role}
 						/>
 					);
 
@@ -2683,6 +2684,7 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							trady={this.props.assigned_trady}
 							invoice_pdf_file={this.state.invoice_pdf_file}
+							role={this.props.current_user_role}
 						/>
 					);
 

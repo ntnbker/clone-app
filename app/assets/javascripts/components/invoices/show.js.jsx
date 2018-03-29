@@ -1,6 +1,6 @@
 var DetailInvoice = React.createClass({
 	render: function() {
-		const {invoice, invoice: {trady}} = this.props;
+		const {invoice, invoice: {trady}, role} = this.props;
 		let subTotal = 0;
 		let gst = 0;
 		if(!!invoice) {
@@ -72,7 +72,7 @@ var DetailInvoice = React.createClass({
 						</td>
 					</tr>
 					{
-						trady && trady.jfmo_participant &&
+						role === 'Trady' && trady && trady.jfmo_participant &&
 						<tr>
 							<td colSpan="3" className="border-none"></td>
 							<td className="text-right font-bold border-none">
@@ -263,7 +263,7 @@ var ModalViewInvoice = React.createClass({
 									</div>
 									<div className="detail-quote">
 										<div className="detail-quote">
-											{!!invoice.invoice_items && <DetailInvoice invoice={invoice} />}
+											{!!invoice.invoice_items && <DetailInvoice role={self.role} invoice={invoice} />}
 										</div>
 									</div>
 									<p className="font-bold">

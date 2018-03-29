@@ -14,7 +14,7 @@ var ModalViewPDFInvoice = React.createClass({
 		const self = this.props;
 		const {invoice} = this.state;
 		const {pdf_url} = invoice;
-		const {trady} = this.props;
+		const {trady, role} = this.props;
 
 		const isPdf = /store\/\w+\.pdf/.test(pdf_url);
 		let total = 0;
@@ -72,9 +72,11 @@ var ModalViewPDFInvoice = React.createClass({
 					        <div className="text-center">
 					          Invoice Due On: {invoice.due_date}
 					        </div>
-					        <div className="text-center">
-					          Service Fee: {invoice.service_fee}
-					        </div>
+					        { role === 'Trady' && trady.jfmo_participant && trady.customer &&
+                    <div className="text-center">
+                      Service Fee: {invoice.service_fee}
+                    </div>
+                  }
 								</div>
 							</div>
 						</div>
@@ -237,6 +239,7 @@ var SubmitInvoicePDF = React.createClass({
 
 	render() {
 		const {pdf_url, pdf, edit_uploaded_invoice_path, pdf_path} = this.props;
+    const {trady, customer} = this.state;
 
 		const isPdf = /store\/\w+\.pdf/.test(pdf_url);
 
@@ -266,9 +269,11 @@ var SubmitInvoicePDF = React.createClass({
         <div className="text-center m-b-lg">
           Invoice Due On : {pdf.due_date}
         </div>
-			  <div className="text-center m-b-lg">
-			    Service Fee: {pdf.service_fee}
-			  </div>
+			  { trady.jfmo_participant && !!customer &&
+          <div className="text-center m-b-lg">
+            Service Fee: {pdf.service_fee}
+          </div>
+        }
 			  <div className="text-center m-b-lg qf-button">
 		      <button
 		      	type="button"
