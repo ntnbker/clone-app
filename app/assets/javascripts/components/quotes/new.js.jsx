@@ -364,7 +364,7 @@ var QuoteFields = React.createClass({
   },
 
   render: function() {
-    const {trady_company, quote} = this.props;
+    const {trady_company, quote, trady} = this.props;
     return (
       <form
         role="form"
@@ -427,7 +427,7 @@ var QuoteFields = React.createClass({
             </label>
           </div>
         </div>
-        {this.renderServiceFee()}
+        {trady.jfmo_participant && this.renderServiceFee()}
         <hr />
         <div className="qf-button">
           <button
