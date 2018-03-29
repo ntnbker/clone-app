@@ -287,10 +287,10 @@ var QuoteFields = React.createClass({
   changeFee(value, type, index) {
     const {cost} = this.state;
     if (type === 'Range') {
-      if (AMOUNT_REGEX.test(value.min) || AMOUNT_REGEX.test(value.max)) return;
+      if (!AMOUNT_REGEX.test(value.min) || !AMOUNT_REGEX.test(value.max)) return;
     }
     else {
-      if (AMOUNT_REGEX.test(value)) return;
+      if (!AMOUNT_REGEX.test(value)) return;
     }
     if (cost[type]) {
       cost[type][index] = typeof value !== 'object'
