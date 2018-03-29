@@ -71350,6 +71350,13 @@ var Payment = React.createClass({
     );
   }
 });
+// For calculate the service fee
+var OVER_SERVICE_FEE = 0.10;
+var UNDER_SERVICE_FEE = 0.15;
+var AGENCY_SERVICE_FEE = 0.05;
+var OVER_AMOUNT = 500;
+
+var AMOUNT_REGEX = /^\d+(\.\d+)?$/;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 AvatarImage = React.createClass({
@@ -72441,7 +72448,7 @@ var Invoices = React.createClass({
 					invoices.length
 				),
 				'Invoice',
-				React.createElement(
+				current_role && current_role.role === 'Trady' && notPaid && React.createElement(
 					'button',
 					{ type: 'button', className: 'btn btn-mark-as-paid', onClick: function (item) {
 							return self.props.paymentReminder({});
@@ -72617,8 +72624,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var SERVICE_FEE = 0.15;
 
 var StepProgress = React.createClass({
   displayName: "StepProgress",
@@ -73001,7 +73006,7 @@ var AdditionalInvoice = React.createClass({
   getInitialState: function () {
     var quote = this.props.content;
     var pricing_type = quote ? quote.pricing_type : 'Fixed Cost';
-    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
+    var hours_input = pricing_type !== 'Hourly' ? false : true;
     return {
       remove: false,
       pricing_type: pricing_type,
@@ -73134,8 +73139,8 @@ var InvoiceItemField = React.createClass({
   getInitialState: function () {
     var invoice_item = this.props.content;
     var pricing_type = invoice_item ? invoice_item.pricing_type : 'Fixed Cost';
-    var hours_input = pricing_type == 'Fixed Cost' ? false : true;
-    var amount = invoice_item ? invoice_item.amount : 0;
+    var hours_input = pricing_type !== 'Hourly' ? false : true;
+    var amount = invoice_item ? invoice_item.amount || invoice_item.min_price : 0;
     var numofhours = invoice_item && invoice_item.hours ? invoice_item.hours : 1;
 
     return {
@@ -73172,7 +73177,7 @@ var InvoiceItemField = React.createClass({
       if (this.amount) {
         if (!this.amount.value) {
           filterError['amount'] = amountError[0];
-        } else if (!/^\d+$/.test(this.amount.value) || this.amount.value === '0') {
+        } else if (AMOUNT_REGEX.test(this.amount.value) || this.amount.value === '0') {
           filterError['amount'] = amountError.reverse()[0];
         }
       }
@@ -73181,7 +73186,7 @@ var InvoiceItemField = React.createClass({
       if (this.hours) {
         if (!this.hours.value) {
           filterError['hours'] = hoursError[0];
-        } else if (!/^\d+$/.test(this.hours.value) || this.hours.value === '0') {
+        } else if (AMOUNT_REGEX.test(this.hours.value) || this.hours.value === '0') {
           filterError['hours'] = hoursError.reverse()[0];
         }
       }
@@ -73193,7 +73198,10 @@ var InvoiceItemField = React.createClass({
     var _state$totalamount = this.state.totalamount;
     var totalamount = _state$totalamount === undefined ? 0 : _state$totalamount;
 
+    var selectedValue = $("[name='" + ("ledger[invoices_attributes][" + this.props.params.x + "][invoice_items_attributes][" + x + "][pricing_type]") + "'").val();
+
     this.props.params.updatePrice(-totalamount);
+    this.props.params.updateHourly(true, totalamount, selectedValue === 'Hourly');
     this.props.removeField(x, this.props.content);
 
     this.setState({
@@ -73204,8 +73212,10 @@ var InvoiceItemField = React.createClass({
   },
 
   updatePrice: function (amount) {
+    var selectedValue = $("[name='" + ("ledger[invoices_attributes][" + this.props.params.x + "][invoice_items_attributes][" + this.props.x + "][pricing_type]") + "'").val();
+
     if (!isNaN(amount)) {
-      this.props.params.updatePrice(amount - this.state.totalamount);
+      this.props.params.updatePrice(amount - this.state.totalamount, selectedValue === 'Hourly');
     }
   },
 
@@ -73225,6 +73235,8 @@ var InvoiceItemField = React.createClass({
         self.onHours({ target: { value: 1 } });
       });
     }
+
+    self.props.params.updateHourly(false, self.state.totalamount, pricing_type === 'Hourly');
   },
 
   onAmount: function (event) {
@@ -73400,14 +73412,31 @@ var InvoiceField = React.createClass({
   getInitialState: function () {
     var invoice = this.props.content;
     var invoice_total = invoice && invoice.amount ? invoice.amount : 0;
-    var service_fee = invoice && invoice.amount ? invoice.amount * SERVICE_FEE : 0;
-    var items_total = invoice && invoice.amount ? invoice_total / 1.1 : 0;
-    var tax_total = invoice && invoice.amount ? invoice_total - invoice_total / 1.1 : 0;
+    var hourly_total = 0;
+
+    invoice && invoice.invoice_items && invoice.invoice_items.forEach(function (item) {
+      if (item.pricing_type === 'Range') {
+        invoice_total += item.min_price;
+      }
+
+      if (item.pricing_type === 'Hourly') {
+        hourly_total += item.amount;
+      }
+    });
+
+    var service_fee = invoice_total > OVER_AMOUNT ? invoice_total * OVER_SERVICE_FEE : invoice_total * UNDER_SERVICE_FEE;
+
+    var items_total = invoice_total / 1.1;
+    var tax_total = invoice_total - items_total;
+
     var tax = invoice && invoice.tax != null ? invoice.tax : true;
+
     return {
       invoice_total: invoice_total,
       service_fee: service_fee || 0,
+      agency_fee: invoice_total * AGENCY_SERVICE_FEE,
       tax: tax,
+      hourly_total: hourly_total,
       items_total: tax ? items_total : invoice_total,
       tax_total: tax ? tax_total : 0,
       remove: false,
@@ -73474,15 +73503,32 @@ var InvoiceField = React.createClass({
     this.props.removeField(x);
   },
 
-  calcInvoiceTotal: function (price) {
+  calcInvoiceTotal: function (price, isHourly) {
     var invoice_total = this.state.invoice_total + price;
+    var SERVICE_FEE = invoice_total > OVER_AMOUNT ? OVER_SERVICE_FEE : UNDER_SERVICE_FEE;
+    var hourly_total = this.state.hourly_total;
+
     this.setState({
       items_total: this.state.tax ? invoice_total / 1.1 : invoice_total,
       invoice_total: invoice_total,
       tax_total: this.state.tax ? invoice_total - invoice_total / 1.1 : 0,
-      service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0
+      service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0,
+      agency_fee: (invoice_total * AGENCY_SERVICE_FEE).toFixed(2) || 0,
+      hourly_total: isHourly ? hourly_total + price : hourly_total
     });
   },
+
+  calcHourlyTotal: function (isRemove, price, isHourly) {
+    var hourly_total = this.state.hourly_total;
+
+    if (isRemove) {
+      hourly_total = isHourly ? hourly_total - price : hourly_total;
+    } else {
+      hourly_total = isHourly ? hourly_total + price : hourly_total - price;
+    }
+    this.setState({ hourly_total: hourly_total });
+  },
+
   onTax: function (isTax) {
     var invoice_total = this.state.invoice_total;
     this.setState({
@@ -73511,6 +73557,8 @@ var InvoiceField = React.createClass({
     var tax_total = _state6.tax_total;
     var items_total = _state6.items_total;
     var service_fee = _state6.service_fee;
+    var hourly_total = _state6.hourly_total;
+    var agency_fee = _state6.agency_fee;
 
     var invoice_items = content && content.invoice_items || null;
     var hasInvoice = content && Object.keys(content).length > 0 && !content.isCoppy;
@@ -73552,7 +73600,7 @@ var InvoiceField = React.createClass({
         React.createElement(
           "div",
           null,
-          React.createElement(FieldList, { existingContent: invoice_items, SampleField: InvoiceItemField, params: { x: x, updatePrice: this.calcInvoiceTotal, remove: remove }, flag: "invoice", errors: errors }),
+          React.createElement(FieldList, { existingContent: invoice_items, SampleField: InvoiceItemField, params: { x: x, updatePrice: this.calcInvoiceTotal, updateHourly: this.calcHourlyTotal, remove: remove }, flag: "invoice", errors: errors }),
           React.createElement(
             "div",
             { className: "text-center m-t-lg" },
@@ -73616,67 +73664,9 @@ var InvoiceField = React.createClass({
             )
           )
         ),
-        React.createElement("hr", null),
         React.createElement(
           "div",
           { className: "field" },
-          React.createElement(
-            "div",
-            null,
-            React.createElement(
-              "p",
-              null,
-              " Items Total: "
-            ),
-            React.createElement(
-              "div",
-              { className: "input-dolar" },
-              React.createElement(
-                "span",
-                { className: "dolar" },
-                "$"
-              ),
-              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: items_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
-            )
-          ),
-          React.createElement(
-            "div",
-            null,
-            React.createElement(
-              "p",
-              null,
-              " Tax Total: "
-            ),
-            React.createElement(
-              "div",
-              { className: "input-dolar" },
-              React.createElement(
-                "span",
-                { className: "dolar" },
-                "$"
-              ),
-              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: tax_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][tax_total]' })
-            )
-          ),
-          React.createElement(
-            "div",
-            null,
-            React.createElement(
-              "p",
-              null,
-              " Invoice Total: "
-            ),
-            React.createElement(
-              "div",
-              { className: "input-dolar" },
-              React.createElement(
-                "span",
-                { className: "dolar" },
-                "$"
-              ),
-              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: invoice_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][invoice_total]' })
-            )
-          ),
           React.createElement(
             "div",
             null,
@@ -73702,10 +73692,91 @@ var InvoiceField = React.createClass({
                 style: errorDate ? { borderColor: 'red' } : {}
               })
             )
+          )
+        ),
+        React.createElement("hr", null),
+        React.createElement(
+          "div",
+          { className: "field" },
+          React.createElement(
+            "div",
+            { className: "alert" },
+            React.createElement(
+              "p",
+              null,
+              " Items Total: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: items_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][amount]' })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "alert" },
+            React.createElement(
+              "p",
+              null,
+              " Hourly Total: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: hourly_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][hourly_total]' })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "alert" },
+            React.createElement(
+              "p",
+              null,
+              " Tax Total: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: tax_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][tax_total]' })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "alert" },
+            React.createElement(
+              "p",
+              null,
+              " Invoice Total: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "$0.00", value: invoice_total.toFixed(2), name: 'ledger[invoices_attributes][' + x + '][invoice_total]' })
+            )
           ),
           trady && trady.jfmo_participant && React.createElement(
             "div",
-            null,
+            { className: "alert" },
             React.createElement(
               "p",
               null,
@@ -73719,7 +73790,64 @@ var InvoiceField = React.createClass({
                 { className: "dolar" },
                 "$"
               ),
-              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "Service Fee", value: service_fee, name: 'ledger[invoices_attributes][' + x + '][service_fee]' })
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "Service Fee", value: (service_fee - 0).toFixed(2), name: 'ledger[invoices_attributes][' + x + '][service_fee]' })
+            )
+          ),
+          trady && trady.jfmo_participant && React.createElement(
+            "div",
+            { className: "alert alert-success" },
+            React.createElement(
+              "p",
+              null,
+              " You Receive: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "You Receive", value: (invoice_total - service_fee).toFixed(2) })
+            )
+          ),
+          trady && trady.jfmo_participant && React.createElement(
+            "div",
+            { className: "alert alert-message" },
+            React.createElement(
+              "p",
+              null,
+              " Agency Receives: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "Agency Receives", value: (agency_fee - 0).toFixed(2) })
+            )
+          ),
+          trady && trady.jfmo_participant && React.createElement(
+            "div",
+            { className: "alert alert-message" },
+            React.createElement(
+              "p",
+              null,
+              " Maintenance App Receives: "
+            ),
+            React.createElement(
+              "div",
+              { className: "input-dolar" },
+              React.createElement(
+                "span",
+                { className: "dolar" },
+                "$"
+              ),
+              React.createElement("input", { type: "text", readOnly: "readonly", placeholder: "Maintenance App Receives", value: (service_fee - agency_fee).toFixed(2) })
             )
           ),
           React.createElement(
@@ -74060,6 +74188,7 @@ var DetailInvoice = React.createClass({
 		var _props = this.props;
 		var invoice = _props.invoice;
 		var trady = _props.invoice.trady;
+		var role = _props.role;
 
 		var subTotal = 0;
 		var gst = 0;
@@ -74188,7 +74317,7 @@ var DetailInvoice = React.createClass({
 							subTotal.toFixed(2)
 						)
 					),
-					trady && trady.jfmo_participant && React.createElement(
+					role === 'Trady' && trady && trady.jfmo_participant && React.createElement(
 						"tr",
 						null,
 						React.createElement("td", { colSpan: "3", className: "border-none" }),
@@ -74477,7 +74606,7 @@ var ModalViewInvoice = React.createClass({
 									React.createElement(
 										"div",
 										{ className: "detail-quote" },
-										!!invoice.invoice_items && React.createElement(DetailInvoice, { invoice: invoice })
+										!!invoice.invoice_items && React.createElement(DetailInvoice, { role: self.role, invoice: invoice })
 									)
 								),
 								React.createElement(
@@ -75551,12 +75680,14 @@ var AddInvoicePDF = React.createClass({
 		var pdf_file = _props.pdf_file;
 		var edit_trady_company_path = _props.edit_trady_company_path;
 
+		var total_invoice_amount = (pdf_file || {}).total_invoice_amount || 0;
 		return {
 			file: {},
-			total_invoice_amount: (pdf_file || {}).total_invoice_amount || '',
+			total_invoice_amount: total_invoice_amount,
 			due_date: (pdf_file || {}).due_date || this.nowDate(),
 			backPath: edit_trady_company_path,
-			service_fee: (pdf_file || {}).service_fee || 0
+			service_fee: (pdf_file || {}).service_fee || 0,
+			agency_fee: total_invoice_amount * AGENCY_SERVICE_FEE
 		};
 	},
 
@@ -75666,12 +75797,23 @@ var AddInvoicePDF = React.createClass({
 			return this.setState({
 				errorAmount: '',
 				total_invoice_amount: value,
-				service_fee: 0
+				service_fee: 0,
+				agency_fee: 0
 			});
 		}
+		if (!AMOUNT_REGEX.test(value)) {
+			return this.setState({
+				errorAmount: '',
+				total_invoice_amount: value
+			});
+		}
+
+		var SERVICE_FEE = value > OVER_AMOUNT ? OVER_SERVICE_FEE : UNDER_SERVICE_FEE;
+
 		this.setState({
 			errorAmount: '',
 			service_fee: (value * SERVICE_FEE).toFixed(2) || 0,
+			agency_fee: (value * AGENCY_SERVICE_FEE).toFixed(2) || 0,
 			total_invoice_amount: value
 		});
 	},
@@ -75732,11 +75874,15 @@ var AddInvoicePDF = React.createClass({
 		var quote_id = _props2.quote_id;
 		var trady_company = _props2.trady_company;
 		var trady_company_id = _props2.trady_company_id;
+		var trady = _props2.trady;
 		var _state = this.state;
 		var errorFile = _state.errorFile;
 		var errorAmount = _state.errorAmount;
 		var errorDate = _state.errorDate;
 		var backPath = _state.backPath;
+		var total_invoice_amount = _state.total_invoice_amount;
+		var service_fee = _state.service_fee;
+		var agency_fee = _state.agency_fee;
 
 		return React.createElement(
 			'div',
@@ -75792,18 +75938,27 @@ var AddInvoicePDF = React.createClass({
 						{ id: 'errorbox', className: 'error' },
 						errorFile ? errorFile[0] : ''
 					),
-					React.createElement('input', {
-						type: 'text',
-						className: 'text-center ' + (errorAmount ? 'border_on_error' : ''),
-						placeholder: 'Total Invoice Amount',
-						value: this.state.total_invoice_amount,
-						ref: function (amount) {
-							return _this.amount = amount;
-						},
-						onChange: this.changeTotalAmount,
-						id: 'uploaded_invoice_maintenance_request_id',
-						name: 'uploaded_invoice[total_invoice_amount]'
-					}),
+					React.createElement(
+						'div',
+						{ className: 'text-center' },
+						React.createElement(
+							'p',
+							null,
+							' Total Invoice Amount: '
+						),
+						React.createElement('input', {
+							type: 'text',
+							className: 'text-center ' + (errorAmount ? 'border_on_error' : ''),
+							placeholder: 'Total Invoice Amount',
+							value: total_invoice_amount,
+							ref: function (amount) {
+								return _this.amount = amount;
+							},
+							onChange: this.changeTotalAmount,
+							id: 'uploaded_invoice_maintenance_request_id',
+							name: 'uploaded_invoice[total_invoice_amount]'
+						})
+					),
 					React.createElement(
 						'p',
 						{ id: 'errorbox', className: 'error' },
@@ -75835,13 +75990,13 @@ var AddInvoicePDF = React.createClass({
 						{ id: 'errorbox', className: 'error' },
 						errorDate || ''
 					),
-					React.createElement(
+					trady && trady.jfmo_participant && React.createElement(
 						'div',
 						{ className: 'text-center' },
 						React.createElement(
 							'p',
 							null,
-							' Service Fee: '
+							' Service Fee ($): '
 						),
 						React.createElement('input', {
 							type: 'text',
@@ -75853,6 +76008,63 @@ var AddInvoicePDF = React.createClass({
 							name: 'uploaded_invoice[service_fee]',
 							className: 'text-center'
 						})
+					),
+					trady && trady.jfmo_participant && React.createElement(
+						'div',
+						{ className: 'service-fee' },
+						React.createElement(
+							'div',
+							{ className: 'alert alert-success' },
+							React.createElement(
+								'span',
+								{ className: 'service-fee-title text-center' },
+								'You Receive:'
+							),
+							React.createElement(
+								'span',
+								{ className: 'text-center' },
+								'$',
+								(total_invoice_amount - service_fee).toFixed(2)
+							)
+						)
+					),
+					trady && trady.jfmo_participant && React.createElement(
+						'div',
+						{ className: 'service-fee' },
+						React.createElement(
+							'div',
+							{ className: 'alert alert-message' },
+							React.createElement(
+								'span',
+								{ className: 'service-fee-title text-center' },
+								'Agency Receives:'
+							),
+							React.createElement(
+								'span',
+								{ className: 'text-center' },
+								'$',
+								(agency_fee - 0).toFixed(2)
+							)
+						)
+					),
+					trady && trady.jfmo_participant && React.createElement(
+						'div',
+						{ className: 'service-fee' },
+						React.createElement(
+							'div',
+							{ className: 'alert alert-message' },
+							React.createElement(
+								'span',
+								{ className: 'service-fee-title text-center' },
+								'Maintenance App Receives:'
+							),
+							React.createElement(
+								'span',
+								{ className: 'text-center' },
+								'$',
+								(service_fee - agency_fee).toFixed(2)
+							)
+						)
 					),
 					React.createElement('input', {
 						type: 'hidden',
@@ -75916,398 +76128,403 @@ var AddInvoicePDF = React.createClass({
 	}
 });
 var ModalViewPDFInvoice = React.createClass({
-		displayName: "ModalViewPDFInvoice",
+  displayName: "ModalViewPDFInvoice",
 
-		getInitialState: function () {
-				return {
-						index: null,
-						invoice: this.props.invoice_pdf_file
-				};
-		},
+  getInitialState: function () {
+    return {
+      index: null,
+      invoice: this.props.invoice_pdf_file
+    };
+  },
 
-		printInvoice: function () {
-				window.print();
-		},
+  printInvoice: function () {
+    window.print();
+  },
 
-		render: function () {
-				var _this = this;
+  render: function () {
+    var _this = this;
 
-				var self = this.props;
-				var invoice = this.state.invoice;
-				var pdf_url = invoice.pdf_url;
-				var trady = this.props.trady;
+    var self = this.props;
+    var invoice = this.state.invoice;
+    var pdf_url = invoice.pdf_url;
+    var _props = this.props;
+    var trady = _props.trady;
+    var role = _props.role;
 
-				var isPdf = /store\/\w+\.pdf/.test(pdf_url);
-				var total = 0;
-				return React.createElement(
-						"div",
-						{ className: "modal-custom fade" },
-						React.createElement(
-								"div",
-								{ className: "modal-dialog" },
-								React.createElement(
-										"div",
-										{ className: "modal-content" },
-										React.createElement(
-												"div",
-												{ className: "modal-header" },
-												React.createElement(
-														"button",
-														{
-																type: "button",
-																className: "close",
-																"data-dismiss": "modal",
-																"aria-label": "Close",
-																onClick: this.props.close
-														},
-														React.createElement(
-																"span",
-																{ "aria-hidden": "true" },
-																"×"
-														)
-												),
-												React.createElement(
-														"h4",
-														{ className: "modal-title text-center" },
-														"PDF VIEWER"
-												)
-										),
-										React.createElement(
-												"div",
-												{ className: "slider-quote" },
-												React.createElement(
-														"div",
-														{ className: "modal-body" },
-														React.createElement(
-																"div",
-																{ className: "show-quote", onTouchEnd: function (key, index) {
-																				return _this.switchSlider('prev', _this.state.index);
-																		} },
-																React.createElement(
-																		"div",
-																		{ className: "info-quote" },
-																		React.createElement(
-																				"div",
-																				{ className: "info-trady" },
-																				React.createElement(
-																						"p",
-																						null,
-																						trady.name
-																				),
-																				React.createElement(
-																						"p",
-																						{ className: "" },
-																						!!trady.trady_company && trady.trady_company.address
-																				),
-																				React.createElement(
-																						"p",
-																						{ className: "" },
-																						!!trady.trady_company && trady.trady_company.email
-																				),
-																				React.createElement(
-																						"p",
-																						{ className: "" },
-																						"Abn: ",
-																						!!trady.trady_company && trady.trady_company.abn
-																				)
-																		),
-																		React.createElement(
-																				"div",
-																				{ className: "info-agency" },
-																				React.createElement(
-																						"p",
-																						null,
-																						self.agency.company_name
-																				),
-																				React.createElement(
-																						"p",
-																						null,
-																						self.agency.address
-																				)
-																		)
-																),
-																React.createElement(
-																		"div",
-																		{ className: "detail-quote" },
-																		React.createElement(
-																				"div",
-																				{ className: "detail-quote" },
-																				!!pdf_url && React.createElement(
-																						"object",
-																						{
-																								width: "100%",
-																								height: isPdf ? '350px' : "100%",
-																								data: pdf_url
-																						},
-																						React.createElement("iframe", {
-																								width: "100%",
-																								height: isPdf ? '350px' : "100%",
-																								src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
-																								className: "scroll-custom" })
-																				)
-																		)
-																),
-																React.createElement(
-																		"div",
-																		{ className: "text-center" },
-																		"Invoice Total: ",
-																		invoice.total_invoice_amount || 0
-																),
-																React.createElement(
-																		"div",
-																		{ className: "text-center" },
-																		"Invoice Due On: ",
-																		invoice.due_date
-																),
-																React.createElement(
-																		"div",
-																		{ className: "text-center" },
-																		"Service Fee: ",
-																		invoice.service_fee
-																)
-														)
-												)
-										),
-										!isPdf && React.createElement(
-												"div",
-												{ className: "modal-body dontprint" },
-												React.createElement(ButtonPrint, { printQuote: this.printInvoice })
-										)
-								)
-						)
-				);
-		}
+    var isPdf = /store\/\w+\.pdf/.test(pdf_url);
+    var total = 0;
+    return React.createElement(
+      "div",
+      { className: "modal-custom fade" },
+      React.createElement(
+        "div",
+        { className: "modal-dialog" },
+        React.createElement(
+          "div",
+          { className: "modal-content" },
+          React.createElement(
+            "div",
+            { className: "modal-header" },
+            React.createElement(
+              "button",
+              {
+                type: "button",
+                className: "close",
+                "data-dismiss": "modal",
+                "aria-label": "Close",
+                onClick: this.props.close
+              },
+              React.createElement(
+                "span",
+                { "aria-hidden": "true" },
+                "×"
+              )
+            ),
+            React.createElement(
+              "h4",
+              { className: "modal-title text-center" },
+              "PDF VIEWER"
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "slider-quote" },
+            React.createElement(
+              "div",
+              { className: "modal-body" },
+              React.createElement(
+                "div",
+                { className: "show-quote", onTouchEnd: function (key, index) {
+                    return _this.switchSlider('prev', _this.state.index);
+                  } },
+                React.createElement(
+                  "div",
+                  { className: "info-quote" },
+                  React.createElement(
+                    "div",
+                    { className: "info-trady" },
+                    React.createElement(
+                      "p",
+                      null,
+                      trady.name
+                    ),
+                    React.createElement(
+                      "p",
+                      { className: "" },
+                      !!trady.trady_company && trady.trady_company.address
+                    ),
+                    React.createElement(
+                      "p",
+                      { className: "" },
+                      !!trady.trady_company && trady.trady_company.email
+                    ),
+                    React.createElement(
+                      "p",
+                      { className: "" },
+                      "Abn: ",
+                      !!trady.trady_company && trady.trady_company.abn
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "info-agency" },
+                    React.createElement(
+                      "p",
+                      null,
+                      self.agency.company_name
+                    ),
+                    React.createElement(
+                      "p",
+                      null,
+                      self.agency.address
+                    )
+                  )
+                ),
+                React.createElement(
+                  "div",
+                  { className: "detail-quote" },
+                  React.createElement(
+                    "div",
+                    { className: "detail-quote" },
+                    !!pdf_url && React.createElement(
+                      "object",
+                      {
+                        width: "100%",
+                        height: isPdf ? '350px' : "100%",
+                        data: pdf_url
+                      },
+                      React.createElement("iframe", {
+                        width: "100%",
+                        height: isPdf ? '350px' : "100%",
+                        src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
+                        className: "scroll-custom" })
+                    )
+                  )
+                ),
+                React.createElement(
+                  "div",
+                  { className: "text-center" },
+                  "Invoice Total: ",
+                  invoice.total_invoice_amount || 0
+                ),
+                React.createElement(
+                  "div",
+                  { className: "text-center" },
+                  "Invoice Due On: ",
+                  invoice.due_date
+                ),
+                role === 'Trady' && trady.jfmo_participant && trady.customer && React.createElement(
+                  "div",
+                  { className: "text-center" },
+                  "Service Fee: ",
+                  invoice.service_fee
+                )
+              )
+            )
+          ),
+          !isPdf && React.createElement(
+            "div",
+            { className: "modal-body dontprint" },
+            React.createElement(ButtonPrint, { printQuote: this.printInvoice })
+          )
+        )
+      )
+    );
+  }
 });
 
 var SubmitInvoicePDF = React.createClass({
-		displayName: "SubmitInvoicePDF",
+  displayName: "SubmitInvoicePDF",
 
-		getInitialState: function () {
-				var _props = this.props;
-				var customer = _props.customer;
-				var trady = _props.trady;
+  getInitialState: function () {
+    var _props2 = this.props;
+    var customer = _props2.customer;
+    var trady = _props2.trady;
 
-				return {
-						customer: customer, trady: trady
-				};
-		},
+    return {
+      customer: customer, trady: trady
+    };
+  },
 
-		isClose: function () {
-				if (this.state.isModal == true) {
-						this.setState({
-								isModal: false,
-								modal: ""
-						});
-				}
+  isClose: function () {
+    if (this.state.isModal == true) {
+      this.setState({
+        isModal: false,
+        modal: ""
+      });
+    }
 
-				var body = document.getElementsByTagName('body')[0];
-				body.classList.remove("modal-open");
-				var div = document.getElementsByClassName('modal-backdrop in')[0];
-				if (div) {
-						div.parentNode.removeChild(div);
-				}
-		},
+    var body = document.getElementsByTagName('body')[0];
+    body.classList.remove("modal-open");
+    var div = document.getElementsByClassName('modal-backdrop in')[0];
+    if (div) {
+      div.parentNode.removeChild(div);
+    }
+  },
 
-		openModal: function (modal) {
-				this.setState({
-						isModal: true,
-						modal: modal
-				});
-		},
+  openModal: function (modal) {
+    this.setState({
+      isModal: true,
+      modal: modal
+    });
+  },
 
-		renderModal: function () {
-				if (this.state.isModal) {
-						var body = document.getElementsByTagName('body')[0];
-						body.className += " modal-open";
-						var div = document.getElementsByClassName('modal-backdrop in');
+  renderModal: function () {
+    if (this.state.isModal) {
+      var body = document.getElementsByTagName('body')[0];
+      body.className += " modal-open";
+      var div = document.getElementsByClassName('modal-backdrop in');
 
-						if (div.length === 0) {
-								div = document.createElement('div');
-								div.className = "modal-backdrop in";
-								body.appendChild(div);
-						}
+      if (div.length === 0) {
+        div = document.createElement('div');
+        div.className = "modal-backdrop in";
+        body.appendChild(div);
+      }
 
-						switch (this.state.modal) {
-								case 'payment':
-										return React.createElement(ModalAddPayment, {
-												close: this.isClose,
-												submit: this.submitPayment
-										});
+      switch (this.state.modal) {
+        case 'payment':
+          return React.createElement(ModalAddPayment, {
+            close: this.isClose,
+            submit: this.submitPayment
+          });
 
-								case 'message':
-										return React.createElement(ModalNotification, {
-												close: this.isClose,
-												bgClass: this.state.notification.bgClass,
-												title: this.state.notification.title,
-												content: this.state.notification.content
-										});
+        case 'message':
+          return React.createElement(ModalNotification, {
+            close: this.isClose,
+            bgClass: this.state.notification.bgClass,
+            title: this.state.notification.title,
+            content: this.state.notification.content
+          });
 
-								default:
-										return '';
-						}
-				}
-		},
+        default:
+          return '';
+      }
+    }
+  },
 
-		submitPayment: function (params, callback) {
-				var self = this;
-				params.trady_id = this.props.trady_id;
-				params.trady_company_id = this.props.trady_company_id;
-				params.maintenance_request_id = this.props.maintenance_request_id;
+  submitPayment: function (params, callback) {
+    var self = this;
+    params.trady_id = this.props.trady_id;
+    params.trady_company_id = this.props.trady_company_id;
+    params.maintenance_request_id = this.props.maintenance_request_id;
 
-				$.ajax({
-						type: 'POST',
-						url: '/trady_payment_registrations',
-						beforeSend: function (xhr) {
-								xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-						},
-						data: params,
-						success: function (res) {
-								if (res && res.errors) {
-										return callback(res.errors);
-								}
-								self.setState({
-										isModal: true,
-										modal: 'message',
-										customer: res.customer,
-										notification: {
-												title: "Credit or debit card",
-												content: res.message,
-												bgClass: "bg-success"
-										}
-								});
-						},
-						error: function (err) {
-								self.setState({
-										isModal: true,
-										modal: 'message',
-										notification: {
-												title: "Credit or debit card",
-												content: err.responseText,
-												bgClass: "bg-error"
-										}
-								});
-						}
-				});
-		},
+    $.ajax({
+      type: 'POST',
+      url: '/trady_payment_registrations',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          customer: res.customer,
+          notification: {
+            title: "Credit or debit card",
+            content: res.message,
+            bgClass: "bg-success"
+          }
+        });
+      },
+      error: function (err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Credit or debit card",
+            content: err.responseText,
+            bgClass: "bg-error"
+          }
+        });
+      }
+    });
+  },
 
-		submitInvoicePdf: function (e) {
-				var _state = this.state;
-				var customer = _state.customer;
-				var trady = _state.trady;
-				var send_pdf_invoice_path = this.props.send_pdf_invoice_path;
+  submitInvoicePdf: function (e) {
+    var _state = this.state;
+    var customer = _state.customer;
+    var trady = _state.trady;
+    var send_pdf_invoice_path = this.props.send_pdf_invoice_path;
 
-				if (customer && !customer.customer_id && trady.jfmo_participant) {
-						return this.openModal('payment');
-				}
+    if (customer && !customer.customer_id && trady.jfmo_participant) {
+      return this.openModal('payment');
+    }
 
-				var self = this;
+    var self = this;
 
-				$.ajax({
-						type: 'POST',
-						url: send_pdf_invoice_path,
-						beforeSend: function (xhr) {
-								xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
-						},
-						success: function (res) {
-								if (res && res.errors) {
-										return callback(res.errors);
-								}
-						},
-						error: function (err) {
-								self.setState({
-										isModal: true,
-										modal: 'message',
-										notification: {
-												title: "Submit Invoice PDF",
-												content: err.responseText,
-												bgClass: "bg-error"
-										}
-								});
-						}
-				});
-		},
+    $.ajax({
+      type: 'POST',
+      url: send_pdf_invoice_path,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      success: function (res) {
+        if (res && res.errors) {
+          return callback(res.errors);
+        }
+      },
+      error: function (err) {
+        self.setState({
+          isModal: true,
+          modal: 'message',
+          notification: {
+            title: "Submit Invoice PDF",
+            content: err.responseText,
+            bgClass: "bg-error"
+          }
+        });
+      }
+    });
+  },
 
-		render: function () {
-				var _props2 = this.props;
-				var pdf_url = _props2.pdf_url;
-				var pdf = _props2.pdf;
-				var edit_uploaded_invoice_path = _props2.edit_uploaded_invoice_path;
-				var pdf_path = _props2.pdf_path;
+  render: function () {
+    var _props3 = this.props;
+    var pdf_url = _props3.pdf_url;
+    var pdf = _props3.pdf;
+    var edit_uploaded_invoice_path = _props3.edit_uploaded_invoice_path;
+    var pdf_path = _props3.pdf_path;
+    var _state2 = this.state;
+    var trady = _state2.trady;
+    var customer = _state2.customer;
 
-				var isPdf = /store\/\w+\.pdf/.test(pdf_url);
+    var isPdf = /store\/\w+\.pdf/.test(pdf_url);
 
-				return React.createElement(
-						"div",
-						{ className: "container well invoice-form", id: "submit-invoice" },
-						React.createElement(
-								"div",
-								{ id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
-								React.createElement(
-										"div",
-										{
-												className: "responsive-wrapper responsive-wrapper-wxh-572x612"
-										},
-										React.createElement(
-												"object",
-												{
-														width: "100%",
-														height: isPdf ? '500px' : "100%",
-														data: pdf_url
-												},
-												React.createElement("iframe", {
-														width: "100%",
-														height: isPdf ? '500px' : "100%",
-														src: pdf_path,
-														className: "scroll-custom"
-												})
-										)
-								)
-						),
-						React.createElement(
-								"div",
-								{ className: "text-center m-b-lg" },
-								"Invoice Total: ",
-								pdf.total_invoice_amount
-						),
-						React.createElement(
-								"div",
-								{ className: "text-center m-b-lg" },
-								"Invoice Due On : ",
-								pdf.due_date
-						),
-						React.createElement(
-								"div",
-								{ className: "text-center m-b-lg" },
-								"Service Fee: ",
-								pdf.service_fee
-						),
-						React.createElement(
-								"div",
-								{ className: "text-center m-b-lg qf-button" },
-								React.createElement(
-										"button",
-										{
-												type: "button",
-												className: "button-back",
-												onClick: function () {
-														return location.href = edit_uploaded_invoice_path;
-												}
-										},
-										"Back"
-								),
-								React.createElement(
-										"button",
-										{
-												type: "button",
-												className: "button-type button-submit green right",
-												onClick: this.submitInvoicePdf
-										},
-										"Submit"
-								)
-						),
-						this.renderModal()
-				);
-		}
+    return React.createElement(
+      "div",
+      { className: "container well invoice-form", id: "submit-invoice" },
+      React.createElement(
+        "div",
+        { id: "Iframe-Master-CC-and-Rs", className: "set-margin set-padding set-border set-box-shadow center-block-horiz" },
+        React.createElement(
+          "div",
+          {
+            className: "responsive-wrapper responsive-wrapper-wxh-572x612"
+          },
+          React.createElement(
+            "object",
+            {
+              width: "100%",
+              height: isPdf ? '500px' : "100%",
+              data: pdf_url
+            },
+            React.createElement("iframe", {
+              width: "100%",
+              height: isPdf ? '500px' : "100%",
+              src: pdf_path,
+              className: "scroll-custom"
+            })
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "text-center m-b-lg" },
+        "Invoice Total: ",
+        pdf.total_invoice_amount
+      ),
+      React.createElement(
+        "div",
+        { className: "text-center m-b-lg" },
+        "Invoice Due On : ",
+        pdf.due_date
+      ),
+      trady.jfmo_participant && !!customer && React.createElement(
+        "div",
+        { className: "text-center m-b-lg" },
+        "Service Fee: ",
+        pdf.service_fee
+      ),
+      React.createElement(
+        "div",
+        { className: "text-center m-b-lg qf-button" },
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "button-back",
+            onClick: function () {
+              return location.href = edit_uploaded_invoice_path;
+            }
+          },
+          "Back"
+        ),
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "button-type button-submit green right",
+            onClick: this.submitInvoicePdf
+          },
+          "Submit"
+        )
+      ),
+      this.renderModal()
+    );
+  }
 });
 var ContentLandlordAction = React.createClass({
 	displayName: "ContentLandlordAction",
@@ -86796,7 +87013,8 @@ var MaintenanceRequest = React.createClass({
 							agency: this.props.agency,
 							invoice: this.state.invoice,
 							invoices: this.state.invoices,
-							property: this.props.property
+							property: this.props.property,
+							role: this.props.current_user_role
 						});
 
 						break;
@@ -86809,7 +87027,8 @@ var MaintenanceRequest = React.createClass({
 							agency: this.props.agency,
 							property: this.props.property,
 							trady: this.props.assigned_trady,
-							invoice_pdf_file: this.state.invoice_pdf_file
+							invoice_pdf_file: this.state.invoice_pdf_file,
+							role: this.props.current_user_role
 						});
 
 						break;
@@ -90151,10 +90370,12 @@ var QuoteRequests = React.createClass({
 	displayName: "QuoteRequests",
 
 	getInitialState: function () {
-
+		var role = self.current_user_role && self.current_user_role.role || self.current_role && self.current_role.role;
+		var quote_requests = role === 'Landlord' ? this.filterQuoteRequestForLandlord(this.props.quote_requests) : this.filterQuoteRequest(this.props.quote_requests);
 		return {
-			quote_requests: this.props.quote_requests,
-			pictures: []
+			quote_requests: quote_requests,
+			pictures: [],
+			role: role
 		};
 	},
 
@@ -90163,9 +90384,42 @@ var QuoteRequests = React.createClass({
 	},
 
 	componentWillReceiveProps: function (nextProps) {
-		this.getPictureImage(nextProps.quote_requests);
+		var role = this.state.role;
+
+		var quote_requests = role === 'Landlord' ? this.filterQuoteRequestForLandlord(nextProps.quote_requests) : this.filterQuoteRequest(nextProps.quote_requests);
+
+		this.getPictureImage(quote_requests);
 		this.setState({
-			quote_requests: nextProps.quote_requests
+			quote_requests: quote_requests
+		});
+	},
+
+	filterQuoteRequest: function (quote_requests) {
+		var filteredQuoteRequest = quote_requests.filter(function (_ref) {
+			var trady = _ref.trady;
+
+			return !trady.jfmo_participant || !!trady.customer_profile;
+		});
+
+		return filteredQuoteRequest;
+	},
+
+	filterQuoteRequestForLandlord: function (quote_requests) {
+		var filtered = this.filterQuoteRequest(quote_requests);
+
+		var filteredQuotesForQuoteRequest = filtered.map(function (quote_request) {
+			// filter quote inside quote_request
+			var quotes = quote_request.quotes.filter(function (quote) {
+				return quote.delivery_status && quote.forwarded_to_landlord;
+			});
+			quote_request.quotes = quotes;
+
+			return quote_request;
+		});
+
+		// Filter quote_request have empty quotes
+		return filteredQuotesForQuoteRequest.filter(function (qr) {
+			return qr.quotes.length;
 		});
 	},
 
@@ -90190,16 +90444,18 @@ var QuoteRequests = React.createClass({
 		var _state2 = this.state;
 		var quote_requests = _state2.quote_requests;
 		var pictures = _state2.pictures;
+		var role = _state2.role;
 
 		var self = this.props;
-		var role = self.current_user_role && self.current_user_role.role || self.current_role && self.current_role.role;
 
 		var isCallTrady = role === 'AgencyAdmin' || role === 'Agent';
+
+		// Check if quote request was created by a real trady
 
 		return React.createElement(
 			"div",
 			{ className: "quotes m-t-lg", id: "quote_requests" },
-			React.createElement(
+			!!quote_requests.length && React.createElement(
 				"p",
 				null,
 				React.createElement(
@@ -90215,9 +90471,6 @@ var QuoteRequests = React.createClass({
 				quote_requests.map(function (quote_request, index) {
 					var trady = quote_request.trady || {};
 
-					if (trady.jfmo_participant && !trady.customer_profile) {
-						return '';
-					}
 					var maintenance_request_id = quote_request.maintenance_request_id;
 					var trady_id = quote_request.trady_id;
 
@@ -90372,6 +90625,14 @@ var QuotesInInvoice = React.createClass({
 				"div",
 				{ className: "list-quote" },
 				quotes.map(function (quote, index) {
+					var amount = quote.amount;
+
+					quote && quote.quote_items && quote.quote_items.forEach(function (item) {
+						if (item.pricing_type === 'Range') {
+							amount += item.min_price;
+						}
+					});
+
 					return React.createElement(
 						"div",
 						{ className: "item-quote row", key: index },
@@ -90421,7 +90682,7 @@ var QuotesInInvoice = React.createClass({
 								"p",
 								{ className: "price" },
 								"Amount: ",
-								quote.amount,
+								amount,
 								"AUD"
 							)
 						),
@@ -91461,7 +91722,7 @@ var QuoteField = React.createClass({
     if (amount === '') return error.filter(function (e) {
       return e.includes('blank');
     })[0];
-    if (!/^\d+$/.test(amount)) return error.filter(function (e) {
+    if (AMOUNT_REGEX.test(amount)) return error.filter(function (e) {
       return e.includes('number');
     })[0];
     return '';
@@ -91473,7 +91734,7 @@ var QuoteField = React.createClass({
     var min_price = this.min_price && this.min_price.value || '';
 
     if (min_price === '') return error[0];
-    if (!/^\d+$/.test(min_price)) return error.filter(function (e) {
+    if (AMOUNT_REGEX.test(min_price)) return error.filter(function (e) {
       return e.includes('number');
     })[0];
     return '';
@@ -91485,7 +91746,7 @@ var QuoteField = React.createClass({
     var max_price = this.max_price && this.max_price.value || '';
 
     if (max_price === '') return error[0];
-    if (!/^\d+$/.test(max_price)) return error.filter(function (e) {
+    if (AMOUNT_REGEX.test(max_price)) return error.filter(function (e) {
       return e.includes('number');
     })[0];
     return '';
@@ -91504,21 +91765,37 @@ var QuoteField = React.createClass({
   },
 
   removeField: function () {
+    var _props = this.props;
+    var changeFee = _props.params.changeFee;
+    var x = _props.x;
+    var pricing_type = this.state.pricing_type;
+
+    // Reset value to 0 when remove the quote item
+    var defaultValue = pricing_type !== 'Range' ? 0 : { min: 0, max: 0 };
+
+    changeFee(defaultValue, pricing_type, this.props.x);
     this.setState({ remove: true });
   },
 
   onPricing: function (event) {
-    var pricing_type = event.target.value;
+    var _props2 = this.props;
+    var changeFee = _props2.params.changeFee;
+    var x = _props2.x;
+    var pricing_type = this.state.pricing_type;
+
+    // Reset value to 0 when change to other price type
+    var defaultValue = pricing_type !== 'Range' ? 0 : { min: 0, max: 0 };
+    changeFee(defaultValue, pricing_type, x);
+
+    var new_pricing_type = event.target.value;
     var update = {
-      pricing_type: pricing_type,
-      hours_input: pricing_type === 'Hourly'
+      pricing_type: new_pricing_type,
+      hours_input: new_pricing_type === 'Hourly'
     };
-    if (pricing_type === 'Range') {
-      update.amount = 0;
-    } else {
-      update.min_price = 0;
-      update.max_price = 0;
-    }
+    update.min_price = 0;
+    update.max_price = 0;
+    update.amount = 0;
+
     this.setState(update);
   },
 
@@ -91531,6 +91808,16 @@ var QuoteField = React.createClass({
 
     var field = id.match(/\d+_(\w+)$/);
     if (!field) return;
+    var pricing_type = this.state.pricing_type;
+    var _props3 = this.props;
+    var changeFee = _props3.params.changeFee;
+    var x = _props3.x;
+
+    var valueFee = pricing_type !== 'Range' ? value : {
+      min: this.min_price.value,
+      max: this.max_price.value
+    };
+    changeFee(valueFee, pricing_type, x);
 
     this.setState((_setState = {}, _defineProperty(_setState, field[1] + '_error', ''), _defineProperty(_setState, field[1], value), _setState));
   },
@@ -91576,7 +91863,9 @@ var QuoteField = React.createClass({
             },
             id: 'quote_quote_items_attributes_' + x + '_item_description',
             name: 'quote[quote_items_attributes][' + x + '][item_description]',
-            onChange: removeErrorFunc
+            onChange: function () {
+              return removeErrorFunc();
+            }
           }),
           renderErrorFunc(currentState['item_description_error'])
         ),
@@ -91636,6 +91925,7 @@ var QuoteField = React.createClass({
               className: "text-center price" + (currentState['min_price_error'] ? ' has-error' : ''),
               id: 'quote_quote_items_attributes_' + x + '_min_price',
               name: 'quote[quote_items_attributes][' + x + '][min_price]',
+              isMin: true,
               onChange: removeErrorFunc,
               style: !needToShowTo ? { display: 'none' } : {}
             }),
@@ -91689,17 +91979,13 @@ var QuoteField = React.createClass({
         )
       ),
       React.createElement(
-        'div',
-        { className: 'text-center' },
-        React.createElement(
-          'button',
-          {
-            type: 'button',
-            className: 'button-remove button-primary red',
-            onClick: this.removeField
-          },
-          'Remove'
-        )
+        'button',
+        {
+          type: 'button',
+          className: 'button-remove button-primary',
+          onClick: this.removeField
+        },
+        'X'
       )
     );
   }
@@ -91709,8 +91995,12 @@ var QuoteFields = React.createClass({
   displayName: 'QuoteFields',
 
   getInitialState: function () {
+    var _cost;
+
     return {
-      errors: {}
+      errors: {},
+      cost: (_cost = {}, _defineProperty(_cost, 'Fixed Cost', []), _defineProperty(_cost, 'Hourly', []), _defineProperty(_cost, 'Range', []), _cost),
+      maxCost: 500
     };
   },
 
@@ -91747,12 +92037,132 @@ var QuoteFields = React.createClass({
     return false;
   },
 
+  changeFee: function (value, type, index) {
+    var cost = this.state.cost;
+
+    if (type === 'Range') {
+      if (AMOUNT_REGEX.test(value.min) || AMOUNT_REGEX.test(value.max)) return;
+    } else {
+      if (AMOUNT_REGEX.test(value)) return;
+    }
+    if (cost[type]) {
+      cost[type][index] = typeof value !== 'object' ? parseFloat(value) : { min: parseFloat(value.min), max: parseFloat(value.max) };
+    }
+    this.setState({ cost: cost });
+  },
+
+  renderServiceFee: function () {
+    var _state = this.state;
+    var _state$cost = _state.cost;
+    var Fixed = _state$cost['Fixed Cost'];
+    var Hourly = _state$cost.Hourly;
+    var Range = _state$cost.Range;
+    var maxCost = _state.maxCost;
+
+    var fixedCost = Fixed.reduce(function (total, cost) {
+      return total + cost || 0;
+    }, 0);
+    var hourlyCost = Hourly.reduce(function (total, cost) {
+      return total + cost || 0;
+    }, 0);
+    var rangeCost = Range.reduce(function (total, cost) {
+      return {
+        min: total.min + (cost && cost.min || 0),
+        max: total.max + (cost && cost.max || 0)
+      };
+    }, { min: 0, max: 0 });
+
+    var greater = fixedCost > maxCost || hourlyCost > maxCost;
+    var feePercent = greater ? 0.10 : 0.15;
+
+    return React.createElement(
+      'div',
+      { className: 'service-fee-group alert alert-danger' },
+      React.createElement(
+        'div',
+        { className: 'service-fee text-center' },
+        React.createElement(
+          'div',
+          { className: 'service-fee-title' },
+          'Summary of app service fee estimate,',
+          greater ? ' 10% ' : ' 15% ',
+          'of invoice total if',
+          greater ? ' greater than ' : ' less than ',
+          '$',
+          maxCost.toFixed(2)
+        ),
+        React.createElement(
+          'div',
+          { className: 'service-fee-item' },
+          React.createElement(
+            'div',
+            { className: 'fixed-fee' },
+            'Fixed Fee: $',
+            (fixedCost * feePercent).toFixed(2)
+          ),
+          React.createElement(
+            'div',
+            { className: 'hourly-fee' },
+            'Hourly Fee: $',
+            (hourlyCost * feePercent).toFixed(2),
+            '/hr'
+          ),
+          React.createElement(
+            'div',
+            { className: 'range-fee' },
+            'Range Fee: $',
+            (rangeCost.min * feePercent).toFixed(2),
+            '- $',
+            (rangeCost.max * feePercent).toFixed(2)
+          )
+        )
+      ),
+      !greater && rangeCost.max > maxCost && React.createElement('div', { className: 'service-fee-split' }),
+      !greater && rangeCost.max > maxCost && React.createElement(
+        'div',
+        { className: 'service-fee text-center' },
+        React.createElement(
+          'div',
+          { className: 'service-fee-title' },
+          'Summary of app service fee estimate, 10% of invoice total if greater than $',
+          maxCost.toFixed(2)
+        ),
+        React.createElement(
+          'div',
+          { className: 'service-fee-item' },
+          React.createElement(
+            'div',
+            { className: 'fixed-fee' },
+            'Fixed Fee: $',
+            (fixedCost * 0.10).toFixed(2)
+          ),
+          React.createElement(
+            'div',
+            { className: 'hourly-fee' },
+            'Hourly Fee: $',
+            (hourlyCost * 0.10).toFixed(2),
+            '/hr'
+          ),
+          React.createElement(
+            'div',
+            { className: 'range-fee' },
+            'Range Fee: $',
+            (rangeCost.min * 0.10).toFixed(2),
+            '- $',
+            (rangeCost.max * 0.10).toFixed(2)
+          )
+        )
+      )
+    );
+  },
+
   render: function () {
     var _this2 = this;
 
-    var _props = this.props;
-    var trady_company = _props.trady_company;
-    var quote = _props.quote;
+    var _props4 = this.props;
+    var trady_company = _props4.trady_company;
+    var quote = _props4.quote;
+    var trady = _props4.trady;
 
     return React.createElement(
       'form',
@@ -91779,6 +92189,7 @@ var QuoteFields = React.createClass({
       ),
       React.createElement(FieldList, {
         existingContent: this.props.quote_items,
+        params: { changeFee: this.changeFee },
         SampleField: QuoteField,
         errors: this.state.errors,
         flag: 'quote'
@@ -91821,6 +92232,7 @@ var QuoteFields = React.createClass({
           )
         )
       ),
+      trady.jfmo_participant && this.renderServiceFee(),
       React.createElement('hr', null),
       React.createElement(
         'div',
@@ -99858,7 +100270,8 @@ var TradyMaintenanceRequest = React.createClass({
 							invoice: this.state.invoice,
 							landlord: this.state.landlord,
 							invoices: this.state.invoices,
-							property: this.props.property
+							property: this.props.property,
+							role: this.props.current_role ? this.props.current_role.role : ''
 						});
 					}
 
@@ -99869,7 +100282,8 @@ var TradyMaintenanceRequest = React.createClass({
 							agency: this.props.agency,
 							property: this.props.property,
 							trady: this.props.assigned_trady,
-							invoice_pdf_file: this.state.invoice_pdf_file
+							invoice_pdf_file: this.state.invoice_pdf_file,
+							role: this.props.current_user_role
 						});
 					}
 
@@ -100470,7 +100884,7 @@ var TradyMaintenanceRequest = React.createClass({
 				!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id && React.createElement(
 					'div',
 					{ className: 'section show-waring' },
-					'We are sorry to inform you that the job has been awarded to another company. Thank you for your quote, we will contact you for other future jobs.'
+					'We are sorry to inform you that this job has been awarded to another company. We will contact you about future jobs, thank you for your time.'
 				),
 				React.createElement(
 					'div',
