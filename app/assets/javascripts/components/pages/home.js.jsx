@@ -484,7 +484,7 @@ var HomeComponent = React.createClass({
           disabled={!!active}
           onClick={() => this.chooseUser('Tenant')}
         >
-          I'm Tenant
+          I'm a Tenant
         </button>
         <button
           className={
@@ -493,7 +493,7 @@ var HomeComponent = React.createClass({
           disabled={!!active}
           onClick={() => this.chooseUser('Trady')}
         >
-          I'm Trady
+          I'm a Tradie
         </button>
         <button
           className={
@@ -502,7 +502,7 @@ var HomeComponent = React.createClass({
           disabled={!!active}
           onClick={() => this.chooseUser('Landlord')}
         >
-          I'm Landlord
+          I'm a Landlord
         </button>
         <button
           className={
@@ -511,7 +511,7 @@ var HomeComponent = React.createClass({
           disabled={!!active}
           onClick={() => this.chooseUser('Agent')}
         >
-          I'm Agent
+          I'm an Agent
         </button>
       </div>
     )
@@ -598,7 +598,7 @@ var HomeComponent = React.createClass({
 
     return (
       <div className="home-action">
-        {!active && <h3 className="choose-role-title text-center">Choose one please</h3>}
+        {!active && <h3 className="choose-role-title text-center">Please choose one.</h3>}
         {this.homeActionTitle()}
         {this.homeActionContent()}
       </div>
@@ -620,7 +620,7 @@ var HomeComponent = React.createClass({
                />
               <h3>MaintenanceApp</h3>
             </div>
-            <div id="home-title" className="home-title">Always getting things done</div>
+            <div id="home-title" className="home-title">Always getting things done.</div>
             {this.renderHowItWork()}
             {this.renderHomeAction()}
             <input type="hidden" id="refresh" value="no" />
