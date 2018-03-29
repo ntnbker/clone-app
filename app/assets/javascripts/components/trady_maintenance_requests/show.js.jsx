@@ -1498,7 +1498,7 @@ var TradyMaintenanceRequest = React.createClass({
 					{
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
 							<div className="section show-waring">
-								We are sorry to inform you that the job has been awarded to another company. Thank you for your quote, we will contact you for other future jobs.
+								We are sorry to inform you that this job has been awarded to another company. We will contact you about future jobs, thank you for your time.
 							</div>
 					}
 					<div className="section">
