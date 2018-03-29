@@ -804,36 +804,7 @@ var InvoiceField = React.createClass({
             </div>
           </div>
         </div>
-        <hr />
         <div className="field">
-          <div>
-            <p> Items Total: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
-            </div>
-          </div>
-          <div>
-            <p> Hourly Total: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={hourly_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][hourly_total]'} />
-            </div>
-          </div>
-          <div>
-            <p> Tax Total: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
-            </div>
-          </div>
-          <div>
-            <p> Invoice Total: </p>
-            <div className="input-dolar">
-              <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
-            </div>
-        </div>
           <div>
             <p> Invoice Due On: </p>
             <div className="input-dolar">
@@ -848,8 +819,39 @@ var InvoiceField = React.createClass({
               />
             </div>
           </div>
+        </div>
+        <hr />
+        <div className="field">
+          <div className="alert">
+            <p> Items Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+            </div>
+          </div>
+          <div className="alert">
+            <p> Hourly Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={hourly_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][hourly_total]'} />
+            </div>
+          </div>
+          <div className="alert">
+            <p> Tax Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={tax_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][tax_total]'} />
+            </div>
+          </div>
+          <div className="alert">
+            <p> Invoice Total: </p>
+            <div className="input-dolar">
+              <span className="dolar">$</span>
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={invoice_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][invoice_total]'} />
+            </div>
+          </div>
           { trady && trady.jfmo_participant &&
-            <div>
+            <div className="alert">
               <p> Service Fee: </p>
               <div className="input-dolar">
                 <span className="dolar">$</span>
