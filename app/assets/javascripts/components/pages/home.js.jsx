@@ -5,7 +5,7 @@ var HomeComponent = React.createClass({
     const step = this.detectStepFromRole(role, email_role);
 
     return {
-      active: !roleUsed ? 'Tenant' : roleUsed === 'AgencyAdmin' ? 'Agent' : roleUsed,
+      active: !roleUsed ? '' : roleUsed === 'AgencyAdmin' ? 'Agent' : roleUsed,
       step,
       signed: !!current_user,
       rolePicked: roleUsed || 'Tenant',
@@ -89,6 +89,14 @@ var HomeComponent = React.createClass({
 
       },
     })
+  },
+
+  removeActive() {
+    $('body').animate({
+      scrollTop: $('#home-title').offset().top,
+    }, 500);
+
+    this.setState({active: ''});
   },
 
   handleLandlordCheckMR() {
@@ -471,50 +479,46 @@ var HomeComponent = React.createClass({
       <div className="home-action-title">
         <button
           className={
-            "tenant-title "
-            + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden ')
-            + (signed ? 'signed ' : '')
+            "tenant-title " + (!active || active === 'Tenant' ?  'active' : 'hidden ')
           }
+          disabled={!!active}
           onClick={() => this.chooseUser('Tenant')}
         >
-          {!signed && "For "}Tenants
+          I'm a Tenant
         </button>
         <button
           className={
-            "trady-title "
-            + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden ')
-            + (signed ? 'signed ' : '')
+            "trady-title " + (!active || active === 'Trady' ?  'active' : 'hidden ')
           }
+          disabled={!!active}
           onClick={() => this.chooseUser('Trady')}
         >
-          {!signed && "For "}Tradies
+          I'm a Tradie
         </button>
         <button
           className={
-            "landlord-title "
-            + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden ')
-            + (signed ? 'signed ' : '')
+            "landlord-title " + (!active || active === 'Landlord' ?  'active' : 'hidden ')
           }
+          disabled={!!active}
           onClick={() => this.chooseUser('Landlord')}
         >
-          {!signed && "For "}Landlords
+          I'm a Landlord
         </button>
         <button
           className={
-            "agent-title "
-            + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden ')
-            + (signed ? 'signed ' : '')
+            "agent-title " + (!active || active === 'Agent' ?  'active' : 'hidden ')
           }
+          disabled={!!active}
           onClick={() => this.chooseUser('Agent')}
         >
-          {!signed && "For "}Agents
+          I'm an Agent
         </button>
       </div>
     )
   },
 
   homeActionContent() {
-    const { active, step } = this.state;
+    const { active, step, signed } = this.state;
     let render = null;
 
     switch (active) {
@@ -557,12 +561,18 @@ var HomeComponent = React.createClass({
         }
         break;
     }
-    return (
+    return active &&
       <div className="home-action-content">
-        <div className="content-frame"></div>
         <div className="action-content">{render && render()}</div>
+        {
+          !signed &&
+          <div className="choose-other-role">
+            <button onClick={this.removeActive}>
+              Not a {(active === 'Trady' ? 'Tradie' : active).toLowerCase()} click here
+            </button>
+          </div>
+      }
       </div>
-    )
   },
 
   renderHowItWork() {
@@ -573,6 +583,7 @@ var HomeComponent = React.createClass({
       case 'Agent': showHowItWork = this.howItWorkForAgent; break;
       case 'Trady': showHowItWork = this.howItWorkForTrady; break;
       case 'Landlord': showHowItWork = this.howItWorkForLandlord; break;
+      default: showHowItWork = () => '';
     }
 
     return (
@@ -583,8 +594,11 @@ var HomeComponent = React.createClass({
   },
 
   renderHomeAction() {
+    const {active} = this.state;
+
     return (
       <div className="home-action">
+        {!active && <h3 className="choose-role-title text-center">Please choose one.</h3>}
         {this.homeActionTitle()}
         {this.homeActionContent()}
       </div>
@@ -606,6 +620,7 @@ var HomeComponent = React.createClass({
                />
               <h3>MaintenanceApp</h3>
             </div>
+            <div id="home-title" className="home-title">Always getting things done.</div>
             {this.renderHowItWork()}
             {this.renderHomeAction()}
             <input type="hidden" id="refresh" value="no" />

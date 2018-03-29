@@ -45,6 +45,9 @@ $color-red: #e34f4f;
 }
 
 .pages {
+	form {
+		margin-bottom: 0px;
+	}
 	background-color: white;
 	position: relative;
 
@@ -52,7 +55,7 @@ $color-red: #e34f4f;
 		left: 0;
 		right: 0;
 		z-index: -1000;
-		height: 1000px;
+		height: 1200px;
 		background-image: url(/assets/cooking-family.png);
 		// background-color: saddlebrown;
 		background-size: cover;
@@ -73,6 +76,12 @@ $color-red: #e34f4f;
 
 			.home-logo {
 				text-align: center;
+				color: white;
+			}
+
+			.home-title {
+				margin: 30px 0;
+				font-size: 3.6em;
 				color: white;
 			}
 
@@ -155,32 +164,41 @@ $color-red: #e34f4f;
 			}
 
 			.home-action {
-				width: 50%;
+				width: 80%;
+				background-color: rgba(90, 86, 86, 0.4);
+				border: 3px solid rgba(255, 255, 255, 0.5);
+				border-radius: 12px;
+
+				.choose-role-title {
+					font-size: 2.5em;
+					color: white;
+					margin: 20px 10px;
+				}
+
 				.home-action-title {
 					@include flexbox;
 					@include align-items(center);
-					border-bottom: 4px solid #5CC993;
+					@include justify-content(center);
+
 					button {
 						@include flex(1);
 						text-align: center;
-						font-size: 1.3em;
-						background-color: white;
+						font-size: 1.5em;
+						font-weight: bold;
+						background-color: #5CC993;
 						padding: 10px 0;
-						color: #5CC993;
+						color: white;
 						border: none;
-						border-radius: 0;
+						border-radius: 4;
 						height: 56px;
-						border-left: 1px solid rgba(0, 0, 0, 0.2);
-						&:first-child {
-							border: none;
-						}
+						margin: 10px;
+						max-width: 300px;
+				    min-width: 150px;
+
 						&.active {
 							background-color: #5CC993;
 							color: white;
 							border-left:none;
-						}
-						&.signed {
-							font-size: 1.3em;
 						}
 						&.hidden {
 							display: none;
@@ -196,22 +214,9 @@ $color-red: #e34f4f;
 					@include flexbox;
 					@include justify-content(center);
 					@include align-items(center);
-					border: 3px solid rgba(255, 255, 255, 0.5);
-					background-color: rgba(90, 86, 86, 0.4);
-					border-radius: 0 0 12px 12px;
-					border-top: none;
+					@include flex-direction(column);
 					width: calc(100% - 6px);
 					position: relative;
-
-					.content-frame {
-						background-color: grey;
-						position: absolute;
-						opacity: 0.6;
-						z-index: -1;
-						height: 100%;
-						width: 100%;
-						border-radius: 0 0 12px 12px;
-					}
 
 					.action-content {
 						margin: 0 25%;
@@ -457,7 +462,7 @@ $color-red: #e34f4f;
 						}
 						.forget-password {
 							text-align: center;
-							margin: 20px 0 10px 0;
+							margin: 20px 0 0px 0;
 							a {
 								color: #5CC993;
 								text-decoration-line: none;
@@ -466,6 +471,23 @@ $color-red: #e34f4f;
 									color: #4aa576;
 								}
 
+							}
+						}
+					}
+
+					.choose-other-role {
+						text-align: center;
+						margin: 0px 0 10px 0;
+						button {
+							color: #5CC993;
+							text-decoration-line: none;
+							text-decoration: none;
+							cursor: pointer;
+							border: none;
+							background: none;
+
+							&:hover {
+								color: #4aa576;
 							}
 						}
 					}
@@ -483,7 +505,7 @@ $color-red: #e34f4f;
 		}
 
 		.how-it-works {
-			margin: 30px 15%;
+			margin: 0px 15% 20px 15%;
 			.three.columns {
 				width: 24%;
 				margin-left: 1%;
@@ -569,8 +591,8 @@ $color-red: #e34f4f;
 	@media (max-width: 1024px) {
 		.home-content .header .home-action {
 			.home-action-title button {
-				font-size: 1.1em;
-				height: 51px;
+				// font-size: 1.1em;
+				// height: 51px;
 			}
 			.home-action-content .action-content {
 				.submit-new-mr {
@@ -607,8 +629,8 @@ $color-red: #e34f4f;
 	@media (max-width: 992px) {
 		.home-content .header .home-action {
 			.home-action-title button {
-				font-size: 0.9em;
-				height: 46px;
+				// font-size: 0.9em;
+				// height: 46px;
 			}
 			.submit-new-mr {
 				.type-service {
@@ -638,52 +660,58 @@ $color-red: #e34f4f;
 		}
 	}
 
-	@media (max-width: 820px) {
-		.home-content .header .home-action {
-			width: 60%;
-
-			.home-action-title button {
-				font-size: 1em;
-				height: 40px;
-				padding: 0 5px;
-
-				&:hover {
-					color: white;
-					background-color: #5CC993;
-					border-color: #5CC993;
-				}
+	@media (max-width: 870px) {
+		.home-content .header {
+			.home-title {
+				font-size: 2.4em;
 			}
+			.home-action {
 
-			.home-action-content .action-content {
-				margin: 0 10%;
-				width: 80%;
+				.home-action-title {
+					@include flex-direction(column);
 
-				.submit-new-mr {
-					.type-service {
-						margin: 15px 0;
-						select {
-							font-size: 19px;
-							padding: 0 15px;
-						}
-						span {
-							top: 26px;
-						}
-					}
-					.input-address {
-						margin: 10px 0 30px 0;
-						textarea {
-							font-size: 19px;
+					button {
+						min-width: 250px;
+
+						&:hover {
+							color: white;
+							background-color: #5CC993;
+							border-color: #5CC993;
 						}
 					}
 				}
-				.login-button.new-mr-button {
-					margin: 30px 0 50px 0;
-				}
 
-				.tenant-home-button, .trady-home-button {
-					.btn {
-						font-size: 17px;
-						height: 40px;
+				.home-action-content .action-content {
+					margin: 0 10%;
+					width: 80%;
+
+					.submit-new-mr {
+						.type-service {
+							margin: 15px 0;
+							select {
+								font-size: 19px;
+								padding: 0 15px;
+							}
+							span {
+								top: 26px;
+							}
+						}
+						.input-address {
+							margin: 10px 0 30px 0;
+							textarea {
+								font-size: 19px;
+							}
+						}
+					}
+					.login-button.new-mr-button {
+						margin: 30px 0 50px 0;
+					}
+
+					.tenant-home-button, .trady-home-button {
+						.btn {
+							font-size: 17px;
+							height: 40px;
+						}
 					}
 				}
 			}
@@ -710,67 +738,75 @@ $color-red: #e34f4f;
 
 	@media (max-width: 500px) {
 		.background-image {
-			height: 850px;
+			height: 1000px;
 		}
-		.home-content .header .home-action {
-			width: 90%;
-
-			.home-action-title button {
-				font-size: 0.8em;
-				height: 30px;
-				padding: 0 5px;
+		.home-content .header {
+			.home-title {
+				font-size: 1.8em;
 			}
+			.home-action {
+				width: 90%;
 
-			.home-action-content .action-content {
-				margin: 0 10%;
-				width: 80%;
+				.choose-role-title {
+					font-size: 1.6em;
+				}
 
-				.login-info {
-					margin-top: 40px;
-					.login-input {
-						margin: 30px 0;
-						padding: 0 10px;
-						border: 2px solid white;
-						border-radius: 4px;
-						font-size: 13px;
-						@include flexbox;
-					}
-					span {
-						@include flexbox;
-						width: 60px;
-						color: white;
-						font-weight: 600;
-						@include justify-content(end);
-						@include justify-content(flex-end);
-						@include align-items(center);
-					}
-					input {
-						@include flex(1);
-						margin-top: auto;
-						color: white;
-						background: transparent;
-						border: none;
-						min-width: 0px;
-						&:-webkit-autofill {
-							-webkit-animation-name: autofill;
-							-webkit-animation-fill-mode: both;
+				.home-action-title button {
+					font-size: 1.2em;
+					height: 45px;
+				}
+
+				.home-action-content .action-content {
+					margin: 0 10%;
+					width: 80%;
+
+					.login-info {
+						margin-top: 40px;
+						.login-input {
+							margin: 30px 0;
+							padding: 0 10px;
+							border: 2px solid white;
+							border-radius: 4px;
+							font-size: 13px;
+							@include flexbox;
+						}
+						span {
+							@include flexbox;
+							width: 60px;
+							color: white;
+							font-weight: 600;
+							@include justify-content(end);
+							@include justify-content(flex-end);
+							@include align-items(center);
+						}
+						input {
+							@include flex(1);
+							margin-top: auto;
+							color: white;
+							background: transparent;
+							border: none;
+							min-width: 0px;
+							&:-webkit-autofill {
+								-webkit-animation-name: autofill;
+								-webkit-animation-fill-mode: both;
+							}
 						}
 					}
-				}
 
-				.submit-new-mr {
-					.type-service select {
-						font-size: 17px;
+					.submit-new-mr {
+						.type-service select {
+							font-size: 17px;
+						}
+						.input-address textarea {
+							font-size: 17px;
+						}
 					}
-					.input-address textarea {
-						font-size: 17px;
-					}
-				}
 
-				.tenant-home-button, .trady-home-button {
-					.btn {
-						font-size: 14px;
-						height: 40px;
+					.tenant-home-button, .trady-home-button {
+						.btn {
+							font-size: 14px;
+							height: 40px;
+						}
 					}
 				}
 			}
@@ -806,25 +842,35 @@ $color-red: #e34f4f;
 	}
 
 	@media (max-width: 380px) {
-		.home-content .header .home-action {
-
-			.home-action-title button {
-				font-size: 0.6em;
+		.home-content .header {
+			.home-title {
+				font-size: 1.4em;
 			}
+			.home-action {
 
-			.home-action-content .action-content {
-				.submit-new-mr {
-					.type-service select {
-						font-size: 12.5px;
-					}
-					.input-address textarea {
-						font-size: 12.5px;
-					}
+				.home-action-title button {
+					font-size: 1.1em;
 				}
 
-				.tenant-home-button, .trady-home-button {
-					.btn {
-						font-size: 12px;
+
+				.choose-role-title {
+					font-size: 1.3em;
+				}
+
+				.home-action-content .action-content {
+					.submit-new-mr {
+						.type-service select {
+							font-size: 12.5px;
+						}
+						.input-address textarea {
+							font-size: 12.5px;
+						}
+					}
+
+					.tenant-home-button, .trady-home-button {
+						.btn {
+							font-size: 12px;
+						}
 					}
 				}
 			}
@@ -851,9 +897,6 @@ $color-red: #e34f4f;
 			height: 900px;
 		}
 		.home-content .header .home-action {
-			.home-action-title button {
-				font-size: 0.5em;
-			}
 			.home-action-content .action-content {
 				.submit-new-mr {
 					.type-service {
