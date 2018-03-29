@@ -88251,7 +88251,7 @@ var HomeComponent = React.createClass({
     var step = this.detectStepFromRole(role, email_role);
 
     return {
-      active: !roleUsed ? 'Tenant' : roleUsed === 'AgencyAdmin' ? 'Agent' : roleUsed,
+      active: !roleUsed ? '' : roleUsed === 'AgencyAdmin' ? 'Agent' : roleUsed,
       step: step,
       signed: !!current_user,
       rolePicked: roleUsed || 'Tenant',
@@ -88333,6 +88333,14 @@ var HomeComponent = React.createClass({
       success: function (res) {},
       error: function (err) {}
     });
+  },
+
+  removeActive: function () {
+    $('body').animate({
+      scrollTop: $('#home-title').offset().top
+    }, 500);
+
+    this.setState({ active: '' });
   },
 
   handleLandlordCheckMR: function () {
@@ -89002,46 +89010,46 @@ var HomeComponent = React.createClass({
       React.createElement(
         'button',
         {
-          className: "tenant-title " + (active === 'Tenant' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
+          className: "tenant-title " + (!active || active === 'Tenant' ? 'active' : 'hidden '),
+          disabled: !!active,
           onClick: function () {
             return _this7.chooseUser('Tenant');
           }
         },
-        !signed && "For ",
-        'Tenants'
+        'I\'m a Tenant'
       ),
       React.createElement(
         'button',
         {
-          className: "trady-title " + (active === 'Trady' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
+          className: "trady-title " + (!active || active === 'Trady' ? 'active' : 'hidden '),
+          disabled: !!active,
           onClick: function () {
             return _this7.chooseUser('Trady');
           }
         },
-        !signed && "For ",
-        'Tradies'
+        'I\'m a Tradie'
       ),
       React.createElement(
         'button',
         {
-          className: "landlord-title " + (active === 'Landlord' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
+          className: "landlord-title " + (!active || active === 'Landlord' ? 'active' : 'hidden '),
+          disabled: !!active,
           onClick: function () {
             return _this7.chooseUser('Landlord');
           }
         },
-        !signed && "For ",
-        'Landlords'
+        'I\'m a Landlord'
       ),
       React.createElement(
         'button',
         {
-          className: "agent-title " + (active === 'Agent' ? 'active ' : !signed ? '' : 'hidden ') + (signed ? 'signed ' : ''),
+          className: "agent-title " + (!active || active === 'Agent' ? 'active' : 'hidden '),
+          disabled: !!active,
           onClick: function () {
             return _this7.chooseUser('Agent');
           }
         },
-        !signed && "For ",
-        'Agents'
+        'I\'m an Agent'
       )
     );
   },
@@ -89050,6 +89058,7 @@ var HomeComponent = React.createClass({
     var _state4 = this.state;
     var active = _state4.active;
     var step = _state4.step;
+    var signed = _state4.signed;
 
     var render = null;
 
@@ -89093,14 +89102,24 @@ var HomeComponent = React.createClass({
         }
         break;
     }
-    return React.createElement(
+    return active && React.createElement(
       'div',
       { className: 'home-action-content' },
-      React.createElement('div', { className: 'content-frame' }),
       React.createElement(
         'div',
         { className: 'action-content' },
         render && render()
+      ),
+      !signed && React.createElement(
+        'div',
+        { className: 'choose-other-role' },
+        React.createElement(
+          'button',
+          { onClick: this.removeActive },
+          'Not a ',
+          (active === 'Trady' ? 'Tradie' : active).toLowerCase(),
+          ' click here'
+        )
       )
     );
   },
@@ -89118,6 +89137,10 @@ var HomeComponent = React.createClass({
         showHowItWork = this.howItWorkForTrady;break;
       case 'Landlord':
         showHowItWork = this.howItWorkForLandlord;break;
+      default:
+        showHowItWork = function () {
+          return '';
+        };
     }
 
     return React.createElement(
@@ -89128,9 +89151,16 @@ var HomeComponent = React.createClass({
   },
 
   renderHomeAction: function () {
+    var active = this.state.active;
+
     return React.createElement(
       'div',
       { className: 'home-action' },
+      !active && React.createElement(
+        'h3',
+        { className: 'choose-role-title text-center' },
+        'Please choose one.'
+      ),
       this.homeActionTitle(),
       this.homeActionContent()
     );
@@ -89161,6 +89191,11 @@ var HomeComponent = React.createClass({
               null,
               'MaintenanceApp'
             )
+          ),
+          React.createElement(
+            'div',
+            { id: 'home-title', className: 'home-title' },
+            'Always getting things done.'
           ),
           this.renderHowItWork(),
           this.renderHomeAction(),
