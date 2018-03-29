@@ -568,7 +568,7 @@ var HomeComponent = React.createClass({
           !signed &&
           <div className="choose-other-role">
             <button onClick={this.removeActive}>
-              Not a {active.toLowerCase()} click here
+              Not a {(active === 'Trady' ? 'Tradie' : active).toLowerCase()} click here
             </button>
           </div>
       }
