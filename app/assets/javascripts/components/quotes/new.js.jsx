@@ -28,7 +28,7 @@ var QuoteField = React.createClass({
     const amount = this.amount && this.amount.value || '';
 
     if (amount === '') return error.filter(e => e.includes('blank'))[0];
-    if (!/^\d+$/.test(amount)) return error.filter(e => e.includes('number'))[0];
+    if (AMOUNT_REGEX.test(amount)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 
@@ -38,7 +38,7 @@ var QuoteField = React.createClass({
     const min_price = this.min_price && this.min_price.value || '';
 
     if (min_price === '') return error[0];
-    if (!/^\d+$/.test(min_price)) return error.filter(e => e.includes('number'))[0];
+    if (AMOUNT_REGEX.test(min_price)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 
@@ -48,7 +48,7 @@ var QuoteField = React.createClass({
     const max_price = this.max_price && this.max_price.value || '';
 
     if (max_price === '') return error[0];
-    if (!/^\d+$/.test(max_price)) return error.filter(e => e.includes('number'))[0];
+    if (AMOUNT_REGEX.test(max_price)) return error.filter(e => e.includes('number'))[0];
     return '';
   },
 
@@ -287,10 +287,10 @@ var QuoteFields = React.createClass({
   changeFee(value, type, index) {
     const {cost} = this.state;
     if (type === 'Range') {
-      if (!/^\d+$/.test(value.min) || !/^\d+$/.test(value.max)) return;
+      if (AMOUNT_REGEX.test(value.min) || AMOUNT_REGEX.test(value.max)) return;
     }
     else {
-      if (!/^\d+$/.test(value)) return;
+      if (AMOUNT_REGEX.test(value)) return;
     }
     if (cost[type]) {
       cost[type][index] = typeof value !== 'object'

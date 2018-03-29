@@ -915,8 +915,6 @@ $color-text: #83878C;
     }
     .invoice-button {
       button {
-        font-size: 9px;
-        height: 20px;
         max-width: 150px;
         padding: 0 5px;
       }
@@ -1271,8 +1269,35 @@ $color-text: #83878C;
   		text-decoration: blink;
   	}
   }
+  .alert {
+    max-width: 300px;
+    padding: 5px 10px;
+    margin: auto;
+    @include flexbox;
+    @include justify-content(center);
+  }
+  .service-fee {
+    margin-top: 20px;
+
+    .service-fee-title {
+      width: 220px;
+      padding-left: 10px;
+    }
+    span {
+      display: inline-block;
+    }
+  }
   input[type="text"], input[type="date"] {
     max-width: 300px;
     margin: auto;
+  }
+  @media (max-width: 500px) {
+    .alert {
+      @include flex-direction(column);
+    }
+    .service-fee .service-fee-title {
+      width: 100%;
+      padding: 0 5px;
+    }
   }
 }

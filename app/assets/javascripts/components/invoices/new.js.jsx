@@ -1,8 +1,3 @@
-const OVER_SERVICE_FEE = 0.10;
-const UNDER_SERVICE_FEE = 0.15;
-const ANGECY_SERVICE_FEE = 0.05;
-const OVER_AMOUNT = 500;
-
 var StepProgress = React.createClass({
   matchClass(nth, step) {
     if (nth < step)
@@ -407,7 +402,7 @@ var InvoiceItemField = React.createClass({
         if (!this.amount.value) {
           filterError['amount'] = amountError[0];
         }
-        else if (!/^\d+$/.test(this.amount.value) || this.amount.value === '0') {
+        else if (AMOUNT_REGEX.test(this.amount.value) || this.amount.value === '0') {
           filterError['amount'] = amountError.reverse()[0];
         }
       }
@@ -417,7 +412,7 @@ var InvoiceItemField = React.createClass({
         if (!this.hours.value) {
           filterError['hours'] = hoursError[0];
         }
-        else if (!/^\d+$/.test(this.hours.value) || this.hours.value === '0') {
+        else if (AMOUNT_REGEX.test(this.hours.value) || this.hours.value === '0') {
           filterError['hours'] = hoursError.reverse()[0];
         }
       }
@@ -627,7 +622,7 @@ var InvoiceField = React.createClass({
     return {
       invoice_total,
       service_fee: service_fee || 0,
-      agency_fee: invoice_total * ANGECY_SERVICE_FEE,
+      agency_fee: invoice_total * AGENCY_SERVICE_FEE,
       tax,
       hourly_total,
       items_total : tax ? items_total : invoice_total,
@@ -701,7 +696,7 @@ var InvoiceField = React.createClass({
       invoice_total: invoice_total,
       tax_total: this.state.tax ? invoice_total - invoice_total/(1.1) : 0,
       service_fee: (invoice_total * SERVICE_FEE).toFixed(2) || 0,
-      agency_fee: (invoice_total * ANGECY_SERVICE_FEE).toFixed(2) || 0,
+      agency_fee: (invoice_total * AGENCY_SERVICE_FEE).toFixed(2) || 0,
       hourly_total: isHourly ? hourly_total + price : hourly_total,
     });
   },
