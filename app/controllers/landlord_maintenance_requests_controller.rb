@@ -57,7 +57,7 @@ class LandlordMaintenanceRequestsController < ApplicationController
     @maintenance_request = MaintenanceRequest.find_by(id:params[:id])
     @non_json_quotes = @maintenance_request.quotes.where(:delivery_status=>true)
     # @quotes = @maintenance_request.quotes.where(:delivery_status=>true).as_json(:include => {:trady => {:include => :trady_company}, :quote_items => {}})
-    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image],quotes:[:quote_items, :quote_image]).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
+    @quote_requests = @maintenance_request.quote_requests.includes(trady:[:trady_profile_image, :trady_company=> :trady_company_profile_image],quotes:[:quote_items, :quote_image]).as_json(:include => {:trady => {:include => {:trady_profile_image=>{:methods => [:image_url]},:trady_company=>{:include=>{:trady_company_profile_image=>{:methods => [:image_url]}}}}}, :customer_profile=>{},:quotes=>{:include=> {:quote_image=>{:methods=>[:image_url]},:quote_items=>{}}} })
     @agency = @maintenance_request.property.agency
     @email_quote_id = params[:email_quote_id]
     @pdf_files = @maintenance_request.delivered_uploaded_invoices
