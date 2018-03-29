@@ -220,16 +220,19 @@ var AddInvoicePDF = React.createClass({
 								</div>
 						}
     				<p id="errorbox" className="error">{errorFile ? errorFile[0] : ''}</p>
-						<input
-              type="text"
-              className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
-              placeholder="Total Invoice Amount"
-              value={total_invoice_amount}
-              ref={amount => this.amount = amount}
-              onChange={this.changeTotalAmount}
-              id="uploaded_invoice_maintenance_request_id"
-              name="uploaded_invoice[total_invoice_amount]"
-            />
+    				<div className="text-center">
+	            <p> Total Invoice Amount: </p>
+							<input
+	              type="text"
+	              className={'text-center ' + (errorAmount ? 'border_on_error' : '')}
+	              placeholder="Total Invoice Amount"
+	              value={total_invoice_amount}
+	              ref={amount => this.amount = amount}
+	              onChange={this.changeTotalAmount}
+	              id="uploaded_invoice_maintenance_request_id"
+	              name="uploaded_invoice[total_invoice_amount]"
+	            />
+            </div>
     				<p id="errorbox" className="error">{errorAmount ? errorAmount[0] : ''}</p>
 	          <div className="text-center">
 	            <p> Invoice Due On: </p>
