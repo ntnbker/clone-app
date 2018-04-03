@@ -73,6 +73,26 @@ class PagesController < ApplicationController
     end
     
   end
+
+
+  def general_terms
+    
+  end
+
+  def privacy_policy
+    
+  end
+
+  def about
+    
+  end
+
+  def support
+    
+  end
+  
+
+
   
   private
 

@@ -9,7 +9,13 @@ Rails.application.routes.draw do
   ###################################################
     root :to => 'pages#home'
     post 'route_user_type' =>"pages#create"
-  
+  ###################################################
+  ##########STATIC PAGES RESOURCES/ROUTES############
+  ###################################################
+    get "general_terms_and_conditions"=> "pages#general_terms"
+    get "privacy_policy"=> "pages#privacy_policy"
+    get "about" => "pages#about"
+    get "support" => "pages#support"
   ###################################################
   ##########USER RESOURCES/ROUTES####################
   ###################################################
