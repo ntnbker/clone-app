@@ -91,9 +91,15 @@ class PagesController < ApplicationController
     
   end
   
+  def tradie_terms_and_conditions
+    
+  end
+
+  def agent_terms_and_conditions
+    
+  end
 
 
-  
   private
 
   def query_params
