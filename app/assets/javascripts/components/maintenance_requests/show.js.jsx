@@ -390,6 +390,7 @@ var SideBarMobile = React.createClass({
 						close={this.close}
 						tenants={this.props.tenants}
 						landlord={this.props.landlord}
+						assigned_trady={this.props.assigned_trady}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/>
 				</div>
