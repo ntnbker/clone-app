@@ -285,7 +285,7 @@ var ButtonHeaderMR = React.createClass({
     	},
     	{
     		title: "Archive",
-    		value: "Archive",
+    		value: "Jobs Completed",
     	}
     ];
 

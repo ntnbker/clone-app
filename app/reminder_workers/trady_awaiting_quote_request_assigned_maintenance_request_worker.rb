@@ -20,10 +20,14 @@ class TradyAwaitingQuoteRequestAssignedMaintenanceRequestWorker
       quote_requests.each do |quote_request|
 
         if quote_request.maintenance_request.trady == quote_request.trady && quote_request.quote_id != nil
-          trady = quote_request.trady
-          property = quote_request.maintenance_request.property
-          maintenance_request = quote_request.maintenance_request
-          TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request).deliver
+          if quote_request.maintenance_request.action_status.trady_status == "Job Complete"
+            #do nothing
+          else
+            trady = quote_request.trady
+            property = quote_request.maintenance_request.property
+            maintenance_request = quote_request.maintenance_request
+            TradyMailer.reminder_awaiting_quote_request(maintenance_request, trady, property, quote_request).deliver
+          end 
 
         else
          #do nothing

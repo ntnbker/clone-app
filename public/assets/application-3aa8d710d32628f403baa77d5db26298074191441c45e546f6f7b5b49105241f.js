@@ -71283,7 +71283,6 @@ var Payment = React.createClass({
 
   submit: function (e) {
     e.preventDefault();
-    debugger;
     var card = this.state.card;
 
     var self = this;
@@ -81973,7 +81972,7 @@ var ButtonHeaderMR = React.createClass({
 			value: "Defer"
 		}, {
 			title: "Archive",
-			value: "Archive"
+			value: "Jobs Completed"
 		}];
 
 		return {
@@ -84321,6 +84320,7 @@ var SideBarMobile = React.createClass({
 					close: this.close,
 					tenants: this.props.tenants,
 					landlord: this.props.landlord,
+					assigned_trady: this.props.assigned_trady,
 					onModalWith: function (modal) {
 						return _this4.props.onModalWith(modal);
 					}
@@ -87851,7 +87851,7 @@ var ContentMessage = React.createClass({
 
 		var generateKey = this.generateKey;
 		var getSenderName = this.getSenderName;
-		debugger;
+
 		if (!!messages) {
 			return React.createElement(
 				'ul',
@@ -88456,6 +88456,2363 @@ var ModalNotification = React.createClass({
 			)
 		);
 	}
+});
+var About = React.createClass({
+  displayName: "About",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { id: "static-pages", className: "about" },
+      React.createElement(
+        "div",
+        { className: "scroll-bar" },
+        React.createElement(
+          "h4",
+          { className: "text-center title" },
+          "About"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "Maintenance App is a cloud based platform that helps organize and log maintenance issues involving your properties.Since 2015 Maintenance App has strived to make the experience of dealing with maintenance issues the best it can be. We designed our platform by thinking of the needs and desires of property managers, landlords, tenants, and tradies. By allowing property managers to quickly organize maintenance requests submitted by tenants we help them accomplish their work quickly and efficiently."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "Using our on demand network of verified tradies, agents and landlord can effortlessly request competitive quotes for jobs that are required to be completed. We give property managers and landlords competitive quotes to help maintain their properties in great condition."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We offer tradies an opportunity to grow their business by receiving high quality leads, which is why many tradies love being on our network. We love helping out small businesses reach their full potential."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We want to thank you for joining us, we hope you enjoy our platform!"
+        )
+      )
+    );
+  }
+});
+var AgentTerms = React.createClass({
+  displayName: "AgentTerms",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { id: "static-pages", className: "agent-terms-and-conditions" },
+      React.createElement(
+        "div",
+        { className: "scroll-bar" },
+        React.createElement(
+          "h4",
+          { className: "text-center title" },
+          "­Agent Terms"
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1"
+          ),
+          " Agent Terms and Generalal Terms"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.1"
+          ),
+          " This website, app, platform and any service offered under the name “Maintenance App” (“",
+          React.createElement(
+            "b",
+            null,
+            "Platform"
+          ),
+          "”) is operated and owned by Lab Developed Pty Ltd (ACN 608 599 293) and its related entities or body corporates (“",
+          React.createElement(
+            "b",
+            null,
+            "us"
+          ),
+          "”, “",
+          React.createElement(
+            "b",
+            null,
+            "we"
+          ),
+          "” and “",
+          React.createElement(
+            "b",
+            null,
+            "our"
+          ),
+          "”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.2"
+          ),
+          " All use of this Platform is subject to the General Terms of Use (“",
+          React.createElement(
+            "b",
+            null,
+            "General Terms"
+          ),
+          "”) ",
+          React.createElement(
+            "a",
+            { "no-href": true },
+            "[CREATE LINK]"
+          ),
+          ". In addition, if you have registered to Platform as an ",
+          React.createElement(
+            "b",
+            null,
+            "Agent"
+          ),
+          ", you also agree to be bound by these Agent Terms (“",
+          React.createElement(
+            "b",
+            null,
+            "Agent Terms"
+          ),
+          "”). Your continued use of the Platform constitutes acceptance of these Agent Terms and is strictly conditional on full compliance with these Agent Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.3"
+          ),
+          " All capitalised words used in these Agent Terms have the same meaning as in the General Terms unless the context requires otherwise."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.4"
+          ),
+          " We may amend or modify the Platform or the Agent Terms at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the General Terms as modified."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.5"
+          ),
+          " These Agent Terms will prevail over any other terms or agreement between you and us."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2"
+          ),
+          " Your use of the Platform"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.1"
+          ),
+          " These Agent Terms apply to you because you have registered as an Agent, who wishes to facilitate the provision of various maintenance services (“",
+          React.createElement(
+            "b",
+            null,
+            "Services"
+          ),
+          "”) by Tradies (“",
+          React.createElement(
+            "b",
+            null,
+            "Tradie"
+          ),
+          "”) to owners (“",
+          React.createElement(
+            "b",
+            null,
+            "Owners"
+          ),
+          "”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.2"
+          ),
+          " Unless the context requires otherwise, your actions while using the Platform are done in your capacity as the agent for each relevant Owner. Nevertheless, you are bound by both the General Terms and these Agent Terms in your personal capacity, and not merely as an agent of the Owner."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.3"
+          ),
+          " This Platform only operates as a venue for you, on behalf of each relevant Owner, to send out job or quote requests and ensure the Owner receives Services from various Tradie. Each time a Tradie agrees to provide the Owner with Services, the Owner will enter into an independent and separate agreement for the provision of the Services with that Tradie (each a “",
+          React.createElement(
+            "b",
+            null,
+            "Service Agreement"
+          ),
+          "”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.4"
+          ),
+          " The terms of each Service Agreement will be negotiated between you on behalf of the Owner (or sometimes the Owner directly) and the Tradie. These terms must include the Services to be provided and the remuneration due to the Tradie (“",
+          React.createElement(
+            "b",
+            null,
+            "Service Fee"
+          ),
+          "”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.5"
+          ),
+          " You and the Owner are solely responsible that the Owner makes the payment of the Service Fee to the Tradie, and the Tradie is solely responsible for the performance of the Services. We are not liable for the Services or the Service Fee in any way. Any claims or demands must be brought against the relevant User as applicable."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.6"
+          ),
+          " Each Service Agreement is a separate agreement between the Owner and the Tradie. We are not a party to the Service Agreement in any way, and its formation will not, under any circumstance, create an employment between us and you. Nothing in these Agent Terms or otherwise will or is intended to establish a relationship of partnership, agency or employment between us and you, and it is the intention of the parties that any such relationship is expressly denied."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.7"
+          ),
+          " You agree that you may seek out new Tradies through our “Just Find Me One” function (“",
+          React.createElement(
+            "b",
+            null,
+            "JFMO Function"
+          ),
+          "”)."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3"
+          ),
+          " Your warranties"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.1"
+          ),
+          " You make the following warranties to us on registration, each time you sign in and each time you facilitate the formation of a new Service Agreement. You also acknowledge that the warranties are essential terms of these Agent Terms and that your registration as Agent is strictly conditional on full compliance with all warranties."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.2"
+          ),
+          " Qualifications:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " You warrant and acknowledge that you hold, and will continue to hold for the term of this agreement, all certificates, licences, memberships and qualifications required for the purpose of this agreement (for example, being a licensed real estate agent)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " You may be required to provide evidence that you hold current certificates, licences, memberships and qualifications."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " If you do not (or cease to) hold any such certificate, licence, membership or qualification at any time for whatever reason (including if it is suspended or cancelled), you must immediately notify us."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.3"
+          ),
+          " Authority:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " You warrant that you have entered into all requisite agency agreements with each Owner and that you have full authority to act on each Owner’s behalf in all matters in connection with the Platform;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " You may be required to provide evidence that you hold such valid agency agreements and/or authority; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " If you do not (or cease to) hold any such valid agency agreements and/or authority at any time for whatever reason (including if it is suspended or cancelled), you must immediately notify us."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.4"
+          ),
+          " You must comply with all the requirements of each relevant law, regulation, Authorisation, ruling, judgment, order or decree of any governmental agency relevant to the performance of the Services under any Service Agreement, including complying with the Privacy Act 1988 (Cth); and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.5"
+          ),
+          " You warrant that you will comply with any of our reasonable directions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.6"
+          ),
+          " These warranties are in addition to any warranties and obligations you have under the General Terms."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4"
+          ),
+          " Subscription Fee"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.1"
+          ),
+          " In consideration for being able to use the Platform as an Agent, and us letting you participate in the JFMO Function, you agree that you must pay to us a monthly subscription fee of $[please insert] (“",
+          React.createElement(
+            "b",
+            null,
+            "Subscription Fee"
+          ),
+          "”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.2"
+          ),
+          " The Subscription Fee will be paid upfront, by way of a direct debit in advance. By using the Platform, you irrevocably request and authorise us to arrange, through financial institutions, to debit the Referral Fees from your nominated account. You will do any reasonable action necessary to assist us with setting up this direct debit. We will issue you with invoices for the Referral Fees."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.3"
+          ),
+          " The Subscription Fee is non-refundable and there are no refunds or credits for partially used periods."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.4"
+          ),
+          " We reserve the right to amend the Subscription Fee at any time by amending these Agent Terms on our website. The amended Subscription Fee will apply starting on your next billing period."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.5"
+          ),
+          " If you fail to pay the Subscription Fee for any reason, your access to the Platform may be suspended or terminated immediately."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5"
+          ),
+          " Rebate"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5.1.1"
+          ),
+          " When a Tradie is referred to you through the JFMO Function and subsequently we receive a referral fee from the Tradie (“",
+          React.createElement(
+            "b",
+            null,
+            "Referral Fee"
+          ),
+          "”), you are entitled to receive a rebate as set out below:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " if the Referral Fee is 10% of the relevant Service Fee, then the rebate will be 2.5% of the Service Fee"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " if the Referral Fee is 15% of the relevant Service Fee, then the rebate will be 5% of the Service Fee."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5.1.2"
+          ),
+          " The Rebate will be paid to you by way of credit on your account or otherwise bank transfer to your nominated bank account within 30 days of the day we receive the Referral Fee from the relevant Tradie."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6"
+          ),
+          " Other Agreements"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6.1.1"
+          ),
+          " You acknowledge that we may enter into separate agreements with other users of the Platform, including but not limited to the Owners, Tradies and Tenants. Those agreements are separate agreements and you are not entitled to rely on the terms of those agreements in any way."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7"
+          ),
+          " Disclaimer and limitation of liability"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.1"
+          ),
+          " We exclude all warranties, conditions, terms, representations, statements and promises of whatever nature, whether express or implied (“",
+          React.createElement(
+            "b",
+            null,
+            "Warranties"
+          ),
+          "”) other than those expressly set out in these Agent Terms or the General Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.2"
+          ),
+          " We exclude any Warranties in relation to the accuracy, suitability, completeness, fitness for purpose, quality or anything else in relation to any other user of the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.3"
+          ),
+          " You acknowledge that you must rely only on your own enquiries in relation to any user of the Platform, or any other information or material contained on the Platform. You should not rely solely on any information on the Platform to make business or personal medical decisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.4"
+          ),
+          " We provide the Platform on an “as is” and on an “as available” basis without any Warranties as to continuous, uninterrupted or secure access to the Platform, that its servers are free of computer viruses, bugs or other harmful components, that defects will be corrected, or that you will not have disruption or other difficulties in using the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.5"
+          ),
+          " We are not responsible for any action of any third-party, user, Resident, Owner, other Agent or Tradie. Any dealings you have with such parties are exclusively entered into between you and them."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.6"
+          ),
+          " We are not party to any Service Agreement and any claim in relation to a Service Agreement must be brought against the relevant Owner or Tradie as applicable."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.7"
+          ),
+          " In the event that we terminate the Platform or your access to the Platform, you release us from all liability, loss or claims suffered by you as result of or arising out of such termination."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.8"
+          ),
+          " To the extent that legislation or other law restricts our right to exclude Warranties under these Agent Terms or the General Terms, the Agent Terms and the General Terms must be read subject to those provisions and nothing in these Agent Terms and General Terms is intended to alter or restrict the operation of such provisions. If those statutory provisions apply, notwithstanding any other provision of these Agent Terms and General Terms, to the extent that we are entitled to do so, we limit our liability pursuant to such provisions:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " in the case of goods:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " the replacement of the goods or the supply of equivalent goods;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " the payment of the cost of replacing the goods or of acquiring equivalent goods; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " in the case of services:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " the supply of the services again; or"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " the payment of the cost of having the services supplied again."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.9"
+          ),
+          " Our liability arising in connection with the Agent Terms and General Terms or the Platform is limited as follows:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " we are not liable for any consequential, special, indirect or remote loss;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " wur total maximum total liability arising in connection with these Agent Terms is capped to the total Service Fee of the relevant Service Agreement or if this is not enforceable, the total net Service Fees recovered by you over the last 12 month period;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " wur liability is limited to the extent that you contributed to the liability;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(d)"
+          ),
+          " we will not be liable to any claim commenced later than 6 months after you had become aware of the facts giving rise to it; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(e)"
+          ),
+          " our liability is subject to your duty to mitigate your loss."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.10"
+          ),
+          " All of the above subclauses are cumulative to one another."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8"
+          ),
+          " Release"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8.1.1"
+          ),
+          " To the maximum extent permitted by law, you agree to release us and our officers, directors, shareholders, agents, employees, consultants, affiliates, subsidiaries, sponsors, and other third-party partners (“",
+          React.createElement(
+            "b",
+            null,
+            "Released Parties"
+          ),
+          "”) from claims, demands, and damages (direct and consequential) of every kind and nature, known and unknown, now and in the future (“",
+          React.createElement(
+            "b",
+            null,
+            "Claims"
+          ),
+          "”), arising out of or in any way connected with any Service Agreement, user, Resident, Owner, Agent, Tradie, transaction with a third party, your interactions with other members, or in connection with the Platform. You further waive any and all rights and benefits otherwise conferred by any statutory or non-statutory law of any jurisdiction that would purport to limit the scope of a release or waiver. This clause survives termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9"
+          ),
+          " Indemnity"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9.1.1"
+          ),
+          " You agree to indemnify, defend and hold all the Released Parties harmless from any Claims, made by any third party (including an Owner, Resident, Agent, or Tradie) made in relation to any Service Agreement or your breach of these Agent Terms. You agree to promptly notify us of any third-party Claims, cooperate with all Released Parties in defending such Claims and pay all fees, costs and expenses associated with defending such Claims (including, but not limited to, legal fees). You agree not to settle any Claim without our prior written consent. This clause survives termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10"
+          ),
+          " Termination"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10.1.1"
+          ),
+          " These Agent Terms terminate automatically if we cease to operate the Platform for any reason."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10.1.2"
+          ),
+          " You acknowledge and agree that:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " we may terminate your access to the Platform at any time without giving any explanation."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " we may terminate the Agent Terms immediately by notice to you in writing if you are deemed to breach these General Terms or associated policies in any way, in our sole discretion."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " termination of the Agent Terms or your access to the Platform does not release you from any of your obligations and liabilities that may have arisen or been incurred prior to the date of such termination, or any provisions which are intended to survive termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11"
+          ),
+          " General"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.1"
+          ),
+          " You must not assign, sublicense or otherwise deal in any other way with any of your rights under these Agent Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.2"
+          ),
+          " If a provision of these Agent Terms is invalid or unenforceable it is to be read down or severed to the extent necessary without affecting the validity or enforceability of the remaining provisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.3"
+          ),
+          " These Agent Terms are governed by the laws of NSW, Australia and each party submits to the jurisdiction of the courts of that State and all courts of appeal therefrom."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.4"
+          ),
+          " Any waiver of any term on these Agent Terms by us can only be done in express writing. Any failure on our part to enforce a term does not constitute a waiver and we reserve the right in relation to all breaches unless expressly stated otherwise."
+        )
+      )
+    );
+  }
+});
+var GeneralTerms = React.createClass({
+  displayName: "GeneralTerms",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { id: "static-pages", className: "general-terms-and-conditions" },
+      React.createElement(
+        "div",
+        { className: "scroll-bar" },
+        React.createElement(
+          "h4",
+          { className: "text-center title" },
+          "Platform General Terms of Use"
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1"
+          ),
+          " Acceptance of General Terms"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.1"
+          ),
+          " This website, app, platform and any service offered under the name “Maintenance App” (“",
+          React.createElement(
+            "b",
+            null,
+            "Platform"
+          ),
+          "”) is operated and owned by Lab Developed Pty Ltd (ACN 608 599 293) and its related entities or body corporates (“",
+          React.createElement(
+            "b",
+            null,
+            "us"
+          ),
+          "”, “",
+          React.createElement(
+            "b",
+            null,
+            "we"
+          ),
+          "” and “",
+          React.createElement(
+            "b",
+            null,
+            "our"
+          ),
+          "”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.2"
+          ),
+          " Your use of this Platform is subject to these terms of use (“",
+          React.createElement(
+            "b",
+            null,
+            "General Terms"
+          ),
+          "”).  The General Terms constitute a binding legal agreement between you and us, and your continued use of the website constitutes your acceptance of these General Terms and also our Privacy Policy ",
+          React.createElement(
+            "a",
+            { "no-href": true },
+            "[CREATE LINK]"
+          ),
+          " and any other policy displayed on the Platform, which constitutes a part of the General Terms. If you do not agree to the General Terms and our Privacy Policy, you must not use the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.3"
+          ),
+          " We may amend or modify the Platform, the General Terms and/or the Privacy Policy at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the General Terms as modified."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1.1.4"
+          ),
+          " These General Terms will prevail over any other terms or agreement between you and us, except the Tradie Terms or Agent Terms ",
+          React.createElement(
+            "a",
+            { "no-href": true },
+            "[CREATE LINKS]"
+          ),
+          " (if Applicable)."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2"
+          ),
+          " Definitions"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2.1.1"
+          ),
+          " In these Terms, the following capitalised terms have the following meaning:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Agent"
+          ),
+          " means the managing agent of the Owner, who acts on behalf of the Owner."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Copyright Act"
+          ),
+          " means Copyright Act 1968 (Cth)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "General Terms"
+          ),
+          " means these Platform General Terms of Use which include the Privacy Policy."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Notification"
+          ),
+          " means an alert by a Resident to the relevant Agent or Owner that Services may be required at the property."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Owner"
+          ),
+          " means a legal owner, or someone so authorised by the legal owner, of the relevant property."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Permitted Region"
+          ),
+          " means Australia."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Platform"
+          ),
+          " means this website, app, platform and any service offered under the name “Maintenance App”."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Quote"
+          ),
+          " means an offer by the Tradie to provide Services."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Resident"
+          ),
+          " means a tenant, occupier or resident of properties who may use the Platform to alert Owners or Agents that Services may be required."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Service Agreement"
+          ),
+          " means an agreement between a Tradie and an Owner for the provision of Services on the terms in the relevant Quote or Work Order."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Service Fee Limit"
+          ),
+          " means an indicative sum specified by an Owner (or Agent on behalf of an Owner) in a Work Order as the maximum amount the Owner will agree to pay in relation to the Services."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Service Fee"
+          ),
+          " means the fee payable by the Owner to the Tradie in exchange for the Services."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Services"
+          ),
+          " mean maintenance and repair services for residential and commercial properties (including strata)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Tradie"
+          ),
+          " means a maintenance worker who provides Services through the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "User"
+          ),
+          " means any user of this Platform, including but not limited to any Resident, Owner, Agent or Tradie, irrespective of whether registered or not."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            null,
+            "Work Order"
+          ),
+          " an offer by the Owner, or the Agent on behalf of the Owner, for a Tradie to provide Services."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3"
+          ),
+          " Warrant of Authority"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.1"
+          ),
+          " Your use of the Platform is conditional on you being:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " At least 18 years old and having the legal capability to enter into binding contracts; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " A resident of the Permitted Region, using the Platform in the Permitted Region and only with credit, debit or prepaid cards issued by financial institutions in the Permitted Region."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3.1.2"
+          ),
+          " Accordingly, by using the Platform, you warrant the above to us. If the above conditions are not satisfied, please cease using the Platform immediately."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4"
+          ),
+          " Registration"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.1"
+          ),
+          " You may be required to be a registered member to access certain features of our Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.2"
+          ),
+          " When you register and activate your account, you will provide us with personal information such as your name and email address and other details. You must ensure that this information is accurate and current. We will handle all personal information we collect in accordance with our Privacy Policy."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.3"
+          ),
+          " We will provide you with a user name and password. You are responsible for keeping this user name and password secure and are responsible for all use and activity carried out under this user name. You must not to share your account credentials with any third party. We do not authorise anyone to use the service on your behalf, and we will not be liable for any loss or damage arising from any kind of unauthorised activity that takes place under your account."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.4"
+          ),
+          " You must not impersonate some other individual, business or company. In case you try to present yourself as another individual or company, your account may be suspended and a legal action may be taken against you."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4.1.5"
+          ),
+          " We collect personal information about you in order to provide you with services, register your account and for purposes otherwise set out in our Privacy Policy. We may disclose that information to third parties that help us deliver our services (including information technology suppliers, communication suppliers and our business partners) or as required by law. If you do not provide this information, we may not be able to provide all of our services or products to you.  By providing your personal information to us, you consent to the collection, use, storage and disclosure of that information as described in the Privacy Policy and these General Terms."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5"
+          ),
+          " Your Content"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5.1.1"
+          ),
+          " Where the Platform allows you to upload any content whatsoever to the Platform (“",
+          React.createElement(
+            "b",
+            null,
+            "Your Content"
+          ),
+          "”), you:"
+        ),
+        React.createElement(
+          "p",
+          { id: "5.1.a", className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " Grant us a perpetual, non-exclusive, royalty-free, irrevocable, worldwide and transferable right and licence to use Your Content in any way (including, without limitation, by reproducing, modifying, and communicating Your Content to the public) and permit us to authorise any other person to do the same thing;"
+        ),
+        React.createElement(
+          "p",
+          { id: "5.1.b", className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " To the full extent permitted by law, consent to any act or omission by us which would otherwise constitute an infringement of your moral rights under the Copyright Act in relation to Your Content; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " Acknowledge and agree that we may delete, modify, or otherwise exploit in any manner contemplated by the Copyright Act any of Your Content submitted to or via the Platform by you."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5.1.2"
+          ),
+          " In each instance when you upload Your Content to or via the Platform, you:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " Represent and warrant to us that you have all right, title, interest and authority in Your Content which is necessary to grant the licences and consents set out in clauses 5.1(a) and 5.1(b);"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " Represent and warrant to us that you have the permission to use the name and likeness of each person whose image appears in any of Your Content in the manner contemplated by these General Terms;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " Represent and warrant to us that the use or exploitation of Your Content by us or any other user of the Platform will not infringe the rights of any third party (including, but are not limited to, intellectual property rights and privacy rights); and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(d)"
+          ),
+          " Agree and undertake to us to pay all amounts which become owing to any person (whether by way of royalty or otherwise) as a result of or in connection with your submission of Your Content to or via the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5.1.3"
+          ),
+          " This clause will survive termination of these General Terms."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6"
+          ),
+          " Your conduct"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6.1.1"
+          ),
+          " In using the Platform, you must:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " Strictly comply with any policy displayed on our Platform;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " Obey all laws whatsoever (including international law) which may apply in respect of your use of the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " Not take any action that is likely to impose upon the Platform or our (or our third-party service providers) a disproportionately large load;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(d)"
+          ),
+          " Not interfere with the proper working of the Platform or any activities conducted via the Platform, including by using any automated or manual software or process to \"crawl\", \"spider\" or engage in similar conduct in relation to the Platform;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(e)"
+          ),
+          " Except to the extent the Copyright Act allows you to do so, not reverse engineer or otherwise seek to obtain any source code forming part of the Platform;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(f)"
+          ),
+          " Not add any Your Content:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " Unless you hold all necessary rights, licences and consents to do so;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " That may result in you or us breaching any law, regulation, rule, code or other legal obligation;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(iii)"
+          ),
+          " That is or could reasonably be considered to be obscene, inappropriate, defamatory, disparaging, indecent, seditious, offensive, pornographic, threatening, abusive, liable to incite racial hatred, discriminatory, profane, in breach of confidence, in breach of privacy or harassing;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(iv)"
+          ),
+          " That would bring us or the Platform into disrepute;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(v)"
+          ),
+          " That infringes the rights of any person;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(vi)"
+          ),
+          " That you know (or ought reasonably suspect) is false, misleading, untruthful or inaccurate;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(vii)"
+          ),
+          " That contains unsolicited or unauthorised advertising (including junk mail or spam); or"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(viii)"
+          ),
+          " That contains computer or software viruses, files or programs that are designed to interfere with the ordinary functionality of the Platform, or obtain unauthorised access to any system, information, security device belonging to us or any third party."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7"
+          ),
+          " Using the Platform"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.1"
+          ),
+          " This Platform is used by multiple users in order to book Services."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.2"
+          ),
+          " A Resident may submit a Notification to the Agent that Services may be required. A Resident is not entitled to enter into any agreement with any Tradies. The Resident undertakes to comply with these Terms in exchange for being able to use the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.3"
+          ),
+          " The Notification will be forwarded to the relevant Agent managing the relevant property."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.4"
+          ),
+          " An Agent is entitled to:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " Unless the Owner stated otherwise in writing, act under the Owner’s authority to either:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " Request a Quote from Tradies; or"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " Send a Work Order to a particular Tradie; or"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " Forward the matter to the Owner for instructions;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.5"
+          ),
+          " In the event that the Agent elects to forward the matter to the Owner pursuant to clause 7.5(b), the Owner is entitled to:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " Resolve the issue directly with the Resident (for example, by providing the Services); or"
+        ),
+        React.createElement(
+          "p",
+          { id: "7.5.b", className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " Request a Quote from Tradies."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.6"
+          ),
+          " A Work Order constitutes a binding offer by the Owner, or the Agent on behalf of the Owner, for the Tradie to provide the Services set out in the Work Order for the relevant Property. A Work Order must specify the Services required and the Service Fee Limit, and may also include time frames and any other relevant details which the Owner wishes to incorporate. If the Work Order is accepted by the Tradies, the Owner and the Tradies enter into a Service Agreement on the terms of the Work Order."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.7"
+          ),
+          " A Quote constitutes a binding offer by the Tradies to provide Services to the Owner on the terms of the Quote. A Quote must specify the Services to be provided and the Service Fee to be paid, and may also include time frames and any other relevant details which the Tradie wishes to incorporate. If the Quote is accepted by the Owner, or the Agent on behalf of the Owner, the Owner and the Tradies enter into a Service Agreement on the terms of the Quote."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.8"
+          ),
+          " A Quote or Work Order may be revoked or modified at any time before it is accepted."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.9"
+          ),
+          " Services may only include residential maintenance services. Users are not permitted to request other services and Tradies are not allowed to perform other services, including any professional services."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.10"
+          ),
+          " The parties are entitled to vary or amend the Service Agreement (using the Platform) by agreement so long as the amendment is recorded on the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.11"
+          ),
+          " Both the Tradie and Owner (or Agent on behalf of the Owner) are required to notify us (using the Platform) once the Services have been completed;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7.1.12"
+          ),
+          " The Service Agreement is a separate agreement between the Tradie and Owner. We are not a party to the Service Agreement in any way, and its formation will not, under any circumstance, create an employment relationship between us and any of the Resident, Owner, Agent or Tradie. You acknowledge that we may collect various referral or subscription fees from the Tradies and/or Agents as part of an independent contract between us and the relevant party."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8"
+          ),
+          " Fees"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8.1.1"
+          ),
+          " Currently, we do not collect any fees from Residents – we currently only collect fees from Tradies and Agents pursuant to our separate agreements with those respective parties."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8.1.2"
+          ),
+          " We reserve the right implement a new fee, or modify an existing fee, for certain current or future features of our Platform. If we implement a new or modified fee, we will give you advanced notice such as by posting changes on our Platform or sending you an email. You agree to pay those fees and any associated taxes for your continued use of the applicable service. Unless otherwise stated, all fees and all transactions are in AUD. All fees are exclusive of applicable federal, state, local, or other taxes."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8.1.3"
+          ),
+          " We have no control over any fees set out in any Quotes or Work Orders."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8.1.4"
+          ),
+          " During your use of the Platform, you or other users may receive offers from third parties (including other users of this website), such as discounts, sponsorships, or other benefits. We are not involved in any dealings or payments between you and third parties, and these General Terms do not govern such transactions."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9"
+          ),
+          " Intellectual Property Rights"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9.1.1"
+          ),
+          " Except where otherwise indicated, we are the sole owners or licensee of all intellectual property comprised in the Platform (including all intellectual property comprised in the Platform content), and nothing in these General Terms constitutes a transfer of any intellectual property rights in or related to the Platform or Platform content."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9.1.2"
+          ),
+          " You acknowledge and agree that the Platform and the content contained therein are protected by copyright, trademarks, service marks, patents, design registrations, and other proprietary rights and laws, and you agree to comply with and maintain all copyright notices and other restrictions on content accessed on or via the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9.1.3"
+          ),
+          " You must not do anything which breaches or otherwise interferes with our intellectual property rights or the intellectual property rights of any of its third-party licensors. You may not distribute, reproduce, publish, alter, modify or create derivative works from the Platform content without our prior written permission or the relevant third-party licensor or exploit such contents for commercial benefit."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9.1.4"
+          ),
+          " You acknowledge and agree that damages may not be an adequate remedy for a breach of this clause 4 and that equitable or injunctive relief may be necessary."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10"
+          ),
+          " Third party sites"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10.1.1"
+          ),
+          " The Platform may contain links to websites that are owned and operated by third parties. We have no control over these external websites, which are governed by terms and conditions and privacy policies independent of us."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10.1.2"
+          ),
+          " You acknowledge and agree that when you access a third-party website available via a link contained on the Platform:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " You do so at your own risk and understand that you should review the privacy policy and terms and conditions of that website;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " We are not liable for the content, accuracy, lawfulness, appropriateness, or any other aspect of that third-party website; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " You acknowledge and agree that to the full extent permitted by applicable law, we will not be liable for any loss or damage suffered by you or any other person as a result of or in connection with your access or use of any third-party website available via a link on the Platform."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11"
+          ),
+          " Disclaimer and limitation of liability"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.1"
+          ),
+          " We exclude all warranties, conditions, terms, representations, statements and promises of whatever nature, whether express or implied (“",
+          React.createElement(
+            "b",
+            null,
+            "Warranties"
+          ),
+          "”) other than those expressly set out in these General Terms and any other terms displayed on our website and applicable to you (for example, Tradies Terms or Agent Terms)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.2"
+          ),
+          " We exclude any Warranties in relation to the accuracy, suitability, completeness, fitness for purpose, quality or anything else in relation to the goods or services offered by, through, or on the Platform, including any Services offered or any User. We do not endorse any particular User, and any rating information displayed on the Platform consists of statements of opinion and not statements of fact or recommendations."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.3"
+          ),
+          " You acknowledge that you must only rely on your own enquiries in relation to such goods and services, Users and Services or any other information or material contained on the Platform. You should not rely solely on any information on the Platform to make business or personal medical decisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.4"
+          ),
+          " We provide the Platform on an “as is” and on an “as available” basis without any Warranties as to continuous, uninterrupted or secure access to the Platform, that its servers are free of computer viruses, bugs or other harmful components, that defects will be corrected, or that you will not have disruption or other difficulties in using the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.5"
+          ),
+          " We are not responsible for any action of any third-party or User. Any dealings you have with such parties are exclusively entered into between you and them."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.6"
+          ),
+          " We are not party to any Service Agreement and any claim in relation to a Service Agreement must be brought against the relevant User as applicable."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.7"
+          ),
+          " In the event that we terminate the Platform or your access to the Platform pursuant to these General Terms, you release us from all liability, loss or claims suffered by you as result of or arising out of such termination."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.8"
+          ),
+          " To the extent that legislation or other law restricts our right to exclude Warranties under these General Terms, these General Terms must be read subject to those provisions and nothing in these General Terms is intended to alter or restrict the operation of such provisions. If those statutory provisions apply, notwithstanding any other provision of these General Terms, to the extent that we are entitled to do so, we limit our liability pursuant to such provisions:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " In the case of goods:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " The replacement of the goods or the supply of equivalent goods;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " The payment of the cost of replacing the goods or of acquiring equivalent goods; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " In the case of services:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " The supply of the services again; or"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " The payment of the cost of having the services supplied again."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.9"
+          ),
+          " Our liability arising in connection with these General Terms or the Platform is limited as follows:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " We are not liable for any consequential, special, indirect or remote loss;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " Our total maximum total liability arising in connection with these General Terms is capped to the total price of any goods or services subject of the liability;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " Our liability is limited to the extent that you contributed to the liability;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(d)"
+          ),
+          " We will not be liable to any claim commenced later than 6 months after you had become aware of the facts giving rise to it; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(e)"
+          ),
+          " Our liability is subject to your duty to mitigate your loss."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "11.1.10"
+          ),
+          " All of the above subclauses are cumulative to one another."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "12"
+          ),
+          " Release"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "12.1.1"
+          ),
+          " You agree to release us and our officers, directors, shareholders, agents, employees, consultants, affiliates, subsidiaries, sponsors, and other third-party partners (“",
+          React.createElement(
+            "b",
+            null,
+            "Released"
+          ),
+          " Parties”) from claims, demands, and damages (direct and consequential) of every kind and nature, known and unknown, now and in the future (“",
+          React.createElement(
+            "b",
+            null,
+            "Claims"
+          ),
+          "”), arising out of or in any way connected with any transaction with a third party, your interactions with other members, or in connection with the Platform. You further waive any and all rights and benefits otherwise conferred by any statutory or non-statutory law of any jurisdiction that would purport to limit the scope of a release or waiver."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "13"
+          ),
+          " Indemnity"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "13.1.1"
+          ),
+          " You agree to indemnify, defend and hold all the Released Parties harmless from any Claims, made by any third party due to or arising out of (a) your violations of these General Terms, (b) your use, misuse, or abuse of our Platform, (c) Your Content, (d) your violation of any law, statute, ordinance or regulation or the rights of a third party, or (e) your participation or conduct in anything that violates these General Terms or a policy. You agree to promptly notify us of any third party Claims, cooperate with all Released Parties in defending such Claims and pay all fees, costs and expenses associated with defending such Claims (including, but not limited to, legal fees). You agree not to settle any Claim without our prior written consent."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "14"
+          ),
+          " Termination"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "14.1.1"
+          ),
+          " These General Terms terminate automatically if we cease to operate the Platform for any reason."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "14.1.2"
+          ),
+          " You acknowledge and agree that:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " We may terminate your access to the Platform at any time without giving any explanation."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " We may terminate these General Terms immediately by notice to you in writing if you are deemed to breach these General Terms or associated policies in any way, in our sole discretion."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " Termination of these General Terms or your access to the Platform does not release you from any of your obligations and liabilities that may have arisen or been incurred prior to the date of such termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "15"
+          ),
+          " General"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "15.1.1"
+          ),
+          " You must not assign, sublicense or otherwise deal in any other way with any of your rights under these General Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "15.1.2"
+          ),
+          " If a provision of these General Terms is invalid or unenforceable it is to be read down or severed to the extent necessary without affecting the validity or enforceability of the remaining provisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "15.1.3"
+          ),
+          " These General Terms are governed by the laws of NSW, Australia and each party submits to the jurisdiction of the courts of that State and all courts of appeal therefrom."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "15.1.4"
+          ),
+          " Any waiver of any term on these General Terms by us can only be done in express writing. Any failure on our part to enforce a term does not constitute a waiver and we reserve the right in relation to all breaches unless expressly stated otherwise."
+        )
+      )
+    );
+  }
 });
 var HomeComponent = React.createClass({
   displayName: 'HomeComponent',
@@ -89429,6 +91786,1138 @@ var HomeComponent = React.createClass({
  <h4>Increase revenue</h4>
  <p>Increase renvenue through out rebate program and Increased productivity</p>
 </div>*/;
+var PrivacyPolicy = React.createClass({
+  displayName: "PrivacyPolicy",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { id: "static-pages", className: "privacy-policy" },
+      React.createElement(
+        "div",
+        { className: "scroll-bar" },
+        React.createElement(
+          "h4",
+          { className: "text-center title" },
+          "Privacy Policy"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "In this Privacy Policy, '",
+          React.createElement(
+            "b",
+            null,
+            "us"
+          ),
+          "' '",
+          React.createElement(
+            "b",
+            null,
+            "we"
+          ),
+          "' or '",
+          React.createElement(
+            "b",
+            null,
+            "our"
+          ),
+          "' means Lab Developed Pty Ltd (ACN 608 599 293). We are committed to respecting your privacy. Our Privacy Policy sets out how we collect, use, store and disclose your personal information."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "By providing personal information to us, you consent to our collection, use and disclosure of your personal information in accordance with this Privacy Policy and any other arrangements that apply between us. We may change our Privacy Policy from time to time by publishing changes to it on our website. We encourage you to check our website periodically to ensure that you are aware of our current Privacy Policy."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "Personal information includes information or an opinion about an individual that is reasonably identifiable. For example, this may include your name, age, gender, postcode and contact details. It may also include financial information, including your credit card information."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "1. What personal information do we collect?"
+        ),
+        React.createElement(
+          "ul",
+          { className: "content level-1" },
+          "We may collect the following types of personal information:"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "name;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "mailing or street address;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "email address;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "telephone number and other contact details;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "age or date of birth;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "credit card information;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "Australian Business Number (if applicable);"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "your device ID, device type, geo-location information, computer and connection information, statistics on page views, traffic to and from the sites, ad data, IP address and standard web log information;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "details of the products and services we have provided to you or that you have enquired about, including any additional information necessary to deliver those products and services and respond to your enquiries;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "all information to do with any services provided or received on the platform;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "any additional information relating to you that you provide to us directly through our website or app or indirectly through your use of our website or app or online presence or through other websites or accounts from which you permit us to collect information;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "information you provide to us through customer surveys; or"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "any other personal information that may be required in order to facilitate your dealings with us."
+        ),
+        React.createElement(
+          "ul",
+          { className: "content level-1" },
+          "We may collect these types of personal information either directly from you, or from third parties. We may collect this information when you:"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "register on our website or app;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "communicate with us through correspondence, chats, email, or when you share information with us from other social applications, services or websites;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "interact with our sites, services, content and advertising; or"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "invest in our business or enquire as to a potential purchase in our business."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "In addition, when you apply for a job or position with us we may collect certain information from you (including your name, contact details, working history and relevant records checks) from any recruitment consultant, your previous employers and others who may be able to provide information to us to assist in our decision on whether or not to make you an offer of employment or engage you under a contract. This Privacy Policy does not apply to acts and practices in relation to employee records of our current and former employees, which are exempt from the Privacy Act."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "2. Why do we collect, use and disclose personal information?"
+        ),
+        React.createElement(
+          "ul",
+          { className: "content level-1" },
+          "We may collect, hold, use and disclose your personal information for the following purposes:"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "to enable you to access and use our website, services and app;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "to operate, protect, improve and optimise our website, services and app, business and our users’ experience, such as to perform analytics, conduct research and for advertising and marketing;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "to send you service, support and administrative messages, reminders, technical notices, updates, security alerts, and information requested by you;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "to send you marketing and promotional messages and other information that may be of interest to you, including information sent by, or on behalf of, our business partners that we think you may find interesting;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "to administer rewards, surveys, contests, or other promotional activities or events sponsored or managed by us or our business partners;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "to comply with our legal obligations, resolve any disputes that we may have with any of our users, and enforce our agreements with third parties; and"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "to consider your employment application."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We may also disclose your personal information to a trusted third party who also holds other information about you. This third party may combine that information in order to enable it and us to develop anonymised consumer insights so that we can better understand your preferences and interests, personalise your experience and enhance the products and services that you receive."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "3. Do we use your personal information for direct marketing?"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We and/or our carefully selected business partners may send you direct marketing communications and information about our services. This may take the form of emails, SMS, mail or other forms of communication, in accordance with the Spam Act and the Privacy Act. You may opt-out of receiving marketing materials from us by contacting us using the details set out below or by using the opt-out facilities provided (eg an unsubscribe link)."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "4. To whom do we disclose your personal information?"
+        ),
+        React.createElement(
+          "ul",
+          { className: "content level-1" },
+          "We may disclose personal information for the purposes described in this privacy policy to:"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "our employees and related bodies corporate;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "third party suppliers and service providers (including providers for the operation of our websites and/or our business or in connection with providing our products and services to you) – however do not disclose Recruitment Information to these persons;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "professional advisers, dealers and agents;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "payment systems operators (eg merchants receiving card payments);"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "our existing or potential agents, business partners or partners;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "our sponsors or promoters of any competition that we conduct via our services;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "anyone to whom our assets or businesses (or any part of them) are transferred;"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "specific third parties authorised by you to receive information held by us; and/or"
+        ),
+        React.createElement(
+          "li",
+          { className: "content level-2" },
+          "other persons, including government agencies, regulatory bodies and law enforcement agencies, or as required, authorised or permitted by law."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "5. Using our website and cookies"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We may collect personal information about you when you use and access our website."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "While we do not use browsing information to identify you personally, we may record certain information about your use of our website, such as which pages you visit, the time and date of your visit and the internet protocol address assigned to your computer."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We may also use 'cookies' or other similar tracking technologies on our website that help us track your website usage and remember your preferences. Cookies are small files that store information on your computer, TV, mobile phone or other device. They enable the entity that put the cookie on your device to recognise you across different websites, services, devices and/or browsing sessions. You can disable cookies through your internet browser but our websites may not work as intended for you if you do so."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We may also use cookies to enable us to collect data that may include personal information. For example, where a cookie is linked to your account, it will be considered personal information under the Privacy Act. We will handle any personal information collected by cookies in the same way that we handle all other personal information as described in this Privacy Policy."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "6. Security"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "We may hold your personal information in either electronic or hard copy form. We take reasonable steps to protect your personal information from misuse, interference and loss, as well as unauthorised access, modification or disclosure and we use a number of physical, administrative, personnel and technical measures to protect your personal information. However, we cannot guarantee the security of your personal information."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "7. Links"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "Our website may contain links to websites operated by third parties. Those links are provided for convenience and may not remain current or be maintained. Unless expressly stated otherwise, we are not responsible for the privacy practices of, or any content on, those linked websites, and have no control over or rights in those linked websites. The privacy policies that apply to those other websites may differ substantially from our Privacy Policy, so we encourage individuals to read them before using those websites."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "8. Accessing or correcting your personal information"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "You can access the personal information we hold about you by contacting us using contact us function. Sometimes, we may not be able to provide you with access to all of your personal information and, where this is the case, we will tell you why. We may also need to verify your identity when you request your personal information."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "If you think that any personal information we hold about you is inaccurate, please contact us and we will take reasonable steps to ensure that it is corrected."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "9. Making a complaint"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "If you think we have breached the Privacy Act, or you wish to make a complaint about the way we have handled your personal information, you can contact us [include hyperlink]. Please include your name, email address and/or telephone number and clearly describe your complaint. We will acknowledge your complaint and respond to you regarding your complaint within a reasonable period of time. If you think that we have failed to resolve the complaint satisfactorily, we will provide you with information about the further steps you can take."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          "10. Contact Us"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "For further information about our Privacy Policy or practices, or to access or correct your personal information, or make a complaint, please contact us using the details set out below:"
+        )
+      )
+    );
+  }
+});
+var TradieTermsAndConditions = React.createClass({
+  displayName: "TradieTermsAndConditions",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { id: "static-pages", className: "about" },
+      React.createElement(
+        "div",
+        { className: "scroll-bar" },
+        React.createElement(
+          "h4",
+          { className: "text-center title" },
+          "Tradesmen Terms"
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " Tradesmen Terms and General Terms"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " This website, app, platform and any service offered under the name “Maintenance App” (“Platform”) is operated and owned by Lab Developed Pty Ltd (ACN 608 599 293) and its related entities or body corporates (“us”, “we” and “our”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2."
+          ),
+          " All use of this Platform is subject to the General Terms of Use (“General Terms”) ",
+          React.createElement(
+            "a",
+            { "no-href": true },
+            "[CREATE LINK]"
+          ),
+          ". In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3."
+          ),
+          " All capitalised words used in these Tradies Terms have the same meaning as in the General Terms unless the context requires otherwise."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4."
+          ),
+          " We may amend or modify the Platform or the Tradies Terms at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the Tradies Terms and the General Terms as modified."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5."
+          ),
+          " These Tradies Terms will prevail over any other terms or agreement between you and us."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2."
+          ),
+          " Your use of the Platform"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " These Tradies Terms apply to you because you have registered as a Tradies wishing to provide various maintenance services (“Services”) to property owners (“Owners”) who use the Platform. Owners may be represented by their managing agent (“Agents”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2."
+          ),
+          " This Platform only operates as a venue for you to receive job requests, to provide Services to various Owners. Each time an Owner (through an Agent or otherwise) books you to provide Services, you enter into an independent and separate agreement for the provision of the Services with that Owner (each a “Service Agreement”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3."
+          ),
+          " The terms of each Service Agreement will be negotiated between you and the Owner (through their Agent). These terms must include the Services to be provided and your remuneration (“Service Fee”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4."
+          ),
+          " You must invoice the Owner for the Service Fee using the Platform. An Owner is not obliged to pay you until you produce an invoice using the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5."
+          ),
+          " You are solely responsible for the collection for your Service Fee from the Owner or Agent, and you are solely responsible for the performance of the Services. We are not liable for the Services or the Service Fee in any way. Any claims or demands must be brought against the Owner or the Agent as applicable."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6."
+          ),
+          " Each Service Agreement is a separate agreement between you and the Owner. We are not a party to the Service Agreement in any way, and its formation will not, under any circumstance, create an employment between us and you. Nothing in these Tradies Terms or otherwise will or is intended to establish a relationship of partnership, agency or employment between us and you, and it is the intention of the parties that any such relationship is expressly denied."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7."
+          ),
+          " You agree that we may refer Owners to you through our special “Just Find Me One” function (“JFMO Function”)."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3."
+          ),
+          " Your Warranties"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " You make the following warranties to us on registration, each time you sign in and each time you agree a new Service Agreement. You also acknowledge that the warranties are essential terms of these Tradies Terms and that your registration as Tradies is strictly conditional on full compliance with all warranties."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2."
+          ),
+          " Qualifications:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " You warrant and acknowledge that you hold, and will continue to hold for the term of this agreement, all certificates, licences, memberships and qualifications required to perform the Services under any Service Agreement you enter into."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " You may be required to provide evidence that you hold current certificates, licences, memberships and qualifications."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " If you do not (or cease to) hold any such certificate, licence, membership or qualification at any time for whatever reason (including if it is suspended or cancelled), you must immediately notify us."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3."
+          ),
+          " Services:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " You must perform the Services under any Service Agreement the standard of professional skill, care and competence expected of a skilled technical or professional person or consultant experienced in performing the same or similar services;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " You must not charge an Owner any additional fee in relation to a Service Agreement on top of the disclosed Service Fee;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " You must not collect or request payments in relation to a Service Agreement outside of the Platform;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(d)"
+          ),
+          " You must comply with all the requirements of each relevant law, regulation, Authorisation, ruling, judgment, order or decree of any governmental agency relevant to the performance of the Services under any Service Agreement, including complying with the Privacy Act 1988 (Cth); and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4."
+          ),
+          "Work outside of the Platform:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " You agree that whenever you meet or are introduced to an Agent or Owner through or in connection with the Platform (Referred Client), you will only enter into any Service Agreement (or similar agreement for the provision of similar services) with a Referred Client, now or in the future, through the Platform. For clarity, you will not work with any Referred Client outside of the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " You agree that if you breach this clause 3.4, we are entitled to be charge you a referral fee in relation to any such agreement in accordance with clause 4.2."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5."
+          ),
+          " You warrant that you will comply with any of our reasonable directions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6."
+          ),
+          " These warranties are in addition to any warranties and obligations you have under the General Terms."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4."
+          ),
+          " Referral Fee"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " In consideration for being able to use the Platform as a Tradies, and us letting you participate in the JFMO Function, you agree that you must pay to us a referral fee for:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " each Service Agreement you enter into as a result of the JFMO Function; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " any subsequent agreement for services you enter into with any Agent or Owner who was originally introduced to you through the JFMO Function – irrespective of whether this subsequent agreement for services is made on the platform or not, (“Referral Fee”)."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2."
+          ),
+          " For each applicable Service Agreement, the Referral Fee is currently:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          "if the Service Fee is under $500, 15% of the Service Fee; or"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          "if the Service Fee is $500 or more, 10% of the Service Fee."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3."
+          ),
+          " The Referral Fee will be paid by way of a direct debit. By using the Platform, you irrevocably request and authorise us to arrange, through financial institutions, to debit the Referral Fees from your nominated account. You will do any reasonable action necessary to assist us with setting up this direct debit. We will issue you with invoices for the Referral Fees."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4."
+          ),
+          " We reserve the right to amend the Referral Fee at any time by amending these Tradies Terms on our website. The amended Referral Fee will apply to any new Service Agreements entered into subsequent to the amendment, but not to any Service Agreements entered into before the amendment of the Tradies Terms."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5."
+          ),
+          " Other Agreements"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " You acknowledge that we may enter into separate agreements with other users of the Platform, including but not limited to the Owners, Agents and Tenants. Those agreements are separate agreements and you are not entitled to rely on the terms of those agreements in any way."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6."
+          ),
+          " Disclaimer and limitation of liability"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " We exclude all warranties, conditions, terms, representations, statements and promises of whatever nature, whether express or implied (“Warranties”) other than those expressly set out in the Tradies Terms and General Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2."
+          ),
+          " We exclude any Warranties in relation to the accuracy, suitability, completeness, fitness for purpose, quality or anything else in relation to any Owner or Agent."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3."
+          ),
+          " You acknowledge that you must rely only on your own enquiries in relation to any Owner or Agent, or any other information or material contained on the Platform. You should not rely solely on any information on the Platform to make business or personal medical decisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4."
+          ),
+          " We provide the Platform on an “as is” and on an “as available” basis without any Warranties as to continuous, uninterrupted or secure access to the Platform, that its servers are free of computer viruses, bugs or other harmful components, that defects will be corrected, or that you will not have disruption or other difficulties in using the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "5."
+          ),
+          " We are not responsible for any action of any third-party, user, Owner, Agent or other Tradies. Any dealings you have with such parties are exclusively entered into between you and them."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "6."
+          ),
+          " We are not party to any Service Agreement and any claim in relation to a Service Agreement must be brought against the relevant Owner or Agent as applicable."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7."
+          ),
+          " In the event that we terminate the Platform or your access to the Platform, you release us from all liability, loss or claims suffered by you as result of or arising out of such termination."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8."
+          ),
+          " To the extent that legislation or other law restricts our right to exclude Warranties under these the Tradies Terms and General Terms, the Tradies Terms and General Terms must be read subject to those provisions and nothing in the Tradies Terms and General Terms is intended to alter or restrict the operation of such provisions. If those statutory provisions apply, notwithstanding any other provision of the Tradies Terms and General Terms, to the extent that we are entitled to do so, we limit our liability pursuant to such provisions:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " in the case of goods:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " the replacement of the goods or the supply of equivalent goods;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " the payment of the cost of replacing the goods or of acquiring equivalent goods; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " in the case of services:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(i)"
+          ),
+          " the supply of the services again; or"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-3" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(ii)"
+          ),
+          " the payment of the cost of having the services supplied again."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9."
+          ),
+          " Our liability arising in connection with these General Terms or the Platform is limited as follows:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " we are not liable for any consequential, special, indirect or remote loss;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " our total maximum total liability arising in connection with these Tradies Terms is capped to the total Service Fee of the relevant Service Agreement or if this is not enforceable, the total net Service Fees recovered by you over the last 12 month period;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " our liability is limited to the extent that you contributed to the liability;"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(d)"
+          ),
+          " we will not be liable to any claim commenced later than 6 months after you had become aware of the facts giving rise to it; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(e)"
+          ),
+          " our liability is subject to your duty to mitigate your loss."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10."
+          ),
+          " All of the above subclauses are cumulative to one another."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "7."
+          ),
+          " Release"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "To the maximum extent permitted by law, you agree to release us and our officers, directors, shareholders, agents, employees, consultants, affiliates, subsidiaries, sponsors, and other third-party partners (“Released Parties”) from claims, demands, and damages (direct and consequential) of every kind and nature, known and unknown, now and in the future (“Claims”), arising out of or in any way connected with any Service Agreement, user, Resident, Owner, Agent, Tradies, transaction with a third party, your interactions with other members, or in connection with the Platform. You further waive any and all rights and benefits otherwise conferred by any statutory or non-statutory law of any jurisdiction that would purport to limit the scope of a release or waiver. This clause survives termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "8."
+          ),
+          " Indemnity"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "You agree to indemnify, defend and hold all the Released Parties harmless from any Claims, made by any third party (including an Owner or Agent, or Tradies) made in relation to any Service Agreement or your breach of these Tradies Terms. You agree to promptly notify us of any third-party Claims, cooperate with all Released Parties in defending such Claims and pay all fees, costs and expenses associated with defending such Claims (including, but not limited to, legal fees). You agree not to settle any Claim without our prior written consent. This clause survives termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "9."
+          ),
+          " Termination"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          "These Tradies Terms terminate automatically if we cease to operate the Platform for any reason."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          "You acknowledge and agree that:"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(a)"
+          ),
+          " we may terminate your access to the Platform at any time without giving any explanation."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(b)"
+          ),
+          " we may terminate the Tradies Terms and General Terms immediately by notice to you in writing if you are deemed to breach the Tradies Terms or General Terms or associated policies in any way, in our sole discretion."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-2" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "(c)"
+          ),
+          " Termination of the Tradies Terms and General Terms or your access to the Platform does not release you from any of your obligations and liabilities that may have arisen or been incurred prior to the date of such termination, or any provisions which are intended to survive termination."
+        ),
+        React.createElement(
+          "h5",
+          { className: "content level-0" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "10."
+          ),
+          " General"
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "1."
+          ),
+          " You must not assign, sublicense or otherwise deal in any other way with any of your rights under the Tradies Terms."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "2."
+          ),
+          "If a provision of the Tradies Terms is invalid or unenforceable it is to be read down or severed to the extent necessary without affecting the validity or enforceability of the remaining provisions."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "3."
+          ),
+          "The Tradies Terms are governed by the laws of NSW, Australia and each party submits to the jurisdiction of the courts of that State and all courts of appeal therefrom."
+        ),
+        React.createElement(
+          "p",
+          { className: "content level-1" },
+          React.createElement(
+            "b",
+            { className: "numbering" },
+            "4."
+          ),
+          "Any waiver of any term on the Tradies Terms by us can only be done in express writing. Any failure on our part to enforce a term does not constitute a waiver and we reserve the right in relation to all breaches unless expressly stated otherwise."
+        )
+      )
+    );
+  }
+});
 var ChangePassword = React.createClass({
   displayName: "ChangePassword",
 
@@ -90398,7 +93887,7 @@ var QuoteRequests = React.createClass({
 		var filteredQuoteRequest = quote_requests.filter(function (_ref) {
 			var trady = _ref.trady;
 
-			return !trady.jfmo_participant || !!trady.customer_profile;
+			return trady && (!trady.jfmo_participant || !!trady.customer_profile);
 		});
 
 		return filteredQuoteRequest;
@@ -93070,6 +96559,8 @@ var Footer = React.createClass({
     displayName: "Footer",
 
     footerForExpanded: function () {
+        var current_role = this.props.current_role;
+
         return React.createElement(
             "div",
             { className: "footer-expanded" },
@@ -93096,105 +96587,50 @@ var Footer = React.createClass({
                     ),
                     React.createElement(
                         "div",
-                        { className: "one-half column footer-links_hp" },
+                        { className: "two-thirds column footer-links_hp" },
                         React.createElement(
                             "div",
-                            { className: "one-third column" },
+                            { className: "one-half column" },
                             React.createElement(
                                 "a",
-                                { href: "/" },
+                                { href: "/about" },
                                 "About us"
                             ),
                             React.createElement(
                                 "a",
-                                { href: "/" },
-                                "Blog"
-                            ),
-                            React.createElement(
-                                "a",
-                                { href: "/" },
-                                "Feedback"
-                            )
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "one-third column" },
-                            React.createElement(
-                                "a",
-                                { href: "/" },
-                                "Community"
-                            ),
-                            React.createElement(
-                                "a",
-                                { href: "/" },
-                                "Trust & Safety"
-                            ),
-                            React.createElement(
-                                "a",
-                                { href: "/" },
+                                { href: "/support" },
                                 "Help & Support"
                             )
                         ),
                         React.createElement(
                             "div",
-                            { className: "one-third column" },
+                            { className: "one-half column" },
                             React.createElement(
                                 "a",
-                                { href: "/" },
+                                { href: "/general_terms_and_conditions" },
                                 "Terms of Service"
                             ),
                             React.createElement(
                                 "a",
-                                { href: "/" },
+                                { href: "/privacy_policy" },
                                 "Privacy Policy"
                             ),
-                            React.createElement(
+                            current_role === 'Trady' && React.createElement(
                                 "a",
-                                { href: "/" },
-                                "Cookie Policy"
+                                { href: "/tradie_terms_and_conditions" },
+                                "Tradie Terms of Service"
+                            ),
+                            (current_role === 'AgencyAdmin' || current_role === 'Agent') && React.createElement(
+                                "a",
+                                { href: "/agent_terms_and_conditions" },
+                                "Agent Terms of Service"
                             )
                         )
                     ),
                     React.createElement(
                         "div",
                         { className: "two columns" },
-                        React.createElement(
-                            "div",
-                            { className: "footer-social_hp" },
-                            React.createElement(
-                                "p",
-                                null,
-                                "Follow us"
-                            ),
-                            React.createElement(
-                                "div",
-                                { className: "social-circle" },
-                                " ",
-                                React.createElement("img", { src: "/assets/ico-twitter.png" }),
-                                " "
-                            ),
-                            React.createElement(
-                                "div",
-                                { className: "social-circle" },
-                                " ",
-                                React.createElement("img", { src: "/assets/ico-facebook.png" }),
-                                " "
-                            ),
-                            React.createElement(
-                                "div",
-                                { className: "social-circle" },
-                                " ",
-                                React.createElement("img", { src: "/assets/ico-instagram.png" }),
-                                " "
-                            ),
-                            React.createElement(
-                                "div",
-                                { className: "social-circle" },
-                                " ",
-                                React.createElement("img", { src: "/assets/ico-google.png" }),
-                                " "
-                            )
-                        )
+                        React.createElement("div", { className: "footer-social_hp" })
                     )
                 )
             )
@@ -93202,6 +96638,8 @@ var Footer = React.createClass({
     },
 
     footer: function () {
+        var current_role = this.props.current_role;
+
         return React.createElement(
             "div",
             { className: "footer-other" },
@@ -93210,63 +96648,36 @@ var Footer = React.createClass({
                 { className: "footer-custom" },
                 React.createElement(
                     "div",
-                    { className: "footer-social" },
-                    React.createElement(
-                        "div",
-                        null,
-                        " ",
-                        React.createElement("img", { src: "/assets/ico-twitter.png" }),
-                        " "
-                    ),
-                    React.createElement(
-                        "div",
-                        null,
-                        " ",
-                        React.createElement("img", { src: "/assets/ico-facebook.png" }),
-                        " "
-                    ),
-                    React.createElement(
-                        "div",
-                        null,
-                        " ",
-                        React.createElement("img", { src: "/assets/ico-instagram.png" }),
-                        " "
-                    ),
-                    React.createElement(
-                        "div",
-                        null,
-                        " ",
-                        React.createElement("img", { src: "/assets/ico-google.png" }),
-                        " "
-                    )
-                ),
-                React.createElement(
-                    "div",
                     { className: "footer-links" },
                     React.createElement(
                         "a",
-                        { href: "/" },
+                        { href: "/about" },
                         "About us"
                     ),
                     React.createElement(
                         "a",
-                        { href: "/" },
-                        "Blog"
-                    ),
-                    React.createElement(
-                        "a",
-                        { href: "/" },
+                        { href: "/support" },
                         "Help & Support"
                     ),
                     React.createElement(
                         "a",
-                        { href: "/" },
+                        { href: "/general_terms_and_conditions" },
                         "Terms of Service"
                     ),
                     React.createElement(
                         "a",
-                        { href: "/" },
+                        { href: "/privacy_policy" },
                         "Privacy Policy"
+                    ),
+                    current_role === 'Trady' && React.createElement(
+                        "a",
+                        { href: "/tradie_terms_and_conditions" },
+                        "Tradie Terms of Service"
+                    ),
+                    (current_role === 'AgencyAdmin' || current_role === 'Agent') && React.createElement(
+                        "a",
+                        { href: "/agent_terms_and_conditions" },
+                        "Agent Terms of Service"
                     )
                 ),
                 React.createElement(
@@ -93295,7 +96706,20 @@ var Footer = React.createClass({
         );
     }
 });
-/*<a href={this.props.new_agency_path}>Register Agent</a>*/ /* <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>*/;
+/*<a href="/">Blog</a>
+<a href="/">Feedback</a>*/ /*<a href={this.props.new_agency_path}>Register Agent</a>*/ /*<div className="one-third column">
+                                                                                          <a href="/">Community</a>
+                                                                                          <a href="/">Trust & Safety</a>
+                                                                                       </div>*/ /*<a href="/">Cookie Policy</a>*/ /* <a className="show-on-mobile" href={this.props.new_agency_path}>Register Agent</a>*/ /*<p>Follow us</p>
+                                                                                                                                                                                                                          <div className="social-circle"> <img src="/assets/ico-twitter.png" /> </div>
+                                                                                                                                                                                                                          <div className="social-circle"> <img src="/assets/ico-facebook.png" /> </div>
+                                                                                                                                                                                                                          <div className="social-circle"> <img src="/assets/ico-instagram.png" /> </div>
+                                                                                                                                                                                                                          <div className="social-circle"> <img src="/assets/ico-google.png" /> </div>*/ /*<div className="footer-social">
+                                                                                                                                                                                                                                                                                                           <div> <img src="/assets/ico-twitter.png" /> </div>
+                                                                                                                                                                                                                                                                                                           <div> <img src="/assets/ico-facebook.png" /> </div>
+                                                                                                                                                                                                                                                                                                           <div> <img src="/assets/ico-instagram.png" /> </div>
+                                                                                                                                                                                                                                                                                                           <div> <img src="/assets/ico-google.png" /> </div>
+                                                                                                                                                                                                                                                                                                        </div>*/ /*<a href="/">Blog</a>*/;
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
 var MenuAgency = function (edit_agency, edit_agency_admin) {
@@ -95295,22 +98719,22 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "2. All use of this Platform is subject to the General Terms of Use (“General Terms”) [CREATE LINK]. In addition, if you have registered to Platform as a Tradesmen, you also agree to be bound by these Tradesmen Term (“Tradesmen Terms”). Your continued use of the Platform constitutes acceptance of these Tradesmen Terms and is strictly conditional on full compliance with these Tradesmen Terms."
+          "2. All use of this Platform is subject to the General Terms of Use (“General Terms”) [CREATE LINK]. In addition, if you have registered to Platform as a Tradies, you also agree to be bound by these Tradies Terms (“Tradies Terms”). Your continued use of the Platform constitutes acceptance of these Tradies Terms and is strictly conditional on full compliance with these Tradies Terms."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "3. All capitalised words used in these Tradesmen Terms have the same meaning as in the General Terms unless the context requires otherwise."
+          "3. All capitalised words used in these Tradies Terms have the same meaning as in the General Terms unless the context requires otherwise."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "4. We may amend or modify the Platform or the Tradesmen Terms at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the General Terms as modified."
+          "4. We may amend or modify the Platform or the Tradies Terms at our sole discretion and at any time.  Any amendments are effective immediately upon publication on the Platform. Your continued use of the Platform indicates your continued acceptance of the Tradies Terms and the General Terms as modified."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "5. These Tradesmen Terms will prevail over any other terms or agreement between you and us."
+          "5. These Tradies Terms will prevail over any other terms or agreement between you and us."
         ),
         React.createElement(
           "h5",
@@ -95320,7 +98744,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "1. These Tradesmen Terms apply to you because you have registered as a Tradesmen wishing to provide various maintenance services (“Services”) to property owners (“Owners”) who use the Platform. Owners may be represented by their managing agent (“Agents”)."
+          "1. These Tradies Terms apply to you because you have registered as a Tradies wishing to provide various maintenance services (“Services”) to property owners (“Owners”) who use the Platform. Owners may be represented by their managing agent (“Agents”)."
         ),
         React.createElement(
           "p",
@@ -95335,17 +98759,22 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "4. You are solely responsible for the collection for your Service Fee from the Owner or Agent, and you are solely responsible for the performance of the Services. We are not liable for the Services or the Service Fee in any way. Any claims or demands must be brought against the Owner or the Agent as applicable."
+          "4. You must invoice the Owner for the Service Fee using the Platform. An Owner is not obliged to pay you until you produce an invoice using the Platform."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "5. Each Service Agreement is a separate agreement between the you and the Owner. We are not a party to the Service Agreement in any way, and its formation will not, under any circumstance, create an employment between us and you. Nothing in these Tradesmen Terms or otherwise will or is intended to establish a relationship of partnership, agency or employment between us and you, and it is the intention of the parties that any such relationship is expressly denied."
+          "5. You are solely responsible for the collection for your Service Fee from the Owner or Agent, and you are solely responsible for the performance of the Services. We are not liable for the Services or the Service Fee in any way. Any claims or demands must be brought against the Owner or the Agent as applicable."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "6. You agree that may refer Owners to you through our special “Just Find Me One” function (“JFMO Function”)."
+          "6. Each Service Agreement is a separate agreement between you and the Owner. We are not a party to the Service Agreement in any way, and its formation will not, under any circumstance, create an employment between us and you. Nothing in these Tradies Terms or otherwise will or is intended to establish a relationship of partnership, agency or employment between us and you, and it is the intention of the parties that any such relationship is expressly denied."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "7. You agree that we may refer Owners to you through our special “Just Find Me One” function (“JFMO Function”)."
         ),
         React.createElement(
           "h5",
@@ -95355,7 +98784,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "1. You make the following warranties to us on registration, each time you sign in and each time you agree a new Service Agreement. You also acknowledge that the warranties are essential terms of these Tradesmen Terms and that your registration as Tradesmen is strictly conditional on full compliance with all warranties."
+          "1. You make the following warranties to us on registration, each time you sign in and each time you agree a new Service Agreement. You also acknowledge that the warranties are essential terms of these Tradies Terms and that your registration as Tradies is strictly conditional on full compliance with all warranties."
         ),
         React.createElement(
           "p",
@@ -95375,7 +98804,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-2" },
-          "(c)If you not (or cease to) hold any such certificate, licence, membership or qualification at any time for whatever reason (including if it is suspended or cancelled), you must immediately notify us."
+          "(c) If you do not (or cease to) hold any such certificate, licence, membership or qualification at any time for whatever reason (including if it is suspended or cancelled), you must immediately notify us."
         ),
         React.createElement(
           "p",
@@ -95405,12 +98834,27 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "4.You warrant that you will comply with any of our reasonable directions."
+          "4.Work outside of the Platform:"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(a)You agree that whenever you meet or are introduced to an Agent or Owner through or in connection with the Platform (Referred Client), you will only enter into any Service Agreement (or similar agreement for the provision of similar services) with a Referred Client, now or in the future, through the Platform. For clarity, you will not work with any Referred Client outside of the Platform."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(b)You agree that if you breach this clause 3.4, we are entitled to be charge you a referral fee in relation to any such agreement in accordance with clause 4.2."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "5. These warranties are in addition to any warranties and obligations you have under the General Terms."
+          "5. You warrant that you will comply with any of our reasonable directions."
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
+          "6. These warranties are in addition to any warranties and obligations you have under the General Terms."
         ),
         React.createElement(
           "h5",
@@ -95420,22 +98864,42 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "1. In consideration for being able to use the Platform as a Tradesmen, and us letting you participate in the JFMO Function, you agree that you must pay to us a referral fee for each Service Agreement you enter into as a result of the JFMO Function (“Referral Fee”)."
+          "1. In consideration for being able to use the Platform as a Tradies, and us letting you participate in the JFMO Function, you agree that you must pay to us a referral fee for:"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(a)each Service Agreement you enter into as a result of the JFMO Function; and"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "(b)any subsequent agreement for services you enter into with any Agent or Owner who was originally introduced to you through the JFMO Function – irrespective of whether this subsequent agreement for services is made on the platform or not, (“Referral Fee”)."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "2. The Referral Fee is currently 15% of the Service Fee. You must provide us evidence of the Service Fee by way of a valid tax invoice agreed between you and the Owner."
+          "2. For each applicable Service Agreement, the Referral Fee is currently:"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "if the Service Fee is under $500, 15% of the Service Fee; or"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-2" },
+          "if the Service Fee is $500 or more, 10% of the Service Fee."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "3. We will issue you an invoice for the Referral Fee. You must complete payment of the invoice within 14 days to the bank account nominated in the invoice."
+          "3. The Referral Fee will be paid by way of a direct debit. By using the Platform, you irrevocably request and authorise us to arrange, through financial institutions, to debit the Referral Fees from your nominated account. You will do any reasonable action necessary to assist us with setting up this direct debit. We will issue you with invoices for the Referral Fees."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "4. We reserve the right to amend the Referral Fee at any time by amending these Tradesmen Terms on our website. The amended Referral Fee will apply to any new Service Agreements entered into subsequent to the amendment, but not to any Service Agreements entered into before the amendment of the Tradesmen Terms."
+          "4. We reserve the right to amend the Referral Fee at any time by amending these Tradies Terms on our website. The amended Referral Fee will apply to any new Service Agreements entered into subsequent to the amendment, but not to any Service Agreements entered into before the amendment of the Tradies Terms."
         ),
         React.createElement(
           "h5",
@@ -95455,7 +98919,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "1. We exclude all warranties, conditions, terms, representations, statements and promises of whatever nature, whether express or implied (“Warranties”) other than those expressly set out in these General Terms."
+          "1. We exclude all warranties, conditions, terms, representations, statements and promises of whatever nature, whether express or implied (“Warranties”) other than those expressly set out in the Tradies Terms and General Terms."
         ),
         React.createElement(
           "p",
@@ -95465,7 +98929,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "3. You acknowledge that you must only rely on your own enquiries in relation to such Owner or Agent or any other information or material contained on the Platform. You should not rely solely on any information on the Platform to make business or personal medical decisions."
+          "3. You acknowledge that you must rely only on your own enquiries in relation to any Owner or Agent, or any other information or material contained on the Platform. You should not rely solely on any information on the Platform to make business or personal medical decisions."
         ),
         React.createElement(
           "p",
@@ -95475,7 +98939,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "5. We are not responsible for any action of any third-party, user, Owner, Agent or other Tradesmen. Any dealings you have with such parties are exclusively entered into between you and them."
+          "5. We are not responsible for any action of any third-party, user, Owner, Agent or other Tradies. Any dealings you have with such parties are exclusively entered into between you and them."
         ),
         React.createElement(
           "p",
@@ -95490,7 +98954,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "8. To the extent that legislation or other law restricts our right to exclude Warranties under these General Terms, these General Terms must be read subject to those provisions and nothing in these General Terms is intended to alter or restrict the operation of such provisions. If those statutory provisions apply, notwithstanding any other provision of these General Terms, to the extent that we are entitled to do so, we limit our liability pursuant to such provisions:",
+          "8. To the extent that legislation or other law restricts our right to exclude Warranties under these the Tradies Terms and General Terms, the Tradies Terms and General Terms must be read subject to those provisions and nothing in the Tradies Terms and General Terms is intended to alter or restrict the operation of such provisions. If those statutory provisions apply, notwithstanding any other provision of the Tradies Terms and General Terms, to the extent that we are entitled to do so, we limit our liability pursuant to such provisions:",
           React.createElement(
             "p",
             { className: "level-2" },
@@ -95534,7 +98998,7 @@ var TermsAndConditions = React.createClass({
           React.createElement(
             "p",
             { className: "level-2" },
-            "(b) our total maximum total liability arising in connection with these Tradesmen Terms is capped to the total Service Fee of the relevant Service Agreement or if this is not enforceable, the total net Service Fees recovered by you over the last 12 month period;"
+            "(b) our total maximum total liability arising in connection with these Tradies Terms is capped to the total Service Fee of the relevant Service Agreement or if this is not enforceable, the total net Service Fees recovered by you over the last 12 month period;"
           ),
           React.createElement(
             "p",
@@ -95565,7 +99029,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "To the maximum extent permitted by law, you agree to release us and our officers, directors, shareholders, agents, employees, consultants, affiliates, subsidiaries, sponsors, and other third-party partners (“Released Parties”) from claims, demands, and damages (direct and consequential) of every kind and nature, known and unknown, now and in the future (“Claims”), arising out of or in any way connected with any Service Agreement, Owner or Agent, Tradesmen, transaction with a third party, your interactions with other members, or in connection with the Platform. You further waive any and all rights and benefits otherwise conferred by any statutory or non-statutory law of any jurisdiction that would purport to limit the scope of a release or waiver. This clause survives termination."
+          "To the maximum extent permitted by law, you agree to release us and our officers, directors, shareholders, agents, employees, consultants, affiliates, subsidiaries, sponsors, and other third-party partners (“Released Parties”) from claims, demands, and damages (direct and consequential) of every kind and nature, known and unknown, now and in the future (“Claims”), arising out of or in any way connected with any Service Agreement, user, Resident, Owner, Agent, Tradies, transaction with a third party, your interactions with other members, or in connection with the Platform. You further waive any and all rights and benefits otherwise conferred by any statutory or non-statutory law of any jurisdiction that would purport to limit the scope of a release or waiver. This clause survives termination."
         ),
         React.createElement(
           "h5",
@@ -95575,7 +99039,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "You agree to indemnify, defend and hold all the Released Parties harmless from any Claims, made by any third party (including an Owner or Agent, or Tradesmen) made in relation to any Service Agreement or your breach of these Tradesmen Terms. You agree to promptly notify us of any third-party Claims, cooperate with all Released Parties in defending such Claims and pay all fees, costs and expenses associated with defending such Claims (including, but not limited to, legal fees). You agree not to settle any Claim without our prior written consent. This clause survives termination."
+          "You agree to indemnify, defend and hold all the Released Parties harmless from any Claims, made by any third party (including an Owner or Agent, or Tradies) made in relation to any Service Agreement or your breach of these Tradies Terms. You agree to promptly notify us of any third-party Claims, cooperate with all Released Parties in defending such Claims and pay all fees, costs and expenses associated with defending such Claims (including, but not limited to, legal fees). You agree not to settle any Claim without our prior written consent. This clause survives termination."
         ),
         React.createElement(
           "h5",
@@ -95585,7 +99049,7 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "1.These Tradesmen Terms terminate automatically if we cease to operate the Platform for any reason."
+          "1.These Tradies Terms terminate automatically if we cease to operate the Platform for any reason."
         ),
         React.createElement(
           "p",
@@ -95599,12 +99063,12 @@ var TermsAndConditions = React.createClass({
           React.createElement(
             "p",
             { className: "level-2" },
-            "(b) we may terminate these General Terms immediately by notice to you in writing if you are deemed to breach these General Terms or associated policies in any way, in our sole discretion."
+            "(b) we may terminate the Tradies Terms and General Terms immediately by notice to you in writing if you are deemed to breach the Tradies Terms or General Terms or associated policies in any way, in our sole discretion."
           ),
           React.createElement(
             "p",
             { className: "level-2" },
-            "(c) Termination of these General Terms or your access to the Platform does not release you from any of your obligations and liabilities that may have arisen or been incurred prior to the date of such termination, or any provisions which are intended to survive termination."
+            "(c) Termination of the Tradies Terms and General Terms or your access to the Platform does not release you from any of your obligations and liabilities that may have arisen or been incurred prior to the date of such termination, or any provisions which are intended to survive termination."
           )
         ),
         React.createElement(
@@ -95615,22 +99079,22 @@ var TermsAndConditions = React.createClass({
         React.createElement(
           "p",
           { className: "level-1" },
-          "1.You must not assign, sublicense or otherwise deal in any other way with any of your rights under these General Terms."
+          "1. You must not assign, sublicense or otherwise deal in any other way with any of your rights under the Tradies Terms."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "2.If a provision of these General Terms is invalid or unenforceable it is to be read down or severed to the extent necessary without affecting the validity or enforceability of the remaining provisions."
+          "2.If a provision of the Tradies Terms is invalid or unenforceable it is to be read down or severed to the extent necessary without affecting the validity or enforceability of the remaining provisions."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "3.These General Terms are governed by the laws of NSW, Australia and each party submits to the jurisdiction of the courts of that State and all courts of appeal therefrom."
+          "3.The Tradies Terms are governed by the laws of NSW, Australia and each party submits to the jurisdiction of the courts of that State and all courts of appeal therefrom."
         ),
         React.createElement(
           "p",
           { className: "level-1" },
-          "4.Any waiver of any term on these General Terms by us can only be done in express writing. Any failure on our part to enforce a term does not constitute a waiver and we reserve the right in relation to all breaches unless expressly stated otherwise."
+          "4.Any waiver of any term on the Tradies Terms by us can only be done in express writing. Any failure on our part to enforce a term does not constitute a waiver and we reserve the right in relation to all breaches unless expressly stated otherwise."
         )
       )
     );

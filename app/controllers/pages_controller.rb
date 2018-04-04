@@ -73,7 +73,33 @@ class PagesController < ApplicationController
     end
     
   end
+
+
+  def general_terms
+    
+  end
+
+  def privacy_policy
+    
+  end
+
+  def about
+    
+  end
+
+  def support
+    
+  end
   
+  def tradie_terms_and_conditions
+    
+  end
+
+  def agent_terms_and_conditions
+    
+  end
+
+
   private
 
   def query_params
