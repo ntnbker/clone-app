@@ -589,7 +589,7 @@ var QuoteRequests = React.createClass({
 
 	filterQuoteRequest(quote_requests) {
 		const filteredQuoteRequest = quote_requests.filter(({trady}) => {
-			return !trady.jfmo_participant || !!trady.customer_profile
+			return trady && (!trady.jfmo_participant || !!trady.customer_profile)
 		})
 
 		return filteredQuoteRequest;
