@@ -368,9 +368,15 @@ class MaintenanceRequestsController < ApplicationController
   end
 
   def update_status
-    binding.pry
+
     maintenance_request = MaintenanceRequest.find_by(id:params[:maintenance_request_id])
-    maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category])
+    
+    if params[:maintenance_request_status] == "Jobs Completed"
+      maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category], trady_status:"Job Complete")
+    else
+      maintenance_request.action_status.update_columns(agent_status:params[:maintenance_request_status],action_category:params[:action_category])
+    end 
+
     action_status = maintenance_request.action_status
     respond_to do |format|
       format.json {render json:action_status}
