@@ -1,7 +1,8 @@
+<%- current_role = @current_user ? @current_user.current_role.role : nil %>
 <% if local_assigns.has_key? :expanded %>
-    <%= react_component('Footer', expanded: true, new_agency_path: new_agency_path) %>
+    <%= react_component('Footer', expanded: true, new_agency_path: new_agency_path, current_role: current_role) %>
 <%end %>
 
 <% if !local_assigns.has_key? :expanded %>
-    <%= react_component('Footer', new_agency_path: new_agency_path) %>
+    <%= react_component('Footer', new_agency_path: new_agency_path, current_role: current_role) %>
 <%end %>

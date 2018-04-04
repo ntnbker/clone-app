@@ -1,0 +1,23 @@
+var About = React.createClass({
+  render() {
+    return (
+      <div id="static-pages" className="about">
+        <div className="scroll-bar">
+          <h4 className="text-center title">About</h4>
+          <p className="content level-0">
+            Maintenance App is a cloud based platform that helps organize and log maintenance issues involving your properties.Since 2015 Maintenance App has strived to make the experience of dealing with maintenance issues the best it can be. We designed our platform by thinking of the needs and desires of property managers, landlords, tenants, and tradies. By allowing property managers to quickly organize maintenance requests submitted by tenants we help them accomplish their work quickly and efficiently.
+          </p>
+          <p className="content level-0">
+            Using our on demand network of verified tradies, agents and landlord can effortlessly request competitive quotes for jobs that are required to be completed. We give property managers and landlords competitive quotes to help maintain their properties in great condition.
+          </p>
+          <p className="content level-0">
+            We offer tradies an opportunity to grow their business by receiving high quality leads, which is why many tradies love being on our network. We love helping out small businesses reach their full potential.
+          </p>
+          <p className="content level-0">
+            We want to thank you for joining us, we hope you enjoy our platform!
+          </p>
+        </div>
+      </div>
+    )
+  }
+})
