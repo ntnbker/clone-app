@@ -77,7 +77,6 @@ var Payment = React.createClass({
 
   submit(e) {
     e.preventDefault();
-    debugger
     const {card} = this.state;
     const self = this;
 
