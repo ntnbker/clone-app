@@ -287,7 +287,7 @@ Rails.application.routes.draw do
   resources :tradie_term_agreements, only:[:new, :create]
   get "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#new_terms_and_conditions_onboarding", :as => :onboarding_tradie_terms_and_conditions
   post "onboarding_tradie_terms_and_conditions" => "tradie_term_agreements#create_terms_and_conditions_onboarding"
-  get "join_just_find_me_one" => "tradie_term_agreements#non_jfmo_terms_and_conditions_onboarding"
+  get "join_just_find_me_one" => "tradie_term_agreements#non_jfmo_terms_and_conditions_onboarding", :as=> :join_just_find_me_one
   post "join_just_find_me_one" => "tradie_term_agreements#create_non_jfmo_terms_and_conditions_onboarding"
   ############################################
   ##########PAYMENT RESOURCES/ROUTES#########

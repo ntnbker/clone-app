@@ -182,7 +182,8 @@ class TradyMaintenanceRequestsController < ApplicationController
 
   def jfmo_terms_and_conditions
     if current_user && current_user.logged_in_as("Trady") && current_user.trady.jfmo_participant == true && current_user.trady.customer_profile.nil?
-      redirect them to the terms and conditons page
+      flash[:danger] = "Please accept the terms and condtions to continue."
+      redirect_to  join_just_find_me_one_path(trady_id:current_user.trady.id)
     else 
 
       #do nothing 
