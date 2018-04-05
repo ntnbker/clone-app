@@ -177,7 +177,16 @@ form#terms-and-conditions {
     }
   }
 }
+.join-jfmo {
+  .terms-and-conditions {
+    height: 350px;
+    margin: 80px 5% 10px 5%;
 
+    .scroll-bar {
+      height: 310px;
+    }
+  }
+}
 @media (max-width: 550px) {
   form#terms-and-conditions {
     .how-it-works-note {
