@@ -99100,6 +99100,106 @@ var TermsAndConditions = React.createClass({
     );
   }
 });
+var JoinJFMOTermsAndConditions = React.createClass({
+  displayName: 'JoinJFMOTermsAndConditions',
+
+  getInitialState: function () {
+    return {
+      isAgree: false,
+      errors: ''
+    };
+  },
+
+  termsAndConditionsText: function () {
+    return React.createElement(TermsAndConditions, null);
+  },
+
+  checkOffAgree: function () {
+    var isAgree = this.state.isAgree;
+
+    this.setState({
+      errors: '',
+      isAgree: !isAgree
+    });
+  },
+
+  renderError: function (error) {
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error ? error : ''
+    );
+  },
+
+  submit: function (e) {
+    e.preventDefault();
+    var isAgree = this.state.isAgree;
+
+    var self = this;
+
+    var params = {
+      terms_and_conditions: isAgree,
+      trady_id: this.props.trady_id
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/join_just_find_me_one',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+      },
+      data: params,
+      success: function (res) {
+        if (res && res.errors) {
+          return self.setState({ errors: res.errors });
+        }
+      },
+      error: function (errors) {}
+    });
+
+    return false;
+  },
+
+  render: function () {
+    var _this = this;
+
+    var isAgree = this.state.isAgree;
+
+    return React.createElement(
+      'form',
+      { id: 'terms-and-conditions', className: 'join-jfmo', onSubmit: this.submit },
+      this.termsAndConditionsText(),
+      React.createElement(
+        'div',
+        { className: 'agree-wrapper' },
+        React.createElement(
+          'label',
+          { className: 'agree_checkbox' },
+          'Agree To Terms and Conditions',
+          React.createElement('input', {
+            type: 'checkbox',
+            id: 'terms_and_conditions',
+            ref: function (elem) {
+              return _this.terms_and_conditions = elem;
+            },
+            onChange: this.checkOffAgree
+          }),
+          React.createElement('span', { className: 'checkmark' })
+        )
+      ),
+      this.renderError(this.state.errors),
+      React.createElement(
+        'div',
+        { className: 'TAC-buttons' },
+        React.createElement(
+          'button',
+          { type: 'submit', className: 'btn button-submit' },
+          'Submit'
+        )
+      )
+    );
+  }
+});
 var TradyTermsAndConditions = React.createClass({
   displayName: "TradyTermsAndConditions",
 
