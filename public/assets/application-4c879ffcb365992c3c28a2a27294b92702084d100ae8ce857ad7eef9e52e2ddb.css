@@ -18121,22 +18121,32 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   color: #71C796;
 }
 
+/* line 181, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+.join-jfmo .terms-and-conditions {
+  height: 350px;
+  margin: 80px 5% 10px 5%;
+}
+/* line 185, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+.join-jfmo .terms-and-conditions .scroll-bar {
+  height: 310px;
+}
+
 @media (max-width: 550px) {
-  /* line 182, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 191, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions {
     /* Create a custom checkbox */
     /* Style the checkmark/indicator */
   }
-  /* line 183, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 192, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .how-it-works-note {
     font-size: 11px;
   }
-  /* line 186, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 195, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .agree_checkbox {
     font-size: 11px;
     margin: 0 10%;
   }
-  /* line 192, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 201, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .checkmark {
     top: 0px;
     left: -17px;
@@ -18144,7 +18154,7 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
     width: 14px;
     border-radius: 5px;
   }
-  /* line 201, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 210, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .agree_checkbox .checkmark:after {
     left: 5px;
     top: 1px;
@@ -18152,58 +18162,58 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
     height: 8px;
     border-width: 0 2px 2px 0;
   }
-  /* line 212, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 221, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .TAC-buttons button {
     margin: 0 5px;
     padding: 0;
   }
-  /* line 217, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 226, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .TAC-buttons .button-submit:hover {
     background-color: #71C796;
   }
-  /* line 220, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 229, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   form#terms-and-conditions .TAC-buttons .button-back:hover {
     background-color: #4CC6EE;
   }
 
-  /* line 226, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 235, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .title {
     font-size: 22px;
   }
-  /* line 229, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 238, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-0 {
     font-size: 15px;
     margin-bottom: 10px;
   }
-  /* line 233, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 242, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-1 {
     font-size: 13px;
   }
-  /* line 236, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 245, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-2 {
     font-size: 11px;
   }
-  /* line 239, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 248, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .terms-and-conditions .level-3 {
     margin-bottom: 5px;
     font-size: 9px;
   }
 
-  /* line 245, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 254, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-title {
     font-size: 13px;
   }
-  /* line 248, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 257, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-item {
     min-height: 40px;
   }
-  /* line 250, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 259, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-item .number {
     width: 26px;
     height: 26px;
     font-size: 18px;
   }
-  /* line 255, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
+  /* line 264, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/terms_and_conditions.scss */
   .how-it-works .how-it-works-item .text {
     margin-left: 40px;
     margin-bottom: 15px;

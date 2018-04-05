@@ -1,4 +1,5 @@
 class TradieTermAgreementsController < ApplicationController
+ before_action :require_login, only:[:non_jfmo_terms_and_conditions_onboarding, :create_non_jfmo_terms_and_conditions_onboarding]
   def new
     @maintenance_request_id = params[:maintenance_request_id]
     @trady_company_id = params[:trady_company_id]
@@ -57,6 +58,33 @@ class TradieTermAgreementsController < ApplicationController
       end
     end 
 
+  end
+
+
+  def non_jfmo_terms_and_conditions_onboarding
+    @trady_id = params[:trady_id]
+  end
+
+  def create_non_jfmo_terms_and_conditions_onboarding
+    @trady_id = params[:trady_id]
+    customer_profile = CustomerProfile.find_by(trady_id:@trady_id)
+    binding.pry
+    if  params[:terms_and_conditions] == "true" 
+      if customer_profile
+        flash[:success] = "Thank you for accepting the terms and conditions. You will now recieve more jobs from many of our property management agency partners."
+        redirect_to trady_maintenance_requests_path
+      else
+        CustomerProfile.create(trady_id:@trady_id, terms_and_conditions: true)
+        flash[:success] = "Thank you for accepting the terms and conditions. You will now recieve more jobs from many of our property management agency partners."
+        redirect_to trady_maintenance_requests_path
+      end 
+       
+    elsif params[:terms_and_conditions] == "false"
+      respond_to do |format|
+          format.json{render :json=>{errors:"You must agree to the terms and conditions to join the maintenance app network."}}
+          format.html{render :non_jfmo_terms_and_conditions_onboarding}
+      end
+    end 
   end
 
 
