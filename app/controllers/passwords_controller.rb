@@ -49,6 +49,7 @@ class PasswordsController < ApplicationController
     @user = current_user
     @user.password_confirmation = params[:user][:password_confirmation]
     # the next line clears the temporary token and updates the password
+    
     if @user.change_password!(params[:user][:password])
       @user.update_attribute(:set_password_token, SecureRandom.hex(10))
       flash[:success] = 'Password was successfully changed.'
@@ -63,18 +64,15 @@ class PasswordsController < ApplicationController
     
     if current_user
       @user = current_user
-    elsif params[:token]
+    else 
       
-      user = User.find_by(set_password_token:params[:token])
-      if user
-        @user = user
+      @user = User.find_by(set_password_token:params[:token])
+      if @user
+       #do nothing
       else
         flash[:danger] = "Sorry that password token has expired. Please use the forgot my password link under the login screen to setup your password. Thank you."
         redirect_to root_path
       end 
-    else 
-      flash[:danger] = "Sorry you need an eligible token to see that page. Please use the forgot my password link under the login screen to setup your password. Thank you."
-      redirect_to root_path
     end 
   end
 

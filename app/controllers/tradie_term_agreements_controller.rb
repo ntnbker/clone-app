@@ -68,6 +68,7 @@ class TradieTermAgreementsController < ApplicationController
   def create_non_jfmo_terms_and_conditions_onboarding
     @trady_id = params[:trady_id]
     customer_profile = CustomerProfile.find_by(trady_id:@trady_id)
+    binding.pry
     if  params[:terms_and_conditions] == "true" 
       if customer_profile
         flash[:success] = "Thank you for accepting the terms and conditions. You will now recieve more jobs from many of our property management agency partners."
