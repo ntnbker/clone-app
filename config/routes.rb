@@ -142,7 +142,7 @@ Rails.application.routes.draw do
   ###################################################
     resources :uploaded_invoices, only:[:new, :create, :show, :edit, :update]
     post "send_pdf_invoice" => "uploaded_invoices#send_invoice", :as => :send_pdf_invoice
-
+    post "void_uploaded_invoice" => "uploaded_invoices#void_invoice"
   ###################################################
   ##########TRADIE RESOURCES/ROUTES#################
   ###################################################
