@@ -105,7 +105,7 @@ class UploadedInvoicesController < ApplicationController
     if !params[:message].empty?
       uploaded_invoice.update_attribute(:active,false)
       
-      maintenance_request = invoice.maintenance_request
+      maintenance_request = uploaded_invoice.maintenance_request
       if current_user.logged_in_as("Trady")
         #send email to the agent saying invoice is void dont pay that one.
         #AgentInvoiceVoidEmailWorker.perform_async(maintenance_request.id)
