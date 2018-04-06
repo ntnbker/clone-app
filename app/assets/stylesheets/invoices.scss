@@ -1301,3 +1301,8 @@ $color-text: #83878C;
     }
   }
 }
+
+textarea.none-resize {
+  resize: none;
+  width: 100%;
+}

@@ -246,6 +246,7 @@ var TradyMaintenanceRequest = React.createClass({
 			appointment   					: null,
 			invoice_pdf_file  			: null,
 			appointmentUpdate  			: null,
+			message  								: '',
 			tradies   							: tradies,
 			comments   							: comments,
 			landlord   							: landlord,
@@ -528,6 +529,7 @@ var TradyMaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'voidInvoice':
 			case 'viewInvoice': {
 				this.setState({
 					invoice: item
@@ -568,6 +570,14 @@ var TradyMaintenanceRequest = React.createClass({
 				this.setState({
 					trady: item
 				});
+				this.onModalWith(key);
+				break;
+			}
+
+			case 'wantNewInvoice': {
+				this.setState({
+					message: item
+				})
 				this.onModalWith(key);
 				break;
 			}
@@ -758,6 +768,32 @@ var TradyMaintenanceRequest = React.createClass({
 				self.setState({notification: {
 					title: "Remind Agent of Payment",
 					content: "Remind Agent of Payment" ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
+	voidInvoice: function(params, callback) {
+		const self = this;
+		const {current_user} = this.props;
+
+		$.ajax({
+			type: 'POST',
+			url: '/void_invoice',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res) {
+				const message = res && res.message || 'You have void this invoice. Do you want to create new invoice?'
+				self.viewItem('wantNewInvoice', res && res.message);
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Void Invoice",
+					content: "An error occured voiding this invoice." ,
 					bgClass: "bg-error",
 				}});
 				self.onModalWith('notification');
@@ -1090,6 +1126,24 @@ var TradyMaintenanceRequest = React.createClass({
 							title="Stop Invoice Reminder"
 							content="Are you sure you have already made an invoice AND you want to stop the invoice reminder?"
 						/>
+					);
+
+				case 'voidInvoice':
+					return (
+						<ModalVoidInvoice
+							voidInvoice={this.voidInvoice}
+							invoice={this.state.invoice}
+							close={this.isClose}
+						/>
+					)
+
+				case 'wantNewInvoice':
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							confirm={() => this.onModalWith('viewConfirm')}
+							title="Void Invoice"
+							content={this.state.message || "You have void this invoice. Do you want to create a new invoice?"} />
 					);
 
 				default:

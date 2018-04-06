@@ -1299,6 +1299,7 @@ var MaintenanceRequest = React.createClass({
 				break;
 			}
 
+			case 'voidInvoice':
 			case 'viewInvoice': {
 				this.setState({
 					invoice: item
@@ -2364,6 +2365,40 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	voidInvoice: function(params, callback) {
+		const self = this;
+		const {current_user} = this.props;
+
+		params.current_user_id = current_user && current_user.id;
+
+		$.ajax({
+			type: 'POST',
+			url: '/void_invoice',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function(res){
+				self.setState({
+					notification: {
+						title: "Void Invoice",
+						content: res && res.message || "You have void this invoice.",
+						bgClass: "bg-success",
+					},
+				});
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					title: "Void Invoice",
+					content: "An error occured voiding this invoice." ,
+					bgClass: "bg-error",
+				}});
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	cancelWorkOrder: function() {
 		const self = this;
 		const {maintenance_request, logs} = this.state;
@@ -2936,6 +2971,15 @@ var MaintenanceRequest = React.createClass({
 							content={'Would you like us to find a competative quote from a qualified tradie to complete the work? and recieve compensation from our rebate program once the work has been done?'}
 							confirm={this.justFindMeOne}
 							close={() => this.onModalWith('requestQuote')}
+						/>
+					)
+
+				case 'voidInvoice':
+					return (
+						<ModalVoidInvoice
+							voidInvoice={this.voidInvoice}
+							invoice={this.state.invoice}
+							close={this.isClose}
 						/>
 					)
 

@@ -182,6 +182,12 @@ var Invoices = React.createClass({
 									</p>
 								</div>
 								<div className="actions-quote">
+                  {
+                    invoice.paid == false &&
+                      <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewInvoice('voidInvoice', invoice)}>
+                        Void Invoice
+                      </button>
+                  }
 									{
 										(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false) &&
 											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
@@ -201,3 +207,79 @@ var Invoices = React.createClass({
 		);
 	}
 });
+
+var ModalVoidInvoice = React.createClass({
+  getInitialState() {
+    return {};
+  },
+
+  voidInvoice() {
+    const { invoice, current_user } = this.props;
+    const self = this;
+
+    const params = {
+      trady_id: invoice.trady_id,
+      invoice_id: invoice.id,
+      maintenance_request_id: invoice.maintenance_request_id,
+      message: this.message && this.message.value,
+    }
+
+    this.props.voidInvoice(params, (error) => {
+      if (err) {
+        self.setState({ error });
+      }
+    })
+  },
+
+  renderError: function() {
+    const {error} = this.state;
+    return <p id="errorbox" className="error">{error || ''}</p>;
+  },
+
+  render() {
+    const { invoice } = this.props;
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={this.props.close}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 className="modal-title text-center">Void Invoice</h4>
+            </div>
+            <div className="modal-body">
+              <p className="text-center">Are you sure want to void this invoice? Voiding this invoice will mark the invocie with a DO NOT PAY status for agent.</p>
+              <textarea
+                type="text"
+                className="none-resize"
+                placeholder="Please tell us the reason:"
+                ref={(elem) => this.message = elem}
+              />
+              {this.renderError()}
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-default success"
+                onClick={this.voidInvoice}
+                data-dismiss="modal"
+              >Void Invoice</button>
+              <button
+                type="button"
+                className="btn btn-primary cancel"
+                onClick={this.props.close}
+              >Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+})
