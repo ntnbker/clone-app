@@ -257,8 +257,33 @@ class InvoicesController < ApplicationController
   end
 
   def void_invoice
-    
+    invoice = Invoice.find_by(id:params[:invoice_id])
+    #user = User.find_by(id:params[:current_user_id])
+    binding.pry
+    if !params[:message].empty?
+      #invoice.update_attribute(:active,false)
+      
+      maintenance_request = invoice.maintenance_request
+      if current_user.logged_in_as("Trady")
+        #send email to the agent saying invoice is void dont pay that one.
+        #AgentInvoiceVoidEmailWorker.perform_async(maintenance_request.id)
+        person = "Agent" 
+      elsif current_user.logged_in_as("AgencyAdmin")
+        #send email to the trady saying invoice has been void and they requite another 
+        person = "Tradie"
+      elsif current_user.logged_in_as("Agent")
+        #send email to the trady saying invoice has been void and they requite another 
+        person = "Tradie"
+      end
+    else 
+      error = "Message is empty, please submit a a reason for voiding the invoice. Thank you for your time."
+    end 
+        
+      respond_to do |format|
+        format.json {render :json=>{message:"You have voided this invoice. An email has been send to the #{person} to inform them that this invoice has been voided and no payment is required towards that invoice.", errors:error}}
+      end 
   end
+
 
 
 
