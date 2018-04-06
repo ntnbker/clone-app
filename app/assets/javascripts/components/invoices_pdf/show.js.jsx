@@ -80,11 +80,15 @@ var ModalViewPDFInvoice = React.createClass({
 								</div>
 							</div>
 						</div>
-            { !isPdf &&
             	<div className="modal-body dontprint">
-	              <ButtonPrint printQuote={this.printInvoice} />
-	            </div>
-          	}
+                {
+                  invoice.paid == false && invoice.active !== false &&
+                    <button type="button" className="btn btn-decline" onClick={(item) => self.viewInvoice('voidInvoice', invoice)}>
+                      Void Invoice
+                    </button>
+                }
+                { !isPdf && <ButtonPrint printQuote={this.printInvoice} /> }
+              </div>
           </div>
 				</div>
 			</div>

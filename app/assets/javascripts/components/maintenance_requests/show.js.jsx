@@ -2368,17 +2368,22 @@ var MaintenanceRequest = React.createClass({
 	voidInvoice: function(params, callback) {
 		const self = this;
 		const {current_user} = this.props;
+		const {invoice} = this.state;
+		const isPdf = !!invoice.pdf_url;
 
 		params.current_user_id = current_user && current_user.id;
 
 		$.ajax({
 			type: 'POST',
-			url: '/void_invoice',
+			url: isPdf ? '/void_uploaded_invoice' : '/void_invoice',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
 			data: params,
 			success: function(res){
+				if (res && res.errors) {
+					return callback(res.errors);
+				}
 				self.setState({
 					notification: {
 						title: "Void Invoice",
@@ -2705,6 +2710,7 @@ var MaintenanceRequest = React.createClass({
 						 	invoice={this.state.invoice}
 						 	invoices={this.state.invoices}
 							property={this.props.property}
+							viewInvoice={this.viewItem}
 							role={this.props.current_user_role}
 						/>
 					);
@@ -2720,6 +2726,7 @@ var MaintenanceRequest = React.createClass({
 							property={this.props.property}
 							trady={this.props.assigned_trady}
 							invoice_pdf_file={this.state.invoice_pdf_file}
+							viewInvoice={this.viewItem}
 							role={this.props.current_user_role}
 						/>
 					);

@@ -778,15 +778,20 @@ var TradyMaintenanceRequest = React.createClass({
 	voidInvoice: function(params, callback) {
 		const self = this;
 		const {current_user} = this.props;
+		const {invoice} = this.state;
+		const isPdf = !!invoice.pdf_url;
 
 		$.ajax({
 			type: 'POST',
-			url: '/void_invoice',
+			url: isPdf ? '/void_uploaded_invoice' : '/void_invoice',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
 			},
 			data: params,
 			success: function(res) {
+				if (res && res.errors) {
+					return callback(res.errors);
+				}
 				const message = res && res.message || 'You have void this invoice. Do you want to create new invoice?'
 				self.viewItem('wantNewInvoice', res && res.message);
 			},
@@ -935,6 +940,7 @@ var TradyMaintenanceRequest = React.createClass({
 					 			landlord={this.state.landlord}
 							 	invoices={this.state.invoices}
 								property={this.props.property}
+								viewInvoice={this.viewItem}
 								role={this.props.current_role ? this.props.current_role.role : ''}
 							/>
 					);
@@ -947,6 +953,7 @@ var TradyMaintenanceRequest = React.createClass({
 								agency={this.props.agency}
 								property={this.props.property}
 								trady={this.props.assigned_trady}
+								viewInvoice={this.viewItem}
 							 	invoice_pdf_file={this.state.invoice_pdf_file}
 								role={this.props.current_user_role}
 							/>

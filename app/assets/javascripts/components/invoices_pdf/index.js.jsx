@@ -51,7 +51,7 @@ var PDFInvoices = React.createClass({
 				<div className="list-quote">
 				{
 					invoices.map(function(invoice, index) {
-						const { trady = {}, paid = false } = invoice;
+						const { trady = {}, paid = false, active } = invoice;
 						return (
 							<div className="item-quote row" key={index}>
 								<div className="user seven columns">
@@ -62,8 +62,20 @@ var PDFInvoices = React.createClass({
 									<div className="info">
 										<div className="name">
 											<span>{trady.name}</span>
-											{!!paid && <button className="button-default Approved"><span>Paid</span></button>}
-											{!paid && <button className="button-default Declined"><span>Outstanding Payment</span></button>}
+											{
+												paid == false
+                          ? active !== false
+                            ? <button className={'button-default status Declined'}>
+    														<span>Outstanding Payment</span>
+    													</button>
+                            : <button className={'button-default status Declined'}>
+                                <span>Do Not Pay</span>
+                              </button>
+													:
+													<button className={'button-default status Approved'}>
+														<span>Paid</span>
+													</button>
+											}
 										</div>
 										<p className="description">
 											{trady.company_name}<br />
@@ -78,8 +90,8 @@ var PDFInvoices = React.createClass({
 								</div>
 								<div className="actions-quote">
                   {
-                    invoice.paid == false && invoice.active == true &&
-                      <button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.viewInvoice('voidInvoice', invoice)}>
+                    invoice.paid == false && invoice.active !== false &&
+                      <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewPDFInvoice('voidInvoice', invoice)}>
                         Void Invoice
                       </button>
                   }

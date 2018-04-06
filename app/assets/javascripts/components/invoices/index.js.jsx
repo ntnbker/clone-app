@@ -157,10 +157,14 @@ var Invoices = React.createClass({
 										<div className="name">
 											<span>{invoice.trady.name}</span>
 											{
-												invoice.paid == false ?
-													<button className={'button-default status Declined'}>
-														<span>Outstanding Payment</span>
-													</button>
+												invoice.paid == false
+                          ? invoice.active !== false
+                            ? <button className={'button-default status Declined'}>
+    														<span>Outstanding Payment</span>
+    													</button>
+                            : <button className={'button-default status Declined'}>
+                                <span>Do Not Pay</span>
+                              </button>
 													:
 													<button className={'button-default status Approved'}>
 														<span>Paid</span>
@@ -183,13 +187,13 @@ var Invoices = React.createClass({
 								</div>
 								<div className="actions-quote">
                   {
-                    invoice.paid == false &&
+                    invoice.paid == false && invoice.active !== false &&
                       <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewInvoice('voidInvoice', invoice)}>
                         Void Invoice
                       </button>
                   }
 									{
-										(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false) &&
+										(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false && invoice.active !== false) &&
 											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
 												Payment Scheduled
 											</button>
@@ -225,7 +229,7 @@ var ModalVoidInvoice = React.createClass({
     }
 
     this.props.voidInvoice(params, (error) => {
-      if (err) {
+      if (error) {
         self.setState({ error });
       }
     })
@@ -260,6 +264,7 @@ var ModalVoidInvoice = React.createClass({
                 type="text"
                 className="none-resize"
                 placeholder="Please tell us the reason:"
+                onChange={() => this.setState({error: ''})}
                 ref={(elem) => this.message = elem}
               />
               {this.renderError()}
@@ -267,13 +272,13 @@ var ModalVoidInvoice = React.createClass({
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-default success"
+                className="btn btn-primary cancel"
                 onClick={this.voidInvoice}
                 data-dismiss="modal"
               >Void Invoice</button>
               <button
                 type="button"
-                className="btn btn-primary cancel"
+                className="btn btn-default success"
                 onClick={this.props.close}
               >Cancel</button>
             </div>
