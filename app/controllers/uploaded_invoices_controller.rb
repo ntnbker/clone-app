@@ -99,7 +99,7 @@ class UploadedInvoicesController < ApplicationController
   end
 
   def void_invoice
-    uploaded_invoice = UploadedInvoice.find_by(id:params[:uploaded_invoice_id])
+    uploaded_invoice = UploadedInvoice.find_by(id:params[:invoice_id])
     #user = User.find_by(id:params[:current_user_id])
     
     if !params[:message].empty?
