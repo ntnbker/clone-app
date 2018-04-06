@@ -104,6 +104,7 @@ Rails.application.routes.draw do
     post "payment_reminder" => "invoices#payment_reminder"
     get "new_additional_invoice" => "invoices#new_additional_invoice", :as=> :new_additional_invoice
     post"submit_additional_invoice" => "invoices#create_additional_invoice" 
+    post "void_invoice" => "invoices#void_invoice"
   ###################################################
   ##########SINGLE INVOICE RESOURCES/ROUTES######
   ###################################################

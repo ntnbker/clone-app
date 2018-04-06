@@ -256,6 +256,10 @@ class InvoicesController < ApplicationController
 
   end
 
+  def void_invoice
+    
+  end
+
 
 
 
