@@ -78,7 +78,7 @@ var PDFInvoices = React.createClass({
 								</div>
 								<div className="actions-quote">
                   {
-                    invoice.paid == false &&
+                    invoice.paid == false && invoice.active == true &&
                       <button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.viewInvoice('voidInvoice', invoice)}>
                         Void Invoice
                       </button>
