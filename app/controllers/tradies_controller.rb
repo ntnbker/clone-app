@@ -143,22 +143,30 @@ class TradiesController < ApplicationController
 
 ####NEW USER STARTS HERE
     else 
-      if @trady.valid?
+      if @trady.save(trady_params)
         
         @user = User.create(email:params[:trady][:email],password:SecureRandom.hex(5))
-        @trady.user_id = @user.id
-        #@trady.skill = params[:trady][:skill_required]
-
-        role = Role.create(user_id:@user.id)
+        @trady.update_attribute(:user_id, @user.id)
+        @user.reload
+        role = Role.new(user_id:@user.id)
         @trady.roles << role
-        @trady.save
+        role.save
+
         Skill.create(trady_id:@trady.id, skill:mr.service_type )
-        #UserSetPasswordEmailWorker.perform_in(5.minutes, @user.id)
+        
        
+
+        
+
+
+
+
+
             
         if params[:trady][:trady_request] == "Quote"
           log = Log.create(maintenance_request_id:mr.id, action:"Quote request sent to #{@trady.capitalize_company_name} by: ", name:name)
-          TradyEmailWorker.perform_async(@user.trady.id,mr.id)
+          binding.pry
+          TradyEmailWorker.perform_async(@trady.id,mr.id)
           TradyStatus.create(maintenance_request_id:mr.id,status:"Quote Requested")
           quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
           TenantQuoteRequestedNotificationEmailWorker.perform_async(mr.id,@trady.id)
