@@ -107,9 +107,10 @@ var ModalViewInvoice = React.createClass({
 	getImage: function(trady) {
 		if (!trady) return '';
 
-		const { trady_company: {trady_company_profile_image}, trady_profile_image } = trady;
+		const trady_company = trady.trady_company || {};
+		const trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-		const image_url = trady_company_profile_image && trady_company_profile_image.image_url;
+		const image_url = trady_company_profile_image.image_url;
 
 		return image_url;
 	},
