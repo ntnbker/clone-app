@@ -1,31 +1,43 @@
 .about {
+  &#static-pages {
+    height: inherit;
+
+    .scroll-bar {
+      height: inherit;
+      overflow-y: auto;
+
+    }
+  }
   .about-top-image {
-    max-height: 300px;
     position: relative;
-    min-height: 150px;
-    max-height: 300px;
+    min-height: 250px;
+    max-height: 400px;
+    background-repeat: round;
     background-image: url(/assets/about-top-image.jpg);
   }
   .about-bottom-image {
     @include flexbox;
-    width: 100%;
+    min-height: 250px;
+    max-height: 400px;
+
     .one-image {
       @include flex(1);
+      background-repeat: round;
     }
     .first-image {
-      min-height: 150px;
-      max-height: 300px;
-      background-image: url(/assets/about-bottom-first.jpg);
+      min-height: 250px;
+      max-height: 400px;
+      background-image: url(/assets/about-bottom-first-image.jpg);
     }
     .second-image {
-      min-height: 150px;
-      max-height: 300px;
-      background-image: url(/assets/about-bottom-second.jpg);
+      min-height: 250px;
+      max-height: 400px;
+      background-image: url(/assets/about-bottom-second-image.jpg);
     }
     .third-image {
-      min-height: 150px;
-      max-height: 300px;
-      background-image: url(/assets/about-bottom-third.jpg);
+      min-height: 250px;
+      max-height: 400px;
+      background-image: url(/assets/about-bottom-third-image.jpg);
     }
   }
 }
