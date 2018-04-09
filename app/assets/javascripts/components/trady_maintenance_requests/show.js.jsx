@@ -792,8 +792,8 @@ var TradyMaintenanceRequest = React.createClass({
 				if (res && res.errors) {
 					return callback(res.errors);
 				}
-				const message = res && res.message || 'You have void this invoice. Do you want to create new invoice?'
-				self.viewItem('wantNewInvoice', res && res.message);
+				const message = (res && res.message || 'You have void this invoice.') + ' Do you want to create another invoice?';
+				self.viewItem('wantNewInvoice', message);
 			},
 			error: function(err) {
 				self.setState({notification: {

@@ -1,6 +1,6 @@
 var DetailInvoice = React.createClass({
 	render: function() {
-		const {invoice, invoice: {trady}, role} = this.props;
+		const {invoice, invoice: {trady}, role, notVoid} = this.props;
 		let subTotal = 0;
 		let gst = 0;
 		if(!!invoice) {
@@ -26,6 +26,13 @@ var DetailInvoice = React.createClass({
 					</tr>
 					</thead>
 					<tbody>
+					{!notVoid &&
+						<div className="text-center position-ab above">
+							<div className="reason-header">INVOICE VOID DO NOT PAY</div>
+							<div className="reason-title">This is the reason the invoice has been void:</div>
+							<div className="reason-content">{invoice.void_reason}</div>
+						</div>
+					}
 					{
 						invoice.invoice_items.map(function(item, key) {
 							if(item.pricing_type == "Fixed Cost") {
@@ -62,7 +69,7 @@ var DetailInvoice = React.createClass({
 							$ {invoice.gst_amount.toFixed(2)}
 						</td>
 					</tr>
-					<tr>
+					<tr className="position-rl">
 						<td colSpan="3" className="border-none"></td>
 						<td className="text-right font-bold border-none">
 							Amount Due: (AUD)
@@ -157,6 +164,8 @@ var ModalViewInvoice = React.createClass({
 											}, 0);
 
 		const image_url = this.getImage(invoice.trady);
+
+		const notVoid = invoice.paid == false && invoice.active !== false;
 
 		return (
 			<div className="modal-custom modal-quote fade">
@@ -261,10 +270,8 @@ var ModalViewInvoice = React.createClass({
 											</p>
 										</div>
 									</div>
-									<div className="detail-quote">
-										<div className="detail-quote">
-											{!!invoice.invoice_items && <DetailInvoice role={self.role} invoice={invoice} />}
-										</div>
+									<div className="detail-quote position-rl">
+										{!!invoice.invoice_items && <DetailInvoice notVoid={notVoid} role={self.role} invoice={invoice} />}
 									</div>
 									<p className="font-bold">
 										Service Address: {this.capitalizeText(self.property.property_address)}
@@ -321,12 +328,6 @@ var ModalViewInvoice = React.createClass({
 							</div>
 						</div>
             <div className="modal-body dontprint">
-	            {
-	              invoice.paid == false && invoice.active !== false &&
-	                <button type="button" className="btn btn-decline" onClick={(item) => self.viewInvoice('voidInvoice', invoice)}>
-	                  Void Invoice
-	                </button>
-	            }
               <ButtonPrint printQuote={this.printInvoice} />
             </div>
 					</div>
