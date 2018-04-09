@@ -29,7 +29,7 @@ var DetailInvoice = React.createClass({
 					{!notVoid &&
 						<div className="text-center position-ab above">
 							<div className="reason-header">INVOICE VOID DO NOT PAY</div>
-							<div className="reason-title">This is the reason the invoice has been void:</div>
+							<div className="reason-title">Reason for voiding:</div>
 							<div className="reason-content">{invoice.void_reason}</div>
 						</div>
 					}

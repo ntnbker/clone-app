@@ -2,6 +2,8 @@ var About = React.createClass({
   render() {
     return (
       <div id="static-pages" className="about">
+        <div className="about-top-image">
+        </div>
         <div className="scroll-bar">
           <h4 className="text-center title">About</h4>
           <p className="content level-1">
@@ -16,6 +18,11 @@ var About = React.createClass({
           <p className="content level-1">
             We want to thank you for joining us, we hope you enjoy our platform!
           </p>
+        </div>
+        <div className="about-bottom-image">
+          <div className="one-image first-image"></div>
+          <div className="one-image second-image"></div>
+          <div className="one-image third-image"></div>
         </div>
       </div>
     )

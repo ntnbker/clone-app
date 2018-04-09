@@ -241,7 +241,7 @@ var ModalVoidInvoice = React.createClass({
   },
 
   render() {
-    const { invoice } = this.props;
+    const { invoice, text } = this.props;
     return (
       <div className="modal-custom fade">
         <div className="modal-dialog">
@@ -259,7 +259,7 @@ var ModalVoidInvoice = React.createClass({
               <h4 className="modal-title text-center">Void Invoice</h4>
             </div>
             <div className="modal-body">
-              <p className="text-center">Are you sure want to void this invoice? Voiding this invoice will mark the invocie with a DO NOT PAY status for agent.</p>
+              <p className="text-center">{text}</p>
               <textarea
                 type="text"
                 className="none-resize"

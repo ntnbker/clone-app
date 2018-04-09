@@ -1141,6 +1141,7 @@ var TradyMaintenanceRequest = React.createClass({
 							voidInvoice={this.voidInvoice}
 							invoice={this.state.invoice}
 							close={this.isClose}
+							text={"Are you sure want to void this invoice? Voiding this invoice will mark the invocie with a DO NOT PAY status for agent. An email will also be sent to the agent informing them it has been void. Do you want to create a new invoice?"}
 						/>
 					)
 

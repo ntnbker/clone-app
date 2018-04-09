@@ -50,29 +50,27 @@ var ModalViewPDFInvoice = React.createClass({
 											<p>{self.agency.address}</p>
 										</div>
 									</div>
-									<div className="detail-quote">
-										<div className="detail-quote">
-                      {!notVoid &&
-                        <div className="text-center position-ab above">
-                          <div className="reason-header">INVOICE VOID DO NOT PAY</div>
-                          <div className="reason-title">This is the reason the invoice has been void:</div>
-                          <div className="reason-content">{invoice.void_reason}</div>
-                        </div>
-                      }
-											{!!pdf_url &&
-												<object
+									<div className="detail-quote position-rl">
+                    {!notVoid &&
+                      <div className="text-center position-ab above">
+                        <div className="reason-header">INVOICE VOID DO NOT PAY</div>
+                        <div className="reason-title">Reason for voiding:</div>
+                        <div className="reason-content">{invoice.void_reason}</div>
+                      </div>
+                    }
+										{!!pdf_url &&
+											<object
+												width="100%"
+												height={isPdf ? '350px' : "100%"}
+												data={pdf_url}
+											>
+												<iframe
 													width="100%"
 													height={isPdf ? '350px' : "100%"}
-													data={pdf_url}
-												>
-													<iframe
-														width="100%"
-														height={isPdf ? '350px' : "100%"}
-														src={`https://docs.google.com/gview?url=${pdf_url.replace(/.pdf\?.*/g, '')}.pdf&embedded=true`}
-														className="scroll-custom" />
-												</object>
-											}
-										</div>
+													src={`https://docs.google.com/gview?url=${pdf_url.replace(/.pdf\?.*/g, '')}.pdf&embedded=true`}
+													className="scroll-custom" />
+											</object>
+										}
 									</div>
 									<div className="text-center">
 										Invoice Total: {invoice.total_invoice_amount || 0}
