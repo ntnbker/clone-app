@@ -156,16 +156,9 @@ class TradiesController < ApplicationController
         
        
 
-        
-
-
-
-
-
-            
         if params[:trady][:trady_request] == "Quote"
           log = Log.create(maintenance_request_id:mr.id, action:"Quote request sent to #{@trady.capitalize_company_name} by: ", name:name)
-          binding.pry
+          
           TradyEmailWorker.perform_async(@trady.id,mr.id)
           TradyStatus.create(maintenance_request_id:mr.id,status:"Quote Requested")
           quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first

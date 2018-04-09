@@ -103,7 +103,7 @@ class UploadedInvoicesController < ApplicationController
     #user = User.find_by(id:params[:current_user_id])
     
     if !params[:message].empty?
-      uploaded_invoice.update_attribute(:active,false)
+      uploaded_invoice.update_columns(active:false, void_reason:params[:message])
       
       maintenance_request = uploaded_invoice.maintenance_request
       if current_user.logged_in_as("Trady")
