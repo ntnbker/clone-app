@@ -52,7 +52,7 @@ var ModalViewPDFInvoice = React.createClass({
 									</div>
 									<div className="detail-quote position-rl">
                     {!notVoid &&
-                      <div className="text-center position-ab above">
+                      <div className="text-center position-ab reason-void">
                         <div className="reason-header">INVOICE VOID DO NOT PAY</div>
                         <div className="reason-title">Reason for voiding:</div>
                         <div className="reason-content">{invoice.void_reason}</div>

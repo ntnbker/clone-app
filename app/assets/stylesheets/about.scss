@@ -1,43 +1,56 @@
 .about {
   &#static-pages {
     height: inherit;
+    text-align: center;
+    max-width: 850px;
+    margin: auto;
+    margin-top: 80px;
+    margin-bottom: 120px;
+    background-color: #e8e8e8;
 
     .scroll-bar {
       height: inherit;
       overflow-y: auto;
-
+      max-width: 500px;
+      width: 80%;
+      margin: auto;
     }
   }
   .about-top-image {
     position: relative;
-    min-height: 250px;
-    max-height: 400px;
+    min-height: 400px;
+    max-height: 600px;
     background-repeat: round;
     background-image: url(/assets/about-top-image.jpg);
   }
   .about-bottom-image {
     @include flexbox;
-    min-height: 250px;
-    max-height: 400px;
+    min-height: 200px;
+    max-height: 300px;
 
     .one-image {
       @include flex(1);
+      min-height: 200px;
+      max-height: 300px;
       background-repeat: round;
     }
     .first-image {
-      min-height: 250px;
-      max-height: 400px;
       background-image: url(/assets/about-bottom-first-image.jpg);
     }
     .second-image {
-      min-height: 250px;
-      max-height: 400px;
       background-image: url(/assets/about-bottom-second-image.jpg);
     }
     .third-image {
-      min-height: 250px;
-      max-height: 400px;
       background-image: url(/assets/about-bottom-third-image.jpg);
+    }
+  }
+
+  @media (max-width: 550px) {
+    .about-top-image {
+      min-height: 200px;
+    }
+    .about-bottom-image {
+      min-height: 100px;
     }
   }
 }
