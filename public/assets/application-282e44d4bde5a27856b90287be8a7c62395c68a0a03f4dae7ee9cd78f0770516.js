@@ -80099,6 +80099,19 @@ var ContentContact = React.createClass({
 				"ul",
 				null,
 				tenantMobile,
+				assigned_trady && assigned_trady.mobile && React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ href: "tel:" + assigned_trady.mobile },
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Trady - ",
+						assigned_trady.name,
+						": ",
+						assigned_trady.mobile
+					)
+				),
 				React.createElement(
 					"li",
 					null,
@@ -94680,7 +94693,7 @@ var ModalViewQuote = React.createClass({
 
 	render: function () {
 		var self = this.props;
-		var quote = this.state.quote;
+		var quote = self.quote;
 		var property = this.props.property;
 
 		var total = 0;
