@@ -2985,7 +2985,7 @@ var MaintenanceRequest = React.createClass({
 					return (
 						<ModalVoidInvoice
 							voidInvoice={this.voidInvoice}
-							text={"Are you sure want to void this invoice? Voiding this invoice will mark the invocie with a DO NOT PAY status. An email will be sent to the tradie to inform them you have voided and rejected this invoice along with the reason why it was voided."}
+							text={"Are you sure want to void this invoice? Voiding this invoice will mark the invoice with a DO NOT PAY status. An email will be sent to the tradie to inform them you have voided and rejected this invoice along with the reason why it was voided."}
 							invoice={this.state.invoice}
 							close={this.isClose}
 						/>

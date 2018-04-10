@@ -205,6 +205,37 @@ class TradyMailer < ActionMailer::Base
     end 
     mail(to:@trady.email, subject:"Question about quote from #{@agency.capitalize_company_name} - #{@property.property_address}, sent on #{Date.today}")
   end
+
+  def agent_voided_invoice(maintenance_request,invoice)
+    @maintenance_request = maintenance_request
+    @invoice = invoice
+    @trady = @invoice.trady
+    
+    if @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+      @agent = @maintenance_request.agent
+    elsif @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+      @agent = @maintenance_request.agency_admin
+    end 
+    mail(to:@trady.email, subject:"Invoice void and rejected by agent view for details, sent on #{Date.today}")
+  end
+
+  
+  def agent_voided_uploaded_invoice(maintenance_request,invoice)
+    @maintenance_request = maintenance_request
+    @invoice = invoice
+    @trady = @invoice.trady
+    
+    if @maintenance_request.agent
+      @agency = @maintenance_request.agent.agency
+      @agent = @maintenance_request.agent
+    elsif @maintenance_request.agency_admin
+      @agency = @maintenance_request.agency_admin.agency
+      @agent = @maintenance_request.agency_admin
+    end 
+    mail(to:@trady.email, subject:"Invoice void and rejected by agent view for details, sent on #{Date.today}")
+  end
   
 end 
 

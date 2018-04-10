@@ -282,5 +282,39 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Landlord has deferred maintenance for - #{@property.property_address}, sent on #{Date.today}")
   end
 
+  def void_invoice(maintenance_request, invoice)
+    @maintenance_request = maintenance_request
+    @invoice = invoice
+    
+    
+    if @maintenance_request.agent 
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end
+    
+    
+    mail(to:email, subject:"Invoice Void Do Not Pay. View Details")
+  end
+
+  def void_uploaded_invoice(maintenance_request, invoice)
+    @maintenance_request = maintenance_request
+    @invoice = invoice
+    
+    
+    if @maintenance_request.agent 
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end
+    
+    
+    mail(to:email, subject:"Invoice Void Do Not Pay. View Details")
+  end
+
 end 
 

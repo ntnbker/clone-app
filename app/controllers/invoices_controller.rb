@@ -266,13 +266,15 @@ class InvoicesController < ApplicationController
       maintenance_request = invoice.maintenance_request
       if current_user.logged_in_as("Trady")
         #send email to the agent saying invoice is void dont pay that one.
-        #AgentInvoiceVoidEmailWorker.perform_async(maintenance_request.id)
+        AgentInvoiceVoidEmailWorker.perform_async(maintenance_request.id, invoice.id)
         person = "Agent" 
       elsif current_user.logged_in_as("AgencyAdmin")
-        #send email to the trady saying invoice has been void and they requite another 
+        #send email to the trady saying invoice has been void and they requite another
+        TradyInvoiceVoidEmailWorker.perform_async(maintenance_request.id, invoice.id) 
         person = "Tradie"
       elsif current_user.logged_in_as("Agent")
         #send email to the trady saying invoice has been void and they requite another 
+        TradyInvoiceVoidEmailWorker.perform_async(maintenance_request.id, invoice.id) 
         person = "Tradie"
       end
     else 
