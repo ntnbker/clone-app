@@ -2348,7 +2348,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					notification: {
 						title: "Mark As Paid",
-						content: "You have marked this invoice as paid.",
+						content: "Invoice has been marked as scheduled for payment.",
 						bgClass: "bg-success",
 					},
 				});

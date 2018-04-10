@@ -124,7 +124,7 @@ class UploadedInvoicesController < ApplicationController
     end 
         
       respond_to do |format|
-        format.json {render :json=>{message:"You have voided this invoice. An email has been send to the #{person} to inform them that this invoice has been voided and no payment is required towards that invoice.", errors:error}}
+        format.json {render :json=>{uploaded_invoice:uploaded_invoice, message:"You have voided this invoice. An email has been send to the #{person} to inform them that this invoice has been voided and no payment is required towards that invoice.", errors:error}}
       end 
   end
 
