@@ -62,6 +62,15 @@ var ContentContact = React.createClass({
 			return (
 				<ul>
 					{tenantMobile}
+					{
+						assigned_trady && assigned_trady.mobile &&
+						<li>
+							<a href={`tel:${assigned_trady.mobile}`}>
+								<i className="fa fa-phone" aria-hidden="true" />
+								Trady - {assigned_trady.name}: {assigned_trady.mobile}
+							</a>
+						</li>
+					}
 					<li>
 						<a onClick={() => selt.props.onModalWith('sendMessageTenant')}>
 							<i className="fa fa-commenting" aria-hidden="true" />
