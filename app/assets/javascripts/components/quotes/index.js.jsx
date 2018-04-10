@@ -1028,7 +1028,7 @@ var ModalViewQuote = React.createClass({
 
 	render: function() {
 		const self = this.props;
-		const quote = this.state.quote;
+		const quote = self.quote;
 		const {property} = this.props;
 		let total = 0;
 
