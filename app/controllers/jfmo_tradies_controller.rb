@@ -6,13 +6,17 @@ class JfmoTradiesController < ApplicationController
     service = maintenance_request.service_type
     tradie_ids = Skill.where(skill:(service)).pluck(:trady_id)
     tradies = Trady.where(jfmo_participant: true, id:tradie_ids)
+    jfmo_request = JfmoRequest.find_by(maintenance_request_id:maintenance_request.id)
 
     if maintenance_request.trady
       message = "Sorry this maintenance request already has a tradie that has been assigned the work."
       
 
     else
-      if tradies.count > 0
+      #if tradies.count > 0
+        
+
+
         tradies.each do |trady|
             quote_request = QuoteRequest.where(:trady_id=>trady.id, :maintenance_request_id=>maintenance_request.id).first
             if quote_request
@@ -22,7 +26,7 @@ class JfmoTradiesController < ApplicationController
               if maintenance_request.jfmo_status == "Passive"
                 QuoteRequest.create(trady_id:trady.id, maintenance_request_id:maintenance_request.id)
                 TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
-                Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
+                #Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
                 message = "Thank you, we will find qualified tradies from our network."
 
               elsif maintenance_request.jfmo_status == "Active"
@@ -34,18 +38,20 @@ class JfmoTradiesController < ApplicationController
 
         end 
 
-      else
-        jfmo_request = JfmoRequest.find_by(maintenance_request_id:maintenance_request.id)
+      #else
+        
         if jfmo_request
           #do nothing
-          message = "Thank you, we will find qualified tradies from our network."
         else
           FindTradieEmailWorker.perform_async(maintenance_request.id)
           JfmoRequest.create(maintenance_request_id:maintenance_request.id)
           Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
-          message = "Thank you, we will find qualified tradies from our network."
         end 
-      end 
+      #end 
+      
+
+
+
       maintenance_request.update_attribute(:jfmo_status, "Active")
       
     end 
