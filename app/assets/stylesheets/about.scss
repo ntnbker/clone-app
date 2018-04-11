@@ -1,19 +1,24 @@
 .about {
-  &#static-pages {
-    height: inherit;
-    text-align: center;
-    max-width: 850px;
-    margin: auto;
-    margin-top: 80px;
-    margin-bottom: 120px;
-    background-color: #e8e8e8;
+  height: inherit;
+  text-align: center;
+  width: 100%;
+  color: $color-text;
+  background-color: #f1f1f1;
 
-    .scroll-bar {
-      height: inherit;
-      overflow-y: auto;
-      max-width: 500px;
-      width: 80%;
-      margin: auto;
+  .about-content {
+    height: inherit;
+    overflow-y: auto;
+    max-width: 600px;
+    width: 80%;
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    .level-1 {
+      text-align: justify;
+      margin-left: 15px;
+      margin-bottom: 10px;
+      line-height: 1.3;
     }
   }
   .about-top-image {
@@ -51,6 +56,12 @@
     }
     .about-bottom-image {
       min-height: 100px;
+      .one-image {
+        min-height: 100px;
+      }
     }
+  }
+  @media (max-width: 448px) {
+    margin-bottom: 122px;
   }
 }
