@@ -72398,18 +72398,11 @@ var Invoices = React.createClass({
   displayName: 'Invoices',
 
   getInitialState: function () {
-    return {
-      invoices: this.props.invoices,
-      pictures: []
-    };
-  },
-
-  componentWillMount: function () {
-    this.getPictureImage(this.state.invoices);
+    return {};
   },
 
   getPictureImage: function (invoices) {
-    if (!invoices || invoices.length === 0) return this.setState({ pictures: [] });
+    if (!invoices || invoices.length === 0) return [];
 
     var pictures = (invoices || []).map(function (invoice) {
       var trady = invoice.trady || {};
@@ -72421,15 +72414,16 @@ var Invoices = React.createClass({
       return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
     });
 
-    this.setState({ pictures: pictures });
+    return pictures;
   },
 
   render: function () {
     var self = this;
-    var current_role = this.props.current_role;
-    var _state = this.state;
-    var invoices = _state.invoices;
-    var pictures = _state.pictures;
+    var _props2 = this.props;
+    var current_role = _props2.current_role;
+    var invoices = _props2.invoices;
+
+    var pictures = this.getPictureImage(invoices);
 
     var notPaid = invoices.filter(function (i) {
       return !i.paid;
@@ -72586,9 +72580,9 @@ var ModalVoidInvoice = React.createClass({
   },
 
   voidInvoice: function () {
-    var _props2 = this.props;
-    var invoice = _props2.invoice;
-    var current_user = _props2.current_user;
+    var _props3 = this.props;
+    var invoice = _props3.invoice;
+    var current_user = _props3.current_user;
 
     var self = this;
 
@@ -72619,9 +72613,9 @@ var ModalVoidInvoice = React.createClass({
   render: function () {
     var _this = this;
 
-    var _props3 = this.props;
-    var invoice = _props3.invoice;
-    var text = _props3.text;
+    var _props4 = this.props;
+    var invoice = _props4.invoice;
+    var text = _props4.text;
 
     return React.createElement(
       'div',
@@ -74331,7 +74325,7 @@ var DetailInvoice = React.createClass({
 		var invoice = _props.invoice;
 		var trady = _props.invoice.trady;
 		var role = _props.role;
-		var notVoid = _props.notVoid;
+		var isShowVoidModal = _props.isShowVoidModal;
 
 		var subTotal = 0;
 		var gst = 0;
@@ -74375,9 +74369,9 @@ var DetailInvoice = React.createClass({
 				React.createElement(
 					"tbody",
 					null,
-					!notVoid && React.createElement(
+					isShowVoidModal && React.createElement(
 						"div",
-						{ className: "text-center position-ab above" },
+						{ className: "text-center position-ab reason-void" },
 						React.createElement(
 							"div",
 							{ className: "reason-header" },
@@ -74568,7 +74562,8 @@ var ModalViewInvoice = React.createClass({
 
 		var image_url = this.getImage(invoice.trady);
 
-		var notVoid = invoice.paid == false && invoice.active !== false;
+		var isShowVoidModal = invoice.paid === false && invoice.active === false;
+		var isShowVoidButton = invoice.paid === false && invoice.active !== false;
 
 		return React.createElement(
 			"div",
@@ -74767,7 +74762,7 @@ var ModalViewInvoice = React.createClass({
 								React.createElement(
 									"div",
 									{ className: "detail-quote position-rl" },
-									!!invoice.invoice_items && React.createElement(DetailInvoice, { notVoid: notVoid, role: self.role, invoice: invoice })
+									!!invoice.invoice_items && React.createElement(DetailInvoice, { isShowVoidModal: isShowVoidModal, role: self.role, invoice: invoice })
 								),
 								React.createElement(
 									"p",
@@ -74917,6 +74912,13 @@ var ModalViewInvoice = React.createClass({
 					React.createElement(
 						"div",
 						{ className: "modal-body dontprint" },
+						isShowVoidButton && React.createElement(
+							"button",
+							{ type: "button", className: "btn btn-decline", onClick: function (item) {
+									return self.viewInvoice('voidInvoice', invoice);
+								} },
+							"Void Invoice"
+						),
 						React.createElement(ButtonPrint, { printQuote: this.printInvoice })
 					)
 				)
@@ -75661,18 +75663,11 @@ var PDFInvoices = React.createClass({
 	displayName: "PDFInvoices",
 
 	getInitialState: function () {
-		return {
-			invoices: this.props.invoice_pdf_files,
-			pictures: []
-		};
-	},
-
-	componentWillMount: function () {
-		this.getPictureImage(this.state.invoices);
+		return {};
 	},
 
 	getPictureImage: function (invoices) {
-		if (!invoices || invoices.length === 0) return this.setState({ pictures: [] });
+		if (!invoices || invoices.length === 0) return [];
 
 		var pictures = (invoices || []).map(function (invoice) {
 			var trady = invoice.trady || {};
@@ -75684,15 +75679,15 @@ var PDFInvoices = React.createClass({
 			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 		});
 
-		this.setState({ pictures: pictures });
+		return pictures;
 	},
 
 	render: function () {
-		var current_role = this.props.current_role;
-		var _state = this.state;
-		var invoices = _state.invoices;
-		var pictures = _state.pictures;
+		var _props = this.props;
+		var current_role = _props.current_role;
+		var invoices = _props.invoice_pdf_files;
 
+		var pictures = this.getPictureImage(invoices);
 		var self = this;
 		var role = current_role.role;
 		var notPaid = invoices.filter(function (i) {
@@ -76327,7 +76322,8 @@ var ModalViewPDFInvoice = React.createClass({
     var role = _props.role;
 
     var isPdf = /store\/\w+\.pdf/.test(pdf_url);
-    var notVoid = invoice.paid == false && invoice.active !== false;
+    var isShowVoidModal = invoice.paid === false && invoice.active === false;
+    var isShowVoidButton = invoice.paid === false && invoice.active !== false;
     var total = 0;
     return React.createElement(
       "div",
@@ -76419,9 +76415,9 @@ var ModalViewPDFInvoice = React.createClass({
                 React.createElement(
                   "div",
                   { className: "detail-quote position-rl" },
-                  !notVoid && React.createElement(
+                  isShowVoidModal && React.createElement(
                     "div",
-                    { className: "text-center position-ab above" },
+                    { className: "text-center position-ab reason-void" },
                     React.createElement(
                       "div",
                       { className: "reason-header" },
@@ -76476,7 +76472,7 @@ var ModalViewPDFInvoice = React.createClass({
           React.createElement(
             "div",
             { className: "modal-body dontprint" },
-            notVoid && React.createElement(
+            isShowVoidButton && React.createElement(
               "button",
               { type: "button", className: "btn btn-decline", onClick: function (item) {
                   return self.viewInvoice('voidInvoice', invoice);
@@ -86941,7 +86937,10 @@ var MaintenanceRequest = React.createClass({
 	voidInvoice: function (params, callback) {
 		var self = this;
 		var current_user = this.props.current_user;
-		var invoice = this.state.invoice;
+		var _state10 = this.state;
+		var invoice = _state10.invoice;
+		var invoices = _state10.invoices;
+		var invoice_pdf_files = _state10.invoice_pdf_files;
 
 		var isPdf = !!invoice.pdf_url;
 
@@ -86957,6 +86956,20 @@ var MaintenanceRequest = React.createClass({
 			success: function (res) {
 				if (res && res.errors) {
 					return callback(res.errors);
+				}
+
+				if (isPdf) {
+					self.setState({
+						invoice_pdf_files: invoice_pdf_files.map(function (inv) {
+							return inv.id === res.uploaded_invoice.id ? Object.assign({}, inv, res.uploaded_invoice) : inv;
+						})
+					});
+				} else {
+					self.setState({
+						invoices: invoices.map(function (inv) {
+							return inv.id === res.invoice.id ? Object.assign({}, inv, res.invoice) : inv;
+						})
+					});
 				}
 				self.setState({
 					notification: {
@@ -86980,9 +86993,9 @@ var MaintenanceRequest = React.createClass({
 
 	cancelWorkOrder: function () {
 		var self = this;
-		var _state10 = this.state;
-		var maintenance_request = _state10.maintenance_request;
-		var logs = _state10.logs;
+		var _state11 = this.state;
+		var maintenance_request = _state11.maintenance_request;
+		var logs = _state11.logs;
 
 		var params = {
 			maintenance_request_id: maintenance_request.id
@@ -87319,11 +87332,11 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state11 = this.state;
-						var comments = _state11.comments;
-						var quoteComments = _state11.quoteComments;
-						var landlordComments = _state11.landlordComments;
-						var appointment = _state11.appointment;
+						var _state12 = this.state;
+						var comments = _state12.comments;
+						var quoteComments = _state12.quoteComments;
+						var landlordComments = _state12.landlordComments;
+						var appointment = _state12.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -87664,12 +87677,12 @@ var MaintenanceRequest = React.createClass({
 		var quote_appointments = _props5.quote_appointments;
 		var current_user_role = _props5.current_user_role;
 		var invoices = _props5.invoices;
-		var _state12 = this.state;
-		var invoice_pdf_files = _state12.invoice_pdf_files;
-		var trady = _state12.trady;
-		var quote_requests = _state12.quote_requests;
-		var tenants = _state12.tenants;
-		var landlord = _state12.landlord;
+		var _state13 = this.state;
+		var invoice_pdf_files = _state13.invoice_pdf_files;
+		var trady = _state13.trady;
+		var quote_requests = _state13.quote_requests;
+		var tenants = _state13.tenants;
+		var landlord = _state13.landlord;
 
 		var hasApproved = quote_requests.some(function (quote_request) {
 			return quote_request.quotes.some(function (quote) {
@@ -88726,29 +88739,43 @@ var About = React.createClass({
   render: function () {
     return React.createElement(
       "div",
-      { id: "static-pages", className: "about" },
-      React.createElement("div", { className: "about-top-image" }),
+      { className: "about" },
       React.createElement(
         "div",
-        { className: "scroll-bar" },
+        { className: "about-top-image position-rl" },
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "position-ab about-slogan" },
+          "Always getting things done."
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "about-content" },
+        React.createElement(AvatarImage, { className: "about-logo", alt: "Logo", imageUri: "/assets/logo.png" }),
+        React.createElement(
+          "p",
+          { className: "app-name" },
+          "Maintenance App"
+        ),
+        React.createElement(
+          "p",
+          { className: "level-1" },
           "Maintenance App is a cloud based platform that helps organize and log maintenance issues involving your properties.Since 2015 Maintenance App has strived to make the experience of dealing with maintenance issues the best it can be. We designed our platform by thinking of the needs and desires of property managers, landlords, tenants, and tradies. By allowing property managers to quickly organize maintenance requests submitted by tenants we help them accomplish their work quickly and efficiently."
         ),
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "level-1" },
           "Using our on demand network of verified tradies, agents and landlord can effortlessly request competitive quotes for jobs that are required to be completed. We give property managers and landlords competitive quotes to help maintain their properties in great condition."
         ),
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "level-1" },
           "We offer tradies an opportunity to grow their business by receiving high quality leads, which is why many tradies love being on our network. We love helping out small businesses reach their full potential."
         ),
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "level-1" },
           "We want to thank you for joining us, we hope you enjoy our platform!"
         )
       ),
@@ -103961,7 +103988,10 @@ var TradyMaintenanceRequest = React.createClass({
 	voidInvoice: function (params, callback) {
 		var self = this;
 		var current_user = this.props.current_user;
-		var invoice = this.state.invoice;
+		var _state3 = this.state;
+		var invoice = _state3.invoice;
+		var invoices = _state3.invoices;
+		var invoice_pdf_files = _state3.invoice_pdf_files;
 
 		var isPdf = !!invoice.pdf_url;
 
@@ -103975,6 +104005,20 @@ var TradyMaintenanceRequest = React.createClass({
 			success: function (res) {
 				if (res && res.errors) {
 					return callback(res.errors);
+				}
+
+				if (isPdf) {
+					self.setState({
+						invoice_pdf_files: invoice_pdf_files.map(function (inv) {
+							return inv.id === res.uploaded_invoice.id ? Object.assign({}, inv, res.uploaded_invoice) : inv;
+						})
+					});
+				} else {
+					self.setState({
+						invoices: invoices.map(function (inv) {
+							return inv.id === res.invoice.id ? Object.assign({}, inv, res.invoice) : inv;
+						})
+					});
 				}
 				var message = (res && res.message || 'You have void this invoice.') + ' Do you want to create another invoice?';
 				self.viewItem('wantNewInvoice', message);
@@ -104207,10 +104251,10 @@ var TradyMaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state3 = this.state;
-						var comments = _state3.comments;
-						var quoteComments = _state3.quoteComments;
-						var appointment = _state3.appointment;
+						var _state4 = this.state;
+						var comments = _state4.comments;
+						var quoteComments = _state4.quoteComments;
+						var appointment = _state4.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -104631,9 +104675,9 @@ var TradyMaintenanceRequest = React.createClass({
 
 	openAppointment: function (appointment_id) {
 		var appointment = '';
-		var _state4 = this.state;
-		var appointments = _state4.appointments;
-		var quote_appointments = _state4.quote_appointments;
+		var _state5 = this.state;
+		var appointments = _state5.appointments;
+		var quote_appointments = _state5.quote_appointments;
 
 		var data = [].concat(_toConsumableArray(appointments), _toConsumableArray(quote_appointments));
 		data.map(function (item, key) {
@@ -104751,15 +104795,15 @@ var TradyMaintenanceRequest = React.createClass({
 	render: function () {
 		var _this3 = this;
 
-		var _state5 = this.state;
-		var appointments = _state5.appointments;
-		var quote_appointments = _state5.quote_appointments;
-		var invoices = _state5.invoices;
-		var invoice_pdf_files = _state5.invoice_pdf_files;
-		var trady = _state5.trady;
-		var quote_requests = _state5.quote_requests;
-		var stop_invoice = _state5.stop_invoice;
-		var stop_appointment = _state5.stop_appointment;
+		var _state6 = this.state;
+		var appointments = _state6.appointments;
+		var quote_appointments = _state6.quote_appointments;
+		var invoices = _state6.invoices;
+		var invoice_pdf_files = _state6.invoice_pdf_files;
+		var trady = _state6.trady;
+		var quote_requests = _state6.quote_requests;
+		var stop_invoice = _state6.stop_invoice;
+		var stop_appointment = _state6.stop_appointment;
 
 		var hasApproved = quote_requests.some(function (quote_request) {
 			return quote_request.quotes.some(function (quote) {

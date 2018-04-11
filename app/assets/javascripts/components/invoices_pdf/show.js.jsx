@@ -17,7 +17,8 @@ var ModalViewPDFInvoice = React.createClass({
 		const {trady, role} = this.props;
 
 		const isPdf = /store\/\w+\.pdf/.test(pdf_url);
-    const notVoid = invoice.paid == false && invoice.active !== false;
+    const isShowVoidModal = invoice.paid === false && invoice.active === false;
+    const isShowVoidButton = invoice.paid === false && invoice.active !== false;
 		let total = 0;
 		return (
 			<div className="modal-custom fade">
@@ -51,8 +52,8 @@ var ModalViewPDFInvoice = React.createClass({
 										</div>
 									</div>
 									<div className="detail-quote position-rl">
-                    {!notVoid &&
-                      <div className="text-center position-ab above">
+                    {isShowVoidModal &&
+                      <div className="text-center position-ab reason-void">
                         <div className="reason-header">INVOICE VOID DO NOT PAY</div>
                         <div className="reason-title">Reason for voiding:</div>
                         <div className="reason-content">{invoice.void_reason}</div>
@@ -88,7 +89,7 @@ var ModalViewPDFInvoice = React.createClass({
 						</div>
             	<div className="modal-body dontprint">
                 {
-                  notVoid &&
+                  isShowVoidButton &&
                     <button type="button" className="btn btn-decline" onClick={(item) => self.viewInvoice('voidInvoice', invoice)}>
                       Void Invoice
                     </button>

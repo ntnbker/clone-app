@@ -99,18 +99,12 @@ var CreateInvoiceForm = React.createClass({
 var Invoices = React.createClass({
 	getInitialState: function() {
 		return {
-			invoices: this.props.invoices,
-			pictures: [],
 		};
-	},
-
-	componentWillMount() {
-		this.getPictureImage(this.state.invoices);
 	},
 
 	getPictureImage(invoices) {
 		if (!invoices || invoices.length === 0)
-			return this.setState({ pictures: []});
+			return [];
 
 		const pictures = (invoices || []).map((invoice) => {
 			const trady 											= invoice.trady || {};
@@ -123,13 +117,13 @@ var Invoices = React.createClass({
 					|| trady_profile_image && trady_profile_image.image_url;
 		});
 
-		this.setState({ pictures });
+		return pictures;
 	},
 
 	render: function() {
 		const self = this;
-		const { current_role }			 = this.props;
-		const { invoices, pictures } = this.state;
+    const { current_role, invoices } = this.props;
+    const pictures = this.getPictureImage(invoices);
 
 		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
 

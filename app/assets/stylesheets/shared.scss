@@ -32,24 +32,47 @@ body {
   position: relative;
   .position-ab {
     position: absolute;
-    width: 90%;
-    top: -10px;
-    margin-left: 5%;
-    min-height: 100px;
-    border: 3px solid $color-red;
-    border-radius: 10px;
-    color: $color-red;
-    font-weight: 500;
 
-    > div {
-      margin-top: 5px;
-      font-size: 15px;
+    &.reason-void {
+      width: 90%;
+      top: -10px;
+      margin-left: 5%;
+      min-height: 100px;
+      border: 3px solid $color-red;
+      border-radius: 10px;
+      color: $color-red;
+      font-weight: 500;
+
+      > div {
+        margin-top: 5px;
+        font-size: 15px;
+      }
+      .reason-header {
+        margin-top: 0;
+        padding: 10px 0;
+        background-color: $color-red;
+        color: black;
+      }
     }
-    .reason-header {
-      margin-top: 0;
-      padding: 10px 0;
-      background-color: $color-red;
-      color: black;
+    &.about-slogan {
+      width: 80%;
+      margin-left: 10%;
+      top: 280px;
+      font-size: 44px;
+      color: #71C796;
+
+      @media (max-width: 750px) {
+        top: 280px;
+        font-size: 34px;
+      }
+      @media (max-width: 550px) {
+        top: 140px;
+        font-size: 24px;
+      }
+      @media (max-width: 400px) {
+        top: 140px;
+        font-size: 16px;
+      }
     }
   }
 }

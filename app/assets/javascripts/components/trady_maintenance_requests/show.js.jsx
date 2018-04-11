@@ -778,7 +778,7 @@ var TradyMaintenanceRequest = React.createClass({
 	voidInvoice: function(params, callback) {
 		const self = this;
 		const {current_user} = this.props;
-		const {invoice} = this.state;
+		const {invoice, invoices, invoice_pdf_files} = this.state;
 		const isPdf = !!invoice.pdf_url;
 
 		$.ajax({
@@ -791,6 +791,24 @@ var TradyMaintenanceRequest = React.createClass({
 			success: function(res) {
 				if (res && res.errors) {
 					return callback(res.errors);
+				}
+
+				if (isPdf) {
+					self.setState({
+						invoice_pdf_files: invoice_pdf_files.map(inv => inv.id === res.uploaded_invoice.id
+							? Object.assign({}, inv, res.uploaded_invoice)
+							: inv
+						),
+					})
+				}
+
+				else {
+					self.setState({
+						invoices: invoices.map(inv => inv.id === res.invoice.id
+							? Object.assign({}, inv, res.invoice)
+							: inv
+						),
+					})
 				}
 				const message = (res && res.message || 'You have void this invoice.') + ' Do you want to create another invoice?';
 				self.viewItem('wantNewInvoice', message);
