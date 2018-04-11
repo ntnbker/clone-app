@@ -6,6 +6,8 @@ var About = React.createClass({
           <p className="position-ab about-slogan">Always getting things done.</p>
         </div>
         <div className="about-content">
+          <AvatarImage className="about-logo" alt="Logo" imageUri="/assets/logo.png" />
+          <p className="app-name">Maintenance App</p>
           <p className="level-1">
             Maintenance App is a cloud based platform that helps organize and log maintenance issues involving your properties.Since 2015 Maintenance App has strived to make the experience of dealing with maintenance issues the best it can be. We designed our platform by thinking of the needs and desires of property managers, landlords, tenants, and tradies. By allowing property managers to quickly organize maintenance requests submitted by tenants we help them accomplish their work quickly and efficiently.
           </p>
