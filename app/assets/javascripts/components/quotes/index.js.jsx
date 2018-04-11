@@ -652,6 +652,8 @@ var QuoteRequests = React.createClass({
 				{
 					quote_requests.map(function(quote_request, index) {
 						const trady = quote_request.trady || {};
+						const assignedTradyValid = !self.assignedTrady
+																		|| self.assignedTrady.id === trady.id;
 
 						const {maintenance_request_id, trady_id} = quote_request;
 						const quotes 				= quote_request.quotes || [];
@@ -665,7 +667,7 @@ var QuoteRequests = React.createClass({
 																			 && !quote_request.quote_sent;
 
 						const needPhotoButton 			= !isLandlord && quote_request.quote_sent;
-						const needMessageButton 		= !isLandlord
+						const needMessageButton 		= !isLandlord && assignedTradyValid
 																				&& !!self.current_user_show_quote_message;
 
 						const messageTo 						= self.keyLandlord === 'trady'

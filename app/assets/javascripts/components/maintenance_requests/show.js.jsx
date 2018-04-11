@@ -3190,6 +3190,7 @@ var MaintenanceRequest = React.createClass({
 							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
 									hideRestore={!!trady}
+									assignedTrady={trady}
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
