@@ -51,28 +51,20 @@ class RecruitsController < ApplicationController
       skill = Skill.where(trady_id:trady.id, skill:maintenance_request.service_type)
       quote_request = QuoteRequest.find_by(trady_id:trady.id, maintenance_request: maintenance_request.id)
       if skill
-         
-        
-
-        if quote_request
-          flash[:danger] = "This tradie has a quote request request already for this maintenance request. Either you have already sent it or someone else did."
-          redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
-        else
-          QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
-          TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
-        end 
-        
-        
+       #do nothing
       else
         Skill.create(trady_id:trady.id, skill: maintenance_request.service_type)
-        if quote_request
-          flash[:danger] = "You have already sent this tradie this quote request"
-          redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
-        else
-          QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:maintenance_request.id)
-          TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
-        end 
+      end   
+        
+      if quote_request
+        flash[:danger] = "This tradie has a quote request request already for this maintenance request. Either you have already sent it or someone else did."
+        redirect_to recruit_path(id:params[:trady][:jfmo_request_id])
+      else
+        QuoteRequest.create(trady_id:trady.id, maintenance_request_id:maintenance_request.id)
+        TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
       end 
+        
+     
       
     else
       
