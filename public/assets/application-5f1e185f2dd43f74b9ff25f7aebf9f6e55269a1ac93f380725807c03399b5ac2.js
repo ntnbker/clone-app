@@ -72502,7 +72502,7 @@ var Invoices = React.createClass({
                     React.createElement(
                       'span',
                       null,
-                      'Paid'
+                      'Payment Scheduled'
                     )
                   )
                 ),
@@ -75777,7 +75777,7 @@ var PDFInvoices = React.createClass({
 										React.createElement(
 											"span",
 											null,
-											"Paid"
+											"Payment Scheduled"
 										)
 									)
 								),
