@@ -1,18 +1,12 @@
 var PDFInvoices = React.createClass({
 	getInitialState: function() {
 		return {
-			invoices: this.props.invoice_pdf_files,
-			pictures: [],
 		};
-	},
-
-	componentWillMount() {
-		this.getPictureImage(this.state.invoices);
 	},
 
 	getPictureImage(invoices) {
 		if (!invoices || invoices.length === 0)
-			return this.setState({ pictures: []});
+			return [];
 
 		const pictures = (invoices || []).map((invoice) => {
 			const trady 											= invoice.trady || {};
@@ -25,12 +19,12 @@ var PDFInvoices = React.createClass({
 					|| trady_profile_image && trady_profile_image.image_url;
 		});
 
-		this.setState({ pictures });
+		return pictures;
 	},
 
 	render: function() {
-		const { current_role } 			 = this.props;
-		const { invoices, pictures } = this.state;
+		const { current_role, invoice_pdf_files: invoices } = this.props;
+		const pictures = this.getPictureImage(invoices);
 		const self = this;
 		const role = current_role.role;
 		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
