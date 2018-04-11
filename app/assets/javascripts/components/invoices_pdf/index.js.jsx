@@ -67,7 +67,7 @@ var PDFInvoices = React.createClass({
                               </button>
 													:
 													<button className={'button-default status Approved'}>
-														<span>Paid</span>
+														<span>Payment Scheduled</span>
 													</button>
 											}
 										</div>
