@@ -57,20 +57,20 @@ body {
     &.about-slogan {
       width: 80%;
       margin-left: 10%;
-      top: 280px;
-      font-size: 44px;
+      top: 25vw;
+      font-size: 34px;
       color: #71C796;
 
-      @media (max-width: 750px) {
-        top: 280px;
-        font-size: 34px;
+      @media (min-width: 1200px) {
+        top: 300px;
+        font-size: 44px;
       }
       @media (max-width: 550px) {
-        top: 140px;
+        top: calc(25vw - 12px);
         font-size: 24px;
       }
       @media (max-width: 400px) {
-        top: 140px;
+        top: calc(25vw - 16px);
         font-size: 16px;
       }
     }
