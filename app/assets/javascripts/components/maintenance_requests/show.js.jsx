@@ -1149,6 +1149,7 @@ var ModalRequestModal = React.createClass({
 								{ this.props.keyTitle === 'request-quote' &&
 									<div className="row">
 										<button
+											type="button"
 											className="btn btn-primary cancel"
 											onClick={() => this.props.viewItem('justFindMeOne')}
 										>
