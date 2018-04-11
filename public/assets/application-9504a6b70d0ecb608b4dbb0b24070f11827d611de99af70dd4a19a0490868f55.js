@@ -72242,325 +72242,462 @@ var InvoiceOption = React.createClass({
  Invoices
 </h1>*/;
 var CreateInvoiceForm = React.createClass({
-	displayName: 'CreateInvoiceForm',
+  displayName: 'CreateInvoiceForm',
 
-	getInitialState: function () {
-		var step = this.props.step;
+  getInitialState: function () {
+    var step = this.props.step;
 
-		var level = ['invoice-option', 'trady-company', 'make-invoice', 'submit-invoice', 'success'];
+    var level = ['invoice-option', 'trady-company', 'make-invoice', 'submit-invoice', 'success'];
 
-		return {
-			errors: {},
-			step: step,
-			level: (level.indexOf(step) || 0) + 1
-		};
-	},
+    return {
+      errors: {},
+      step: step,
+      level: (level.indexOf(step) || 0) + 1
+    };
+  },
 
-	componentDidMount: function () {
-		$('body > div.layout').css('background-color', 'white');
-	},
+  componentDidMount: function () {
+    $('body > div.layout').css('background-color', 'white');
+  },
 
-	labelTitle: function (number, text, isPass) {
-		return React.createElement(
-			'div',
-			{ className: "registration-label-title " + (isPass && 'pass' || '') },
-			React.createElement(
-				'div',
-				{ className: "step-status " + (isPass && 'pass' || '') },
-				number > 1 && React.createElement('div', { className: 'separate-line ' })
-			),
-			React.createElement(
-				'div',
-				{ className: 'step-number' },
-				number
-			),
-			React.createElement(
-				'div',
-				{ className: 'step-text' },
-				text
-			)
-		);
-	},
+  labelTitle: function (number, text, isPass) {
+    return React.createElement(
+      'div',
+      { className: "registration-label-title " + (isPass && 'pass' || '') },
+      React.createElement(
+        'div',
+        { className: "step-status " + (isPass && 'pass' || '') },
+        number > 1 && React.createElement('div', { className: 'separate-line ' })
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-number' },
+        number
+      ),
+      React.createElement(
+        'div',
+        { className: 'step-text' },
+        text
+      )
+    );
+  },
 
-	generateStepTitle: function () {
-		var level = this.state.level;
+  generateStepTitle: function () {
+    var level = this.state.level;
 
-		return React.createElement(
-			'div',
-			{ className: 'registration-title' },
-			this.labelTitle(1, React.createElement(
-				'p',
-				null,
-				'Invoice',
-				React.createElement('br', null),
-				'Option'
-			), level > 0),
-			this.labelTitle(2, React.createElement(
-				'p',
-				null,
-				'Trady',
-				React.createElement('br', null),
-				'Company',
-				React.createElement('br', null),
-				'Infomation'
-			), level > 1),
-			this.labelTitle(3, React.createElement(
-				'p',
-				null,
-				'Create/Upload',
-				React.createElement('br', null),
-				'Invoice'
-			), level > 2),
-			this.labelTitle(4, React.createElement(
-				'p',
-				null,
-				'Submit',
-				React.createElement('br', null),
-				'Invoice'
-			), level > 3)
-		);
-	},
+    return React.createElement(
+      'div',
+      { className: 'registration-title' },
+      this.labelTitle(1, React.createElement(
+        'p',
+        null,
+        'Invoice',
+        React.createElement('br', null),
+        'Option'
+      ), level > 0),
+      this.labelTitle(2, React.createElement(
+        'p',
+        null,
+        'Trady',
+        React.createElement('br', null),
+        'Company',
+        React.createElement('br', null),
+        'Infomation'
+      ), level > 1),
+      this.labelTitle(3, React.createElement(
+        'p',
+        null,
+        'Create/Upload',
+        React.createElement('br', null),
+        'Invoice'
+      ), level > 2),
+      this.labelTitle(4, React.createElement(
+        'p',
+        null,
+        'Submit',
+        React.createElement('br', null),
+        'Invoice'
+      ), level > 3)
+    );
+  },
 
-	generateTitle: function () {
-		var step = this.state.step;
+  generateTitle: function () {
+    var step = this.state.step;
 
-		switch (step) {
-			case 'invoice-option':
-				return React.createElement(
-					'h5',
-					{ className: 'step-title text-center' },
-					'Invoice Option'
-				);
-			case 'trady-company':
-				return React.createElement(
-					'h5',
-					{ className: 'step-title text-center' },
-					'Trady Company Information'
-				);
-			case 'make-invoice':
-				return React.createElement(
-					'h5',
-					{ className: 'step-title text-center' },
-					'Create/Upload Invoice'
-				);
-			case 'submit-invoice':
-				return React.createElement(
-					'h5',
-					{ className: 'step-title text-center' },
-					'Submit Invoice'
-				);
-			case 'success':
-				return React.createElement(
-					'h5',
-					{ className: 'step-title text-center' },
-					'Success'
-				);
-		}
-	},
+    switch (step) {
+      case 'invoice-option':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Invoice Option'
+        );
+      case 'trady-company':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Trady Company Information'
+        );
+      case 'make-invoice':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Create/Upload Invoice'
+        );
+      case 'submit-invoice':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Submit Invoice'
+        );
+      case 'success':
+        return React.createElement(
+          'h5',
+          { className: 'step-title text-center' },
+          'Success'
+        );
+    }
+  },
 
-	generateForm: function () {
-		var step = this.state.step;
-		var _props = this.props;
-		var isEdit = _props.is_edit;
-		var isUpload = _props.is_upload;
+  generateForm: function () {
+    var step = this.state.step;
+    var _props = this.props;
+    var isEdit = _props.is_edit;
+    var isUpload = _props.is_upload;
 
-		switch (step) {
-			case 'invoice-option':
-				return React.createElement(InvoiceOption, this.props);
-			case 'trady-company':
-				return isEdit ? React.createElement(EditTradyCompany, this.props) : React.createElement(AddTradycompany, this.props);
-			case 'make-invoice':
-				return isUpload ? React.createElement(AddInvoicePDF, this.props) : React.createElement(InvoiceFields, this.props);
-			case 'submit-invoice':
-				return isUpload ? React.createElement(SubmitInvoicePDF, this.props) : React.createElement(InvoiceSubmit, this.props);
-			case 'success':
-				return React.createElement(InvoiceSentSuccess, this.props);
-		}
-	},
+    switch (step) {
+      case 'invoice-option':
+        return React.createElement(InvoiceOption, this.props);
+      case 'trady-company':
+        return isEdit ? React.createElement(EditTradyCompany, this.props) : React.createElement(AddTradycompany, this.props);
+      case 'make-invoice':
+        return isUpload ? React.createElement(AddInvoicePDF, this.props) : React.createElement(InvoiceFields, this.props);
+      case 'submit-invoice':
+        return isUpload ? React.createElement(SubmitInvoicePDF, this.props) : React.createElement(InvoiceSubmit, this.props);
+      case 'success':
+        return React.createElement(InvoiceSentSuccess, this.props);
+    }
+  },
 
-	componentWillUnmount: function () {
-		$('body > div.layout').css('background-color', '#F4F8FB');
-	},
+  componentWillUnmount: function () {
+    $('body > div.layout').css('background-color', '#F4F8FB');
+  },
 
-	render: function () {
-		return React.createElement(
-			'div',
-			{ id: 'registration', className: 'agency-registration' },
-			this.generateStepTitle(),
-			this.generateTitle(),
-			this.generateForm()
-		);
-	}
+  render: function () {
+    return React.createElement(
+      'div',
+      { id: 'registration', className: 'agency-registration' },
+      this.generateStepTitle(),
+      this.generateTitle(),
+      this.generateForm()
+    );
+  }
 
 });
 
 var Invoices = React.createClass({
-	displayName: 'Invoices',
+  displayName: 'Invoices',
 
-	getInitialState: function () {
-		return {
-			invoices: this.props.invoices,
-			pictures: []
-		};
-	},
+  getInitialState: function () {
+    return {};
+  },
 
-	componentWillMount: function () {
-		this.getPictureImage(this.state.invoices);
-	},
+  getPictureImage: function (invoices) {
+    if (!invoices || invoices.length === 0) return [];
 
-	getPictureImage: function (invoices) {
-		if (!invoices || invoices.length === 0) return this.setState({ pictures: [] });
+    var pictures = (invoices || []).map(function (invoice) {
+      var trady = invoice.trady || {};
+      var id = trady.id || '';
+      var trady_company = trady.trady_company || {};
+      var trady_profile_image = trady.trady_profile_image || {};
+      var trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-		var pictures = (invoices || []).map(function (invoice) {
-			var trady = invoice.trady || {};
-			var id = trady.id || '';
-			var trady_company = trady.trady_company || {};
-			var trady_profile_image = trady.trady_profile_image || {};
-			var trady_company_profile_image = trady_company.trady_company_profile_image || {};
+      return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
+    });
 
-			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
-		});
+    return pictures;
+  },
 
-		this.setState({ pictures: pictures });
-	},
+  render: function () {
+    var self = this;
+    var _props2 = this.props;
+    var current_role = _props2.current_role;
+    var invoices = _props2.invoices;
 
-	render: function () {
-		var self = this;
-		var current_role = this.props.current_role;
-		var _state = this.state;
-		var invoices = _state.invoices;
-		var pictures = _state.pictures;
+    var pictures = this.getPictureImage(invoices);
 
-		var notPaid = invoices.filter(function (i) {
-			return !i.paid;
-		}).length !== 0;
+    var notPaid = invoices.filter(function (i) {
+      return !i.paid;
+    }).length !== 0;
 
-		return React.createElement(
-			'div',
-			{ className: 'quotes invoices m-t-xl', id: 'invoices' },
-			React.createElement(
-				'p',
-				null,
-				React.createElement(
-					'span',
-					{ className: 'index index-invoice' },
-					invoices.length
-				),
-				'Invoice',
-				current_role && current_role.role === 'Trady' && notPaid && React.createElement(
-					'button',
-					{ type: 'button', className: 'btn btn-mark-as-paid', onClick: function (item) {
-							return self.props.paymentReminder({});
-						} },
-					'Remind Agent of Payment'
-				)
-			),
-			React.createElement(
-				'div',
-				{ className: 'list-quote' },
-				invoices.map(function (invoice, index) {
-					return React.createElement(
-						'div',
-						{ className: 'item-quote row', key: index },
-						React.createElement(
-							'div',
-							{ className: 'user seven columns' },
-							React.createElement(
-								'span',
-								{ className: 'index quote index-invoice' },
-								index + 1
-							),
-							React.createElement(
-								'span',
-								{ className: 'icon-user' },
-								React.createElement(AvatarImage, { imageUri: pictures[index] })
-							),
-							React.createElement(
-								'div',
-								{ className: 'info' },
-								React.createElement(
-									'div',
-									{ className: 'name' },
-									React.createElement(
-										'span',
-										null,
-										invoice.trady.name
-									),
-									invoice.paid == false ? React.createElement(
-										'button',
-										{ className: 'button-default status Declined' },
-										React.createElement(
-											'span',
-											null,
-											'Outstanding Payment'
-										)
-									) : React.createElement(
-										'button',
-										{ className: 'button-default status Approved' },
-										React.createElement(
-											'span',
-											null,
-											'Paid'
-										)
-									)
-								),
-								React.createElement(
-									'p',
-									{ className: 'description' },
-									invoice.trady && invoice.trady.company_name,
-									React.createElement('br', null),
-									invoice.trady && invoice.trady.trady_company ? invoice.trady.trady_company.trading_name : null
-								)
-							)
-						),
-						React.createElement(
-							'div',
-							{ className: 'actions five columns content' },
-							React.createElement(
-								'p',
-								null,
-								'Total: ',
-								React.createElement(
-									'span',
-									null,
-									'$',
-									invoice.amount
-								)
-							),
-							React.createElement(
-								'p',
-								null,
-								'DUE: ',
-								React.createElement(
-									'span',
-									null,
-									moment(invoice.due_date).format('LL')
-								)
-							)
-						),
-						React.createElement(
-							'div',
-							{ className: 'actions-quote' },
-							(current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false) && React.createElement(
-								'button',
-								{ type: 'button', className: 'btn btn-mark-as-paid', onClick: function (item) {
-										return self.props.markAsPaid(invoice);
-									} },
-								'Payment Scheduled'
-							),
-							React.createElement(
-								'button',
-								{ type: 'button', className: 'btn btn-view', onClick: function (key, item) {
-										return self.props.viewInvoice('viewInvoice', invoice);
-									} },
-								'View Invoice'
-							)
-						)
-					);
-				})
-			)
-		);
-	}
+    return React.createElement(
+      'div',
+      { className: 'quotes invoices m-t-xl', id: 'invoices' },
+      React.createElement(
+        'p',
+        null,
+        React.createElement(
+          'span',
+          { className: 'index index-invoice' },
+          invoices.length
+        ),
+        'Invoice',
+        current_role && current_role.role === 'Trady' && notPaid && React.createElement(
+          'button',
+          { type: 'button', className: 'btn btn-mark-as-paid', onClick: function (item) {
+              return self.props.paymentReminder({});
+            } },
+          'Remind Agent of Payment'
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'list-quote' },
+        invoices.map(function (invoice, index) {
+          return React.createElement(
+            'div',
+            { className: 'item-quote row', key: index },
+            React.createElement(
+              'div',
+              { className: 'user seven columns' },
+              React.createElement(
+                'span',
+                { className: 'index quote index-invoice' },
+                index + 1
+              ),
+              React.createElement(
+                'span',
+                { className: 'icon-user' },
+                React.createElement(AvatarImage, { imageUri: pictures[index] })
+              ),
+              React.createElement(
+                'div',
+                { className: 'info' },
+                React.createElement(
+                  'div',
+                  { className: 'name' },
+                  React.createElement(
+                    'span',
+                    null,
+                    invoice.trady.name
+                  ),
+                  invoice.paid == false ? invoice.active !== false ? React.createElement(
+                    'button',
+                    { className: 'button-default status Declined' },
+                    React.createElement(
+                      'span',
+                      null,
+                      'Outstanding Payment'
+                    )
+                  ) : React.createElement(
+                    'button',
+                    { className: 'button-default status Declined' },
+                    React.createElement(
+                      'span',
+                      null,
+                      'Do Not Pay'
+                    )
+                  ) : React.createElement(
+                    'button',
+                    { className: 'button-default status Approved' },
+                    React.createElement(
+                      'span',
+                      null,
+                      'Paid'
+                    )
+                  )
+                ),
+                React.createElement(
+                  'p',
+                  { className: 'description' },
+                  invoice.trady && invoice.trady.company_name,
+                  React.createElement('br', null),
+                  invoice.trady && invoice.trady.trady_company ? invoice.trady.trady_company.trading_name : null
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'actions five columns content' },
+              React.createElement(
+                'p',
+                null,
+                'Total: ',
+                React.createElement(
+                  'span',
+                  null,
+                  '$',
+                  invoice.amount
+                )
+              ),
+              React.createElement(
+                'p',
+                null,
+                'DUE: ',
+                React.createElement(
+                  'span',
+                  null,
+                  moment(invoice.due_date).format('LL')
+                )
+              )
+            ),
+            React.createElement(
+              'div',
+              { className: 'actions-quote' },
+              invoice.paid == false && invoice.active !== false && React.createElement(
+                'button',
+                { type: 'button', className: 'btn btn-decline', onClick: function (item) {
+                    return self.props.viewInvoice('voidInvoice', invoice);
+                  } },
+                'Void Invoice'
+              ),
+              (current_role.role == 'Agent' || current_role.role == "AgencyAdmin" && invoice.paid == false && invoice.active !== false) && React.createElement(
+                'button',
+                { type: 'button', className: 'btn btn-mark-as-paid', onClick: function (item) {
+                    return self.props.markAsPaid(invoice);
+                  } },
+                'Payment Scheduled'
+              ),
+              React.createElement(
+                'button',
+                { type: 'button', className: 'btn btn-view', onClick: function (key, item) {
+                    return self.props.viewInvoice('viewInvoice', invoice);
+                  } },
+                'View Invoice'
+              )
+            )
+          );
+        })
+      )
+    );
+  }
+});
+
+var ModalVoidInvoice = React.createClass({
+  displayName: 'ModalVoidInvoice',
+
+  getInitialState: function () {
+    return {};
+  },
+
+  voidInvoice: function () {
+    var _props3 = this.props;
+    var invoice = _props3.invoice;
+    var current_user = _props3.current_user;
+
+    var self = this;
+
+    var params = {
+      trady_id: invoice.trady_id,
+      invoice_id: invoice.id,
+      maintenance_request_id: invoice.maintenance_request_id,
+      message: this.message && this.message.value
+    };
+
+    this.props.voidInvoice(params, function (error) {
+      if (error) {
+        self.setState({ error: error });
+      }
+    });
+  },
+
+  renderError: function () {
+    var error = this.state.error;
+
+    return React.createElement(
+      'p',
+      { id: 'errorbox', className: 'error' },
+      error || ''
+    );
+  },
+
+  render: function () {
+    var _this = this;
+
+    var _props4 = this.props;
+    var invoice = _props4.invoice;
+    var text = _props4.text;
+
+    return React.createElement(
+      'div',
+      { className: 'modal-custom fade' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'close',
+                'data-dismiss': 'modal',
+                'aria-label': 'Close',
+                onClick: this.props.close
+              },
+              React.createElement(
+                'span',
+                { 'aria-hidden': 'true' },
+                '×'
+              )
+            ),
+            React.createElement(
+              'h4',
+              { className: 'modal-title text-center' },
+              'Void Invoice'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'p',
+              { className: 'text-center' },
+              text
+            ),
+            React.createElement('textarea', {
+              type: 'text',
+              className: 'none-resize',
+              placeholder: 'Please tell us the reason:',
+              onChange: function () {
+                return _this.setState({ error: '' });
+              },
+              ref: function (elem) {
+                return _this.message = elem;
+              }
+            }),
+            this.renderError()
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-footer' },
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-primary cancel',
+                onClick: this.voidInvoice,
+                'data-dismiss': 'modal'
+              },
+              'Void Invoice'
+            ),
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-default success',
+                onClick: this.props.close
+              },
+              'Cancel'
+            )
+          )
+        )
+      )
+    );
+  }
 });
 var InvoiceSentSuccess = React.createClass({
   displayName: "InvoiceSentSuccess",
@@ -74188,6 +74325,7 @@ var DetailInvoice = React.createClass({
 		var invoice = _props.invoice;
 		var trady = _props.invoice.trady;
 		var role = _props.role;
+		var isShowVoidModal = _props.isShowVoidModal;
 
 		var subTotal = 0;
 		var gst = 0;
@@ -74231,6 +74369,25 @@ var DetailInvoice = React.createClass({
 				React.createElement(
 					"tbody",
 					null,
+					isShowVoidModal && React.createElement(
+						"div",
+						{ className: "text-center position-ab reason-void" },
+						React.createElement(
+							"div",
+							{ className: "reason-header" },
+							"INVOICE VOID DO NOT PAY"
+						),
+						React.createElement(
+							"div",
+							{ className: "reason-title" },
+							"Reason for voiding:"
+						),
+						React.createElement(
+							"div",
+							{ className: "reason-content" },
+							invoice.void_reason
+						)
+					),
 					invoice.invoice_items.map(function (item, key) {
 						if (item.pricing_type == "Fixed Cost") {
 							subTotal += item.amount;
@@ -74302,7 +74459,7 @@ var DetailInvoice = React.createClass({
 					),
 					React.createElement(
 						"tr",
-						null,
+						{ className: "position-rl" },
 						React.createElement("td", { colSpan: "3", className: "border-none" }),
 						React.createElement(
 							"td",
@@ -74350,10 +74507,10 @@ var ModalViewInvoice = React.createClass({
 	getImage: function (trady) {
 		if (!trady) return '';
 
-		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
-		var trady_profile_image = trady.trady_profile_image;
+		var trady_company = trady.trady_company || {};
+		var trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-		var image_url = trady_company_profile_image && trady_company_profile_image.image_url;
+		var image_url = trady_company_profile_image.image_url;
 
 		return image_url;
 	},
@@ -74404,6 +74561,9 @@ var ModalViewInvoice = React.createClass({
 		}, 0);
 
 		var image_url = this.getImage(invoice.trady);
+
+		var isShowVoidModal = invoice.paid === false && invoice.active === false;
+		var isShowVoidButton = invoice.paid === false && invoice.active !== false;
 
 		return React.createElement(
 			"div",
@@ -74601,12 +74761,8 @@ var ModalViewInvoice = React.createClass({
 								),
 								React.createElement(
 									"div",
-									{ className: "detail-quote" },
-									React.createElement(
-										"div",
-										{ className: "detail-quote" },
-										!!invoice.invoice_items && React.createElement(DetailInvoice, { role: self.role, invoice: invoice })
-									)
+									{ className: "detail-quote position-rl" },
+									!!invoice.invoice_items && React.createElement(DetailInvoice, { isShowVoidModal: isShowVoidModal, role: self.role, invoice: invoice })
 								),
 								React.createElement(
 									"p",
@@ -74756,6 +74912,13 @@ var ModalViewInvoice = React.createClass({
 					React.createElement(
 						"div",
 						{ className: "modal-body dontprint" },
+						isShowVoidButton && React.createElement(
+							"button",
+							{ type: "button", className: "btn btn-decline", onClick: function (item) {
+									return self.viewInvoice('voidInvoice', invoice);
+								} },
+							"Void Invoice"
+						),
 						React.createElement(ButtonPrint, { printQuote: this.printInvoice })
 					)
 				)
@@ -75500,18 +75663,11 @@ var PDFInvoices = React.createClass({
 	displayName: "PDFInvoices",
 
 	getInitialState: function () {
-		return {
-			invoices: this.props.invoice_pdf_files,
-			pictures: []
-		};
-	},
-
-	componentWillMount: function () {
-		this.getPictureImage(this.state.invoices);
+		return {};
 	},
 
 	getPictureImage: function (invoices) {
-		if (!invoices || invoices.length === 0) return this.setState({ pictures: [] });
+		if (!invoices || invoices.length === 0) return [];
 
 		var pictures = (invoices || []).map(function (invoice) {
 			var trady = invoice.trady || {};
@@ -75523,15 +75679,15 @@ var PDFInvoices = React.createClass({
 			return trady_company_profile_image && trady_company_profile_image.image_url || trady_profile_image && trady_profile_image.image_url;
 		});
 
-		this.setState({ pictures: pictures });
+		return pictures;
 	},
 
 	render: function () {
-		var current_role = this.props.current_role;
-		var _state = this.state;
-		var invoices = _state.invoices;
-		var pictures = _state.pictures;
+		var _props = this.props;
+		var current_role = _props.current_role;
+		var invoices = _props.invoice_pdf_files;
 
+		var pictures = this.getPictureImage(invoices);
 		var self = this;
 		var role = current_role.role;
 		var notPaid = invoices.filter(function (i) {
@@ -75570,6 +75726,7 @@ var PDFInvoices = React.createClass({
 					var trady = _invoice$trady === undefined ? {} : _invoice$trady;
 					var _invoice$paid = invoice.paid;
 					var paid = _invoice$paid === undefined ? false : _invoice$paid;
+					var active = invoice.active;
 
 					return React.createElement(
 						"div",
@@ -75598,22 +75755,29 @@ var PDFInvoices = React.createClass({
 										null,
 										trady.name
 									),
-									!!paid && React.createElement(
+									paid == false ? active !== false ? React.createElement(
 										"button",
-										{ className: "button-default Approved" },
-										React.createElement(
-											"span",
-											null,
-											"Paid"
-										)
-									),
-									!paid && React.createElement(
-										"button",
-										{ className: "button-default Declined" },
+										{ className: 'button-default status Declined' },
 										React.createElement(
 											"span",
 											null,
 											"Outstanding Payment"
+										)
+									) : React.createElement(
+										"button",
+										{ className: 'button-default status Declined' },
+										React.createElement(
+											"span",
+											null,
+											"Do Not Pay"
+										)
+									) : React.createElement(
+										"button",
+										{ className: 'button-default status Approved' },
+										React.createElement(
+											"span",
+											null,
+											"Paid"
 										)
 									)
 								),
@@ -75643,6 +75807,13 @@ var PDFInvoices = React.createClass({
 						React.createElement(
 							"div",
 							{ className: "actions-quote" },
+							invoice.paid == false && invoice.active !== false && React.createElement(
+								"button",
+								{ type: "button", className: "btn btn-decline", onClick: function (item) {
+										return self.props.viewPDFInvoice('voidInvoice', invoice);
+									} },
+								"Void Invoice"
+							),
 							['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && React.createElement(
 								"button",
 								{ type: "button", className: "btn btn-mark-as-paid", onClick: function (item) {
@@ -76151,6 +76322,8 @@ var ModalViewPDFInvoice = React.createClass({
     var role = _props.role;
 
     var isPdf = /store\/\w+\.pdf/.test(pdf_url);
+    var isShowVoidModal = invoice.paid === false && invoice.active === false;
+    var isShowVoidButton = invoice.paid === false && invoice.active !== false;
     var total = 0;
     return React.createElement(
       "div",
@@ -76241,23 +76414,38 @@ var ModalViewPDFInvoice = React.createClass({
                 ),
                 React.createElement(
                   "div",
-                  { className: "detail-quote" },
-                  React.createElement(
+                  { className: "detail-quote position-rl" },
+                  isShowVoidModal && React.createElement(
                     "div",
-                    { className: "detail-quote" },
-                    !!pdf_url && React.createElement(
-                      "object",
-                      {
-                        width: "100%",
-                        height: isPdf ? '350px' : "100%",
-                        data: pdf_url
-                      },
-                      React.createElement("iframe", {
-                        width: "100%",
-                        height: isPdf ? '350px' : "100%",
-                        src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
-                        className: "scroll-custom" })
+                    { className: "text-center position-ab reason-void" },
+                    React.createElement(
+                      "div",
+                      { className: "reason-header" },
+                      "INVOICE VOID DO NOT PAY"
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "reason-title" },
+                      "Reason for voiding:"
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "reason-content" },
+                      invoice.void_reason
                     )
+                  ),
+                  !!pdf_url && React.createElement(
+                    "object",
+                    {
+                      width: "100%",
+                      height: isPdf ? '350px' : "100%",
+                      data: pdf_url
+                    },
+                    React.createElement("iframe", {
+                      width: "100%",
+                      height: isPdf ? '350px' : "100%",
+                      src: "https://docs.google.com/gview?url=" + pdf_url.replace(/.pdf\?.*/g, '') + ".pdf&embedded=true",
+                      className: "scroll-custom" })
                   )
                 ),
                 React.createElement(
@@ -76281,10 +76469,17 @@ var ModalViewPDFInvoice = React.createClass({
               )
             )
           ),
-          !isPdf && React.createElement(
+          React.createElement(
             "div",
             { className: "modal-body dontprint" },
-            React.createElement(ButtonPrint, { printQuote: this.printInvoice })
+            isShowVoidButton && React.createElement(
+              "button",
+              { type: "button", className: "btn btn-decline", onClick: function (item) {
+                  return self.viewInvoice('voidInvoice', invoice);
+                } },
+              "Void Invoice"
+            ),
+            !isPdf && React.createElement(ButtonPrint, { printQuote: this.printInvoice })
           )
         )
       )
@@ -79900,6 +80095,19 @@ var ContentContact = React.createClass({
 				"ul",
 				null,
 				tenantMobile,
+				assigned_trady && assigned_trady.mobile && React.createElement(
+					"li",
+					null,
+					React.createElement(
+						"a",
+						{ href: "tel:" + assigned_trady.mobile },
+						React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
+						"Trady - ",
+						assigned_trady.name,
+						": ",
+						assigned_trady.mobile
+					)
+				),
 				React.createElement(
 					"li",
 					null,
@@ -85618,6 +85826,7 @@ var MaintenanceRequest = React.createClass({
 					break;
 				}
 
+			case 'voidInvoice':
 			case 'viewInvoice':
 				{
 					this.setState({
@@ -86708,7 +86917,7 @@ var MaintenanceRequest = React.createClass({
 				self.setState({
 					notification: {
 						title: "Mark As Paid",
-						content: "You have marked this invoice as paid.",
+						content: "Invoice has been marked as scheduled for payment.",
 						bgClass: "bg-success"
 					}
 				});
@@ -86725,11 +86934,68 @@ var MaintenanceRequest = React.createClass({
 		});
 	},
 
+	voidInvoice: function (params, callback) {
+		var self = this;
+		var current_user = this.props.current_user;
+		var _state10 = this.state;
+		var invoice = _state10.invoice;
+		var invoices = _state10.invoices;
+		var invoice_pdf_files = _state10.invoice_pdf_files;
+
+		var isPdf = !!invoice.pdf_url;
+
+		params.current_user_id = current_user && current_user.id;
+
+		$.ajax({
+			type: 'POST',
+			url: isPdf ? '/void_uploaded_invoice' : '/void_invoice',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (res && res.errors) {
+					return callback(res.errors);
+				}
+
+				if (isPdf) {
+					self.setState({
+						invoice_pdf_files: invoice_pdf_files.map(function (inv) {
+							return inv.id === res.uploaded_invoice.id ? Object.assign({}, inv, res.uploaded_invoice) : inv;
+						})
+					});
+				} else {
+					self.setState({
+						invoices: invoices.map(function (inv) {
+							return inv.id === res.invoice.id ? Object.assign({}, inv, res.invoice) : inv;
+						})
+					});
+				}
+				self.setState({
+					notification: {
+						title: "Void Invoice",
+						content: res && res.message || "You have void this invoice.",
+						bgClass: "bg-success"
+					}
+				});
+				self.onModalWith('notification');
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Void Invoice",
+						content: "An error occured voiding this invoice.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	cancelWorkOrder: function () {
 		var self = this;
-		var _state10 = this.state;
-		var maintenance_request = _state10.maintenance_request;
-		var logs = _state10.logs;
+		var _state11 = this.state;
+		var maintenance_request = _state11.maintenance_request;
+		var logs = _state11.logs;
 
 		var params = {
 			maintenance_request_id: maintenance_request.id
@@ -87014,6 +87280,7 @@ var MaintenanceRequest = React.createClass({
 							invoice: this.state.invoice,
 							invoices: this.state.invoices,
 							property: this.props.property,
+							viewInvoice: this.viewItem,
 							role: this.props.current_user_role
 						});
 
@@ -87028,6 +87295,7 @@ var MaintenanceRequest = React.createClass({
 							property: this.props.property,
 							trady: this.props.assigned_trady,
 							invoice_pdf_file: this.state.invoice_pdf_file,
+							viewInvoice: this.viewItem,
 							role: this.props.current_user_role
 						});
 
@@ -87064,11 +87332,11 @@ var MaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state11 = this.state;
-						var comments = _state11.comments;
-						var quoteComments = _state11.quoteComments;
-						var landlordComments = _state11.landlordComments;
-						var appointment = _state11.appointment;
+						var _state12 = this.state;
+						var comments = _state12.comments;
+						var quoteComments = _state12.quoteComments;
+						var landlordComments = _state12.landlordComments;
+						var appointment = _state12.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -87264,6 +87532,14 @@ var MaintenanceRequest = React.createClass({
 						}
 					});
 
+				case 'voidInvoice':
+					return React.createElement(ModalVoidInvoice, {
+						voidInvoice: this.voidInvoice,
+						text: "Are you sure want to void this invoice? Voiding this invoice will mark the invoice with a DO NOT PAY status. An email will be sent to the tradie to inform them you have voided and rejected this invoice along with the reason why it was voided.",
+						invoice: this.state.invoice,
+						close: this.isClose
+					});
+
 				default:
 					return null;
 			}
@@ -87401,12 +87677,12 @@ var MaintenanceRequest = React.createClass({
 		var quote_appointments = _props5.quote_appointments;
 		var current_user_role = _props5.current_user_role;
 		var invoices = _props5.invoices;
-		var _state12 = this.state;
-		var invoice_pdf_files = _state12.invoice_pdf_files;
-		var trady = _state12.trady;
-		var quote_requests = _state12.quote_requests;
-		var tenants = _state12.tenants;
-		var landlord = _state12.landlord;
+		var _state13 = this.state;
+		var invoice_pdf_files = _state13.invoice_pdf_files;
+		var trady = _state13.trady;
+		var quote_requests = _state13.quote_requests;
+		var tenants = _state13.tenants;
+		var landlord = _state13.landlord;
 
 		var hasApproved = quote_requests.some(function (quote_request) {
 			return quote_request.quotes.some(function (quote) {
@@ -88463,35 +88739,52 @@ var About = React.createClass({
   render: function () {
     return React.createElement(
       "div",
-      { id: "static-pages", className: "about" },
+      { className: "about" },
       React.createElement(
         "div",
-        { className: "scroll-bar" },
+        { className: "about-top-image position-rl" },
         React.createElement(
-          "h4",
-          { className: "text-center title" },
-          "About"
+          "p",
+          { className: "position-ab about-slogan" },
+          "Always getting things done."
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "about-content" },
+        React.createElement(AvatarImage, { className: "about-logo", alt: "Logo", imageUri: "/assets/logo.png" }),
+        React.createElement(
+          "p",
+          { className: "app-name" },
+          "Maintenance App"
         ),
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "level-1" },
           "Maintenance App is a cloud based platform that helps organize and log maintenance issues involving your properties.Since 2015 Maintenance App has strived to make the experience of dealing with maintenance issues the best it can be. We designed our platform by thinking of the needs and desires of property managers, landlords, tenants, and tradies. By allowing property managers to quickly organize maintenance requests submitted by tenants we help them accomplish their work quickly and efficiently."
         ),
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "level-1" },
           "Using our on demand network of verified tradies, agents and landlord can effortlessly request competitive quotes for jobs that are required to be completed. We give property managers and landlords competitive quotes to help maintain their properties in great condition."
         ),
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "level-1" },
           "We offer tradies an opportunity to grow their business by receiving high quality leads, which is why many tradies love being on our network. We love helping out small businesses reach their full potential."
         ),
         React.createElement(
           "p",
-          { className: "content level-1" },
+          { className: "level-1" },
           "We want to thank you for joining us, we hope you enjoy our platform!"
         )
+      ),
+      React.createElement(
+        "div",
+        { className: "about-bottom-image" },
+        React.createElement("div", { className: "one-image first-image" }),
+        React.createElement("div", { className: "one-image second-image" }),
+        React.createElement("div", { className: "one-image third-image" })
       )
     );
   }
@@ -94413,10 +94706,10 @@ var ModalViewQuote = React.createClass({
 	getImage: function (trady) {
 		if (!trady) return '';
 
-		var trady_company_profile_image = trady.trady_company.trady_company_profile_image;
-		var trady_profile_image = trady.trady_profile_image;
+		var trady_company = trady.trady_company || {};
+		var trady_company_profile_image = trady_company.trady_company_profile_image || {};
 
-		var image_url = trady_company_profile_image && trady_company_profile_image.image_url;
+		var image_url = trady_company_profile_image.image_url;
 
 		return image_url;
 	},
@@ -94427,7 +94720,7 @@ var ModalViewQuote = React.createClass({
 
 	render: function () {
 		var self = this.props;
-		var quote = this.state.quote;
+		var quote = self.quote;
 		var property = this.props.property;
 
 		var total = 0;
@@ -103127,6 +103420,7 @@ var TradyMaintenanceRequest = React.createClass({
 			appointment: null,
 			invoice_pdf_file: null,
 			appointmentUpdate: null,
+			message: '',
 			tradies: tradies,
 			comments: comments,
 			landlord: landlord,
@@ -103427,6 +103721,7 @@ var TradyMaintenanceRequest = React.createClass({
 					break;
 				}
 
+			case 'voidInvoice':
 			case 'viewInvoice':
 				{
 					this.setState({
@@ -103471,6 +103766,15 @@ var TradyMaintenanceRequest = React.createClass({
 				{
 					this.setState({
 						trady: item
+					});
+					this.onModalWith(key);
+					break;
+				}
+
+			case 'wantNewInvoice':
+				{
+					this.setState({
+						message: item
 					});
 					this.onModalWith(key);
 					break;
@@ -103681,6 +103985,55 @@ var TradyMaintenanceRequest = React.createClass({
 		});
 	},
 
+	voidInvoice: function (params, callback) {
+		var self = this;
+		var current_user = this.props.current_user;
+		var _state3 = this.state;
+		var invoice = _state3.invoice;
+		var invoices = _state3.invoices;
+		var invoice_pdf_files = _state3.invoice_pdf_files;
+
+		var isPdf = !!invoice.pdf_url;
+
+		$.ajax({
+			type: 'POST',
+			url: isPdf ? '/void_uploaded_invoice' : '/void_invoice',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: params,
+			success: function (res) {
+				if (res && res.errors) {
+					return callback(res.errors);
+				}
+
+				if (isPdf) {
+					self.setState({
+						invoice_pdf_files: invoice_pdf_files.map(function (inv) {
+							return inv.id === res.uploaded_invoice.id ? Object.assign({}, inv, res.uploaded_invoice) : inv;
+						})
+					});
+				} else {
+					self.setState({
+						invoices: invoices.map(function (inv) {
+							return inv.id === res.invoice.id ? Object.assign({}, inv, res.invoice) : inv;
+						})
+					});
+				}
+				var message = (res && res.message || 'You have void this invoice.') + ' Do you want to create another invoice?';
+				self.viewItem('wantNewInvoice', message);
+			},
+			error: function (err) {
+				self.setState({ notification: {
+						title: "Void Invoice",
+						content: "An error occured voiding this invoice.",
+						bgClass: "bg-error"
+					} });
+				self.onModalWith('notification');
+			}
+		});
+	},
+
 	renderModal: function () {
 		var _this2 = this;
 
@@ -103835,6 +104188,7 @@ var TradyMaintenanceRequest = React.createClass({
 							landlord: this.state.landlord,
 							invoices: this.state.invoices,
 							property: this.props.property,
+							viewInvoice: this.viewItem,
 							role: this.props.current_role ? this.props.current_role.role : ''
 						});
 					}
@@ -103846,6 +104200,7 @@ var TradyMaintenanceRequest = React.createClass({
 							agency: this.props.agency,
 							property: this.props.property,
 							trady: this.props.assigned_trady,
+							viewInvoice: this.viewItem,
 							invoice_pdf_file: this.state.invoice_pdf_file,
 							role: this.props.current_user_role
 						});
@@ -103896,10 +104251,10 @@ var TradyMaintenanceRequest = React.createClass({
 
 				case 'viewAppointment':
 					{
-						var _state3 = this.state;
-						var comments = _state3.comments;
-						var quoteComments = _state3.quoteComments;
-						var appointment = _state3.appointment;
+						var _state4 = this.state;
+						var comments = _state4.comments;
+						var quoteComments = _state4.quoteComments;
+						var appointment = _state4.appointment;
 
 						var commentShow = [];
 						switch (appointment.appointment_type) {
@@ -104017,6 +104372,23 @@ var TradyMaintenanceRequest = React.createClass({
 						title: 'Stop Invoice Reminder',
 						content: 'Are you sure you have already made an invoice AND you want to stop the invoice reminder?'
 					});
+
+				case 'voidInvoice':
+					return React.createElement(ModalVoidInvoice, {
+						voidInvoice: this.voidInvoice,
+						invoice: this.state.invoice,
+						close: this.isClose,
+						text: "Are you sure want to void this invoice? Voiding this invoice will mark the invocie with a DO NOT PAY status for agent. An email will also be sent to the agent informing them it has been void. Do you want to create a new invoice?"
+					});
+
+				case 'wantNewInvoice':
+					return React.createElement(ModalConfirmAnyThing, {
+						close: this.isClose,
+						confirm: function () {
+							return _this2.onModalWith('viewConfirm');
+						},
+						title: 'Void Invoice',
+						content: this.state.message || "You have void this invoice. Do you want to create a new invoice?" });
 
 				default:
 					return null;
@@ -104303,9 +104675,9 @@ var TradyMaintenanceRequest = React.createClass({
 
 	openAppointment: function (appointment_id) {
 		var appointment = '';
-		var _state4 = this.state;
-		var appointments = _state4.appointments;
-		var quote_appointments = _state4.quote_appointments;
+		var _state5 = this.state;
+		var appointments = _state5.appointments;
+		var quote_appointments = _state5.quote_appointments;
 
 		var data = [].concat(_toConsumableArray(appointments), _toConsumableArray(quote_appointments));
 		data.map(function (item, key) {
@@ -104423,15 +104795,15 @@ var TradyMaintenanceRequest = React.createClass({
 	render: function () {
 		var _this3 = this;
 
-		var _state5 = this.state;
-		var appointments = _state5.appointments;
-		var quote_appointments = _state5.quote_appointments;
-		var invoices = _state5.invoices;
-		var invoice_pdf_files = _state5.invoice_pdf_files;
-		var trady = _state5.trady;
-		var quote_requests = _state5.quote_requests;
-		var stop_invoice = _state5.stop_invoice;
-		var stop_appointment = _state5.stop_appointment;
+		var _state6 = this.state;
+		var appointments = _state6.appointments;
+		var quote_appointments = _state6.quote_appointments;
+		var invoices = _state6.invoices;
+		var invoice_pdf_files = _state6.invoice_pdf_files;
+		var trady = _state6.trady;
+		var quote_requests = _state6.quote_requests;
+		var stop_invoice = _state6.stop_invoice;
+		var stop_appointment = _state6.stop_appointment;
 
 		var hasApproved = quote_requests.some(function (quote_request) {
 			return quote_request.quotes.some(function (quote) {
