@@ -9254,28 +9254,28 @@ body {
 .position-rl .position-ab.about-slogan {
   width: 80%;
   margin-left: 10%;
-  top: 280px;
-  font-size: 44px;
+  top: 25vw;
+  font-size: 34px;
   color: #71C796;
 }
-@media (max-width: 750px) {
+@media (min-width: 1200px) {
   /* line 57, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .position-rl .position-ab.about-slogan {
-    top: 280px;
-    font-size: 34px;
+    top: 300px;
+    font-size: 44px;
   }
 }
 @media (max-width: 550px) {
   /* line 57, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .position-rl .position-ab.about-slogan {
-    top: 140px;
+    top: calc(25vw - 12px);
     font-size: 24px;
   }
 }
 @media (max-width: 400px) {
   /* line 57, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/shared.scss */
   .position-rl .position-ab.about-slogan {
-    top: 140px;
+    top: calc(25vw - 16px);
     font-size: 16px;
   }
 }
@@ -18427,7 +18427,7 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
 /* line 28, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
 .about .about-top-image {
   position: relative;
-  min-height: 600px;
+  height: 50vw;
   max-height: 600px;
   background-repeat: round;
   background-image: url(/assets/about-top-image.jpg);
@@ -18439,7 +18439,7 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  min-height: 200px;
+  height: 25vw;
   max-height: 300px;
 }
 /* line 40, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
@@ -18449,7 +18449,7 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  min-height: 300px;
+  height: 25vw;
   max-height: 300px;
   background-repeat: round;
 }
@@ -18464,20 +18464,6 @@ form#terms-and-conditions .TAC-buttons .button-submit:hover {
 /* line 52, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
 .about .about-bottom-image .third-image {
   background-image: url(/assets/about-bottom-third-image.jpg);
-}
-@media (max-width: 550px) {
-  /* line 58, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
-  .about .about-top-image {
-    min-height: 300px;
-  }
-  /* line 61, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
-  .about .about-bottom-image {
-    min-height: 150px;
-  }
-  /* line 63, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
-  .about .about-bottom-image .one-image {
-    min-height: 150px;
-  }
 }
 @media (max-width: 448px) {
   /* line 1, /Users/ron/Desktop/Startup/realestate/realestate/app/assets/stylesheets/about.scss */
