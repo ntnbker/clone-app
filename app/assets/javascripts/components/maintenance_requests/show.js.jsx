@@ -1149,6 +1149,7 @@ var ModalRequestModal = React.createClass({
 								{ this.props.keyTitle === 'request-quote' &&
 									<div className="row">
 										<button
+											type="button"
 											className="btn btn-primary cancel"
 											onClick={() => this.props.viewItem('justFindMeOne')}
 										>
@@ -3190,6 +3191,7 @@ var MaintenanceRequest = React.createClass({
 							quote_requests && quote_requests.length > 0
 							? <QuoteRequests
 									hideRestore={!!trady}
+									assignedTrady={trady}
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}

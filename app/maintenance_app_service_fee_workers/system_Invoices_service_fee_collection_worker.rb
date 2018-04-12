@@ -16,7 +16,7 @@ class SystemInvoicesServiceFeeCollectionWorker
     customers_profiles_trady_ids  = CustomerProfile.where.not(trady_id:nil, customer_id:nil).pluck(:trady_id)
     
     
-    invoices = Invoice.where(delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile])
+    invoices = Invoice.where(active:true,delivery_status:true, mapp_payment_status:"Outstanding", trady_id:customers_profiles_trady_ids).includes(trady:[:customer_profile])
     
     invoices.each do |invoice|
 
@@ -40,7 +40,7 @@ class SystemInvoicesServiceFeeCollectionWorker
               # Since it's a decline, Stripe::CardError will be caught
               body = e.json_body
               err  = body[:error]
-              TradyPaymentErrors.create(trady_id:invoice.trady.id ,charge_id:err[:charge], message:err[:message], http_status:e.http_status,error_type:err[:type], error_code:err[:code],)
+              TradyPaymentErrors.create(trady_id:invoice.trady.id ,charge_id:err[:charge], message:err[:message], http_status:e.http_status,error_type:err[:type], error_code:err[:code])
               #WE NEED TO SEND AN EMAIL HERE. OR WE CAN JUST LIST THE ERRORS THAT WE GET ON A VIEW FOR US
 
             rescue Stripe::RateLimitError => e

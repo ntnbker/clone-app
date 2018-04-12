@@ -77115,7 +77115,7 @@ var ContentLandlordContact = React.createClass({
 					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Agent - ",
-					agent.first_name,
+					agent.name,
 					": ",
 					agent.mobile_phone
 				)
@@ -85666,6 +85666,7 @@ var ModalRequestModal = React.createClass({
 								React.createElement(
 									"button",
 									{
+										type: "button",
 										className: "btn btn-primary cancel",
 										onClick: function () {
 											return _this9.props.viewItem('justFindMeOne');
@@ -87752,6 +87753,7 @@ var MaintenanceRequest = React.createClass({
 					}),
 					quote_requests && quote_requests.length > 0 ? React.createElement(QuoteRequests, {
 						hideRestore: !!trady,
+						assignedTrady: trady,
 						quote_requests: quote_requests,
 						onModalWith: this.onModalWith,
 						landlord: this.state.landlord,
@@ -94252,6 +94254,7 @@ var QuoteRequests = React.createClass({
 				{ className: "list-quote" },
 				quote_requests.map(function (quote_request, index) {
 					var trady = quote_request.trady || {};
+					var assignedTradyValid = !self.assignedTrady || self.assignedTrady.id === trady.id;
 
 					var maintenance_request_id = quote_request.maintenance_request_id;
 					var trady_id = quote_request.trady_id;
@@ -94266,7 +94269,7 @@ var QuoteRequests = React.createClass({
 					var needAlreadySentButton = !isLandlord && quotes.length === 0 && !quote_request.quote_sent;
 
 					var needPhotoButton = !isLandlord && quote_request.quote_sent;
-					var needMessageButton = !isLandlord && !!self.current_user_show_quote_message;
+					var needMessageButton = !isLandlord && assignedTradyValid && !!self.current_user_show_quote_message;
 
 					var messageTo = self.keyLandlord === 'trady' ? 'Agent' : quote_request.trady ? quote_request.trady.name : '';
 					var linkCreateQuote = "/quote_options?maintenance_request_id=" + maintenance_request_id + "&trady_id=" + trady_id;
@@ -102788,7 +102791,7 @@ var ContentTradyContact = React.createClass({
 					{ href: "tel:" + agent.mobile_phone },
 					React.createElement("i", { className: "fa fa-phone", "aria-hidden": "true" }),
 					"Agent - ",
-					agent.first_name,
+					agent.name,
 					": ",
 					agent.mobile_phone
 				)
