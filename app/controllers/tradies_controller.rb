@@ -80,6 +80,12 @@ class TradiesController < ApplicationController
         mr.update_attribute(:trady_id, @user.trady.id )
 
         mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
+        quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
+        if quote_request
+          #do nothing
+        else
+          QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
+        end
 
       end 
       
@@ -129,7 +135,12 @@ class TradiesController < ApplicationController
         mr.update_attribute(:trady_id, @user.trady.id )
 
         mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
-
+        quote_request = QuoteRequest.where(:trady_id=>@user.trady.id, :maintenance_request_id=>mr.id).first
+        if quote_request
+          #do nothing
+        else
+          QuoteRequest.create(trady_id:@user.trady.id, maintenance_request_id:mr.id)
+        end
       end 
       
       #mr.action_status.update_attribute(:agent_status,"Awaiting Tradie Initiation")
@@ -178,6 +189,16 @@ class TradiesController < ApplicationController
           mr.update_attribute(:trady_id, @trady.id )
 
           mr.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
+
+          quote_request = QuoteRequest.where(:trady_id=>@trady.id, :maintenance_request_id=>mr.id).first
+          if quote_request
+            #do nothing
+          else
+            QuoteRequest.create(trady_id:@trady.id, maintenance_request_id:mr.id)
+          end
+
+
+
 
         end 
 

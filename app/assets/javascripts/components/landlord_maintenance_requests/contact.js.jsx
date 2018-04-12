@@ -6,7 +6,7 @@ var ContentLandlordContact = React.createClass({
 				<li>
 					<a href={"tel:" + agent.mobile_phone}>
 						<i className="fa fa-phone" aria-hidden="true" />
-						Agent - {agent.first_name}: {agent.mobile_phone}
+						Agent - {agent.name}: {agent.mobile_phone}
 					</a>
 				</li>
 			);
@@ -55,19 +55,19 @@ var LandlordContact = React.createClass({
 				<div className="header contact">
 					<a>Contact:</a>
 					<i
-						aria-hidden="true" 
-						onClick={this.showContact} 
-						className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} 
+						aria-hidden="true"
+						onClick={this.showContact}
+						className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"}
 					/>
 				</div>
 				<div className="content">
-					{ this.state.show && 
+					{ this.state.show &&
 							<ContentLandlordContact
 								agent={this.props.agent}
 								landlord={this.props.landlord}
 								maintenance_request={this.props.maintenance_request}
 								onModalWith={(modal) => this.props.onModalWith(modal)}
-							/> 
+							/>
 					}
 				</div>
 			</div>
@@ -83,8 +83,8 @@ var LandlordContactMobile = React.createClass({
 					<div className="header action">
 						<a>Contact:</a>
 						<i
-							aria-hidden="true" 
-							className="fa fa-close" 
+							aria-hidden="true"
+							className="fa fa-close"
 							onClick={this.props.close}
 						/>
 					</div>
@@ -94,7 +94,7 @@ var LandlordContactMobile = React.createClass({
 							landlord={this.props.landlord}
 							maintenance_request={this.props.maintenance_request}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
-						/> 
+						/>
 					</div>
 				</div>
 			</div>
