@@ -68,7 +68,7 @@ group :development do
   gem 'spring'
   # gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'thin'
-  gem 'better_errors'
+  # gem 'better_errors'
   gem 'binding_of_caller'
   gem 'letter_opener'
   gem 'pry'

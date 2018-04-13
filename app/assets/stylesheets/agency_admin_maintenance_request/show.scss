@@ -9,7 +9,126 @@ $color-gray-dark: #baccd8;
 $color-red: #e34f4f;
 $color-black: #000000;
 $color-blue-light: #7646FF;
+$color-text: #83878C;
 
+.item-maintenance-request {
+  color: $color-text;
+
+  h4.mr-title {
+    font-weight: 500;
+  }
+  .button-header-mr {
+    @include flexbox;
+    @include flex-direction(row-reverse);
+    @include flex-wrap(wrap);
+    @include justify-content(center);
+    font-size: 12px;
+
+    > * {
+      @include flex(1 1 115px);
+      width: 100%;
+      max-width: 115px;
+      margin: 5px 2px;
+      padding: 0 2px;
+      color: $color-text;
+      background-color: $color-grey;
+      border: 0;
+      font-weight: 600;
+      border-radius: 5px;
+
+      button {
+        padding: 3px;
+        width: 100%;
+        border: 0;
+        border-radius: 5px;
+        font-weight: 600;
+      }
+      &:hover {
+        background-color: $color-grey-1;
+        color: $color-white;
+
+        button {
+          color: $color-white;
+        }
+      }
+    }
+  }
+  .box-shadow {
+    box-shadow: 2px 2px 12px 0px #cacaca, -2px -2px 12px 0px #cacaca;
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .mr-detail {
+    .mr-information {
+      .key {
+        margin-right: 10px;
+        font-weight: 100;
+      }
+      .status {
+        color: $color-green;
+        border: 2px solid $color-green;
+        border-radius: 5px;
+        display: inline-block;
+        font-weight: 500;
+        padding: 2px 5px 0;
+        height: 25px;
+        background-color: #fff;
+      }
+      .address {
+        font-weight: 500;
+      }
+      .mr-information, .service {
+        font-size: 13px;
+        font-weight: 300;
+      }
+    }
+    .mr-photo {
+      margin-left: -20px;
+      margin-right: -20px;
+    }
+  }
+  .contact-button {
+    @include flexbox;
+    @include flex-wrap(wrap);
+
+    > div {
+      @include flex(1 1 250px);
+      width: 100%;
+      max-width: 250px;
+      padding: 10px;
+      text-align: center;
+      margin: 5px 10px 5px 0;
+      background-color: $color-grey;
+
+      button {
+        padding: 0;
+        height: 0;
+        border: 0;
+      }
+      i {
+        margin-right: 5px;
+      }
+      &:hover {
+        background-color: $color-grey-1;
+        color: $color-white;
+
+        button {
+          color: $color-white;
+        }
+      }
+    }
+  }
+  .job-description {
+    font-weight: 500;
+  }
+  .small-weight {
+    font-weight: 100;
+  }
+  .add-photo-button {
+    margin: 10px;
+  }
+}
 body{
   position: relative;
 }
@@ -532,7 +651,7 @@ span.index {
     }
   }
 .summary-container-index {
-  background-color: $color-grey;
+  background-color: white;
   clear: both;
   overflow: hidden;
   width: 100%;
@@ -540,6 +659,7 @@ span.index {
   font-family: 'Montserrat', sans-serif !important;
   .main-summary {
     margin: auto 120px;
+    background-color: $color-grey;
     overflow: hidden;
     .show-waring {
       color: #a94442;
@@ -552,7 +672,6 @@ span.index {
   }
   .section {
     float: left;
-    background-color: $color-white;
     margin-right: 25px;
     max-width: none;
     width: calc(100% - 365px);
@@ -1361,7 +1480,7 @@ span.index {
     @include align-items(center);
     @include justify-content(center);
     @include flex-direction(column);
-    
+
     input {
       margin-bottom: 10px;
     }

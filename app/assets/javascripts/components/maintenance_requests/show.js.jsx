@@ -3156,8 +3156,10 @@ var MaintenanceRequest = React.createClass({
 							existTradyAssigned={!!trady}
 							all_agency_admins={this.props.all_agency_admins}
 							viewItem={(key, item) => this.viewItem(key, item)}
+							onModalWith={this.onModalWith}
 							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
+							landlord={this.state.landlord}
 							show_assign={this.props.current_user_show_quote_message}
 							strike_approval={hasApproved}
 						/>

@@ -852,6 +852,8 @@ var LandlordMaintenanceRequest = React.createClass({
 						<ItemMaintenanceRequest
 							gallery={this.props.gallery}
 							property={this.props.property}
+							onModalWith={this.onModalWith}
+							landlord={this.state.landlord}
 							maintenance_request={this.state.maintenance_request}
 							strike_approval={hasApproved}
 						/>

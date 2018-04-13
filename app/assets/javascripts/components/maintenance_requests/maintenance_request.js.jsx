@@ -356,24 +356,24 @@ var ButtonHeaderMR = React.createClass({
 		const all_agency_admins = this.props.all_agency_admins;
 		const {standBy, actionRequired, awaitingAction} = this.state;
 		return (
-			<div className="actions">
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
+			<div className="button-header-mr box-shadow">
+				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
 					<span>
 						Approval Note
 					</span>
 				</button>
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
+				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
 					<span>
 						Split
 					</span>
 				</button>
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('duplicateMR')}>
+				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('duplicateMR')}>
 					<span>
 						Duplicate
 					</span>
 				</button>
 				<div id="update-status">
-					<button className="button-primary update-status" onClick={(key) => this.show('status')}>
+					<button type="button" className="update-status" onClick={(key) => this.show('status')}>
 						Update status
 					</button>
 					<div
@@ -397,15 +397,15 @@ var ButtonHeaderMR = React.createClass({
 						</div>
 					</div>
 				</div>
-				<button className="button-primary edit-detail" onClick={(key) => this.props.viewItem('editMaintenanceRequest')}>
+				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('editMaintenanceRequest')}>
 					<i className="fa fa-pencil" aria-hidden="true" />
 					<span>
 						Edit Details
 					</span>
 				</button>
 				<div className="assign">
-					<button
-						className="button-primary assign-to"
+					<button type="button"
+						className="assign-to"
 						id="assign-to"
 						ref={elem => this.assignBtn = elem}
 						onClick={key => this.show('assign')}
@@ -496,6 +496,7 @@ var ItemMaintenanceRequest = React.createClass({
 		let created_at = moment(date).add(-n/60).fromNow();
 		
 		return (
+<<<<<<< Updated upstream
 			<div className="post">
 				<div className="info">
 					<div className="info-title">
@@ -552,6 +553,22 @@ var ItemMaintenanceRequest = React.createClass({
 					</div>
 					<Carousel gallery={this.props.gallery} />
 				</div>
+=======
+			<div className="item-maintenance-request">
+				{
+					props.show_assign &&
+						<ButtonHeaderMR
+							all_agents={props.all_agents}
+							all_agency_admins={props.all_agency_admins}
+							existLandlord={props.existLandlord}
+							existQuoteRequest={props.existQuoteRequest}
+							existTradyAssigned={props.existTradyAssigned}
+							viewItem={(key, item) => this.props.viewItem(key, item)}
+						/>
+				}
+				<MaintenaceRequestDetail {...this.props} />
+				<TenantContactButton {...this.props} />
+>>>>>>> Stashed changes
 			</div>
 		);
 	}
@@ -849,3 +866,164 @@ var ModalConfirmUpdateStatus = React.createClass({
 		);
 	}
 });
+
+var MaintenaceRequestDetail = React.createClass({
+	getInitialState() {
+		return {};
+	},
+
+	render() {
+		const {
+			show_assign, status, maintenance_request, hide_note, strike_approval
+		} = this.props;
+
+		return (
+			<div className="mr-detail box-shadow">
+				<h4 className="mr-title">Maintenance Request Details</h4>
+				<MaintenanceRequestInformation {...this.props} />
+				<LandlordContactButton {...this.props} />
+				<div className="content">
+					<div className="description">
+						<p className="m-b-n small-weight">Job Description:</p>
+						<p className="job-description">{maintenance_request.maintenance_description}</p>
+					</div>
+					{ !hide_note && maintenance_request.preapproved_note
+						? <div className="vailability pre-approved-note">
+								<p className="header small-weight">Approval Note: </p>
+								<p className="description job-description">
+                  <span className={'approval-note ' + (strike_approval ? 'strike' : '')}>
+                    {maintenance_request.preapproved_note}
+                  </span>
+                  {strike_approval && "As per quote approved"}
+                </p>
+							</div>
+						: ''
+					}
+				</div>
+				<div className="mr-photo">
+					<Carousel gallery={this.props.gallery} />
+				</div>
+				<div className="add-photo-button contact-button">
+					<div className="phone">
+						<button
+							type="button"
+							className=""
+							onClick={() => this.props.onModalWith('addPhoto')}
+						>
+							Add Photo
+						</button>
+					</div>
+				</div>
+			</div>
+		)
+	}
+})
+
+var MaintenanceRequestInformation = React.createClass({
+	render() {
+		const {maintenance_request, status, property, show_assign} = this.props;
+
+		const n = new Date().getTimezoneOffset();
+		const date = new Date(maintenance_request.created_at);
+		let created_at = moment(date).add(-n/60).fromNow();
+
+		return (
+			<div className="mr-information">
+				{
+					show_assign &&
+					<div className="mr-information">
+						<span className="key">Status: </span>
+						<span className="data status">{status && status.agent_status}</span>
+					</div>
+				}
+				<div className="mr-information">
+					<span className="key">Address: </span>
+					<span className="data address">
+						<i className="fa fa-map-marker" aria-hidden="true" />
+						{property.property_address}
+					</span>
+				</div>
+				<div className="mr-information">
+					<span className="key">Submitted: </span>
+					<span className="data time">
+						{created_at}
+					</span>
+				</div>
+				<div className="mr-information">
+					<span className="key">Service Required: </span>
+					<span className="data service">
+						| {maintenance_request.service_type}
+					</span>
+				</div>
+			</div>
+		)
+	}
+})
+
+var LandlordContactButton = React.createClass({
+	render() {
+		const {landlord} = this.props;
+		return !!landlord &&
+			<div className="landlord-contact-button contact-button">
+				<div className="phone">
+					<button
+						type="button"
+						className="call-landlord"
+						onClick={() => this.callLandlord.click()}
+					>
+						<a
+							className="display-none"
+							href={"tel:" + landlord.mobile}
+							ref={e => this.callLandlord = e}
+						/>
+						<i className="fa fa-phone" aria-hidden="true" />
+						Landlord - {landlord.name}
+					</button>
+				</div>
+				<div className="message">
+					<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageLandlord')}>
+						Message {landlord.name}
+					</button>
+				</div>
+			</div>
+	}
+})
+
+var TenantContactButton = React.createClass({
+	render() {
+		const {tenants, maintenance_request} = this.props;
+		return (
+			<div className="tenant-contact box-shadow">
+				<h4 className="mr-title">Tenant Details</h4>
+				<div className="vailability">
+					<p className="header small-weight">Tenant Availability and Access Instructions: </p>
+					<p className="job-description">{maintenance_request.availability_and_access}</p>
+				</div>
+				{tenants.map(tenant => (
+					<div className="contact-button">
+						<div className="phone">
+							<button
+								type="button"
+								className="call-tenant"
+								onClick={() => this[`tenantPhone${tenant.id}`].click()}
+							>
+								<a
+									href={`tel:${tenant.mobile}`}
+									ref={e => this[`tenantPhone${tenant.id}`] = e}
+									className="display-none"
+								/>
+								<i className="fa fa-phone" aria-hidden="true" />
+								Call {tenant.name}
+							</button>
+						</div>
+						<div className="message">
+							<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
+								Message {tenant.name}
+							</button>
+						</div>
+					</div>
+				))}
+			</div>
+		)
+	}
+})
