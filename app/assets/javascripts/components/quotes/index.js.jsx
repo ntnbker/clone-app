@@ -448,12 +448,8 @@ var ActionQuoteRequest = React.createClass({
 			};
 		});
 
-		if (quotes.length === 0) {
-			return <div></div>;
-		}
-
 		return <div className="quote-request">
-				<Quotes {...this.props} quotes={quotes} />
+				{quotes.length > 0 && <Quotes {...this.props} quotes={quotes} />}
 			</div>
 	}
 });
@@ -500,8 +496,8 @@ var Quotes = React.createClass({
 
 		return (
 			<div className="quotes m-t-lg" id="quotes">
-				<p>
-					<span className="index circle">{quotes.length}</span>Quotes
+				<p className="quote-title">
+					Quotes
 				</p>
 				<div className="list-quote">
 				{
@@ -511,26 +507,15 @@ var Quotes = React.createClass({
 
 						return (
 							<div className="item-quote row" key={index}>
-								<div className="user seven columns">
+								<div className="user seven columns quote-status">
 									<span className="index quote circle">{index + 1}</span>
-									<span className="icon-user">
-										<AvatarImage imageUri={pictures[index]} />
-									</span>
-									<div className="info">
-										<div className="name">
-											<span>{quote.trady.company_name}</span>
-											{showStatus &&
-												<button
-													className={'button-default status ' + status}>
-													<span>{status}</span>
-												</button>
-											}
-										</div>
-										<p className="description">
-											{quote.trady && quote.trady.name} <br />
-											{(quote.trady && quote.trady.trady_company) && quote.trady.trady_company.trading_name}
-										</p>
-									</div>
+									<span>Status: </span>
+									{showStatus &&
+										<button
+											className={'button-default status ' + status}>
+											<span>{status}</span>
+										</button>
+									}
 								</div>
 								{ !!self.current_user &&
 										<ActionQuote
@@ -642,7 +627,7 @@ var QuoteRequests = React.createClass({
 		// Check if quote request was created by a real trady
 
 		return (
-			<div className="quotes m-t-lg" id="quote_requests">
+			<div className="quotes m-t-lg box-shadow" id="quote_requests">
 				{ !!quote_requests.length &&
 					<p>
 						<span className="index">{quote_requests.length}</span>Quote Requests
@@ -679,62 +664,71 @@ var QuoteRequests = React.createClass({
 
 						return (
 							<div className="item-quote row item-quote-request" key={index}>
-								<div className="user seven columns">
-									<span className="index quote">{index + 1}</span>
-									<span className="icon-user">
-										<AvatarImage imageUri={pictures[index]} />
-									</span>
-									<div className="info">
-										<div className="name">
-											<span>{trady.company_name}</span>
-										</div>
-										<div className="description">
-											{trady.name}
-											<br />
-											{(trady.trady_company) && trady.trady_company.trading_name}
+								<div className="user seven columns trady-info-group">
+									<div className="trady-info">
+										<span className="icon-user">
+											<AvatarImage imageUri={pictures[index]} />
+										</span>
+										<div className="info">
+											<div className="name">
+												<span className="key">Name: </span>
+												<span className="value">{trady.name}</span>
+											</div>
+											{ trady.trady_company &&
+												<div className="business-name">
+													<span className="key">Business Name: </span>
+													<span className="value">{trady.trady_company.trading_name}</span>
+												</div>
+											}
+											<div className="company-name">
+												<span className="key">Company Name: </span>
+												<span className="value">{trady.company_name}</span>
+											</div>
 										</div>
 									</div>
-									<div className="quote-request-button">
-										{
-											isCallTrady
-											? <ButtonCallTrady
+									<div className="contact-button">
+										{ isCallTrady &&
+											<div className="trady-call-button">
+												<ButtonCallTrady
 													trady={trady}
 												/>
-											: ''
+											</div>
 										}
-										{ role === 'Trady'
-											? <ButtonCreateQuote
-													linkCreateQuote={linkCreateQuote}
-												/>
-											: ''
-										}
-										{
-											needMessageButton
-											? <ButtonQuoteRequestMessage
+										{ needMessageButton &&
+											<div className="trady-message-button">
+												<ButtonQuoteRequestMessage
 													quote_request={quote_request}
 													name={messageTo}
 													viewQuote={self.viewQuote}
 												/>
-											: ''
-										}
-										{ !quote_request.trady.jfmo_participant && needAlreadySentButton
-											? <ButtonQuoteAlreadySent
-													{...self}
-													quote_request={quote_request}
-												/>
-											: ''
-										}
-										{ needPhotoButton
-											? <ModalImageUpload
-													className="btn btn-default"
-													{...self}
-													chooseImageText="Choose Image or PDF to upload"
-													text="Upload Quote PDF/Image"
-													onClick={() => self.chooseQuoteRequest(quote_request)}
-												/>
-											: ''
+											</div>
 										}
 									</div>
+								</div>
+								<div className="quote-request-button">
+									{ role === 'Trady'
+										? <ButtonCreateQuote
+												linkCreateQuote={linkCreateQuote}
+											/>
+										: ''
+									}
+									{ !quote_request.trady.jfmo_participant && needAlreadySentButton
+										? <ButtonQuoteAlreadySent
+												{...self}
+												quote_request={quote_request}
+											/>
+										: ''
+									}
+									{ needPhotoButton
+										? <ModalImageUpload
+												className="btn btn-default"
+												{...self}
+												chooseImageText="Choose Image or PDF to upload"
+												text="Upload Quote PDF/Image"
+												onClick={() => self.chooseQuoteRequest(quote_request)}
+											/>
+										: ''
+									}
 								</div>
 								{ !!self.current_user &&
 										<ActionQuoteRequest

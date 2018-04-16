@@ -11,7 +11,7 @@ $color-black: #000000;
 $color-blue-light: #7646FF;
 $color-text: #83878C;
 
-.item-maintenance-request {
+.new-ui-maintenance-request {
   color: $color-text;
 
   h4.mr-title {
@@ -103,7 +103,7 @@ $color-text: #83878C;
 
       button {
         padding: 0;
-        height: 0;
+        height: inherit;
         border: 0;
       }
       i {
@@ -127,6 +127,98 @@ $color-text: #83878C;
   }
   .add-photo-button {
     margin: 10px;
+  }
+
+  .icon-user img {
+    width: 60px;
+    height: 60px;
+    margin-top: 7px;
+  }
+
+  .item-quote-request {
+    @include flexbox;
+    @include flex-direction(column);
+    > div {
+      margin: 10px 0;
+    }
+    .trady-info-group {
+      @include flexbox;
+      @include justify-content(space-between);
+      @include justify-content(justify);
+      color: $color-text;
+      width: calc(100% - 20px);
+      margin: 0 10px;
+
+      .trady-info {
+        @include flex(3);
+        @include flexbox;
+        padding-top: 20px;
+
+        .info {
+          @include flex(1);
+          margin-left: 10px;
+          > div {
+            .key {
+              font-weight: 300;
+            }
+            .value {
+              font-weight: bold;
+            }
+          }
+        }
+      }
+      .contact-button {
+        @include flex(2);
+      }
+
+      .contact-button {
+        margin: 10px;
+        @include flexbox;
+        @include flex-direction(column);
+
+        > div {
+          @include flex(0);
+
+          button {
+            word-wrap: break-word;
+            word-break: break-all;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+    .quote-request-button {
+      margin: 0 10px;
+      width: calc(100% - 20px);
+      @include flexbox;
+      @include justify-content(center);
+
+      button {
+        margin: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 300px;
+        padding: 0 10px;
+        border: none;
+        background-color: #f4f8fb;
+        color: #849aaa;
+        font-size: 14px;
+        font-weight: 400;
+        i {
+          padding-right: 5px;
+        }
+        &:hover {
+          background-color: #deeaf3;
+        }
+        &.stop-reminder {
+          background-color: #e34f4f;
+          color: white;
+        }
+      }
+    }
   }
 }
 body{
@@ -210,7 +302,6 @@ span.index {
   height: 25px;
   text-align: center;
   &.quote {
-    margin-top: 43px;
     float: left;
   }
   &.circle {
@@ -868,103 +959,6 @@ span.index {
       &:last-child {
         // border-bottom: none;
       }
-      .user {
-        overflow: hidden;
-        width: 100%;
-        img {
-          float: left;
-          display: block;
-          width: 60px;
-          height: 60px;
-        }
-        .icon-user {
-          float: left;
-          display: block;
-          margin: 25px 0px 20px 0px;
-          i {
-            font-size: 40px;
-            color: #849aaa;
-          }
-        }
-      }
-      .info {
-        margin: 20px 0px 20px 10px;
-        float: left;
-        .name {
-          color: $color-gray;
-          font-size: 15px;
-          margin-bottom: 5px;
-          font-weight: 500;
-          .modal-footer {
-            button {
-              float: none;
-            }
-          }
-        }
-        .description {
-          color: $color-grey-dark;
-          font-size: 12px;
-          font-weight: 500;
-        }
-      }
-      .quote-request-button {
-        float: right;
-        margin-right: 10px;
-        margin-top: 40px;
-        button {
-          margin-right: 20px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 300px;
-          padding: 0 10px;
-          border: none;
-          background-color: #f4f8fb;
-          color: #849aaa;
-          font-size: 14px;
-          font-weight: 400;
-          i {
-            padding-right: 5px;
-          }
-          &:hover {
-            background-color: #deeaf3;
-          }
-          &.stop-reminder {
-            background-color: #e34f4f;
-            color: white;
-          }
-        }
-      }
-      .info .name button {
-        height: 33px;
-        float: right;
-        margin: 20px 25px 0px 10px;
-        display: inline-block;
-        font-weight: 500;
-        font-size: 14px;
-        text-align: center;
-        background-color: $color-white;
-        padding: 0 10px;
-        &.Approved {
-          border-color: $color-green;
-          color: $color-green;
-        }
-        &.Active {
-          border-color: $color-gray;
-          color: $color-gray;
-        }
-        &.Declined {
-          border-color: $color-red;
-          color: $color-red;
-        }
-        &.Cancelled {
-
-        }
-        &.status {
-          float: none;
-          margin-top: 0px;
-        }
-      }
       .actions {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -1101,9 +1095,13 @@ span.index {
       }
     }
     .quote-request {
-      width: 90%;
       float: right;
-      margin-right: 10px;
+      margin: 10px;
+      .quote-status {
+        margin-top: 15px;
+        color: $color-text;
+
+      }
       .item-quote {
         width: 100%;
         float: right;

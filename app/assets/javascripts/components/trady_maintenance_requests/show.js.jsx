@@ -1573,7 +1573,7 @@ var TradyMaintenanceRequest = React.createClass({
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
 		return (
-			<div className="summary-container-index" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
 				<div className="main-summary dontprint">
 					{
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&
@@ -1585,12 +1585,9 @@ var TradyMaintenanceRequest = React.createClass({
 						<ItemMaintenanceRequest
 							gallery={this.state.gallery}
 							property={this.props.property}
-<<<<<<< Updated upstream
-=======
 							tenants={this.props.tenants}
 							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
->>>>>>> Stashed changes
 							maintenance_request={this.state.maintenance_request}
 							hide_note={!trady || trady.user_id !== this.props.current_user.id}
 							strike_approval={hasApproved}hasApproved

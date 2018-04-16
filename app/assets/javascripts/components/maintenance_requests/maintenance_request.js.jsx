@@ -494,66 +494,8 @@ var ItemMaintenanceRequest = React.createClass({
 		const n = d.getTimezoneOffset();
 		const date = new Date(maintenance.created_at);
 		let created_at = moment(date).add(-n/60).fromNow();
-		
+
 		return (
-<<<<<<< Updated upstream
-			<div className="post">
-				<div className="info">
-					<div className="info-title">
-						{
-							props.show_assign &&
-								<div className="title">
-									<button className="button-primary" type="">{status && status.agent_status}</button>
-								</div>
-						}
-						<div className="author">
-							<i className="fa fa-map-marker" aria-hidden="true" />
-							<span className="address">
-								{this.props.property.property_address}.
-							</span>
-							<a className="time">
-								{created_at}
-							</a>
-							<a>|</a>
-							<a className="name-author">{maintenance.service_type}</a>
-						</div>
-					</div>
-					{
-						props.show_assign &&
-							<ButtonHeaderMR
-								all_agents={props.all_agents}
-								all_agency_admins={props.all_agency_admins}
-								existLandlord={props.existLandlord}
-								existQuoteRequest={props.existQuoteRequest}
-								existTradyAssigned={props.existTradyAssigned}
-								viewItem={(key, item) => this.props.viewItem(key, item)}
-							/>
-					}
-				</div>
-				<div className="content">
-					<div className="description">
-						<p className="m-b-n">Job Description:</p>
-						<p>{maintenance.maintenance_description}</p>
-					</div>
-					{ !this.props.hide_note && maintenance.preapproved_note
-						? <div className="vailability pre-approved-note">
-								<p className="header">Approval Note: </p>
-								<p className="description">
-                  <span className={'approval-note ' + (strike_approval ? 'strike' : '')}>
-                    {maintenance.preapproved_note}
-                  </span>
-                  {strike_approval && "As per quote approved"}
-                </p>
-							</div>
-						: ''
-					}
-					<div className="vailability">
-							<p className="header">Tenant Availability and Access Instructions: </p>
-							<p className="description">{maintenance.availability_and_access}</p>
-					</div>
-					<Carousel gallery={this.props.gallery} />
-				</div>
-=======
 			<div className="item-maintenance-request">
 				{
 					props.show_assign &&
@@ -568,7 +510,6 @@ var ItemMaintenanceRequest = React.createClass({
 				}
 				<MaintenaceRequestDetail {...this.props} />
 				<TenantContactButton {...this.props} />
->>>>>>> Stashed changes
 			</div>
 		);
 	}
@@ -991,7 +932,7 @@ var LandlordContactButton = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants, maintenance_request} = this.props;
+		const {tenants = [], maintenance_request} = this.props;
 		return (
 			<div className="tenant-contact box-shadow">
 				<h4 className="mr-title">Tenant Details</h4>
