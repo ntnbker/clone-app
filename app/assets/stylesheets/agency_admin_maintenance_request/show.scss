@@ -86,6 +86,54 @@ $color-text: #83878C;
     .mr-photo {
       margin-left: -20px;
       margin-right: -20px;
+
+
+      .slider-custom {
+        position: relative;
+        .swiper-container {
+          .slider {
+            transition: all .6s;
+          }
+        }
+        .swiper-pagination {
+          position: initial;
+          bottom: -30px;
+          .swiper-pagination-bullet {
+            width: 30px;
+            height: 10px;
+            border-radius: 5px;
+            margin-right: 5px;
+          }
+        }
+        .slide-image {
+          max-height: 500px;
+        }
+        .swiper-pagination-bullet-active {
+          background-color: $color-green !important;
+        }
+        .swiper-button-next {
+          top: 43%;
+        }
+        .swiper-button-prev {
+          top: 43%;
+        }
+        .btn-slider {
+          position: absolute;
+          top: 40%;
+          z-index: 100;
+          cursor: pointer;
+          &.btn-next {
+            right: 30px;
+          }
+          &.btn-prev {
+            left: 30px;
+          }
+          i {
+            color: #fff;
+            font-size: 60px;
+          }
+        }
+      }
     }
   }
   .contact-button {
@@ -216,6 +264,21 @@ $color-text: #83878C;
         &.stop-reminder {
           background-color: #e34f4f;
           color: white;
+        }
+      }
+    }
+    .item-quote {
+      .quote-status {
+        .Active {
+          border: 1px solid #849aaa;
+        }
+        .Accepted {
+          border: 1px solid #7dc691;
+          color: #7dc691;
+        }
+        .Declined, .Cancelled {
+          border: 1px solid #e76565;
+          color: #e76565;
         }
       }
     }
