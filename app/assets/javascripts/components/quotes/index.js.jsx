@@ -544,11 +544,12 @@ var Quotes = React.createClass({
 
 var QuoteRequests = React.createClass({
   getInitialState: function() {
-    const role = self.current_user_role && self.current_user_role.role
-              || self.current_role && self.current_role.role;
+  	const self = this.props;
+
+    const role = self.current_role && self.current_role.role;
     const quote_requests = role === 'Landlord'
-                        ? this.filterQuoteRequestForLandlord(this.props.quote_requests)
-                        : this.filterQuoteRequest(this.props.quote_requests);
+                        ? this.filterQuoteRequestForLandlord(self.quote_requests)
+                        : this.filterQuoteRequest(self.quote_requests);
     return {
       quote_requests,
       pictures: [],
@@ -640,6 +641,7 @@ var QuoteRequests = React.createClass({
             const assignedTradyValid = !self.assignedTrady
                                     || self.assignedTrady.id === trady.id;
 
+						const isAssigned = self.assignedTrady && self.assignedTrady.id === trady.id;
             const {maintenance_request_id, trady_id} = quote_request;
             const quotes 				= quote_request.quotes || [];
             const quoteAlready  = quotes.filter(quote => !quote.quote_items
@@ -730,6 +732,17 @@ var QuoteRequests = React.createClass({
                     : ''
                   }
                 </div>
+                { isAssigned &&
+									<AssignTrady
+										current_role={role}
+										stop_appointment={self.stop_appointment}
+										stop_invoice={self.stop_invoice}
+										showAppointmentAlreadyMade={self.showAppointmentAlreadyMade}
+										trady={self.assignedTrady}
+										viewTrady={self.viewQuote}
+										onModalWith={self.onModalWith}
+									/>
+                }
                 { !!self.current_user &&
                     <ActionQuoteRequest
                       {...self}

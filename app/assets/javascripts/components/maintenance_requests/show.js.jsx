@@ -3181,13 +3181,13 @@ var MaintenanceRequest = React.createClass({
 								/>
 						}
 						{
-							this.state.trady &&
-								<AssignTrady
-									trady={this.state.trady}
-									current_role={this.props.current_user_role}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									viewTrady={(key, item) => this.viewItem(key, item)}
-								/>
+							// this.state.trady &&
+							// 	<AssignTrady
+							// 		trady={this.state.trady}
+							// 		current_role={this.props.current_user_role}
+							// 		onModalWith={(modal) => this.onModalWith(modal)}
+							// 		viewTrady={(key, item) => this.viewItem(key, item)}
+							// 	/>
 						}
 						{
 							quote_requests && quote_requests.length > 0
@@ -3197,8 +3197,8 @@ var MaintenanceRequest = React.createClass({
 									quote_requests={quote_requests}
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
+									current_role={this.props.current_user_role}
 									current_user={this.props.current_user}
-									current_user_role={this.props.current_user_role}
 									updateStatusQuote={this.updateStatusQuote}
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}

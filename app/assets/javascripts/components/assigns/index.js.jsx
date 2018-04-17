@@ -13,65 +13,57 @@ var AssignTrady = React.createClass({
 
 		return (
 			<div className="quotes invoices m-t-xl assign" id="invoices">
-				<p>
-					{current_role === 'Trady' ? "Work Order For:" : "Work Order Assigned To:"}
-				</p>
-				<div className="list-quote">
-					<div className="item-quote row">
-						<div className="user seven columns">
-							<span className="icon-user">
-                <AvatarImage imageUri={image_url} />
-							</span>
-							<div className="info">
-								<div className="name">
-									<span>{trady.name}</span>
-								</div>
-								<p className="description">
-									{trady.company_name}<br />
-									{trady.trady_company && trady.trady_company.trading_name}
-								</p>
-							</div>
+				<div className="list-quote item-quote-request">
+					<div className="item-quote row trady-info-group work-order">
+						<div className="user seven columns trady-info work-order-title">
+              {current_role === 'Trady' ? "Work Order" : "Work Order"}
 						</div>
-						<div className="actions-quote">
-              <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
-                View
-              </button>
-              { showStopReminder &&
-                <button
-                  type="button"
-                  className="btn btn-view appointment-already-made stop-reminder"
-                  onClick={() => {
-                    if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
-                  }}
-                >
-                  {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+						<div className="contact-button">
+              <div className="view-work-order">
+                <button type="button" className="btn btn-view" onClick={(key, item) => this.props.viewTrady('viewTrady', trady)}>
+                  View Work Order
                 </button>
-              }
-              { showStopReminder &&
-                <button
-                  type="button"
-                  className="btn btn-view appointment-already-made stop-reminder"
-                  onClick={() => {
-                    if (!stop_appointment) {
-                      this.props.onModalWith('confirmAppointmentAlreadyMade');
-                    }
-                  }}
-                >
-                {
-                  !stop_appointment
-                    ? "Stop Appointment Reminder"
-                    : "Appointment Reminder Stopped"
-                }
-                </button>
-              }
+              </div>
 							{
-								(current_role.role == 'Agent' || current_role.role == "AgencyAdmin") &&
-									<button type="button" className="btn btn-decline" onClick={(modal) => this.props.onModalWith('confirmCancelTrady')}>
-										Cancel
-									</button>
+								(current_role == 'Agent' || current_role == "AgencyAdmin") &&
+									<div className="cancel-work-order">
+                    <button type="button" className="btn btn-decline" onClick={(modal) => this.props.onModalWith('confirmCancelTrady')}>
+  										Cancel Work Order
+  									</button>
+                  </div>
 							}
 						</div>
 					</div>
+          <div className="quote-request-button">
+            { showStopReminder &&
+              <button
+                type="button"
+                className="btn btn-view appointment-already-made stop-reminder"
+                onClick={() => {
+                  if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
+                }}
+              >
+                {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+              </button>
+            }
+            { showStopReminder &&
+              <button
+                type="button"
+                className="btn btn-view appointment-already-made stop-reminder"
+                onClick={() => {
+                  if (!stop_appointment) {
+                    this.props.onModalWith('confirmAppointmentAlreadyMade');
+                  }
+                }}
+              >
+              {
+                !stop_appointment
+                  ? "Stop Appointment Reminder"
+                  : "Appointment Reminder Stopped"
+              }
+              </button>
+            }
+          </div>
 				</div>
 			</div>
 		);

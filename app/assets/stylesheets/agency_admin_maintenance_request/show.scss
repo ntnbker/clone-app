@@ -139,20 +139,24 @@ $color-text: #83878C;
   .contact-button {
     @include flexbox;
     @include flex-wrap(wrap);
+    @include flex(2);
 
     > div {
       @include flex(1 1 250px);
-      width: 100%;
+      width: calc(100% - 10px);
       max-width: 250px;
       padding: 10px;
       text-align: center;
       margin: 5px 10px 5px 0;
       background-color: $color-grey;
+      border-radius: 7px;
 
       button {
         padding: 0;
         height: inherit;
         border: 0;
+        background: 0;
+        margin: 0;
       }
       i {
         margin-right: 5px;
@@ -164,6 +168,15 @@ $color-text: #83878C;
         button {
           color: $color-white;
         }
+      }
+    }
+    .cancel-work-order {
+      background-color: $color-red;
+      border-color: $color-red;
+      color: $color-white;
+      &:hover {
+        background-color: #c14343;
+        border-color: #c14343;
       }
     }
   }
@@ -197,6 +210,9 @@ $color-text: #83878C;
       width: calc(100% - 20px);
       margin: 0 10px;
 
+      &.work-order {
+        border-top: 1px solid #e0e3e6;
+      }
       .trady-info {
         @include flex(3);
         @include flexbox;
@@ -215,14 +231,16 @@ $color-text: #83878C;
           }
         }
       }
-      .contact-button {
-        @include flex(2);
-      }
+      .work-order-title {
+        font-size: 18px;
+        font-weight: 600;
 
+      }
       .contact-button {
         margin: 10px;
         @include flexbox;
         @include flex-direction(column);
+        @include flex(2);
 
         > div {
           @include flex(0);
@@ -264,6 +282,11 @@ $color-text: #83878C;
         &.stop-reminder {
           background-color: #e34f4f;
           color: white;
+
+          &:hover {
+            background-color: #c14343;
+            border-color: #c14343;
+          }
         }
       }
     }
@@ -273,6 +296,10 @@ $color-text: #83878C;
           border: 1px solid #849aaa;
         }
         .Accepted {
+          border: 1px solid #7dc691;
+          color: #7dc691;
+        }
+        .Approved {
           border: 1px solid #7dc691;
           color: #7dc691;
         }
@@ -1008,10 +1035,10 @@ span.index {
       float: right;
     }
     p {
-      color: $color-grey-dark;
-      font-size: 14px;
+      color: $color-text;
+      font-size: 18px;
       margin-bottom: 10px;
-      font-weight: 500;
+      font-weight: 600;
     }
     .list-quote {
       border: 1px solid $color-grey;
@@ -1168,7 +1195,7 @@ span.index {
       .item-quote {
         width: 100%;
         float: right;
-        border: 1px solid rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
         margin-bottom: 10px;
         border-radius: 5px;
       }
