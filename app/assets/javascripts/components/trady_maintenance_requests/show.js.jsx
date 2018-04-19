@@ -1586,7 +1586,6 @@ var TradyMaintenanceRequest = React.createClass({
 							gallery={this.state.gallery}
 							property={this.props.property}
 							tenants={this.props.tenants}
-							landlord={this.state.landlord}
 							onModalWith={this.onModalWith}
 							maintenance_request={this.state.maintenance_request}
 							hide_note={!trady || trady.user_id !== this.props.current_user.id}

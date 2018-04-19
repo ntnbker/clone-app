@@ -23,6 +23,7 @@ $color-text: #83878C;
     @include flex-wrap(wrap);
     @include justify-content(center);
     font-size: 12px;
+    position: relative;
 
     > * {
       @include flex(1 1 115px);
@@ -49,6 +50,25 @@ $color-text: #83878C;
 
         button {
           color: $color-white;
+        }
+      }
+    }
+    .assign {
+      position: relative;
+      
+      .dropdown-assign {
+        margin-top: 10px;
+      }
+    }
+    #update-status {
+      .dropdown-status {
+        margin-top: 0px;
+        left: calc(50% - 200px);
+        top: calc(100% - 10px);
+
+        @media (max-width: 400px) {
+          left: calc(50% - 145px);
+          width: 290px;
         }
       }
     }
@@ -139,14 +159,14 @@ $color-text: #83878C;
   .contact-button {
     @include flexbox;
     @include flex-wrap(wrap);
-    @include flex(2 2 250px);
-    max-width: 250px;
     width: 100%;
 
     > div {
       text-align: center;
-      margin: 5px 10px 5px 0;
+      margin: 5px 5px 5px 5px;
       width: calc(100% - 10px);
+      @include flex(2 2 250px);
+      max-width: 250px;
       background-color: $color-grey;
       border-radius: 7px;
       padding: 10px;
@@ -191,8 +211,10 @@ $color-text: #83878C;
   .small-weight {
     font-weight: 100;
   }
-  .add-photo-button {
-    margin: 10px;
+  .add-photo{
+    .add-photo-button {
+      min-width: 200px;
+    }
   }
 
   .icon-user img {
@@ -208,6 +230,8 @@ $color-text: #83878C;
   .item-quote-request {
     @include flexbox;
     @include flex-direction(column);
+    border: 2px solid #f4f8fb;
+    margin: 10px;
     margin-bottom: 20px;
     
     .quotes .index {
@@ -256,7 +280,9 @@ $color-text: #83878C;
         margin: 10px;
         @include flexbox;
         @include flex-direction(column);
-        @include flex(2);
+        @include flex(2 2 250px);
+        width: 100%;
+        max-width: 250px;
 
         > div {
           @include flex(0);
@@ -353,6 +379,10 @@ $color-text: #83878C;
     .quote-request-button {
       @include flex-direction(column);
       @include align-items(center);
+    }
+
+    .contact-button > div {
+      @include flex(0);
     }
   }
 }
@@ -2266,7 +2296,7 @@ span.index {
   }
   @media (min-width: 776px) and (max-width: 900px) {
     .dropdown-assign {
-      right: 76px;
+      right: 6px;
       &:after {
         right: 6%;
         left: unset;

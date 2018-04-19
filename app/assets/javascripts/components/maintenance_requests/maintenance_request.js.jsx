@@ -844,8 +844,8 @@ var MaintenaceRequestDetail = React.createClass({
 				<div className="mr-photo">
 					<Carousel gallery={this.props.gallery} />
 				</div>
-				<div className="add-photo-button contact-button">
-					<div className="phone">
+				<div className="add-photo contact-button">
+					<div className="phone add-photo-button">
 						<button
 							type="button"
 							className=""
