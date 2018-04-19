@@ -846,7 +846,7 @@ var LandlordMaintenanceRequest = React.createClass({
 		const hasApproved = quote_requests.some(quote_request => quote_request.quotes.some(quote => quote.status === 'Approved'));
 
 		return (
-			<div className="summary-container-index" id="summary-container-index">
+			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
 				<div className="main-summary dontprint">
 					<div className="section">
 						<ItemMaintenanceRequest
@@ -854,6 +854,8 @@ var LandlordMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							onModalWith={this.onModalWith}
 							landlord={this.state.landlord}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							tenants={this.state.tenants}
 							maintenance_request={this.state.maintenance_request}
 							strike_approval={hasApproved}
 						/>
