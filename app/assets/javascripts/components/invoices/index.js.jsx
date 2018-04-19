@@ -123,6 +123,7 @@ var Invoices = React.createClass({
 	render: function() {
 		const self = this;
     const { current_role, invoices } = this.props;
+    const role = current_role && current_role.role;
     const pictures = this.getPictureImage(invoices);
 
 		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
@@ -136,7 +137,7 @@ var Invoices = React.createClass({
       {
         invoices.map(function(invoice, index) {
           const { trady = {}, paid = false, active } = invoice;
-          
+
           return (
             <div className="item-quote row item-quote-request" key={index}>
               <div className="user seven columns trady-info-group">
@@ -188,7 +189,7 @@ var Invoices = React.createClass({
                         Payment Scheduled
                       </button>
                 }
-                { current_role && current_role.role === 'Trady' && !paid && active !== false &&
+                { role === 'Trady' && !paid && active !== false &&
                   <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
                     Remind Agent of Payment
                   </button>
@@ -196,7 +197,7 @@ var Invoices = React.createClass({
               </div>
               <div className="invoice-status">
                 <span>Status: </span>
-                {	
+                {
                   invoice.paid == false
                     ? invoice.active !== false
                       ? <button className={'button-default status Declined'}>

@@ -867,6 +867,7 @@ var LandlordMaintenanceRequest = React.createClass({
 									onModalWith={this.onModalWith}
 									landlord={this.state.landlord}
 									current_user={this.props.current_user}
+									current_role={this.props.current_role}
 									updateStatusQuote={this.updateStatusQuote}
 									sendEmailLandlord={this.sendEmailLandlord}
 									uploadImage={this.uploadImage}
