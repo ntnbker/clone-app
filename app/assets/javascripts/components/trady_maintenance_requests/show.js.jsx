@@ -1581,6 +1581,70 @@ var TradyMaintenanceRequest = React.createClass({
 								We are sorry to inform you that this job has been awarded to another company. We will contact you about future jobs, thank you for your time.
 							</div>
 					}
+
+					<div className="sidebar">
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*
+
+									<TradyContact
+										agent={this.props.agent}
+										tenants={this.props.tenants}
+										landlord={this.state.landlord}
+										current_user={this.props.current_user}
+										assigned_trady={this.props.assigned_trady}
+										onModalWith={(modal) => this.onModalWith(modal)}
+										maintenance_request={this.state.maintenance_request}
+									/>*/
+							}
+							<GeneralAction
+								{...this.props}
+							/>
+						{
+							!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ?
+								null
+								:
+								<div>
+									<TradyAction
+										trady={this.props.trady}
+										landlord={this.state.landlord}
+										invoices={this.props.invoices}
+										assigned_trady={this.props.assigned_trady}
+										signed_in_trady={this.props.signed_in_trady}
+										needShowCreateQuote={!!quote_requests.length}
+										onModalWith={(modal) => this.onModalWith(modal)}
+										invoice_pdf_files={this.props.invoice_pdf_files}
+										maintenance_request={this.state.maintenance_request}
+									/>
+								</div>
+						}
+
+						{
+							(appointments && appointments.length > 0) &&
+								<AppointmentRequest
+									appointments={appointments}
+									title="Work Order Appointments"
+									cancelAppointment={(value) => this.cancel(value)}
+									current_role={this.props.trady.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
+						{
+							(quote_appointments && quote_appointments.length > 0) &&
+								<AppointmentRequest
+									title="Appointments For Quotes"
+									appointments={quote_appointments}
+									cancelAppointment={(value) => this.cancel(value)}
+									current_role={this.props.trady.user.current_role}
+									viewItem={(key, item) => this.viewItem(key, item)}
+									acceptAppointment={(value) => this.acceptAppointment(value)}
+									declineAppointment={(value) => this.decline(value)}
+								/>
+						}
+						</div>
+					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
 							gallery={this.state.gallery}
@@ -1644,60 +1708,6 @@ var TradyMaintenanceRequest = React.createClass({
 									current_user={this.props.current_user}
 									viewQuote={this.viewItem}
 									current_user_show_quote_message={this.props.current_user_show_quote_message}
-								/>
-						}
-					</div>
-					<div className="sidebar">
-					{
-						!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id ?
-							null
-							:
-							<div>
-								<TradyContact
-									agent={this.props.agent}
-									tenants={this.props.tenants}
-									landlord={this.state.landlord}
-									current_user={this.props.current_user}
-									assigned_trady={this.props.assigned_trady}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									maintenance_request={this.state.maintenance_request}
-								/>
-								<TradyAction
-									trady={this.props.trady}
-									landlord={this.state.landlord}
-									invoices={this.props.invoices}
-									assigned_trady={this.props.assigned_trady}
-									signed_in_trady={this.props.signed_in_trady}
-									needShowCreateQuote={!!quote_requests.length}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									invoice_pdf_files={this.props.invoice_pdf_files}
-									maintenance_request={this.state.maintenance_request}
-								/>
-							</div>
-					}
-
-						{
-							(appointments && appointments.length > 0) &&
-								<AppointmentRequest
-									appointments={appointments}
-									title="Work Order Appointments"
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.trady.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-						{
-							(quote_appointments && quote_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Appointments For Quotes"
-									appointments={quote_appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.trady.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
 								/>
 						}
 					</div>

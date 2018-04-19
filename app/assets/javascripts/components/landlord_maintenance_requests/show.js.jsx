@@ -848,6 +848,42 @@ var LandlordMaintenanceRequest = React.createClass({
 		return (
 			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
 				<div className="main-summary dontprint">
+					<div className="sidebar">
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*
+							<LandlordContact
+								agent={this.props.agent}
+								landlord={this.state.landlord}
+								onModalWith={(modal) => this.onModalWith(modal)}
+								current_user={this.props.current_user}
+								maintenance_request={this.state.maintenance_request}
+							/>*/
+							}
+							<GeneralAction
+								{...this.props}
+							/>
+							<LandlordAction
+								landlord={this.state.landlord}
+								requestQuote={this.requestQuote}
+								onModalWith={(modal) => this.onModalWith(modal)}
+								maintenance_request={this.state.maintenance_request}
+							/>
+							{
+								(appointments && appointments.length > 0) &&
+									<AppointmentRequest
+										title="Landlord Appointments"
+										appointments={appointments}
+										cancelAppointment={(value) => this.cancel(value)}
+										viewItem={(key, item) => this.viewItem(key, item)}
+										declineAppointment={(value) => this.decline(value)}
+										acceptAppointment={(value) => this.acceptAppointment(value)}
+										current_role={this.props.signed_in_landlord.user.current_role}
+									/>
+							}
+							<ActivityMobile logs={this.props.logs} />
+						</div>
+					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
 							gallery={this.props.gallery}
@@ -888,34 +924,6 @@ var LandlordMaintenanceRequest = React.createClass({
 									viewQuote={this.viewItem}
 								/>
 						}
-					</div>
-					<div className="sidebar">
-						<LandlordContact
-							agent={this.props.agent}
-							landlord={this.state.landlord}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							current_user={this.props.current_user}
-							maintenance_request={this.state.maintenance_request}
-						/>
-						<LandlordAction
-							landlord={this.state.landlord}
-							requestQuote={this.requestQuote}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							maintenance_request={this.state.maintenance_request}
-						/>
-						{
-							(appointments && appointments.length > 0) &&
-								<AppointmentRequest
-									title="Landlord Appointments"
-									appointments={appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									declineAppointment={(value) => this.decline(value)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									current_role={this.props.signed_in_landlord.user.current_role}
-								/>
-						}
-						<ActivityMobile logs={this.props.logs} />
 					</div>
 					{
 						(appointments && appointments.length > 0) &&

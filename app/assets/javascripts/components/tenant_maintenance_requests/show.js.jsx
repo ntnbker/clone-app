@@ -766,51 +766,59 @@ var TenantMaintenanceRequest = React.createClass({
 						/>
 					</div>
 					<div className="sidebar">
-						<TenantContact
-							current_user={this.props.current_user}
-							onModalWith={(modal) => this.onModalWith(modal)}
-						/>
-						<TenantDetail
-							current_user={this.props.current_user}
-							onModalWith={(modal) => this.onModalWith(modal)}
-						/>
-						{
-							(appointments && appointments.length > 0) &&
-								<AppointmentRequest
-									appointments={appointments}
-									title="Work Order Appointments"
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.tenant.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-						{
-							(quote_appointments && quote_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Appointments For Quotes"
-									appointments={quote_appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.tenant.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-						{
-							(landlord_appointments && landlord_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Landlord Appointments"
-									appointments={landlord_appointments}
-									cancelAppointment={(value) => this.cancel(value)}
-									current_role={this.props.tenant.user.current_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-									acceptAppointment={(value) => this.acceptAppointment(value)}
-									declineAppointment={(value) => this.decline(value)}
-								/>
-						}
-
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*
+								<TenantContact
+									current_user={this.props.current_user}
+									onModalWith={(modal) => this.onModalWith(modal)}
+								/>*/
+							}
+							<GeneralAction
+								{...this.props}
+								current_role={this.props.current_role}
+							/>
+							<TenantDetail
+								current_user={this.props.current_user}
+								onModalWith={(modal) => this.onModalWith(modal)}
+							/>
+							{
+								(appointments && appointments.length > 0) &&
+									<AppointmentRequest
+										appointments={appointments}
+										title="Work Order Appointments"
+										cancelAppointment={(value) => this.cancel(value)}
+										current_role={this.props.tenant.user.current_role}
+										viewItem={(key, item) => this.viewItem(key, item)}
+										acceptAppointment={(value) => this.acceptAppointment(value)}
+										declineAppointment={(value) => this.decline(value)}
+									/>
+							}
+							{
+								(quote_appointments && quote_appointments.length > 0) &&
+									<AppointmentRequest
+										title="Appointments For Quotes"
+										appointments={quote_appointments}
+										cancelAppointment={(value) => this.cancel(value)}
+										current_role={this.props.tenant.user.current_role}
+										viewItem={(key, item) => this.viewItem(key, item)}
+										acceptAppointment={(value) => this.acceptAppointment(value)}
+										declineAppointment={(value) => this.decline(value)}
+									/>
+							}
+							{
+								(landlord_appointments && landlord_appointments.length > 0) &&
+									<AppointmentRequest
+										title="Landlord Appointments"
+										appointments={landlord_appointments}
+										cancelAppointment={(value) => this.cancel(value)}
+										current_role={this.props.tenant.user.current_role}
+										viewItem={(key, item) => this.viewItem(key, item)}
+										acceptAppointment={(value) => this.acceptAppointment(value)}
+										declineAppointment={(value) => this.decline(value)}
+									/>
+							}
+						</div>
 					</div>
 					{
 						(appointments && appointments.length > 0) &&
