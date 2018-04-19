@@ -26,7 +26,7 @@ var PDFInvoices = React.createClass({
 		const { current_role, invoice_pdf_files: invoices } = this.props;
 		const pictures = this.getPictureImage(invoices);
 		const self = this;
-		const role = current_role.role;
+		const role = current_role && current_role.role;
 		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
 
 		return (
@@ -38,7 +38,7 @@ var PDFInvoices = React.createClass({
 				{
 					invoices.map(function(invoice, index) {
 						const { trady = {}, paid = false, active } = invoice;
-						
+
 						return (
 							<div className="item-quote row item-quote-request" key={index}>
 								<div className="user seven columns trady-info-group">
@@ -90,7 +90,7 @@ var PDFInvoices = React.createClass({
 													Payment Scheduled
 												</button>
 									}
-									{ current_role && current_role.role === 'Trady' && !paid && active !== false &&
+									{ role === 'Trady' && !paid && active !== false &&
 										<button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
 															Remind Agent of Payment
 										</button>
@@ -98,7 +98,7 @@ var PDFInvoices = React.createClass({
 								</div>
 								<div className="invoice-status">
 									<span>Status: </span>
-									{	
+									{
 										paid == false
 											? active !== false
 												? <button className={'button-default status Declined'}>
@@ -122,7 +122,7 @@ var PDFInvoices = React.createClass({
 								<div className="info">
 									<div className="name">
 										<span>{trady.name}</span>
-										
+
 									</div>
 									<p className="description">
 										{trady.company_name}<br />
