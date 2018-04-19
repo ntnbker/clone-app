@@ -139,24 +139,25 @@ $color-text: #83878C;
   .contact-button {
     @include flexbox;
     @include flex-wrap(wrap);
-    @include flex(2);
+    @include flex(2 2 250px);
+    max-width: 250px;
+    width: 100%;
 
     > div {
-      @include flex(1 1 250px);
-      width: calc(100% - 10px);
-      max-width: 250px;
-      padding: 10px;
       text-align: center;
       margin: 5px 10px 5px 0;
+      width: calc(100% - 10px);
       background-color: $color-grey;
       border-radius: 7px;
+      padding: 10px;
 
       button {
-        padding: 0;
-        height: inherit;
-        border: 0;
-        background: 0;
-        margin: 0;
+        padding: 0 !important;
+        height: inherit !important;
+        border: 0 !important;
+        background: 0 !important;
+        margin: 0 !important;
+        line-height: inherit !important;
       }
       i {
         margin-right: 5px;
@@ -170,7 +171,7 @@ $color-text: #83878C;
         }
       }
     }
-    .cancel-work-order {
+    .cancel-work-order, .void-invoice {
       background-color: $color-red;
       border-color: $color-red;
       color: $color-white;
@@ -178,6 +179,10 @@ $color-text: #83878C;
         background-color: #c14343;
         border-color: #c14343;
       }
+    }
+    .payment-scheduled {
+      background-color: #8ADEFF;
+      border-color: #8ADEFF;
     }
   }
   .job-description {
@@ -195,10 +200,21 @@ $color-text: #83878C;
     height: 60px;
     margin-top: 7px;
   }
-
+  .assign .item-quote-request {
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
   .item-quote-request {
     @include flexbox;
     @include flex-direction(column);
+    margin-bottom: 20px;
+    
+    .quotes .index {
+      border: 1px solid #ff5a5f;
+      background-color: #ff5a5f;
+    }
+
     > div {
       margin: 10px 0;
     }
@@ -262,22 +278,28 @@ $color-text: #83878C;
       @include justify-content(center);
 
       button {
-        margin: 10px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 300px;
-        padding: 0 10px;
-        border: none;
-        background-color: #f4f8fb;
-        color: #849aaa;
-        font-size: 14px;
-        font-weight: 400;
+        text-align: center;
+        margin: 5px 10px 5px 0;
+        background-color: $color-grey;
+        border-radius: 7px;
+        padding: 10px;
+        color: $color-text;
+
+        height: inherit !important;
+        border: 0 !important;
+        line-height: inherit !important;
+
+
         i {
-          padding-right: 5px;
+          margin-right: 5px;
         }
         &:hover {
-          background-color: #deeaf3;
+          background-color: $color-grey-1;
+          color: $color-white;
+
+          button {
+            color: $color-white;
+          }
         }
         &.stop-reminder {
           background-color: #e34f4f;
@@ -288,26 +310,49 @@ $color-text: #83878C;
             border-color: #c14343;
           }
         }
+        .cancel-work-order, .void-invoice {
+          background-color: $color-red;
+          border-color: $color-red;
+          color: $color-white;
+          &:hover {
+            background-color: #c14343;
+            border-color: #c14343;
+          }
+        }
+        .payment-scheduled {
+          background-color: #8ADEFF;
+          border-color: #8ADEFF;
+        }
       }
     }
-    .item-quote {
-      .quote-status {
-        .Active {
-          border: 1px solid #849aaa;
-        }
-        .Accepted {
-          border: 1px solid #7dc691;
-          color: #7dc691;
-        }
-        .Approved {
-          border: 1px solid #7dc691;
-          color: #7dc691;
-        }
-        .Declined, .Cancelled {
-          border: 1px solid #e76565;
-          color: #e76565;
-        }
+    .quote-status, .invoice-status {
+      .Active {
+        border: 1px solid #849aaa;
       }
+      .Accepted {
+        border: 1px solid #7dc691;
+        color: #7dc691;
+      }
+      .Approved {
+        border: 1px solid #7dc691;
+        color: #7dc691;
+      }
+      .Declined, .Cancelled {
+        border: 1px solid #e76565;
+        color: #e76565;
+      }
+    }
+    .invoice-status {
+      margin: 10px;
+    }
+  }
+
+  @media (max-width: 770px) {
+    .contact-button, 
+    .item-quote-request .trady-info-group,
+    .quote-request-button {
+      @include flex-direction(column);
+      @include align-items(center);
     }
   }
 }
@@ -370,15 +415,6 @@ body::-webkit-scrollbar-thumb {
   margin-bottom: 0px;
   color: red !important;
   text-align: center;
-}
-.item-quote-request {
-  border: 1px solid #e0e3e6;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  .quotes .index {
-    border: 1px solid #ff5a5f;
-    background-color: #ff5a5f;
-  }
 }
 span.index {
   display: inline-block;

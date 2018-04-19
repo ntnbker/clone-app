@@ -3208,18 +3208,6 @@ var MaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
-						{	false && (quote_requests && quote_requests.length > 0) &&
-						 		<Quotes
-							 		quotes={this.state.quote_requests}
-							 		onModalWith={this.onModalWith}
-							 		landlord={this.state.landlord}
-							 		current_user={this.props.current_user}
-							 		updateStatusQuote={this.updateStatusQuote}
-							 		sendEmailLandlord={this.sendEmailLandlord}
-							 		viewQuote={this.viewItem}
-							 		current_user_show_quote_message={this.props.current_user_show_quote_message}
-						 		/>
-					 	}
 					</div>
 					<div className="sidebar">
 						<Contact

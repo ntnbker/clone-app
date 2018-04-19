@@ -30,52 +30,105 @@ var PDFInvoices = React.createClass({
 		const notPaid = invoices.filter((i) => !i.paid).length !== 0;
 
 		return (
-			<div className="quotes invoices m-t-xl">
+			<div className="quotes invoices m-t-xl box-shadow">
 				<p>
-					<span className="index index-invoice">{invoices.length}</span>PDF Invoice
+					PDF Invoice
 				</p>
-				{
-					(role == 'Trady' && notPaid) &&
-					<p>
-						<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.paymentReminder({})}>
-							Remind Agent of Payment
-						</button>
-					</p>
-				}
 				<div className="list-quote">
 				{
 					invoices.map(function(invoice, index) {
 						const { trady = {}, paid = false, active } = invoice;
+						
 						return (
-							<div className="item-quote row" key={index}>
-								<div className="user seven columns">
-									<span className="index quote index-invoice">{index + 1}</span>
-									<span className="icon-user">
-										<AvatarImage imageUri={pictures[index]} />
-									</span>
-									<div className="info">
-										<div className="name">
-											<span>{trady.name}</span>
-											{
-												paid == false
-                          ? active !== false
-                            ? <button className={'button-default status Declined'}>
-    														<span>Outstanding Payment</span>
-    													</button>
-                            : <button className={'button-default status Declined'}>
-                                <span>Do Not Pay</span>
-                              </button>
-													:
-													<button className={'button-default status Approved'}>
-														<span>Payment Scheduled</span>
-													</button>
+							<div className="item-quote row item-quote-request" key={index}>
+								<div className="user seven columns trady-info-group">
+									<div className="trady-info">
+										<span className="icon-user">
+											<AvatarImage imageUri={pictures[index]} />
+										</span>
+										<div className="info">
+											<div className="name">
+												<span className="key">Name: </span>
+												<span className="value">{trady.name}</span>
+											</div>
+											{ trady.trady_company &&
+												<div className="business-name">
+													<span className="key">Business Name: </span>
+													<span className="value">{trady.trady_company.trading_name}</span>
+												</div>
 											}
+											<div className="company-name">
+												<span className="key">Company Name: </span>
+												<span className="value">{trady.company_name}</span>
+											</div>
 										</div>
-										<p className="description">
-											{trady.company_name}<br />
-											{trady.trady_company ? trady.trady_company.trading_name : ""}
-										</p>
 									</div>
+									<div className="contact-button">
+										<div className="view-invoice">
+											<button
+												type="button"
+												className="btn btn-view"
+												onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice)}
+											>
+													View Invoice
+											</button>
+										</div>
+										{
+											invoice.paid == false && invoice.active !== false &&
+												<div className="void-invoice">
+													<button type="button" className="btn btn-decline" onClick={(item) => self.props.viewPDFInvoice('voidInvoice', invoice)}>
+														Void Invoice
+													</button>
+												</div>
+										}
+									</div>
+								</div>
+								<div className="quote-request-button">
+									{
+										(['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && active !== false) &&
+												<button type="button" className="btn payment-scheduled" onClick={(item) => self.props.markAsPaid(invoice)}>
+													Payment Scheduled
+												</button>
+									}
+									{ current_role && current_role.role === 'Trady' && !paid && active !== false &&
+										<button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
+															Remind Agent of Payment
+										</button>
+									}
+								</div>
+								<div className="invoice-status">
+									<span>Status: </span>
+									{	
+										paid == false
+											? active !== false
+												? <button className={'button-default status Declined'}>
+														<span>Outstanding Payment</span>
+													</button>
+												: <button className={'button-default status Declined'}>
+														<span>Do Not Pay</span>
+													</button>
+											:
+											<button className={'button-default status Approved'}>
+												<span>Payment Scheduled</span>
+											</button>
+									}
+								</div>
+							{
+								/* {<div className="user seven columns">
+								<span className="index quote index-invoice">{index + 1}</span>
+								<span className="icon-user">
+									<AvatarImage imageUri={pictures[index]} />
+								</span>
+								<div className="info">
+									<div className="name">
+										<span>{trady.name}</span>
+										
+									</div>
+									<p className="description">
+										{trady.company_name}<br />
+										{trady.trady_company ? trady.trady_company.trading_name : ""}
+									</p>
+								</div>
 								</div>
 								<div className="actions five columns content">
 									<p>
@@ -83,12 +136,12 @@ var PDFInvoices = React.createClass({
 									</p>
 								</div>
 								<div className="actions-quote">
-                  {
-                    invoice.paid == false && invoice.active !== false &&
-                      <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewPDFInvoice('voidInvoice', invoice)}>
-                        Void Invoice
-                      </button>
-                  }
+									{
+										invoice.paid == false && invoice.active !== false &&
+											<button type="button" className="btn btn-decline" onClick={(item) => self.props.viewPDFInvoice('voidInvoice', invoice)}>
+												Void Invoice
+											</button>
+									}
 									{
 										(['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid) &&
 											<button type="button" className="btn btn-mark-as-paid" onClick={(item) => self.props.markAsPaid(invoice)}>
@@ -102,7 +155,8 @@ var PDFInvoices = React.createClass({
 									>
 											View
 									</button>
-								</div>
+								</div>} */
+							}
 							</div>
 						);
 					})

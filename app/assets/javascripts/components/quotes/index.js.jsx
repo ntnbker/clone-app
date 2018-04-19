@@ -743,7 +743,7 @@ var QuoteRequests = React.createClass({
 										onModalWith={self.onModalWith}
 									/>
                 }
-                { !!self.current_user &&
+                { !!self.current_user && quote_request.quotes && quote_request.length > 0 &&
                     <ActionQuoteRequest
                       {...self}
                       index={index}

@@ -13,7 +13,7 @@ var AssignTrady = React.createClass({
 
 		return (
 			<div className="quotes invoices m-t-xl assign" id="invoices">
-				<div className="list-quote item-quote-request">
+				<div className="item-quote-request">
 					<div className="item-quote row trady-info-group work-order">
 						<div className="user seven columns trady-info work-order-title">
               {current_role === 'Trady' ? "Work Order" : "Work Order"}

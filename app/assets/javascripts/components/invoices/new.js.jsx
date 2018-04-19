@@ -422,7 +422,7 @@ var InvoiceItemField = React.createClass({
 
   removeField(x) {
     const { totalamount = 0 } = this.state;
-    const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${x}][pricing_type]`}'`).val();
+    const selectedValue = $(`[name="${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${x}][pricing_type]`}"`).val();
 
     this.props.params.updatePrice(-totalamount);
     this.props.params.updateHourly(true, totalamount, selectedValue === 'Hourly');
@@ -436,7 +436,7 @@ var InvoiceItemField = React.createClass({
   },
 
   updatePrice(amount) {
-    const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${this.props.x}][pricing_type]`}'`).val();
+    const selectedValue = $(`[name="${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${this.props.x}][pricing_type]`}"]`).val();
 
     if (!isNaN(amount)) {
       this.props.params.updatePrice(amount - this.state.totalamount, selectedValue === 'Hourly');
@@ -826,7 +826,7 @@ var InvoiceField = React.createClass({
             <p> Items Total: </p>
             <div className="input-dolar">
               <span className="dolar">$</span>
-              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'ledger[invoices_attributes][' + x + '][amount]'} />
+              <input type="text" readOnly="readonly" placeholder="$0.00" value={items_total.toFixed(2)} name={'594[invoices_attributes][' + x + '][amount]'} />
             </div>
           </div>
           <div className="alert">
