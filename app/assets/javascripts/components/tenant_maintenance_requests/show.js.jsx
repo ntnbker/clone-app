@@ -761,6 +761,7 @@ var TenantMaintenanceRequest = React.createClass({
 							gallery={this.state.gallery}
 							property={this.props.property}
 							landlord={this.state.landlord}
+							viewItem={(key, item) => this.viewItem(key, item)}
 							onModalWith={this.onModalWith}
 							maintenance_request={this.state.maintenance_request}
 						/>

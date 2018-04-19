@@ -854,6 +854,8 @@ var LandlordMaintenanceRequest = React.createClass({
 							property={this.props.property}
 							onModalWith={this.onModalWith}
 							landlord={this.state.landlord}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							tenants={this.state.tenants}
 							maintenance_request={this.state.maintenance_request}
 							strike_approval={hasApproved}
 						/>

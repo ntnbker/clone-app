@@ -3156,6 +3156,7 @@ var MaintenanceRequest = React.createClass({
 							existTradyAssigned={!!trady}
 							all_agency_admins={this.props.all_agency_admins}
 							viewItem={(key, item) => this.viewItem(key, item)}
+							tenants={this.state.tenants}
 							onModalWith={this.onModalWith}
 							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
