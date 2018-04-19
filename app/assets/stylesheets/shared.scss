@@ -10,7 +10,23 @@ body {
   height: 100%;
 
 }
+.flexbox {
+  @include flexbox;
 
+  &.flex-column {
+    @include flex-direction(column);
+  }
+  &.justify-center {
+    @include justify-content(center);
+  }
+  &.justify-space {
+    @include justify-content(space-between);
+    @include justify-content(justify);
+  }
+  &.align-center {
+    @include align-items(center);
+  }
+}
 .description-data {
   background-color: #71C796;
   color: white;

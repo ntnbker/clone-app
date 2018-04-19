@@ -3144,6 +3144,58 @@ var MaintenanceRequest = React.createClass({
 		return (
 			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
 				<div className="main-summary dontprint">
+					<div className="sidebar">
+						<div className="box-shadow flexbox flex-column">
+							{
+								/*<Contact
+									tenants={tenants}
+									landlord={this.state.landlord}
+									current_user={this.props.current_user}
+									assigned_trady={trady || this.props.assigned_trady}
+									onModalWith={(modal) => this.onModalWith(modal)}
+								/>*/
+							}
+							<GeneralAction
+								{...this.props}
+								current_role={this.props.current_user_role}
+							/>
+							<Action
+								landlord={this.state.landlord}
+								hasTenant={!!this.state.tenants.length}
+								onModalWith={(modal) => this.onModalWith(modal)}
+								viewItem={this.viewItem}
+								assigned_trady={trady || this.props.assigned_trady}
+							/>
+							{
+								(work_order_appointments && work_order_appointments.length > 0) &&
+									<AppointmentRequest
+										appointments={work_order_appointments}
+										title="Work Order Appointments"
+										current_role={current_user_role}
+										viewItem={(key, item) => this.viewItem(key, item)}
+									/>
+							}
+							{
+								(quote_appointments && quote_appointments.length > 0) &&
+									<AppointmentRequest
+										title="Appointments For Quotes"
+										current_role={current_user_role}
+										appointments={quote_appointments}
+										viewItem={(key, item) => this.viewItem(key, item)}
+									/>
+							}
+							{
+								(landlord_appointments && landlord_appointments.length > 0) &&
+									<AppointmentRequest
+										title="Landlord Appointments"
+										current_role={current_user_role}
+										appointments={landlord_appointments}
+										viewItem={(key, item) => this.viewItem(key, item)}
+									/>
+							}
+							<Activity logs={this.props.logs} />
+						</div>
+					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
 							status={this.state.status}
@@ -3209,50 +3261,6 @@ var MaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
-					</div>
-					<div className="sidebar">
-						<Contact
-							tenants={tenants}
-							landlord={this.state.landlord}
-							current_user={this.props.current_user}
-							assigned_trady={trady || this.props.assigned_trady}
-							onModalWith={(modal) => this.onModalWith(modal)}
-						/>
-						<Action
-							landlord={this.state.landlord}
-							hasTenant={!!this.state.tenants.length}
-							onModalWith={(modal) => this.onModalWith(modal)}
-							viewItem={this.viewItem}
-							assigned_trady={trady || this.props.assigned_trady}
-						/>
-						{
-							(work_order_appointments && work_order_appointments.length > 0) &&
-								<AppointmentRequest
-									appointments={work_order_appointments}
-									title="Work Order Appointments"
-									current_role={current_user_role}
-									viewItem={(key, item) => this.viewItem(key, item)}
-								/>
-						}
-						{
-							(quote_appointments && quote_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Appointments For Quotes"
-									current_role={current_user_role}
-									appointments={quote_appointments}
-									viewItem={(key, item) => this.viewItem(key, item)}
-								/>
-						}
-						{
-							(landlord_appointments && landlord_appointments.length > 0) &&
-								<AppointmentRequest
-									title="Landlord Appointments"
-									current_role={current_user_role}
-									appointments={landlord_appointments}
-									viewItem={(key, item) => this.viewItem(key, item)}
-								/>
-						}
-						<Activity logs={this.props.logs} />
 					</div>
 					{
 						(work_order_appointments && work_order_appointments.length > 0) &&
