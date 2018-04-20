@@ -628,44 +628,42 @@ var QuoteRequests = React.createClass({
     // Check if quote request was created by a real trady
 
     return (
-      <div className="quotes m-t-lg box-shadow" id="quote_requests">
-        { !!quote_requests.length &&
-          <p>
-            <span className="index">{quote_requests.length}</span>Quote Requests
-          </p>
-        }
-        <div className="list-quote">
-        {
-          quote_requests.map(function(quote_request, index) {
-            const trady = quote_request.trady || {};
-            const assignedTradyValid = !self.assignedTrady
-                                    || self.assignedTrady.id === trady.id;
+      <div className="list-quote">
+      {
+        quote_requests.map(function(quote_request, index) {
+          const trady = quote_request.trady || {};
+          const assignedTradyValid = !self.assignedTrady
+                                  || self.assignedTrady.id === trady.id;
 
-						const isAssigned = self.assignedTrady && self.assignedTrady.id === trady.id;
-            const {maintenance_request_id, trady_id} = quote_request;
-            const quotes 				= quote_request.quotes || [];
-            const quoteAlready  = quotes.filter(quote => !quote.quote_items
-                                                       || quote.quote_items.length === 0);
+					const isAssigned = self.assignedTrady && self.assignedTrady.id === trady.id;
+          const {maintenance_request_id, trady_id} = quote_request;
+          const quotes 				= quote_request.quotes || [];
+          const quoteAlready  = quotes.filter(quote => !quote.quote_items
+                                                     || quote.quote_items.length === 0);
 
-            const isLandlord = self.keyLandlord === "landlord";
+          const isLandlord = self.keyLandlord === "landlord";
 
-            const needAlreadySentButton = !isLandlord
-                                       && quotes.length === 0
-                                       && !quote_request.quote_sent;
+          const needAlreadySentButton = !isLandlord
+                                     && quotes.length === 0
+                                     && !quote_request.quote_sent;
 
-            const needPhotoButton 			= !isLandlord && quote_request.quote_sent;
-            const needMessageButton 		= !isLandlord && assignedTradyValid
-                                        && !!self.current_user_show_quote_message;
+          const needPhotoButton 			= !isLandlord && quote_request.quote_sent;
+          const needMessageButton 		= !isLandlord && assignedTradyValid
+                                      && !!self.current_user_show_quote_message;
 
-            const messageTo 						= self.keyLandlord === 'trady'
-                                        ? 'Agent'
-                                        : quote_request.trady
-                                          ? quote_request.trady.name
-                                          : '';
-            const linkCreateQuote = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
+          const messageTo 						= self.keyLandlord === 'trady'
+                                      ? 'Agent'
+                                      : quote_request.trady
+                                        ? quote_request.trady.name
+                                        : '';
+          const linkCreateQuote = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
 
-            return (
-              <div className="item-quote row item-quote-request" key={index}>
+          return (
+
+            <div className="quotes m-t-lg box-shadow" id="quote_requests" key={index}>
+              <p><span className="index">{index + 1}</span>Quote Requests
+              </p>
+              <div className="item-quote row item-quote-request">
                 <div className="user seven columns trady-info-group">
                   <div className="trady-info">
                     <span className="icon-user">
@@ -761,10 +759,10 @@ var QuoteRequests = React.createClass({
                     />
                 }
               </div>
-            );
-          })
-        }
-        </div>
+            </div>
+          );
+        })
+      }
       </div>
     );
   }
