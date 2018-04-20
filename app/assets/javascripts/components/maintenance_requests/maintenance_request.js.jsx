@@ -893,7 +893,7 @@ var MaintenanceRequestInformation = React.createClass({
 				<div className="mr-information">
 					<span className="key">Service Required: </span>
 					<span className="data service">
-						| {maintenance_request.service_type}
+						{maintenance_request.service_type}
 					</span>
 				</div>
 			</div>
