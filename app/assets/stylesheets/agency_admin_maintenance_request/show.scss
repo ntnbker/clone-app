@@ -20,7 +20,6 @@ $color-text: #83878C;
     .section {
       @include flex(1);
       float: none;
-      width: inherit;
       padding: 40px 10px;
       margin-right: 0px;
     }
@@ -32,6 +31,16 @@ $color-text: #83878C;
 
       > * {
         margin-bottom: 10px;
+      }
+      .item {
+        overflow: inherit;
+
+        .content {
+          li {
+            margin: 10px 0;
+            height: inherit;
+          }
+        }
       }
       .user-avatar {
         img.general-user-image {
@@ -56,11 +65,21 @@ $color-text: #83878C;
       .general-action-title {
         border-top: 2px solid $color-text;
         border-bottom: 2px solid $color-text;
-        padding: 5px 30px;
+        padding: 5px 15px;
         font-weight: 600;
         color: rgba(131, 135, 140, 0.5);
-        font-size: 18px;
+        font-size: 15px;
         margin: 10px -20px;
+        background: white;
+        line-height: inherit;
+        height: inherit;
+
+        > * {
+          line-height: inherit;
+          color: inherit;
+          font-size: inherit;
+          margin-left: 0;
+        }
       }
       .general-actions {
         @include flexbox;
@@ -68,13 +87,15 @@ $color-text: #83878C;
         margin-bottom: 20px;
         > * {
           cursor: pointer;
-          margin: 5px;
+          margin: 5px 0;
           font-weight: 600;
           color: $color-text;
-          font-size: 14px;
+          font-size: 13px;
 
           &:hover {
-            color: $color-gray;
+            > * {
+              color: $color-gray !important;
+            }
           }
         }
         span.icon {
@@ -83,6 +104,13 @@ $color-text: #83878C;
           margin-right: 8px;
         }
       }
+      .item {
+
+      }
+    }
+
+    @media (max-width: 1024px) {
+      @include flex-direction(column);
     }
   }
   h4.mr-title {
@@ -311,7 +339,7 @@ $color-text: #83878C;
     }
 
     > div {
-      margin: 10px 0;
+      margin: 10px;
     }
     .trady-info-group {
       @include flexbox;
@@ -354,6 +382,7 @@ $color-text: #83878C;
         @include flex(2 2 250px);
         width: 100%;
         max-width: 250px;
+        max-height: 130px;
 
         > div {
           @include flex(0);
@@ -455,6 +484,9 @@ $color-text: #83878C;
 
     .contact-button > div {
       @include flex(0);
+    }
+    .trady-info-group .contact-button {
+      @include flex(2 2 120px);
     }
   }
 }
@@ -1355,7 +1387,6 @@ span.index {
     }
   }
   .sidebar, .activity-mobile {
-    overflow: hidden;
     background-color: $color-grey;
     display: block;
   }
@@ -1396,6 +1427,10 @@ span.index {
     .activity-content {
       max-height: 280px;
       overflow-y: auto;
+      width: calc(100% + 10px);
+      > div {
+        margin-right: 10px;
+      }
       &::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         border-radius: 15px;
@@ -1607,8 +1642,9 @@ span.index {
   .activity-mobile {
     display: none;
     overflow: hidden;
-    width: 100%;
+    width: calc(100% - 20px);
     padding-top: 20px;
+    margin: 0 10px;
     .activity-content {
       max-height: 280px;
       overflow-y: auto !important;
@@ -2366,14 +2402,7 @@ span.index {
   }
   @media (min-width: 769px) and (max-width: 1024px) {
     .main-summary {
-      margin: auto 50px;
-    }
-    .section {
-      float: left;
-      margin-right: 0px;
-      overflow: hidden;
-      padding: 25px 23px 30px;
-      width: calc(100% - 46px)
+      margin: auto 20px;
     }
     .post {
       .info-title {

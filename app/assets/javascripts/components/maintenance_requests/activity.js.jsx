@@ -41,7 +41,7 @@ var Activity = React.createClass({
 	render: function() {
 		return (
 			<div className="item">
-				<div className="header action">
+				<div className="header action general-action-title">
 					<a>Activity log:</a>
 					<i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showActivity}></i>
 				</div>

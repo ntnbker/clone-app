@@ -755,16 +755,7 @@ var TenantMaintenanceRequest = React.createClass({
 		const {appointments, quote_appointments, landlord_appointments} = this.state;
 		return (
 			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
-				<div className="main-summary dontprint">
-					<div className="section">
-						<ItemMaintenanceRequest
-							gallery={this.state.gallery}
-							property={this.props.property}
-							viewItem={(key, item) => this.viewItem(key, item)}
-							onModalWith={this.onModalWith}
-							maintenance_request={this.state.maintenance_request}
-						/>
-					</div>
+				<div className="main-summary dontprint">	
 					<div className="sidebar">
 						<div className="box-shadow flexbox flex-column">
 							{
@@ -776,7 +767,6 @@ var TenantMaintenanceRequest = React.createClass({
 							}
 							<GeneralAction
 								{...this.props}
-								current_role={this.props.current_role}
 							/>
 							<TenantDetail
 								current_user={this.props.current_user}
@@ -819,6 +809,15 @@ var TenantMaintenanceRequest = React.createClass({
 									/>
 							}
 						</div>
+					</div>
+					<div className="section">
+						<ItemMaintenanceRequest
+							gallery={this.state.gallery}
+							property={this.props.property}
+							viewItem={(key, item) => this.viewItem(key, item)}
+							onModalWith={this.onModalWith}
+							maintenance_request={this.state.maintenance_request}
+						/>
 					</div>
 					{
 						(appointments && appointments.length > 0) &&
