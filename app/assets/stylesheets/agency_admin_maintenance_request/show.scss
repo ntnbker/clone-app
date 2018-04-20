@@ -13,16 +13,22 @@ $color-text: #83878C;
 
 .new-ui-maintenance-request.summary-container-index {
   color: $color-text;
-
+  background-color: #f4f8fb;
+  clear: both;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 25px;
+  font-family: 'Montserrat', sans-serif !important;
+  
   .main-summary {
     @include flexbox;
 
     .section {
       @include flex(1);
-      float: none;
       padding: 40px 10px;
-      margin-right: 0px;
-      width: inherit;
+      margin: auto 10px;
+      margin-left: 320px;
+      width: calc(100% - 340px);
 
       .item {
         overflow: inherit;
@@ -57,6 +63,7 @@ $color-text: #83878C;
       width: 100%;
       max-width: 300px;
       padding: 40px 10px;
+      position: fixed;
 
       > * {
         margin-bottom: 10px;
@@ -137,6 +144,13 @@ $color-text: #83878C;
 
     @media (max-width: 1024px) {
       @include flex-direction(column);
+      .sidebar {
+        display: none;
+      }
+      .section {
+        margin: auto 10px;
+        width: calc(100% - 20px);
+      }
     }
   }
   h4.mr-title {
@@ -199,7 +213,7 @@ $color-text: #83878C;
     }
   }
   .box-shadow {
-    box-shadow: 2px 2px 12px 0px #cacaca, -2px -2px 12px 0px #cacaca;
+    box-shadow: 2px 2px 12px 0px #cacaca5e, -2px -2px 12px 0px #cacaca5e;
     background-color: white;
     padding: 20px;
     margin-bottom: 20px;
@@ -231,7 +245,6 @@ $color-text: #83878C;
       }
       .mr-information, .service {
         font-size: 13px;
-        font-weight: 300;
       }
     }
     .mr-photo {
@@ -359,6 +372,7 @@ $color-text: #83878C;
     margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
+    border: 0;
   }
   .item-quote-request {
     @include flexbox;
@@ -1036,14 +1050,9 @@ span.index {
     }
   }
 .summary-container-index {
-  background-color: white;
-  clear: both;
-  overflow: hidden;
-  width: 100%;
-  padding-top: 50px;
-  font-family: 'Montserrat', sans-serif !important;
   .main-summary {
-    margin: auto 120px;
+    margin: auto 5px;
+    margin-top: 15px;
     background-color: $color-grey;
     overflow: hidden;
     .show-waring {
@@ -2087,14 +2096,6 @@ span.index {
     }
   }
   @media (min-width: 320px) and (max-width: 480px) {
-    .main-summary {
-      margin: auto 10px;
-      .section {
-        padding: 20px 5px 25px;
-        width: calc(100% - 10px);
-        margin-bottom: 50px;
-      }
-    }
     .post {
       .info-title {
         width: 100%;
@@ -2251,13 +2252,6 @@ span.index {
       left: 0%;
       bottom: -100px;
     }
-    .main-summary {
-      margin: auto 15px;
-      .section {
-        padding: 20px 15px 25px;
-        width: calc(100% - 30px);
-      }
-    }
     .post {
       .info-title {
         width: 100%;
@@ -2334,13 +2328,6 @@ span.index {
     }
   }
   @media (min-width: 641px) and (max-width: 768px) {
-    .main-summary {
-      margin: auto 30px;
-    }
-    .section {
-      padding: 20px 15px 25px;
-      width: calc(100% - 30px)
-    }
     .post {
       .info-title {
         width: 100%;
@@ -2434,9 +2421,6 @@ span.index {
     }
   }
   @media (min-width: 769px) and (max-width: 1024px) {
-    .main-summary {
-      margin: auto 20px;
-    }
     .post {
       .info-title {
         float: left;
@@ -2512,15 +2496,6 @@ span.index {
     }
   }
   @media (min-width: 1025px) and (max-width: 1280px) {
-    .main-summary {
-      margin: auto 20px;
-    }
-    .section {
-      float: left;
-      margin-right: 10px;
-      width: calc(100% - 310px);
-      padding: 40px 15px 50px;
-    }
     .post {
       .info-title {
         width: 50%
@@ -2558,15 +2533,6 @@ span.index {
     }
   }
   @media (min-width: 1281px) {
-    .main-summary {
-      margin: auto 30px;
-    }
-    .section {
-      float: left;
-      margin-right: 20px;
-      width: calc(100% - 340px);
-      padding: 40px 25px 50px;
-    }
     .post {
       .info-title {
         float: left;
@@ -2608,15 +2574,6 @@ span.index {
     }
   }
   @media (min-width: 1366px) {
-    .main-summary {
-      margin: auto 30px;
-    }
-    .section {
-      float: left;
-      margin-right: 25px;
-      width: calc(100% - 365px);
-      padding: 40px 30px 50px;
-    }
     .post {
       .info-title {
         float: left;
@@ -2651,9 +2608,6 @@ span.index {
     }
   }
   @media (min-width: 1680px) {
-    .main-summary {
-      margin: auto 80px;
-    }
     .post {
       .info-title {
         float: left;
