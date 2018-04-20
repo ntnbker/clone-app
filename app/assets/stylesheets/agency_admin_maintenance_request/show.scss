@@ -22,6 +22,35 @@ $color-text: #83878C;
       float: none;
       padding: 40px 10px;
       margin-right: 0px;
+      width: inherit;
+
+      .item {
+        overflow: inherit;
+
+        .content {
+          li {
+            margin: 10px 0;
+            height: inherit;
+          }
+        }
+      }
+
+      .general-action-title {
+        padding: 5px 15px;
+        font-weight: 600;
+        color: rgba(131, 135, 140, 0.5);
+        font-size: 17px;
+        background: white;
+        line-height: inherit;
+        height: inherit;
+
+        > * {
+          line-height: inherit;
+          color: inherit;
+          font-size: inherit;
+          margin-left: 0;
+        }
+      }
     }
     .sidebar {
       @include flex(1 1 300px);
@@ -103,9 +132,6 @@ $color-text: #83878C;
           color: rgba(131, 135, 140, 0.8);
           margin-right: 8px;
         }
-      }
-      .item {
-
       }
     }
 
@@ -1400,7 +1426,6 @@ span.index {
   }
 
   .item, .actions-full {
-    width: 100%;
     margin-bottom: 15px;
     border-radius: 5px;
     overflow: hidden;

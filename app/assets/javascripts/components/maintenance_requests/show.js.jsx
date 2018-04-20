@@ -3166,34 +3166,6 @@ var MaintenanceRequest = React.createClass({
 								viewItem={this.viewItem}
 								assigned_trady={trady || this.props.assigned_trady}
 							/>
-							{
-								(work_order_appointments && work_order_appointments.length > 0) &&
-									<AppointmentRequest
-										appointments={work_order_appointments}
-										title="Work Order Appointments"
-										current_role={current_user_role}
-										viewItem={(key, item) => this.viewItem(key, item)}
-									/>
-							}
-							{
-								(quote_appointments && quote_appointments.length > 0) &&
-									<AppointmentRequest
-										title="Appointments For Quotes"
-										current_role={current_user_role}
-										appointments={quote_appointments}
-										viewItem={(key, item) => this.viewItem(key, item)}
-									/>
-							}
-							{
-								(landlord_appointments && landlord_appointments.length > 0) &&
-									<AppointmentRequest
-										title="Landlord Appointments"
-										current_role={current_user_role}
-										appointments={landlord_appointments}
-										viewItem={(key, item) => this.viewItem(key, item)}
-									/>
-							}
-							<Activity logs={this.props.logs} />
 						</div>
 					</div>
 					<div className="section">
@@ -3261,35 +3233,8 @@ var MaintenanceRequest = React.createClass({
 								/>
 							: ''
 						}
+						<Activity logs={this.props.logs} />
 					</div>
-					{
-						(work_order_appointments && work_order_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Work Order Appointments"
-								current_role={current_user_role}
-								appointments={work_order_appointments}
-								viewItem={(key, item) => this.viewItem(key, item)}
-							/>
-					}
-					{
-						(quote_appointments && quote_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Appointments For Quotes"
-								current_role={current_user_role}
-								appointments={quote_appointments}
-								viewItem={(key, item) => this.viewItem(key, item)}
-							/>
-					}
-					{
-						(landlord_appointments && landlord_appointments.length > 0) &&
-							<AppointmentRequestMobile
-								title="Landlord Appointments"
-								current_role={current_user_role}
-								appointments={landlord_appointments}
-								viewItem={(key, item) => this.viewItem(key, item)}
-							/>
-					}
-					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<SideBarMobile
 					tenants={tenants}

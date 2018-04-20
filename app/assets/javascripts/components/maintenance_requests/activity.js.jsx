@@ -12,7 +12,7 @@ var ContentActivity = React.createClass({
 								</span>
 								<p className="info">
 									<span className="title">
-										{ item.action } 
+										{ item.action }
 										<strong> { item.name }</strong>
 									</span>
 									<span className="time">{ moment(item.created_at).format('lll') }</span>
@@ -40,7 +40,7 @@ var Activity = React.createClass({
 
 	render: function() {
 		return (
-			<div className="item">
+			<div className="item box-shadow">
 				<div className="header action general-action-title">
 					<a>Activity log:</a>
 					<i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showActivity}></i>
