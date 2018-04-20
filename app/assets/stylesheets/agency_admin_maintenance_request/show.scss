@@ -184,6 +184,9 @@ $color-text: #83878C;
         margin-right: 10px;
         font-weight: 100;
       }
+      .data {
+        font-weight: 500;
+      }
       .status {
         color: $color-green;
         border: 2px solid $color-green;
@@ -196,6 +199,9 @@ $color-text: #83878C;
       }
       .address {
         font-weight: 500;
+        i {
+          margin-right: 5px;
+        }
       }
       .mr-information, .service {
         font-size: 13px;
@@ -226,6 +232,7 @@ $color-text: #83878C;
         }
         .slide-image {
           max-height: 500px;
+          object-fit: contain;
         }
         .swiper-pagination-bullet-active {
           background-color: $color-green !important;
@@ -248,7 +255,7 @@ $color-text: #83878C;
             left: 30px;
           }
           i {
-            color: #fff;
+            color: $color-gray;
             font-size: 60px;
           }
         }
@@ -306,6 +313,7 @@ $color-text: #83878C;
   }
   .job-description {
     font-weight: 500;
+    margin-left: 20px;
   }
   .small-weight {
     font-weight: 100;
