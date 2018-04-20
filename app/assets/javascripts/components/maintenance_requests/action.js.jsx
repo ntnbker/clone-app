@@ -81,8 +81,8 @@ var Action = React.createClass({
 	render: function() {
 		return (
 			<div className="item" data-intro="Select 'Action' to action the maintenance request." data-position="left">
-				<div className="header action">
-					<a>Actions:</a>
+				<div className="header action general-action-title">
+					<a>Maintenance Request Actions</a>
 					<i
 						aria-hidden="true"
 						onClick={this.showAction}

@@ -48,8 +48,8 @@ var Carousel = React.createClass({
 		var sliderDetail = $('#slider-detail')
 		if(sliderDetail.length > 0) {
 			this.setWidth(sliderDetail.width())
-
 			$( window ).resize(function() {
+				var sliderDetail = $('#slider-detail')
 				self.setWidth(sliderDetail.width());
 			});
 

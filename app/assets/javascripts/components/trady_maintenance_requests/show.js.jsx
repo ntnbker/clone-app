@@ -1581,7 +1581,6 @@ var TradyMaintenanceRequest = React.createClass({
 								We are sorry to inform you that this job has been awarded to another company. We will contact you about future jobs, thank you for your time.
 							</div>
 					}
-
 					<div className="sidebar">
 						<div className="box-shadow flexbox flex-column">
 							{
@@ -1674,22 +1673,23 @@ var TradyMaintenanceRequest = React.createClass({
 							/>
 						}
 						{
-							trady && trady.id === this.props.signed_in_trady.id && this.props.current_role &&
-								<AssignTrady
-									trady={trady}
-									current_role={this.props.current_role.role}
-									onModalWith={(modal) => this.onModalWith(modal)}
-									stop_invoice={stop_invoice}
-									stop_appointment={stop_appointment}
-									showAppointmentAlreadyMade={true}
-									viewTrady={(key, item) => this.viewItem(key, item)}
-								/>
+							// trady && trady.id === this.props.signed_in_trady.id && this.props.current_role &&
+							// 	<AssignTrady
+							// 		trady={trady}
+							// 		current_role={this.props.current_role.role}
+							// 		onModalWith={(modal) => this.onModalWith(modal)}
+							// 		stop_invoice={stop_invoice}
+							// 		stop_appointment={stop_appointment}
+							// 		showAppointmentAlreadyMade={true}
+							// 		viewTrady={(key, item) => this.viewItem(key, item)}
+							// 	/>
 						}
 						{ (!trady || trady.id === this.props.signed_in_trady.id) && quote_requests && quote_requests.length > 0 &&
 								<QuoteRequests
 									keyLandlord="trady"
 									landlord={this.state.landlord}
 									quote_requests={quote_requests}
+									assignedTrady={trady}
 									onModalWith={this.onModalWith}
 									uploadImage={this.uploadImage}
 									current_user={this.props.current_user}

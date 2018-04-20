@@ -12,6 +12,25 @@ var GeneralAction = React.createClass({
     };
   },
 
+  logout (e) {
+    e.preventDefault();
+    const self = this;
+
+		return $.ajax({
+			type: 'DELETE',
+			url: this.props.logout_path,
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+      success: (res) => {
+
+      },
+      error: (err) => {
+
+      }
+    })
+  },
+
   generateActionButton(text, link, iconClass) {
     return (
       <div className="user-action-link" onClick={() => this.link.click()}>
@@ -170,7 +189,7 @@ var GeneralAction = React.createClass({
       <div className="user-avatar flexbox flex-column justify-center align-center">
         <AvatarImage className="general-user-image" imageUri={this.state.avatar} />
         <div className="user-name">{this.state.name}</div>
-        <button className="sign-out-button">Sign Out</button>
+        <button type="button" className="sign-out-button" onClick={this.logout}>Sign Out</button>
       </div>
     )
   },
