@@ -76,7 +76,7 @@ $color-text: #83878C;
 
         .content {
           li {
-            margin: 10px 0;
+            margin: 4px 0;
             height: inherit;
             padding-top: 0px;
           }
@@ -101,7 +101,8 @@ $color-text: #83878C;
           font-weight: 600;
           margin-bottom: 5px;
           height: inherit;
-          padding: 5px 10px;
+          padding: 1px 10px;
+          font-size: 12px;
         }
       }
       .general-action-title {
@@ -129,7 +130,7 @@ $color-text: #83878C;
         margin-bottom: 0px;
         > * {
           cursor: pointer;
-          margin: 5px 0;
+          margin: 4px 0;
           font-weight: 600;
           color: $color-text;
           font-size: 13px;
@@ -156,6 +157,8 @@ $color-text: #83878C;
       .section {
         margin: auto 10px;
         width: calc(100% - 20px);
+        padding-left: 0px;
+        padding-right: 0px;
       }
     }
   }
@@ -242,8 +245,8 @@ $color-text: #83878C;
         border-radius: 5px;
         display: inline-block;
         font-weight: 500;
-        padding: 2px 5px 0;
-        height: 25px;
+        padding: 0px 5px 0;
+        height: inherit;
         background-color: #fff;
       }
       .address {
@@ -437,12 +440,15 @@ $color-text: #83878C;
         @include flexbox;
         @include flex-direction(column);
         @include flex(2 2 250px);
-        width: 100%;
+        width: 90%;
         max-width: 250px;
         max-height: 130px;
 
         > div {
           @include flex(0);
+          height: 33px;
+          padding-top: 0;
+          padding-bottom: 0;
 
           button {
             word-wrap: break-word;
@@ -510,6 +516,11 @@ $color-text: #83878C;
     }
     .quote-status, .invoice-status {
       margin: 10px;
+      button {
+        height: inherit;
+        padding: 0 5px;
+      }
+
       .Active {
         border: 1px solid #849aaa;
       }
@@ -545,6 +556,9 @@ $color-text: #83878C;
     .trady-info-group .contact-button {
       @include flex(2 2 120px);
     }
+  }
+  @media (max-width: 640px) {
+    padding-top: 75px;
   }
 }
 body{
@@ -693,7 +707,7 @@ span.index {
 }
 .modal-custom {
     position: fixed;
-    top: 0;
+    top: 95px;
     right: 0;
     bottom: 0;
     left: 0;
@@ -2748,10 +2762,6 @@ span.index {
         width: 98%;
         margin-left: 1%;
       }
-    }
-    .item-quote .user .quote-request-button {
-      width: 98%;
-      margin-left: 1%;
     }
     .post .info .title button {
       height: auto;
