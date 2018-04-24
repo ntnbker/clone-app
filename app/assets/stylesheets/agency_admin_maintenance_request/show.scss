@@ -326,7 +326,8 @@ $color-text: #83878C;
       max-width: 250px;
       background-color: $color-grey;
       border-radius: 7px;
-      padding: 10px;
+      padding: 0 10px;
+      height: 33px;
 
       button {
         padding: 0 !important;
@@ -2757,12 +2758,6 @@ span.index {
 }
 @media (max-width: 350px) {
   .summary-container-index {
-    .quotes {
-      .actions-quote {
-        width: 98%;
-        margin-left: 1%;
-      }
-    }
     .post .info .title button {
       height: auto;
       white-space: normal;
