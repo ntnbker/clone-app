@@ -923,6 +923,7 @@ var LandlordContactButton = React.createClass({
 				</div>
 				<div className="message">
 					<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageLandlord')}>
+						<i className="fa fa-commenting" aria-hidden="true" />
 						Message {landlord.name}
 					</button>
 				</div>
@@ -959,6 +960,7 @@ var TenantContactButton = React.createClass({
 						</div>
 						<div className="message">
 							<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
+								<i className="fa fa-commenting" aria-hidden="true" />
 								Message {tenant.name}
 							</button>
 						</div>

@@ -622,6 +622,9 @@ header {
     }
   }
 }
+#main {
+  margin-top: 75px;
+}
 
 @media (max-width: 1024px) {
   .header-expanded {
@@ -662,6 +665,9 @@ header {
 }
 
 @media (max-width: 640px) {
+  #main {
+    margin-top: 125px;
+  }
   header {
     .header-expanded {
       .header-custom {

@@ -12,6 +12,10 @@ var GeneralAction = React.createClass({
     };
   },
 
+  componentDidMount() {
+    $('#btn-menu-bar').css({'display': 'none'}); 
+  },
+
   logout (e) {
     e.preventDefault();
     const self = this;
@@ -186,17 +190,21 @@ var GeneralAction = React.createClass({
 
   renderUserAvatar() {
     return (
-      <div className="user-avatar flexbox flex-column justify-center align-center">
-        <AvatarImage className="general-user-image" imageUri={this.state.avatar} />
-        <div className="user-name">{this.state.name}</div>
-        <button type="button" className="sign-out-button" onClick={this.logout}>Sign Out</button>
+      <div className="user-avatar flexbox">
+        <div className="user-avatar-left">
+          <AvatarImage className="general-user-image" imageUri={this.state.avatar} />
+        </div>
+        <div className="user-avatar-right flexbox flex-column justify-center align-center">
+          <div className="user-name">{this.state.name}</div>
+          <button type="button" className="sign-out-button" onClick={this.logout}>Sign Out</button>
+        </div>
       </div>
     )
   },
 
   render() {
     return (
-      <div className="user-general-action">
+      <div className="user-general-action" id="user-general-action">
         {this.renderUserAvatar()}
         <div className="general-action-title">General Actions</div>
         {this.renderActions()}
