@@ -619,7 +619,7 @@ $color-text: #83878C;
   }
 
   @media (max-width: 460px) {
-    font-size: 11px;
+    font-size: 13px;
     
     h4.mr-title {
       font-size: 17px;
@@ -627,13 +627,13 @@ $color-text: #83878C;
     }
     .mr-detail {
       .mr-information .mr-information {
-        font-size: 9px;
+        font-size: 11px;
       }
     }
     .item-quote-request {
       .quote-request-button {
         button.stop-reminder {
-          font-size: 11px;
+          font-size: 13px;
         }
       }
     }
@@ -1132,6 +1132,8 @@ span.index {
       border-top: none;
       overflow: hidden;
       width: 100%;
+      margin-top: 10px;
+      
       button {
         border: none;
         color: $color-white;
