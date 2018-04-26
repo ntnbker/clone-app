@@ -8,26 +8,28 @@ var LandlordSideBarMobile = React.createClass({
 
 	show: function(key) {
 		const height = $( window ).height();
-		if(key == 'action') {
-			this.setState({showAction: true});
-			this.setState({showContact: false});
-			$('#actions-full').css({'height': 270, 'border-width': 1});
-		}else {
-			this.setState({showAction: false});
-			this.setState({showContact: true});
-			$('#contacts-full').css({'height': 270, 'border-width': 1});
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
 		}
 	},
 
 	close: function() {
-		if($('#actions-full').length > 0) {
-			this.setState({showAction: false});
-			$('#actions-full').css({'height': 0, 'border-width': 0});
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
 		}
-		if($('#contacts-full').length > 0) {
-			this.setState({showContact: false});
-			$('#contacts-full').css({'height': 0, 'border-width': 0});
-		}
+		$('.sidebar').removeClass('visible');
+	},
+
+	componentDidMount: function() {
+		const self = this;
+		$(document).click(function(e) {
+			let {pageX, pageY} = e;
+			let isHeaderActionClicked = pageX <= 300 && pageY >= 250 && pageY <= 282;
+			if (!isHeaderActionClicked) {
+				self.close();
+			}
+		})
 	},
 
 	componentDidMount: function() {
@@ -42,7 +44,7 @@ var LandlordSideBarMobile = React.createClass({
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
-						<button
+						{/* <button
 							data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (!!this.state.showContact && 'active')}
 							onClick={(key) => this.show('contact')}
@@ -55,7 +57,15 @@ var LandlordSideBarMobile = React.createClass({
 							onClick={(key) => this.show('action')}
 						>
 							ACTIONS MENU
+						</button> */}
+						<button
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
+							className={"button-default " + (this.state.showGeneral && 'active')}
+							onClick={(key) => this.show('general-action')}
+						>
+							MENU
 						</button>
+						<div className="background" />
 					</div>
 				</div>
 				<div className="action-mobile">

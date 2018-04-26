@@ -17,7 +17,6 @@ $color-text: #83878C;
   clear: both;
   overflow: hidden;
   width: 100%;
-  padding-top: 25px;
   font-family: 'Montserrat', sans-serif !important;
   
   .user-general-action {
@@ -28,9 +27,10 @@ $color-text: #83878C;
 
     .section {
       @include flex(1);
-      padding: 40px 10px;
+      padding: 10px 10px 40px;
       margin: auto 10px;
       margin-left: 320px;
+      margin: 10px 10px auto 320px;
       width: calc(100% - 340px);
 
       .item {
@@ -65,8 +65,10 @@ $color-text: #83878C;
       @include flex(1 1 300px);
       width: 100%;
       max-width: 300px;
-      padding: 40px 10px;
+      padding: 10px 10px 0;
+      margin-top: 10px;
       position: fixed;
+      z-index: 1000;
 
       > * {
         margin-bottom: 10px;
@@ -83,6 +85,12 @@ $color-text: #83878C;
         }
       }
       .user-avatar {
+        > div {
+          @include flex(1);
+        }
+        .user-avatar-right {
+          @include flex(3);
+        }
         img.general-user-image {
           width: 75px;
           height: 75px;
@@ -149,16 +157,59 @@ $color-text: #83878C;
       }
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1023px) {
       @include flex-direction(column);
       .sidebar {
-        display: none;
+        padding: 0;
+        z-index: 10000;
+        top: 0;
+        height: 100%;
+        left: -300px;
+        margin-top: 0px;
+        transition: -webkit-transform ease 250ms;
+        transition: transform ease 250ms;
+        left: -300px;
+        overflow: hidden;
+    
+        &.visible {
+          transform: translate3d(300px, 0, 0);
+        }
+
+        .box-shadow {
+          height: 100%;
+        }
       }
       .section {
         margin: auto 10px;
         width: calc(100% - 20px);
         padding-left: 0px;
         padding-right: 0px;
+      }
+    }
+  }
+  .sidebar-mobile {
+    .fixed {
+      height: 58px;
+      > * {
+        position: fixed;
+        bottom: 0;
+      }
+      .background {
+        height: 58px;
+        width: 100%;
+        background: $color-gray;
+        z-index: 1000;
+      }
+      button {
+        position: fixed;
+        z-index: 1001; 
+        background-color: $color-gray;
+        border: white;
+        border-style: solid;
+        border-width: 3px;
+        margin: 10px;
+        color: white;
+        height: 38px;
       }
     }
   }
@@ -472,11 +523,14 @@ $color-text: #83878C;
 
       button {
         text-align: center;
-        margin: 5px 10px 5px 0;
+        margin: 5px;
         background-color: $color-grey;
         border-radius: 7px;
-        padding: 10px;
+        padding: 5px;
         color: $color-text;
+        max-width: 260px;
+        overflow: hidden;
+        width: 100%;
 
         height: inherit !important;
         border: 0 !important;
@@ -560,9 +614,6 @@ $color-text: #83878C;
     .trady-info-group .contact-button {
       @include flex(2 2 120px);
     }
-  }
-  @media (max-width: 640px) {
-    padding-top: 75px;
   }
 }
 body{
@@ -1079,7 +1130,6 @@ span.index {
 .summary-container-index {
   .main-summary {
     margin: auto 5px;
-    margin-top: 15px;
     background-color: $color-grey;
     overflow: hidden;
     .show-waring {
@@ -2161,9 +2211,6 @@ span.index {
         }
       }
     }
-    .sidebar {
-      display: none;
-    }
     .actions-full {
       bottom: 76px;
       width: 100%;
@@ -2322,9 +2369,6 @@ span.index {
         }
       }
     }
-    .sidebar {
-      display: none;
-    }
     .actions-full {
       width: 100%;
       bottom: 76px;
@@ -2408,9 +2452,6 @@ span.index {
         }
       }
     }
-    .sidebar {
-      display: none;
-    }
     .actions-full {
       width: 640px;
       bottom: 82px;
@@ -2447,7 +2488,7 @@ span.index {
       }
     }
   }
-  @media (min-width: 769px) and (max-width: 1024px) {
+  @media (min-width: 769px) and (max-width: 1023px) {
     .post {
       .info-title {
         float: left;
@@ -2491,9 +2532,6 @@ span.index {
           font-size: 14px;
         }
       }
-    }
-    .sidebar {
-      display: none;
     }
     .actions-full {
       width: 640px;

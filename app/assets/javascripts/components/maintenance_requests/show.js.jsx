@@ -319,40 +319,27 @@ var SideBarMobile = React.createClass({
 
 	show: function(key) {
 		const height = $( window ).height();
-		if(key == 'action') {
-			this.setState({showAction: true});
-			this.setState({showContact: false});
-			if($('#actions-full')) {
-				$('#actions-full').css({'height': 300, 'border-width': 1});
-			}
-		}else {
-			this.setState({showAction: false});
-			this.setState({showContact: true});
-			if($('#contacts-full')) {
-				$('#contacts-full').css({'height': 300, 'border-width': 1});
-			}
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
 		}
 	},
 
 	close: function() {
-		if(!!this.state.showAction) {
-			this.setState({showAction: false});
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
 		}
-		if(!!this.state.showContact) {
-			this.setState({showContact: false});
-		}
-		if($('#actions-full')) {
-			$('#actions-full').css({'height': 0, 'border-width': 0});
-		}
-		if($('#contacts-full')) {
-			$('#contacts-full').css({'height': 0, 'border-width': 0});
-		}
+		$('.sidebar').removeClass('visible');
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).click(function() {
-			self.close();
+		$(document).click(function(e) {
+			let {pageX, pageY} = e;
+			let isHeaderActionClicked = pageX <= 300 && pageY >= 250 && pageY <= 282;
+			if (!isHeaderActionClicked) {
+				self.close();
+			}
 		})
 	},
 
@@ -362,7 +349,7 @@ var SideBarMobile = React.createClass({
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
-						<button
+						{/* <button
 							id="contact" data-intro="Select 'Contact' to call or message." data-position="top"
 							className={"contact button-default " + (showContact && 'active')}
 							onClick={(key) => this.show('contact')}
@@ -375,10 +362,18 @@ var SideBarMobile = React.createClass({
 							onClick={(key) => this.show('action')}
 						>
 							ACTIONS MENU
+						</button> */}
+						<button
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
+							className={"button-default " + (this.state.showGeneral && 'active')}
+							onClick={(key) => this.show('general-action')}
+						>
+							MENU
 						</button>
+						<div className="background" />
 					</div>
 				</div>
-				<div className="action-mobile">
+				{/* <div className="action-mobile">
 					<ActionMobile
 						close={this.close}
 						hasTenant={this.props.hasTenant}
@@ -393,7 +388,7 @@ var SideBarMobile = React.createClass({
 						assigned_trady={this.props.assigned_trady}
 						onModalWith={(modal) => this.props.onModalWith(modal)}
 					/>
-				</div>
+				</div> */}
 			</div>
 		);
 	}

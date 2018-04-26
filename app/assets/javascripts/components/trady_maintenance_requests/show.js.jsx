@@ -6,19 +6,28 @@ var TradySideBarMobile = React.createClass({
 	},
 
 	show: function(key) {
-		$('#actions-full').css({'height': 350 + (this.props.tenants.length || 0) * 40});
-		this.setState({showAction: true});
+		const height = $( window ).height();
+		if (key == 'general-action') {
+			this.setState({showGeneral: true});
+			return $('.sidebar').addClass('visible');
+		}
 	},
 
 	close: function() {
-		$('#actions-full').css({'height': 0});
-		this.setState({showAction: false});
+		if (!!this.state.showGeneral) {
+			this.setState({showGeneral: false});
+		}
+		$('.sidebar').removeClass('visible');
 	},
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).click(function() {
-			self.close();
+		$(document).click(function(e) {
+			let {pageX, pageY} = e;
+			let isHeaderActionClicked = pageX <= 300 && pageY >= 250 && pageY <= 282;
+			if (!isHeaderActionClicked) {
+				self.close();
+			}
 		})
 	},
 
@@ -30,7 +39,7 @@ var TradySideBarMobile = React.createClass({
 			<div className="dontprint">
 				<div className="sidebar-mobile">
 					<div className="fixed">
-						<button
+						{/* <button
 							className={"actions trady-actions button-default " + (!!this.state.showAction && 'active')}
 							onClick={(key) => this.show('action')}
 						>
@@ -39,7 +48,15 @@ var TradySideBarMobile = React.createClass({
 							<span className="display-block">
 								{isAssignedTrady ? "CREATE INVOICE" : "CONTACT AGENT"}
 							</span>
+						</button> */}
+						<button
+							data-intro="Select 'Action' to action the maintenance request." data-position="top"
+							className={"button-default " + (this.state.showGeneral && 'active')}
+							onClick={(key) => this.show('general-action')}
+						>
+							MENU
 						</button>
+						<div className="background" />
 					</div>
 				</div>
 				<div className="action-mobile">
