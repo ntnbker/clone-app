@@ -362,7 +362,7 @@ var ButtonHeaderMR = React.createClass({
 						Approval Note
 					</span>
 				</button>
-				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
+				{/* <button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('splitMR')}>
 					<span>
 						Split
 					</span>
@@ -371,7 +371,7 @@ var ButtonHeaderMR = React.createClass({
 					<span>
 						Duplicate
 					</span>
-				</button>
+				</button> */}
 				<div id="update-status">
 					<button type="button" className="update-status" onClick={(key) => this.show('status')}>
 						Update status

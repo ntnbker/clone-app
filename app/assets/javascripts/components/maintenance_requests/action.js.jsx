@@ -6,6 +6,24 @@ var ContentAction = React.createClass({
 
 		return (
 			<ul>
+				{
+					this.props.show_assign &&
+					<li>
+						<a onClick={() => this.props.onModalWith('duplicateMR')}>
+							<i className="fa fa-files-o" aria-hidden="true" />
+							Duplicate Maintenace Request
+						</a>
+					</li>
+				}
+				{
+					this.props.show_assign &&
+					<li>
+						<a onClick={() => this.props.onModalWith('splitMR')}>
+							<i className="fa fa-files-o" aria-hidden="true" />
+							Split Maintenace Request
+						</a>
+					</li>
+				}
 				<li>
 					<a onClick={() => this.props.onModalWith(hasLandlord ? 'confirm' : 'addAskLandlord')}>
 						<i className="fa fa-user" />
@@ -96,6 +114,7 @@ var Action = React.createClass({
 								hasTenant={this.props.hasTenant}
 								assigned_trady={this.props.assigned_trady}
 								viewItem={this.props.viewItem}
+								show_assign={this.props.show_assign}
 								onModalWith={(modal) => this.props.onModalWith(modal)}
 							/>
 					}
@@ -124,6 +143,7 @@ var ActionMobile = React.createClass({
 							viewItem={this.props.viewItem}
 							hasTenant={this.props.hasTenant}
 							assigned_trady={this.props.assigned_trady}
+							show_assign={this.props.show_assign}
 							onModalWith={(modal) => this.props.onModalWith(modal)}
 						/>
 					</div>
