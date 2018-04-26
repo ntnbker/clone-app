@@ -30,7 +30,7 @@ $color-text: #83878C;
       padding: 10px 10px 40px;
       margin: auto 10px;
       margin-left: 320px;
-      margin: 10px 10px auto 320px;
+      margin: 0 10px auto 320px;
       width: calc(100% - 340px);
 
       .item {
@@ -66,7 +66,6 @@ $color-text: #83878C;
       width: 100%;
       max-width: 300px;
       padding: 10px 10px 0;
-      margin-top: 10px;
       position: fixed;
       z-index: 1000;
 
@@ -207,9 +206,11 @@ $color-text: #83878C;
         border: white;
         border-style: solid;
         border-width: 3px;
-        margin: 10px;
+        margin: 10px auto;
         color: white;
         height: 38px;
+        width: 57%;
+        max-width: 260px;
       }
     }
   }
@@ -373,8 +374,8 @@ $color-text: #83878C;
       text-align: center;
       margin: 5px 5px 5px 5px;
       width: calc(100% - 10px);
-      @include flex(2 2 250px);
-      max-width: 250px;
+      @include flex(2 2 240px);
+      max-width: 240px;
       background-color: $color-grey;
       border-radius: 7px;
       padding: 0 10px;
@@ -491,9 +492,9 @@ $color-text: #83878C;
         margin: 10px;
         @include flexbox;
         @include flex-direction(column);
-        @include flex(2 2 250px);
+        @include flex(2 2 260px);
         width: 90%;
-        max-width: 250px;
+        max-width: 260px;
         max-height: 130px;
 
         > div {
@@ -551,6 +552,7 @@ $color-text: #83878C;
         &.stop-reminder {
           background-color: #e34f4f;
           color: white;
+          font-size: 11px;
 
           &:hover {
             background-color: #c14343;
@@ -613,6 +615,30 @@ $color-text: #83878C;
     }
     .trady-info-group .contact-button {
       @include flex(2 2 120px);
+    }
+  }
+
+  @media (max-width: 460px) {
+    font-size: 11px;
+    
+    h4.mr-title {
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+    .mr-detail {
+      .mr-information .mr-information {
+        font-size: 9px;
+      }
+    }
+    .item-quote-request {
+      .quote-request-button {
+        button.stop-reminder {
+          font-size: 11px;
+        }
+      }
+    }
+    .quotes p {
+      font-size: 14px;
     }
   }
 }
@@ -2731,8 +2757,9 @@ span.index {
       .actions-quote {
         @include flexbox;
         @include flex-direction(column);
-        width: 60%;
-        margin-left: 20%;
+        width: 90%;
+        max-width: 260px;
+        margin: auto;
         margin-bottom: 10px;
         float: none;
         padding: 0px;
@@ -2770,7 +2797,13 @@ span.index {
   .modal-custom .modal-footer .cancel {
     margin-top: 10px;
   }
+}
+@media (max-width: 400px) {
   .summary-container-index {
+    .post .info .title button {
+      height: auto;
+      white-space: normal;
+    }
     .quotes {
       .actions-quote {
         width: 90%;
@@ -2794,14 +2827,6 @@ span.index {
     font-size: 12px;
     .item-date {
       font-size: 8px;
-    }
-  }
-}
-@media (max-width: 350px) {
-  .summary-container-index {
-    .post .info .title button {
-      height: auto;
-      white-space: normal;
     }
   }
 }

@@ -12,6 +12,10 @@ var GeneralAction = React.createClass({
     };
   },
 
+  componentDidMount() {
+    $('#btn-menu-bar').css({'display': 'none'}); 
+  },
+
   logout (e) {
     e.preventDefault();
     const self = this;
