@@ -129,6 +129,7 @@ $color-text: #83878C;
           button {
             color: white;
             background: $color-gray;
+            border-color: $color-gray;
             font-weight: 600;
             margin-bottom: 5px;
             height: inherit;
@@ -162,13 +163,14 @@ $color-text: #83878C;
           > * {
             cursor: pointer;
             margin: 4px 0;
-            font-weight: 600;
-            color: $color-text;
+            font-weight: 500;
+            color: $color-grey-dark;
+            color: $color-grey-dark;
             font-size: 13px;
 
-            &:hover {
+            &:hover, &.active {
               > * {
-                color: $color-gray !important;
+                color: $color-green !important;
               }
             }
           }

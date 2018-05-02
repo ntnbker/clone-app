@@ -846,7 +846,7 @@ var MaintenaceRequestDetail = React.createClass({
 				<LandlordContactButton {...this.props} />
 				<div className="content">
 					<div className="description">
-						<p className="m-b-n small-weight">Job Description:</p>
+						<h4 className="m-b-n mr-title">Job Description:</h4>
 						<p className="job-description">{maintenance_request.maintenance_description}</p>
 					</div>
 					{ !hide_note && maintenance_request.preapproved_note
