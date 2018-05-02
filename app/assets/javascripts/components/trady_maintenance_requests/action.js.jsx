@@ -105,8 +105,8 @@ var ContentTradyAction = React.createClass({
 					{this.props.needShowCreateQuote && <CreactOrUploadQuote link={link} />}
 					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					{/*<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />*/}
-					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
-					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{/* <CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} /> */}
 					<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
