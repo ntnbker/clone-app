@@ -12,10 +12,14 @@ $color-blue-light: #7646FF;
 $color-text: #83878C;
 
 .new-ui {
+  .modal-custom {
+    top: 35px;
+  }
   #main {
-    margin-top: 75px;
-    @media (max-screen: 640px) {
-      margin-top: 125px;
+    margin-top: 65px !important;
+    margin-bottom: 78px !important;
+    @media (max-width: 1023px) {
+      margin-bottom: 136px !important;
     }
   }
   header {
@@ -26,6 +30,9 @@ $color-text: #83878C;
       @include justify-content(center);
 
       .header-right {
+        display: none;
+      }
+      .menu-btn.signed{
         display: none;
       }
     }
@@ -92,9 +99,11 @@ $color-text: #83878C;
         padding: 10px 10px 0;
         position: fixed;
         z-index: 1000;
+        overflow: scroll;
 
         > * {
-          margin-bottom: 10px;
+          padding-bottom: 10px;
+          margin-bottom: 0px;
         }
         .item {
           overflow: inherit;
@@ -198,10 +207,7 @@ $color-text: #83878C;
       
           &.visible {
             transform: translate3d(300px, 0, 0);
-          }
-
-          .box-shadow {
-            height: 100%;
+            overflow: scroll;
           }
         }
         .section {
@@ -228,8 +234,8 @@ $color-text: #83878C;
         button {
           position: fixed;
           z-index: 1001; 
-          background-color: $color-gray;
-          border: white;
+          background-color: $color-red;
+          border: $color-red;
           border-style: solid;
           border-width: 3px;
           margin: 10px auto;
@@ -306,7 +312,7 @@ $color-text: #83878C;
       margin-bottom: 20px;
     }
     .box-shadow .item {
-      margin-bottom: -20px;
+      margin-bottom: -10px;
     }
     .mr-detail {
       .mr-information {
@@ -1561,7 +1567,7 @@ span.index {
       }
     }
   }
-  .sidebar, .activity-mobile {
+  .activity-mobile {
     background-color: $color-grey;
     display: block;
   }
@@ -2085,12 +2091,10 @@ span.index {
     margin-left: 5px;
   }
   .dropdown-assign {
-    position: absolute;
     z-index: 100;
     border: 1px solid #879FBB;
     background-color: #fff;
-    margin-top: 45px;
-    width: 220px;
+    margin: 5px;
     border-radius: 5px;
     color: #849aaa;
     outline: none;

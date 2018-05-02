@@ -202,7 +202,7 @@ var GeneralAction = React.createClass({
     return (
       <div className="user-general-action" id="user-general-action">
         {this.renderUserAvatar()}
-        <div className="general-action-title">General Actions</div>
+        <div className="general-action-title">General</div>
         {this.renderActions()}
       </div>
     )

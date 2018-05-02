@@ -47,7 +47,6 @@ var Carousel = React.createClass({
 		const self = this;
 		var sliderDetail = $('#slider-detail')
 		if(sliderDetail.length > 0) {
-			console.log(sliderDetail.width())
 			this.setWidth(sliderDetail.width())
 			$( window ).resize(function() {
 				var sliderDetail = $('#slider-detail')
@@ -86,8 +85,6 @@ var Carousel = React.createClass({
 							? this.state.stlen * this.state.stwidth
 							: '100%',
 		};
-		console.log({styles});
-		console.log(this.state);
 		const temp = this;
 		var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
 		return (
@@ -143,74 +140,34 @@ var FixCSS = React.createClass({
   },
 
   componentDidMount() {
-    $('.layout').addClass('new-ui');
+		$('.layout').addClass('new-ui');
+	  if ($(window).width() < 1024) {
+			$('.sidebar').css({height: $(window).height()});
+		} else {
+			let menuHeight = 65;
+			let footerHeight = 58;
+			$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
+		}
   },
 
   componentWillUnmount() {
-	$('.layout').removeClass('new-ui');
+		$('.layout').removeClass('new-ui');
+		$('.sidebar').css({height: ''});
   },
   
   render() {
     return <div className="display-none" />
   }
-})
-
-var Assigns = React.createClass({
-	render: function() {
-		const assigns = this.props.assigns;
-		return (
-			<ul>
-				{
-					assigns.map((item, key) => {
-						if(item.name || item.first_name){
-							return (
-								<li key={item.id}>
-									<a onClick={(key, data) => this.props.viewItem('confirmAssign', item.email)}>
-										{ item.name ? item.name : item.first_name + " " + item.last_name }
-									</a>
-								</li>
-							);
-						}
-
-					})
-				}
-			</ul>
-		);
-	}
 });
 
-var DropDownStatus = React.createClass({
-	viewItem: function(status) {
-		this.props.viewItem('confirmUpdateStatus', status);
-	},
-
-	render: function() {
-		return (
-			<ul>
-				{
-					this.props.data.map((item, key) => {
-						return (
-							<li key={key} onClick={(status) => this.viewItem(item)}>
-								{item.title}
-							</li>
-						);
-					})
-				}
-			</ul>
-		);
-	}
-});
-
-var ButtonHeaderMR = React.createClass({
-	getInitialState: function() {
+var UpdateStatusModal = React.createClass({
+	getInitialState() {
 		const {standBy, actionRequired, awaitingAction} = this.filterHideField(this.props);
 
 		return {
-			isShow: false,
-			isShowStatus: false,
 			standBy,
 			actionRequired,
-			awaitingAction,
+			awaitingAction
 		};
 	},
 
@@ -327,6 +284,137 @@ var ButtonHeaderMR = React.createClass({
 		})
 	},
 
+	render() {
+		const {standBy, actionRequired, awaitingAction} = this.state;
+
+		return <div className="modal-custom fade update-status-modal">
+			<div className="modal-dialog">
+				<div className="modal-content">
+					<div className="modal-header">
+						<button
+							type="button"
+							className="close"
+							data-dismiss="modal"
+							aria-label="Close"
+							onClick={this.props.close}
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 className="modal-title text-center">Update Status</h4>
+					</div>
+					<div className="modal-body">
+						<div className="dropdown-assign">
+							<p>Stand By</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
+						</div>
+						<div className="dropdown-assign">
+							<p className="awaiting">Action Required</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
+						</div>
+						<div className="dropdown-assign">
+							<p className="awaiting">Awaiting Action</p>
+							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>;
+	}
+});
+
+var AssignModal = React.createClass({
+	getInitialState() {
+		return {};
+	},
+
+	render() {
+		const {all_agency_admins, all_agents} = this.props;
+
+		return <div className="modal-custom fade update-status-modal">
+			<div className="modal-dialog">
+				<div className="modal-content">
+					<div className="modal-header">
+						<button
+							type="button"
+							className="close"
+							data-dismiss="modal"
+							aria-label="Close"
+							onClick={this.props.close}
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 className="modal-title text-center">Assign To</h4>
+					</div>
+					<div className="modal-body">
+						<div className="dropdown-assign">
+							<p>Agency Administrators</p>
+							<Assigns assigns={all_agency_admins} viewItem={(key, item) => this.props.viewItem(key, item)} />
+						</div>
+						<div className="dropdown-assign">
+							<p className="agent">Agents</p>
+							<Assigns assigns={all_agents} viewItem={(key, item) => this.props.viewItem(key, item)} />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>;
+	}
+});
+
+var Assigns = React.createClass({
+	render: function() {
+		const assigns = this.props.assigns;
+		return (
+			<ul>
+				{
+					assigns.map((item, key) => {
+						if(item.name || item.first_name){
+							return (
+								<li key={item.id}>
+									<a onClick={(key, data) => this.props.viewItem('confirmAssign', item.email)}>
+										{ item.name ? item.name : item.first_name + " " + item.last_name }
+									</a>
+								</li>
+							);
+						}
+
+					})
+				}
+			</ul>
+		);
+	}
+});
+
+var DropDownStatus = React.createClass({
+	viewItem: function(status) {
+		this.props.viewItem('confirmUpdateStatus', status);
+	},
+
+	render: function() {
+		return (
+			<ul>
+				{
+					this.props.data.map((item, key) => {
+						return (
+							<li key={key} onClick={(status) => this.viewItem(item)}>
+								{item.title}
+							</li>
+						);
+					})
+				}
+			</ul>
+		);
+	}
+});
+
+var ButtonHeaderMR = React.createClass({
+	getInitialState: function() {
+		return {
+			isShow: false,
+			isShowStatus: false,
+		};
+	},
+
 	show: function(key) {
 		switch(key) {
 			case 'assign':
@@ -369,13 +457,9 @@ var ButtonHeaderMR = React.createClass({
 		}
 	},
 
-	componentDidMount: function() {
-	},
-
 	render: function() {
 		const all_agents = this.props.all_agents;
 		const all_agency_admins = this.props.all_agency_admins;
-		const {standBy, actionRequired, awaitingAction} = this.state;
 		return (
 			<div className="button-header-mr box-shadow">
 				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('approveJob')}>
@@ -393,7 +477,7 @@ var ButtonHeaderMR = React.createClass({
 						Duplicate
 					</span>
 				</button> */}
-				<div id="update-status">
+				{/* <div id="update-status">
 					<button type="button" className="update-status" onClick={(key) => this.show('status')}>
 						Update status
 					</button>
@@ -404,21 +488,9 @@ var ButtonHeaderMR = React.createClass({
 						tabIndex="2"
 						onBlur={() => this.close('status')}
 					>
-						<div>
-							<p>Stand By</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={standBy}/>
-						</div>
-						<div>
-							<p className="awaiting">Action Required</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={actionRequired}/>
-						</div>
-						<div>
-							<p className="awaiting">Awaiting Action</p>
-							<DropDownStatus viewItem={(key, item) => this.props.viewItem(key, item)} data={awaitingAction}/>
-						</div>
 					</div>
-				</div>
-				<button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('editMaintenanceRequest')}>
+				</div> */}
+				{/* <button type="button" className="edit-detail" onClick={(key) => this.props.viewItem('editMaintenanceRequest')}>
 					<i className="fa fa-pencil" aria-hidden="true" />
 					<span>
 						Edit Details
@@ -454,7 +526,7 @@ var ButtonHeaderMR = React.createClass({
 							<Assigns assigns={all_agents} viewItem={(key, item) => this.props.viewItem(key, item)} />
 						</div>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		);
 	}
