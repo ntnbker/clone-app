@@ -528,6 +528,9 @@ $color-text: #83878C;
           width: 90%;
           max-width: 260px;
           max-height: 130px;
+          &.quote-request-button {
+            margin-right: 20px;
+          }
 
           > div {
             @include flex(0);
@@ -1489,7 +1492,7 @@ span.index {
       button {
         padding: 0 20px;
         height: 33px;
-        margin: 5px 15px 5px 0px;
+        margin: 5px 5px 5px 0px;
         font-size: 14px;
         background-color: #f4f8fb;
         color: #849aaa;
