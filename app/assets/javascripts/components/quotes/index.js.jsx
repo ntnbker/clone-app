@@ -661,8 +661,8 @@ var QuoteRequests = React.createClass({
           return (
 
             <div className="quotes m-t-lg box-shadow" id="quote_requests" key={index}>
-              <p><span className="index">{index + 1}</span>Quote Requests
-              </p>
+              <h4 className="mr-title"><span className="index">{index + 1}</span>Quote Requests
+              </h4>
               <div className="item-quote row item-quote-request">
                 <div className="user seven columns trady-info-group">
                   <div className="trady-info">

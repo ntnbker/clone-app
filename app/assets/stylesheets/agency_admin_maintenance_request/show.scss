@@ -737,8 +737,8 @@ span.index {
   color: $color-white;
   margin-right: 10px;
   margin-left: 10px;
-  width: 25px;
-  height: 25px;
+  width: 41px;
+  height: 41px;
   text-align: center;
   &.quote {
     float: left;
@@ -1584,18 +1584,15 @@ span.index {
       i {
         float: right;
         font-size: 18px;
-        color: $color-white;
+        color: inherit;
         display: inline-block;
         line-height: 60px;
         font-weight: 500;
         margin-right: 20px;
         cursor: pointer;
       }
-      &.contact {
-        background-color: $color-green;
-      }
-      &.action {
-        background-color: $color-green;
+      .activity {
+        display: inline-block;
       }
     }
     .activity-content {
