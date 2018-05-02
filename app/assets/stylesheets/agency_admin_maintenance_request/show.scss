@@ -628,6 +628,10 @@ $color-text: #83878C;
           border: 1px solid #e76565;
           color: #e76565;
         }
+        .pending-decision {
+          border: 1px solid rgb(255, 191, 28);
+          color: rgb(255, 191, 28);
+        }
       }
       .invoice-status {
         margin: 10px;
@@ -743,8 +747,8 @@ span.index {
   color: $color-white;
   margin-right: 10px;
   margin-left: 10px;
-  width: 41px;
-  height: 41px;
+  width: 25px;
+  height: 25px;
   text-align: center;
   &.quote {
     float: left;
@@ -1478,6 +1482,10 @@ span.index {
       width: calc(100% - 22px);
       padding: 10px;
       padding-top: 0px;
+      @include flexbox;
+      @include justify-content(flex-end);
+      @include flex-wrap(wrap);
+
       button {
         padding: 0 20px;
         height: 33px;
@@ -1488,6 +1496,10 @@ span.index {
         border: none;
         font-size: 14px;
         font-weight: 400;
+        width: calc(100% - 10px);
+        max-width: 260px;
+        @include flex(1 1 260px);
+
         &:hover {
           background-color: #deeaf3;
         }
@@ -2787,6 +2799,7 @@ span.index {
       .actions-quote {
         @include flexbox;
         @include flex-direction(column);
+        @include align-items(center);
         width: 90%;
         max-width: 260px;
         margin: auto;
@@ -2794,7 +2807,7 @@ span.index {
         float: none;
         padding: 0px;
         button {
-          @include align-items(center);
+          @include flex(0);
           padding: 0px;
           margin: 0px 0px 10px 0px;
         }

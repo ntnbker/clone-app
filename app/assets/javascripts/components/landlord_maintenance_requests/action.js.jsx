@@ -21,12 +21,12 @@ var ContentLandlordAction = React.createClass({
 						Request quote
 					</a>
 				</li>
-				<li>
+				{/* <li>
 					<a onClick={() => this.props.onModalWith('createAppointment')}>
 						<i className="icon-send" aria-hidden="true" />
 						Create appointment to fix myself
 					</a>
-				</li>
+				</li> */}
 				<li>
 					<a onClick={() => this.props.onModalWith('approveJob')}>
 						<i className="icon-send" aria-hidden="true" />
@@ -59,7 +59,7 @@ var LandlordAction = React.createClass({
 		return (
 			<div className="item"  data-intro="This is Action" data-position="left">
 				<div className="header action general-action-title">
-					<a>Maintenance Request Actions</a>
+					<a>Maintenance Request</a>
 					<i
 						aria-hidden="true"
 						onClick={this.showAction}
