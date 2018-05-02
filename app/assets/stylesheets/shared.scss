@@ -10,11 +10,6 @@ body {
   height: 100%;
 
 }
-header {
-  position: fixed;
-  width: 100%;
-  z-index: 10000;
-}
 .flexbox {
   @include flexbox;
 
@@ -290,6 +285,7 @@ header {
             font-size: 20px;
             padding-left: 10px;
             line-height: 55px;
+            margin: auto;
             i {
               // @include flexbox;
               line-height: 55px;
@@ -622,9 +618,6 @@ header {
     }
   }
 }
-#main {
-  margin-top: 75px;
-}
 
 @media (max-width: 1024px) {
   .header-expanded {
@@ -665,9 +658,6 @@ header {
 }
 
 @media (max-width: 640px) {
-  #main {
-    margin-top: 125px;
-  }
   header {
     .header-expanded {
       .header-custom {

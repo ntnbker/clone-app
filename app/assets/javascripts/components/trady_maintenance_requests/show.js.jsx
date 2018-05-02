@@ -1591,6 +1591,7 @@ var TradyMaintenanceRequest = React.createClass({
 
 		return (
 			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+				<FixCSS />
 				<div className="main-summary dontprint">
 					{
 						(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) &&

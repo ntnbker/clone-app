@@ -12,14 +12,6 @@ var GeneralAction = React.createClass({
     };
   },
 
-  componentDidMount() {
-    $('#btn-menu-bar').css({'display': 'none'}); 
-    let width = $( window ).width();
-    if (width < 1024) {
-      $('footer').css({bottom: 58});
-    }
-  },
-
   logout (e) {
     e.preventDefault();
     const self = this;

@@ -47,6 +47,7 @@ var Carousel = React.createClass({
 		const self = this;
 		var sliderDetail = $('#slider-detail')
 		if(sliderDetail.length > 0) {
+			console.log(sliderDetail.width())
 			this.setWidth(sliderDetail.width())
 			$( window ).resize(function() {
 				var sliderDetail = $('#slider-detail')
@@ -85,6 +86,8 @@ var Carousel = React.createClass({
 							? this.state.stlen * this.state.stwidth
 							: '100%',
 		};
+		console.log({styles});
+		console.log(this.state);
 		const temp = this;
 		var subWidth = 100/(this.state.stlen ? this.state.stlen : 1) + '%';
 		return (
@@ -133,6 +136,24 @@ var Carousel = React.createClass({
 		);
 	}
 });
+
+var FixCSS = React.createClass({
+	getInitialState() {
+    return {};
+  },
+
+  componentDidMount() {
+    $('.layout').addClass('new-ui');
+  },
+
+  componentWillUnmount() {
+	$('.layout').removeClass('new-ui');
+  },
+  
+  render() {
+    return <div className="display-none" />
+  }
+})
 
 var Assigns = React.createClass({
 	render: function() {

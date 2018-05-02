@@ -857,6 +857,7 @@ var LandlordMaintenanceRequest = React.createClass({
 
 		return (
 			<div className="summary-container-index new-ui-maintenance-request" id="summary-container-index">
+				<FixCSS />
 				<div className="main-summary dontprint">
 					<div className="sidebar">
 						<div className="box-shadow flexbox flex-column">

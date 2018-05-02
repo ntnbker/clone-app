@@ -3249,6 +3249,7 @@ var MaintenanceRequest = React.createClass({
 	render: function() {
 		return (
 			<div>
+        <FixCSS />
 				{ this.summary() }
 			</div>
 		);
