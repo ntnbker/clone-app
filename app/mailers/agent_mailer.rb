@@ -316,5 +316,23 @@ class AgentMailer < ActionMailer::Base
     mail(to:email, subject:"Invoice Void Do Not Pay. View Details")
   end
 
+
+  def agent_notice_landlord_self_repair_email(maintenance_request)
+    @maintenance_request = maintenance_request
+    
+    @property = @maintenance_request.property
+    
+    if @maintenance_request.agent 
+      @user = @maintenance_request.agent.user
+      email = @maintenance_request.agent.email
+    elsif @maintenance_request.agency_admin 
+      @user = @maintenance_request.agency_admin.user
+      email = @maintenance_request.agency_admin.email 
+    end
+    
+    
+    mail(to:email, subject:"Landlord has decied to resolve issue himself for property - #{@property.property_address}, sent on #{Date.today}")
+  end
+
 end 
 

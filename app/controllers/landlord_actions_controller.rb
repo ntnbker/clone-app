@@ -9,6 +9,7 @@ class LandlordActionsController < ApplicationController
     landlord = current_user.landlord 
 
     TenantNoticeLandlordSelfRepairEmailWorker.perform_async(maintenance_request.id, landlord.id)
+    AgentNoticeLandlordSelfRepairEmailWorker.perform_async(maintenance_request.id)
     #send email to tenant
     #send email to agent
     #create reminder for landlord

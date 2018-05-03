@@ -1,9 +1,3 @@
-
-
-
-
-
-
 class TenantNoticeLandlordSelfRepairEmailWorker
   include Sidekiq::Worker
 
