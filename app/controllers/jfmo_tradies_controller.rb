@@ -26,6 +26,7 @@ class JfmoTradiesController < ApplicationController
               if maintenance_request.jfmo_status == "Passive"
                 QuoteRequest.create(trady_id:trady.id, maintenance_request_id:maintenance_request.id)
                 TradyEmailWorker.perform_async(trady.id,maintenance_request.id)
+                maintenance_request.action_status.update_columns(agent_status:"Awaiting Quote", trady_status:"Quote Requests")
                 #Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
                 message = "Thank you, we will find qualified tradies from our network."
 
@@ -46,6 +47,8 @@ class JfmoTradiesController < ApplicationController
           FindTradieEmailWorker.perform_async(maintenance_request.id)
           JfmoRequest.create(maintenance_request_id:maintenance_request.id)
           Log.create(maintenance_request_id:maintenance_request.id, action:"Just Find One Request")
+      
+
         end 
       #end 
       

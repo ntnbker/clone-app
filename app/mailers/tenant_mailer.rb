@@ -169,7 +169,28 @@ class TenantMailer < ActionMailer::Base
     @tenant = tenant_object
     @user = @tenant.user
     
-    mail(to:@tenant.email, subject:"Reminder New appointment request by #{@trady.company_name.capitalize} - #{@property.property_address.capitalize}, sent on #{Date.today}")
+    mail(to:@tenant.email, subject:"Reminder new appointment request by #{@trady.company_name.capitalize} - #{@property.property_address.capitalize}, sent on #{Date.today}")
+  end
+
+  def tenant_notice_landlord_self_repair_email(maintenance_request, landlord)
+    @maintenance_request = maintenance_request
+    @property = @maintenance_request.property
+    @landlord = landlord
+    @tenant = @maintenance_request.tenants.first
+
+    #@user = @tenant.user
+
+
+    # if @maintenance_request.agent
+    #   @agent = @maintenance_request.agent
+    #   @agency = @agent.agency
+    # elsif @maintenance_request.agency_admin
+    #   @agency_admin = @maintenance_request.agency_admin
+    #   @agency = @agency_admin.agency
+    # end
+
+
+    mail(to:@tenant.email, subject:"Landlord Repair  - #{@property.property_address.capitalize}, sent on #{Date.today}")
   end
   
   

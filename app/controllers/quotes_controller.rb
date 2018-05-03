@@ -131,7 +131,7 @@ class QuotesController < ApplicationController
           NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           quote.update_attribute(:status, params[:status])
-          maintenance_request.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
+          maintenance_request.action_status.update_columns(agent_status:"Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
 
           Log.create(maintenance_request_id:maintenance_request.id, action:"Quote has been approved by: ", name: name)
           if maintenance_request.property.landlord
@@ -335,7 +335,7 @@ class QuotesController < ApplicationController
           TradyQuoteApprovedEmailWorker.perform_async(quote.id,trady.id, maintenance_request.id)
           maintenance_request.update_attribute(:trady_id,trady.id)
           
-          maintenance_request.action_status.update_columns(agent_status:"Quote Approved Tradie To Organise Appointment", trady_status:"Appointment Required")
+          maintenance_request.action_status.update_columns(agent_status:"Maintenance Scheduled - Awaiting Invoice", trady_status:"Job Booked")
           quote.update_attribute(:status, params[:status])
           NotifyAgentQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
           NotifyLandlordQuoteApprovedEmailWorker.perform_async(maintenance_request.id)
