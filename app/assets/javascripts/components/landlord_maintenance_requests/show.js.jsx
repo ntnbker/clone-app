@@ -599,6 +599,51 @@ var LandlordMaintenanceRequest = React.createClass({
 		this.setState({ quote_request });
 	},
 
+	createAppointmentFixMyself(callback) {
+		const {maintenance_request, authenticity_token} = this.props;
+		const self = this;
+
+		$.ajax({
+			type: 'POST',
+			url: '/landlord_repair',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: {
+				maintenance_request_id: maintenance_request.id
+			},
+			success: function(res){
+				if (res.errors) {
+					self.setState({notification: {
+						bgClass: "bg-error",
+						title: "Create Appointment",
+						content: res.errors,
+					}});
+				}
+				else {
+					self.setState({
+						maintenance_request,
+						notification: {
+							bgClass: "bg-success",
+							title: "Create Appoinemnt",
+							content: res.message,
+						}
+					});
+				}
+
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Create Appoinemnt",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		})
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -700,6 +745,17 @@ var LandlordMaintenanceRequest = React.createClass({
 							type="Landlord Appointment"
 							comments={this.state.comments}
 							addAppointment={this.addAppointment}
+						/>
+					);
+				}
+
+				case 'createAppointmentFixMyself': {
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							title="Create Appoinment"
+							content="Are you sure you want to fix it yourself?"
+							confirm={this.createAppointmentFixMyself}
 						/>
 					);
 				}

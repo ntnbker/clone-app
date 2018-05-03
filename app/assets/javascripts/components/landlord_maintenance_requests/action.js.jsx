@@ -22,7 +22,7 @@ var ContentLandlordAction = React.createClass({
 					</a>
 				</li>
 				<li>
-					<a onClick={() => this.props.onModalWith('createAppointment')}>
+					<a onClick={() => this.props.onModalWith('createAppointmentFixMyself')}>
 						<i className="icon-send" aria-hidden="true" />
 						Create appointment to fix myself
 					</a>
