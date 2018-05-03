@@ -52,6 +52,40 @@ $color-text: #83878C;
     
     .user-general-action {
       margin-top: -10px;
+      .form-search {
+        height: 100%;
+        margin-bottom: 0px;
+        @include flexbox;
+        @include align-items(center);
+        position: relative;
+        margin: auto;
+        max-width: 300px;
+        height: 35px;
+        border-radius: 20px;
+        background: #313E46;
+        font-size: 12px;
+      }
+
+      .btn-search {
+        border: none;
+        width: 35px;
+        height: 100%;
+        padding: 0;
+        padding-left: 5px;
+        color: #fff;
+      }
+
+      .input-search {
+        height: 100%;
+        width: 80%;
+        background: transparent;
+        padding: 0;
+        border: none;
+        color: #fff;
+        @include input-placeholder {
+          color: white;
+        }
+      }
     }
     .main-summary {
       @include flexbox;

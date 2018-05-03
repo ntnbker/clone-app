@@ -3165,6 +3165,8 @@ var MaintenanceRequest = React.createClass({
 							<GeneralAction
 								{...this.props}
 								current_role={this.props.current_user_role}
+								showSearchBar={true}
+								searchText={this.props.searchText}
 							/>
 							<Action
 								show_assign={this.props.current_user_show_quote_message}

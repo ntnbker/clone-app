@@ -143,6 +143,7 @@ var FixCSS = React.createClass({
 		$('.layout').addClass('new-ui');
 	  if ($(window).width() < 1024) {
 			$('.sidebar').css({height: $(window).height()});
+			$('.sidebar > .box-shadow').css({height: $(window).height() - 30});
 		} else {
 			let menuHeight = 65;
 			let footerHeight = 58;
