@@ -458,6 +458,18 @@ $color-text: #83878C;
         i {
           margin-right: 5px;
         }
+        &.phone, &.trady-call-button {
+          background-color: #8DC596;
+          color: white;
+        }
+        &.message, &.trady-message-button {
+          background-color: #325ABD;
+          color: white;
+        }
+        &.view-work-order {
+          background-color: #5887FF;
+          color: white;
+        }
         &:hover {
           background-color: $color-grey-1;
           color: $color-white;
@@ -479,6 +491,7 @@ $color-text: #83878C;
       .payment-scheduled {
         background-color: #8ADEFF;
         border-color: #8ADEFF;
+        color: white;
       }
     }
     .job-description {
@@ -491,6 +504,8 @@ $color-text: #83878C;
     .add-photo{
       .add-photo-button {
         min-width: 200px;
+        background-color: #ec5c81;
+        color: white;
       }
     }
 
@@ -578,6 +593,7 @@ $color-text: #83878C;
               width: 100%;
               overflow: hidden;
               text-overflow: ellipsis;
+              color: inherit;
             }
           }
           i {
@@ -672,6 +688,10 @@ $color-text: #83878C;
       }
       .invoice-status {
         margin: 10px;
+        > span {
+          display: inline-block;
+          width: 70px;
+        }
       }
     }
 
@@ -681,6 +701,11 @@ $color-text: #83878C;
       .quote-request-button {
         @include flex-direction(column);
         @include align-items(center);
+      }
+
+      .item-quote-request .invoice-status {
+        max-width: 260px;
+        margin: auto;
       }
 
       .contact-button > div {

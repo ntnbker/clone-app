@@ -33,7 +33,7 @@ var AssignTrady = React.createClass({
                   </div>
 							}
               {current_role === 'Trady' &&
-                <div className="view-work-order">
+                <div className="create-invoice-order">
                   <button type="button" className="btn btn-view" onClick={(key, item) => this.props.onModalWith('viewConfirm')}>
                     Create Invoice
                   </button>

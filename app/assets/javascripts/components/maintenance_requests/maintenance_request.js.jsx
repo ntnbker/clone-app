@@ -939,7 +939,7 @@ var MaintenaceRequestDetail = React.createClass({
 					<Carousel gallery={this.props.gallery} />
 				</div>
 				<div className="add-photo contact-button">
-					<div className="phone add-photo-button">
+					<div className="add-photo-button">
 						<button
 							type="button"
 							className=""

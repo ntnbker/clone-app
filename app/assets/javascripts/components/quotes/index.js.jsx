@@ -694,7 +694,7 @@ var QuoteRequests = React.createClass({
                   </div>
                   <div className="contact-button quote-request-button">
                     { role === 'Trady'
-                      ? <div className="trady-message-button">
+                      ? <div className="trady-create-button">
                           <ButtonCreateQuote
                               linkCreateQuote={linkCreateQuote}
                             />
