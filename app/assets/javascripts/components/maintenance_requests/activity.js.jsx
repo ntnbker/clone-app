@@ -42,7 +42,7 @@ var Activity = React.createClass({
 		return (
 			<div className="item box-shadow">
 				<div className="header action">
-					<h4 className="mr-title activity">Activity log</h4>
+					<h5 className="mr-title activity">Activity log</h5>
 					<i className={this.state.show ? "fa fa-angle-down" : "fa fa-angle-right"} aria-hidden="true" onClick={this.showActivity}></i>
 				</div>
 				<div className="content text-center activity-content" id="activity-content">
