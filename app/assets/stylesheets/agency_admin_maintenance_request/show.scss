@@ -133,7 +133,6 @@ $color-text: #83878C;
         padding: 10px 10px 0;
         position: fixed;
         z-index: 1000;
-        overflow-y: scroll;
         padding-right: 0;
         // Config the scroll bar style
         &::-webkit-scrollbar-track {
@@ -145,7 +144,7 @@ $color-text: #83878C;
         }
     
         &::-webkit-scrollbar-thumb {
-          background-color: $color-green-submit;
+          background-color: #D2D5D8;
         }
 
         > * {
