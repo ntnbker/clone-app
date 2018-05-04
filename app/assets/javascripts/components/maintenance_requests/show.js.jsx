@@ -3207,6 +3207,7 @@ var MaintenanceRequest = React.createClass({
 							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
 							landlord={this.state.landlord}
+							isShowLandlord={true}
 							show_assign={this.props.current_user_show_quote_message}
 							strike_approval={hasApproved}
 						/>

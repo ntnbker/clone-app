@@ -916,7 +916,6 @@ var MaintenaceRequestDetail = React.createClass({
 			<div className="mr-detail box-shadow">
 				<h4 className="mr-title">Maintenance Request Details</h4>
 				<MaintenanceRequestInformation {...this.props} />
-				<LandlordContactButton {...this.props} />
 				<div className="content">
 					<div className="description">
 						<h4 className="m-b-n mr-title">Job Description:</h4>
@@ -995,71 +994,110 @@ var MaintenanceRequestInformation = React.createClass({
 	}
 })
 
-var LandlordContactButton = React.createClass({
-	render() {
-		const {landlord} = this.props;
-		return !!landlord &&
-			<div className="landlord-contact-button contact-button">
-				<div className="phone">
-					<button
-						type="button"
-						className="call-landlord"
-						onClick={() => this.callLandlord.click()}
-					>
-						<a
-							className="display-none"
-							href={"tel:" + landlord.mobile}
-							ref={e => this.callLandlord = e}
-						/>
-						<i className="fa fa-phone" aria-hidden="true" />
-						Landlord - {landlord.name}
-					</button>
-				</div>
-				<div className="message">
-					<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageLandlord')}>
-						<i className="fa fa-commenting" aria-hidden="true" />
-						Message {landlord.name}
-					</button>
-				</div>
-			</div>
-	}
-})
-
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request} = this.props;
+		const {tenants = [], maintenance_request, landlord, isShowLandlord} = this.props;
 		return (
-			<div className="tenant-contact box-shadow">
-				<h4 className="mr-title">Tenant Details</h4>
-				<div className="vailability">
-					<p className="header small-weight">Tenant Availability and Access Instructions: </p>
-					<p className="job-description">{maintenance_request.availability_and_access}</p>
-				</div>
-				{tenants.map(tenant => (
-					<div className="contact-button">
-						<div className="phone">
-							<button
-								type="button"
-								className="call-tenant"
-								onClick={() => this[`tenantPhone${tenant.id}`].click()}
-							>
-								<a
-									href={`tel:${tenant.mobile}`}
-									ref={e => this[`tenantPhone${tenant.id}`] = e}
-									className="display-none"
-								/>
-								<i className="fa fa-phone" aria-hidden="true" />
-								Call {tenant.name}
-							</button>
-						</div>
-						<div className="message">
-							<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
-								<i className="fa fa-commenting" aria-hidden="true" />
-								Message {tenant.name}
-							</button>
-						</div>
+			<div className="box-shadow">
+				{isShowLandlord && 
+					<div className="landlord-information">
+						<h4 className="mr-title">Landlord Details</h4>
+						{ !landlord 
+							? <div className="no-landlord-text">
+									No landlord available for this property
+								</div>
+							:	<div className="landlord-detail">
+									<div className="landlord-name">
+										<span className="key">Name: </span>
+										<span className="value">{landlord.name}</span>
+									</div>
+									<div className="phone">
+										<span className="key">Phone Number: </span>
+										<span className="value">{landlord.mobile}</span>
+									</div>
+								</div>
+						}
+						{ !!landlord 
+							? <div className="landlord-contact-button contact-button">
+									<div className="phone">
+										<button
+											type="button"
+											className="call-landlord"
+											onClick={() => this.callLandlord.click()}
+										>
+											<a
+												className="display-none"
+												href={"tel:" + landlord.mobile}
+												ref={e => this.callLandlord = e}
+											/>
+											<i className="fa fa-phone" aria-hidden="true" />
+											Landlord - {landlord.name}
+										</button>
+									</div>
+									<div className="message">
+										<button 
+											type="button" 
+											className="message-landlord" onClick={() => this.props.onModalWith('sendMessageLandlord')}
+										>
+											<i className="fa fa-commenting" aria-hidden="true" />
+											Landlord - {landlord.name}
+										</button>
+									</div>
+								</div>
+							: <div className="landlord-contact-button contact-button">
+									<div className="add-landlord">
+										<button 
+											type="button"
+											onClick={() => this.props.onModalWith('addLandlord')}
+										>
+											<i className="fa fa-plus" aria-hidden="true" />
+											Add Landlord
+										</button>
+									</div>
+								</div>
+						}
 					</div>
-				))}
+				}
+				<div className="tenant-information">
+					<h4 className="mr-title">Tenant Details</h4>
+					<div className="vailability">
+						<p className="header small-weight">Tenant Availability and Access Instructions: </p>
+						<p className="job-description">{maintenance_request.availability_and_access}</p>
+					</div>
+					{tenants.map(tenant => (
+						<div className="tenant-detail">
+							<div className="phone-desktop">
+								<div className="phone">
+									<span className="key">Phone Number: </span>
+									<span className="value">{tenant.mobile}</span>
+								</div>
+							</div>
+							<div className="contact-button">
+								<div className="phone">
+									<button
+										type="button"
+										className="call-tenant"
+										onClick={() => this[`tenantPhone${tenant.id}`].click()}
+									>
+										<a
+											href={`tel:${tenant.mobile}`}
+											ref={e => this[`tenantPhone${tenant.id}`] = e}
+											className="display-none"
+										/>
+										<i className="fa fa-phone" aria-hidden="true" />
+										Tenant - {tenant.name}
+									</button>
+								</div>
+								<div className="message">
+									<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
+										<i className="fa fa-commenting" aria-hidden="true" />
+										Tenant - {tenant.name}
+									</button>
+								</div>
+							</div>
+						</div>
+					))}
+				</div>
 			</div>
 		)
 	}

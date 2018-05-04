@@ -280,8 +280,39 @@ $color-text: #83878C;
         }
       }
     }
+    .item-maintenance-request {
+      .landlord-information {
+        margin-bottom: 10px;
+        .landlord-detail {
+          margin-left: 5px;
+
+          .phone {
+            @media (max-width: 1023px) {
+              display: none;
+            }
+          }
+        }
+      }
+      .tenant-information {
+        .tenant-detail > .phone-desktop {
+          margin-left: 5px;
+          @media (max-width: 1023px) {
+            display: none;
+          }
+        }
+      }
+      .contact-button {
+        .phone {
+          @media (min-width: 1024px) {
+            display: none;
+          }
+        }
+      }
+    }
     h4.mr-title {
       font-weight: 500;
+      margin-bottom: 5px;
+      margin-top: 10px;
     }
     .button-header-mr {
       @include flexbox;
@@ -464,6 +495,10 @@ $color-text: #83878C;
         }
         &.message, &.trady-message-button {
           background-color: #325ABD;
+          color: white;
+        }
+        &.add-landlord {
+          background-color: #1A4E57;
           color: white;
         }
         &.view-work-order {
