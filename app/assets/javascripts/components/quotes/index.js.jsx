@@ -264,7 +264,7 @@ var ButtonQuoteRequestMessage = React.createClass({
 var ButtonPrint = React.createClass({
   render: function() {
     return (
-      <button className="btn btn-print" onClick={this.props.printQuote}>
+      <button type="button" className="btn btn-print" onClick={this.props.printQuote}>
         Print
       </button>
     );
@@ -510,11 +510,18 @@ var Quotes = React.createClass({
                 <div className="user seven columns quote-status">
                   <span className="index quote circle">{index + 1}</span>
                   <span>Status: </span>
-                  {showStatus &&
-                    <button
-                      className={'button-default status ' + status}>
-                      <span>{status}</span>
-                    </button>
+                  {showStatus 
+                    ? <button
+                        type="button"
+                        className={'button-default status ' + status}>
+                        <span>{status}</span>
+                      </button>
+                    : <button
+                        type="button"
+                        className="button-default status pending-decision"
+                      >
+                        <span>Pending Decision</span>
+                      </button>
                   }
                 </div>
                 { !!self.current_user &&
@@ -661,8 +668,7 @@ var QuoteRequests = React.createClass({
           return (
 
             <div className="quotes m-t-lg box-shadow" id="quote_requests" key={index}>
-              <p><span className="index">{index + 1}</span>Quote Requests
-              </p>
+              <p><span className="index">{index + 1}</span>Quote Requests</p>
               <div className="item-quote row item-quote-request">
                 <div className="user seven columns trady-info-group">
                   <div className="trady-info">
@@ -686,7 +692,15 @@ var QuoteRequests = React.createClass({
                       </div>
                     </div>
                   </div>
-                  <div className="contact-button">
+                  <div className="contact-button quote-request-button">
+                    { role === 'Trady'
+                      ? <div className="trady-create-button">
+                          <ButtonCreateQuote
+                              linkCreateQuote={linkCreateQuote}
+                            />
+                      </div>
+                      : ''
+                    }
                     { isCallTrady &&
                       <div className="trady-call-button">
                         <ButtonCallTrady
@@ -706,12 +720,6 @@ var QuoteRequests = React.createClass({
                   </div>
                 </div>
                 <div className="quote-request-button">
-                  { role === 'Trady'
-                    ? <ButtonCreateQuote
-                        linkCreateQuote={linkCreateQuote}
-                      />
-                    : ''
-                  }
                   { !quote_request.trady.jfmo_participant && needAlreadySentButton
                     ? <ButtonQuoteAlreadySent
                         {...self}
@@ -814,7 +822,7 @@ var QuotesInInvoice = React.createClass({
                   <div className="info">
                     <div className="name">
                       <span>{quote.trady.name}</span>
-                      <button className={'button-default ' + quote.status}>
+                      <button type="button" className={'button-default ' + quote.status}>
                         <span>{quote.status}</span>
                       </button>
                     </div>

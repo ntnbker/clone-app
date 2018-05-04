@@ -2995,16 +2995,28 @@ var MaintenanceRequest = React.createClass({
 						/>
 					)
 
-				case 'voidInvoice':
+				case 'updateMRStatus':
 					return (
-						<ModalVoidInvoice
-							voidInvoice={this.voidInvoice}
-							text={"Are you sure want to void this invoice? Voiding this invoice will mark the invoice with a DO NOT PAY status. An email will be sent to the tradie to inform them you have voided and rejected this invoice along with the reason why it was voided."}
-							invoice={this.state.invoice}
+						<UpdateStatusModal
+							existLandlord={!!this.state.landlord}
+							existQuoteRequest={!!this.state.quote_requests.length}
+							existTradyAssigned={!!this.state.trady}
+							onModalWith={this.onModalWith}
+							viewItem={this.viewItem}
 							close={this.isClose}
 						/>
 					)
 
+					case 'assignTo':
+						return (
+							<AssignModal
+								onModalWith={this.onModalWith}
+								all_agents={this.props.all_agents}
+								all_agency_admins={this.props.all_agency_admins}
+								viewItem={this.viewItem}
+								close={this.isClose}
+							/>
+						)
 				default:
 					return null;
 			}
@@ -3153,14 +3165,28 @@ var MaintenanceRequest = React.createClass({
 							<GeneralAction
 								{...this.props}
 								current_role={this.props.current_user_role}
+								showSearchBar={true}
+								searchText={this.props.searchText}
 							/>
 							<Action
 								show_assign={this.props.current_user_show_quote_message}
-								landlord={this.state.landlord}
-								hasTenant={!!this.state.tenants.length}
 								onModalWith={(modal) => this.onModalWith(modal)}
 								viewItem={this.viewItem}
+							/>
+							<AgentLandlordAction
+								onModalWith={this.onModalWith}
+								viewItem={this.viewItem}
+								landlord={this.state.landlord}
+							/>
+							<AgentTradyAction
+								onModalWith={this.onModalWith}
+								viewItem={this.viewItem}
 								assigned_trady={trady || this.props.assigned_trady}
+							/>
+							<AgentTenantAction
+								onModalWith={this.onModalWith}
+								viewItem={this.viewItem}
+								hasTenant={this.state.tenants.length}
 							/>
 						</div>
 					</div>
@@ -3181,6 +3207,7 @@ var MaintenanceRequest = React.createClass({
 							assignToUser={(email) => this.assignToUser(email)}
 							maintenance_request={this.state.maintenance_request}
 							landlord={this.state.landlord}
+							isShowLandlord={true}
 							show_assign={this.props.current_user_show_quote_message}
 							strike_approval={hasApproved}
 						/>
@@ -3249,6 +3276,7 @@ var MaintenanceRequest = React.createClass({
 	render: function() {
 		return (
 			<div>
+        <FixCSS />
 				{ this.summary() }
 			</div>
 		);

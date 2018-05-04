@@ -29,7 +29,7 @@ var TenantDetail = React.createClass({
 		return (
 			<div className="item" data-intro="This is edit details" data-position="left">
 				<div className="header action general-action-title">
-					<a>Maintenance Request Actions</a>
+					<a>Maintenance Request</a>
 					<i
 						aria-hidden="true" 
 						onClick={this.showContact} 

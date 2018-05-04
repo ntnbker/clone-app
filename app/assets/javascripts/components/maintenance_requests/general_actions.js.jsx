@@ -12,14 +12,6 @@ var GeneralAction = React.createClass({
     };
   },
 
-  componentDidMount() {
-    $('#btn-menu-bar').css({'display': 'none'}); 
-    let width = $( window ).width();
-    if (width < 1024) {
-      $('footer').css({bottom: 58});
-    }
-  },
-
   logout (e) {
     e.preventDefault();
     const self = this;
@@ -39,10 +31,52 @@ var GeneralAction = React.createClass({
     })
   },
 
+  search(e) {
+    e.preventDefault();
+    const self = this;
+
+		return $.ajax({
+			type: 'GET',
+			url: '/search',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', self.props.authenticity_token);
+			},
+			data: {
+        query: this.searchText.value || '',
+      },
+			success: function(res){
+				
+			},
+			error: function(err) {
+				
+			}
+		});
+  },
+
+  generateSearchBar() {
+    return (
+      <div className="search hidden-search">        
+        <form className="form-search" onSubmit={this.search}>
+          <button type="submit" className="btn-search">
+            <i className="fa fa-search"></i>
+          </button>
+          <input
+            id="query"
+            type="search"
+            ref={e => this.searchText = e}
+            className="input-search"
+            placeholder="Search..."
+            defaultValue={this.props.searchText || ''}
+          />
+        </form>
+      </div>
+    )
+  },
+
   generateActionButton(text, link, iconClass) {
     return (
-      <div className="user-action-link" onClick={() => this.link.click()}>
-        <a href={link} className="display-none" ref={e => this.link = e} />
+      <div className="user-action-link" onClick={() => this[text].click()}>
+        <a href={link} className="display-none" ref={e => this[text] = e} />
         <span className={`icon ${iconClass}`}></span>
         <span className="action-text">{text}</span>
       </div>
@@ -210,7 +244,8 @@ var GeneralAction = React.createClass({
     return (
       <div className="user-general-action" id="user-general-action">
         {this.renderUserAvatar()}
-        <div className="general-action-title">General Actions</div>
+        {this.props.showSearchBar && this.generateSearchBar()}
+        <div className="general-action-title">General</div>
         {this.renderActions()}
       </div>
     )

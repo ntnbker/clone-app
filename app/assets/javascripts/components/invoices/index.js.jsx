@@ -160,6 +160,16 @@ var Invoices = React.createClass({
                       <span className="key">Company Name: </span>
                       <span className="value">{trady.company_name}</span>
                     </div>
+                    <div className="invoice-status">
+                      <span>Invoice Status: </span>
+                      {
+                        paid == false
+                          ? active !== false
+                            ? <button className={'button-default status Declined'}>Outstanding Payment</button>
+                            : <button className={'button-default status Declined'}>Do Not Pay</button>
+                          : <button className={'button-default status Approved'}>Payment Scheduled</button>
+                      }
+                    </div>
                   </div>
                 </div>
                 <div className="contact-button">
@@ -173,6 +183,21 @@ var Invoices = React.createClass({
                     </button>
                   </div>
                   {
+                    ['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && active !== false &&
+                      <div className="payment-scheduled">
+                        <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.markAsPaid(invoice)}>
+                          Payment Scheduled
+                        </button>
+                      </div>  
+                  }
+                  { role === 'Trady' && !paid && active !== false &&
+                    <div className="payment-scheduled">
+                      <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
+                        Remind Agent of Payment
+                      </button>
+                    </div>
+                  }
+                  {
                     paid == false && active !== false &&
                       <div className="void-invoice">
                         <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewPDFInvoice('voidInvoice', invoice)}>
@@ -181,36 +206,6 @@ var Invoices = React.createClass({
                       </div>
                   }
                 </div>
-              </div>
-              <div className="quote-request-button">
-                {
-                  ['Agent', 'AgencyAdmin'].indexOf(role) !== -1 && !paid && active !== false &&
-                      <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.markAsPaid(invoice)}>
-                        Payment Scheduled
-                      </button>
-                }
-                { role === 'Trady' && !paid && active !== false &&
-                  <button type="button" className="btn payment-scheduled" onClick={(item) => self.props.paymentReminder({})}>
-                    Remind Agent of Payment
-                  </button>
-                }
-              </div>
-              <div className="invoice-status">
-                <span>Status: </span>
-                {
-                  invoice.paid == false
-                    ? invoice.active !== false
-                      ? <button className={'button-default status Declined'}>
-                          <span>Outstanding Payment</span>
-                        </button>
-                      : <button className={'button-default status Declined'}>
-                          <span>Do Not Pay</span>
-                        </button>
-                    :
-                    <button className={'button-default status Approved'}>
-                      <span>Payment Scheduled</span>
-                    </button>
-                }
               </div>
             </div>
           );

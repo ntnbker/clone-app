@@ -105,16 +105,16 @@ var ContentTradyAction = React.createClass({
 					{this.props.needShowCreateQuote && <CreactOrUploadQuote link={link} />}
 					<CreateOrUploadInvoice onModalWith={(modal) => this.props.onModalWith(modal)} />
 					{/*<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />*/}
-					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
-					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{/* <CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} /> */}
 					<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
 		}else if(!!this.props.assigned_trady && !!this.props.signed_in_trady && this.props.signed_in_trady.id != this.props.assigned_trady.id) {
 			return (
 				<ul>
-					<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
-					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{/* <CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
+					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} /> */}
 					<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 				</ul>
 			);
@@ -128,10 +128,10 @@ var ContentTradyAction = React.createClass({
 					{ !!this.props.assigned_trady &&
 						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					{ !!this.props.assigned_trady &&
+					{ false && !!this.props.assigned_trady &&
 						<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					<CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} />
+					{/* <CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} /> */}
 					{ !!this.props.assigned_trady &&
 						<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
@@ -156,7 +156,7 @@ var TradyAction = React.createClass({
 		return (
 			<div className="item" data-intro="This is Action" data-position="left">
 				<div className="header action general-action-title">
-					<a>Maintenance Request Actions</a>
+					<a>Maintenance Request</a>
 					<i
 						aria-hidden="true"
 						onClick={this.showAction}

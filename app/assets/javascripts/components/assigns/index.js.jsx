@@ -32,6 +32,13 @@ var AssignTrady = React.createClass({
   									</button>
                   </div>
 							}
+              {current_role === 'Trady' &&
+                <div className="create-invoice-order">
+                  <button type="button" className="btn btn-view" onClick={(key, item) => this.props.onModalWith('viewConfirm')}>
+                    Create Invoice
+                  </button>
+                </div>
+              }
 						</div>
 					</div>
           <div className="quote-request-button">
@@ -46,7 +53,7 @@ var AssignTrady = React.createClass({
                 {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
               </button>
             }
-            { showStopReminder &&
+            { false && showStopReminder &&
               <button
                 type="button"
                 className="btn btn-view appointment-already-made stop-reminder"
