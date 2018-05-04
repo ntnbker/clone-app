@@ -389,7 +389,7 @@ var InvoiceSubmit = React.createClass({
               <div className="date-quote">
                 <p>
                   <span className="font-bold ">
-                    Trady Invoice Ref:
+                    Trady Invoice Reference:
                   </span>
                   <span>
                     {invoice.trady_invoice_reference || 'N/A'}
