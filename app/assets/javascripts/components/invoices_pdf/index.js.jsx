@@ -61,6 +61,16 @@ var PDFInvoices = React.createClass({
 												<span className="key">Company Name: </span>
 												<span className="value">{trady.company_name}</span>
 											</div>
+											<div className="invoice-status">
+												<span>Invoice Status: </span>
+												{
+													paid == false
+														? active !== false
+															? <button className={'button-default status Declined'}>Outstanding Payment</button>
+															: <button className={'button-default status Declined'}>Do Not Pay</button>
+														: <button className={'button-default status Approved'}>Payment Scheduled</button>
+												}
+											</div>
 										</div>
 									</div>
 									<div className="contact-button">
@@ -97,23 +107,6 @@ var PDFInvoices = React.createClass({
 												</div>
 										}
 									</div>
-								</div>
-								<div className="invoice-status">
-									<span>Status: </span>
-									{
-										paid == false
-											? active !== false
-												? <button className={'button-default status Declined'}>
-														<span>Outstanding Payment</span>
-													</button>
-												: <button className={'button-default status Declined'}>
-														<span>Do Not Pay</span>
-													</button>
-											:
-											<button className={'button-default status Approved'}>
-												<span>Payment Scheduled</span>
-											</button>
-									}
 								</div>
 							{
 								/* {<div className="user seven columns">

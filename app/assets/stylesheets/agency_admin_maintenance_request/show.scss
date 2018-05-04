@@ -659,8 +659,10 @@ $color-text: #83878C;
           }
         }
       }
-      .quote-status, .invoice-status {
+      .quote-status {
         margin: 10px;
+      }
+      .quote-status, .invoice-status {
         button {
           height: inherit;
           padding: 0 5px;
@@ -686,13 +688,6 @@ $color-text: #83878C;
           color: rgb(255, 191, 28);
         }
       }
-      .invoice-status {
-        margin: 10px;
-        > span {
-          display: inline-block;
-          width: 70px;
-        }
-      }
     }
 
     @media (max-width: 770px) {
@@ -701,11 +696,6 @@ $color-text: #83878C;
       .quote-request-button {
         @include flex-direction(column);
         @include align-items(center);
-      }
-
-      .item-quote-request .invoice-status {
-        max-width: 260px;
-        margin: auto;
       }
 
       .contact-button > div {
