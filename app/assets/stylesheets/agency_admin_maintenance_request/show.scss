@@ -62,7 +62,7 @@ $color-text: #83878C;
         max-width: 300px;
         height: 35px;
         border-radius: 20px;
-        background: #313E46;
+        background: #D2D5D8;
         font-size: 12px;
       }
 
@@ -72,7 +72,7 @@ $color-text: #83878C;
         height: 100%;
         padding: 0;
         padding-left: 5px;
-        color: #fff;
+        color: #3d4b53;
       }
 
       .input-search {
@@ -81,9 +81,9 @@ $color-text: #83878C;
         background: transparent;
         padding: 0;
         border: none;
-        color: #fff;
+        color: #3d4b53;
         @include input-placeholder {
-          color: white;
+          color: #3d4b53;
         }
       }
     }
@@ -166,13 +166,13 @@ $color-text: #83878C;
             margin-bottom: 20px;
             margin-bottom: 10px;
             font-size: 17px;
-            color: $color-gray;
+            color: #8B99A7;
             text-transform: capitalize;
           }
           button {
             color: white;
-            background: $color-gray;
-            border-color: $color-gray;
+            background: #98C399;
+            border-color: #98C399;
             font-weight: 600;
             margin-bottom: 5px;
             height: inherit;
@@ -181,14 +181,14 @@ $color-text: #83878C;
           }
         }
         .general-action-title {
-          border-top: 2px solid $color-text;
-          border-bottom: 2px solid $color-text;
+          border-top: 2px solid #98C399;
+          border-bottom: 2px solid #98C399;
           padding: 2px 15px;
           font-weight: 600;
-          color: rgba(131, 135, 140, 0.5);
+          color: white;
           font-size: 15px;
           margin: 7px -20px;
-          background: white;
+          background: #98C399;
           line-height: inherit;
           height: inherit;
 
@@ -241,7 +241,7 @@ $color-text: #83878C;
       
           &.visible {
             transform: translate3d(300px, 0, 0);
-            overflow: scroll;
+            overflow-y: scroll;
           }
         }
         .section {
@@ -396,7 +396,7 @@ $color-text: #83878C;
           font-weight: 500;
           padding: 0px 5px 0;
           height: inherit;
-          background-color: #fff;
+          background-color: white;
         }
         .address {
           font-weight: 500;
@@ -701,25 +701,26 @@ $color-text: #83878C;
         button {
           height: inherit;
           padding: 0 5px;
+          font-size: 13px;
         }
 
         .Active {
-          border: 1px solid #849aaa;
+          border: 2px solid #849aaa;
         }
         .Accepted {
-          border: 1px solid #7dc691;
+          border: 2px solid #7dc691;
           color: #7dc691;
         }
         .Approved {
-          border: 1px solid #7dc691;
+          border: 2px solid #7dc691;
           color: #7dc691;
         }
         .Declined, .Cancelled {
-          border: 1px solid #e76565;
+          border: 2px solid #e76565;
           color: #e76565;
         }
         .pending-decision {
-          border: 1px solid rgb(255, 191, 28);
+          border: 2px solid rgb(255, 191, 28);
           color: rgb(255, 191, 28);
         }
       }
@@ -757,6 +758,11 @@ $color-text: #83878C;
         .quote-request-button {
           button.stop-reminder {
             font-size: 13px;
+          }
+        }
+        .quote-status, .invoice-status {
+          button {
+            font-size: 11px;
           }
         }
       }

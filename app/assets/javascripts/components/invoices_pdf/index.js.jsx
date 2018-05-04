@@ -62,7 +62,7 @@ var PDFInvoices = React.createClass({
 												<span className="value">{trady.company_name}</span>
 											</div>
 											<div className="invoice-status">
-												<span>Invoice Status: </span>
+												<span className="key">Invoice Status: </span>
 												{
 													paid == false
 														? active !== false

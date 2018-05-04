@@ -141,14 +141,16 @@ var FixCSS = React.createClass({
 
   componentDidMount() {
 		$('.layout').addClass('new-ui');
-	  if ($(window).width() < 1024) {
-			$('.sidebar').css({height: $(window).height()});
-			$('.sidebar > .box-shadow').css({height: $(window).height() - 30});
-		} else {
-			let menuHeight = 65;
-			let footerHeight = 58;
-			$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
-		}
+		$(window).resize(() => {
+			if ($(window).width() < 1024) {
+				$('.sidebar').css({height: $(window).height()});
+				// $('.sidebar > .box-shadow').css({height: $(window).height()});
+			} else {
+				let menuHeight = 65;
+				let footerHeight = 58;
+				$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
+			}
+		})
   },
 
   componentWillUnmount() {
