@@ -158,6 +158,12 @@ var FixCSS = React.createClass({
 			let footerHeight = 58;
 			$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
 		}
+		if ($('.sidebar').height() < $('.sidebar > .box-shadow').height()) {
+			$('.sidebar').css({'overflow-y': 'scroll'});
+		}
+		else {
+			$('.sidebar').css({'overflow-y': ''});
+		}
 	},
 
   componentWillUnmount() {
