@@ -13,8 +13,8 @@ var ModalViewPDFInvoice = React.createClass({
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
-		const {pdf_url} = invoice;
-		const {trady, role} = this.props;
+		const {pdf_url, trady} = invoice;
+		const {role} = this.props;
 
 		const isPdf = /store\/\w+\.pdf/.test(pdf_url);
     const isShowVoidModal = invoice.paid === false && invoice.active === false;

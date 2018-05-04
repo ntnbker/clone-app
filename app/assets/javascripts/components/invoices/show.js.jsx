@@ -259,8 +259,8 @@ var ModalViewInvoice = React.createClass({
 										</div>
 										<div className="info-agency">
 											<p>
-												<span className="font-bold">Invoice no: </span>
-												<span> {invoice.invoice_number}</span>
+												<span className="font-bold">Trady Invoice Ref: </span>
+												<span> {invoice.trady_invoice_reference || 'N/A'}</span>
 											</p>
 											<p>
 												<span className="font-bold">Issue date: </span>
@@ -322,8 +322,8 @@ var ModalViewInvoice = React.createClass({
 									</p>
 									{ !!invoice.invoice_items &&
 										<p>
-											<span className="font-bold">Invoice no: </span>
-											<span> {invoice.invoice_number}</span>
+											<span className="font-bold">Trady Invoice Ref: </span>
+											<span> {invoice.trady_invoice_reference || 'N/A'}</span>
 										</p>
 									}
 								</div>

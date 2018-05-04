@@ -625,7 +625,7 @@ var LandlordMaintenanceRequest = React.createClass({
 						maintenance_request,
 						notification: {
 							bgClass: "bg-success",
-							title: "Create Appoinemnt",
+							title: "Create Appointment",
 							content: res.message,
 						}
 					});
@@ -636,7 +636,52 @@ var LandlordMaintenanceRequest = React.createClass({
 			error: function(err) {
 				self.setState({notification: {
 					bgClass: "bg-error",
-					title: "Create Appoinemnt",
+					title: "Create Appointment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		})
+	},
+
+	markIssueResolved(callback) {
+		const {maintenance_request, authenticity_token} = this.props;
+		const self = this;
+
+		$.ajax({
+			type: 'POST',
+			url: '/landlord_resolved_issue',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: {
+				maintenance_request_id: maintenance_request.id
+			},
+			success: function(res){
+				if (res.errors) {
+					self.setState({notification: {
+						bgClass: "bg-error",
+						title: "Mark As Issue Resolved",
+						content: res.errors,
+					}});
+				}
+				else {
+					self.setState({
+						maintenance_request,
+						notification: {
+							bgClass: "bg-success",
+							title: "Mark As Issue Resolved",
+							content: res.message,
+						}
+					});
+				}
+
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Mark As Issue Resolved",
 					content: err.responseText,
 				}});
 				self.onModalWith('notification');
@@ -809,6 +854,16 @@ var LandlordMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'markIssueResolved': {
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							title="Mark As Issue Resolved"
+							content="Are you sure you want to mark this maintenance request issue as resolved?"
+							confirm={this.markIssueResolved}
+						/>
+					);
+				}
 				default:
 					return null;
 			}
