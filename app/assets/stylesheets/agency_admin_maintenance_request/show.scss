@@ -133,7 +133,20 @@ $color-text: #83878C;
         padding: 10px 10px 0;
         position: fixed;
         z-index: 1000;
-        overflow: scroll;
+        overflow-y: scroll;
+        padding-right: 0;
+        // Config the scroll bar style
+        &::-webkit-scrollbar-track {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+    
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+    
+        &::-webkit-scrollbar-thumb {
+          background-color: $color-green-submit;
+        }
 
         > * {
           padding-bottom: 10px;
@@ -171,8 +184,8 @@ $color-text: #83878C;
           }
           button {
             color: white;
-            background: #98C399;
-            border-color: #98C399;
+            background: #7CC791;
+            border-color: #7CC791;
             font-weight: 600;
             margin-bottom: 5px;
             height: inherit;
@@ -181,14 +194,14 @@ $color-text: #83878C;
           }
         }
         .general-action-title {
-          border-top: 2px solid #98C399;
-          border-bottom: 2px solid #98C399;
+          border-top: 2px solid #7CC791;
+          border-bottom: 2px solid #7CC791;
           padding: 2px 15px;
           font-weight: 600;
           color: white;
           font-size: 15px;
           margin: 7px -20px;
-          background: #98C399;
+          background: #7CC791;
           line-height: inherit;
           height: inherit;
 
