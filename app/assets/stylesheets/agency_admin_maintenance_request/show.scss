@@ -241,7 +241,7 @@ $color-text: #83878C;
       
           &.visible {
             transform: translate3d(300px, 0, 0);
-            overflow: scroll;
+            overflow-y: scroll;
           }
         }
         .section {
