@@ -137,21 +137,28 @@ var Carousel = React.createClass({
 var FixCSS = React.createClass({
 	getInitialState() {
     return {};
-  },
+	},
 
   componentDidMount() {
+		const self = this;
 		$('.layout').addClass('new-ui');
+		self.resizeSidebar();
+
 		$(window).resize(() => {
-			if ($(window).width() < 1024) {
-				$('.sidebar').css({height: $(window).height()});
-				// $('.sidebar > .box-shadow').css({height: $(window).height()});
-			} else {
-				let menuHeight = 65;
-				let footerHeight = 58;
-				$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
-			}
+			self.resizeSidebar();	
 		})
-  },
+	},
+	
+	resizeSidebar() {
+		if ($(window).width() < 1024) {
+			$('.sidebar').css({height: $(window).height()});
+			// $('.sidebar > .box-shadow').css({height: $(window).height()});
+		} else {
+			let menuHeight = 65;
+			let footerHeight = 58;
+			$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
+		}
+	},
 
   componentWillUnmount() {
 		$('.layout').removeClass('new-ui');
