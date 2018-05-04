@@ -592,7 +592,7 @@ var ItemMaintenanceRequest = React.createClass({
 		return (
 			<div className="item-maintenance-request">
 				{
-					props.show_assign &&
+					false && props.show_assign &&
 						<ButtonHeaderMR
 							all_agents={props.all_agents}
 							all_agency_admins={props.all_agency_admins}
@@ -914,11 +914,11 @@ var MaintenaceRequestDetail = React.createClass({
 
 		return (
 			<div className="mr-detail box-shadow">
-				<h4 className="mr-title">Maintenance Request Details</h4>
+				<h5 className="mr-title">Maintenance Request Details</h5>
 				<MaintenanceRequestInformation {...this.props} />
 				<div className="content">
 					<div className="description">
-						<h4 className="m-b-n mr-title">Job Description:</h4>
+						<h5 className="m-b-n mr-title">Job Description:</h5>
 						<p className="job-description">{maintenance_request.maintenance_description}</p>
 					</div>
 					{ !hide_note && maintenance_request.preapproved_note
@@ -1001,7 +1001,7 @@ var TenantContactButton = React.createClass({
 			<div className="box-shadow">
 				{isShowLandlord && 
 					<div className="landlord-information">
-						<h4 className="mr-title">Landlord Details</h4>
+						<h5 className="mr-title">Landlord Details</h5>
 						{ !landlord 
 							? <div className="no-landlord-text">
 									No landlord available for this property
@@ -1059,7 +1059,7 @@ var TenantContactButton = React.createClass({
 					</div>
 				}
 				<div className="tenant-information">
-					<h4 className="mr-title">Tenant Details</h4>
+					<h5 className="mr-title">Tenant Details</h5>
 					<div className="vailability">
 						<p className="header small-weight">Tenant Availability and Access Instructions: </p>
 						<p className="job-description">{maintenance_request.availability_and_access}</p>

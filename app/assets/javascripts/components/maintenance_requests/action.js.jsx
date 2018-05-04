@@ -85,20 +85,25 @@ var Action = React.createClass({
 		const hasLandlord = !!this.props.landlord;
 		const hasTenant = this.props.hasTenant;
 		const isNotAssigned = !this.props.assigned_trady;
-
+		
 		return {
 			listActions: [{
-				icon: 'fa fa-files-o',
+				icon: 'fa fa-sticky-note-o',
+				text: 'Approve Job',
+				onClick: () => this.props.onModalWith('approveJob'),
+				isShow: this.props.show_assign,
+			}, {
+				icon: 'fa fa-plus-square-o',
 				text: 'Assign To',
 				onClick: () => this.props.onModalWith('assignTo'),
 				isShow: this.props.show_assign,
 			}, {
-				icon: 'fa fa-files-o',
+				icon: 'fa fa-pencil-square-o',
 				text: 'Edit Maintenance Request',
 				onClick: () => this.props.onModalWith('editMaintenanceRequest'),
 				isShow: this.props.show_assign,
 			}, {
-				icon: 'fa fa-files-o',
+				icon: 'fa fa-bars',
 				text: 'Update Status',
 				onClick: () => this.props.onModalWith('updateMRStatus'),
 				isShow: this.props.show_assign,
