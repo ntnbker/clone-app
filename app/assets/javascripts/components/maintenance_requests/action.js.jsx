@@ -32,7 +32,7 @@ var ActionComponent = React.createClass({
 		return (
 			<div className="item" data-intro="Select 'Action' to action the maintenance request." data-position="left">
 				<div className="header action general-action-title">
-					<a>{this.props.text}</a>
+					{this.props.text}
 					<i
 						aria-hidden="true"
 						onClick={this.showAction}

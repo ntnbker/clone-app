@@ -1,3 +1,6 @@
+// Use it for close sidebar in MR show page on mobile
+var DONT_CLOSE_WHEN_CLICK_ME_LIST = ['input-search', 'fa-angle-right', 'general-action-title'];
+
 var Carousel = React.createClass({
 	getInitialState: function() {
 		const gallery = this.props.gallery.length > 0 ? this.props.gallery : [];
