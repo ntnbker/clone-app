@@ -154,8 +154,10 @@ var FixCSS = React.createClass({
 	
 	resizeSidebar() {
 		if ($(window).width() < 1024) {
-			$('.sidebar').css({height: $(window).height()});
-			// $('.sidebar > .box-shadow').css({height: $(window).height()});
+			let screenHeight = $(window).height();
+			let sidebarHeight = $('.sidebar').height();
+			$('.sidebar').css({height: screenHeight});
+			$('.sidebar > .box-shadow').css({height: Math.max(screenHeight, sidebarHeight)});
 		} else {
 			let menuHeight = 65;
 			let footerHeight = 58;
