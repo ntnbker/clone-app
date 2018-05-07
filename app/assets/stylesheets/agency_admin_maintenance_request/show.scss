@@ -566,6 +566,16 @@ $color-text: #83878C;
           background-color: #5887FF;
           color: white;
         }
+        &.trady-create-button, &.create-invoice-order {
+          background-color: #7DC691;
+          border-color: #7DC691;
+          color: white;
+        }
+        &.view-invoice {
+          background-color: #2892D7;
+          border-color: #2892D7;
+          color: white;
+        }
         &:hover {
           background-color: $color-grey-1;
           color: $color-white;
@@ -740,7 +750,7 @@ $color-text: #83878C;
               border-color: #c14343;
             }
           }
-          .cancel-work-order, .void-invoice {
+          &.cancel-work-order, &.void-invoice {
             background-color: $color-red;
             border-color: $color-red;
             color: $color-white;
@@ -749,9 +759,18 @@ $color-text: #83878C;
               border-color: #c14343;
             }
           }
-          .payment-scheduled {
+          &.payment-scheduled {
             background-color: #8ADEFF;
             border-color: #8ADEFF;
+          }
+          &.create-quote {
+            background-color: #2892D7;
+            border-color: #2892D7;
+          }
+          &.view-invoice {
+            background-color: #2892D7;
+            border-color: #2892D7;
+            color: white;
           }
         }
       }
@@ -2237,6 +2256,11 @@ span.index {
         color: #849aaa;
         border: none;
       }
+      &.view-quote {
+        background-color: #2892D7;
+        border-color: #2892D7;
+        color: white;
+      }
     }
     .btn-accept {
       background-color: $color-green;
@@ -2546,9 +2570,6 @@ span.index {
     }
     .modal-custom .modal-body .input-custom {
       width: 100%;
-    }
-    .modal-custom .modal-header .top-part {
-
     }
     .show-quote .detail-quote .table tr {
       word-wrap: break-word;

@@ -52,7 +52,7 @@ var ButtonCreateQuote = React.createClass({
     return (
       <button
       type="button"
-      className="btn btn-accept"
+      className="btn btn-accept create-quote"
       onClick={() => this.link.click()}
       >
         <a
@@ -152,7 +152,7 @@ var ButtonView = React.createClass({
     return (
       <button
         type="button"
-        className="btn btn-trans"
+        className="btn view-quote"
         onClick={(key, item) => this.props.viewQuote('viewQuote', this.props.quote)}
       >
         View
