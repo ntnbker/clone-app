@@ -3018,6 +3018,14 @@ var MaintenanceRequest = React.createClass({
 								close={this.isClose}
 							/>
 						)
+
+					case 'showSettings':
+						return (
+							<ModalShowSettings
+								onModalWith={this.onModalWith}
+								close={this.isClose}
+							/>
+						)
 				default:
 					return null;
 			}

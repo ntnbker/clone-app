@@ -622,6 +622,16 @@ var ItemMaintenanceRequest = React.createClass({
 				}
 				<MaintenaceRequestDetail {...this.props} />
 				<TenantContactButton {...this.props} />
+				{ props.show_assign && 
+					<button
+						type="button"
+						className="show-settings"
+						onClick={() => this.props.onModalWith('showSettings')}
+					>
+						<i className="fa fa-cog" aria-hidden="true" />
+						Settings
+					</button>
+				}
 			</div>
 		);
 	}
@@ -932,7 +942,17 @@ var MaintenaceRequestDetail = React.createClass({
 
 		return (
 			<div className="mr-detail box-shadow">
-				<h5 className="mr-title">Maintenance Request Details</h5>
+				<h5 className="mr-title">
+					Maintenance Request Details 
+					{show_assign && 
+						<span 
+							className="edit-detail" 
+							onClick={() => this.props.onModalWith('editMaintenanceRequest')}
+						>
+							(Edit Detail)
+						</span>
+					}
+				</h5>
 				<MaintenanceRequestInformation {...this.props} />
 				<div className="content">
 					<div className="description">
@@ -986,6 +1006,12 @@ var MaintenanceRequestInformation = React.createClass({
 					<div className="mr-information">
 						<span className="key">Status: </span>
 						<span className="data status">{status && status.agent_status}</span>
+						<span 
+							className="update-status"
+							onClick={() => this.props.onModalWith('updateMRStatus')}
+						>
+							(Update Status)
+						</span>
 					</div>
 				}
 				<div className="mr-information">

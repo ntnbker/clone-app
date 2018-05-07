@@ -92,31 +92,31 @@ var Action = React.createClass({
 				text: 'Approve Job',
 				onClick: () => this.props.onModalWith('approveJob'),
 				isShow: this.props.show_assign,
-			}, {
-				icon: 'fa fa-plus-square-o',
-				text: 'Assign To',
-				onClick: () => this.props.onModalWith('assignTo'),
-				isShow: this.props.show_assign,
-			}, {
-				icon: 'fa fa-pencil-square-o',
-				text: 'Edit Maintenance Request',
-				onClick: () => this.props.onModalWith('editMaintenanceRequest'),
-				isShow: this.props.show_assign,
-			}, {
-				icon: 'fa fa-bars',
-				text: 'Update Status',
-				onClick: () => this.props.onModalWith('updateMRStatus'),
-				isShow: this.props.show_assign,
-			}, {
-				icon: 'fa fa-files-o',
-				text: 'Duplicate Maintenance Request',
-				onClick: () => this.props.onModalWith('duplicateMR'),
-				isShow: this.props.show_assign,
-			}, {
-				icon: 'fa fa-files-o',
-				text: 'Split Maintenance Request',
-				onClick: () => this.props.onModalWith('splitMR'),
-				isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-plus-square-o',
+			// 	text: 'Assign To',
+			// 	onClick: () => this.props.onModalWith('assignTo'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-pencil-square-o',
+			// 	text: 'Edit Maintenance Request',
+			// 	onClick: () => this.props.onModalWith('editMaintenanceRequest'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-bars',
+			// 	text: 'Update Status',
+			// 	onClick: () => this.props.onModalWith('updateMRStatus'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-files-o',
+			// 	text: 'Duplicate Maintenance Request',
+			// 	onClick: () => this.props.onModalWith('duplicateMR'),
+			// 	isShow: this.props.show_assign,
+			// }, {
+			// 	icon: 'fa fa-files-o',
+			// 	text: 'Split Maintenance Request',
+			// 	onClick: () => this.props.onModalWith('splitMR'),
+			// 	isShow: this.props.show_assign,
 			}, ]
 		};
 	},

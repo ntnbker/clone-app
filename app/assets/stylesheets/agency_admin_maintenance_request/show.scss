@@ -293,6 +293,21 @@ $color-text: #83878C;
       }
     }
     .item-maintenance-request {
+      position: relative;
+      .show-settings {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        height: inherit;
+        padding: 0 10px;
+        background-color: #4A90E2;
+        border: #4A90E2;
+        color: white;
+
+        i {
+          margin-right: 5px;
+        }
+      }
       .landlord-information {
         margin-bottom: 10px;
         .landlord-detail {
@@ -332,6 +347,20 @@ $color-text: #83878C;
       font-weight: 500;
       margin-bottom: 5px;
       margin-top: 10px;
+
+      .edit-detail {
+        margin-left: 10px;
+        font-size: 15px;
+        font-weight: 300;
+        cursor: pointer;
+        color: #4A90E2;
+        display: inline-block;
+        
+        &:hover {
+          text-decoration: underline;
+          color: $color-green;
+        }
+      }
     }
     .button-header-mr {
       @include flexbox;
@@ -425,6 +454,19 @@ $color-text: #83878C;
         }
         .mr-information, .service {
           font-size: 13px;
+        }
+
+        .update-status {
+          margin-left: 10px;
+          font-size: 13px;
+          font-weight: 300;
+          cursor: pointer;
+          color: #4A90E2;
+          
+          &:hover {
+            text-decoration: underline;
+            color: $color-green;
+          }
         }
       }
       .mr-photo {
@@ -781,10 +823,20 @@ $color-text: #83878C;
       h5.mr-title {
         font-size: 17px;
         margin-bottom: 10px;
+        margin-top: 25px;
+        line-height: 15px;
+
+        .edit-detail {
+          font-size: 12px;
+        }
       }
       .mr-detail {
         .mr-information .mr-information {
           font-size: 11px;
+          
+          .update-status {
+            font-size: 10px;
+          }
         }
       }
       .item-quote-request {
@@ -801,6 +853,29 @@ $color-text: #83878C;
       }
       .quotes p {
         font-size: 14px;
+      }
+    }
+  }
+  .maintenance-request-settings {
+    @include flexbox;
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+
+    > button {
+      margin: 10px 0;
+      width: 300px;
+      color: white;
+      background-color: $color-green;
+      border: $color-green;
+      padding: 0;
+
+      i {
+        margin-right: 5px;
+      }
+      &:hover {
+        background-color: #619970;
+        border: #619970;
       }
     }
   }
