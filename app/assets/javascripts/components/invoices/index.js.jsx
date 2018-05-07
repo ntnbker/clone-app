@@ -177,7 +177,7 @@ var Invoices = React.createClass({
                     <button
                       type="button"
                       className="btn btn-view"
-                      onClick={(key, item) => self.props.viewPDFInvoice('viewPdfInvoice', invoice)}
+                      onClick={(key, item) => self.props.viewInvoice('viewInvoice', invoice)}
                     >
                         View Invoice
                     </button>
@@ -200,7 +200,7 @@ var Invoices = React.createClass({
                   {
                     paid == false && active !== false &&
                       <div className="void-invoice">
-                        <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewPDFInvoice('voidInvoice', invoice)}>
+                        <button type="button" className="btn btn-decline" onClick={(item) => self.props.viewInvoice('voidInvoice', invoice)}>
                           Void Invoice
                         </button>
                       </div>

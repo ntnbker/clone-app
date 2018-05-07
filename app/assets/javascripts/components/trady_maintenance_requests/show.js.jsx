@@ -23,9 +23,10 @@ var TradySideBarMobile = React.createClass({
 	componentDidMount: function() {
 		const self = this;
 		$(document).click(function(e) {
-			let {pageX, pageY} = e;
-			let isHeaderActionClicked = pageX <= 300 && pageY >= 250 && pageY <= 282;
-			if (!isHeaderActionClicked) {
+			const {className} = e.target;
+			dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+
+			if (!dontCloseMe) {
 				self.close();
 			}
 		})
