@@ -118,7 +118,7 @@ var GeneralAction = React.createClass({
           this.generateActionButton(
             'Agent Account Settings',
             this.props.edit_agent,
-            'fa fa-user-o'
+            'fa fa-user'
           )
         }
       </div>
@@ -153,7 +153,7 @@ var GeneralAction = React.createClass({
           this.generateActionButton(
             'Agency Admin Account Settings',
             this.props.edit_agency_admin,
-            'fa fa-user-o'
+            'fa fa-user'
           )
         }
       </div>
@@ -174,7 +174,7 @@ var GeneralAction = React.createClass({
           this.generateActionButton(
             'Trady Account Settings',
             this.props.edit_trady,
-            'fa fa-user-o'
+            'fa fa-user'
           )
         }
       </div>
@@ -202,7 +202,7 @@ var GeneralAction = React.createClass({
           this.generateActionButton(
             'Tenant Account Settings',
             this.props.edit_tenant,
-            'fa fa-user-o'
+            'fa fa-user'
           )
         }
       </div>

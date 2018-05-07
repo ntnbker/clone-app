@@ -231,7 +231,7 @@ $color-text: #83878C;
           }
           span.icon {
             font-size: 18px;
-            color: rgba(131, 135, 140, 0.8);
+            color: #849aaa;
             margin-right: 8px;
           }
         }
@@ -350,7 +350,7 @@ $color-text: #83878C;
 
       .edit-detail {
         margin-left: 10px;
-        font-size: 15px;
+        font-size: 13px;
         font-weight: 300;
         cursor: pointer;
         color: #4A90E2;
@@ -841,7 +841,8 @@ $color-text: #83878C;
         line-height: 15px;
 
         .edit-detail {
-          font-size: 12px;
+          font-size: 11px;
+          margin-left: 5px;
         }
       }
       .mr-detail {
@@ -849,7 +850,7 @@ $color-text: #83878C;
           font-size: 11px;
           
           .update-status {
-            font-size: 10px;
+            font-size: 11px;
           }
         }
       }
@@ -1953,7 +1954,6 @@ span.index {
         border-radius: 5px;
         text-align: center;
         display: inline-block;
-        ;
         margin-bottom: 20px;
         color: $color-grey-dark;
         font-size: 14px;
@@ -2308,9 +2308,6 @@ span.index {
   }
   .tenant-content {
     left: 35% !important;
-  }
-  .invoices .content{
-
   }
   .invoices .content p{
     @include flexbox;
