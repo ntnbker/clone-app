@@ -774,6 +774,7 @@ var QuoteRequests = React.createClass({
       </div>
     );
   }
+
 });
 
 var QuotesInInvoice = React.createClass({

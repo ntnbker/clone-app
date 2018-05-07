@@ -128,9 +128,9 @@ var ContentTradyAction = React.createClass({
 					{ !!this.props.assigned_trady &&
 						<MarkJobAsCompleted onModalWith={(modal) => this.props.onModalWith(modal)} />
 					}
-					{ false && !!this.props.assigned_trady &&
+					{/* { !!this.props.assigned_trady &&
 						<CreateAppointment onModalWith={(modal) => this.props.onModalWith(modal)} />
-					}
+					} */}
 					{/* <CreateAppointmentForQuote onModalWith={(modal) => this.props.onModalWith(modal)} /> */}
 					{ !!this.props.assigned_trady &&
 						<AddPhoto onModalWith={(modal) => this.props.onModalWith(modal)} />

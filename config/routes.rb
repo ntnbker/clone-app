@@ -59,6 +59,8 @@ Rails.application.routes.draw do
   ###################################################
     resources :landlords, only:[:create]
     resources :landlord_maintenance_requests, only:[:index, :show]
+    post "landlord_repair" => "landlord_actions#fix_myself"
+    post "landlord_resolved_issue" => "landlord_actions#issue_resolved"
     post 'update-landlord' => 'landlords#update', :as => :update_landlord
     post 'create-and-notify-landlord' => 'landlords#create_and_notify_landlord', :as =>:create_and_notify_landlord
     post "update-and-notify-landlord" => 'landlords#update_and_notify_landlord', :as =>:update_and_notify_landlord

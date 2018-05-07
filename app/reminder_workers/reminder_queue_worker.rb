@@ -25,6 +25,8 @@ class ReminderQueueWorker
       TenantReminderTenantToConfirmAppointmentWorker.perform_async
       LandlordReminderLandlordToConfirmAppointmentWorker.perform_async
       TradyReminderAwaitingInvoiceWorker.perform_async
+      LandlordReminderRepairStatusWorker.perform_async
+
       schedule.update_attribute(:run_date, run_date + 4.days)
     else
       #do nothing

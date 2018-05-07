@@ -430,6 +430,7 @@ class MaintenanceRequestsController < ApplicationController
     @tenant = @maintenance_request.tenants.first
     @maintenance_request_duplicate = @maintenance_request.dup
     @maintenance_request_duplicate.trady_id = nil
+    @maintenance_request_duplicate.jfmo_status = "Passive"
     @maintenance_request_duplicate.save
     @images = @maintenance_request.images
     TenantMaintenanceRequest.create(tenant_id:@tenant.id, maintenance_request_id:@maintenance_request_duplicate.id)
@@ -475,7 +476,7 @@ class MaintenanceRequestsController < ApplicationController
     counter = 0
     array.each do |maintenance_request|
       counter = counter + 1
-      @maintenance_request = MaintenanceRequest.new(name:original_maintenance_request.name,email:original_maintenance_request.email,mobile:original_maintenance_request.mobile,property_id:original_maintenance_request.property_id,maintenance_description:maintenance_request[1][:maintenance_description], service_type: maintenance_request[1][:service_type], agency_admin_id: agency_admin_id, agent_id: agent_id)
+      @maintenance_request = MaintenanceRequest.new(name:original_maintenance_request.name,email:original_maintenance_request.email,mobile:original_maintenance_request.mobile,property_id:original_maintenance_request.property_id,maintenance_description:maintenance_request[1][:maintenance_description], service_type: maintenance_request[1][:service_type], agency_admin_id: agency_admin_id, agent_id: agent_id, jfmo_status: "Passive")
       
       @maintenance_request.perform_contact_maintenance_request_validation = false
       if @maintenance_request.valid?

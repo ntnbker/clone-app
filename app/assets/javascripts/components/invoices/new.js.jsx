@@ -422,7 +422,7 @@ var InvoiceItemField = React.createClass({
 
   removeField(x) {
     const { totalamount = 0 } = this.state;
-    const selectedValue = $(`[name="${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${x}][pricing_type]`}"`).val();
+    const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${x}][pricing_type]`}']`).val();
 
     this.props.params.updatePrice(-totalamount);
     this.props.params.updateHourly(true, totalamount, selectedValue === 'Hourly');
@@ -436,7 +436,7 @@ var InvoiceItemField = React.createClass({
   },
 
   updatePrice(amount) {
-    const selectedValue = $(`[name="${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${this.props.x}][pricing_type]`}"]`).val();
+    const selectedValue = $(`[name='${`ledger[invoices_attributes][${this.props.params.x}][invoice_items_attributes][${this.props.x}][pricing_type]`}']`).val();
 
     if (!isNaN(amount)) {
       this.props.params.updatePrice(amount - this.state.totalamount, selectedValue === 'Hourly');
@@ -766,7 +766,7 @@ var InvoiceField = React.createClass({
             type="text"
             className="text-center"
             ref={elem => this.reference = elem}
-            placeholder="Invoice Reference Number"
+            placeholder="Trady Invoice Reference"
             defaultValue={invoice && invoice.trady_invoice_reference}
             onChange={() => this.setState({errorReference: ''})}
             name={'ledger[invoices_attributes][' + x + '][trady_invoice_reference]' }

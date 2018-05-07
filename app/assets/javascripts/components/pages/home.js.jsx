@@ -27,6 +27,9 @@ var HomeComponent = React.createClass({
   },
 
   chooseUser(user) {
+    $('html, body').animate({
+        scrollTop: $(this.homeForm).offset().top
+    }, 500);
     if (this.state.active !== user && !this.state.signed) {
       const step = user === 'Tenant' || user === 'Trady' ? 'home' : 'login';
       this.setState({active: user, step, rolePicked: user, error: ''});
@@ -92,8 +95,8 @@ var HomeComponent = React.createClass({
   },
 
   removeActive() {
-    $('body').animate({
-      scrollTop: $('#home-title').offset().top,
+    $('html, body').animate({
+      scrollTop: $(this.mainPage).offset().top,
     }, 500);
 
     this.setState({active: ''});
@@ -479,39 +482,39 @@ var HomeComponent = React.createClass({
       <div className="home-action-title">
         <button
           className={
-            "tenant-title " + (!active || active === 'Tenant' ?  'active' : 'hidden ')
+            "tenant-title " + (!active ? '' : active === 'Tenant' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Tenant')}
         >
-          I'm a Tenant
+          {active === 'Tenant' ? "Signing in as" : "I'm a"} Tenant
         </button>
         <button
           className={
-            "trady-title " + (!active || active === 'Trady' ?  'active' : 'hidden ')
+            "trady-title " + (!active ? '' : active === 'Trady' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Trady')}
         >
-          I'm a Tradie
+          {active === 'Trady' ? "Signing in as" : "I'm a"} Tradie
         </button>
         <button
           className={
-            "landlord-title " + (!active || active === 'Landlord' ?  'active' : 'hidden ')
+            "landlord-title " + (!active ? '' : active === 'Landlord' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Landlord')}
         >
-          I'm a Landlord
+          {active === 'Landlord' ? "Signing in as" : "I'm a"} Landlord
         </button>
         <button
           className={
-            "agent-title " + (!active || active === 'Agent' ?  'active' : 'hidden ')
+            "agent-title " + (!active ? '' : active === 'Agent' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Agent')}
         >
-          I'm an Agent
+          {active === 'Agent' ? "Signing in as" : "I'm an"} Agent
         </button>
       </div>
     )
@@ -594,12 +597,12 @@ var HomeComponent = React.createClass({
   },
 
   renderHomeAction() {
-    const {active} = this.state;
+    const {active, signed} = this.state;
 
     return (
-      <div className="home-action">
+      <div className="home-action" ref={e => this.homeForm = e}>
         {!active && <h3 className="choose-role-title text-center">Please choose one.</h3>}
-        {this.homeActionTitle()}
+        {!signed && this.homeActionTitle()}
         {this.homeActionContent()}
       </div>
     )
@@ -607,7 +610,7 @@ var HomeComponent = React.createClass({
 
   render: function() {
     return (
-      <div className="pages">
+      <div className="pages" ref={e => this.mainPage = e}>
         <div className="background-image" />
         <div className="home-content">
           <div className="header">

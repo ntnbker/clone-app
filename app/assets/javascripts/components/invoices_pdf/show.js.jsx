@@ -13,8 +13,8 @@ var ModalViewPDFInvoice = React.createClass({
 	render: function() {
 		const self = this.props;
 		const {invoice} = this.state;
-		const {pdf_url} = invoice;
-		const {trady, role} = this.props;
+		const {pdf_url, trady} = invoice;
+		const {role} = this.props;
 
 		const isPdf = /store\/\w+\.pdf/.test(pdf_url);
     const isShowVoidModal = invoice.paid === false && invoice.active === false;
@@ -285,6 +285,9 @@ var SubmitInvoicePDF = React.createClass({
             Service Fee: {pdf.service_fee}
           </div>
         }
+        <div className="alert alert-message">
+          Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment.
+        </div>
 			  <div className="text-center m-b-lg qf-button">
 		      <button
 		      	type="button"

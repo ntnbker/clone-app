@@ -610,6 +610,96 @@ var LandlordMaintenanceRequest = React.createClass({
 		this.setState({ quote_request });
 	},
 
+	createAppointmentFixMyself(callback) {
+		const {maintenance_request, authenticity_token} = this.props;
+		const self = this;
+
+		$.ajax({
+			type: 'POST',
+			url: '/landlord_repair',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: {
+				maintenance_request_id: maintenance_request.id
+			},
+			success: function(res){
+				if (res.errors) {
+					self.setState({notification: {
+						bgClass: "bg-error",
+						title: "Create Appointment",
+						content: res.errors,
+					}});
+				}
+				else {
+					self.setState({
+						maintenance_request,
+						notification: {
+							bgClass: "bg-success",
+							title: "Create Appointment",
+							content: res.message,
+						}
+					});
+				}
+
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Create Appointment",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		})
+	},
+
+	markIssueResolved(callback) {
+		const {maintenance_request, authenticity_token} = this.props;
+		const self = this;
+
+		$.ajax({
+			type: 'POST',
+			url: '/landlord_resolved_issue',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('X-CSRF-Token', authenticity_token);
+			},
+			data: {
+				maintenance_request_id: maintenance_request.id
+			},
+			success: function(res){
+				if (res.errors) {
+					self.setState({notification: {
+						bgClass: "bg-error",
+						title: "Mark As Issue Resolved",
+						content: res.errors,
+					}});
+				}
+				else {
+					self.setState({
+						maintenance_request,
+						notification: {
+							bgClass: "bg-success",
+							title: "Mark As Issue Resolved",
+							content: res.message,
+						}
+					});
+				}
+
+				self.onModalWith('notification');
+			},
+			error: function(err) {
+				self.setState({notification: {
+					bgClass: "bg-error",
+					title: "Mark As Issue Resolved",
+					content: err.responseText,
+				}});
+				self.onModalWith('notification');
+			}
+		})
+	},
+
 	renderModal: function() {
 		if(this.state.isModal) {
 			var body = document.getElementsByTagName('body')[0];
@@ -715,6 +805,17 @@ var LandlordMaintenanceRequest = React.createClass({
 					);
 				}
 
+				case 'createAppointmentFixMyself': {
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							title="Create Appoinment"
+							content="Are you sure you want to fix it yourself?"
+							confirm={this.createAppointmentFixMyself}
+						/>
+					);
+				}
+
 				case 'viewModalInstruction':
 					return (
 						<ModalInstruction
@@ -764,6 +865,16 @@ var LandlordMaintenanceRequest = React.createClass({
 						/>
 					);
 
+				case 'markIssueResolved': {
+					return (
+						<ModalConfirmAnyThing
+							close={this.isClose}
+							title="Mark As Issue Resolved"
+							content="Are you sure you want to mark this maintenance request issue as resolved?"
+							confirm={this.markIssueResolved}
+						/>
+					);
+				}
 				default:
 					return null;
 			}
@@ -931,6 +1042,7 @@ var LandlordMaintenanceRequest = React.createClass({
 									landlord={this.state.landlord}
 									onModalWith={this.onModalWith}
 									current_user={this.props.current_user}
+									current_role={this.props.current_role}
 									updateStatusQuote={this.updateStatusQuote}
 									sendEmailLandlord={this.sendEmailLandlord}
 									viewQuote={this.viewItem}
