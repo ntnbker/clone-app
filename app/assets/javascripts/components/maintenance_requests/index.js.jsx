@@ -517,26 +517,26 @@ var ListMaintenanceRequest = React.createClass({
           value: "Quote Received Awaiting Approval",
           count: this.props.awaiting_quote_approval_count
         },
-        {
-          title: "Job Approved Tradie To Set Appointment",
-          value: "Quote Approved Tradie To Organise Appointment",
-          count: this.props.trady_organise_appointment_count
-        },
-        {
-          title: "Tradie To Confirm Appointment",
-          value: "Tradie To Confirm Appointment",
-          count: this.props.trady_confirm_appointment_count
-        },
-        {
-          title: "Tenant To Confirm Appointment",
-          value: "Tenant To Confirm Appointment",
-          count: this.props.tenant_confirm_appointment_count
-        },
-        {
-          title: "Landlord To Confirm Appointment",
-          value: "Landlord To Confirm Appointment",
-          count: this.props.landlord_confirm_appointment_count
-        },
+        // {
+        //   title: "Job Approved Tradie To Set Appointment",
+        //   value: "Quote Approved Tradie To Organise Appointment",
+        //   count: this.props.trady_organise_appointment_count
+        // },
+        // {
+        //   title: "Tradie To Confirm Appointment",
+        //   value: "Tradie To Confirm Appointment",
+        //   count: this.props.trady_confirm_appointment_count
+        // },
+        // {
+        //   title: "Tenant To Confirm Appointment",
+        //   value: "Tenant To Confirm Appointment",
+        //   count: this.props.tenant_confirm_appointment_count
+        // },
+        // {
+        //   title: "Landlord To Confirm Appointment",
+        //   value: "Landlord To Confirm Appointment",
+        //   count: this.props.landlord_confirm_appointment_count
+        // },
         {
           title: "Maintenance Scheduled - Awaiting Invoice",
           value: "Maintenance Scheduled - Awaiting Invoice",
@@ -559,21 +559,21 @@ var ListMaintenanceRequest = React.createClass({
           value: "Awaiting Quote Approvals",
           count: this.props.awaiting_quote_approvals
         },
-        {
-          title: "Appointments Required",
-          value: "Appointment Required",
-          count: this.props.appointments_required
-        },
-        {
-          title: "Awaiting Appointment Confirmation",
-          value: "Awaiting Appointment Confirmation",
-          count: this.props.awaiting_appointment_confirmation
-        },
-        {
-          title: "Alternate Appointment Requested",
-          value: "Alternate Appointment Requested",
-          count: this.props.alternate_appointment_requested
-        },
+        // {
+        //   title: "Appointments Required",
+        //   value: "Appointment Required",
+        //   count: this.props.appointments_required
+        // },
+        // {
+        //   title: "Awaiting Appointment Confirmation",
+        //   value: "Awaiting Appointment Confirmation",
+        //   count: this.props.awaiting_appointment_confirmation
+        // },
+        // {
+        //   title: "Alternate Appointment Requested",
+        //   value: "Alternate Appointment Requested",
+        //   count: this.props.alternate_appointment_requested
+        // },
         {
           title: "Job Booked",
           value: "Job Booked",
