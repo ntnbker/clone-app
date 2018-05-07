@@ -40,7 +40,7 @@ class LandlordsController < ApplicationController
           @landlord.roles << role
           
           property.update_attribute(:landlord_id, @user.landlord.id)
-          UserSetPasswordEmailWorker.perform_async(@user.id)
+          
         else
           respond_to do |format|
             format.json{render :json=>{errors:@landlord.errors.to_hash(true).as_json}}
@@ -111,7 +111,7 @@ class LandlordsController < ApplicationController
           property.update_attribute(:landlord_id, @user.landlord.id)
 
           LandlordEmailWorker.perform_async(params[:landlord][:maintenance_request_id],@landlord.id)
-          UserSetPasswordEmailWorker.perform_in(5.minutes, @user.id)
+          
           maintenance_request.action_status.update_columns(maintenance_request_status:"In Progress", agent_status:"Awaiting Owner Initiation",action_category:"Awaiting Action") 
 
           log = Log.create(maintenance_request_id:maintenance_request.id, action:"Maintenance request forwarded to - Landlord ", name:@landlord.name.capitalize)
@@ -128,10 +128,10 @@ class LandlordsController < ApplicationController
   end 
 
   def update_and_notify_landlord
-    @landlord = Landlord.find_by(id:params[:landlord][:id])  
+    @landlord = Landlord.find_by(email:params[:landlord][:email])  
     maintenance_request = MaintenanceRequest.find_by(id:params[:landlord][:maintenance_request_id])
     property = maintenance_request.property
-
+    binding.pry
     if @landlord.update(landlord_params)
         
       property.update_attribute(:landlord_id, @landlord.id)
@@ -156,7 +156,7 @@ class LandlordsController < ApplicationController
   private
 
   def landlord_params
-    params.require(:landlord).permit(:id,:user_id,:name,:email,:mobile, :maintenance_request_id)
+    params.require(:landlord).permit(:user_id,:name,:email,:mobile, :maintenance_request_id)
   end
 end 
 
