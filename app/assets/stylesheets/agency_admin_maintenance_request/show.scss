@@ -320,6 +320,13 @@ $color-text: #83878C;
           }
         }
       }
+      .trady-info-group {
+        .trady-info .phone-desktop {
+          @media (max-width: 1023px) {
+            display: none;
+          }
+        }
+      }
     }
     h5.mr-title {
       font-weight: 500;
@@ -734,6 +741,20 @@ $color-text: #83878C;
         .pending-decision {
           border: 2px solid rgb(255, 191, 28);
           color: rgb(255, 191, 28);
+        }
+      }
+      .contact-button {
+        .phone {
+          @media (min-width: 1024px) {
+            display: none;
+          }
+        }
+      }
+      .trady-info-group {
+        .trady-info .phone-desktop {
+          @media (max-width: 1023px) {
+            display: none;
+          }
         }
       }
     }
