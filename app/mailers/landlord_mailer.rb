@@ -163,6 +163,19 @@ class LandlordMailer < ActionMailer::Base
     
     mail(to:@landlord.email, subject:"Change appointment request by tenant #{@tenant.name.capitalize}- #{@property.property_address}, sent on #{Date.today}")
   end
+
+
+  def reminder_repair_status_email(maintenance_request_object, landlord_object, property_object, tenant_object)
+    @maintenance_request = maintenance_request_object
+    @property =property_object
+    
+    @landlord = landlord_object
+    @tenant = tenant_object
+    @user = @landlord.user
+    
+    
+    mail(to:@landlord.email, subject:"Self Repair Maintenance Reminder- #{@property.property_address}, sent on #{Date.today}")
+  end
   
 
 end 

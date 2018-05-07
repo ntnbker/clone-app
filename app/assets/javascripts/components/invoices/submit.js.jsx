@@ -389,10 +389,10 @@ var InvoiceSubmit = React.createClass({
               <div className="date-quote">
                 <p>
                   <span className="font-bold ">
-                    Invoice Number:
+                    Trady Invoice Reference:
                   </span>
                   <span>
-                    {invoice.invoice_number}
+                    {invoice.trady_invoice_reference || 'N/A'}
                   </span>
                 </p>
                 <p>
@@ -550,6 +550,9 @@ var InvoiceSubmit = React.createClass({
               </div>
             </div>
           ))}
+        </div>
+        <div className="alert alert-message">
+          Please Note: Every invoice submitted will have an associated service fee. If a mistake has been made on an invoice and it was submitted please void that invoice and submit a new invoice to avoid double service fee payment.
         </div>
         <div className="qf-button text-center">
           <button
