@@ -482,7 +482,7 @@ var HomeComponent = React.createClass({
       <div className="home-action-title">
         <button
           className={
-            "tenant-title " + (!active || active === 'Tenant' ?  'active' : 'hidden ')
+            "tenant-title " + (!active ? '' : active === 'Tenant' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Tenant')}
@@ -491,7 +491,7 @@ var HomeComponent = React.createClass({
         </button>
         <button
           className={
-            "trady-title " + (!active || active === 'Trady' ?  'active' : 'hidden ')
+            "trady-title " + (!active ? '' : active === 'Trady' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Trady')}
@@ -500,7 +500,7 @@ var HomeComponent = React.createClass({
         </button>
         <button
           className={
-            "landlord-title " + (!active || active === 'Landlord' ?  'active' : 'hidden ')
+            "landlord-title " + (!active ? '' : active === 'Landlord' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Landlord')}
@@ -509,7 +509,7 @@ var HomeComponent = React.createClass({
         </button>
         <button
           className={
-            "agent-title " + (!active || active === 'Agent' ?  'active' : 'hidden ')
+            "agent-title " + (!active ? '' : active === 'Agent' ?  'active' : 'hidden ')
           }
           disabled={!!active}
           onClick={() => this.chooseUser('Agent')}
@@ -597,12 +597,12 @@ var HomeComponent = React.createClass({
   },
 
   renderHomeAction() {
-    const {active} = this.state;
+    const {active, signed} = this.state;
 
     return (
       <div className="home-action" ref={e => this.homeForm = e}>
         {!active && <h3 className="choose-role-title text-center">Please choose one.</h3>}
-        {this.homeActionTitle()}
+        {!signed && this.homeActionTitle()}
         {this.homeActionContent()}
       </div>
     )
