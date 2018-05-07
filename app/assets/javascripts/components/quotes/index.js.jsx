@@ -559,8 +559,10 @@ var Quotes = React.createClass({
 
 var QuoteRequests = React.createClass({
 	getInitialState: function() {
-		const role = self.current_user_role && self.current_user_role.role
-							|| self.current_role && self.current_role.role;
+		const self = this.props;
+		const role = (self.current_user_role && self.current_user_role.role)
+							|| (self.current_role && self.current_role.role);
+							
 		const quote_requests = role === 'Landlord'
 												? this.filterQuoteRequestForLandlord(this.props.quote_requests)
 												: this.filterQuoteRequest(this.props.quote_requests);
