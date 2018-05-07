@@ -992,18 +992,6 @@ var LandlordMaintenanceRequest = React.createClass({
 								onModalWith={(modal) => this.onModalWith(modal)}
 								maintenance_request={this.state.maintenance_request}
 							/>
-							{
-								(appointments && appointments.length > 0) &&
-									<AppointmentRequest
-										title="Landlord Appointments"
-										appointments={appointments}
-										cancelAppointment={(value) => this.cancel(value)}
-										viewItem={(key, item) => this.viewItem(key, item)}
-										declineAppointment={(value) => this.decline(value)}
-										acceptAppointment={(value) => this.acceptAppointment(value)}
-										current_role={this.props.signed_in_landlord.user.current_role}
-									/>
-							}
 							<ActivityMobile logs={this.props.logs} />
 						</div>
 					</div>
@@ -1049,18 +1037,6 @@ var LandlordMaintenanceRequest = React.createClass({
 								/>
 						}
 					</div>
-					{
-						(appointments && appointments.length > 0) &&
-							<AppointmentRequestMobile
-								appointments={appointments}
-								title="Landlord Appointments"
-								cancelAppointment={(value) => this.cancel(value)}
-								viewItem={(key, item) => this.viewItem(key, item)}
-								declineAppointment={(value) => this.decline(value)}
-								acceptAppointment={(value) => this.acceptAppointment(value)}
-								current_role={this.props.signed_in_landlord.user.current_role}
-							/>
-					}
 					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<LandlordSideBarMobile

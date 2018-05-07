@@ -767,11 +767,6 @@ $color-text: #83878C;
             background-color: #2892D7;
             border-color: #2892D7;
           }
-          &.view-invoice {
-            background-color: #2892D7;
-            border-color: #2892D7;
-            color: white;
-          }
         }
       }
       .quote-status {
@@ -2257,8 +2252,8 @@ span.index {
         border: none;
       }
       &.view-quote {
-        background-color: #2892D7;
-        border-color: #2892D7;
+        background-color: #FE4A49;
+        border-color: #FE4A49;
         color: white;
       }
     }
