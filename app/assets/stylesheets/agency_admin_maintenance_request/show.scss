@@ -279,7 +279,6 @@ $color-text: #83878C;
       
           &.visible {
             transform: translate3d(300px, 0, 0);
-            overflow-y: scroll;
           }
         }
         .section {
@@ -865,7 +864,7 @@ $color-text: #83878C;
         font-size: 17px;
         margin-bottom: 10px;
         margin-top: 30px;
-        line-height: 15px;
+        line-height: 25px;
 
         .edit-detail {
           font-size: 11px;
@@ -990,8 +989,8 @@ span.index {
   color: $color-white;
   margin-right: 10px;
   margin-left: 10px;
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   text-align: center;
   &.quote {
     float: left;
@@ -3080,6 +3079,10 @@ span.index {
 @media (max-width: 550px) {
   .modal-custom .modal-footer .cancel {
     margin-top: 10px;
+  }
+  span.index {
+    width: 25px;
+    height: 25px;
   }
 }
 @media (max-width: 400px) {

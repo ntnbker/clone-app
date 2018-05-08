@@ -153,6 +153,7 @@ var FixCSS = React.createClass({
 	},
 	
 	resizeSidebar() {
+		$('.sidebar > .box-shadow').css({height: ''});
 		if ($(window).width() < 1024) {
 			let screenHeight = $(window).height();
 			let sidebarHeight = $('.sidebar').height();
@@ -162,12 +163,6 @@ var FixCSS = React.createClass({
 			let menuHeight = 65;
 			let footerHeight = 58;
 			$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
-		}
-		if ($('.sidebar').height() < $('.sidebar > .box-shadow').height()) {
-			$('.sidebar').css({'overflow-y': 'scroll'});
-		}
-		else {
-			$('.sidebar').css({'overflow-y': ''});
 		}
 	},
 
@@ -1053,7 +1048,7 @@ var TenantContactButton = React.createClass({
 									className="edit-detail" 
 									onClick={() => this.props.onModalWith('showLandlordSettings')}
 								>
-									(Edit Details)
+									(Edit Landlord)
 								</span>
 							}
 						</h5>

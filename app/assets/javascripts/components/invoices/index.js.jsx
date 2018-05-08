@@ -130,9 +130,9 @@ var Invoices = React.createClass({
 
 		return (
 			<div className="quotes invoices m-t-xl box-shadow">
-      <p>
+      <h5 className="mr-title">
         Invoice
-      </p>
+      </h5>
       <div className="list-quote">
       {
         invoices.map(function(invoice, index) {
