@@ -951,7 +951,7 @@ var MaintenaceRequestDetail = React.createClass({
 							className="edit-detail" 
 							onClick={() => this.props.onModalWith('editMaintenanceRequest')}
 						>
-							(Edit Detail)
+							(Edit Details)
 						</span>
 					}
 				</h5>
