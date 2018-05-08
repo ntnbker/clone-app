@@ -34,16 +34,16 @@
     =yield :head
   %body
     
-    = render 'shared/spinner'
+    - if !content_for? :expanded
+      = render 'shared/spinner'
     
     %div.layout
-      = render 'shared/messages'
       %header
         - if content_for? :expanded
           = render 'shared/nav', {:expanded => true}
         - else
           = render 'shared/nav'
-
+          = render 'shared/messages'
       %section.content.clearfix.content-custom#main
 
         = yield
