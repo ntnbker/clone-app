@@ -1586,4 +1586,52 @@ var ModalShowSettings = React.createClass({
   }
 });
 
+var ShowLandlordSettings = React.createClass({
+  render: function() {
+    const {close, onModalWith} = this.props;
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={close}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 className="modal-title text-center">Maintenance Request Settings</h4>
+            </div>
+            <div className="modal-body">
+							<div className="maintenance-request-settings">
+								<button
+									type="button"
+									className="btn btn-default success"
+									onClick={() => onModalWith('editLandlord')}
+									data-dismiss="modal"
+								>
+								 <i className="fa fa-user" aria-hidden="true" /> 
+								 	Edit Landlord Details
+								</button>
+								<button
+									type="button"
+									className="btn btn-default success"
+									onClick={() => onModalWith('addLandlord')}
+									data-dismiss="modal"
+								>
+									<i className="fa fa-user" aria-hidden="true" /> 
+									Change Landlord
+								</button>
+							</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
 

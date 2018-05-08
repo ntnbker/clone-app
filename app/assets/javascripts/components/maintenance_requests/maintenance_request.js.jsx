@@ -1042,12 +1042,21 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord} = this.props;
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign} = this.props;
 		return (
 			<div className="box-shadow">
 				{isShowLandlord && 
 					<div className="landlord-information">
-						<h5 className="mr-title">Landlord Details</h5>
+						<h5 className="mr-title">Landlord Details
+							{show_assign && landlord && 
+								<span 
+									className="edit-detail" 
+									onClick={() => this.props.onModalWith('showLandlordSettings')}
+								>
+									(Edit Details)
+								</span>
+							}
+						</h5>
 						{ !landlord 
 							? <div className="no-landlord-text">
 									No landlord available for this property
@@ -1105,7 +1114,16 @@ var TenantContactButton = React.createClass({
 					</div>
 				}
 				<div className="tenant-information">
-					<h5 className="mr-title">Tenant Details</h5>
+					<h5 className="mr-title">Tenant Details
+							{show_assign && landlord && 
+								<span 
+									className="edit-detail" 
+									onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
+								>
+									(Edit Tenants)
+								</span>
+							}
+						</h5>
 					<div className="vailability">
 						<p className="header small-weight">Tenant Availability and Access Instructions: </p>
 						<p className="job-description">{maintenance_request.availability_and_access}</p>

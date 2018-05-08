@@ -28,12 +28,33 @@ $color-text: #83878C;
     z-index: 10000;
     .header-expanded .header-custom {
       @include justify-content(center);
+      @include flex-direction(row);
 
+      .logo a {
+        display: none;
+      }
       .header-right {
+        flex: 0;
+        margin: auto 5px;
+        .search .form-search {
+          margin-bottom: 0;
+        }
+      }
+      .menu-bar {
         display: none;
       }
       .menu-btn.signed{
         display: none;
+      }
+    }
+    @media (max-width: 460px) {
+      .header-expanded .header-custom {
+        .header-right {
+          .search .form-search {
+            min-width: 220px;
+            max-width: 220px;
+          }
+        }
       }
     }
   }
@@ -572,8 +593,8 @@ $color-text: #83878C;
           color: white;
         }
         &.view-invoice {
-          background-color: #2892D7;
-          border-color: #2892D7;
+          background-color: #4A90E2;
+          border-color: #4A90E2;
           color: white;
         }
         &:hover {
@@ -595,8 +616,8 @@ $color-text: #83878C;
         }
       }
       .payment-scheduled {
-        background-color: #8ADEFF;
-        border-color: #8ADEFF;
+        background-color: #4A90E2;
+        border-color: #4A90E2;
         color: white;
       }
     }
@@ -760,8 +781,8 @@ $color-text: #83878C;
             }
           }
           &.payment-scheduled {
-            background-color: #8ADEFF;
-            border-color: #8ADEFF;
+            background-color: #4A90E2;
+            border-color: #4A90E2;
           }
           &.create-quote {
             background-color: #2892D7;
@@ -2247,13 +2268,13 @@ span.index {
       color: $color-black;
       text-transform: capitalize !important;
       &.btn-trans {
-        background-color: #f4f8fb;
-        color: #849aaa;
+        background-color: #4A90E2;
+        color: white;
         border: none;
       }
       &.view-quote {
-        background-color: #FE4A49;
-        border-color: #FE4A49;
+        background-color: #4A90E2;
+        border-color: #4A90E2;
         color: white;
       }
     }

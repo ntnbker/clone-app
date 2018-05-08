@@ -88,8 +88,8 @@ var Action = React.createClass({
 		
 		return {
 			listActions: [{
-				icon: 'fa fa-sticky-note-o',
-				text: 'Approve Job',
+				icon: 'fa fa-sticky-note',
+				text: 'Approval Note',
 				onClick: () => this.props.onModalWith('approveJob'),
 				isShow: this.props.show_assign,
 			// }, {
@@ -117,6 +117,21 @@ var Action = React.createClass({
 			// 	text: 'Split Maintenance Request',
 			// 	onClick: () => this.props.onModalWith('splitMR'),
 			// 	isShow: this.props.show_assign,
+			}, {
+				icon: 'fa fa-user',
+				text: 'Ask Landlord For Instructions',
+				onClick: () => this.props.onModalWith(hasLandlord ? 'confirm' : 'addAskLandlord'),
+				isShow: true,
+			}, {
+				icon: 'fa fa-file-text',
+				text: 'Request Quote',
+				onClick: () => this.props.onModalWith('requestQuote'),
+				isShow: true,
+			}, {
+				icon: 'fa fa-send',
+				text: 'Send Work Order',
+				onClick: () => this.props.onModalWith('sendWorkOrder'),
+				isShow: isNotAssigned,
 			}, ]
 		};
 	},

@@ -3026,6 +3026,15 @@ var MaintenanceRequest = React.createClass({
 								close={this.isClose}
 							/>
 						)
+
+					case 'showLandlordSettings':
+						return (
+							<ShowLandlordSettings
+								onModalWith={this.onModalWith}
+								close={this.isClose}
+							/>
+						)
+
 				default:
 					return null;
 			}
@@ -3182,7 +3191,7 @@ var MaintenanceRequest = React.createClass({
 								onModalWith={(modal) => this.onModalWith(modal)}
 								viewItem={this.viewItem}
 							/>
-							<AgentLandlordAction
+							{/* <AgentLandlordAction
 								onModalWith={this.onModalWith}
 								viewItem={this.viewItem}
 								landlord={this.state.landlord}
@@ -3196,7 +3205,7 @@ var MaintenanceRequest = React.createClass({
 								onModalWith={this.onModalWith}
 								viewItem={this.viewItem}
 								hasTenant={this.state.tenants.length}
-							/>
+							/> */}
 						</div>
 					</div>
 					<div className="section">

@@ -228,6 +228,7 @@ header {
           position: relative;
           margin: auto;
           max-width: 300px;
+          min-width: 250px;
           height: 35px;
           border-radius: 20px;
           background: #313E46;
@@ -331,7 +332,7 @@ header {
         @include align-items(center);
         @include justify-content(flex-end);
         -ms-flex-align: center;
-        margin: auto 0;
+        margin: auto 5px;
         // margin-top: 22.5px;
 
         height: 100%;
