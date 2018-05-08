@@ -190,7 +190,7 @@ var ButtonCallTrady = React.createClass({
           style={{display: 'none'}}
           ref={(elem) => this.phone = elem}
         />
-        <i className="fa fa-phone"></i> Call {trady.name}
+        <i className="fa fa-phone"></i> Trady - {trady.name}
       </button>
     );
   }
@@ -255,7 +255,7 @@ var ButtonQuoteRequestMessage = React.createClass({
         }
       >
         <i className="fa fa-commenting" aria-hidden="true" />
-        Message {name}
+        Trady - {name}
       </button>
     );
   }

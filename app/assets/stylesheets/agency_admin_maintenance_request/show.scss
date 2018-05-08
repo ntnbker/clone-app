@@ -4,7 +4,7 @@ $color-grey-1: #aab8c3;
 $color-grey-dark: #849aaa;
 $color-grey-dark-1: #cedae3;
 $color-green: #7dc691;
-$color-gray: #3e4b54;
+$color-gray: #3e4b53;
 $color-gray-dark: #baccd8;
 $color-red: #e34f4f;
 $color-black: #000000;
@@ -13,7 +13,7 @@ $color-text: #83878C;
 
 .new-ui {
   .modal-custom {
-    top: 35px;
+    top: 45px;
   }
   #main {
     margin-top: 65px !important;
@@ -29,7 +29,12 @@ $color-text: #83878C;
     .header-expanded .header-custom {
       @include justify-content(center);
       @include flex-direction(row);
-
+      height: 65px;
+      
+      .logo img {
+        max-width: 35px;
+        height: 35px;
+      }
       .logo a {
         display: none;
       }
@@ -564,6 +569,7 @@ $color-text: #83878C;
           padding: 0 !important;
           height: inherit !important;
           border: 0 !important;
+          width: 100%;
           background: 0 !important;
           margin: 0 !important;
           line-height: inherit !important;
@@ -1119,7 +1125,7 @@ span.index {
     .modal-header {
       padding: 15px;
       border-bottom: 1px solid #e5e5e5;
-      background-color: $color-grey-dark;
+      background-color: $color-gray;
       &.modal-quote-header {
         @include flex-direction(column);
       }
