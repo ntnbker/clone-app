@@ -1644,6 +1644,7 @@ var TradyMaintenanceRequest = React.createClass({
 					</div>
 					<div className="section">
 						<ItemMaintenanceRequest
+							isTrady={true}
 							gallery={this.state.gallery}
 							property={this.props.property}
 							tenants={this.props.tenants}

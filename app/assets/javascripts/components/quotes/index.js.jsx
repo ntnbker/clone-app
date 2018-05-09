@@ -190,7 +190,7 @@ var ButtonCallTrady = React.createClass({
           style={{display: 'none'}}
           ref={(elem) => this.phone = elem}
         />
-        <i className="fa fa-phone"></i> Trady - {trady.name}
+        <i className="fa fa-phone"></i> Tradie - {trady.name}
       </button>
     );
   }
@@ -661,7 +661,7 @@ var QuoteRequests = React.createClass({
           const messageTo 						= role === 'Trady'
                                       ? `Agent - ${self.agent && (self.agent.name || self.agent.first_name)}`
                                       : quote_request.trady
-                                        ? `Trady - ${quote_request.trady.name}`
+                                        ? `Tradie - ${quote_request.trady.name}`
                                         : '';
           const linkCreateQuote = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
 

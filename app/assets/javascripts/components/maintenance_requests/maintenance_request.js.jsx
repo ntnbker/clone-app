@@ -1039,7 +1039,7 @@ var MaintenanceRequestInformation = React.createClass({
 
 var TenantContactButton = React.createClass({
 	render() {
-		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign} = this.props;
+		const {tenants = [], maintenance_request, landlord, isShowLandlord, show_assign, isTrady} = this.props;
 		return (
 			<div className="box-shadow">
 				{isShowLandlord && 
@@ -1058,7 +1058,7 @@ var TenantContactButton = React.createClass({
 							? <div className="no-landlord-text">
 									No landlord available for this property
 								</div>
-							:	<div className="landlord-detail">
+							:	!isTrady && <div className="landlord-detail">
 									<div className="landlord-name">
 										<span className="key">Name: </span>
 										<span className="value">{landlord.name}</span>
@@ -1071,21 +1071,23 @@ var TenantContactButton = React.createClass({
 						}
 						{ !!landlord 
 							? <div className="landlord-contact-button contact-button">
-									<div className="phone">
-										<button
-											type="button"
-											className="call-landlord"
-											onClick={() => this.callLandlord.click()}
-										>
-											<a
-												className="display-none"
-												href={"tel:" + landlord.mobile}
-												ref={e => this.callLandlord = e}
-											/>
-											<i className="fa fa-phone" aria-hidden="true" />
-											Landlord - {landlord.name}
-										</button>
-									</div>
+									{ !isTrady && 
+										<div className="phone">
+											<button
+												type="button"
+												className="call-landlord"
+												onClick={() => this.callLandlord.click()}
+											>
+												<a
+													className="display-none"
+													href={"tel:" + landlord.mobile}
+													ref={e => this.callLandlord = e}
+												/>
+												<i className="fa fa-phone" aria-hidden="true" />
+												Landlord - {landlord.name}
+											</button>
+										</div>
+									}
 									<div className="message">
 										<button 
 											type="button" 
@@ -1112,7 +1114,7 @@ var TenantContactButton = React.createClass({
 				}
 				<div className="tenant-information">
 					<h5 className="mr-title">Tenant Details
-							{show_assign && landlord && 
+							{show_assign && 
 								<span 
 									className="edit-detail" 
 									onClick={() => this.props.onModalWith(tenants.length ? 'showTenants' : 'addTenant')}
@@ -1149,12 +1151,14 @@ var TenantContactButton = React.createClass({
 										Tenant - {tenant.name}
 									</button>
 								</div>
-								<div className="message">
-									<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
-										<i className="fa fa-commenting" aria-hidden="true" />
-										Tenant - {tenant.name}
-									</button>
-								</div>
+								{ !isTrady && 
+									<div className="message">
+										<button className="message-landlord" onClick={() => this.props.onModalWith('sendMessageTenant')}>
+											<i className="fa fa-commenting" aria-hidden="true" />
+											Tenant - {tenant.name}
+										</button>
+									</div>
+								}
 							</div>
 						</div>
 					))}

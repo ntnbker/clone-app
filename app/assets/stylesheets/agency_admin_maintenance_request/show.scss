@@ -332,7 +332,7 @@ $color-text: #83878C;
 
           max-width: 260px;
 
-          @media (max-width: 460px) {
+          @media (min-width: 460px) {
             left: calc(50% - 130px);
           }
         }
