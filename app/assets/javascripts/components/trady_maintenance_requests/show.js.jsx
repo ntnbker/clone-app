@@ -22,7 +22,7 @@ var TradySideBarMobile = React.createClass({
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).click(function(e) {
+		$(document).on('click touch', function(e) {
 			const {className} = e.target;
 			dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
 
