@@ -308,7 +308,7 @@ var Header = React.createClass({
         <div className={"container " + (expanded ? 'full-header' : '')} >
           <div className={"column header-custom " + (e && "forhome")}>
             <div className="logo">
-              <img src="/assets/logo.png" alt="logo" />
+              <img src="/assets/logo.png" alt="logo" onClick={() => location.href = '/'} />
               <a href={props.root_path}> MaintenanceApp </a>
             </div>
             {

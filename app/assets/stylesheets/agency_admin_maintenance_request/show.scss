@@ -17,9 +17,18 @@ $color-text: #83878C;
   }
   #main {
     margin-top: 65px !important;
-    margin-bottom: 78px !important;
+    margin-bottom: 54px !important;
     @media (max-width: 1023px) {
+      margin-bottom: 112px !important;
+    }
+    @media (max-width: 920px) {
       margin-bottom: 136px !important;
+    }
+    @media (max-width: 640px) {
+      margin-bottom: 160px !important;
+    }
+    @media (max-width: 360px) {
+      margin-bottom: 184px !important;
     }
   }
   header {
@@ -31,6 +40,9 @@ $color-text: #83878C;
       @include flex-direction(row);
       height: 65px;
       
+      .search.hidden-search {
+        display: none;
+      }
       .logo img {
         max-width: 35px;
         height: 35px;
@@ -118,7 +130,7 @@ $color-text: #83878C;
 
       .section {
         @include flex(1);
-        padding: 10px 10px 40px;
+        padding: 10px 10px 0px;
         margin: auto 10px;
         margin-left: 320px;
         margin: 0 10px auto 320px;
@@ -373,6 +385,10 @@ $color-text: #83878C;
       margin-bottom: 5px;
       margin-top: 10px;
 
+      &.quote-request-title {
+        position: relative;
+        padding-left: 35px;
+      }
       .edit-detail {
         margin-left: 10px;
         font-size: 13px;
@@ -385,6 +401,12 @@ $color-text: #83878C;
           text-decoration: underline;
           color: $color-green;
         }
+      }
+      span.index {
+        font-size: 18px;
+        position: absolute;
+        left: -10px;
+        top: 5px;
       }
     }
     .button-header-mr {
@@ -852,8 +874,11 @@ $color-text: #83878C;
       .contact-button > div {
         @include flex(0);
       }
-      .trady-info-group .contact-button {
-        @include flex(2 2 120px);
+      .trady-info-group {
+        .contact-button,
+        .contact-button.quote-request-button {
+          @include flex(0);
+        }
       }
     }
 
@@ -989,8 +1014,8 @@ span.index {
   color: $color-white;
   margin-right: 10px;
   margin-left: 10px;
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
   text-align: center;
   &.quote {
     float: left;
@@ -1431,6 +1456,12 @@ span.index {
       .cancel {
         background-color: $color-red;
         margin-right: 10px;
+      }
+      div.alert {
+        width: 80%;
+        margin: 0 5%;
+        padding: 5px 5%;
+        margin-bottom: 10px;
       }
     }
   }
@@ -2540,12 +2571,6 @@ span.index {
         font-size: 14px;
       }
     }
-    .activity-mobile {
-      display: block;
-    }
-    .activity-mobile {
-      display: block;
-    }
 
     .quotes .item-quote .actions {
       margin-top: 0px;
@@ -2696,12 +2721,6 @@ span.index {
         font-size: 14px;
       }
     }
-    .activity-mobile {
-      display: block;
-    }
-    .activity-mobile {
-      display: block;
-    }
     .modal-custom .modal-dialog {
       width: 80%;
     }
@@ -2780,12 +2799,6 @@ span.index {
         padding-right: 0.5em;
       }
     }
-    .activity-mobile {
-      display: block;
-    }
-    .activity-mobile {
-      display: block;
-    }
   }
   @media (min-width: 776px) and (max-width: 900px) {
     .dropdown-assign {
@@ -2860,12 +2873,6 @@ span.index {
         padding-left: 0.5em;
         padding-right: 0.5em;
       }
-    }
-    .activity-mobile {
-      display: block;
-    }
-    .activity-mobile {
-      display: block;
     }
   }
   @media (min-width: 1025px) and (max-width: 1280px) {
@@ -3080,9 +3087,24 @@ span.index {
   .modal-custom .modal-footer .cancel {
     margin-top: 10px;
   }
-  span.index {
-    width: 25px;
-    height: 25px;
+  .new-ui {
+    .new-ui-maintenance-request.summary-container-index {
+      h5.mr-title {
+        margin-top: 30px;
+
+        &.quote-request-title {
+          padding-left: 30px;
+
+          span.index {
+            width: 20px;
+            height: 20px;
+            font-size: 15px;
+            top: 2px;
+            line-height: 20px;
+          }
+        }
+      }
+    }
   }
 }
 @media (max-width: 400px) {
@@ -3093,8 +3115,12 @@ span.index {
     }
     .quotes {
       .actions-quote {
-        width: 90%;
-        margin-left: 5%;
+        width: 96%;
+        margin-left: 2%;
+
+        button {
+          font-size: 11px;
+        }
       }
     }
     .item-quote .user .quote-request-button {

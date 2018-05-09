@@ -899,6 +899,7 @@ var TradyMaintenanceRequest = React.createClass({
 							close={this.isClose}
 							quote_request={this.state.quote_request}
 							current_user={this.props.current_user}
+							isTrady={true}
 							sendMessageQuoteRequest={this.sendMessageQuoteRequest}
 						/>
 					)
@@ -1684,6 +1685,7 @@ var TradyMaintenanceRequest = React.createClass({
 									landlord={this.state.landlord}
 									quote_requests={quote_requests}
 									assignedTrady={trady}
+									agent={this.props.agent || this.props.agency_admin}
 									onModalWith={this.onModalWith}
 									uploadImage={this.uploadImage}
 									current_user={this.props.current_user}

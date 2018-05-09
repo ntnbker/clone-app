@@ -992,7 +992,6 @@ var LandlordMaintenanceRequest = React.createClass({
 								onModalWith={(modal) => this.onModalWith(modal)}
 								maintenance_request={this.state.maintenance_request}
 							/>
-							<ActivityMobile logs={this.props.logs} />
 						</div>
 					</div>
 					<div className="section">
@@ -1036,8 +1035,8 @@ var LandlordMaintenanceRequest = React.createClass({
 									viewQuote={this.viewItem}
 								/>
 						}
+						<Activity logs={this.props.logs} />
 					</div>
-					<ActivityMobile logs={this.props.logs} />
 				</div>
 				<LandlordSideBarMobile
 					agent={this.props.agent}

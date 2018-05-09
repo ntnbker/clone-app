@@ -244,18 +244,18 @@ var ButtonQuoteMessage = React.createClass({
 
 var ButtonQuoteRequestMessage = React.createClass({
   render: function() {
-    const { name = '', quote_request, viewQuote } = this.props;
+    const { buttonText = '', quote_request, viewQuote } = this.props;
 
     return (
       <button
         type="button"
         className="btn btn-message"
-        title={`Message ${name}`}
+        title={buttonText}
         onClick={() => viewQuote('viewQuoteRequestMessage', quote_request)
         }
       >
         <i className="fa fa-commenting" aria-hidden="true" />
-        Trady - {name}
+        {buttonText}
       </button>
     );
   }
@@ -648,7 +648,7 @@ var QuoteRequests = React.createClass({
           const quoteAlready  = quotes.filter(quote => !quote.quote_items
                                                      || quote.quote_items.length === 0);
 
-          const isLandlord = self.keyLandlord === "landlord";
+          const isLandlord = role === "Landlord";
 
           const needAlreadySentButton = !isLandlord
                                      && quotes.length === 0
@@ -658,17 +658,17 @@ var QuoteRequests = React.createClass({
           const needMessageButton 		= !isLandlord && assignedTradyValid
                                       && !!self.current_user_show_quote_message;
 
-          const messageTo 						= self.keyLandlord === 'trady'
-                                      ? 'Agent'
+          const messageTo 						= role === 'Trady'
+                                      ? `Agent - ${self.agent && (self.agent.name || self.agent.first_name)}`
                                       : quote_request.trady
-                                        ? quote_request.trady.name
+                                        ? `Trady - ${quote_request.trady.name}`
                                         : '';
           const linkCreateQuote = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
 
           return (
 
             <div className="quotes m-t-lg box-shadow" id="quote_requests" key={index}>
-              <h5 className="mr-title"><span className="index">{index + 1}</span>Quote Requests</h5>
+              <h5 className="mr-title quote-request-title"><span className="index">{index + 1}</span>Quote Requests</h5>
               <div className="item-quote row item-quote-request">
                 <div className="user seven columns trady-info-group">
                   <div className="trady-info">
@@ -690,10 +690,12 @@ var QuoteRequests = React.createClass({
                         <span className="key">Company Name: </span>
                         <span className="value">{trady.company_name}</span>
                       </div>
-                      <div className="phone-desktop">
-                        <span className="key">Phone: </span>
-                        <span className="value">{trady.mobile}</span>
-                      </div>
+                      { !isCallTrady &&
+                        <div className="phone-desktop">
+                          <span className="key">Phone: </span>
+                          <span className="value">{trady.mobile}</span>
+                        </div>
+                      }
                     </div>
                   </div>
                   <div className="contact-button quote-request-button">
@@ -716,7 +718,7 @@ var QuoteRequests = React.createClass({
                       <div className="trady-message-button">
                         <ButtonQuoteRequestMessage
                           quote_request={quote_request}
-                          name={messageTo}
+                          buttonText={messageTo}
                           viewQuote={self.viewQuote}
                         />
                       </div>
@@ -1304,8 +1306,7 @@ var ModalViewQuoteRequestMessage = React.createClass({
   },
 
   render: function() {
-    const current_user 		 = this.props.current_user;
-    const quote_request		 = this.props.quote_request;
+    const {current_user, quote_request, isTrady} 		 = this.props;
     const { errorMessage } = this.state;
 
     return (
@@ -1323,7 +1324,7 @@ var ModalViewQuoteRequestMessage = React.createClass({
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 className="modal-title text-center">Message Quote Request</h4>
+                <h4 className="modal-title text-center">Messages</h4>
               </div>
               <div className="modal-body">
               {
@@ -1344,6 +1345,11 @@ var ModalViewQuoteRequestMessage = React.createClass({
                   />
                 </div>
                 {this.renderError(errorMessage)}
+                { isTrady && 
+                  <div className="alert alert-danger">
+                    Do NOT submit a quote in a message conversation. The agent won’t be able to accept and process the quote. Please use the create quote button.
+                  </div>
+                }
                 <button
                   type="submit"
                   onClick={this.onSubmit}

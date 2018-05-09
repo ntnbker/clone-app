@@ -23,19 +23,19 @@ var ContentLandlordAction = React.createClass({
 				</li>
         <li>
           <a onClick={() => this.props.onModalWith('createAppointmentFixMyself')}>
-            <i className="icon-send" aria-hidden="true" />
+            <i className="fa fa-send" aria-hidden="true" />
             Fix Myself
           </a>
         </li>
 				<li>
 					<a onClick={() => this.props.onModalWith('approveJob')}>
-						<i className="icon-send" aria-hidden="true" />
+						<i className="fa fa-send" aria-hidden="true" />
 						Approve Job
 					</a>
 				</li>
 				<li>
 					<a onClick={() => this.props.onModalWith('defere')}>
-						<i className="icon-send" aria-hidden="true" />
+						<i className="fa fa-send" aria-hidden="true" />
 						Defer
 					</a>
 				</li>

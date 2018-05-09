@@ -148,21 +148,23 @@ var FixCSS = React.createClass({
 		self.resizeSidebar();
 
 		$(window).resize(() => {
-			self.resizeSidebar();	
+			setTimeout(() => self.resizeSidebar(), 1000);	
 		})
 	},
 	
 	resizeSidebar() {
 		$('.sidebar > .box-shadow').css({height: ''});
+		let screenHeight = $(window).height();
+		let sidebarHeight = $('.sidebar').height();
 		if ($(window).width() < 1024) {
-			let screenHeight = $(window).height();
-			let sidebarHeight = $('.sidebar').height();
 			$('.sidebar').css({height: screenHeight});
 			$('.sidebar > .box-shadow').css({height: Math.max(screenHeight, sidebarHeight)});
 		} else {
 			let menuHeight = 65;
 			let footerHeight = 58;
-			$('.sidebar').css({height: $(window).height() - menuHeight - footerHeight - 30});
+			let spaceHeight = 55;
+			$('.sidebar').css({height: screenHeight - menuHeight - footerHeight - spaceHeight});
+			$('.sidebar > .box-shadow').css({height: screenHeight - menuHeight - footerHeight - spaceHeight});
 		}
 	},
 
