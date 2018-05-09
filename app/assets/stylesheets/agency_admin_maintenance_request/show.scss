@@ -587,8 +587,8 @@ $color-text: #83878C;
       > div {
         text-align: center;
         margin: 5px 5px 5px 5px;
-        width: calc(100% - 10px);
-        @include flex(2 2 240px);
+        width: calc(100% - 30px);
+        @include flex(2 0 240px);
         max-width: 240px;
         background-color: $color-grey;
         border-radius: 7px;
@@ -708,6 +708,8 @@ $color-text: #83878C;
 
         &.work-order {
           border-top: 1px solid #e0e3e6;
+          width: calc(100% + 10px);
+          margin: 0 -5px;
         }
         .trady-info {
           @include flex(3);
@@ -739,9 +741,8 @@ $color-text: #83878C;
           @include flex(2 2 260px);
           width: 90%;
           max-width: 260px;
-          max-height: 130px;
           &.quote-request-button {
-            margin-right: 20px;
+            margin-right: 5px;
           }
 
           > div {
@@ -878,15 +879,48 @@ $color-text: #83878C;
       .quote-request-button {
         @include flex-direction(column);
         @include align-items(center);
+        @include justify-content(auto);
+      }
+
+      .item-quote-request .trady-info-group .contact-button {
+        @include flex(0);
       }
 
       .contact-button > div {
-        @include flex(0);
+        @include flex-basis(0);
       }
       .trady-info-group {
         .contact-button,
         .contact-button.quote-request-button {
           @include flex(0);
+        }
+        .trady-info {
+          @include flex(0);
+        }
+      }
+      .quotes {
+        .actions-quote {
+          @include flexbox;
+          @include flex-direction(column);
+          @include align-items(center);
+          width: 90%;
+          max-width: 260px;
+          margin: auto;
+          margin-bottom: 10px;
+          padding: 0px;
+          float: none;
+          button {
+            @include flex(0);
+            padding: 0px;
+            margin: 0px 0px 10px 0px;
+          }
+        }
+        .btn-mark-as-paid {
+          margin-top: 20px;
+          @include flexbox;
+          @include flex-direction(column);
+          margin-left: calc(60% - 125px);
+          float: none;
         }
       }
     }
@@ -3051,31 +3085,31 @@ span.index {
 }
 @media (max-width: 820px) {
   .summary-container-index {
-    .quotes {
-      .actions-quote {
-        @include flexbox;
-        @include flex-direction(column);
-        @include align-items(center);
-        width: 90%;
-        max-width: 260px;
-        margin: auto;
-        margin-bottom: 10px;
-        float: none;
-        padding: 0px;
-        button {
-          @include flex(0);
-          padding: 0px;
-          margin: 0px 0px 10px 0px;
-        }
-      }
-      .btn-mark-as-paid {
-        margin-top: 20px;
-        @include flexbox;
-        @include flex-direction(column);
-        margin-left: calc(60% - 125px);
-        float: none;
-      }
-    }
+    // .quotes {
+    //   .actions-quote {
+    //     @include flexbox;
+    //     @include flex-direction(column);
+    //     @include align-items(center);
+    //     width: 90%;
+    //     max-width: 260px;
+    //     margin: auto;
+    //     margin-bottom: 10px;
+    //     float: none;
+    //     padding: 0px;
+    //     button {
+    //       @include flex(0);
+    //       padding: 0px;
+    //       margin: 0px 0px 10px 0px;
+    //     }
+    //   }
+    //   .btn-mark-as-paid {
+    //     margin-top: 20px;
+    //     @include flexbox;
+    //     @include flex-direction(column);
+    //     margin-left: calc(60% - 125px);
+    //     float: none;
+    //   }
+    // }
     .item-quote .user .quote-request-button {
       margin-top: 110px;
       margin-left: 25%;
