@@ -20,16 +20,19 @@ var TradySideBarMobile = React.createClass({
 		$('.sidebar').removeClass('visible');
 	},
 
-	componentDidMount: function() {
+	checkClose(e) {
 		const self = this;
-		$(document).on('click touch', function(e) {
-			const {className} = e.target;
-			dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+		const {className} = e.target;
+		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
 
-			if (!dontCloseMe) {
-				self.close();
-			}
-		})
+		if (!dontCloseMe) {
+			self.close();
+		}
+	},
+
+	componentDidMount: function() {
+		$(document).on('click', this.checkClose);
+		$(document).on('touchstart', this.checkClose);
 	},
 
 	render: function() {

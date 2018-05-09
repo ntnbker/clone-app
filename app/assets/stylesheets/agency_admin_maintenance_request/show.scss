@@ -306,6 +306,7 @@ $color-text: #83878C;
       .fixed {
         height: 58px;
         width: 100%;
+        display: block;
         > * {
           position: fixed;
           bottom: 0;
@@ -326,8 +327,14 @@ $color-text: #83878C;
           margin: 10px auto;
           color: white;
           height: 38px;
-          width: 57%;
+          width: 56%;
+          left: 22%;
+
           max-width: 260px;
+
+          @media (max-width: 460px) {
+            left: calc(50% - 130px);
+          }
         }
       }
     }

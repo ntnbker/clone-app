@@ -21,16 +21,20 @@ var LandlordSideBarMobile = React.createClass({
 		$('.sidebar').removeClass('visible');
 	},
 
+	checkClose(e) {
+		const self = this;
+		const {className} = e.target;
+		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
+
+		if (!dontCloseMe) {
+			self.close();
+		}
+	},
+
 	componentDidMount: function() {
 		const self = this;
-		$(document).on('click touch', function(e) {
-			const {className} = e.target;
-			dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
-
-			if (!dontCloseMe) {
-				self.close();
-			}
-		})
+		$(document).on('click', this.checkClose);
+		$(document).on('touchstart', this.checkClose);
 	},
 
 	render: function() {
