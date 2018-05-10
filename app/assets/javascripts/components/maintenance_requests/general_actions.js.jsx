@@ -75,7 +75,10 @@ var GeneralAction = React.createClass({
 
   generateActionButton(text, link, iconClass) {
     return (
-      <div className="user-action-link" onClick={() => this[text].click()}>
+      <div className="user-action-link" onClick={() => {
+        triggerSpinner(true); // show spinner
+        this[text].click();
+      }}>
         <a href={link} className="display-none" ref={e => this[text] = e} />
         <span className={`icon ${iconClass}`}></span>
         <span className="action-text">{text}</span>

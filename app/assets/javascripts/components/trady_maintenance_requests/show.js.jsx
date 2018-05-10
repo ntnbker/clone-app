@@ -32,10 +32,16 @@ var TradySideBarMobile = React.createClass({
 	},
 
 	componentDidMount: function() {
-		$(document).on('click', this.checkClose);
-		$(document).on('touchstart', this.checkClose);
+		const self = this;
+		$(document).on('click.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkClose);
 	},
 
+	componentWillUnmount() {
+		$(document).unbind('click.sidebar');
+		$(document).unbind('touchstart.sidebar');
+	},
+	
 	render: function() {
 		const { trady } = this.state;
 		const isAssignedTrady = trady && trady.id === this.props.signed_in_trady.id;

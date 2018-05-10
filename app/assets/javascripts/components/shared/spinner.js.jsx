@@ -1,5 +1,19 @@
+var triggerSpinner = () => {};
+
 var Spinner = React.createClass({
+	getInitialState() {
+		triggerSpinner = this.showSpinner.bind(this);
+		return {
+			isShow: false
+		};
+	},
+
+	showSpinner(isShow) {
+		this.setState({isShow: !!isShow});
+	},
+
 	componentDidMount: function() {
+		const self = this;
 		/*$(document).ajaxStart(function() {
 			$("#spinner").css('display', 'flex');
 		});
@@ -8,16 +22,16 @@ var Spinner = React.createClass({
 			$("#spinner").css('display', 'none');
 		});*/
 
-		$(document).bind('ajaxSend', function(e) {
-			$("#spinner").css('display', 'flex');
-		}).bind('ajaxComplete', function(e) {
-			$("#spinner").css('display', 'none');
+		$(document).bind('ajaxSend popstate', function(e) {
+			self.setState({isShow: true});
+		}).bind('ajaxComplete load', function(e) {
+			self.setState({isShow: false});
 		});
 	},
 
 	render: function() {
 		return (
-			<div id="spinner" className="spinner-content">
+			<div id="spinner" className="spinner-content" style={{display: this.state.isShow ? 'flex' : 'none'}}>
 				<div className="spinner-bg"></div>
 				<div className="spinner">
 					<div className="bounce1"></div>

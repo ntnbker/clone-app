@@ -345,8 +345,13 @@ var SideBarMobile = React.createClass({
 
 	componentDidMount: function() {
 		const self = this;
-		$(document).on('click', this.checkClose);
-		$(document).on('touchstart', this.checkClose);
+		$(document).on('click.sidebar', this.checkClose);
+		$(document).on('touchstart.sidebar', this.checkClose);
+	},
+
+	componentWillUnmount() {
+		$(document).unbind('click.sidebar');
+		$(document).unbind('touchstart.sidebar');
 	},
 
 	render: function() {
