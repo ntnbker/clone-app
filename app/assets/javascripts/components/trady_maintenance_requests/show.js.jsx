@@ -55,7 +55,7 @@ var TradySideBarMobile = React.createClass({
 						</button> */}
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
-							className={"button-default " + (this.state.showGeneral && 'active')}
+							className={"button-default show-sidebar-menu " + (this.state.showGeneral && 'active')}
 							onClick={(key) => this.show('general-action')}
 						>
 							MENU

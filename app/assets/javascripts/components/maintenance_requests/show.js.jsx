@@ -338,7 +338,7 @@ var SideBarMobile = React.createClass({
 		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
 
 		if (!dontCloseMe) {
-			self.close();
+			setTimeout(() => self.close(), 500);
 		}
 	},
 
@@ -370,7 +370,7 @@ var SideBarMobile = React.createClass({
 						</button> */}
 						<button
 							data-intro="Select 'Action' to action the maintenance request." data-position="top"
-							className={"button-default " + (this.state.showGeneral && 'active')}
+							className={"button-default show-sidebar-menu " + (this.state.showGeneral && 'active')}
 							onClick={(key) => this.show('general-action')}
 						>
 							MENU

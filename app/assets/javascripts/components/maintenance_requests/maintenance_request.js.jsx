@@ -1,5 +1,5 @@
 // Use it for close sidebar in MR show page on mobile
-var DONT_CLOSE_WHEN_CLICK_ME_LIST = ['input-search', 'fa-angle-right', 'fa-angle-down', 'general-action-title'];
+var DONT_CLOSE_WHEN_CLICK_ME_LIST = ['input-search', 'fa-angle-right', 'fa-angle-down', 'general-action-title', 'show-sidebar-menu'];
 
 var Carousel = React.createClass({
 	getInitialState: function() {
@@ -148,8 +148,15 @@ var FixCSS = React.createClass({
 		self.resizeSidebar();
 
 		$(window).resize(() => {
-			setTimeout(() => self.resizeSidebar(), 1000);	
+			self.resizeSidebar();	
 		})
+		$(window).on('orientationchange', self.resizeSidebar);
+	},
+
+	componentWillReceiveProps() {
+		const self = this;
+		$('.layout').addClass('new-ui');
+		self.resizeSidebar();
 	},
 	
 	resizeSidebar() {

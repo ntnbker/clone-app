@@ -51,7 +51,7 @@ $color-text: #83878C;
         display: none;
       }
       .header-right {
-        flex: 0;
+        @include flex(1);
         margin: auto 5px;
         .search .form-search {
           margin-bottom: 0;
@@ -538,7 +538,7 @@ $color-text: #83878C;
             }
           }
           .swiper-pagination {
-            position: initial;
+            position: unset;
             bottom: -30px;
             .swiper-pagination-bullet {
               width: 30px;
