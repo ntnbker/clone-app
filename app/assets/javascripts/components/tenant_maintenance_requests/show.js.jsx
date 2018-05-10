@@ -27,7 +27,8 @@ var TenantSideBarMobile = React.createClass({
 		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
 
 		if (!dontCloseMe) {
-			self.close();
+			e.target.click && e.target.click();
+			setTimeout(() => self.close(), 0);
 		}
 	},
 

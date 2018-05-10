@@ -152,12 +152,6 @@ var FixCSS = React.createClass({
 		})
 		$(window).on('orientationchange', self.resizeSidebar);
 	},
-
-	componentWillReceiveProps() {
-		const self = this;
-		$('.layout').addClass('new-ui');
-		self.resizeSidebar();
-	},
 	
 	resizeSidebar() {
 		$('.sidebar > .box-shadow').css({height: ''});
@@ -173,6 +167,7 @@ var FixCSS = React.createClass({
 			$('.sidebar').css({height: screenHeight - menuHeight - footerHeight - spaceHeight});
 			$('.sidebar > .box-shadow').css({height: screenHeight - menuHeight - footerHeight - spaceHeight});
 		}
+		$('.list-quote .contact-button > div').hide().show(0);
 	},
 
   componentWillUnmount() {

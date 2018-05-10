@@ -690,7 +690,7 @@ var QuoteRequests = React.createClass({
                         <span className="key">Company Name: </span>
                         <span className="value">{trady.company_name}</span>
                       </div>
-                      { !isCallTrady &&
+                      { isCallTrady &&
                         <div className="phone-desktop">
                           <span className="key">Phone: </span>
                           <span className="value">{trady.mobile}</span>

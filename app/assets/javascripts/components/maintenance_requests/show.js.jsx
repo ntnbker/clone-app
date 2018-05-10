@@ -338,7 +338,8 @@ var SideBarMobile = React.createClass({
 		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
 
 		if (!dontCloseMe) {
-			setTimeout(() => self.close(), 500);
+			e.target.click && e.target.click();
+			setTimeout(() => self.close(), 0);
 		}
 	},
 

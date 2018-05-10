@@ -51,7 +51,7 @@ $color-text: #83878C;
         display: none;
       }
       .header-right {
-        @include flex(1);
+        @include flex(unset);
         margin: auto 5px;
         .search .form-search {
           margin-bottom: 0;
@@ -603,6 +603,7 @@ $color-text: #83878C;
           background: 0 !important;
           margin: 0 !important;
           line-height: inherit !important;
+          display: block;
         }
         i {
           margin-right: 5px;
@@ -758,6 +759,7 @@ $color-text: #83878C;
               overflow: hidden;
               text-overflow: ellipsis;
               color: inherit;
+              display: block;
             }
           }
           i {
