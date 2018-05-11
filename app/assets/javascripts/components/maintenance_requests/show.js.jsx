@@ -313,7 +313,8 @@ var SideBarMobile = React.createClass({
 	getInitialState: function() {
 		return {
 			showAction: false,
-			showContact: false
+			showContact: false,
+			showGeneral: false,
 		};
 	},
 
@@ -337,9 +338,9 @@ var SideBarMobile = React.createClass({
 		const {className} = e.target;
 		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
 
-		if (!dontCloseMe) {
+		if (!dontCloseMe && self.state.showGeneral) {
 			e.target.click && e.target.click();
-			setTimeout(() => self.close(), 0);
+			self.close();
 		}
 	},
 
@@ -1250,7 +1251,8 @@ var MaintenanceRequest = React.createClass({
 		};
 	},
 
-	isClose: function() {
+	isClose: function(e) {
+		e.preventDefault();
 		if(this.state.isModal == true) {
 			this.setState({
 				isModal: false,
