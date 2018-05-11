@@ -558,7 +558,7 @@ var QuoteRequests = React.createClass({
                         ? this.filterQuoteRequestForLandlord(self.quote_requests)
                         : this.filterQuoteRequest(self.quote_requests);
     return {
-      quote_requests,
+      quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
       pictures: [],
       role,
     };
@@ -576,7 +576,7 @@ var QuoteRequests = React.createClass({
 
     this.getPictureImage(quote_requests);
     this.setState({
-      quote_requests: quote_requests,
+      quote_requests: quote_requests.sort((qr1, qr2) => !!qr2.quotes.length - !!qr1.quotes.length),
     });
   },
 
@@ -1289,6 +1289,7 @@ var ModalViewQuoteRequestMessage = React.createClass({
   onSubmit: function(e) {
     e.preventDefault();
     const self = this;
+
     const params = {
       message: {
         body: this.message && this.message.value,
@@ -1301,8 +1302,10 @@ var ModalViewQuoteRequestMessage = React.createClass({
       if (err) {
         self.setState({ errorMessage: err['body'] });
       }
+      this.message.value = "";
     });
-    this.message.value = "";
+
+    return false;
   },
 
   render: function() {
@@ -1312,7 +1315,7 @@ var ModalViewQuoteRequestMessage = React.createClass({
     return (
       <div className="modal-custom fade">
         <div className="modal-dialog">
-          <form role="form">
+          <form role="form" onSubmit={this.onSubmit}>
             <div className="modal-content">
               <div className="modal-header">
                 <button
@@ -1352,7 +1355,6 @@ var ModalViewQuoteRequestMessage = React.createClass({
                 }
                 <button
                   type="submit"
-                  onClick={this.onSubmit}
                   disabled={!current_user}
                   className="btn btn-default success"
                 >

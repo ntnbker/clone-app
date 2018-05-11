@@ -25,7 +25,7 @@ var TradySideBarMobile = React.createClass({
 		const {className} = e.target;
 		dontCloseMe = !!DONT_CLOSE_WHEN_CLICK_ME_LIST.filter(element => className.includes(element))[0];
 
-		if (!dontCloseMe) {
+		if (!dontCloseMe && self.state.showGeneral) {
 			e.target.click && e.target.click();
 			setTimeout(() => self.close(), 0);
 		}
@@ -41,7 +41,7 @@ var TradySideBarMobile = React.createClass({
 		$(document).unbind('click.sidebar');
 		$(document).unbind('touchstart.sidebar');
 	},
-	
+
 	render: function() {
 		const { trady } = this.state;
 		const isAssignedTrady = trady && trady.id === this.props.signed_in_trady.id;
