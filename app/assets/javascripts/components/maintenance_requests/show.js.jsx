@@ -1252,7 +1252,6 @@ var MaintenanceRequest = React.createClass({
 	},
 
 	isClose: function(e) {
-		e.preventDefault();
 		if(this.state.isModal == true) {
 			this.setState({
 				isModal: false,
