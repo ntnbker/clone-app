@@ -54,8 +54,9 @@ class Invoice < ApplicationRecord
 
   def save_total
     total = self.calculate_invoice_items_totals
-    self.calculate_tax
     self.update_attribute(:amount, total)
+    self.calculate_tax
+    
   end
 
 
@@ -76,7 +77,8 @@ class Invoice < ApplicationRecord
         self.update_attribute(:gst_amount, 0.00)
 
       return invoice_total_amount
-      else
+    else  
+        
         invoice_total_amount = self.amount/1.10
         tax_amount = invoice_total_amount * 0.10
         self.update_attribute(:gst_amount, tax_amount.round(3))
