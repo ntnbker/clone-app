@@ -79,8 +79,13 @@ class ApplicationController < ActionController::Base
       user = User.find_by(email:params[:email])
       token = user.set_password_token
     else
-      user = current_user
-      token = user.set_password_token
+      if current_user
+        user = current_user
+        token = user.set_password_token
+      else  
+        flash[:message] = "Please login to view the maintenance request."
+        redirect_to root_path(user_type:params[:user_type], maintenance_request_id:params[:id], anchor:params[:anchor], message:params[:message], quote_message_id:params[:quote_message_id], appointment_id:params[:appointment_id], stop_reminder:params[:stop_reminder], quote_request_id:params[:quote_request_id],role:params[:role] )
+      end 
     end 
 
     
