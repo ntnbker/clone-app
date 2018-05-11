@@ -3201,6 +3201,8 @@ var MaintenanceRequest = React.createClass({
 							<Action
 								show_assign={this.props.current_user_show_quote_message}
 								onModalWith={(modal) => this.onModalWith(modal)}
+								landlord={this.state.landlord}
+								hasTenant={this.state.tenants.length}
 								viewItem={this.viewItem}
 							/>
 							{/* <AgentLandlordAction
