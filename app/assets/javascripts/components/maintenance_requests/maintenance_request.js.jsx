@@ -147,25 +147,26 @@ var FixCSS = React.createClass({
 		$('.layout').addClass('new-ui');
 		self.resizeSidebar();
 
-		$(window).resize(() => {
-			self.resizeSidebar();	
-		})
-		$(window).on('orientationchange', self.resizeSidebar);
+		$(window).bind('resize.new_ui orientationchange.new_ui', self.resizeSidebar);
+		$('#main > div.alert').bind('remove.new_ui', self.resizeSidebar);
 	},
 	
 	resizeSidebar() {
 		$('.sidebar > .box-shadow').css({height: ''});
 		let screenHeight = $(window).height();
 		let sidebarHeight = $('.sidebar').height();
-		if ($(window).width() < 1024) {
+		if (window.innerWidth < 1024) {
 			$('.sidebar').css({height: screenHeight});
 			$('.sidebar > .box-shadow').css({height: Math.max(screenHeight, sidebarHeight)});
 		} else {
 			let menuHeight = 65;
 			let footerHeight = 58;
 			let spaceHeight = 55;
-			$('.sidebar').css({height: screenHeight - menuHeight - footerHeight - spaceHeight});
-			$('.sidebar > .box-shadow').css({height: screenHeight - menuHeight - footerHeight - spaceHeight});
+			let alertHeight = $("#main > div.alert").height() || 0;
+			let sidebarHeight = screenHeight - menuHeight - footerHeight - spaceHeight - alertHeight;
+			console.log(sidebarHeight, alertHeight);
+			$('.sidebar').css({height: sidebarHeight});
+			$('.sidebar > .box-shadow').css({height: sidebarHeight});
 		}
 		$('.list-quote .contact-button > div').hide().show(0);
 	},
@@ -173,6 +174,8 @@ var FixCSS = React.createClass({
   componentWillUnmount() {
 		$('.layout').removeClass('new-ui');
 		$('.sidebar').css({height: ''});
+		$(window).unbind('resize.new_ui orientationchange.new_ui');
+		$('#main > div.alert').unbind('remove.new_ui', self.resizeSidebar);
   },
   
   render() {

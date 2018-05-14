@@ -38,6 +38,7 @@ $color-text: #83878C;
     .header-expanded .header-custom {
       @include justify-content(center);
       @include flex-direction(row);
+      @include inline-flex;
       height: 65px;
       
       .search.hidden-search {
@@ -52,12 +53,14 @@ $color-text: #83878C;
       }
       .header-right {
         @include flex-grow(0);
-        @include flex-basis(300px);
         @include flex(unset);
         margin: auto 5px;
         .search .form-search {
           margin-bottom: 0;
         }
+      }
+      .agent {
+        @include flex-basis(300px);
       }
       .menu-bar {
         display: none;
@@ -73,6 +76,9 @@ $color-text: #83878C;
             min-width: 220px;
             max-width: 220px;
           }
+        }
+        .agent {
+          @include flex-basis(220px);
         }
       }
     }
@@ -1281,10 +1287,12 @@ span.index {
         @include justify-content(justify);
 
         .tenant-name {
-          @include flex(1);
+          @include flex(3);
           text-align: left;
         }
         .view-tenant-button {
+          @include flex(1);
+          text-align: right;
           span {
             margin-left: 15px;
             cursor: pointer;
