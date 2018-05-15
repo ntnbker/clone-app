@@ -698,7 +698,7 @@ var QuoteRequests = React.createClass({
                       }
                     </div>
                   </div>
-                  <div className="contact-button quote-request-button">
+                  <div className="contact-button">
                     { role === 'Trady'
                       ? <div className="trady-create-button">
                           <ButtonCreateQuote
@@ -723,26 +723,28 @@ var QuoteRequests = React.createClass({
                         />
                       </div>
                     }
+                    { !quote_request.trady.jfmo_participant && needAlreadySentButton
+                      ? <div className="stop-reminder">
+                          <ButtonQuoteAlreadySent
+                            {...self}
+                            quote_request={quote_request}
+                          />
+                        </div>
+                      : ''
+                    }
+                    { true
+                      ? <div>
+                          <ModalImageUpload
+                            className="btn btn-default"
+                            {...self}
+                            chooseImageText="Choose Image or PDF to upload"
+                            text="Upload Quote PDF/Image"
+                            onClick={() => self.chooseQuoteRequest(quote_request)}
+                          />
+                        </div>
+                      : ''
+                    }
                   </div>
-                </div>
-                <div className="quote-request-button">
-                  { !quote_request.trady.jfmo_participant && needAlreadySentButton
-                    ? <ButtonQuoteAlreadySent
-                        {...self}
-                        quote_request={quote_request}
-                      />
-                    : ''
-                  }
-                  { needPhotoButton
-                    ? <ModalImageUpload
-                        className="btn btn-default"
-                        {...self}
-                        chooseImageText="Choose Image or PDF to upload"
-                        text="Upload Quote PDF/Image"
-                        onClick={() => self.chooseQuoteRequest(quote_request)}
-                      />
-                    : ''
-                  }
                 </div>
                 { isAssigned &&
 									<AssignTrady
@@ -1643,3 +1645,60 @@ var ShowLandlordSettings = React.createClass({
 });
 
 
+var ShowTradyActions = React.createClass({
+  createQuote() {
+    const {maintenance_request_id, trady_id} = this.props;
+    location.href = `/quote_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`;
+  },
+
+  createQuote() {
+    const {maintenance_request_id, trady_id} = this.props;
+    location.href = `/invoice_options?maintenance_request_id=${maintenance_request_id}&trady_id=${trady_id}`
+  },
+
+  render: function() {
+    const {close, maintenance_request_id, trady_id} = this.props;
+    return (
+      <div className="modal-custom fade">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={close}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 className="modal-title text-center">Trady Actions</h4>
+            </div>
+            <div className="modal-body">
+							<div className="maintenance-request-settings">
+								<button
+									type="button"
+									className="btn btn-default success"
+									onClick={this.createQuote}
+									data-dismiss="modal"
+								>
+								 <i className="fa fa-user" aria-hidden="true" /> 
+								 	Create Quote
+								</button>
+								<button
+									type="button"
+									className="btn btn-default success"
+									onClick={this.createInvoice}
+									data-dismiss="modal"
+								>
+									<i className="fa fa-user" aria-hidden="true" /> 
+									Create Invoice
+								</button>
+							</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});

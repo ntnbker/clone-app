@@ -39,38 +39,21 @@ var AssignTrady = React.createClass({
                   </button>
                 </div>
               }
+              { showStopReminder &&
+                <div className="appointment-already-made stop-reminder">
+                  <button
+                    type="button"
+                    className="btn btn-view appointment-already-made stop-reminder"
+                    onClick={() => {
+                      if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
+                    }}
+                  >
+                    {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
+                  </button>
+                </div>
+              }
 						</div>
 					</div>
-          <div className="quote-request-button">
-            { showStopReminder &&
-              <button
-                type="button"
-                className="btn btn-view appointment-already-made stop-reminder"
-                onClick={() => {
-                  if (!stop_invoice) this.props.viewTrady('confirmInvoiceAlreadyMade');
-                }}
-              >
-                {!stop_invoice ? "Stop Invoice Reminder" : "Invoice Reminder Stopped"}
-              </button>
-            }
-            { false && showStopReminder &&
-              <button
-                type="button"
-                className="btn btn-view appointment-already-made stop-reminder"
-                onClick={() => {
-                  if (!stop_appointment) {
-                    this.props.onModalWith('confirmAppointmentAlreadyMade');
-                  }
-                }}
-              >
-              {
-                !stop_appointment
-                  ? "Stop Appointment Reminder"
-                  : "Appointment Reminder Stopped"
-              }
-              </button>
-            }
-          </div>
 				</div>
 			</div>
 		);

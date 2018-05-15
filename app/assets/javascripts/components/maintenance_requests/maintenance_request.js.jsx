@@ -144,7 +144,9 @@ var FixCSS = React.createClass({
 
   componentDidMount() {
 		const self = this;
+		const {className} = this.props;
 		$('.layout').addClass('new-ui');
+		$('footer').addClass(className || '');
 		self.resizeSidebar();
 
 		$(window).bind('resize.new_ui orientationchange.new_ui', self.resizeSidebar);
@@ -173,6 +175,7 @@ var FixCSS = React.createClass({
 
   componentWillUnmount() {
 		$('.layout').removeClass('new-ui');
+		$('footer').removeClass(this.props.className || '');
 		$('.sidebar').css({height: ''});
 		$(window).unbind('resize.new_ui orientationchange.new_ui');
 		$('#main > div.alert').unbind('remove.new_ui', self.resizeSidebar);
@@ -976,20 +979,24 @@ var MaintenaceRequestDetail = React.createClass({
 						: ''
 					}
 				</div>
-				<div className="mr-photo">
-					<Carousel gallery={this.props.gallery} />
-				</div>
-				<div className="add-photo contact-button">
-					<div className="add-photo-button">
-						<button
-							type="button"
-							className=""
-							onClick={() => this.props.onModalWith('addPhoto')}
-						>
-							Add Photo
-						</button>
+				{this.props.gallery && this.props.gallery.length > 0 &&
+					<div className="mr-photo">
+						<Carousel gallery={this.props.gallery} />
 					</div>
-				</div>
+				}
+				{!this.props.isTrady && 
+					<div className="add-photo contact-button">
+						<div className="add-photo-button">
+							<button
+								type="button"
+								className=""
+								onClick={() => this.props.onModalWith('addPhoto')}
+							>
+								Add Photo
+							</button>
+						</div>
+					</div>
+				}
 			</div>
 		)
 	}

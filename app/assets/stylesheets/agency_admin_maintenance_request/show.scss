@@ -87,6 +87,9 @@ $color-text: #83878C;
     @media (max-width: 1023px) {
       bottom: 57px;
     }
+    @media (max-width: 499px) {
+      bottom: 48px;
+    }
   }
   .new-ui-maintenance-request.summary-container-index {
     color: $color-text;
@@ -335,13 +338,51 @@ $color-text: #83878C;
           margin: 10px auto;
           color: white;
           height: 38px;
-          width: 56%;
-          left: 22%;
-
+          width: 80%;
+          left: 10%;
+          font-size: 14px;
           max-width: 260px;
 
-          @media (min-width: 460px) {
+          @media (min-width: 325px) {
             left: calc(50% - 130px);
+          }
+        }
+      }
+      &.trady-menu-button {
+        .fixed {
+          button {
+            width: 45%;
+          }
+          @media (min-width: 579px) {
+            .menu-button {
+              left: calc(33% - 173px);
+            }
+            .create-quote {
+              left: calc(67% - 86px);
+            }
+          }
+          @media (max-width: 578px) {
+            .menu-button {
+              left: 3%;
+            }
+            .create-quote {
+              left: 51.5%;
+            }
+          }
+        }
+      }
+      @media (max-width: 499px) {
+        height: 48px;
+        .fixed {
+          height: 48px;
+          
+          button {
+            height: 32px;
+            margin: 8px auto;
+            font-size: 11px;
+          }
+          .background {
+            height: 48px;
           }
         }
       }
@@ -604,7 +645,7 @@ $color-text: #83878C;
         padding: 0 10px;
         height: 33px;
 
-        button {
+        > button {
           padding: 0 !important;
           height: inherit !important;
           border: 0 !important;
@@ -642,6 +683,33 @@ $color-text: #83878C;
           background-color: #4A90E2;
           border-color: #4A90E2;
           color: white;
+        }
+        &.stop-reminder {
+          background-color: #e34f4f;
+          color: white;
+          font-size: 11px;
+
+          &:hover {
+            background-color: #c14343;
+            border-color: #c14343;
+          }
+        }
+        &.cancel-work-order, &.void-invoice {
+          background-color: $color-red;
+          border-color: $color-red;
+          color: $color-white;
+          &:hover {
+            background-color: #c14343;
+            border-color: #c14343;
+          }
+        }
+        &.payment-scheduled {
+          background-color: #4A90E2;
+          border-color: #4A90E2;
+        }
+        &.create-quote {
+          background-color: #2892D7;
+          border-color: #2892D7;
         }
         &:hover {
           background-color: $color-grey-1;
@@ -751,9 +819,6 @@ $color-text: #83878C;
           @include flex(2 2 260px);
           width: 90%;
           max-width: 260px;
-          &.quote-request-button {
-            margin-right: 5px;
-          }
 
           > div {
             @include flex(0);
@@ -762,7 +827,7 @@ $color-text: #83878C;
             padding-top: 0;
             padding-bottom: 0;
 
-            button {
+            > button {
               word-wrap: break-word;
               word-break: break-all;
               width: 100%;
@@ -774,68 +839,6 @@ $color-text: #83878C;
           }
           i {
             margin-right: 5px;
-          }
-        }
-      }
-      .quote-request-button {
-        margin: 0 10px;
-        width: calc(100% - 20px);
-        @include flexbox;
-        @include justify-content(center);
-
-        button {
-          text-align: center;
-          margin: 5px;
-          background-color: $color-grey;
-          border-radius: 7px;
-          padding: 5px;
-          color: $color-text;
-          max-width: 260px;
-          overflow: hidden;
-          width: 100%;
-
-          height: inherit !important;
-          border: 0 !important;
-          line-height: inherit !important;
-
-
-          i {
-            margin-right: 5px;
-          }
-          &:hover {
-            background-color: $color-grey-1;
-            color: $color-white;
-
-            button {
-              color: $color-white;
-            }
-          }
-          &.stop-reminder {
-            background-color: #e34f4f;
-            color: white;
-            font-size: 11px;
-
-            &:hover {
-              background-color: #c14343;
-              border-color: #c14343;
-            }
-          }
-          &.cancel-work-order, &.void-invoice {
-            background-color: $color-red;
-            border-color: $color-red;
-            color: $color-white;
-            &:hover {
-              background-color: #c14343;
-              border-color: #c14343;
-            }
-          }
-          &.payment-scheduled {
-            background-color: #4A90E2;
-            border-color: #4A90E2;
-          }
-          &.create-quote {
-            background-color: #2892D7;
-            border-color: #2892D7;
           }
         }
       }
@@ -887,8 +890,7 @@ $color-text: #83878C;
 
     @media (max-width: 770px) {
       .contact-button,
-      .item-quote-request .trady-info-group,
-      .quote-request-button {
+      .item-quote-request .trady-info-group {
         @include flex-direction(column);
         @include align-items(center);
         @include justify-content(auto);
@@ -902,8 +904,7 @@ $color-text: #83878C;
         @include flex-basis(0);
       }
       .trady-info-group {
-        .contact-button,
-        .contact-button.quote-request-button {
+        .contact-button {
           @include flex(0);
         }
         .trady-info {
@@ -961,11 +962,6 @@ $color-text: #83878C;
         }
       }
       .item-quote-request {
-        .quote-request-button {
-          button.stop-reminder {
-            font-size: 13px;
-          }
-        }
         .quote-status, .invoice-status {
           button {
             font-size: 11px;
@@ -1530,9 +1526,7 @@ span.index {
     .show-waring {
       color: #a94442;
       background-color: #f2dede;
-      padding-top: 15px;
-      padding-bottom: 15px;
-      margin-bottom: 25px;
+      padding: 15px;
       border-radius: 5px;
     }
   }
@@ -2616,17 +2610,6 @@ span.index {
     }
     .sidebar-mobile {
       display: block;
-      .fixed {
-        @include flexbox;
-        @include justify-content(center);
-      }
-      button {
-        height: 82px;
-        width: 50%;
-        color: $color-white;
-        font-weight: 600;
-        font-size: 14px;
-      }
     }
 
     .quotes .item-quote .actions {
@@ -2765,18 +2748,6 @@ span.index {
     }
     .sidebar-mobile {
       display: block;
-      .fixed {
-        @include flexbox;
-        @include justify-content(center);
-      }
-      button {
-        height: 82px;
-        width: auto;
-        width: 50%;
-        color: $color-white;
-        font-weight: 600;
-        font-size: 14px;
-      }
     }
     .modal-custom .modal-dialog {
       width: 80%;
@@ -2843,18 +2814,6 @@ span.index {
     }
     .sidebar-mobile {
       display: block;
-      .fixed {
-        @include flexbox;
-        @include justify-content(center);
-      }
-      button {
-        height: 82px;
-        width: auto;
-        width: initial;
-        font-size: 16px;
-        padding-left: 0.5em;
-        padding-right: 0.5em;
-      }
     }
   }
   @media (min-width: 776px) and (max-width: 900px) {
@@ -2918,18 +2877,6 @@ span.index {
     }
     .sidebar-mobile {
       display: block;
-      .fixed {
-        @include flexbox;
-        @include justify-content(center);
-      }
-
-      button {
-        width: auto;
-        width: initial;
-        font-size: 20px;
-        padding-left: 0.5em;
-        padding-right: 0.5em;
-      }
     }
   }
   @media (min-width: 1025px) and (max-width: 1280px) {
@@ -3124,20 +3071,6 @@ span.index {
     //     float: none;
     //   }
     // }
-    .item-quote .user .quote-request-button {
-      margin-top: 110px;
-      margin-left: 25%;
-      width: 50%;
-      @include flexbox;
-      @include flex-direction(column);
-      float: none;
-      button {
-        margin-right: 0px;
-        margin-bottom: 20px;
-        padding: 0px;
-        max-width: 400px;
-      }
-    }
   }
 }
 @media (max-width: 550px) {
@@ -3178,18 +3111,6 @@ span.index {
         button {
           font-size: 11px;
         }
-      }
-    }
-    .item-quote .user .quote-request-button {
-      margin-top: 110px;
-      @include flexbox;
-      @include flex-direction(column);
-      margin-left: 5%;
-      width: 90%;
-      float: none;
-      button {
-        margin-right: 0px;
-        margin-bottom: 20px;
       }
     }
   }

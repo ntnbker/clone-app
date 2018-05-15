@@ -1,7 +1,7 @@
 #image_uploader {
   .modal-custom {
     position: fixed;
-    top: 0;
+    top: 95px;
     right: 0;
     bottom: 0;
     left: 0;
@@ -46,7 +46,7 @@
     .modal-header {
       padding: 15px;
       border-bottom: 1px solid #e5e5e5;
-      background-color: $color-grey-dark;
+      background-color: #3e4b54;
       .modal-title {
         margin-bottom: 0px;
         color: $color-white;
@@ -221,6 +221,7 @@
     }
     .modal-footer {
       padding: 15px;
+      width: calc(100% - 30px);
       text-align: center;
       border-top: none;
       overflow: hidden;
